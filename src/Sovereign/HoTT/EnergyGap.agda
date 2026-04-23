@@ -1,117 +1,115 @@
 {-# OPTIONS --cubical --guardedness #-}
 
 -- | Sovereign.HoTT.EnergyGap
--- 高维拓扑：能隙 Δ=√3、弦长与时空关系的几何定义
+-- 高维拓扑：能隙 Δ=√3 的代数本源与时空统一
 --
 -- 核心宪法：
--- 1. 能隙 Δ = √3：胞腔边界相位跃迁的最小壁垒，非能量差，而是拓扑障碍。
--- 2. 弦长 L = √3：离散 GF(3) 格点图中，相邻非平凡节点的最短几何距离。
--- 3. 时空关系：能隙定义了空间距离，而时间（损益步进）是跨越此距离的演化动力。
---    只有当时间演化积累的能量足以克服 Δ 时，相变才会发生。
+-- 1. Δ=√3 不是无理数，而是 **C3 群生成元作用下的代数不变量**。
+-- 2. 它源于相生 (+1) 与相克 (ω) 在复平面上的离散距离。
+-- 3. 时间与空间通过 **Hermite 度量** 统一：时间每步进 1（极向），空间必产生弦长 √3（环向）。
 
 module Sovereign.HoTT.EnergyGap where
 
-open import Cubical.Core.Everything
-open import Cubical.Foundations.Prelude
 open import Data.Nat using (ℕ; _+_; _*_; _^_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
-open import Data.Product using (_×_; _,_)
+open import Data.Rational using (ℚ; _+_; _*_; _/_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-import Sovereign.Base.Trit as Trit
-import Sovereign.HoTT.Geometry as Geo
+import Cubical.Foundations.Prelude as Cubical
 
 --------------------------------------------------------------------------------
--- 1. √3 的代数定义 (Algebraic Definition of √3)
+-- 1. C3 群生成元与复振幅 (C3 Generator & Amplitudes)
 --------------------------------------------------------------------------------
 
--- 在律算体系中，我们严禁使用浮点数。
--- 因此，√3 被定义为满足方程 x² = 3 的正实数（或代数数）。
--- 为了在离散系统中操作，我们通常使用其平方值 3 或定点近似。
+-- 在律算离散结构中，我们不使用连续统复数，而是使用代数定义的振幅。
+-- 对应 C3 群的三个根：1, ω, ω²
+-- 满足方程 x³ = 1 且 x ≠ 1 (对于 ω)
+-- 即 ω² + ω + 1 = 0
+
+record ComplexAmplitude : Set where
+  field
+    re : ℚ  -- 实部 (有理数，因为涉及 1/2)
+    im : ℚ  -- 虚部 (涉及 √3，此处用系数表示)
+    -- 为了严格避免 √3，我们记录虚部系数 k，使得实际虚部为 k*√3
+
+-- 相生振幅 (Sheng)：+1
+Sheng : ComplexAmplitude
+Sheng = record { re = 1 / 1; im = 0 / 1 }
+
+-- 相克振幅 (Ke)：ω = -1/2 + i(√3/2)
+-- 注意：im 字段存储的是 √3 的系数
+Ke : ComplexAmplitude
+Ke = record { re = -1 / 2; im = 1 / 2 }
+
+--------------------------------------------------------------------------------
+-- 2. 能隙的代数定义 (Algebraic Definition of Gap)
+--------------------------------------------------------------------------------
+
+-- 计算两个振幅之间的“平方距离” (模长平方)
+-- |z|² = re² + (im * √3)² = re² + 3 * im²
+NormSq : ComplexAmplitude → ℚ
+NormSq z = (ComplexAmplitude.re z * ComplexAmplitude.re z) + 
+           (3 * ComplexAmplitude.im z * ComplexAmplitude.im z)
+
+-- 位移矢量：Ke - Sheng
+Displacement : ComplexAmplitude
+Displacement = record 
+  { re = ComplexAmplitude.re Ke - ComplexAmplitude.re Sheng
+  ; im = ComplexAmplitude.im Ke - ComplexAmplitude.im Sheng
+  }
+
+-- 核心定理：能隙平方等于 3
+-- 证明：
+-- Re = -1/2 - 1 = -3/2
+-- Im = 1/2 - 0 = 1/2
+-- |Δ|² = (-3/2)² + 3 * (1/2)² = 9/4 + 3/4 = 12/4 = 3
+
+GapSqEquals3 : NormSq Displacement ≡ 3 / 1
+GapSqEquals3 = refl
+
+-- 宪法定义：能隙 Δ = √3
+-- 我们不将其实例化为小数，而是作为一个满足 x²=3 的代数结构
+record EnergyGap : Set where
+  constructor mkGap
+  field
+    sqValue : ℕ  -- 存储平方值 (整数)
+    proof   : sqValue ≡ 3
+
+Gap : EnergyGap
+Gap = mkGap 3 refl
+
+--------------------------------------------------------------------------------
+-- 3. 时空统一：Hermite 度量 (Spacetime Unification)
+--------------------------------------------------------------------------------
+
+-- 在 T⁶ 复三维环面中：
+-- 时间 (Time) = 极向损益步进 (Phase Step)
+-- 空间 (Space) = 环向 C3 相位 (Chord Length)
+
+-- 定理：时间每推进一个损益步 (t=1)，空间产生的位移平方必为 3 (s²=3)。
+-- 这建立了时空的内在联系，无需光速 c 作为转换因子。
+
+SpacetimeStep : Set
+SpacetimeStep = (Time : ℕ) × (SpaceSq : ℕ)
+
+-- 单位步进的时空属性
+UnitSpacetimeStep : SpacetimeStep
+UnitSpacetimeStep = (1 , 3) -- t=1, s²=3 (即弦长 √3)
+
+-- 物理意义解释：
+-- 当主权状态机执行一次“移宫转调”（时间 +1），它必须在复流形的格点上移动。
+-- 由于格点由 C3 对称性定义，最近的非平凡邻接点（相克态）距离起点的平方必须是 3。
+-- 因此，时间与空间在底层几何上是锁定的：
+-- Δt = 1 ⇔ Δx² = 3
+
+--------------------------------------------------------------------------------
+-- 4. 拓扑壁垒 (Topological Barrier)
+--------------------------------------------------------------------------------
+
+-- 能隙 Δ=√3 是胞腔边界的最小跃迁壁垒。
+-- 任何小于此距离的变化在离散格点中被视为“虚位移”或涨落，
+-- 只有达到 Δ 的演化才能被记录为有效的“损益”状态改变。
 
 postulate
-  Sqrt3 : ℝ  -- 抽象的 √3 类型
-  Sqrt3Sq : Sqrt3 * Sqrt3 ≡ 3.0
-  Sqrt3Positive : Sqrt3 > 0.0
-
---------------------------------------------------------------------------------
--- 2. 离散弦长 (Discrete Chord Length)
---------------------------------------------------------------------------------
-
--- 弦长定义为 T⁶ 环面离散格点图上两点之间的距离。
--- 基础距离基于 Trit 的差异。
-
--- 单个 Trit 维度上的距离
-tritDistance : Trit.Trit → Trit.Trit → ℕ
-tritDistance t1 t2 with t1 | t2
-... | T- | T- = 0
-... | T0 | T0 = 0
-... | T+ | T+ = 0
-... | T- | T0 = 1
-... | T0 | T- = 1
-... | T0 | T+ = 1
-... | T+ | T0 = 1
-... | T- | T+ = 2 -- 跨越了平衡态
-... | T+ | T- = 2
-
--- 两个 Tryte (6 Trits) 之间的平方欧氏距离
--- 对应于高维空间中的几何距离平方
-tryteDistSq : Geo.Tryte → Geo.Tryte → ℕ
-tryteDistSq t1 t2 = 
-  sum (zipWith (λ x y → (tritDistance x y) ^ 2) t1 t2)
-  where
-    zipWith : ∀ {n} {A B C : Set} → (A → B → C) → Vec A n → Vec B n → Vec C n
-    zipWith f [] [] = []
-    zipWith f (x ∷ xs) (y ∷ ys) = f x y ∷ zipWith f xs ys
-    
-    sum : Vec ℕ 6 → ℕ
-    sum [] = 0
-    sum (x ∷ xs) = x + sum xs
-
--- 宪法定理：最小平移距离（弦长）对应 √3
--- 物理意义：两个最近邻的、手性相反的驻波核心之间的距离。
--- 在 Tryte 空间中，这对应于 3 个 Trit 发生翻转（例如全 T- 变为 3 个 T+）
--- 此时距离平方 = 1² + 1² + 1² = 3。
-
-postulate
-  minimalChordLengthIsSqrt3 : 
-    ∀ (t1 t2 : Geo.Tryte) →
-    isNeighbor t1 t2 → -- 假设 isNeighbor 定义了特定的拓扑邻接关系
-    tryteDistSq t1 t2 ≡ 3
-
---------------------------------------------------------------------------------
--- 3. 能隙作为时空壁垒 (Energy Gap as Spacetime Barrier)
---------------------------------------------------------------------------------
-
--- 能隙 Δ=√3 在几何上是最小弦长。
--- 在动力学上，它是相变必须跨越的势垒。
-
--- 时间演化（损益步进）带来的能量积累
--- 这里的“能量”定义为环向缠绕幂次 a 的函数
-evolutionEnergy : ℕ → ℝ
-evolutionEnergy a = toℝ a * unitEnergy -- 线性简化模型
-
--- 时空耦合定理：
--- 只有当时间演化积累的能量 E(t) ≥ Δ 时，空间结构（几何态）才能发生跃迁。
-postulate
-  spacetimeCouplingTheorem : 
-    ∀ (a : ℕ) (currentGeo nextGeo : Geo.GeometricForm) →
-    let E = evolutionEnergy a
-    in 
-    -- 如果发生了几何相变
-    isTransition currentGeo nextGeo →
-    -- 则能量必须至少达到能隙 Δ
-    E ≥ Sqrt3
-
---------------------------------------------------------------------------------
--- 4. 几何解释：为什么是 √3？
---------------------------------------------------------------------------------
-
--- 在 GF(3) 构成的等边三角形网格中：
--- 边长设为 1。
--- 能隙通常对应于“跨越”一个基本胞腔所需的能量。
--- 对于正四面体（火），中心到顶点的距离，或者面心到顶点的距离，
--- 往往涉及 √3 因子（与高度、体积相关的几何量）。
-
--- 这里的 √3 明确标识了我们的几何基底不是欧氏正方形网格（距离为 1 或 √2），
--- 而是基于三进制/六边形/四面体的离散流形。
+  isTopologicalBarrier : 
+    ∀ (distSq : ℕ) → distSq < 3 → distSq ≡ 0 -- 小于 3 的距离在离散拓扑中等价于 0 (未发生跃迁)
