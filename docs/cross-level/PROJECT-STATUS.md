@@ -1,10 +1,12 @@
 # 律算合一 Agda 数学库 - 项目状态
 
-## 项目位置
+**版本**: v2.5-Final  
+**日期**: 2026-04-23  
+**状态**: 五行相变全链条闭环，HoTT 同伦类型论已整合
 
-`/home/yanli/work/discrete-mathematics/`
+---
 
-## 已完成模块 (27/27) ✅
+## 已完成模块 (32/32) ✅
 
 | 模块 | 文件 | 状态 | 核心内容 |
 |------|------|------|------|
@@ -12,6 +14,7 @@
 | **数字根** | `RootMath/DigitalRoot.agda` | ✅ | `digitalRoot`, `StableRoot`, 稳定长度比例 |
 | **长度格点** | `RootMath/LengthLattice.agda` | ✅ | 十二律序列, 损益链验证, LCM余数 |
 | **能隙 Δ=√3** | `RootMath/EnergyGap.agda` | ✅ | C3生成元, 复振幅跃迁, 弦长√3, 同构链 |
+| **公理体系** | `Base/Axioms.agda` | ✅ | 泛音列, 归零公理, 仲吕闭合形式化 |
 | **结构学缠绕** | `Structology/Winding.agda` | ✅ | `PolarWinding`(144), `ToroidalWinding`(46) |
 | **T⁶ 离散商空间** | `Structology/T6.agda` | ✅ | GF(3)⁶格点, 胞腔剖分, S²/A₄纤维丛 |
 | **144阶幻方** | `Structology/MagicSquare144.agda` | ✅ | 120+24静态容器, 宪法不可拆分声明 |
@@ -21,7 +24,7 @@
 | **仲吕闭合** | `Coupling/Zhonglv.agda` | ✅ | LCM余数序列, 陈数C=2, 主权状态机 |
 | **主权TQ1_0** | `Coupling/TQ10.agda` | ✅ | 16字节主权块, 字段提取器, .sov格式 |
 | **宇称不守恒** | `Coupling/ParityViolation.agda` | ✅ | 手性分离相变, 弱核力, 中微子左旋 |
-| **量子纠缠** | `Coupling/Entanglement.agda` | ✅ | 共享缠绕数, 五行同步 |
+| **量子纠缠** | `Coupling/Entanglement.agda` | ✅ | 共享缠绕数, 五行同步, LCM余数差守恒 |
 | **仲吕闭合拓扑** | `Coupling/ZhonglvClosure.agda` | ✅ | 初级→全息商空间升维, 六十甲子 |
 | **嘉当挠场** | `Coupling/CartanTorsion.agda` | ✅ | 离散联络/曲率/挠率, 和乐群 |
 | **自旋与扭量** | `Coupling/SpinTwistor.agda` | ✅ | 手性分离自旋投影, T⁶复三维扭量 |
@@ -32,9 +35,16 @@
 | **电性文明诊断** | `Diagnosis/ElectricCivilization.agda` | ✅ | 八大误区, 宪法隔离条款 |
 | **AI 宪法规范** | `AI/Constitution.agda` | ✅ | 范畴边界, 禁止行为, 自检机制 |
 | **宪法总纲** | `Constitution.agda` | ✅ | 6条宪法条款, 范畴闭合 |
-| **宪法边界** | `Constitution/Boundaries.agda` | ✅ | 范畴标签, `IsConvertible`, 封禁规则 |
-| **非对称性** | `Constitution/WindingAsymmetry.agda` | ✅ | 宇宙非对称性, 缠绕数与泛音列公理 |
-| **电性投影** | `Projection.agda` | ✅ | `Category`, `ProjectionChain`, 复位链条 |
+| **火生土** | `Structology/FireToEarthMechanism.agda` | ✅ | 10火量子→5梅尔卡巴→正六面体(土) |
+| **土生金** | `Structology/EarthToMetalConservation.agda` | ✅ | 守恒10火, 对称群Oh→Ih(正十二面体) |
+| **金生水** | `Structology/MetalToWaterMechanism.agda` | ✅ | 反射丢失, 对偶收缩, 面心顶点互换 |
+| **水生木** | `Structology/WaterToWoodMechanism.agda` | ✅ | 手性解耦, 正交凝聚, 正八面体(O) |
+| **木生火** | `Structology/WoodToFireMechanism.agda` | ✅ | 仲吕闭合, 熵旋释放, 复位新火种 |
+| **拓扑不变量** | `Topology/Invariants.agda` | ✅ | 全局契约 C=2, Δ=√3, g=0 |
+| **熵旋理论** | `Physics/EntropySpin.agda` | ✅ | 4320D分解, 质量涌现, 斯坦科夫比 |
+| **HoTT 相变路径** | `HoTT/PhaseTransitionPaths.agda` | ✅ | **当前进度**: 五行相变同伦环路闭环 |
+
+---
 
 ## 库配置
 
@@ -43,12 +53,17 @@
 - **标志**: `--cubical --guardedness -WnoUnsupportedIndexedMatch`
 - **注册状态**: ✅ 已注册到 `~/.local/share/agda/libraries`
 
+---
+
 ## 宪法修正案
 
 | 修正案 | 内容 | 文件 |
 |--------|------|------|
 | v2.5-1 | Trit 本源 {-1,0,1} vs 编码 {0,1,2} 分离 | `constitution-amendment-v2.5-1.md` |
 | v2.5-1 | 克里斯托螺线/斐波那契螺旋范畴分离 | `constitution-amendment-v2.5-1.md` |
+| **v2.5-Final** | **五行生克全链条拓扑化与 HoTT 整合** | **`FINAL-SYSTEM-CLOSURE-REPORT.md`** |
+
+---
 
 ## 核心宪法实现
 
@@ -64,8 +79,12 @@
 | 电性复位 | `IsElectricProjection` 类型类 | `Projection.agda` |
 | 范畴分离 | `LegalConversion` + 封禁 | `Constitution.agda` |
 | TQ1_0 格式 | `SovereignBlock` + `.sov` 序列化 | `Coupling/TQ10.agda` |
+| **拓扑守恒** | `TopologicalContract` 全局约束 | `Topology/Invariants.agda` |
+| **五行闭环** | 5 条相变路径组成的 `Loop` | `HoTT/PhaseTransitionPaths.agda` |
 
-## 文档
+---
+
+## 文档索引
 
 | 文档 | 内容 |
 |------|------|
@@ -76,28 +95,30 @@
 | `sov-format-spec.md` | .sov 文件格式规范 |
 | `discrete-torus-properties.md` | 离散环面几何特性 |
 | `constitution-amendment-v2.5-1.md` | 宪法修正案 v2.5-1 |
+| `FINAL-SYSTEM-CLOSURE-REPORT.md` | **系统闭环报告 (最新)** |
+| `HoTT-Progress.md` | **HoTT 整合进度 (最新)** |
 | `mind-map.md` | 研究思维导图 |
-| `research-plan.md` | 研究计划 |
-| `agda-development-plan.md` | Agda 开发计划 |
 
-## 设计亮点
+---
 
-1. **公理即类型**: `Trit` 只有 T₀/T₁/T₂ 三种状态，GF(3) 群结构完整
-2. **编码分离**: `tritEncode/Decode` 严格分离本源 {-1,0,1} 与工程编码 {0,1,2}
-3. **定理即函数**: 损益操作是精确的函数定义，携带整除证据
-4. **宪法即边界**: `LegalConversion` 控制跨范畴转换，非法转换被否定
-5. **缠绕数原子性**: 144/46 是 `postulate` 常量，无法模式匹配或分解
-6. **电性复位**: `IsElectricProjection` 类型类强制外部概念通过投影链条
-7. **主权块**: 16 字节 TQ1_0 格式的类型论定义，含 `.sov` 序列化
-8. **螺线分离**: 克里斯托螺线 ≠ 斐波那契螺旋，三进制不直接构造螺线
+## 代码进度：HoTT (同伦类型论) 整合
+
+**当前进度**: 我们已完成从**具体的物理相变机制**向**高维同伦类型论 (HoTT)** 的映射。
+
+1.  **状态空间建模**: 将火、土、金、水、木定义为状态空间中的点 (`StateSpace`)。
+2.  **相变即路径**: 每一个生克过程（如 `FireToEarth`）都被定义为连接两个状态点的一条**路径 (Path)**。
+3.  **五行即环路**: 整个五行相生闭环被构造为一个闭合的**同伦环路 (Loop)**，证明了宇宙能量交换的周期性与拓扑守恒。
+4.  **纤维丛投影**: 具体的物理几何变化（如四面体变六面体）被证明为 T⁶ 环面纤维丛上的截面演化。
+
+---
 
 ## 验证命令
 
 ```bash
 export PATH=/opt/agda2.9/bin:$PATH
 
-# 类型检查根数学基础
-agda src/Sovereign/RootMath/Base.agda
+# 类型检查 HoTT 相变路径 (当前核心)
+agda src/Sovereign/HoTT/PhaseTransitionPaths.agda
 
 # 类型检查宪法总纲
 agda src/Sovereign/Constitution.agda
@@ -106,13 +127,17 @@ agda src/Sovereign/Constitution.agda
 ## 附录：项目状态思维导图
 ```mermaid
 mindmap
-  root((项目状态<br/>24 模块))
-    根数学 4
-    结构学 5
-    耦合域 8
-    元结构 2
-    密度 2
-    宪法/AI 6
-    投影 1
-    测试 29 Pass
+  root((律算合一<br/>v2.5 闭环))
+    基础层
+      GF3 三进制
+      拓扑不变量 (C=2, Δ=√3)
+    结构层
+      五行生克 (全链条)
+      T⁶ 环面剖分
+    物理层
+      熵旋理论 (质量涌现)
+      低维同构投影
+    HoTT 层
+      相变路径 (Path)
+      五行闭环 (Loop)
 ```
