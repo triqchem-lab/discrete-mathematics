@@ -1,19 +1,16 @@
 {-# OPTIONS --cubical --guardedness #-}
 
 -- | Sovereign.Structology.DiscreteCalculus
--- 结构学：复值场与离散微分算子
+-- 结构学：代数复数场与离散微分算子
 --
--- 本模块定义了 T⁶ 环面离散商空间上的物理场（驻波）与微积分（损益）。
--- 它是连接几何结构（Torus144）与动力学演化（波方程、陈数）的桥梁。
---
--- 宪法对应：
--- - 复值场：主权状态机的局部振幅与相位 (FixedComplex)
--- - 偏微分 (∂): 单一维度上的损益操作
--- - 拉普拉斯 (Δ): 驻波的共振稳定性算子
+-- 宪法更新：
+-- - 移除 Data.Complex (违反纯代数宪法)。
+-- - 使用 Sovereign.RootMath.AlgebraicComplex 替代。
 
 module Sovereign.Structology.DiscreteCalculus where
 
-open import Data.Complex using (Complex; _+i_; re; im; _*ᶜ_; _+ᶜ_; _-ᶜ_)
+-- ⚠️ 宪法合规：使用代数复数替代连续统复数
+open import Sovereign.RootMath.AlgebraicComplex using (Sqrt3; _+s3_; _+ˢ_; _*ˢ_; sqrt3)
 open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_; 1ℚ; 0ℚ; neg)
 open import Data.Integer using (ℤ; +_; -_)
 open import Data.Fin using (Fin; toℕ; fromℕ)
@@ -50,18 +47,18 @@ shiftToroidal cell k = mkCell (polar cell) (addMod12 (toℕ (toroidal cell)) k)
 -- 2. 复值场 (驻波场)
 --------------------------------------------------------------------------------
 
--- 驻波场：从 144 细胞到复有理数的映射
--- 工程对应: std::function<sov_fixed_complex_t(Cell144)>
+-- 驻波场：从 144 细胞到代数复数 (Sqrt3) 的映射
+-- 工程对应: 代数复数 a + b√3
 -- 在律算中，这代表了特定格点上的"气" (Qi) 或驻波振幅/相位。
 StandingWaveField : Set
-StandingWaveField = Cell144 → Complex ℚ
+StandingWaveField = Cell144 → Sqrt3
 
 -- 零场 (寂静态)
 zeroField : StandingWaveField
-zeroField c = 0ℚ +i 0ℚ
+zeroField c = 0b0 +s3 0b0
 
 -- 常数场 (均匀态)
-constantField : Complex ℚ → StandingWaveField
+constantField : Sqrt3 → StandingWaveField
 constantField z c = z
 
 --------------------------------------------------------------------------------
@@ -74,12 +71,12 @@ constantField z c = z
 -- 极向偏导 (∂_p)
 -- 对应十二律损益链的步进
 partialPolar : StandingWaveField → StandingWaveField
-partialPolar f cell = f (shiftPolar cell 1) -ᶜ f cell
+partialPolar f cell = f (shiftPolar cell 1) -ˢ f cell
 
 -- 环向偏导 (∂_t)
 -- 对应五行模数区的跃迁
 partialToroidal : StandingWaveField → StandingWaveField
-partialToroidal f cell = f (shiftToroidal cell 1) -ᶜ f cell
+partialToroidal f cell = f (shiftToroidal cell 1) -ˢ f cell
 
 -- 混合偏导 (∂_p ∂_t)
 -- 对应极向与环向的交叉干涉 (Cross-Interference)
@@ -111,8 +108,8 @@ DiscreteLaplacian f cell =
       f_up    = f (shiftToroidal cell 1)
       f_down  = f (shiftToroidalNeg cell)
       f_center = f cell
-      four = 4ℚ +i 0ℚ
-  in (f_right +ᶜ f_left +ᶜ f_up +ᶜ f_down) -ᶜ (four *ᶜ f_center)
+      four = 4ℚ +s3 0b0
+  in (f_right +ˢ f_left +ˢ f_up +ˢ f_down) -ˢ (four *ˢ f_center)
 
 --------------------------------------------------------------------------------
 -- 5. 探索：离散曲率 (Discrete Curvature / Berry Phase)
@@ -129,7 +126,7 @@ DiscreteLaplacian f cell =
 CurvatureTest : StandingWaveField → StandingWaveField
 CurvatureTest f cell = 
   -- (∂_p ∂_t - ∂_t ∂_p) f
-  mixedPartial f cell -ᶜ (partialToroidal (partialPolar f) cell)
+  mixedPartial f cell -ˢ (partialToroidal (partialPolar f) cell)
 
 -- 宪法结论：
 -- 对于普通的驻波场，CurvatureTest f 应该恒等于零场。

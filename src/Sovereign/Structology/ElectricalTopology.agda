@@ -1,18 +1,21 @@
 {-# OPTIONS --cubical --guardedness #-}
 
 -- | Sovereign.Structology.ElectricalTopology
--- 结构学：电性文明拓扑（退化投影）
+-- ⚠️ 废弃：电性文明拓扑（连续统退化投影）
 --
--- 警告：这是律算算经中的“反面教材”。
--- 电性文明使用连续统数学（有理数、复数）来近似描述世界，
--- 导致了精度的丢失和整数拓扑性质的破坏。
--- 此模块仅作为历史遗留或对照组存在。
+-- 宪法裁定：
+-- - 本模块使用 Data.Complex (连续统复数)，违反纯代数宪法。
+-- - 根据 ADR-004，外部连续统引用信用为 0。
+-- - 本模块仅作为历史对照组存在，禁止用于任何宪法级证明。
+--
+-- 替代方案：参见 Sovereign.Structology.DiscreteCalculus (代数复数版本)
 
 module Sovereign.Structology.ElectricalTopology where
 
+-- ⚠️ UNTRUSTED: 连续统复数，仅用于对照
+open import Data.Complex using (Complex; _+i_; re; im; _+ᶜ_; _-ᶜ_)
 open import Data.Fin using (Fin; toℕ)
 open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_)
-open import Data.Complex using (Complex; _+i_; re; im; _+ᶜ_; _-ᶜ_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 import Sovereign.Structology.Torus144 as Torus

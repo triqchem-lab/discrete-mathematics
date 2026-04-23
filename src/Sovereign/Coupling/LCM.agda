@@ -256,8 +256,9 @@ zhonglvClosureSection sec =
 postulate
   pack5RangeValid : ∀ (ts : Vec T.Trit 5) → pack5 ts < GAP_THRESHOLD
 
-open import Data.Nat.Properties using (+-comm; *-assoc; m*n%m≡0; m*n÷m≡n; mod-mod; +-mod; *-mod; a≡a*m)
-open import Data.Nat.DivMod using (div-mod; m*n%n≡0; m*n÷n≡m)
+-- ⚠️ ISOLATION (Phase 1): Imported via Untrusted Proxy.
+-- 原引用: Data.Nat.Properties, Data.Nat.DivMod
+open import Sovereign.Arithmetic.Untrusted using (+-comm; *-assoc; m*n%m≡0; m*n÷m≡n; mod-mod; +-mod; *-mod; a≡a*m; div-mod; m*n%n≡0; m*n÷n≡m)
 
 --------------------------------------------------------------------------------
 -- 8. 宪法验证：打包/解包互逆性证明

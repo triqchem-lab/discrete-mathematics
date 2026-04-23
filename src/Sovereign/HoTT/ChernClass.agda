@@ -9,8 +9,8 @@
 
 module Sovereign.HoTT.ChernClass where
 
-open import Cubical.Core.Everything
-open import Cubical.Foundations.Prelude
+-- ⚠️ ISOLATION (Phase 1): Imported via DiscreteCubical Proxy.
+open import Sovereign.HoTT.DiscreteCubical
 open import Data.Nat using (ℕ; _+_)
 
 import Sovereign.HoTT.Bundle as Bun

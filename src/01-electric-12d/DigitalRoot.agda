@@ -9,7 +9,9 @@
 module Sovereign.RootMath.DigitalRoot where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _/_; _%_; _≤_; _<_)
-open import Data.Nat.DivMod using (_mod_; _div_)
+-- ⚠️ ISOLATION (Phase 1): Imported via Untrusted Proxy.
+-- 原引用: Data.Nat.DivMod
+open import Sovereign.Arithmetic.Untrusted using (_mod_; _div_)
 open import Data.Bool using (Bool; true; false; _∧_; _∨_; not)
 open import Data.Fin using (Fin; toℕ; fromℕ)
 open import Relation.Nullary using (Dec; yes; no; ¬_)

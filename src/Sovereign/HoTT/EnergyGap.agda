@@ -15,7 +15,8 @@ open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Rational using (ℚ; _+_; _*_; _/_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-import Cubical.Foundations.Prelude as Cubical
+-- ⚠️ ISOLATION (Phase 1): Imported via DiscreteCubical Proxy.
+open import Sovereign.HoTT.DiscreteCubical
 
 --------------------------------------------------------------------------------
 -- 1. C3 群生成元与复振幅 (C3 Generator & Amplitudes)

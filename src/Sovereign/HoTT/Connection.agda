@@ -10,8 +10,10 @@
 
 module Sovereign.HoTT.Connection where
 
-open import Cubical.Core.Everything
-open import Cubical.Foundations.Prelude
+-- ⚠️ ISOLATION (Phase 1): Imported via DiscreteCubical Proxy.
+-- 原引用: Cubical.Foundations.Prelude
+open import Sovereign.HoTT.DiscreteCubical
+
 open import Data.Nat using (ℕ; _+_; _*_; _mod_)
 open import Data.Fin using (Fin; toℕ; fromℕ)
 open import Data.Vec using (Vec; map)
