@@ -1,0 +1,4 @@
+name: sovereign
+depend: standard-library
+include: src
+flags: --cubical --guardedness

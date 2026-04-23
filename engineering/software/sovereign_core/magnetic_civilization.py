@@ -1,0 +1,1 @@
+../../02-magnetic-24d/magnetic_civilization.py
