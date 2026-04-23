@@ -42,7 +42,11 @@
 | **木生火** | `Structology/WoodToFireMechanism.agda` | ✅ | 仲吕闭合, 熵旋释放, 复位新火种 |
 | **拓扑不变量** | `Topology/Invariants.agda` | ✅ | 全局契约 C=2, Δ=√3, g=0 |
 | **熵旋理论** | `Physics/EntropySpin.agda` | ✅ | 4320D分解, 质量涌现, 斯坦科夫比 |
-| **HoTT 相变路径** | `HoTT/PhaseTransitionPaths.agda` | ✅ | **当前进度**: 五行相变同伦环路闭环 |
+| **HoTT 相变路径** | `HoTT/PhaseTransitionPaths.agda` | ✅ | 五行相变同伦环路闭环 |
+| **HoTT 纤维丛** | `HoTT/Bundle.agda` | ✅ | 底流形/主权纤维/截面定义 |
+| **HoTT 联络与和乐** | `HoTT/Connection.agda` | ✅ | 传输=损益/和乐=仲吕闭合 |
+| **HoTT 陈类** | `HoTT/ChernClass.agda` | ✅ | 离散曲率/C=2 拓扑守恒 |
+| **HoTT 总集** | `HoTT/All.agda` | ✅ | 全模块整合与导出 |
 
 ---
 
