@@ -32,8 +32,10 @@ import Sovereign.Coding.Trit.Properties as TProp -- 假设存在群性质证明
 TransportPolar : Bun.Fiber → Bun.Fiber
 TransportPolar fiber = map (λ t → t T.⊕ T.T₁) fiber
 -- 这里我们假设 "益一" (Step +1) 对应全局加 T₁。
--- 如果是 "损一"，则是加 T₂ (即 -1 mod 3)。
--- 为简化 HoTT 证明，我们先定义标准的正向传输。
+
+-- 极向传输算子 (逆/损一): 对应全局加 T₂ (即 -1 mod 3)
+TransportPolarLoss : Bun.Fiber → Bun.Fiber
+TransportPolarLoss fiber = map (λ t → t T.⊕ T.T₂) fiber
 
 -- 环向传输算子 (Parallel Transport along Toroidal direction)
 -- 对应内部相位的旋转 (例如手性翻转)
