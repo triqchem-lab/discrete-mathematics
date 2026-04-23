@@ -46,6 +46,7 @@
 | **HoTT 纤维丛** | `HoTT/Bundle.agda` | ✅ | 底流形/主权纤维/截面定义 |
 | **HoTT 联络与和乐** | `HoTT/Connection.agda` | ✅ | 传输=损益/和乐=仲吕闭合 |
 | **HoTT 陈类** | `HoTT/ChernClass.agda` | ✅ | 离散曲率/C=2 拓扑守恒 |
+| **HoTT 能隙与时空** | `HoTT/EnergyGap.agda` | ✅ | $\Delta=\sqrt{3}$/最小弦长/时空耦合定理 |
 | **HoTT 总集** | `HoTT/All.agda` | ✅ | 全模块整合与导出 |
 
 ---

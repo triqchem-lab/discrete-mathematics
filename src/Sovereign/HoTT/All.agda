@@ -42,3 +42,8 @@ public
 -- 基础的路径代数与环路定义
 public
   import Sovereign.HoTT.Paths
+
+-- 8. 能隙与时空关系 (Energy Gap)
+-- 定义 Δ=√3、最小弦长、以及能量跨越能隙触发相变的时空耦合定理
+public
+  import Sovereign.HoTT.EnergyGap
