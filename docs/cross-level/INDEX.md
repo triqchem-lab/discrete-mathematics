@@ -68,7 +68,7 @@
 ### 根数学 (RootMath) - 4 模块
 | 模块 | 说明 |
 |------|------|
-| `Base.agda` | Trit {-1,0,1}, GF(3)群, Tryte, 编码/解码 |
+| `Base.agda` | Trit {0,1,2}, GF(3)群, Tryte, 编码/解码 |
 | `DigitalRoot.agda` | digitalRoot, StableRoot, 稳定长度比例 |
 | `LengthLattice.agda` | 十二律序列, 损益链验证, LCM 余数 |
 | `EnergyGap.agda` | C3 生成元, 复振幅跃迁, 弦长√3, 同构链 |

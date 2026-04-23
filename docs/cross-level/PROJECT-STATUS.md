@@ -10,7 +10,7 @@
 
 | 模块 | 文件 | 状态 | 核心内容 |
 |------|------|------|------|
-| **根数学基础** | `RootMath/Base.agda` | ✅ | `Trit` {-1,0,1}, GF(3)群, `Tryte`, 编码/解码 |
+| **根数学基础** | `RootMath/Base.agda` | ✅ | `Trit` {0,1,2}, GF(3)群, `Tryte`, 编码/解码 |
 | **数字根** | `RootMath/DigitalRoot.agda` | ✅ | `digitalRoot`, `StableRoot`, 稳定长度比例 |
 | **长度格点** | `RootMath/LengthLattice.agda` | ✅ | 十二律序列, 损益链验证, LCM余数 |
 | **能隙 Δ=√3** | `RootMath/EnergyGap.agda` | ✅ | C3生成元, 复振幅跃迁, 弦长√3, 同构链 |
@@ -64,7 +64,7 @@
 
 | 修正案 | 内容 | 文件 |
 |--------|------|------|
-| v2.5-1 | Trit 本源 {-1,0,1} vs 编码 {0,1,2} 分离 | `constitution-amendment-v2.5-1.md` |
+| v2.5-1 | Trit 本源 {0,1,2} vs 编码 {0,1,2} 分离 | `constitution-amendment-v2.5-1.md` |
 | v2.5-1 | 克里斯托螺线/斐波那契螺旋范畴分离 | `constitution-amendment-v2.5-1.md` |
 | **v2.5-Final** | **五行生克全链条拓扑化与 HoTT 整合** | **`FINAL-SYSTEM-CLOSURE-REPORT.md`** |
 
@@ -74,7 +74,7 @@
 
 | 宪法要求 | Agda 实现机制 | 文件 |
 |---------|----------|------|
-| Trit 本源 {-1,0,1} | `T₀/T₁/T₂` + `tritEncode/Decode` | `RootMath/Base.agda` |
+| Trit 本源 {0,1,2} | `T₀/T₁/T₂` + `tritEncode/Decode` | `RootMath/Base.agda` |
 | GF(3) 加法群 | `_+ᵍᶠ_` + `gf3Neg` + `gf3NegCancel` | `RootMath/Base.agda` |
 | 数字根公理 | `StableRoot` 精炼类型 | `RootMath/DigitalRoot.agda` |
 | 损益唯一合法 | `LossGain` + 整除证据 | `Coupling/LossGain.agda` |
