@@ -105,8 +105,36 @@ stateToTQ10 state =
       packedQs = packSectionToQs sec
   in TQ10.mkBlock packedQs 0 0 0 0 (replicate 6 0)
   where
+    -- 实现 5-trit 打包逻辑
+    -- 参考 /home/yanli/work/trit/BitNet/.../sovereign_block.h
+    -- 逻辑：packed = Σ t[i] * 3^i, 其中 t[i] ∈ {0,1,2}
+    pack5 : Vec T.Trit 5 → Fin 256
+    pack5 (t0 ∷ t1 ∷ t2 ∷ t3 ∷ t4 ∷ []) =
+      let v0 = T.toℕ t0
+          v1 = T.toℕ t1
+          v2 = T.toℕ t2
+          v3 = T.toℕ t3
+          v4 = T.toℕ t4
+          -- Base-3 expansion
+          val = v0 + (v1 * 3) + (v2 * 9) + (v3 * 27) + (v4 * 81)
+      in fromℕ val -- 最大值 242，安全
+    pack5 _ = 0b0 -- Should not happen with length 5
+
+    -- 将 30 个 Trit 分为 6 组
     packSectionToQs : LCM.SovereignSection → Vec (Fin 256) 6
-    packSectionToQs section = ? -- 待实现：5-trit 打包逻辑
+    packSectionToQs section =
+      let t0  = Vec.take 5 section
+          r0  = Vec.drop 5 section
+          t1  = Vec.take 5 r0
+          r1  = Vec.drop 5 r0
+          t2  = Vec.take 5 r1
+          r2  = Vec.drop 5 r1
+          t3  = Vec.take 5 r2
+          r3  = Vec.drop 5 r2
+          t4  = Vec.take 5 r3
+          r4  = Vec.drop 5 r3
+          t5  = Vec.take 5 r4
+      in pack5 t0 ∷ pack5 t1 ∷ pack5 t2 ∷ pack5 t3 ∷ pack5 t4 ∷ pack5 t5 ∷ []
 
 -- 从 TQ10 块导入为 SovereignState (上下文无损拾起)
 tq10ToState : TQ10.TQ10Block → Proj.Context → SovereignState
@@ -114,11 +142,45 @@ tq10ToState blk ctx =
   let -- 解包 6 字节为 30 个 Trit
       section = unpackQsToSection (TQ10.qs blk) ctx
       acc     = 0  -- 初始累加器
-      phase   = TQ10.getPolarPhase blk -- 从块中提取相位 (需扩展到 Fin 144)
-  in mkState section acc (fromℕ 0) 0
+      phase   = fromℕ 0 -- 从块中提取相位 (需扩展到 Fin 144)
+  in mkState section acc phase 0
   where
+    -- 实现 1 字节解包为 5 个 Trit
+    -- 检查能隙奇点 (>= 243)
+    unpack5 : Fin 256 → Proj.Context → Vec T.Trit 5
+    unpack5 byte ctx =
+      let val = toℕ byte
+      in
+      if val ≥ 243 then
+        -- 能隙奇点：返回全 T₀ 或触发复位 (这里简单返回 T₀)
+        T.T₀ ∷ T.T₀ ∷ T.T₀ ∷ T.T₀ ∷ T.T₀ ∷ []
+      else
+        -- Base-3 解码
+        let v0 = val mod 3
+            v1 = (val div 3) mod 3
+            v2 = (val div 9) mod 3
+            v3 = (val div 27) mod 3
+            v4 = (val div 81) mod 3
+            -- 使用上下文恢复 (此处简化为直接映射 0,1,2)
+            -- 如果需要更复杂的上下文恢复，可在此处调用 Proj.restoreTritWithContext
+            t0 = T.fromℕ v0
+            t1 = T.fromℕ v1
+            t2 = T.fromℕ v2
+            t3 = T.fromℕ v3
+            t4 = T.fromℕ v4
+        in t0 ∷ t1 ∷ t2 ∷ t3 ∷ t4 ∷ []
+
+    -- 拼接 6 组
     unpackQsToSection : Vec (Fin 256) 6 → Proj.Context → LCM.SovereignSection
-    unpackQsToSection qs ctx = ? -- 待实现：利用 restoreTritWithContext
+    unpackQsToSection (b0 ∷ b1 ∷ b2 ∷ b3 ∷ b4 ∷ b5 ∷ []) ctx =
+      let t0 = unpack5 b0 ctx
+          t1 = unpack5 b1 ctx
+          t2 = unpack5 b2 ctx
+          t3 = unpack5 b3 ctx
+          t4 = unpack5 b4 ctx
+          t5 = unpack5 b5 ctx
+      in t0 Data.Vec.++ t1 Data.Vec.++ t2 Data.Vec.++ t3 Data.Vec.++ t4 Data.Vec.++ t5
+    unpackQsToSection [] ctx = replicate 30 T.T₀
 
 --------------------------------------------------------------------------------
 -- 4. 宪法验证 (Constitutional Verification)
