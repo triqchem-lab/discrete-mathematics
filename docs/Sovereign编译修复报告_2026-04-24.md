@@ -154,10 +154,10 @@ IsStableDecimal n = ?  -- 需要实现十进制数字根
 
 ## 📚 **相关文件**
 
-- [ZeroGeometry.agda](file:///home/yanli/work/discrete-mathematics/src/Sovereign/Base/ZeroGeometry.agda) ✅
-- [Lattice.agda](file:///home/yanli/work/discrete-mathematics/src/Sovereign/Structology/Lattice.agda) ⚠️
-- [Axioms.agda](file:///home/yanli/work/discrete-mathematics/src/Sovereign/Base/Axioms.agda) ✅
-- [Decimal/Axioms.agda](file:///home/yanli/work/discrete-mathematics/src/Sovereign/Projection/Decimal/Axioms.agda) ✅
+- [ZeroGeometry.agda](file://./src/Sovereign/Base/ZeroGeometry.agda) ✅
+- [Lattice.agda](file://./src/Sovereign/Structology/Lattice.agda) ⚠️
+- [Axioms.agda](file://./src/Sovereign/Base/Axioms.agda) ✅
+- [Decimal/Axioms.agda](file://./src/Sovereign/Projection/Decimal/Axioms.agda) ✅
 
 ---
 

@@ -260,8 +260,8 @@ Tryte 729 态空间分析
 ## 🔗 **相关文档**
 
 - [智能体配置文件](/home/yanli/.lingma/agents/tryte-reasoner.md)
-- [理论澄清 - 极向缠绕相位轨迹 124875](/home/yanli/work/discrete-mathematics/docs/理论澄清 - 极向缠绕相位轨迹 124875.md)
-- [律算合一知识图谱 v2.5](/home/yanli/work/discrete-mathematics/docs/)
+- [理论澄清 - 极向缠绕相位轨迹 124875](./docs/理论澄清 - 极向缠绕相位轨迹 124875.md)
+- [律算合一知识图谱 v2.5](./docs/)
 
 ---
 

@@ -32,7 +32,7 @@
 #### 步骤 1：打开 Axioms.agda
 
 ```bash
-cd /home/yanli/work/discrete-mathematics
+cd .
 nano src/Sovereign/Base/Axioms.agda
 ```
 
@@ -60,7 +60,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym;
 #### 步骤 5：类型检查
 
 ```bash
-cd /home/yanli/work/discrete-mathematics
+cd .
 agda src/Sovereign/Base/Axioms.agda
 ```
 

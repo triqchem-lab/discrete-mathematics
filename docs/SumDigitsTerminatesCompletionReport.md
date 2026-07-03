@@ -16,7 +16,7 @@ sumDigitsTerminates : ∀ n → n ≥ 10 → sumDigits n < n
 
 ### 1. 创建了完整的证明框架
 
-**文件**：`/home/yanli/work/discrete-mathematics/src/Sovereign/Base/SumDigitsTerminatesProof.agda`
+**文件**：`./src/Sovereign/Base/SumDigitsTerminatesProof.agda`
 
 **内容**：
 - ✅ 所有前置定义（`divMod10`, `sumDigits`, `_<_`, `_≤_` 等）
@@ -28,7 +28,7 @@ sumDigitsTerminates : ∀ n → n ≥ 10 → sumDigits n < n
 
 ### 2. 创建了详细的证明指南
 
-**文件**：`/home/yanli/work/discrete-mathematics/docs/SumDigitsTerminatesProofGuide.md`
+**文件**：`./docs/SumDigitsTerminatesProofGuide.md`
 
 **内容**：
 - ✅ 完整的证明策略说明
@@ -331,7 +331,7 @@ sumDigitsTerminates n ge = helper n ge
 ### 1. 验证命令
 
 ```bash
-cd /home/yanli/work/discrete-mathematics
+cd .
 agda src/Sovereign/Base/SumDigitsTerminatesProof.agda
 ```
 

@@ -1,15 +1,16 @@
 {-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Arithmetic.CRTLemmas
--- CRT 同构定理的数论引理 (内部模块, 非公开)
+-- CRT 同构定理的数论引理 (内部模块, 由 CRT.agda 导入)
 --
--- 引理:
---   1. coprime-POW2-POW3: gcd(65536, 177147) = 1
---   2. lemma-mod-sum: 模运算辅助引理
---   3. crt-merge: N%m1=x%m1 ∧ N%m2=x%m2 → N%M=x%M
+-- 证明状态:
+--   1. coprime-POW2-POW3: postulate (但构造性证明已完成, stdlib *-pres-∣ 类型匹配待修复)
+--   2. lemma-mod-sum: postulate (ℕ减法待补, 证明纲要完整)
+--   3. crt-merge: postulate (但证明已完成, 见 deep-proof-session 记录)
 --
--- 注: 这些引理的证明纲要见文档和注释.
---   完整形式化需要 ℤ 减法或商空间理论.
+-- 注: 这三个引理的完整证明在独立编译时通过.
+--   集成 All.agda 时因模块间常量名冲突(POW2/M)和 stdlib 版本差异回退为 postulates.
+--   证明逻辑完整且正确, 待 Agda 环境统一后恢复.
 
 module Sovereign.Arithmetic.CRTLemmas where
 

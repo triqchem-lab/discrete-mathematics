@@ -2,7 +2,7 @@
 
 **重构时间**: 2026-04-24  
 **重构依据**: 根数学第一性原理，废弃十进制算术实现  
-**重构范围**: `/home/yanli/work/discrete-mathematics/src/Sovereign/Base`
+**重构范围**: `./src/Sovereign/Base`
 
 ---
 
@@ -223,11 +223,11 @@ Sovereign/Base/
 
 ## 📚 **相关文档**
 
-1. [Axioms.agda 宪法级修正](file:///home/yanli/work/discrete-mathematics/src/Sovereign/Base/Axioms.agda)
-2. [Trit.agda GF(3) 定义](file:///home/yanli/work/discrete-mathematics/src/Sovereign/Base/Trit.agda)
-3. [TritOps.agda 损益操作](file:///home/yanli/work/discrete-mathematics/src/Sovereign/Base/TritOps.agda)
-4. [Invariants.agda 拓扑不变量](file:///home/yanli/work/discrete-mathematics/src/Sovereign/Base/Invariants.agda)
-5. [范畴分离违例检查报告](file:///home/yanli/work/discrete-mathematics/docs/范畴分离违例检查报告_2026-04-24.md)
+1. [Axioms.agda 宪法级修正](file://./src/Sovereign/Base/Axioms.agda)
+2. [Trit.agda GF(3) 定义](file://./src/Sovereign/Base/Trit.agda)
+3. [TritOps.agda 损益操作](file://./src/Sovereign/Base/TritOps.agda)
+4. [Invariants.agda 拓扑不变量](file://./src/Sovereign/Base/Invariants.agda)
+5. [范畴分离违例检查报告](file://./docs/范畴分离违例检查报告_2026-04-24.md)
 6. [Tryte-Reasoner 智能体 v2.8](file:///home/yanli/.lingma/agents/tryte-reasoner.md)
 
 ---

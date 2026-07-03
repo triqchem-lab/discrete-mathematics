@@ -282,7 +282,7 @@ agda --html --html-dir=docs/ src/Sovereign/RootMath/Base.agda
 
 ## 下一步行动
 
-1. 在 `/home/yanli/work/discrete-mathematics` 创建项目结构
+1. 在 `.` 创建项目结构
 2. 创建 `.agda-lib` 配置文件
 3. 编写 `Sovereign.RootMath.Base` 模块
 4. 逐步实现其余模块

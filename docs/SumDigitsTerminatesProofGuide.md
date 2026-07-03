@@ -390,7 +390,7 @@ sumDigits<10 : ∀ n → n < 10 → sumDigits n ≡ n
 ### 1. 类型检查
 
 ```bash
-cd /home/yanli/work/discrete-mathematics
+cd .
 agda src/Sovereign/Base/SumDigitsTerminatesProof.agda
 ```
 

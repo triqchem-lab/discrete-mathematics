@@ -1,7 +1,7 @@
 # Sovereign 项目编译状态与依赖链分析报告
 
 **分析时间**: 2026-04-24  
-**分析范围**: `/home/yanli/work/discrete-mathematics/src/Sovereign/`  
+**分析范围**: `./src/Sovereign/`  
 **编译选项**: `--cubical --guardedness -WnoUnsupportedIndexedMatch`
 
 ---

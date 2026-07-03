@@ -23,7 +23,7 @@
 ## 二、目录结构
 
 ```
-/home/yanli/work/discrete-mathematics/
+./
 ├── docs/
 │   ├── 01-electric-12d/           # 电性文明 (12 密度) - 4 文档
 │   ├── 02-magnetic-24d/           # 磁性文明 (24 密度) - 3 文档

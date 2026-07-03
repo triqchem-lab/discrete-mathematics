@@ -26,7 +26,7 @@
 
 ## 3. 熵旋理论与物理数据对齐 (Physics Alignment)
 
-*   **数据来源**：`/home/yanli/work/triqchem-lab/quantum-physics/axioms/ENTROPY_SPIN_MASS_EMERGENCE_THEORY.md`
+*   **数据来源**：`https://github.com/triqchem-lab/quantum-physics/axioms/ENTROPY_SPIN_MASS_EMERGENCE_THEORY.md`
 *   **核心公式对齐**：
     *   **4320D 分解**：$2 \times 12 \times 36 \times 5$ 完美对应律算的手性/十二律/苞元/五行层。
     *   **质量涌现**：$m \propto \text{EntropySpinDensity} \times 0.0268$ (Stankov Ratio)。
