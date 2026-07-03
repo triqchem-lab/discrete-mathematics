@@ -102,7 +102,7 @@ CHERN        = ±2           (全局陈数)
 | D | π_H=144/46 | **0.3379** (WR) |
 | E | Lidari ρ≈0.38 极限环 | +16.6% 跃变 |
 
-引擎: `/data/training/cli/scholar-loop/engines/quartz_phonon/`
+引擎: [Scholar Loop Engine](https://github.com/triqchem-lab/scholar-loop)
 
 ---
 
@@ -126,8 +126,9 @@ src/Sovereign/
 
 | 仓库 | 内容 |
 |------|------|
-| `/home/yanli/work/math` | GF(3) C++23 数学库 (L0-L8) |
-| `/data/training/cli/scholar-loop` | Scholar Loop 实验验证 |
+| `~/.qwen/skills/crt-theory` | CRT 理论技能 |
+| [math](https://github.com/triqchem-lab/math) | GF(3) C++23 数学库 (L0-L8) |
+| [scholar-loop](https://github.com/triqchem-lab/scholar-loop) | Scholar Loop 实验验证 |
 
 ---
 
