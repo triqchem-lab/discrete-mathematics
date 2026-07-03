@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Tests
 -- 验证测试：律算合一基础代码功能验证
@@ -39,22 +39,22 @@ testLinZhongDigitalRoot = refl
 testUnstableDigitalRoot : Ax.digitalRoot 100 ≡ 1
 testUnstableDigitalRoot = refl
 
--- 测试：仲吕闭合逻辑正确性 (65536 -> 177147)
-testZhonglvClosureLogic : Ax.zhonglvClosure 65536 ≡ 177147
-testZhonglvClosureLogic = Ax.zhonglvClosureCorrect -- Postulate from Axioms
+-- 测试：仲吕对齐逻辑正确性 (65536 -> 177147)
+testZhonglvPhaseSyncLogic : Ax.zhonglvAlign 65536 ≡ 177147
+testZhonglvPhaseSyncLogic = Ax.zhonglvAlignCorrect -- Postulate from Axioms
 
 --------------------------------------------------------------------------------
 -- 2. 结构与打包验证 (Structure & Packing Verification)
 --------------------------------------------------------------------------------
 
--- 测试：全 T- (Base3 0) 的 5 个 Trit 打包后应为 0
-testPackAllT- : TQ10.pack5 (Trit.T- ∷ Trit.T- ∷ Trit.T- ∷ Trit.T- ∷ Trit.T- ∷ []) ≡ 0
-testPackAllT- = refl
+-- 测试：全 T₀ (Base3 0) 的 5 个 Trit 打包后应为 0
+testPackAllT₀ : TQ10.pack5 (Trit.T₀ ∷ Trit.T₀ ∷ Trit.T₀ ∷ Trit.T₀ ∷ Trit.T₀ ∷ []) ≡ 0
+testPackAllT₀ = refl
 
--- 测试：全 T+ (Base3 2) 的 5 个 Trit 打包后应为 242 (3^0*2 + ... + 3^4*2)
+-- 测试：全 T₂ (Base3 2) 的 5 个 Trit 打包后应为 242 (3^0*2 + ... + 3^4*2)
 -- 2 + 6 + 18 + 54 + 162 = 242
-testPackAllT+ : TQ10.pack5 (Trit.T+ ∷ Trit.T+ ∷ Trit.T+ ∷ Trit.T+ ∷ Trit.T+ ∷ []) ≡ 242
-testPackAllT+ = refl
+testPackAllT₂ : TQ10.pack5 (Trit.T₂ ∷ Trit.T₂ ∷ Trit.T₂ ∷ Trit.T₂ ∷ Trit.T₂ ∷ []) ≡ 242
+testPackAllT₂ = refl
 
 -- 测试：PackedByte 合法性检查
 testPackedByteValidity : TQ10.isPackedValid 250 ≡ false -- 250 > 243 (奇点捕获区)
@@ -65,13 +65,25 @@ testPackedByteValidity = refl
 --------------------------------------------------------------------------------
 
 -- 辅助：构造一个合法的初始块 (全 0 trit, Phase 0)
--- 注意：此处假设 TQ10.fromℕ 存在 (需在 TQ10 中补充或手动构造 Fin 256)
--- 为简化，我们直接使用 Fin 构造函数 (fromℕ 需要证明 < 256)
--- 这里为了代码可运行，我们假设有一个构造器
-postulate
-  initialBlock : TQ10.TQ10Block
-  initialAcc  : ℕ
-  initialState : SM.SovereignState
+-- 构造具体的初始状态（黄钟初始态）
+initialBlock : TQ10.TQ10Block
+initialBlock = TQ10.mkBlock 
+  (zeroByte ∷ zeroByte ∷ zeroByte ∷ zeroByte ∷ zeroByte ∷ zeroByte ∷ [])  -- qs: 6 个零字节
+  (fromℕ 0)   -- scale: 0
+  (fromℕ 0)   -- phase_bias: 0 (极向相位 0, C3 相位 0)
+  (fromℕ 0)   -- chern_guard: 0
+  (fromℕ 0)   -- wuxing_mask: 0
+  (zeroByte ∷ zeroByte ∷ zeroByte ∷ zeroByte ∷ zeroByte ∷ zeroByte ∷ [])  -- reserved
+  where
+    open import Data.Fin using (fromℕ)
+    zeroByte : TQ10.PackedByte
+    zeroByte = fromℕ 0  -- 全 T₀ 态打包为 0
+
+initialAcc : ℕ
+initialAcc = 0
+
+initialState : SM.SovereignState
+initialState = SM.mkState initialBlock initialAcc
 
 -- 由于 TQ10 的具体构造依赖 Fin 的繁琐证明，我们在此略过具体块的构建细节，
 -- 重点验证演化逻辑的**代数性质**。

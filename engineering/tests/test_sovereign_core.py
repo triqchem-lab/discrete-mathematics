@@ -20,7 +20,7 @@ from sovereign_core.loss_gain import (
     TWELVE_LU_LENGTHS
 )
 from sovereign_core.tq10_format import SovereignBlock
-from sovereign_core.wuxing import WuXing, wuxing_generate, wuxing_overcome, compute_spin_projection
+from sovereign_core.wuxing import WuXing, WUXING_GENERATE_PATH, WUXING_OVERCOME_MAP, get_chirality_from_trit
 
 
 class TestTrit(unittest.TestCase):
@@ -216,23 +216,31 @@ class TestTQ10Format(unittest.TestCase):
 class TestWuXing(unittest.TestCase):
     """五行测试 (元结构层)"""
     
-    def test_generate_chain(self):
-        """相生链"""
-        self.assertEqual(wuxing_generate(WuXing.FIRE), WuXing.EARTH)
-        self.assertEqual(wuxing_generate(WuXing.EARTH), WuXing.METAL)
-        self.assertEqual(wuxing_generate(WuXing.WOOD), WuXing.FIRE)  # 闭环
-    
-    def test_overcome(self):
-        """相克关系"""
-        self.assertTrue(wuxing_overcome(WuXing.WOOD, WuXing.EARTH))
-        self.assertTrue(wuxing_overcome(WuXing.FIRE, WuXing.METAL))
-        self.assertFalse(wuxing_overcome(WuXing.FIRE, WuXing.WOOD))
-    
+    def test_wuxing_generate(self):
+        """五行相生"""
+        # 使用 WUXING_GENERATE_PATH 验证相生关系
+        fire_idx = WUXING_GENERATE_PATH.index(WuXing.FIRE)
+        earth_idx = WUXING_GENERATE_PATH.index(WuXing.EARTH)
+        wood_idx = WUXING_GENERATE_PATH.index(WuXing.WOOD)
+        
+        self.assertEqual(WUXING_GENERATE_PATH[(fire_idx + 1) % 5], WuXing.EARTH)
+        self.assertEqual(WUXING_GENERATE_PATH[(earth_idx + 1) % 5], WuXing.METAL)
+        self.assertEqual(WUXING_GENERATE_PATH[(wood_idx + 1) % 5], WuXing.FIRE)  # 闭环
+
+    def test_wuxing_overcome(self):
+        """五行相克"""
+        # 使用 WUXING_OVERCOME_MAP 验证相克关系
+        self.assertEqual(WUXING_OVERCOME_MAP[WuXing.WOOD], WuXing.EARTH)
+        self.assertEqual(WUXING_OVERCOME_MAP[WuXing.FIRE], WuXing.METAL)
+        # 验证不存在的相克关系
+        self.assertNotEqual(WUXING_OVERCOME_MAP.get(WuXing.FIRE, None), WuXing.WOOD)
+
     def test_spin_projection(self):
-        """自旋投影"""
-        self.assertEqual(compute_spin_projection(2, 0.5), "spin_1")
-        self.assertEqual(compute_spin_projection(4, 0.8), "spin_12")
-        self.assertEqual(compute_spin_projection(3, 0.3), "spin_0")
+        """手性映射"""
+        # 使用 get_chirality_from_trit 验证手性映射
+        self.assertEqual(get_chirality_from_trit(-1).value, -1)  # LEFT
+        self.assertEqual(get_chirality_from_trit(0).value, 0)    # BALANCE
+        self.assertEqual(get_chirality_from_trit(1).value, 1)    # RIGHT
 
 
 class TestIntegration(unittest.TestCase):

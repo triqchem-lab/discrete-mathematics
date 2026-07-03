@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Coupling.TQ10
 -- 主权 TQ1_0 格式：16 字节主权块的类型论定义
@@ -20,8 +20,8 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.RootMath.Base using (Trit; T-; T0; T+; Tryte)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
-open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POWER3_11; POWER2_16; 
-                                                LossGain; Sun; Yi; applyLossGain; 
+open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶;
+                                                LossGain; Sun; Yi; applyLossGain;
                                                 zhonglvClosure; zhonglvClosureMod)
 
 --------------------------------------------------------------------------------

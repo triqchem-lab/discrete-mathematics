@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Base.Invariants
 -- 律算基础：核心拓扑不变量 (Topological Invariants)
@@ -52,15 +52,15 @@ GAP_DEN = 65536
 
 -- 3 的 11 次方：177,147
 -- 用于仲吕闭合操作的乘法因子
-POW3_11 : ℕ
-POW3_11 = 177147
+POW3₁₁ : ℕ
+POW3₁₁ = 177147
 
 -- 2 的 16 次方：65,536
 -- 用于仲吕闭合操作的除法因子
-POW2_16 : ℕ
-POW2_16 = 65536
+POW2₁₆ : ℕ
+POW2₁₆ = 65536
 
 -- 主权 LCM 模数：3^11 * 2^16 = 11,609,505,792
 -- 极向与环向同步归零的工程周期
 SOVEREIGN_LCM : ℕ
-SOVEREIGN_LCM = POW3_11 * POW2_16
+SOVEREIGN_LCM = POW3₁₁ * POW2₁₆

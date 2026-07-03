@@ -1,81 +1,77 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Base.Trit
 -- 律算基础：GF(3) 三进制定义与运算
 --
 -- 核心公理：宇宙最小几何单元为 GF(3) 格点。
--- 包含：Trit {-1, 0, 1}，加法和乘法运算。
+-- 包含：Trit {0, 1, 2}，加法和乘法运算。
 
 module Sovereign.Base.Trit where
 
-open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Nat using (ℕ; zero; suc)
+open import Data.Integer using (ℤ; +_; -[1+_])
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 --------------------------------------------------------------------------------
 -- 1. Trit 数据类型 (GF(3))
 --------------------------------------------------------------------------------
 
--- 驻波三态：吸收 (-1), 平衡 (0), 表达 (+1)
+-- 驻波三态：吸收态 (0), 平衡态 (1), 表达态 (2)
 data Trit : Set where
-  T- : Trit  -- -1
-  T0 : Trit  --  0
-  T+ : Trit  -- +1
+  T₀ : Trit  -- 0
+  T₁ : Trit  -- 1
+  T₂ : Trit  -- 2
 
---------------------------------------------------------------------------------
--- 2. 映射与转换
---------------------------------------------------------------------------------
+-- Trit 到自然数 ℕ（本源表示）
+tritToℕ : Trit → ℕ
+tritToℕ T₀ = 0
+tritToℕ T₁ = 1
+tritToℕ T₂ = 2
 
--- Trit 到 整数 ℤ
-tritToℤ : Trit → ℤ
-tritToℤ T- = -[1+ 0 ]  -- -1
-tritToℤ T0 = + 0       --  0
-tritToℤ T+ = + 1       -- +1
-
--- Trit 到 编码值 {0, 1, 2} (用于工程打包)
+-- Trit 到编码值 {0, 1, 2} (用于工程打包，恒等映射)
 tritToCode : Trit → ℕ
-tritToCode T- = 0
-tritToCode T0 = 1
-tritToCode T+ = 2
+tritToCode T₀ = 0
+tritToCode T₁ = 1
+tritToCode T₂ = 2
 
--- 编码值 到 Trit
+-- 编码值到 Trit
 codeToTrit : ℕ → Trit
-codeToTrit 0 = T-
-codeToTrit 1 = T0
-codeToTrit 2 = T+
-codeToTrit _ = T0 -- 默认归零
+codeToTrit 0 = T₀
+codeToTrit 1 = T₁
+codeToTrit 2 = T₂
+codeToTrit _ = T₀ -- 默认归零
 
 --------------------------------------------------------------------------------
 -- 3. GF(3) 运算
 --------------------------------------------------------------------------------
 
 -- 加法 (模 3)
--- 对应律算中的“损益”微调或相位叠加
+-- 对应律算中的"损益"微调或相位叠加
 _⊕_ : Trit → Trit → Trit
-T0 ⊕ x = x
-x ⊕ T0 = x
-T+ ⊕ T+ = T-  -- 1 + 1 = 2 ≡ -1 (mod 3)
-T- ⊕ T- = T+  -- -1 + -1 = -2 ≡ 1 (mod 3)
-T+ ⊕ T- = T0  -- 1 + -1 = 0 (归零/对消灭)
-T- ⊕ T+ = T0
+T₀ ⊕ x = x
+T₁ ⊕ T₁ = T₂
+T₁ ⊕ T₂ = T₀
+T₂ ⊕ T₁ = T₀
+T₂ ⊕ T₂ = T₁
+x ⊕ y with x | y
+... | _ | _ = T₀ -- 覆盖剩余情况
 
 -- 乘法 (模 3)
--- 对应律算中的“五行干涉”或振幅调制
 _⊗_ : Trit → Trit → Trit
-T0 ⊗ _ = T0
-_ ⊗ T0 = T0
-T+ ⊗ x = x  -- 1 * x = x
-T- ⊗ T- = T+ -- -1 * -1 = 1
-T- ⊕ T+ = T0 -- 冗余匹配，忽略
+T₀ ⊗ _ = T₀
+_ ⊗ T₀ = T₀
+T₁ ⊗ x = x
+T₂ ⊗ T₂ = T₁
+_ ⊗ _ = T₁
 
 --------------------------------------------------------------------------------
 -- 4. 核心验证
 --------------------------------------------------------------------------------
 
--- 归零公理验证：T+ + T- = T0 (1 + (-1) = 0)
-axiomZeroing : T+ ⊕ T- ≡ T0
-axiomZeroing = refl
+-- 归零公理验证：T₁ + T₂ = T₀ (1 + 2 = 3 ≡ 0)
+verifyZero : T₁ ⊕ T₂ ≡ T₀
+verifyZero = refl
 
--- 泛音列投影验证：T+ ⊗ T+ = T- (对应某种频率加倍后的相位反转?)
-axiomHarmonicProj : T+ ⊗ T+ ≡ T-
-axiomHarmonicProj = refl
+-- 乘法验证：T₂ ⊗ T₂ = T₁ (2 × 2 = 4 ≡ 1)
+verifyMul : T₂ ⊗ T₂ ≡ T₁
+verifyMul = refl

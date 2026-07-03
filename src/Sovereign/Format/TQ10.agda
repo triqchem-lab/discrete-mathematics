@@ -14,10 +14,11 @@
 
 module Sovereign.Format.TQ10 where
 
-open import Data.Nat using (ℕ; _+_; _*_; _<_; _≥_; _mod_; _div_)
-open import Data.Fin using (Fin; toℕ; fromℕ)
-open import Data.Vec using (Vec; []; _∷_)
-open import Data.Bool using (Bool; true; false)
+open import Data.Nat using (ℕ; _+_; _*_; _<_; _≥_; _<ᵇ_)
+open import Data.Nat.DivMod using (_mod_; _div_)
+open import Data.Fin using (Fin; toℕ; fromℕ; combine; remQuot; #_)
+open import Data.Vec using (Vec; []; _∷_; map)
+open import Data.Bool using (Bool; true; false; _∧_)
 open import Data.Product using (_×_; _,_)
 
 import Sovereign.Base.Trit as Trit
@@ -41,9 +42,8 @@ PackedByte : Set
 PackedByte = Fin 243
 
 -- 验证字节合法性 (是否在奇点捕获区之外)
-isPackedValid : Fin 256 → Bool
-isPackedValid byte with toℕ byte
-... | n = n < 243
+isPackedValid : PackedByte → Bool
+isPackedValid byte = toℕ byte <ᵇ 243
 
 --------------------------------------------------------------------------------
 -- 2. 打包与解包逻辑 (Packing Logic)
@@ -58,43 +58,49 @@ isPackedValid byte with toℕ byte
 
 -- 辅助：将单个 Trit 映射为 Base-3 数字 {0, 1, 2}
 tritToBase3 : Trit.Trit → ℕ
-tritToBase3 Trit.T- = 0
-tritToBase3 Trit.T0 = 1
-tritToBase3 Trit.T+ = 2
+tritToBase3 Trit.T₀ = 0
+tritToBase3 Trit.T₁ = 1
+tritToBase3 Trit.T₂ = 2
 
 -- 辅助：将 Base-3 数字还原为 Trit
 base3ToTrit : ℕ → Trit.Trit
-base3ToTrit 0 = Trit.T-
-base3ToTrit 1 = Trit.T0
-base3ToTrit 2 = Trit.T+
-base3ToTrit _ = Trit.T0 -- 默认平衡
+base3ToTrit 0 = Trit.T₀
+base3ToTrit 1 = Trit.T₁
+base3ToTrit 2 = Trit.T₂
+base3ToTrit _ = Trit.T₁ -- 默认平衡
+
+-- Trit 与 Fin 3 的双向转换 (用于 combine/remQuot 打包)
+tritToFin : Trit.Trit → Fin 3
+tritToFin Trit.T₀ = # 0
+tritToFin Trit.T₁ = # 1
+tritToFin Trit.T₂ = # 2
+
+finToTrit : Fin 3 → Trit.Trit
+finToTrit x with toℕ x
+... | 0 = Trit.T₀
+... | 1 = Trit.T₁
+... | 2 = Trit.T₂
+... | _ = Trit.T₁ -- unreachable for Fin 3
 
 -- 打包 5 Trits 到 1 PackedByte
+-- 使用 combine (标准库的混合进制编码) 将 5 个 Fin 3 压缩为 Fin 243
 pack5 : Vec Trit.Trit 5 → PackedByte
-pack5 (t0 ∷ t1 ∷ t2 ∷ t3 ∷ t4 ∷ []) =
-  let v0 = tritToBase3 t0
-      v1 = tritToBase3 t1
-      v2 = tritToBase3 t2
-      v3 = tritToBase3 t3
-      v4 = tritToBase3 t4
-      -- Base-3 to Int: v0 + v1*3 + v2*9 + v3*27 + v4*81
-      val = v0 + (v1 * 3) + (v2 * 9) + (v3 * 27) + (v4 * 81)
-  in fromℕ val
+pack5 (v0 ∷ v1 ∷ v2 ∷ v3 ∷ v4 ∷ []) =
+  combine (combine (combine (combine tv4 tv3) tv2) tv1) tv0
+  where
+  tv0 = tritToFin v0; tv1 = tritToFin v1; tv2 = tritToFin v2
+  tv3 = tritToFin v3; tv4 = tritToFin v4
 
 -- 解包 1 PackedByte 到 5 Trits
+-- 使用 remQuot (标准库的混合进制解码) 反向提取 5 个 Fin 3
 unpack5 : PackedByte → Vec Trit.Trit 5
-unpack5 byte = 
-  let val = toℕ byte
-      v0 = val mod 3
-      v1 = (val div 3) mod 3
-      v2 = (val div 9) mod 3
-      v3 = (val div 27) mod 3
-      v4 = (val div 81) mod 3
-  in base3ToTrit v0 ∷ 
-     base3ToTrit v1 ∷ 
-     base3ToTrit v2 ∷ 
-     base3ToTrit v3 ∷ 
-     base3ToTrit v4 ∷ []
+unpack5 byte =
+  let rest1 , v0-fin = remQuot {m = 81} 3 byte
+      rest2 , v1-fin = remQuot {m = 27} 3 rest1
+      rest3 , v2-fin = remQuot {m = 9}  3 rest2
+      v4-fin , v3-fin = remQuot {m = 3}  3 rest3
+  in finToTrit v0-fin ∷ finToTrit v1-fin ∷ finToTrit v2-fin
+     ∷ finToTrit v3-fin ∷ finToTrit v4-fin ∷ []
 
 --------------------------------------------------------------------------------
 -- 3. 主权块定义 (Sovereign Block Definition)
@@ -118,6 +124,7 @@ record TQ10Block : Set where
     reserved    : Vec (Fin 256) 6
 
 open TQ10Block public
+open TQ10Block
 
 --------------------------------------------------------------------------------
 -- 4. 工程约束验证 (Engineering Constraints)
@@ -125,21 +132,19 @@ open TQ10Block public
 
 -- 验证块是否完整 (所有字节都在合法范围内)
 isBlockValid : TQ10Block → Bool
-isBlockValid blk = 
-  let qs_valid = foldr (λ b acc → isPackedValid (fromℕ (toℕ b)) && acc) true (qs blk)
-      -- 其他字段通常在 Fin 256 内，天然合法，除了特定的位域约束
-  in qs_valid -- 简化验证，主要检查 qs 是否落入奇点捕获区
+isBlockValid (mkBlock qs _ _ _ _ _) = allValid qs
+  where
+    allValid : Vec PackedByte 6 → Bool
+    allValid (x ∷ y ∷ z ∷ w ∷ u ∷ v ∷ []) =
+      isPackedValid x ∧ isPackedValid y ∧ isPackedValid z ∧
+      isPackedValid w ∧ isPackedValid u ∧ isPackedValid v
 
 -- 提取极向相位 (Phase Bias High 4 bits)
-getPolarPhase : TQ10Block → Fin 16 -- 0-15, 有效 0-11
-getPolarPhase blk = 
-  let pb = toℕ (phase_bias blk)
-      phase = (pb div 16) mod 16
-  in fromℕ phase
+-- Polar phase = high 4 bits (bits 4-7) = (toℕ phase_bias / 16) % 16
+getPolarPhase : TQ10Block → Fin 16
+getPolarPhase blk = ((toℕ (phase_bias blk)) div 16) mod 16
 
 -- 提取局部陈数 (Chern Guard Low 5 bits)
+-- Local Chern = low 5 bits = toℕ chern_guard % 32
 getLocalChern : TQ10Block → Fin 32
-getLocalChern blk = 
-  let cg = toℕ (chern_guard blk)
-      chern = cg mod 32
-  in fromℕ chern
+getLocalChern blk = (toℕ (chern_guard blk)) mod 32

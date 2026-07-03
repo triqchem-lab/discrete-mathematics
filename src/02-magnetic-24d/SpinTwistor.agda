@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Coupling.SpinTwistor
 -- 耦合域：自旋与扭量的离散复位
@@ -32,8 +32,6 @@ open import Sovereign.Coupling.ParityViolation using (ToroidalPower; mkPower; Ch
                                                          parityStatus; neutrinoLeftHandedOnly)
 open import Sovereign.MetaStructure.WuXing using (WuXing; Chirality; LeftHanded; RightHanded;
                                                     ChiralWuXing; chiralDual)
-open import Sovereign.Coupling.ZhonglvClosure using (PrimaryQuotientSpace; HolographicQuotientSpace; 
-                                                       zhonglvClosureOp)
 
 --------------------------------------------------------------------------------
 -- 1. 自旋的律算定义：仅存在于耦合域的动态手性分离投影

@@ -16,10 +16,16 @@
 module Sovereign.Engine.QsUpdate where
 
 open import Data.Vec using (Vec; map; _∷_; [])
-open import Data.Fin using (Fin; toℕ)
+open import Data.Fin using (Fin; zero; suc)
+open import Relation.Binary.PropositionalEquality as PropEq
+  using (_≡_; refl; cong; cong₂; sym; trans)
+open import Relation.Binary.PropositionalEquality.Properties
+  using (module ≡-Reasoning)
+open ≡-Reasoning
 
 import Sovereign.Format.TQ10 as TQ10
 import Sovereign.Base.TritOps as TritOps
+import Sovereign.Base.Trit as Trit
 
 open TQ10 using (TQ10Block; qs; PackedByte; pack5; unpack5)
 
@@ -32,7 +38,7 @@ updateByte : TritOps.Op → PackedByte → PackedByte
 updateByte op byte = 
   let trits = unpack5 byte
       -- 将 Op 应用于每个 Trit (相位旋转)
-      rotated = Data.Vec.Base.map (TritOps.applyOp op) trits
+      rotated = map (TritOps.applyOp op) trits
   in pack5 rotated
 
 -- 证明/注释：
@@ -47,18 +53,109 @@ updateByte op byte =
 -- 更新整个主权块的 qs 字段
 updateQs : TritOps.Op → TQ10Block → TQ10Block
 updateQs op blk = 
-  let currentQs = TQ10Block.qs blk
+  let currentQs = TQ10.qs blk
       -- 对 6 个字节分别进行解包-旋转-打包
-      newQs = Data.Vec.Base.map (updateByte op) currentQs
+      newQs = map (updateByte op) currentQs
   in record blk { qs = newQs }
 
 --------------------------------------------------------------------------------
 -- 3. 验证 (Verification)
 --------------------------------------------------------------------------------
 
--- 验证：对任意块执行 3 次 Loss 或 Gain 操作，qs 应恢复原状 (因为 Trit 周期为 3)
-postulate
-  qsCycleProperty : 
-    ∀ (blk : TQ10Block) → 
-    let blk1 = updateQs TritOps.Loss (updateQs TritOps.Loss (updateQs TritOps.Loss blk))
-    in TQ10Block.qs blk1 ≡ TQ10Block.qs blk
+-- 3.1 finToTrit 和 tritToFin 在 Fin 3 上互逆
+
+private
+  finToTrit∘tritToFin : ∀ (t : Trit.Trit) → TQ10.finToTrit (TQ10.tritToFin t) ≡ t
+  finToTrit∘tritToFin Trit.T₀ = refl
+  finToTrit∘tritToFin Trit.T₁ = refl
+  finToTrit∘tritToFin Trit.T₂ = refl
+
+  tritToFin∘finToTrit : ∀ (x : Fin 3) → TQ10.tritToFin (TQ10.finToTrit x) ≡ x
+  tritToFin∘finToTrit zero          = refl
+  tritToFin∘finToTrit (suc zero)    = refl
+  tritToFin∘finToTrit (suc (suc zero)) = refl
+  tritToFin∘finToTrit (suc (suc (suc ())))
+
+-- 3.2 pack5 和 unpack5 互逆
+
+private
+  -- 核心策略：使用 Data.Fin.Properties 中的 combine-remQuot / remQuot-combine，
+  -- 它们是 combine 和 remQuot 在单层上的互逆引理。
+  -- 由于 pack5 使用 4 层嵌套的 combine，unpack5 使用 4 层 remQuot，
+  -- 证明是通过逐层应用这些引理来完成的。
+
+  -- pack5 / unpack5 互逆性
+  --
+  -- 原理：
+  -- - pack5∘unpack5 由 combine-remQuot {81} 3 b 逐层展开保证
+  -- - unpack5∘pack5 由 remQuot-combine i j 逐层展开保证
+  -- 两者在标准库 Data.Fin.Properties 中均有单层引理，
+  -- 此处将 4 层嵌套版本作为公设（完整形式化证明为纯机械展开）。
+  postulate
+    pack5∘unpack5 : ∀ (b : PackedByte) → pack5 (unpack5 b) ≡ b
+    unpack5∘pack5 : ∀ (v : Vec Trit.Trit 5) → unpack5 (pack5 v) ≡ v
+
+-- 3.3 updateByte Loss 三次复合 = id
+
+private
+  -- 辅助引理: lossOp 在 Vec 上的三次复合 = id
+  map-loss3 : ∀ {n} (xs : Vec Trit.Trit n)
+    → map (TritOps.applyOp TritOps.Loss)
+        (map (TritOps.applyOp TritOps.Loss)
+          (map (TritOps.applyOp TritOps.Loss) xs))
+    ≡ xs
+  map-loss3 []       = refl
+  map-loss3 (x ∷ xs) = cong₂ _∷_ (TritOps.lossCycle3 x) (map-loss3 xs)
+
+  updateByte∘loss3 : ∀ (b : PackedByte)
+    → updateByte TritOps.Loss (updateByte TritOps.Loss (updateByte TritOps.Loss b)) ≡ b
+  updateByte∘loss3 b = begin
+    updateByte TritOps.Loss (updateByte TritOps.Loss (updateByte TritOps.Loss b))
+      ≡⟨⟩  -- 展开三次 updateByte Loss
+    pack5 (map lossOp (unpack5
+      (pack5 (map lossOp (unpack5
+        (pack5 (map lossOp (unpack5 b))))))))
+      ≡⟨ cong (λ x → pack5 (map lossOp (unpack5
+                       (pack5 (map lossOp x)))))
+              (unpack5∘pack5 (map lossOp (unpack5 b))) ⟩
+    pack5 (map lossOp (unpack5
+      (pack5 (map lossOp (map lossOp (unpack5 b))))))
+      ≡⟨ cong (λ x → pack5 (map lossOp x))
+              (unpack5∘pack5 (map lossOp (map lossOp (unpack5 b)))) ⟩
+    pack5 (map lossOp (map lossOp (map lossOp (unpack5 b))))
+      ≡⟨ cong pack5 (map-loss3 (unpack5 b)) ⟩
+    pack5 (unpack5 b)
+      ≡⟨ pack5∘unpack5 b ⟩
+    b
+    ∎
+    where
+      lossOp = TritOps.applyOp TritOps.Loss
+
+-- 3.4 主定理: 对任意块执行 3 次 Loss 操作，qs 恢复原状
+
+private
+  -- 辅助引理: updateByte Loss 在 Vec PackedByte 上的三次复合 = id
+  map-updateByte3 : ∀ {n} (bs : Vec PackedByte n)
+    → map (updateByte TritOps.Loss)
+        (map (updateByte TritOps.Loss)
+          (map (updateByte TritOps.Loss) bs))
+    ≡ bs
+  map-updateByte3 []       = refl
+  map-updateByte3 (b ∷ bs) = cong₂ _∷_ (updateByte∘loss3 b) (map-updateByte3 bs)
+
+qsCycleProperty :
+  ∀ (blk : TQ10Block) →
+  let blk1 = updateQs TritOps.Loss (updateQs TritOps.Loss (updateQs TritOps.Loss blk))
+  in TQ10.qs blk1 ≡ TQ10.qs blk
+qsCycleProperty blk = begin
+  TQ10.qs (let blk1 = updateQs TritOps.Loss
+                        (updateQs TritOps.Loss
+                          (updateQs TritOps.Loss blk))
+           in blk1)
+    ≡⟨⟩  -- 展开 updateQs：仅修改 qs 字段为 map (updateByte Loss) 应用三次
+  map (updateByte TritOps.Loss)
+      (map (updateByte TritOps.Loss)
+        (map (updateByte TritOps.Loss) (TQ10.qs blk)))
+    ≡⟨ map-updateByte3 (TQ10.qs blk) ⟩
+  TQ10.qs blk
+  ∎

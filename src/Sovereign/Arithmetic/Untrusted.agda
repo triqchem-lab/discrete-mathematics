@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Arithmetic.Untrusted
 -- 隔离层：集中管理未信任的外部算术引理 (Data.Nat.*)

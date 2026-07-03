@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Coupling.CartanTorsion
 -- 耦合域：嘉当挠场量子物理学的离散复位
@@ -30,7 +30,7 @@ open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding;
                                                   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Structology.T6 using (T6Lattice; GF3; Cell; CellDimension)
 open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi; applyLossGain; 
-                                                SOVEREIGN_LCM; POWER3_11; POWER2_16;
+                                                SOVEREIGN_LCM; POW3¹¹; POW2¹⁶;
                                                 zhonglvClosure)
 open import Sovereign.Coupling.Zhonglv using (SovereignState; chernConservation)
 open import Sovereign.MetaStructure.WuXing using (WuXing; Chirality; LeftHanded; RightHanded)

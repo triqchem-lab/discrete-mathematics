@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Coupling.Entanglement
 -- 耦合域：量子纠缠——共享主权 LCM 缠绕数的五行同步
@@ -20,7 +20,7 @@ open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 -- 导入核心模块
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
-open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POWER3_11; POWER2_16; 
+open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶; 
                                                 LossGain; Sun; Yi; applyLossGain; 
                                                 zhonglvClosure; lcmRemainder)
 open import Sovereign.Coupling.Zhonglv using (SovereignState; evolveStep; 

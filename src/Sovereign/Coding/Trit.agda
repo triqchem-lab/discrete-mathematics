@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Coding.Trit
 -- 编码代数：三进制基底 Fin 3
@@ -10,9 +10,11 @@
 
 module Sovereign.Coding.Trit where
 
-open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; _≟_)
-open import Data.Nat using (ℕ; _+_; _*_; _mod_; _≤_; s≤s; z≤n)
-open import Data.Nat.Properties using (+-comm; *-comm; mod-<)
+open import Data.Fin public using (Fin; zero; suc; toℕ; fromℕ; _≟_)
+open import Data.Nat using (ℕ; _+_; _*_; _≤_; s≤s; z≤n)
+open import Data.Nat.Base using (_%_)
+open import Data.Nat.DivMod using (_mod_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 
 --------------------------------------------------------------------------------
@@ -38,14 +40,25 @@ T₂ = suc (suc zero) -- 0b2
 -- 2. GF(3) 代数结构
 --------------------------------------------------------------------------------
 
--- 模 3 加法群 (GF(3) Addition)
+-- 模 3 加法群 (GF(3) Addition) — Fin 构造子模式匹配
 _⊕_ : Trit → Trit → Trit
-a ⊕ b = fromℕ ((toℕ a + toℕ b) mod 3)
-  -- fromℕ 需要证明 (a+b) mod 3 < 3，此处 by mod-<
+zero     ⊕ b        = b
+(suc zero)    ⊕ zero     = suc zero
+(suc zero)    ⊕ (suc zero)    = suc (suc zero)
+(suc zero)    ⊕ (suc (suc zero)) = zero
+(suc (suc zero)) ⊕ zero     = suc (suc zero)
+(suc (suc zero)) ⊕ (suc zero)    = zero
+(suc (suc zero)) ⊕ (suc (suc zero)) = suc zero
+
 
 -- 模 3 乘法 (GF(3) Multiplication)
+-- 模 3 乘法 (GF(3) Multiplication) — Fin 构造子模式匹配
 _⊗_ : Trit → Trit → Trit
-a ⊗ b = fromℕ ((toℕ a * toℕ b) mod 3)
+zero     ⊗ _        = zero
+(suc zero)    ⊗ b        = b
+(suc (suc zero)) ⊗ zero     = zero
+(suc (suc zero)) ⊗ (suc zero)    = suc (suc zero)
+(suc (suc zero)) ⊗ (suc (suc zero)) = suc zero
 
 --------------------------------------------------------------------------------
 -- 3. 逆元与减法 (用于曲率差分计算)
@@ -53,9 +66,9 @@ a ⊗ b = fromℕ ((toℕ a * toℕ b) mod 3)
 
 -- 加法逆元
 inv : Trit → Trit
-inv T₀ = T₀  -- -0 = 0
-inv T₁ = T₂  -- -1 = 2 (mod 3)
-inv T₂ = T₁  -- -2 = 1 (mod 3)
+inv zero = zero
+inv (suc zero) = suc (suc zero)
+inv (suc (suc zero)) = suc zero
 
 -- 减法定义为加逆元
 _⊖_ : Trit → Trit → Trit
@@ -63,15 +76,15 @@ a ⊖ b = a ⊕ (inv b)
 
 --------------------------------------------------------------------------------
 -- 4. 基本代数证明 (Proofs)
---------------------------------------------------------------------------------
 
 -- 证明：T₀ 是加法单位元
 identityR : ∀ (x : Trit) → x ⊕ T₀ ≡ x
-identityR x = cong (λ n → fromℕ (n mod 3)) (+-comm (toℕ x) 0) 
-             -- 简化：(x + 0) mod 3 = x mod 3 = x (since x < 3)
+identityR zero = refl
+identityR (suc zero) = refl
+identityR (suc (suc zero)) = refl
 
 -- 证明：逆元对消 (x + (-x) = 0)
 cancel : ∀ (x : Trit) → x ⊕ (inv x) ≡ T₀
-cancel T₀ = refl
-cancel T₁ = refl  -- 1 + 2 = 3 ≡ 0
-cancel T₂ = refl  -- 2 + 1 = 3 ≡ 0
+cancel zero = refl
+cancel (suc zero) = refl
+cancel (suc (suc zero)) = refl

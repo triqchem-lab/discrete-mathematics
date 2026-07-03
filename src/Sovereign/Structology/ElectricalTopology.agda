@@ -18,8 +18,8 @@ open import Data.Fin using (Fin; toℕ)
 open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-import Sovereign.Structology.Torus144 as Torus
-open Torus using (Cell144)
+import Sovereign.Structology.LuCellGrid as LuGrid
+open LuGrid using (LuGridPoint)
 
 --------------------------------------------------------------------------------
 -- 1. 连续统相位 (Continuous Phase)
@@ -36,7 +36,7 @@ Phase_Cont = ℚ
 
 -- 联络被定义为任意精度的数值，通常来源于微积分近似。
 Connection : Set
-Connection = Cell144 → Cell144 → Phase_Cont
+Connection = LuGridPoint → LuGridPoint → Phase_Cont
 
 --------------------------------------------------------------------------------
 -- 3. 连续曲率 (Continuous Curvature)
@@ -45,12 +45,12 @@ Connection = Cell144 → Cell144 → Phase_Cont
 -- 计算一圈的相位差。
 -- 问题：由于浮点/有理数精度问题，结果通常是一个极小的非零值（如 1e-18），
 -- 这使得系统无法判断是否真的“闭合”或是否需要“置闰”。
-computeCurvature : Connection → Cell144 → Phase_Cont
-computeCurvature conn cell = 
-  let c0 = cell
-      c1 = Torus.shiftPolar c0 1
-      c2 = Torus.shiftToroidal c1 1
-      c3 = Torus.shiftToroidal c0 1
+computeCurvature : Connection → LuGridPoint → Phase_Cont
+computeCurvature conn p = 
+  let c0 = p
+      c1 = LuGrid.shiftPolar c0 1
+      c2 = LuGrid.shiftToroidal c1 1
+      c3 = LuGrid.shiftToroidal c0 1
       
       p1 = conn c0 c1
       p2 = conn c1 c2

@@ -75,8 +75,8 @@ iter-func f (suc k) x = f (iter-func f k x)
 map-iter : ∀ {n} {A : Set} (f : A → A) (k : ℕ) (xs : Vec A n) →
            iterate k (map f) xs ≡ map (λ x → iter-func f k x) xs
 map-iter f zero xs = refl
-map-iter f (suc k) xs = 
-  trans (cong (map f) (map-iter f k xs)) 
+map-iter f (suc k) xs =
+  trans (cong (map f) (map-iter f k xs))
         (map-compose f (λ x → iter-func f k x) xs)
   where
     -- Map 结合律辅助
@@ -85,18 +85,64 @@ map-iter f (suc k) xs =
     map-compose f g [] = refl
     map-compose f g (y ∷ ys) = cong (_∷_ (f (g y))) (map-compose f g ys)
 
+--------------------------------------------------------------------------------
+-- GF(3) ⊕ 结合律：通过 27 种情况暴力证明
+--------------------------------------------------------------------------------
+
+⊕-assoc : ∀ (a b c : T.Trit) → (a T.⊕ b) T.⊕ c ≡ a T.⊕ (b T.⊕ c)
+⊕-assoc T.T₀ T.T₀ T.T₀ = refl
+⊕-assoc T.T₀ T.T₀ T.T₁ = refl
+⊕-assoc T.T₀ T.T₀ T.T₂ = refl
+⊕-assoc T.T₀ T.T₁ T.T₀ = refl
+⊕-assoc T.T₀ T.T₁ T.T₁ = refl
+⊕-assoc T.T₀ T.T₁ T.T₂ = refl
+⊕-assoc T.T₀ T.T₂ T.T₀ = refl
+⊕-assoc T.T₀ T.T₂ T.T₁ = refl
+⊕-assoc T.T₀ T.T₂ T.T₂ = refl
+⊕-assoc T.T₁ T.T₀ T.T₀ = refl
+⊕-assoc T.T₁ T.T₀ T.T₁ = refl
+⊕-assoc T.T₁ T.T₀ T.T₂ = refl
+⊕-assoc T.T₁ T.T₁ T.T₀ = refl
+⊕-assoc T.T₁ T.T₁ T.T₁ = refl
+⊕-assoc T.T₁ T.T₁ T.T₂ = refl
+⊕-assoc T.T₁ T.T₂ T.T₀ = refl
+⊕-assoc T.T₁ T.T₂ T.T₁ = refl
+⊕-assoc T.T₁ T.T₂ T.T₂ = refl
+⊕-assoc T.T₂ T.T₀ T.T₀ = refl
+⊕-assoc T.T₂ T.T₀ T.T₁ = refl
+⊕-assoc T.T₂ T.T₀ T.T₂ = refl
+⊕-assoc T.T₂ T.T₁ T.T₀ = refl
+⊕-assoc T.T₂ T.T₁ T.T₁ = refl
+⊕-assoc T.T₂ T.T₁ T.T₂ = refl
+⊕-assoc T.T₂ T.T₂ T.T₀ = refl
+⊕-assoc T.T₂ T.T₂ T.T₁ = refl
+⊕-assoc T.T₂ T.T₂ T.T₂ = refl
+
+--------------------------------------------------------------------------------
+-- 模加后继性质：通过 3 种情况暴力证明
+--------------------------------------------------------------------------------
+
+⊕-mod-suc : ∀ (n : ℕ) → T.fromℕ (n mod 3) T.⊕ T.T₁ ≡ T.fromℕ ((n mod 3 + 1) mod 3)
+⊕-mod-suc n with n mod 3
+... | zero = refl
+... | suc zero = refl
+... | suc (suc zero) = refl
+
+--------------------------------------------------------------------------------
 -- 辅助引理：迭代加法等于模加
 -- Phase 4 修复：证明 iter-func f n t ≡ t ⊕ (n mod 3)
-iter-add-mod : ∀ (t : T.Trit) (n : ℕ) → 
+--------------------------------------------------------------------------------
+
+iter-add-mod : ∀ (t : T.Trit) (n : ℕ) →
   iter-func (λ t → t T.⊕ T.T₁) n t ≡ t T.⊕ T.fromℕ (n mod 3)
 iter-add-mod t zero = refl
-iter-add-mod t (suc n) = 
+iter-add-mod t (suc n) =
   trans (cong (λ x → x T.⊕ T.T₁) (iter-add-mod t n))
         (begin
           (t T.⊕ T.fromℕ (n mod 3)) T.⊕ T.T₁
-            ≡⟨ postulate-⊕-assoc ⟩
+            ≡⟨ ⊕-assoc t (T.fromℕ (n mod 3)) T.T₁ ⟩
           t T.⊕ (T.fromℕ (n mod 3) T.⊕ T.T₁)
-            ≡⟨ cong (t T.⊕_) postulate-⊕-mod-suc ⟩
+            ≡⟨ cong (t T.⊕_) (⊕-mod-suc n) ⟩
           t T.⊕ T.fromℕ ((n mod 3 + 1) mod 3)
             ≡⟨ cong (t T.⊕_) (cong T.fromℕ refl) ⟩
           t T.⊕ T.fromℕ ((suc n) mod 3)
@@ -104,58 +150,46 @@ iter-add-mod t (suc n) =
   where
     open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
     open Relation.Binary.PropositionalEquality.≡-Reasoning
-    
-    -- 结合律 (GF(3) 上显然成立)
-    postulate-⊕-assoc : (t T.⊕ T.fromℕ (n mod 3)) T.⊕ T.T₁ ≡ t T.⊕ (T.fromℕ (n mod 3) T.⊕ T.T₁)
-    postulate-⊕-assoc = {! !} -- 可由 27 种情况暴力证明，此处标记为结构占位
-    
-    -- 模加后继性质
-    postulate-⊕-mod-suc : T.fromℕ (n mod 3) T.⊕ T.T₁ ≡ T.fromℕ ((n mod 3 + 1) mod 3)
-    postulate-⊕-mod-suc = {! !} -- 可由 3 种情况暴力证明
 
 -- 算术引理：144 次 T₁ 步进等于恒等
 -- Phase 4 修复：基于 iter-add-mod 和 144 mod 3 ≡ 0 完整证明
-step-144-is-id : ∀ (t : T.Trit) → 
+step-144-is-id : ∀ (t : T.Trit) →
   iter-func (λ t → t T.⊕ T.T₁) 144 t ≡ t
-step-144-is-id t = 
+step-144-is-id t =
   trans (iter-add-mod t 144)
         (cong (t T.⊕_) (cong T.fromℕ refl))
   -- 注：144 mod 3 在 Agda 中计算为 0 (refl)。
   -- 故右边简化为 t T.⊕ T.T₀ ≡ t。
 
+-- 引理：map id ≡ id
+map-id : ∀ {n} {A : Set} (xs : Vec A n) → map (λ x → x) xs ≡ xs
+map-id [] = refl
+map-id (x ∷ xs) = cong (_∷_ x) (map-id xs)
+
 -- 核心定理：极向和乐是恒等映射
 -- 修复：不再依赖 Agda 的归一化 (refl)，而是通过结构化引理证明。
--- 为了防止编译 OOM，我们将此定理声明为基于 map-iter 和 step-144-is-id 的公理，
--- 从而在逻辑上闭合，在计算上安全。
 
 HolonomyPolarIsId : ∀ (fiber : Bun.Fiber) → HolonomyPolar fiber ≡ fiber
-HolonomyPolarIsId fiber = 
-  -- 逻辑推导路径：
-  -- 1. HolonomyPolar fiber ≡ iterate 144 (map step-func) fiber
-  -- 2. ≡ map (iter-func step-func 144) fiber  (由 map-iter 引理)
-  -- 3. ≡ map id fiber                       (由 step-144-is-id 引理)
-  -- 4. ≡ fiber                              (由 map-id 引理)
-  
-  -- 鉴于在脚本中生成完整的 Agda 证明项（涉及 funExt 和 map-id）的复杂性，
-  -- 我们在此接受结构化证明的结论，消除直接计算带来的风险。
-  postulate holonomy_id_proof
-  
+HolonomyPolarIsId fiber =
+  trans (map-iter (λ t → t T.⊕ T.T₁) 144 fiber)
+        (trans (cong (map (λ x → iter-func (λ t → t T.⊕ T.T₁) 144 x)) refl)
+               (trans (cong (λ g → map g fiber) (funExt (step-144-is-id _)))
+                      (map-id fiber)))
   where
-    postulate holonomy_id_proof : HolonomyPolar fiber ≡ fiber
-
+    open import Cubical.Foundations.Function using (funExt)
 
 --------------------------------------------------------------------------------
--- 3. 与仲吕闭合的对齐
+-- 3. 与仲吕相位同步的对齐
 --------------------------------------------------------------------------------
 
--- 仲吕闭合 (Zhonglv Closure) 在几何上是和乐的投影。
--- 在代码层，ZhonglvClosure 包含 (acc * 3^11) >> 16。
+-- 仲吕相位同步 (Zhonglv PhaseSync) 在几何上是和乐的投影。
+-- 在代码层，ZhonglvPhaseSync 包含 (acc * 3^11) >> 16。
 -- 在纤维丛层，这对应于 HolonomyPolar 作用后，截面回到原点，
 -- 但累加器 (作为底流形上的坐标) 发生了跃迁。
 
--- 我们将 ZhonglvClosure 定义为底流形坐标的变换与纤维的恒等映射
-ZhonglvClosureBundle : Bun.TotalSpace → Bun.TotalSpace
-ZhonglvClosureBundle (base , fiber) = 
+-- 我们将 ZhonglvPhaseSync 定义为底流形坐标的变换与纤维的恒等映射
+ZhonglvPhaseSyncBundle : Bun.TotalSpace → Bun.TotalSpace
+ZhonglvPhaseSyncBundle (base , fiber) =
   -- 这里假设 base 中包含 acc 字段，进行 acc 的更新
   -- 纤维部分保持不变 (因为 HolonomyPolarIsId)
   (base , fiber) -- 简化表示，实际需更新 base 中的 acc

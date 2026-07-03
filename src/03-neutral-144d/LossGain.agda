@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Coupling.LossGain
 -- 耦合域：移宫转调（损益操作）、主权 LCM 模数、仲吕闭合
@@ -82,12 +82,12 @@ SOVEREIGN_LCM : ℕ
 SOVEREIGN_LCM = 11609505792
 
 -- 3¹¹ = 177147（仲吕闭合乘数）
-POWER3_11 : ℕ
-POWER3_11 = 177147
+POW3¹¹ : ℕ
+POW3¹¹ = 177147
 
 -- 2¹⁶ = 65536（仲吕闭合除数）
-POWER2_16 : ℕ
-POWER2_16 = 65536
+POW2¹⁶ : ℕ
+POW2¹⁶ = 65536
 
 -- LCM 余数计算
 lcmRemainder : ℕ → ℕ
@@ -104,12 +104,12 @@ zhonglvClosure acc = (acc * 177147) / 65536
 
 -- 仲吕闭合的模运算版本
 zhonglvClosureMod : ℕ → ℕ
-zhonglvClosureMod n = (n * POWER3_11) % POWER2_16
+zhonglvClosureMod n = (n * POW3¹¹) % POW2¹⁶
 
 -- 仲吕闭合后的复位值
 -- 黄钟 LCM 余数 = 3¹¹ = 177147
 huangzhongLCMRemainder : ℕ
-huangzhongLCMRemainder = POWER3_11
+huangzhongLCMRemainder = POW3¹¹
 
 -- 仲吕闭合验证：闭合后应复位到黄钟余数
 postulate

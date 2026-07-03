@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Structology.DiscreteCalculus
 -- 结构学：代数复数场与离散微分算子
@@ -17,41 +17,27 @@ open import Data.Fin using (Fin; toℕ; fromℕ)
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _mod_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
+-- 引入律胞腔网格（作为空间底座）
+-- 注意：不再重复定义 Cell144，而是使用 LuCellGrid 模块
+import Sovereign.Structology.LuCellGrid as LuGrid
+open LuGrid using (LuGridPoint; mkGridPoint; gridRow; gridCol; shiftPolar; shiftToroidal)
+
 --------------------------------------------------------------------------------
--- 1. 基础几何结构 (144-Cell Torus)
+-- 1. 基础几何结构（律胞腔网格）
 --------------------------------------------------------------------------------
 
--- 为了方便演示，此处直接定义 144 细胞（实际上应 import Torus144）
--- Cell144 是极向坐标 (Polar) 和 环向坐标 (Toroidal) 的直积
-record Cell144 : Set where
-  constructor mkCell
-  field
-    polar : Fin 12
-    toroidal : Fin 12
-
-open Cell144
-
--- 辅助函数：安全地计算 (n + k) mod 12
-addMod12 : ℕ → ℕ → Fin 12
-addMod12 n k = fromℕ ((n + k) mod 12)
-
--- 极向平移 (Shift Polar) - 对应"时间"演化
-shiftPolar : Cell144 → ℕ → Cell144
-shiftPolar cell k = mkCell (addMod12 (toℕ (polar cell)) k) (toroidal cell)
-
--- 环向平移 (Shift Toroidal) - 对应"空间"演化
-shiftToroidal : Cell144 → ℕ → Cell144
-shiftToroidal cell k = mkCell (polar cell) (addMod12 (toℕ (toroidal cell)) k)
+-- LuGridPoint 已在 LuCellGrid 中定义为 Fin 144
+-- 这是静态结构学网格，不是动态缠绕数
 
 --------------------------------------------------------------------------------
 -- 2. 复值场 (驻波场)
 --------------------------------------------------------------------------------
 
--- 驻波场：从 144 细胞到代数复数 (Sqrt3) 的映射
+-- 驻波场：从律胞腔网格到代数复数 (Sqrt3) 的映射
 -- 工程对应: 代数复数 a + b√3
 -- 在律算中，这代表了特定格点上的"气" (Qi) 或驻波振幅/相位。
 StandingWaveField : Set
-StandingWaveField = Cell144 → Sqrt3
+StandingWaveField = LuGridPoint → Sqrt3
 
 -- 零场 (寂静态)
 zeroField : StandingWaveField
@@ -71,18 +57,18 @@ constantField z c = z
 -- 极向偏导 (∂_p)
 -- 对应十二律损益链的步进
 partialPolar : StandingWaveField → StandingWaveField
-partialPolar f cell = f (shiftPolar cell 1) -ˢ f cell
+partialPolar f point = f (shiftPolar point 1) -ˢ f point
 
 -- 环向偏导 (∂_t)
 -- 对应五行模数区的跃迁
 partialToroidal : StandingWaveField → StandingWaveField
-partialToroidal f cell = f (shiftToroidal cell 1) -ˢ f cell
+partialToroidal f point = f (shiftToroidal point 1) -ˢ f point
 
 -- 混合偏导 (∂_p ∂_t)
 -- 对应极向与环向的交叉干涉 (Cross-Interference)
 mixedPartial : StandingWaveField → StandingWaveField
-mixedPartial f cell = 
-  partialPolar (partialToroidal f) cell
+mixedPartial f point = 
+  partialPolar (partialToroidal f) point
 
 --------------------------------------------------------------------------------
 -- 4. 离散拉普拉斯算子 (The Laplacian / Harmony Operator)
@@ -93,11 +79,11 @@ mixedPartial f cell =
 -- 在物理上，这是波动方程的核心。
 
 -- 辅助：反向平移 (用于计算中心差分)
-shiftPolarNeg : Cell144 → Cell144
-shiftPolarNeg cell = shiftPolar cell 11  -- +11 等价于 -1 mod 12
+shiftPolarNeg : LuGridPoint → LuGridPoint
+shiftPolarNeg point = shiftPolar point 11  -- +11 等价于 -1 mod 12
 
-shiftToroidalNeg : Cell144 → Cell144
-shiftToroidalNeg cell = shiftToroidal cell 11
+shiftToroidalNeg : LuGridPoint → LuGridPoint
+shiftToroidalNeg point = shiftToroidal point 11
 
 -- 离散拉普拉斯算子 (Discrete Laplacian)
 -- Δf = (f_右 + f_左 + f_上 + f_下) - 4 * f_中

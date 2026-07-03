@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Structology.Lattice
 -- 结构学：长度格点序列 (十二律)
@@ -14,39 +14,25 @@
 module Sovereign.Structology.Lattice where
 
 open import Data.Nat using (ℕ; _+_; _*_; _<_)
-open import Data.Vec using (Vec; []; _∷_)
-open import Data.Fin using (Fin; zero; suc)
+open import Data.Vec.Base using (Vec; []; _∷_; lookup; length)
+open import Data.Bool using (true)
+open import Data.Fin.Base using (Fin; zero; suc)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
+open import Sovereign.Base.Lü using (LüName; HuangZhong; LinZhong; TaiCu; NanLu; GuXian; YingZhong; RuiBin; DaLu; YiZe; JiaZhong; WuShe; ZhongLu)
 import Sovereign.Base.Invariants as Inv
 import Sovereign.Base.Axioms as Ax
+import Sovereign.Projection.Decimal.Axioms as DecimalAx
 
 --------------------------------------------------------------------------------
--- 1. 律名定义 (Lü Names)
---------------------------------------------------------------------------------
-
-data LüName : Set where
-  HuangZhong : LüName  -- 黄钟 (基准)
-  LinZhong   : LüName  -- 林钟 (损一)
-  TaiCu      : LüName  -- 太簇 (益一)
-  NanLu      : LüName  -- 南吕 (损一)
-  GuXian     : LüName  -- 姑洗 (益一)
-  YingZhong  : LüName  -- 应钟 (损一)
-  RuiBin     : LüName  -- 蕤宾 (益一)
-  DaLu       : LüName  -- 大吕 (损一)
-  YiZe       : LüName  -- 夷则 (益一)
-  JiaZhong   : LüName  -- 夹钟 (损一)
-  WuShe      : LüName  -- 无射 (益一)
-  ZhongLu    : LüName  -- 仲吕 (损一 -> 触发闭合)
-
---------------------------------------------------------------------------------
--- 2. 律管记录 (Lü Record)
+-- 1. 律管记录 (Lü Record)
 --------------------------------------------------------------------------------
 
 record Lü : Set where
   constructor mkLü
   field
     name       : LüName
-    length     : ℕ   -- 长度格点 (Constitutional Truth)
+    lüLength   : ℕ   -- 长度格点 (Constitutional Truth)
     lcmRem     : ℕ   -- LCM 余数 (Constitutional Truth)
 
 open Lü public
@@ -79,11 +65,14 @@ TwelveLu =
 --------------------------------------------------------------------------------
 
 -- 验证黄钟的稳定性 (数字根为 9)
-postulate
-  huangZhongStable : Ax.IsStable (length (Vec.lookup TwelveLu zero)) ≡ true
+-- ⚠️ 注意：使用十进制投影层的 IsStable，非律算核心的 IsStableResonance
+huangZhongStable : DecimalAx.IsStable (lüLength (lookup TwelveLu zero)) ≡ true
+huangZhongStable = refl
+-- digitalRoot 81 = 8+1 = 9, IsStable 9 = true
 
 -- 验证仲吕的 LCM 余数为 2^16
-postulate
-  zhongLuRemCorrect : 
-    lcmRem (Vec.lookup TwelveLu (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))) 
-    ≡ Inv.POW2_16
+zhongLuRemCorrect :
+  lcmRem (lookup TwelveLu (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))))
+  ≡ Inv.POW2₁₆
+zhongLuRemCorrect = refl
+-- TwelveLu[11] = mkLü ZhongLu 30 65536, lcmRem = 65536 = 2^16

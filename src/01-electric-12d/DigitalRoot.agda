@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.RootMath.DigitalRoot
 -- 根数学：数字根公理与稳定驻波判定

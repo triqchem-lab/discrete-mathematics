@@ -28,22 +28,28 @@ import Sovereign.HoTT.Bundle as Bundle
 -- 1. 基础代数结构 (Algebraic Structure of Fiber)
 --------------------------------------------------------------------------------
 
--- 将 Trit 映射到整数 ℤ 以便进行微积分运算
-tritToZ : Trit.Trit → ℤ
-tritToZ Trit.T- = -[1+ 0 ]  -- -1
-tritToZ Trit.T0 = + 0       --  0
-tritToZ Trit.T+ = + 1       --  1
+-- 将 Trit 映射到自然数 ℕ（本源表示）
+tritToN : Trit.Trit → ℕ
+tritToN Trit.T₀ = 0
+tritToN Trit.T₁ = 1
+tritToN Trit.T₂ = 2
 
--- 损益操作在整数域上的表现
--- 损一 (Loss): T+ -> T0 -> T- -> T+
--- 对应整数: 1 -> 0 -> -1 -> 1 (即 x -> x-1 在模 3 意义下)
-lossOpZ : ℤ → ℤ
-lossOpZ x = x - 1
+-- 损益操作在自然数域上的表现（模 3 循环）
+-- 损一 (Loss): T₂ -> T₁ -> T₀ -> T₂
+-- 对应自然数: 2 -> 1 -> 0 -> 2 (即 x -> x-1 mod 3)
+lossOpN : ℕ → ℕ
+lossOpN 0 = 2  -- 0 - 1 ≡ 2 (mod 3)
+lossOpN 1 = 0  -- 1 - 1 = 0
+lossOpN 2 = 1  -- 2 - 1 = 1
+lossOpN (suc (suc (suc n))) = lossOpN n  -- 递归处理 >= 3 的情况
 
--- 益一 (Gain): T- -> T0 -> T+ -> T-
--- 对应整数: -1 -> 0 -> 1 -> -1 (即 x -> x+1 在模 3 意义下)
-gainOpZ : ℤ → ℤ
-gainOpZ x = x + 1
+-- 益一 (Gain): T₀ -> T₁ -> T₂ -> T₀
+-- 对应自然数: 0 -> 1 -> 2 -> 0 (即 x -> x+1 mod 3)
+gainOpN : ℕ → ℕ
+gainOpN 0 = 1  -- 0 + 1 = 1
+gainOpN 1 = 2  -- 1 + 1 = 2
+gainOpN 2 = 0  -- 2 + 1 ≡ 0 (mod 3)
+gainOpN (suc (suc (suc n))) = gainOpN n  -- 递归处理 >= 3 的情况
 
 --------------------------------------------------------------------------------
 -- 2. 纤维与传输 (Fiber and Transport)

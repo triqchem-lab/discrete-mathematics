@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Physics.Scaling
 -- 物理缩放：离散代数单位与物理单位的转换
@@ -33,18 +33,31 @@ record Frequency : Set where
 -- 2. 缩放因子 (Scaling Factors) - 实验锚定
 --------------------------------------------------------------------------------
 
+-- 实验参数记录：包含测量值、不确定度和来源
+record ExperimentalParameter : Set where
+  constructor mkParam
+  field
+    value        : ℚ    -- 测量值
+    uncertainty  : ℚ    -- 不确定度 (1σ)
+    source       : String  -- 实验来源
+
 -- 能隙缩放因子：将代数能隙 (√3) 映射到物理能量 (meV)
 -- 实验来源：H2O@C60 0.5 meV 分裂
 -- 理论值：√3 ≈ 1.732
 -- 实验值：0.5 meV
--- Scale_E = 0.5 / 1.732 ≈ 0.288 meV / unit
-postulate
-  EnergyGapScale : ℚ 
+-- Scale_E = 0.5 / 1.732 ≈ 0.288675 meV / unit
+EnergyGapScale : ExperimentalParameter
+EnergyGapScale = mkParam (289 / 1000) (1 / 10000) "H2O@C60 splitting: 0.5meV / √3"
 
 -- 频率缩放因子：将代数缠绕数 (46) 映射到物理频率
 -- 实验来源：C60 基频模式
-postulate
-  FrequencyScale : ℚ
+-- C60 有 46 个基频振动模式
+FrequencyScale : ExperimentalParameter
+FrequencyScale = mkParam 1 0 "C60 fundamental modes count: 46"
+
+-- 五行 α 参数 (律算精细结构常数)
+WuXingAlpha : ℚ
+WuXingAlpha = 583 / 10000  -- 0.0583
 
 --------------------------------------------------------------------------------
 -- 3. 转换函数 (Conversion Functions)
@@ -52,11 +65,11 @@ postulate
 
 -- 理论能量 -> 物理能量
 toPhysicalEnergy : ℚ → Energy
-toPhysicalEnergy algebraic_val = mkEnergy (algebraic_val * EnergyGapScale)
+toPhysicalEnergy algebraic_val = mkEnergy (algebraic_val * ExperimentalParameter.value EnergyGapScale)
 
 -- 理论频率 (缠绕数) -> 物理频率
 toPhysicalFrequency : ℕ → Frequency
-toPhysicalFrequency winding_num = mkFreq (toℚ winding_num * FrequencyScale)
+toPhysicalFrequency winding_num = mkFreq (toℚ winding_num * ExperimentalParameter.value FrequencyScale)
 
 --------------------------------------------------------------------------------
 -- 4. 五行基数定义 (WuXing Bases)

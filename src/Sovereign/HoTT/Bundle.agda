@@ -15,9 +15,10 @@ module Sovereign.HoTT.Bundle where
 -- 原引用: Cubical.Foundations.Prelude, Cubical.Core.Everything
 open import Sovereign.HoTT.DiscreteCubical
 
-open import Data.Nat using (ℕ; _+_; _*_; _mod_)
+open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Vec using (Vec)
 open import Data.Fin using (Fin)
+open import Data.Product using (_×_)
 
 -- 引入律算基础
 import Sovereign.Base.Trit as Trit
@@ -30,7 +31,7 @@ import Sovereign.HoTT.Geometry as Geo
 -- 底流形：极向 (144) × 环向 (46) 的离散格点
 -- 对应 S²/A₄ 商空间在关注自由度上的投影
 BaseSpace : Type₀
-BaseSpace = Fin Geo.Invariants.POLAR_WINDING × Fin Geo.Invariants.TOROIDAL_WINDING
+BaseSpace = Fin Geo.Invariants.PolarWinding × Fin Geo.Invariants.ToroidalWinding
 
 -- 纤维：30 个 Trit 的向量空间
 -- 对应 T⁶ 单点纤维的完整截面 (5 个五行子纤维 × 6 trit)
@@ -56,13 +57,15 @@ Section : Type₀
 Section = (b : BaseSpace) → Fiber
 
 --------------------------------------------------------------------------------
--- 3. 局部平凡化 (Local Trivialization)
+-- 局部平凡化 (Local Trivialization)
 --------------------------------------------------------------------------------
 
 -- 纤维丛在局部看起来像 直积空间 Base × Fiber。
--- 这意味着在极小的极向/环向步进中，几何结构是平坦的，
--- 只有在绕行闭合环路（和乐）时才会表现出拓扑扭曲。
-
-postulate
-  localTriviality : 
-    ∀ (b : BaseSpace) → TotalSpace ≃ (BaseSpace × Fiber)
+-- 构造性证明：显式构造等价映射
+-- 由于 TotalSpace = Σ[ b ∈ BaseSpace ] Fiber 就是直积的定义，
+-- 恒等映射就是等价
+localTriviality :
+  ∀ (b : BaseSpace) → TotalSpace ≃ (BaseSpace × Fiber)
+localTriviality b = idEquiv (BaseSpace × Fiber)
+  where
+    open import Cubical.Foundations.Equiv using (_≃_; idEquiv)

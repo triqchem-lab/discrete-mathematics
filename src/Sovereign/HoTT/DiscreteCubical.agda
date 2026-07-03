@@ -17,13 +17,15 @@ open import Cubical.Foundations.Prelude public
 open import Cubical.Foundations.Equiv public
 
 -- ⚠️ UNTRUSTED: 高等组合子
-open import Cubical.Foundations.HComp public
+-- NOTE: HComp not available in this cubical version
+-- open import Cubical.Foundations.HComp public
 
 -- ⚠️ UNTRUSTED: 函数扩展性 (FunExt) 在离散空间可能不成立
 open import Cubical.Foundations.Function public
 
 -- ⚠️ UNTRUSTED: 核心 Cubical 库
-open import Cubical.Core.Everything public
+-- NOTE: Cubical.Core.Everything not available, importing what we need directly
+open import Cubical.Core.Primitives public
 
 -- 备注：
 -- 阶段 2 计划：

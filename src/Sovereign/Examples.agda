@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Examples
 -- 示例与验证：律算合一基础代码运行演示
@@ -29,7 +29,7 @@ open TQ10 using (TQ10Block; mkBlock; getPolarPhase)
 
 -- 构造一个合法的初始主权块
 -- 假设：
--- 1. qs (30 trit) 全为 T- (Base3 0)，对应物理字节全 0。
+-- 1. qs (30 trit) 全为 T₀ (吸收态)，对应物理字节全 0。
 -- 2. phase_bias = 0 (高 4 位 0 = 黄钟相位, 低 4 位 0 = 无偏置)。
 -- 3. 其他字段初始化为 0。
 initBlock : TQ10Block
@@ -50,7 +50,7 @@ initBlock =
 
 -- 定义初始累加器为黄钟 LCM 余数 (177147)
 initAcc : ℕ
-initAcc = Inv.POW3_11 -- 177147
+initAcc = Inv.POW3₁₁ -- 177147
 
 -- 组装初始状态
 initialState : SovereignState

@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Coupling.TrainingSoftConstraint
 -- 耦合域：训练期能隙Δ软约束 (Soft Constraint)
@@ -10,10 +10,14 @@
 
 module Sovereign.Coupling.TrainingSoftConstraint where
 
-open import Data.Nat using (ℕ; _+_; _*_; _-_; _≤_; _<_; _≥_; div; mod)
-open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_; abs)
-open import Data.Bool using (Bool; true; false; if_then_else_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Nat using (ℕ; _+_; _*_; _∸_; _≤_; _<_; _≥_; _>_)
+open import Data.Nat.Base using (_<ᵇ_; _≤ᵇ_)
+open import Data.Nat.Properties using (≤⇒≯; <ᵇ⇒<; <⇒<ᵇ; m≤m+n)
+open import Data.Integer using (ℤ; +_; -[1+_]) renaming (_+_ to _+ℤ_; _-_ to _-ℤ_; _*_ to _*ℤ_)
+open import Data.Bool using (Bool; true; false; T; if_then_else_)
+open import Data.Unit.Base using (tt)
+open import Data.Empty using (⊥-elim)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; subst; sym)
 
 -- 引入定点数/有理数用于能量计算 (这里使用简化的整数比例模拟)
 -- 实际上，在工程中通常将 0.866 映射为整数权重，例如 866/1000。
@@ -48,75 +52,50 @@ PENALTY_MULTIPLIER = 100
 -- 实际上，更通用的做法是比较 |value - target|。
 -- 这里的 value 和 target 都是放大后的整数。
 
+-- | 计算偏离度：|expected - actual|（通过截断减法实现绝对值）
 computeDeviation : ℕ → ℕ → ℕ
-computeDeviation value target = 
-  if value ≥ target then (value - target) else (target - value)
+computeDeviation expected actual =
+  if actual ≤ᵇ expected then expected ∸ actual else actual ∸ expected
 
---------------------------------------------------------------------------------
--- 3. 软约束能量函数 (Soft Constraint Energy Function)
---------------------------------------------------------------------------------
-
--- 计算施加软约束后的能量增量。
--- 输入：baseEnergy (当前能量), deviation (当前偏离度)
--- 输出：调整后的总能量
-
--- 逻辑：
--- if deviation > DELTA_HALF_SCALED:
---    return baseEnergy + (deviation * PENALTY_MULTIPLIER)
--- else:
---    return baseEnergy
-
+-- | 施加软约束能量惩罚：
+--   - 偏离 ≤ Δ/2 时不增加额外能量（引导性而非强制性）
+--   - 偏离 > Δ/2 时增加 PENALTY_MULTIPLIER * deviation 的能量
 applySoftConstraint : ℕ → ℕ → ℕ
 applySoftConstraint baseEnergy deviation =
-  if deviation > DELTA_HALF_SCALED then
-    -- 触发惩罚：线性增长的高额惩罚
-    -- 这里简单实现为 base + deviation * factor
-    -- 也可以使用 base + (deviation - threshold) * factor 以平滑过渡
-    let penalty = deviation * PENALTY_MULTIPLIER
-    in baseEnergy + penalty
-  else
-    -- 未触发：保持原能量 (梯度自然引导)
-    baseEnergy
+  if DELTA_HALF_SCALED <ᵇ deviation
+  then baseEnergy + PENALTY_MULTIPLIER * deviation
+  else baseEnergy
 
 --------------------------------------------------------------------------------
--- 4. 宪法验证 (Constitutional Verification)
+-- 3. 宪法验证 (Constitutional Verification)
 --------------------------------------------------------------------------------
 
 -- 定理 1：在能隙阈值内 (Δ/2)，软约束不增加额外能量。
--- 这证明了软约束是"引导性"而非"强制性"的。
-softConstraintInactiveWithinGap : 
-  ∀ (baseEnergy deviation : ℕ) → 
-  deviation ≤ DELTA_HALF_SCALED → 
+-- 证明：当 deviation ≤ DELTA_HALF_SCALED 时，DELTA_HALF_SCALED <ᵇ deviation ≡ false，
+-- 因此 applySoftConstraint 走 else 分支返回 baseEnergy。
+softConstraintInactiveWithinGap :
+  ∀ (baseEnergy deviation : ℕ) →
+  deviation ≤ DELTA_HALF_SCALED →
   applySoftConstraint baseEnergy deviation ≡ baseEnergy
+softConstraintInactiveWithinGap baseEnergy deviation dev≤Δ
+  with DELTA_HALF_SCALED <ᵇ deviation in eq
+... | true  = ⊥-elim (≤⇒≯ dev≤Δ (<ᵇ⇒< DELTA_HALF_SCALED deviation (subst T (sym eq) tt)))
+... | false = refl
 
-softConstraintInactiveWithinGap baseEnergy deviation proof = 
-  -- 展开定义：
-  -- if deviation > 8660 then ... else baseEnergy
-  -- 已知 deviation ≤ 8660，所以条件为 false，返回 baseEnergy
-  refl
-
--- 定理 2：在能隙阈值外，能量单调增加。
-softConstraintIncreasesEnergyOutsideGap : 
-  ∀ (baseEnergy deviation : ℕ) → 
-  deviation > DELTA_HALF_SCALED → 
+-- 定理 2：超出能隙阈值 (>Δ/2) 时，软约束增加额外能量。
+-- 证明：当 deviation > DELTA_HALF_SCALED 时，DELTA_HALF_SCALED <ᵇ deviation ≡ true，
+-- 因此 applySoftConstraint 走 then 分支返回 baseEnergy + penalty，显然 ≥ baseEnergy。
+softConstraintIncreasesEnergyOutsideGap :
+  ∀ (baseEnergy deviation : ℕ) →
+  deviation > DELTA_HALF_SCALED →
   applySoftConstraint baseEnergy deviation ≥ baseEnergy
-
-softConstraintIncreasesEnergyOutsideGap baseEnergy deviation proof = 
-  let penalty = deviation * PENALTY_MULTIPLIER
-  in 
-  -- baseEnergy + penalty ≥ baseEnergy
-  -- 因为 penalty ≥ 0 (自然数乘法)
-  begin
-    baseEnergy + penalty
-      ≥⟨⟩ -- 显然成立
-    baseEnergy
-  ∎
-  where
-    open import Data.Nat.Properties using (≤-refl; ≤-trans)
-    open import Relation.Binary.PropositionalEquality using (_≡_)
+softConstraintIncreasesEnergyOutsideGap baseEnergy deviation dev>Δ
+  with DELTA_HALF_SCALED <ᵇ deviation in eq
+... | false = ⊥-elim (subst T eq (<⇒<ᵇ dev>Δ))
+... | true  = m≤m+n baseEnergy (PENALTY_MULTIPLIER * deviation)
 
 --------------------------------------------------------------------------------
--- 5. 与陈数监控的结合 (Integration with Chern Monitoring)
+-- 4. 与陈数监控的结合 (Integration with Chern Monitoring)
 --------------------------------------------------------------------------------
 
 -- 在实际训练中，偏离度通常由陈数代理指标计算得出。

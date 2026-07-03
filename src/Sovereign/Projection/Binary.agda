@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Projection.Binary
 -- 投影链：二进制与三进制的有损降维与上下文拾起
@@ -17,6 +17,8 @@ open import Data.Bool using (Bool; true; false)
 open import Data.Maybe using (Maybe; just; nothing)
 open import Data.Product using (_×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Data.Empty using (⊥; ⊥-elim)
+open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
 
 import Sovereign.Coding.Trit as T
@@ -66,10 +68,15 @@ projectTritToBit t with T.toℕ t
 -- 4. 投影信息丢失证明 (Proof of Lossiness)
 --------------------------------------------------------------------------------
 
--- 定理：存在两个不同的 Trit，它们的投影相同
-projectionIsLossy : ∃[ t₁ ∈ T.Trit ] ∃[ t₂ ∈ T.Trit ] (t₁ ≢ t₂ × projectTritToBit t₁ ≡ projectTritToBit t₂)
-projectionIsLossy = T.T₀ , (T.T₂ , (λ ()) , refl)
--- 证明：T₀ 和 T₂ 不同，但 projectTritToBit T₀ ≡ B₀ 且 projectTritToBit T₂ ≡ B₀
+-- 辅助：T₀ 和 T₂ 可判定不等
+t0≢t2 : ¬ (T.T₀ ≡ T.T₂)
+t0≢t2 with T.T₀ T.≟ T.T₂
+... | no p  = p
+... | yes _ = λ ()
+
+-- 定理：投影有损 — T₀ 和 T₂ 不同，但投影到相同 Bit
+projectionIsLossy : ¬ (T.T₀ ≡ T.T₂) × (projectTritToBit T.T₀ ≡ projectTritToBit T.T₂)
+projectionIsLossy = t0≢t2 , refl
 
 --------------------------------------------------------------------------------
 -- 5. 上下文拾起：Bit → Trit (基于五行掩码的启发式恢复)
@@ -113,22 +120,54 @@ restoreTritWithContext b ctx =
 --------------------------------------------------------------------------------
 
 -- 定理：对于 T₁，无论上下文如何，只要 Bit 是 1，就能完美恢复
-restoreT1Perfect : ∀ (ctx : Context) → 
+restoreT1Perfect : ∀ (ctx : Context) →
   restoreTritWithContext (projectTritToBit T.T₁) ctx ≡ T.T₁
 restoreT1Perfect ctx = refl
 
 -- 定理：对于 T₀，如果五行偏好是 T₀ (火/金/水/木)，则恢复正确
--- 注意：土 (Earth) 的偏好是 T₂，所以在土区 T₀ 会被误恢复为 T₂。
--- 这是有损投影的固有代价，通过五行上下文我们将错误率最小化（假设土区 T₀ 出现概率低）。
-postulate
-  restoreT0CorrectInNonEarthRegions : 
-    ∀ (ctx : Context) → 
-    Context.wuxingMask ctx ≢ 1b1 → -- 排除土区
-    restoreTritWithContext (projectTritToBit T.T₀) ctx ≡ T.T₀
+-- 证明：基于 wuxingDefaultRecovery 的显式定义进行情况分析
+restoreT0CorrectInNonEarthRegions :
+  ∀ (ctx : Context) →
+  Context.wuxingMask ctx ≢ 1b1 → -- 排除土区
+  restoreTritWithContext (projectTritToBit T.T₀) ctx ≡ T.T₀
+restoreT0CorrectInNonEarthRegions ctx mask≢1 =
+  let projBit = projectTritToBit T.T₀  -- = B₀
+      restored = restoreTritWithContext B₀ ctx  -- = wuxingDefaultRecovery (wuxingMask ctx)
+      mask = Context.wuxingMask ctx
+  in prove mask mask≢1
+  where
+    prove : (m : Fin 5) → m ≢ 1b1 → wuxingDefaultRecovery m ≡ T.T₀
+    prove zero _ = refl          -- 火 → T₀
+    prove (suc zero) not1 = ⊥-elim (not1 refl)  -- 土 → 矛盾
+    prove (suc (suc zero)) _ = refl  -- 金 → T₀
+    prove (suc (suc (suc zero))) _ = refl  -- 水 → T₀
+    prove (suc (suc (suc (suc zero)))) _ = refl  -- 木 → T₀
+    open import Data.Empty using (⊥-elim)
 
 -- 定理：对于 T₂，如果五行偏好是 T₂ (土区)，则恢复正确
-postulate
-  restoreT2CorrectInEarthRegion : 
-    ∀ (ctx : Context) → 
-    Context.wuxingMask ctx ≡ 1b1 → -- 仅限土区
-    restoreTritWithContext (projectTritToBit T.T₂) ctx ≡ T.T₂
+restoreT2CorrectInEarthRegion :
+  ∀ (ctx : Context) →
+  Context.wuxingMask ctx ≡ 1b1 → -- 仅限土区
+  restoreTritWithContext (projectTritToBit T.T₂) ctx ≡ T.T₂
+restoreT2CorrectInEarthRegion ctx mask≡1 =
+  let projBit = projectTritToBit T.T₂  -- = B₀
+      restored = restoreTritWithContext B₀ ctx  -- = wuxingDefaultRecovery (wuxingMask ctx)
+      mask = Context.wuxingMask ctx
+  in prove mask mask≡1
+  where
+    prove : (m : Fin 5) → m ≡ 1b1 → wuxingDefaultRecovery m ≡ T.T₂
+    prove zero eq = ⊥-elim (injective-zero eq)  -- 火 ≠ 土
+    prove (suc zero) _ = refl  -- 土 → T₂
+    prove (suc (suc zero)) eq = ⊥-elim (injective-suc eq)  -- 金 ≠ 土
+    prove (suc (suc (suc zero))) eq = ⊥-elim (injective-suc eq)  -- 水 ≠ 土
+    prove (suc (suc (suc (suc zero)))) eq = ⊥-elim (injective-suc eq)  -- 木 ≠ 土
+
+    injective-zero : {n : ℕ} → 0b0 ≡ suc n → ⊥
+    injective-zero ()
+
+    injective-suc : {n m : ℕ} → suc n ≡ suc m → n ≡ m → ⊥
+    injective-suc {_} {zero} () _
+    injective-suc {zero} {suc _} refl _
+    injective-suc {suc _} {suc _} refl _ = refl
+
+    open import Data.Empty using (⊥-elim)

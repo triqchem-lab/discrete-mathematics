@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Coupling.ParityViolation
 -- 耦合域：宇称不守恒——环向缠绕深化引发的手性对偶破缺

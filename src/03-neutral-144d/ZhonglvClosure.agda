@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Coupling.ZhonglvClosure
 -- 耦合域：仲吕闭合——六十律纳甲初级商空间到全息商空间的升维跃迁
@@ -23,7 +23,7 @@ open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Wa
 open import Sovereign.MetaStructure.Nayin using (NayinSound; NayinFingerprint; nayinToWuxing)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
-open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POWER3_11; POWER2_16; 
+open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶; 
                                                 LossGain; Sun; Yi; applyLossGain)
 
 --------------------------------------------------------------------------------
@@ -183,13 +183,13 @@ zhonglvCanZeroAfterClosure = (3312 , λ _ → (refl , refl))
 
 -- 仲吕闭合操作：acc = (acc * 3¹¹) >> 16
 zhonglvClosureOp : ℤ → ℤ
-zhonglvClosureOp acc = (acc * POWER3_11) / POWER2_16
+zhonglvClosureOp acc = (acc * POW3¹¹) / POW2¹⁶
 
 -- 定理：仲吕闭合将极向相位（3¹¹）与环向压缩（2¹⁶）强制同步
 zhonglvSynchronizes : 
   ∀ (acc : ℤ) → 
   let acc' = zhonglvClosureOp acc
-  in acc' * POWER2_16 ≡ acc * POWER3_11
+  in acc' * POW2¹⁶ ≡ acc * POW3¹¹
 zhonglvSynchronizes acc = ?  -- 需要整除性证明
 
 -- 和乐归零：极向 144 与环向 46 的平行移动同时为单位元

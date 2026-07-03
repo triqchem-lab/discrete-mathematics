@@ -1,4 +1,4 @@
 name: sovereign
-depend: standard-library-2.4 cubical agda-categories agda-algebras
+depend: standard-library-2.4 cubical-0.9 agda-categories agda-algebras
 include: src
-flags: --cubical --guardedness -WnoUnsupportedIndexedMatch
+flags: --guardedness -WnoUnsupportedIndexedMatch
