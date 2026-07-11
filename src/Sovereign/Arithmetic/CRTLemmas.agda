@@ -8,6 +8,7 @@ open import Data.Nat.Base using (_<_; _%_; _≤_; NonZero; nonZero; >-nonZero; s
 open import Data.Nat.Coprimality using (Coprime; gcd≡1⇒coprime; coprime-divisor)
 open import Data.Nat.Divisibility.Core using (_∣_; quotient)
 open import Data.Nat.Divisibility using (n∣m⇒m%n≡0)
+open import Sovereign.AlgebraWrapper using (distrib-lemma)
 open import Data.Nat.Properties using (*-comm; *-assoc; [m+n]∸[m+o]≡n∸o; m+n∸n≡m; m∸n+n≡m; +-identityˡ; ≰⇒≥)
 open import Data.Nat.DivMod using (m≡m%n+[m/n]*n; %-distribˡ-+; m%n%n≡m%n)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym; cong; cong₂; subst; module ≡-Reasoning)
@@ -28,16 +29,6 @@ instance
 
 postulate lemma-mod-sum : ∀ r s n {{_ : NonZero n}} → r < n → s < n → (r + s) % n ≡ r → s ≡ 0
 
-*-∸-lemma : ∀ (b c a : ℕ) → (b * a) ∸ (c * a) ≡ (b ∸ c) * a
-*-∸-lemma zero    zero    a = refl
-*-∸-lemma zero    (suc c) a = refl
-*-∸-lemma (suc b) zero    a = refl
-*-∸-lemma (suc b) (suc c) a = trans (∸-cancel a (b * a) (c * a)) (*-∸-lemma b c a)
-  where
-    ∸-cancel : ∀ (a b c : ℕ) → (a + b) ∸ (a + c) ≡ b ∸ c
-    ∸-cancel zero    b c = refl
-    ∸-cancel (suc a) b c = ∸-cancel a b c
-
 mod≡⇒n∣m∸m' : ∀ m m' n {{nz : NonZero n}} → m % n ≡ m' % n → n ∣ (m ∸ m')
 mod≡⇒n∣m∸m' m m' n eq = record { quotient = q ∸ q' ; equality = pf }
   where
@@ -52,7 +43,7 @@ mod≡⇒n∣m∸m' m m' n eq = record { quotient = q ∸ q' ; equality = pf }
         step2 : (r + q * n) ∸ (r + q' * n) ≡ (q * n) ∸ (q' * n)
         step2 = [m+n]∸[m+o]≡n∸o r (q * n) (q' * n)
         step3 : (q * n) ∸ (q' * n) ≡ (q ∸ q') * n
-        step3 = *-∸-lemma q q' n
+        step3 = distrib-lemma n q q'
 
 euclid-%≡0 : ∀ m m' → m % POW2 ≡ m' % POW2 → m % POW3 ≡ m' % POW3 → (m ∸ m') % M ≡ 0
 euclid-%≡0 m m' eP eQ =
