@@ -6,7 +6,7 @@ open import Data.Nat using (ℕ; NonZero; zero; suc; _+_; _*_; _∸_; _/_; _≤?
 open import Data.Nat.GCD using (gcd)
 open import Data.Nat.Base using (_<_; _%_; _≤_; NonZero; nonZero; >-nonZero; s≤s; z≤n)
 open import Data.Nat.Coprimality using (Coprime; gcd≡1⇒coprime; coprime-divisor)
-open import Data.Nat.Divisibility.Core using (_∣_; quotient)
+open import Data.Nat.Divisibility.Core using (_∣_; quotient; divides)
 open import Data.Nat.Divisibility using (n∣m⇒m%n≡0)
 open import Sovereign.AlgebraWrapper using (distrib-lemma)
 open import Data.Nat.Properties using (*-comm; *-assoc; [m+n]∸[m+o]≡n∸o; m+n∸n≡m; m∸n+n≡m; +-identityˡ; ≰⇒≥)
@@ -50,13 +50,22 @@ euclid-%≡0 m m' eP eQ =
   let d₀  = m ∸ m'
       P∣d₀ = mod≡⇒n∣m∸m' m m' POW2 eP
       Q∣d₀ = mod≡⇒n∣m∸m' m m' POW3 eQ
-      a₀   = quotient P∣d₀ ; aP≡d₀ = _∣_.equality P∣d₀
+      open _∣_ P∣d₀ renaming (quotient to a₀; equality to aP≡d₀)
+      open _∣_ Q∣d₀ renaming (quotient to b₀; equality to bP≡d₀)
+      Q∣a₀P : POW3 ∣ a₀ * POW2
       Q∣a₀P = subst (POW3 ∣_) aP≡d₀ Q∣d₀
-      Q∣a₀  = coprime-divisor coprime-POW2-POW3 (subst (POW3 ∣_) (*-comm a₀ POW2) Q∣a₀P)
-      c₀   = quotient Q∣a₀ ; a≡cQ₀ = _∣_.equality Q∣a₀
-      d₀≡cM = trans aP≡d₀ (trans (cong (_* POW2) a≡cQ₀) (*-assoc c₀ POW3 POW2))
-      M∣d₀  = record { quotient = c₀ ; equality = d₀≡cM }
+      Q∣a₀  : POW3 ∣ a₀
+      Q∣a₀  = q∣a-helper a₀ Q∣a₀P
+      open _∣_ Q∣a₀ renaming (quotient to c₀; equality to a≡cQ₀)
+      d₀≡cM = trans aP≡d₀ 
+               (trans (cong (_* POW2) a≡cQ₀)
+                      (trans (*-assoc c₀ POW3 POW2)
+                             (cong (c₀ *_) (*-comm POW3 POW2))))
+      M∣d₀  = divides c₀ d₀≡cM
   in n∣m⇒m%n≡0 d₀ M M∣d₀
+  where
+    q∣a-helper : ∀ a → POW3 ∣ a * POW2 → POW3 ∣ a
+    q∣a-helper a p rewrite *-comm a POW2 = coprime-divisor coprime-POW2-POW3 p
 
 -- crt-merge: CRT 唯一性 — Bézout/Euclid 构造性
 crt-merge : ∀ N x → N % POW2 ≡ x % POW2 → N % POW3 ≡ x % POW3 → N % M ≡ x % M
