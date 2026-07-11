@@ -4,7 +4,7 @@ module Sovereign.Arithmetic.CRTLemmas where
 
 open import Data.Nat using (ℕ; NonZero; zero; suc; _+_; _*_; _∸_; _/_)
 open import Data.Nat.GCD using (gcd)
-open import Data.Nat.Base using (_<_; _%_; _≤_)
+open import Data.Nat.Base using (_<_; _%_; _≤_; _≤?_; ≰⇒≥)
 import Data.Nat.Base
 open import Data.Nat.Coprimality using (Coprime; gcd≡1⇒coprime; coprime-divisor; coprime-Bézout)
 open import Data.Nat.Divisibility using (_∣_; divides; quotient; equality)
@@ -57,19 +57,20 @@ euclid-%≡0 m m' eP eQ =
 -- crt-merge: CRT 唯一性 — Bézout/Euclid 构造性
 crt-merge : ∀ N x → N % POW2 ≡ x % POW2 → N % POW3 ≡ x % POW3 → N % M ≡ x % M
 crt-merge N x eP eQ = go N x (N ∸ x) (x ∸ N)
-  (euclid-%≡0 N x eP eQ) (euclid-%≡0 x N (sym eP) (sym eQ)) (Data.Nat.Base.≤-total N x)
+  (euclid-%≡0 N x eP eQ) (euclid-%≡0 x N (sym eP) (sym eQ)) (N ≤? x)
   where
     open ≡-Reasoning
-    go : ∀ N x d d' → d % M ≡ 0 → d' % M ≡ 0 → (N ≤ x ⊎ x ≤ N) → N % M ≡ x % M
-    go N x d d' d%M≡0 d'%M≡0 (inj₁ N≤x) = begin
-      x % M ≡⟨ cong (_% M) (sym (m∸n+n≡m N≤x)) ⟩
-      (d' + N) % M ≡⟨ %-distribˡ-+ d' N M ⟩
+    open import Relation.Nullary using (Dec; yes; no)
+    go : ∀ N x d d' → d % M ≡ 0 → d' % M ≡ 0 → Dec (N ≤ x) → N % M ≡ x % M
+    go N x d d' d%M≡0 d'%M≡0 (yes N≤x) = begin
+      x % M              ≡⟨ cong (_% M) (sym (m∸n+n≡m N≤x)) ⟩
+      (d' + N) % M       ≡⟨ %-distribˡ-+ d' N M ⟩
       (d' % M + N % M) % M ≡⟨ cong (λ r → (r + N % M) % M) d'%M≡0 ⟩
-      (0 + N % M) % M ≡⟨ cong (_% M) (+-identityˡ (N % M)) ⟩
-      N % M ∎
-    go N x d d' d%M≡0 d'%M≡0 (inj₂ N≥x) = begin
-      N % M ≡⟨ cong (_% M) (sym (m∸n+n≡m N≥x)) ⟩
-      (d + x) % M ≡⟨ %-distribˡ-+ d x M ⟩
-      (d % M + x % M) % M ≡⟨ cong (λ r → (r + x % M) % M) d%M≡0 ⟩
-      (0 + x % M) % M ≡⟨ cong (_% M) (+-identityˡ (x % M)) ⟩
-      x % M ∎
+      (0 + N % M) % M    ≡⟨ cong (_% M) (+-identityˡ (N % M)) ⟩
+      N % M              ∎
+    go N x d d' d%M≡0 d'%M≡0 (no N≰x) =
+      let N≥x = Data.Nat.Base.≰⇒≥ N≰x
+      in trans (cong (_% M) (sym (m∸n+n≡m N≥x)))
+         (trans (%-distribˡ-+ d x M)
+         (trans (cong (λ r → (r + x % M) % M) d%M≡0)
+                (cong (_% M) (+-identityˡ (x % M)))))
