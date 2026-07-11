@@ -34,14 +34,17 @@ mod≡⇒n∣m∸m' m m' n eq = record { quotient = q ∸ q' ; equality = pf }
     r = m % n ; q = m / n ; q' = m' / n
     open ≡-Reasoning
     pf : m ∸ m' ≡ (q ∸ q') * n
-    pf = trans (cong₂ _∸_ stepL stepR)
-               (trans ([m+n]∸[m+o]≡n∸o r (q * n) (q' * n))
-                      (sym (*-distribˡ-∸ q q' n)))
+    pf = trans step1 (trans step2 step3)
       where
-        stepL : m ≡ r + q * n
-        stepL = m≡m%n+[m/n]*n m n
-        stepR : m' ≡ r + q' * n
-        stepR = trans (m≡m%n+[m/n]*n m' n) (cong (λ x → x + m' / n * n) (sym eq))
+        step1 : m ∸ m' ≡ (r + q * n) ∸ (r + q' * n)
+        step1 = cong₂ _∸_ (m≡m%n+[m/n]*n m n)
+                          (trans (m≡m%n+[m/n]*n m' n) (cong (λ x → x + m' / n * n) (sym eq)))
+        step2 : (r + q * n) ∸ (r + q' * n) ≡ (q * n) ∸ (q' * n)
+        step2 = [m+n]∸[m+o]≡n∸o r (q * n) (q' * n)
+        step3 : (q * n) ∸ (q' * n) ≡ (q ∸ q') * n
+        step3 = trans (cong₂ _∸_ (*-comm q n) (*-comm q' n))
+                      (trans (sym (*-distribʳ-∸ n q q'))
+                             (*-comm n (q ∸ q')))
 
 euclid-%≡0 : ∀ m m' → m % POW2 ≡ m' % POW2 → m % POW3 ≡ m' % POW3 → (m ∸ m') % M ≡ 0
 euclid-%≡0 m m' eP eQ =
