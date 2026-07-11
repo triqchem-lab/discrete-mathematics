@@ -4,7 +4,7 @@ module Sovereign.Arithmetic.CRTLemmas where
 
 open import Data.Nat using (ℕ; NonZero; zero; suc; _+_; _*_; _∸_; _/_; _≤?_)
 open import Data.Nat.GCD using (gcd)
-open import Data.Nat.Base using (_<_; _%_; _≤_; NonZero; nonZero; >-nonZero; s≤s; z≤n)
+open import Data.Nat.Base using (_<_; _%_; _≤_; _>_; NonZero; nonZero; >-nonZero; s≤s; z≤n)
 open import Data.Nat.Coprimality using (Coprime; gcd≡1⇒coprime; coprime-divisor)
 open import Data.Nat.Divisibility.Core using (_∣_; quotient; divides)
 open import Data.Nat.Divisibility using (n∣m⇒m%n≡0)
@@ -25,7 +25,13 @@ coprime-POW2-POW3 = gcd≡1⇒coprime refl
 instance
   POW2-nz : NonZero POW2 ; POW2-nz = nonZero
   POW3-nz : NonZero POW3 ; POW3-nz = nonZero
-  M-nz    : NonZero M    ; M-nz    = nonZero
+
+M>0 : M > 0
+M>0 = s≤s z≤n
+
+instance
+  M-nz : NonZero M
+  M-nz = >-nonZero M>0
 
 postulate lemma-mod-sum : ∀ r s n {{_ : NonZero n}} → r < n → s < n → (r + s) % n ≡ r → s ≡ 0
 
@@ -47,23 +53,32 @@ mod≡⇒n∣m∸m' m m' n eq = record { quotient = q ∸ q' ; equality = pf }
 
 euclid-%≡0 : ∀ m m' → m % POW2 ≡ m' % POW2 → m % POW3 ≡ m' % POW3 → (m ∸ m') % M ≡ 0
 euclid-%≡0 m m' eP eQ =
-  let d₀  = m ∸ m'
-      P∣d₀ = mod≡⇒n∣m∸m' m m' POW2 eP
-      Q∣d₀ = mod≡⇒n∣m∸m' m m' POW3 eQ
-      open _∣_ P∣d₀ renaming (quotient to a₀; equality to aP≡d₀)
-      open _∣_ Q∣d₀ renaming (quotient to b₀; equality to bP≡d₀)
+  let P∣d = mod≡⇒n∣m∸m' m m' POW2 eP
+      Q∣d = mod≡⇒n∣m∸m' m m' POW3 eQ
+      open ≡-Reasoning
+      open _∣_ P∣d renaming (quotient to a₀; equality to aP≡d₀)
+      open _∣_ Q∣d renaming (quotient to b₀; equality to bP≡d₀)
       Q∣a₀P : POW3 ∣ a₀ * POW2
-      Q∣a₀P = subst (POW3 ∣_) aP≡d₀ Q∣d₀
+      Q∣a₀P = subst (POW3 ∣_) aP≡d₀ Q∣d
       Q∣a₀  : POW3 ∣ a₀
       Q∣a₀  = q∣a-helper a₀ Q∣a₀P
       open _∣_ Q∣a₀ renaming (quotient to c₀; equality to a≡cQ₀)
-      d₀≡cM = trans aP≡d₀ 
-               (trans (cong (_* POW2) a≡cQ₀)
-                      (trans (*-assoc c₀ POW3 POW2)
-                             (cong (c₀ *_) (*-comm POW3 POW2))))
-      M∣d₀  = divides c₀ d₀≡cM
-  in n∣m⇒m%n≡0 d₀ M M∣d₀
+      d₀ = m ∸ m'
+      d₀≡cM : d₀ ≡ c₀ * M
+      d₀≡cM = begin
+        d₀                ≡⟨ aP≡d₀ ⟩
+        a₀ * POW2         ≡⟨ cong (_* POW2) a≡cQ₀ ⟩
+        (c₀ * POW3) * POW2 ≡⟨ *-assoc c₀ POW3 POW2 ⟩
+        c₀ * (POW3 * POW2) ≡⟨ cong (c₀ *_) (*-comm POW3 POW2) ⟩
+        c₀ * (POW2 * POW3) ≡⟨⟩
+        c₀ * M            ∎
+      M∣d  : M ∣ (m ∸ m')
+      M∣d  = divides c₀ d₀≡cM
+  in apply-Euclid (m ∸ m') M∣d
   where
+    apply-Euclid : ∀ d → M ∣ d → d % M ≡ 0
+    apply-Euclid d p = n∣m⇒m%n≡0 d M p
+
     q∣a-helper : ∀ a → POW3 ∣ a * POW2 → POW3 ∣ a
     q∣a-helper a p rewrite *-comm a POW2 = coprime-divisor coprime-POW2-POW3 p
 
