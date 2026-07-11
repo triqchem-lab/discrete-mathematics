@@ -8,7 +8,7 @@ open import Data.Nat.Base using (_<_; _%_; _≤_; NonZero; nonZero; >-nonZero; s
 open import Data.Nat.Coprimality using (Coprime; gcd≡1⇒coprime; coprime-divisor)
 open import Data.Nat.Divisibility.Core using (_∣_; quotient)
 open import Data.Nat.Divisibility using (n∣m⇒m%n≡0)
-open import Data.Nat.Properties using (*-comm; *-assoc; *-distribʳ-∸; [m+n]∸[m+o]≡n∸o; m+n∸n≡m; m∸n+n≡m; +-identityˡ; ≰⇒≥)
+open import Data.Nat.Properties using (*-comm; *-assoc; *-distribʳ-∸; *-distribˡ-∸; [m+n]∸[m+o]≡n∸o; m+n∸n≡m; m∸n+n≡m; +-identityˡ; ≰⇒≥)
 open import Data.Nat.DivMod using (m≡m%n+[m/n]*n; %-distribˡ-+; m%n%n≡m%n)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym; cong; cong₂; subst; module ≡-Reasoning)
 open import Relation.Nullary using (Dec; yes; no)
@@ -26,9 +26,9 @@ instance
   POW3-nz : NonZero POW3 ; POW3-nz = nonZero
   M-nz    : NonZero M    ; M-nz    = nonZero
 
-postulate lemma-mod-sum : ∀ r s n → r < n → s < n → (r + s) % n ≡ r → s ≡ 0
+postulate lemma-mod-sum : ∀ r s n {{_ : NonZero n}} → r < n → s < n → (r + s) % n ≡ r → s ≡ 0
 
-mod≡⇒n∣m∸m' : ∀ m m' n (nz : NonZero n) → m % n ≡ m' % n → n ∣ (m ∸ m')
+mod≡⇒n∣m∸m' : ∀ m m' n {{nz : NonZero n}} → m % n ≡ m' % n → n ∣ (m ∸ m')
 mod≡⇒n∣m∸m' m m' n eq = record { quotient = q ∸ q' ; equality = pf }
   where
     r = m % n ; q = m / n ; q' = m' / n
@@ -40,14 +40,14 @@ mod≡⇒n∣m∸m' m m' n eq = record { quotient = q ∸ q' ; equality = pf }
       (r + q * n) ∸ (r + q' * n)
         ≡⟨ [m+n]∸[m+o]≡n∸o r (q * n) (q' * n) ⟩
       (q * n) ∸ (q' * n)
-        ≡⟨ *-distribʳ-∸ n q q' ⟩
+        ≡⟨ sym (*-distribˡ-∸ q q' n) ⟩
       (q ∸ q') * n ∎
 
 euclid-%≡0 : ∀ m m' → m % POW2 ≡ m' % POW2 → m % POW3 ≡ m' % POW3 → (m ∸ m') % M ≡ 0
 euclid-%≡0 m m' eP eQ =
   let d₀  = m ∸ m'
-      P∣d₀ = mod≡⇒n∣m∸m' m m' POW2 POW2-nz eP
-      Q∣d₀ = mod≡⇒n∣m∸m' m m' POW3 POW3-nz eQ
+      P∣d₀ = mod≡⇒n∣m∸m' m m' POW2 eP
+      Q∣d₀ = mod≡⇒n∣m∸m' m m' POW3 eQ
       a₀   = quotient P∣d₀ ; aP≡d₀ = _∣_.equality P∣d₀
       Q∣a₀P = subst (POW3 ∣_) aP≡d₀ Q∣d₀
       Q∣a₀  = coprime-divisor coprime-POW2-POW3 (subst (POW3 ∣_) (*-comm a₀ POW2) Q∣a₀P)
