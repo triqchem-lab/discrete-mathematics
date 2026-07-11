@@ -34,14 +34,14 @@ mod≡⇒n∣m∸m' m m' n eq = record { quotient = q ∸ q' ; equality = pf }
     r = m % n ; q = m / n ; q' = m' / n
     open ≡-Reasoning
     pf : m ∸ m' ≡ (q ∸ q') * n
-    pf = begin
-      m ∸ m'
-        ≡⟨ cong₂ _∸_ (m≡m%n+[m/n]*n m n) (trans (cong (λ r' → r' + m' / n * n) (sym eq)) (m≡m%n+[m/n]*n m' n)) ⟩
-      (r + q * n) ∸ (r + q' * n)
-        ≡⟨ [m+n]∸[m+o]≡n∸o r (q * n) (q' * n) ⟩
-      (q * n) ∸ (q' * n)
-        ≡⟨ sym (*-distribˡ-∸ q q' n) ⟩
-      (q ∸ q') * n ∎
+    pf = trans (cong₂ _∸_ stepL stepR)
+               (trans ([m+n]∸[m+o]≡n∸o r (q * n) (q' * n))
+                      (sym (*-distribˡ-∸ q q' n)))
+      where
+        stepL : m ≡ r + q * n
+        stepL = m≡m%n+[m/n]*n m n
+        stepR : m' ≡ r + q' * n
+        stepR = trans (m≡m%n+[m/n]*n m' n) (cong (λ x → x + m' / n * n) (sym eq))
 
 euclid-%≡0 : ∀ m m' → m % POW2 ≡ m' % POW2 → m % POW3 ≡ m' % POW3 → (m ∸ m') % M ≡ 0
 euclid-%≡0 m m' eP eQ =
