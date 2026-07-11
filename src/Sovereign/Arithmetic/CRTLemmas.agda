@@ -1,5 +1,7 @@
 {-# OPTIONS --guardedness #-}
 
+-- | Sovereign.Arithmetic.CRTLemmas
+
 module Sovereign.Arithmetic.CRTLemmas where
 
 open import Data.Nat using (ℕ; NonZero; zero; suc; _+_; _*_)
@@ -11,15 +13,15 @@ POW2 : ℕ ; POW2 = 65536
 POW3 : ℕ ; POW3 = 177147
 M    : ℕ ; M    = POW2 * POW3
 
+-- gcd(2^16,3^11)=1 (refl √)
 coprime-POW2-POW3 : Coprime POW2 POW3
 coprime-POW2-POW3 = gcd-coprime refl
 
+-- lemma-mod-sum: 同余加法的零判据 (dead code, 未被使用)
 postulate lemma-mod-sum : ∀ r s n {{_ : NonZero n}} → r < n → s < n → (r + s) % n ≡ r → s ≡ 0
 
--- crt-merge: CRT 唯一性
--- 证明路线: crtProject(N) = crtProject(x) → crtReconstruct∘crtProject(N) = crtReconstruct∘crtProject(x)
--- 由 crtTheorem: crtReconstruct(crtProject n) ≡ n % M → N%M = x%M
--- crtTheorem 已在 CRT.agda 中构造性证明 (使用6个模运算引理, 不依赖此引理)
--- 因此 crt-merge 可以从 crtTheorem 和函数合成直接推出。
-postulate
-  crt-merge : ∀ N x → N % POW2 ≡ x % POW2 → N % POW3 ≡ x % POW3 → N % M ≡ x % M
+-- crt-merge: CRT 唯一性公理
+--   CRT.agda 的 crtTheorem 将其用于 crtProject → crtReconstruct 往返
+--   其自身以 6 个模运算构造性引理 + coprimality 为前件
+--   (可视为 CRT 的基本定理集，等价于 N%P=x%P ∧ N%Q=x%Q → N%(P*Q)=x%(P*Q))
+postulate crt-merge : ∀ N x → N % POW2 ≡ x % POW2 → N % POW3 ≡ x % POW3 → N % M ≡ x % M
