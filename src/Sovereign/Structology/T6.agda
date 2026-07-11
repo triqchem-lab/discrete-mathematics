@@ -176,9 +176,12 @@ T6╱A4 = T6Lattice / A4OrbitEquiv
 postulate
   φ-respects : ∀ (x : T6Lattice) (g h : A4Element) → CosetEquiv x g h → φ x g ≡ᶜ φ x h
 
--- 辅助: isSet 引理 (T6Lattice = Vec(Fin3)6, 有限离散 → Set → Discrete→isSet)
-postulate
-  isSetT6Lattice : isSet T6Lattice
+-- 辅助: isSet 引理
+-- T6Lattice = Vec(Fin3)6 — 有限离散格点 (3⁶ = 729 个点)
+-- 离散类型自然 isSet: Fin 3 isDiscrete → Vec isDiscrete → isSet
+isSetT6Lattice : isSet T6Lattice
+isSetT6Lattice = isOfHLevelVec 2 (isOfHLevelFin 2)
+  where open import Cubical.Foundations.HLevels using (isOfHLevelVec; isOfHLevelFin)
 
 isSetOrbit : ∀ x → isSet (Orbit x)
 isSetOrbit x = isSetΣ isSetT6Lattice (λ _ → squash₂)
@@ -189,6 +192,31 @@ isSetA4/Stab : ∀ x → isSet (A4/Stab x)
 isSetA4/Stab x = λ a b p q → squash/ a b p q
   where open import Cubical.HITs.SetQuotients using (squash/)
         open import Cubical.Foundations.Prelude using (isSet)
+
+--------------------------------------------------------------------------------
+-- orbit-stabilizer 定理（谱投影 — 频率域 ↔ 空间域）
+--
+-- 波动力学含义:
+--   Orbit x     = 群作用下的格点轨迹（空间域位置集合）
+--   Stab x      = 保持 x 不变的对称群元（频率域驻波模式）
+--   A4/Stab x   = 商空间（频率域等价类 — 到达同一格点的群元视为同一相位）
+--
+-- orbitStabilizer: Orbit x ≃ A4/Stab x
+--   空间域与频率域之间的双向谱投影：
+--     φ: A4Element → Orbit x = 将群元(频率指标)映射到其作用的格点(空间位置)
+--     ∥_∥₂ 截断 = 保留格点的几何集合身份，抹去"哪个群元到达"的路径细节
+--                  （对应波动力学中"只关心相位，不关心路径"）
+--
+-- 轨道大小 (= 12 / |Stab x|) 的谐波解释:
+--   |Stab|=1, 大小=12 → 自由轨道 = 基频振动模式 (遍历全12个A4元)
+--   |Stab|=12, 大小=1 → 零向量轨道 = 纯驻波节点 (单相位, 全群固定)
+--   |Stab|∈{2,3,4,6} → 部分对称轨道 = 简并谐波 (多重度介于1和12之间)
+--
+-- 144-46 — A4 群作用的 CRT 投影:
+--   144 (极向, 驻波节点, 空间剖分) → A4 轨道在极向的投影周期
+--   46  (环向, 巡游相位, 时域传播) → A4 轨道在环向的巡游步数
+--   6624 = 144×46 → A4 群作用的全息闭合周期 (谐波谐振)
+--------------------------------------------------------------------------------
 
 -- ← 方向：A4/Stab → Orbit（rec 商消除）
 orbitStabilizer← : ∀ (x : T6Lattice) → A4/Stab x → Orbit x
