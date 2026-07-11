@@ -48,13 +48,13 @@ codeToTrit _ = T₀ -- 默认归零
 -- 加法 (模 3)
 -- 对应律算中的"损益"微调或相位叠加
 _⊕_ : Trit → Trit → Trit
-T₀ ⊕ x = x
+T₀ ⊕ y = y
+T₁ ⊕ T₀ = T₁
 T₁ ⊕ T₁ = T₂
 T₁ ⊕ T₂ = T₀
+T₂ ⊕ T₀ = T₂
 T₂ ⊕ T₁ = T₀
 T₂ ⊕ T₂ = T₁
-x ⊕ y with x | y
-... | _ | _ = T₀ -- 覆盖剩余情况
 
 -- 乘法 (模 3)
 _⊗_ : Trit → Trit → Trit

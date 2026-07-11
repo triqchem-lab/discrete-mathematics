@@ -20,8 +20,8 @@ open import Data.Vec using (Vec)
 open import Data.Fin using (Fin)
 open import Data.Product using (_×_)
 
--- 引入律算基础
-import Sovereign.Base.Trit as Trit
+-- 引入律算基础（使用 Coding.Trit = Fin 3，宪法类型）
+import Sovereign.Coding.Trit as Trit
 import Sovereign.HoTT.Geometry as Geo
 
 --------------------------------------------------------------------------------

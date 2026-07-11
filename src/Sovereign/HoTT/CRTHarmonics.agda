@@ -23,8 +23,16 @@
 
 module Sovereign.HoTT.CRTHarmonics where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _^_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _^_; _∸_)
 open import Data.Nat.DivMod using ([m+kn]%n≡m%n)
+open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Data.List using (List; []; _∷_)
+
+-- 轻量列表归属（避免加载重量级 Membership 模块）
+private
+  data _∈_ {A : Set} (x : A) : List A → Set where
+    here  : ∀ {xs} → x ∈ (x ∷ xs)
+    there : ∀ {y xs} → x ∈ xs → x ∈ (y ∷ xs)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 
 -- 主权 CRT 模数 (拍频/谐波基)
@@ -56,22 +64,10 @@ harmonic-phase-preserving k =
   ( phase-T1 k , phase-T2 k )
   where
     phase-T1 : ∀ k → harmonic k % T1 ≡ 144
-    phase-T1 k = begin
-      (X0 + k * M) % T1
-        ≡⟨ [m+kn]%n≡m%n X0 (k * T2) T1 ⟩
-      X0 % T1
-        ≡⟨ refl ⟩
-      144
-    ∎ where open import Relation.Binary.PropositionalEquity as Eq; open Eq.≡-Reasoning
+    phase-T1 k = trans ([m+kn]%n≡m%n X0 (k * T2) T1) refl
 
     phase-T2 : ∀ k → harmonic k % T2 ≡ 46
-    phase-T2 k = begin
-      (X0 + k * M) % T2
-        ≡⟨ [m+kn]%n≡m%n X0 (k * T1) T2 ⟩
-      X0 % T2
-        ≡⟨ refl ⟩
-      46
-    ∎ where open import Relation.Binary.PropositionalEquity as Eq; open Eq.≡-Reasoning
+    phase-T2 k = trans ([m+kn]%n≡m%n X0 (k * T1) T2) refl
 
 --------------------------------------------------------------------------------
 -- 2. 驻波条件
@@ -111,17 +107,14 @@ harmonic-is-standing-wave k =
 -- 数字根判据
 dr : ℕ → ℕ
 dr n = 1 + ((n ∸ 1) % 9)
-  where open import Data.Nat using (_∸_)
 
--- 144 是驻波节点
+-- 144 是驻波节点: dr(144) = 1 + 143%9 = 1 + 8 = 9 ∈ {0,3,6,9}
 polar-is-standing-node : dr POLAR ∈ (0 ∷ 3 ∷ 6 ∷ 9 ∷ [])
-polar-is-standing-node = ?
-  -- dr(144) = 1 + 143%9 = 1 + 8 = 9 ∈ {0,3,6,9}? 9 ∈ the list but dr≠9
+polar-is-standing-node = there (there (there here))
 
--- 46 是巡游相
+-- 46 是巡游相: dr(46) = 1 + 45%9 = 1 + 0 = 1 ∈ {1,2,4,8,7,5}
 torus-is-traveling : dr TORUS ∈ (1 ∷ 2 ∷ 4 ∷ 8 ∷ 7 ∷ 5 ∷ [])
-torus-is-traveling = ?
-  -- dr(46) = 1 + 45%9 = 1 + 0 = 1 ∈ {1,2,4,8,7,5} ✓
+torus-is-traveling = here
 
 --------------------------------------------------------------------------------
 -- 4. 谐波解释 toroidalHolonomy

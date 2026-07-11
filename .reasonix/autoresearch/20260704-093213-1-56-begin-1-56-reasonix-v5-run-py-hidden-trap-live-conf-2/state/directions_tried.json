@@ -1,0 +1,16 @@
+[
+  {
+    "fingerprint": "turn-completed",
+    "summary": "turn completed",
+    "first_seen_iteration": 1,
+    "last_seen_iteration": 1,
+    "count": 1
+  },
+  {
+    "fingerprint": "confirmed-benchmark-completed-in-previous-turn-submittin",
+    "summary": "Confirmed: benchmark completed in previous turn. Submitting evidence to close the goal.",
+    "first_seen_iteration": 2,
+    "last_seen_iteration": 2,
+    "count": 1
+  }
+]

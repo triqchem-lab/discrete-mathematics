@@ -16,7 +16,7 @@
 --   1. P⁻¹(144, 46) ≠ ∅ (CRT 确保)
 --   2. x₀ = 5148246160 是最小正代表元
 --   3. FULL_TOUR = 6624 = 144×46
---   4. CRT 模数 M 包含 1752640 个完整巡游
+--   4. CRT 模数 M 包含 1752642 个完整巡游 + 72² 不闭合余量
 
 module Sovereign.HoTT.CRTFiberWinding where
 
@@ -111,8 +111,8 @@ crt-fiber-mod-3 k = begin
 full-tour-correct : FULL_TOUR ≡ POLAR * TORUS
 full-tour-correct = refl
 
--- M = FULL_TOUR × 1752640
-M-div-tour : M / FULL_TOUR ≡ 1752640
+-- M / FULL_TOUR = 1752642, M mod FULL_TOUR = 5184 = 72²（不闭合余量）
+M-div-tour : M / FULL_TOUR ≡ 1752642
 M-div-tour = refl
 
 -- CRT 纤维绕数: X0 对应的环面巡游等效参数

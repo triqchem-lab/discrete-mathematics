@@ -9,8 +9,9 @@
 
 module Sovereign.Structology.MagicSquare144 where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _<_)
 open import Data.Nat.DivMod using (m%n<n)
+open import Data.Nat.Properties using (≤-trans; m≤m+n)
 open import Data.Fin using (Fin; toℕ; fromℕ; fromℕ<)
 open import Data.Product using (_×_; _,_)
 open import Data.Vec using (Vec; []; _∷_)
@@ -19,7 +20,9 @@ open import Relation.Nullary using (¬_)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding;
                                                   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Structology.T6 using (T6Lattice)
-open import Sovereign.Format.CRT using (crtProject; POW2₁₆; POW3₁₁; M; T1; T2; T1-proj1; T2-proj2)
+open import Sovereign.Format.CRT using (crtProject; T1; T2; T1-proj1; T2-proj2)
+open import Sovereign.Arithmetic.CRTLemmas using (M)
+open import Sovereign.Base.Invariants using (POW2₁₆; POW3₁₁)
 
 --------------------------------------------------------------------------------
 -- Experimental Verification (Scholar Loop v4.0, 2026-07-03)
@@ -137,8 +140,7 @@ crt-projection-equality = refl
 
 -- 剖分组成严格小于 M (120+24=144 < 11609505792)
 cell-sum-lt-M : DodecahedronCells + MerkabaCells < M
-cell-sum-lt-M = refl
-  where open import Data.Nat using (_<_)
+cell-sum-lt-M = ≤-trans (m≤m+n 145 65391) (m≤m+n 65536 (65536 * 177146))
 
 -- 缠绕数的 CRT 纤维层: k₁ = PolarWinding / M (环面绕数的整圈数)
 -- 对于基本缠绕数 144: k₁ = 0 (144 < M)
@@ -181,9 +183,9 @@ fullTourCorrect : FULL_TOUR ≡ 6624
 fullTourCorrect = refl
 
 -- CRT 模数 M = 2^16 × 3^11 = 11609505792
--- M / FULL_TOUR = 11609505792 / 6624 = 1752640
--- 即 CRT 域包含 1752640 个完整环面巡游周期
-M-contains-tours : M / FULL_TOUR ≡ 1752640
+-- M / FULL_TOUR = 11609505792 / 6624 = 1752642
+-- M mod FULL_TOUR = 5184 = 72²（不闭合余量，证实环面螺旋非闭合）
+M-contains-tours : M / FULL_TOUR ≡ 1752642
 M-contains-tours = refl
 
 --------------------------------------------------------------------------------

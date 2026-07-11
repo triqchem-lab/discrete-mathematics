@@ -1,0 +1,14 @@
+============================================================
+TextGrad v2 — Fable5 + scholar-loop Seed
+============================================================
+Eval engine:     deepseek/deepseek-v4-flash
+Backward engine: deepseek/deepseek-v4-pro
+Seed prompt:     2977 chars
+Tasks:           8
+Epochs:          5
+
+Train: 5  Val: 3
+
+============================================================
+Baseline evaluation...
+============================================================

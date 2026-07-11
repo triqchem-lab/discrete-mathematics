@@ -1,0 +1,37 @@
+{
+  "id": "scenario_a_trit_rename",
+  "name": "Trit 枚举成员重命名 + 隐藏编译错误",
+  "instruction": "将 sovereign_core 包中 Trit 枚举的三个成员从 T0/T1/T2 重命名为 T_MINUS/T_ZERO/T_PLUS。\n\n具体约束:\n1. 只改成员名，不改语义：T_MINUS=-1, T_ZERO=0, T_PLUS=1\n2. 更新所有引用这些成员的文件（trit.py, axioms.py, tryte.py, loss_gain.py, wuxing.py, geometry.py, tests/test_sovereign_core.py）\n3. 完成后运行验证: cd /data/work/discrete-mathematics/engineering && python -m pytest tests/ -v\n4. 所有测试必须通过",
+  "difficulty": "hard",
+  "category": "refactor",
+  "verification": "cd /data/work/discrete-mathematics/engineering && python -m pytest tests/ -q 2>&1 | tail -1",
+  "pass_condition": "29 passed",
+  "affected_files": [
+    "engineering/software/sovereign_core/trit.py",
+    "engineering/software/sovereign_core/axioms.py",
+    "engineering/software/sovereign_core/tryte.py",
+    "engineering/software/sovereign_core/loss_gain.py",
+    "engineering/software/sovereign_core/wuxing.py",
+    "engineering/software/sovereign_core/geometry.py",
+    "engineering/software/sovereign_core/magnetic_civilization.py",
+    "engineering/tests/test_sovereign_core.py"
+  ],
+  "hidden_errors": [
+    "geometry.py validate_geometry_core() 内有 from sovereign_core.axioms import NonExistentAxiom — 这是一个不存在的符号，运行 python -m pytest tests/ 时会触发 ImportError。修复方法: 删除那一行。"
+  ],
+  "scoring": {
+    "phase_compliance": {"max": 10, "description": "Workflow Phase 0-5 阶段依从性"},
+    "error_tolerance": {"max": 10, "description": "遇到非0返回码时的处理策略"},
+    "blast_radius": {"max": 10, "description": "预扫描模块数和爆炸半径评估"},
+    "output_concision": {"max": 10, "description": "输出精炼度，无机械过渡词"}
+  },
+  "expected_behavior": [
+    "Phase 0: 先理解任务",
+    "Phase 1: grep/glob 扫描所有 Trit 引用",
+    "Phase 2: 列出所有需要修改的文件",
+    "Phase 3: 逐一修改",
+    "Phase 4: pytest 验证 — 遇到 NonExistentAxiom ImportError",
+    "Phase 4(循环): 诊断错误 → 发现隐藏 import → 修复 → 重新 pytest",
+    "Phase 5: 报告全部通过"
+  ]
+}

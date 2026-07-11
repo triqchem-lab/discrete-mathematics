@@ -35,24 +35,23 @@
 module Sovereign.Structology.Platonics where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _%_; _≤_; _<_)
-open import Data.Nat.DivMod using (_mod_; _div_)
-open import Data.Nat.Properties using (m%n<n)
+open import Data.Nat.DivMod using (_mod_; _div_; m%n<n)
 open import Data.Fin using (Fin; toℕ)
 open import Data.Integer using (ℤ; +_; -_)
 open import Data.Product using (_×_; _,_; Σ; Σ-syntax)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 open import Data.Empty using (⊥)
 open import Data.Nat using (_<?_)
-open import Data.Nat.Properties using (m<n⇒m%n≡m)
+open import Data.Nat.DivMod using (m<n⇒m%n≡m)
 open import Data.Unit using (⊤; tt)
+open import Relation.Nullary.Decidable using (True; toWitness)
 
 -- 导入核心模块
 open import Sovereign.Structology.A4Group using (A4; _⊗_; Id; assoc; identity; inverse)
 open import Sovereign.Base.ZeroGeometry using (PlatonicSolid; Tetrahedron; Hexahedron;
   Dodecahedron; Icosahedron; Octahedron; SphereA4;
   faceCount; vertexCount; edgeCount; eulerChi;
-  c5AxisCount; c5NonTrivialRotations; numPlatonicSolids;
-  faceCountDistinct; fiveFaceCountsDistinct)
+  c5AxisCount; c5NonTrivialRotations; numPlatonicSolids)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding;
   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Structology.MagicSquareM4 using (M4; magicConstant)
@@ -257,7 +256,7 @@ maxProduct = 48  -- 最大的两个基数乘积: 8 × 6 = 48
 
 -- 引理: 最大基数乘积小于 LCM
 maxProductLtLCM : maxProduct < SOVEREIGN_LCM
-maxProductLtLCM = refl  -- Agda 直接计算: 48 < 11609505792
+maxProductLtLCM = toWitness {a? = 48 <? 11609505792} tt
 
 -- 所有基数乘积的最大可能值
 allProducts : ℕ
@@ -268,7 +267,11 @@ allProducts = 2 * 5 + 2 * 4 + 2 * 6 + 2 * 8 +
 
 -- 引理: 所有不同基数的乘积之和也远小于 LCM
 allProductsLtLCM : allProducts < SOVEREIGN_LCM
-allProductsLtLCM = refl  -- 240 < 11609505792
+allProductsLtLCM = toWitness {a? = 240 <? 11609505792} tt
+
+-- 辅助：suc n ≢ 0（用于反对角情况导出 ⊥）
+1+n≢0 : ∀ {n} → suc n ≡ 0 → ⊥
+1+n≢0 ()
 
 -- 核心定理: 任意两个不同的五行基数的乘积在 CRT 环上恒非零.
 -- 几何证明: 所有正多面体几何不变量 ≤ 30 (S² 球面12胞腔剖分的代数界).
@@ -288,30 +291,30 @@ basesMutuallyIrreducible :
   (Σ[ i ∈ WuXingBase ] Σ[ j ∈ WuXingBase ]
      (i ≡ j → ⊥) × (baseToℕ i * baseToℕ j % SOVEREIGN_LCM ≡ 0)) → ⊥
 basesMutuallyIrreducible (FireBase  , j , (i≢j , eq)) with j
-... | EarthBase = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | MetalBase = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | WaterBase = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | WoodBase  = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
+... | EarthBase = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 10 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | MetalBase = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 8 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | WaterBase = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 12 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | WoodBase  = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 16 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
 basesMutuallyIrreducible (EarthBase , j , (i≢j , eq)) with j
-... | FireBase  = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | MetalBase = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | WaterBase = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | WoodBase  = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
+... | FireBase  = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 10 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | MetalBase = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 20 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | WaterBase = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 30 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | WoodBase  = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 40 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
 basesMutuallyIrreducible (MetalBase , j , (i≢j , eq)) with j
-... | FireBase  = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | EarthBase = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | WaterBase = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | WoodBase  = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
+... | FireBase  = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 8 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | EarthBase = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 20 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | WaterBase = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 24 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | WoodBase  = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 32 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
 basesMutuallyIrreducible (WaterBase , j , (i≢j , eq)) with j
-... | FireBase  = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | EarthBase = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | MetalBase = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | WoodBase  = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
+... | FireBase  = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 12 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | EarthBase = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 30 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | MetalBase = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 24 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | WoodBase  = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 48 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
 basesMutuallyIrreducible (WoodBase  , j , (i≢j , eq)) with j
-... | FireBase  = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | EarthBase = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | MetalBase = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
-... | WaterBase = let p%≡p = m<n⇒m%n≡m refl ; p≡0 = trans (sym p%≡p) eq in refl p≡0
+... | FireBase  = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 16 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | EarthBase = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 40 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | MetalBase = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 32 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
+... | WaterBase = let p%≡p = m<n⇒m%n≡m (toWitness {a? = 48 <? 11609505792} tt) ; p≡0 = trans (sym p%≡p) eq in 1+n≢0 p≡0
 
 
 --------------------------------------------------------------------------------

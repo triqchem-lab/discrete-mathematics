@@ -8,10 +8,11 @@
 
 module Sovereign.Format.ModulusGeneration where
 
-open import Data.Nat using (ℕ; zero; suc; _*_; _/_; _%_)
-open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _/_; _%_)
+open import Data.Integer using (+_)
 open import Data.Vec using (Vec; []; _∷_)
 open import Data.Fin using (Fin)
+open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Base.Invariants using (SOVEREIGN_LCM; POW2₁₆; POW3₁₁)

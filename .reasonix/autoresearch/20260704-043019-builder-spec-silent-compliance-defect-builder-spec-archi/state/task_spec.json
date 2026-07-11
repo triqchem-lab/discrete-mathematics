@@ -1,0 +1,27 @@
+{
+  "task_id": "20260704-043019-builder-spec-silent-compliance-defect-builder-spec-archi",
+  "goal": "仔细研究 builder 必须先反驳 spec（silent compliance = defect）\t没有显式要求 builder 在实现前质疑 spec\narchitect-research scout-first 分解\t有 deep-research 子代理但无 scout → Fable 设计 lane → 并行研究 → 验证合成的完整链路\nHANDOFF.md 裁剪模式（每会话裁剪，repo 是唯一记忆）\t有 QWEN.md 但不会自动裁剪，有 .reasonix/memory/ 但不在 repo 里",
+  "scope": null,
+  "non_goals": null,
+  "allowed_operations": {
+    "write": true,
+    "network": false,
+    "publish": false
+  },
+  "success_criteria": [
+    {
+      "id": "objective_evidence",
+      "description": "The goal outcome is supported by direct evidence, such as inspected code, reproduced behavior, source material, or concrete findings.",
+      "required": true,
+      "evidence_ids": [
+        "f1"
+      ]
+    },
+    {
+      "id": "verification",
+      "description": "The result has relevant verification evidence, such as tests, commands, benchmarks, manual checks, or a documented reason why verification is not applicable.",
+      "required": true,
+      "evidence_ids": null
+    }
+  ]
+}

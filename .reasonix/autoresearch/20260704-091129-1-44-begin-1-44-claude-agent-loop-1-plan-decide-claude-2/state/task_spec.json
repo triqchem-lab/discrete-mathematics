@@ -1,0 +1,27 @@
+{
+  "task_id": "20260704-091129-1-44-begin-1-44-claude-agent-loop-1-plan-decide-claude-2",
+  "goal": "[已粘贴文本 #1 · 44 行]\n\n--- Begin [已粘贴文本 #1 · 44 行] ---\n是的，你提到了最本质的底层架构！前面我更偏向于从“应用场景”去介绍，但如果从**系统运行机制**来看，Claude 的智能体闭环（Agent Loop）确实是由极其紧密的**三个核心部分**循环轮转组成的。\n\n这三个部分构成了它从“接收任务”到“彻底搞定”的完整生命周期：\n\n---\n\n### 1. 决策与规划（Plan / Decide）—— “脑”\n\n这是循环的起点。当输入一个目标后，Claude 绝不盲目写代码，而是进入**主动思考状态**：\n\n* **状态解析**：评估当前代码库的现状（上下文、报错信息、依赖关系）。\n* **任务拆解**：将大目标拆解为可执行的子任务，并决定**下一步该使用什么工具**（是读文件、搜代码、还是跑编译？）。\n* **动态调整**：在循环的后续轮次中，它会根据上一轮的反馈，重新修正这个计划。\n\n### 2. 执行与工具调用（Act / Execute）—— “手”\n\n规划好之后，Claude 会直接向系统或环境发出动作。在 Claude Code 中，这体现为**完全自主的工具调用（Tool Calling）**：\n\n* **文件操作**：自主执行对源文件的精确编辑（如 `view_file`、`edit_file`、`save_file`）。\n* **终端命令**：直接运行 `git` 提交、`gcc/llvm` 编译命令、测试脚本（如 `pytest`、`npm test`）或自定义的 shell 脚本。\n* **网络/环境交互**：在有权限的情况下，拉取依赖包或调用外部 API。\n\n### 3. 观察与评估（Observe / Evaluate）—— “眼”\n\n这是让 Loop 之所以成为“闭环”的关键。工具执行完后，系统会强制进入观察阶段，不允许它盲目往下走：\n\n* **结果捕获**：抓取终端的标准输出（`stdout`）、错误输出（`stderr`）以及文件的改动结果。\n* **独立对齐（Evaluator）**：由后台的评估机制（或另一个专门的提示词实例）来冷酷地审视：“这次执行是让结果变好了，还是引入了新的 bug？离最终目标还差多远？”\n* **产生新输入**：观察到的结果会化为新的上下文，重新喂给“第一部分（规划）”，从而开启下一次循环。\n\n---\n\n```\n   ┌────────────────────────────────────────┐\n   │                                        │\n   ▼                                        │\n[ 1. Plan / Decide ] ──\u003e [ 2. Act / Execute ] ──\u003e [ 3. Observe / Evaluate ]\n  (分析现状，拆解步骤)       (调用工具，修改运行)       (捕获报错，比对目标)\n\n```\n\n这三个部分不断交替，直到第三部分（评估）给出了 **“Task Completed（任务已达成且通过验证）”** 的信号，或者触发了最大循环次数的硬限制，Loop 才会安全退出。\n\n在这三个环节中，你目前在实际工程中觉得最难控制、或者最容易让 AI “陷在错误循环里出不来”的是哪一部分？\n--- End [已粘贴文本 #1 · 44 行] ---",
+  "scope": null,
+  "non_goals": null,
+  "allowed_operations": {
+    "write": true,
+    "network": false,
+    "publish": false
+  },
+  "success_criteria": [
+    {
+      "id": "objective_evidence",
+      "description": "The goal outcome is supported by direct evidence, such as inspected code, reproduced behavior, source material, or concrete findings.",
+      "required": true,
+      "evidence_ids": [
+        "f1"
+      ]
+    },
+    {
+      "id": "verification",
+      "description": "The result has relevant verification evidence, such as tests, commands, benchmarks, manual checks, or a documented reason why verification is not applicable.",
+      "required": true,
+      "evidence_ids": null
+    }
+  ]
+}
