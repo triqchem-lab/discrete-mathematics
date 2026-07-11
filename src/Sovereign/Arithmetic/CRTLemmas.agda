@@ -2,10 +2,9 @@
 
 module Sovereign.Arithmetic.CRTLemmas where
 
-open import Data.Nat using (ℕ; NonZero; zero; suc; _+_; _*_; _∸_; _/_)
+open import Data.Nat using (ℕ; NonZero; zero; suc; _+_; _*_; _∸_; _/_; _≤?_)
 open import Data.Nat.GCD using (gcd)
-open import Data.Nat.Base using (_<_; _%_; _≤_; _≤?_)
-import Data.Nat.Base
+open import Data.Nat.Base using (_<_; _%_; _≤_; NonZero; nonZero; >-nonZero; s≤s; z≤n)
 open import Data.Nat.Coprimality using (Coprime; gcd≡1⇒coprime; coprime-divisor)
 open import Data.Nat.Divisibility.Core using (_∣_; quotient)
 open import Data.Nat.Divisibility using (n∣m⇒m%n≡0)
@@ -21,9 +20,15 @@ M    : ℕ ; M    = POW2 * POW3
 coprime-POW2-POW3 : Coprime POW2 POW3
 coprime-POW2-POW3 = gcd≡1⇒coprime refl
 
+-- NonZero 实例: 65536 和 177147 显然 >0
+instance
+  POW2-nz : NonZero POW2 ; POW2-nz = nonZero
+  POW3-nz : NonZero POW3 ; POW3-nz = nonZero
+  M-nz    : NonZero M    ; M-nz    = nonZero
+
 postulate lemma-mod-sum : ∀ r s n → r < n → s < n → (r + s) % n ≡ r → s ≡ 0
 
-mod≡⇒n∣m∸m' : ∀ m m' n {{_ : NonZero n}} → m % n ≡ m' % n → n ∣ (m ∸ m')
+mod≡⇒n∣m∸m' : ∀ m m' n (nz : NonZero n) → m % n ≡ m' % n → n ∣ (m ∸ m')
 mod≡⇒n∣m∸m' m m' n eq = record { quotient = q ∸ q' ; equality = pf }
   where
     r = m % n ; q = m / n ; q' = m' / n
@@ -41,8 +46,8 @@ mod≡⇒n∣m∸m' m m' n eq = record { quotient = q ∸ q' ; equality = pf }
 euclid-%≡0 : ∀ m m' → m % POW2 ≡ m' % POW2 → m % POW3 ≡ m' % POW3 → (m ∸ m') % M ≡ 0
 euclid-%≡0 m m' eP eQ =
   let d₀  = m ∸ m'
-      P∣d₀ = mod≡⇒n∣m∸m' m m' POW2 eP
-      Q∣d₀ = mod≡⇒n∣m∸m' m m' POW3 eQ
+      P∣d₀ = mod≡⇒n∣m∸m' m m' POW2 POW2-nz eP
+      Q∣d₀ = mod≡⇒n∣m∸m' m m' POW3 POW3-nz eQ
       a₀   = quotient P∣d₀ ; aP≡d₀ = _∣_.equality P∣d₀
       Q∣a₀P = subst (POW3 ∣_) aP≡d₀ Q∣d₀
       Q∣a₀  = coprime-divisor coprime-POW2-POW3 (subst (POW3 ∣_) (*-comm a₀ POW2) Q∣a₀P)
@@ -50,30 +55,25 @@ euclid-%≡0 m m' eP eQ =
       d₀≡cM = trans aP≡d₀ (trans (cong (_* POW2) a≡cQ₀) (*-assoc c₀ POW3 POW2))
       M∣d₀  = record { quotient = c₀ ; equality = d₀≡cM }
   in n∣m⇒m%n≡0 d₀ M M∣d₀
-  where
-    open import Data.Nat.Divisibility using (n∣m⇒m%n≡0)
-    open import Data.Nat.Properties using (*-comm; *-assoc)
-    open import Relation.Binary.PropositionalEquality using (module ≡-Reasoning)
-    open ≡-Reasoning
-    open _∣_
 
 -- crt-merge: CRT 唯一性 — Bézout/Euclid 构造性
 crt-merge : ∀ N x → N % POW2 ≡ x % POW2 → N % POW3 ≡ x % POW3 → N % M ≡ x % M
-crt-merge N x eP eQ with Data.Nat.Base._≤?_ N x
-... | yes N≤x = begin
-  x % M              ≡⟨ cong (_% M) (sym (m∸n+n≡m N≤x)) ⟩
-  (d' + N) % M       ≡⟨ %-distribˡ-+ d' N M ⟩
-  (d' % M + N % M) % M ≡⟨ cong (λ r → (r + N % M) % M) d'%M≡0 ⟩
-  (0 + N % M) % M    ≡⟨ cong (_% M) (+-identityˡ (N % M)) ⟩
-  N % M              ∎
-... | no  N≰x = begin
-  N % M              ≡⟨ cong (_% M) (sym (m∸n+n≡m (≰⇒≥ N≰x))) ⟩
-  (d + x) % M        ≡⟨ %-distribˡ-+ d x M ⟩
-  (d % M + x % M) % M ≡⟨ cong (λ r → (r + x % M) % M) d%M≡0 ⟩
-  (0 + x % M) % M    ≡⟨ cong (_% M) (+-identityˡ (x % M)) ⟩
-  x % M              ∎
+crt-merge N x eP eQ = go (N ≤? x)
   where
     open ≡-Reasoning
     d  = N ∸ x ; d' = x ∸ N
     d%M≡0  = euclid-%≡0 N x eP eQ
     d'%M≡0 = euclid-%≡0 x N (sym eP) (sym eQ)
+    go : Dec (N ≤ x) → N % M ≡ x % M
+    go (yes N≤x) = begin
+      x % M ≡⟨ cong (_% M) (sym (m∸n+n≡m N≤x)) ⟩
+      (d' + N) % M ≡⟨ %-distribˡ-+ d' N M ⟩
+      (d' % M + N % M) % M ≡⟨ cong (λ r → (r + N % M) % M) d'%M≡0 ⟩
+      (0 + N % M) % M ≡⟨ cong (_% M) (+-identityˡ (N % M)) ⟩
+      N % M ∎
+    go (no  N≰x) = begin
+      N % M ≡⟨ cong (_% M) (sym (m∸n+n≡m (≰⇒≥ N≰x))) ⟩
+      (d + x) % M ≡⟨ %-distribˡ-+ d x M ⟩
+      (d % M + x % M) % M ≡⟨ cong (λ r → (r + x % M) % M) d%M≡0 ⟩
+      (0 + x % M) % M ≡⟨ cong (_% M) (+-identityˡ (x % M)) ⟩
+      x % M ∎
