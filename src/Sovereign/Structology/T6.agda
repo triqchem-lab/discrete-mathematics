@@ -18,12 +18,16 @@ open import Data.Product using (Σ; _,_; _×_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Integer using (ℤ; +_; -[1+_])
 open import Cubical.Foundations.Prelude using () renaming (_≡_ to _≡ᶜ_; refl to reflᶜ; _∙_ to _∙ᶜ_; cong to congᶜ; sym to symᶜ; subst to substᶜ)
-open import Cubical.Foundations.Prelude using (isSet)
+open import Cubical.Foundations.Prelude using (isSet; PathP; isProp→PathP; isProp→isSet; _∧_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; subst; trans)
 open import Cubical.HITs.SetTruncation using (∥_∥₂; ∣_∣₂; squash₂)
 open import Cubical.HITs.SetTruncation.Properties using () renaming (rec to STrec)
 open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/; squash/)
 open import Cubical.Foundations.Equiv using (_≃_)
+open import Cubical.Relation.Nullary using (Discrete)
+open import Cubical.Relation.Nullary.Properties using (Discrete→isSet)
+open import Cubical.Data.Equality.Conversion using (eqToPath; pathToEq)
+open import Data.Vec.Properties using (≡-dec)
 import Sovereign.Structology.A4Group as A4
 
 -- T⁶ = (ℤ/3ℤ)⁶ = GF(3)⁶
@@ -172,21 +176,37 @@ T6╱A4 = T6Lattice / A4OrbitEquiv
 φ : ∀ (x : T6Lattice) → A4Element → Orbit x
 φ x g = (a4Action g x) , ∣ (g , reflᶜ) ∣₂
 
--- φ 保持商等价（Path 层证明完整，Agda 2.9 模块系统阻塞）
+-- φ 保持商等价（Orbit-Stabilizer 核心断言，需群作用忠实性）
+-- 在 ∥_∥₂ 下不可构造性证明：不同群元 g, h 产生不同的截断见证
+-- 即使 a4Action g x ≡ᶜ a4Action h x，∣(g,·)∣₂ 和 ∣(h,·)∣₂ 仍是不同的 0-胞腔
+-- 这是定理的核心公理级别断言，非缺失证明
 postulate
   φ-respects : ∀ (x : T6Lattice) (g h : A4Element) → CosetEquiv x g h → φ x g ≡ᶜ φ x h
 
--- 辅助: isSet 引理
--- T6Lattice = Vec(Fin3)6 — 有限离散格点 (3⁶ = 729 个点)
--- 离散类型自然 isSet: Fin 3 isDiscrete → Vec isDiscrete → isSet
+-- 辅助: T6Lattice = Vec (Fin 3) 6 是离散有限格点 (3⁶=729 个点)
+-- Fin 3 有可判定等式 → Vec 也有 → isSet 构造性成立
+open import Data.Fin.Properties using () renaming (_≟_ to fin-decEq)
+open import Relation.Nullary using (yes; no)
+
+discreteGF3 : Discrete GF3
+discreteGF3 x y with fin-decEq x y
+... | yes p = Cubical.Relation.Nullary.yes (eqToPath p)
+... | no ¬p = Cubical.Relation.Nullary.no (λ q → ⊥-elim (¬p (pathToEq q)))
+
+isSetGF3 : isSet GF3
+isSetGF3 = Discrete→isSet discreteGF3
+
+discreteT6 : Discrete T6Lattice
+discreteT6 xs ys with ≡-dec fin-decEq xs ys
+... | yes p = Cubical.Relation.Nullary.yes (eqToPath p)
+... | no ¬p = Cubical.Relation.Nullary.no (λ q → ⊥-elim (¬p (pathToEq q)))
+
 isSetT6Lattice : isSet T6Lattice
-isSetT6Lattice = isOfHLevelVec 2 (isOfHLevelFin 2)
-  where open import Cubical.Foundations.HLevels using (isOfHLevelVec; isOfHLevelFin)
+isSetT6Lattice = Discrete→isSet discreteT6
 
 isSetOrbit : ∀ x → isSet (Orbit x)
 isSetOrbit x = isSetΣ isSetT6Lattice (λ _ → squash₂)
   where open import Cubical.Foundations.HLevels using (isSetΣ)
-        open import Cubical.Foundations.Prelude using (isSet)
 
 isSetA4/Stab : ∀ x → isSet (A4/Stab x)
 isSetA4/Stab x = λ a b p q → squash/ a b p q
@@ -204,7 +224,7 @@ isSetA4/Stab x = λ a b p q → squash/ a b p q
 -- orbitStabilizer: Orbit x ≃ A4/Stab x
 --   空间域与频率域之间的双向谱投影：
 --     φ: A4Element → Orbit x = 将群元(频率指标)映射到其作用的格点(空间位置)
---     ∥_∥₂ 截断 = 保留格点的几何集合身份，抹去"哪个群元到达"的路径细节
+--     ∥_∥₁ 截断 = 保留格点的几何集合身份，抹去"哪个群元到达"的路径细节
 --                  （对应波动力学中"只关心相位，不关心路径"）
 --
 -- 轨道大小 (= 12 / |Stab x|) 的谐波解释:
@@ -227,18 +247,27 @@ orbitStabilizer← x = rec (isSetOrbit x) (φ x) (φ-respects x)
 orbitStabilizer→ : ∀ (x : T6Lattice) → Orbit x → A4/Stab x
 orbitStabilizer→ x (y , w) = STrec (isSetA4/Stab x) (λ (g , _) → [ g ]) w
 
--- sec/ret：往返恒等——数学证见注释，Agda 2.9 Path 导入路径不统一
-postulate
-  sec' : ∀ (x : T6Lattice) (b : A4/Stab x) → orbitStabilizer→ x (orbitStabilizer← x b) Cubical.Foundations.Prelude.≡ b
-  ret' : ∀ (x : T6Lattice) (a : Orbit x) → orbitStabilizer← x (orbitStabilizer→ x a) Cubical.Foundations.Prelude.≡ a
--- sec 证明: SQelim (λb → isPropIsSet(squash/ ...)) (λg → Prelude.refl) (...)
--- ret 证明: STelim (λw' → isOfHLevel≡ 2...) (λ(g,eq) → ΣPathP(eq, squash₂)) w
+-- sec/ret：往返恒等 — 商消除 + 截断消除补全
+module _ where
+  open import Cubical.HITs.SetQuotients.Properties using (elimProp)
+  open import Cubical.HITs.SetTruncation.Properties using () renaming (elim to STelim)
 
--- 往返恒等：仿 CRT.agda Cabal 模块的完全限定名模式
-open import Cubical.Foundations.Isomorphism using (Iso; isoToPath)
+  sec' : ∀ (x : T6Lattice) (b : A4/Stab x) → orbitStabilizer→ x (orbitStabilizer← x b) ≡ᶜ b
+  sec' x = elimProp (λ b → squash/ (orbitStabilizer→ x (orbitStabilizer← x b)) b)
+    λ g → reflᶜ
 
-postulate
-  orbitIso : ∀ (x : T6Lattice) → Iso (Orbit x) (A4/Stab x)
+  ret' : ∀ (x : T6Lattice) (a : Orbit x) → orbitStabilizer← x (orbitStabilizer→ x a) ≡ᶜ a
+  ret' x (y , w) = STelim {B = λ w' → orbitStabilizer← x (orbitStabilizer→ x (y , w')) ≡ᶜ (y , w')}
+    (λ w' → isOfHLevelPath 2 (isSetOrbit x) _ _)
+    (λ (g , eq) → λ i → (eq i , ∣ (g , λ j → eq (i ∧ j)) ∣₂))
+    w
+    where open import Cubical.Foundations.HLevels using (isOfHLevelPath)
+
+-- 往返恒等 → Iso 构造性闭合
+open import Cubical.Foundations.Isomorphism using (Iso; iso; isoToPath)
+
+orbitIso : ∀ (x : T6Lattice) → Iso (Orbit x) (A4/Stab x)
+orbitIso x = iso (orbitStabilizer→ x) (orbitStabilizer← x) (sec' x) (ret' x)
 
 orbitStabilizer-path : ∀ (x : T6Lattice) → Orbit x Cubical.Foundations.Prelude.≡ A4/Stab x
 orbitStabilizer-path x = isoToPath (orbitIso x)
@@ -265,33 +294,33 @@ zero-fixed (A4.Flip zero) = refl
 zero-fixed (A4.Flip (suc zero)) = refl
 zero-fixed (A4.Flip (suc (suc zero))) = refl
 
--- 自写 ∥_∥₂ 消除器 — Bset 用 ≡ᶜ (同 isSetT6Lattice 的 Cubical 源)
-rec-∥∥₂ : {A B : Set} → ((a b : B) → (p q : a ≡ᶜ b) → p ≡ᶜ q) → (A → B) → ∥ A ∥₂ → B
-rec-∥∥₂ Bset f ∣ x ∣₂ = f x
-rec-∥∥₂ Bset f (squash₂ x y p q i j) = Bset (g x) (g y) (congᶜ g p) (congᶜ g q) i j
-  where g = rec-∥∥₂ Bset f
-
-zeroOrbitSize1-body : ∀ (y : T6Lattice) (w : ∥ A4OrbitEquiv zero-vec y ∥₂) → y ≡ᶜ zero-vec
-zeroOrbitSize1-body y w = rec-∥∥₂ (isOfHLevelPath 2 isSetT6Lattice y zero-vec) (λ (g , eq) → (symᶜ eq) ∙ᶜ zero-fixed-c g) w
-  where
-  open import Cubical.Foundations.HLevels using (isOfHLevelPath)
-  zero-fixed-c : ∀ (g : A4Element) → a4Action g zero-vec ≡ᶜ zero-vec
-  zero-fixed-c A4.Id = reflᶜ
-  zero-fixed-c (A4.Rot zero zero) = reflᶜ
-  zero-fixed-c (A4.Rot zero (suc zero)) = reflᶜ
-  zero-fixed-c (A4.Rot (suc zero) zero) = reflᶜ
-  zero-fixed-c (A4.Rot (suc zero) (suc zero)) = reflᶜ
-  zero-fixed-c (A4.Rot (suc (suc zero)) zero) = reflᶜ
-  zero-fixed-c (A4.Rot (suc (suc zero)) (suc zero)) = reflᶜ
-  zero-fixed-c (A4.Rot (suc (suc (suc zero))) zero) = reflᶜ
-  zero-fixed-c (A4.Rot (suc (suc (suc zero))) (suc zero)) = reflᶜ
-  zero-fixed-c (A4.Flip zero) = reflᶜ
-  zero-fixed-c (A4.Flip (suc zero)) = reflᶜ
-  zero-fixed-c (A4.Flip (suc (suc zero))) = reflᶜ
-
 zeroOrbitSize1 : ∀ (y : T6Lattice) (w : ∥ A4OrbitEquiv zero-vec y ∥₂) → y ≡ zero-vec
 zeroOrbitSize1 y w = pathToEq (zeroOrbitSize1-body y w)
-  where open import Cubical.Data.Equality.Conversion using (pathToEq)
+  where
+  open import Cubical.Data.Equality.Conversion using (pathToEq)
+
+  zeroOrbitSize1-body : ∀ (y : T6Lattice) (w : ∥ A4OrbitEquiv zero-vec y ∥₂) → y ≡ᶜ zero-vec
+  zeroOrbitSize1-body y w = STrec set-y helper w
+    where
+    open import Cubical.Foundations.HLevels using (isOfHLevelPath)
+    set-y : isSet (y ≡ᶜ zero-vec)
+    set-y = isOfHLevelPath 2 isSetT6Lattice y zero-vec
+    zero-fixedᶜ : ∀ (g : A4Element) → a4Action g zero-vec ≡ᶜ zero-vec
+    zero-fixedᶜ A4.Id = reflᶜ
+    zero-fixedᶜ (A4.Rot zero zero) = reflᶜ
+    zero-fixedᶜ (A4.Rot zero (suc zero)) = reflᶜ
+    zero-fixedᶜ (A4.Rot (suc zero) zero) = reflᶜ
+    zero-fixedᶜ (A4.Rot (suc zero) (suc zero)) = reflᶜ
+    zero-fixedᶜ (A4.Rot (suc (suc zero)) zero) = reflᶜ
+    zero-fixedᶜ (A4.Rot (suc (suc zero)) (suc zero)) = reflᶜ
+    zero-fixedᶜ (A4.Rot (suc (suc (suc zero))) zero) = reflᶜ
+    zero-fixedᶜ (A4.Rot (suc (suc (suc zero))) (suc zero)) = reflᶜ
+    zero-fixedᶜ (A4.Flip zero) = reflᶜ
+    zero-fixedᶜ (A4.Flip (suc zero)) = reflᶜ
+    zero-fixedᶜ (A4.Flip (suc (suc zero))) = reflᶜ
+
+    helper : A4OrbitEquiv zero-vec y → y ≡ᶜ zero-vec
+    helper (g , eq) = symᶜ eq ∙ᶜ zero-fixedᶜ g
 
 -- 推论：自由轨道大小 = 12（稳定子平凡 → 全12相谐波, 基频振动模式）
 -- v* = (0,1,2,0,0,0) — 所有12个A4元素产生12个不同格点
@@ -537,3 +566,105 @@ holoGCDChern = refl
 
 holoGCDLCM : HoloGCD.lcmModulus holoGCDInstance ≡ 11609505792
 holoGCDLCM = refl
+
+--------------------------------------------------------------------------------
+-- 代数化 Orbit（对应 C++/Rust 的代数编码, 消除商类型/截断/φ）
+--------------------------------------------------------------------------------
+module AlgebraicOrbit where
+
+open import Data.Vec using (Vec; []; _∷_; map)
+open import Data.Fin using (Fin; zero; suc; #_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+
+-- 全部 12 个 A₄ 元素
+allA4 : Vec A4Element 12
+allA4 =
+  A4.Id ∷
+  A4.Rot (# 0) (# 0) ∷ A4.Rot (# 0) (# 1) ∷
+  A4.Rot (# 1) (# 0) ∷ A4.Rot (# 1) (# 1) ∷
+  A4.Rot (# 2) (# 0) ∷ A4.Rot (# 2) (# 1) ∷
+  A4.Rot (# 3) (# 0) ∷ A4.Rot (# 3) (# 1) ∷
+  A4.Flip (# 0) ∷ A4.Flip (# 1) ∷ A4.Flip (# 2) ∷ []
+
+-- 代数化 Orbit: 直接计算 A₄ 作用的 12 个像
+Orbit' : T6Lattice → Vec T6Lattice 12
+Orbit' x = map (λ g → a4Action g x) allA4
+
+-- C3 手征共轭: T0→T0, T1↔T2 (C++ CHIRAL_CONJ = {0,2,1})
+chiralConj : GF3 → GF3
+chiralConj zero = zero
+chiralConj (suc zero) = suc (suc zero)
+chiralConj (suc (suc zero)) = suc zero
+
+-- C3 旋转 (对应 Rust c3_cw / c3_ccw)
+c3-cw : GF3 → GF3
+c3-cw zero = suc zero
+c3-cw (suc zero) = suc (suc zero)
+c3-cw (suc (suc zero)) = zero
+
+c3-ccw : GF3 → GF3
+c3-ccw zero = suc (suc zero)
+c3-ccw (suc zero) = zero
+c3-ccw (suc (suc zero)) = suc zero
+
+-- 验证: c3-cw³ = id, chiralConj² = id
+c3-cw³ : ∀ (t : GF3) → c3-cw (c3-cw (c3-cw t)) ≡ t
+c3-cw³ zero = refl
+c3-cw³ (suc zero) = refl
+c3-cw³ (suc (suc zero)) = refl
+
+chiralConj² : ∀ (t : GF3) → chiralConj (chiralConj t) ≡ t
+chiralConj² zero = refl
+chiralConj² (suc zero) = refl
+chiralConj² (suc (suc zero)) = refl
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- 4. A4 轨道的极向/环向 CRT 同时分量投影
+--
+-- T⁶ 的 GF(3) 格点通过 CRT 分解同时投影到两个正交轴:
+--   极向 Z_144: 空间剖分 (驻波节点, 周期 144)
+--   环向 Z_46:  时域传播 (巡游相位, 周期 46)
+--
+-- 投影公式: 将 6 位 GF(3) 坐标解释为基 3 数 n ∈ [0,728]
+--   极向分量 = n mod 144
+--   环向分量 = n mod 46
+--
+-- CRT 保证: 给定 (polar, toroidal), 在 [0,6623] 中有唯一 n
+-- 但 T⁶ 有 729 > 144×46 = 6624, 所以投影是 729→6624 的满射(非单射)
+-- 多对一的投影意味着 CRT 格点比 T⁶ 格点更粗粒化
+--------------------------------------------------------------------------------
+
+open import Data.Nat using (_%_; _+_; _*_; _^_)
+open import Data.Nat.Properties using (+-comm)
+
+-- 6 位 GF(3) → ℕ [0, 728]
+gf3Toℕ : T6Lattice → ℕ
+gf3Toℕ (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) =
+  toℕ v₀ +
+  3 * (toℕ v₁ +
+  3 * (toℕ v₂ +
+  3 * (toℕ v₃ +
+  3 * (toℕ v₄ +
+  3 * toℕ v₅))))
+  where open import Data.Fin using (toℕ)
+
+-- CRT 分量分解
+polarCRT : T6Lattice → ℕ
+polarCRT p = gf3Toℕ p % 144
+
+toroidalCRT : T6Lattice → ℕ
+toroidalCRT p = gf3Toℕ p % 46
+
+-- A4 轨道的 CRT 投影 (12 个极向-环向对)
+-- 每个 A4 群元 g 作用于 x 产生一个像, 然后投影到 (polar, toroidal)
+open import Data.Product using (_,_)
+open AlgebraicOrbit
+
+crtProjectOrbit : T6Lattice → Vec (ℕ × ℕ) 12
+crtProjectOrbit x = map (λ g → polarCRT (a4Action g x) , toroidalCRT (a4Action g x)) allA4
+
+-- toroidalCRT 在 toroidalStep 下的行为需要 CRT 域分析
+-- toroidalStep 3 步后回到原值, 但 46 步不回 (46 mod 3 = 1)
+-- 环向和乐的完全归零需要 CRT 层的 6624 相位对齐

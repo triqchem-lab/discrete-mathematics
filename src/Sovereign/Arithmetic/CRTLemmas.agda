@@ -29,9 +29,14 @@ instance
 M>0 : M > 0
 M>0 = s≤s z≤n
 
+P2P3>0 : (POW2 * POW3) > 0
+P2P3>0 = s≤s z≤n
+
 instance
   M-nz : NonZero M
   M-nz = >-nonZero M>0
+  P2P3-nz : NonZero (POW2 * POW3)
+  P2P3-nz = >-nonZero P2P3>0
 
 postulate lemma-mod-sum : ∀ r s n {{_ : NonZero n}} → r < n → s < n → (r + s) % n ≡ r → s ≡ 0
 
@@ -64,23 +69,19 @@ euclid-%≡0 m m' eP eQ =
       Q∣a₀  = q∣a-helper a₀ Q∣a₀P
       open _∣_ Q∣a₀ renaming (quotient to c₀; equality to a≡cQ₀)
       d₀ = m ∸ m'
-      d₀≡cM : d₀ ≡ c₀ * M
-      d₀≡cM = begin
+      d₀≡cP2P3 : d₀ ≡ c₀ * (POW2 * POW3)
+      d₀≡cP2P3 = begin
         d₀                ≡⟨ aP≡d₀ ⟩
         a₀ * POW2         ≡⟨ cong (_* POW2) a≡cQ₀ ⟩
         (c₀ * POW3) * POW2 ≡⟨ *-assoc c₀ POW3 POW2 ⟩
         c₀ * (POW3 * POW2) ≡⟨ cong (c₀ *_) (*-comm POW3 POW2) ⟩
-        c₀ * (POW2 * POW3) ≡⟨⟩
-        c₀ * M            ∎
-      M∣d  : M ∣ (m ∸ m')
-      M∣d  = divides c₀ d₀≡cM
-  in apply-Euclid (m ∸ m') M∣d
+        c₀ * (POW2 * POW3) ∎
+      M∣d' : (POW2 * POW3) ∣ (m ∸ m')
+      M∣d' = divides c₀ d₀≡cP2P3
+  in n∣m⇒m%n≡0 (m ∸ m') (POW2 * POW3) M∣d'
   where
-    apply-Euclid : ∀ d → M ∣ d → d % M ≡ 0
-    apply-Euclid d p = n∣m⇒m%n≡0 d M p
-
     q∣a-helper : ∀ a → POW3 ∣ a * POW2 → POW3 ∣ a
-    q∣a-helper a p rewrite *-comm a POW2 = coprime-divisor coprime-POW2-POW3 p
+    q∣a-helper a p rewrite *-comm a POW2 = coprime-divisor (Data.Nat.Coprimality.sym coprime-POW2-POW3) p
 
 -- crt-merge: CRT 唯一性 — Bézout/Euclid 构造性
 crt-merge : ∀ N x → N % POW2 ≡ x % POW2 → N % POW3 ≡ x % POW3 → N % M ≡ x % M
@@ -91,15 +92,17 @@ crt-merge N x eP eQ = go (N ≤? x)
     d%M≡0  = euclid-%≡0 N x eP eQ
     d'%M≡0 = euclid-%≡0 x N (sym eP) (sym eQ)
     go : Dec (N ≤ x) → N % M ≡ x % M
-    go (yes N≤x) = begin
+    go (yes N≤x) = sym (begin
       x % M ≡⟨ cong (_% M) (sym (m∸n+n≡m N≤x)) ⟩
       (d' + N) % M ≡⟨ %-distribˡ-+ d' N M ⟩
       (d' % M + N % M) % M ≡⟨ cong (λ r → (r + N % M) % M) d'%M≡0 ⟩
       (0 + N % M) % M ≡⟨ cong (_% M) (+-identityˡ (N % M)) ⟩
-      N % M ∎
+      (N % M) % M ≡⟨ m%n%n≡m%n N M ⟩
+      N % M ∎)
     go (no  N≰x) = begin
       N % M ≡⟨ cong (_% M) (sym (m∸n+n≡m (≰⇒≥ N≰x))) ⟩
       (d + x) % M ≡⟨ %-distribˡ-+ d x M ⟩
       (d % M + x % M) % M ≡⟨ cong (λ r → (r + x % M) % M) d%M≡0 ⟩
       (0 + x % M) % M ≡⟨ cong (_% M) (+-identityˡ (x % M)) ⟩
+      (x % M) % M ≡⟨ m%n%n≡m%n x M ⟩
       x % M ∎

@@ -11,8 +11,13 @@
 module Sovereign.Physics.Scaling where
 
 open import Data.Nat using (ℕ)
-open import Data.Integer using (ℤ)
-open import Data.Rational using (ℚ)
+open import Data.Integer using (ℤ; +_)
+open import Data.Rational using (ℚ; _/_; _*_)
+open import Data.String using (String)
+
+private
+  toℚ : ℕ → ℚ
+  toℚ n = (+ n) / 1   -- ℕ → ℤ → ℚ
 
 --------------------------------------------------------------------------------
 -- 1. 物理单位定义 (Physical Units)
@@ -47,17 +52,17 @@ record ExperimentalParameter : Set where
 -- 实验值：0.5 meV
 -- Scale_E = 0.5 / 1.732 ≈ 0.288675 meV / unit
 EnergyGapScale : ExperimentalParameter
-EnergyGapScale = mkParam (289 / 1000) (1 / 10000) "H2O@C60 splitting: 0.5meV / √3"
+EnergyGapScale = mkParam ((+ 289) / 1000) ((+ 1) / 10000) "H2O@C60 splitting: 0.5meV / √3"
 
 -- 频率缩放因子：将代数缠绕数 (46) 映射到物理频率
 -- 实验来源：C60 基频模式
 -- C60 有 46 个基频振动模式
 FrequencyScale : ExperimentalParameter
-FrequencyScale = mkParam 1 0 "C60 fundamental modes count: 46"
+FrequencyScale = mkParam ((+ 1) / 1) ((+ 0) / 1) "C60 fundamental modes count: 46"
 
 -- 五行 α 参数 (律算精细结构常数)
 WuXingAlpha : ℚ
-WuXingAlpha = 583 / 10000  -- 0.0583
+WuXingAlpha = (+ 583) / 10000  -- 0.0583
 
 --------------------------------------------------------------------------------
 -- 3. 转换函数 (Conversion Functions)

@@ -23,13 +23,13 @@ module Sovereign.HoTT.CRTFiberWinding where
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _^_)
 open import Data.Nat.DivMod using (m%n<n; [m+kn]%n≡m%n)
 open import Data.Nat.Properties using (*-comm)
-open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
+open import Data.Product using (Σ; _×_; _,_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)
 
 -- CRT 基
 POW2 : ℕ ; POW2 = 65536
 POW3 : ℕ ; POW3 = 177147
-M    : ℕ ; M    = 11609505792
+M    : ℕ ; M    = POW2 * POW3
 T1   : ℕ ; T1   = 4317249537
 T2   : ℕ ; T2   = 7292256256
 
@@ -70,30 +70,44 @@ crt-fiber k = X0 + k * M
 
 -- 纤维中每个元素都满足相同的 CRT 同余
 -- 利用 [m+kn]%n: M = POW2·POW3, 故 k·M = (k·POW3)·POW2
+module _ where
+  open ≡-Reasoning
+  open Data.Nat.Properties using (*-assoc; *-comm)
+
+  kM≡kPOW3*POW2 : ∀ k → k * M ≡ (k * POW3) * POW2
+  kM≡kPOW3*POW2 k = begin
+    k * M                     ≡⟨⟩
+    k * (POW2 * POW3)         ≡⟨ cong (k *_) (*-comm POW2 POW3) ⟩
+    k * (POW3 * POW2)         ≡⟨ sym (*-assoc k POW3 POW2) ⟩
+    (k * POW3) * POW2         ∎
+
+  kM≡kPOW2*POW3 : ∀ k → k * M ≡ (k * POW2) * POW3
+  kM≡kPOW2*POW3 k = begin
+    k * M                     ≡⟨⟩
+    k * (POW2 * POW3)         ≡⟨ sym (*-assoc k POW2 POW3) ⟩
+    (k * POW2) * POW3         ∎
+
 crt-fiber-mod-2 : ∀ k → crt-fiber k % POW2 ≡ 144
 crt-fiber-mod-2 k = begin
   (X0 + k * M) % POW2
-    ≡⟨ cong (λ z → (X0 + z) % POW2) (cong (k *_) (refl {x = M})) ⟩
-  (X0 + k * (POW2 * POW3)) % POW2
-    ≡⟨ cong (λ z → (X0 + z) % POW2) (sym (*-assoc k POW2 POW3)) ⟩
-  (X0 + (k * POW2) * POW3) % POW2
+    ≡⟨ cong (λ z → (X0 + z) % POW2) (kM≡kPOW3*POW2 k) ⟩
+  (X0 + (k * POW3) * POW2) % POW2
     ≡⟨ [m+kn]%n≡m%n X0 (k * POW3) POW2 ⟩
   X0 % POW2
     ≡⟨ x0-mod-2 ⟩
-  144
-  ∎
-  where open Eq.≡-Reasoning
-        open Data.Nat.Properties using (*-assoc)
+  144 ∎
+  where open ≡-Reasoning
 
 crt-fiber-mod-3 : ∀ k → crt-fiber k % POW3 ≡ 46
 crt-fiber-mod-3 k = begin
   (X0 + k * M) % POW3
+    ≡⟨ cong (λ z → (X0 + z) % POW3) (kM≡kPOW2*POW3 k) ⟩
+  (X0 + (k * POW2) * POW3) % POW3
     ≡⟨ [m+kn]%n≡m%n X0 (k * POW2) POW3 ⟩
   X0 % POW3
     ≡⟨ x0-mod-3 ⟩
-  46
-  ∎
-  where open Eq.≡-Reasoning
+  46 ∎
+  where open ≡-Reasoning
 
 --------------------------------------------------------------------------------
 -- 3. 环面绕数交互
@@ -144,5 +158,5 @@ M-div-tour = refl
 postulate
   toroidalHolonomy-CRT :
     -- 存在唯一的 CRT 代表元同时满足两个缠绕条件
-    Σ[ x ∈ ℕ ] (x % POW2 ≡ POLAR × x % POW3 ≡ TORUS)
+    Σ ℕ (λ x → (x % POW2 ≡ POLAR) × (x % POW3 ≡ TORUS))
     × (∀ y → y % POW2 ≡ POLAR → y % POW3 ≡ TORUS → y % M ≡ X0)

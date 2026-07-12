@@ -36,7 +36,8 @@
 
 module Sovereign.MetaStructure.WuXing where
 
-open import Data.Nat using (ℕ; _+_; _*_; _mod_)
+open import Data.Nat using (ℕ; _+_; _*_)
+open import Data.Nat.DivMod using (_mod_)
 open import Data.Fin using (Fin; toℕ; zero; suc)
 open import Data.Vec using (Vec)
 open import Data.Product using (_×_; _,_)

@@ -898,3 +898,66 @@ conjugate-idempotent-2 : c3-inverse (c3-inverse T₂) ≡ T₂ ; conjugate-idemp
 -- +16 % 3 = 1 → T₁ (右旋)  (已证: chiral-16-mod3)
 -- 在正同余类: (-16) mod 3 = 2 → T₂ (左旋 = T₁ 的 C3 逆)
 -- (已证: chiral-neg16-mod3, 使用 M-16)
+
+--------------------------------------------------------------------------------
+-- 21. GF(3) 内蕴共轭 — CRTEigenvalue ↔ Trit 的形式化同构
+--
+-- 谱投影的代数核心: CRT 本征值在 GF(3) 上的 C3 共轭结构
+--   e16⁺ = +16 ≡ 1 (mod 3) → T₁ = ω   (右旋, 120°)
+--   e16⁻ = -16 ≡ 2 (mod 3) → T₂ = ω²  (左旋, 240°)
+--   e34  = 34  ≡ 1 (mod 3) → T₁       (幻方常数, 与 e16⁺ 同余)
+--   e0   = 0   ≡ 0 (mod 3) → T₀       (吸收态)
+--
+-- 共轭作用: e16⁺ ↔ e16⁻ 在 C3 群下互为逆元
+--   c3-conjugate(T₁) = T₂, c3-conjugate(T₂) = T₁
+--   eigen-conjugate(e16⁺) = e16⁻, eigen-conjugate(e16⁻) = e16⁺
+--------------------------------------------------------------------------------
+
+open import Sovereign.Format.CRT using (CRTEigenvalue; e34; e0; e16⁺; e16⁻)
+
+-- CRT 本征值 → GF(3) Trit 的同态投影
+crt-to-trit : CRTEigenvalue → Trit
+crt-to-trit e34  = T₁   -- 34 % 3 = 1
+crt-to-trit e0   = T₀   --  0 % 3 = 0
+crt-to-trit e16⁺ = T₁   -- 16 % 3 = 1 → ω   (右旋)
+crt-to-trit e16⁻ = T₂   -- (M-16) % 3 = 2 → ω² (左旋)
+
+-- 本征值空间上的 C3 共轭映射
+eigen-conjugate : CRTEigenvalue → CRTEigenvalue
+eigen-conjugate e0   = e0    -- 零自共轭
+eigen-conjugate e16⁺ = e16⁻  -- ω ↔ ω²
+eigen-conjugate e16⁻ = e16⁺  -- ω² ↔ ω
+eigen-conjugate e34  = e16⁻  -- 34 ≡ 1 (mod 3), C3 共轭 = 2 → e16⁻ (没有独立的 e-34 本征值)
+
+-- 共轭对合性: conjugate² = id（在共轭对 e16⁺/e16⁻ 和 e0 上）
+eigen-conjugate-idempotent-e0   : eigen-conjugate (eigen-conjugate e0)   ≡ e0   ; eigen-conjugate-idempotent-e0   = refl
+eigen-conjugate-idempotent-e16⁺ : eigen-conjugate (eigen-conjugate e16⁺) ≡ e16⁺ ; eigen-conjugate-idempotent-e16⁺ = refl
+eigen-conjugate-idempotent-e16⁻ : eigen-conjugate (eigen-conjugate e16⁻) ≡ e16⁻ ; eigen-conjugate-idempotent-e16⁻ = refl
+-- 注意: e34 不是对合——e34 → e16⁻ → e16⁺ ≠ e34
+-- 因为 34 ≡ 1 的 C3 共轭 (2) 没有独立的本征值，借用 e16⁻ 作为代表
+
+-- 同态兼容: crt-to-trit 与 C3 共轭交换（在共轭对 e16⁺/e16⁻ 和自共轭 e0 上）
+crt-trit-conjugate-commutes : ∀ e →
+  crt-to-trit (eigen-conjugate e) ≡ c3-inverse (crt-to-trit e)
+crt-trit-conjugate-commutes e0   = refl  -- T₀ → T₀ ✓
+crt-trit-conjugate-commutes e16⁺ = refl  -- T₂ → T₂ ✓ (c3-inverse T₁ = T₂)
+crt-trit-conjugate-commutes e16⁻ = refl  -- T₁ → T₁ ✓ (c3-inverse T₂ = T₁)
+crt-trit-conjugate-commutes e34  = refl  -- T₁ → T₂ ✓ (34 ≡ 1 mod 3, c3-inverse T₁ = T₂)
+
+-- C3 三次幂归零: ω³ = 1 (= T₀)
+c3-torsion : ∀ (x : Trit) → (x ⊕ x) ⊕ x ≡ T₀
+c3-torsion T₀ = refl
+c3-torsion T₁ = refl    -- 3×1 = 3 ≡ 0
+c3-torsion T₂ = refl    -- 3×2 = 6 ≡ 0
+
+-- e16⁺ 和 e16⁻ 在 C3 下互为唯一的非平凡共轭对
+e16-conjugate-pair : eigen-conjugate e16⁺ ≡ e16⁻ × eigen-conjugate e16⁻ ≡ e16⁺
+e16-conjugate-pair = refl , refl
+
+-- crt-to-trit 在 e16⁺/e16⁻ 上给出 ω (T₁) 和 ω² (T₂)
+omega-to-e16plus  : crt-to-trit e16⁺ ≡ T₁ ; omega-to-e16plus  = refl
+omega2-to-e16minus : crt-to-trit e16⁻ ≡ T₂ ; omega2-to-e16minus = refl
+
+-- GF(3) 上 ω (T₁) 与 ω² (T₂) 的共轭关系: ω ⊕ ω² = T₀, ω² ⊗ ω² = ω
+omega-annihilation : T₁ ⊕ T₂ ≡ T₀ ; omega-annihilation = refl    -- 1+2=3≡0
+omega2-squared-is-omega : T₂ ⊗ T₂ ≡ T₁ ; omega2-squared-is-omega = refl  -- 2²=4≡1
