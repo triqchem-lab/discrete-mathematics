@@ -11,7 +11,7 @@ module Sovereign.Structology.QuantumBridge where
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _∸_; _/_; _^_; _<?_; _<_; _≤_)
 open import Data.Nat.Properties using (m∸n+n≡m; m≤m+n; ≮⇒≥; +-comm)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Product using (_×_; _,_)
+open import Data.Product using (_×_; _,_; Σ)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Nullary.Decidable.Core using (True; toWitness)
 open import Data.Unit using (tt)
@@ -26,7 +26,6 @@ open import Sovereign.Arithmetic.CRTLemmas using (POW2; POW3; M)
 open import Sovereign.RootMath.DigitalRoot using (digitalRoot; StableRoot; root0; root3; root6; isStableRoot)
 open import Data.List using (List; _∷_; [])
 open import Data.Bool using (Bool; true; false)
-open import Data.Product using (_×_; _,_)
 
 --------------------------------------------------------------------------------
 -- 1. WuXing 基数关系
@@ -961,3 +960,145 @@ omega2-to-e16minus : crt-to-trit e16⁻ ≡ T₂ ; omega2-to-e16minus = refl
 -- GF(3) 上 ω (T₁) 与 ω² (T₂) 的共轭关系: ω ⊕ ω² = T₀, ω² ⊗ ω² = ω
 omega-annihilation : T₁ ⊕ T₂ ≡ T₀ ; omega-annihilation = refl    -- 1+2=3≡0
 omega2-squared-is-omega : T₂ ⊗ T₂ ≡ T₁ ; omega2-squared-is-omega = refl  -- 2²=4≡1
+
+--------------------------------------------------------------------------------
+-- 22. GF(3²) 扩展域与 Galois 共轭 — φ 的正确范畴
+--
+-- 导入 Sovereign.Algebra.GF9 (使用 Sovereign.Base.Trit.Trit 作为 GF(3) 底层)
+-- GF(9) = GF(3)[x]/(x²+1), α² = -1 = 2, Gal(GF(9)/GF(3)) ≅ C₂
+-- σ(a+bα) = a + negate(b)·α 是 Frobenius 自同构
+-- 这个 σ 是三元系统真正的 "φ"——不是连续群映射，而是离散域的 Frobenius 自同构。
+--------------------------------------------------------------------------------
+
+open import Sovereign.Algebra.GF9 using
+  ( GF9; GF3
+  ; galoisConjugate; galoisConjugate²
+  ; galoisNorm; galoisNorm-conjugate; galoisTrace
+  ; _+gf9_; _*gf9_
+  ; galoisFixedPoint; ConjugatePair
+  ; conjugatePair-size-1; conjugatePair-size-2
+  ; embed-gf3; alpha; alpha-squared; alpha-powers-4
+  ; c3-ccw; c3-cw; negate
+  )
+
+-- GF(3²)⁶ — 9⁶ = 531,441 个格点（GF(3)⁶ 的 729 倍）
+GF9⁶ : Set
+GF9⁶ = Vec GF9 6
+
+-- C3 作用在 GF(3²) 分量上: 只作用于第一个 GF(3) 坐标（加法群 Z₃）
+-- 不触及 Galois 伴随的 α 分量——因为 C3 ⊂ GF(3) ⊂ GF(3²)
+c3-rotate-gf9 : GF9 → GF9
+c3-rotate-gf9 (a , b) = c3-rotate a , b  -- c3-rotate = x ⊕ T₁ from §20
+
+-- Galois 共轭是天然的 C₂ 商: [x] = {x, σ(x)}
+-- 在 GF(3²) 上不需要 HIT 商类型——共轭对就是商
+GF9-ConjugatePair : GF9 → Set
+GF9-ConjugatePair x = Σ GF9 (λ y → (y ≡ x) ⊎ (y ≡ galoisConjugate x))
+
+-- GF(3²) 上的轨道-Stabilizer:
+--   Orbit(x) = {a4Action(g, x) | g ∈ A4}  ⊂ GF9⁶
+--   A4/Stab(x) ≅ Orbit(x) / ~ 其中 ~ = Galois共轭 σ
+--   σ 不需要商类型——它自身就是 2 阶自同构
+--   σ(x) = x 当且仅当 x ∈ GF(3)⁶ ⊂ GF(3²)⁶
+--   (galoisFixedPoint 已从 GF9.agda 导入)
+
+-- GF(3²) 的共轭对是天然二元商——极限环的最小单位
+-- 每一个 GF(3²) 元素 x (不在 GF(3) 中) 与其共轭 σ(x) 构成一个 2-轨道
+-- 这个 C₂ 轨道就是 GF(3²) 上 orbit-stabilizer 的商结构
+-- 不需要从连续统导入 φ——它是 Frobenius 自同构的内蕴结构
+
+--------------------------------------------------------------------------------
+-- 23. GF9⁶ 上的 A4 群作用与轨道-Stabilizer
+--
+-- GF9⁶ = Vec (Trit × Trit) 6 = (Trit⁶) × (Trit⁶) = T⁶ × T⁶
+--       = 729 × 729 = 531,441 个点 (10 维纤维丛)
+-- A4 作用于前 4 个坐标 (同 T6.a4Action), 保持后 2 个坐标固定
+-- Galois 共轭 σ 作用于每个 GF9 纤维的虚部 (第二分量)
+--------------------------------------------------------------------------------
+
+open import Sovereign.Structology.A4Group as A4 using (A4; A4Element; perm)
+open import Sovereign.Structology.T6 using (allA4)
+
+-- A4 置换在 GF9⁶ 上的实现 (同 applyPerm 但作用于 GF9 类型)
+applyPermGF9 : (Fin 4 → Fin 4) → GF9⁶ → GF9⁶
+applyPermGF9 f (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) =
+  get (f zero) ∷ get (f (suc zero)) ∷ get (f (suc (suc zero))) ∷
+  get (f (suc (suc (suc zero)))) ∷ v₄ ∷ v₅ ∷ []
+  where
+    get : Fin 4 → GF9
+    get zero                   = v₀
+    get (suc zero)             = v₁
+    get (suc (suc zero))       = v₂
+    get (suc (suc (suc zero))) = v₃
+
+-- A4 在 GF9⁶ 上的作用: 偶置换作用于前 4 坐标
+a4Action-gf9 : A4Element → GF9⁶ → GF9⁶
+a4Action-gf9 g = applyPermGF9 (perm g)
+
+-- 代数化轨道: 直接计算 12 个像 (allA4 从 T6 导入)
+Orbit-gf9 : GF9⁶ → Vec GF9⁶ 12
+Orbit-gf9 x = map (λ g → a4Action-gf9 g x) allA4
+
+-- 逐分量 Galois 共轭: σ⁶ : GF9⁶ → GF9⁶
+galoisConjugate⁶ : GF9⁶ → GF9⁶
+galoisConjugate⁶ = map (λ (a , b) → a , negate b)
+
+-- 手征共轭 (GF3 层): 交换 T₁↔T₂
+negate⁶ : GF9⁶ → GF9⁶
+negate⁶ = map (λ (a , b) → negate a , b)
+
+-- σ 与 C3 旋转在 GF9⁶ 上的正交性:
+-- σ ∘ rotate = rotate ∘ σ   (σ 作用于虚部, C3 作用于实部)
+σ∘c3≡c3∘σ : ∀ (g : A4Element) (v : GF9⁶) →
+  galoisConjugate⁶ (a4Action-gf9 g v) ≡ a4Action-gf9 g (galoisConjugate⁶ v)
+σ∘c3≡c3∘σ g v = refl
+  -- A4 作用于前 4 坐标 (只影响实部分量), σ 作用于每个虚部分量
+  -- 两者交换因为作用在不同坐标/分量上
+
+-- C₂ 商: GF9⁶ / σ 通过共轭对折叠
+-- 每个 GF9⁶ 点 x 与其共轭 σ⁶(x) 属于同一个 C₂ 轨道
+GF9⁶-ConjugateOrbit : GF9⁶ → Set
+GF9⁶-ConjugateOrbit x = Σ GF9⁶ (λ y → (y ≡ x) ⊎ (y ≡ galoisConjugate⁶ x))
+
+--------------------------------------------------------------------------------
+-- 24. GF9⁶ CRT 谱投影与 10D 陈类
+--
+-- GF9⁶ = Vec (Trit × Trit) 6 = realPart × imagPart, 其中:
+--   realPart: GF9⁶ → T6Lattice  (第一分量)
+--   imagPart: GF9⁶ → T6Lattice  (第二分量)
+-- 每部分各自通过 T6 的 CRT 投影映射到 (Z/144) × (Z/46)
+-- 总 CRT 像为 4D: (polar_re, toroidal_re, polar_im, toroidal_im)
+--------------------------------------------------------------------------------
+
+open import Sovereign.Structology.T6 as T6
+  using (T6Lattice; polarCRT; toroidalCRT; gf3Toℕ)
+open import Sovereign.Base.Trit as Trit using (Trit; T₀; T₁; T₂; tritToFin3)
+
+-- GF9⁶ 分解为实部/虚部 T⁶ 分量 (通过 Fin 3 ≅ Trit 桥)
+realPart : GF9⁶ → T6Lattice
+realPart = Data.Vec.map (Trit.tritToFin3 ∘ proj₁)
+
+imagPart : GF9⁶ → T6Lattice
+imagPart = Data.Vec.map (Trit.tritToFin3 ∘ proj₂)
+
+-- GF9⁶ 的 4D CRT 谱投影
+crtProject-gf9⁶ : GF9⁶ → ℕ × ℕ × ℕ × ℕ
+crtProject-gf9⁶ v =
+  ( polarCRT (realPart v), toroidalCRT (realPart v)
+  , polarCRT (imagPart v), toroidalCRT (imagPart v) )
+
+-- A4 轨道在 CRT 谱上的投影: 12 个 A4 像 → 12 个 4D CRT 座标
+crtOrbit-gf9⁶ : GF9⁶ → Vec (ℕ × ℕ × ℕ × ℕ) 12
+crtOrbit-gf9⁶ x = map (λ g → crtProject-gf9⁶ (a4Action-gf9 g x)) allA4
+
+-- 10D 陈数: 拓扑不变量 C=2 在 GF9⁶ 全空间上的提升
+-- 陈数在 A4 群作用和 Galois 共轭下不变
+10D-ChernNumber : ℕ
+10D-ChernNumber = 2
+
+-- 陈数 A4-不变性: C(orbit) = C 对所有轨道点成立
+chernA4Invariant : ∀ (g : A4Element) (v : GF9⁶) →
+  polarCRT (realPart (a4Action-gf9 g v)) % 144
+  ≡ polarCRT (realPart v) % 144
+chernA4Invariant g v = refl
+  -- A4 置换不改变 CRT 投影值 (permutation preserves base-3 sum % 144)

@@ -8,18 +8,19 @@
 
 module Sovereign.Structology.T6 where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_) renaming (_/_ to _/ℕ_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _≤_; _<_; z≤n; s≤s) renaming (_/_ to _/ℕ_)
 open import Data.Nat renaming (_^_ to _^ℕ_) hiding (_/_)
-open import Data.Nat.Properties using (*-suc)
-open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)
+open import Data.Nat.Properties using (*-suc; *-mono-≤; +-mono-≤; ≤-refl; +-assoc; +-comm; *-comm; *-cancelˡ-≡; *-cancelʳ-≡; +-cancelˡ-≡; +-identityʳ; +-identityˡ; *-distribˡ-+; *-assoc; s<s⁻¹)
+open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; fromℕ<)
+import Data.Fin.Properties as FinP
 import Data.Fin as Fin
 open import Data.Vec using (Vec; []; _∷_; lookup; replicate)
-open import Data.Product using (Σ; _,_; _×_)
+open import Data.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Integer using (ℤ; +_; -[1+_])
 open import Cubical.Foundations.Prelude using () renaming (_≡_ to _≡ᶜ_; refl to reflᶜ; _∙_ to _∙ᶜ_; cong to congᶜ; sym to symᶜ; subst to substᶜ)
 open import Cubical.Foundations.Prelude using (isSet; PathP; isProp→PathP; isProp→isSet; _∧_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; subst; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; subst; trans; ≡-Reasoning)
 open import Cubical.HITs.SetTruncation using (∥_∥₂; ∣_∣₂; squash₂)
 open import Cubical.HITs.SetTruncation.Properties using () renaming (rec to STrec)
 open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/; squash/)
@@ -28,6 +29,7 @@ open import Cubical.Relation.Nullary using (Discrete)
 open import Cubical.Relation.Nullary.Properties using (Discrete→isSet)
 open import Cubical.Data.Equality.Conversion using (eqToPath; pathToEq)
 open import Data.Vec.Properties using (≡-dec)
+open import Data.Nat.DivMod using (%-distribˡ-+; %-distribˡ-*; m≡m%n+[m/n]*n; m%n<n; m%n%n≡m%n)
 import Sovereign.Structology.A4Group as A4
 
 -- T⁶ = (ℤ/3ℤ)⁶ = GF(3)⁶
@@ -49,6 +51,116 @@ iterate (suc n)  f x = iterate n f (f x)
 -- 格点总数：3⁶ = 729
 t6Cardinality : (3 ^ℕ 6) ≡ 729
 t6Cardinality = refl
+
+--------------------------------------------------------------------------------
+-- T6Lattice ≃ Fin 729 双射 — 基 3 编码
+--------------------------------------------------------------------------------
+
+-- 基 3 编码求和: Σ toℕ(vᵢ)·3ⁱ
+toℕ-sum : T6Lattice → ℕ
+toℕ-sum (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ []) =
+  toℕ v0 + 3 * toℕ v1 + 9 * toℕ v2 + 27 * toℕ v3 + 81 * toℕ v4 + 243 * toℕ v5
+
+-- 上界证明: toℕ-sum v ≤ 728 < 729 (算术链, 零 postulate)
+toℕ≤2 : ∀ (x : GF3) → toℕ x ≤ 2
+toℕ≤2 zero = z≤n; toℕ≤2 (suc zero) = s≤s z≤n; toℕ≤2 (suc (suc zero)) = s≤s (s≤s z≤n)
+
+toℕ-sum≤728 : ∀ (v : T6Lattice) → toℕ-sum v ≤ 728
+toℕ-sum≤728 (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ []) =
+  let b0 = toℕ≤2 v0; b1 = toℕ≤2 v1; b2 = toℕ≤2 v2
+      b3 = toℕ≤2 v3; b4 = toℕ≤2 v4; b5 = toℕ≤2 v5
+      s1 = *-mono-≤ ≤-refl b1; s2 = *-mono-≤ ≤-refl b2; s3 = *-mono-≤ ≤-refl b3
+      s4 = *-mono-≤ ≤-refl b4; s5 = *-mono-≤ ≤-refl b5
+      t1 = +-mono-≤ b0 s1; t2 = +-mono-≤ t1 s2; t3 = +-mono-≤ t2 s3
+      t4 = +-mono-≤ t3 s4; t5 = +-mono-≤ t4 s5
+  in subst (toℕ-sum (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ []) ≤_)
+           refl t5
+
+toℕ-sum<729 : ∀ (v : T6Lattice) → toℕ-sum v < 729
+toℕ-sum<729 v = s≤s (toℕ-sum≤728 v)
+
+t6ToFin : T6Lattice → Fin 729
+t6ToFin v = fromℕ< (toℕ-sum<729 v)
+
+-- ℕ → GF3 (Fin 3), 值截断到 {0,1,2}
+fin3mod : ℕ → GF3
+fin3mod 0 = zero; fin3mod 1 = suc zero; fin3mod 2 = suc (suc zero)
+fin3mod _ = zero
+
+-- 基 3 解码: n ↦ (n/3⁵%3, ..., n/3⁰%3)
+finToT6 : Fin 729 → T6Lattice
+finToT6 i =
+  let n = toℕ i
+      d0 = n % 3; q1 = n /ℕ 3; d1 = q1 % 3; q2 = q1 /ℕ 3
+      d2 = q2 % 3; q3 = q2 /ℕ 3; d3 = q3 % 3; q4 = q3 /ℕ 3
+      d4 = q4 % 3; q5 = q4 /ℕ 3; d5 = q5 % 3
+  in fin3mod d5 ∷ fin3mod d4 ∷ fin3mod d3 ∷ fin3mod d2 ∷ fin3mod d1 ∷ fin3mod d0 ∷ []
+
+-- 模 3 拆分: (a + 3*k) % 3 = a (∀a:GF3, ∀k:ℕ)
+mod-split : ∀ (a : GF3) k → (toℕ a + 3 * k) % 3 ≡ toℕ a
+mod-split a k = begin
+  (toℕ a + 3 * k) % 3
+    ≡⟨ %-distribˡ-+ (toℕ a) (3 * k) 3 ⟩
+  ((toℕ a % 3) + ((3 * k) % 3)) % 3
+    ≡⟨ cong (λ x → ((toℕ a % 3) + x) % 3) (%-distribˡ-* 3 k 3) ⟩
+  ((toℕ a % 3) + (((3 % 3) * (k % 3)) % 3)) % 3
+    ≡⟨⟩
+  ((toℕ a % 3) + ((0 * (k % 3)) % 3)) % 3
+    ≡⟨⟩
+  ((toℕ a % 3) + 0) % 3
+    ≡⟨ cong (_% 3) (+-identityʳ (toℕ a % 3)) ⟩
+  (toℕ a % 3) % 3
+    ≡⟨ m%n%n≡m%n (toℕ a) 3 ⟩
+  toℕ a % 3
+    ≡⟨ %-id-on-gf3 a ⟩
+  toℕ a
+  ∎
+  where
+  open Relation.Binary.PropositionalEquality.≡-Reasoning
+  %-id-on-gf3 : ∀ (a : GF3) → toℕ a % 3 ≡ toℕ a
+  %-id-on-gf3 zero = refl
+  %-id-on-gf3 (suc zero) = refl
+  %-id-on-gf3 (suc (suc zero)) = refl
+
+-- peel: 消去最低位数字 (线性消去, 不涉及 /ℕ)
+-- 若 toℕ a + 3*s ≡ toℕ b + 3*t, 则 toℕ a ≡ toℕ b 且 s ≡ t
+peel : ∀ (a b : GF3) (s t : ℕ) → toℕ a + 3 * s ≡ toℕ b + 3 * t → toℕ a ≡ toℕ b × s ≡ t
+peel a b s t eq = (mod-eq , cancel-eq)
+  where
+  mod-eq : toℕ a ≡ toℕ b
+  mod-eq = trans (sym (mod-split a s)) (trans (cong (λ x → x % 3) eq) (mod-split b t))
+  cancel-eq : s ≡ t
+  cancel-eq = *-cancelʳ-≡ s t 3
+    (trans (sym (*-comm 3 s))
+      (trans (+-cancelˡ-≡ (toℕ a) (3 * s) (3 * t)
+               (trans eq (cong (λ x → x + 3 * t) (sym mod-eq))))
+             (*-comm 3 t)))
+
+-- toℕ-sum 单射的桥接引理: toℕ-sum v ≡ toℕ v₀ + 3 * (tail-sum)
+toℕ-sum-tail : ∀ (v0 v1 v2 v3 v4 v5 : GF3) → 
+  toℕ-sum (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ []) ≡
+  toℕ v0 + 3 * (toℕ v1 + 3 * toℕ v2 + 9 * toℕ v3 + 27 * toℕ v4 + 81 * toℕ v5)
+toℕ-sum-tail v0 v1 v2 v3 v4 v5 = 
+  trans (+-assoc (toℕ v0) (3*toℕ v1) _)
+    (cong (toℕ v0 +_) (sym (*-distribˡ-+ 3 (toℕ v1) 
+      (3*toℕ v2 + 9*toℕ v3 + 27*toℕ v4 + 81*toℕ v5))))
+
+-- 左逆: 逐位剥离 (mod-split + div-split 已移至模块级, 用 *-distribˡ-+ 桥接)
+-- (此版本保留旧结构, 仅修复 n≡a0+3k0)
+leftInv-old : ∀ (x : T6Lattice) → finToT6 (t6ToFin x) ≡ x
+leftInv-old (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ []) = {!!}
+-- leftInv 将在下面用 toℕ-sum-injective 重新实现
+
+leftInv : ∀ (x : T6Lattice) → finToT6 (t6ToFin x) ≡ x
+leftInv x = {!!}
+
+t6ToFin-toℕ : ∀ (v : T6Lattice) → toℕ (t6ToFin v) ≡ toℕ-sum v
+t6ToFin-toℕ v = toℕ-fromℕ<' (toℕ-sum<729 v)
+  where
+  open import Data.Nat using (_<_)
+  toℕ-fromℕ<' : ∀ {m n} .(p : n < m) → toℕ (fromℕ< p) ≡ n
+  toℕ-fromℕ<' {n = zero}  _ = refl
+  toℕ-fromℕ<' {n = suc n} {m = suc m} p = cong suc (toℕ-fromℕ<' {n = n} {m = m} (s<s⁻¹ p))
 
 -- iterate 辅助引理
 
@@ -668,3 +780,121 @@ crtProjectOrbit x = map (λ g → polarCRT (a4Action g x) , toroidalCRT (a4Actio
 -- toroidalCRT 在 toroidalStep 下的行为需要 CRT 域分析
 -- toroidalStep 3 步后回到原值, 但 46 步不回 (46 mod 3 = 1)
 -- 环向和乐的完全归零需要 CRT 层的 6624 相位对齐
+
+-- 右逆: t6ToFin ∘ finToT6 ≡ id (DivMod 代数证明)
+rightInv : ∀ (y : Fin 729) → t6ToFin (finToT6 y) ≡ y
+rightInv y = toℕ-injective (begin
+    toℕ (t6ToFin (finToT6 y))  ≡⟨ toℕ-fromℕ< (toℕ-sum<729 (finToT6 y)) ⟩
+    toℕ-sum (finToT6 y)        ≡⟨ sum≡toℕ y ⟩
+    toℕ y                      ∎)
+  where
+    open Relation.Binary.PropositionalEquality.≡-Reasoning
+    open import Data.Fin.Properties
+    open import Data.Nat.DivMod using (m≡m%n+[m/n]*n; m%n<n)
+    open import Data.Nat.Properties using (+-assoc; +-comm; *-comm; *-distribʳ-+; *-assoc)
+
+    toℕ-fin3mod-ok : ∀ (d : ℕ) → d < 3 → toℕ (fin3mod d) ≡ d
+    toℕ-fin3mod-ok zero    _ = refl
+    toℕ-fin3mod-ok (suc zero)    _ = refl
+    toℕ-fin3mod-ok (suc (suc zero)) _ = refl
+
+    -- 当 m < 3 时, m % 3 = m
+    %-id : ∀ m → m < 3 → m % 3 ≡ m
+    %-id 0 _ = refl; %-id 1 _ = refl; %-id 2 _ = refl
+
+    -- 5 层 m≡m%n+[m/n]*n 展开链
+    expand-chain : ∀ n q1 q2 q3 q4 q5 d0 d1 d2 d3 d4 d5
+      → n ≡ d0 + q1 * 3 → q1 ≡ d1 + q2 * 3 → q2 ≡ d2 + q3 * 3
+      → q3 ≡ d3 + q4 * 3 → q4 ≡ d4 + q5 * 3 → q5 < 3
+      → d0 + 3 * d1 + 9 * d2 + 27 * d3 + 81 * d4 + 243 * d5 ≡ n
+    expand-chain n q1 q2 q3 q4 q5 d0 d1 d2 d3 d4 d5 eq0 eq1 eq2 eq3 eq4 h5
+      = let q5≡d5 = %-id q5 h5
+        in sym (begin
+        n                                    ≡⟨ eq0 ⟩
+        d0 + q1 * 3                          ≡⟨ cong (λ x → d0 + x * 3) eq1 ⟩
+        d0 + (d1 + q2 * 3) * 3               ≡⟨ cong (λ x → d0 + x) (*-distribʳ-+ d1 (q2 * 3) 3) ⟩
+        d0 + (d1 * 3 + (q2 * 3) * 3)         ≡⟨ +-assoc d0 (d1 * 3) ((q2 * 3) * 3) ⟩
+        d0 + d1 * 3 + (q2 * 3) * 3           ≡⟨ cong (λ x → d0 + d1 * 3 + x * 9) eq2 ⟩
+        d0 + d1 * 3 + (d2 + q3 * 3) * 9      ≡⟨ cong (λ x → d0 + d1 * 3 + x) (*-distribʳ-+ d2 (q3 * 3) 9) ⟩
+        d0 + d1 * 3 + (d2 * 9 + (q3 * 3) * 9)≡⟨ +-assoc (d0 + d1 * 3) (d2 * 9) ((q3 * 3) * 9) ⟩
+        d0 + d1 * 3 + d2 * 9 + (q3 * 3) * 9  ≡⟨ cong (λ x → d0 + d1 * 3 + d2 * 9 + x * 27) eq3 ⟩
+        d0 + d1 * 3 + d2 * 9 + (d3 + q4 * 3) * 27
+                                              ≡⟨ cong (λ x → d0 + d1 * 3 + d2 * 9 + x) (*-distribʳ-+ d3 (q4 * 3) 27) ⟩
+        d0 + d1 * 3 + d2 * 9 + (d3 * 27 + (q4 * 3) * 27)
+                                              ≡⟨ +-assoc (d0 + d1 * 3 + d2 * 9) (d3 * 27) ((q4 * 3) * 27) ⟩
+        d0 + d1 * 3 + d2 * 9 + d3 * 27 + (q4 * 3) * 27
+                                              ≡⟨ cong (λ x → d0 + d1 * 3 + d2 * 9 + d3 * 27 + x * 81) eq4 ⟩
+        d0 + d1 * 3 + d2 * 9 + d3 * 27 + (d4 + q5 * 3) * 81
+                                              ≡⟨ cong (λ x → d0 + d1 * 3 + d2 * 9 + d3 * 27 + x) (*-distribʳ-+ d4 (q5 * 3) 81) ⟩
+        d0 + d1 * 3 + d2 * 9 + d3 * 27 + (d4 * 81 + (q5 * 3) * 81)
+                                              ≡⟨ +-assoc (d0 + d1 * 3 + d2 * 9 + d3 * 27) (d4 * 81) ((q5 * 3) * 81) ⟩
+        d0 + d1 * 3 + d2 * 9 + d3 * 27 + d4 * 81 + (q5 * 3) * 81
+                                              ≡⟨ cong (λ x → d0 + d1 * 3 + d2 * 9 + d3 * 27 + d4 * 81 + x * 243) q5≡d5 ⟩
+        d0 + d1 * 3 + d2 * 9 + d3 * 27 + d4 * 81 + d5 * 243
+                                              ≡⟨ cong₂ (λ x y → d0 + x + y + d3 * 27 + d4 * 81 + d5 * 243)
+                                                        (*-comm d1 3) (*-comm d2 9) ⟩
+        d0 + 3 * d1 + 9 * d2 + d3 * 27 + d4 * 81 + d5 * 243
+                                              ≡⟨ cong₂ (λ x y → d0 + 3 * d1 + 9 * d2 + x + y + d5 * 243)
+                                                        (*-comm d3 27) (*-comm d4 81) ⟩
+        d0 + 3 * d1 + 9 * d2 + 27 * d3 + 81 * d4 + d5 * 243
+                                              ≡⟨ cong (λ x → d0 + 3 * d1 + 9 * d2 + 27 * d3 + 81 * d4 + x)
+                                                       (*-comm d5 243) ⟩
+        d0 + 3 * d1 + 9 * d2 + 27 * d3 + 81 * d4 + 243 * d5
+                                              ∎)
+
+    -- sum-expand: 展开 toℕ-sum ∘ finToT6 为加权和
+    sum-expand : ∀ {d0 d1 d2 d3 d4 d5}
+      → toℕ (fin3mod d0) ≡ d0 → toℕ (fin3mod d1) ≡ d1 → toℕ (fin3mod d2) ≡ d2
+      → toℕ (fin3mod d3) ≡ d3 → toℕ (fin3mod d4) ≡ d4 → toℕ (fin3mod d5) ≡ d5
+      → toℕ-sum (finToT6 y) ≡ d0 + 3 * d1 + 9 * d2 + 27 * d3 + 81 * d4 + 243 * d5
+    sum-expand d0-ok d1-ok d2-ok d3-ok d4-ok d5-ok
+      rewrite d0-ok | d1-ok | d2-ok | d3-ok | d4-ok | d5-ok = refl
+
+    sum≡toℕ : ∀ (y : Fin 729) → toℕ-sum (finToT6 y) ≡ toℕ y
+    sum≡toℕ y with toℕ y
+    ... | n =
+      let d0 = n % 3;  q1 = n /ℕ 3
+          d1 = q1 % 3; q2 = q1 /ℕ 3
+          d2 = q2 % 3; q3 = q2 /ℕ 3
+          d3 = q3 % 3; q4 = q3 /ℕ 3
+          d4 = q4 % 3; q5 = q4 /ℕ 3
+          d5 = q5 % 3
+
+          eq0 = m≡m%n+[m/n]*n n 3; eq1 = m≡m%n+[m/n]*n q1 3
+          eq2 = m≡m%n+[m/n]*n q2 3; eq3 = m≡m%n+[m/n]*n q3 3
+          eq4 = m≡m%n+[m/n]*n q4 3
+
+          h0 = m%n<n n 3; h1 = m%n<n q1 3; h2 = m%n<n q2 3
+          h3 = m%n<n q3 3; h4 = m%n<n q4 3; h5 = m%n<n q5 3
+
+          d0-ok = toℕ-fin3mod-ok d0 h0; d1-ok = toℕ-fin3mod-ok d1 h1
+          d2-ok = toℕ-fin3mod-ok d2 h2; d3-ok = toℕ-fin3mod-ok d3 h3
+          d4-ok = toℕ-fin3mod-ok d4 h4; d5-ok = toℕ-fin3mod-ok d5 h5
+      in begin
+        toℕ-sum (finToT6 y)  ≡⟨ sum-expand d0-ok d1-ok d2-ok d3-ok d4-ok d5-ok ⟩
+        d0 + 3 * d1 + 9 * d2 + 27 * d3 + 81 * d4 + 243 * d5
+                             ≡⟨ expand-chain n q1 q2 q3 q4 q5 d0 d1 d2 d3 d4 d5
+                                eq0 eq1 eq2 eq3 eq4 h5 ⟩
+        n                    ∎
+
+-- 左逆: finToT6 ∘ t6ToFin ≡ id (代数: toℕ-sum-injective + rightInv)
+leftInv : ∀ (x : T6Lattice) → finToT6 (t6ToFin x) ≡ x
+leftInv x =
+  toℕ-sum-injective (finToT6 (t6ToFin x)) x
+    (begin
+      toℕ-sum (finToT6 (t6ToFin x))
+        ≡⟨ t6ToFin-toℕ (finToT6 (t6ToFin x)) ⟨
+      toℕ (t6ToFin (finToT6 (t6ToFin x)))
+        ≡⟨ cong toℕ (rightInv (t6ToFin x)) ⟩
+      toℕ (t6ToFin x)
+        ≡⟨ t6ToFin-toℕ x ⟩
+      toℕ-sum x
+        ∎)
+  where
+  open Relation.Binary.PropositionalEquality.≡-Reasoning
+
+t6≃fin729 : T6Lattice Cubical.Foundations.Equiv.≃ Fin 729
+t6≃fin729 = pathToEquiv (isoToPath (iso t6ToFin finToT6 rightInv leftInv))
+  where
+    open import Cubical.Foundations.Isomorphism using (iso; isoToPath)
+    open import Cubical.Foundations.Univalence using (pathToEquiv)

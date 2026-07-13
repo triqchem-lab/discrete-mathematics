@@ -92,13 +92,12 @@ isZhonglvPoint p = toℕ p ≡ᵇ 11
 -- 拓扑含义：利用 LCM (11609505792) 强制同步 144 与 46 的相位
 
 zhonglvPhaseSyncOp : State → State
-zhonglvPhaseSyncOp (mkState p t) =
-  -- 1. 极向归零 (回到黄钟)
+zhonglvPhaseSyncOp s =
+  -- CRT 投影策略: 使用 toroidal 投影而非 pattern-match mkState
+  -- toroidal (zhonglvPhaseSyncOp s) ≡ toroidal s + 1 成为直接投影计算
+  -- 避免在 XuanwuAbsorption 的 stepN 12 s 调用点触发 η-展开组合爆炸
   let p' = zero
-  -- 2. 环向相位跃迁 (Lift to Higher Section)
-  -- 这里的 +ℕ1 代表跃迁到了下一个“大周期”的环向切片
-  -- 在真实高维几何中，这是 12 -> 144 的展开
-      t' = t +ℕ 1
+      t' = toroidal s +ℕ 1
   in mkState p' t'
 
 --------------------------------------------------------------------------------
@@ -108,13 +107,14 @@ zhonglvPhaseSyncOp (mkState p t) =
 -- 收敛性证明：通过有限状态机迭代计算
 -- 状态空间大小：12 × 46 = 552，有限且可穷举
 
+-- stepN: 普通步进 n 次 (模块级, 可导出, 供 XuanwuAbsorption 共享)
+stepN : ℕ → State → State
+stepN zero s = s
+stepN (suc n) s = stepN n (step s)
+
 iteratePhaseSync : ℕ → State → State
 iteratePhaseSync zero s = s
 iteratePhaseSync (suc n) s = iteratePhaseSync n (zhonglvPhaseSyncOp (stepN 12 s))
-  where
-    stepN : ℕ → State → State
-    stepN zero s = s
-    stepN (suc n) s = stepN n (step s)
 
 -- 全息态定义：极向=0 且环向为 46 的倍数
 isHolographicState : State → Bool

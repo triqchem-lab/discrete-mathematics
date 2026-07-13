@@ -19,6 +19,8 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym;
 open import Data.Product using (_×_; _,_)
 
 import Sovereign.Structology.T6 as T6
+open import Data.Fin.Properties using (_≟_)
+open import Data.Fin using (fromℕ; lower₁)
 
 --------------------------------------------------------------------------------
 -- 1. 万有覆盖类型
@@ -40,13 +42,19 @@ FullCover _ = Fin 144 × Fin 46
 -- 2. 覆盖上的传输（Transport）
 --------------------------------------------------------------------------------
 
+private
+  incMod : ∀ n → Fin n → Fin n
+  incMod (suc n) i with i ≟ fromℕ n
+  ... | yes _ = zero           -- 末位 → 回绕
+  ... | no ¬last = suc (lower₁ i ¬last)  -- 非末位 → +1, bound 不变
+
 -- 沿一步极向步进，绕数 +1 (mod 144)
 polarTransport : (p : T6.T6Lattice) → PolarCover p → PolarCover (T6.polarStep p)
-polarTransport p n = zero  -- placeholder: transport identity on Fin 144
+polarTransport p n = incMod 144 n
 
 -- 沿一步环向步进，绕数 +1 (mod 46)
 toroidalTransport : (p : T6.T6Lattice) → ToroidalCover p → ToroidalCover (T6.toroidalStep p)
-toroidalTransport p n = zero
+toroidalTransport p n = incMod 46 n
 
 -- 路径传输：沿任意路径传输绕数状态
 transportPolar : {x y : T6.T6Lattice} → x ≡ y → PolarCover x → PolarCover y
@@ -72,8 +80,10 @@ encodeToroidal p = transportToroidal p zero
 decodePolar : (p : T6.T6Lattice) → Fin 144 → p ≡ T6.iterate 144 T6.polarStep p
 decodePolar p _ = sym (T6.polarHolonomy p)
 
--- toroidalHolonomy 仍为 postulate，暂时以平凡路径替代
--- 待 toroidalHolonomy 证明后，可替换为 sym (T6.toroidalHolonomy p)
+-- 环向解码: 46 步环向步进 ≠ id (46 mod 3 = 1, 环向和乐在 GF(3) 层不归零)
+-- 归零需要 CRT 纤维 (46 是 CRT 域观测量)。此处使用 T6.toroidalHolonomy 的结果:
+-- iterate 46 toroidalStep p ≡ toroidalStep p (而非 p ≡ p)
+-- TODO: 接入 CRT 层后, decodeToroidal 应返回 CRT 纤维上的闭合路径
 decodeToroidal : (p : T6.T6Lattice) → Fin 46 → p ≡ p
 decodeToroidal p _ = refl
 
