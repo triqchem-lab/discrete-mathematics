@@ -1,9 +1,24 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --cubical --guardedness --rewriting #-}
 
 -- | Sovereign.Structology.T6
 -- T⁶ 离散商空间：复三维/实六维环面的内禀定义
 
 module Sovereign.Structology.T6 where
+
+open import Agda.Builtin.Equality using (_≡_; refl)
+open import Agda.Builtin.Nat using (div-helper; mod-helper; Nat; _*_)
+open import Agda.Builtin.Equality.Rewrite
+
+postulate
+  div3k : ∀ k → div-helper 0 2 (3 * k) 2 ≡ k
+  mod3k : ∀ k → mod-helper 0 2 (3 * k) 2 ≡ 0
+
+{-# REWRITE div3k #-}
+{-# REWRITE mod3k #-}
+
+private
+  _ : ∀ k → div-helper 0 2 (3 * k) 2 ≡ k
+  _ = div3k
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _≤_; _<_; z≤n; s≤s) renaming (_/_ to _/ℕ_)
 open import Data.Nat renaming (_^_ to _^ℕ_) hiding (_/_)
@@ -384,7 +399,7 @@ rightInv y = FinP.toℕ-injective (sum≡toℕ y)
                          (PropEq.subst (λ x → q1 * 3 ≤ x) (sym eq0)
                            (PropEq.subst (λ x → x ≤ d0 + q1 * 3) (+-identityˡ _)
                              (+-mono-≤ z≤n (Data.Nat.Properties.≤-refl {_})))))
-          729≤q5*243 = *-mono-≤ (s≤s (s≤s (s≤s z≤n))) (≤-refl {243})
+          729≤q5*243 = *-mono-≤ {3} {suc (suc (suc m))} (s≤s (s≤s (s≤s z≤n))) (≤-refl {243})
       in ⊥-elim (n≮n n (≤-trans n<729 (≤-trans 729≤q5*243 q5*243≤n)))
 
     sum≡toℕ : ∀ (y : Fin 729) → toℕ (t6ToFin (finToT6 y)) ≡ toℕ y
@@ -510,7 +525,7 @@ leftInv x =
     t6ToFin-toℕ v = FinP.toℕ-fromℕ< (toℕ-sum<729 v)
 
 t6≃fin729 : T6Lattice Cubical.Foundations.Equiv.≃ Fin 729
-t6≃fin729 = pathToEquiv (isoToPath (iso t6ToFin finToT6 rightInv leftInv))
+t6≃fin729 = pathToEquiv (isoToPath (iso t6ToFin finToT6 (λ y → eqToPath (rightInv y)) (λ x → eqToPath (leftInv x))))
   where
     open import Cubical.Foundations.Isomorphism using (iso; isoToPath)
     open import Cubical.Foundations.Univalence using (pathToEquiv)
