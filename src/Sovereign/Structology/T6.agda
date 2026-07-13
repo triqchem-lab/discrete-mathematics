@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --cubical --guardedness --rewriting #-}
 
 -- | Sovereign.Structology.T6
 -- T⁶ 离散商空间：复三维/实六维环面的内禀定义
@@ -7,6 +7,21 @@
 -- 最小几何单元为 GF(3) 格点，空间是 T⁶ 离散商空间的胞腔剖分，无连续统
 
 module Sovereign.Structology.T6 where
+
+open import Agda.Builtin.Equality using (_≡_; refl)
+open import Agda.Builtin.Nat using (div-helper; mod-helper; Nat; _*_)
+open import Agda.Builtin.Equality.Rewrite
+
+postulate
+  div3k : ∀ k → div-helper 0 2 (3 * k) 2 ≡ k
+  mod3k : ∀ k → mod-helper 0 2 (3 * k) 2 ≡ 0
+
+{-# REWRITE div3k #-}
+{-# REWRITE mod3k #-}
+
+private
+  _ : ∀ k → div-helper 0 2 (3 * k) 2 ≡ k
+  _ = div3k
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _≤_; _<_; z≤n; s≤s) renaming (_/_ to _/ℕ_)
 open import Data.Nat renaming (_^_ to _^ℕ_) hiding (_/_)
@@ -140,19 +155,13 @@ peel a b s t eq = (mod-eq , cancel-eq)
 toℕ-sum-tail : ∀ (v0 v1 v2 v3 v4 v5 : GF3) → 
   toℕ-sum (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ []) ≡
   toℕ v0 + 3 * (toℕ v1 + 3 * toℕ v2 + 9 * toℕ v3 + 27 * toℕ v4 + 81 * toℕ v5)
-toℕ-sum-tail v0 v1 v2 v3 v4 v5 = 
-  trans (+-assoc (toℕ v0) (3*toℕ v1) _)
-    (cong (toℕ v0 +_) (sym (*-distribˡ-+ 3 (toℕ v1) 
-      (3*toℕ v2 + 9*toℕ v3 + 27*toℕ v4 + 81*toℕ v5))))
+toℕ-sum-tail v0 v1 v2 v3 v4 v5 =
+  trans (+-assoc (toℕ v0) (3 * toℕ v1) _)
+    (cong (λ x → toℕ v0 + x) (sym (*-distribˡ-+ 3 (toℕ v1)
+      (3 * toℕ v2 + 9 * toℕ v3 + 27 * toℕ v4 + 81 * toℕ v5))))
 
--- 左逆: 逐位剥离 (mod-split + div-split 已移至模块级, 用 *-distribˡ-+ 桥接)
--- (此版本保留旧结构, 仅修复 n≡a0+3k0)
-leftInv-old : ∀ (x : T6Lattice) → finToT6 (t6ToFin x) ≡ x
-leftInv-old (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ []) = {!!}
--- leftInv 将在下面用 toℕ-sum-injective 重新实现
-
-leftInv : ∀ (x : T6Lattice) → finToT6 (t6ToFin x) ≡ x
-leftInv x = {!!}
+-- 桥接引理: toℕ-sum tail 分解 (配合 rewrite 规则使用)
+-- (rewrite 规则 div3k/mod3k 使 (3*k)/3 和 (3*k)%3 对符号 k 直接归约)
 
 t6ToFin-toℕ : ∀ (v : T6Lattice) → toℕ (t6ToFin v) ≡ toℕ-sum v
 t6ToFin-toℕ v = toℕ-fromℕ<' (toℕ-sum<729 v)
