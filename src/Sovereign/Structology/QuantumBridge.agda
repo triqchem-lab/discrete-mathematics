@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --cubical --guardedness --rewriting #-}
 
 -- | Sovereign.Structology.QuantumBridge
 -- 量子数学桥：CRT域 ←→ 幻方正交 ←→ T⁶环面

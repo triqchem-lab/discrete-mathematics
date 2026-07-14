@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --cubical --guardedness --rewriting #-}
 
 -- | Sovereign.HoTT.HopfConstruction
 -- 离散 Hopf 纤维化：T⁶/A₄
