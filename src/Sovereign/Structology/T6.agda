@@ -1,9 +1,24 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --cubical --guardedness --rewriting #-}
 
 -- | Sovereign.Structology.T6
 -- T⁶ 离散商空间：复三维/实六维环面的内禀定义
 
 module Sovereign.Structology.T6 where
+
+open import Agda.Builtin.Equality using (_≡_; refl)
+open import Agda.Builtin.Nat using (div-helper; mod-helper; Nat; _*_)
+open import Agda.Builtin.Equality.Rewrite
+
+postulate
+  div3k : ∀ k → div-helper 0 2 (3 * k) 2 ≡ k
+  mod3k : ∀ k → mod-helper 0 2 (3 * k) 2 ≡ 0
+
+{-# REWRITE div3k #-}
+{-# REWRITE mod3k #-}
+
+private
+  _ : ∀ k → div-helper 0 2 (3 * k) 2 ≡ k
+  _ = div3k
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _≤_; _<_; z≤n; s≤s) renaming (_/_ to _/ℕ_)
 open import Data.Nat renaming (_^_ to _^ℕ_) hiding (_/_)
