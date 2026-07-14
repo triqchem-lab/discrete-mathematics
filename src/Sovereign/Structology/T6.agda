@@ -21,7 +21,7 @@ private
   _ : ∀ k → div-helper 0 2 (3 * k) 2 ≡ k
   _ = div3k
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _≤_; _<_; z≤n; s≤s) renaming (_/_ to _/ℕ_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _≤_; _<_; z≤n; s≤s; NonZero) renaming (_/_ to _/ℕ_)
 open import Data.Nat renaming (_^_ to _^ℕ_) hiding (_/_)
 open import Data.Nat.Properties using (*-suc; *-mono-≤; +-mono-≤; ≤-refl; +-assoc; +-comm; *-comm; *-assoc; *-distribˡ-+; *-cancelˡ-≡; *-cancelʳ-≡; +-cancelˡ-≡; +-identityʳ; +-identityˡ; ≤-trans; ≤-reflexive)
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; fromℕ<)
@@ -43,7 +43,8 @@ open import Cubical.Relation.Nullary using (Discrete)
 open import Cubical.Relation.Nullary.Properties using (Discrete→isSet)
 open import Cubical.Data.Equality.Conversion using (eqToPath; pathToEq)
 open import Data.Vec.Properties using (≡-dec)
-open import Data.Nat.DivMod using (%-distribˡ-+; %-distribˡ-*; m%n%n≡m%n)
+open import Data.Nat.DivMod using (%-distribˡ-+; %-distribˡ-*; m%n%n≡m%n; +-distrib-/-∣ˡ; m*n/n≡m; [m+kn]%n≡m%n)
+open import Data.Nat.Divisibility using (divides-refl)
 import Sovereign.Structology.A4Group as A4
 
 -- T⁶ = (ℤ/3ℤ)⁶ = GF(3)⁶
@@ -70,9 +71,12 @@ toℕ-sum : T6Lattice → ℕ
 toℕ-sum (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ []) =
   toℕ v0 + 3 * toℕ v1 + 9 * toℕ v2 + 27 * toℕ v3 + 81 * toℕ v4 + 243 * toℕ v5
 
+-- [4320D-migration] 已迁移至 sum%3-6/sum/3-6 纯模运算路线, 以下保留参考
+{-
 toℕ-sum-nested : T6Lattice → ℕ
 toℕ-sum-nested (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ []) =
   toℕ v0 + 3 * (toℕ v1 + 3 * (toℕ v2 + 3 * (toℕ v3 + 3 * (toℕ v4 + 3 * toℕ v5))))
+-}
 
 -- right-assoc-6: needed early by toℕ-sum<729
 right-assoc-6 : ∀ a b c d e f → a + b + c + d + e + f ≡ a + (b + (c + (d + (e + f))))
@@ -254,6 +258,255 @@ factor3-5 a b c d e = begin
     ≡⟨ cong (λ x → 3 * x) (sym (right-assoc-5 a (3 * b) (9 * c) (27 * d) (81 * e))) ⟩
   3 * (a + 3 * b + 9 * c + 27 * d + 81 * e) ∎
   where open ≡-Reasoning
+
+-- ----------------------------------------------------------------------
+-- 2.5. 4320D 纯模运算数字提取引理
+-- ----------------------------------------------------------------------
+
+-- 归约大常数项: (3*n * toℕ x) % 3 ≡ 0
+-- 利用 (3*n)*x = 3*(n*x) 转为 mod3k 可匹配的形式
+mod3N : ∀ n (x : GF3) → ((3 * n) * toℕ x) % 3 ≡ 0
+mod3N n x = begin
+  ((3 * n) * toℕ x) % 3   ≡⟨ cong (_% 3) (*-assoc 3 n (toℕ x)) ⟩
+  (3 * (n * toℕ x)) % 3   ≡⟨ mod3k (n * toℕ x) ⟩
+  0                         ∎
+  where open ≡-Reasoning
+
+-- gf3%-id: GF3 值的 %3 即自身
+gf3%-id : ∀ (a : GF3) → toℕ a % 3 ≡ toℕ a
+gf3%-id zero = refl; gf3%-id (suc zero) = refl; gf3%-id (suc (suc zero)) = refl
+
+-- div3-gf3: GF3 值 /ℕ3 ≡ 0 (因 toℕ a < 3)
+div3-gf3 : ∀ (a : GF3) → toℕ a /ℕ 3 ≡ 0
+div3-gf3 zero = refl; div3-gf3 (suc zero) = refl; div3-gf3 (suc (suc zero)) = refl
+
+-- div3-add: (toℕ a + 3*b) /ℕ3 ≡ b (因 toℕ a < 3, 3∣3*b)
+div3-add : ∀ (a : GF3) b → (toℕ a + 3 * b) /ℕ 3 ≡ b
+div3-add a b = begin
+  (toℕ a + 3 * b) /ℕ 3
+    ≡⟨ cong (λ x → x /ℕ 3) (+-comm (toℕ a) (3 * b)) ⟩
+  (3 * b + toℕ a) /ℕ 3
+    ≡⟨ cong (λ x → (x + toℕ a) /ℕ 3) (*-comm 3 b) ⟩
+  (b * 3 + toℕ a) /ℕ 3
+    ≡⟨ +-distrib-/-∣ˡ (toℕ a) (divides-refl b) ⟩
+  (b * 3) /ℕ 3 + toℕ a /ℕ 3
+    ≡⟨ cong (λ x → x + toℕ a /ℕ 3) (m*n/n≡m b 3) ⟩
+  b + toℕ a /ℕ 3
+    ≡⟨ cong (λ x → b + x) (div3-gf3 a) ⟩
+  b + 0
+    ≡⟨ +-identityʳ b ⟩
+  b ∎
+  where open ≡-Reasoning
+
+-- sum%3-6: 六项和 %3 还原为最低位 v0
+-- 因式分解 toℕ v0 + 3*tail, 一步 [m+kn]%n≡m%n 替代 5 层 %-distribˡ-+
+sum%3-6 : ∀ (v0 v1 v2 v3 v4 v5 : GF3) →
+  toℕ-sum (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ []) % 3 ≡ toℕ v0
+sum%3-6 v0 v1 v2 v3 v4 v5 = begin
+  toℕ-sum (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ []) % 3
+    ≡⟨⟩
+  (toℕ v0 + 3 * toℕ v1 + 9 * toℕ v2 + 27 * toℕ v3 + 81 * toℕ v4 + 243 * toℕ v5) % 3
+    ≡⟨ cong (_% 3) (right-assoc-6 (toℕ v0) (3 * toℕ v1) (9 * toℕ v2) (27 * toℕ v3) (81 * toℕ v4) (243 * toℕ v5)) ⟩
+  (toℕ v0 + (3 * toℕ v1 + (9 * toℕ v2 + (27 * toℕ v3 + (81 * toℕ v4 + 243 * toℕ v5))))) % 3
+    ≡⟨ cong (λ x → (toℕ v0 + x) % 3) (factor-right-5 (toℕ v1) (toℕ v2) (toℕ v3) (toℕ v4) (toℕ v5)) ⟩
+  (toℕ v0 + 3 * (toℕ v1 + (3 * toℕ v2 + (9 * toℕ v3 + (27 * toℕ v4 + 81 * toℕ v5))))) % 3
+    ≡⟨ cong (λ x → (toℕ v0 + 3 * x) % 3) (sym (right-assoc-5 (toℕ v1) (3 * toℕ v2) (9 * toℕ v3) (27 * toℕ v4) (81 * toℕ v5))) ⟩
+  (toℕ v0 + 3 * tail) % 3
+    ≡⟨ cong (λ x → (toℕ v0 + x) % 3) (*-comm 3 tail) ⟩
+  (toℕ v0 + tail * 3) % 3
+    ≡⟨ [m+kn]%n≡m%n (toℕ v0) tail 3 ⟩
+  toℕ v0 % 3
+    ≡⟨ gf3%-id v0 ⟩
+  toℕ v0 ∎
+  where
+    open ≡-Reasoning
+    tail = toℕ v1 + 3 * toℕ v2 + 9 * toℕ v3 + 27 * toℕ v4 + 81 * toℕ v5
+
+-- sum/3-6: 六项和 /ℕ3 剥离最低位得出 5 项余项
+sum/3-6 : ∀ (v0 v1 v2 v3 v4 v5 : GF3) →
+  toℕ-sum (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ []) /ℕ 3 ≡ toℕ v1 + 3 * toℕ v2 + 9 * toℕ v3 + 27 * toℕ v4 + 81 * toℕ v5
+sum/3-6 v0 v1 v2 v3 v4 v5 =
+  let S = toℕ-sum (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ [])
+      tail = toℕ v1 + 3 * toℕ v2 + 9 * toℕ v3 + 27 * toℕ v4 + 81 * toℕ v5
+      open ≡-Reasoning
+      expand : S ≡ toℕ v0 + 3 * tail
+      expand = begin
+        S
+          ≡⟨⟩
+        toℕ v0 + 3 * toℕ v1 + 9 * toℕ v2 + 27 * toℕ v3 + 81 * toℕ v4 + 243 * toℕ v5
+          ≡⟨ right-assoc-6 (toℕ v0) (3 * toℕ v1) (9 * toℕ v2) (27 * toℕ v3) (81 * toℕ v4) (243 * toℕ v5) ⟩
+        toℕ v0 + (3 * toℕ v1 + (9 * toℕ v2 + (27 * toℕ v3 + (81 * toℕ v4 + 243 * toℕ v5))))
+          ≡⟨ cong (λ x → toℕ v0 + x) (factor-right-5 (toℕ v1) (toℕ v2) (toℕ v3) (toℕ v4) (toℕ v5)) ⟩
+        toℕ v0 + 3 * (toℕ v1 + (3 * toℕ v2 + (9 * toℕ v3 + (27 * toℕ v4 + 81 * toℕ v5))))
+          ≡⟨ cong (λ x → toℕ v0 + 3 * x) (sym (right-assoc-5 (toℕ v1) (3 * toℕ v2) (9 * toℕ v3) (27 * toℕ v4) (81 * toℕ v5))) ⟩
+        toℕ v0 + 3 * tail ∎
+  in begin
+    S /ℕ 3               ≡⟨ cong (_/ℕ 3) expand ⟩
+    (toℕ v0 + 3 * tail) /ℕ 3 ≡⟨ div3-add v0 tail ⟩
+    tail                 ∎
+
+-- ----------------------------------------------------------------------
+-- 4320D tail 缩写与对应 %3//ℕ3 引理 (5→4→3→2→1 项)
+-- ----------------------------------------------------------------------
+
+-- 5 项 flat sum
+sum5 : GF3 → GF3 → GF3 → GF3 → GF3 → ℕ
+sum5 v1 v2 v3 v4 v5 = toℕ v1 + 3 * toℕ v2 + 9 * toℕ v3 + 27 * toℕ v4 + 81 * toℕ v5
+
+-- 4 项 flat sum
+sum4 : GF3 → GF3 → GF3 → GF3 → ℕ
+sum4 v2 v3 v4 v5 = toℕ v2 + 3 * toℕ v3 + 9 * toℕ v4 + 27 * toℕ v5
+
+-- 3 项 flat sum
+sum3 : GF3 → GF3 → GF3 → ℕ
+sum3 v3 v4 v5 = toℕ v3 + 3 * toℕ v4 + 9 * toℕ v5
+
+-- 2 项 flat sum
+sum2 : GF3 → GF3 → ℕ
+sum2 v4 v5 = toℕ v4 + 3 * toℕ v5
+
+-- 5 项 %3 (因式分解 + [m+kn]%n≡m%n)
+sum%3-5 : ∀ v1 v2 v3 v4 v5 → sum5 v1 v2 v3 v4 v5 % 3 ≡ toℕ v1
+sum%3-5 v1 v2 v3 v4 v5 = begin
+  sum5 v1 v2 v3 v4 v5 % 3
+    ≡⟨⟩
+  (toℕ v1 + 3 * toℕ v2 + 9 * toℕ v3 + 27 * toℕ v4 + 81 * toℕ v5) % 3
+    ≡⟨ cong (_% 3) (right-assoc-5 (toℕ v1) (3 * toℕ v2) (9 * toℕ v3) (27 * toℕ v4) (81 * toℕ v5)) ⟩
+  (toℕ v1 + (3 * toℕ v2 + (9 * toℕ v3 + (27 * toℕ v4 + 81 * toℕ v5)))) % 3
+    ≡⟨ cong (λ x → (toℕ v1 + x) % 3) (factor-right-4 (toℕ v2) (toℕ v3) (toℕ v4) (toℕ v5)) ⟩
+  (toℕ v1 + 3 * (toℕ v2 + (3 * toℕ v3 + (9 * toℕ v4 + 27 * toℕ v5)))) % 3
+    ≡⟨ cong (λ x → (toℕ v1 + 3 * x) % 3) (sym (right-assoc-4 (toℕ v2) (3 * toℕ v3) (9 * toℕ v4) (27 * toℕ v5))) ⟩
+  (toℕ v1 + 3 * tail) % 3
+    ≡⟨ cong (λ x → (toℕ v1 + x) % 3) (*-comm 3 tail) ⟩
+  (toℕ v1 + tail * 3) % 3
+    ≡⟨ [m+kn]%n≡m%n (toℕ v1) tail 3 ⟩
+  toℕ v1 % 3 ≡⟨ gf3%-id v1 ⟩ toℕ v1 ∎
+  where open ≡-Reasoning; tail = toℕ v2 + 3 * toℕ v3 + 9 * toℕ v4 + 27 * toℕ v5
+
+-- 5 项 /ℕ3
+sum/3-5 : ∀ v1 v2 v3 v4 v5 → sum5 v1 v2 v3 v4 v5 /ℕ 3 ≡ sum4 v2 v3 v4 v5
+sum/3-5 v1 v2 v3 v4 v5 =
+  let S = sum5 v1 v2 v3 v4 v5
+      tail = sum4 v2 v3 v4 v5
+      open ≡-Reasoning
+      expand : S ≡ toℕ v1 + 3 * tail
+      expand = begin
+        S
+          ≡⟨⟩
+        toℕ v1 + 3 * toℕ v2 + 9 * toℕ v3 + 27 * toℕ v4 + 81 * toℕ v5
+          ≡⟨ right-assoc-5 (toℕ v1) (3 * toℕ v2) (9 * toℕ v3) (27 * toℕ v4) (81 * toℕ v5) ⟩
+        toℕ v1 + (3 * toℕ v2 + (9 * toℕ v3 + (27 * toℕ v4 + 81 * toℕ v5)))
+          ≡⟨ cong (λ x → toℕ v1 + x) (factor-right-4 (toℕ v2) (toℕ v3) (toℕ v4) (toℕ v5)) ⟩
+        toℕ v1 + 3 * (toℕ v2 + (3 * toℕ v3 + (9 * toℕ v4 + 27 * toℕ v5)))
+          ≡⟨ cong (λ x → toℕ v1 + 3 * x) (sym (right-assoc-4 (toℕ v2) (3 * toℕ v3) (9 * toℕ v4) (27 * toℕ v5))) ⟩
+        toℕ v1 + 3 * tail ∎
+  in begin
+    S /ℕ 3               ≡⟨ cong (_/ℕ 3) expand ⟩
+    (toℕ v1 + 3 * tail) /ℕ 3 ≡⟨ div3-add v1 tail ⟩
+    tail                 ∎
+
+-- 4 项 %3 (因式分解 + [m+kn]%n≡m%n)
+sum%3-4 : ∀ v2 v3 v4 v5 → sum4 v2 v3 v4 v5 % 3 ≡ toℕ v2
+sum%3-4 v2 v3 v4 v5 = begin
+  sum4 v2 v3 v4 v5 % 3
+    ≡⟨⟩
+  (toℕ v2 + 3 * toℕ v3 + 9 * toℕ v4 + 27 * toℕ v5) % 3
+    ≡⟨ cong (_% 3) (right-assoc-4 (toℕ v2) (3 * toℕ v3) (9 * toℕ v4) (27 * toℕ v5)) ⟩
+  (toℕ v2 + (3 * toℕ v3 + (9 * toℕ v4 + 27 * toℕ v5))) % 3
+    ≡⟨ cong (λ x → (toℕ v2 + x) % 3) (factor-right-3 (toℕ v3) (toℕ v4) (toℕ v5)) ⟩
+  (toℕ v2 + 3 * (toℕ v3 + (3 * toℕ v4 + 9 * toℕ v5))) % 3
+    ≡⟨ cong (λ x → (toℕ v2 + 3 * x) % 3) (sym (right-assoc-3 (toℕ v3) (3 * toℕ v4) (9 * toℕ v5))) ⟩
+  (toℕ v2 + 3 * tail) % 3
+    ≡⟨ cong (λ x → (toℕ v2 + x) % 3) (*-comm 3 tail) ⟩
+  (toℕ v2 + tail * 3) % 3
+    ≡⟨ [m+kn]%n≡m%n (toℕ v2) tail 3 ⟩
+  toℕ v2 % 3 ≡⟨ gf3%-id v2 ⟩ toℕ v2 ∎
+  where open ≡-Reasoning; tail = toℕ v3 + 3 * toℕ v4 + 9 * toℕ v5
+
+-- 4 项 /ℕ3
+sum/3-4 : ∀ v2 v3 v4 v5 → sum4 v2 v3 v4 v5 /ℕ 3 ≡ sum3 v3 v4 v5
+sum/3-4 v2 v3 v4 v5 =
+  let S = sum4 v2 v3 v4 v5
+      tail = sum3 v3 v4 v5
+      open ≡-Reasoning
+      expand : S ≡ toℕ v2 + 3 * tail
+      expand = begin
+        S
+          ≡⟨⟩
+        toℕ v2 + 3 * toℕ v3 + 9 * toℕ v4 + 27 * toℕ v5
+          ≡⟨ right-assoc-4 (toℕ v2) (3 * toℕ v3) (9 * toℕ v4) (27 * toℕ v5) ⟩
+        toℕ v2 + (3 * toℕ v3 + (9 * toℕ v4 + 27 * toℕ v5))
+          ≡⟨ cong (λ x → toℕ v2 + x) (factor-right-3 (toℕ v3) (toℕ v4) (toℕ v5)) ⟩
+        toℕ v2 + 3 * (toℕ v3 + (3 * toℕ v4 + 9 * toℕ v5))
+          ≡⟨ cong (λ x → toℕ v2 + 3 * x) (sym (right-assoc-3 (toℕ v3) (3 * toℕ v4) (9 * toℕ v5))) ⟩
+        toℕ v2 + 3 * tail ∎
+  in begin
+    S /ℕ 3               ≡⟨ cong (_/ℕ 3) expand ⟩
+    (toℕ v2 + 3 * tail) /ℕ 3 ≡⟨ div3-add v2 tail ⟩
+    tail                 ∎
+
+-- 3 项 %3 (因式分解 + [m+kn]%n≡m%n)
+sum%3-3 : ∀ v3 v4 v5 → sum3 v3 v4 v5 % 3 ≡ toℕ v3
+sum%3-3 v3 v4 v5 = begin
+  sum3 v3 v4 v5 % 3
+    ≡⟨⟩
+  (toℕ v3 + 3 * toℕ v4 + 9 * toℕ v5) % 3
+    ≡⟨ cong (_% 3) (right-assoc-3 (toℕ v3) (3 * toℕ v4) (9 * toℕ v5)) ⟩
+  (toℕ v3 + (3 * toℕ v4 + 9 * toℕ v5)) % 3
+    ≡⟨ cong (λ x → (toℕ v3 + x) % 3) (factor3-2 (toℕ v4) (toℕ v5)) ⟩
+  (toℕ v3 + 3 * tail) % 3
+    ≡⟨ cong (λ x → (toℕ v3 + x) % 3) (*-comm 3 tail) ⟩
+  (toℕ v3 + tail * 3) % 3
+    ≡⟨ [m+kn]%n≡m%n (toℕ v3) tail 3 ⟩
+  toℕ v3 % 3 ≡⟨ gf3%-id v3 ⟩ toℕ v3 ∎
+  where open ≡-Reasoning; tail = toℕ v4 + 3 * toℕ v5
+
+-- 3 项 /ℕ3
+sum/3-3 : ∀ v3 v4 v5 → sum3 v3 v4 v5 /ℕ 3 ≡ sum2 v4 v5
+sum/3-3 v3 v4 v5 =
+  let S = sum3 v3 v4 v5
+      tail = sum2 v4 v5
+      open ≡-Reasoning
+      expand : S ≡ toℕ v3 + 3 * tail
+      expand = begin
+        S
+          ≡⟨⟩
+        toℕ v3 + 3 * toℕ v4 + 9 * toℕ v5
+          ≡⟨ right-assoc-3 (toℕ v3) (3 * toℕ v4) (9 * toℕ v5) ⟩
+        toℕ v3 + (3 * toℕ v4 + 9 * toℕ v5)
+          ≡⟨ cong (λ x → toℕ v3 + x) (factor3-2 (toℕ v4) (toℕ v5)) ⟩
+        toℕ v3 + 3 * tail ∎
+  in begin
+    S /ℕ 3               ≡⟨ cong (_/ℕ 3) expand ⟩
+    (toℕ v3 + 3 * tail) /ℕ 3 ≡⟨ div3-add v3 tail ⟩
+    tail                 ∎
+
+-- 2 项 %3 (因式分解 + [m+kn]%n≡m%n)
+sum%3-2 : ∀ v4 v5 → sum2 v4 v5 % 3 ≡ toℕ v4
+sum%3-2 v4 v5 = begin
+  sum2 v4 v5 % 3
+    ≡⟨⟩
+  (toℕ v4 + 3 * toℕ v5) % 3
+    ≡⟨ cong (λ x → (toℕ v4 + x) % 3) (*-comm 3 (toℕ v5)) ⟩
+  (toℕ v4 + toℕ v5 * 3) % 3
+    ≡⟨ [m+kn]%n≡m%n (toℕ v4) (toℕ v5) 3 ⟩
+  toℕ v4 % 3 ≡⟨ gf3%-id v4 ⟩ toℕ v4 ∎
+  where open ≡-Reasoning
+
+-- 2 项 /ℕ3
+sum/3-2 : ∀ v4 v5 → sum2 v4 v5 /ℕ 3 ≡ toℕ v5
+sum/3-2 v4 v5 =
+  let S = sum2 v4 v5; tail = toℕ v5; open ≡-Reasoning
+      expand : S ≡ toℕ v4 + 3 * tail
+      expand = refl
+  in begin
+    S /ℕ 3               ≡⟨ cong (_/ℕ 3) expand ⟩
+    (toℕ v4 + 3 * tail) /ℕ 3 ≡⟨ div3-add v4 tail ⟩
+    tail                 ∎
+
+-- 1 项 %3 (用于最终层)
+sum%3-1 : ∀ v5 → toℕ v5 % 3 ≡ toℕ v5
+sum%3-1 v5 = gf3%-id v5
 
 -- ----------------------------------------------------------------------
 -- 3. DivMod 展开链 (右结合，纯代数)
@@ -453,51 +706,79 @@ toℕ-sum-injective : ∀ (v w : T6Lattice) → toℕ-sum v ≡ toℕ-sum w → 
 toℕ-sum-injective v@(v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ [])
                   w@(w5 ∷ w4 ∷ w3 ∷ w2 ∷ w1 ∷ w0 ∷ []) eq =
   let open ≡-Reasoning
-      S5 = toℕ v5; T5 = toℕ w5
-      S4 = toℕ v4 + 3 * S5; T4 = toℕ w4 + 3 * T5
-      S3 = toℕ v3 + 3 * S4; T3 = toℕ w3 + 3 * T4
-      S2 = toℕ v2 + 3 * S3; T2 = toℕ w2 + 3 * T3
-      S1 = toℕ v1 + 3 * S2; T1 = toℕ w1 + 3 * T2
-
-      flat→nested : ∀ (x5 x4 x3 x2 x1 x0 : GF3) → toℕ-sum (x5 ∷ x4 ∷ x3 ∷ x2 ∷ x1 ∷ x0 ∷ []) ≡ toℕ-sum-nested (x5 ∷ x4 ∷ x3 ∷ x2 ∷ x1 ∷ x0 ∷ [])
-      flat→nested x5 x4 x3 x2 x1 x0 =
-        let V0 = toℕ x0; V1 = toℕ x1; V2 = toℕ x2; V3 = toℕ x3; V4 = toℕ x4; V5 = toℕ x5
-        in trans (right-assoc-6 V0 (3 * V1) (9 * V2) (27 * V3) (81 * V4) (243 * V5))
-           (trans (cong (λ z → V0 + z) (factor-right-5 V1 V2 V3 V4 V5))
-            (trans (cong (λ z → V0 + z) (cong (λ w → 3 * w) (cong (λ z → V1 + z) (factor-right-4 V2 V3 V4 V5))))
-             (trans (cong (λ z → V0 + z) (cong (λ w → 3 * w) (cong (λ z → V1 + z) (cong (λ w → 3 * w) (cong (λ z → V2 + z) (factor-right-3 V3 V4 V5))))))
-              (cong (λ z → V0 + z) (cong (λ w → 3 * w) (cong (λ z → V1 + z) (cong (λ w → 3 * w) (cong (λ z → V2 + z) (cong (λ w → 3 * w) (cong (λ z → V3 + z) (factor3-2 V4 V5)))))))))))
-
-      eq' : toℕ-sum-nested (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ []) ≡ toℕ-sum-nested (w5 ∷ w4 ∷ w3 ∷ w2 ∷ w1 ∷ w0 ∷ [])
-      eq' = trans (sym (flat→nested v5 v4 v3 v2 v1 v0)) (trans eq (flat→nested w5 w4 w3 w2 w1 w0))
-
-      eq0 : toℕ v0 + 3 * S1 ≡ toℕ w0 + 3 * T1
-      eq0 = eq'
-
-      peel0 = peel v0 w0 S1 T1 eq0
-      v0≡w0 = gf3-eq' v0 w0 (proj₁ peel0)
-      S1≡T1 : S1 ≡ T1
-      S1≡T1 = proj₂ peel0
-
-      peel1 = peel v1 w1 S2 T2 S1≡T1
-      v1≡w1 = gf3-eq' v1 w1 (proj₁ peel1)
-      S2≡T2 : S2 ≡ T2
-      S2≡T2 = proj₂ peel1
-
-      peel2 = peel v2 w2 S3 T3 S2≡T2
-      v2≡w2 = gf3-eq' v2 w2 (proj₁ peel2)
-      S3≡T3 : S3 ≡ T3
-      S3≡T3 = proj₂ peel2
-
-      peel3 = peel v3 w3 S4 T4 S3≡T3
-      v3≡w3 = gf3-eq' v3 w3 (proj₁ peel3)
-      S4≡T4 : S4 ≡ T4
-      S4≡T4 = proj₂ peel3
-
-      peel4 = peel v4 w4 S5 T5 S4≡T4
-      v4≡w4 = gf3-eq' v4 w4 (proj₁ peel4)
-      v5≡w5 : v5 ≡ w5
-      v5≡w5 = gf3-eq' v5 w5 (proj₂ peel4)
+      -- Level 0: extract v0 via sum%3-6
+      v0≡w0 = gf3-eq' v0 w0 (begin
+        toℕ v0         ≡⟨ sym (sum%3-6 v0 v1 v2 v3 v4 v5) ⟩
+        toℕ-sum v % 3  ≡⟨ cong (_% 3) eq ⟩
+        toℕ-sum w % 3  ≡⟨ sum%3-6 w0 w1 w2 w3 w4 w5 ⟩
+        toℕ w0         ∎)
+      -- Level 0 strip: /ℕ3 → 5-term tail equality
+      tail0≡ : toℕ-sum v /ℕ 3 ≡ toℕ-sum w /ℕ 3
+      tail0≡ = cong (_/ℕ 3) eq
+      eq1 : sum5 v1 v2 v3 v4 v5 ≡ sum5 w1 w2 w3 w4 w5
+      eq1 = begin
+        sum5 v1 v2 v3 v4 v5   ≡⟨ sym (sum/3-6 v0 v1 v2 v3 v4 v5) ⟩
+        toℕ-sum v /ℕ 3        ≡⟨ tail0≡ ⟩
+        toℕ-sum w /ℕ 3        ≡⟨ sum/3-6 w0 w1 w2 w3 w4 w5 ⟩
+        sum5 w1 w2 w3 w4 w5   ∎
+      -- Level 1: extract v1 via sum%3-5
+      v1≡w1 = gf3-eq' v1 w1 (begin
+        toℕ v1                 ≡⟨ sym (sum%3-5 v1 v2 v3 v4 v5) ⟩
+        sum5 v1 v2 v3 v4 v5 % 3 ≡⟨ cong (_% 3) eq1 ⟩
+        sum5 w1 w2 w3 w4 w5 % 3 ≡⟨ sum%3-5 w1 w2 w3 w4 w5 ⟩
+        toℕ w1                 ∎)
+      -- Level 1 strip → 4-term tail equality
+      tail1≡ = cong (_/ℕ 3) eq1
+      eq2 : sum4 v2 v3 v4 v5 ≡ sum4 w2 w3 w4 w5
+      eq2 = begin
+        sum4 v2 v3 v4 v5       ≡⟨ sym (sum/3-5 v1 v2 v3 v4 v5) ⟩
+        sum5 v1 v2 v3 v4 v5 /ℕ 3 ≡⟨ tail1≡ ⟩
+        sum5 w1 w2 w3 w4 w5 /ℕ 3 ≡⟨ sum/3-5 w1 w2 w3 w4 w5 ⟩
+        sum4 w2 w3 w4 w5       ∎
+      -- Level 2: extract v2 via sum%3-4
+      v2≡w2 = gf3-eq' v2 w2 (begin
+        toℕ v2                 ≡⟨ sym (sum%3-4 v2 v3 v4 v5) ⟩
+        sum4 v2 v3 v4 v5 % 3   ≡⟨ cong (_% 3) eq2 ⟩
+        sum4 w2 w3 w4 w5 % 3   ≡⟨ sum%3-4 w2 w3 w4 w5 ⟩
+        toℕ w2                 ∎)
+      -- Level 2 strip → 3-term tail equality
+      tail2≡ = cong (_/ℕ 3) eq2
+      eq3 : sum3 v3 v4 v5 ≡ sum3 w3 w4 w5
+      eq3 = begin
+        sum3 v3 v4 v5         ≡⟨ sym (sum/3-4 v2 v3 v4 v5) ⟩
+        sum4 v2 v3 v4 v5 /ℕ 3 ≡⟨ tail2≡ ⟩
+        sum4 w2 w3 w4 w5 /ℕ 3 ≡⟨ sum/3-4 w2 w3 w4 w5 ⟩
+        sum3 w3 w4 w5         ∎
+      -- Level 3: extract v3 via sum%3-3
+      v3≡w3 = gf3-eq' v3 w3 (begin
+        toℕ v3                ≡⟨ sym (sum%3-3 v3 v4 v5) ⟩
+        sum3 v3 v4 v5 % 3     ≡⟨ cong (_% 3) eq3 ⟩
+        sum3 w3 w4 w5 % 3     ≡⟨ sum%3-3 w3 w4 w5 ⟩
+        toℕ w3                ∎)
+      -- Level 3 strip → 2-term tail equality
+      tail3≡ = cong (_/ℕ 3) eq3
+      eq4 : sum2 v4 v5 ≡ sum2 w4 w5
+      eq4 = begin
+        sum2 v4 v5           ≡⟨ sym (sum/3-3 v3 v4 v5) ⟩
+        sum3 v3 v4 v5 /ℕ 3   ≡⟨ tail3≡ ⟩
+        sum3 w3 w4 w5 /ℕ 3   ≡⟨ sum/3-3 w3 w4 w5 ⟩
+        sum2 w4 w5           ∎
+      -- Level 4: extract v4 via sum%3-2
+      v4≡w4 = gf3-eq' v4 w4 (begin
+        toℕ v4               ≡⟨ sym (sum%3-2 v4 v5) ⟩
+        sum2 v4 v5 % 3       ≡⟨ cong (_% 3) eq4 ⟩
+        sum2 w4 w5 % 3       ≡⟨ sum%3-2 w4 w5 ⟩
+        toℕ w4               ∎)
+      -- Level 4 strip → v5 equality
+      tail4≡ = cong (_/ℕ 3) eq4
+      eq5 : toℕ v5 ≡ toℕ w5
+      eq5 = begin
+        toℕ v5               ≡⟨ sym (sum/3-2 v4 v5) ⟩
+        sum2 v4 v5 /ℕ 3      ≡⟨ tail4≡ ⟩
+        sum2 w4 w5 /ℕ 3      ≡⟨ sum/3-2 w4 w5 ⟩
+        toℕ w5               ∎
+      -- Level 5: extract v5
+      v5≡w5 = gf3-eq' v5 w5 eq5
   in cong₂ _∷_ v5≡w5 (cong₂ _∷_ v4≡w4 (cong₂ _∷_ v3≡w3
        (cong₂ _∷_ v2≡w2 (cong₂ _∷_ v1≡w1 (cong₂ _∷_ v0≡w0 refl)))))
   where
@@ -507,6 +788,29 @@ toℕ-sum-injective v@(v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ [])
     gf3-eq' (suc zero) (suc (suc _)) ()
     gf3-eq' (suc (suc zero)) (suc zero) ()
     gf3-eq' (suc (suc zero)) (suc (suc zero)) _ = refl
+
+-- [4320D-migration] 旧 flat→nested + peel 实现保留参考:
+-- 以下为迁移前的 GF(2) 残骸实现，使用嵌套形式 S1..S5 中间变量 +
+-- flat→nested 桥接函数将 flat toℕ-sum 转为嵌套 toℕ-sum-nested，
+-- 然后再用 6 层 peel 逐步剥离数字。
+-- 当前 4320D 路线使用 sum%3-6 + sum/3-6 + sum%3/5..2 系列引理，
+-- 纯 %3 + /ℕ3 模运算替代。保留旧实现供理论审计。
+{-
+toℕ-sum-injective-old v@(v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ [])
+                     w@(w5 ∷ w4 ∷ w3 ∷ w2 ∷ w1 ∷ w0 ∷ []) eq =
+  let open ≡-Reasoning
+      S5 = toℕ v5; T5 = toℕ w5
+      S4 = toℕ v4 + 3 * S5; T4 = toℕ w4 + 3 * T5
+      S3 = toℕ v3 + 3 * S4; T3 = toℕ w3 + 3 * T4
+      S2 = toℕ v2 + 3 * S3; T2 = toℕ w2 + 3 * T3
+      S1 = toℕ v1 + 3 * S2; T1 = toℕ w1 + 3 * T2
+      flat→nested : ∀ (x5 x4 x3 x2 x1 x0 : GF3) → toℕ-sum (x5 ∷ x4 ∷ x3 ∷ x2 ∷ x1 ∷ x0 ∷ []) ≡ toℕ-sum-nested (x5 ∷ x4 ∷ x3 ∷ x2 ∷ x1 ∷ x0 ∷ [])
+      flat→nested x5 x4 x3 x2 x1 x0 = ...
+      eq' = trans (sym (flat→nested v5 v4 v3 v2 v1 v0)) (trans eq (flat→nested w5 w4 w3 w2 w1 w0))
+      ...
+  in cong₂ _∷_ v5≡w5 (cong₂ _∷_ v4≡w4 (cong₂ _∷_ v3≡w3
+       (cong₂ _∷_ v2≡w2 (cong₂ _∷_ v1≡w1 (cong₂ _∷_ v0≡w0 refl)))))
+-}
 
 leftInv : ∀ (x : T6Lattice) → finToT6 (t6ToFin x) ≡ x
 leftInv x =
