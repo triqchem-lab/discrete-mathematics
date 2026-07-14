@@ -16,7 +16,7 @@ module Sovereign.Structology.Closure where
 
 open import Data.Nat using (ℕ; zero; suc; _∸_; _≤_; _>_; _<?_) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
 open import Data.Nat.Base using (_≡ᵇ_)
-open import Data.Nat.DivMod using (_div_; _mod_)
+open import Data.Nat.DivMod using (_div_; _mod_; m%n<n)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Bool using (Bool; true; false; _∧_)
 open import Relation.Nullary using (Dec; yes; no)
@@ -57,9 +57,7 @@ open State public
 -- 损益步进 (Loss/Gain Step)
 -- 极向向前推进，环向随之积累
 step : State → State
-step (mkState p t) with toℕ p +ℕ 1 <? 12
-... | yes lt = mkState (fromℕ< lt) (t +ℕ 1)
-... | no _   = mkState zero (t +ℕ 1)
+step (mkState p t) = mkState (fromℕ< (m%n<n (toℕ p +ℕ 1) 12)) (t +ℕ 1)
 
 --------------------------------------------------------------------------------
 -- 3. 仲吕不交 (The Gap / Topological Torsion)
