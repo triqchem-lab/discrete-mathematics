@@ -7,6 +7,7 @@
 -- 全部使用 refl 验证代数关系。
 
 module Sovereign.Structology.QuantumBridge where
+open import Data.Fin using (Fin; zero; suc; toℕ)
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _∸_; _/_; _^_; _<?_; _<_; _≤_)
 open import Data.Nat.Properties using (m∸n+n≡m; m≤m+n; ≮⇒≥; +-comm)
@@ -349,7 +350,7 @@ wuxing-dual-structure = refl , refl , refl
 -- |T⁶ 格点: 3⁶ = 729, 由 GF(3) 在每个 S¹ 因子上生成
 -- T6Lattice = Vec GF3 6 (from Structology/T6)
 -- 这是"量子化晶格" — 离散第一性的直接体現
-open import Sovereign.Structology.T6 using (T6Lattice)
+open import Sovereign.Structology.T6 using (T6Lattice; A4Element)
 
 -- |环面缠绕: 144×46 = 6624
 -- 144 = A₄ 对称剖分 (空间)
@@ -1016,7 +1017,7 @@ GF9-ConjugatePair x = Σ GF9 (λ y → (y ≡ x) ⊎ (y ≡ galoisConjugate x))
 -- Galois 共轭 σ 作用于每个 GF9 纤维的虚部 (第二分量)
 --------------------------------------------------------------------------------
 
-open import Sovereign.Structology.A4Group as A4 using (A4; A4Element; perm)
+open import Sovereign.Structology.A4Group as A4 using (A4; perm)
 open import Sovereign.Structology.T6 using (allA4)
 
 -- A4 置换在 GF9⁶ 上的实现 (同 applyPerm 但作用于 GF9 类型)
