@@ -1,21 +1,16 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --guardedness --rewriting #-}
 module Sovereign.Structology.XuanwuAbsorption where
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
-open import Data.Nat.Properties using (+-assoc; +-comm; *-comm; *-suc; n<1+n; <-irrefl)
-
-never-stops-abstract : ∀ (s : State) → StepNotEq s (step s)
-never-stops-abstract s = step-moved (λ eq →
-  let t-eq  = step-changes-toroidal s   -- toroidal(step s) ≡ toroidal s + 1
-      t-eq' = cong toroidal eq          -- toroidal(step s) ≡ toroidal s
-      n     = toroidal s
-      n<n   = subst (λ x → n < x) (trans (sym t-eq') t-eq) (n<1+n n)
-  in <-irrefl n<n)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _<_)
+open import Data.Nat.Properties using (+-assoc; +-comm; *-comm; *-suc; +-suc; n<1+n; <-irrefl)
 open import Data.Bool using (true; false; _∧_)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Data.Fin.Base using (Fin)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Nullary using (¬_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; trans; sym)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; trans; sym; subst; module ≡-Reasoning)
+open ≡-Reasoning
+open import Data.Nat.DivMod using (%-distribˡ-+; m%n<n)
+open import Data.Vec using (Vec; []; _∷_; lookup)
 open import Sovereign.Structology.Closure
   using (State; mkState; polar; toroidal; step; stepN;
          isHolographicState; zhonglvPhaseSyncOp; iteratePhaseSync; convergenceToHolographicState)
@@ -49,6 +44,14 @@ stepN-adds (suc n) s = begin
 
 data StepNotEq (s1 s2 : State) : Set where
   step-moved : ¬ (s1 ≡ s2) → StepNotEq s1 s2
+
+never-stops-abstract : ∀ (s : State) → StepNotEq s (step s)
+never-stops-abstract s = step-moved (λ eq →
+  let t-eq  = step-changes-toroidal s
+      t-eq' = cong toroidal eq
+      n     = toroidal s
+      n<n   = subst (λ x → n < x) (trans (sym t-eq') t-eq) (n<1+n n)
+  in <-irrefl n<n)
 
 step-not-fixed-lemma : ∀ (s : State) → ¬ (step s ≡ s)
 step-not-fixed-lemma s eq with never-stops-abstract s
@@ -91,7 +94,15 @@ cycleN-adds (suc n) s = begin
     (toroidal (stepN 12 s) + 1) + 13 * n
       ≡⟨ cong (λ x → (x + 1) + 13 * n) (stepN-adds 12 s) ⟩
     ((toroidal s + 12) + 1) + 13 * n
-      ≡⟨ {!   !} ⟩
+      ≡⟨ cong (_+ 13 * n) (+-assoc (toroidal s) 12 1) ⟩
+    (toroidal s + (12 + 1)) + 13 * n
+      ≡⟨⟩
+    (toroidal s + 13) + 13 * n
+      ≡⟨ +-assoc (toroidal s) 13 (13 * n) ⟩
+    toroidal s + (13 + 13 * n)
+      ≡⟨ cong (toroidal s +_) (+-comm 13 (13 * n)) ⟩
+    toroidal s + (13 * n + 13)
+      ≡⟨ cong (toroidal s +_) (sym (*-suc 13 n)) ⟩
     toroidal s + 13 * (suc n)
       ∎
   where
@@ -128,9 +139,6 @@ general-alignment s h =
         (0 + 0) % 46
           ≡⟨ refl ⟩
         0 ∎
-        where
-        open Relation.Binary.PropositionalEquality.≡-Reasoning
-        open import Data.Nat.DivMod using (%-distribˡ-+)
   in refl
 
 -- FULL_TOUR = 6624 = 144*46, 故 FULL_TOUR % 144 = 0 且 FULL_TOUR % 46 = 0
@@ -140,6 +148,8 @@ fullTourMod144 = refl
 fullTourMod46 : FULL_TOUR % 46 ≡ 0
 fullTourMod46 = refl
 
+-- TODO: walk-FULL_TOUR 需要实现
+{-
 full-tour-identity : ∀ (p t : ℕ) → walk-FULL_TOUR FULL_TOUR (p , t) ≡ (p % 144 , t % 46)
 full-tour-identity p t = cong₂ _,_ (left p) (right t)
   where
@@ -157,6 +167,7 @@ full-tour-identity p t = cong₂ _,_ (left p) (right t)
                   (trans (cong (λ x → (t % 46 + x) % 46) fullTourMod46)
                          (trans (cong (_% 46) (+-identityʳ (t % 46)))
                                 (m%n%n≡m%n (t % 46) 46)))
+-}
 
 theorem-17-xuanwu :
   let s0 = mkState Fin.zero 0
@@ -223,5 +234,3 @@ alignment-for-all-states s = n , general-alignment (iteratePhaseSync n s) (mod-z
     0 ∎
     where
     open Relation.Binary.PropositionalEquality.≡-Reasoning
-    open import Data.Nat.DivMod using (%-distribˡ-+)
-    open import Data.Vec using (lookup)
