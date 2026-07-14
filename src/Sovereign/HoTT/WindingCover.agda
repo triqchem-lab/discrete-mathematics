@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness --rewriting #-}
+{-# OPTIONS --cubical --guardedness #-}
 
 -- | Sovereign.HoTT.WindingCover
 -- 万有覆盖与 encode-decode 框架

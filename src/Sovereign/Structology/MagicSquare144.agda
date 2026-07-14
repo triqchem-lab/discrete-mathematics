@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness --rewriting #-}
+{-# OPTIONS --cubical --guardedness #-}
 
 -- | Sovereign.Structology.MagicSquare144
 -- 结构学：144 阶幻方静态容器

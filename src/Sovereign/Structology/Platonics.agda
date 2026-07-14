@@ -1,4 +1,3 @@
-{-# OPTIONS --rewriting #-}
 
 -- | Sovereign.Structology.Platonics
 -- 五正多面体 → 五行基数: 对称群特征模数的 CRT 投影形式化

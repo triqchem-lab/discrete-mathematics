@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness --rewriting #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Coupling.CartanTorsion
 -- 耦合域：嘉当挠场量子物理学的离散复位
