@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --guardedness --rewriting #-}
 
 -- | Sovereign.Structology.Aether
 -- 结构学：以太——T⁶ 离散环面格点基底

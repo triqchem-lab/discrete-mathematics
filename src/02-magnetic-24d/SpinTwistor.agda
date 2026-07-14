@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --guardedness --rewriting #-}
 
 -- | Sovereign.Coupling.SpinTwistor
 -- 耦合域：自旋与扭量的离散复位

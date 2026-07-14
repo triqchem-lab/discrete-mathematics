@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --guardedness --rewriting #-}
 
 -- | Sovereign.HoTT.T6Homotopy
 -- T⁶ 离散环面同伦理论
