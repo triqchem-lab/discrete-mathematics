@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.Format.ModulusGeneration
 -- 幻方正交拓扑：CRT 模数生成协议

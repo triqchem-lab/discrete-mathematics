@@ -1,0 +1,25 @@
+{
+  "task_id": "20260716-024620-p0-aether-agda-all-agda-p1-p1-4320d-encodet6-complete-po",
+  "goal": "确认收到。理解用户已将 **P0 两条** 成功消除，并修复了 `Aether.agda` 的编码重复和导入兼容性，使得 **All.agda 全程编译通过**。现在开始处理 **P1 批处理项**。\n\n---\n\n## P1 批处理方案（低复杂度，无交叉依赖）\n\n| 引理 | 当前状态 | 4320D/风格化方案 |\n|:---|:---|:---|\n| **encodeT6-complete** | `postulate`，声明编码完整性 | 复用 `rightInv` 中已有的 `toℕ-sum\u003c729` 和 `sum≡toℕ` 链——该性质实际上已在 `T6.agda` 中通过 `rightInv` 间接证明，应能直接引用 |\n| **allLatticePointsComplete** | 已由用户消除（`lookup∘tabulate` + `leftInv`） | ✅ 已完成 |\n| **lemma-mod-sum** | `postulate`，同余分配 | 使用 `[m+kn]%n≡m%n` + `m%n\u003cn` 的代数链（与 `T6.agda` 中 `mod-split` 同构） |\n| **stableRootConstraint** | `postulate`，数字根3/6/9稳定 | 3 个 case：`digitalRoot` ∈ {3,6,9}，用 `T` 消去 |\n\n**处理顺序**：\n1. **lemma-mod-sum**：已在 `CRTLemmas.agda` 中有现成的 `mod-split` 引理可用，只需直接引用或简单适配即可完成。\n2. **encodeT6-complete**：可复用 `rightInv` 的 `sum≡toℕ` 证明链，无需重复开发。\n3. **stableRootConstraint**：`RootMath/DigitalRoot.agda` 已有 `stableRoot?` 决策过程，只需将 `postulate` 替换为 `stableRoot?` 的 case 分析即可。\n\n正在按此顺序修改。如果需要给出具体修改后的代码差异，请告知。",
+  "scope": null,
+  "non_goals": null,
+  "allowed_operations": {
+    "write": true,
+    "network": false,
+    "publish": false
+  },
+  "success_criteria": [
+    {
+      "id": "objective_evidence",
+      "description": "The goal outcome is supported by direct evidence, such as inspected code, reproduced behavior, source material, or concrete findings.",
+      "required": true,
+      "evidence_ids": null
+    },
+    {
+      "id": "verification",
+      "description": "The result has relevant verification evidence, such as tests, commands, benchmarks, manual checks, or a documented reason why verification is not applicable.",
+      "required": true,
+      "evidence_ids": null
+    }
+  ]
+}

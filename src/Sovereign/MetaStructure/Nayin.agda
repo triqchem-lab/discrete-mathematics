@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.MetaStructure.Nayin
 -- 元结构层：六十甲子纳音拓扑指纹

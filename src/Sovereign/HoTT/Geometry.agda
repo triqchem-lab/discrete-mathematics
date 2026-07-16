@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.HoTT.Geometry
 -- 高维几何：复三维/实六维环面及其拓扑不变量

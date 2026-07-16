@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Projection.Binary
 -- 投影链：二进制与三进制的有损降维与上下文拾起

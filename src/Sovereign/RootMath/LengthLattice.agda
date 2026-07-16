@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.RootMath.LengthLattice
 -- 根数学：十二律长度格点序列的完整定义

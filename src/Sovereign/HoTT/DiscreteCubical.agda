@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.HoTT.DiscreteCubical
 -- 隔离层：集中管理未信任的 Cubical Agda 基础库

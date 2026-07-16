@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness --allow-unsolved-metas #-}
+{-# OPTIONS --rewriting --guardedness --allow-unsolved-metas #-}
 
 -- | Sovereign.Topology.HighDimClosure
 -- 拓扑学：仲吕闭合的高维几何原理与极限环面演化

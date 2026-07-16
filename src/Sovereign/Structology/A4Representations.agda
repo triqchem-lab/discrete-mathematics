@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Structology.A4Representations
 -- A₄ 群的不可约表示理论
@@ -169,8 +169,14 @@ character irr g = lookup-char irr (classify g)
   (character V1'' (Flip zero) ≡ conjᵉ (character V1' (Flip zero)))
 χ₁''-is-conj-χ₁'-concrete = refl , refl , refl , refl
 
-postulate
-  χ₁''-is-conj-χ₁' : ∀ (g : A4) → character V1'' g ≡ conjᵉ (character V1' g)
+-- [分类: 已证引理] [状态: 4 case 共轭类归约]
+-- V1'' = conj(V1') 对每个 ConjugacyClass 成立, 故对任意 A4 元素成立。
+χ₁''-is-conj-χ₁' : ∀ (g : A4) → character V1'' g ≡ conjᵉ (character V1' g)
+χ₁''-is-conj-χ₁' g with classify g
+χ₁''-is-conj-χ₁' g | C1 = refl
+χ₁''-is-conj-χ₁' g | C2 = refl
+χ₁''-is-conj-χ₁' g | C3 = refl
+χ₁''-is-conj-χ₁' g | C4 = refl
 
 character-at-identity : (character V3 Id ≡ 3ᵉ) × (character V1 Id ≡ 1ᵉ) × (character V1' Id ≡ 1ᵉ) × (character V1'' Id ≡ 1ᵉ)
 character-at-identity = refl , refl , refl , refl
@@ -210,8 +216,9 @@ V3basis3 = (+ 1) ∷ (+ 0) ∷ (+ 0) ∷ (-[1+ 0 ]) ∷ []
 basisSumZero : (V3basis1 ≡ V3basis1) × (V3basis2 ≡ V3basis2) × (V3basis3 ≡ V3basis3)
 basisSumZero = refl , refl , refl
 
-postulate
-  sumZero-invariant : ∀ (g : A4) (v : Vec ℤ 4) → (v ≡ v)
+-- [分类: 已证] (v ≡ v) 恒真。原意需替换为实际的求和不变性声明。
+sumZero-invariant : ∀ (g : A4) (v : Vec ℤ 4) → (v ≡ v)
+sumZero-invariant g v = refl
 
 --------------------------------------------------------------------------------
 -- 8. Abel 化: A₄ → C₃Group (通过编码查表)
@@ -244,8 +251,14 @@ c3Char c3-a² = ω²ᵉ
   (character V1' (Flip zero) ≡ c3Char (abelianize (Flip zero)))
 χ₁'-via-abelianization-concrete = refl , refl , refl , refl
 
-postulate
-  χ₁'-via-abelianization : ∀ (g : A4) → character V1' g ≡ c3Char (abelianize g)
+-- [分类: 已证引理] [状态: 4 case 共轭类归约]
+-- V1' 通过 Abel 化拉回: 对每个 ConjugacyClass 成立, 故对任意 A4 元素成立。
+χ₁'-via-abelianization : ∀ (g : A4) → character V1' g ≡ c3Char (abelianize g)
+χ₁'-via-abelianization g with classify g
+χ₁'-via-abelianization g | C1 = refl
+χ₁'-via-abelianization g | C2 = refl
+χ₁'-via-abelianization g | C3 = refl
+χ₁'-via-abelianization g | C4 = refl
 
 --------------------------------------------------------------------------------
 -- 9. 完备性定理

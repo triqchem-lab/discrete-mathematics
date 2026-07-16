@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.HoTT.ChernClass
 -- 高维拓扑：陈数 C=2 的定义与拓扑守恒

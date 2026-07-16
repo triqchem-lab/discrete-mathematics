@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Constitution.WindingAsymmetry
 -- 宪法：宇宙非对称性——源于缠绕数与泛音列公理

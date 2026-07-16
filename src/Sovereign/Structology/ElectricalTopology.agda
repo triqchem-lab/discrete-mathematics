@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.Structology.ElectricalTopology
 -- ⚠️ 废弃：电性文明拓扑（连续统退化投影）

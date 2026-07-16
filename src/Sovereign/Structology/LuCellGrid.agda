@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.Structology.LuCellGrid
 -- 结构学：律胞腔网格（十二律相位的二维静态展开）

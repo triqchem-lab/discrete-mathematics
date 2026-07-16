@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Density.Resonance
 -- 密度：量子共振——纳音驻波主峰的谐波筛选
@@ -254,7 +254,8 @@ noEnergyLevelTransition ()
 noEnergyTransfer : ¬ (Resonance ≡ EnergyTransfer)
 noEnergyTransfer ()
 
--- 合法表述
+-- [分类: 宪法公理] [状态: 定义性声明]
+-- 共振定义 = 纳音驻波谐波滤波。非数学定理——是框架的概念绑定。
 postulate
   resonanceLegal :
     ResonanceDefinition ≡ NayinStandingWaveHarmonicFiltering

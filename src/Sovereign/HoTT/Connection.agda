@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.HoTT.Connection
 -- 高维拓扑：纤维丛上的离散联络与和乐 (Connection and Holonomy)

@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.HoTT.EnergyGap
 -- 高维拓扑：能隙 Δ=√3 的代数本源与时空统一

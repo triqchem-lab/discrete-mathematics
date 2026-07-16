@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Structology.TopologyLevels
 -- 结构学：多层级拓扑定义（磁性、中性、全息）

@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.Engine.QsUpdate
 -- 引擎层：主权块权重 (qs) 的物理更新逻辑

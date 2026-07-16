@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.Base.ZeroGeometry
 -- 零的几何拓扑本源：完美球体几何 S²/A₄

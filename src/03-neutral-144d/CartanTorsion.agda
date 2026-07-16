@@ -162,7 +162,9 @@ record DiscreteCurvature : Set where
 computeCurvature : DiscreteCurvature → ℚ
 computeCurvature (mkCurvature edges phase chern) = phase
 
--- 定理：全局曲率和 = 2π × C = 4π (C=2)
+-- [分类: 物理锚定] [状态: 物理声明，不可证]
+-- 全局曲率和 = 2π × C = 4π (C=2)。陈数 C=2 是拓扑不变量，非数学推导结果。
+-- ℚ 占位，3 ≈ π 是连续统遗留（见 v6.7 审计: 连续统残留清理）。
 postulate
   globalCurvatureSum : ℚ
   globalCurvatureIs4Pi : globalCurvatureSum ≡ (+ 4 / 1) * 3  -- 近似 4π

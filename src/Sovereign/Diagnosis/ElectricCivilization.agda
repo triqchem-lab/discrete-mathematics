@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Diagnosis.ElectricCivilization
 -- 诊断：电性文明的八大误区与范畴复位

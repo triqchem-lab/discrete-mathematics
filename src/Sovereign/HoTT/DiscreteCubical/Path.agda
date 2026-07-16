@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.HoTT.DiscreteCubical.Path
 -- 离散路径类型：T⁶ 环面上的离散连接

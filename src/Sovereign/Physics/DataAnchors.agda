@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Physics.DataAnchors
 -- 数据实证：理论模型与物理实验数据的锚定

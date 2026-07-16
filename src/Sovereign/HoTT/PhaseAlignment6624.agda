@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.HoTT.PhaseAlignment6624
 -- T⁶ 环面的 6624 相位对齐定理 (v1.0)
@@ -26,14 +26,14 @@
 
 module Sovereign.HoTT.PhaseAlignment6624 where
 
-open import Data.Nat
-  using (ℕ; zero; suc; _+_; _*_; _%_; _/_)
+open import Data.Nat.Base
+  using (ℕ; zero; suc; _+_; _*_; _<_; _≤_)
 open import Data.Nat.DivMod
-  using (m≡m%n+[m/n]*n; [m+kn]%n≡m%n)
+  using (m≡m%n+[m/n]*n; [m+kn]%n≡m%n; m%n<n; m<n⇒m%n≡m)
 open import Data.Nat.Properties
-  using (*-comm; *-assoc)
+  using (*-comm; *-assoc; *-distribˡ-+; +-assoc; +-mono-≤; *-mono-≤; ≤-refl; ≤-trans; ≤-pred)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; cong; sym; trans)
+  using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)
 open import Data.Product using (_×_; _,_)
 
 --------------------------------------------------------------------------------
@@ -127,13 +127,69 @@ decompositionLemma x = trans (m≡m%n+[m/n]*n x POLAR)
 --    所以 q' % b = r/a = q' - q·b
 --    故 r = r' + a·(q'%b) ∎
 --
--- 核心引理 (待形式化):
---   divDistrib : (q*a*b + r) / a ≡ q*b + r/a   [当 r < a*b]
---   modSmall   : r/a < b  ⇒  (r/a) % b ≡ r/a   [因余数小于除数]
---
--- 当前标记为 postulate, 等待 RootMath/Arithmetic 模块完成所需引理后消除
-postulate
-  phaseResyncTheorem : ∀ x → (x % FULL_TOUR) ≡ (x % POLAR) + POLAR * ((x / POLAR) % TORUS)
+-- 相位重同步定理: x % 6624 = (x % 144) + 144 * ((x / 144) % 46)
+-- 证明: x = r + 144*q (m≡m%n+[m/n]*n), q = q' + 46*k (同理), 
+-- x = r + 144*q' + 6624*k。左边 = (r + 144*q' + 6624*k) % 6624
+-- = (r + 144*q') % 6624 ([m+kn]%n≡m%n)。
+-- 因 r < 144, q' < 46 → r + 144*q' < 6624 → % ≡ id (m<n⇒m%n≡m)。
+phaseResyncTheorem : ∀ x → (x % FULL_TOUR) ≡ (x % POLAR) + POLAR * ((x / POLAR) % TORUS)
+phaseResyncTheorem x =
+  let open ≡-Reasoning
+      r = x % POLAR
+      q = x / POLAR
+      q' = q % TORUS
+      k = q / TORUS
+      
+      -- x = r + POLAR * q
+      x≡r+Pq : x ≡ r + POLAR * q
+      x≡r+Pq = m≡m%n+[m/n]*n x POLAR
+      
+      -- q = q' + TORUS * k
+      q≡q'+Tk : q ≡ q' + TORUS * k
+      q≡q'+Tk = m≡m%n+[m/n]*n q TORUS
+      
+      -- x = r + POLAR*q' + FULL_TOUR*k
+      x≡r+Pq'+Fk : x ≡ r + POLAR * q' + FULL_TOUR * k
+      x≡r+Pq'+Fk = begin
+        x                  ≡⟨ x≡r+Pq ⟩
+        r + POLAR * q      ≡⟨ cong (r + POLAR *_) q≡q'+Tk ⟩
+        r + POLAR * (q' + TORUS * k) ≡⟨ cong (r +_) (*-distribˡ-+ POLAR q' (TORUS * k)) ⟩
+        r + (POLAR * q' + POLAR * (TORUS * k)) ≡⟨ +-assoc r (POLAR * q') (POLAR * (TORUS * k)) ⟩
+        (r + POLAR * q') + POLAR * (TORUS * k) ≡⟨ cong ((r + POLAR * q') +_) (*-assoc POLAR TORUS k) ⟩
+        (r + POLAR * q') + (POLAR * TORUS) * k ≡⟨⟩
+        (r + POLAR * q') + FULL_TOUR * k ∎
+      
+      -- x % FULL_TOUR = (r + POLAR*q') % FULL_TOUR
+      x%F≡r+Pq'%F : x % FULL_TOUR ≡ (r + POLAR * q') % FULL_TOUR
+      x%F≡r+Pq'%F = begin
+        x % FULL_TOUR              ≡⟨ cong (_% FULL_TOUR) x≡r+Pq'+Fk ⟩
+        ((r + POLAR * q') + FULL_TOUR * k) % FULL_TOUR  ≡⟨ [m+kn]%n≡m%n (r + POLAR * q') k FULL_TOUR ⟩
+        (r + POLAR * q') % FULL_TOUR ∎
+      
+      -- r < POLAR
+      r<POLAR : r < POLAR
+      r<POLAR = m%n<n x POLAR
+      
+      -- q' < TORUS
+      q'<TORUS : q' < TORUS
+      q'<TORUS = m%n<n q TORUS
+      
+      -- r + POLAR*q' < FULL_TOUR
+      r+Pq'<F : r + POLAR * q' < FULL_TOUR
+      r+Pq'<F =
+        let r≤143 : r ≤ 143
+            r≤143 = ≤-pred r<POLAR
+            q'≤45 : q' ≤ 45
+            q'≤45 = ≤-pred q'<TORUS
+            Pq'≤6480 : POLAR * q' ≤ 6480
+            Pq'≤6480 = *-mono-≤ (≤-refl {144}) q'≤45
+            r+Pq'≤6623 : r + POLAR * q' ≤ 6623
+            r+Pq'≤6623 = +-mono-≤ r≤143 Pq'≤6480
+        in s≤s r+Pq'≤6623
+  in begin
+    x % FULL_TOUR                    ≡⟨ x%F≡r+Pq'%F ⟩
+    (r + POLAR * q') % FULL_TOUR     ≡⟨ m<n⇒m%n≡m r+Pq'<F ⟩
+    r + POLAR * q'                   ∎
 
 --------------------------------------------------------------------------------
 -- 5. 缠绕数关系

@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Density.SevenStages
 -- 密度：七阶段周期、爻变窗口、地气声子谱基频 144 Hz

@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.HoTT.CRTHarmonics
 -- CRT 理论的谐波与驻波解释 (v5.19)
@@ -33,6 +33,7 @@ private
   data _∈_ {A : Set} (x : A) : List A → Set where
     here  : ∀ {xs} → x ∈ (x ∷ xs)
     there : ∀ {y xs} → x ∈ xs → x ∈ (y ∷ xs)
+open import Sovereign.HoTT.CRTFiberWinding using (crt-fiber; crt-fiber-mod-2; crt-fiber-mod-3)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 
 -- 主权 CRT 模数 (拍频/谐波基)
@@ -156,8 +157,16 @@ data Aligned (steps : ℕ) : Set where
 CHIRAL_COLLAPSE : ℕ
 CHIRAL_COLLAPSE = 113507
 
--- 对齐→驻波: 当步数对齐时, 相位同时满足双锁相条件
--- 即 N14 时钟每 6624 步的相位归零 = 谐波阶梯的基频谐振
-postulate
-  alignment-implies-standing-wave :
-    ∀ steps → Aligned steps → StandingWave (steps * OMEGA0 % M)
+-- [分类: 跨模块依赖] [状态: 1 postulate — 需 CRTFiberWinding + T6Homotopy]
+-- 核心命题: Aligned steps → (steps*OMEGA0 % M) 在 CRT 纤维 (144,46) 上 → 驻波.
+-- 当前状态: harmonic-is-standing-wave 已证每个谐波是驻波.
+-- 缺口: 需证明 Aligned → 落在 harmonic k 的纤维上.
+--   CRTFiberWinding (待完成) 提供纤维结构 + T6Homotopy 提供同伦连续化.
+-- [分类: CRT纤维定理] [状态: 框架完备, 缺口=fiberContains引理]
+-- 证明链: Aligned → steps*OMEGA0%M在CRT纤维上 → harmonic → StandingWave
+-- 缺口: 需 CRTFiberWinding.fiberContains: 锁相→谐波 (harmonic-phase2的逆)
+-- 使用 CRTFiberWinding: harmonic = crt-fiber, 每个纤维元素满足锁相条件.
+-- 缺口: 需证 Aligned → (steps*OMEGA0 % M) = crt-fiber k for some k.
+-- 即: (steps*OMEGA0) 在CRT纤维中.
+alignment-implies-standing-wave : ∀ steps → Aligned steps → StandingWave (steps * OMEGA0 % M)
+alignment-implies-standing-wave s (isAligned aligned) = {!!}  -- 待 CRTFiberWinding 桥接

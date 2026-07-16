@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.RootMath.Arithmetic
 -- 根数学:高维几何审查后的算术引理

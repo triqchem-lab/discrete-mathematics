@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 module Sovereign.Arithmetic.CRTLemmas where
 
@@ -7,11 +7,12 @@ open import Data.Nat.GCD using (gcd)
 open import Data.Nat.Base using (_<_; _%_; _≤_; _>_; NonZero; nonZero; >-nonZero; s≤s; z≤n)
 open import Data.Nat.Coprimality using (Coprime; gcd≡1⇒coprime; coprime-divisor)
 open import Data.Nat.Divisibility.Core using (_∣_; quotient; divides)
-open import Data.Nat.Divisibility using (n∣m⇒m%n≡0)
+open import Data.Nat.Divisibility using (n∣m⇒m%n≡0; ∣⇒≤)
 open import Sovereign.AlgebraWrapper using (distrib-lemma)
-open import Data.Nat.Properties using (*-comm; *-assoc; [m+n]∸[m+o]≡n∸o; m+n∸n≡m; m∸n+n≡m; +-identityˡ; ≰⇒≥)
-open import Data.Nat.DivMod using (m≡m%n+[m/n]*n; %-distribˡ-+; m%n%n≡m%n)
+open import Data.Nat.Properties using (*-comm; *-assoc; [m+n]∸[m+o]≡n∸o; m+n∸n≡m; m∸n+n≡m; +-identityˡ; +-identityʳ; ≰⇒≥; <⇒≱; +-comm; +-cancelˡ-≡; m≤m+n)
+open import Data.Nat.DivMod using (m≡m%n+[m/n]*n; %-distribˡ-+; m%n%n≡m%n; m<n⇒m%n≡m)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym; cong; cong₂; subst; module ≡-Reasoning)
+open import Data.Empty using (⊥-elim)
 open import Relation.Nullary using (Dec; yes; no)
 
 POW2 : ℕ ; POW2 = 65536
@@ -38,7 +39,10 @@ instance
   P2P3-nz : NonZero (POW2 * POW3)
   P2P3-nz = >-nonZero P2P3>0
 
-postulate lemma-mod-sum : ∀ r s n {{_ : NonZero n}} → r < n → s < n → (r + s) % n ≡ r → s ≡ 0
+-- [分类: 已证引理] [状态: 4320D 模运算链]
+-- (r+s)%n = r 且 r,s < n → s = 0。
+-- 证明: (r+s)%n = r 且 r%n = r (因 r<n) → (r+s)%n = r%n → n ∣ (r+s-r) = n ∣ s
+-- → n ≤ s (∣⇒≤), 与 s < n 矛盾, 故 s = 0。
 
 mod≡⇒n∣m∸m' : ∀ m m' n {{nz : NonZero n}} → m % n ≡ m' % n → n ∣ (m ∸ m')
 mod≡⇒n∣m∸m' m m' n eq = record { quotient = q ∸ q' ; equality = pf }
@@ -55,6 +59,19 @@ mod≡⇒n∣m∸m' m m' n eq = record { quotient = q ∸ q' ; equality = pf }
         step2 = [m+n]∸[m+o]≡n∸o r (q * n) (q' * n)
         step3 : (q * n) ∸ (q' * n) ≡ (q ∸ q') * n
         step3 = distrib-lemma n q q'
+
+-- [分类: 已证引理] [状态: 4320D 模运算链]
+-- (r+s)%n = r 且 r,s < n → s = 0。
+-- 证明: (r+s)%n = r 且 r%n = r (因 r<n) → (r+s)%n = r%n → n ∣ (r+s-r) = n ∣ s
+-- → n ≤ s (∣⇒≤), 与 s < n 矛盾, 故 s = 0。
+lemma-mod-sum : ∀ r s d {{_ : NonZero d}} → r < d → s < d → (r + s) % d ≡ r → s ≡ 0
+lemma-mod-sum r s d r<d s<d eq with mod≡⇒n∣m∸m' (r + s) r d (trans eq (sym (m<n⇒m%n≡m r<d)))
+lemma-mod-sum r s d r<d s<d eq | divides zero    eq' = 
+  trans (sym (trans (cong (_∸ r) (+-comm r s)) (m+n∸n≡m s r))) eq'
+lemma-mod-sum r s d r<d s<d eq | divides (suc q) eq' = 
+  let s≡sq*d : s ≡ suc q * d
+      s≡sq*d = trans (sym (trans (cong (_∸ r) (+-comm r s)) (m+n∸n≡m s r))) eq'
+  in ⊥-elim (<⇒≱ s<d (subst (d ≤_) (sym s≡sq*d) (m≤m+n d (q * d))))
 
 euclid-%≡0 : ∀ m m' → m % POW2 ≡ m' % POW2 → m % POW3 ≡ m' % POW3 → (m ∸ m') % M ≡ 0
 euclid-%≡0 m m' eP eQ =

@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Structology.WuXingTransition
 -- 五行对称群跃迁链：A₄ → O_h → I_h → I → O → A₄

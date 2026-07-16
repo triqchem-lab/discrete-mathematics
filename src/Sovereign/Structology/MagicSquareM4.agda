@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.Structology.MagicSquareM4
 -- 瑟尔四阶幻方 M₄ 及其 CRT 谱投影

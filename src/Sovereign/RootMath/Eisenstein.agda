@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.RootMath.Eisenstein
 -- Eisenstein 整数环 Z[ω]:  a + b·ω, 其中 ω² + ω + 1 = 0, ω³ = 1

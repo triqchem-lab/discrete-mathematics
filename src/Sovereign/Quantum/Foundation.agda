@@ -1,3 +1,4 @@
+{-# OPTIONS --rewriting #-}
 {-# OPTIONS --cubical --guardedness #-}
 
 -- | Sovereign.Quantum.Foundation

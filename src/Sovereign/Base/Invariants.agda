@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Base.Invariants
 -- 律算基础：核心拓扑不变量 (Topological Invariants)

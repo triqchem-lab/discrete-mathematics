@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Physics.EntropySpin
 -- 物理学：熵旋理论质量涌现机制与4320D流形映射

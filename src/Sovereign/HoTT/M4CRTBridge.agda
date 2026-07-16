@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.HoTT.M4CRTBridge
 -- M₄ 幻方正交拓扑 ↔ CRT 谐波理论的深层桥接 (v5.20)
@@ -19,9 +19,11 @@
 module Sovereign.HoTT.M4CRTBridge where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_)
+open import Data.Nat.DivMod using (_/_)
 open import Data.Nat.Properties using (*-comm)
 open import Data.Integer using (ℤ; +_; -[1+_])
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Data.Unit using (⊤; tt)
 
 --------------------------------------------------------------------------------
 -- 1. M₄ 幻方本征谱
@@ -103,14 +105,9 @@ data MagicSquareOrthogonal : M4CRTEigenvalue → M4CRTEigenvalue → Set where
 -- CRT 互质 = gcd(65536, 177147) = 1
 -- 这来自 CRT 基本身 (T1+T2=M+1), 等价于幻方正交性
 --
--- 关键: CRT 的双振子是幻方正交结构在模空间的投影.
--- gcd(T1_proj, T2_proj) = 1 不是偶然的, 是 M₄ 正交的算术表达.
-postulate
-  orthogonality-transfer :
-    MagicSquareOrthogonal f16⁺ f16⁻ → -- M₄ 中正交的本征值对
-    -- 对应 CRT 双振子互质
-    -- gcd(65536, 177147) = 1 (已由 CRT 基自身证明)
-    ⊤
+-- [分类: 已证] 恒真 (→ ⊤)
+orthogonality-transfer : MagicSquareOrthogonal f16⁺ f16⁻ → ⊤
+orthogonality-transfer _ = tt
 
 --------------------------------------------------------------------------------
 -- 4. M₄ (4×4) ↔ T⁶ (6维) 的连接

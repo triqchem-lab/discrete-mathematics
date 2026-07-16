@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.HoTT.Bundle
 -- 高维拓扑：主权状态机的纤维丛结构 (Fiber Bundle Structure)

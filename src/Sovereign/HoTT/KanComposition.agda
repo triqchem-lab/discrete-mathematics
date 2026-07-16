@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.HoTT.KanComposition
 -- Kan 纤维化的 6624 相位对齐边界闭合 (L2 方向)

@@ -15,9 +15,11 @@
 
 module Sovereign.HoTT.T6Homotopy where
 
-open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; _<_)
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)
+open import Data.Fin.Properties using (toℕ<n)
 open import Data.Vec using (Vec; []; _∷_)
+open import Data.Nat.Properties using (≤-refl; ≤-pred; +-mono-≤; *-mono-≤; m<n⇒m≤n)
 open import Data.Product using (_×_; _,_; Σ; Σ-syntax)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 
@@ -228,12 +230,25 @@ encodeT6 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) =
   let val = toℕ v₀ + toℕ v₁ * 3 + toℕ v₂ * 9 + toℕ v₃ * 27 + toℕ v₄ * 81 + toℕ v₅ * 243
   in fromℕ val
 
--- 编码的完备性: 基 3 展开是双射 (729 点 ↔ Fin 729)
--- 证明: ∀ p, encodeT6 p ∈ Fin 729 (值域 [0, 728])
--- 注: fromℕ val 的返回类型是 Fin (suc val), 需要证明 val < 729.
--- 因每个坐标 ∈ {0,1,2}, val 最大值 = 2+6+18+54+162+486 = 728.
-postulate
-  encodeT6-complete : ∀ (p : T6Lattice) → toℕ (encodeT6 p) < 729
+-- 编码的完备性: 基 3 展开值域 [0, 728], 即 < 729
+-- 4320D 风格: 每个坐标 ≤ 2, *-mono-≤ + +-mono-≤ 链
+encodeT6-complete : ∀ (p : T6Lattice) → toℕ (encodeT6 p) < 729
+encodeT6-complete (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) =
+  let vᵢ≤2 : ∀ (v : GF3) → toℕ v ≤ 2
+      vᵢ≤2 v = ≤-pred (toℕ<n v)
+      
+      b₁ = *-mono-≤ (≤-refl {3}) (vᵢ≤2 v₁)   -- 3*v₁ ≤ 6
+      b₂ = *-mono-≤ (≤-refl {9}) (vᵢ≤2 v₂)   -- 9*v₂ ≤ 18
+      b₃ = *-mono-≤ (≤-refl {27}) (vᵢ≤2 v₃)  -- 27*v₃ ≤ 54
+      b₄ = *-mono-≤ (≤-refl {81}) (vᵢ≤2 v₄)  -- 81*v₄ ≤ 162
+      b₅ = *-mono-≤ (≤-refl {243}) (vᵢ≤2 v₅) -- 243*v₅ ≤ 486
+      
+      s0 = +-mono-≤ (vᵢ≤2 v₀) b₁  -- v0 + 3*v1 ≤ 8
+      s1 = +-mono-≤ s0 b₂           -- + 9*v2 ≤ 26
+      s2 = +-mono-≤ s1 b₃           -- + 27*v3 ≤ 80
+      s3 = +-mono-≤ s2 b₄           -- + 81*v4 ≤ 242
+      total = +-mono-≤ s3 b₅        -- + 243*v5 ≤ 728
+  in s≤s total
 
 -- 连接 Aether.agda 的 allLatticePointsComplete:
 --   若 allLatticePoints = Vec.tabulate (λ i → decodeT6 i),

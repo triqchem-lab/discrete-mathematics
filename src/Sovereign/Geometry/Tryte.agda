@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness --allow-unsolved-metas #-}
+{-# OPTIONS --rewriting --guardedness --allow-unsolved-metas #-}
 
 -- | Sovereign.Geometry.Tryte
 -- 几何定义：Tryte 作为 T⁶ 环面的单点纤维截面

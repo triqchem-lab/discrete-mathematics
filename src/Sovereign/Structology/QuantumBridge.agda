@@ -12,10 +12,11 @@ open import Data.Fin using (Fin; zero; suc; toℕ)
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _∸_; _/_; _^_; _<?_; _<_; _≤_)
 open import Data.Nat.Properties using (m∸n+n≡m; m≤m+n; ≮⇒≥; +-comm)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Product using (_×_; _,_; Σ)
+open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Nullary.Decidable.Core using (True; toWitness)
 open import Data.Unit using (tt)
+open import Function using (_∘_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym; cong)
 
 -- 已有模块
@@ -765,7 +766,7 @@ twelve-is-3-times-4 = refl
 -- T₁⊕T₁ = T₂ (1+1=2): 损益微调 — 同向叠加产生位移
 -- T₂⊕T₂ = T₁ (2+2=4≡1): 双倍手征 — 两次旋转 = 单次反向旋转
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; c3-ccw; c3-cw)
 
 -- |C3 群在 GF(3) 上的作用: x → x⊕T₁ (旋转 120°)
 -- 三次回到自身: T₁⊕T₁⊕T₁ = T₀
@@ -979,7 +980,6 @@ open import Sovereign.Algebra.GF9 using
   ; galoisFixedPoint; ConjugatePair
   ; conjugatePair-size-1; conjugatePair-size-2
   ; embed-gf3; alpha; alpha-squared; alpha-powers-4
-  ; c3-ccw; c3-cw; negate
   )
 
 -- GF(3²)⁶ — 9⁶ = 531,441 个格点（GF(3)⁶ 的 729 倍）
@@ -1052,7 +1052,18 @@ negate⁶ = map (λ (a , b) → negate a , b)
 -- σ ∘ rotate = rotate ∘ σ   (σ 作用于虚部, C3 作用于实部)
 σ∘c3≡c3∘σ : ∀ (g : A4Element) (v : GF9⁶) →
   galoisConjugate⁶ (a4Action-gf9 g v) ≡ a4Action-gf9 g (galoisConjugate⁶ v)
-σ∘c3≡c3∘σ g v = refl
+σ∘c3≡c3∘σ A4.Id                        (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+σ∘c3≡c3∘σ (A4.Rot zero zero)                 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+σ∘c3≡c3∘σ (A4.Rot zero (suc zero))           (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+σ∘c3≡c3∘σ (A4.Rot (suc zero) zero)           (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+σ∘c3≡c3∘σ (A4.Rot (suc zero) (suc zero))     (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+σ∘c3≡c3∘σ (A4.Rot (suc (suc zero)) zero)            (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+σ∘c3≡c3∘σ (A4.Rot (suc (suc zero)) (suc zero))      (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+σ∘c3≡c3∘σ (A4.Rot (suc (suc (suc zero))) zero)      (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+σ∘c3≡c3∘σ (A4.Rot (suc (suc (suc zero))) (suc zero))(v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+σ∘c3≡c3∘σ (A4.Flip zero)              (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+σ∘c3≡c3∘σ (A4.Flip (suc zero))        (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+σ∘c3≡c3∘σ (A4.Flip (suc (suc zero)))  (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
   -- A4 作用于前 4 坐标 (只影响实部分量), σ 作用于每个虚部分量
   -- 两者交换因为作用在不同坐标/分量上
 
@@ -1072,7 +1083,7 @@ GF9⁶-ConjugateOrbit x = Σ GF9⁶ (λ y → (y ≡ x) ⊎ (y ≡ galoisConjuga
 --------------------------------------------------------------------------------
 
 open import Sovereign.Structology.T6 as T6
-  using (T6Lattice; polarCRT; toroidalCRT; gf3Toℕ)
+  using (T6Lattice; polarCRT; toroidalCRT; gf3Toℕ; applyPerm; gf3Toℕ-A4-inv)
 open import Sovereign.Base.Trit as Trit using (Trit; T₀; T₁; T₂; tritToFin3)
 
 -- GF9⁶ 分解为实部/虚部 T⁶ 分量 (通过 Fin 3 ≅ Trit 桥)
@@ -1081,6 +1092,22 @@ realPart = Data.Vec.map (Trit.tritToFin3 ∘ proj₁)
 
 imagPart : GF9⁶ → T6Lattice
 imagPart = Data.Vec.map (Trit.tritToFin3 ∘ proj₂)
+
+-- realPart 与 A4 作用交换: map f (applyPermGF9 p v) ≡ applyPerm p (map f v)
+realPart-a4Action-commute : ∀ (g : A4Element) (v : GF9⁶) →
+  realPart (a4Action-gf9 g v) ≡ applyPerm (A4.perm g) (realPart v)
+realPart-a4Action-commute A4.Id                        (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+realPart-a4Action-commute (A4.Rot zero zero)                 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+realPart-a4Action-commute (A4.Rot zero (suc zero))           (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+realPart-a4Action-commute (A4.Rot (suc zero) zero)           (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+realPart-a4Action-commute (A4.Rot (suc zero) (suc zero))     (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+realPart-a4Action-commute (A4.Rot (suc (suc zero)) zero)            (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+realPart-a4Action-commute (A4.Rot (suc (suc zero)) (suc zero))      (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+realPart-a4Action-commute (A4.Rot (suc (suc (suc zero))) zero)      (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+realPart-a4Action-commute (A4.Rot (suc (suc (suc zero))) (suc zero))(v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+realPart-a4Action-commute (A4.Flip zero)              (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+realPart-a4Action-commute (A4.Flip (suc zero))        (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+realPart-a4Action-commute (A4.Flip (suc (suc zero)))  (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
 
 -- GF9⁶ 的 4D CRT 谱投影
 crtProject-gf9⁶ : GF9⁶ → ℕ × ℕ × ℕ × ℕ
@@ -1101,5 +1128,5 @@ crtOrbit-gf9⁶ x = map (λ g → crtProject-gf9⁶ (a4Action-gf9 g x)) allA4
 chernA4Invariant : ∀ (g : A4Element) (v : GF9⁶) →
   polarCRT (realPart (a4Action-gf9 g v)) % 144
   ≡ polarCRT (realPart v) % 144
-chernA4Invariant g v = refl
-  -- A4 置换不改变 CRT 投影值 (permutation preserves base-3 sum % 144)
+chernA4Invariant g v =
+  cong (_% 144) (cong polarCRT (realPart-a4Action-commute g v))

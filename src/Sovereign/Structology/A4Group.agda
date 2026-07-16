@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.Structology.A4Group
 -- 结构学：A₄ 群（正四面体旋转对称群）

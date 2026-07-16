@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.HoTT.CRTFiberWinding
 -- CRT 纤维与环面绕数交互理论 (v5.18)
@@ -21,9 +21,10 @@
 module Sovereign.HoTT.CRTFiberWinding where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _^_)
-open import Data.Nat.DivMod using (m%n<n; [m+kn]%n≡m%n)
-open import Data.Nat.Properties using (*-comm)
+open import Data.Nat.DivMod using (m%n<n; [m+kn]%n≡m%n; m<n⇒m%n≡m)
+open import Data.Nat.Properties using (*-comm; +-comm; +-identityˡ; s≤s; z≤n)
 open import Data.Product using (Σ; _×_; _,_)
+open import Sovereign.Arithmetic.CRTLemmas using (crt-merge)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)
 
 -- CRT 基
@@ -151,12 +152,25 @@ M-div-tour = refl
 -- 46 是 CRT 域中的观测量, 不是 GF(3) 格点上的步进周期.
 --------------------------------------------------------------------------------
 
--- [Constitutional] toroidalHolonomy 的 CRT 纤维本质
---   144 和 46 是同一 CRT 纤维的两个投影分量.
---   它们不可分割——就像 CRT 同构 Z/M ≅ Z/65536 × Z/177147 中
---   (144, 46) 是单一 CRT 余数向量的两个坐标.
-postulate
-  toroidalHolonomy-CRT :
-    -- 存在唯一的 CRT 代表元同时满足两个缠绕条件
-    Σ ℕ (λ x → (x % POW2 ≡ POLAR) × (x % POW3 ≡ TORUS))
-    × (∀ y → y % POW2 ≡ POLAR → y % POW3 ≡ TORUS → y % M ≡ X0)
+-- [已证] toroidalHolonomy 的 CRT 纤维本质
+-- 存在性: X0 = 5148246160 同时满足两个模条件 (x0-mod-2, x0-mod-3).
+-- 唯一性: 若 y 同时满足, 则 y % M = X0 (crt-merge + X0 < M).
+toroidalHolonomy-CRT :
+  Σ ℕ (λ x → (x % POW2 ≡ POLAR) × (x % POW3 ≡ TORUS))
+  × (∀ y → y % POW2 ≡ POLAR → y % POW3 ≡ TORUS → y % M ≡ X0)
+toroidalHolonomy-CRT = existence , uniqueness
+  where
+    existence : Σ ℕ (λ x → (x % POW2 ≡ POLAR) × (x % POW3 ≡ TORUS))
+    existence = X0 , (x0-mod-2 , x0-mod-3)
+
+    x0%M≡X0 : X0 % M ≡ X0
+    x0%M≡X0 = refl  -- X0=5148246160 < M=11609505792, % 为恒等
+
+    uniqueness : ∀ y → y % POW2 ≡ POLAR → y % POW3 ≡ TORUS → y % M ≡ X0
+    uniqueness y y%2≡POLAR y%3≡TORUS = trans (crt-merge y X0 y%2≡X0%2 y%3≡X0%3) x0%M≡X0
+      where
+        y%2≡X0%2 : y % POW2 ≡ X0 % POW2
+        y%2≡X0%2 = trans y%2≡POLAR (sym x0-mod-2)
+        
+        y%3≡X0%3 : y % POW3 ≡ X0 % POW3
+        y%3≡X0%3 = trans y%3≡TORUS (sym x0-mod-3)

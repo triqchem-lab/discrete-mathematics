@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.Format.TQ10
 -- 格式定义：主权 TQ1_0 格式 (16 字节主权块)

@@ -9,23 +9,24 @@
 
 module Sovereign.Structology.Aether where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; s≤s)
 open import Data.Nat.DivMod using (_/_; _%_; m%n<n; m%n+[m/n]*n≡m)
-open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m+n; m≤n+m; +-mono-≤; *-mono-≤; ≤-pred)
+open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m+n; m≤n+m; +-mono-≤; *-mono-≤; ≤-pred; m≤n⇒m≤1+n)
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; fromℕ<)
 open import Data.Fin.Properties using (fromℕ<-toℕ; toℕ<n; fromℕ<-irrelevant)
 open import Data.Vec using (Vec; []; _∷_; lookup; tabulate)
-open import Data.Vec.Properties using (lookup-tabulate)
+open import Data.Vec.Properties using (lookup∘tabulate)
 open import Data.Integer using (ℤ; +_; -[1+_]) renaming (_+_ to _+ℤ_; _*_ to _*ℤ_)
-open import Data.List using (List; []; _∷_; length)
+open import Data.List using (List; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
+open import Relation.Binary.PropositionalEquality.Properties using (module ≡-Reasoning)
 open import Data.Product using (_×_; _,_; Σ; ∃; ∃-syntax)
 open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥)
 open import Relation.Nullary using (¬_)
 
 -- 导入核心模块
-open import Sovereign.Structology.T6 using (T6Lattice; GF3; Cell; CellDimension; polarStep; toroidalStep)
+open import Sovereign.Structology.T6 using (T6Lattice; GF3; Cell; CellDimension; polarStep; toroidalStep; finToT6; t6ToFin; leftInv)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; LossGain)
@@ -77,22 +78,9 @@ record Aether : Set where
     toroidalWinding : ℕ               -- 环向缠绕数 46
     lcmModulus   : ℕ                  -- 主权 LCM 模数
 
--- 所有 T⁶ 格点：3⁶ = 729 个
+-- 所有 T⁶ 格点：3⁶ = 729 个。使用 T6.agda 的 finToT6 编码。
 allLatticePoints : Vec T6Lattice 729
-allLatticePoints = tabulate f
-  where
-    f : Fin 729 → T6Lattice
-    f n = d5 ∷ d4 ∷ d3 ∷ d2 ∷ d1 ∷ d0 ∷ []
-      where
-        v = toℕ n
-        gf3 : ℕ → GF3
-        gf3 k = fromℕ< (m%n<n k 3)
-        d0 = gf3 (v % 3)
-        d1 = gf3 ((v / 3) % 3)
-        d2 = gf3 ((v / 9) % 3)
-        d3 = gf3 ((v / 27) % 3)
-        d4 = gf3 ((v / 81) % 3)
-        d5 = gf3 (v / 243)
+allLatticePoints = tabulate finToT6
 
 -- 标准以太实例
 standardAether : Aether
@@ -161,24 +149,19 @@ latticeIndex (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) =
 -- 最大可能值：2 + 3*2 + 9*2 + 27*2 + 81*2 + 243*2 = 2*364 = 728 < 729
 latticeIndex<729 : ∀ (p : T6Lattice) → latticeIndex p < 729
 latticeIndex<729 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) =
-  let open import Data.Nat.Properties
-        using (≤-trans; +-mono-≤; *-mono-≤; m≤m+n; m≤n+m; m<n⇒m≤n;
-               n≤1+n; ≤-step)
-      open import Data.Fin.Properties using (toℕ<n)
-
-      -- 每个坐标 ≤ 2（因为 Fin 3 中 toℕ < 3）
+  let -- 每个坐标 ≤ 2（因为 Fin 3 中 toℕ < 3）
       bound₀ : toℕ v₀ ≤ 2
-      bound₀ = m<n⇒m≤n (≤-pred (toℕ<n v₀))
+      bound₀ = ≤-pred (toℕ<n v₀)
       bound₁ : toℕ v₁ ≤ 2
-      bound₁ = m<n⇒m≤n (≤-pred (toℕ<n v₁))
+      bound₁ = ≤-pred (toℕ<n v₁)
       bound₂ : toℕ v₂ ≤ 2
-      bound₂ = m<n⇒m≤n (≤-pred (toℕ<n v₂))
+      bound₂ = ≤-pred (toℕ<n v₂)
       bound₃ : toℕ v₃ ≤ 2
-      bound₃ = m<n⇒m≤n (≤-pred (toℕ<n v₃))
+      bound₃ = ≤-pred (toℕ<n v₃)
       bound₄ : toℕ v₄ ≤ 2
-      bound₄ = m<n⇒m≤n (≤-pred (toℕ<n v₄))
+      bound₄ = ≤-pred (toℕ<n v₄)
       bound₅ : toℕ v₅ ≤ 2
-      bound₅ = m<n⇒m≤n (≤-pred (toℕ<n v₅))
+      bound₅ = ≤-pred (toℕ<n v₅)
 
       -- 加权后各项的上界
       term₀ : toℕ v₀ ≤ 2
@@ -209,16 +192,14 @@ latticeIndex<729 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) =
 
       totalBound : toℕ v₀ + 3 * toℕ v₁ + 9 * toℕ v₂ + 27 * toℕ v₃ + 81 * toℕ v₄ + 243 * toℕ v₅ ≤ 728
       totalBound = +-mono-≤ sum01234 term₅
-  in ≤-step totalBound
+  in s≤s totalBound
 
--- 标准以太格点集完备性：任意 T⁶ 格点皆存在于 allLatticePoints 中
--- 此命题为真，因为 allLatticePoints 通过 tabulate 枚举了全部 3⁶=729 个格点，
--- 而 latticeIndex 提供了到 [0,728] 的唯一编码。
--- [Structural Lemma] encode-decode 恒等式依赖于 6 维 GF(3) 基展开的模运算，
--- 此处作为结构引理保持为 postulate——其实质是有限枚举的完备性。
-postulate
-  allLatticePointsComplete : ∀ (p : T6Lattice) →
-    Σ[ i ∈ Fin 729 ] (lookup allLatticePoints i ≡ p)
+-- 标准以太格点集完备性：finToT6 ∘ t6ToFin ≡ id (leftInv)
+-- 因 allLatticePoints = tabulate finToT6, lookup-tabulate + leftInv 直接得证。
+allLatticePointsComplete : ∀ (p : T6Lattice) →
+  Σ (Fin 729) (λ i → lookup allLatticePoints i ≡ p)
+allLatticePointsComplete p =
+  t6ToFin p , trans (lookup∘tabulate finToT6 (t6ToFin p)) (leftInv p)
 
 --------------------------------------------------------------------------------
 -- 3. 离散联络与平行移动
@@ -239,7 +220,7 @@ parallelTransport lattice conn = DiscreteConnection.to conn
 -- 证明：allLatticePoints 枚举全部 729 个 T⁶ 格点，allLatticePointsComplete
 -- 保证任意平行移动结果皆可在其中找到对应索引。
 transportStaysInAether : ∀ (lat : T6Lattice) (conn : DiscreteConnection) →
-  Σ[ i ∈ Fin 729 ] (lookup (Aether.lattice standardAether) i ≡ parallelTransport lat conn)
+  Σ (Fin 729) (λ i → lookup (Aether.lattice standardAether) i ≡ parallelTransport lat conn)
 transportStaysInAether lat conn = allLatticePointsComplete (parallelTransport lat conn)
 
 --------------------------------------------------------------------------------
@@ -292,7 +273,7 @@ trivialGeodesicFromChain = [] , refl
 geodesicDeterminedByLossGain : T6Lattice → List LossGain → DiscreteGeodesic
 geodesicDeterminedByLossGain start chain =
   let (endPt , connections) = walk start chain
-      pathLength = length connections
+      pathLength = Data.List.length connections
   in record { start = start; end = endPt; path = connections; length = pathLength }
   where
     -- 损益操作对应的格点步进

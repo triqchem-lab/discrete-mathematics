@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Coupling.ZhonglvPhaseSync
 -- v5.2: 仲吕相位同步（非闭合）

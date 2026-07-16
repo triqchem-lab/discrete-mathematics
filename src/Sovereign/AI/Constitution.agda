@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.AI.Constitution
 -- AI 宪法规范：律算宪法在 AI 领域的形式化约束

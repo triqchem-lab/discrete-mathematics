@@ -1,4 +1,4 @@
-{-# OPTIONS --allow-unsolved-metas #-}
+{-# OPTIONS --rewriting --allow-unsolved-metas #-}
 
 module Sovereign.Coupling.Dynamics where
 

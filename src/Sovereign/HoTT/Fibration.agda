@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.HoTT.Fibration
 -- 高维拓扑：纤维丛与和乐 (Fiber Bundles and Holonomy)

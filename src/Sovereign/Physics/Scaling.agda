@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Physics.Scaling
 -- 物理缩放：离散代数单位与物理单位的转换

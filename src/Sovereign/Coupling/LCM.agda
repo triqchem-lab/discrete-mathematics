@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 module Sovereign.Coupling.LCM where
 open import Data.Fin using (Fin; toℕ; fromℕ; zero; suc)
 open import Data.Fin.Properties using (toℕ<n; toℕ-fromℕ<; toℕ-injective)

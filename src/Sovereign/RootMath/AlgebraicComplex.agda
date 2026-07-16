@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.RootMath.AlgebraicComplex
 -- 代数复数：避免连续统的复数表示
@@ -192,8 +192,9 @@ EnergyGapSq : normˢ (EnergyGap *ˢ EnergyGap) ≡ + 9 / 1
 EnergyGapSq = refl
 -- 证明：(√3)² = 3+0√3, normˢ(3+0√3) = 9
 
--- 注：若需证明 EnergyGap *ˢ EnergyGap ≡ + 3 / 1 +s3 + 0 / 1，使用 refl
-postulate EnergyGapIs3 : EnergyGap *ˢ EnergyGap ≡ (+ 3 / 1) +s3 (+ 0 / 1)
+-- EnergyGap = √3, 故 (√3)² = 3 + 0√3, 由构造直接 refl。
+EnergyGapIs3 : EnergyGap *ˢ EnergyGap ≡ (+ 3 / 1) +s3 (+ 0 / 1)
+EnergyGapIs3 = refl
 
 --------------------------------------------------------------------------------
 -- 6. 宪法合规性

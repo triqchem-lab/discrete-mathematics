@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.RootMath.EnergyGap
 -- 根数学：能隙 Δ=√3 与弦长 √3 的起源

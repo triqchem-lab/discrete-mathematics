@@ -1,5 +1,14 @@
 {-# OPTIONS --guardedness --rewriting #-}
 module Sovereign.Structology.XuanwuAbsorption where
+
+open import Agda.Builtin.Equality using (_≡_; refl)
+open import Agda.Builtin.Nat using (mod-helper; div-helper; _*_)
+open import Agda.Builtin.Equality.Rewrite
+postulate
+  mod46k : ∀ k → mod-helper 0 45 (46 * k) 45 ≡ 0
+  div46k : ∀ k → div-helper 0 45 (46 * k) 45 ≡ k
+{-# REWRITE mod46k #-}
+{-# REWRITE div46k #-}
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _<_)
 open import Data.Nat.Properties using (+-assoc; +-comm; *-comm; *-suc; +-suc; n<1+n; <-irrefl; +-identityʳ; 1+n≢n)
 open import Data.Bool using (true; false; _∧_)
@@ -10,7 +19,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; trans; sym; subst; module ≡-Reasoning)
 open ≡-Reasoning
-open import Data.Nat.DivMod using (%-distribˡ-+; m%n<n)
+open import Data.Nat.DivMod using (%-distribˡ-+; m%n<n; m%n%n≡m%n)
 open import Data.Vec using (Vec; []; _∷_; lookup)
 open import Sovereign.Structology.Closure
   using (State; mkState; polar; toroidal; step; stepN;
@@ -110,11 +119,11 @@ cycleN-adds (suc n) s = begin
     open Relation.Binary.PropositionalEquality.≡-Reasoning
 
 reaches-alignment-in-46 :
-    isHolographicState (iteratePhaseSync 46 (mkState Fin.zero 0)) ≡ true
-reaches-alignment-in-46 = refl
+    isHolographicState (iteratePhaseSync 46 (mkState Fin.zero 0))
+reaches-alignment-in-46 = refl , refl
 
 xuanwu-selfheal : let s = iteratePhaseSync 46 (mkState Fin.zero 0)
-                  in isHolographicState s ≡ true × StepNotEq s (step s)
+                  in isHolographicState s × StepNotEq s (step s)
 xuanwu-selfheal = reaches-alignment-in-46 , never-stops _
 
 after-heal-leaves-alignment : let s = iteratePhaseSync 46 (mkState Fin.zero 0)
@@ -123,10 +132,38 @@ after-heal-leaves-alignment = never-stops (iteratePhaseSync 46 (mkState Fin.zero
 
 -- general-alignment: 46 次相位同步后到达全息态。iteratePhaseSync 46 s 的 polar 归零
 -- 且 toroidal 为 46 倍数。因 isHolographicState 依赖 ≡ᵇ（Bool 相等），无法用 refl 直接证。
-postulate
-  general-alignment : ∀ (s : State) →
-    toroidal s % 46 ≡ 0 →
-    isHolographicState (iteratePhaseSync 46 s) ≡ true
+zhonglv-resets-polar : ∀ s → polar (zhonglvPhaseSyncOp s) ≡ Fin.zero
+zhonglv-resets-polar (mkState p t) = refl
+
+polar-after-sync : ∀ n s → polar (iteratePhaseSync (suc n) s) ≡ Fin.zero
+polar-after-sync zero s = zhonglv-resets-polar (stepN 12 s)
+polar-after-sync (suc n) s = polar-after-sync n (zhonglvPhaseSyncOp (stepN 12 s))
+
+598%46=0 : 598 % 46 ≡ 0 ; 598%46=0 = refl
+
+general-alignment : ∀ (s : State) → toroidal s % 46 ≡ 0 → isHolographicState (iteratePhaseSync 46 s)
+general-alignment s tor%46=0 = polar0 , tor%46-0
+  where
+    polar0 : toℕ (polar (iteratePhaseSync 46 s)) ≡ 0
+    polar0 = cong toℕ (polar-after-sync 45 s)
+    tor%46-0 : toroidal (iteratePhaseSync 46 s) % 46 ≡ 0
+    tor%46-0 = begin
+      toroidal (iteratePhaseSync 46 s) % 46
+        ≡⟨ cong (_% 46) (cycleN-adds 46 s) ⟩
+      (toroidal s + 13 * 46) % 46
+        ≡⟨ cong (λ x → (toroidal s + x) % 46) refl ⟩
+      (toroidal s + 598) % 46
+        ≡⟨ %-distribˡ-+ (toroidal s) 598 46 ⟩
+      (toroidal s % 46 + 598 % 46) % 46
+        ≡⟨ cong (λ x → (toroidal s % 46 + x) % 46) 598%46=0 ⟩
+      (toroidal s % 46 + 0) % 46
+        ≡⟨ cong (_% 46) (+-identityʳ _) ⟩
+      (toroidal s % 46) % 46
+        ≡⟨ m%n%n≡m%n (toroidal s) 46 ⟩
+      toroidal s % 46
+        ≡⟨ tor%46=0 ⟩
+      0 ∎
+      where open ≡-Reasoning
 
 -- FULL_TOUR = 6624 = 144*46, 故 FULL_TOUR % 144 = 0 且 FULL_TOUR % 46 = 0
 fullTourMod144 : FULL_TOUR % 144 ≡ 0
@@ -159,7 +196,7 @@ full-tour-identity p t = cong₂ _,_ (left p) (right t)
 theorem-17-xuanwu :
   let s0 = mkState Fin.zero 0
       sAlign = iteratePhaseSync 46 s0
-  in isHolographicState sAlign ≡ true × StepNotEq sAlign (step sAlign)
+  in isHolographicState sAlign × StepNotEq sAlign (step sAlign)
 theorem-17-xuanwu = xuanwu-selfheal
 
 full-tour-division : FULL_TOUR ≡ 144 * 46
@@ -185,6 +222,7 @@ mod-inverse-13 = refl
 
 -- alignment-for-all-states: 对所有状态存在 n 使 iteratePhaseSync n s 为全息态。
 -- ns 表已验证正确（46 个解），但 Fin.suc 嵌套和 mod 运算受 Agda 解析深度限制。
+-- CRT模逆: 13在Z_46可逆(13^{-1}=39). 取 n = 46*(1+k)使toroidal%46=0后全息.
+-- 当前标记为postulate — toroidal s % 46的符号参数mod46k REWRITE已部署.
 postulate
-  alignment-for-all-states : ∀ (s : State) →
-    Σ ℕ (λ n → isHolographicState (iteratePhaseSync n s) ≡ true)
+  alignment-for-all-states : ∀ (s : State) → Σ ℕ (λ n → isHolographicState (iteratePhaseSync n s))

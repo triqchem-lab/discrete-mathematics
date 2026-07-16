@@ -1,3 +1,4 @@
+{-# OPTIONS --rewriting #-}
 module Sovereign.Algebra.GF9 where
 
 -- GF(3²) = GF(3)[x]/(x²+1)

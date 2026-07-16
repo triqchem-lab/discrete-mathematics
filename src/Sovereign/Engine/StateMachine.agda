@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 module Sovereign.Engine.StateMachine where
 open import Data.Nat using (ℕ; suc; _+_; _*_; _<_; _≤_)
 open import Data.Nat.Base using (_≡ᵇ_; _%_)

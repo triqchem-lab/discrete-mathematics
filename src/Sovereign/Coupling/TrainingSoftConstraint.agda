@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Coupling.TrainingSoftConstraint
 -- 耦合域：训练期能隙Δ软约束 (Soft Constraint)

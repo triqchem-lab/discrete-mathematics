@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Structology.Closure
 -- 结构学：仲吕相位同步与高维拓扑同步 (Zhonglv PhaseSync & Topological Sync)
@@ -14,11 +14,12 @@
 
 module Sovereign.Structology.Closure where
 
-open import Data.Nat using (ℕ; zero; suc; _∸_; _≤_; _>_; _<?_) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
+open import Data.Nat using (ℕ; zero; suc; _∸_; _≤_; _>_; _<?_; _%_) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
 open import Data.Nat.Base using (_≡ᵇ_)
 open import Data.Nat.DivMod using (_div_; _mod_; m%n<n)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
-open import Data.Bool using (Bool; true; false; _∧_)
+open import Data.Product using (_×_; _,_)
+open import Data.Bool using (Bool)
 open import Relation.Nullary using (Dec; yes; no)
 open import Data.Fin.Base using (Fin; zero; toℕ; fromℕ<)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
@@ -114,17 +115,14 @@ iteratePhaseSync : ℕ → State → State
 iteratePhaseSync zero s = s
 iteratePhaseSync (suc n) s = iteratePhaseSync n (zhonglvPhaseSyncOp (stepN 12 s))
 
--- 全息态定义：极向=0 且环向为 46 的倍数
-isHolographicState : State → Bool
+-- 全息态定义：极向=0 且环向为 46 的倍数（命题类型，非 Bool）
+isHolographicState : State → Set
 isHolographicState s =
-  ((toℕ (State.polar s) ≡ᵇ 0) ∧ (isMultipleOf46 (State.toroidal s)))
-  where
-    isMultipleOf46 : ℕ → Bool
-    isMultipleOf46 n = toℕ (n mod 46) ≡ᵇ 0
+  (toℕ (State.polar s) ≡ 0) × (State.toroidal s % 46 ≡ 0)
 
 -- 收敛定理基线：0 次相位同步时黄钟初始态即为全息态
 -- TODO: 推广到 ∀ initialState 经过 46 次相位同步后到达全息态
 -- 当前因 46 次展开归一化超时，暂证明基线情形 (N=0)。
 convergenceToHolographicState :
-  isHolographicState (iteratePhaseSync 0 (mkState zero 0)) ≡ true
-convergenceToHolographicState = refl
+  isHolographicState (iteratePhaseSync 0 (mkState zero 0))
+convergenceToHolographicState = refl , refl

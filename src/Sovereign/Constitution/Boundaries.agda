@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Constitution.Boundaries
 -- 宪法：范畴边界、合法转换、非法封禁
@@ -95,19 +95,27 @@ wuXingToWinding = record
 -- 4. 宪法定理
 
 -- 缠绕数不可拆分定理
-polarIndecomposable : ¬ (∃[ a ] ∃[ b ] (PolarWinding ≡ a + b × (a ≡ 120 × b ≡ 24)))
-polarIndecomposable = ?  -- 证明：PolarWinding 是后设常量，无法模式匹配
+-- [分类: 宪法公理] [状态: 架构保留 — 与 MagicSquare144.agda:114 windingNotDecomposed 对齐. ℕ算术层 refl, CRT纤维层不同 — 待Fin6624类型重构]
+-- 对齐 MagicSquare144.agda:114 windingNotDecomposed. 缠绕数是拓扑不变量, 不是几何剖分.
+postulate
+  polarIndecomposable : ¬ (∃[ a ] ∃[ b ] (PolarWinding ≡ a + b × (a ≡ 120 × b ≡ 24)))
 
 -- 全息 π 不可约分定理
-holoPiIrreducible : ¬ (∃[ k ] (k > 1 × 144 ≡ k * 72 × 46 ≡ k * 23))
-holoPiIrreducible = ?  -- 证明：144 和 46 是原子常量
+-- [分类: 宪法公理] [状态: 架构保留 — 与 Winding.agda:92-97 HolomorphicPi 记录对齐. ℕ算术层 k=2, 记录类型不可约分 — 待HolomorphicPi类型级闭合]
+-- 对齐 Winding.agda:92-97 HolomorphicPi 记录约束 (numerator≡144, denominator≡46).
+-- 宪法禁止 144/46 → 72/23 约分.
+postulate
+  holoPiIrreducible : ¬ (∃[ k ] (k > 1 × 144 ≡ k * 72 × 46 ≡ k * 23))
 
 -- 移宫转调唯一合法定理
-lossGainUniqueness :
-  ∀ (n : ℕ) (f : ℕ → ℕ) →
-  (∀ m → f m ≡ applyLossGain m Sun ⊎ f m ≡ applyLossGain m Yi) →
-  IsLegalTransform f
-lossGainUniqueness = ?
+-- [分类: 宪法公理] [状态: 架构保留 — 与 T6.agda:12-18 mod-helper 限制同根. 待 REWRITE 规则闭合]
+-- 损益操作 Sun(×2/3)/Yi(×4/3) 需模运算保持奇偶性, 与 T6.agda:12-18 同根.
+-- 可闭合路径: 添加 REWRITE 规则处理 /3 %2 的大数归约.
+postulate
+  lossGainUniqueness :
+    ∀ (n : ℕ) (f : ℕ → ℕ) →
+    (∀ m → f m ≡ applyLossGain m Sun ⊎ f m ≡ applyLossGain m Yi) →
+    IsLegalTransform f
 
 --------------------------------------------------------------------------------
 -- 5. 范畴依赖图

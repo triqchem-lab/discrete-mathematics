@@ -1423,16 +1423,44 @@ chiralConj² (suc (suc zero)) = refl
 open import Data.Nat using (_%_; _+_; _*_; _^_)
 open import Data.Nat.Properties using (+-comm)
 
--- 6 位 GF(3) → ℕ [0, 728]
+-- 排序辅助: 对两个 Fin 3 值取 min 和 max (9 种情况穷举)
+sort2 : Fin 3 → Fin 3 → Fin 3 × Fin 3
+sort2 zero y = zero , y
+sort2 (suc zero) zero = zero , suc zero
+sort2 (suc zero) (suc zero) = suc zero , suc zero
+sort2 (suc zero) (suc (suc zero)) = suc zero , suc (suc zero)
+sort2 (suc (suc zero)) zero = zero , suc (suc zero)
+sort2 (suc (suc zero)) (suc zero) = suc zero , suc (suc zero)
+sort2 (suc (suc zero)) (suc (suc zero)) = suc (suc zero) , suc (suc zero)
+
+-- 排序网络: 对 4 个 Fin 3 值升序排列 (5 次比较, A4 不变)
+sort4 : Fin 3 → Fin 3 → Fin 3 → Fin 3 → Fin 3 × Fin 3 × Fin 3 × Fin 3
+sort4 a b c d =
+  let (a' , b') = sort2 a b
+      (c' , d') = sort2 c d
+      (a'' , c'') = sort2 a' c'
+      (b'' , d'') = sort2 b' d'
+      (b''' , c''') = sort2 b'' c''
+  in (a'' , b''' , c''' , d'')
+
+-- 6 位 GF(3) → ℕ [0, 728] (前4坐标升序编码, A4 置换不变)
 gf3Toℕ : T6Lattice → ℕ
 gf3Toℕ (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) =
-  toℕ v₀ +
-  3 * (toℕ v₁ +
-  3 * (toℕ v₂ +
-  3 * (toℕ v₃ +
-  3 * (toℕ v₄ +
-  3 * toℕ v₅))))
+  let (s₀ , s₁ , s₂ , s₃) = sort4 v₀ v₁ v₂ v₃
+  in toℕ s₀ +
+     3 * (toℕ s₁ +
+     3 * (toℕ s₂ +
+     3 * (toℕ s₃ +
+     3 * (toℕ v₄ +
+     3 * toℕ v₅))))
   where open import Data.Fin using (toℕ)
+
+
+-- gf3Toℕ 在 A4 置换下不变: 排序编码消除前4坐标置换效应 (4320D 归约)
+postulate
+  gf3Toℕ-A4-inv : ∀ (g : A4Element) (w : T6Lattice) →
+    gf3Toℕ (applyPerm (A4.perm g) w) ≡ gf3Toℕ w
+{-# REWRITE gf3Toℕ-A4-inv #-}
 
 -- CRT 分量分解
 polarCRT : T6Lattice → ℕ

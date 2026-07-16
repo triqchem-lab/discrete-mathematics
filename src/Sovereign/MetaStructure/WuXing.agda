@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.MetaStructure.WuXing
 -- 元结构层：五行模数区定义与动力学关系

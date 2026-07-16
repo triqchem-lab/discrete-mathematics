@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Coupling.LossGain
 -- 耦合域：移宫转调（损益操作）、主权 LCM 模数、仲吕对齐
