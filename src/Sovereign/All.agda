@@ -205,6 +205,8 @@ open import Sovereign.Analysis.FiniteDynamics public
 open import Sovereign.Analysis.VertexAlgebraDiscrete public hiding (shift)
 -- P4-C: 离散 Hilbert 空间 (GF9ⁿ + hermitianIP + 轨道周期完备性, 0 postulate)
 open import Sovereign.Analysis.HilbertDiscrete public
+-- P4-D: 全息态与基模 (信息论闭包类型基础设施, 4 postulate 待构造)
+open import Sovereign.Structology.HolographicSpace public
 
 -- ── 同伦类型论扩展 (v7.4) ────────────────────────────────────
 -- 离散 CCHM: CRT 环面上的 C₃ Burnside 群作用
