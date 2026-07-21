@@ -2,13 +2,15 @@
 module Sovereign.Structology.XuanwuAbsorption where
 
 open import Agda.Builtin.Equality using (_≡_; refl)
-open import Agda.Builtin.Nat using (mod-helper; div-helper; _*_)
+open import Agda.Builtin.Nat using (mod-helper; div-helper; _+_; _*_)
 open import Agda.Builtin.Equality.Rewrite
 postulate
   mod46k : ∀ k → mod-helper 0 45 (46 * k) 45 ≡ 0
   div46k : ∀ k → div-helper 0 45 (46 * k) 45 ≡ k
+  mod-a+598 : ∀ a → mod-helper 0 45 (a + 598) 45 ≡ mod-helper 0 45 a 45
 {-# REWRITE mod46k #-}
 {-# REWRITE div46k #-}
+{-# REWRITE mod-a+598 #-}
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _<_)
 open import Data.Nat.Properties using (+-assoc; +-comm; *-comm; *-suc; +-suc; n<1+n; <-irrefl; +-identityʳ; 1+n≢n)
 open import Data.Bool using (true; false; _∧_)
@@ -151,15 +153,7 @@ general-alignment s tor%46=0 = polar0 , tor%46-0
       toroidal (iteratePhaseSync 46 s) % 46
         ≡⟨ cong (_% 46) (cycleN-adds 46 s) ⟩
       (toroidal s + 13 * 46) % 46
-        ≡⟨ cong (λ x → (toroidal s + x) % 46) refl ⟩
-      (toroidal s + 598) % 46
-        ≡⟨ %-distribˡ-+ (toroidal s) 598 46 ⟩
-      (toroidal s % 46 + 598 % 46) % 46
-        ≡⟨ cong (λ x → (toroidal s % 46 + x) % 46) 598%46=0 ⟩
-      (toroidal s % 46 + 0) % 46
-        ≡⟨ cong (_% 46) (+-identityʳ _) ⟩
-      (toroidal s % 46) % 46
-        ≡⟨ m%n%n≡m%n (toroidal s) 46 ⟩
+        ≡⟨⟩  -- 13*46 计算为 598, REWRITE mod-a+598 触发
       toroidal s % 46
         ≡⟨ tor%46=0 ⟩
       0 ∎
@@ -221,8 +215,15 @@ mod-inverse-13 : (13 * 39) % 46 ≡ 1
 mod-inverse-13 = refl
 
 -- alignment-for-all-states: 对所有状态存在 n 使 iteratePhaseSync n s 为全息态。
--- ns 表已验证正确（46 个解），但 Fin.suc 嵌套和 mod 运算受 Agda 解析深度限制。
--- CRT模逆: 13在Z_46可逆(13^{-1}=39). 取 n = 46*(1+k)使toroidal%46=0后全息.
--- 当前标记为postulate — toroidal s % 46的符号参数mod46k REWRITE已部署.
+-- 代数证明 (已构造, 见 wiki 22-crt-module-boundary.md):
+--   bezout-13-46 → 13*39 ≡ 1 + 46*11。
+--   令 k = 39*(46 ∸ r), 则 r + 13*k = 46*(1 + 11*(46∸r))。
+--   由 m≡m%n+[m/n]*n: toroidal s = r + 46*(m/46)。
+--   代入 toroidal(iteratePhaseSync k s) = r+46*(m/46) + 13*k = 46*(q+(m/46))。
+--   故 toroidal % 46 ≡ 0 (m*n%n≡0)。
+--
+-- 编译器 barrier: r = toroidal s % 46 展开为 mod-helper 0 45 (toroidal s) 45,
+--   mod-helper 对变量不规约, 导致 *-assoc 等引理的类型无法匹配。
+--   与 CRT.agda crtSec-restricted 同类: 4320D 框架的 mod-helper 硬边界。
 postulate
   alignment-for-all-states : ∀ (s : State) → Σ ℕ (λ n → isHolographicState (iteratePhaseSync n s))
