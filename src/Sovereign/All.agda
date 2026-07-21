@@ -192,13 +192,19 @@ open import Sovereign.Algebra.LCMVortexConnection
 -- (50 个符号与上游冲突, 取消 public 重导出, 模块仍被类型检查)
 open import Sovereign.Algebra.FieldExtensionTower
 
--- ── P3 群表示论: 分支规则 + 二元四面体群 + 统一框架 (v7.5) ──
--- SO(3)→A₄ 分支规则: spin-l 分解表 + 特征标内积, 0 postulate
-open import Sovereign.Algebra.BranchingRules public
--- 二元四面体群 2A₄ = Q₈ ⋊ C₃: 非平凡中心扩张, 7 不可约表示, 0 postulate
-open import Sovereign.Structology.BinaryTetrahedral public
--- 表示论统一框架: 膨胀/旋量/SU(2)→2A₄/覆盖一致性, 0 postulate
-open import Sovereign.Algebra.RepresentationBridge public
+-- ── P3 群表示论: Lie 群离散替代统一入口 (v7.5) ──────────────
+-- 合并: BranchingRules (SO(3)→A₄) + BinaryTetrahedral (2A₄=Q₈⋊C₃)
+--       + RepresentationBridge (膨胀/旋量/覆盖一致性)
+-- P0 证据已注册至 CompletenessTheorem §8, 0 postulate
+open import Sovereign.Algebra.LieDiscrete public
+
+-- ── P4 无穷维结构离散替代 (v7.5) ─────────────────────────────
+-- P4-A: 有限状态动力系统 + 轨道周期定理 (鸽巢原理, 0 postulate)
+open import Sovereign.Analysis.FiniteDynamics public
+-- P4-B: GF(9) 离散顶点代数 (char 3 OPE 截断, 0 postulate)
+open import Sovereign.Analysis.VertexAlgebraDiscrete public hiding (shift)
+-- P4-C: 离散 Hilbert 空间 (GF9ⁿ + hermitianIP + 轨道周期完备性, 0 postulate)
+open import Sovereign.Analysis.HilbertDiscrete public
 
 -- ── 同伦类型论扩展 (v7.4) ────────────────────────────────────
 -- 离散 CCHM: CRT 环面上的 C₃ Burnside 群作用
