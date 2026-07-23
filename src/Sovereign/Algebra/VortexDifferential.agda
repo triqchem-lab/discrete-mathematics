@@ -264,8 +264,29 @@ cancel-pair a b c =
   (trans (cong (λ v → a ⊕ (v ⊕ c)) (trans (⊕-comm (negate b) b) (⊕-inverse b)))
          (cong (a ⊕_) (⊕-identityˡ c))))
 
--- Δ₁₂³-is-3step 待后续用代数链风格重写 (需要正确的消去引理)
--- 核心: cancel-pair 已证, Δ₁₂²-expand 已证
+-- 内层望远镜: negate c ⊕ (c ⊕ negate d) ≡ negate d
+-- 证明: sym assoc → comm+inverse → identity (3 步代数链)
+inner-telescope : ∀ c d → negate c ⊕ (c ⊕ negate d) ≡ negate d
+inner-telescope c d =
+  trans (sym (⊕-assoc (negate c) c (negate d)))
+  (trans (cong (_⊕ negate d) (trans (⊕-comm (negate c) c) (⊕-inverse c)))
+         (⊕-identityˡ (negate d)))
+
+-- 完全展开: (a⊕negate b)⊕((b⊕negate c)⊕(c⊕negate d)) ≡ a⊕negate d
+-- 证明: assoc → cancel-pair → inner-telescope (3 步)
+telescope-4 : ∀ a b c d → (a ⊕ negate b) ⊕ ((b ⊕ negate c) ⊕ (c ⊕ negate d)) ≡ a ⊕ negate d
+telescope-4 a b c d =
+  trans (cong ((a ⊕ negate b) ⊕_) (⊕-assoc b (negate c) (c ⊕ negate d)))
+  (trans (cancel-pair a b (negate c ⊕ (c ⊕ negate d)))
+         (cong (a ⊕_) (inner-telescope c d)))
+
+-- 定理 4: Δ₁₂³ f(x) = f(x+3) ⊕ negate(f(x))
+-- 证明: Δ₁₂²-expand → telescope-4 (2 步)
+Δ₁₂³-is-3step : ∀ f x →
+  Δ₁₂ (Δ₁₂ (Δ₁₂ f)) x ≡ (f (+1 (+1 (+1 x))) ⊕ negate (f x))
+Δ₁₂³-is-3step f x =
+  trans (Δ₁₂²-expand (Δ₁₂ f) x)
+        (telescope-4 (f (+1 (+1 (+1 x)))) (f (+1 (+1 x))) (f (+1 x)) (f x))
 
 --------------------------------------------------------------------------------
 -- §7. 卷积的移位交换性
