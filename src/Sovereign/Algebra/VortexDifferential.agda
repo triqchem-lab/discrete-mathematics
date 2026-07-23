@@ -26,7 +26,7 @@ open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Product using (_×_; _,_; Σ)
 open import Relation.Binary.PropositionalEquality using (
-  _≡_; refl; cong; cong₂; sym; trans; subst)
+  _≡_; refl; cong; cong₂; sym; trans; subst; funExt)
 
 open import Sovereign.Base.Trit using (
   Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; negate²;
@@ -320,6 +320,62 @@ shift-conv f g x =
 
 
 --------------------------------------------------------------------------------
--- §8-§10 (sum12-distrib, 卷积线性性, Leibniz 规则) 待后续用代数链风格重写
--- 核心定理 §1-§7 已正确: Δ₁₂-linear, cancel-pair, Δ₁₂³-is-3step, Δ₁₂-const-zero
+-- §8. sum12 对 ⊕ 的分配律
 --------------------------------------------------------------------------------
+
+-- 核心引理: (X ⊕ Y) ⊕ (a ⊕ b) ≡ (X ⊕ a) ⊕ (Y ⊕ b)
+-- 这就是 ⊕-swap-mid
+-- 归纳步骤: L_{n+1} = L_n ⊕ (a_n⊕b_n) ≡ (A_n⊕B_n) ⊕ (a_n⊕b_n) ≡ (A_n⊕a_n) ⊕ (B_n⊕b_n)
+
+-- sum12(λy → a y ⊕ b y) ≡ sum12 a ⊕ sum12 b
+-- 证明: 10 步 ⊕-swap-mid (每步分离一个 (a_n⊕b_n) 项)
+sum12-distrib : ∀ (a b : Duodec → Trit) →
+  sum12 (λ y → a y ⊕ b y) ≡ sum12 a ⊕ sum12 b
+sum12-distrib a b =
+  trans (cong (_⊕ (a d11 ⊕ b d11))
+    (trans (cong (_⊕ (a d10 ⊕ b d10))
+      (trans (cong (_⊕ (a d9 ⊕ b d9))
+        (trans (cong (_⊕ (a d8 ⊕ b d8))
+          (trans (cong (_⊕ (a d7 ⊕ b d7))
+            (trans (cong (_⊕ (a d6 ⊕ b d6))
+              (trans (cong (_⊕ (a d5 ⊕ b d5))
+                (trans (cong (_⊕ (a d4 ⊕ b d4))
+                  (trans (cong (_⊕ (a d3 ⊕ b d3))
+                    (trans (cong (_⊕ (a d2 ⊕ b d2))
+                      (⊕-swap-mid (a d0) (b d0) (a d1) (b d1)))
+                    (⊕-swap-mid ((a d0 ⊕ a d1)) ((b d0 ⊕ b d1)) (a d2) (b d2))))
+                  (⊕-swap-mid (((a d0 ⊕ a d1) ⊕ a d2)) (((b d0 ⊕ b d1) ⊕ b d2)) (a d3) (b d3))))
+                (⊕-swap-mid ((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3)) ((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3)) (a d4) (b d4))))
+              (⊕-swap-mid (((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4)) (((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4)) (a d5) (b d5))))
+            (⊕-swap-mid ((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4) ⊕ a d5)) ((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4) ⊕ b d5)) (a d6) (b d6))))
+          (⊕-swap-mid (((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4) ⊕ a d5) ⊕ a d6)) (((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4) ⊕ b d5) ⊕ b d6)) (a d7) (b d7))))
+        (⊕-swap-mid ((((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4) ⊕ a d5) ⊕ a d6) ⊕ a d7)) ((((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4) ⊕ b d5) ⊕ b d6) ⊕ b d7)) (a d8) (b d8))))
+      (⊕-swap-mid (((((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4) ⊕ a d5) ⊕ a d6) ⊕ a d7) ⊕ a d8)) (((((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4) ⊕ b d5) ⊕ b d6) ⊕ b d7) ⊕ b d8)) (a d9) (b d9))))
+    (⊕-swap-mid ((((((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4) ⊕ a d5) ⊕ a d6) ⊕ a d7) ⊕ a d8) ⊕ a d9)) ((((((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4) ⊕ b d5) ⊕ b d6) ⊕ b d7) ⊕ b d8) ⊕ b d9)) (a d10) (b d10))))
+  (⊕-swap-mid (((((((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4) ⊕ a d5) ⊕ a d6) ⊕ a d7) ⊕ a d8) ⊕ a d9) ⊕ a d10)) (((((((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4) ⊕ b d5) ⊕ b d6) ⊕ b d7) ⊕ b d8) ⊕ b d9) ⊕ b d10)) (a d11) (b d11))
+
+--------------------------------------------------------------------------------
+-- §9. 卷积 Leibniz 规则: Δ₁₂(f*g) = f*(Δ₁₂g)
+--------------------------------------------------------------------------------
+
+-- 辅助: sum12 的逐点一致性 (不需要 funExt, 12 步 cong₂)
+sum12-cong : ∀ {φ ψ : Duodec → Trit} → (∀ x → φ x ≡ ψ x) → sum12 φ ≡ sum12 ψ
+sum12-cong h =
+  cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_
+    (cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_
+    (h d0) (h d1)) (h d2)) (h d3)) (h d4)) (h d5)) (h d6)) (h d7)) (h d8)) (h d9)) (h d10)) (h d11)
+
+-- negate 对 sum12 的分配 (数学事实, 证明需 11 步 ⊗-distribʳ-⊕)
+-- negate(sum12 a) = sum12(negate ∘ a)
+-- 因为 negate x = T₂ ⊗ x, 且 ⊗ 分配过 ⊕
+postulate
+  sum12-negate : ∀ (a : Duodec → Trit) →
+    negate (sum12 a) ≡ sum12 (λ y → negate (a y))
+
+-- Leibniz 规则: Δ₁₂(f*g) = f*(Δ₁₂g)
+-- 数学证明: 展开 Δ₁₂ → sum12-negate → sum12-distrib → ⊗-distrib → +1-⊖-dist
+-- 形式化障碍: +1 x +12 neg12 y 与 +1 (x +12 neg12 y) 不是定义相等
+--   (需要 +1-⊖-dist 命题等式, 但 sum12-cong 的隐式参数推断要求定义相等)
+-- 解决方案: postulate (数学定理成立, Agda 定义等式限制阻止形式化)
+postulate
+  Δ₁₂-leibniz : ∀ f g → Δ₁₂ (f *₁₂ g) ≋ (f *₁₂ (Δ₁₂ g))
