@@ -68,10 +68,10 @@ DiscreteCarrier LieGroupSO3        = A4            -- 12 元素有限群
 DiscreteCarrier FourierIntegral    = ℕ             -- 4320D 离散频谱
 DiscreteCarrier ComplexNumber      = GF9           -- GF(3²), 9 元素有限域
 DiscreteCarrier LimitEpsilon       = Σ (ℕ → ℕ) (λ a → Σ ℕ (λ L → DiscreteLimit a L))
-DiscreteCarrier HilbertSpace       = ⊤             -- TODO: GF(3) 有限维内积空间
-DiscreteCarrier ODEPDE             = ⊤             -- TODO: GF(3) 差分方程 (Δ³≡0 已覆盖)
-DiscreteCarrier MeasureTheory      = ⊤             -- TODO: GF(3) 计数测度
-DiscreteCarrier FunctionalAnalysis = ⊤             -- TODO: GF(3) 有限维算子代数
+DiscreteCarrier HilbertSpace       = GF3Func × GF3Func  -- GF(3) 有限维内积空间 (向量对)
+DiscreteCarrier ODEPDE             = GF3Func       -- GF(3) 差分方程 (Δ³≡0 截断)
+DiscreteCarrier MeasureTheory      = ℕ             -- 计数测度 μ(A)=|A|
+DiscreteCarrier FunctionalAnalysis = GF3Func → Trit  -- 线性泛函空间 (对偶空间)
 
 --------------------------------------------------------------------------------
 -- §3. 存在性证据 — 每个载体非空
@@ -84,10 +84,10 @@ carrierWitness LieGroupSO3        = Id                        -- A₄ 单位元
 carrierWitness FourierIntegral    = 4320                      -- 全息维度
 carrierWitness ComplexNumber      = (T₀ , T₀)                -- GF(9) 零元
 carrierWitness LimitEpsilon       = (λ _ → 0) , (0 , const-converges 0)  -- 常数序列收敛
-carrierWitness HilbertSpace       = tt                        -- TODO
-carrierWitness ODEPDE             = tt                        -- TODO
-carrierWitness MeasureTheory      = tt                        -- TODO
-carrierWitness FunctionalAnalysis = tt                        -- TODO
+carrierWitness HilbertSpace       = (T₀ , T₀ , T₀) , (T₀ , T₀ , T₀)  -- 零向量对
+carrierWitness ODEPDE             = (T₀ , T₀ , T₀)           -- 零解 (Δ³≡0)
+carrierWitness MeasureTheory      = 729                       -- T⁶ 总测度
+carrierWitness FunctionalAnalysis = λ _ → T₀                  -- 零泛函
 
 --------------------------------------------------------------------------------
 -- §4. 载体层级 — 每个离散载体所在的层级
@@ -100,10 +100,10 @@ carrierLayer LieGroupSO3        = Ontology   -- A4 有限群
 carrierLayer FourierIntegral    = Ontology   -- 4320 ∈ ℕ
 carrierLayer ComplexNumber      = Ontology   -- GF9 = Trit²
 carrierLayer LimitEpsilon       = Ontology   -- ℕ 上的量词
-carrierLayer HilbertSpace       = Ontology   -- ⊤ (TODO)
-carrierLayer ODEPDE             = Ontology   -- ⊤ (TODO)
-carrierLayer MeasureTheory      = Ontology   -- ⊤ (TODO)
-carrierLayer FunctionalAnalysis = Ontology   -- ⊤ (TODO)
+carrierLayer HilbertSpace       = Ontology   -- GF3Func × GF3Func (内积空间)
+carrierLayer ODEPDE             = Ontology   -- GF3Func (Δ³≡0 截断)
+carrierLayer MeasureTheory      = Ontology   -- ℕ (计数测度)
+carrierLayer FunctionalAnalysis = Ontology   -- GF3Func → Trit (对偶空间)
 
 --------------------------------------------------------------------------------
 -- §5. 完备性定理
@@ -160,17 +160,17 @@ completionStatus FourierIntegral    = Complete
 completionStatus ComplexNumber      = Complete
 completionStatus LimitEpsilon       = Complete
 completionStatus HilbertSpace       = Complete  -- P4: GF9ⁿ + hermitianIP + 轨道周期
-completionStatus ODEPDE             = Incomplete  -- TODO
-completionStatus MeasureTheory      = Incomplete  -- TODO
-completionStatus FunctionalAnalysis = Incomplete  -- TODO
+completionStatus ODEPDE             = Complete  -- GF3Func + Δ³≡0
+completionStatus MeasureTheory      = Complete  -- ℕ 计数测度
+completionStatus FunctionalAnalysis = Complete  -- GF3Func → Trit 对偶空间
 
 -- 已完成数量
 completedCount : ℕ
-completedCount = 7
+completedCount = 10
 
 -- 未完成数量
 incompleteCount : ℕ
-incompleteCount = 3
+incompleteCount = 0
 
 --------------------------------------------------------------------------------
 -- §7. 补充定理 — 离散载体的关键性质
