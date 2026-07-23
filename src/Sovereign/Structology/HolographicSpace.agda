@@ -41,11 +41,12 @@ open import Sovereign.Structology.BurnsideT6 using
 --   builtin 函数 → REWRITE 拦截
 --   用户定义函数 → 参数化卡住
 --
--- normSq-basisVec 作为 postulate 提供证明项 (非 REWRITE 规则)
+-- normSq-basisVec 已在 FiniteInnerProduct.agda 中构造性证明 (0 postulate)
 --------------------------------------------------------------------------------
 
-postulate
-  normSq-basisVec : ∀ n (i : Fin n) → normSq n (basisVec n i) ≡ gf9-one
+-- 从 FiniteInnerProduct 导入已证明的引理
+open import Sovereign.Analysis.FiniteInnerProduct using
+  (normSq-basisVec; basis-orthogonal)
 
 --------------------------------------------------------------------------------
 -- 常量 (ℕ 级, 不涉及 Fin 归一化)
@@ -101,12 +102,12 @@ basisAt-self : ∀ n (i : Fin n) → BasisMode.vector (basisAt n i) i ≡ gf9-on
 basisAt-self n i = basisVec-diag n i
 
 --------------------------------------------------------------------------------
--- §4. 正交性 (postulate)
+-- §4. 正交性 (构造性证明, 委托给 FiniteInnerProduct.basis-orthogonal)
 --------------------------------------------------------------------------------
 
-postulate
-  basis-orthogonal : ∀ n (i j : Fin n) → ¬ (toℕ i ≡ toℕ j) →
-    Orthogonal (basisAt n i) (basisAt n j)
+basisAt-orthogonal : ∀ n (i j : Fin n) → ¬ (toℕ i ≡ toℕ j) →
+  Orthogonal (basisAt n i) (basisAt n j)
+basisAt-orthogonal n i j neq = basis-orthogonal n i j neq
 
 --------------------------------------------------------------------------------
 -- §5. 最大性 (postulate)
