@@ -12,7 +12,7 @@ open import Sovereign.Algebra.Jacobian.jac_GF3
   using (F-gf3; gf3-collision; det-J-formal; J-formal)
 
 -- Fermat 坍缩: y³=y 在 GF(3) 函数空间上
-fermat-cubic : ∀ y → ((y ⊗ y) ⊗ y) ≡ y
+fermat-cubic : ∀ (y : Trit) → ((y ⊗ y) ⊗ y) ≡ y
 fermat-cubic T₀ = refl
 fermat-cubic T₁ = refl
 fermat-cubic T₂ = refl
