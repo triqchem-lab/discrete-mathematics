@@ -13,7 +13,7 @@ open import Data.Nat.DivMod using (_%_; _div_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Bool using (Bool; true; false)
 
-open import Sovereign.Base.Trit
+open import Sovereign.Base.Trit hiding (c3-cw)
 open import Sovereign.Base.Invariants
 
 --------------------------------------------------------------------------------
@@ -74,6 +74,7 @@ add3-assoc T₂ T₀ T₀ = refl; add3-assoc T₂ T₀ T₁ = refl; add3-assoc T
 add3-assoc T₂ T₁ T₀ = refl; add3-assoc T₂ T₁ T₁ = refl; add3-assoc T₂ T₁ T₂ = refl
 add3-assoc T₂ T₂ T₀ = refl; add3-assoc T₂ T₂ T₁ = refl; add3-assoc T₂ T₂ T₂ = refl
 
+-- NSE 本地 c3-cw/c3-inverse: pattern-match 版本 (与 Trit 的 x⊕T₁ 语义一致)
 c3-cw : Trit → Trit
 c3-cw T₀ = T₁; c3-cw T₁ = T₂; c3-cw T₂ = T₀
 

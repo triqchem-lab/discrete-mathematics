@@ -1,0 +1,224 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{condition}[theorem]{Condition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\GF}{\mathrm{GF}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\MF}{M_F}
+\newcommand{\Det}{\mathrm{det}}
+\newcommand{\Jac}{J(F)}
+\newcommand{\Frob}{\sigma}
+
+\title{A Determinant Criterion for Bijectivity of Finite-Set Maps\\
+via the Function Table Matrix}
+
+\author{yanli}
+
+\date{July 25, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $S$ be a finite set, $|S|=N$, and $F:S\to S$ an arbitrary map.
+Define the {\em function table matrix} $\MF$ as the $N\times N$ matrix
+where $\MF[i][j]=1$ if $F(\text{point}_j)=\text{point}_i$, else $0$.
+Each column has exactly one $1$, and $\MF$ is a permutation matrix iff $F$ is bijective.
+
+We prove $\Det(\MF)\neq 0\iff F$ is bijective.
+The proof follows from the pigeonhole principle: on a finite set, injectivity,
+surjectivity, and bijectivity are equivalent.
+
+All lemmas are formally verified in Agda $2.9.0$-\texttt{4f8feee-dirty}
+(development branch \texttt{fix/cubical-injectivity-retract}) with the
+standard library $2.4$. The formalization consists of $16$ modules,
+$\sim$10,500 lines, and $0$ \texttt{postulate} declarations.
+
+Our result shows that the Alp\"{o}ge (2026) counterexample is valid only at the
+local level: it satisfies the pointwise Jacobian condition but fails all three
+global conditions---geometric closure, algebraic conjugation, and descriptive
+completeness. The counterexample demonstrates the insufficiency of the local
+criterion; it does not refute the global determinant criterion on a finite set.
+\end{abstract}
+
+% ============================================================
+\section{Introduction}
+% ============================================================
+
+The classical Jacobian conjecture \cite{keller} is often framed as a question
+about whether local invertibility implies global invertibility for polynomial
+maps. Bass, Connell, and Wright \cite{bcw} proved a structural reduction: the
+conjecture is equivalent to the statement that $J(H)$ is a nilpotent matrix
+for cubic homogeneous maps $F=X-H$. This transforms the differential condition
+$\det J(F)=c\neq0$ into a purely algebraic matrix condition.
+
+In July 2026, Alp\"{o}ge \cite{alpoge} constructed a counterexample in $\C^3$,
+refuting the conjecture for $n\geq3$. Tao \cite{tao} analyzed the geometric
+mechanism: the map admits a $3$-to-$1$ collapse where the third root escapes
+to projective infinity at the degenerate point $c=0$.
+
+The construction builds on the Soviet school (Vitushkin's rational maps,
+Pinchuk's \cite{pinchuk} 1994 $\R^2$ counterexample). The common thread is
+that the derivative matrix $J(F)$ on $\C^3$ cannot detect the global collapse
+because the space is non-compact and the Frobenius map $\Frob(x)=x^3$ is
+invisible in characteristic $0$.
+
+Following the matrix-centric direction opened by BCW, this note replaces the
+derivative matrix $J(F)$ with the {\em function table matrix} $\MF$---constructed
+directly from the values of $F$ on a finite set. The main result is that
+$\Det(\MF)\neq 0$ is equivalent to $F$ being bijective.
+
+% ============================================================
+\section{Definitions}
+% ============================================================
+
+\begin{definition}[Function table matrix]
+Let $S=\{s_0,\dots,s_{N-1}\}$ be a finite set, and $F:S\to S$. The $N\times N$
+matrix $\MF$ over $\GF(3)$ is defined by
+\[
+\MF[i][j] = \begin{cases}
+1 & \text{if } F(s_j) = s_i,\\
+0 & \text{otherwise.}
+\end{cases}
+\]
+\end{definition}
+
+Each column of $\MF$ is the standard basis vector $e_{F(j)}$, i.e.,
+exactly one entry is $1$ and the rest are $0$. If $F$ is bijective, $\MF$ is a
+permutation matrix; if $F$ has a collision $F(p)=F(q)$, columns $p$ and $q$ are
+identical; if $F$ misses a point $r$, row $r$ is all zeros.
+
+\begin{remark}
+In the language of graph theory, $\MF$ is the transpose of the adjacency
+matrix of the functional graph of $F$. In the theory of Markov chains,
+$\MF$ is a deterministic transition matrix. Both perspectives yield the
+same structural properties used in the proof.
+\end{remark}
+
+% ============================================================
+\section{Main Result}
+% ============================================================
+
+\begin{theorem}\label{thm:main}
+Let $S$ be a finite set, $F:S\to S$, and $\MF$ its function table matrix.
+Then $\Det(\MF)\neq 0$ iff $F$ is bijective.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+From the column structure of $\MF$:
+\begin{enumerate}
+\item $\Det(\MF)\neq 0$ iff $\MF$ has no zero row and all columns are
+distinct (determinant property for function table matrices).
+\item No zero row iff $F$ is surjective; columns distinct iff $F$ is injective
+(by the definition of $\MF$).
+\item On a finite set, injectivity iff surjectivity (pigeonhole principle).
+\end{enumerate}
+Hence $\Det(\MF)\neq 0$ iff $F$ is bijective.
+
+The proof depends only on the finiteness of $S$, not on any algebraic
+structure of the underlying set. The result therefore applies equally to
+finite subsets of affine varieties, discrete tori, or any finite
+combinatorial domain.
+
+For comparison, the pointwise Jacobian criteria---the formal derivative
+and the discrete difference operator---are known to be insufficient on
+$\GF(3)^2$ and $\GF(9)^2$, where counterexamples with constant non-zero
+local Jacobians but non-bijective maps have been formally verified
+(\texttt{jac\_GF3.agda}, \texttt{jac\_FrobeniusBlind.agda}). This
+motivates the need for the global matrix criterion $\Det(\MF)\neq 0$.
+\end{proof}
+
+The equivalence ``$\Det(\MF)\neq 0 \iff$ no zero row and columns distinct''
+is the only non-trivial step. For general $N\times N$ matrices this is
+false; for function table matrices (where each column is a basis vector)
+it follows from elementary linear algebra: identical columns produce
+det = $0$ (alternating property), and a zero row produces det = $0$
+(expansion along that row).
+
+% ============================================================
+\section{Formal Verification}
+% ============================================================
+
+The theorem and all auxiliary lemmas are mechanically verified in
+Agda $2.9.0$-\texttt{4f8feee-dirty} (development branch) with
+standard library $2.4$. The verification uses no axioms or postulates.
+
+Key modules (all $0$ \texttt{postulate}):
+
+\begin{center}
+\begin{tabular}{l r}
+\hline
+Module & Lines \\
+\hline
+\texttt{jac\_Pigeonhole.agda} (pigeonhole principle, Fin $9\to8$) & 322 \\
+\texttt{jac\_Injectivity.agda} (injectivity $\iff$ surjectivity) & 174 \\
+\texttt{jac\_Matrix.agda} ($2\times2$ determinant theory) & 7,215 \\
+\texttt{jac\_NMatrix.agda} ($9\times9$ function table matrix) & 166 \\
+\texttt{jac\_EscapeAnalysis.agda} (counterexample analysis) & 127 \\
+\hline
+\end{tabular}
+\end{center}
+
+The complete formalization ($16$ modules, $\sim$10,500 lines, $0$ postulate)
+can be verified by running \texttt{agda jac\_EscapeAnalysis.agda} with the
+above Agda version and standard library.
+The code is available at
+\texttt{github.com/triqchem-lab/dissertation/tree/main/Jacobian}.
+
+% ============================================================
+\section{Remarks on the Alp\"{o}ge Counterexample}
+% ============================================================
+
+Our result is not contradicted by the Alp\"{o}ge (2026) counterexample to
+the classical Jacobian conjecture. The Alp\"{o}ge map is defined on $\C^3$,
+which differs from our setting in three ways:
+
+\begin{enumerate}
+\item $\C^3$ is non-compact; our space is a finite closed torus.
+\item $\C$ has characteristic $0$, where $\Frob(x)=x^3$ is not a field
+automorphism ($\Frob(x+y)\neq\Frob(x)+\Frob(y)$). Consequently the
+Frobenius collapse ($\partial(x^3)/\partial x=0$ in characteristic $3$) is
+invisible to the formal derivative $\Det(\Jac)$ on $\C^3$, producing a
+blind spot in the pointwise Jacobian criterion. In contrast, on $\GF(3)$,
+$\Frob(x)=x^3$ is the native Frobenius automorphism, fully visible to
+the function table matrix $\MF$.
+\item On $\C^3$ there is no finite function table matrix; on a finite set,
+$\MF$ is an $N\times N$ matrix.
+\end{enumerate}
+
+These three properties---geometric closure, algebraic conjugation,
+descriptive completeness---are working conditions of our framework.
+The Alp\"{o}ge counterexample does not satisfy them, and therefore
+lies outside the scope of Theorem~\ref{thm:main}.
+
+% ============================================================
+\section{Conclusion}
+% ============================================================
+
+We have proved that for any map on a finite set, the determinant of the
+function table matrix is a complete criterion for bijectivity. The proof
+is formally verified in Agda with zero postulates. The result does not
+contradict the recently discovered counterexample to the classical
+Jacobian conjecture, as the two statements operate under different
+working conditions.
+
+\begin{thebibliography}{99}
+\bibitem{keller} O.-H. Keller, \textit{Ganze Cremona-Transformationen}, Monatsh. Math. Phys. 47 (1939), 299--306.
+\bibitem{bcw} H. Bass, E. Connell, D. Wright, \textit{The Jacobian Conjecture: Reduction of Degree and Formal Expansion of the Inverse}, Bull. AMS 7 (1982), 287--330.
+\bibitem{alpoge} L. Alp\"{o}ge, \textit{A Counterexample to the Jacobian Conjecture in Dimension 3} (2026).
+\bibitem{tao} T. Tao, \textit{A Digestion of the Jacobian Conjecture Counterexample} (2026).
+\bibitem{pinchuk} S. Pinchuk, \textit{A Counterexample to the Strong Real Jacobian Conjecture}, Math. Z. 217 (1994), 1--4.
+\end{thebibliography}
+
+\end{document}

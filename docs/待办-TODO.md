@@ -18,7 +18,7 @@
 
 ---
 
-## P0: 阻断性缺口 (2 项)
+## P0: 阻断性缺口 (4 项)
 
 ### P0-1: A₄ 不可约表示的形式化
 
@@ -42,6 +42,35 @@
 5. 五行 a-序列 ↔ 群跃迁链的跨文件连接定理（`WuXingTransition.agda` ↔ `Platonics.agda`）
 
 **阻断**: 造物法则第三法则（五行=手征耦合模式）缺少完整群论根基
+
+### P0-3: 三合弦恒等式 α²⁺⁴ᵏ≡-𝟙 postulate 消除
+
+**文件**: `src/Sovereign/Algebra/TriadicHarmonic.agda:125`  
+**状态**: 🔴 postulate（k=0,1,2 已证，k≥3 需归纳）  
+**描述**: 指数分类定理的核心归纳步。`alpha-power-add4` 引理（`∀ n → α^(n+4) ≡ α^n`）的 `refl` 证明因 Agda `*gf9` 约化行为在模块上下文中不工作。
+
+**需要完成**：
+1. 实现 `alpha-power-add4` 引理（需绕过 `*gf9` 在非具体参数上的展开阻塞）
+2. 或：使用 `mul-alpha-squared-twice`（9-case）+ `*gf9-identityʳ` 构建 `x * α⁴ ≡ x` 的完整证明链
+3. 或：用 `+-suc` 桥接 `suc n + 4 → suc (n+4)` 绕过 `alpha-power` 的约化阻塞
+4. 编译验证：`α²⁺⁴ᵏ≡-𝟙` 变为普通定理
+
+**阻断**: 三合弦定理群论层不完全闭合（仅 k=0,1,2 被覆盖）
+
+### P0-4: ZeroHomologyEquivalence 空壳填充
+
+**文件**: `src/Sovereign/HoTT/ZeroHomologyEquivalence.agda`  
+**状态**: 🔴 仅 2 行 `tt : ⊤`，零行实际证明  
+**描述**: 生成数对偶的公理化描述已经存在，但到 T⁶ 同调的映射零形式化。
+
+**需要完成**：
+1. 导入 `Sovereign.Structology.T6` → `homologyT6`
+2. 定义零同调类类型：`ZeroHomology = Σ λ h → h.rank ≡ 0`
+3. 定义维数映射：`φ: {2,6,10} → Fin 7`（对应 H_d 的 degree）
+4. 构造等价链：`H₆-zero ↔ H₁-zero ↔ H₅-zero ↔ H₂-zero`
+5. 证明：群同构保持加法单位元
+
+**阻断**: 同调等价声明无形式化支撑，ZeroHomologyEquivalence 文件徒有虚名
 
 ---
 

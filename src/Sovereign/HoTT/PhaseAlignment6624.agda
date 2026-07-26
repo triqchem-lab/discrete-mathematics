@@ -26,7 +26,7 @@
 
 module Sovereign.HoTT.PhaseAlignment6624 where
 
-open import Data.Nat.Base
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_)
   using (ℕ; zero; suc; _+_; _*_; _<_; _≤_)
 open import Data.Nat.DivMod
   using (m≡m%n+[m/n]*n; [m+kn]%n≡m%n; m%n<n; m<n⇒m%n≡m)

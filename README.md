@@ -118,6 +118,7 @@ src/Sovereign/
 ├── Structology/           ← T⁶, A4群, 幻方, 柏拉图 T⁶, A4, MagicSquare, Platonic
 ├── HoTT/                  ← CRT谐波, 纤维丛, T⁶同伦 CRT harmonics, fibers, homotopy
 ├── Format/                ← CRT基, 谱投影 CRT basis, spectral projection
+├── Geometry/              ← 射影几何 (G-轨道, 4320D) + 共形几何 (Conf-轨道, 1458)
 ├── Engine/                ← 主权状态机 Sovereign state machine
 ├── MetaStructure/         ← 五行, 纳音 WuXing, Nayin
 └── AI/Constitution        ← AI宪法 AI constitution

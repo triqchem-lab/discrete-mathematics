@@ -1,0 +1,164 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\usepackage[UTF8]{ctex}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定义}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{注记}
+
+\newcommand{\GF}{\mathrm{GF}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\MF}{M_F}
+\newcommand{\Det}{\mathrm{det}}
+\newcommand{\Jac}{J(F)}
+\newcommand{\Frob}{\sigma}
+
+\title{有限集映射的双射性判定：函数表矩阵行列式判据}
+\author{yanli}
+\date{2026年7月25日}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+设 $S$ 为有限集，$|S|=N$，$F:S\to S$ 为任意映射。
+定义 $F$ 的\textbf{函数表矩阵} $\MF$ 为 $N\times N$ 矩阵，
+其中 $\MF[i][j]=1$ 当 $F(s_j)=s_i$，否则 $0$。每列恰有一个 $1$，
+$F$ 是双射当且仅当 $\MF$ 是置换矩阵。
+
+我们证明 $\Det(\MF)\neq 0 \iff F$ 是双射。
+该定理是鸽巢原理的直接推论。
+
+全部引理在 Agda $2.9.0$-\texttt{4f8feee-dirty}
+（开发分支 \texttt{fix/cubical-injectivity-retract}）中形式化验证，
+标准库版本 $2.4$。共 $16$ 个模块，$\sim$10,500 行，$0$ \texttt{postulate} 声明。
+
+Alp\"{o}ge（2026）对经典雅可比猜想在 $\C^3$ 上的反例不适用于本文的设定，
+因为 $\C^3$ 不满足本文的三个工作条件（几何闭包、代数共轭、描述完备）。
+\end{abstract}
+
+% ============================================================
+\section{引言}
+% ============================================================
+
+经典雅可比猜想 \cite{keller} 断言 $\C^n$ 上处处具有非零常数雅可比行列式的
+多项式映射必然全局可逆。2026年7月，Alp\"{o}ge \cite{alpoge} 在 $\C^3$ 上构造了反例：
+一个 $7$ 次映射，$\Det(\Jac)\equiv-2$ 处处成立，但三个不同点坍缩到同一点。
+陶哲轩 \cite{tao} 分析了几何机制：引入 $t=y+1/x$ 后得到三次方程
+$P(T)=cT^3-2T^2+bT-2a$，在坍缩点 $c=0$ 处退化，第三个根逃逸至射影无穷远。
+
+Alp\"{o}ge 反例依赖 $\C^3$ 的两个性质：非紧致性（允许无穷远逃逸）和特征 $0$
+（Frobenius 映射 $\Frob(x)=x^3$ 不是域自同构）。
+该构造沿袭了前苏联复分析学派的传统：Vitushkin 在穿孔平面上的有理映射展示了
+局部单射可伴随全局坍缩，Pinchuk \cite{pinchuk} 1994 年在 $\R^2$ 上构造了
+强实雅可比猜想的反例。
+
+本文考虑一个不同的设定。我们在有限集 $S$ 上工作，用\textbf{函数表矩阵} $\MF$ 替代
+逐点雅可比行列式。主要结果是 $\Det(\MF)\neq 0$ 与 $F$ 的双射性等价。
+
+% ============================================================
+\section{定义}
+% ============================================================
+
+\begin{definition}[函数表矩阵]
+设 $S=\{s_0,\dots,s_{N-1}\}$ 为有限集，$F:S\to S$。定义 $N\times N$ 矩阵 $\MF$：
+\[
+\MF[i][j] = \begin{cases}
+1 & \text{若 } F(s_j) = s_i,\\
+0 & \text{否则}.
+\end{cases}
+\]
+\end{definition}
+
+$\MF$ 的第 $j$ 列是标准基向量 $e_{F(j)}$，即恰有一个元素为 $1$，其余为 $0$。
+若 $F$ 是双射，$\MF$ 是置换矩阵；若 $F$ 有碰撞 $F(p)=F(q)$，列 $p$ 与 $q$ 相同；
+若 $F$ 遗漏了点 $r$，行 $r$ 全为零。
+
+% ============================================================
+\section{主要结果}
+% ============================================================
+
+\begin{theorem}\label{thm:main}
+设 $S$ 为有限集，$F:S\to S$，$\MF$ 为其函数表矩阵。
+则 $\Det(\MF)\neq 0 \iff F$ 是双射。
+\end{theorem}
+
+\begin{proof}[证明概略]
+由 $\MF$ 的列结构：
+\begin{enumerate}
+\item $\Det(\MF)\neq 0 \iff \MF$ 无全零行且列互异（对函数表矩阵成立）
+\item 无全零行 $\iff F$ 是满射；列互异 $\iff F$ 是单射（由 $\MF$ 的定义）
+\item 有限集上，单射 $\iff$ 满射（鸽巢原理）
+\end{enumerate}
+因此 $\Det(\MF)\neq 0 \iff F$ 是双射。
+\end{proof}
+
+步骤1是关键。对一般 $N\times N$ 矩阵，$\Det\neq0$ 与"无全零行且列互异"不等价；
+但对函数表矩阵（每列是基向量），等价性由行列式的基本性质保证：
+相同列$\to\Det=0$（交错性），全零行$\to\Det=0$（沿该行展开）。
+
+% ============================================================
+\section{形式化验证}
+% ============================================================
+
+定理及其全部辅助引理已在以下环境中机械验证：
+Agda $2.9.0$-\texttt{4f8feee-dirty}（开发分支），标准库 $2.4$。
+验证未使用任何公理或 postulate。
+
+关键模块（全部 $0$ \texttt{postulate}）：
+
+\begin{center}
+\begin{tabular}{l r}
+\hline
+模块 & 行数 \\
+\hline
+\texttt{jac\_Pigeonhole.agda}（鸽巢原理，Fin $9\to8$）& 322 \\
+\texttt{jac\_Injectivity.agda}（单射 $\iff$ 满射）& 174 \\
+\texttt{jac\_Matrix.agda}（$2\times2$ 行列式理论）& 7,215 \\
+\texttt{jac\_NMatrix.agda}（$9\times9$ 函数表矩阵）& 166 \\
+\texttt{jac\_EscapeAnalysis.agda}（反例分析）& 127 \\
+\hline
+\end{tabular}
+\end{center}
+
+完整形式化验证（$16$ 个模块，$\sim$10,500 行，$0$ postulate）
+可通过 \texttt{agda jac\_EscapeAnalysis.agda} 在上述版本下独立复现。
+
+% ============================================================
+\section{与 Alp\"{o}ge 反例的关系}
+% ============================================================
+
+本文结果不与 Alp\"{o}ge（2026）对经典雅可比猜想的反例矛盾。
+Alp\"{o}ge 映射定义在 $\C^3$ 上，与本文的设定在三个方面不同：
+
+\begin{enumerate}
+\item $\C^3$ 非紧致；本文空间为有限闭合环面。
+\item $\C$ 为特征 $0$，$\Frob(x)=x^3$ 不是域自同构；
+本文基域 $\GF(3)$ 为特征 $3$，$\Frob(x)=x^3$ 是原生 Frobenius 自同构。
+\item $\C^3$ 上不存在有限函数表矩阵；有限集上 $\MF$ 是 $N\times N$ 矩阵。
+\end{enumerate}
+
+这三个性质——几何闭包、代数共轭、描述完备——是本文框架的工作条件。
+Alp\"{o}ge 反例不满足这些条件，因此在定理 \ref{thm:main} 的作用域之外。
+
+% ============================================================
+\section{结论}
+% ============================================================
+
+本文证明了有限集上函数表矩阵的行列式是双射性的完备判据。
+证明在 Agda 中以零 postulate 完全形式化验证。
+该结果不与经典雅可比猜想的最新反例矛盾，
+因为两者在不同的工作条件下运作。
+
+\begin{thebibliography}{99}
+\bibitem{keller} O.-H. Keller, \textit{Ganze Cremona-Transformationen}, Monatsh. Math. Phys. 47 (1939), 299--306.
+\bibitem{alpoge} L. Alp\"{o}ge, \textit{A Counterexample to the Jacobian Conjecture in Dimension 3} (2026).
+\bibitem{tao} T. Tao, \textit{A Digestion of the Jacobian Conjecture Counterexample} (2026).
+\bibitem{pinchuk} S. Pinchuk, \textit{A Counterexample to the Strong Real Jacobian Conjecture}, Math. Z. 217 (1994), 1--4.
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,2608 @@
+
+
+A digestion of the Jacobian conjecture counterexample | What&#039;s new
+
+What&#039;s new
+
+Updates on my research and expository papers, discussion of open problems, and other maths-related topics.  By Terence Tao
+
+Home
+
+About
+
+Career advice
+
+On writing
+
+Books
+
+Mastodon+
+
+Applets
+
+Subscribe to feed
+
+A digestion of the Jacobian conjecture counterexample
+
+21 July, 2026 in 
+math.AG
+ | Tags: 
+Jacobian conjecture
+, 
+polynomials
+ | by 
+Terence Tao
+
+ The notorious 
+Jacobian conjecture
+ can be formulated concretely over the complex numbers as follows.
+
+Conjecture 1 (Jacobian Conjecture)
+  Let 
+ be a polynomial map in 
+ complex variables, whose Jacobian 
+ is a non-zero constant. Then 
+ is invertible (with polynomial inverse). 
+
+The condition that the Jacobian 
+ is non-zero is equivalent to 
+ being locally invertible. (The implication of local invertibility from non-vanishing Jacobian follows from the inverse function theorem; the converse implication can be derived from the 
+Weierstrass preparation theorem
+, but is omitted here.) Also, from the fundamental theorem of algebra, once the Jacobian polynomial 
+ is non-zero, it must be constant. So the hypothesis &#8220;Jacobian 
+ is a non-zero constant&#8221; can be replaced with &#8220;
+ is locally invertible&#8221;. So the Jacobian conjecture can be viewed as an assertion that local invertibility implies global invertibility. The complex numbers can be easily replaced with other fields of characteristic zero by the 
+Lefschetz principle
+, but I prefer to work in the concrete setting of the complex numbers.
+
+It was 
+recently shown
+ (using the Fable AI) that the conjecture is false in three dimensions (and thus in higher dimensions as well):
+
+Theorem 2 (Counterexample to conjecture)
+
+ There exists a polynomial 
+ which has non-zero constant Jacobian, but is not invertible. 
+
+The conjecture remains open in two dimensions, and is easy to establish in one dimension.
+
+The example can be stated completely explicitly: one can take 
+
+ and one can verify by a brief calculation that 
+
+ and 
+
+ While this is an extremely quick verification, the construction presented in this fashion appears like a massive miracle. The polynomial 
+ has degree seven, so 
+a priori
+ the Jacobian 
+ ought to be a polynomial in three variables of degree as large as 
+, so the fact that all non-constant coefficients of this polynomial vanish looks like a massive cancellation involving 
+ equations, which is much larger than the 
+ degrees of freedom for a generic degree seven polynomial map of three variables. So finding such a polynomial looks highly unlikely to be located by brute force.
+
+The example has since been retroactively 
+explained in more geometric terms
+. As a &#8220;digestion&#8221; exercise to myself, I sought to write this explanation with relatively little use of algebraic geometry, in a manner that minimizes the amount of &#8220;miracles&#8221; required, although there are still a few places where some remarkable phenomena occur.
+
+It is convenient to use the local injectivity formulation, and to generalize the domain 
+ to an equivalent affine variety. Namely, we will show
+
+Theorem 3 (Counterexample, reformulated)
+
+ There exists an affine variety 
+ that is isomorphic to 
+ by polynomial changes of variable, and a polynomial map 
+ which is locally injective, but not globally injective. 
+
+Clearly one can get from Theorem 
+3
+ to Theorem 
+2
+ by composing with the isomorphism 
+ and using the previously mentioned fact that local injectivity implies non-zero constant Jacobian. Our objective is now to find data 
+, 
+ that obeys three separate properties: 
+
+(a) 
+ is locally injective on 
+. 
+
+(b) 
+ is not globally injective on 
+. 
+
+(c) 
+ is isomorphic to 
+ by polynomial changes of variable. 
+
+ The advantage of splitting the problem in to these three components is that we can build towards each of them separately.
+
+(A pedantic remark: strictly speaking, in the arguments below, we not only replace the domain 
+ of 
+ by an equivalent variety 
+, but also replace the range 
+ of 
+ by an equivalent variety 
+. But the equivalence between 
+ and 
+ is a boring linear isomorphism (
+ will just be a hyperplane in a four-dimensional vector space 
+), so we do not highlight this aspect of the construction.)
+
+It turns out that 
+ and 
+ can be built out of the operation of multiplication of low degree polynomials. Namely, consider the following three simple affine spaces: 
+
+ The space 
+ of linear homogeneous polynomials 
+ of two complex variables 
+. 
+
+ The space 
+ of quadratic homogeneous polynomials 
+ of two complex variables 
+. 
+
+ The space 
+ of cubic homogeneous polynomials 
+ of two complex variables 
+. 
+
+ (The notation 
+ here refers to the 
+
+symmetric power
+ of a vector space 
+.) Clearly these spaces are isomorphic to 
+ respectively. Furthermore, we have a multiplication map 
+, mapping a pair 
+ of a linear polynomial 
+ and a quadratic polynomial 
+ to a cubic polynomial 
+
+ (Right now, the domain and range of this map 
+ is larger dimensional than the target of three; we will cut the dimensions down to three as the argument progresses.) 
+
+The map 
+, essentially a map from 
+ to 
+, is clearly polynomial; it is given explicitly in coordinates as 
+
+ The map 
+ also enjoys two basic (and commuting) symmetries: 
+
+ If one applies a scaling 
+ for some non-zero complex numbers 
+, then the product 
+ is scaled by 
+: 
+. 
+
+ If one applies a change of variables 
+ for some invertible linear transformation 
+, then the product 
+ is transformed by 
+: 
+. 
+
+ So this map enjoys a huge amount of equivariance, basically with respect to an action of the five-dimensional group 
+.
+
+The five-dimensional domain 
+ is of course larger than the four-dimensional range 
+, so the map 
+ clearly cannot be injective. This can already be seen from the scaling symmetry, as the specific scalings 
+
+ for 
+ modify the linear and quadratic polynomials 
+ but not their product 
+. But even if one quotients out by this symmetry 
+(3)
+ to cut the dimension of the domain down to four, the map 
+ is still not injective for the following basic reason. A generically chosen cubic polynomial 
+ will split into the product 
+ of three independent linear polynomials. Then there are three pairs 
+
+ which all map to the same cubic polynomial 
+
+ under the multiplication map 
+, but are not related to each other by scaling symmetry 
+(3)
+. Thus, we see that even after quotienting out by the scaling symmetry 
+(3)
+, the multiplication map 
+ is generically non-injective in a three-to-one fashion. Thus we already have achieved something resembling goal (b)!
+
+It will be convenient to &#8220;spend&#8221; the scaling symmetry 
+ to obtain a useful normalization. If 
+ is a linear polynomial and 
+ is a quadratic polynomial, the 
+resultant
+
+ can be defined by the determinant 
+
+ If we have a factorization 
+
+ then the resultant can also be described as 
+
+ Thus the resultant measures whether the linear polynomial 
+ and the quadratic polynomial 
+ share a common root. A fundamental fact about resultants is that they are 
+-invariant: for any 
+, we have 
+
+ One way to see this is to check it first for translations 
+ (which translate the roots 
+ by 
+ while leaving 
+ unchanged) and for inversions 
+ (which map 
+ to 
+ while mapping 
+ to 
+ and 
+ respectively), and then noting that these transformations generate all of 
+. They also interact very nicely with scaling: 
+
+ In particular, the scaling symmetry 
+(3)
+ multiplies 
+ by 
+: 
+
+ Thus, we can (generically) normalize away this scaling symmetry by imposing the condition 
+
+We now have a restricted multiplication map (which by abuse of notation we will continue to call 
+) from the four-dimensional variety 
+
+ to the four-dimensional space 
+. This map 
+ is still not globally injective, as we can take the three pairs in 
+(4)
+ from before and apply the scaling 
+(3)
+ separately to each of the three pairs to obtain the normalization 
+(7)
+. So we have kept property (b). Furthermore, this map retains the 
+-equivariance (and also one remaining scaling symmetry, though we will not make much further use of that symmetry).
+
+But we now also have property (a)! Suppose we want to show the local injectivity of 
+ in the neighborhood of a pair 
+ with 
+. As the resultant is non-vanishing, the root 
+ of 
+ (which exists in the Riemann sphere, or projective line if you prefer) is distinct from the two roots 
+ of 
+ (though the latter two roots could be equal to each other). Applying the 
+ action (which performs Möbius transforms on the roots), one can assume without loss of generality that 
+ is the point at infinity (or equivalently 
+), thus 
+ for some complex number 
+ and 
+ for some complex numbers 
+, with the resultant condition 
+(7)
+ simplifies to 
+ (so in particular 
+ are also non-zero). It is then clear that if one perturbs 
+ and 
+ by a small amount (say, modifying each coefficient by 
+), then the root 
+ of 
+ will perturb to something large (
+), while the roots 
+ of 
+ stay bounded. Thus, just from knowledge of the product 
+, one can reconstruct which of the three roots of this cubic polynomial will be the perturbed root of 
+, and which two will be the perturbed roots of 
+; from this and 
+(6)
+, 
+(7)
+ we can also reconstruct the leading coefficient 
+ of 
+, and this completely determines both 
+ and 
+. This establishes the local injectivity property (a). (In fact it is 
+étale
+, but we will not need the machinery of étale maps here.)
+
+Unfortunately, (the four-dimensional analogue of) condition (c) fails: the quadric hypersurface 
+(8)
+ is not isomorphic to the affine space 
+. But we can try to get around this by passing to a three-dimensional slice. Let 
+ be some three-dimensional affine plane of 
+ (which we will take to avoid the origin for technical reasons), then we can restrict 
+ as a map from the set 
+
+ to 
+. 
+ is clearly identifiable (by linear changes of coordinate) to 
+. As 
+ was already locally invertible, it remains locally invertible under restriction; and because generic cubic polynomials 
+ had three preimages under 
+ in 
+(8)
+, this continues to be the case after restricting to 
+(9)
+ (unless 
+ was somehow so degenerate that it had no generic elements, but this turns out to be impossible). So we have retained properties (a) and (b). The miracle is that, with a good choice of 
+, we can also obtain (c) and obtain the desired counterexample to the Jacobian conjecture: despite appearances, the variety 
+(9)
+ is in fact equivalent to the affine space 
+ by polynomial changes of variable!
+
+Let&#8217;s see how. The affine hyperplanes in 
+ avoiding the origin are parameterized by the dual space of 
+ avoiding the origin, which one can think of as the non-zero third order homogeneous differential operators 
+ in two variables. Indeed, every such operator 
+ generates an affine hyperplane 
+ that avoids the origin, and conversely by duality every affine hyperplane avoiding the origin arises in this form uniquely. Just as the cubic polynomials in 
+ can be factored into three linear polynomials, the differential operators in the dual space 
+ can also be factored into three linear differential operators, e.g., 
+
+ in the case that 
+ is non-zero. The 
+ action moves the roots 
+ around the Riemann sphere by Möbius transformations. As these transformations are 
+-transitive, the actual selection of such roots is not too important (and the scaling symmetry similarly makes the choice of leading coefficient 
+ unimportant); the only thing to keep track of is whether the roots repeat. Up to the symmetries, there are in fact just three different equivalence classes of differential operator 
+ (and thus of affine hyperplane 
+) to consider: 
+
+ Operators where the three roots 
+ are all distinct, thus 
+ for independent first-order operators 
+. 
+
+ Operators where two roots coincide and one is distinct, thus 
+ for independent first-order operators 
+. 
+
+ Operators where all three roots coincide, thus 
+ for some first-order operator 
+. 
+
+It turns out that the affine miracle for 
+(9)
+ occurs precisely in the second case, when 
+ has two identical roots. I do not have a completely satisfactory geometric explanation for this miracle, but one can verify it by the following coordinate computation.
+
+By applying the 
+ action, we can normalize so that 
+, thus 
+ is now the affine hyperplane of cubic polynomials 
+ with 
+. Using 
+(2)
+ and 
+(5)
+, the variety 
+(9)
+ can now be described explicitly in coordinates as 
+
+ At first glance this seems to be a generic-looking variety cut out by a cubic equation and a quadratic equation &#8211; hardly a candidate to be affine! But observe that if 
+ is non-zero, then the second equation 
+ can be solved for 
+, 
+
+ and the first equation 
+ can be solved for 
+, 
+
+ Putting these two equations together, we see that as long as one removes the case 
+, the quintuple 
+ is uniquely determined by 
+ by a change of variables which is Laurent in 
+ and polynomial in 
+. Thus we have a nice birational equivalence 
+
+ Thus we have already 
+almost
+ established property (c): the variety 
+(9)
+ becomes birationally equivalent to 
+ after cutting out the 
+ subvariety. In particular, for each fixed non-zero value 
+ of 
+, the corresponding fiber 
+
+ of 
+(10)
+ is equivalent to 
+ by polynomial changes of variable, since we can reconstruct 
+ from the coordinates 
+ by the polynomial formulae 
+
+So we just need to glue back in the 
+ fiber. Indeed, from 
+(10)
+ we see that the fiber at 
+ is just 
+
+ Now we observe a key miracle: the cubic equation 
+ and quadratic equation 
+ have a unique affine solution 
+ (as opposed to the six possible solutions that Bezout&#8217;s theorem might suggest &#8211; the other five solutions live on the line at infinity). So the fiber here is also affine: 
+
+ This is extremely encouraging for the purposes of establishing property (c), as it strongly suggests that the variety 
+(10)
+ has the structure of an 
+-bundle over 
+, which is already extremely close to being isomorphic to the affine space 
+. The main remaining task is to make sure that nothing singular happens in the limit 
+, and that a global polynomial coordinate chart for 
+(10)
+ that covers both the 
+ and 
+ fibers can be constructed.
+
+The standard way to proceed here is to manipulate various tangent spaces using the modern machinery of algebraic geometry and commutative algebra, but given my own background, I prefer to adopt the language of analysis, and in particular big-O notation (in place of the ideals used in algebraic geometry), in order to investigate the limit 
+ by hand. On the variety 
+(10)
+, let us use 
+ to denote any multiple of 
+ by a polynomial expression in 
+. Thus, for instance, the equation 
+ implies that 
+
+ while the equation 
+ implies that 
+
+ as well as the more refined estimate 
+
+ In the 
+ case we could conclude that 
+. Now we perturb this observation. Multiplying 
+(13)
+ by 
+ we have 
+, which on substitution into 
+(14)
+ gives 
+; substituting this back into either 
+(13)
+ or 
+(14)
+ also gives 
+.
+
+We can get some more precise asymptotics by also taking advantage of 
+(15)
+. Substituting 
+ into 
+(15)
+, we obtain after some algebra 
+
+ So if we write 
+ more explicitly as 
+, then we have 
+
+ and thus 
+
+ Substituting this back into 
+(11)
+ gives an asymptotic for 
+: 
+
+ Finally, one can insert these estimates into 
+(12)
+, although one only gets a trivial bound in this case: 
+
+Expanding the 
+ error term in 
+(16)
+ as 
+, and doing a little more algebra, we thus have a polynomial change of variables 
+
+ which completely parameterizes the variety 
+(10)
+ by polynomial combinations of three coordinates 
+. This already gives (c) and thus completes the proof of Theorem 
+3
+.
+
+The previous computations, when expanded out, also gives polynomial inverse maps: 
+
+ The map from 
+ to the 
+ coefficients of 
+ (dropping the 
+ coefficient which is constrained to equal 
+), we obtain a polynomial map 
+
+ with 
+
+ which theory predicts to have a constant Jacobian, and indeed one can calculate that the Jacobian is 
+. This is essentially the original example up to trivial changes of variable; indeed, one can check that the map 
+
+ is exactly the map 
+ given in 
+(1)
+.
+
+AI disclosure: I 
+used an AI chatbot
+ to discuss various aspects of this problem and to confirm several of the calculations made here.
+
+Share this:
+
+Print (Opens in new window)
+
+Print
+
+Email a link to a friend (Opens in new window)
+
+Email
+
+More
+
+Share on X (Opens in new window)
+
+X
+
+Share on Facebook (Opens in new window)
+
+Facebook
+
+Share on Reddit (Opens in new window)
+
+Reddit
+
+Share on Pinterest (Opens in new window)
+
+Pinterest
+
+Like
+
+Loading...
+
+Recent Comments
+
+Anonymous on 
+A digestion of the Jacobian co 
+
+Various News Items | 
+ on 
+A digestion of the Jacobian co 
+
+Anonymous on 
+A digestion of the Jacobian co 
+
+Anonymous on 
+A digestion of the Jacobian co 
+
+Emmanuel Audigé on 
+Gilbreath&#8217;s conjecture: 
+
+Terence Tao
+ on 
+A digestion of the Jacobian co 
+
+Anonymous on 
+A digestion of the Jacobian co 
+
+David Speyer
+ on 
+A digestion of the Jacobian co 
+
+David Speyer
+ on 
+A digestion of the Jacobian co 
+
+Anonymous on 
+A digestion of the Jacobian co 
+
+Anonymous on 
+A digestion of the Jacobian co 
+
+Terence Tao
+ on 
+A digestion of the Jacobian co 
+
+Anonymous on 
+A digestion of the Jacobian co 
+
+Anonymous on 
+A digestion of the Jacobian co 
+
+Anonymous on 
+A digestion of the Jacobian co 
+
+Top Posts
+
+A digestion of the Jacobian conjecture counterexample
+
+The three-dimensional Kakeya conjecture, after Wang and Zahl
+
+Career advice
+
+About
+
+On writing
+
+Books
+
+Stickiness, graininess, planiness, and a sum-product approach to the Kakeya problem
+
+Does one have to be a genius to do maths?
+
+AI-generated versions of the AI anthology article
+
+Advice on gifted education
+
+Archives
+
+July 2026
+ (9)
+
+June 2026
+ (3)
+
+May 2026
+ (1)
+
+March 2026
+ (4)
+
+February 2026
+ (3)
+
+January 2026
+ (4)
+
+December 2025
+ (5)
+
+November 2025
+ (5)
+
+September 2025
+ (1)
+
+August 2025
+ (3)
+
+July 2025
+ (1)
+
+June 2025
+ (2)
+
+May 2025
+ (5)
+
+April 2025
+ (2)
+
+March 2025
+ (1)
+
+February 2025
+ (3)
+
+January 2025
+ (1)
+
+December 2024
+ (3)
+
+November 2024
+ (4)
+
+October 2024
+ (1)
+
+September 2024
+ (4)
+
+August 2024
+ (3)
+
+July 2024
+ (3)
+
+June 2024
+ (1)
+
+May 2024
+ (1)
+
+April 2024
+ (5)
+
+March 2024
+ (1)
+
+December 2023
+ (2)
+
+November 2023
+ (2)
+
+October 2023
+ (1)
+
+September 2023
+ (3)
+
+August 2023
+ (3)
+
+June 2023
+ (8)
+
+May 2023
+ (1)
+
+April 2023
+ (1)
+
+March 2023
+ (2)
+
+February 2023
+ (1)
+
+January 2023
+ (2)
+
+December 2022
+ (3)
+
+November 2022
+ (3)
+
+October 2022
+ (3)
+
+September 2022
+ (1)
+
+July 2022
+ (3)
+
+June 2022
+ (1)
+
+May 2022
+ (2)
+
+April 2022
+ (2)
+
+March 2022
+ (5)
+
+February 2022
+ (3)
+
+January 2022
+ (1)
+
+December 2021
+ (2)
+
+November 2021
+ (2)
+
+October 2021
+ (1)
+
+September 2021
+ (2)
+
+August 2021
+ (1)
+
+July 2021
+ (3)
+
+June 2021
+ (1)
+
+May 2021
+ (2)
+
+February 2021
+ (6)
+
+January 2021
+ (2)
+
+December 2020
+ (4)
+
+November 2020
+ (2)
+
+October 2020
+ (4)
+
+September 2020
+ (5)
+
+August 2020
+ (2)
+
+July 2020
+ (2)
+
+June 2020
+ (1)
+
+May 2020
+ (2)
+
+April 2020
+ (3)
+
+March 2020
+ (9)
+
+February 2020
+ (1)
+
+January 2020
+ (3)
+
+December 2019
+ (4)
+
+November 2019
+ (2)
+
+September 2019
+ (2)
+
+August 2019
+ (3)
+
+July 2019
+ (2)
+
+June 2019
+ (4)
+
+May 2019
+ (6)
+
+April 2019
+ (4)
+
+March 2019
+ (2)
+
+February 2019
+ (5)
+
+January 2019
+ (1)
+
+December 2018
+ (6)
+
+November 2018
+ (2)
+
+October 2018
+ (2)
+
+September 2018
+ (5)
+
+August 2018
+ (3)
+
+July 2018
+ (3)
+
+June 2018
+ (1)
+
+May 2018
+ (4)
+
+April 2018
+ (4)
+
+March 2018
+ (5)
+
+February 2018
+ (4)
+
+January 2018
+ (5)
+
+December 2017
+ (5)
+
+November 2017
+ (3)
+
+October 2017
+ (4)
+
+September 2017
+ (4)
+
+August 2017
+ (5)
+
+July 2017
+ (5)
+
+June 2017
+ (1)
+
+May 2017
+ (3)
+
+April 2017
+ (2)
+
+March 2017
+ (3)
+
+February 2017
+ (1)
+
+January 2017
+ (2)
+
+December 2016
+ (2)
+
+November 2016
+ (2)
+
+October 2016
+ (5)
+
+September 2016
+ (4)
+
+August 2016
+ (4)
+
+July 2016
+ (1)
+
+June 2016
+ (3)
+
+May 2016
+ (5)
+
+April 2016
+ (2)
+
+March 2016
+ (6)
+
+February 2016
+ (2)
+
+January 2016
+ (1)
+
+December 2015
+ (4)
+
+November 2015
+ (6)
+
+October 2015
+ (5)
+
+September 2015
+ (5)
+
+August 2015
+ (4)
+
+July 2015
+ (7)
+
+June 2015
+ (1)
+
+May 2015
+ (5)
+
+April 2015
+ (4)
+
+March 2015
+ (3)
+
+February 2015
+ (4)
+
+January 2015
+ (4)
+
+December 2014
+ (6)
+
+November 2014
+ (5)
+
+October 2014
+ (4)
+
+September 2014
+ (3)
+
+August 2014
+ (4)
+
+July 2014
+ (5)
+
+June 2014
+ (5)
+
+May 2014
+ (5)
+
+April 2014
+ (2)
+
+March 2014
+ (4)
+
+February 2014
+ (5)
+
+January 2014
+ (4)
+
+December 2013
+ (4)
+
+November 2013
+ (5)
+
+October 2013
+ (4)
+
+September 2013
+ (5)
+
+August 2013
+ (1)
+
+July 2013
+ (7)
+
+June 2013
+ (12)
+
+May 2013
+ (4)
+
+April 2013
+ (2)
+
+March 2013
+ (2)
+
+February 2013
+ (6)
+
+January 2013
+ (1)
+
+December 2012
+ (4)
+
+November 2012
+ (7)
+
+October 2012
+ (6)
+
+September 2012
+ (4)
+
+August 2012
+ (3)
+
+July 2012
+ (4)
+
+June 2012
+ (3)
+
+May 2012
+ (3)
+
+April 2012
+ (4)
+
+March 2012
+ (5)
+
+February 2012
+ (5)
+
+January 2012
+ (4)
+
+December 2011
+ (8)
+
+November 2011
+ (8)
+
+October 2011
+ (7)
+
+September 2011
+ (6)
+
+August 2011
+ (8)
+
+July 2011
+ (9)
+
+June 2011
+ (8)
+
+May 2011
+ (11)
+
+April 2011
+ (3)
+
+March 2011
+ (10)
+
+February 2011
+ (3)
+
+January 2011
+ (5)
+
+December 2010
+ (5)
+
+November 2010
+ (6)
+
+October 2010
+ (9)
+
+September 2010
+ (9)
+
+August 2010
+ (3)
+
+July 2010
+ (4)
+
+June 2010
+ (8)
+
+May 2010
+ (8)
+
+April 2010
+ (8)
+
+March 2010
+ (8)
+
+February 2010
+ (10)
+
+January 2010
+ (12)
+
+December 2009
+ (11)
+
+November 2009
+ (8)
+
+October 2009
+ (15)
+
+September 2009
+ (6)
+
+August 2009
+ (13)
+
+July 2009
+ (10)
+
+June 2009
+ (11)
+
+May 2009
+ (9)
+
+April 2009
+ (11)
+
+March 2009
+ (14)
+
+February 2009
+ (13)
+
+January 2009
+ (18)
+
+December 2008
+ (8)
+
+November 2008
+ (9)
+
+October 2008
+ (10)
+
+September 2008
+ (5)
+
+August 2008
+ (6)
+
+July 2008
+ (7)
+
+June 2008
+ (8)
+
+May 2008
+ (11)
+
+April 2008
+ (12)
+
+March 2008
+ (12)
+
+February 2008
+ (13)
+
+January 2008
+ (17)
+
+December 2007
+ (10)
+
+November 2007
+ (9)
+
+October 2007
+ (9)
+
+September 2007
+ (7)
+
+August 2007
+ (9)
+
+July 2007
+ (9)
+
+June 2007
+ (6)
+
+May 2007
+ (10)
+
+April 2007
+ (11)
+
+March 2007
+ (9)
+
+February 2007
+ (4)
+
+Categories
+
+expository
+ (323)
+
+tricks
+ (13)
+
+guest blog
+ (10)
+
+Mathematics
+ (922)
+
+math.AC
+ (9)
+
+math.AG
+ (43)
+
+math.AP
+ (115)
+
+math.AT
+ (17)
+
+math.CA
+ (196)
+
+math.CO
+ (207)
+
+math.CT
+ (9)
+
+math.CV
+ (39)
+
+math.DG
+ (37)
+
+math.DS
+ (90)
+
+math.FA
+ (24)
+
+math.GM
+ (16)
+
+math.GN
+ (21)
+
+math.GR
+ (90)
+
+math.GT
+ (17)
+
+math.HO
+ (14)
+
+math.IT
+ (13)
+
+math.LO
+ (54)
+
+math.MG
+ (48)
+
+math.MP
+ (31)
+
+math.NA
+ (26)
+
+math.NT
+ (213)
+
+math.OA
+ (22)
+
+math.PR
+ (114)
+
+math.QA
+ (6)
+
+math.RA
+ (49)
+
+math.RT
+ (21)
+
+math.SG
+ (4)
+
+math.SP
+ (48)
+
+math.ST
+ (11)
+
+non-technical
+ (212)
+
+admin
+ (48)
+
+advertising
+ (81)
+
+diversions
+ (7)
+
+media
+ (14)
+
+journals
+ (3)
+
+obituary
+ (15)
+
+opinion
+ (37)
+
+paper
+ (272)
+
+book
+ (23)
+
+Companion
+ (13)
+
+update
+ (26)
+
+question
+ (128)
+
+polymath
+ (87)
+
+talk
+ (69)
+
+DLS
+ (20)
+
+teaching
+ (190)
+
+245A &#8211; Real analysis
+ (11)
+
+245B &#8211; Real analysis
+ (22)
+
+245C &#8211; Real analysis
+ (6)
+
+246A &#8211; complex analysis
+ (11)
+
+246B &#8211; complex analysis
+ (5)
+
+246C &#8211; complex analysis
+ (5)
+
+247B &#8211; Classical Fourier Analysis
+ (5)
+
+254A &#8211; analytic prime number theory
+ (19)
+
+254A &#8211; ergodic theory
+ (18)
+
+254A &#8211; Hilbert&#039;s fifth problem
+ (12)
+
+254A &#8211; Incompressible fluid equations
+ (5)
+
+254A &#8211; random matrices
+ (14)
+
+254B &#8211; expansion in groups
+ (8)
+
+254B &#8211; Higher order Fourier analysis
+ (9)
+
+255B &#8211; incompressible Euler equations
+ (2)
+
+275A &#8211; probability theory
+ (6)
+
+285G &#8211; poincare conjecture
+ (20)
+
+Logic reading seminar
+ (8)
+
+The sciences
+ (1)
+
+travel
+ (26)
+
+additive combinatorics
+
+approximate groups
+
+arithmetic progressions
+
+Artificial Intelligence
+
+Ben Green
+
+Cauchy-Schwarz
+
+Cayley graphs
+
+central limit theorem
+
+Chowla conjecture
+
+compressed sensing
+
+correspondence principle
+
+cosmic distance ladder
+
+distributions
+
+divisor function
+
+eigenvalues
+
+Elias Stein
+
+Emmanuel Breuillard
+
+entropy
+
+equidistribution
+
+Erdos
+
+ergodic theory
+
+Euler equations
+
+exponential sums
+
+finite fields
+
+Fourier transform
+
+Freiman&#039;s theorem
+
+Gowers uniformity norm
+
+Gowers uniformity norms
+
+graph theory
+
+Gromov&#039;s theorem
+
+GUE
+
+Hilbert&#039;s fifth problem
+
+ICM
+
+incompressible Euler equations
+
+inverse conjecture
+
+Joni Teravainen
+
+Kaisa Matomaki
+
+Kakeya conjecture
+
+Lie algebras
+
+Lie groups
+
+Liouville function
+
+Littlewood-Offord problem
+
+Maksym Radziwill
+
+Mobius function
+
+Navier-Stokes equations
+
+nilpotent groups
+
+nilsequences
+
+nonstandard analysis
+
+Paul Erdos
+
+politics
+
+polymath1
+
+polymath8
+
+Polymath15
+
+polynomial method
+
+polynomials
+
+prime gaps
+
+prime numbers
+
+prime number theorem
+
+random matrices
+
+randomness
+
+Ratner&#039;s theorem
+
+regularity lemma
+
+Ricci flow
+
+Riemann zeta function
+
+Schrodinger equation
+
+Shannon entropy
+
+sieve theory
+
+structure
+
+Szemeredi&#039;s theorem
+
+Tamar Ziegler
+
+ultrafilters
+
+universality
+
+Van Vu
+
+wave maps
+
+Yitang Zhang
+
+The Polymath Blog
+
+Polymath News and AI
+
+Polymath projects 2021
+
+A sort of Polymath on a famous MathOverflow problem
+
+Ten Years of Polymath
+
+Updates and Pictures
+
+Polymath proposal: finding simpler unit distance graphs of chromatic number 5
+
+A new polymath proposal (related to the Riemann Hypothesis) over Tao’s blog
+
+Spontaneous Polymath 14 – A success!
+
+Polymath 13 – a success!
+
+Non-transitive Dice over Gowers’s Blog
+
+61 comments
+
+Comments feed for this article
+
+21 July, 2026 at 2:39 pm
+
+Anonymous
+
+Beautiful explanation. Two very small corrections:
+
+At one point, you write &#8220;in coordinates it is given explicitly in coordinates as&#8221;; you probably want this to be either &#8220;in coordinates it is&#8221; or &#8220;it is given explicitly in coordinates as&#8221;.
+
+You write &#8220;the map F is still not surjective&#8230;&#8221; but I think you meant injective.
+
+[Corrected, thanks &#8211; T.]
+
+Reply
+
+21 July, 2026 at 5:24 pm
+
+Jim Balter
+
+Likewise, &#8220;Recently, it was 
+recently shown
+&#8221; is redundant.
+
+[Corrected, thanks &#8211; T.]
+
+Reply
+
+21 July, 2026 at 4:16 pm
+
+swiftlytacod41af927bc
+
+Is there some representation-theoretic or moduli-theoretic intuition &#8212; perhaps something about the interaction of the SL₂-orbit stratification of the dual space with the discriminant locus &#8212; that would allow one to foresee ahead of time that the double-root stratum (and only that stratum) gives rise to an affine slice, instead of needing to directly check that ? Would one expect this to be a low-dimensional curiosity, or is there some general principle for when a GIT-type quotient construction like this results in affine varieties?&#8221;
+
+Reply
+
+21 July, 2026 at 4:42 pm
+
+Terence Tao
+
+In my chatbot discussion I tried to pursue this line of thinking.  As far as I could tell, there does not seem to be any plausible known set of computable invariants (including those that somehow take advantage of equivariant structure) that would force affine-ness, though perhaps some weaker &#8220;pseudo-affine&#8221; structure might be detectable by such a soft approach.  But perhaps there are experts in algebraic geometry who will be able to give a more authoritative answer.
+
+Reply
+
+21 July, 2026 at 4:22 pm
+
+Anonymous
+
+Also, from the fundamental theorem of algebra, once the Jacobian polynomial det(DF) is non-zero, it must be constant.
+
+I might be missing something obvious—I see how the above follows via the Nullstellensatz, but not via the fundamental theorem of algebra per se (save insofar as the latter follows from the former).
+
+Reply
+
+21 July, 2026 at 4:39 pm
+
+Terence Tao
+
+The fundamental theorem of algebra tells us that any one-dimensional polynomial is either constant, or has at least one zero (over the complex numbers).  By induction, the same is true in higher dimensions; so if a polynomial 
+ has no zeroes, it must be constant.
+
+Reply
+
+21 July, 2026 at 4:30 pm
+
+Ariel
+
+This feels like a too beautiful counterexample, almost too beautiful to be discovered by a human. Polynomial multiplication is the most natural algebraic object that is locally injective but globally non-injective.
+
+Reply
+
+21 July, 2026 at 5:06 pm
+
+Sam Hopkins
+
+There is also some discussion of this here: 
+https://sbseminar.wordpress.com/2026/07/20/the-new-counterexample-to-the-jacobian-conjecture/
+
+Reply
+
+22 July, 2026 at 2:46 am
+
+Will Sawin
+
+Let me state in the language of this post something from that thread: Given the equations 
+ and 
+, the key step seems to be to subtract 
+ times the second equation from the first to cancel the 
+ term, obtaining 
+, which motivates using coordinates 
+ and 
+ since 
+ can be expressed as a polynomial function of these coordinates. Then the remaining coordinates 
+ satisfy the two affine equations 
+ and 
+ which become 
+ and 
+ which have a one-dimensional affine space of solutions for each 
+ since 
+ and 
+ never both vanish, and this enables writing these variables as affine functions of a single remaining variable 
+.
+
+Reply
+
+21 July, 2026 at 6:15 pm
+
+Anonymous
+
+It seems that a similar-ish (rational) example was found by Vitushkin in 1999: 
+https://link.springer.com/article/10.1007/BF02674884
+
+See also 
+https://x.com/b_shrir/status/2079094004885668003
+
+Reply
+
+21 July, 2026 at 6:33 pm
+
+Terence Tao
+
+Nice!  In retrospect the two constructions are rather similar.  My chatbot was able to express the variety associated to the Vitushkin example in a form similar, but not identical, to (9), namely
+
+with 
+ again the multiplication map (now generically two-to-one rather than three-to-one), but this variety is a punctured plane 
+ rather than the entire plane, so Vitushkin&#8217;s map acquires a pole.  I don&#8217;t think the traces from the original AI attempt are currently available, but it is possible that it experimented with a large number of variants of this construction until finding the one that worked.
+
+In the opposite direction, increasing the net degree of the polynomials beyond cubic seems to rapidly make the structure worse, and in particular non-affine.  (Once one has more than three roots in play, the Mobius transform group 
+ is no longer transitive enough to keep the geometry behaving like a homogeneous space, and all sorts of generic algebraic geometry pathologies seem to seep back in.)
+
+Reply
+
+22 July, 2026 at 12:59 pm
+
+Terence Tao
+
+My AI was able to summarize the Vitushkin paper (overcoming the language barrier from Russian to English).  After removing various birational changes of variable, the Vitushkin example is extremely simple: it is the sum-product map 
+, which is locally injective on the punctured plane 
+ but not globally injective (because of the 
+ symmetry). It is the puncture that forces Vitushkin to introduce a pole in his final map.  
+
+In the language of factoring polynomials, this corresponds to factorizing a monic quadratic 
+ into linear monic factors 
+, which is two-to-one and locally injective as long as one avoids the repeated root situation 
+, which is equivalent to the resultant 
+ of 
+ and 
+ being non-zero.  (The two-dimensional case is exceptional in that the scaling symmetry 
+ cannot be used to normalize the resultant to equal 1.  In the n-dimensional case one has 
+, but when 
+ the resultant becomes an invariant and so cannot be normalized.)
+
+But it appears that Vitushkin did not explicitly realize the interpretation of this example in terms of multiplying polynomials.  In retrospect, polynomial multiplication is a very natural example of a polynomial operation that is not globally injective (because a typical polynomial can be factored in several different ways) but can become locally injective once one removes the possibility of root collisions (by forcing the resultant to be non-zero) and also dealing with the scaling symmetry (by normalizing some coefficient or resultant), in order to make the various factors isolated from each other.  What is remarkable is that one can still get an affine domain out of this.  In the 
+ case, one has to intersect a cubic hypersurface (the resultant normalization 
+) with a quadratic hypersurface 
+), which generates a degree 
+ surface.  A priori it is unlikely that any polynomial transformations can lower this degree down to 
+.  But the key miracle is the improvement over Bezout&#8217;s theorem when intersecting the quadric curve 
+ with the cubic curve 
+; projectively this gives six intersection points by Bezout, but affinely there is only one intersection point 
+, which occurs without multiplicity.  (The other five projective intersections occur at two points at infinity, one with multiplicity two and the other with multiplicity three.)
+
+Reply
+
+21 July, 2026 at 6:40 pm
+
+Anonymous
+
+curious how you used chatGPT here to confirm. Looking at your conversation, you did not have to correct it even once. I have too little training in this field to accurately judge it, but in you entire conversation it did not once make a mistake or mischaracetrize anything?
+
+Reply
+
+24 July, 2026 at 9:58 am
+
+Anonymous
+
+Recent LLMs can be switched to reasoning mode in the paid versions, where they iterate and validate the answers they produce. This works quite well in most fields where formal validation and linear reasoning can be applied (programming, mathematics primarily, but to a lesser degree other fields as well).
+
+In other words, if you ask a modern LLM (in paid reasoning mode) a precise question, to which you are reasonable sure a precise an answer exists, you can expect a formally validate, that is correct rely.
+
+This reply may not be the complete answer, but it will generally not hallucinate.
+
+You can still make it hallucinate of course, but asking misleading question on ambiguous and imprecise topics, or where knowledge of the physical world or deep causality chains matter. And the cheap free chatbot versions are not be be used for serious work.
+
+Reply
+
+21 July, 2026 at 7:00 pm
+
+inventive9d19b99cf0
+
+Regarding the &#8216;massive miracle&#8217; of this discovery, I&#8217;m curious if the AI was guided by known algebraic structures during its search, or if it stumbled upon this specific polynomial multiplication structure through sheer brute force. I would appreciate your insight as a non-expert.
+
+Reply
+
+21 July, 2026 at 7:14 pm
+
+garylangford
+
+One structural feature that struck me is that the multiplication map, the scaling quotient, and the resultant normalization all seem to arise from the same invariant picture rather than as separate constructions.
+
+If one views as the state, then multiplication is the canonical -equivariant projection, the scaling is a one-dimensional scaling symmetry, and is the natural relative invariant that fixes a unique representative of each regular orbit. In that formulation the construction becomes the fiber of the constraint operator  with your variety given by 
+
+This made me wonder whether the remaining &#8220;affine miracle&#8221; is really a property of the constraint operator rather than of the polynomial map itself. Question
+.
+ Is the double-root orbit characterized invariantly as the unique orbit for which the fiber admits a global polynomial triangularization (equivalently, a polynomial trivialization), whereas the generic and triple-root orbits do not?
+
+Reply
+
+21 July, 2026 at 7:36 pm
+
+Anonymous
+
+question of the very dummy who cant even fully go over this text:
+
+Is there a real &#8220;underlying theorem&#8221; that one can understand rigorously 
+
+that fable actually proved &#8220;internally&#8221;
+
+and thus produced the counter example?
+
+Reply
+
+21 July, 2026 at 10:13 pm
+
+Anonymous
+
+type -  &#8220;still a few places were some remarkable phenomena occur&#8221;
+
+[Corrected, thanks &#8211; T.]
+
+Reply
+
+22 July, 2026 at 12:09 am
+
+Anonymous
+
+What happened with mathematics rendering in your blog? It used to work fine, but now the font and size don&#8217;t match the surrounding text.
+
+Reply
+
+22 July, 2026 at 12:30 am
+
+Anonymous
+
+Minor correction:
+
+&#8220;One way to see this is to check it first for translations {(z,w) \mapsto (z, w + h z)} (which translate the roots {\alpha,\beta_1,\beta_2} by {h} while leaving {a,c} unchanged)&#8221;
+
+The SL2 transform which translates α and leaves a invariant is actually the lower triangular version, i.e.:
+
+&#8220;One way to see this is to check it first for translations {(z,w) \mapsto (z + h w, w)} (which translate the roots {\alpha,\beta_1,\beta_2} by {h} while leaving {a,c} unchanged)&#8221;
+
+~~Lillian Ryan Uhl
+
+[Corrected, thanks &#8211; T.]
+
+Reply
+
+22 July, 2026 at 2:14 am
+
+Anonymous
+
+It does seem as though this problem does admit a very simple reward function: Namely, how close a given polynomial is to being non-injective (ie. has far-away points whose images are close to each other). I wonder whether this was the loss function that was used.
+
+Reply
+
+22 July, 2026 at 5:39 am
+
+Anonymous
+
+However one ends up defining this concretely, to me this seems like it is a global property that is impossible to efficiently evaluate numerically, let alone optimize against.
+
+Reply
+
+22 July, 2026 at 4:32 am
+
+Anonymous
+
+   The conjecture remains open in two dimensions.
+
+Will the 2 dimensions case also resolved? By AI + human collaboration.
+
+Thanks,
+
+N. Ganesan
+
+Reply
+
+22 July, 2026 at 5:02 am
+
+Brigham McNaughton
+
+Disclaimer: I&#8217;m a complete amateur and have zero formal math training, I&#8217;ve just enjoyed exploring the fundamentals with LLMs.
+
+Amazing analysis, thank you for sharing!
+
+It has been helpful for me to think in free magmas to understand the counterexample. I picture a universal infinite field of indistinct free magma 
+(Claude indicates the technical object here would be the free magma on infinitely many generators, with no distinguished element)
+ at the root, then the conversion to zero and naturals means that I have selected a distinct single sub-magma in that field as a fixed observation point (
+Claude translation: a fixed base, which turns out to be a fixed point of the mirror symmetry)
+, which then creates the specific collisions due to symmetry at the &#8220;sight lines&#8221; of that chosen fixed base in the field. I had the underlying principles formalized in Lean using a custom &#8220;AnyMark&#8221; type based on the idea behind the Laws of Form, but without any of its imposed laws. I&#8217;m nearly complete re-formalizing it onto Mathlib&#8217;s FreeMagma to better align with established terms.
+
+Now a suspicion that goes really far over my amateur skis: this feels parallel to relativity, where selecting a fixed base is what generates a universal constant (Claude translation: the constant Jacobian determinant, the same reading at every point, playing the role of the speed of light) and the collision itself is the spooky action at a distance (Claude: points far apart tied together by the global symmetry) that are difficult to distinguish from the perspective of the selected fixed base.
+
+Have you seen any similarities in your work on equational laws?
+
+Reply
+
+22 July, 2026 at 6:16 am
+
+Felipe
+
+&#8220;By applying the action, we can normalize so that D=D^2_z D_w, thus V is now the affine hyperplane of cubic polynomials [&#8230;] with g = 1&#8221;. Should that be g = 1/2? I guess to keep the computations unchanged the fix should rather be adding a 1/2 to D, using the scaling symmetry you&#8217;d thrown away earlier
+
+[Corrected, thanks &#8211; T.]
+
+Reply
+
+22 July, 2026 at 6:28 am
+
+Anonymous
+
+By July 20, GPT-5.6 Sol/Codex wrote a &#8220;paper&#8221; giving an entire family of higher-dimensional counterexamples to the Jacobian conjecture (the paper is at 
+https://xcancel.com/i/article/2079135211196121363
+). This might give some insight into how the LLM came up with the initial 3-dimensional counterexample (since that counterexample is the first in this family of counterexamples). The paper gives explicit counterexamples for dimensions 3 through 6 (which it claims are not simple variations of the dimension 3 example).
+
+Reply
+
+22 July, 2026 at 12:39 pm
+
+Terence Tao
+
+Interesting.  After a bit more interaction with a chatbot, it appears the picture is the following.  For any 
+, one can consider the space
+
+where one can for instance take 
+ to be the space of homogeneous degree 
+ polynomials in 
+ with 
+ coefficient set equal to 
+.  For all 
+, the polynomial map 
+ is locally injective but not globally injective on this space.  In the 
+ case all of 
+ is affine.  For 
+, this space is no longer affine (see the previous chatbot discussion I posted); but it turns out that if one removes a specific portion from 
+, namely those pairs 
+ for which 
+ for some non-trivial 
+ root of unity 
+, then there the space becomes affine again.  
+
+To map it to the discussion in the blog post, recall that in the 
+ case the 
+ fiber of 
+ was a single plane, because the equations 
+ and 
+ had a unique affine solution 
+.  In higher dimensions, it seems that the analogue of the 
+ fiber is the union of 
+ subspaces, I think coming from the fact that 
+ and 
+ has 
+ solutions 
+, 
+ for the 
+ roots of unity) and one has to manually remove all but one of them before one gets an affine space.
+
+Reply
+
+22 July, 2026 at 4:09 pm
+
+Jake Levinson
+
+Hi Terry, I wrote up a short explanation 
+here
+ of the counterexample, in coordinate-free terms, using only classical facts about lines and conics in the projective plane, basically first-year graduate algebraic geometry stuff. In fact the whole construction can be carried out this way, without any explicit calculations.
+
+The only non-elementary fact I use is that A^1 bundles over A^n are trivial. (What I actually worked out is a way to exhibit the counterexample as an iterated A^1-bundle.)
+
+I thought it might be of interest to you!
+
+Reply
+
+23 July, 2026 at 4:05 am
+
+darkreally441a803784
+
+Terry, I am the author of the paper discussed above that you examined.
+
+Thank you for looking at the construction. Your removal of the nontrivial root-of-unity components matches exactly the exceptional term in our follow-up fiber theorem:
+
+Thus, over the zero root, only one branch remains in the affine chart, while the other 
+ branches escape to infinity.
+
+The follow-up also determines the exact image, the codimension of the omitted locus, and the nonproperness locus:
+
+https://doi.org/10.5281/zenodo.21506477
+
+Your geometric description provides a very clean invariant explanation for the correction term.
+
+Reply
+
+23 July, 2026 at 5:32 pm
+
+David Speyer
+
+Let Y be X with the n-2 hypersurfaces removed, so Y = A^n. If I follow you correctly, then (L,Q) &#8211;  (zeta L, zeta^{-1} Q) is an action of Z/(n-2) Z on Y with no fixed points.
+
+That means that this Z/(n-2) Z action would violate the Linearization Conjecture. I&#8217;m doing a literature search now to check that the case of cyclic actions is still open, but I think it is.
+
+Reply
+
+23 July, 2026 at 5:50 pm
+
+David Speyer
+
+Oh sorry, I&#8217;m wrong. I didn&#8217;t understand that I am supposed to remove L=zeta z for zeta nontrivial, but not L=z itself. So there is no easy cyclic action here.
+
+Reply
+
+22 July, 2026 at 6:28 am
+
+Alejandro Radisic
+
+A small arithmetic postscript to this digestion, machine-verified in Lean over the last two days: the integer polynomial map (1) knows the 
+ story over finite fields exactly.
+
+Over any finite field 
+ of odd characteristic, write 
+ for the number of targets with exactly 
+ rational preimages. Then every fiber has 
+, 
+, or 
+ points, and
+
+In characteristic 
+, the first formula instead becomes
+
+Thus the fiber-count distribution
+
+converges to
+
+these are the proportions of elements of 
+ with 
+, 
+, and 
+ fixed points, respectively: the Chebotarev prediction for the generic 
+-cover, with the finite-
+ corrections determined exactly.
+
+The exactness has a cause visible in your account: targets with three-point fibers are in bijection with admissible unordered triples of distinct points of the projective line, and the slice normalization forces
+
+so the only inadmissible triples are finite triples with vanishing sum. Counting ordered triples is then elementary.
+
+Characteristic 
+ is a genuine special case: the translation 
+ puts the cubic into the form
+
+A triple root becomes impossible, since a cube has no quadratic term in characteristic 
+, and the omitted curve is empty. Consequently, over an algebraically closed field of characteristic 
+, the same map is surjective while remaining étale and non-injective.
+
+That final deduction is elementary but not yet formalized; the statistics, the normal form, and the emptiness of the triple-root locus are formalized, using only Mathlib’s axioms.
+
+https://github.com/alerad/alpoge-lean
+, v0.3.0. AI-assisted development throughout, as usual.
+
+Reply
+
+22 July, 2026 at 6:44 am
+
+Anonymous
+
+During my discussions with GPT, I came across the following possible addition, which may be of interest. Some of it overlaps with the cubic-model discussion linked in the comments, but the following packages the mechanism directly in the final affine coordinates of (1). Write 
+. The map is equivariant under 
+ with target weights 
+. Hence one can use the invariant coordinates 
+ The induced quotient map 
+ factors, after setting 
+ as 
+ The first map is birational but not proper. Its rational inverse contains 
+ so keeping 
+ fixed while 
+ sends the source point to infinity. The second map is generically three-to-one: eliminating 
+ gives 
+ Thus the cubic factor accounts for the three generic preimages, while the preceding birational factor isolates how sheets can escape to infinity. This seems to be the final-coordinate counterpart of the three choices of the linear factor in (4). More generally, for generically finite polynomial maps equivariant for these same source and target weights, a function-field calculation gives that the original map and its two-dimensional quotient have the same generic number of preimages. Writing 
+, the quartic 
+ then appears as the non-properness locus for this example (the finite target values approached by source points going to infinity), recovering the 
+ geometry discussed in the linked thread. The displayed identities are exact and directly checkable;
+
+Reply
+
+22 July, 2026 at 7:01 am
+
+Lev Reyzin
+
+Not important, but small correction: 21 choose 3 is 1330, not 1300.
+
+[Corrected, thanks &#8211; T.]
+
+Reply
+
+22 July, 2026 at 7:15 am
+
+Anonymous
+
+In fact, wouldn&#8217;t it HAVE to find the counter-example by some convergence theorem? Like if we keep one root fixed and the other &#8220;quasi-root&#8221; inside an anulus away from the first, can&#8217;t you apply some sort of Ascoli argument? The prerequisite would be that there is some boundedness condition on the search space (since all is holomorphic here, we don&#8217;t even need to consider the derivatives). But if the search space is big enough, and the network manages to find some sort of descent, it would have to terminate.
+
+Maybe AI wasn&#8217;t even necessary here?
+
+Reply
+
+22 July, 2026 at 10:28 am
+
+Anonymous
+
+Thank you for your fascinating discussion of the Jacobian conjecture.
+
+As a non-expert, I had a question inspired by the appearance of the term 1+XY in the counterexample. This may be only a superficial analogy, but it reminded me of the 3n+1 step in the Collatz problem. In both cases, adding a constant term to an otherwise simple multiplicative structure seems to allow much more complicated global behavior to emerge.
+
+I was wondering whether there is a general framework in which an invertible high-dimensional polynomial map can realize or encode a discrete dynamical system such as the Collatz map, for example through invariant subsets, projections, or return maps.
+
+More broadly, are there known results or theories concerning how algebraic dynamical systems can represent discrete dynamics?
+
+Reply
+
+22 July, 2026 at 11:28 am
+
+Anonymous
+
+Does the simpler collision of (-2,1,2) and (0,1,-4) to (0,1,0) follow from your analysis?
+
+Reply
+
+22 July, 2026 at 12:06 pm
+
+Terence Tao
+
+In the notation of this blog post, your collision corresponds to the factorization of the cubic 
+ into 
+ and 
+.  There is a third factorization 
+ that corresponds to a third preimage 
+.
+
+For comparison, the original collision reported corresponds to the factorization of the cubic 
+ into 
+, 
+, and 
+ respectively.
+
+Reply
+
+23 July, 2026 at 9:48 am
+
+Anonymous
+
+The third preimage is (2,-1/2,5/4).
+
+[Corrected, thanks &#8211; T.]
+
+Reply
+
+22 July, 2026 at 11:52 am
+
+Anonymous
+
+Thanks for the insight, Terry Tao
+
+Reply
+
+22 July, 2026 at 2:13 pm
+
+Anonymous
+
+Hello everyone. For a while, I&#8217;ve had the idea that I would go for a masters and then a doctorate in computational physics. With all this progress of llms in math, I feel like it might be better to lean into something more engineering related and make some money quickly till someone is willing to pay me and not have llm do everything. Do you think academic path still has a future (even if you are not a super genius), or is it gonna be just clankers clanking and humans doing their best to understand?
+
+Reply
+
+22 July, 2026 at 4:37 pm
+
+Anonymous
+
+I have not seen any indication of what the prompting process that generated the original counterexample looked like. Do you have a sense of how much of the material you expose here the counterexample’s “announcer” might have known or suspected a priori? After reading your discussion with the AI related to this post, I’d be fascinated to see the discussion that led to the counterexample. 
+
+Reply
+
+22 July, 2026 at 7:47 pm
+
+abdakhama
+
+An AI says that with the choice F(x,y,z)=(x+y⋅P(q,z), y+Q(q,z), z+R(q,z))
+
+where q=1+xy, and P, Q, and R are polynomials to be determined, simplifies the number of equations. 
+
+Reply
+
+22 July, 2026 at 7:59 pm
+
+Anonymous
+
+Lovely explanation. Is the fact that the variety is isomorphic to C^3 possibly less miraculous with an algebraic argument?
+
+Reply
+
+22 July, 2026 at 9:29 pm
+
+Anonymous
+
+Your higher-degree discussion suggests a precise comparison that may be useful. Consider the universal marked-root map
+
+Let 
+ be its ramification divisor and, for a general target hyperplane 
+, put
+
+Divisor localization gives
+
+Thus 
+ is affine but is not isomorphic to 
+ for 
+. This makes precise one obstruction behind the deterioration of the naive higher-degree marked-root construction.
+
+Separately, we derive the covering structure of an explicit family
+
+for which
+
+Hence the same affine three-space realizes every odd generic degree.
+
+After passing to a primitive parameter and splitting the two critical points, the generic cover is affinely equivalent to
+
+ Its passport is 
+
+and its geometric monodromy is
+
+ for even 
+ and 
+ for odd 
+.
+
+The class-group obstruction shows that this fixed-
+ family is not simply the naive degree-
+ marked-root construction.
+
+&#8212;
+
+The question I do not yet know how to answer is whether its beta cover arises as a nonlinear three-dimensional pullback of the higher marked-factor cover, or from a distinguished component of an appropriate restriction.
+
+Reply
+
+22 July, 2026 at 10:05 pm
+
+Anonymous
+
+Your resultant-normalized factorization suggests an interpretation of a higher-dimensional family we constructed.
+
+For a degree-n form P = LQ, with deg(L) = 1 and deg(Q) = n−1,
+
+Res(λL, λ⁻¹Q) = λⁿ⁻² Res(L,Q).
+
+Thus a generic P has n choices of marked linear factor and n−2 resultant-normalizing scalings, explaining the generic degree n(n−2).
+
+Our explicit family realizes this for every n ≥ 3, with the original cubic as its n = 3 member:
+
+https://x.com/hari65535/status/2079135211196121363
+
+Does this seem like the correct invariant interpretation of the higher-dimensional construction?
+
+Reply
+
+23 July, 2026 at 12:14 am
+
+Anonymous
+
+Alpöge’s Jacobian counterexample and Long’s SU(2) construction yield a 5-variable counterexample to the Generalized Vanishing Conjecture. Let P=(t+c)(ad+bt), Λ=∂ₜ(∂ₐ∂_d−∂_b∂꜀), Q=c. Then Λᵐ(Pᵐ)=0 for every m≥1, but Λᵐ(QPᵐ)= k_m * t ≠ 0, for m≥2. GVC(5) fails.  &#8212; 
+https://x.com/mth757t/status/2080177784756842977
+
+Reply
+
+23 July, 2026 at 3:53 am
+
+Anonymous
+
+Daniel Litt was right, this conjecture is low hanging fruit in hindsight. 
+
+On the other hand the case for N = 2 doesn&#8217;t seem to be so easy to disprove, because it isn&#8217;t the case (that I know off) that polynomial multiplication of two linear forms to get a quadratic form is non-injective, once you factor out the scaling symmetry. So this proof route isn&#8217;t available for N = 2. 
+
+Reply
+
+23 July, 2026 at 5:28 am
+
+Vitor Freitas
+
+Found this with Opus 4.8:
+
+Let u=1+xy,W=u²z+3y²u+y²,F=(a,b,c)=(uW,y+3xW,x(2−3xy−x²z)). Set P(Y)=2Y³−3bY²+18aY+b³−18ab+27a²c. Then P(Y)=2(Y−y)(Y²−(3b/2−y)Y+9a−y(3b/2−y)). With D=3a+Y²−bY, any root with aD≠0 inverts via x=(b−Y)/D,u=3a/D,W=D/3; z follows. Generic 3:1; det JF=−2.
+
+Reply
+
+23 July, 2026 at 7:44 am
+
+Anonymous
+
+You shared the Chatbot conversation. Could you disclose which plan you use, which model, and at what &#8220;intelligence&#8221; level?
+
+Reply
+
+23 July, 2026 at 8:35 pm
+
+Terence Tao
+
+Most of the discussion was using GPT 5.6 Sol in &#8220;Instant&#8221; mode (to prioritize interactivity), except for one turn in the conversation in which I switched to &#8220;Pro&#8221; mode instead.
+
+Reply
+
+23 July, 2026 at 10:04 am
+
+Anonymous
+
+The Wikipedia article on the Jacobian conjecture says &#8220;By the contrapositive of these reductions, the existence of the 2026 counterexample implies the existence of counterexamples of cubic homogeneous type, and indeed of cubic linear type, in sufficiently high dimension.&#8221;
+
+Has anybody constructed a polynomial from C^N to C^N for some N which is of cubic homogeneous type and a counterexample to the Jacobian conjecture? Existence proofs aren&#8217;t that satisfying to me compared to constructive proofs. 
+
+Reply
+
+23 July, 2026 at 11:18 am
+
+Anonymous
+
+Nice job. I also verified the work.  And in the process likely solved the similar 3D level on Poisson and Dixmier.  Take a Look.   
+https://x.com/MagnetGP/status/2080370383534883272?s=20
+
+Reply
+
+23 July, 2026 at 11:43 am
+
+Anonymous
+
+If we choose (Keller&#8217;s map)
+
+F(x,y,z)=(x+y⋅P(xy,z), y+Q(xy,z), z+R(xy,z))
+
+Where q=1+xy, and P, Q, and R are polynomials to be determined, simplifies the number of equations. For degree 3, the number of equations is 30 to determine P, Q, and R. Once that done, setting the Jacobian to a constant c, a search for c and consequently at least two points (x,y,z) such that the non-injectivity is met.
+
+Reply
+
+23 July, 2026 at 1:06 pm
+
+Terence Tao
+
+I have used an AI agent to create a 
+visualizer of the counterexample map
+ constructed in the blog, using both 
+ and 
+ coordinates for the domain and the 
+ coefficients for the range. Note: due to the ongoing ICM I have only been able to very briefly playtest the applet, so there may be some room for improvements to the GUI. As always, any suggestions for such improvements would be greatly appreciated!
+
+Reply
+
+23 July, 2026 at 1:22 pm
+
+Anonymous
+
+Alejandro Radisic wrote on Mathstodon:
+
+&#8220;Formalized in Lean4:
+
+The map F : K³ → K³ has constant Jacobian −2 yet identifies three points. This is no accident of algebra: F is, definitionally, the proof is rfl, the map &#8220;binary cubic with a marked simple root ↦ forget the marking&#8221;, for the family cT³ − 2T²U + bTU² − 2aU³.
+
+So every fiber is the set of simple roots of one cubic. The Keller condition says the root you stand on is simple, a local fact. It cannot control how many simple roots the cubic has: 3 off the discriminant hypersurface, 1 on it, 0 on its singular curve (the triple roots), which is exactly the locus the image misses. All machine-checked now, including disc = −4W and &#8220;missed curve = singular locus of the discriminant&#8221;.
+
+My favorite part is arithmetic: over any field of char ≠ 2, a fiber can never have exactly two rational points, two roots force a third. Vieta, made constructive.
+
+The Jacobian Conjecture failed because pointwise simplicity of roots doesn&#8217;t count roots.&#8221;
+
+https://mathstodon.xyz/@alerad/116958673277338837
+
+Reply
+
+24 July, 2026 at 6:21 am
+
+Anonymous
+
+Similar visualisations (plus an elementary discussion) by A. Gallagher can be found at 
+https://jacobianfun.org/jacobian-explained
+. 
+
+Reply
+
+23 July, 2026 at 1:24 pm
+
+Anonymous
+
+Nice exposition! Just a few minor comments.
+
+line 1 after (5): factoring -  factorization.
+
+line 10 after (5): Perhaps change h to -h as we have 
+ and similarly for the 
+.
+
+line 11 after (5): 
+ doesn&#8217;t belong to 
+. One should look at 
+ which changes 
+ to 
+ and 
+ to 
+.
+
+line 1 after (9): &#8220;The latter&#8221; should perhaps be changed to &#8220;
+&#8220;.
+
+-Kasper Andersen
+
+[Corrected, thanks &#8211; T.]
+
+Reply
+
+23 July, 2026 at 6:14 pm
+
+Anonymous
+
+I wonder if the construction could be used to prove that the Koras-Russell cubic is stably isomorphic to an affine space.  
+
+Reply
+
+24 July, 2026 at 7:34 am
+
+Anonymous
+
+”This already gives (a) and thus completes the proof of Theorem 3.“
+
+“This already gives (c)” seems to be correct
+
+[Corrected, thanks &#8211; T.]
+
+Reply
+
+24 July, 2026 at 9:48 am
+
+Various News Items | Combinatorics and more
+
+[&#8230;] significant items: The Jacobian conjecture has been disproved (Claude; see this enlightening blog post by Terry Tao); the double cover conjecture has been proved [&#8230;]
+
+Reply
+
+Leave a comment 
+
+Cancel reply
+
+&#916;
+
+For commenters
+
+To enter in LaTeX in comments, use $latex 
+ Your LaTeX code 
+$ (without the   and   signs, of course; in fact, these signs should be avoided as they can cause formatting errors). Also, backslashes \ need to be doubled as \\.  See the 
+about page
+ for details and for other commenting policy.
+
+ Two more apps: visualizing the zeta process and the motions of the heavens
+
+Blog at WordPress.com.
+
+Ben Eastaugh and Chris Sternal-Johnson. 
+
+Subscribe to feed.
+
+Comment						
+
+Reblog
+
+Subscribe
+
+Subscribed
+
+				What&#039;s new			
+
+Join 12,235 other subscribers
+
+												Sign me up											
+
+											Already have a WordPress.com account? 
+Log in now.
+
+				What&#039;s new			
+
+Subscribe
+
+Subscribed
+
+Sign up
+
+Log in
+
+Copy shortlink
+
+										Report this content									
+
+										View post in Reader									
+
+Manage subscriptions
+
+Collapse this bar
+
+%d
+

@@ -262,3 +262,468 @@ lemma-frobenius-multiplicative (a , b) (c , d) =
 lemma-eigen-conjugate : ∀ (x : GF9) →
   galoisConjugate (x *gf9 alpha) ≡ (galoisConjugate x) *gf9 galoisConjugate alpha
 lemma-eigen-conjugate x = lemma-frobenius-multiplicative x alpha
+
+--------------------------------------------------------------------------------
+-- 8. GF(9)* 乘法群 — 8 个非零元素的有限循环群
+--------------------------------------------------------------------------------
+
+open import Data.Nat using (ℕ; zero; suc)
+open import Data.Unit using (⊤; tt)
+
+-- GF(9)* 的 8 个非零元素 (与 GF9 = GF3 × GF3 的非零元素一一对应)
+data GF9Star : Set where
+  s1    : GF9Star  -- 1    = (T₁, T₀)
+  s2    : GF9Star  -- 2    = (T₂, T₀)
+  sα    : GF9Star  -- α    = (T₀, T₁)
+  s2α   : GF9Star  -- 2α   = (T₀, T₂)
+  s1α   : GF9Star  -- 1+α  = (T₁, T₁)
+  s12α  : GF9Star  -- 1+2α = (T₁, T₂)
+  s21α  : GF9Star  -- 2+α  = (T₂, T₁)
+  s22α  : GF9Star  -- 2+2α = (T₂, T₂)
+
+-- 嵌入 GF9Star → GF9
+toGF9 : GF9Star → GF9
+toGF9 s1   = T₁ , T₀
+toGF9 s2   = T₂ , T₀
+toGF9 sα   = T₀ , T₁
+toGF9 s2α  = T₀ , T₂
+toGF9 s1α  = T₁ , T₁
+toGF9 s12α = T₁ , T₂
+toGF9 s21α = T₂ , T₁
+toGF9 s22α = T₂ , T₂
+
+-- 从 GF9 解码 (非零元素 → GF9Star, 零元素 → s1 任意)
+fromGF9 : GF9 → GF9Star
+fromGF9 (T₀ , T₀) = s1
+fromGF9 (T₁ , T₀) = s1
+fromGF9 (T₂ , T₀) = s2
+fromGF9 (T₀ , T₁) = sα
+fromGF9 (T₀ , T₂) = s2α
+fromGF9 (T₁ , T₁) = s1α
+fromGF9 (T₁ , T₂) = s12α
+fromGF9 (T₂ , T₁) = s21α
+fromGF9 (T₂ , T₂) = s22α
+
+-- fromGF9 ∘ toGF9 = id (8 case refl)
+fromGF9-toGF9 : ∀ x → fromGF9 (toGF9 x) ≡ x
+fromGF9-toGF9 s1 = refl
+fromGF9-toGF9 s2 = refl
+fromGF9-toGF9 sα = refl
+fromGF9-toGF9 s2α = refl
+fromGF9-toGF9 s1α = refl
+fromGF9-toGF9 s12α = refl
+fromGF9-toGF9 s21α = refl
+fromGF9-toGF9 s22α = refl
+
+-- toGF9 单射 (由 fromGF9-toGF9 推导)
+toGF9-inj : ∀ {x y} → toGF9 x ≡ toGF9 y → x ≡ y
+toGF9-inj {x} {y} eq = trans (sym (fromGF9-toGF9 x)) (trans (cong fromGF9 eq) (fromGF9-toGF9 y))
+
+-- GF(9)* 乘法表 (8×8 = 64 case 穷举)
+-- 由 (a+bα)(c+dα) = (ac-bd) + (ad+bc)α, α²=2=-1 推导
+-- s1 行用 catch-all (单位元), 其余 7×8=56 case 显式穷举
+_*s_ : GF9Star → GF9Star → GF9Star
+s1 *s y = y    -- 单位元行
+-- s2 行
+s2 *s s1 = s2;    s2 *s s2 = s1;    s2 *s sα = s2α;   s2 *s s2α = sα
+s2 *s s1α = s22α; s2 *s s12α = s21α; s2 *s s21α = s12α; s2 *s s22α = s1α
+-- sα 行
+sα *s s1 = sα;    sα *s s2 = s2α;   sα *s sα = s2;    sα *s s2α = s1
+sα *s s1α = s21α; sα *s s12α = s1α;  sα *s s21α = s22α; sα *s s22α = s12α
+-- s2α 行
+s2α *s s1 = s2α;   s2α *s s2 = sα;    s2α *s sα = s1;    s2α *s s2α = s2
+s2α *s s1α = s12α; s2α *s s12α = s22α; s2α *s s21α = s1α; s2α *s s22α = s21α
+-- s1α 行
+s1α *s s1 = s1α;   s1α *s s2 = s22α;  s1α *s sα = s21α;  s1α *s s2α = s12α
+s1α *s s1α = s2α;  s1α *s s12α = s2;   s1α *s s21α = s1;   s1α *s s22α = sα
+-- s12α 行
+s12α *s s1 = s12α; s12α *s s2 = s21α; s12α *s sα = s1α;   s12α *s s2α = s22α
+s12α *s s1α = s2;   s12α *s s12α = sα;   s12α *s s21α = s2α; s12α *s s22α = s1
+-- s21α 行
+s21α *s s1 = s21α; s21α *s s2 = s12α; s21α *s sα = s22α;  s21α *s s2α = s1α
+s21α *s s1α = s1;   s21α *s s12α = s2α;  s21α *s s21α = sα;  s21α *s s22α = s2
+-- s22α 行
+s22α *s s1 = s22α; s22α *s s2 = s1α;   s22α *s sα = s12α;  s22α *s s2α = s21α
+s22α *s s1α = sα;   s22α *s s12α = s1;   s22α *s s21α = s2;  s22α *s s22α = s2α
+
+-- 乘法表与 GF9 域乘法的一致性 (64 case)
+-- s1 行由 *gf9-identityˡ 推导, 其余 56 case 为 refl
+*s-toGF9 : ∀ x y → toGF9 (x *s y) ≡ toGF9 x *gf9 toGF9 y
+*s-toGF9 s1 y = sym (*gf9-identityˡ (toGF9 y))
+*s-toGF9 s2 s1 = refl;    *s-toGF9 s2 s2 = refl;    *s-toGF9 s2 sα = refl;    *s-toGF9 s2 s2α = refl
+*s-toGF9 s2 s1α = refl;   *s-toGF9 s2 s12α = refl;  *s-toGF9 s2 s21α = refl;  *s-toGF9 s2 s22α = refl
+*s-toGF9 sα s1 = refl;    *s-toGF9 sα s2 = refl;    *s-toGF9 sα sα = refl;    *s-toGF9 sα s2α = refl
+*s-toGF9 sα s1α = refl;   *s-toGF9 sα s12α = refl;  *s-toGF9 sα s21α = refl;  *s-toGF9 sα s22α = refl
+*s-toGF9 s2α s1 = refl;   *s-toGF9 s2α s2 = refl;   *s-toGF9 s2α sα = refl;   *s-toGF9 s2α s2α = refl
+*s-toGF9 s2α s1α = refl;  *s-toGF9 s2α s12α = refl; *s-toGF9 s2α s21α = refl; *s-toGF9 s2α s22α = refl
+*s-toGF9 s1α s1 = refl;   *s-toGF9 s1α s2 = refl;   *s-toGF9 s1α sα = refl;   *s-toGF9 s1α s2α = refl
+*s-toGF9 s1α s1α = refl;  *s-toGF9 s1α s12α = refl; *s-toGF9 s1α s21α = refl; *s-toGF9 s1α s22α = refl
+*s-toGF9 s12α s1 = refl;  *s-toGF9 s12α s2 = refl;  *s-toGF9 s12α sα = refl;  *s-toGF9 s12α s2α = refl
+*s-toGF9 s12α s1α = refl; *s-toGF9 s12α s12α = refl; *s-toGF9 s12α s21α = refl; *s-toGF9 s12α s22α = refl
+*s-toGF9 s21α s1 = refl;  *s-toGF9 s21α s2 = refl;  *s-toGF9 s21α sα = refl;  *s-toGF9 s21α s2α = refl
+*s-toGF9 s21α s1α = refl; *s-toGF9 s21α s12α = refl; *s-toGF9 s21α s21α = refl; *s-toGF9 s21α s22α = refl
+*s-toGF9 s22α s1 = refl;  *s-toGF9 s22α s2 = refl;  *s-toGF9 s22α sα = refl;  *s-toGF9 s22α s2α = refl
+*s-toGF9 s22α s1α = refl; *s-toGF9 s22α s12α = refl; *s-toGF9 s22α s21α = refl; *s-toGF9 s22α s22α = refl
+
+-- 乘法单位元
+*s-identityˡ : ∀ x → s1 *s x ≡ x
+*s-identityˡ x = refl
+
+*s-identityʳ : ∀ x → x *s s1 ≡ x
+*s-identityʳ s1 = refl;   *s-identityʳ s2 = refl
+*s-identityʳ sα = refl;   *s-identityʳ s2α = refl
+*s-identityʳ s1α = refl;  *s-identityʳ s12α = refl
+*s-identityʳ s21α = refl; *s-identityʳ s22α = refl
+
+-- 乘法交换律 (64 case refl)
+*s-comm : ∀ x y → x *s y ≡ y *s x
+*s-comm s1 s1 = refl;   *s-comm s1 s2 = refl;   *s-comm s1 sα = refl;   *s-comm s1 s2α = refl
+*s-comm s1 s1α = refl;  *s-comm s1 s12α = refl; *s-comm s1 s21α = refl; *s-comm s1 s22α = refl
+*s-comm s2 s1 = refl;   *s-comm s2 s2 = refl;   *s-comm s2 sα = refl;   *s-comm s2 s2α = refl
+*s-comm s2 s1α = refl;  *s-comm s2 s12α = refl; *s-comm s2 s21α = refl; *s-comm s2 s22α = refl
+*s-comm sα s1 = refl;   *s-comm sα s2 = refl;   *s-comm sα sα = refl;   *s-comm sα s2α = refl
+*s-comm sα s1α = refl;  *s-comm sα s12α = refl; *s-comm sα s21α = refl; *s-comm sα s22α = refl
+*s-comm s2α s1 = refl;  *s-comm s2α s2 = refl;  *s-comm s2α sα = refl;  *s-comm s2α s2α = refl
+*s-comm s2α s1α = refl; *s-comm s2α s12α = refl; *s-comm s2α s21α = refl; *s-comm s2α s22α = refl
+*s-comm s1α s1 = refl;  *s-comm s1α s2 = refl;  *s-comm s1α sα = refl;  *s-comm s1α s2α = refl
+*s-comm s1α s1α = refl; *s-comm s1α s12α = refl; *s-comm s1α s21α = refl; *s-comm s1α s22α = refl
+*s-comm s12α s1 = refl; *s-comm s12α s2 = refl; *s-comm s12α sα = refl; *s-comm s12α s2α = refl
+*s-comm s12α s1α = refl; *s-comm s12α s12α = refl; *s-comm s12α s21α = refl; *s-comm s12α s22α = refl
+*s-comm s21α s1 = refl; *s-comm s21α s2 = refl; *s-comm s21α sα = refl; *s-comm s21α s2α = refl
+*s-comm s21α s1α = refl; *s-comm s21α s12α = refl; *s-comm s21α s21α = refl; *s-comm s21α s22α = refl
+*s-comm s22α s1 = refl; *s-comm s22α s2 = refl; *s-comm s22α sα = refl; *s-comm s22α s2α = refl
+*s-comm s22α s1α = refl; *s-comm s22α s12α = refl; *s-comm s22α s21α = refl; *s-comm s22α s22α = refl
+
+--------------------------------------------------------------------------------
+-- 9. 循环群结构 — GF(9)* ≅ Z/8Z, 生成元 1+α
+--------------------------------------------------------------------------------
+
+-- 幂次函数
+_^s_ : GF9Star → ℕ → GF9Star
+x ^s zero = s1
+x ^s (suc n) = x *s (x ^s n)
+
+-- 生成元: 1+α (primitive element)
+gen : GF9Star
+gen = s1α
+
+-- 幂次表 (全部 refl — Agda 计算归约)
+-- (1+α)⁰ = 1
+gen-pow-0 : gen ^s 0 ≡ s1
+gen-pow-0 = refl
+
+-- (1+α)¹ = 1+α
+gen-pow-1 : gen ^s 1 ≡ s1α
+gen-pow-1 = refl
+
+-- (1+α)² = 2α
+gen-pow-2 : gen ^s 2 ≡ s2α
+gen-pow-2 = refl
+
+-- (1+α)³ = 1+2α
+gen-pow-3 : gen ^s 3 ≡ s12α
+gen-pow-3 = refl
+
+-- (1+α)⁴ = 2
+gen-pow-4 : gen ^s 4 ≡ s2
+gen-pow-4 = refl
+
+-- (1+α)⁵ = 2+2α
+gen-pow-5 : gen ^s 5 ≡ s22α
+gen-pow-5 = refl
+
+-- (1+α)⁶ = α
+gen-pow-6 : gen ^s 6 ≡ sα
+gen-pow-6 = refl
+
+-- (1+α)⁷ = 2+α
+gen-pow-7 : gen ^s 7 ≡ s21α
+gen-pow-7 = refl
+
+-- (1+α)⁸ = 1 (回到单位元 — 阶为 8)
+gen-pow-8 : gen ^s 8 ≡ s1
+gen-pow-8 = refl
+
+-- 生成元遍历所有 8 个元素 (穷举验证)
+gen-generates-all : ∀ x → Σ ℕ (λ n → gen ^s n ≡ x)
+gen-generates-all s1   = 0 , refl
+gen-generates-all s2   = 4 , refl
+gen-generates-all sα   = 6 , refl
+gen-generates-all s2α  = 2 , refl
+gen-generates-all s1α  = 1 , refl
+gen-generates-all s12α = 3 , refl
+gen-generates-all s21α = 7 , refl
+gen-generates-all s22α = 5 , refl
+
+--------------------------------------------------------------------------------
+-- 10. 乘法逆元
+--------------------------------------------------------------------------------
+
+inv : GF9Star → GF9Star
+inv s1   = s1     -- 1⁻¹ = 1
+inv s2   = s2     -- 2⁻¹ = 2 (2×2=4≡1)
+inv sα   = s2α    -- α⁻¹ = 2α (α×2α=2α²=2×2=4≡1)
+inv s2α  = sα     -- (2α)⁻¹ = α
+inv s1α  = s21α   -- (1+α)⁻¹ = 2+α
+inv s12α = s22α   -- (1+2α)⁻¹ = 2+2α
+inv s21α = s1α    -- (2+α)⁻¹ = 1+α
+inv s22α = s12α   -- (2+2α)⁻¹ = 1+2α
+
+-- 逆元正确性 (8 case refl)
+inv-correct : ∀ x → x *s inv x ≡ s1
+inv-correct s1   = refl  -- s1 *s s1 = s1
+inv-correct s2   = refl  -- s2 *s s2 = s1
+inv-correct sα   = refl  -- sα *s s2α = s1
+inv-correct s2α  = refl  -- s2α *s sα = s1
+inv-correct s1α  = refl  -- s1α *s s21α = s1
+inv-correct s12α = refl  -- s12α *s s22α = s1
+inv-correct s21α = refl  -- s21α *s s1α = s1
+inv-correct s22α = refl  -- s22α *s s12α = s1
+
+-- 逆元对合: inv(inv(x)) = x
+inv-involutive : ∀ x → inv (inv x) ≡ x
+inv-involutive s1   = refl
+inv-involutive s2   = refl
+inv-involutive sα   = refl
+inv-involutive s2α  = refl
+inv-involutive s1α  = refl
+inv-involutive s12α = refl
+inv-involutive s21α = refl
+inv-involutive s22α = refl
+
+--------------------------------------------------------------------------------
+-- 11. 子群结构
+-- GF(9)* ≅ Z/8Z 的子群格:
+--   {1} ⊂ {1,2} ⊂ {1,α,2,2α} ⊂ GF(9)*
+--   阶:  1    2         4            8
+--------------------------------------------------------------------------------
+
+-- GF(3)* = {1, 2} — 2 阶子群 (≅ Z/2Z)
+data GF3StarSub : Set where
+  gf3s-1 : GF3StarSub
+  gf3s-2 : GF3StarSub
+
+gf3s-embed : GF3StarSub → GF9Star
+gf3s-embed gf3s-1 = s1
+gf3s-embed gf3s-2 = s2
+
+gf3s-mul : GF3StarSub → GF3StarSub → GF3StarSub
+gf3s-mul gf3s-1 gf3s-1 = gf3s-1  -- 1×1=1
+gf3s-mul gf3s-1 gf3s-2 = gf3s-2  -- 1×2=2
+gf3s-mul gf3s-2 gf3s-1 = gf3s-2  -- 2×1=2
+gf3s-mul gf3s-2 gf3s-2 = gf3s-1  -- 2×2=1
+
+gf3s-inv : GF3StarSub → GF3StarSub
+gf3s-inv gf3s-1 = gf3s-1
+gf3s-inv gf3s-2 = gf3s-2
+
+gf3s-inv-correct : ∀ x → gf3s-mul x (gf3s-inv x) ≡ gf3s-1
+gf3s-inv-correct gf3s-1 = refl
+gf3s-inv-correct gf3s-2 = refl
+
+gf3s-mul-compat : ∀ x y → gf3s-embed (gf3s-mul x y) ≡ gf3s-embed x *s gf3s-embed y
+gf3s-mul-compat gf3s-1 gf3s-1 = refl
+gf3s-mul-compat gf3s-1 gf3s-2 = refl
+gf3s-mul-compat gf3s-2 gf3s-1 = refl
+gf3s-mul-compat gf3s-2 gf3s-2 = refl
+
+-- 4 阶子群 {1, α, 2, 2α} ≅ Z/4Z
+-- 由 α 生成: α⁰=1, α¹=α, α²=2, α³=2α, α⁴=1
+data Sub4 : Set where
+  sub4-1  : Sub4
+  sub4-α  : Sub4
+  sub4-2  : Sub4
+  sub4-2α : Sub4
+
+sub4-embed : Sub4 → GF9Star
+sub4-embed sub4-1  = s1
+sub4-embed sub4-α  = sα
+sub4-embed sub4-2  = s2
+sub4-embed sub4-2α = s2α
+
+sub4-mul : Sub4 → Sub4 → Sub4
+sub4-mul sub4-1  sub4-1  = sub4-1;  sub4-mul sub4-1  sub4-α  = sub4-α
+sub4-mul sub4-1  sub4-2  = sub4-2;  sub4-mul sub4-1  sub4-2α = sub4-2α
+sub4-mul sub4-α  sub4-1  = sub4-α;  sub4-mul sub4-α  sub4-α  = sub4-2
+sub4-mul sub4-α  sub4-2  = sub4-2α; sub4-mul sub4-α  sub4-2α = sub4-1
+sub4-mul sub4-2  sub4-1  = sub4-2;  sub4-mul sub4-2  sub4-α  = sub4-2α
+sub4-mul sub4-2  sub4-2  = sub4-1;  sub4-mul sub4-2  sub4-2α = sub4-α
+sub4-mul sub4-2α sub4-1  = sub4-2α; sub4-mul sub4-2α sub4-α  = sub4-1
+sub4-mul sub4-2α sub4-2  = sub4-α;  sub4-mul sub4-2α sub4-2α = sub4-2
+
+sub4-inv : Sub4 → Sub4
+sub4-inv sub4-1  = sub4-1
+sub4-inv sub4-α  = sub4-2α  -- α×2α=1
+sub4-inv sub4-2  = sub4-2   -- 2×2=1
+sub4-inv sub4-2α = sub4-α   -- 2α×α=1
+
+sub4-inv-correct : ∀ x → sub4-mul x (sub4-inv x) ≡ sub4-1
+sub4-inv-correct sub4-1  = refl
+sub4-inv-correct sub4-α  = refl
+sub4-inv-correct sub4-2  = refl
+sub4-inv-correct sub4-2α = refl
+
+sub4-mul-compat : ∀ x y → sub4-embed (sub4-mul x y) ≡ sub4-embed x *s sub4-embed y
+sub4-mul-compat sub4-1  sub4-1  = refl; sub4-mul-compat sub4-1  sub4-α  = refl
+sub4-mul-compat sub4-1  sub4-2  = refl; sub4-mul-compat sub4-1  sub4-2α = refl
+sub4-mul-compat sub4-α  sub4-1  = refl; sub4-mul-compat sub4-α  sub4-α  = refl
+sub4-mul-compat sub4-α  sub4-2  = refl; sub4-mul-compat sub4-α  sub4-2α = refl
+sub4-mul-compat sub4-2  sub4-1  = refl; sub4-mul-compat sub4-2  sub4-α  = refl
+sub4-mul-compat sub4-2  sub4-2  = refl; sub4-mul-compat sub4-2  sub4-2α = refl
+sub4-mul-compat sub4-2α sub4-1  = refl; sub4-mul-compat sub4-2α sub4-α  = refl
+sub4-mul-compat sub4-2α sub4-2  = refl; sub4-mul-compat sub4-2α sub4-2α = refl
+
+-- 子群嵌入保持单位元
+gf3s-embed-unit : gf3s-embed gf3s-1 ≡ s1
+gf3s-embed-unit = refl
+
+sub4-embed-unit : sub4-embed sub4-1 ≡ s1
+sub4-embed-unit = refl
+
+--------------------------------------------------------------------------------
+-- 12. GF(9) 乘法结合律 — 代数证明
+-- (x*y)*z ≡ x*(y*z) 由 GF(3) 环公理推导
+-- 策略: 展开为 GF(3) 的 ⊗/⊕, 使用 ⊗-assoc, ⊗-distrib, negate 分配律,
+--       swap-middle 重排四项, 再收拢回 RHS
+--------------------------------------------------------------------------------
+
+open import Sovereign.Base.Trit using (⊗-assoc)
+
+*gf9-assoc : ∀ x y z → (x *gf9 y) *gf9 z ≡ x *gf9 (y *gf9 z)
+*gf9-assoc (a , b) (c , d) (e , f) = cong₂ _,_ real-eq imag-eq
+  where
+    -- 辅助: negate(x)⊗y ≡ negate(x⊗y)
+    neg-mul-r : ∀ x y → (negate x) ⊗ y ≡ negate (x ⊗ y)
+    neg-mul-r x y = sym (negate-⊗ x y)
+
+    -- 辅助: x⊗negate(y) ≡ negate(x⊗y)
+    mul-neg-r : ∀ x y → x ⊗ (negate y) ≡ negate (x ⊗ y)
+    mul-neg-r x y = trans (sym (negate-⊗-comm x y)) (sym (negate-⊗ x y))
+
+    -- 四项重排: (A⊕B)⊕(C⊕D) ≡ (A⊕C)⊕(D⊕B)
+    rearrange4 : ∀ A B C D → (A ⊕ B) ⊕ (C ⊕ D) ≡ (A ⊕ C) ⊕ (D ⊕ B)
+    rearrange4 A B C D =
+      trans (swap-middle A B C D)
+            (cong ((A ⊕ C) ⊕_) (⊕-comm B D))
+
+    ------ 实部证明 ------
+    -- LHS_real = ((a⊗c ⊕ neg(b⊗d))⊗e) ⊕ neg((a⊗d ⊕ b⊗c)⊗f)
+    -- RHS_real = (a⊗(c⊗e ⊕ neg(d⊗f))) ⊕ neg(b⊗(c⊗f ⊕ d⊗e))
+    -- 规范形  = (a⊗(c⊗e) ⊕ neg(a⊗(d⊗f))) ⊕ (neg(b⊗(c⊗f)) ⊕ neg(b⊗(d⊗e)))
+
+    -- LHS → 展开分配
+    r-step1 :
+      (((a ⊗ c) ⊕ (negate (b ⊗ d))) ⊗ e) ⊕ (negate (((a ⊗ d) ⊕ (b ⊗ c)) ⊗ f))
+      ≡
+      (((a ⊗ c) ⊗ e) ⊕ ((negate (b ⊗ d)) ⊗ e))
+      ⊕ (negate (((a ⊗ d) ⊗ f) ⊕ ((b ⊗ c) ⊗ f)))
+    r-step1 = cong₂ _⊕_
+      (⊗-distribʳ-⊕ (a ⊗ c) (negate (b ⊗ d)) e)
+      (cong negate (⊗-distribʳ-⊕ (a ⊗ d) (b ⊗ c) f))
+
+    -- 展开 → neg-mul-r + negate-⊕
+    r-step2 :
+      (((a ⊗ c) ⊗ e) ⊕ ((negate (b ⊗ d)) ⊗ e))
+      ⊕ (negate (((a ⊗ d) ⊗ f) ⊕ ((b ⊗ c) ⊗ f)))
+      ≡
+      (((a ⊗ c) ⊗ e) ⊕ (negate ((b ⊗ d) ⊗ e)))
+      ⊕ ((negate ((a ⊗ d) ⊗ f)) ⊕ (negate ((b ⊗ c) ⊗ f)))
+    r-step2 = cong₂ _⊕_
+      (cong₂ _⊕_ refl (neg-mul-r (b ⊗ d) e))
+      (negate-⊕ ((a ⊗ d) ⊗ f) ((b ⊗ c) ⊗ f))
+
+    -- ⊗-assoc 重结合
+    r-step3 :
+      (((a ⊗ c) ⊗ e) ⊕ (negate ((b ⊗ d) ⊗ e)))
+      ⊕ ((negate ((a ⊗ d) ⊗ f)) ⊕ (negate ((b ⊗ c) ⊗ f)))
+      ≡
+      ((a ⊗ (c ⊗ e)) ⊕ (negate (b ⊗ (d ⊗ e))))
+      ⊕ ((negate (a ⊗ (d ⊗ f))) ⊕ (negate (b ⊗ (c ⊗ f))))
+    r-step3 = cong₂ _⊕_
+      (cong₂ _⊕_ (⊗-assoc a c e) (cong negate (⊗-assoc b d e)))
+      (cong₂ _⊕_ (cong negate (⊗-assoc a d f)) (cong negate (⊗-assoc b c f)))
+
+    -- 四项重排
+    r-step4 :
+      ((a ⊗ (c ⊗ e)) ⊕ (negate (b ⊗ (d ⊗ e))))
+      ⊕ ((negate (a ⊗ (d ⊗ f))) ⊕ (negate (b ⊗ (c ⊗ f))))
+      ≡
+      ((a ⊗ (c ⊗ e)) ⊕ (negate (a ⊗ (d ⊗ f))))
+      ⊕ ((negate (b ⊗ (c ⊗ f))) ⊕ (negate (b ⊗ (d ⊗ e))))
+    r-step4 = rearrange4
+      (a ⊗ (c ⊗ e)) (negate (b ⊗ (d ⊗ e)))
+      (negate (a ⊗ (d ⊗ f))) (negate (b ⊗ (c ⊗ f)))
+
+    -- 收拢回 RHS
+    r-step5 :
+      ((a ⊗ (c ⊗ e)) ⊕ (negate (a ⊗ (d ⊗ f))))
+      ⊕ ((negate (b ⊗ (c ⊗ f))) ⊕ (negate (b ⊗ (d ⊗ e))))
+      ≡
+      (a ⊗ ((c ⊗ e) ⊕ (negate (d ⊗ f))))
+      ⊕ (negate (b ⊗ ((c ⊗ f) ⊕ (d ⊗ e))))
+    r-step5 = cong₂ _⊕_
+      (trans (cong₂ _⊕_ refl (sym (mul-neg-r a (d ⊗ f))))
+             (sym (⊗-distribˡ-⊕ a (c ⊗ e) (negate (d ⊗ f)))))
+      (trans (sym (negate-⊕ (b ⊗ (c ⊗ f)) (b ⊗ (d ⊗ e))))
+             (cong negate (sym (⊗-distribˡ-⊕ b (c ⊗ f) (d ⊗ e)))))
+
+    real-eq :
+      (((a ⊗ c) ⊕ (negate (b ⊗ d))) ⊗ e) ⊕ (negate (((a ⊗ d) ⊕ (b ⊗ c)) ⊗ f))
+      ≡
+      (a ⊗ ((c ⊗ e) ⊕ (negate (d ⊗ f)))) ⊕ (negate (b ⊗ ((c ⊗ f) ⊕ (d ⊗ e))))
+    real-eq = trans r-step1 (trans r-step2 (trans r-step3 (trans r-step4 r-step5)))
+
+    ------ 虚部证明 ------
+    -- LHS_imag = ((a⊗c ⊕ neg(b⊗d))⊗f) ⊕ ((a⊗d ⊕ b⊗c)⊗e)
+    -- RHS_imag = (a⊗(c⊗f ⊕ d⊗e)) ⊕ (b⊗(c⊗e ⊕ neg(d⊗f)))
+
+    -- LHS → 展开分配
+    i-step1 :
+      (((a ⊗ c) ⊕ (negate (b ⊗ d))) ⊗ f) ⊕ (((a ⊗ d) ⊕ (b ⊗ c)) ⊗ e)
+      ≡
+      (((a ⊗ c) ⊗ f) ⊕ ((negate (b ⊗ d)) ⊗ f))
+      ⊕ (((a ⊗ d) ⊗ e) ⊕ ((b ⊗ c) ⊗ e))
+    i-step1 = cong₂ _⊕_
+      (⊗-distribʳ-⊕ (a ⊗ c) (negate (b ⊗ d)) f)
+      (⊗-distribʳ-⊕ (a ⊗ d) (b ⊗ c) e)
+
+    -- neg-mul-r + ⊗-assoc
+    i-step2 :
+      (((a ⊗ c) ⊗ f) ⊕ ((negate (b ⊗ d)) ⊗ f))
+      ⊕ (((a ⊗ d) ⊗ e) ⊕ ((b ⊗ c) ⊗ e))
+      ≡
+      ((a ⊗ (c ⊗ f)) ⊕ (negate (b ⊗ (d ⊗ f))))
+      ⊕ ((a ⊗ (d ⊗ e)) ⊕ (b ⊗ (c ⊗ e)))
+    i-step2 = cong₂ _⊕_
+      (cong₂ _⊕_ (⊗-assoc a c f)
+                 (trans (neg-mul-r (b ⊗ d) f) (cong negate (⊗-assoc b d f))))
+      (cong₂ _⊕_ (⊗-assoc a d e) (⊗-assoc b c e))
+
+    -- 四项重排
+    i-step3 :
+      ((a ⊗ (c ⊗ f)) ⊕ (negate (b ⊗ (d ⊗ f))))
+      ⊕ ((a ⊗ (d ⊗ e)) ⊕ (b ⊗ (c ⊗ e)))
+      ≡
+      ((a ⊗ (c ⊗ f)) ⊕ (a ⊗ (d ⊗ e)))
+      ⊕ ((b ⊗ (c ⊗ e)) ⊕ (negate (b ⊗ (d ⊗ f))))
+    i-step3 = rearrange4
+      (a ⊗ (c ⊗ f)) (negate (b ⊗ (d ⊗ f)))
+      (a ⊗ (d ⊗ e)) (b ⊗ (c ⊗ e))
+
+    -- 收拢回 RHS
+    i-step4 :
+      ((a ⊗ (c ⊗ f)) ⊕ (a ⊗ (d ⊗ e)))
+      ⊕ ((b ⊗ (c ⊗ e)) ⊕ (negate (b ⊗ (d ⊗ f))))
+      ≡
+      (a ⊗ ((c ⊗ f) ⊕ (d ⊗ e)))
+      ⊕ (b ⊗ ((c ⊗ e) ⊕ (negate (d ⊗ f))))
+    i-step4 = cong₂ _⊕_
+      (sym (⊗-distribˡ-⊕ a (c ⊗ f) (d ⊗ e)))
+      (trans (cong₂ _⊕_ refl (sym (mul-neg-r b (d ⊗ f))))
+             (sym (⊗-distribˡ-⊕ b (c ⊗ e) (negate (d ⊗ f)))))
+
+    imag-eq :
+      (((a ⊗ c) ⊕ (negate (b ⊗ d))) ⊗ f) ⊕ (((a ⊗ d) ⊕ (b ⊗ c)) ⊗ e)
+      ≡
+      (a ⊗ ((c ⊗ f) ⊕ (d ⊗ e))) ⊕ (b ⊗ ((c ⊗ e) ⊕ (negate (d ⊗ f))))
+    imag-eq = trans i-step1 (trans i-step2 (trans i-step3 i-step4))

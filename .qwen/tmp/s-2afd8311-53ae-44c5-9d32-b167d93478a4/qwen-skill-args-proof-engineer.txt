@@ -1,0 +1,1 @@
+：VortexDifferential 的 Δ₁₂³-is-3step 和卷积 Leibniz 规则需用正确的代数链风格重写（当前 cancel-pair 已证，消去引理的嵌套 trans 链有元变量问题），分析问题，推演路径，反思，验证标准

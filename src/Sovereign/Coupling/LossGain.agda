@@ -116,6 +116,18 @@ huangzhongLCMRemainder = POW3¹¹
 -- 仲吕对齐验证：仲吕余数(65536)对齐后回到黄钟余数(177147)
 zhonglvCorrectness : (65536 * POW3¹¹) / POW2¹⁶ ≡ 177147
 zhonglvCorrectness = refl
+
+-- 仲吕闭合操作（ℤ 版本）：acc ↦ (acc * 3¹¹) / 2¹⁶
+-- 用于主权状态机演化 (Zhonglv.evolveStep)
+-- 对非负累加器等价于 zhonglvAlign
+zhonglvClosure : ℤ → ℤ
+zhonglvClosure (+ n)    = + ((n * POW3¹¹) / POW2¹⁶)
+zhonglvClosure -[1+ n ] = -[1+ ((suc n * POW3¹¹) / POW2¹⁶) ]
+
+-- 仲吕闭合的模运算版本（ℕ）
+zhonglvClosureMod : ℕ → ℕ
+zhonglvClosureMod n = (n * POW3¹¹) % POW2¹⁶
+
 --------------------------------------------------------------------------------
 -- 6. 损益操作的数字根约束
 --------------------------------------------------------------------------------

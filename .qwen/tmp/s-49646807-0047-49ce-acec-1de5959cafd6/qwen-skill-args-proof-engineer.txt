@@ -1,0 +1,1 @@
+按路径 1（REWRITE decode9-encode9）消除这 2 个 postulate

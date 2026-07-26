@@ -113,6 +113,7 @@
 ### 核心宪法
 | 文档 | 说明 |
 |------|------|
+| [数学大厦底层更新-离散连续界面规范-v7.0.md](数学大厦底层更新-离散连续界面规范-v7.0.md) | **v7.0 底层更新**: 离散/连续界面规范, GF(9)共轭, 4320D谱, 31000步训练验证 |
 | [lvsvan-yi-graph-v2.5.md](cross-level/lvsvan-yi-graph-v2.5.md) | 律算合一知识图谱 v2.5 |
 | [final-summary-v2.5.md](cross-level/final-summary-v2.5.md) | 知识图谱最终总结 |
 | [constitution-amendment-v2.5-1.md](cross-level/constitution-amendment-v2.5-1.md) | 宪法修正案 |
@@ -145,6 +146,84 @@
 | [agda-development-plan.md](cross-level/agda-development-plan.md) | Agda 开发计划 |
 | [system-completion-summary-v2.5.md](cross-level/system-completion-summary-v2.5.md) | 体系完善完成报告 |
 
+### RH/GRH 离散闭合研究
+| 文档 | 说明 |
+|------|------|
+| [Riemann/README.md](Riemann/README.md) | RH/GRH 文档目录索引 |
+| [Riemann/RH-GRH-文献检索与元理论断层诊断.md](Riemann/RH-GRH-文献检索与元理论断层诊断.md) | 第一波：五大旧路线尸检 |
+| [Riemann/RH-GRH-元数学定位与阴阳研判.md](Riemann/RH-GRH-元数学定位与阴阳研判.md) | 连续统局限性宣言，阴阳合一元结论 |
+| [Riemann/RH-GRH-第二波战术部署.md](Riemann/RH-GRH-第二波战术部署.md) | 三大革命性方向侦察部署 |
+| [Riemann/RH-GRH-第二波突袭报告.md](Riemann/RH-GRH-第二波突袭报告.md) | 三方向突袭 + 次世代断层预测 |
+| [Riemann/RH-GRH-次世代高阶断层诊断.md](Riemann/RH-GRH-次世代高阶断层诊断.md) | 三级升级图 + 高阶壁垒 + 类型审查宣告 |
+| [Riemann/RH-GRH-次世代结构框架类型审查报告.md](Riemann/RH-GRH-次世代结构框架类型审查报告.md) | 独立学术审查 + 精确错误码 + 评分表 |
+| [Riemann/RH-GRH-战术资产整合与白皮书宣告.md](Riemann/RH-GRH-战术资产整合与白皮书宣告.md) | 阴阳相成整合 + 双轨发布战略 |
+| [Riemann/RH-GRH-第三波战略-代数审查宣言与算子相变侦察.md](Riemann/RH-GRH-第三波战略-代数审查宣言与算子相变侦察.md) | 三层金字塔 + 第三波算子相变侦察 |
+| [Riemann/RH-GRH-第三波侦察执行报告-算子相变图谱.md](Riemann/RH-GRH-第三波侦察执行报告-算子相变图谱.md) | 执行结果：算子相变图谱 + 对译字典 + ITP对标 |
+| [Riemann/RH-GRH-终章-数学极值相变宣言框架.md](Riemann/RH-GRH-终章-数学极值相变宣言框架.md) | 战略终章：从孤证到普遍规律 + 五部宣言框架 |
+| [Riemann/RH-GRH-大衍框架完整知识图谱-v5.5.md](Riemann/RH-GRH-大衍框架完整知识图谱-v5.5.md) | 完整知识图谱 v5.5（结构化对话备份） |
+| [Riemann/RH-GRH-宣言全卷编排与发布蓝图.md](Riemann/RH-GRH-宣言全卷编排与发布蓝图.md) | 四卷宣言大纲 + 存证与发布流程 |
+| [Riemann/RH-GRH-数学极值相变宣言-正文定稿.md](Riemann/RH-GRH-数学极值相变宣言-正文定稿.md) | ⭐ 宣言正文定稿（五卷正式文本） |
+
+### BSD 猜想诊断
+| 文档 | 说明 |
+|------|------|
+| [BSD/README.md](BSD/README.md) | BSD 猜想文档目录索引 |
+| [../src/Sovereign/Arithmetic/BSD/doc/BSD-三重完备性初始诊断.md](../src/Sovereign/Arithmetic/BSD/doc/BSD-三重完备性初始诊断.md) | 编译器初诊：三重缺失 + 路线拆解 + RH 同构验证 |
+
+### Langlands 函子性诊断
+| 文档 | 说明 |
+|------|------|
+| [Langlands/Langlands-三重完备性编译器初诊.md](Langlands/Langlands-三重完备性编译器初诊.md) | 编译器初诊：CorrespondenceWithoutGlobalConjugation |
+
+### Hodge 猜想诊断
+| 文档 | 说明 |
+|------|------|
+| [Hodge/Hodge-三重完备性编译器初诊.md](Hodge/Hodge-三重完备性编译器初诊.md) | 编译器初诊：AnalyticToAlgebraicGapWithoutFrobenius |
+
+### Navier-Stokes 正则性诊断
+| 文档 | 说明 |
+|------|------|
+| [NavierStokes/NavierStokes-三重完备性编译器初诊.md](NavierStokes/NavierStokes-三重完备性编译器初诊.md) | 编译器初诊：ContinuousDissipationWithoutDiscreteBarrier |
+
+### P vs NP 诊断
+| 文档 | 说明 |
+|------|------|
+| [PNP/PvsNP-三重完备性编译器初诊.md](PNP/PvsNP-三重完备性编译器初诊.md) | 编译器分析：唯一论域已闭合的千禧年问题，三重方法论屏障 |
+
+### Yang-Mills 质量间隙诊断
+| 文档 | 说明 |
+|------|------|
+| [YangMills/YangMills-三重完备性编译器初诊.md](YangMills/YangMills-三重完备性编译器初诊.md) | 编译器初诊：UVDivergenceWithoutDiscreteCompactification，格点版本已离散可判 |
+
+### 🔴 第四波：代数拓扑与代数群的红灯审查与离散重构
+| 文档 | 说明 |
+|------|------|
+| [Topology/第四波-代数拓扑与代数群-红灯审查与离散重构.md](Topology/第四波-代数拓扑与代数群-红灯审查与离散重构.md) | v1.0 红线审查诊断表 |
+| [Topology/第四波-Protocol-v2.0-20模块全息架构.md](Topology/第四波-Protocol-v2.0-20模块全息架构.md) | v2.0 四模块全景架构 |
+
+### 🆕 第五波：千禧年驱动的理论重建路线图
+| 文档 | 说明 |
+|------|------|
+| [第五波-千禧年驱动的理论重建路线图.md](第五波-千禧年驱动的理论重建路线图.md) | 五阶段依赖序 + 理论构件锻造 |
+
+### 🆕 第六波：扩展与推广战略规划
+| 文档 | 说明 |
+|------|------|
+| [第六波-扩展与推广战略规划.md](第六波-扩展与推广战略规划.md) | 三扩展线(A/B/C)+双发布线(arXiv/期刊)+时间序 |
+| [Langlands/Langlands-三重完备性深化诊断.md](Langlands/Langlands-三重完备性深化诊断.md) | B2: Langlands四路线尸检 + 编译器扫描 |
+| [Hodge/Hodge-三重完备性深化诊断.md](Hodge/Hodge-三重完备性深化诊断.md) | B3: Hodge五路线尸检 + 编译器扫描 |
+| [Postulate审计报告.md](Postulate审计报告.md) | C1+C2: 98 postulate三分类(可闭合22/物理锚定65/机械约束11) |
+
+### ✅ 七问题验收 (最终锁定)
+| 文档 | 说明 |
+|------|------|
+| [声称边界精确审计-vFinal.md](声称边界精确审计-vFinal.md) | 最终审计：80模块/15233行/0 postulate，14 L3 + 4 L3\* + 3 L0+ |
+| [七问题验收标准-vFinal.md](七问题验收标准-vFinal.md) | 验收标准锁定：连续统标准不适用，Agda编译器为唯一权威 |
+| [七问题元理论审计报告-v3.md](七问题元理论审计报告-v3.md) | 逐模块审计：6920 refl，0 postulate，全部exit=0 |
+| [经典理论红灯审查诊断手册.md](经典理论红灯审查诊断手册.md) | 连续统 TypeError 诊断：奇异同调/指数映射/行列式/RH/NS |
+| [七大问题真实推进路线图与验收标准.md](七大问题真实推进路线图与验收标准.md) | 原始路线图 + L0-L3 等级定义 |
+| [编译器最终审计报告.md](编译器最终审计报告.md) | 三重完备性编译器逐公理检查 |
+
 ### 文明诊断
 | 文档 | 说明 |
 |------|------|
@@ -156,6 +235,7 @@
 |------|------|
 | [IMPLEMENTATION-PLAN.md](cross-level/IMPLEMENTATION-PLAN.md) | 工程实现计划 |
 | [ENGINEERING-SUMMARY.md](cross-level/ENGINEERING-SUMMARY.md) | 工程实现总结 |
+| [TRIADIC-HARMONIC-PROOF-STATUS.md](cross-level/../TRIADIC-HARMONIC-PROOF-STATUS.md) | 三合弦恒等式与零同调等价形式化证明状态 |
 
 ---
 

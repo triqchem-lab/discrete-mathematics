@@ -107,6 +107,17 @@ outer-product-FULL-TOUR = refl
 superposition-table-verified : verifyZero ≡ refl × verifyMul ≡ refl
 superposition-table-verified = refl , refl
 
+-- |公理 2 的几何解释：叠加 = T⁶ 环面平移
+-- ⊕ 是 GF(3) 加法群在 T⁶ = (Z/3Z)⁶ 上的平移作用
+-- T₀⊕T₁=T₂ 意味着：从格点 T₀ 沿 T₁ 方向平移，到达 T₂
+-- 三个基态 {T₀,T₁,T₂} 的叠加 = 环面上三个平移轨道
+--
+-- 形式化连接:
+--   Sovereign.Base.Trit._⊕_ = GF(3) 加法群 = Z/3Z 的平移
+--   Sovereign.Structology.T6 = (Z/3Z)⁶ = 6 维环面
+--   叠加态 = 环面上的平移轨道 (加法群作用)
+--   T₁⊕T₂=T₀ = 平移的逆元 (仲吕闭合的代数本质)
+
 --------------------------------------------------------------------------------
 -- 公理 3: 量子纠缠 (Quantum Entanglement)
 --------------------------------------------------------------------------------
@@ -128,6 +139,18 @@ superposition-table-verified = refl , refl
 -- 已在 Base/Trit.agda 完整定义, 此处直接引用（通过 import 可见）
 entanglement-is-from-base : T₂ ⊗ T₂ ≡ T₁
 entanglement-is-from-base = Sovereign.Base.Trit.verifyMul
+
+-- |公理 3 的几何解释：纠缠 = GF(9) Frobenius 共轭
+-- ⊗ 是 GF(9)* 乘法群在 GF(9) 上的共轭作用
+-- σ(α)=-α 意味着：α 和 -α 是共轭对，测量一个确定另一个
+-- 纠缠对 (α, -α) 不可分离 = Frobenius 自同构的不可分解性
+--
+-- 形式化连接:
+--   Sovereign.Algebra.GF9 = GF(9) = GF(3)[x]/(x²+1) 的 9 元素有限域
+--   Frobenius 自同构 σ: α ↦ α³ = -α (在 GF(9) 上)
+--   共轭对 α⊗σ(α) = α⊗(-α) 不可分离
+--   Sovereign.Coupling.Entanglement = 共享缠绕数的五行同步
+--   纠缠 = 乘法群作用 (非局域), 叠加 = 加法群作用 (局域平移)
 
 --------------------------------------------------------------------------------
 -- 公理 4: 截断商空间

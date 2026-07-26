@@ -1,20 +1,22 @@
-{-# OPTIONS --rewriting --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Structology.HolographicSpace
 -- 全息态与基模 — 信息论闭包的类型基础设施
 --
--- 索引策略 (与 T6.agda div3k/mod3k 同构):
---   T6.agda: div3k 在 k 为变量(中性项)时触发 REWRITE, 短路 div-helper
---   本模块: normSq-basisVec 在 n 为变量(中性项)时触发 REWRITE, 短路 sumGF9
---   类型定义保持 ∀ n 参数化, 不在类型中固定 4320 (避免 basisVec 4320 展开)
---   具体 4320 仅出现在 ℕ 级证明 (refl, 不涉及 Fin 归一化)
+-- 核心原则:
+--   ① 类型定义保持 ∀ n 参数化, 不在类型中固定 4320 (避免 Fin 归一化展开)
+--   ② 具体 4320 仅出现在 ℕ 级证明 (refl, 不涉及 Fin 递归)
+--   ③ normSq-basisVec/basis-orthogonal 已迁移至 FiniteInnerProduct.agda (构造性证明)
+--   ④ theorem-maximality-4320 由 BurnsideT6.orbit-sizes-sum-729 + refl 闭合
 --
--- Postulate: 3 (normSq-basisVec REWRITE + basis-orthogonal + maximality)
+-- 包含: HolographicState, BasisMode, basisAt, basisAt-orthogonal,
+--       theorem-maximality-4320, closure-complete
+--
+-- 0 postulate — 全部构造性证明
 
 module Sovereign.Structology.HolographicSpace where
 
 open import Agda.Builtin.Equality using (_≡_; refl)
-open import Agda.Builtin.Equality.Rewrite
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _>_; _<_)
 open import Data.Fin using (Fin; zero; suc; toℕ)
@@ -25,28 +27,11 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.GF9 using
   ( GF9; gf9-one; _+gf9_; _*gf9_; galoisConjugate; galoisNorm)
 open import Sovereign.Analysis.FiniteInnerProduct using
-  ( VectorSpace; gf9-zero; zeroVec; normSq; hermitianIP; basisVec; basisVec-diag)
+  ( VectorSpace; gf9-zero; zeroVec; normSq; hermitianIP; basisVec; basisVec-diag
+  ; normSq-basisVec; basis-orthogonal)
 open import Sovereign.Structology.BurnsideT6 using
   ( orbit-sizes-sum-729; group-closure-complete
   ; independent-info-from-yao; yao-4320)
-
---------------------------------------------------------------------------------
--- 归一化短路 (与 T6.agda div3k/mod3k 同原理, 不同机制)
---
--- T6.agda: div-helper 是 Agda builtin → REWRITE 规则拦截内建计算
--- 本模块: sumGF9 是用户定义递归 → 参数化(∀ n)使 sumGF9 n f 卡住不展开
---
--- 两者是同一原理在不同层面的应用:
---   目标: 阻止归一化器对大数索引做 N 层递归展开
---   builtin 函数 → REWRITE 拦截
---   用户定义函数 → 参数化卡住
---
--- normSq-basisVec 已在 FiniteInnerProduct.agda 中构造性证明 (0 postulate)
---------------------------------------------------------------------------------
-
--- 从 FiniteInnerProduct 导入已证明的引理
-open import Sovereign.Analysis.FiniteInnerProduct using
-  (normSq-basisVec; basis-orthogonal)
 
 --------------------------------------------------------------------------------
 -- 常量 (ℕ 级, 不涉及 Fin 归一化)
@@ -92,7 +77,7 @@ Orthogonal b₁ b₂ =
 -- §3. 参数化基模构造
 --------------------------------------------------------------------------------
 -- basisAt n i = 标准基的第 i 个向量
--- normOne 由 REWRITE 规则短路 (n 为变量时触发)
+-- normOne 由 FiniteInnerProduct.normSq-basisVec 构造性证明提供
 
 basisAt : ∀ n (i : Fin n) → BasisMode n
 basisAt n i = mkBasis (basisVec n i) (normSq-basisVec n i)

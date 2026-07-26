@@ -323,36 +323,80 @@ shift-conv f g x =
 -- §8. sum12 对 ⊕ 的分配律
 --------------------------------------------------------------------------------
 
--- 核心引理: (X ⊕ Y) ⊕ (a ⊕ b) ≡ (X ⊕ a) ⊕ (Y ⊕ b)
--- 这就是 ⊕-swap-mid
+-- 核心引理: (X ⊕ Y) ⊕ (a ⊕ b) ≡ (X ⊕ a) ⊕ (Y ⊕ b) = ⊕-swap-mid
 -- 归纳步骤: L_{n+1} = L_n ⊕ (a_n⊕b_n) ≡ (A_n⊕B_n) ⊕ (a_n⊕b_n) ≡ (A_n⊕a_n) ⊕ (B_n⊕b_n)
 
+-- 分离前 3 项 (2 层 trans)
+private
+  sep-3 : ∀ a₀ a₁ a₂ b₀ b₁ b₂ →
+    ((a₀ ⊕ b₀) ⊕ (a₁ ⊕ b₁)) ⊕ (a₂ ⊕ b₂) ≡ ((a₀ ⊕ a₁) ⊕ a₂) ⊕ ((b₀ ⊕ b₁) ⊕ b₂)
+  sep-3 a₀ a₁ a₂ b₀ b₁ b₂ =
+    trans (cong (_⊕ (a₂ ⊕ b₂)) (⊕-swap-mid a₀ b₀ a₁ b₁))
+          (⊕-swap-mid (a₀ ⊕ a₁) (b₀ ⊕ b₁) a₂ b₂)
+
+-- 扩展分离: 已分离的 (A⊕B) 再加 3 项 (2 层 trans)
+private
+  extend-sep-3 : ∀ A B a₀ a₁ a₂ b₀ b₁ b₂ →
+    (((A ⊕ B) ⊕ (a₀ ⊕ b₀)) ⊕ (a₁ ⊕ b₁)) ⊕ (a₂ ⊕ b₂) ≡
+    (((A ⊕ a₀) ⊕ a₁) ⊕ a₂) ⊕ (((B ⊕ b₀) ⊕ b₁) ⊕ b₂)
+  extend-sep-3 A B a₀ a₁ a₂ b₀ b₁ b₂ =
+    trans (cong (_⊕ (a₂ ⊕ b₂))
+      (cong (_⊕ (a₁ ⊕ b₁)) (⊕-swap-mid A B a₀ b₀)))
+    (trans (cong (_⊕ (a₂ ⊕ b₂))
+      (⊕-swap-mid (A ⊕ a₀) (B ⊕ b₀) a₁ b₁))
+    (⊕-swap-mid ((A ⊕ a₀) ⊕ a₁) ((B ⊕ b₀) ⊕ b₁) a₂ b₂))
+
+-- 分离前 6 项 (左结合, 1 层 trans)
+private
+  sep-6 : ∀ a₀ a₁ a₂ a₃ a₄ a₅ b₀ b₁ b₂ b₃ b₄ b₅ →
+    (((((a₀ ⊕ b₀) ⊕ (a₁ ⊕ b₁)) ⊕ (a₂ ⊕ b₂))
+      ⊕ (a₃ ⊕ b₃)) ⊕ (a₄ ⊕ b₄)) ⊕ (a₅ ⊕ b₅) ≡
+    (((((a₀ ⊕ a₁) ⊕ a₂) ⊕ a₃) ⊕ a₄) ⊕ a₅) ⊕
+    (((((b₀ ⊕ b₁) ⊕ b₂) ⊕ b₃) ⊕ b₄) ⊕ b₅)
+  sep-6 a₀ a₁ a₂ a₃ a₄ a₅ b₀ b₁ b₂ b₃ b₄ b₅ =
+    trans (cong (_⊕ (a₅ ⊕ b₅)) (cong (_⊕ (a₄ ⊕ b₄))
+      (cong (_⊕ (a₃ ⊕ b₃)) (sep-3 a₀ a₁ a₂ b₀ b₁ b₂))))
+    (extend-sep-3 ((a₀ ⊕ a₁) ⊕ a₂) ((b₀ ⊕ b₁) ⊕ b₂)
+      a₃ a₄ a₅ b₃ b₄ b₅)
+
+-- 分离前 9 项 (左结合, 1 层 trans)
+private
+  sep-9 : ∀ a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈
+            b₀ b₁ b₂ b₃ b₄ b₅ b₆ b₇ b₈ →
+    ((((((((a₀ ⊕ b₀) ⊕ (a₁ ⊕ b₁)) ⊕ (a₂ ⊕ b₂))
+      ⊕ (a₃ ⊕ b₃)) ⊕ (a₄ ⊕ b₄)) ⊕ (a₅ ⊕ b₅))
+      ⊕ (a₆ ⊕ b₆)) ⊕ (a₇ ⊕ b₇)) ⊕ (a₈ ⊕ b₈) ≡
+    ((((((((a₀ ⊕ a₁) ⊕ a₂) ⊕ a₃) ⊕ a₄) ⊕ a₅)
+      ⊕ a₆) ⊕ a₇) ⊕ a₈) ⊕
+    ((((((((b₀ ⊕ b₁) ⊕ b₂) ⊕ b₃) ⊕ b₄) ⊕ b₅)
+      ⊕ b₆) ⊕ b₇) ⊕ b₈)
+  sep-9 a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈
+        b₀ b₁ b₂ b₃ b₄ b₅ b₆ b₇ b₈ =
+    trans (cong (_⊕ (a₈ ⊕ b₈)) (cong (_⊕ (a₇ ⊕ b₇))
+      (cong (_⊕ (a₆ ⊕ b₆))
+        (sep-6 a₀ a₁ a₂ a₃ a₄ a₅ b₀ b₁ b₂ b₃ b₄ b₅))))
+    (extend-sep-3 (((((a₀ ⊕ a₁) ⊕ a₂) ⊕ a₃) ⊕ a₄) ⊕ a₅)
+                  (((((b₀ ⊕ b₁) ⊕ b₂) ⊕ b₃) ⊕ b₄) ⊕ b₅)
+                  a₆ a₇ a₈ b₆ b₇ b₈)
+
 -- sum12(λy → a y ⊕ b y) ≡ sum12 a ⊕ sum12 b
--- 证明: 10 步 ⊕-swap-mid (每步分离一个 (a_n⊕b_n) 项)
+-- 证明: sep-9 + extend-sep-3 (1 层 trans)
 sum12-distrib : ∀ (a b : Duodec → Trit) →
   sum12 (λ y → a y ⊕ b y) ≡ sum12 a ⊕ sum12 b
 sum12-distrib a b =
   trans (cong (_⊕ (a d11 ⊕ b d11))
-    (trans (cong (_⊕ (a d10 ⊕ b d10))
-      (trans (cong (_⊕ (a d9 ⊕ b d9))
-        (trans (cong (_⊕ (a d8 ⊕ b d8))
-          (trans (cong (_⊕ (a d7 ⊕ b d7))
-            (trans (cong (_⊕ (a d6 ⊕ b d6))
-              (trans (cong (_⊕ (a d5 ⊕ b d5))
-                (trans (cong (_⊕ (a d4 ⊕ b d4))
-                  (trans (cong (_⊕ (a d3 ⊕ b d3))
-                    (trans (cong (_⊕ (a d2 ⊕ b d2))
-                      (⊕-swap-mid (a d0) (b d0) (a d1) (b d1)))
-                    (⊕-swap-mid ((a d0 ⊕ a d1)) ((b d0 ⊕ b d1)) (a d2) (b d2))))
-                  (⊕-swap-mid (((a d0 ⊕ a d1) ⊕ a d2)) (((b d0 ⊕ b d1) ⊕ b d2)) (a d3) (b d3))))
-                (⊕-swap-mid ((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3)) ((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3)) (a d4) (b d4))))
-              (⊕-swap-mid (((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4)) (((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4)) (a d5) (b d5))))
-            (⊕-swap-mid ((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4) ⊕ a d5)) ((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4) ⊕ b d5)) (a d6) (b d6))))
-          (⊕-swap-mid (((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4) ⊕ a d5) ⊕ a d6)) (((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4) ⊕ b d5) ⊕ b d6)) (a d7) (b d7))))
-        (⊕-swap-mid ((((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4) ⊕ a d5) ⊕ a d6) ⊕ a d7)) ((((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4) ⊕ b d5) ⊕ b d6) ⊕ b d7)) (a d8) (b d8))))
-      (⊕-swap-mid (((((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4) ⊕ a d5) ⊕ a d6) ⊕ a d7) ⊕ a d8)) (((((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4) ⊕ b d5) ⊕ b d6) ⊕ b d7) ⊕ b d8)) (a d9) (b d9))))
-    (⊕-swap-mid ((((((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4) ⊕ a d5) ⊕ a d6) ⊕ a d7) ⊕ a d8) ⊕ a d9)) ((((((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4) ⊕ b d5) ⊕ b d6) ⊕ b d7) ⊕ b d8) ⊕ b d9)) (a d10) (b d10))))
-  (⊕-swap-mid (((((((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4) ⊕ a d5) ⊕ a d6) ⊕ a d7) ⊕ a d8) ⊕ a d9) ⊕ a d10)) (((((((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4) ⊕ b d5) ⊕ b d6) ⊕ b d7) ⊕ b d8) ⊕ b d9) ⊕ b d10)) (a d11) (b d11))
+    (cong (_⊕ (a d10 ⊕ b d10))
+    (cong (_⊕ (a d9 ⊕ b d9))
+    (sep-9 (a d0) (a d1) (a d2) (a d3) (a d4) (a d5)
+           (a d6) (a d7) (a d8)
+           (b d0) (b d1) (b d2) (b d3) (b d4) (b d5)
+           (b d6) (b d7) (b d8)))))
+  (extend-sep-3
+    ((((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3) ⊕ a d4)
+      ⊕ a d5) ⊕ a d6) ⊕ a d7) ⊕ a d8)
+    ((((((((b d0 ⊕ b d1) ⊕ b d2) ⊕ b d3) ⊕ b d4)
+      ⊕ b d5) ⊕ b d6) ⊕ b d7) ⊕ b d8)
+    (a d9) (a d10) (a d11) (b d9) (b d10) (b d11))
 
 --------------------------------------------------------------------------------
 -- §9. 卷积 Leibniz 规则: Δ₁₂(f*g) = f*(Δ₁₂g)
@@ -365,17 +409,93 @@ sum12-cong h =
     (cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_
     (h d0) (h d1)) (h d2)) (h d3)) (h d4)) (h d5)) (h d6)) (h d7)) (h d8)) (h d9)) (h d10)) (h d11)
 
--- negate 对 sum12 的分配 (数学事实, 证明需 11 步 ⊗-distribʳ-⊕)
--- negate(sum12 a) = sum12(negate ∘ a)
--- 因为 negate x = T₂ ⊗ x, 且 ⊗ 分配过 ⊕
-postulate
-  sum12-negate : ∀ (a : Duodec → Trit) →
-    negate (sum12 a) ≡ sum12 (λ y → negate (a y))
+-- negate 对 ⊕ 的分配 (策略 A: 9-case 穷举)
+negate-distrib : ∀ x y → negate (x ⊕ y) ≡ negate x ⊕ negate y
+negate-distrib T₀ T₀ = refl; negate-distrib T₀ T₁ = refl; negate-distrib T₀ T₂ = refl
+negate-distrib T₁ T₀ = refl; negate-distrib T₁ T₁ = refl; negate-distrib T₁ T₂ = refl
+negate-distrib T₂ T₀ = refl; negate-distrib T₂ T₁ = refl; negate-distrib T₂ T₂ = refl
+
+-- 未来态: 从目标态 (negate 已分配) 构造，不从源端剥离
+-- 推过 3 项左结合和 (1 层 trans)
+private
+  negate-sep-3 : ∀ a₀ a₁ a₂ →
+    negate ((a₀ ⊕ a₁) ⊕ a₂) ≡
+    (negate a₀ ⊕ negate a₁) ⊕ negate a₂
+  negate-sep-3 a₀ a₁ a₂ =
+    trans (negate-distrib (a₀ ⊕ a₁) a₂)
+          (cong (_⊕ negate a₂) (negate-distrib a₀ a₁))
+
+-- 扩展: 已分配 negate 的和再加 3 项 (2 层 trans)
+private
+  negate-extend-3 : ∀ A a₀ a₁ a₂ →
+    negate (((A ⊕ a₀) ⊕ a₁) ⊕ a₂) ≡
+    (((negate A ⊕ negate a₀) ⊕ negate a₁) ⊕ negate a₂)
+  negate-extend-3 A a₀ a₁ a₂ =
+    trans (negate-distrib ((A ⊕ a₀) ⊕ a₁) a₂)
+    (trans (cong (_⊕ negate a₂) (negate-distrib (A ⊕ a₀) a₁))
+    (cong (λ v → (v ⊕ negate a₁) ⊕ negate a₂)
+      (negate-distrib A a₀)))
+
+-- 推过 6 项 (1 层 trans)
+private
+  negate-sep-6 : ∀ a₀ a₁ a₂ a₃ a₄ a₅ →
+    negate (((((a₀ ⊕ a₁) ⊕ a₂) ⊕ a₃) ⊕ a₄) ⊕ a₅) ≡
+    (((((negate a₀ ⊕ negate a₁) ⊕ negate a₂)
+      ⊕ negate a₃) ⊕ negate a₄) ⊕ negate a₅)
+  negate-sep-6 a₀ a₁ a₂ a₃ a₄ a₅ =
+    trans (negate-extend-3 ((a₀ ⊕ a₁) ⊕ a₂) a₃ a₄ a₅)
+    (cong (λ v → ((v ⊕ negate a₃) ⊕ negate a₄) ⊕ negate a₅)
+      (negate-sep-3 a₀ a₁ a₂))
+
+-- 推过 9 项 (1 层 trans)
+private
+  negate-sep-9 : ∀ a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈ →
+    negate ((((((((a₀ ⊕ a₁) ⊕ a₂) ⊕ a₃) ⊕ a₄)
+      ⊕ a₅) ⊕ a₆) ⊕ a₇) ⊕ a₈) ≡
+    ((((((((negate a₀ ⊕ negate a₁) ⊕ negate a₂)
+      ⊕ negate a₃) ⊕ negate a₄) ⊕ negate a₅)
+      ⊕ negate a₆) ⊕ negate a₇) ⊕ negate a₈)
+  negate-sep-9 a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈ =
+    trans (negate-extend-3
+      (((((a₀ ⊕ a₁) ⊕ a₂) ⊕ a₃) ⊕ a₄) ⊕ a₅)
+      a₆ a₇ a₈)
+    (cong (λ v → ((v ⊕ negate a₆) ⊕ negate a₇) ⊕ negate a₈)
+      (negate-sep-6 a₀ a₁ a₂ a₃ a₄ a₅))
+
+-- negate 对 sum12 的分配 (1 层 trans, 0 postulate)
+sum12-negate : ∀ (a : Duodec → Trit) →
+  negate (sum12 a) ≡ sum12 (λ y → negate (a y))
+sum12-negate a =
+  trans (negate-extend-3
+    ((((((((a d0 ⊕ a d1) ⊕ a d2) ⊕ a d3)
+      ⊕ a d4) ⊕ a d5) ⊕ a d6) ⊕ a d7) ⊕ a d8)
+    (a d9) (a d10) (a d11))
+  (cong (λ v → ((v ⊕ negate (a d9)) ⊕ negate (a d10))
+    ⊕ negate (a d11))
+    (negate-sep-9 (a d0) (a d1) (a d2) (a d3) (a d4)
+      (a d5) (a d6) (a d7) (a d8)))
+
+-- ⊗ 与 negate 的交互: a ⊗ negate b ≡ negate (a ⊗ b)
+-- 策略 A: 9-case 穷举
+⊗-negateʳ : ∀ a b → a ⊗ negate b ≡ negate (a ⊗ b)
+⊗-negateʳ T₀ T₀ = refl; ⊗-negateʳ T₀ T₁ = refl; ⊗-negateʳ T₀ T₂ = refl
+⊗-negateʳ T₁ T₀ = refl; ⊗-negateʳ T₁ T₁ = refl; ⊗-negateʳ T₁ T₂ = refl
+⊗-negateʳ T₂ T₀ = refl; ⊗-negateʳ T₂ T₁ = refl; ⊗-negateʳ T₂ T₂ = refl
 
 -- Leibniz 规则: Δ₁₂(f*g) = f*(Δ₁₂g)
--- 数学证明: 展开 Δ₁₂ → sum12-negate → sum12-distrib → ⊗-distrib → +1-⊖-dist
--- 形式化障碍: +1 x +12 neg12 y 与 +1 (x +12 neg12 y) 不是定义相等
---   (需要 +1-⊖-dist 命题等式, 但 sum12-cong 的隐式参数推断要求定义相等)
--- 解决方案: postulate (数学定理成立, Agda 定义等式限制阻止形式化)
-postulate
-  Δ₁₂-leibniz : ∀ f g → Δ₁₂ (f *₁₂ g) ≋ (f *₁₂ (Δ₁₂ g))
+-- 未来态证明: 从 LHS (Gamma) 到 RHS (Delta)
+-- 链: sym sum12-negate → sym ⊗-negateʳ → sym sum12-distrib
+--     → sym ⊗-distribˡ → +1-⊖-dist
+Δ₁₂-leibniz : ∀ f g → Δ₁₂ (f *₁₂ g) ≋ (f *₁₂ (Δ₁₂ g))
+Δ₁₂-leibniz f g x =
+  trans (cong (λ v → sum12 (λ y → f y ⊗ g (+1 x +12 neg12 y)) ⊕ v)
+    (trans (sum12-negate (λ y → f y ⊗ g (x +12 neg12 y)))
+    (sum12-cong (λ y → sym (⊗-negateʳ (f y) (g (x +12 neg12 y)))))))
+  (trans (sym (sum12-distrib
+    (λ y → f y ⊗ g (+1 x +12 neg12 y))
+    (λ y → f y ⊗ negate (g (x +12 neg12 y)))))
+  (trans (sum12-cong (λ y → sym (⊗-distribˡ-⊕ (f y)
+    (g (+1 x +12 neg12 y)) (negate (g (x +12 neg12 y))))))
+  (sum12-cong (λ y → cong (λ w → f y ⊗ w)
+    (cong (λ v → v ⊕ negate (g (x +12 neg12 y)))
+    (cong g (sym (+1-⊖-dist x y))))))))

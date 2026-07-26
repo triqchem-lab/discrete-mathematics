@@ -1,0 +1,19 @@
+test:
+	agda src/Sovereign/Algebra/TriCycGraph.agda
+	agda src/Sovereign/Structology/ArthurMagicSquare.agda
+	agda src/Sovereign/Structology/MotorStableStates.agda
+	agda src/Sovereign/Physics/QuantumMotor.agda
+	agda src/Sovereign/Algebra/TriadicHarmonic.agda
+	agda src/Sovereign/Algebra/DigitalRootCycle.agda
+	agda src/Sovereign/Algebra/C3Orbit.agda
+	agda src/Sovereign/Geometry/ProjectiveCore.agda
+	agda src/Sovereign/Geometry/ProjectiveOrbit.agda
+	agda src/Sovereign/Geometry/ProjectiveInvariants.agda
+	agda src/Sovereign/Geometry/ProjectiveTransform.agda
+	agda src/Sovereign/Geometry/ConformalCore.agda
+	agda src/Sovereign/Geometry/ConformalInvariants.agda
+	agda src/Sovereign/Geometry/TorusGeometry.agda
+	agda src/Sovereign/Geometry/TorusGeodesic.agda
+	agda src/Sovereign/Geometry/TorusAlgebra.agda
+	agda src/Sovereign/Geometry/TorusFourier.agda
+	@echo "ALL_PASS"
