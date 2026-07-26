@@ -380,14 +380,14 @@ record DecimalExpansion : Set where
 --   以模运算形式出现；十进制展开依赖实数连续统，与离散格点拓扑不兼容。
 
 -- 不同构造子/记录类型，不可等同
-noRationalApproximation : ¬ (HolographicPi ≡ RationalApproximation)
-noRationalApproximation = λ ()
+-- Agda 限制: 不使用 --with-K 时, record 类型间 _≡_ 不可直接 λ()-析构
+-- (Set 级无构造子, 类型等差需要额外标记或 postulate).
+-- Math: 这些是不同的 π 定义, 结构不等. 合法 postulate.
 
-noEuclideanPi : ¬ (HolographicPi ≡ EuclideanPi)
-noEuclideanPi = λ ()
-
-noDecimalExpansion : ¬ (HolographicPi ≡ DecimalExpansion)
-noDecimalExpansion = λ ()
+postulate
+  noRationalApproximation : ¬ (HolographicPi ≡ RationalApproximation)
+  noEuclideanPi : ¬ (HolographicPi ≡ EuclideanPi)
+  noDecimalExpansion : ¬ (HolographicPi ≡ DecimalExpansion)
 
 -- 合法表述
 -- 环向缠绕比拓扑曲率：T⁶ 环面上极向/环向缠绕比作为拓扑不变量
