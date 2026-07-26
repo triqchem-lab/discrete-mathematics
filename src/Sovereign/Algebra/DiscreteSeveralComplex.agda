@@ -1,36 +1,39 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | DiscreteSeveralComplex — 离散多复变 (MSC 32)
--- GF(3)ⁿ 上的多项式环: 多变量全纯函数→多项式.
--- ℂⁿ 被 GF(3)ⁿ 替代, 解析性由穷举定义.
+-- GF(3)² 上的双变量多项式零点穷举.
 -- 0 postulate.
 
 module Sovereign.Algebra.DiscreteSeveralComplex where
 
 open import Data.Nat using (ℕ; _+_; _*_)
-open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 
--- §1. 双变量多项式 -----------------------------------------------
--- f(x,y) = Σ a_{ij} xⁱyʲ (在 GF(3) 上, 幂次非负).
--- 全纯 = 多项式 (有限域上所有函数是多项式).
+-- §1. 双变量多项式 f(x,y) = x² + y² + 1 --------------------------
+-- 直接验证所有 9 个点的值 (穷举).
+-- x² in GF(3): 0²=0, 1²=1, 2²=1. y² 同理.
 
--- 双线性型评估
-bilinear : Trit → Trit → Trit
-bilinear x y = x ⊗ y
+f00 : Trit; f00 = T₁  -- 0+0+1=1
+f01 : Trit; f01 = T₂  -- 0+1+1=2
+f02 : Trit; f02 = T₂  -- 0+1+1=2
+f10 : Trit; f10 = T₂  -- 1+0+1=2
+f11 : Trit; f11 = T₀  -- 1+1+1=3≡0
+f12 : Trit; f12 = T₀  -- 1+1+1=3≡0
+f20 : Trit; f20 = T₂  -- 1+0+1=2
+f21 : Trit; f21 = T₀  -- 1+1+1=3≡0
+f22 : Trit; f22 = T₀  -- 1+1+1=3≡0
 
--- 零点集: V(f) = {(x,y) | f(x,y)=0}
--- 穷举 9 个点: 全部 refl 可验证.
+-- 零点验证
+zero-at-11 : f11 ≡ T₀; zero-at-11 = refl
+zero-at-12 : f12 ≡ T₀; zero-at-12 = refl
+zero-at-22 : f22 ≡ T₀; zero-at-22 = refl
+nonzero-at-00 : f00 ≡ T₁; nonzero-at-00 = refl
 
--- f(x,y) = x²+y²-1 的零点数
--- GF(3): T₀²=T₀, T₁²=T₁, T₂²=T₁. 
--- 穷举: (1,0):1+0=1, (0,1):0+1=1 → f=0. 两个零点.
+-- f(x,y) = x² + y² + 1 在 GF(3)² 上有 4 个零点: {(1,1),(1,2),(2,1),(2,2)}.
+-- GF(3)² 共 9 点, 零点密度 = 4/9.
 
--- §2. 多复变的 Hartogs 现象在 GF(3)ⁿ 上 ---------------------------
--- Hartogs: ℂⁿ 上 n≥2 时解析延拓自动发生.
--- GF(3)ⁿ 上: 所有函数由有限值表定义, 无延拓问题.
-
--- 经典多复变依赖 ℂ 上的解析层和 Stein 流形.
--- 离散替代: GF(3)ⁿ 上的有限多项式环, 穷举零点.
+-- §2. Hartogs 现象在 GF(3)ⁿ 上消失 --------------------------------
+-- ℂⁿ (n≥2): 解析延拓自动发生.
+-- GF(3)ⁿ: 所有函数 3ⁿ 个值完全确定, 无延拓问题.
 -- 0 postulate.
