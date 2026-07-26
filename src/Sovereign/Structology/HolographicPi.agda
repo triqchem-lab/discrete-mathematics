@@ -379,11 +379,15 @@ record DecimalExpansion : Set where
 -- - noDecimalExpansion: Protocol C.2 的 √3 energy gap 在 GF(3) 格点上
 --   以模运算形式出现；十进制展开依赖实数连续统，与离散格点拓扑不兼容。
 
--- 不同构造子/记录类型，不可等同 (类型系统结构性保证, postulate)
-postulate
-  noRationalApproximation : ¬ (HolographicPi ≡ RationalApproximation)
-  noEuclideanPi : ¬ (HolographicPi ≡ EuclideanPi)
-  noDecimalExpansion : ¬ (HolographicPi ≡ DecimalExpansion)
+-- 不同构造子/记录类型，不可等同
+noRationalApproximation : ¬ (HolographicPi ≡ RationalApproximation)
+noRationalApproximation = λ ()
+
+noEuclideanPi : ¬ (HolographicPi ≡ EuclideanPi)
+noEuclideanPi = λ ()
+
+noDecimalExpansion : ¬ (HolographicPi ≡ DecimalExpansion)
+noDecimalExpansion = λ ()
 
 -- 合法表述
 -- 环向缠绕比拓扑曲率：T⁶ 环面上极向/环向缠绕比作为拓扑不变量
