@@ -7,6 +7,7 @@
 module Sovereign.Geometry.ConformalInvariants where
 
 open import Data.Nat using (ℕ; _*_)
+open import Data.Nat.DivMod using (_/_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- |Conf| = |T⁶| × 2 = 729 × 2 = 1458
@@ -21,7 +22,8 @@ proj-order : ℕ; proj-order = 27 * 2
 proj-order-ok : proj-order ≡ 54; proj-order-ok = refl
 
 -- 射影→共形嵌入: |G| = 54 整除 |Conf| = 1458 → 指数 27
-index : ℕ; index = 27
+-- 射影→共形嵌入: |G| = 54 整除 |Conf| = 1458 → 指数 1458/54 = 27
+index : ℕ; index = 1458 / 54
 index-ok : 54 * index ≡ 1458; index-ok = refl
 
 -- 0 postulate.
