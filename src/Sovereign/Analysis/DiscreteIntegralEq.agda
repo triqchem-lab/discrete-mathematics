@@ -33,6 +33,17 @@ solve-diag = refl
 -- u(x) = λ Σ_{y<x} K(x,y)·u(y) + f(x) (因果核).
 -- 下三角矩阵 → 前向替换, 完全可解.
 
+-- 2×2 Volterra 核 (严格下三角): K₀₁=0, K₁₀=T₁
+v-solve : (T₂ ⊗ ((T₂ ⊗ T₀) ⊕ (T₀ ⊗ T₁))) ⊕ T₁ ≡ T₁
+v-solve = refl  -- 2·(0+0)+1 = 1
+
+-- Fredholm 二择一: (I-λK)u = f 有解 ⇔ det(I-λK) ≠ 0
+det-IλK₁ : T₁ ⊕ (neg (T₁ ⊗ T₁)) ≡ T₀
+det-IλK₁ = refl  -- 1 - 1·1 = 0 → 奇异, λ=T₁ 无唯一解
+
+det-IλK₂ : T₁ ⊕ (neg (T₂ ⊗ T₁)) ≡ T₂
+det-IλK₂ = refl  -- 1 - 2·1 = 1-2 = -1 = 2 → 非奇异
+
 -- 经典积分方程依赖连续核和 Fredholm 行列式.
 -- 离散替代: GF(3) 矩阵方程的穷举/结构化求解.
 -- 0 postulate.

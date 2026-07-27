@@ -23,6 +23,14 @@ laplace-const = refl  -- 1+1+1=3≡0 ✓
 laplace-linear : laplace3 T₀ T₁ T₂ ≡ T₀
 laplace-linear = refl  -- 0+2+1=3≡0 ✓
 
+-- 二次函数 u = [T₀, T₁, T₁] 的 Laplacian
+laplace-quadratic : laplace3 T₀ T₁ T₁ ≡ T₂
+laplace-quadratic = refl  -- 0+1+1=2≡T₂ ✓
+
+-- 调和函数: Δu=0 的解为常数和线性
+harmonic-const : laplace3 T₀ T₀ T₀ ≡ T₀
+harmonic-const = refl
+
 -- 经典位势依赖 ℂ 的 Poisson 核和 Green 函数.
 -- 离散替代: GF(3) 上有限差分算子穷举求解.
 -- 0 postulate.

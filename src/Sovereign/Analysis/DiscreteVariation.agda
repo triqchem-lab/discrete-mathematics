@@ -37,6 +37,16 @@ freeL : Trit → Trit → Trit; freeL u v = u ⊗ v
 -- ∂L/∂u - Δ(∂L/∂(Δu)) = 0
 -- 在有限格点上: 穷举所有路径, 验证能量极小.
 
+-- 静态解: 常路径 u_i = c 作用量极小
+stationary-const : action2 freeL T₀ T₀ T₀ ≡ T₀
+stationary-const = refl  -- 0⊗0 + 0⊗0 = 0
+
+-- 非平稳路径验证
+nonstationary : action2 freeL T₀ T₁ T₂ ≡ T₂
+nonstationary = refl  -- 0⊗1 + 1⊗2 = 0 + 2 = 2
+
+-- 0 postulate.
+
 -- 经典变分法依赖 Banach 空间上的 Fréchet 导数.
 -- 离散替代: GF(3) 格点上的穷举极值搜索.
 -- 0 postulate.

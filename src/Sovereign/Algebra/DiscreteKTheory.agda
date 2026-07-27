@@ -27,4 +27,16 @@ c1-sum-ok : c1-sum ≡ + 0
 c1-sum-ok = refl
 
 -- §3. Bott 周期性退化为有限表示环 --------------------------------
+
+-- K₀(T⁶) 有限生成: rank + 扭分量
+-- 有限集上向量丛分类是有限范畴.
+
+-- 陈特征 ch: K₀ → H*(T⁶; ℤ) 有理系数
+-- 离散版本: ch([L]) = rank(L) + c₁(L)
+ch-L1 : + 1 Data.Integer.+ c1-x ≡ + 3
+ch-L1 = refl  -- 1 + 2 = 3
+
+ch-L2 : + 2 Data.Integer.+ c1-y ≡ + 2
+ch-L2 = refl  -- 2 + 0 = 2
+
 -- 0 postulate.
