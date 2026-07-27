@@ -215,3 +215,56 @@ cd /data/work/discrete-mathematics
 | 对已存在定义postulate(contamination) | 引入连续统污染 | 查现有模块→import而非postulate |
 | 不改flags直接加--cubical | SafeFlagPragma冲突 | 评估是否真需要Cubical |
 | 对所有缺失import逐一加 | 10+级联→无限循环 | 一批读完所有import需求→批量补 |
+
+### A.8 全周期已验证模式 (2026-07-11 ~ 2026-07-27)
+
+以下模式从 150+ 次 archived sessions + git 提交中提炼，全部经编译验证。
+
+#### 证明策略模式
+
+| 模式 | 首次出现 | 适用场景 | 验证状态 |
+|------|---------|---------|---------|
+| Postulate→refl 转换 | fc7bb30 | CRT proofs: 8/10 postulates→proof(80%) | ✅ |
+| theorem-maximality | 111f07c | 有限组合事实替代无限域 | ✅ |
+| 大常数 REWRITE | 9e34298 | T6≃Fin729: div3k/mod3k rewrite | ✅ |
+| 参数化重写消除超时 | a4597ca | HolographicSpace: 大数索引归一化 | ✅ |
+| 缺失定义→桥接层 | e314084 | sumGF9单点支撑→消除2/3 postulate | ✅ |
+| with抽象消除 | 1a357e7 | Closure.step: with→显式case | ✅ |
+
+#### 编译修复模式
+
+| 模式 | 修复动作 | 验证文件 |
+|------|---------|---------|
+| InfectiveImport (--rewriting vs --safe) | 命令行不加--rewriting | 52 Problem模块 |
+| 隐式导出移除 (stdlib2.4) | 逐符号explicit using | External |
+| 命名空间冲突 (零/后继/加) | rename: fzero/fsuc/_+ℤ_/_+ℚ_ | CartanTorsion |
+| postulate...where 语法 | 分离为独立 postulate 块 | CartanTorsion, ParityViolation |
+| data内嵌record where | 提升为顶层定义 | WuXingAmplitude |
+| Data.X.Y.Trust 非法名 | camelCase + modName | External |
+| ≤-refl 全限定 | Data.Nat.Properties.≤-refl | q5<3-lemma |
+
+#### 性能模式
+
+| 模式 | 症状 | 优化 |
+|------|------|------|
+| 大Fin递归超时 | Heap exhausted / 300s+ | 引用已编译模块 + fromℕ< |
+| 大数取模展开 | mod-helper stuck | REWRITE 规则 |
+| 递归联合归一化 | 新模块递归+属性→超时 | 分离函数和属性到不同模块 |
+
+### A.9 历史错误指纹数据库
+
+基于 150+ archived sessions 的累积错误指纹：
+
+```
+SafeFlagPragma          → D类: 检查 --rewriting vs --safe
+InfectiveImport         → D类: 评估 flags 传染链
+NotInScope (stdlib)     → A类: 补 explicit using
+NotInScope (Sovereign)  → B类: 修正模块路径
+AmbiguousName           → C类: renaming 冲突符号
+ParseError (postulate)  → E类: 语法重构 where 块
+UnequalTypes            → F类: 类型层级 Set→Set₁
+UnsolvedConstraints     → 检查: REWRITE规则/递归归一化/空洞未填充
+Heap exhausted          → 性能: 引用已编译模块, 不重新递归
+ConstructorDoesNotFit   → F类: 大数据类型, Set→Set₁
+UnequalTerms (refl)     → 检查: 定义vs规范是否一致, 补import
+```
