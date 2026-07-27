@@ -309,3 +309,21 @@ mindmap
       思维导图总览
       研究计划
 ```
+
+---
+
+## 预存编译错误 (v3.1)
+
+10+ 模块有 stdlib 2.4 兼容问题，全部在非核心目录，自 v6.8 就存在:
+
+| 目录 | 文件 | 错误 |
+|------|------|------|
+| Trust | External | ✅ 已修复 (module_name→modName) |
+| Diagnosis | ElectricCivilization | ⚠️ 类型层级+缺失定义 |
+| Density | SevenStages | ⚠️ 10+导入冲突 |
+| Projection | Decimal/Proofs | ⚠️ 导入+stdlib API变化 |
+| RootMath | LengthLattice | ⚠️ UnequalTypes |
+| Constitution | Boundaries | ⚠️ NotInScope |
+| Coupling | CartanTorsion/ParityViolation/SpinTwistor/TQ10 | ⚠️ Parse/NotInScope |
+
+不影响 Jacobian/Problem/Holographic/Analysis 315+ 核心模块 0 error。
