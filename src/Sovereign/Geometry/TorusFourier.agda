@@ -31,3 +31,9 @@ fourierInv (a , b) = crtReconstruct (a , b) % M
 
 -- 恒等式: Fourier 逆 = crtReconstruct
 -- 链接 Format/CRT.agda crtTheorem
+
+-- 恒等点验证: zero 向量投影→恢复
+fourier-zero : crtReconstruct (crtProject 0) % M ≡ 0 % M
+fourier-zero = refl
+
+-- 0 postulate.

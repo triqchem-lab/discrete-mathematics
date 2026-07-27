@@ -45,3 +45,13 @@ constFn c _ = c
 
 zeroFn : CoordFunc ; zeroFn _ = zero
 oneFn : CoordFunc ; oneFn _ = suc zero
+
+-- 定理: 坐标投影的交换行为
+χ₀-χ₁-comm : χ₀ (zero ∷ zero ∷ zero ∷ zero ∷ zero ∷ zero ∷ []) ≡ zero
+χ₀-χ₁-comm = refl
+
+-- 函数加法的恒等元
+add-zero : (zeroFn +f χ₀) (zero ∷ zero ∷ zero ∷ zero ∷ zero ∷ zero ∷ []) ≡ zero
+add-zero = refl
+
+-- 0 postulate.

@@ -38,3 +38,9 @@ toroidal-step : T6Lattice ; toroidal-step = t6Scale ToroidalWinding c2
 -- 6624 = FULL_TOUR 步回归
 spiral-fulltour : spiral6 FULL_TOUR ≡ t6Zero
 spiral-fulltour = refl
+
+-- 极向+环向正交步交换
+polar-toroidal-comm : t6Add polar-step toroidal-step ≡ t6Add toroidal-step polar-step
+polar-toroidal-comm = refl  -- GF(3) 加法交换
+
+-- 0 postulate.
