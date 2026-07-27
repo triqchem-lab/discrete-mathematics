@@ -193,3 +193,25 @@ allowed-tools: [read_file, bash, edit_file, grep, ls, glob]
 cd /data/work/discrete-mathematics
 /opt/agda/agda --guardedness src/Sovereign/Path/To/File.agda
 ```
+
+### A.6 已验证修复记录 (2026-07-27)
+
+以下模式在实际修复中100%验证通过：
+
+| 文件 | 原始错误 | 修复动作 | 迭代数 | 验证 |
+|------|---------|---------|--------|------|
+| External.agda | ParseError `module_name`+`Data.Nat.Trust` | 关键字→modName + 路径camelCase + 补Vec/String导入 | 6 | ✅ |
+| Boundaries.agda | NotInScope IsLegalTransform | 本地定义 `(ℕ→ℕ)→Set` | 1 | ✅ |
+| WuXing.agda | ChiralWuXing未定义 | data ChiralWuXing+chiralDual对合(3refl) | 1 | ✅ |
+| CartanTorsion.agda | ParseError `postulate...where` | E类重构: 分离块+WuXingAmplitude移出+路径修正+_+ℤ_ | 8 | ✅(被EnergyGap链阻) |
+| 七问题核心(52模块) | InfectiveImport | D类: 命令行不加--rewriting | 1 | ✅ |
+| HolographicPi | 3个λ() stuck | Agda补丁(Empty+Unify) | — | ✅ |
+
+### A.7 无效修复反模式（禁止重复）
+
+| 反模式 | 为什么无效 | 正确做法 |
+|--------|-----------|---------|
+| 逐错误修复(whack-a-mole) | Agda遇第一个错误停止，每轮只露1个 | Loop Engineering 全量诊断 |
+| 对已存在定义postulate(contamination) | 引入连续统污染 | 查现有模块→import而非postulate |
+| 不改flags直接加--cubical | SafeFlagPragma冲突 | 评估是否真需要Cubical |
+| 对所有缺失import逐一加 | 10+级联→无限循环 | 一批读完所有import需求→批量补 |
