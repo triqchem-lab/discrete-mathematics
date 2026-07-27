@@ -126,3 +126,24 @@ wuXingBasesCorrect :
   (wuXingBase Water ≡ 6) ×
   (wuXingBase Wood  ≡ 8)
 wuXingBasesCorrect = refl , refl , refl , refl , refl
+
+--------------------------------------------------------------------------------
+-- 4. 手性五行对偶 (ChiralWuXing)
+--------------------------------------------------------------------------------
+
+-- 手性五行：五行元素 × 手性标签
+record ChiralWuXing : Set where
+  constructor chiral
+  field
+    element  : WuXing
+    chirality : Chirality
+
+-- 手性对偶：翻转手性标签（左↔右）
+chiralDual : ChiralWuXing → ChiralWuXing
+chiralDual (chiral e LeftHanded)  = chiral e RightHanded
+chiralDual (chiral e RightHanded) = chiral e LeftHanded
+
+-- 手性对偶是对合：dual ∘ dual ≡ id
+chiralDualInvolutive : ∀ (c : ChiralWuXing) → chiralDual (chiralDual c) ≡ c
+chiralDualInvolutive (chiral e LeftHanded)  = refl
+chiralDualInvolutive (chiral e RightHanded) = refl

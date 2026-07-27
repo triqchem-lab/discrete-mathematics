@@ -111,6 +111,9 @@ postulate
 -- [分类: 宪法公理] [状态: 架构保留 — 与 T6.agda:12-18 mod-helper 限制同根. 待 REWRITE 规则闭合]
 -- 损益操作 Sun(×2/3)/Yi(×4/3) 需模运算保持奇偶性, 与 T6.agda:12-18 同根.
 -- 可闭合路径: 添加 REWRITE 规则处理 /3 %2 的大数归约.
+IsLegalTransform : (ℕ → ℕ) → Set
+IsLegalTransform f = ∀ n → f n ≡ applyLossGain n Sun ⊎ f n ≡ applyLossGain n Yi
+
 postulate
   lossGainUniqueness :
     ∀ (n : ℕ) (f : ℕ → ℕ) →
