@@ -4,7 +4,7 @@
 -- 数学基座 → 物理语义的完整映射
 -- 0 postulate
 
-module Sovereign.Problem.NavierStokes.PhysicalOntology where
+module Sovereign.Algebra.Jacobian.jac_PhysicalOntology where
 
 open import Data.Nat using (ℕ)
 open import Data.Integer using (ℤ)
