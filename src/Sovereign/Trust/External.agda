@@ -16,7 +16,8 @@
 module Sovereign.Trust.External where
 
 open import Data.Bool using (Bool; true; false)
-open import Data.Vec using (Vec)
+open import Data.String using (String)
+open import Data.Vec using (Vec; []; _∷_)
 
 --------------------------------------------------------------------------------
 -- 1. 信任度枚举 (Trust Level)
@@ -32,41 +33,41 @@ data TrustLevel : Set where
 --------------------------------------------------------------------------------
 
 -- 算术模块
-Data.Nat.Trust            : TrustLevel
-Data.Nat.Trust            = UNTRUSTED  -- ⚠️ 基于连续统算术，需重新证明
+dataNatTrust            : TrustLevel
+dataNatTrust            = UNTRUSTED  -- ⚠️ 基于连续统算术，需重新证明
 
-Data.Nat.Properties.Trust : TrustLevel
-Data.Nat.Properties.Trust = UNTRUSTED  -- 🔴 极高风险，模运算引理未经验证
+dataNatPropertiesTrust : TrustLevel
+dataNatPropertiesTrust = UNTRUSTED  -- 🔴 极高风险，模运算引理未经验证
 
-Data.Nat.DivMod.Trust     : TrustLevel
-Data.Nat.DivMod.Trust     = UNTRUSTED  -- 🔴 极高风险，除法 - 模分解未验证
+dataNatDivModTrust     : TrustLevel
+dataNatDivModTrust     = UNTRUSTED  -- 🔴 极高风险，除法 - 模分解未验证
 
-Data.Integer.Trust       : TrustLevel
-Data.Integer.Trust       = UNTRUSTED  -- ⚠️ 整数定义可能兼容，需审查
+dataIntegerTrust       : TrustLevel
+dataIntegerTrust       = UNTRUSTED  -- ⚠️ 整数定义可能兼容，需审查
 
-Data.Rational.Trust      : TrustLevel
-Data.Rational.Trust      = UNTRUSTED  -- ⚠️ 有理数基于连续统，禁止用于能隙计算
+dataRationalTrust      : TrustLevel
+dataRationalTrust      = UNTRUSTED  -- ⚠️ 有理数基于连续统，禁止用于能隙计算
 
 -- 有限类型模块
-Data.Fin.Trust           : TrustLevel
-Data.Fin.Trust           = UNDER_REVIEW  -- 🟡 边界检查需与缠绕数对齐
+dataFinTrust           : TrustLevel
+dataFinTrust           = UNDER_REVIEW  -- 🟡 边界检查需与缠绕数对齐
 
-Data.Vec.Trust           : TrustLevel
-Data.Vec.Trust           = UNDER_REVIEW  -- 🟡 map 需证明保持纤维丛结构
+dataVecTrust           : TrustLevel
+dataVecTrust           = UNDER_REVIEW  -- 🟡 map 需证明保持纤维丛结构
 
 -- 逻辑与等式模块
-Relation.Binary.PropositionalEquality.Trust : TrustLevel
-Relation.Binary.PropositionalEquality.Trust = TRUSTED  -- ✅ 等式逻辑与高维几何兼容
+relationBinaryPropositionalEqualityTrust : TrustLevel
+relationBinaryPropositionalEqualityTrust = TRUSTED  -- ✅ 等式逻辑与高维几何兼容
 
-Relation.Binary.PropositionalEquality.Properties.Trust : TrustLevel
-Relation.Binary.PropositionalEquality.Properties.Trust = UNDER_REVIEW
+relationBinaryPropositionalEqualityPropertiesTrust : TrustLevel
+relationBinaryPropositionalEqualityPropertiesTrust = UNDER_REVIEW
 
 -- Cubical 模块
-Cubical.Foundations.Prelude.Trust : TrustLevel
-Cubical.Foundations.Prelude.Trust = UNTRUSTED  -- 🔴 Path 类型与离散环面可能冲突
+cubicalFoundationsPreludeTrust : TrustLevel
+cubicalFoundationsPreludeTrust = UNTRUSTED  -- 🔴 Path 类型与离散环面可能冲突
 
-Cubical.Core.Everything.Trust : TrustLevel
-Cubical.Core.Everything.Trust = UNTRUSTED  -- 🔴 连续同伦理论，需离散化
+cubicalCoreEverythingTrust : TrustLevel
+cubicalCoreEverythingTrust = UNTRUSTED  -- 🔴 连续同伦理论，需离散化
 
 --------------------------------------------------------------------------------
 -- 3. 审查清单 (Review Checklist)
@@ -74,7 +75,7 @@ Cubical.Core.Everything.Trust = UNTRUSTED  -- 🔴 连续同伦理论，需离�
 
 record ReviewStatus : Set where
   field
-    module_name    : String
+    modName    : String
     trust_level    : TrustLevel
     review_notes   : String
     reviewed_by    : String  -- 必须是高维几何审查员
@@ -83,27 +84,27 @@ record ReviewStatus : Set where
 review_log : Vec ReviewStatus 5
 review_log = 
   -- 待审查的关键引理
-  record { module_name = "Data.Nat.Properties.+-mod"
+  record { modName = "Data.Nat.Properties.+-mod"
          ; trust_level = UNTRUSTED
          ; review_notes = "模运算分配律基于连续统，需在 GF(3) 格点上重新证明"
          ; reviewed_by = "PENDING"
          } ∷
-  record { module_name = "Data.Nat.Properties.m*n%m≡0"
+  record { modName = "Data.Nat.Properties.m*n%m≡0"
          ; trust_level = UNTRUSTED
          ; review_notes = "乘法模零律需验证与 T⁶ 离散拓扑的兼容性"
          ; reviewed_by = "PENDING"
          } ∷
-  record { module_name = "Data.Nat.DivMod.div-mod"
+  record { modName = "Data.Nat.DivMod.div-mod"
          ; trust_level = UNTRUSTED
          ; review_notes = "除法 - 模分解唯一性需在 Base-3 编码中验证"
          ; reviewed_by = "PENDING"
          } ∷
-  record { module_name = "Cubical.Foundations.Prelude.Path"
+  record { modName = "Cubical.Foundations.Prelude.Path"
          ; trust_level = UNTRUSTED
          ; review_notes = "Path 类型假设连续空间，需定义离散版本"
          ; reviewed_by = "PENDING"
          } ∷
-  record { module_name = "Data.Fin.boundary"
+  record { modName = "Data.Fin.boundary"
          ; trust_level = UNDER_REVIEW
          ; review_notes = "Fin 边界检查需与极向 144/环向 46 对齐"
          ; reviewed_by = "PENDING"
@@ -122,8 +123,9 @@ require_trusted UNDER_REVIEW = false
 
 -- 使用示例：
 -- 如果尝试使用 UNTRUSTED 引理，类型检查器将拒绝
--- require_trusted Data.Nat.Properties.Trust refl  -- 类型错误！
+-- require_trusted dataNatPropertiesTrust refl  -- 类型错误！
 
 -- 信任检查辅助函数
 isTrustedForConstitutionalUse : TrustLevel → Bool
-isTrustedForConstitutionalUse = require_trusted
+isTrustedForConstitutionalUse TRUSTED = true
+isTrustedForConstitutionalUse _ = false
