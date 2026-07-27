@@ -1,12 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.NSE — N-S方程 GF(3) 全域精确解
+-- | Sovereign.Problem.NavierStokes.NSE — N-S方程 GF(3) 全域精确解
 --
 -- 状态: 全部对齐 (2026-05-11)
 --   12项定理 + 零postulate + 零自由参数
 --   从泛音列公理到12.15 MHz, 完整推导链
 
-module Sovereign.Physics.NSE where
+module Sovereign.Problem.NavierStokes.NSE where
 
 open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _∸_; _^_)
 open import Data.Nat.DivMod using (_%_; _div_)
