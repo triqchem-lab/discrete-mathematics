@@ -4,7 +4,7 @@
 -- 定理: F ↦ M_F 是忠实函子, 4320D 是 T⁶ 的信息上限
 -- 0 postulate
 
-module Sovereign.Problem.NavierStokes.InfoClosure where
+module Sovereign.Algebra.Jacobian.jac_InfoClosure where
 
 open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

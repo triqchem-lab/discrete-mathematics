@@ -20,7 +20,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 
 -- 空间基座
 import Sovereign.Algebra.Jacobian.jac_AutT6       -- Aut(T⁶/GF(9))
-import Sovereign.Problem.NavierStokes.InfoClosure  -- 4320D 信息容量
+import Sovereign.Algebra.Jacobian.jac_InfoClosure  -- 4320D 信息容量
 
 -- ═══════════════════════════════════════════════════════════
 -- 第一本体: 物质 = Frobenius 涡旋
