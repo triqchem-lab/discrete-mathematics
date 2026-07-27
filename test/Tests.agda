@@ -6,7 +6,7 @@
 -- 本模块验证核心公理、状态演化与仲吕闭合的正确性。
 -- 所有测试基于 Agda 的命题等式 (_≡_) 进行形式化验证。
 
-module Sovereign.Tests where
+module Tests where
 
 open import Data.Nat using (ℕ; _+_; _*_; _<_; _≥_; _mod_; _div_; suc; zero)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
