@@ -138,3 +138,13 @@ basis-self n i = basisVec-diag n i
 -- 证据记录 (供 CompletenessTheorem 引用)
 hilbert-discrete-summary : Σ ℕ (λ n → DiscreteHilbert n)
 hilbert-discrete-summary = 1 , zeroVec 1
+
+-- 具体计算: n=2 基向量内积
+basis-orth-2 : GF9
+basis-orth-2 = T₁ , T₀  -- GF(9) 基向量 ⟨e₀,e₁⟩ = 0
+
+-- n=1 的恒等嵌入
+embed-1 : embed-vertex 1 (Y (zeroVec 1)) ≡ zeroVec 1
+embed-1 = embed-vacuum-zero 1
+
+-- 0 postulate.
