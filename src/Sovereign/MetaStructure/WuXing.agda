@@ -54,6 +54,11 @@ data WuXing : Set where
   Water : WuXing  -- 水 (模数 6)
   Wood  : WuXing  -- 木 (模数 8)
 
+-- 手征性 (Chirality)
+data Chirality : Set where
+  LeftHanded  : Chirality
+  RightHanded : Chirality
+
 -- 五行基数映射 (宪法定义)
 wuXingBase : WuXing → ℕ
 wuXingBase Fire  = 2

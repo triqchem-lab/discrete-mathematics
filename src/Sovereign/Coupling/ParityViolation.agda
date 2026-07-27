@@ -9,10 +9,11 @@
 
 module Sovereign.Coupling.ParityViolation where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; _≥_)
+open import Cubical.Foundations.Prelude
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; _>_; _≥_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Bool using (Bool; true; false; _∧_; _∨_)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Binary.PropositionalEquality using (_≢_)
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -107,7 +108,7 @@ record RightHandedNeutrino : Set where
 -- 定理：当 a≥4 时，不存在右旋中微子
 neutrinoLeftHandedOnly : ∀ (tp : ToroidalPower) → 
   ToroidalPower.exponent tp ≥ 4 → 
-  ¬ ∃[ ν ] RightHandedNeutrino ν × ToroidalPower.exponent (RightHandedNeutrino.power ν) ≥ 4
+  ¬ (∃ λ ν → RightHandedNeutrino ν × ToroidalPower.exponent (RightHandedNeutrino.power ν) ≥ 4)
 neutrinoLeftHandedOnly (mkPower 4) ge (ν , _) = ?  -- 右旋被完全抑制
 neutrinoLeftHandedOnly (mkPower (suc (suc (suc (suc (suc n)))))) ge (ν , _) = ?
 
