@@ -38,7 +38,7 @@ open import Sovereign.Algebra.Jacobian.jac_GF3
          id-gf3; JΔ-id; det-JΔ-id)
 
 -- 从 jac_FrobeniusBlind 导入 (GF(9)² 反例, 差分算子也失败)
-open import Sovereign.Problem.Riemann.jac_FrobeniusBlind
+open import Sovereign.Problem.Riemann.FrobeniusBlind
   using (GF9; GF9²; F-frob; frob-3to1; Δy-F2-const;
          Δx-F1-const; Δy-F1-const; Δx-F2-const;
          frob-collision-1; frob-collision-2;

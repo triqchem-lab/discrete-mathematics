@@ -30,7 +30,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; neg
 
 -- GF(9) 与 Galois 群
 open import Sovereign.Algebra.GF9 using (GF9; _+gf9_; _*gf9_)
-open import Sovereign.Problem.Riemann.jac_Galois
+open import Sovereign.Problem.Riemann.Galois
   using (C2; e; σ; galois-act; galois-σ²)
 
 -- §2. GL₃(GF(9)) 的抽象接口 ---------------------------------------

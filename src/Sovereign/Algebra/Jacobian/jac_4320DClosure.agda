@@ -53,7 +53,7 @@ open import Sovereign.Algebra.Jacobian.jac_GF3
          JΔ-counter; det-JΔ-counter; det-JΔ-id)
   renaming (id-gf3 to id-gf3²)
 
-open import Sovereign.Problem.Riemann.jac_FrobeniusBlind
+open import Sovereign.Problem.Riemann.FrobeniusBlind
   using (GF9; GF9²; F-frob; σ₉; α₉; frob-3to1; frob-collision-1; frob-collision-2;
          Δy-F2-const; Δy-F2-at-00; σ-shift)
 
