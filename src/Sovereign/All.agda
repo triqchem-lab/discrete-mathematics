@@ -147,7 +147,7 @@ open import Sovereign.Algebra.VortexRoot public
          vortexToDuodec; vortex12-identity)
 
 -- 4320D 全息代数分解: 2×12×36×5, 涡旋根驱动, 0 postulate
-open import Sovereign.Algebra.Holographic4320D public
+open import Sovereign.Algebra.Holographic.4320D public
   using (dim-4320; dim-4320-expanded; dim-4320-alt; dim-4320-729;
          holographic-full; prime-factorization;
          div-by-12; div-by-36; div-by-24;

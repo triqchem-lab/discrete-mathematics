@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_ClassicAnalysis
+-- | Sovereign.Algebra.Holographic.ClassicAnalysis
 -- 经典反例（Alpöge 2026）的三重防火墙判决
 --
 -- 裁决逻辑:
@@ -10,7 +10,7 @@
 --
 -- 0 postulate. 所有判定由已证模块支持.
 
-module Sovereign.Algebra.Jacobian.jac_ClassicAnalysis where
+module Sovereign.Algebra.Holographic.ClassicAnalysis where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; cong; sym; trans)
@@ -27,7 +27,7 @@ open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
   using (encode9; decode9; decode9-encode9; encode9-decode9)
 open import Sovereign.Algebra.Jacobian.jac_NMatrix
   using (funcTable; DetNonzero; detNonzero↔bij)
-open import Sovereign.Algebra.Jacobian.jac_EscapeAnalysis
+open import Sovereign.Algebra.Holographic.EscapeAnalysis
   using (fermat-cubic; collapse→not-detnonzero)
 
 --------------------------------------------------------------------------------

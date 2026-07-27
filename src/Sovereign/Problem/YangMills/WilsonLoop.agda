@@ -11,7 +11,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 
 open import Sovereign.Algebra.Jacobian.jac_GF9Matrix
   using (GF9; 0gf9; 1gf9; GF9Mat; det2-gf9; det3-gf9; I3-gf9; det3-gf9-I)
-open import Sovereign.Algebra.Jacobian.jac_LatticeField
+open import Sovereign.Algebra.Holographic.LatticeField
   using (mass-gap-I2)
 
 --------------------------------------------------------------------------------

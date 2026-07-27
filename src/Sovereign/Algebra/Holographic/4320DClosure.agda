@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_4320DClosure
+-- | Sovereign.Algebra.Holographic.4320DClosure
 -- 4320D 全息空间中差分算子完备性的核心论证
 --
 -- 一句话定位: T⁶(729点)环面绝对有界→无射影无穷远→Alpöge反例不可能→离散雅可比完备。
@@ -23,7 +23,7 @@
 --
 -- [分类: 已证定理] [状态: 0 postulate] [范式: 鸽巢+CRT+几何论证]
 
-module Sovereign.Algebra.Jacobian.jac_4320DClosure where
+module Sovereign.Algebra.Holographic.4320DClosure where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans; _≢_; module ≡-Reasoning)
@@ -69,10 +69,10 @@ open import Sovereign.Algebra.Jacobian.jac_Injectivity
 open import Sovereign.Algebra.Jacobian.jac_Discrete
   using (Mat2; det2; GF3²; FormalJacDet1; FunctionTableInj; formal-not-table)
 
-open import Sovereign.Algebra.Jacobian.jac_Conjecture
+open import Sovereign.Algebra.Holographic.Conjecture
   using (PointwiseJC; pointwise-not-surjective; inj→surj-GF3²)
 
-open import Sovereign.Algebra.Jacobian.jac_Theorem
+open import Sovereign.Algebra.Holographic.Theorem
   using ()
 
 --------------------------------------------------------------------------------

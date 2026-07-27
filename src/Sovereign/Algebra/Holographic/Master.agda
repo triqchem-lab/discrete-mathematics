@@ -3,7 +3,7 @@
 -- | jac_Master — 大衍框架统一定理 · 59模块全景
 -- 0 postulate
 
-module Sovereign.Algebra.Jacobian.jac_Master where
+module Sovereign.Algebra.Holographic.Master where
 
 open import Data.Nat using (ℕ)
 open import Data.Integer using (ℤ)
@@ -57,7 +57,7 @@ import Sovereign.Problem.PvsNP.PvsNP_Conjecture -- 形式猜想
 -- ═══════════════════════════════════════════════════════════
 import Sovereign.Algebra.Jacobian.jac_Pigeonhole     -- 组合
 import Sovereign.Algebra.Jacobian.jac_AutT6           -- 群论
-import Sovereign.Algebra.Jacobian.jac_InfoClosure     -- 信息论
+import Sovereign.Algebra.Holographic.InfoClosure     -- 信息论
 import Sovereign.Problem.Riemann.WeilRH          -- Weil 独立形式化
 import Sovereign.Problem.Hodge.DeligneHodge    -- Deligne 独立形式化
 import Sovereign.Problem.Langlands.DeligneLusztig  -- DL 独立形式化

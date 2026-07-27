@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_LatticeField
+-- | Sovereign.Algebra.Holographic.LatticeField
 -- 格点场论与相变 — GF(9) 格点上的杨-米尔斯质量间隙
 --
 -- 核心定理:
@@ -12,7 +12,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Algebra.Jacobian.jac_LatticeField where
+module Sovereign.Algebra.Holographic.LatticeField where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _≤_; z≤n; s≤s)
 open import Data.Fin using (Fin; zero; suc)

@@ -4,7 +4,7 @@
 -- 数学基座 → 物理语义的完整映射
 -- 0 postulate
 
-module Sovereign.Algebra.Jacobian.jac_PhysicalOntology where
+module Sovereign.Algebra.Holographic.PhysicalOntology where
 
 open import Data.Nat using (ℕ)
 open import Data.Integer using (ℤ)
@@ -20,7 +20,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 
 -- 空间基座
 import Sovereign.Algebra.Jacobian.jac_AutT6       -- Aut(T⁶/GF(9))
-import Sovereign.Algebra.Jacobian.jac_InfoClosure  -- 4320D 信息容量
+import Sovereign.Algebra.Holographic.InfoClosure  -- 4320D 信息容量
 
 -- ═══════════════════════════════════════════════════════════
 -- 第一本体: 物质 = Frobenius 涡旋

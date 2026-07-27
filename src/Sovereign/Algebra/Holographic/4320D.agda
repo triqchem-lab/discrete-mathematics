@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting #-}
-module Sovereign.Algebra.Holographic4320D where
+module Sovereign.Algebra.Holographic.4320D where
 
 --------------------------------------------------------------------------------
 -- 4320D 全息代数分解 — 涡旋根 "123" 驱动的全息维度结构

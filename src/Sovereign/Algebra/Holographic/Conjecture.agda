@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_Conjecture
+-- | Sovereign.Algebra.Holographic.Conjecture
 -- Phase 4: 离散雅可比猜想陈述与实质定理
 --
 -- 在有限集 S 上, F: S → S 是双射 ⟺ 全局矩阵 det(M_F) ≠ 0
 -- 这是有限集线性代数定理 (鸽巢原理), 不依赖连续统雅可比猜想。
 -- 逐点雅可比有 Frobenius 盲区, 全局矩阵没有。
 
-module Sovereign.Algebra.Jacobian.jac_Conjecture where
+module Sovereign.Algebra.Holographic.Conjecture where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)

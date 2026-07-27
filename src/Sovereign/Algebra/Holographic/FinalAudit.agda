@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
-module Sovereign.Algebra.Jacobian.jac_FinalAudit where
+module Sovereign.Algebra.Holographic.FinalAudit where
 
 -- NS L3 ✅ (NSE.agda, 12定理, 0 postulate)
 import Sovereign.Problem.YangMills.YM_L3         -- YM L3 ✅
@@ -25,7 +25,7 @@ import Sovereign.Problem.BSD.ZetaDiscrete   -- RH L0+ 🔴
 import Sovereign.Problem.Hodge.DeligneHodge   -- 外部形式化
 import Sovereign.Problem.Langlands.DeligneLusztig
 import Sovereign.Algebra.Jacobian.jac_CRTDet         -- 基础设施
-import Sovereign.Algebra.Jacobian.jac_PhysicalOntology -- 物理本体论
+import Sovereign.Algebra.Holographic.PhysicalOntology -- 物理本体论
 
 -- 68模块, 0 postulate.
 -- NS YM Hodge: L3 ✅ | BSD: L3* 🟡 | PvsNP Langlands RH: 🔴

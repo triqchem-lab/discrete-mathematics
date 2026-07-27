@@ -8,7 +8,7 @@
 -- 逐点雅可比有 Frobenius 盲区, 全局矩阵没有。
 -- 连续统雅可比猜想的困难来自无穷远, 离散环面无此困难。
 
-module Sovereign.Algebra.Jacobian.jac_Theorem where
+module Sovereign.Algebra.Holographic.Theorem where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl)

@@ -39,7 +39,7 @@ open import Sovereign.Algebra.ProjectionDifferential using (GF3Func; Δ; Δ³≡
 open import Sovereign.Structology.T6 using (T6Lattice; finToT6)
 open import Sovereign.Structology.A4Group using (A4; Id)
 open import Sovereign.Algebra.GF9 using (GF9)
-open import Sovereign.Algebra.Holographic4320D using (dim-4320)
+open import Sovereign.Algebra.Holographic.4320D using (dim-4320)
 open import Sovereign.Algebra.DiscreteLimit using (DiscreteLimit; const-converges)
 
 --------------------------------------------------------------------------------

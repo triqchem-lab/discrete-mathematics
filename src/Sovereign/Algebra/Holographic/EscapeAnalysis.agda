@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_EscapeAnalysis
+-- | Sovereign.Algebra.Holographic.EscapeAnalysis
 -- 在离散射影几何中验证 Alpöge 反例的"根逃逸"机制
 --
 -- 三个防火墙阻断 Alpöge 逃逸:
@@ -10,7 +10,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Algebra.Jacobian.jac_EscapeAnalysis where
+module Sovereign.Algebra.Holographic.EscapeAnalysis where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; cong; sym; trans)

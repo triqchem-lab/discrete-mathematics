@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_Representation
+-- | Sovereign.Algebra.Holographic.Representation
 -- 有限群表示论 — Burnside 定理 + 特征标正交性 + 一般框架
 --
 -- 核心定理:
@@ -11,7 +11,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Algebra.Jacobian.jac_Representation where
+module Sovereign.Algebra.Holographic.Representation where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (_×_; _,_)

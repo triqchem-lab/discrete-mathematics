@@ -54,7 +54,7 @@ open import Sovereign.Algebra.Jacobian.jac_Injectivity
          nonsingular→inj→bij; F-gf3-not-inj; F-gf3-not-surj; F-gf3-not-bij)
 
 -- 从 jac_Conjecture 导入 (离散雅可比猜想陈述)
-open import Sovereign.Algebra.Jacobian.jac_Conjecture
+open import Sovereign.Algebra.Holographic.Conjecture
   using (PointwiseJC; pointwise-I2; inj→surj-GF3²; pointwise-not-surjective)
 
 -- 从 jac_Matrix 导入 (行列式乘法性, 逆矩阵, 秩分类)
