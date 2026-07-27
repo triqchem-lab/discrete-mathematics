@@ -9,11 +9,11 @@
 
 module Sovereign.Coupling.ParityViolation where
 
-open import Cubical.Foundations.Prelude
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; _≥_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Bool using (Bool; true; false; _∧_; _∨_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 open import Data.Empty using (⊥; ⊥-elim)
 
@@ -195,12 +195,16 @@ weakForceIsomorphism = refl
 
 -- 禁止表述：弱相互作用下空间反射不对称
 postulate
+  ParityViolation : Set
+  SpatialReflectionAsymmetry : Set
+
+postulate
   noSpatialReflection : ¬ (ParityViolation ≡ SpatialReflectionAsymmetry)
-  where
-    postulate ParityViolation SpatialReflectionAsymmetry : Set
 
 -- 合法表述：环向缠绕深化引发的手性对偶破缺
-parityViolationLegal : 
-  ParityViolationDefinition ≡ ChiralSymmetryBreakingByToroidalWinding
-  where
-    postulate ParityViolationDefinition ChiralSymmetryBreakingByToroidalWinding : Set
+postulate
+  ParityViolationDefinition : Set
+  ChiralSymmetryBreakingByToroidalWinding : Set
+
+postulate
+  parityViolationLegal : ParityViolationDefinition ≡ ChiralSymmetryBreakingByToroidalWinding

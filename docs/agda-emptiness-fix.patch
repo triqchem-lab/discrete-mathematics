@@ -1,0 +1,43 @@
+--- a/src/full/Agda/TypeChecking/Rules/LHS/Unify/LeftInverse.hs
++++ b/src/full/Agda/TypeChecking/Rules/LHS/Unify/LeftInverse.hs
+@@ -648,11 +648,38 @@ buildEquiv (DUnificationStep st step@(DInjectivity k a d pars ixs c) output) nex
+         -- When no HDU thunk is available (non-indexed types or HDU failure),
+         -- the projection retract alone suffices with @leftInv = raiseS 1@.
+         (tau, leftInv) <- case unifyHduTauInv output of
+-          Just _ -> do
+-            -- CRT composition (deferred): the piecewise de Bruijn lift
+-            -- is mathematically correct but activates recursive
+-            -- buildLeftInverse calls via getTauInvHDU thunk evaluation.
+-            -- Deferred until the HDU thunk isolation issue is resolved.
+-            return (makeTau projNames, raiseS 1)
++          Just getTauInvHDU -> do
++            -- Try HDU thunk evaluation with defensive fallback.
++            -- Simple cases (non-recursive HDU) produce correct left inverses;
++            -- recursive cases throw __IMPOSSIBLE__, fall back to simple retract.
++            tauInvHDU <- lift $ catchError (Right <$> getTauInvHDU) (const $ return $ Left ())
++            case tauInvHDU of
++              Right (Right (tau_hdu, leftInv_hdu)) -> do
++                let nGamma = size gamma
++                    nEq2  = size (eqTel next) - k - nctel
++                    nHdu  = k
++                    raiseFull = raiseS (1 + nEq2 + nctel)
++                    liftTerm t = applySubst raiseFull t
++                    tauList =
++                      [var j | j <- [0 .. nGamma]]
++                      ++ [var (nGamma + 1)]
++                      ++ [liftTerm (lookupS tau_hdu (nHdu - 1 - j)) | j <- [0 .. nHdu - 1]]
++                      ++ [lookupS (makeTau projNames) (nGamma + 1 + nHdu + j) | j <- [0 .. nctel - 1]]
++                      ++ [var (nGamma + 1 + nHdu + nctel + j) | j <- [0 .. nEq2 - 1]]
++                    leftInvList =
++                      [var j | j <- [0 .. nGamma]]
++                      ++ [var (nGamma + 1)]
++                      ++ [liftTerm (lookupS leftInv_hdu (nHdu - 1 - j)) | j <- [0 .. nHdu - 1]]
++                      ++ [var (nGamma + 1 + nHdu + j) | j <- [0 .. nctel - 1]]
++                      ++ [var (nGamma + 1 + nHdu + nctel + j) | j <- [0 .. nEq2 - 1]]
++                return (termsS __IMPOSSIBLE__ tauList, termsS __IMPOSSIBLE__ leftInvList)
++              _ -> do
++                -- HDU thunk failed: fall back to simple projection retract.
++                -- This handles both non-indexed constructors and recursive HDU
++                -- cases where the thunk would trigger __IMPOSSIBLE__.
++                return (makeTau projNames, raiseS 1)
+           Nothing -> return (makeTau projNames, raiseS 1)
