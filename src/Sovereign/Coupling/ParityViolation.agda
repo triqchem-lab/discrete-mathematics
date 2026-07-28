@@ -9,17 +9,16 @@
 
 module Sovereign.Coupling.ParityViolation where
 
-open import Cubical.Foundations.Prelude
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; _>_; _≥_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Bool using (Bool; true; false; _∧_; _∨_)
-open import Relation.Binary.PropositionalEquality using (_≢_)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Relation.Nullary using (¬_)
-open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
+open import Data.Product using (_×_; _,_; proj₁; proj₂; ∃; ∃-syntax)
 open import Data.Empty using (⊥; ⊥-elim)
 
 -- 导入核心模块
-open import Sovereign.RootMath.Base using (Trit; T₀; T₁; T₂; tritToℤ)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; 
                                                     wuxingBase; Chirality; LeftHanded; RightHanded;
                                                     ChiralWuXing; chiralDual; chiralDualInvolutive)
@@ -141,13 +140,13 @@ betaDecayAsymmetry _ = ?
 
 -- 手性分离相变的阶跃函数
 chiralPhaseTransition : ToroidalPower → ChiralSymmetry × WuXingAmplitude
-chiralPhaseTransition (mkPower 0) = (SingleChiral, AmpGenerate)
-chiralPhaseTransition (mkPower 1) = (PairedConserved, AmpGenerate)
-chiralPhaseTransition (mkPower 2) = (PairedConserved, AmpGenerate)
-chiralPhaseTransition (mkPower 3) = (BreakingStarted, AmpOvercome)    -- ω激活
-chiralPhaseTransition (mkPower 4) = (BreakingObvious, AmpOvercome2)   -- ω²深化
+chiralPhaseTransition (mkPower 0) = Data.Product._,_ SingleChiral AmpGenerate
+chiralPhaseTransition (mkPower 1) = Data.Product._,_ PairedConserved AmpGenerate
+chiralPhaseTransition (mkPower 2) = Data.Product._,_ PairedConserved AmpGenerate
+chiralPhaseTransition (mkPower 3) = Data.Product._,_ BreakingStarted AmpOvercome    -- ω激活
+chiralPhaseTransition (mkPower 4) = Data.Product._,_ BreakingObvious AmpOvercome2   -- ω²深化
 chiralPhaseTransition (mkPower (suc (suc (suc (suc (suc n)))))) = 
-  (BreakingComplete, AmpOvercome2)
+  Data.Product._,_ BreakingComplete AmpOvercome2
 
 -- 相变点：a=3 时ω激活，宇称破缺启动
 phaseTransitionPoint : ToroidalPower
@@ -156,8 +155,7 @@ phaseTransitionPoint = mkPower 3
 -- 相变定理：在相变点之后，手性对称性被破坏
 postPhaseTransitionBreaking : ∀ (tp : ToroidalPower) → 
   ToroidalPower.exponent tp ≥ ToroidalPower.exponent phaseTransitionPoint → 
-  let (sym, amp) = chiralPhaseTransition tp
-  in sym ≢ PairedConserved ∧ isAmplitudeSymmetric amp ≡ false
+  (proj₁ (chiralPhaseTransition tp) ≢ PairedConserved) × (isAmplitudeSymmetric (proj₂ (chiralPhaseTransition tp)) ≡ false)
 postPhaseTransitionBreaking (mkPower 3) ge = ?
 postPhaseTransitionBreaking (mkPower 4) ge = ?
 postPhaseTransitionBreaking (mkPower (suc (suc (suc (suc (suc n)))))) ge = ?
