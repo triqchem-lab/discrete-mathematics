@@ -18,7 +18,7 @@ open import Data.Product using (_×_; _,_; proj₁; proj₂; ∃; ∃-syntax)
 open import Data.Empty using (⊥; ⊥-elim)
 
 -- 导入核心模块
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; tritToℤ)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; 
                                                     wuxingBase; Chirality; LeftHanded; RightHanded;
                                                     ChiralWuXing; chiralDual; chiralDualInvolutive)

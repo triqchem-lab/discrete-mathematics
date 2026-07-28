@@ -29,11 +29,6 @@ tritToℕ T₀ = 0
 tritToℕ T₁ = 1
 tritToℕ T₂ = 2
 
-tritToℤ : Trit → ℤ
-tritToℤ T₀ = + 0
-tritToℤ T₁ = + 1
-tritToℤ T₂ = -[1+ 0 ]  -- -1 (original mapping, T₂ ↔ chirality reversal)
-
 -- Trit 到编码值 {0, 1, 2} (用于工程打包，恒等映射)
 tritToCode : Trit → ℕ
 tritToCode T₀ = 0
