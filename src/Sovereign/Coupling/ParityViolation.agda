@@ -9,16 +9,17 @@
 
 module Sovereign.Coupling.ParityViolation where
 
+open import Cubical.Foundations.Prelude
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; _>_; _≥_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Bool using (Bool; true; false; _∧_; _∨_)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Binary.PropositionalEquality using (_≢_)
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 open import Data.Empty using (⊥; ⊥-elim)
 
 -- 导入核心模块
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
+open import Sovereign.RootMath.Base using (Trit; T₀; T₁; T₂; tritToℤ)
 open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; 
                                                     wuxingBase; Chirality; LeftHanded; RightHanded;
                                                     ChiralWuXing; chiralDual; chiralDualInvolutive)
