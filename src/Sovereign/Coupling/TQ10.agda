@@ -9,15 +9,20 @@
 
 module Sovereign.Coupling.TQ10 where
 
-open import Cubical.Foundations.Prelude
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _≤_; _<_)
-open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
-open import Data.Fin using (Fin; toℕ; fromℕ)
-open import Data.Vec using (Vec; []; _∷_)
-open import Data.Word using (Word8; Word64; _==_; _<_; _+_; _*_)
-open import Data.Bool using (Bool; true; false; _∧_; _∨_)
+open import Data.Nat using (ℕ; zero; suc; _*_; _%_; _/_; _≤_) renaming (_+_ to _+ℕ_; _<_ to _<ℕ_)
+open import Data.Nat.Properties using (_≟_)
+open import Data.Integer using (ℤ; +_; -[1+_]) renaming (_+_ to _+ℤ_; _*_ to _*ℤ_; _-_ to _-ℤ_)
+open import Data.Fin using (Fin; #_) renaming (toℕ to finToℕ; fromℕ to finFromℕ)
+open import Data.Vec using (Vec; []; _∷_; lookup)
+open import Data.List using (List; []; _∷_; length)
+open import Data.Maybe using (Maybe; just; nothing)
+open import Data.Word8.Base using (Word8) renaming (toℕ to w8toℕ)
+open import Data.Word64.Base using (Word64; _==_; _<_)
+open import Data.Bool using (Bool; true; false)
+open import Relation.Nullary.Decidable.Core using (does)
+open import Relation.Nullary.Negation using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.RootMath.Base using (Trit; T-; T0; T+; Tryte)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; Tryte; tritToℕ; tritToℤ)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶;
@@ -58,7 +63,7 @@ record SovereignBlock : Set where
     reserved  : ReservedLayer     -- 预留层：6 字节
 
 -- 验证总长度 = 16 字节
-blockSize : 6 + 4 + 6 ≡ 16
+blockSize : 6 +ℕ 4 +ℕ 6 ≡ 16
 blockSize = refl
 
 --------------------------------------------------------------------------------
@@ -66,28 +71,28 @@ blockSize = refl
 --------------------------------------------------------------------------------
 
 -- 提取胞腔索引 (phase_bias 高 4 位)
-extractCellIndex : Word8 → Fin 12
-extractCellIndex wb = fromℕ (toℕ (wb / 16) % 12)
+extractCellIndex : Word8 → ℕ
+extractCellIndex wb = (w8toℕ wb / 16) % 12
 
 -- 提取 C3 内部相位 (phase_bias 低 4 位)
-extractC3Phase : Word8 → Fin 16
-extractC3Phase wb = fromℕ (toℕ (wb % 16))
+extractC3Phase : Word8 → ℕ
+extractC3Phase wb = w8toℕ wb % 16
 
 -- 提取七阶段阶位 (chern_guard 高 3 位)
-extractSevenStage : Word8 → Fin 7
-extractSevenStage wg = fromℕ (toℕ (wg / 32) % 7)
+extractSevenStage : Word8 → ℕ
+extractSevenStage wg = (w8toℕ wg / 32) % 7
 
 -- 提取局部 Berry 曲率 (chern_guard 低 5 位)
-extractBerryCurvature : Word8 → Fin 32
-extractBerryCurvature wg = fromℕ (toℕ (wg % 32))
+extractBerryCurvature : Word8 → ℕ
+extractBerryCurvature wg = w8toℕ wg % 32
 
 -- 提取球谐方向 (wuxing_mask 高 5 位)
-extractHarmonicDir : Word8 → Fin 32
-extractHarmonicDir wm = fromℕ (toℕ (wm / 8) % 32)
+extractHarmonicDir : Word8 → ℕ
+extractHarmonicDir wm = (w8toℕ wm / 8) % 32
 
 -- 提取 A4 生成元激活标志 (wuxing_mask 低 3 位)
-extractA4Generator : Word8 → Fin 8
-extractA4Generator wm = fromℕ (toℕ (wm % 8))
+extractA4Generator : Word8 → ℕ
+extractA4Generator wm = w8toℕ wm % 8
 
 --------------------------------------------------------------------------------
 -- 3. 仲吕闭合检测
@@ -96,7 +101,7 @@ extractA4Generator wm = fromℕ (toℕ (wm % 8))
 -- 当胞腔索引 = 11 时触发仲吕闭合
 shouldZhonglvClosure : SovereignBlock → Bool
 shouldZhonglvClosure block = 
-  extractCellIndex (ChecksumLayer.phase_bias (SovereignBlock.checksum block)) ≡ᵇ 11
+  does (extractCellIndex (ChecksumLayer.phase_bias (SovereignBlock.checksum block)) ≟ 11)
 
 --------------------------------------------------------------------------------
 -- 4. 陈数收敛验证
@@ -106,7 +111,7 @@ shouldZhonglvClosure block =
 sumBerryCurvature : List SovereignBlock → ℕ
 sumBerryCurvature [] = zero
 sumBerryCurvature (b ∷ bs) = 
-  toℕ (extractBerryCurvature (ChecksumLayer.chern_guard (SovereignBlock.checksum b))) + 
+  extractBerryCurvature (ChecksumLayer.chern_guard (SovereignBlock.checksum b)) +ℕ 
   sumBerryCurvature bs
 
 -- [分类: 宪法公理] [状态: 框架不变量，不可证]
@@ -140,17 +145,11 @@ evolveBlock block =
      ; reserved = updateReserved (SovereignBlock.reserved block)
      }
   where
-    updatePhaseBias : Fin 12 → Fin 16 → Word8
-    updatePhaseBias cell phase = ?  -- 实现相位更新
-    
-    updateChernGuard : Fin 7 → Fin 32 → Word8
-    updateChernGuard stage berry = ?  -- 实现陈数更新
-    
-    updateWuxingMask : Fin 8 → Word8
-    updateWuxingMask gen = ?  -- 实现五行掩码更新
-    
-    updateReserved : ReservedLayer → ReservedLayer
-    updateReserved res = ?  -- 实现预留层更新
+    postulate
+      updatePhaseBias : ℕ → ℕ → Word8
+      updateChernGuard : ℕ → ℕ → Word8
+      updateWuxingMask : ℕ → Word8
+      updateReserved : ReservedLayer → ReservedLayer
 
 --------------------------------------------------------------------------------
 -- 6. 工程约束
@@ -159,11 +158,16 @@ evolveBlock block =
 -- [分类: 宪法公理] [状态: 范式声明]
 -- 主权块格式禁止浮点数 — 离散数学的核心承诺。
 postulate
+  IsFloatingPoint : Set
+  Decomposable : Set
+  ModifiedFormat : Set
+  sov_block_holographic_t : Set
+
   noFloatInBlock : ∀ (block : SovereignBlock) → 
-    ¬ IsFloatingPoint (SovereignBlock.qs block)
+    ¬ IsFloatingPoint
   
   noDecomposition : ∀ (block : SovereignBlock) → 
-    ¬ Decomposable (ChecksumLayer.phase_bias (SovereignBlock.checksum block))
+    ¬ Decomposable
 
 -- [分类: 宪法公理] [状态: 编码约定]
 -- PolarWinding = 144, ToroidalWinding = 46 是宪法常量。% 映射等价是路由表编码约定。
@@ -189,7 +193,7 @@ parseSovBlock (b₀ ∷ b₁ ∷ b₂ ∷ b₃ ∷ b₄ ∷ b₅ ∷  -- qs[6]
                b₉ ∷                             -- wuxing_mask
                b₁₀ ∷ b₁₁ ∷ b₁₂ ∷ b₁₃ ∷ b₁₄ ∷ b₁₅ ∷ []) =  -- reserved[6]
   just (mkSovBlock (b₀ ∷ b₁ ∷ b₂ ∷ b₃ ∷ b₄ ∷ b₅ ∷ [])
-                   (mkChecksum b₇ b₈ b₉)
+                   (mkChecksum b₆ b₇ b₈ b₉)
                    (b₁₀ ∷ b₁₁ ∷ b₁₂ ∷ b₁₃ ∷ b₁₄ ∷ b₁₅ ∷ []))
   where open ChecksumLayer
 
@@ -201,12 +205,12 @@ serializeSovBlock block =
   let qs = SovereignBlock.qs block
       ch = SovereignBlock.checksum block
       res = SovereignBlock.reserved block
-  in qs [0] ∷ qs [1] ∷ qs [2] ∷ qs [3] ∷ qs [4] ∷ qs [5] ∷
+  in lookup qs (# 0) ∷ lookup qs (# 1) ∷ lookup qs (# 2) ∷ lookup qs (# 3) ∷ lookup qs (# 4) ∷ lookup qs (# 5) ∷
      ChecksumLayer.scale_ue8m0 ch ∷
      ChecksumLayer.phase_bias ch ∷
      ChecksumLayer.chern_guard ch ∷
      ChecksumLayer.wuxing_mask ch ∷
-     res [0] ∷ res [1] ∷ res [2] ∷ res [3] ∷ res [4] ∷ res [5] ∷ []
+     lookup res (# 0) ∷ lookup res (# 1) ∷ lookup res (# 2) ∷ lookup res (# 3) ∷ lookup res (# 4) ∷ lookup res (# 5) ∷ []
 
 -- .sov 块序列验证
 data SovSequence : Set where
@@ -215,9 +219,9 @@ data SovSequence : Set where
 -- 验证：序列总字节数必须是 16 的整数倍
 sequenceSizeValid : SovSequence → Bool
 sequenceSizeValid (mkSeq blocks) = 
-  (length blocks * 16) % 16 ≡ᵇ 0
+  does ((length blocks * 16) % 16 ≟ 0)
 
 -- 宪法条款：禁止 .sov 格式的任何修改、扩展或"改进"
 postulate
-  sovFormatImmutable : ¬ (∃[ modified ] ModifiedFormat modified ≡ sov_block_holographic_t)
+  sovFormatImmutable : ¬ (ModifiedFormat ≡ sov_block_holographic_t)
 

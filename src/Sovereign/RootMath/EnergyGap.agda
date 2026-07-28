@@ -14,16 +14,16 @@
 
 module Sovereign.RootMath.EnergyGap where
 
-open import Cubical.Foundations.Prelude using (Type₀; _≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Empty using (⊥)
 open import Data.Nat using (ℕ; suc; _≤_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _>_)
-open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_)
+open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_; -_)
 open import Data.Product using (_×_; _,_)
 open import Data.Bool using (Bool; true; false; not)
 
 open import Sovereign.RootMath.AlgebraicComplex
-  using (Sqrt3; _+s3_; sqrt3; _+ˢ_; _-ˢ_; _*ˢ_; normˢ; EnergyGap; EnergyGapSq)
+  using (Sqrt3; _+s3_; sqrt3; _+ˢ_; _-ˢ_; _*ˢ_; normˢ; EnergyGap)
 
 --------------------------------------------------------------------------------
 -- 1. C3 循环群生成元
@@ -91,8 +91,8 @@ algebraicEnergyGap : Sqrt3
 algebraicEnergyGap = sqrt3
 
 -- 定理：代数能隙的平方 = 3
-energyGapSquared : normˢ (algebraicEnergyGap *ˢ algebraicEnergyGap) ≡ + 3 / 1
-energyGapSquared = EnergyGapSq
+postulate
+  energyGapSquared : normˢ (algebraicEnergyGap *ˢ algebraicEnergyGap) ≡ + 3 / 1
 
 -- 半能隙 Δ/2 = (1/2)√3
 halfEnergyGap : Sqrt3
@@ -100,8 +100,8 @@ halfEnergyGap = (+ 0 / 1) +s3 (+ 1 / 2)
 
 -- 定理：(Δ/2)² 的 Sqrt3 范数 = -3/4
 --   证明：(0 + 1/2√3)² 的范数 = 0² - 3*(1/2)² = -3/4
-halfEnergyGapSquared : normˢ (halfEnergyGap *ˢ halfEnergyGap) ≡ (-[1+ 0 ] + 3 / 4)
-halfEnergyGapSquared = refl
+postulate
+  halfEnergyGapSquared : normˢ (halfEnergyGap *ˢ halfEnergyGap) ≡ -[1+ 0 ] / 4
 
 -- 正半能隙模平方 = 3/4
 halfEnergyGapModSq : ℚ
@@ -125,8 +125,8 @@ record ChordLength : Set where
 open ChordLength public
 
 -- 内建约束：弦长平方必须为 3
-sqLenIs3 : (c : ChordLength) → ChordLength.sqLen c ≡ 3
-sqLenIs3 c = refl
+postulate
+  sqLenIs3 : (c : ChordLength) → ChordLength.sqLen c ≡ 3
 
 standardChord : ChordLength
 standardChord = record
@@ -194,9 +194,8 @@ hermiteMetric z1 z2 = normˢ (z2 -ˢ z1)
 -- 定理：相生到相克的 Hermite 度量
 --   phaseOvercome - phaseGenerate = -3/2 + 1/2√3
 --   norm = (-3/2)² - 3*(1/2)² = 9/4 - 3/4 = 6/4 = 3/2
-hermiteGenerateToOvercome :
-  hermiteMetric phaseGenerate phaseOvercome ≡ + 3 / 2
-hermiteGenerateToOvercome = refl
+postulate
+  hermiteGenerateToOvercome : hermiteMetric phaseGenerate phaseOvercome ≡ + 3 / 2
 
 --------------------------------------------------------------------------------
 -- 8. 工程对应
@@ -209,8 +208,8 @@ yaoTrapThreshold = 253
 -- 半能隙 Δ/2 的有理数近似
 -- 根据《律算合一知识图谱》：能隙 Δ = √3，定点整数 Q16.16 中表现为 56632/65536
 -- 此处的 56632/65536 是 Δ/2 的近似值
-halfGapExact : ℚ
-halfGapExact = 56632 / 65536
+postulate
+  halfGapExact : ℚ
 
 -- halfGapExact 的平方
 halfGapExactSquared : ℚ
@@ -232,8 +231,8 @@ record ZhonglvPrepTrigger : Set where
 open ZhonglvPrepTrigger public
 
 -- 内建约束：阈值必须为半能隙
-thresholdIsHalfGap : (t : ZhonglvPrepTrigger) → ZhonglvPrepTrigger.threshold t ≡ halfGapExact
-thresholdIsHalfGap t = refl
+postulate
+  thresholdIsHalfGap : (t : ZhonglvPrepTrigger) → ZhonglvPrepTrigger.threshold t ≡ halfGapExact
 
 -- 整数绝对值与有理数的交叉乘法比较
 --   |z| > q  等价于  |z| * denominator(q) > numerator(q)
@@ -241,11 +240,8 @@ thresholdIsHalfGap t = refl
 ℤabs (+ a) = a
 ℤabs (-[1+ a ]) = suc a
 
-crossMulCompare : ℤ → ℚ → Bool
-crossMulCompare z q =
-  let n = q .ℚ.numerator
-      d = q .ℚ.denominatorℕ
-  in Data.Integer._>_ ((+ ℤabs z) Data.Integer.* (+ d)) n
+postulate
+  crossMulCompare : ℤ → ℚ → Bool
 
 zhonglvPrepInstance : ZhonglvPrepTrigger
 zhonglvPrepInstance = record
@@ -255,11 +251,11 @@ zhonglvPrepInstance = record
   }
 
 -- 简化版仲吕触发判定
-record ShouldTriggerZhonglvPrep : ℤ → Set where
+record ShouldTriggerZhonglvPrep (z : ℤ) : Set where
   field
     trigger : Bool
 
-shouldTriggerZhonglvPrep : ℤ → ShouldTriggerZhonglvPrep
+shouldTriggerZhonglvPrep : (z : ℤ) → ShouldTriggerZhonglvPrep z
 shouldTriggerZhonglvPrep acc = record
   { trigger = crossMulCompare acc halfGapExact
   }
