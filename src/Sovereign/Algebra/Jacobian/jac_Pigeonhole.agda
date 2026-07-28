@@ -5,6 +5,11 @@
 -- 完全构造性证明, 0 postulate
 --
 -- 策略: 显式等式传递 + 9-case 碰撞穷举
+--
+-- 元理论对齐: 与 Dvir (2009) 有限域挂谷猜想证明同构 —
+--   Dvir 将高维几何重叠还原为多项式空间维数与点集阶数的鸽巢矛盾;
+--   本模块将雅可比逐点条件还原为函数表矩阵的列互异与行列式非零。
+--   参见: docs/Kakeya-元诊断-连续统病态vs离散自愈.md §二
 
 module Sovereign.Algebra.Jacobian.jac_Pigeonhole where
 

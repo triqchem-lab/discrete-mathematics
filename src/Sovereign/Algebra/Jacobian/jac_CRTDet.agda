@@ -4,6 +4,11 @@
 -- 定理: det(M) = crt12(det(M₃), det(M₄))
 --        det(M) ≠ 0 ⟺ (det(M₃) ≠ 0) ∧ (det(M₄) ≠ 0)
 -- 永久替代通用 N×N 行列式。0 postulate。
+--
+-- 元理论对齐: CRT 无损降维 ↔ Dvir 有限射影空间精确计数 —
+--   Dvir: 𝔽_qⁿ 方向约束 → |ℙⁿ⁻¹(𝔽_q)| = (qⁿ-1)/(q-1) 精确有限计数;
+--   本模块: 高维可逆性 → CRT 同态投影至 3×3/4×4 局部分量判定。
+--   参见: docs/Kakeya-元诊断-连续统病态vs离散自愈.md §二
 
 module Sovereign.Algebra.Jacobian.jac_CRTDet where
 
