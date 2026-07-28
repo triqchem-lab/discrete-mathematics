@@ -2,17 +2,18 @@
 
 ## 摘要
 
-本报告分析了挂谷猜想在连续统（ℝⁿ）与离散基座（GF(3)ⁿ/GF(9)）上的形式化对比。通过三个Agda模块（`KakeyaGF3.agda`, `KakeyaMF.agda`, `KakeyaPathology.agda`），我们展示了：
+本报告分析了挂谷猜想在连续统（ℝⁿ）与离散基座（GF(3)ⁿ/GF(9)）上的形式化对比。通过四个Agda模块（`KakeyaGF3.agda`, `KakeyaGF9.agda`, `KakeyaMF.agda`, `KakeyaPathology.agda`），我们展示了：
 
 1. **Dvir定理的GF(3)实例化** — 有限域挂谷猜想的2页纸证明在GF(3)上可形式化
-2. **M_F全局编码** — 大衍框架独有的函数表矩阵判定协议
-3. **三重完备性元诊断** — 连续统三重缺失 vs 离散三重自愈的形式化证明
+2. **GF(9) Frobenius共轭** — 大衍框架独有的原生Galois刚性（Dvir没有）
+3. **M_F全局编码** — 大衍框架独有的函数表矩阵判定协议
+4. **三重完备性元诊断** — 连续统三重缺失 vs 离散三重自愈的形式化证明
 
 **核心结论**：王虹127页与Dvir2页的差距，被形式化为连续统基座的本体论病态，而非人类智力的差距。
 
 ---
 
-## 一、KakeyaGF3.agda: Dvir定理的GF(3)形式化
+## 一、KakeyaGF3.agda: Dvir定理的GF(3)形式化（纯GF(3)，无共轭）
 
 ### 核心构造
 
@@ -41,7 +42,19 @@ dvir-2-valid : dvir-bound-2 ≤ card-GF3²
 dvir-2-valid = s≤s (s≤s (s≤s (s≤s (s≤s z≤n))))
 ```
 
-### GF(9) Frobenius共轭 — 大衍独有
+### 连续统与离散的对照
+
+| 连续统 ℝⁿ | 离散 GF(3)ⁿ |
+|-----------|-------------|
+| 方向空间 Sⁿ⁻¹: 不可数 | 方向空间 ℙⁿ⁻¹(GF(3)): 精确有限 |
+| 测度可泄漏为0 | 格点阶数硬下界 |
+| 无Frobenius共轭 | σ(x)=x³ 原生Galois共轭 |
+
+---
+
+## 一b、KakeyaGF9.agda: GF(9) Frobenius共轭 — 大衍独有（Dvir没有）
+
+### 原生Galois共轭
 
 ```agda
 -- σ : GF9 → GF9, σ(a+bα) = a-bα
@@ -57,13 +70,23 @@ dvir-2-valid = s≤s (s≤s (s≤s (s≤s (s≤s z≤n))))
 σ-mul = lemma-frobenius-multiplicative
 ```
 
-### 连续统与离散的对照
+### 范数与迹
 
-| 连续统 ℝⁿ | 离散 GF(3)ⁿ |
-|-----------|-------------|
-| 方向空间 Sⁿ⁻¹: 不可数 | 方向空间 ℙⁿ⁻¹(GF(3)): 精确有限 |
-| 测度可泄漏为0 | 格点阶数硬下界 |
-| 无Frobenius共轭 | σ(x)=x³ 原生Galois共轭 |
+```agda
+-- N(x) = x·σ(x) = a²+b² ∈ GF(3)
+norm-conj-inv : ∀ x → galoisNorm (σ x) ≡ galoisNorm x
+norm-conj-inv = galoisNorm-conjugate
+
+-- 不动点: σ(x)=x ⟺ x∈GF(3)
+fixed-pt-gf3 : ∀ x → σ x ≡ x → Σ GF3 (λ a → x ≡ embed-gf3 a)
+fixed-pt-gf3 = galoisFixedPoint
+```
+
+### 为什么Dvir没有这个？
+
+- Dvir的多项式方法对**任意**有限域成立，包括GF(2)（无非平凡自同构）
+- 大衍锁定GF(9)：σ(x)=x³是原生Galois共轭，对应复共轭的离散投影
+- 连续统特征0：无Frobenius → 共轭缺失 → 病态根因
 
 ---
 
