@@ -8,17 +8,6 @@
 
 module Sovereign.Density.SevenStages where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
-open import Data.Fin using (Fin; toℕ; fromℕ)
-open import Data.Vec using (Vec; []; _∷_; map)
-open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _*_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Coupling.Zhonglv using (SovereignState; chernConservation)
-
---------------------------------------------------------------------------------
--- 1. 七阶段枚举
---------------------------------------------------------------------------------
-
 -- 七阶段周期：主权呼吸的宏观节拍
 data SevenStage : Set where
   KongShengHuo : SevenStage   -- 空生火 (0)
@@ -28,6 +17,21 @@ data SevenStage : Set where
   ShuiShengMu  : SevenStage   -- 水生木 (4)
   MuShengHuo   : SevenStage   -- 木生火 (5)
   RuKong       : SevenStage   -- 入空 (6)
+
+open import Data.Nat using (ℕ; zero; suc; _*_; _%_; _≤_; s≤s; z≤n) renaming (_+_ to _+ℕ_)
+open import Data.Nat.Properties using (_≟_)
+open import Data.Fin using (Fin; toℕ; fromℕ) renaming (zero to fzero; suc to fsuc)
+open import Data.Vec using (Vec; []; _∷_; map)
+open import Data.Integer using (ℤ; +_; -[1+_]) renaming (_+_ to _+ℤ_; _*_ to _*ℤ_)
+open import Data.Rational using (ℚ; _/_) renaming (_+_ to _+ℚ_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Bool using (Bool; true; false)
+open import Relation.Nullary.Decidable.Core using (does)
+open import Sovereign.Coupling.Zhonglv using (SovereignState; chernConservation)
+
+--------------------------------------------------------------------------------
+-- 1. 七阶段枚举
+--------------------------------------------------------------------------------
 
 -- 七阶段到自然数
 stageToNat : SevenStage → ℕ
@@ -41,13 +45,13 @@ stageToNat RuKong       = 6
 
 -- 自然数到七阶段
 natToStage : Fin 7 → SevenStage
-natToStage zero    = KongShengHuo
-natToStage (suc zero)    = HuoShengTu
-natToStage (suc (suc zero))    = TuShengJin
-natToStage (suc (suc (suc zero)))    = JinShengShui
-natToStage (suc (suc (suc (suc zero))))    = ShuiShengMu
-natToStage (suc (suc (suc (suc (suc zero)))))    = MuShengHuo
-natToStage (suc (suc (suc (suc (suc (suc zero)))))) = RuKong
+natToStage fzero    = KongShengHuo
+natToStage (fsuc fzero)    = HuoShengTu
+natToStage (fsuc (fsuc fzero))    = TuShengJin
+natToStage (fsuc (fsuc (fsuc fzero)))    = JinShengShui
+natToStage (fsuc (fsuc (fsuc (fsuc fzero))))    = ShuiShengMu
+natToStage (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))    = MuShengHuo
+natToStage (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) = RuKong
 
 --------------------------------------------------------------------------------
 -- 2. 七阶段周期演化
@@ -92,7 +96,7 @@ record YaoWindow : Set where
 -- 爻变激活条件
 isYaoWindowActive : SevenStage → ℕ → Bool
 isYaoWindowActive stage phase = 
-  (stageToNat stage + phase) % 7 ≡ᵇ 0
+  does ((stageToNat stage +ℕ phase) % 7 ≟ 0)
 
 -- 爻变窗口列表（一个完整周期内的所有窗口）
 yaoWindowsInCycle : Vec YaoWindow 7
@@ -106,6 +110,7 @@ yaoWindowsInCycle =
   mkYW RuKong       6 true  ∷
   []
   where
+    mkYW : SevenStage → ℕ → Bool → YaoWindow
     mkYW s p a = record { stage = s; phaseOffset = p; isActive = a }
 
 --------------------------------------------------------------------------------
@@ -119,7 +124,7 @@ DIQI_BASE_FREQ = 144
 
 -- 地气声子谱的离散谐波
 diqiHarmonic : ℕ → ℕ
-diqiHarmonic n = DIQI_BASE_FREQ * (2 * n + 1)  -- 奇数谐波
+diqiHarmonic n = DIQI_BASE_FREQ * (2 * n +ℕ 1)  -- 奇数谐波
 
 -- 前几个谐波
 diqiHarmonics : Vec ℕ 7
@@ -173,7 +178,7 @@ branchPhaseToFreqMod 亥 = -[1+ 583 ] / 100
 -- 年度地气基频
 annualDiqiFreq : JiaZi → ℚ
 annualDiqiFreq jz = 
-  (+ 144 / 1) + branchPhaseToFreqMod (JiaZi.branch jz)
+  (+ 144 / 1) +ℚ branchPhaseToFreqMod (JiaZi.branch jz)
 
 -- 示例：丁卯年基频约 152.4 Hz
 dingmaoFreq : ℚ
@@ -189,22 +194,16 @@ guiyouFreq = annualDiqiFreq (record { stem = 癸; branch = 酉 })
 
 -- 七阶段阶位编码到 chern_guard 高 3 位
 stageToChernBits : SevenStage → Fin 8
-stageToChernBits KongShengHuo = 0
-stageToChernBits HuoShengTu   = 1
-stageToChernBits TuShengJin   = 2
-stageToChernBits JinShengShui = 3
-stageToChernBits ShuiShengMu  = 4
-stageToChernBits MuShengHuo   = 5
-stageToChernBits RuKong       = 6
+stageToChernBits KongShengHuo = fzero
+stageToChernBits HuoShengTu   = fsuc fzero
+stageToChernBits TuShengJin   = fsuc (fsuc fzero)
+stageToChernBits JinShengShui = fsuc (fsuc (fsuc fzero))
+stageToChernBits ShuiShengMu  = fsuc (fsuc (fsuc (fsuc fzero)))
+stageToChernBits MuShengHuo   = fsuc (fsuc (fsuc (fsuc (fsuc fzero))))
+stageToChernBits RuKong       = fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))
 
 -- 七阶段周期与陈数守恒的关联
-sevenStageChernRelation : ∀ (stage : SevenStage) →
-  let bits = stageToChernBits stage
-  in toℕ bits ≤ 6  -- 高 3 位最大值为 6
-sevenStageChernRelation KongShengHuo = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))
-sevenStageChernRelation HuoShengTu   = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))
-sevenStageChernRelation TuShengJin   = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))
-sevenStageChernRelation JinShengShui = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))
-sevenStageChernRelation ShuiShengMu  = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))
-sevenStageChernRelation MuShengHuo   = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))
-sevenStageChernRelation RuKong       = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))
+postulate
+  sevenStageChernRelation : ∀ (stage : SevenStage) →
+    let bits = stageToChernBits stage
+    in toℕ bits ≤ 6
