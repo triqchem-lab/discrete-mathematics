@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness --rewriting #-}
+{-# OPTIONS --cubical --guardedness --rewriting #-}
 
 -- | Sovereign.Coupling.SpinTwistor
 -- 耦合域：自旋与扭量的离散复位
@@ -19,9 +19,10 @@ open import Data.Vec using (Vec; []; _∷_; map; foldr)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Data.Unit using (⊤; tt)
 
 -- 导入核心模块
-open import Sovereign.RootMath.Base using (Trit; T₀; T₁; T₂; tritToℤ)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; tritToℤ)
 open import Sovereign.RootMath.EnergyGap using (DiscreteComplex; _+ᵢ_; _+ᶜ_; _*ᶜ_; conjugate)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
@@ -72,6 +73,11 @@ computeSpinProjection (mkPower a) beta =
 -- 2. 宪法条款：静态容器中绝对不存在自旋
 --------------------------------------------------------------------------------
 
+-- 宪法约束类型（必须在 StaticContainer 之前定义）
+postulate 
+  ChiralityInContainer : Chirality → Set
+  SpinLabelInContainer : SpinLabel → Set
+
 -- 静态结构学容器：仅提供格点舞台，无手性、无自旋、无动力学
 record StaticContainer : Set where
   field
@@ -82,10 +88,6 @@ record StaticContainer : Set where
     -- 宪法约束：静态容器无手性
     noChirality : ¬ ∃[ c ] (ChiralityInContainer c)
     noSpin : ¬ ∃[ s ] (SpinLabelInContainer s)
-  where
-    postulate 
-      ChiralityInContainer : Chirality → Set
-      SpinLabelInContainer : SpinLabel → Set
 
 -- 证明：静态容器无自旋
 staticContainerNoSpin : ∀ (sc : StaticContainer) → 
@@ -97,15 +99,16 @@ staticContainerNoChirality : ∀ (sc : StaticContainer) →
   ¬ ∃[ c ] (StaticContainer.ChiralityInContainer sc c)
 staticContainerNoChirality sc = StaticContainer.noChirality sc
 
+-- 自旋 - 统计定理的类型占位（待闭合）
+postulate 
+  IsBoson : SpinLabel → Set
+  IsFermion : SpinLabel → Set
+
 -- 自旋 - 统计定理的律算复位
 spinStatisticsReset : ∀ (tp : ToroidalPower) (beta : ChiralBeta) → 
   let spin = computeSpinProjection tp beta
   in (spin ≡ Spin1 → IsBoson spin) × (spin ≡ Spin12 → IsFermion spin)
 spinStatisticsReset tp beta = ?
-  where
-    postulate 
-      IsBoson : SpinLabel → Set
-      IsFermion : SpinLabel → Set
 
 --------------------------------------------------------------------------------
 -- 2. 扭量的律算定义：T⁶ 复三维格点坐标
@@ -120,19 +123,19 @@ record TwistorPoint : Set where
     z3 : DiscreteComplex  -- 复维度 3
     
     -- 约束：每个 z_k 对应主权 LCM 商空间中的离散复数值
-    isInLCMSpace : True
+    isInLCMSpace : ⊤
 
 -- 扭量变换：对应移宫转调中的缠绕数跃迁
 record TwistorTransformation : Set where
   field
-   损益操作 : LossGain
+    损益操作 : LossGain
     conformalModulusChange : ℚ → ℚ  -- 环面共形模 τ 变换
     windingJump : PolarWinding × ToroidalWinding  -- 缠绕数跃迁
 
 -- 扭量复共轭 ↔ 手性对偶
 twistorConjugate : TwistorPoint → TwistorPoint
 twistorConjugate (mkTwistor z1 z2 z3 _) = mkTwistor 
-  (conjugate z1) (conjugate z2) (conjugate z3) true
+  (conjugate z1) (conjugate z2) (conjugate z3) tt
 
 -- 定理：扭量复共轭对应手性翻转
 conjugateIsChiralFlip : ∀ (tw : TwistorPoint) → 
@@ -143,22 +146,24 @@ conjugateIsChiralFlip tw = refl
 -- 3. 零测地线与仲吕闭合路径
 --------------------------------------------------------------------------------
 
+-- 主权状态机占位类型（待 Zhonglv.SovereignState 或本模块 record 定义闭合）
+postulate 
+  SovereignState : Set
+  accReal : SovereignState → ℤ
+  accImag : SovereignState → ℤ
+
 -- 零测地线：主权状态机虚实比归零的仲吕闭合路径
 record NullGeodesic : Set where
   field
     startPoint : SovereignState
     endPoint : SovereignState
     path     : List LossGain  -- 损益路径
-    isClosed : True  -- 和乐归零
+    isClosed : ⊤  -- 和乐归零
     
     -- 零测地线条件：虚实比归零
     zeroVirtualRealRatio : 
-      SovereignState.accReal startPoint - SovereignState.accReal endPoint ≡ + 0
-      × SovereignState.accImag startPoint - SovereignState.accImag endPoint ≡ + 0
-  where
-    postulate 
-      SovereignState : Set
-      accReal accImag : SovereignState → ℤ
+      accReal startPoint - accReal endPoint ≡ + 0
+      × accImag startPoint - accImag endPoint ≡ + 0
 
 -- 定理：仲吕闭合路径是零测地线
 zhonglvPathIsZeroGeodesic : 
@@ -211,32 +216,35 @@ record SpinTwistorUnification : Set where
 -- 6. 范畴分离
 --------------------------------------------------------------------------------
 
+-- 范畴分离：前置类型占位
+postulate 
+  Electron : Set
+  Spin12' : Set
+  TwistorSpace : Set
+  FundamentalSpacetime : Set
+  SpinNetwork : Set
+  QuantumGeometry : Set
+  SpinDefinition : Set
+  ChiralSeparationProjection : Set
+  TwistorDefinition : Set
+  T6ComplexCoordinateProjection : Set
+  RequiresResetToDis本源 : Set → Set
+
 -- 禁止表述
 postulate
-  notElectronSpin12 : ¬ (Electron ≡ Spin12)
+  notElectronSpin12 : ¬ (Electron ≡ Spin12')
   notTwistorSpacetime : ¬ (TwistorSpace ≡ FundamentalSpacetime)
   notSpinNetworkQuantumGeom : ¬ (SpinNetwork ≡ QuantumGeometry)
-  where
-    postulate 
-      Electron Spin12 : Set
-      TwistorSpace FundamentalSpacetime : Set
-      SpinNetwork QuantumGeometry : Set
 
 -- 合法表述
-spinLegal : 
-  SpinDefinition ≡ ChiralSeparationProjection
-  where
-    postulate SpinDefinition ChiralSeparationProjection : Set
+spinLegal : SpinDefinition ≡ ChiralSeparationProjection
+spinLegal = ?  -- 预存未填充, 范畴分离声明
 
-twistorLegal : 
-  TwistorDefinition ≡ T6ComplexCoordinateProjection
-  where
-    postulate TwistorDefinition T6ComplexCoordinateProjection : Set
+twistorLegal : TwistorDefinition ≡ T6ComplexCoordinateProjection
+twistorLegal = ?  -- 预存未填充, 范畴分离声明
 
 -- 宪法条款
 postulate
   spinTwistorResetClause : 
     ∀ (spin : SpinLabel) (tw : TwistorPoint) → 
     RequiresResetToDis本源 spin × RequiresResetToDis本源 tw
-  where
-    postulate RequiresResetToDis本源 : Set → Set

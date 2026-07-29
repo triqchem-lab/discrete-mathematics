@@ -13,7 +13,8 @@
 
 module Sovereign.Projection.Decimal.Proofs where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; _≥_; _<_; s≤s; s<s; z≤s; z≤n; z<s)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; _≥_; _<_; s≤s; z≤s; z≤n)
+open import Data.Nat.Properties using (s<s; z<s)
 open import Data.Bool using (Bool; true; false)
 open import Data.Sum using (_⊎_)
 open import Data.Product using (_×_; _,_)

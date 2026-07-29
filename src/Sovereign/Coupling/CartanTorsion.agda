@@ -12,11 +12,12 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; _≡
 open import Data.Integer using (ℤ; +_; -[1+_])
   renaming (_+_ to _+ℤ_; _-_ to _-ℤ_; _*_ to _*ℤ_)
 open import Data.Rational using (ℚ) renaming (_+_ to _+ℚ_; _-_ to _-ℚ_; _*_ to _*ℚ_; _/_ to _/ℚ_)
-open import Data.Bool using (Bool; true; false; _∧_; _∨_)
+open import Data.Bool using (Bool; true; false; _∧_; _∨_; if_then_else_)
 open import Data.Fin using (Fin; toℕ)
 open import Data.Vec using (Vec; []; _∷_; map; foldr)
 open import Data.List using (List; []; _∷_; foldr)
 open import Data.Maybe using (Maybe; just; nothing)
+open import Function using (case_of_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
@@ -24,24 +25,44 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Empty using (⊥; ⊥-elim)
 
 -- 导入核心模块
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
 open import Sovereign.RootMath.EnergyGap using (C3Element; c3-id; c3-omega; c3-omega2;
-  DiscreteComplex; phaseGenerate; phaseOvercome; energyGap; sqrt3)
+  phaseGenerate; phaseOvercome; ℤabs; energyGapJump; energyGapNorm)
+open import Sovereign.RootMath.AlgebraicComplex using (Sqrt3; sqrt3)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.T6 using (T6Lattice; GF3)
 open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi; applyLossGain)
 open import Sovereign.Coupling.Zhonglv using (SovereignState; chernConservation)
 open import Sovereign.MetaStructure.WuXing using (WuXing; Chirality; LeftHanded; RightHanded)
 
+-- 离散复数: a + bi, i² = -1 (本质 = GF(9) = GF(3)[i]/(i²+1))
+record DiscreteComplex : Set where
+  constructor _+ᵢ_
+  field
+    re : Trit  -- 实部
+    im : Trit  -- 虚部
+
+-- 离散复数加法
+_+ᶜ_ : DiscreteComplex → DiscreteComplex → DiscreteComplex
+(a +ᵢ b) +ᶜ (c +ᵢ d) = (a ⊕ c) +ᵢ (b ⊕ d)
+
+-- 离散复数乘法: (a+bi)(c+di) = (ac-bd) + (ad+bc)i
+_*ᶜ_ : DiscreteComplex → DiscreteComplex → DiscreteComplex
+(a +ᵢ b) *ᶜ (c +ᵢ d) = ((a ⊗ c) ⊕ negate (b ⊗ d)) +ᵢ ((a ⊗ d) ⊕ (b ⊗ c))
+
+-- 共轭: conj(a+bi) = a-bi
+conjugate : DiscreteComplex → DiscreteComplex
+conjugate (a +ᵢ b) = a +ᵢ negate b
+
 -- 本地定义：二阶相克复振幅
-postulate phaseOvercome2 : DiscreteComplex
+postulate phaseOvercome2 : Sqrt3
 
 --------------------------------------------------------------------------------
 -- 1. 底流形与结构群
 --------------------------------------------------------------------------------
 
 -- 底流形：S²/A₄ 的 12 胞腔剖分
-record BaseManifold : Set where
+record BaseManifold : Set₁ where
   field
     cellCount : ℕ
     cellCountIs12 : cellCount ≡ 12
@@ -97,7 +118,7 @@ a4GroupInstance = record
 
 -- 离散纤维丛：E → S²/A₄
 -- 纤维为 C3 循环群与五行干涉直积
-record DiscreteFiberBundle : Set where
+record DiscreteFiberBundle : Set₁ where
   field
     baseSpace : BaseManifold  -- 底空间 S²/A₄
     fiber     : Set           -- 纤维 = C3 × WuXing
@@ -133,8 +154,8 @@ record DiscreteConnection : Set where
     gainLoss : LossGain  -- 损益操作
     wuxingAmp : WuXingAmplitude  -- 五行干涉复振幅
 
--- 联络的复振幅表示
-connectionToComplex : DiscreteConnection → DiscreteComplex
+-- 联络的复振幅表示 (Sqrt3 代数复振幅)
+connectionToComplex : DiscreteConnection → Sqrt3
 connectionToComplex conn = 
   case DiscreteConnection.wuxingAmp conn of λ where
     AmpGenerate → phaseGenerate
@@ -144,7 +165,7 @@ connectionToComplex conn =
 -- 离散联络的复合
 composeConnections : DiscreteConnection → DiscreteConnection → Maybe DiscreteConnection
 composeConnections conn1 conn2 = 
-  if DiscreteConnection.toCell conn1 ≡ᵇ DiscreteConnection.fromCell conn2
+  if toℕ (DiscreteConnection.toCell conn1) ≡ᵇ toℕ (DiscreteConnection.fromCell conn2)
   then just (record conn1 { toCell = DiscreteConnection.toCell conn2 })
   else nothing
 
@@ -169,7 +190,7 @@ computeCurvature (mkCurvature edges phase chern) = phase
 -- ℚ 占位，3 ≈ π 是连续统遗留（见 v6.7 审计: 连续统残留清理）。
 postulate
   globalCurvatureSum : ℚ
-  globalCurvatureIs4Pi : globalCurvatureSum ≡ (+ 4 / 1) * 3  -- 近似 4π
+  globalCurvatureIs4Pi : globalCurvatureSum ≡ (+ 4 /ℚ 1) *ℚ (+ 3 /ℚ 1)  -- 近似 4π
 
 -- 陈数守恒：跨块累加收敛至 C=2 (预存未完成证明)
 sumChernContribs : List DiscreteCurvature → ℕ
@@ -194,7 +215,7 @@ record DiscreteTorsion : Set where
     torsionValue : ℤ  -- 挠率值 = 相位差
     
     -- 挠率非零（仲吕不交）
-    torsionNonzero : torsionValue ≢ 0
+    torsionNonzero : torsionValue ≢ + 0
 
 -- 标准挠率：仲吕相位
 zhonglvTorsion : DiscreteTorsion
@@ -230,22 +251,21 @@ record ParallelTransport : Set where
     path : List DiscreteConnection  -- 路径
     finalState : SovereignState
     
-    -- 移动规则：每步更新 trit_state 与累加器
-    transportRule : initialState → path → finalState
+    -- 移动规则：每步更新累加器
+    transportRule : SovereignState → List DiscreteConnection → SovereignState
+
+-- [分类: 编译占位] [状态: 待 SovereignState 类型完成]
+postulate
+  tritState : SovereignState → Trit
+  updateTrit : Trit → WuXingAmplitude → Trit
 
 -- 平行移动的差分方程
 transportDiffEq : SovereignState → DiscreteConnection → SovereignState
 transportDiffEq state conn = 
   let acc = SovereignState.accumulator state
-      trit = SovereignState.tritState state
   in record state
-     { accumulator = applyLossGain (ℤ.abs acc) (DiscreteConnection.gainLoss conn)
-     ; tritState = updateTrit trit (DiscreteConnection.wuxingAmp conn)
+     { accumulator = + (applyLossGain (ℤabs acc) (DiscreteConnection.gainLoss conn))
      }
-  where
-    postulate 
-      tritState : SovereignState → Trit
-      updateTrit : Trit → WuXingAmplitude → Trit
 
 --------------------------------------------------------------------------------
 -- 7. 和乐群
@@ -266,7 +286,7 @@ record HolonomyGroup : Set where
       toroidalHolonomy ≡ 0 × 
       wuxingHolonomy ≡ WuXing.Fire ×  -- 单位元
       chernHolonomy ≡ 2 × 
-      torsionHolonomy ≡ 0
+      torsionHolonomy ≡ + 0
 
 -- 定理：主权 LCM 商空间中，3312 步后和乐同时为单位元
 holonomyIdentityAt3312 : HolonomyGroup
@@ -275,7 +295,7 @@ holonomyIdentityAt3312 = record
   ; toroidalHolonomy = 0  -- 3312 mod 46 = 0
   ; wuxingHolonomy = WuXing.Fire
   ; chernHolonomy = 2
-  ; torsionHolonomy = 0  -- 仲吕闭合后
+  ; torsionHolonomy = + 0  -- 仲吕闭合后
   ; allIdentity = (refl , (refl , (refl , (refl , refl))))
   }
 
@@ -287,7 +307,7 @@ holonomyIdentityAt3312 = record
 record GaugePotential : Set where
   field
     wuxingAmp : WuXingAmplitude
-    complexRep : DiscreteComplex
+    complexRep : Sqrt3
 
 gaugePotentialInstance : GaugePotential
 gaugePotentialInstance = record
@@ -298,13 +318,13 @@ gaugePotentialInstance = record
 -- 场强 = 能隙 Δ=√3
 record FieldStrength : Set where
   field
-    energyGap : DiscreteComplex
+    energyGapVal : Sqrt3
     gapMagnitude : ℚ
 
 fieldStrengthInstance : FieldStrength
 fieldStrengthInstance = record
-  { energyGap = energyGap
-  ; gapMagnitude = sqrt3
+  { energyGapVal = energyGapJump
+  ; gapMagnitude = energyGapNorm
   }
 
 -- 物质场 = 30 trit 截面
@@ -330,7 +350,7 @@ record CartanFirstEquation : Set where
     connectionWedge : DiscreteConnection     -- ω ∧ ω
     
     -- 方程：Ω = dω + ω ∧ ω
-    equationHolds : DiscreteCurvature ≡ mkCurvature [] 0 0  -- 简化
+    equationHolds : curvature ≡ mkCurvature [] (+ 0 /ℚ 1) (Data.Fin.zero)  -- 简化
 
 -- 离散嘉当第二结构方程：Θ = dθ + ω ∧ θ
 record CartanSecondEquation : Set where
@@ -346,19 +366,24 @@ record CartanSecondEquation : Set where
 -- 10. 范畴分离
 --------------------------------------------------------------------------------
 
--- 禁止表述
 -- 禁止表述 (范畴分离公理)
+-- 注: GaugePotential/FieldStrength 已在 §8 定义为 record
+-- 此处用抽象类型声明范畴不等
 postulate
-  CartanGeometry QuantumMechanicsBase : Set
-  CartanConnection GaugePotential : Set
-  CartanCurvature FieldStrength : Set
-  CartanTorsion SpacetimeDistortion : Set
+  CartanGeometryAbstract : Set
+  QuantumMechanicsBase : Set
+  CartanConnectionAbstract : Set
+  GaugePotentialAbstract : Set
+  CartanCurvature : Set
+  FieldStrengthAbstract : Set
+  CartanTorsionAbstract : Set
+  SpacetimeDistortion : Set
 
 postulate
-  notCartanAsBase : ¬ (CartanGeometry ≡ QuantumMechanicsBase)
-  notConnectionAsGauge : ¬ (CartanConnection ≡ GaugePotential)
-  notCurvatureAsField : ¬ (CartanCurvature ≡ FieldStrength)
-  notTorsionAsSpacetime : ¬ (CartanTorsion ≡ SpacetimeDistortion)
+  notCartanAsBase : ¬ (CartanGeometryAbstract ≡ QuantumMechanicsBase)
+  notConnectionAsGauge : ¬ (CartanConnectionAbstract ≡ GaugePotentialAbstract)
+  notCurvatureAsField : ¬ (CartanCurvature ≡ FieldStrengthAbstract)
+  notTorsionAsSpacetime : ¬ (CartanTorsionAbstract ≡ SpacetimeDistortion)
 
 -- 合法表述
 postulate
@@ -369,10 +394,10 @@ cartanLegal = ?  -- 预存未填充, 范畴分离声明
 
 -- 宪法条款
 postulate
-  CartanGeometry : Set
-  RequiresResetToDiscrete : CartanGeometry → Set
+  CartanGeometryConstitutional : Set
+  RequiresResetToDiscrete : CartanGeometryConstitutional → Set
 
 postulate
   cartanTorsionResetClause : 
-    ∀ (cartan : CartanGeometry) → 
+    ∀ (cartan : CartanGeometryConstitutional) → 
     RequiresResetToDiscrete cartan

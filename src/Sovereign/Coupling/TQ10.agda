@@ -126,6 +126,13 @@ postulate
 -- 5. 主权块演化
 --------------------------------------------------------------------------------
 
+-- 主权块演化辅助函数（待实现）
+postulate
+  updatePhaseBias : ℕ → ℕ → Word8
+  updateChernGuard : ℕ → ℕ → Word8
+  updateWuxingMask : ℕ → Word8
+  updateReserved : ReservedLayer → ReservedLayer
+
 -- 主权块状态演化一步
 evolveBlock : SovereignBlock → SovereignBlock
 evolveBlock block = 
@@ -144,12 +151,6 @@ evolveBlock block =
                   }
      ; reserved = updateReserved (SovereignBlock.reserved block)
      }
-  where
-    postulate
-      updatePhaseBias : ℕ → ℕ → Word8
-      updateChernGuard : ℕ → ℕ → Word8
-      updateWuxingMask : ℕ → Word8
-      updateReserved : ReservedLayer → ReservedLayer
 
 --------------------------------------------------------------------------------
 -- 6. 工程约束

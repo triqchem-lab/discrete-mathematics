@@ -22,10 +22,10 @@ open import Data.List using (List; []; _∷_)
 open import Data.Product using (∃; ∃-syntax; _×_; _,_)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
-open import Sovereign.RootMath.Base
-open import Sovereign.Structology.Winding
-open import Sovereign.Coupling.LossGain
-open import Sovereign.MetaStructure.WuXing
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
+open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
+open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi; applyLossGain)
+open import Sovereign.MetaStructure.WuXing using (WuXing; wuXingBase)
 
 --------------------------------------------------------------------------------
 -- 1. 范畴标签

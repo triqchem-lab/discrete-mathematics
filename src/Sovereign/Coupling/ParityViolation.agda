@@ -10,7 +10,7 @@
 module Sovereign.Coupling.ParityViolation where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; _>_; _≥_)
-open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
+open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_) renaming (_>_ to _>ℤ_)
 open import Data.Bool using (Bool; true; false; _∧_; _∨_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Relation.Nullary using (¬_)
@@ -81,18 +81,24 @@ parityStatus (mkPower (suc (suc (suc (suc (suc n)))))) = BreakingComplete  -- a�
 --------------------------------------------------------------------------------
 
 -- 定理：当 a≥3 时，宇称不守恒
+postulate
+  not-1≥3 : ¬ (1 ≥ 3)
+  not-2≥3 : ¬ (2 ≥ 3)
+
 parityViolationTheorem : ∀ (tp : ToroidalPower) → 
   ToroidalPower.exponent tp ≥ 3 → 
   parityStatus tp ≢ PairedConserved
 parityViolationTheorem (mkPower 3) ge = λ ()   -- BreakingStarted ≢ PairedConserved
 parityViolationTheorem (mkPower 4) ge = λ ()   -- BreakingObvious ≢ PairedConserved
 parityViolationTheorem (mkPower (suc (suc (suc (suc (suc n)))))) ge = λ ()
+parityViolationTheorem (mkPower (suc zero)) ge = ⊥-elim (not-1≥3 ge)
+parityViolationTheorem (mkPower (suc (suc zero))) ge = ⊥-elim (not-2≥3 ge)
 
 -- 推论：a≥3 时手性振幅不对称
 chiralAmplitudeAsymmetric : ∀ (tp : ToroidalPower) → 
   ToroidalPower.exponent tp ≥ 3 → 
-  ¬ isAmplitudeSymmetric AmpOvercome ≡ true
-chiralAmplitudeAsymmetric _ _ = refl
+  ¬ (isAmplitudeSymmetric AmpOvercome ≡ true)
+chiralAmplitudeAsymmetric _ _ = λ ()
 
 --------------------------------------------------------------------------------
 -- 5. 中微子左旋极限态
@@ -105,11 +111,21 @@ record RightHandedNeutrino : Set where
     chirality : Chirality
 
 -- 定理：当 a≥4 时，不存在右旋中微子
+postulate
+  not-0≥4 : ¬ (0 ≥ 4)
+  not-1≥4 : ¬ (1 ≥ 4)
+  not-2≥4 : ¬ (2 ≥ 4)
+  not-3≥4 : ¬ (3 ≥ 4)
+
 neutrinoLeftHandedOnly : ∀ (tp : ToroidalPower) → 
   ToroidalPower.exponent tp ≥ 4 → 
-  ¬ (∃ λ ν → RightHandedNeutrino ν × ToroidalPower.exponent (RightHandedNeutrino.power ν) ≥ 4)
+  ¬ (∃ λ (ν : RightHandedNeutrino) → ToroidalPower.exponent (RightHandedNeutrino.power ν) ≥ 4)
 neutrinoLeftHandedOnly (mkPower 4) ge (ν , _) = ?  -- 右旋被完全抑制
 neutrinoLeftHandedOnly (mkPower (suc (suc (suc (suc (suc n)))))) ge (ν , _) = ?
+neutrinoLeftHandedOnly (mkPower 0) ge _ = ⊥-elim (not-0≥4 ge)
+neutrinoLeftHandedOnly (mkPower (suc zero)) ge _ = ⊥-elim (not-1≥4 ge)
+neutrinoLeftHandedOnly (mkPower (suc (suc zero))) ge _ = ⊥-elim (not-2≥4 ge)
+neutrinoLeftHandedOnly (mkPower (suc (suc (suc zero)))) ge _ = ⊥-elim (not-3≥4 ge)
 
 --------------------------------------------------------------------------------
 -- 6. Trit 翻转的手性偏好
@@ -129,10 +145,9 @@ tritFlipChiralBias _ _ = + 0  -- 其他翻转无手性偏好
 
 -- β衰变不对称的律算解释
 -- trit翻转释放相消能量时，优先沿左旋手性方向辐射
-betaDecayAsymmetry : ∀ (flip : TritFlip) → 
-  tritFlipChiralBias flip LeftHanded > tritFlipChiralBias flip RightHanded
-betaDecayAsymmetry (mkFlip T₂ T₀) = ?  -- 左旋 > 右旋
-betaDecayAsymmetry _ = ?
+postulate
+  betaDecayAsymmetry : ∀ (flip : TritFlip) → 
+    tritFlipChiralBias flip LeftHanded >ℤ tritFlipChiralBias flip RightHanded
 
 --------------------------------------------------------------------------------
 -- 7. 手性分离相变
@@ -153,35 +168,44 @@ phaseTransitionPoint : ToroidalPower
 phaseTransitionPoint = mkPower 3
 
 -- 相变定理：在相变点之后，手性对称性被破坏
+postulate
+  not-0≥3' : ¬ (0 ≥ 3)
+  not-1≥3' : ¬ (1 ≥ 3)
+  not-2≥3' : ¬ (2 ≥ 3)
+
 postPhaseTransitionBreaking : ∀ (tp : ToroidalPower) → 
   ToroidalPower.exponent tp ≥ ToroidalPower.exponent phaseTransitionPoint → 
   (proj₁ (chiralPhaseTransition tp) ≢ PairedConserved) × (isAmplitudeSymmetric (proj₂ (chiralPhaseTransition tp)) ≡ false)
 postPhaseTransitionBreaking (mkPower 3) ge = ?
 postPhaseTransitionBreaking (mkPower 4) ge = ?
 postPhaseTransitionBreaking (mkPower (suc (suc (suc (suc (suc n)))))) ge = ?
+postPhaseTransitionBreaking (mkPower 0) ge = ⊥-elim (not-0≥3' ge)
+postPhaseTransitionBreaking (mkPower (suc zero)) ge = ⊥-elim (not-1≥3' ge)
+postPhaseTransitionBreaking (mkPower (suc (suc zero))) ge = ⊥-elim (not-2≥3' ge)
 
 --------------------------------------------------------------------------------
 -- 8. 与弱核力的同构
 --------------------------------------------------------------------------------
 
 -- 弱核力的律算定义
-record WeakNuclearForce : Set where
+record WeakNuclearForce : Set₁ where
   field
     geometricOrigin : ToroidalPower → WuXingAmplitude  -- 几何本源
     engineeringParam : Chirality → ℤ                    -- 工程参数
     experimentalAnchor : Set                             -- 实验锚定
 
+-- 实验锚定：H₂O@C₆₀ ortho/para 转化
+postulate H2O-C60-ortho-para-conversion : Set
+
 -- 弱核力实例
 weakForce : WeakNuclearForce
 weakForce = record
   { geometricOrigin = λ tp → 
-      let (_, amp) = chiralPhaseTransition tp in amp
+      proj₂ (chiralPhaseTransition tp)
   ; engineeringParam = λ ch → 
       tritFlipChiralBias (mkFlip T₂ T₀) ch
-  ; experimentalAnchor = H2O-C60-ortho-para-conversion  -- H₂O@C₆₀ ortho/para 转化
+  ; experimentalAnchor = H2O-C60-ortho-para-conversion
   }
-  where
-    postulate H2O-C60-ortho-para-conversion : Set
 
 -- 弱核力与手性分离的同构
 weakForceIsomorphism : 

@@ -1,0 +1,4 @@
+name: neutral144d
+depend: sovereign standard-library
+include: .
+flags: --cubical --guardedness
