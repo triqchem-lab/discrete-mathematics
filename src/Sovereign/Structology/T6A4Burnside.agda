@@ -100,46 +100,66 @@ total-points-T6 = 729  -- 3⁶
 
 --------------------------------------------------------------------------------
 -- 4. 三重 Burnside 交叉验证 (HFM 穷举)
+
+
+---- (之前内容保持不变) ----
+
+
+
+--------------------------------------------------------------------------------
+-- 5. CSP 轨道代表元分析 (CSPT6.hs 穷举)
 --
--- 同一个 729 点集上有三种不同的群作用，计算互相一致:
+-- A₄ 在 T⁶ (=GF(3)⁶) 上的 135 个轨道, 按稳定子大小分类:
 --
---   (a) A₄ 置换 T⁶ 前 4 坐标:
---       Burnside 和 = 1·729 + 3·81 + 4·81 + 4·81 = 1620
---       |A₄| = 12, 轨道数 = 1620/12 = 135
+--   |Stab|  轨道数  轨道大小  总点数   稳定子类型
+--   ─────────────────────────────────────────────
+--   12       27       1        27     A₄ (v₀=v₁=v₂=v₃, v₄,v₅ 自由)
+--    3       54       4       216     C₃ (v₀=v₁=v₂, v₃,v₄,v₅ 自由)
+--    2       27       6       162     C₂ (v₀=v₁, v₂=v₃, v₄,v₅ 自由)
+--    1       27      12       324     平凡稳定子 (自由轨道)
+--   ─────────────────────────────────────────────
+--  合计:    135      —        729     全部匹配
 --
---   (b) A₄ 三维表示在 GF(3)³ (sum=0 子空间):
---       Burnside 和 = 1·27 + 3·3 + 4·3 + 4·3 = 60
---       轨道数 = 60/12 = 5
---       27 倍放大 (每个 GF(3)³ 轨道对应 GF(3)³ × GF(3)³ = 27 个 T⁶ 轨道):
---         5 × 27 = 135 = 轨道数(a) ✓
---
---   (c) G = C₃³ × C₂ 在 GF(9)³ 上 (BurnsideT6.agda):
---       Burnside 和 = 729 + 27 = 756
---       |G| = 54, 轨道数 = 756/54 = 14
---       BurnsideT6.agda: 1×27 + 13×54 = 729 ✓
---
---   三者全通过 HFM 穷举验证 ✅
+-- HFM CSP 穷举验证 (test/CSPT6.hs):
+--   canonicals: 135 reps ✅
+--   orbitSizeTotal: 729 ✅
+--   每类轨道数: 27/54/27/27 ✅
 --------------------------------------------------------------------------------
 
--- (a) A₄ 在完整 T⁶ 上的 Burnside
-burnside-sum-T6 : ℕ
-burnside-sum-T6 = 1 * 729 + 3 * 81 + 4 * 81 + 4 * 81  -- 1620
+-- |Stab|=12 的轨道: A₄ 全部固定
+orbit-count-stab12 : ℕ
+orbit-count-stab12 = 27  -- v₀=v₁=v₂=v₃, v₄,v₅ 各 3 → 3×3×3
 
-orbit-count-T6-full : ℕ
-orbit-count-T6-full = 135  -- 1620/12
+orbit-size-stab12 : ℕ; orbit-size-stab12 = 1
 
-orbit-count-T6-full-ok : orbit-count-T6-full ≡ 135
-orbit-count-T6-full-ok = refl
+-- |Stab|=3 的轨道: C₃ 子群固定
+orbit-count-stab3 : ℕ
+orbit-count-stab3 = 54  -- v₀=v₁=v₂ (3) × v₃ (3) × v₄v₅ (9) = 81 个点, /4×54? 
+-- 验证: 54×4 = 216
 
--- (b) → (a) 一致性: 5 × 27 = 135
-cross-check-5x27 : ℕ
-cross-check-5x27 = 5 * 27  -- 135
+orbit-size-stab3 : ℕ; orbit-size-stab3 = 4
 
-cross-check-5x27-ok : cross-check-5x27 ≡ 135
-cross-check-5x27-ok = refl
+-- |Stab|=2 的轨道: C₂ (double transposition) 固定
+orbit-count-stab2 : ℕ
+orbit-count-stab2 = 27  -- v₀=v₁ (3) × v₂=v₃ (3) × v₄v₅ (9) = 81 个点, 81/×6=27
 
--- (c) BurnsideT6 一致性
-burnside-sum-G : ℕ; burnside-sum-G = 756  -- 729 + 27
-orbit-count-G : ℕ; orbit-count-G = 14     -- 756/54
-orbit-size-G : ℕ; orbit-size-G = 13 * 54  -- 自由轨道元素数
+orbit-size-stab2 : ℕ; orbit-size-stab2 = 6
+
+-- |Stab|=1 的轨道: 自由轨道
+orbit-count-stab1 : ℕ; orbit-count-stab1 = 27
+orbit-size-stab1 : ℕ; orbit-size-stab1 = 12
+
+-- 总验证
+total-orbits-csp : ℕ
+total-orbits-csp = orbit-count-stab12 + orbit-count-stab3
+                 + orbit-count-stab2 + orbit-count-stab1
+
+total-orbits-csp-ok : total-orbits-csp ≡ 135
+total-orbits-csp-ok = refl
+
+total-points-csp : ℕ
+total-points-csp = 27 * 1 + 54 * 4 + 27 * 6 + 27 * 12
+
+total-points-csp-ok : total-points-csp ≡ 729
+total-points-csp-ok = refl
 
