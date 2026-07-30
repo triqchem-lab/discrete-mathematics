@@ -31,9 +31,8 @@ orderA4 : ℕ; orderA4 = 12
 -- |C₃| = 3 (三阶循环群, 与 A₄/V₄ 同构)
 orderC3 : ℕ; orderC3 = 3
 
--- |A₄ × C₃| = 12 × 3 = 36
--- 证明: 直积的阶是因子群阶的乘积
-orderProduct : ℕ; orderProduct = 36
+-- |A₄ × C₃| = |A₄| · |C₃| (有限直积的阶定理)
+orderProduct : ℕ; orderProduct = orderA4 * orderC3  -- 12 × 3
 
 orderA4-ok : orderA4 ≡ 12; orderA4-ok = refl
 orderC3-ok : orderC3 ≡ 3; orderC3-ok = refl
@@ -50,11 +49,10 @@ conjClassesA4 : ℕ; conjClassesA4 = 4
 --   {c₀}, {c₁}, {c₂}
 conjClassesC3 : ℕ; conjClassesC3 = 3
 
--- A₄ × C₃ 的共役类数 = 4 × 3 = 12
+-- A₄ × C₃ 的共役类数 = conj(A₄) × conj(C₃)
 -- 证明: 群直积 G×H 中,(g₁,h₁) 与 (g₂,h₂) 共役当且仅当
 --   g₁ 与 g₂ 在 G 中共役且 h₁ 与 h₂ 在 H 中共役
---   所以共役类的个数 = 因子群共役类数之积
-conjClassesProduct : ℕ; conjClassesProduct = 12
+conjClassesProduct : ℕ; conjClassesProduct = conjClassesA4 * conjClassesC3  -- 4 × 3
 
 conjClassesProduct-ok : conjClassesProduct ≡ 12
 conjClassesProduct-ok = refl

@@ -65,13 +65,13 @@ burnside-sum-GF3⁴ = 1 * fix-identity-GF3⁴
   -- = 81 + 27 + 36 + 36 = 180
 
 orbit-count-GF3⁴ : ℕ
-orbit-count-GF3⁴ = 15  -- 180/12 = 15
+orbit-count-GF3⁴ = 15  -- 180/12 = 15 (整除验证见下方)
 
 -- 在全 T⁶ (=GF(3)⁶) 上，后 2 坐标固定
 -- 每个 GF(3)⁴ 轨道对应 9 个 T⁶ 轨道
 
 orbit-count-T6 : ℕ
-orbit-count-T6 = 135  -- 15 × 9 = 135
+orbit-count-T6 = orbit-count-GF3⁴ * 9  -- 15 × 9 = 135
 
 --------------------------------------------------------------------------------
 -- 3. 验证
@@ -87,6 +87,14 @@ orbit-count-GF3⁴-correct = refl
 
 orbit-count-T6-correct : orbit-count-T6 ≡ 135
 orbit-count-T6-correct = refl
+
+-- Burnside 整除验证: |A₄| × 轨道数 = Burnside 和
+orbit-count-divisibility : orbit-count-GF3⁴ * 12 ≡ burnside-sum-GF3⁴
+orbit-count-divisibility = refl
+
+-- 链式一致性: orbit-count-T6 ≡ orbit-count-GF3⁴ × 9
+orbit-count-chain : orbit-count-T6 ≡ orbit-count-GF3⁴ * 9
+orbit-count-chain = refl
 
 -- 全 T⁶ 点数验证
 total-points-T6 : ℕ

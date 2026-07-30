@@ -63,10 +63,11 @@ burnside-sum = 1 * fix-identity
              + 4 * fix-3cycle
 
 -- 轨道数 = 60 / 12 = 5
+-- 整除验证: orbit-count * 12 ≡ burnside-sum (见下方)
 orbit-count : ℕ
 orbit-count = 5
 
--- 轨道分解 (由轨道-稳定子定理 |G| = |Orb|·|Stab|):
+-- |Orbit|·|Stab| = |A₄| 的轨道分解:
 --   稳定子 V₄ (阶 4) → 轨道大小 12/4 = 3, 1 个
 --   稳定子 C₂ (阶 2) → 轨道大小 12/2 = 6, 4 个
 small-orbit-size : ℕ;  small-orbit-size = 3
@@ -84,6 +85,10 @@ burnside-sum-correct = refl
 
 orbit-count-correct : orbit-count ≡ 5
 orbit-count-correct = refl
+
+-- Burnside 整除验证: |G| × 轨道数 = Burnside 和
+orbit-count-factor-check : orbit-count * 12 ≡ burnside-sum
+orbit-count-factor-check = refl
 
 total-points-verified : orbit-decomposition-sum ≡ 27
 total-points-verified = refl

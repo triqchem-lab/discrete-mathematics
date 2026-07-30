@@ -33,7 +33,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 sizeQ8 : ℕ; sizeQ8 = 8     -- Q₈ = {±1, ±i, ±j, ±k}
 sizeC3 : ℕ; sizeC3 = 3     -- C₃ = {1, ω, ω²}
 sizeA4 : ℕ; sizeA4 = 12    -- A₄ (参考)
-size2A4 : ℕ; size2A4 = 24  -- |2A₄| = |Q₈| × |C₃| = 8 × 3
+size2A4 : ℕ; size2A4 = sizeQ8 * sizeC3  -- |2A₄| = |Q₈| × |C₃| = 8 × 3
 
 -- Z(Q₈) = {1, -1} (特征子群)
 sizeCenter : ℕ; sizeCenter = 2

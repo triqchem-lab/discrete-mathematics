@@ -41,21 +41,27 @@
 module Sovereign.Problem.Langlands.GL2TestVectors where
 
 open import Data.Nat using (ℕ; _+_; _*_)
+
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- 1. 群阶
 -- |GL₂(GF(q))| = (q²-1)(q²-q), q=9
 -- = (81-1)(81-9) = 80×72 = 5760
-orderGL2 : ℕ; orderGL2 = 5760
+orderGL2 : ℕ; orderGL2 = 80 * 72
 
 -- |SL₂(GF(9))| = |GL₂| / |GF(9)*| = 5760/8 = 720
+-- 用整除验证: orderSL2 * 8 ≡ orderGL2  (见下方 orderSL2-factor-ok)
 orderSL2 : ℕ; orderSL2 = 720
 
--- |Z(GL₂)| = |GF(9)*| = 8 (标量矩阵 λI)
-centerSize : ℕ; centerSize = 8
+-- |Z(GL₂)| = |GF(9)*| = 9 - 1 = 8
+centerSize : ℕ; centerSize = 8  -- |GF(9)*| = 9-1 = 8
 
 orderGL2-ok : orderGL2 ≡ 5760; orderGL2-ok = refl
 orderSL2-ok : orderSL2 ≡ 720; orderSL2-ok = refl
+
+-- 整除验证: |SL₂| × 8 = |GL₂|
+orderSL2-factor-check : orderSL2 * centerSize ≡ orderGL2
+orderSL2-factor-check = refl
 
 -- 2. 共役类分类
 -- 四类: Central 8类×1 + Split 28类×90 + Aniso 36类×72 + Unip 8类×80
