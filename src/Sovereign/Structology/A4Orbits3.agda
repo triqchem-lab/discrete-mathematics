@@ -32,44 +32,91 @@
 -- 与 A₄ 在 T⁶ (=GF(3)⁶) 上作用的关系:
 --   A₄ 在 GF(3)³ 上的 5 个轨道 × 27 (v₄,v₅ 的自由度)
 --   = 135 = A₄ 在 T⁶ 上的总轨道数
---   (见 T6A4Burnside.agda §4)
 
 module Sovereign.Structology.A4Orbits3 where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (module ≡-Reasoning)
+open ≡-Reasoning
 
 -- 不动点计数
--- 恒等: 全部 27 点 (GF(3)³ 的全部元素)
 fix-identity : ℕ
-fix-identity = 27
+fix-identity = 27  -- GF(3)³ 的全部 27 = 3³ 个点
 
--- 双对换 (如 (12)(34)): v₀=v₁=v₂=v₃ 在 sum=0 中
--- → 3 个解 (v₀ 任意, 其余由 sum=0 确定)
 fix-double-transposition : ℕ
-fix-double-transposition = 3
+fix-double-transposition = 3  -- v₀=v₁=v₂=v₃ 在 sum=0 中, 3 个解
 
--- 3-循环 (如 (123)): v₀=v₁=v₂, sum=0 → v₃=0
--- → 3 个解 (v₀ 任意)
 fix-3cycle : ℕ
-fix-3cycle = 3
+fix-3cycle = 3  -- v₀=v₁=v₂, sum=0 → v₃=0, 3 个解
 
 -- Burnside 和 = 27 + 3×3 + 4×3 + 4×3 = 60
--- 1 个恒等, 3 个双对换, 8 个 3-循环
+-- |A₄| 共役类: 恒等(1个), 双对换(3个), 3-循环(8个)
 burnside-sum : ℕ
 burnside-sum = 1 * fix-identity
              + 3 * fix-double-transposition
              + 4 * fix-3cycle
              + 4 * fix-3cycle
 
--- 轨道数 = 60 / 12 = 5
--- 整除验证: orbit-count * 12 ≡ burnside-sum (见下方)
+-- 展开验证: burnside-sum 逐步规约到 60
+burnside-sum-correct : burnside-sum ≡ 60
+burnside-sum-correct =
+  begin
+    burnside-sum
+  ≡⟨⟩  -- 展开定义
+    1 * fix-identity + 3 * fix-double-transposition + 4 * fix-3cycle + 4 * fix-3cycle
+  ≡⟨⟩  -- fix-identity = 27
+    1 * 27 + 3 * fix-double-transposition + 4 * fix-3cycle + 4 * fix-3cycle
+  ≡⟨⟩  -- 1*27 = 27
+    27 + 3 * fix-double-transposition + 4 * fix-3cycle + 4 * fix-3cycle
+  ≡⟨⟩  -- fix-double-transposition = 3
+    27 + 3 * 3 + 4 * fix-3cycle + 4 * fix-3cycle
+  ≡⟨⟩  -- 3*3 = 9
+    27 + 9 + 4 * fix-3cycle + 4 * fix-3cycle
+  ≡⟨⟩  -- fix-3cycle = 3 (第一次)
+    27 + 9 + 4 * 3 + 4 * fix-3cycle
+  ≡⟨⟩  -- 4*3 = 12 (第一次)
+    27 + 9 + 12 + 4 * fix-3cycle
+  ≡⟨⟩  -- fix-3cycle = 3 (第二次)
+    27 + 9 + 12 + 4 * 3
+  ≡⟨⟩  -- 4*3 = 12 (第二次)
+    27 + 9 + 12 + 12
+  ≡⟨⟩  -- 27 + 9 = 36
+    36 + 12 + 12
+  ≡⟨⟩  -- 36 + 12 = 48
+    48 + 12
+  ≡⟨⟩  -- 48 + 12 = 60
+    60
+  ∎
+
+-- 轨道数 = 60 / 12 = 5 (Burnside 引理: orbits = Σ|Fix(g)| / |G|)
 orbit-count : ℕ
 orbit-count = 5
 
+orbit-count-correct : orbit-count ≡ 5
+orbit-count-correct =
+  begin
+    orbit-count
+  ≡⟨⟩  5
+  ∎
+
+-- Burnside 整除验证: |A₄| × 轨道数 = Burnside 和
+-- |A₄| = 12, 轨道数 = 5, Burnside 和 = 60
+orbit-count-factor-check : orbit-count * 12 ≡ burnside-sum
+orbit-count-factor-check =
+  begin
+    orbit-count * 12
+  ≡⟨⟩  -- orbit-count = 5
+    5 * 12
+  ≡⟨⟩  -- 5 * 12 = 60
+    60
+  ≡⟨⟩  -- burnside-sum = 60
+    burnside-sum
+  ∎
+
 -- |Orbit|·|Stab| = |A₄| 的轨道分解:
---   稳定子 V₄ (阶 4) → 轨道大小 12/4 = 3, 1 个
---   稳定子 C₂ (阶 2) → 轨道大小 12/2 = 6, 4 个
+--   稳定子 V₄ (阶 4) → 轨道大小 3, 1 个
+--   稳定子 C₂ (阶 2) → 轨道大小 6, 4 个
 small-orbit-size : ℕ;  small-orbit-size = 3
 small-orbit-count : ℕ; small-orbit-count = 1
 large-orbit-size : ℕ;  large-orbit-size = 6
@@ -79,16 +126,16 @@ orbit-decomposition-sum : ℕ
 orbit-decomposition-sum = small-orbit-count * small-orbit-size
                         + large-orbit-count * large-orbit-size
 
--- refl 验证
-burnside-sum-correct : burnside-sum ≡ 60
-burnside-sum-correct = refl
-
-orbit-count-correct : orbit-count ≡ 5
-orbit-count-correct = refl
-
--- Burnside 整除验证: |G| × 轨道数 = Burnside 和
-orbit-count-factor-check : orbit-count * 12 ≡ burnside-sum
-orbit-count-factor-check = refl
-
 total-points-verified : orbit-decomposition-sum ≡ 27
-total-points-verified = refl
+total-points-verified =
+  begin
+    orbit-decomposition-sum
+  ≡⟨⟩  -- 展开
+    1 * 3 + 4 * 6
+  ≡⟨⟩  -- 1*3 = 3
+    3 + 4 * 6
+  ≡⟨⟩  -- 4*6 = 24
+    3 + 24
+  ≡⟨⟩  -- 3 + 24 = 27
+    27
+  ∎

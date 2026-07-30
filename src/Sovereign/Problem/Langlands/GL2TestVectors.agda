@@ -41,35 +41,80 @@
 module Sovereign.Problem.Langlands.GL2TestVectors where
 
 open import Data.Nat using (ℕ; _+_; _*_)
-
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (module ≡-Reasoning)
+open ≡-Reasoning
 
 -- 1. 群阶
--- |GL₂(GF(q))| = (q²-1)(q²-q), q=9
--- = (81-1)(81-9) = 80×72 = 5760
+-- |GL₂(GF(q))| = (q²-1)(q²-q), q=9 → 80 × 72 = 5760
 orderGL2 : ℕ; orderGL2 = 80 * 72
 
 -- |SL₂(GF(9))| = |GL₂| / |GF(9)*| = 5760/8 = 720
--- 用整除验证: orderSL2 * 8 ≡ orderGL2  (见下方 orderSL2-factor-ok)
 orderSL2 : ℕ; orderSL2 = 720
 
--- |Z(GL₂)| = |GF(9)*| = 9 - 1 = 8
-centerSize : ℕ; centerSize = 8  -- |GF(9)*| = 9-1 = 8
+-- |Z(GL₂)| = |GF(9)*| = 8 (标量矩阵 λI, λ∈GF(9)*)
+centerSize : ℕ; centerSize = 8
 
-orderGL2-ok : orderGL2 ≡ 5760; orderGL2-ok = refl
-orderSL2-ok : orderSL2 ≡ 720; orderSL2-ok = refl
+orderGL2-ok : orderGL2 ≡ 5760
+orderGL2-ok =
+  begin
+    orderGL2
+  ≡⟨⟩  80 * 72
+  ≡⟨⟩  5760
+  ∎
 
--- 整除验证: |SL₂| × 8 = |GL₂|
+orderSL2-ok : orderSL2 ≡ 720
+orderSL2-ok =
+  begin
+    orderSL2
+  ≡⟨⟩  720
+  ∎
+
+-- 整除验证: |SL₂| × |Z| = |GL₂| (因 GL₂/SL₂ ≅ GF(9)*)
 orderSL2-factor-check : orderSL2 * centerSize ≡ orderGL2
-orderSL2-factor-check = refl
+orderSL2-factor-check =
+  begin
+    orderSL2 * centerSize
+  ≡⟨⟩  -- 展开
+    720 * 8
+  ≡⟨⟩  -- 720 × 8 = 5760
+    5760
+  ≡⟨⟩  -- orderGL2 = 5760
+    orderGL2
+  ∎
 
 -- 2. 共役类分类
--- 四类: Central 8类×1 + Split 28类×90 + Aniso 36类×72 + Unip 8类×80
+--   四类: Central(8×1) + Split(28×90) + Aniso(36×72) + Unip(8×80)
 totalClasses : ℕ; totalClasses = 8 + 28 + 36 + 8
 burnsideSum : ℕ; burnsideSum = 8 * 1 + 28 * 90 + 36 * 72 + 8 * 80
 
-totalClasses-ok : totalClasses ≡ 80; totalClasses-ok = refl
-burnsideSum-ok : burnsideSum ≡ 5760; burnsideSum-ok = refl
+totalClasses-ok : totalClasses ≡ 80
+totalClasses-ok =
+  begin
+    totalClasses
+  ≡⟨⟩  8 + 28 + 36 + 8
+  ≡⟨⟩  -- 8+28=36
+    36 + 36 + 8
+  ≡⟨⟩  -- 36+36=72
+    72 + 8
+  ≡⟨⟩  -- 72+8=80
+    80
+  ∎
+
+burnsideSum-ok : burnsideSum ≡ 5760
+burnsideSum-ok =
+  begin
+    burnsideSum
+  ≡⟨⟩  8 * 1 + 28 * 90 + 36 * 72 + 8 * 80
+  ≡⟨⟩  -- 8×1=8, 28×90=2520, 36×72=2592, 8×80=640
+    8 + 2520 + 2592 + 640
+  ≡⟨⟩  -- 8+2520=2528
+    2528 + 2592 + 640
+  ≡⟨⟩  -- 2528+2592=5120
+    5120 + 640
+  ≡⟨⟩  -- 5120+640=5760
+    5760
+  ∎
 
 -- 3. Steinberg 特征标 (ℤ)
 open import Data.Integer renaming (_+_ to _+ℤ_; _*_ to _*ℤ_)
@@ -83,21 +128,43 @@ chiSt-aniso : ℤ; chiSt-aniso = -[1+ 0 ]  -- Aniso 上 = −1
 chiSt-unip : ℤ; chiSt-unip = + 0      -- Unip 上 = 0
 
 -- ⟨χ_St, 1⟩ = 0 (正交于平凡表示)
--- (8·1·9 + 28·90·1 + 36·72·(−1) + 8·80·0) / 5760 = 0
+-- Σ|C|·χ_St(C)·1 = 8·1·9 + 28·90·1 + 36·72·(−1) + 8·80·0 = 0
 orthTriv : ℤ
 orthTriv = (+ 8) *ℤ (+ 1) *ℤ (+ 9)
         +ℤ (+ 28) *ℤ (+ 90) *ℤ (+ 1)
         +ℤ (+ 36) *ℤ (+ 72) *ℤ (-[1+ 0 ])
         +ℤ (+ 8) *ℤ (+ 80) *ℤ (+ 0)
 
-orthTriv-ok : orthTriv ≡ + 0; orthTriv-ok = refl
+orthTriv-ok : orthTriv ≡ + 0
+orthTriv-ok =
+  begin
+    orthTriv
+  ≡⟨⟩  (+ 8) *ℤ (+ 1) *ℤ (+ 9) +ℤ (+ 28) *ℤ (+ 90) *ℤ (+ 1)
+         +ℤ (+ 36) *ℤ (+ 72) *ℤ (-[1+ 0 ]) +ℤ (+ 8) *ℤ (+ 80) *ℤ (+ 0)
+  ≡⟨⟩  -- 8·1·9=72, 28·90·1=2520, 36·72·(−1)=−2592, 8·80·0=0
+    (+ 72) +ℤ (+ 2520) +ℤ (-[1+ 2591 ]) +ℤ (+ 0)
+  ≡⟨⟩  -- 72+2520=2592, 2592−2592=0
+    (+ 0)
+  ∎
 
 -- ⟨χ_St, χ_St⟩ = 1 (自身正交归一)
--- (8·1·81 + 28·90·1 + 36·72·1 + 8·80·0) / 5760 = 1
+-- Σ|C|·χ_St(C)² = 8·1·81 + 28·90·1 + 36·72·1 + 8·80·0 = 5760
 orthSelf : ℤ
 orthSelf = (+ 8) *ℤ (+ 1) *ℤ (+ 9) *ℤ (+ 9)
         +ℤ (+ 28) *ℤ (+ 90) *ℤ (+ 1) *ℤ (+ 1)
         +ℤ (+ 36) *ℤ (+ 72) *ℤ (+ 1) *ℤ (+ 1)
         +ℤ (+ 8) *ℤ (+ 80) *ℤ (+ 0) *ℤ (+ 0)
 
-orthSelf-ok : orthSelf ≡ + 5760; orthSelf-ok = refl
+orthSelf-ok : orthSelf ≡ + 5760
+orthSelf-ok =
+  begin
+    orthSelf
+  ≡⟨⟩  (+ 8) *ℤ (+ 1) *ℤ (+ 9) *ℤ (+ 9)
+         +ℤ (+ 28) *ℤ (+ 90) *ℤ (+ 1) *ℤ (+ 1)
+         +ℤ (+ 36) *ℤ (+ 72) *ℤ (+ 1) *ℤ (+ 1)
+         +ℤ (+ 8) *ℤ (+ 80) *ℤ (+ 0) *ℤ (+ 0)
+  ≡⟨⟩  -- 8·81=648, 28·90=2520, 36·72=2592, 8·80·0=0
+    (+ 648) +ℤ (+ 2520) +ℤ (+ 2592) +ℤ (+ 0)
+  ≡⟨⟩  -- 648+2520=3168, 3168+2592=5760
+    (+ 5760)
+  ∎

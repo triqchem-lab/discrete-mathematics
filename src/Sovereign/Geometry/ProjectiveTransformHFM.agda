@@ -24,6 +24,8 @@ module Sovereign.Geometry.ProjectiveTransformHFM where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (module ≡-Reasoning)
+open ≡-Reasoning
 
 -- |A₄| = 12 (正四面体旋转群)
 orderA4 : ℕ; orderA4 = 12
@@ -34,9 +36,33 @@ orderC3 : ℕ; orderC3 = 3
 -- |A₄ × C₃| = |A₄| · |C₃| (有限直积的阶定理)
 orderProduct : ℕ; orderProduct = orderA4 * orderC3  -- 12 × 3
 
-orderA4-ok : orderA4 ≡ 12; orderA4-ok = refl
-orderC3-ok : orderC3 ≡ 3; orderC3-ok = refl
-orderProduct-ok : orderProduct ≡ 36; orderProduct-ok = refl
+orderA4-ok : orderA4 ≡ 12
+orderA4-ok =
+  begin
+    orderA4
+  ≡⟨⟩  12
+  ∎
+
+orderC3-ok : orderC3 ≡ 3
+orderC3-ok =
+  begin
+    orderC3
+  ≡⟨⟩  3
+  ∎
+
+orderProduct-ok : orderProduct ≡ 36
+orderProduct-ok =
+  begin
+    orderProduct
+  ≡⟨⟩  -- 展开: orderA4 * orderC3
+    orderA4 * orderC3
+  ≡⟨⟩  -- orderA4 = 12
+    12 * orderC3
+  ≡⟨⟩  -- orderC3 = 3
+    12 * 3
+  ≡⟨⟩  -- 12 × 3 = 36
+    36
+  ∎
 
 -- A₄ 的 4 个共役类:
 --   C₁ = {1} (大小 1)
@@ -55,4 +81,15 @@ conjClassesC3 : ℕ; conjClassesC3 = 3
 conjClassesProduct : ℕ; conjClassesProduct = conjClassesA4 * conjClassesC3  -- 4 × 3
 
 conjClassesProduct-ok : conjClassesProduct ≡ 12
-conjClassesProduct-ok = refl
+conjClassesProduct-ok =
+  begin
+    conjClassesProduct
+  ≡⟨⟩  -- 展开: conjClassesA4 * conjClassesC3
+    conjClassesA4 * conjClassesC3
+  ≡⟨⟩  -- conjClassesA4 = 4
+    4 * conjClassesC3
+  ≡⟨⟩  -- conjClassesC3 = 3
+    4 * 3
+  ≡⟨⟩  -- 4 × 3 = 12
+    12
+  ∎
