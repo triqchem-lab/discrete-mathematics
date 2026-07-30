@@ -273,6 +273,22 @@ src/Sovereign/
 | [ENGINEERING-SUMMARY.md](cross-level/ENGINEERING-SUMMARY.md) | 工程实现总结 |
 | [TRIADIC-HARMONIC-PROOF-STATUS.md](cross-level/../TRIADIC-HARMONIC-PROOF-STATUS.md) | 三合弦恒等式与零同调等价形式化证明状态 |
 
+### Agda 语言参考（官方文档镜像）
+| 文档 | 说明 |
+|------|------|
+| [agda/语法/INDEX.md](agda/语法/INDEX.md) | Agda 官方 [Language Reference](https://agda.readthedocs.io/en/latest/language/index.html) 全量镜像（51 主题，624KB），保留英文原文 + 中文导读 + Sovereign 项目相关性提示 |
+
+### HFM 交叉验证数据模块
+| 模块 | 说明 |
+|------|------|
+| [Structology/T6A4Burnside.agda](../src/Sovereign/Structology/T6A4Burnside.agda) | A₄ 在 T⁶ 前 4 坐标上的 Burnside 轨道数 (15/135), HFM 穷举验证 |
+| [Structology/A4Orbits3.agda](../src/Sovereign/Structology/A4Orbits3.agda) | A₄ 三维表示在 GF(3)³ 上的 5 个轨道, HFM 穷举验证 |
+| [Structology/BinaryTetrahedralHFM.agda](../src/Sovereign/Structology/BinaryTetrahedralHFM.agda) | Q₈ 置换群构造 (8, Z₂ 中心), 2A₄ Σdim²=24 |
+| [Structology/WuXingEulerHFM.agda](../src/Sovereign/Structology/WuXingEulerHFM.agda) | 柏拉图 Euler 示性数 χ=2 (5 种立体全部验证) |
+| [Structology/MagicSquareHFM.agda](../src/Sovereign/Structology/MagicSquareHFM.agda) | M₄ Dürer 幻方常数 =34, 行/列/对角线和验证 |
+| [Geometry/ProjectiveTransformHFM.agda](../src/Sovereign/Geometry/ProjectiveTransformHFM.agda) | A₄×C₃ 直积 (36 元素, 12 共役类), HFM dp 验证 |
+| [Problem/Langlands/GL2TestVectors.agda](../src/Sovereign/Problem/Langlands/GL2TestVectors.agda) | GL₂(GF(9)) 穷举 (5760, 80 类), Steinberg 正交验证 |
+
 ---
 
 ## 六、工程测试

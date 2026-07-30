@@ -1,0 +1,204 @@
+> **余归纳** · `coinduction`
+>
+> 通过 coinductive record 与 copattern 定义无限/惰性数据结构（如流、余归纳类型）。
+>
+> 🔗 原文：<https://agda.readthedocs.io/en/latest/language/coinduction.html>
+>
+> **本项目相关性**：T⁶ 纤维丛的自相似结构与共振链可用余归纳表达；注意 Sized 类型配合终止检查。
+
+---
+# Coinduction[](#coinduction "Link to this heading")
+
+The corecursive definitions below are accepted if the option `--guardedness` is active:
+
+{-# OPTIONS --guardedness #-}
+
+(An alternative approach is to use [Sized Types](sized-types.md#sized-types).)
+
+## Coinductive Records[](#coinductive-records "Link to this heading")
+
+It is possible to define the type of infinite lists (or streams) of elements of some type `A` as follows:
+
+record Stream (A : Set) : Set where
+  coinductive
+  field
+    hd : A
+    tl : Stream A
+
+As opposed to [inductive record types](record-types.md#recursive-records), we have to introduce the keyword `coinductive` before defining the fields that constitute the record.
+
+It is interesting to note that it is not necessary to give an [explicit constructor](#coinductive-constructors) to the record type `Stream`.
+
+Now we can use [copatterns](copatterns.md#copatterns) to create `Stream`s, like one that repeats a given element `a` infinitely many times:
+
+repeat : {A : Set} (a : A) -> Stream A
+hd (repeat a) = a
+tl (repeat a) = repeat a
+
+We can also define pointwise equality (a bisimulation and an equivalence) of a pair of `Stream`s as a coinductive record:
+
+record _≈_ {A} (xs : Stream A) (ys : Stream A) : Set where
+  coinductive
+  field
+    hd-≡ : hd xs ≡ hd ys
+    tl-≈ : tl xs ≈ tl ys
+
+Using [copatterns](copatterns.md#copatterns) we can define a pair of functions on `Stream`s such that one returns the elements in the even positions and the other the elements in the odd positions:
+
+even : ∀ {A} → Stream A → Stream A
+hd (even xs) = hd xs
+tl (even xs) = even (tl (tl xs))
+
+odd : ∀ {A} → Stream A → Stream A
+odd xs = even (tl xs)
+
+split : ∀ {A} → Stream A → Stream A × Stream A
+split xs = even xs , odd xs
+
+as well as a function that merges a pair of `Stream`s by interleaving their elements:
+
+merge : ∀ {A} → Stream A × Stream A → Stream A
+hd (merge (xs , ys)) = hd xs
+tl (merge (xs , ys)) = merge (ys , tl xs)
+
+Finally, we can prove that `merge` is a left inverse for `split`:
+
+merge-split-id : ∀ {A} (xs : Stream A) → merge (split xs) ≈ xs
+hd-≡ (merge-split-id _)  = refl
+tl-≈ (merge-split-id xs) = merge-split-id (tl xs)
+
+### Coinductive Record Constructors[](#coinductive-record-constructors "Link to this heading")
+
+It is possible to give an explicit constructor to coinductive record types like `Stream`:
+
+record Stream' (A : Set) : Set where
+  coinductive
+  constructor cons
+  field
+    hd : A
+    tl : Stream' A
+
+However, this constructor cannot be pattern-matched:
+
+-- Get the third element of a stream
+third : ∀{A} → Stream' A → A
+
+-- Not allowed:
+-- third (cons _ (cons _ (cons x _))) = x
+
+Instead, you can use the record fields as projections:
+
+third str = str .tl .tl .hd
+
+The constructor can be used as usual in the right-hand side of definitions:
+
+-- Prepend a list to a stream
+prepend : ∀{A} → List A → Stream' A → Stream' A
+prepend [] str = str
+prepend (a ∷ as) str = cons a (prepend as str)
+
+However, it doesn’t count as ‘guarding’ for the productivity checker:
+
+-- Make a stream with one element repeated forever
+cycle : ∀{A} → A → Stream' A
+
+-- Does not termination-check:
+-- cycle a = cons a (cycle a)
+
+Instead, you can use copattern matching:
+
+cycle a .hd = a
+cycle a .tl = cycle a
+
+It is also possible to use copatterns in a [Pattern lambda](lambda-abstraction.md#pattern-lambda):
+
+cycle' : ∀{A} → A → Stream' A
+cycle' a = λ where
+  .hd → a
+  .tl → cycle' a
+
+For more information on these restrictions, see [this pull request](https://github.com/agda/agda/pull/4611), and [this commit](https://github.com/agda/agda/commit/d771ac257ee9a1f9662364e5db8a50f9994dac49).
+
+#### The `ETA_EQUALITY` pragma[](#the-eta-equality-pragma "Link to this heading")
+
+Agda does not permit the `eta-equality` directive in `coinductive` `record` declarations, since η for coinductive types is unsafe in general and can make the type checker loop. For instance, the following code would lead to infinite η expansion when checking `test`:
+
+record R : Set where
+ coinductive; eta-equality
+ field force : R
+open R
+
+foo : R
+foo .force .force = foo
+
+test : foo .force ≡ foo
+test = refl
+
+If you know what you are doing, you can override Agda and force a coinductive record to support η via the `ETA_EQUALITY` pragma.
+
+{-# ETA_EQUALITY #-}
+record R : Set where
+  ...
+
+## Old Coinduction[](#old-coinduction "Link to this heading")
+
+Note
+
+This is the old way of coinduction support in Agda. You are advised to use [Coinductive Records](#copatterns-coinductive-records) instead.
+
+To use coinduction it is recommended that you import the module Coinduction from the [standard library](https://wiki.portal.chalmers.se/agda/pmwiki.php?n=Libraries.StandardLibrary). Coinductive types can then be defined by labelling coinductive occurrences using the delay operator `∞`:
+
+data Coℕ : Set where
+   zero : Coℕ
+   suc  : ∞ Coℕ → Coℕ
+
+The type `∞ A` can be seen as a suspended computation of type `A`. It comes with delay and force functions:
+
+♯_ : ∀ {a} {A : Set a} → A → ∞ A
+♭  : ∀ {a} {A : Set a} → ∞ A → A
+
+Values of coinductive types can be constructed using corecursion, which does not need to terminate, but has to be productive. As an approximation to productivity the termination checker requires that corecursive definitions are guarded by coinductive constructors. As an example the infinite “natural number” can be defined as follows:
+
+inf : Coℕ
+inf = suc (♯ inf)
+
+The check for guarded corecursion is integrated with the check for size-change termination, thus allowing interesting combinations of inductive and coinductive types. We can for instance define the type of stream processors, along with some functions:
+
+-- Infinite streams.
+
+data Stream (A : Set) : Set where
+  _∷_ : (x : A) (xs : ∞ (Stream A)) → Stream A
+
+-- A stream processor SP A B consumes elements of A and produces
+-- elements of B. It can only consume a finite number of A’s before
+-- producing a B.
+
+data SP (A B : Set) : Set where
+  get : (f : A → SP A B) → SP A B
+  put : (b : B) (sp : ∞ (SP A B)) → SP A B
+
+-- The function eat is defined by an outer corecursion into Stream B
+-- and an inner recursion on SP A B.
+
+eat : ∀ {A B} → SP A B → Stream A → Stream B
+eat (get f)    (a ∷ as) = eat (f a) (♭ as)
+eat (put b sp) as       = b ∷ ♯ eat (♭ sp) as
+
+-- Composition of stream processors.
+
+_∘_ : ∀ {A B C} → SP B C → SP A B → SP A C
+get f₁    ∘ put x sp₂ = f₁ x ∘ ♭ sp₂
+put x sp₁ ∘ sp₂       = put x (♯ (♭ sp₁ ∘ sp₂))
+sp₁       ∘ get f₂    = get (λ x → sp₁ ∘ f₂ x)
+
+It is also possible to define “coinductive families”. It is recommended not to use the delay constructor (`♯_`) in a constructor’s index expressions. The following definition of equality between coinductive “natural numbers” is discouraged:
+
+data _≈’_ : Coℕ → Coℕ → Set where
+  zero : zero ≈’ zero
+  suc  : ∀ {m n} → ∞ (m ≈’ n) → suc (♯ m) ≈’ suc (♯ n)
+
+The recommended definition is the following one:
+
+data _≈_ : Coℕ → Coℕ → Set where
+  zero : zero ≈ zero
+  suc  : ∀ {m n} → ∞ (♭ m ≈ ♭ n) → suc m ≈ suc n

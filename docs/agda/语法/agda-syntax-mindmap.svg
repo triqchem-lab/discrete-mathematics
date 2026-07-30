@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 2292" width="1300" height="2292">
+<defs>
+  <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#fafbff"/>
+    <stop offset="100%" stop-color="#f0f2f8"/>
+  </linearGradient>
+  <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+    <feOffset dx="0" dy="1.5" result="off"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="star-glow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+    <feOffset dx="0" dy="1" result="off"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.30"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1300" height="2292" fill="url(#bg-grad)"/>
+<text x="650.0" y="34.0" font-size="20" fill="#1e293b" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">Agda 语言参考 · 思维导图</text>
+<text x="650.0" y="58.0" font-size="12" fill="#64748b" font-weight="normal" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">51 主题 · 10 组 · ★ = Sovereign 项目核心</text>
+<path d="M 230.0,1146.0 C 322.2,1146.0 342.8,1056.0 435.0,1056.0" fill="none" stroke="#1d4ed8" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+<path d="M 230.0,1146.0 C 322.2,1146.0 342.8,796.0 435.0,796.0" fill="none" stroke="#b45309" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+<path d="M 230.0,1146.0 C 322.2,1146.0 342.8,482.0 435.0,482.0" fill="none" stroke="#166534" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+<path d="M 230.0,1146.0 C 322.2,1146.0 342.8,276.0 435.0,276.0" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+<path d="M 230.0,1146.0 C 322.2,1146.0 342.8,142.0 435.0,142.0" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+<path d="M 230.0,1146.0 C 322.2,1146.0 342.8,1308.0 435.0,1308.0" fill="none" stroke="#be123c" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+<path d="M 230.0,1146.0 C 322.2,1146.0 342.8,1550.0 435.0,1550.0" fill="none" stroke="#c2410c" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+<path d="M 230.0,1146.0 C 322.2,1146.0 342.8,1702.0 435.0,1702.0" fill="none" stroke="#4338ca" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+<path d="M 230.0,1146.0 C 322.2,1146.0 342.8,1872.0 435.0,1872.0" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+<path d="M 230.0,1146.0 C 322.2,1146.0 342.8,2042.0 435.0,2042.0" fill="none" stroke="#9d174d" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+<path d="M 625.0,1056.0 C 696.8,1056.0 758.2,1128.0 830.0,1128.0" fill="none" stroke="#1d4ed8" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1056.0 C 696.8,1056.0 758.2,1092.0 830.0,1092.0" fill="none" stroke="#1d4ed8" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1056.0 C 696.8,1056.0 758.2,1056.0 830.0,1056.0" fill="none" stroke="#1d4ed8" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1056.0 C 696.8,1056.0 758.2,1020.0 830.0,1020.0" fill="none" stroke="#1d4ed8" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1056.0 C 696.8,1056.0 758.2,984.0 830.0,984.0" fill="none" stroke="#1d4ed8" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,796.0 C 696.8,796.0 758.2,922.0 830.0,922.0" fill="none" stroke="#b45309" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,796.0 C 696.8,796.0 758.2,886.0 830.0,886.0" fill="none" stroke="#b45309" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,796.0 C 696.8,796.0 758.2,850.0 830.0,850.0" fill="none" stroke="#b45309" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,796.0 C 696.8,796.0 758.2,814.0 830.0,814.0" fill="none" stroke="#b45309" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,796.0 C 696.8,796.0 758.2,778.0 830.0,778.0" fill="none" stroke="#b45309" stroke-width="2.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M 625.0,796.0 C 696.8,796.0 758.2,742.0 830.0,742.0" fill="none" stroke="#b45309" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,796.0 C 696.8,796.0 758.2,706.0 830.0,706.0" fill="none" stroke="#b45309" stroke-width="2.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M 625.0,796.0 C 696.8,796.0 758.2,670.0 830.0,670.0" fill="none" stroke="#b45309" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,482.0 C 696.8,482.0 758.2,608.0 830.0,608.0" fill="none" stroke="#166534" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,482.0 C 696.8,482.0 758.2,572.0 830.0,572.0" fill="none" stroke="#166534" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,482.0 C 696.8,482.0 758.2,536.0 830.0,536.0" fill="none" stroke="#166534" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,482.0 C 696.8,482.0 758.2,500.0 830.0,500.0" fill="none" stroke="#166534" stroke-width="2.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M 625.0,482.0 C 696.8,482.0 758.2,464.0 830.0,464.0" fill="none" stroke="#166534" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,482.0 C 696.8,482.0 758.2,428.0 830.0,428.0" fill="none" stroke="#166534" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,482.0 C 696.8,482.0 758.2,392.0 830.0,392.0" fill="none" stroke="#166534" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,482.0 C 696.8,482.0 758.2,356.0 830.0,356.0" fill="none" stroke="#166534" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,276.0 C 696.8,276.0 758.2,294.0 830.0,294.0" fill="none" stroke="#7c3aed" stroke-width="2.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M 625.0,276.0 C 696.8,276.0 758.2,258.0 830.0,258.0" fill="none" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,142.0 C 696.8,142.0 758.2,196.0 830.0,196.0" fill="none" stroke="#0891b2" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,142.0 C 696.8,142.0 758.2,160.0 830.0,160.0" fill="none" stroke="#0891b2" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,142.0 C 696.8,142.0 758.2,124.0 830.0,124.0" fill="none" stroke="#0891b2" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,142.0 C 696.8,142.0 758.2,88.0 830.0,88.0" fill="none" stroke="#0891b2" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1308.0 C 696.8,1308.0 758.2,1164.0 830.0,1164.0" fill="none" stroke="#be123c" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1308.0 C 696.8,1308.0 758.2,1200.0 830.0,1200.0" fill="none" stroke="#be123c" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1308.0 C 696.8,1308.0 758.2,1236.0 830.0,1236.0" fill="none" stroke="#be123c" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1308.0 C 696.8,1308.0 758.2,1272.0 830.0,1272.0" fill="none" stroke="#be123c" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1308.0 C 696.8,1308.0 758.2,1308.0 830.0,1308.0" fill="none" stroke="#be123c" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1308.0 C 696.8,1308.0 758.2,1344.0 830.0,1344.0" fill="none" stroke="#be123c" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1308.0 C 696.8,1308.0 758.2,1380.0 830.0,1380.0" fill="none" stroke="#be123c" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1308.0 C 696.8,1308.0 758.2,1416.0 830.0,1416.0" fill="none" stroke="#be123c" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1308.0 C 696.8,1308.0 758.2,1452.0 830.0,1452.0" fill="none" stroke="#be123c" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1550.0 C 696.8,1550.0 758.2,1514.0 830.0,1514.0" fill="none" stroke="#c2410c" stroke-width="2.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M 625.0,1550.0 C 696.8,1550.0 758.2,1550.0 830.0,1550.0" fill="none" stroke="#c2410c" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1550.0 C 696.8,1550.0 758.2,1586.0 830.0,1586.0" fill="none" stroke="#c2410c" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1702.0 C 696.8,1702.0 758.2,1648.0 830.0,1648.0" fill="none" stroke="#4338ca" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1702.0 C 696.8,1702.0 758.2,1684.0 830.0,1684.0" fill="none" stroke="#4338ca" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1702.0 C 696.8,1702.0 758.2,1720.0 830.0,1720.0" fill="none" stroke="#4338ca" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1702.0 C 696.8,1702.0 758.2,1756.0 830.0,1756.0" fill="none" stroke="#4338ca" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1872.0 C 696.8,1872.0 758.2,1818.0 830.0,1818.0" fill="none" stroke="#0f766e" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1872.0 C 696.8,1872.0 758.2,1854.0 830.0,1854.0" fill="none" stroke="#0f766e" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1872.0 C 696.8,1872.0 758.2,1890.0 830.0,1890.0" fill="none" stroke="#0f766e" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,1872.0 C 696.8,1872.0 758.2,1926.0 830.0,1926.0" fill="none" stroke="#0f766e" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,2042.0 C 696.8,2042.0 758.2,1988.0 830.0,1988.0" fill="none" stroke="#9d174d" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,2042.0 C 696.8,2042.0 758.2,2024.0 830.0,2024.0" fill="none" stroke="#9d174d" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,2042.0 C 696.8,2042.0 758.2,2060.0 830.0,2060.0" fill="none" stroke="#9d174d" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<path d="M 625.0,2042.0 C 696.8,2042.0 758.2,2096.0 830.0,2096.0" fill="none" stroke="#9d174d" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+<g filter="url(#soft-shadow)">
+<rect x="70.0" y="1121.0" width="160" height="50" rx="12" ry="12" fill="#1e293b" stroke="#0f172a" stroke-width="2"/>
+<text x="150.0" y="1138.0" font-size="16" fill="#ffffff" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">Agda</text>
+<text x="150.0" y="1158.0" font-size="13" fill="#cbd5e1" font-weight="normal" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">语言参考</text>
+</g>
+<g filter="url(#soft-shadow)">
+<rect x="435.0" y="1038.0" width="190" height="36" rx="8" ry="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+<rect x="435.0" y="1038.0" width="6" height="36" rx="3" ry="3" fill="#1d4ed8"/>
+<text x="538.0" y="1056.0" font-size="13" fill="#1e293b" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">核心语法与词法</text>
+<text x="609.0" y="1056.0" font-size="11" fill="#94a3b8" font-weight="normal" text-anchor="end" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">5</text>
+</g>
+<g filter="url(#soft-shadow)">
+<rect x="435.0" y="778.0" width="190" height="36" rx="8" ry="8" fill="#ffffff" stroke="#b45309" stroke-width="2"/>
+<rect x="435.0" y="778.0" width="6" height="36" rx="3" ry="3" fill="#b45309"/>
+<text x="538.0" y="796.0" font-size="13" fill="#1e293b" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">类型与数据</text>
+<text x="609.0" y="796.0" font-size="11" fill="#94a3b8" font-weight="normal" text-anchor="end" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">8</text>
+</g>
+<g filter="url(#soft-shadow)">
+<rect x="435.0" y="464.0" width="190" height="36" rx="8" ry="8" fill="#ffffff" stroke="#166534" stroke-width="2"/>
+<rect x="435.0" y="464.0" width="6" height="36" rx="3" ry="3" fill="#166534"/>
+<text x="538.0" y="482.0" font-size="13" fill="#1e293b" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">函数定义与模式匹配</text>
+<text x="609.0" y="482.0" font-size="11" fill="#94a3b8" font-weight="normal" text-anchor="end" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">8</text>
+</g>
+<g filter="url(#soft-shadow)">
+<rect x="435.0" y="258.0" width="190" height="36" rx="8" ry="8" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+<rect x="435.0" y="258.0" width="6" height="36" rx="3" ry="3" fill="#7c3aed"/>
+<text x="538.0" y="276.0" font-size="13" fill="#1e293b" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">模块与作用域</text>
+<text x="609.0" y="276.0" font-size="11" fill="#94a3b8" font-weight="normal" text-anchor="end" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">2</text>
+</g>
+<g filter="url(#soft-shadow)">
+<rect x="435.0" y="124.0" width="190" height="36" rx="8" ry="8" fill="#ffffff" stroke="#0891b2" stroke-width="2"/>
+<rect x="435.0" y="124.0" width="6" height="36" rx="3" ry="3" fill="#0891b2"/>
+<text x="538.0" y="142.0" font-size="13" fill="#1e293b" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">参数解析与泛化</text>
+<text x="609.0" y="142.0" font-size="11" fill="#94a3b8" font-weight="normal" text-anchor="end" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">4</text>
+</g>
+<g filter="url(#soft-shadow)">
+<rect x="435.0" y="1290.0" width="190" height="36" rx="8" ry="8" fill="#ffffff" stroke="#be123c" stroke-width="2"/>
+<rect x="435.0" y="1290.0" width="6" height="36" rx="3" ry="3" fill="#be123c"/>
+<text x="538.0" y="1308.0" font-size="13" fill="#1e293b" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">可见性·相关性·模态</text>
+<text x="609.0" y="1308.0" font-size="11" fill="#94a3b8" font-weight="normal" text-anchor="end" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">9</text>
+</g>
+<g filter="url(#soft-shadow)">
+<rect x="435.0" y="1532.0" width="190" height="36" rx="8" ry="8" fill="#ffffff" stroke="#c2410c" stroke-width="2"/>
+<rect x="435.0" y="1532.0" width="6" height="36" rx="3" ry="3" fill="#c2410c"/>
+<text x="538.0" y="1550.0" font-size="13" fill="#1e293b" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">Cubical / HoTT</text>
+<text x="609.0" y="1550.0" font-size="11" fill="#94a3b8" font-weight="normal" text-anchor="end" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">3</text>
+</g>
+<g filter="url(#soft-shadow)">
+<rect x="435.0" y="1684.0" width="190" height="36" rx="8" ry="8" fill="#ffffff" stroke="#4338ca" stroke-width="2"/>
+<rect x="435.0" y="1684.0" width="6" height="36" rx="3" ry="3" fill="#4338ca"/>
+<text x="538.0" y="1702.0" font-size="13" fill="#1e293b" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">元编程与重写</text>
+<text x="609.0" y="1702.0" font-size="11" fill="#94a3b8" font-weight="normal" text-anchor="end" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">4</text>
+</g>
+<g filter="url(#soft-shadow)">
+<rect x="435.0" y="1854.0" width="190" height="36" rx="8" ry="8" fill="#ffffff" stroke="#0f766e" stroke-width="2"/>
+<rect x="435.0" y="1854.0" width="6" height="36" rx="3" ry="3" fill="#0f766e"/>
+<text x="538.0" y="1872.0" font-size="13" fill="#1e293b" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">内建·余归纳·大小类型</text>
+<text x="609.0" y="1872.0" font-size="11" fill="#94a3b8" font-weight="normal" text-anchor="end" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">4</text>
+</g>
+<g filter="url(#soft-shadow)">
+<rect x="435.0" y="2024.0" width="190" height="36" rx="8" ry="8" fill="#ffffff" stroke="#9d174d" stroke-width="2"/>
+<rect x="435.0" y="2024.0" width="6" height="36" rx="3" ry="3" fill="#9d174d"/>
+<text x="538.0" y="2042.0" font-size="13" fill="#1e293b" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">公设·Pragma·FFI·安全</text>
+<text x="609.0" y="2042.0" font-size="11" fill="#94a3b8" font-weight="normal" text-anchor="end" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">4</text>
+</g>
+<rect x="830.0" y="1114.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1128.0" r="3.5" fill="#1d4ed8"/>
+<text x="944.0" y="1128.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">核心语言</text>
+<rect x="830.0" y="1078.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1092.0" r="3.5" fill="#1d4ed8"/>
+<text x="944.0" y="1092.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">词法结构</text>
+<rect x="830.0" y="1042.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1056.0" r="3.5" fill="#1d4ed8"/>
+<text x="944.0" y="1056.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">语法糖</text>
+<rect x="830.0" y="1006.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1020.0" r="3.5" fill="#1d4ed8"/>
+<text x="944.0" y="1020.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">混合 fixity 运算符</text>
+<rect x="830.0" y="970.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="984.0" r="3.5" fill="#1d4ed8"/>
+<text x="944.0" y="984.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">语法声明</text>
+<rect x="830.0" y="908.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="922.0" r="3.5" fill="#b45309"/>
+<text x="944.0" y="922.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">排序系统（宇宙）</text>
+<rect x="830.0" y="872.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="886.0" r="3.5" fill="#b45309"/>
+<text x="944.0" y="886.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">宇宙层级</text>
+<rect x="830.0" y="836.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="850.0" r="3.5" fill="#b45309"/>
+<text x="944.0" y="850.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">函数类型</text>
+<rect x="830.0" y="800.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="814.0" r="3.5" fill="#b45309"/>
+<text x="944.0" y="814.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">数据类型</text>
+<g filter="url(#star-glow)">
+<rect x="830.0" y="764.0" width="220" height="28" rx="7" ry="7" fill="#b45309" stroke="#b45309" stroke-width="2" fill-opacity="0.12"/>
+<rect x="830.0" y="764.0" width="220" height="28" rx="7" ry="7" fill="transparent" stroke="#b45309" stroke-width="2"/>
+<text x="844.0" y="778.0" font-size="12" fill="#b45309" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">★</text>
+<text x="950.0" y="778.0" font-size="12.5" fill="#0f172a" font-weight="600" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">记录类型</text>
+</g>
+<rect x="830.0" y="728.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="742.0" r="3.5" fill="#b45309"/>
+<text x="944.0" y="742.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">Prop 命题宇宙</text>
+<g filter="url(#star-glow)">
+<rect x="830.0" y="692.0" width="220" height="28" rx="7" ry="7" fill="#b45309" stroke="#b45309" stroke-width="2" fill-opacity="0.12"/>
+<rect x="830.0" y="692.0" width="220" height="28" rx="7" ry="7" fill="transparent" stroke="#b45309" stroke-width="2"/>
+<text x="844.0" y="706.0" font-size="12" fill="#b45309" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">★</text>
+<text x="950.0" y="706.0" font-size="12.5" fill="#0f172a" font-weight="600" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">望远镜</text>
+</g>
+<rect x="830.0" y="656.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="670.0" r="3.5" fill="#b45309"/>
+<text x="944.0" y="670.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">两层类型论</text>
+<rect x="830.0" y="594.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="608.0" r="3.5" fill="#166534"/>
+<text x="944.0" y="608.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">函数定义</text>
+<rect x="830.0" y="558.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="572.0" r="3.5" fill="#166534"/>
+<text x="944.0" y="572.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">Lambda 抽象</text>
+<rect x="830.0" y="522.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="536.0" r="3.5" fill="#166534"/>
+<text x="944.0" y="536.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">局部定义 let/where</text>
+<g filter="url(#star-glow)">
+<rect x="830.0" y="486.0" width="220" height="28" rx="7" ry="7" fill="#166534" stroke="#166534" stroke-width="2" fill-opacity="0.12"/>
+<rect x="830.0" y="486.0" width="220" height="28" rx="7" ry="7" fill="transparent" stroke="#166534" stroke-width="2"/>
+<text x="844.0" y="500.0" font-size="12" fill="#166534" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">★</text>
+<text x="950.0" y="500.0" font-size="12.5" fill="#0f172a" font-weight="600" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">with 抽象</text>
+</g>
+<rect x="830.0" y="450.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="464.0" r="3.5" fill="#166534"/>
+<text x="944.0" y="464.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">协模式</text>
+<rect x="830.0" y="414.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="428.0" r="3.5" fill="#166534"/>
+<text x="944.0" y="428.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">模式同义词</text>
+<rect x="830.0" y="378.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="392.0" r="3.5" fill="#166534"/>
+<text x="944.0" y="392.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">覆盖检查</text>
+<rect x="830.0" y="342.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="356.0" r="3.5" fill="#166534"/>
+<text x="944.0" y="356.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">终止检查</text>
+<g filter="url(#star-glow)">
+<rect x="830.0" y="280.0" width="220" height="28" rx="7" ry="7" fill="#7c3aed" stroke="#7c3aed" stroke-width="2" fill-opacity="0.12"/>
+<rect x="830.0" y="280.0" width="220" height="28" rx="7" ry="7" fill="transparent" stroke="#7c3aed" stroke-width="2"/>
+<text x="844.0" y="294.0" font-size="12" fill="#7c3aed" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">★</text>
+<text x="950.0" y="294.0" font-size="12.5" fill="#0f172a" font-weight="600" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">模块系统</text>
+</g>
+<rect x="830.0" y="244.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="258.0" r="3.5" fill="#7c3aed"/>
+<text x="944.0" y="258.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">互递归</text>
+<rect x="830.0" y="182.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="196.0" r="3.5" fill="#0891b2"/>
+<text x="944.0" y="196.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">隐式参数</text>
+<rect x="830.0" y="146.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="160.0" r="3.5" fill="#0891b2"/>
+<text x="944.0" y="160.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">实例参数</text>
+<rect x="830.0" y="110.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="124.0" r="3.5" fill="#0891b2"/>
+<text x="944.0" y="124.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">声明变量泛化</text>
+<rect x="830.0" y="74.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="88.0" r="3.5" fill="#0891b2"/>
+<text x="944.0" y="88.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">字面量重载</text>
+<rect x="830.0" y="1150.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1164.0" r="3.5" fill="#be123c"/>
+<text x="944.0" y="1164.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">无关性（证明无关）</text>
+<rect x="830.0" y="1186.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1200.0" r="3.5" fill="#be123c"/>
+<text x="944.0" y="1200.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">运行时无关性</text>
+<rect x="830.0" y="1222.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1236.0" r="3.5" fill="#be123c"/>
+<text x="944.0" y="1236.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">Opaque 定义</text>
+<rect x="830.0" y="1258.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1272.0" r="3.5" fill="#be123c"/>
+<text x="944.0" y="1272.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">抽象定义</text>
+<rect x="830.0" y="1294.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1308.0" r="3.5" fill="#be123c"/>
+<text x="944.0" y="1308.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">模态系统</text>
+<rect x="830.0" y="1330.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1344.0" r="3.5" fill="#be123c"/>
+<text x="944.0" y="1344.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">Flat 模态</text>
+<rect x="830.0" y="1366.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1380.0" r="3.5" fill="#be123c"/>
+<text x="944.0" y="1380.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">极性注解</text>
+<rect x="830.0" y="1402.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1416.0" r="3.5" fill="#be123c"/>
+<text x="944.0" y="1416.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">正定性检查</text>
+<rect x="830.0" y="1438.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1452.0" r="3.5" fill="#be123c"/>
+<text x="944.0" y="1452.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">累积性</text>
+<g filter="url(#star-glow)">
+<rect x="830.0" y="1500.0" width="220" height="28" rx="7" ry="7" fill="#c2410c" stroke="#c2410c" stroke-width="2" fill-opacity="0.12"/>
+<rect x="830.0" y="1500.0" width="220" height="28" rx="7" ry="7" fill="transparent" stroke="#c2410c" stroke-width="2"/>
+<text x="844.0" y="1514.0" font-size="12" fill="#c2410c" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">★</text>
+<text x="950.0" y="1514.0" font-size="12.5" fill="#0f172a" font-weight="600" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">Cubical 类型论</text>
+</g>
+<rect x="830.0" y="1536.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1550.0" r="3.5" fill="#c2410c"/>
+<text x="944.0" y="1550.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">Cubical 兼容模式</text>
+<rect x="830.0" y="1572.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1586.0" r="3.5" fill="#c2410c"/>
+<text x="944.0" y="1586.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">无 K</text>
+<rect x="830.0" y="1634.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1648.0" r="3.5" fill="#4338ca"/>
+<text x="944.0" y="1648.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">反射（元编程）</text>
+<rect x="830.0" y="1670.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1684.0" r="3.5" fill="#4338ca"/>
+<text x="944.0" y="1684.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">重写规则</text>
+<rect x="830.0" y="1706.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1720.0" r="3.5" fill="#4338ca"/>
+<text x="944.0" y="1720.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">局部重写</text>
+<rect x="830.0" y="1742.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1756.0" r="3.5" fill="#4338ca"/>
+<text x="944.0" y="1756.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">有损统一</text>
+<rect x="830.0" y="1804.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1818.0" r="3.5" fill="#0f766e"/>
+<text x="944.0" y="1818.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">内建类型</text>
+<rect x="830.0" y="1840.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1854.0" r="3.5" fill="#0f766e"/>
+<text x="944.0" y="1854.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">余归纳</text>
+<rect x="830.0" y="1876.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1890.0" r="3.5" fill="#0f766e"/>
+<text x="944.0" y="1890.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">大小类型</text>
+<rect x="830.0" y="1912.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1926.0" r="3.5" fill="#0f766e"/>
+<text x="944.0" y="1926.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">守卫类型论</text>
+<rect x="830.0" y="1974.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="1988.0" r="3.5" fill="#9d174d"/>
+<text x="944.0" y="1988.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">公设</text>
+<rect x="830.0" y="2010.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="2024.0" r="3.5" fill="#9d174d"/>
+<text x="944.0" y="2024.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">编译指令 Pragmas</text>
+<rect x="830.0" y="2046.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="2060.0" r="3.5" fill="#9d174d"/>
+<text x="944.0" y="2060.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">Safe Agda</text>
+<rect x="830.0" y="2082.0" width="220" height="28" rx="7" ry="7" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<circle cx="840.0" cy="2096.0" r="3.5" fill="#9d174d"/>
+<text x="944.0" y="2096.0" font-size="12" fill="#334155" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">外部函数接口 FFI</text>
+<text x="50.0" y="2262.0" font-size="11" fill="#64748b" font-weight="normal" text-anchor="start" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">★ = Sovereign 项目数学骨架高度相关</text>
+<text x="1250.0" y="2262.0" font-size="10" fill="#94a3b8" font-weight="normal" text-anchor="end" dominant-baseline="central" font-family="Noto Sans SC, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, sans-serif">Source: agda.readthedocs.io/en/latest/language/</text>
+</svg>
