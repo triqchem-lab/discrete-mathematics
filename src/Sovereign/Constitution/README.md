@@ -1,8 +1,10 @@
 # Postulate 全库登记表 (防止忘记)
 
-> 生成: 2026-08 P0 轮收尾实测 · 全库 **83 个 postulate 块 / 162 条声明 / 27 文件**。
-> 校准: 假/空 = **0**; D 类 13 块已歼灭 11 块 (2026-08-15), 剩 Decimal/Proofs 3 块
-> (divMod10Correct/sumDigitsTerminates/digitalRoot* — 基础引理已证, 策略注释在文件内)。
+> 生成: 2026-08 P0 轮收尾实测 · 全库 **81 个 postulate 块 / 157 条声明 / 26 文件**。
+> 校准: 假/空 = **0**; D 类 13 块已**全部歼灭** (2026-08-15) —
+> 最后 2 块 Decimal/Proofs (divMod10Correct/sumDigitsTerminates/digitalRoot*)
+> 已按路线 (a) with-free 全证明闭合: Axioms.divMod10 对齐 stdlib (n/10, n%10),
+> 正确性由 m≡m%n+[m/n]*n + m%n<n + m/n<m 直证, 终止性/收敛性/稳定性由 <-wellFounded 良基归纳。
 > 合法公理按 A/B/C/D 四类登记, 处置纪律见 Constitution/PhysicalAssumptions.agda。
 > **本表为防遗忘清单** — 每处新增/消除 postulate 必须同步本表与 PhysicalAssumptions.agda。
 > 注 (2026-08): B 类已逐文件加「轨道 B 物理锚定登记」边界注释 (20 处)。
@@ -116,16 +118,11 @@
 ### src/Sovereign/Structology/XuanwuAbsorption.agda:228 — 1 条
 - `alignment-for-all-states` : alignment-for-all-states : ∀ (s : State) → Σ ℕ (λ n → isHolographicState (iteratePhaseSync n s))
 
-## D 可闭合/待核验 (2 块)
+## D 可闭合/待核验 (0 块)
 
-### src/Sovereign/Projection/Decimal/Proofs.agda:48 — 2 条
-- `divMod10Correct` : divMod10Correct : (n : ℕ) → let (q , r) = divMod10 n in n ≡ q * 10 + r × r < 10
-- `lemma_q_lt` : lemma_q_lt : (q r : ℕ) → q ≥ 1 → q < q * 10 + r
-
-### src/Sovereign/Projection/Decimal/Proofs.agda:85 — 3 条
-- `sumDigitsTerminates` : sumDigitsTerminates : (n : ℕ) → n ≥ 10 → sumDigits n < n
-- `digitalRootConverges` : digitalRootConverges : (n : ℕ) → digitalRoot n < 10
-- `digitalRootStable` : digitalRootStable : (n : ℕ) → IsStable n ≡ true → digitalRoot n ≡ 3 ⊎ digitalRoot n ≡ 6 ⊎ digitalRoot n ≡ 9
+**全部歼灭** (2026-08-15)。历史: 13 块 → 11 块 (LengthLattice/LossGain/SevenStages/Nayin/
+TQ10/ZhonglvPhaseSync/WindingAsymmetry 等) → 最后 Decimal/Proofs 2 块经路线 (a) 重写闭合。
+详细处置记录见 docs/剩余工作-任务清单_2026-08-14.md P0 段。
 
 ## C 范畴分离/宪法条款/工程接口 (55 块)
 
@@ -343,7 +340,7 @@
 
 ### src/Sovereign/Structology/T6.agda:1475 — 0 条
 
-## D 类歼灭记录 (2026-08-15, 13 块 → 2 块)
+## D 类歼灭记录 (2026-08-15, 13 块 → 0 块)
 
 - LengthLattice: twelveStepChain/allReachable 空类型公理删除 (精确链 64→42 ≠ 宪法取整 43), 余数定理 refl 证明, zhonglvReset 定义
 - LossGain: lossGainPreservesStableRoot 假全称删除 (见证 n=3, Sun: 稳定根 3 → 2)
@@ -352,4 +349,7 @@
 - TQ10: chernConvergence 假全称删除 (自由 chern_guard 字段, 144×0 反例)
 - ZhonglvPhaseSync: holonomyLemma 构造性证明 (m%n≡0⇒n∣m ×2 + lcm-least + n∣m⇒m%n≡0)
 - WindingAsymmetry: a/b 单调性 66+66 case 证明; zhonglvNotSunYi 假 (acc=0 见证); onlyResetMechanism 假 (reset=Sun-op 见证)
-- Decimal/Proofs: *-suc/lemma_q_lt/lemma_sum_lt 证明 (lemma_sum_lt 补 q≥1 前提 — 原签名 q=0 反例)
+- Decimal/Proofs (最后一击, 路线 a): with 重写不对称绕行 — Axioms.divMod10 对齐 stdlib
+  (n/10, n%10), sumDigits 同改; divMod10Correct 由 m≡m%n+[m/n]*n + m%n<n 直证,
+  sumDigitsBound/sumDigitsTerminates/digitalRootConverges/digitalRootStable 由
+  <-wellFounded 良基归纳 + m/n<m 递归证明, 全程 0 postulate 0 with (5 条全部闭合)。

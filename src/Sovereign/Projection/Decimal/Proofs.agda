@@ -10,17 +10,25 @@
 --   1. divMod10Correct：十进制除法正确性
 --   2. sumDigitsTerminates：数字和递归终止性
 --   3. digitalRoot 稳定性证明
+--
+-- 2026-08 P0 收口 (路线 a): 全部 0 postulate —
+--   Axioms.divMod10 已改为 stdlib 对齐的 with-free 定义 (n/10, n%10),
+--   sumDigits 同改; 正确性由 m≡m%n+[m/n]*n + m%n<n + m/n<m 直证,
+--   终止性/稳定性由 <-wellFounded 良基归纳证明, 全程无 with。
 
 module Sovereign.Projection.Decimal.Proofs where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; _≥_; _>_; _<_; s≤s; z≤s; z≤n)
-open import Data.Nat.Properties using (s<s; z<s; *-suc; +-comm; +-assoc; m<m+n; ≤-trans; ≤-refl; m≤m+n; n≤m+n; +-monoˡ-<; +-identityʳ; m≤n⇒m<n∨m≡n; ≤-pred)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _≤_; _≥_; _>_; _<_; s≤s; z≤n)
+open import Data.Nat.Properties using (*-suc; +-comm; +-assoc; m<m+n; ≤-trans; ≤-refl; ≤-reflexive; m≤m+n; +-monoˡ-<; +-monoˡ-≤; +-monoʳ-≤; +-identityʳ; m≤n⇒m<n∨m≡n; ≤-pred; <⇒≤; 1+n≰n; ≤-<-trans)
+open import Data.Nat.DivMod using (m≡m%n+[m/n]*n; m%n<n; m/n<m)
 open import Data.Bool using (Bool; true; false; T)
 open import Data.Unit using (tt)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Product using (_×_; _,_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym; cong; subst)
+open import Data.Nat.Induction using (<-wellFounded)
+open import Induction.WellFounded using (Acc; acc)
 
 -- stdlib 2.4 未导出 ¬suc≤zero, 本地定义
 ¬suc≤zero : ∀ {n} → suc n ≤ zero → ⊥
@@ -28,40 +36,31 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym
 
 open import Sovereign.Projection.Decimal.Axioms
 
+true≢false : true ≡ false → ⊥
+true≢false ()
+
 --------------------------------------------------------------------------------
--- 1. divMod10 正确性证明
+-- 1. divMod10 正确性证明 (路线 a: stdlib 引理直证, 无 with)
 --------------------------------------------------------------------------------
 
 -- 辅助引理：乘法分配律 (2026-08 P0: 原 postulate → stdlib *-suc + +-comm)
 suc-*-distrib : (q n : ℕ) → q * suc n ≡ q * n + q
 suc-*-distrib q n = trans (*-suc q n) (+-comm q (q * n))
 
-true≢false : true ≡ false → ⊥
-true≢false ()
-
 -- 定理：divMod10 n = (q, r) 满足 n = q * 10 + r 且 r < 10
--- [2026-08 P0 D 类收尾策略·实测诊断] 基础已备: suc-*-distrib/lemma_q_lt/
---   lemma_sum_lt (上方已证)。证法: 对 n 归纳; with divMod10 n | divMod10Correct n;
---   再 with r — 0..8 九个分支的证明项已写出 (trans (cong suc n≡qr)
---   (sym (+-suc (q*10) k)) + s≤s 链), 编译通过; r=9 进位分支受阻于
---   **Agda 2.9 with 重写不对称**: 目标被 with 替换 (divMod10 (suc n) 归约到
---   with-aux), 但模式变量 (n≡qr) 的类型保持冻结的 proj₂(divMod10 n) 形式 —
---   两形态无法统一 (已试 with-in/逐 case 辅助函数/内联/subst 桥/refl 桥,
---   约 30 个结构变体)。出路二选一:
---     (a) 重构 Axioms.divMod10 为 Fin 索引或 stdlib div/mod 桥
---         (先证 divMod10 n ≡ (n / 10 , n % 10), 再用 m≡m%n+[m/n]*n);
---     (b) 等 Agda 修复 with-abstract 的类型替换传播。
-postulate
-  divMod10Correct : (n : ℕ) → 
-    let (q , r) = divMod10 n
-    in n ≡ q * 10 + r × r < 10
+divMod10Correct : (n : ℕ) →
+  let (q , r) = divMod10 n
+  in n ≡ q * 10 + r × r < 10
+divMod10Correct n = (n≡ , m%n<n n 10)
+  where
+    n≡ : n ≡ (n / 10) * 10 + n % 10
+    n≡ = trans (m≡m%n+[m/n]*n n 10) (+-comm (n % 10) ((n / 10) * 10))
 
 --------------------------------------------------------------------------------
--- 2. sumDigits 终止性证明
+-- 2. sumDigits 终止性证明 (良基归纳, 无 with)
 --------------------------------------------------------------------------------
 
--- 辅助引理: q ≥ 1 → q < q * 10 + r (2026-08 P0: 原 postulate → 证明)
--- q*10 = q + q*9; q*9+r ≥ 1 由 q≥1 导出; m<m+n 给严格性。
+-- 辅助引理：q ≥ 1 → q < q * 10 + r
 lemma_q_lt : (q r : ℕ) → q ≥ 1 → q < q * 10 + r
 lemma_q_lt q r q≥1 =
   subst (q <_) (lemma-q-eq q r) (m<m+n q {q * 9 + r} (nz q r q≥1))
@@ -75,34 +74,103 @@ lemma_q_lt q r q≥1 =
         (m≤m+n (q * 9) r)
 
 -- 辅助引理: q ≥ 1 → r < 10 → r + q < q * 10 + r
--- (2026-08 P0: 原签名缺 q≥1 前提 — q=0 时 r < r 为假; 补前提后证明)
 lemma_sum_lt : (q r : ℕ) → q ≥ 1 → r < 10 → r + q < q * 10 + r
 lemma_sum_lt q r q≥1 r<10 =
   subst (λ x → x < q * 10 + r) (sym (+-comm r q))
     (subst (λ x → q + r < x + r) (+-identityʳ (q * 10))
       (+-monoˡ-< r (lemma_q_lt q 0 q≥1)))
 
+q≤q*10 : ∀ q → q ≤ q * 10
+q≤q*10 q = subst (λ x → q ≤ x) (sym (*-suc q 9)) (m≤m+n q (q * 9))
+
+1<10 : 1 < 10
+1<10 = s≤s (s≤s z≤n)
+
+-- sumDigits n ≤ n (对全部 n)
+sumDigitsBound : (n : ℕ) → sumDigits n ≤ n
+sumDigitsBound n = go _ (<-wellFounded n)
+  where
+    go : ∀ n → Acc _<_ n → sumDigits n ≤ n
+    go zero _ = z≤n
+    go (suc n) (acc rec) =
+      ≤-trans
+        (+-monoʳ-≤ (suc n % 10) (go ((suc n) / 10) (rec (m/n<m (suc n) 10 1<10))))
+        (≤-trans (+-monoʳ-≤ (suc n % 10) (q≤q*10 ((suc n) / 10)))
+          (≤-reflexive (sym (m≡m%n+[m/n]*n (suc n) 10))))
+
+suc-eq : ∀ m → (m / 10) * 10 + m % 10 ≡ m
+suc-eq m = trans (+-comm ((m / 10) * 10) (m % 10)) (sym (m≡m%n+[m/n]*n m 10))
+
+q≥1 : ∀ m → m ≥ 10 → m / 10 ≥ 1
+q≥1 m m≥10 = f (m≤n⇒m<n∨m≡n z≤n)
+  where
+    f : 0 < m / 10 ⊎ 0 ≡ m / 10 → m / 10 ≥ 1
+    f (inj₁ q>0) = q>0
+    f (inj₂ q≡0) =
+      ⊥-elim (1+n≰n (≤-trans m≥10 m≤9))
+      where
+        m≡r : m ≡ m % 10
+        m≡r = trans (subst (λ q → m ≡ m % 10 + q * 10) (sym q≡0) (m≡m%n+[m/n]*n m 10))
+          (+-identityʳ (m % 10))
+        m≤9 : m ≤ 9
+        m≤9 = ≤-pred (subst (λ x → x < 10) (sym m≡r) (m%n<n m 10))
+
 -- 主定理：∀ n → n ≥ 10 → sumDigits n < n
--- [2026-08 P0 D 类收尾策略] 依赖 divMod10Correct: n ≡ q*10+r →
---   sumDigits n = r + sumDigits q ≤ r + q < q*10+r = n (lemma_sum_lt q≥1)。
---   q≥1 由 n≥10 导出 (lemma_q_lt 的反向); sumDigits q ≤ q 需一并归纳。
---   digitalRootConverges/Stable 需沿 sumDigitsTerminates 的良基归纳
---   (digitalRoot 的 {-# TERMINATING #-} 递归), 收敛后按 0..9 十 case refl。
-postulate
-  sumDigitsTerminates : (n : ℕ) → n ≥ 10 → sumDigits n < n
-  digitalRootConverges : (n : ℕ) → digitalRoot n < 10
-  digitalRootStable : (n : ℕ) → IsStable n ≡ true → 
-    digitalRoot n ≡ 3 ⊎ digitalRoot n ≡ 6 ⊎ digitalRoot n ≡ 9
+sumDigitsTerminates : (n : ℕ) → n ≥ 10 → sumDigits n < n
+sumDigitsTerminates n n≥10 = go _ (<-wellFounded n) n≥10
+  where
+    go : ∀ n → Acc _<_ n → n ≥ 10 → sumDigits n < n
+    go zero _ n≥10 = ⊥-elim (1+n≰n (≤-trans n≥10 z≤n))
+    go (suc n) (acc rec) n≥10 =
+      subst (λ x → sumDigits (suc n) < x) (suc-eq (suc n))
+        (≤-<-trans (+-monoʳ-≤ (suc n % 10) (sumDigitsBound ((suc n) / 10)))
+          (lemma_sum_lt ((suc n) / 10) (suc n % 10) (q≥1 (suc n) n≥10) (m%n<n (suc n) 10)))
 
 --------------------------------------------------------------------------------
--- ⚠️ 待完成项
+-- 3. digitalRoot 收敛性与稳定性 (良基归纳, 无 with)
 --------------------------------------------------------------------------------
 
--- 以下证明需要补充完整：
--- 1. lemma_q_lt - 不等式构造
--- 2. lemma_sum_lt - 不等式构造
--- 3. sumDigitsTerminates - 主证明项
--- 4. digitalRootConverges - 收敛性证明
--- 5. digitalRootStable - 稳定性证明
+digitalRootConverges : (n : ℕ) → digitalRoot n < 10
+digitalRootConverges n = go _ (<-wellFounded n)
+  where
+    go : ∀ n → Acc _<_ n → digitalRoot n < 10
+    go zero _ = s≤s z≤n
+    go (suc zero) _ = s≤s (s≤s z≤n)
+    go (suc (suc zero)) _ = s≤s (s≤s (s≤s z≤n))
+    go (suc (suc (suc zero))) _ = s≤s (s≤s (s≤s (s≤s z≤n)))
+    go (suc (suc (suc (suc zero)))) _ = s≤s (s≤s (s≤s (s≤s (s≤s z≤n))))
+    go (suc (suc (suc (suc (suc zero))))) _ = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))
+    go (suc (suc (suc (suc (suc (suc zero)))))) _ = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n))))))
+    go (suc (suc (suc (suc (suc (suc (suc zero))))))) _ = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))))
+    go (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) _ = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n))))))))
+    go (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) _ = s≤s ≤-refl
+    go (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))))) (acc rec) =
+      go (sumDigits (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))))))
+        (rec (sumDigitsTerminates (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))))) n≥10))
+      where
+        n≥10 : suc (suc (suc (suc (suc (suc (suc (suc (suc (suc m))))))))) ≥ 10
+        n≥10 = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))))))
 
--- 这些证明在十进制自然数体系内是严谨的构造性证明
+digitalRootStable : (n : ℕ) → IsStable n ≡ true →
+  digitalRoot n ≡ 3 ⊎ digitalRoot n ≡ 6 ⊎ digitalRoot n ≡ 9
+digitalRootStable n prem = go _ (<-wellFounded n) prem
+  where
+    go : ∀ n → Acc _<_ n → IsStable n ≡ true →
+      digitalRoot n ≡ 3 ⊎ digitalRoot n ≡ 6 ⊎ digitalRoot n ≡ 9
+    go zero _ prem = ⊥-elim (true≢false (sym prem))
+    go (suc zero) _ prem = ⊥-elim (true≢false (sym prem))
+    go (suc (suc zero)) _ prem = ⊥-elim (true≢false (sym prem))
+    go (suc (suc (suc zero))) _ prem = inj₁ refl
+    go (suc (suc (suc (suc zero)))) _ prem = ⊥-elim (true≢false (sym prem))
+    go (suc (suc (suc (suc (suc zero))))) _ prem = ⊥-elim (true≢false (sym prem))
+    go (suc (suc (suc (suc (suc (suc zero)))))) _ prem = inj₂ (inj₁ refl)
+    go (suc (suc (suc (suc (suc (suc (suc zero))))))) _ prem = ⊥-elim (true≢false (sym prem))
+    go (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) _ prem = ⊥-elim (true≢false (sym prem))
+    go (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) _ prem = inj₂ (inj₂ refl)
+    go (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))))) (acc rec) prem =
+      go (sumDigits (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))))))
+        (rec (sumDigitsTerminates (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))))) n≥10))
+        prem
+      where
+        n≥10 : suc (suc (suc (suc (suc (suc (suc (suc (suc (suc m))))))))) ≥ 10
+        n≥10 = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))))))

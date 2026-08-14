@@ -11,7 +11,7 @@
 
 module Sovereign.Projection.Decimal.Axioms where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _/_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _/_; _%_)
 open import Data.Bool using (Bool; true; false)
 open import Data.Product using (_×_; _,_)
 open import Cubical.Foundations.Prelude
@@ -36,20 +36,18 @@ suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) <10 = false
 _ <10 = false  -- 默认情况：≥10
 
 -- 十进制除法：divMod10
+-- 2026-08 P0 路线 (a): 与 stdlib 除法对齐的 with-free 定义 —
+--   divMod10 n = (n / 10 , n % 10); 旧 with 递归版语义等价 (商/余数),
+--   且可直接由 m≡m%n+[m/n]*n / m%n<n 证明正确性 (见 Proofs.agda)。
 divMod10 : ℕ → ℕ × ℕ
-divMod10 zero = (zero , zero)
-divMod10 (suc n) with divMod10 n
-... | (q , r) with suc r <10
-... | true = (q , suc r)
-... | false = (suc q , zero)
+divMod10 n = (n / 10 , n % 10)
 
 -- 十进制数字和
 -- ⚠️ 注意：此函数需要终止性证明
 {-# TERMINATING #-}
 sumDigits : ℕ → ℕ
 sumDigits zero = zero
-sumDigits (suc n) with divMod10 (suc n)
-... | (q , r) = r + sumDigits q
+sumDigits (suc n) = (suc n) % 10 + sumDigits ((suc n) / 10)
 
 -- 十进制数字根（迭代至个位数）
 -- ⚠️ 注意：此函数需要终止性证明，此处使用 TERMINATING pragma
