@@ -153,12 +153,10 @@ winding-CRT-fiber = refl  -- 因为 144 < M，所以 144%M = 144
 -- 核心定理: 即使 CRT 坐标相同，缠绕数和剖分组成属于不同纤维层
 -- 因为缠绕数作为拓扑不变量可以有 k₁ ≠ 0 的延拓
 -- 而剖分组成作为静态计数严格 k₂ = 0
-postulate
-  crt-fiber-distinction :
-    ∀ (k₁ k₂ : ℕ) →
-    (PolarWinding + k₁ * M) % M ≡ (DodecahedronCells + MerkabaCells + k₂ * M) % M →
-    k₁ ≡ k₂ × (PolarWinding + k₁ * M ≡ DodecahedronCells + MerkabaCells + k₂ * M)
-  -- 仅当 k₁=k₂ 时两者相等，但 k₁ 由拓扑决定，k₂=0 由几何决定
+-- 2026-08 P0 轨道 A 处置: 原 crt-fiber-distinction 为假命题 —
+--   前提 (144 + k₁M) % M ≡ (120+24 + k₂M) % M 恒为 refl (两侧均归约到
+--   144 % M = 144, 见 winding-CRT-fiber), 结论 k₁ ≡ k₂ 被 k₁=0,k₂=1 反驳 —
+--   该公理使 ⊥ 可导出, 已删除。纤维层区分教义保留为本注释。
 
 -- 4.6 CRT 纤维与环面巡游 (v5.16: 修正范畴错误)
 --
@@ -267,10 +265,9 @@ totalEulerIs2 = refl
 --------------------------------------------------------------------------------
 
 -- 144 阶幻方是静态容器，不是缠绕数的代数分解
--- [宪法公理] ¬ 标记：幻方表示环面剖分的静态投影，
--- 不是极向缠绕(144)或环向缠绕(46)的代数操作。
--- 它们属于不同范畴（静态容器 vs 拓扑不变量）。
-postulate
-  magicSquareIsStatic :
-    ∀ (cell : MagicCell) →
-    ¬ (MagicCell.value cell ≡ PolarWinding)
+-- [宪法条款] 幻方表示环面剖分的静态投影，不是极向缠绕(144)或环向缠绕(46)的
+-- 代数操作。它们属于不同范畴（静态容器 vs 拓扑不变量）。
+-- 2026-08 P0 轨道 A 处置: 原 magicSquareIsStatic
+--   ∀ cell → ¬ (MagicCell.value cell ≡ PolarWinding) 为假命题 —
+--   MagicCell.value : ℕ 是自由字段, 取 value=144 的单元格即反证 (⊥ 可导出),
+--   已删除。教义保留为本注释 (静态容器 vs 拓扑不变量)。

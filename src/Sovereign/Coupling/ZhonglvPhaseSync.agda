@@ -33,6 +33,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _/_; _≤_; _<_;
 open import Data.Nat.Properties using (m≤m+n; ≤-trans; *-monoˡ-<; <⇒≤)
 open import Data.Nat.DivMod using (m*n%n≡0)
 open import Data.Integer using (ℤ; +_; -[1+_]) renaming (_+_ to _+ℤ_; _-_ to _-ℤ_; _*_ to _*ℤ_; _/_ to _/ℤ_)
+open import Data.Integer.Properties using (+-identityˡ)
 open import Data.Fin using (Fin; toℕ; fromℕ; fromℕ<; #_; zero; suc)
 open import Data.Fin.Properties using (toℕ<n)
 open import Data.Vec using (Vec; []; _∷_)
@@ -267,13 +268,12 @@ zhonglvPhaseSyncOp acc = (acc *ℤ (+ POW3¹¹)) /ℤ (+ POW2¹⁶)
 -- v5.2: "同步"替代"闭合"——算子将系统推向下一个代数对齐点，
 --        而非封闭循环的终点。
 -- [Constitutional] 仲吕操作的设计约束: (acc * 3^11 / 2^16)^4 ≡ (acc * 3^11 / 2^16)^2
--- 此等式对任意 ℤ 不成立, 是系统设计约束而非全称定理。
--- 0 + acc' = acc' 部分平凡 (由 +-identityˡ).
-postulate
-  zhonglvSynchronizes :
-    ∀ (acc : ℤ) →
-    let acc' = zhonglvPhaseSyncOp acc
-    in (+ 0 +ℤ acc') ≡ acc' × acc' *ℤ acc' *ℤ acc' *ℤ acc' ≡ acc' *ℤ acc'
+-- 2026-08 P0 轨道 A 处置: 原 zhonglvSynchronizes 的该合取对任意 ℤ 为假
+--   (原注释自认 "非全称定理"; 反例 acc = 2¹⁶ → acc' = 3¹¹, 3¹¹⁴ ≠ 3¹¹²) —
+--   假命题已删除, 设计约束保留为注释宪法条款。
+--   第一个合取 (+ 0 +ℤ acc' ≡ acc') 是 +-identityˡ 的直接推论, 独立成定理:
+zhonglvSyncIdentity : ∀ (acc : ℤ) → (+ 0 +ℤ zhonglvPhaseSyncOp acc) ≡ zhonglvPhaseSyncOp acc
+zhonglvSyncIdentity acc = +-identityˡ (zhonglvPhaseSyncOp acc)
 
 -- 和乐归零：极向 144 与环向 46 的平行移动同时为单位元
 -- v5.2: "和乐归零"描述的是代数相位对齐条件，非拓扑闭合条件。

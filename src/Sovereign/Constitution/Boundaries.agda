@@ -117,11 +117,13 @@ wuXingToWinding = record
 IsLegalTransform : (ℕ → ℕ) → Set
 IsLegalTransform f = ∀ n → f n ≡ applyLossGain n Sun ⊎ f n ≡ applyLossGain n Yi
 
-postulate
-  lossGainUniqueness :
-    ∀ (n : ℕ) (f : ℕ → ℕ) →
-    (∀ m → f m ≡ applyLossGain m Sun ⊎ f m ≡ applyLossGain m Yi) →
-    IsLegalTransform f
+-- 2026-08 P0 轨道 C: 原 lossGainUniqueness 为 postulate — 前提与结论是同一命题
+--   (IsLegalTransform 的定义即该 ∀ 命题), 恒等直接给出证明。
+lossGainUniqueness :
+  ∀ (n : ℕ) (f : ℕ → ℕ) →
+  (∀ m → f m ≡ applyLossGain m Sun ⊎ f m ≡ applyLossGain m Yi) →
+  IsLegalTransform f
+lossGainUniqueness n f h = h
 
 --------------------------------------------------------------------------------
 -- 5. 范畴依赖图
