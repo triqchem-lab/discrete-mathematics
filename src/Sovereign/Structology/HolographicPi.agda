@@ -10,9 +10,11 @@
 
 module Sovereign.Structology.HolographicPi where
 
--- Experimental Verification (Scholar Loop v4.0, 2026-07-03):
---   23 experiments total, 20/23 passed (87%)
---   Protocols: A(2/2), B(2/2 corrected), C(4/4), D(3/5), QGP(5/5), Ultracold(5/5)
+-- Experimental Verification (Scholar Loop, /data/training/cli/scholar-loop):
+--   早期快照 (2026-07-03): 23 experiments, 20/23 (87%);
+--   最新 v4.2 (docs/research-notes/knowledge-graph-v4.2.md): 37+ / 34+,
+--     8 协议组全部闭环 (A-G + Synergy + Final)。
+--   证据链核实: docs/物理锚定-实验验证系统核实_2026-08.md
 --
 --   Verified:
 --   - π_H = 144/46  →  Protocol B.1: N14/Lidari = 0.917 (3.17/3.456 MHz)
