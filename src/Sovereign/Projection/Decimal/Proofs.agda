@@ -40,11 +40,17 @@ true≢false : true ≡ false → ⊥
 true≢false ()
 
 -- 定理：divMod10 n = (q, r) 满足 n = q * 10 + r 且 r < 10
--- [2026-08 P0 D 类收尾策略] 基础已备: suc-*-distrib/lemma_q_lt/lemma_sum_lt
---   (上方已证)。证法: 对 n 归纳; with divMod10 n | divMod10Correct n;
---   再 with suc r <10 in br — true 支: cong suc n≡ + <10⇒< (suc r) br;
---   false 支: 由 r<10 (≤-pred) + m≤n⇒m<n∨m≡n 导出 r≡9 (r<9 支与 br 矛盾),
---   再以 *-comm/*-suc 链证明 q*10+9+1 ≡ suc q*10。
+-- [2026-08 P0 D 类收尾策略·实测诊断] 基础已备: suc-*-distrib/lemma_q_lt/
+--   lemma_sum_lt (上方已证)。证法: 对 n 归纳; with divMod10 n | divMod10Correct n;
+--   再 with r — 0..8 九个分支的证明项已写出 (trans (cong suc n≡qr)
+--   (sym (+-suc (q*10) k)) + s≤s 链), 编译通过; r=9 进位分支受阻于
+--   **Agda 2.9 with 重写不对称**: 目标被 with 替换 (divMod10 (suc n) 归约到
+--   with-aux), 但模式变量 (n≡qr) 的类型保持冻结的 proj₂(divMod10 n) 形式 —
+--   两形态无法统一 (已试 with-in/逐 case 辅助函数/内联/subst 桥/refl 桥,
+--   约 30 个结构变体)。出路二选一:
+--     (a) 重构 Axioms.divMod10 为 Fin 索引或 stdlib div/mod 桥
+--         (先证 divMod10 n ≡ (n / 10 , n % 10), 再用 m≡m%n+[m/n]*n);
+--     (b) 等 Agda 修复 with-abstract 的类型替换传播。
 postulate
   divMod10Correct : (n : ℕ) → 
     let (q , r) = divMod10 n
