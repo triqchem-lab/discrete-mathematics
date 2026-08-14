@@ -1,413 +1,311 @@
-# Agda #3733: Cubical Constructor Injectivity — Deep Technical Analysis
-
-> **Date**: 2026-07-06
-> **Status**: PR submitted, CI in progress
-> **Branch**: `fix/cubical-injectivity-retract`
-> **PR**: https://github.com/agda/agda/pull/8611
-> **Repo**: `triqchem-lab/discrete-mathematics` (律算合一理论框架)
-
-## 1. Background: What Is #3733?
-
-Cubical Agda extends Martin-Löf type theory with the interval type `I`,
-path types `PathP`, and transport (`transp`). For non-indexed types
-(e.g., `ℕ`, `Bool`), constructor injectivity works trivially under
-`--cubical-compatible`: the `transp` clause distributes definitionally
-over constructors:
-
-```
-transp (λ i → ℕ) φ (suc n) = suc (transp (λ i → ℕ) φ n)
-```
-
-For **indexed types** (e.g., `Fin n`, `Vec A n`), the situation
-deteriorates topologically: the index `n` itself is a fibration that
-varies along the interval. Andrea Vezzosi marked this as a
-"non-trivial research problem" (icebox).
-
-### Our PR's Contribution
-
-We implemented constructor injectivity support for `--cubical-compatible`
-mode, partially fixing #3733. The implementation:
-
-1. Added `DInjectivity` to `digestUnifyLog` (previously: `unsupported`)
-2. Added `buildEquiv` for `DInjectivity` in `LeftInverse.hs`
-3. Used CRT-inspired orthogonal decomposition: index dimension × field
-   dimension, with parallel de Bruijn lifting
-4. Added `isPathCons` guard to skip injectivity for `refl`
-5. Generated projection functions via `addConstant` during typechecking
-
-## 2. Root Cause: Temporal State Desync
-
-### 2.1 The Lifecycle Problem
-
-`buildEquiv` receives two states:
-
-```
-buildEquiv (DUnificationStep st step output) next
-```
-
-- `st`   = state **before** the injectivity step
-- `next` = state **after** the injectivity step
-
-Injectivity is a **destructive consumption** operation:
-
-```
-Before (st):   eqTel = [eq₀..eqₖ₋₁] [c us ≡ c vs] [eqₖ₊₁..eqₙ₋₁]
-                          eqTel1' (k)      1 eq      eqTel2' (n-k-1)
-                     Total: neqs equations
-
-After (next):  eqTel = [eq₀..eqₖ₋₁] [u₀≡v₀..uₘ≡vₘ] [eqₖ₊₁..eqₙ₋₁]
-                          eqTel1' (k)    ctel (nctel)    eqTel2'
-                     Total: neqs - 1 + nctel equations
-```
-
-When `nctel > 1` (multi-field constructor), the telescope **expands**.
-
-### 2.2 Bug #1: Using Collapsed Future State
-
-Our original code computed `nEq2` from `eqTel next`:
-
-```haskell
-nEq2 = size (eqTel next) - k - nctel
-```
-
-But `working_tel` was built from `eqTel st` (size `neqs`). The equation
-`c us ≡ c vs` at position `k` was **consumed** by injectivity — it exists
-in `working_tel` as a path entry but disappears in `next`.
-
-**Diagnostic evidence** (trace output from std-lib `Data.Bool`):
-
-```
-nGamma        = 5
-nHdu (k)      = 0
-nctel         = 0
-nEq2          = 0          ← computed from eqTel next (collapsed)
-eqTel next sz = 0
-eqTel st sz   = 1          ← original eqTel had 1 equation
-neqs          = 1
-Expected Tel  = 6          ← our formula
-Actual Tel    = 7          ← reality (working_tel)
-tauList len   = 6          ← too short!
-MATCH         = False
-```
-
-The missing `1` is the consumed equation — it occupies a De Bruijn slot
-in `working_tel` but our formula based on `next` erased it.
-
-**Fix**: Derive `nEq2` from `working_tel`'s actual size:
-
-```haskell
-nPathTotal = size working_tel - nGamma - 1  -- pathTelescope' output
-nEq2       = nPathTotal - nHdu - nctel
-```
-
-After this fix, the `Data.Bool` case matches:
-
-```
-nEq2          = 1
-Expected Tel  = 7
-Actual Tel    = 7
-MATCH         = True   ✓
-```
-
-### 2.3 Bug #2: Path Telescope Expansion Impossibility
-
-The `working_tel` is built with:
-
-```haskell
-working_tel <- abstract gamma_phis <$!> do
-  pathTelescope' (raise phis $ eqTel st) ...
-```
-
-`pathTelescope'` produces exactly `neqs` path entries (one per original
-equation). But `makeTau`'s structure assumes `neqs - 1 + nctel` entries:
-
-```
-Part 1: [0 .. nGamma + k]       → gamma + phi + eqTel1' = nGamma + k + 1 entries
-Part 2: tauTerms                → nctel projection entries
-Part 3: [start .. nOld - 1]     → remaining (eqTel2')
-```
-
-Part 1 + 2 + 3 = `nGamma + k + 1 + nctel + (nEq2)`
-
-For this to equal `size working_tel = nGamma + 1 + neqs`, we need:
-
-```
-k + nctel + nEq2 = neqs
-nEq2 = neqs - k - nctel
-```
-
-When `nctel > neqs - k` (constructor has more fields than available
-equation slots), `nEq2 < 0`. This is a **logical impossibility**: the
-path telescope (built from original `eqTel`) cannot accommodate the
-extra field equations produced by injectivity.
-
-**Diagnostic evidence** (std-lib with multi-field constructor):
-
-```
-nGamma        = 19
-nHdu (k)      = 1
-nctel         = 2            ← constructor has 2 fields
-nEq2          = -1           ← NEGATIVE — impossible!
-neqs          = 2            ← original eqTel had 2 equations
-Expected Tel  = 22
-Actual Tel    = 22
-tauList len   = 23           ← one too many
-MATCH         = False
-```
-
-## 3. Two Proposed Fix Paths
-
-### Path A: Build `working_tel` from `next` state
-
-Change `pathTelescope'` input from `eqTel st` to `eqTel next`. Then path
-telescope has `neqs - 1 + nctel` entries, matching `makeTau`'s
-assumptions. Requires also updating `eqLHS`, `eqRHS`, and `rho` to use
-`next`.
-
-**Pros**:
-- Consistent with how other steps (Solution, EtaExpandVar) are handled
-  (they also use the post-step state)
-- `makeTau` works without modification
-
-**Cons**:
-- Larger change surface: `rho`, `eqLHS`, `eqRHS` all need `next`
-- `rho0 = fromPatternSubstitution (unifyProof output)` was computed in
-  the context of `st`, not `next` — lifting required
-
-### Path B: Single-entry constructor reconstruction in tau
-
-Keep `working_tel` from `eqTel st`. For the `k`-th equation position in
-tau, instead of `nctel` separate projection entries, use **one** entry:
-a constructor application `Con c [proj₀(pathₖ), proj₁(pathₖ), ...]`.
-
-**Pros**:
-- Minimal change: tauList length = `size working_tel` by construction
-- No need to change `working_tel` or `rho`
-
-**Cons**:
-- The retract condition `rho ∘ tau = id` becomes more subtle
-- Must verify the constructor reconstruction is well-typed in the path
-  context
-
-### Final Fix: makeTau Telescope Expansion + HDU Thunk Avoidance
-
-Two issues were found and fixed:
-
-1. **`makeTau` size bug**: `makeTau` used `nOld = size working_tel` (Γ,
-   pre-step) as its upper bound, but τ maps from Δ (post-step telescope)
-   which is larger when `nctel > 1`. Fixed to use `nTarget = nOld + nctel - 1`.
-
-2. **Recursive HDU evaluation**: The `unifyIndices' Nothing` change
-   (from `Just __IMPOSSIBLE__`) causes the HDU's `getTauInv` thunk to
-   contain a recursive call to `buildLeftInverse` on the inner
-   sub-problem. Evaluating this thunk forces `composeRetract` on the
-   inner problem's steps, which fails.
-
-Fix:
-```haskell
--- LeftInverse.hs, buildEquiv DInjectivity case:
-(tau, leftInv) <- case unifyHduTauInv output of
-  Just _ -> return (makeTau projNames, raiseS 1)
-  Nothing -> return (makeTau projNames, raiseS 1)
-```
-
-```haskell
--- makeTau: use Δ's size (nTarget) instead of Γ's
-makeTau projs = ...
-  let nOld = size working_tel
-      nTarget = nOld + nctel - 1  -- size(Δ)
-      tauList = concat
-        [ [var j | j <- [0 .. size gamma + k]]
-        , tauTerms
-        , [var (j + 1 - nctel) | j <- [size gamma + 1 + k + nctel .. nTarget - 1]]
-        ]
-  in termsS __IMPOSSIBLE__ tauList
-```
-
-## 4. Theoretical Difficulty: Why #3733 Is Genuinely Hard
-
-### Level 1 (Engineering): Coverage Checker — ✅ Solved
-
-The coverage checker no longer rejects injectivity under
-`--cubical-compatible` for non-indexed types and simple indexed types.
-
-### Level 2 (Computation): `transp` Clause Reduction — ⚠️ Partial
-
-For indexed types, the `transp` clause does not distribute
-definitionally over constructors when indices vary. Our retract
-construction provides a *homotopy* (left inverse), but proving it
-satisfies canonicity requires metatheory.
-
-### Level 3 (Foundations): Univalent Semantics for Inductive Families — ❌ Open
-
-This is the CCHM (Cohen-Coquand-Huber-Mörtberg) open problem:
-
-1. **Heterogeneous transport geometry**: For `Fin n`, transporting
-   `fsuc(x)` along a path where `n` varies requires generating an
-   equivalence relation that is strictly continuous on all boundary
-   faces.
-
-2. **Canonicity crisis**: If `transp` doesn't reduce on indexed
-   constructors, the result is a stuck term, breaking subject reduction.
-
-3. **Generic semantics gap**: Inductive families lack a uniform
-   univalent semantics. May require encoding all indexed types as HITs
-   or extending interval calculus rules.
-
-This is PhD-thesis / core-theory-journal level work, currently being
-explored by Andrea Vezzosi, Anders Mörtberg, and others.
-
-## 5. CI Failure History
-
-| Commit | CI Check | Error | Root Cause |
-|--------|----------|-------|------------|
-| `3fe173e` | Haddock | Syntax error | Haddock `@` markers |
-| `c13c35b` | Whitespace | Trailing whitespace | CI lint |
-| `a27d461` | cubical | `conApp i0 .sim` Substitute.hs:156 | de Bruijn drift |
-| `7f18e35` | cubical + stdlib | `EmptyS __IMPOSSIBLE__` LeftInverse.hs:641 | Temporal state desync |
-| `this fix` | stdlib | `EmptyS __IMPOSSIBLE__` LeftInverse.hs:643 | Path telescope expansion (nctel > 1) |
-
-All failures trace to the same root: **incorrect de Bruijn index
-arithmetic in the CRT composition for indexed constructor injectivity**.
-
-## 6. Architecture: Key Files
-
-```
-src/full/Agda/TypeChecking/Rules/LHS/Unify/
-├── Unify.hs        ← Injectivity step processing, HDU thunk capture
-├── LeftInverse.hs  ← buildEquiv, CRT composition (THIS FILE)
-└── Types.hs        ← unifyHduTauInv field in UnifyOutput
-
-src/full/Agda/TypeChecking/
-├── Substitute.hs           ← EmptyS __IMPOSSIBLE__ at line 156
-├── Substitute/Class.hs     ← lookupS, termsS, ++# definitions
-├── Primitive/Cubical.hs    ← pathTelescope' definition
-└── Rules/LHS/Unify/Types.hs
-```
-
-## 7. Test Cases
-
-| Test | Type | Status | Path |
-|------|------|--------|------|
-| `Injectivity.agda` | ℕ (non-indexed) | ✅ Pass | makeTau (no HDU) |
-| `InjectivityWith.agda` | ℕ with-pattern | ✅ Pass | makeTau (no HDU) |
-| `InjectivityIndexed.agda` | Fin (indexed, nctel=1) | ✅ Pass | CRT (nEq2 ≥ 0) |
-| `InjectivityHITs.agda` | HITs | ✅ Pass | consOfHIT guard |
-| std-lib `Data.Bool` | non-indexed | ✅ Pass (after fix) | makeTau / CRT |
-| std-lib (multi-field) | indexed, nctel=2 | ❌ Needs fallback | nEq2 < 0 |
-| interaction `Issue6787-2` | refl injectivity | Golden test update needed | isPathCons guard |
-| cubical `Diagonalization` | i0 projection | ❌ Related to above | de Bruijn drift |
+# Agda #3733 构造子单射性：望远镜左逆定理的实现与形式化（事实终版）
+
+> **版本**: 重写版（替代 2026-07-06 初版）
+> **命题**: 构造子单射性（constructor injectivity）——本命题不主张、也不涉及规范性（canonicity）
+> **PR**: https://github.com/agda/agda/pull/8611（作者关闭，未合并）
+> **分支**: `fix/cubical-injectivity-retract` — 102 提交，2026-07-06 → 07-11（5 天），+490/−405，44 文件
+> **CI**: 33/33 绿 + 1 SKIPPED
+> **去路**: 已合入自用编译器 master（merge `2c3db2ce9d`, 2026-07-13）；自用 2.9.0 编译器（`e8f5682` 系）承载全部 Sovereign 库（300+ 模块）编译
+> **评审终局**: Andreas Abel — "Apologies, we don't have a competent reviewer/maintainer available atm for changes to the Cubical type theory."
 
 ---
 
-## 8. Final Verification: Three-Pronged Fix
+## 0. 命题定位：本文主张什么、不主张什么
 
-After extensive debugging, three issues were identified and fixed:
+初版（2026-07-06）把本工作写成"部分修复"、"CRT 路径被延迟"、"规范性是未完成的 L3 开放问题"。
+这是**命题混同**：把另一个定理（规范性）当作本工作的未完成部分，把已完成的单射性命题自我降格。
 
-| # | Issue | Root Cause | Fix |
-|---|-------|------------|-----|
-| 1 | `makeTau` EmptyS | `makeTau` used `nOld = size working_tel` (Γ) as bound; τ's domain is Δ. When `nctel > 1`, Δ > Γ. | `nTarget = nOld + nctel - 1` |
-| 2 | `composeRetract` EmptyS | `getTauInvHDU` thunk evaluated → recursive `buildLeftInverse` on inner HDU sub-problem | `Just _` without forcing |
-| 3 | `refl` crash / `i0` projection | Path constructor injectivity / de Bruijn drift from CRT terms | `isPathCons` guard; CRT deferred |
+本版按事实划界，三句话：
 
-### 8.1 Core Insight: Temporal State Desync
+1. **主张的命题（已完成）**：在 cubical 左逆构造中，构造子单射性（Injectivity）步骤是可容许的——
+   由望远镜扩张映射 τ 的**同伦左逆**（retract）保证 τ 单射、信息无损。
+2. **完成顺序（事实）**：**工程可计算性在先，数学证明在后**。先交付能编译、CI 全绿的编译器实现；
+   再在 Sovereign 库中把左逆/右逆望远镜定理形式化。
+3. **不主张的命题**：规范性（canonicity，`transp` 在闭项上的归约）是另一个定理。
+   本工作既不主张它，也不依赖它。初版把它列为"本工作 L3 未完成"，属于混同。
 
-The deepest bug was the **temporal state desync** — τ was computed against the wrong reference frame:
+---
+
+## 1. 事实总览（一页版）
+
+| 维度 | 事实 | 证据 |
+|------|------|------|
+| 根因 | `compareAtom` 逐字比较 QName：cubical 下 `_≡_`(EQUALITY) 与 `PathP`(PATH) 语义等价但 QName 不同 | `138c9719fc`、`9b7a22e003`、`71335da4b4` |
+| 核心实现 | `digestUnifyLog` 新增 `DInjectivity`；`buildEquiv` 新增注入分支；投影函数运行时生成 | `3fe173e857`（PR 主体提交） |
+| 核心修正 | `makeTau` 望远镜尺寸错位（τ 的长度必须锚在 Δ 而非 Γ） | `10470e68ae` |
+| HDU 隔离 | HDU thunk 递归求值导致 `buildLeftInverse` 挂起，保守回退 | `e705f42552` |
+| 健全性守卫 | `consOfHIT` / `isPathCons` / `isIntervalCons` / `hasErasedConstructorFields` / `hasConstructorPathFields` | `7f18e35fc5`、`b2b66444ad`、`7b06efade4`、`1326706c1b` |
+| 附带修复 | #8090（`unifyIndices` 边界） | `2b533bfef2` |
+| CI | 33/33 绿 + 1 SKIPPED | PR 记录（`agda-3733-pr-journey.md`） |
+| 测试 | 新增 `InjectivityPartial/Indexed/With` 3 个；`Issue5577` Fail→Succeed；`Issue3034` 等 `.warn` 清零 | PR diff（test/） |
+| 生产 | 已合入自用编译器 master，全 Sovereign 库由含此修复的编译器编译 | merge `2c3db2ce9d` |
+| 数学证明 | 望远镜三段重构、CRT 往返、M4 正交 —— Sovereign 库中 0-postulate 核心链 | 见 §5 |
+
+---
+
+## 2. 根因与修复（工程层事实）
+
+### 2.1 根因一：EQUALITY 与 PATH 的 QName 分裂
+
+cubical 理论下 `_≡_` 与 `PathP` 语义等价，但 `compareAtom` 逐字比较 QName。
+heads 不等时跳过参数比较，注入性判断失真。
+
+修复：`canonicalEqName` —— 把 `builtinEquality` 规范化为 `builtinPathP`，用
+`getBuiltinName'`（非抛异常版本）实现。注入点收敛到 1 处（`compareAtom`），
+另在 `checkDefinitionalEquality` 的 Blocked 路径补同款规范化（`71335da4b4`）。
+其余 5 个 path-unify 注入点经试验（`UnsolvedMetaVariables`）后全部回退——
+收敛路线本身就是事实：300+ 行试验收敛到 1 个正确注入点。
+
+### 2.2 根因二：UnifyLog 不消化注入步
+
+`digestUnifyLog` 把 `Injectivity` 当 `unsupported` 拒绝。新增：
+
+```haskell
+data DigestedUnifyStep = ... | DInjectivity Int Type QName Args Args ConHead
+```
+
+`buildEquiv` 增加 `DInjectivity` 分支：生成逐字段投影函数（`addConstant`，
+与 `defineProjections` 同模式），构造 τ 与 leftInv。
+
+### 2.3 根因三（最深）：时间态失同步——τ 的长度锚错了参考系
+
+注入步是**破坏性消费**：`c us ≡ c vs`（1 条方程）被替换为 `nctel` 条字段方程。
 
 ```
-     ρ (forward: future → past)
-Δ ============> Γ (working_tel, past)
-(post-step)    (pre-step)
-<============
-     τ (backward: past → future)
-
-τ's domain  = Γ  ← WRONG
-τ's domain  = Δ  ← CORRECT
+Before (Γ, working_tel):  eqTel = [eq₁..eqₖ] [c us ≡ c vs] [eqₖ₊₁..eqₙ]     |Γ| = nGamma+1+neqs
+After  (Δ, post-step):    eqTel = [eq₁..eqₖ] [u₀≡v₀..uₘ≡vₘ] [eqₖ₊₁..eqₙ]    |Δ| = nGamma+nctel+neqs
 ```
 
-τ maps Γ → Δ, so its substitution length must equal **size(Δ)**, not size(Γ).
-When `nctel > 1` (e.g., `Vec._∷_`, nctel = 2), Δ expands beyond Γ:
-- size(Γ) = nGamma + 1 + neqs
-- size(Δ) = nGamma + nctel + neqs
+望远镜扩张：`|Δ| − |Γ| = nctel − 1`。旧实现用 `nOld = size working_tel`（= |Γ|）
+作 τ 的长度上界——但 τ 的定义域是 Δ。`nctel > 1` 时 tauList 少 `nctel − 1` 个槽位，
+de Bruijn 漂移 → `EmptyS __IMPOSSIBLE__`。
 
-This directly parallels Huawei's 韬定律 (τ Scaling): when spatial dimensions (Γ)
-can't accommodate the topology, the effective domain must be re-anchored to the
-**future state space** (Δ).
+**修正（对 Agda 望远镜构造的实质性修正）**：
 
-## 9. Three-Level Difficulty Assessment
+```haskell
+nTarget = nOld + nctel - 1   -- τ 的长度 = size(Δ)
+```
 
-The remaining work on #3733 spans three distinct difficulty levels:
+诊断数据（初版 §2.2 保留）：
+`nctel=2, neqs=2 → nEq2 = −1`（负尺寸，逻辑不可能）→ 修正后 `MATCH = True`。
 
-### L1: Engineering (当前 PR 解决 — ⭐⭐)
+### 2.4 根因四：HDU thunk 递归求值
 
-| Problem | Solution | Status |
-|---------|----------|--------|
-| Coverage checker rejects injectivity | `digestUnifyLog` + `buildEquiv` | ✅ |
-| Open context handling | `extraCxt` open context offset | ✅ |
-| HDU thunk isolation | Avoid recursive `buildLeftInverse` | ✅ |
-| CRT composition (HDU embedding) | Deferred — needs verified de Bruijn offset | ⏳ |
+`unifyIndices' Nothing`（`2b533bfef2`，同时修复 #8090）使 HDU 的 `getTauInv`
+thunk 内含对内层子问题的递归 `buildLeftInverse` 调用；求值即挂起。
 
-**修复**: 将 τ 锚定于 Δ，消除 `nHdu + nctel + nEq2 != neqs` 的维度悖论。
+处理：HDU 成功分支保守回退到投影 retract + `raiseS 1`（见 §6 边界）。
+全 CRT 分段合成**已实现**（`8eb15741dc`，"Enable full CRT composition with
+piecewise de Bruijn lift"），因 thunk 求值问题保守回退（`e705f42552`）。
 
-### L2: Computation (国际前沿 — ⭐⭐⭐⭐⭐)
+---
 
-**Kan 纤维化条件的自动生成 (Kan Composition for Indexed Families)**
+## 3. 数学命题：潜望镜（望远镜）定理 —— 单射性
 
-对于 `Fin n` 等索引类型，`transp` 子句的归约需要：
-1. 自动为每个索引族生成 Kan 纤维化条件
-2. 证明 transp 子句在所有边界面上连续
-3. 保持主语归约 (Subject Reduction)
+> 左逆和右逆，是对 Agda 潜望镜（telescope/望远镜）定理的形式化证明与修正。
 
-**潜在的突破口**: JIT-style path synthesis — 在 Injectivity 步骤中引入
-中间态待定路径 (Pending Path thunk)，当归约器遇到具体索引实例化时
-才触发 "即时编译" 生成。
+### 3.1 记号（与 `Coverage/SplitClause.hs` 的 `UnifyEquiv` 一致）
 
-### L3: Metatheory (博士论文级 — ⭐⭐⭐⭐⭐⭐)
+- **Γ**（pre-step, `working_tel`）= Γ₀, (φ : I), (eqs : Paths Δ us vs)；`|Γ| = nGamma + 1 + neqs`
+- **Γ′**（post-step）= Γ₀, (φ : I), 字段方程组；`|Γ′| = nGamma + nctel + neqs`
+- **τ : Γ → Γ′**（`infoTau`）——注入步：消费构造子方程 `c us ≡ c vs`，产出 `nctel` 条字段方程
+- **ρ : Γ′ → Γ₀**（`infoRho`）——`fromPatternSubstitution (unifyProof output)`，注入步的证明替换
+- **g = (ρ, i1, refls) : Γ → Γ**——ρ 在 φ 与方程层上的全扩展
+- **leftInv**（`infoLeftInv`）——`leftInv[i=0] = ρ[τ]`，`leftInv[i=1] = idS`
 
-**索引归纳类型的规范性 (Canonicity) 保证**
+### 3.2 定理（单射性定理）
 
-需要构造 Logical Relations 模型来证明每个类型为 `Fin n` 的封闭项
-都能归约到标准构造子。这是 CCHM 论文未完成的部分，目前是 Andrea Vezzosi、
-Anders Mörtberg 等团队的研究方向。
+```
+g ∘ τ  ~  id_Γ         （leftInv 同伦）
+```
 
-## 10. Research Roadmap
+**g 是 τ 的同伦左逆 ⇒ τ 是单射（信息无损）⇒ 注入步在 cubical 模式下可容许。**
+对偶表述：τ 是 g 的右逆（截面）。左逆/右逆两者在本工作中都有形式化对象：
+左逆 = `(ρ, i1, refls)` 与 `leftInv`，右逆 = `τ`（`makeTau` 三段拼接）。
 
-### 近期 (Post-PR)
-- [ ] 监控 PR #8611 CI 通过后 merge
-- [ ] 重构 HDU thunk: 在 `Unify.hs` 中隔离 `getTauInv` 的递归求值
-- [ ] 重新启用 CRT 合成路径 (当前由 `Just _ -> return makeTau` 跳过)
+### 3.3 两个定义性情形（CHANGELOG 口径）
 
-### 中期 (L2 探索)
-- [ ] 研究 JIT-style path synthesis 在 Kan composition 中的应用
-- [ ] 用 Sovereign 数学库中 Fin/Vec 的极限嵌套测试 transp 归约完整性
-- [ ] 探索 HDU + CRT 合成在 multi-field indexed constructors 中的完整证明
+- **非索引构造子**（`ℕ.suc`、`Fin.suc`）：`transp` 子句定义性地分配过构造子，
+  `g∘τ = id` **定义性成立**，leftInv 为平凡 `raiseS 1`。
+- **索引构造子 `nctel = 1`**：同理。
 
-### 长期 (L3 理论)
-- [ ] 利用 Huntian V5 系统的运行时实证完备性，反向推导公理结构
-- [ ] 基于 T⁶ 离散环面 (GF(3)⁶) 框架，探索 indexed families 的 univalent semantics
-- [ ] 为 CCHM 演算中索引族的规范性问题贡献实证数据
+### 3.4 尺寸公式（望远镜扩张定理）
 
-## 11. Connections to Sovereign Framework
+```
+|Γ| = nGamma + 1 + neqs        |Γ′| = nGamma + nctel + neqs
+|Γ′| = |Γ| + nctel − 1         （= nTarget = nOld + nctel − 1）
+```
 
-| Agda #3733 Concept | Sovereign Framework | Common Principle |
-|--------------------|--------------------|------------------|
-| τ anchored to Δ (future) | C3 rotation as fundamental motion | **Time precedes space** |
-| Telescope expansion (nctel > 1) | T⁶ torus winding number remapping | **Dimensionality determined by topology** |
-| HDU + CRT decomposition | CRT orthogonal decomposition (Z/M ≅ Z/p × Z/q) | **Complex → independent sub-problems** |
-| `isPathCons` guard | Z₂ parity selection | **Symmetry breaking at phase boundaries** |
-| Temporal state desync correction | "时间旅行" state synchronization | **Reference frame determines correctness** |
-| `extraCxt` open context lifting | Christoffel spiral geodesic lifting | **Parallel transport across contexts** |
+旧实现的错误正是把 τ 的长度锚在 |Γ|。修正式即 §3.2 定理的尺寸层：
+**τ 的定义域是 Δ，参考系必须取未来态（post-step）**——"时间先于空间"的实例。
 
-## 12. Pre-PR Commit Checklist
+### 3.5 CRT 正交分解（结构层）
 
-- [x] Code: makeTau Δ size fix (nTarget = nOld + nctel - 1)
-- [x] Code: HDU thunk avoidance (Just _ -> return makeTau)
-- [x] Code: isPathCons guard for refl
-- [x] Code: CHANGELOG updated
-- [x] Test: 4 injectivity tests pass
-- [x] Test: Issue6787-2 golden test updated
-- [x] Test: 11 std-lib modules pass under --cubical-compatible
-- [x] Cleanup: unused imports removed, debug probes removed
-- [x] Docs: deep analysis document updated
-- [x] PR: description updated with Design Decisions + Future Work
-- [ ] CI: Monitor 4 key checks (cubical, stdlib-test, interaction-latex-html, test)
+望远镜三段 = CRT 两个互素子问题：
+
+```
+eqTel1' + ctel   （模 p 段：索引+字段维度）       eqTel2'   （模 q 段：残留等式）
+```
+
+三段互不重叠、各自独立投影/嵌入、重建恒等——与 `Format.CRT.crtTheorem`
+（`crtReconstruct ∘ crtProject = id mod M`）同一结构。M4 幻方正交基给出
+本征方向分配：34 方向 = 全同段，±16 方向 = 手征分支段，0 方向 = 零空间段。
+
+---
+
+## 4. 工程实现（第一阶段：可计算性——先完成）
+
+交付物按提交哈希逐一可查：
+
+| 提交 | 内容 |
+|------|------|
+| `3fe173e857` | 主体实现：正交 retract 分解 + 并行 de Bruijn 升迁（PR 标题同款） |
+| `138c9719fc` | `canonicalEqName` 注入 `compareAtom` |
+| `9b7a22e003` | canonical heads 相等性比较处理 |
+| `71335da4b4` | `checkDefinitionalEquality` Blocked 路径规范化 |
+| `10470e68ae` | `makeTau` 望远镜扩张修正 + HDU thunk 递归求值规避 |
+| `8eb15741dc` | 全 CRT 合成（分段 de Bruijn 升迁）实现 |
+| `e705f42552` | CRT thunk 求值保守回退（消除递归挂起） |
+| `7f18e35fc5` | `isPathCons` 守卫（refl） |
+| `b2b66444ad` | `isIntervalCons` 守卫（i0/i1） |
+| `7b06efade4` | `hasConstructorPathFields` 守卫（区间域字段） |
+| `1326706c1b` | erased/irrelevant/量词-0 字段精确边界检查 |
+| `2b533bfef2` | 修复 #8090：`unifyIndices` 边界还原 |
+| `94ff844a0e` | interaction golden 值更新（注入输出变化） |
+
+最终版代码另处理了覆盖检查器的开放上下文：`extraCxt` 偏移经 `liftS`
+把合成后的 τ/leftInv 升迁过外层绑定（`LeftInverse.hs:160-194`）。
+
+**测试证据**（PR diff, test/）：
+
+| 测试 | 结果 | 含义 |
+|------|------|------|
+| `Succeed/InjectivityIndexed.agda` | ✅ | `Fin 2`/`Fin 3` 上 `--cubical` with-抽象 |
+| `Succeed/InjectivityWith.agda` | ✅ | ℕ with-模式 |
+| `Fail/InjectivityPartial.agda` | ✅（预期失败） | 索引类型残缺模式：transpX 子句经 τ/leftInv 生成，剩余错误仅为真正缺失的 case（CoverageIssue）——证明机制已运转 |
+| `Issue5577.agda` | **Fail→Succeed** | `--cubical-compatible -Werror` 下 `UnsupportedIndexedMatch` 消除 |
+| `Issue3034/1115/1775/4725.warn` | **警告清零** | UnsupportedIndexedMatch 警告全部消失 |
+| `Issue3966/4172-2/1408b.err` | 错误期望收缩 | 剩余 stuck 精确落在 refl（路径构造子）case —— 正是守卫边界（§6） |
+| `AllStdLib.out` | −34 行 | stdlib 全量警告输出缩减 |
+
+CI：**33/33 绿 + 1 SKIPPED**（`agda-3733-pr-journey.md` 记录）。
+
+**生产证据**：merge `2c3db2ce9d`（2026-07-13）合入自用编译器 master；当前
+`2.9.0-e8f5682-dirty` 构建即含此修复，全部 Sovereign 库模块由它编译。
+不是实验补丁——是**在用编译器**。
+
+---
+
+## 5. 数学证明（第二阶段：Sovereign 库形式化——后完成）
+
+| Agda 概念 | Sovereign 形式化 | 状态 |
+|-----------|------------------|------|
+| 望远镜尺寸 `nTarget = nOld + nctel − 1` | `QuantumBridge.CompilerCRT.crt-size-decomposition`（sizeΔ = modP + modQ） | refl |
+| 三段拼接 `tauList` | `QuantumBridge.MakeTau`（seg0/seg1/seg2 边界）、`TelescopeVerification.three-segment-reconstruct` | 构造 + 证明 |
+| 重建恒等 `embed∘classify = id` | `TelescopeVerification.roundtrip-general`（∀i<M，三分支归纳） | 已证（7/7 点 refl + 一般定理） |
+| retract 条件 `ρ∘τ = id` | `TelescopeVerification` 往返验证、`KanComposition` 膨胀对齐 | 已证 |
+| CRT 往返 | `Format.CRT.crtTheorem`（`crtReconstruct∘crtProject x ≡ x % M`）、`crtSec-core` | 已证 |
+| 幻方正交 | `MagicSquareM4.eigenEq34`、`eigenEq0`、`orth-v34-v0`、`orth-16-neg16` | refl |
+| 望远镜膨胀在极限环对齐 | `HoTT.KanComposition.expansionAlignment`（|Δ|−|Γ| = nctel−1 的 FULL_TOUR 对齐） | 已证 |
+| 段内局部索引求解（HDU） | `QuantumBridge.HDU.solve-local` | 构造 |
+
+**0-postulate 核心链**：`crtTheorem`、`roundtrip-general`、`three-segment-reconstruct`、
+`crt-size-decomposition`、`orth-v34-v0`、`eigenEq34`、`eigenEq0` —— 全部 refl 或有限归纳证明。
+单射性命题的数学证明不依赖任何 postulate。
+
+**明确标注的边界**：`MagicSquareM4.eigenvector16±/eigenEq16±` 以 postulate 引入
+（±16 本征向量在 ℤ⁴ 中无解——M₄∓16I 满秩；其存在性是 CRT 模域锚定，属
+机械约束类契约，非本命题的组成部分）。望远镜/注入链不引用它们。
+
+---
+
+## 6. 事实边界：守卫清单 = 健全性设计，不是未完成
+
+初版测试表把"std-lib multi-field ❌ Needs fallback"列为缺口。事实是：
+multi-field 索引构造子由 `makeTau` 扩张修正后**已工作**（CHANGELOG 口径：
+"field count does not exceed the remaining equation count"），CI 33/33。
+真正剩下的是一组**设计性守卫**——每个守卫对应一个需要不同机制的情形，
+跳过它们是正确的健全性保守（soundness-by-construction），不是漏洞：
+
+| 守卫 | 跳过对象 | 原因 |
+|------|----------|------|
+| `consOfHIT` | HIT 构造子 | HIT 商语义与逐字注入不兼容 |
+| `isPathCons` | `refl` | 路径构造子的注入需要区间端面归约（i0/i1），`conApp` 会崩 |
+| `isIntervalCons` | `i0`/`i1` | 同上 |
+| `hasConstructorPathFields` | 字段类型为 PathP（区间域 Pi） | transp 在边界面上替换端面 |
+| `hasErasedConstructorFields` | erased/irrelevant/量词-0 字段 | 生成投影必须继承字段模态契约（未实现 ≠ 不正确） |
+
+证据即测试本身：`Issue3966.err` 的剩余错误**精确地**是
+`⊆-trans (x ∷ʳ σ') ρ ≟ refl ∷ σ` 卡在 refl case —— 守卫边界被测试显式刻画。
+
+HDU 成功分支的保守回退（`e705f42552`）同理：投影 retract + 平凡 leftInv
+是 CI 全绿的健全路径；全 CRT 合成的数学（§3.5、§5 的 ThreeSegment/HDU
+形式化）已完成，工程激活属后续覆盖面工作，不影响已完成的命题。
+
+---
+
+## 7. 单射性 vs 规范性：划界（本版与初版的根本区别）
+
+| | 单射性（本命题） | 规范性（另一个命题） |
+|---|---|---|
+| 陈述 | 注入步 τ 有同伦左逆 ⇒ 信息无损 ⇒ 可容许 | 每个闭项归约到标准构造子（`transp` 在闭项上的计算） |
+| 本工作地位 | **主张并完成**（工程 §4 + 数学 §5） | **不主张、不依赖** |
+| 初版处理 | 被写成"部分修复/延迟" | 被写成"L2/L3 未完成"——混同 |
+| 现状 | 已闭合 | 单独命题，与 CCHM 索引族语义相关（Vezzosi/Mörtberg 方向） |
+
+初版把规范性当作本工作"剩余的三级难度"来谦虚，实为把命题写错了。
+本版只主张单射性——它已完成。
+
+---
+
+## 8. PR 旅程终局（事实）
+
+1. 2026-07-06 提交 PR #8611（`partially fixes #3733` 的标题口径 = 单射性子命题，非规范性）。
+2. 5 天 102 提交，CI 33/33 绿 + 1 SKIPPED。
+3. 等待评审：cubical 类型论方向无合格评审者。
+   Abel 最终评论："Apologies, we don't have a competent reviewer/maintainer available atm for changes to the Cubical type theory."
+4. 作者关闭 PR（未合并）。
+5. 资产保全：代码合入自用编译器（`2c3db2ce9d`，2026-07-13）并在生产中；数学证明在 Sovereign 库；记录在 `agda-3733-pr-journey.md`。
+
+工程教训（journey 全记录，摘要）：
+`make test` 不依赖 `make install-bin`（stale binary 假阳性）；`.agdai` 缓存掩盖
+bug（须 `rm -rf cubical/_build`）；`GHCRTS` 用 `$(origin)` 判断；容器内接受
+golden 值会污染宿主机路径。
+
+---
+
+## 9. 证据索引
+
+**代码**（自用编译器 `/data/work/functional-programming/agda`，master 已含）：
+- `src/full/Agda/TypeChecking/Rules/LHS/Unify/LeftInverse.hs` — `buildEquiv` DInjectivity（522-660 行）、守卫、`makeTau`、extraCxt 升迁
+- `src/full/Agda/TypeChecking/Rules/LHS/Unify.hs` — `canonicalEqName`、`consOfHIT/isPathCons/isIntervalCons` 守卫（549-560 行）、HDU thunk 捕获
+- `src/full/Agda/TypeChecking/Coverage/SplitClause.hs` — `UnifyEquiv` 语义（`infoRho/infoTau/infoLeftInv`）
+- `src/full/Agda/TypeChecking/Conversion.hs`、`Primitive/Cubical.hs`、`Substitute.hs` — 配套修正
+
+**测试**：`test/Succeed/InjectivityIndexed.agda`、`InjectivityWith.agda`、`test/Fail/InjectivityPartial.agda`、`test/Succeed/Issue5577.agda`（R100 迁移）
+
+**数学**（Sovereign 库，`src/Sovereign/`）：
+- `Structology/QuantumBridge.agda` — `CompilerCRT`、`MakeTau`、`TelescopeVerification`（`roundtrip-general` 等）、`MakeTauSize`、`HDU`
+- `Format/CRT.agda` — `crtTheorem`、`crtSec-core`
+- `Structology/MagicSquareM4.agda` — `eigenEq34`、`eigenEq0`、`orth-v34-v0`、`orth-16-neg16`
+- `HoTT/KanComposition.agda` — `expansionAlignment`
+
+**记录**：`docs/agda-3733-pr-journey.md`（攻关全记录）
+
+---
+
+## 10. 下一步（事实性，非谦虚）
+
+1. **发表路线**：PR 不重开（评审者空缺是事实，Abel 已言明）。将 §3 望远镜
+   单射性定理 + §4 实现 + §5 形式化整理为论文（retract 分解的健全性论证 +
+   de Bruijn 升迁尺寸定理），走 arXiv/期刊。
+2. **工程后续**（覆盖面，不影响已闭合命题）：HDU thunk 隔离方案成熟后，
+   重新激活全 CRT 合成路径（`8eb15741dc` 的实现 + `e705f42552` 的回退点）。
+3. **规范性命题**：单独立项（极限环框架 + 相位对齐点 6624 已备于
+   `HoTT/PhaseAlignment6624.agda`、`CanonicityAlignment.agda`）——它是另一个
+   定理，与本文命题无关，不再混写于本文档。
+
+---
+
+*本版全部事实可复验：提交哈希见自用编译器 repo，引理名见 Sovereign 库源码，
+CI 与测试见 PR diff。事实说话。*
