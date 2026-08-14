@@ -123,7 +123,7 @@
 
 | 优先级 | 建议 |
 |:------:|------|
-| P0 | 闭合 `DiscreteCCHM.agda` 的 `shift-additive` postulate (可消除, 需 %幂等性证明) |
+| P0 | ~~闭合 `DiscreteCCHM.agda` 的 `shift-additive` postulate (可消除, 需 %幂等性证明)~~ ✅ 已闭合 (2026-08: `mod+-distrib` + `[m+kn]%n≡m%n` 命题层证明, 编译绿) |
 | P1 | 为 `ZeroHomologyEquivalence.agda` 提供实际证明 (当前为 `tt : ⊤` 空壳) |
 | P2 | 为 `Quantum/Foundation.agda` 的声子模型提供至少一个非 postulate 定理 |
 | P3 | 更新 wiki 文档中已过时的 postulate 计数 |

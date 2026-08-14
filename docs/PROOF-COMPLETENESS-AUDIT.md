@@ -59,7 +59,7 @@
 | `CRTFiberWinding` | 0 | — | ✅ 闭合 |
 | `CRTHarmonics` | 0 | — | ✅ 闭合 |
 | `Connection` | 0 | — | ✅ 闭合 |
-| `DiscreteCCHM` | **3** | `shift-additive`: 可消除, `discreteGlue`/`discreteCanonicity`: v6.0 接口占位 | 🟡 |
+| `DiscreteCCHM` | **2** | `shift-additive`: ✅ 已消除 (2026-08, mod+-distrib + [m+kn]%n≡m%n 命题层证明); `discreteGlue`/`discreteCanonicity`: v6.0 接口占位 | 🟡 |
 | `Equivalence` | 0 | — | ✅ 闭合 |
 | `Fibration` | 0 | — | ✅ 闭合 |
 | `Geometry` | 0 | — | ✅ 闭合 |

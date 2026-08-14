@@ -271,9 +271,11 @@ normalization 搜索。规范性命题被替换为有限域上的有界收敛命
 | 内核等价判定 | 三极判定（代数极 4320D→CRT、几何极 T⁶/A4 轨道、拓扑极不变量）替代 Agda βη | 已实现 + Hspec 穷举（`forall729`、`convTerm (Lit 0) (reduce4320D (9%3)) ≡ True`） | `dype/src/Dayan/Kernel/Conversion.hs` |
 | 规范形计算 | `reduceDiv3k`（3k/3→k）、`reduceMod3k`（3k%3→0）、`evalArith` 折叠 → `reduce4320D` | 已实现；O(1) CRT 查表（含 `8d52466` 规范代表元修复） | `dype/src/Dayan/Compute/CRT.hs` |
 
-剩余边界（占位，不影响已闭合部分）：`DiscreteCCHM` 的 3 个 postulate——
-`shift-additive`（`%` 幂等性阻塞定义性相等，T6 REWRITE 同款模式）、
-`discreteGlue`、`discreteCanonicity`（注释：v6.0 连续化闭合用）。另按 wiki 20
+剩余边界（占位接口，不影响已闭合部分）：`DiscreteCCHM` 的 2 个 postulate——
+`discreteGlue`（CRT crt-merge 接线占位，`Format/CRT.crtReconstruct` 已 0 postulate
+存在，可直接定义）、`discreteCanonicity`（CRTFiberWinding 满射性，v6.0 连续化
+闭合用）。原第 3 个 `shift-additive` 已于 2026-08 由 postulate 升级为命题层证明
+（`mod+-distrib` + `[m+kn]%n≡m%n`，编译绿，见 §7.1 表格）。另按 wiki 20
 的诚实记录：`discreteUA` 曾因 `norm` 非单射（729→6624 满射）引入矛盾而移除。
 
 结论：上游连续 CCHM 规范性（Vezzosi/Mörtberg 方向）依旧开放——但 dype
@@ -327,7 +329,7 @@ golden 值会污染宿主机路径。
 3. **规范性命题**：连续 CCHM 版（任意索引族 `transp` 在闭项上的归约）保持
    上游开放，本工作不主张。dype 平替版已闭合（§7.1：`DiscreteCCHM.boundedComputation`
    已证、`CanonicityAlignment` Fin 基底 0 postulate、Dayan 内核 4320D 规范形 +
-   729/6624 穷举）；剩余仅为 ℕ→连续桥接的 3 个占位 postulate（v6.0 连续化闭合）。
+   729/6624 穷举）；剩余仅为 ℕ→连续桥接的 2 个占位 postulate（v6.0 连续化闭合）。
 
 ---
 

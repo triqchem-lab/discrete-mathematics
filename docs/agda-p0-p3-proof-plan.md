@@ -91,9 +91,11 @@
 `iterTransp`/`norm`；第 3 步（6624 不动点）= `fullTour-alignment`；第 2 步
 （indexed HITs 闭项归约）属连续 CCHM，由 dype 平替而非证明。
 
-**剩余（占位，不影响已闭合部分）：** `DiscreteCCHM` 3 个 postulate——
-`shift-additive`（`%` 幂等性阻塞定义性相等，T6 REWRITE 同款模式）、
-`discreteGlue`、`discreteCanonicity`（v6.0 连续化闭合用）。另按 wiki 20：
+**剩余（占位接口，不影响已闭合部分）：** `DiscreteCCHM` 2 个 postulate——
+`discreteGlue`（CRT crt-merge 接线占位，`Format/CRT.crtReconstruct` 已 0 postulate
+存在，可直接定义）、`discreteCanonicity`（CRTFiberWinding 满射性，v6.0 连续化
+闭合用）。原第 3 个 `shift-additive` 已于 2026-08 由 postulate 升级为命题层证明
+（`mod+-distrib` + `[m+kn]%n≡m%n`）。另按 wiki 20：
 `discreteUA` 因 `norm` 非单射（729→6624 满射）引入矛盾而移除。
 
 **难度（原评级 ⭐⭐⭐⭐⭐⭐ 博士论文级）：** 仅适用于连续 CCHM 版——
