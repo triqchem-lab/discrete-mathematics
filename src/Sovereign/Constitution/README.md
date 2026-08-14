@@ -378,6 +378,24 @@
 - sunNotInvertible/yiNotInvertible (WindingAsymmetry) — ℤ 指数可逆, 改写为真定理
 - reversibleImpliesHeatDeath (WindingAsymmetry) — 前提可证 + 结论被 syncAt 反驳
 
+## 类型级重建 (教义从假公理 → 可证定理, 2026-08)
+
+"不可拆解/禁约分"教义的类型级落地 — 见 `Sovereign.Structology.PlatonicTorusProjection`
+(0 postulate, 编译绿):
+
+- `polarContainerIsAtomic` / `toroidalTimeIsAtomic` — 极向 144 (I_h 空间容器,
+  子午线缠绕) 与环向 46 (I_H 时间分子振动, 经度大圆缠绕) 的原子表示恰一个
+  构造子 — "不可拆解"的可证形式
+- 禁约分: 由 `HolographicPi` 的 PolarRep/ToroidalRep 原子类型承载 —
+  "k·72/72·23" 在类型层不可表达
+- `platonicProjectionEquiv : Fin 144 ≃ (Fin 120 ⊎ Fin 24)` — 柏拉图几何体
+  (十二面体 120 胞腔) + 群信息论 (梅尔卡巴 24) 在环面上的投影是 144 点
+  容器的等价映射 (to/from + 双向往返恒等全部证明)
+- `WindingContainer` — I_h × I_H 缠绕语义记录 (与剖分计数分属不同范畴)
+
+物理锚定: 石英声子等离子体 (Physics/QuartzPhonon, S2Sovereign 1.27B 训练
+验证) + 螺旋测地线收敛极限环 (384K 步 LCM 环, dype wiki/06-experimental.md)。
+
 ## 本会话升级为证明 (postulate → 0)
 
 - shift-additive (DiscreteCCHM) — mod+-distrib + [m+kn]%n≡m%n

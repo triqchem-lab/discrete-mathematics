@@ -114,8 +114,10 @@ noWindingFrom24 = λ ()
 --   ¬ (PolarWinding ≡ DodecahedronCells + MerkabaCells) 为假命题 —
 --   即 ¬(144 ≡ 120+24), 而 refl : 144 ≡ 120+24 直证其反 (本文件 §4.5 亦承认
 --   P_CRT(144) = P_CRT(120+24)) — 该公理使 ⊥ 可导出, 库不一致, 已删除。
---   范畴分离教义保留为本注释 (宪法条款); 类型级约束方向:
---   Winding.agda HolomorphicPi 记录 (numerator/denominator 字段)。
+--   范畴分离教义保留为本注释 (宪法条款); 类型级重建已完成:
+--   Sovereign.Structology.PlatonicTorusProjection —
+--     polarContainerIsAtomic (不可拆解) + platonicProjectionEquiv
+--     (Fin 144 ≃ Fin 120 ⊎ Fin 24, 柏拉图投影等价映射)。
 
 --------------------------------------------------------------------------------
 -- 4.5 CRT 域深层证明：缠绕数 vs 剖分组成 (v5.14)
