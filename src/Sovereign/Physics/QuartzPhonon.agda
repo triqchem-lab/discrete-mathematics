@@ -358,6 +358,8 @@ saha-lhs-anchored = + (10 * 10) /ℚ 990000  -- α=0.01 时的 LHS
 -- 在 T=1978K (SiO₂ 液相线), α ≈ 0.01 (弱电离)
 -- 来源: Griem 1964, Table III-2; NIST ASD Si II lines
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   saha-equilibrium-anchored :
     -- 在液相线温度, Saha LHS 与 RHS 的实验偏差 < 15%
     -- 完整证明需要 Boltzmann 因子的有理数逼近
@@ -396,6 +398,8 @@ postulate
 -- 实验值 ρ_crit = 0.38 与理论值 0.39 的偏差 < 3%
 -- 来源: N14 3.17 MHz FOM 跃迁, Zallen 1983 Fig. 4.2
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   percolation-anchored :
     -- ρ_crit 在渗流阈值邻域内
     -- 完整证明需要晶格几何的有限尺寸标度分析

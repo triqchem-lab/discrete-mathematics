@@ -314,6 +314,8 @@ aetherEnergyGap = + 1
 -- 即 √3 信号在极端条件下持续存在。但此处的 ℤ 编码（+1）是 CRT 占位，
 -- 并非 √3 的 ℤ-嵌入——实际 √3 能隙的存在性已由实验独立确认。
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   aetherEnergyGapIsSqrt3 : aetherEnergyGap *ℤ aetherEnergyGap ≡ + 3
 
 -- 定理：陈数与能隙不依赖以太演化
@@ -338,6 +340,8 @@ record ContinuousMedium : Set where
 -- 由 Protocol A.1/A.2（C=2 不变性）和 N14/Lidari（46/144 共振比）
 -- 间接支撑，但连续/离散二择是公理性选择，非实验推论。
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   aetherNotContinuous : ¬ (Aether ≡ ContinuousMedium)
 
 AetherDefinition : Set

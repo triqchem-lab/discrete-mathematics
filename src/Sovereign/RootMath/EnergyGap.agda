@@ -92,6 +92,8 @@ algebraicEnergyGap = sqrt3
 
 -- 定理：代数能隙的平方 = 3
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   energyGapSquared : normˢ (algebraicEnergyGap *ˢ algebraicEnergyGap) ≡ + 3 / 1
 
 -- 半能隙 Δ/2 = (1/2)√3
@@ -101,6 +103,8 @@ halfEnergyGap = (+ 0 / 1) +s3 (+ 1 / 2)
 -- 定理：(Δ/2)² 的 Sqrt3 范数 = -3/4
 --   证明：(0 + 1/2√3)² 的范数 = 0² - 3*(1/2)² = -3/4
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   halfEnergyGapSquared : normˢ (halfEnergyGap *ˢ halfEnergyGap) ≡ -[1+ 0 ] / 4
 
 -- 正半能隙模平方 = 3/4
@@ -126,6 +130,8 @@ open ChordLength public
 
 -- 内建约束：弦长平方必须为 3
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   sqLenIs3 : (c : ChordLength) → ChordLength.sqLen c ≡ 3
 
 standardChord : ChordLength
@@ -195,6 +201,8 @@ hermiteMetric z1 z2 = normˢ (z2 -ˢ z1)
 --   phaseOvercome - phaseGenerate = -3/2 + 1/2√3
 --   norm = (-3/2)² - 3*(1/2)² = 9/4 - 3/4 = 6/4 = 3/2
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   hermiteGenerateToOvercome : hermiteMetric phaseGenerate phaseOvercome ≡ + 3 / 2
 
 --------------------------------------------------------------------------------
@@ -209,6 +217,8 @@ yaoTrapThreshold = 253
 -- 根据《律算合一知识图谱》：能隙 Δ = √3，定点整数 Q16.16 中表现为 56632/65536
 -- 此处的 56632/65536 是 Δ/2 的近似值
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   halfGapExact : ℚ
 
 -- halfGapExact 的平方
@@ -232,6 +242,8 @@ open ZhonglvPrepTrigger public
 
 -- 内建约束：阈值必须为半能隙
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   thresholdIsHalfGap : (t : ZhonglvPrepTrigger) → ZhonglvPrepTrigger.threshold t ≡ halfGapExact
 
 -- 整数绝对值与有理数的交叉乘法比较

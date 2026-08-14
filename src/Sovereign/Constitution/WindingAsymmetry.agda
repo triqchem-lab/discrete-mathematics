@@ -11,15 +11,15 @@
 
 module Sovereign.Constitution.WindingAsymmetry where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _/_; _≤_; _≥_; _∸_; NonZero; ≢-nonZero; nonZero)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _/_; _≤_; _≥_; _∸_; NonZero; ≢-nonZero; nonZero; s≤s; z≤n)
 open import Data.Nat.DivMod using (m%n<n; [m+kn]%n≡m%n)
-open import Data.Nat.Properties using (m^n≡0⇒m≡0; 1+n≢0)
-open import Data.Integer using (ℤ; +_; -_; -[1+_]; ∣_∣) renaming (_+_ to _+ℤ_; _-_ to _-ℤ_; _*_ to _*ℤ_; _/_ to _/ℤ_; _≥_ to _≥ℤ_; _≤_ to _≤ℤ_)
+open import Data.Nat.Properties using (m^n≡0⇒m≡0; 1+n≢0; m≤m+n)
+open import Data.Integer using (ℤ; +_; -_; -[1+_]; ∣_∣; +≤+; -≤+; -≤-) renaming (_+_ to _+ℤ_; _-_ to _-ℤ_; _*_ to _*ℤ_; _/_ to _/ℤ_; _≥_ to _≥ℤ_; _≤_ to _≤ℤ_)
 open import Data.Integer.Properties using (_≤?_)
 open import Relation.Nullary using (Dec; yes; no)
 open import Data.Bool using (Bool; true; false; if_then_else_)
 open import Data.String using (String)
-open import Data.Fin using (Fin; toℕ; fromℕ<; _<_)
+open import Data.Fin using (Fin; toℕ; fromℕ<; _<_) renaming (zero to fzero; suc to fsuc)
 open import Data.Fin.Properties using (fromℕ<-cong; toℕ-fromℕ<)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong; cong₂)
 open import Relation.Nullary using (¬_)
@@ -31,10 +31,11 @@ open import Data.Sum using (_⊎_)
 -- 导入核心模块
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
-open import Sovereign.RootMath.LengthLattice using (LüName; lüToLength; 
-                                                      HuangZhong; LinZhong; TaiCu; NanLu;
-                                                      GuXian; YingZhong; RuiBin; DaLu;
-                                                      YiZe; JiaZhong; WuShe; ZhongLu)
+open import Sovereign.Base.Lü using (LüName;
+                                      HuangZhong; LinZhong; TaiCu; NanLu;
+                                      GuXian; YingZhong; RuiBin; DaLu;
+                                      YiZe; JiaZhong; WuShe; ZhongLu)
+open import Sovereign.RootMath.LengthLattice using (lüToLength)
 open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi; applyLossGain)
 
 --------------------------------------------------------------------------------
@@ -99,22 +100,150 @@ sunInvertible = mkExp (- (+ 1)) (+ 1) , refl
 yiInvertible : Σ HarmonicExponents (λ inv → applyYi inv ≡ mkExp (+ 0) (+ 0))
 yiInvertible = mkExp (- (+ 2)) (+ 1) , refl
 
--- 定理：指数 a 单调递增（损益链中）
--- 2026-08 P0 处理: 原为未填充 hole — 升级为显式公理 (可闭合类:
---   对 twelveLüExponents 的 12 项逐 case 归约即可证, Fin 12 × Fin 12
---   共 144 case, 待损益链表完备后歼灭)。
-postulate
-  aMonotonicallyIncreasing : ∀ (i j : Fin 12) → 
-    i < j → 
-    HarmonicExponents.a (lookup twelveLüExponents i) ≤ℤ 
-    HarmonicExponents.a (lookup twelveLüExponents j)
+-- 定理：指数 a 单调递增 / b 单调递减（损益链中）
+-- 2026-08 P0 轨道 C: 原 2 条 postulate → 66+66 case 逐对证明 (0 postulate):
+--   a 序列 0,1,3,4,6,7,9,10,12,13,15,16 递增; b 序列 0,-1,...,-11 递减,
+--   每对 (i,j) 的 ≤ℤ 由 +≤+/m≤m+n 或 -≤-/-≤+ 直接给出。
+aMonotonicallyIncreasing : ∀ (i j : Fin 12) → i < j →
+  HarmonicExponents.a (lookup twelveLüExponents i) ≤ℤ
+  HarmonicExponents.a (lookup twelveLüExponents j)
+aMonotonicallyIncreasing (fzero) (fsuc (fzero)) (s≤s (z≤n)) = +≤+ (m≤m+n 0 1)
+aMonotonicallyIncreasing (fzero) (fsuc (fsuc (fzero))) (s≤s (z≤n)) = +≤+ (m≤m+n 0 3)
+aMonotonicallyIncreasing (fzero) (fsuc (fsuc (fsuc (fzero)))) (s≤s (z≤n)) = +≤+ (m≤m+n 0 4)
+aMonotonicallyIncreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fzero))))) (s≤s (z≤n)) = +≤+ (m≤m+n 0 6)
+aMonotonicallyIncreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (s≤s (z≤n)) = +≤+ (m≤m+n 0 7)
+aMonotonicallyIncreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (s≤s (z≤n)) = +≤+ (m≤m+n 0 9)
+aMonotonicallyIncreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (z≤n)) = +≤+ (m≤m+n 0 10)
+aMonotonicallyIncreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (z≤n)) = +≤+ (m≤m+n 0 12)
+aMonotonicallyIncreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (z≤n)) = +≤+ (m≤m+n 0 13)
+aMonotonicallyIncreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (z≤n)) = +≤+ (m≤m+n 0 15)
+aMonotonicallyIncreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (z≤n)) = +≤+ (m≤m+n 0 16)
+aMonotonicallyIncreasing (fsuc (fzero)) (fsuc (fsuc (fzero))) (s≤s (s≤s (z≤n))) = +≤+ (m≤m+n 1 2)
+aMonotonicallyIncreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fzero)))) (s≤s (s≤s (z≤n))) = +≤+ (m≤m+n 1 3)
+aMonotonicallyIncreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fzero))))) (s≤s (s≤s (z≤n))) = +≤+ (m≤m+n 1 5)
+aMonotonicallyIncreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (s≤s (s≤s (z≤n))) = +≤+ (m≤m+n 1 6)
+aMonotonicallyIncreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (s≤s (s≤s (z≤n))) = +≤+ (m≤m+n 1 8)
+aMonotonicallyIncreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (s≤s (z≤n))) = +≤+ (m≤m+n 1 9)
+aMonotonicallyIncreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (z≤n))) = +≤+ (m≤m+n 1 11)
+aMonotonicallyIncreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (z≤n))) = +≤+ (m≤m+n 1 12)
+aMonotonicallyIncreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (z≤n))) = +≤+ (m≤m+n 1 14)
+aMonotonicallyIncreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (z≤n))) = +≤+ (m≤m+n 1 15)
+aMonotonicallyIncreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fzero)))) (s≤s (s≤s (s≤s (z≤n)))) = +≤+ (m≤m+n 3 1)
+aMonotonicallyIncreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fzero))))) (s≤s (s≤s (s≤s (z≤n)))) = +≤+ (m≤m+n 3 3)
+aMonotonicallyIncreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (s≤s (s≤s (s≤s (z≤n)))) = +≤+ (m≤m+n 3 4)
+aMonotonicallyIncreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (s≤s (s≤s (s≤s (z≤n)))) = +≤+ (m≤m+n 3 6)
+aMonotonicallyIncreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (s≤s (s≤s (z≤n)))) = +≤+ (m≤m+n 3 7)
+aMonotonicallyIncreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (s≤s (z≤n)))) = +≤+ (m≤m+n 3 9)
+aMonotonicallyIncreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (z≤n)))) = +≤+ (m≤m+n 3 10)
+aMonotonicallyIncreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (z≤n)))) = +≤+ (m≤m+n 3 12)
+aMonotonicallyIncreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (z≤n)))) = +≤+ (m≤m+n 3 13)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fzero))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = +≤+ (m≤m+n 4 2)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = +≤+ (m≤m+n 4 3)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = +≤+ (m≤m+n 4 5)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = +≤+ (m≤m+n 4 6)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = +≤+ (m≤m+n 4 8)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = +≤+ (m≤m+n 4 9)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = +≤+ (m≤m+n 4 11)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = +≤+ (m≤m+n 4 12)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = +≤+ (m≤m+n 6 1)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = +≤+ (m≤m+n 6 3)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = +≤+ (m≤m+n 6 4)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = +≤+ (m≤m+n 6 6)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = +≤+ (m≤m+n 6 7)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = +≤+ (m≤m+n 6 9)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = +≤+ (m≤m+n 6 10)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))) = +≤+ (m≤m+n 7 2)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))) = +≤+ (m≤m+n 7 3)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))) = +≤+ (m≤m+n 7 5)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))) = +≤+ (m≤m+n 7 6)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))) = +≤+ (m≤m+n 7 8)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))) = +≤+ (m≤m+n 7 9)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))) = +≤+ (m≤m+n 9 1)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))) = +≤+ (m≤m+n 9 3)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))) = +≤+ (m≤m+n 9 4)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))) = +≤+ (m≤m+n 9 6)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))) = +≤+ (m≤m+n 9 7)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))))) = +≤+ (m≤m+n 10 2)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))))) = +≤+ (m≤m+n 10 3)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))))) = +≤+ (m≤m+n 10 5)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))))) = +≤+ (m≤m+n 10 6)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))))) = +≤+ (m≤m+n 12 1)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))))) = +≤+ (m≤m+n 12 3)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))))) = +≤+ (m≤m+n 12 4)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))))))) = +≤+ (m≤m+n 13 2)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))))))) = +≤+ (m≤m+n 13 3)
+aMonotonicallyIncreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))))))) = +≤+ (m≤m+n 15 1)
 
-  -- 定理：指数 b 单调递减（损益链中）
-  -- 2026-08 P0 处理: 同上 (可闭合类, 144 case)。
-  bMonotonicallyDecreasing : ∀ (i j : Fin 12) → 
-    i < j → 
-    HarmonicExponents.b (lookup twelveLüExponents j) ≤ℤ 
-    HarmonicExponents.b (lookup twelveLüExponents i)
+bMonotonicallyDecreasing : ∀ (i j : Fin 12) → i < j →
+  HarmonicExponents.b (lookup twelveLüExponents j) ≤ℤ
+  HarmonicExponents.b (lookup twelveLüExponents i)
+bMonotonicallyDecreasing (fzero) (fsuc (fzero)) (s≤s (z≤n)) = -≤+
+bMonotonicallyDecreasing (fzero) (fsuc (fsuc (fzero))) (s≤s (z≤n)) = -≤+
+bMonotonicallyDecreasing (fzero) (fsuc (fsuc (fsuc (fzero)))) (s≤s (z≤n)) = -≤+
+bMonotonicallyDecreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fzero))))) (s≤s (z≤n)) = -≤+
+bMonotonicallyDecreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (s≤s (z≤n)) = -≤+
+bMonotonicallyDecreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (s≤s (z≤n)) = -≤+
+bMonotonicallyDecreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (z≤n)) = -≤+
+bMonotonicallyDecreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (z≤n)) = -≤+
+bMonotonicallyDecreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (z≤n)) = -≤+
+bMonotonicallyDecreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (z≤n)) = -≤+
+bMonotonicallyDecreasing (fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (z≤n)) = -≤+
+bMonotonicallyDecreasing (fsuc (fzero)) (fsuc (fsuc (fzero))) (s≤s (s≤s (z≤n))) = -≤- (m≤m+n 0 1)
+bMonotonicallyDecreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fzero)))) (s≤s (s≤s (z≤n))) = -≤- (m≤m+n 0 2)
+bMonotonicallyDecreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fzero))))) (s≤s (s≤s (z≤n))) = -≤- (m≤m+n 0 3)
+bMonotonicallyDecreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (s≤s (s≤s (z≤n))) = -≤- (m≤m+n 0 4)
+bMonotonicallyDecreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (s≤s (s≤s (z≤n))) = -≤- (m≤m+n 0 5)
+bMonotonicallyDecreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (s≤s (z≤n))) = -≤- (m≤m+n 0 6)
+bMonotonicallyDecreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (z≤n))) = -≤- (m≤m+n 0 7)
+bMonotonicallyDecreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (z≤n))) = -≤- (m≤m+n 0 8)
+bMonotonicallyDecreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (z≤n))) = -≤- (m≤m+n 0 9)
+bMonotonicallyDecreasing (fsuc (fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (z≤n))) = -≤- (m≤m+n 0 10)
+bMonotonicallyDecreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fzero)))) (s≤s (s≤s (s≤s (z≤n)))) = -≤- (m≤m+n 1 1)
+bMonotonicallyDecreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fzero))))) (s≤s (s≤s (s≤s (z≤n)))) = -≤- (m≤m+n 1 2)
+bMonotonicallyDecreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (s≤s (s≤s (s≤s (z≤n)))) = -≤- (m≤m+n 1 3)
+bMonotonicallyDecreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (s≤s (s≤s (s≤s (z≤n)))) = -≤- (m≤m+n 1 4)
+bMonotonicallyDecreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (s≤s (s≤s (z≤n)))) = -≤- (m≤m+n 1 5)
+bMonotonicallyDecreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (s≤s (z≤n)))) = -≤- (m≤m+n 1 6)
+bMonotonicallyDecreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (z≤n)))) = -≤- (m≤m+n 1 7)
+bMonotonicallyDecreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (z≤n)))) = -≤- (m≤m+n 1 8)
+bMonotonicallyDecreasing (fsuc (fsuc (fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (z≤n)))) = -≤- (m≤m+n 1 9)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fzero))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = -≤- (m≤m+n 2 1)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = -≤- (m≤m+n 2 2)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = -≤- (m≤m+n 2 3)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = -≤- (m≤m+n 2 4)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = -≤- (m≤m+n 2 5)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = -≤- (m≤m+n 2 6)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = -≤- (m≤m+n 2 7)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (z≤n))))) = -≤- (m≤m+n 2 8)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = -≤- (m≤m+n 3 1)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = -≤- (m≤m+n 3 2)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = -≤- (m≤m+n 3 3)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = -≤- (m≤m+n 3 4)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = -≤- (m≤m+n 3 5)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = -≤- (m≤m+n 3 6)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))) = -≤- (m≤m+n 3 7)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))) = -≤- (m≤m+n 4 1)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))) = -≤- (m≤m+n 4 2)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))) = -≤- (m≤m+n 4 3)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))) = -≤- (m≤m+n 4 4)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))) = -≤- (m≤m+n 4 5)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))) = -≤- (m≤m+n 4 6)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))) = -≤- (m≤m+n 5 1)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))) = -≤- (m≤m+n 5 2)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))) = -≤- (m≤m+n 5 3)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))) = -≤- (m≤m+n 5 4)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))) = -≤- (m≤m+n 5 5)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))))) = -≤- (m≤m+n 6 1)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))))) = -≤- (m≤m+n 6 2)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))))) = -≤- (m≤m+n 6 3)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))))) = -≤- (m≤m+n 6 4)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))))) = -≤- (m≤m+n 7 1)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))))) = -≤- (m≤m+n 7 2)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))))) = -≤- (m≤m+n 7 3)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))))))) = -≤- (m≤m+n 8 1)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n))))))))))) = -≤- (m≤m+n 8 2)
+bMonotonicallyDecreasing (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero))))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fzero)))))))))))) (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (z≤n)))))))))))) = -≤- (m≤m+n 9 1)
+
 
 --------------------------------------------------------------------------------
 -- 3. 极向 144 与环向 46 的相位差
@@ -182,20 +311,19 @@ zhonglvModReset : ℤ → ℤ
 zhonglvModReset acc = (acc *ℤ + 177147) /ℤ + 65536
 
 -- 定理：仲吕闭合不是损益操作
--- 2026-08 P0 处理: 原 zhonglvNotSunYi = ? 为未填充 hole (隐藏假设) —
---   升级为显式公理 (可闭合类: 需对 zhonglvModReset 与 applyLossGain 逐分支
---   归约证明, 待 LossGain 表完备后歼灭)。
-postulate
-  zhonglvNotSunYi : ∀ acc → ¬ (∃ λ lg → zhonglvModReset acc ≡ + applyLossGain (∣ acc ∣) lg)
+-- 2026-08 P0 轨道 A 处置: 原 zhonglvNotSunYi (¬∃lg 全称) 为假命题 —
+--   见证 acc=0, lg=Sun: zhonglvModReset 0 = 0 = applyLossGain 0 Sun
+--   (0 ≡ + 0, refl 直证) — 公理使 ⊥ 可导出, 已删除。
+--   事实: 仲吕闭合在 acc=0 处与损操作重合; "非损益复位"是相位语义
+--   (模数缩放 177147/65536 vs 2/3), 非 ℤ 层逐点 ≠, 教义保留为注释。
 
 -- 定理：仲吕闭合是唯一的非损益复位方式
--- 2026-08 P0 处理: 原为未填充 hole — 升级为显式公理 (待核验类:
---   ∀ 覆盖任意 reset 函数, 需先核验反例再决定证明或收窄命题)。
-postulate
-  onlyResetMechanism : 
-    ∀ (reset : ℤ → ℤ) → 
-    (∀ acc → reset acc ≡ zhonglvModReset acc) ⊎ 
-    (∀ acc → ¬ (∃ λ lg → reset acc ≡ + applyLossGain (∣ acc ∣) lg))
+-- 2026-08 P0 轨道 A 处置: 原 onlyResetMechanism 为假命题 —
+--   见证 reset = λ acc → + applyLossGain (∣ acc ∣) Sun:
+--   第一支在 acc=65536 失败 (43690 ≠ 177147), 第二支在任意 acc 失败
+--   (lg=Sun 给出 ≡) — 两支皆伪, 公理使 ⊥ 可导出, 已删除。
+--   "唯一复位方式"的宪法语义由 LossGain 表 + 仲吕相位锚定承载,
+--   不以 ∀-覆盖任意函数的 ℤ 层命题驻留。
 
 --------------------------------------------------------------------------------
 -- 5. 非对称性的宪法定义

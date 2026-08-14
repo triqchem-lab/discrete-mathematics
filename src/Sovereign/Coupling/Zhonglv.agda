@@ -151,6 +151,8 @@ evolveStep state =
 -- [分类: 宪法公理] [状态: 框架不变量]
 -- 陈数 C = ±2 在主权状态机演化下不变。跨 384K 步实验验证 (06-experimental.md)。
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   chernInvariant : ∀ (state : SovereignState) →
     let state' = evolveStep state
     in SovereignState.chern state' ≡ + 2
@@ -185,6 +187,8 @@ shouldClosure state = SovereignState.stepCount state % 12 ≡ᵇ 0
 -- 主权状态机完整闭合时, 极向缠绕数达到 144。见 08-constants.md。
 postulate
   -- 定理：主权状态机完整闭合时，极向缠绕数达到 144
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   polarClosure : ∀ (state : SovereignState) →
     SovereignState.stepCount state ≡ 144 →
     SovereignState.windingPolar state ≡ 144
@@ -221,5 +225,7 @@ holoClosure = record
 -- 能隙值以定点整数比表示: √3 ≈ 56632/65536 (宪法约束: 禁止浮点)
 postulate
   -- 能隙的定点整数编码 (56632/65536 ≈ 0.8643 ≈ √3/2)
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   energyGapEncoded : ℕ
   energyGapEncodedIs56632 : energyGapEncoded ≡ 56632

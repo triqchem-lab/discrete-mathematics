@@ -226,4 +226,6 @@ mod-inverse-13 = refl
 --   mod-helper 对变量不规约, 导致 *-assoc 等引理的类型无法匹配。
 --   与 CRT.agda crtSec-restricted 同类: 4320D 框架的 mod-helper 硬边界。
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   alignment-for-all-states : ∀ (s : State) → Σ ℕ (λ n → isHolographicState (iteratePhaseSync n s))

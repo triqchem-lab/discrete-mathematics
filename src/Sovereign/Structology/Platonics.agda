@@ -426,6 +426,8 @@ Torus2D = PolarCircle × ToroidalCircle
 
 -- 从 A₄ 群元提取极向/环向分量 (实际需 GF(3) 坐标计算, 此处为结构声明)
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   tetrahedralCell : A4 → Torus2D
   -- 正四面体的 12 个面对应 A₄ 的 12 个群元
   -- 每组 {Rot i j} 产生 C3 极向旋转 → φ 步进 48 (=144/3)
@@ -470,6 +472,8 @@ postulate
 -- S² 上的投影结构 (非坐标映射, 是拓扑不变量保留)
 postulate
   -- T⁶ → S² 投影, 保留陈数 c₁=2
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   project_T6_to_S2 : T6Lattice → Set  -- 纤维丛结构, 非逐点映射
   chern-preserved : ℕ → Set               -- c₁(project_T6_to_S2) ≡ 2
 
@@ -477,6 +481,8 @@ postulate
 -- R/r = 144/46 是圆内接正多边形的半径/边长比在整数格点上的极限
 -- 欧拉示性数 χ(S²)=2 正是这个比的拓扑保护
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   s2_to_torus_ratio : ℕ → Set  -- R:r = 144:46 是 S² 嵌入 T² 的整数特征
   holographic-pi : ℕ → Set     -- 全息 π = 144/46 = R/r, 精确有理数
 

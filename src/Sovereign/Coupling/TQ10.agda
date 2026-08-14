@@ -114,13 +114,13 @@ sumBerryCurvature (b ∷ bs) =
   extractBerryCurvature (ChecksumLayer.chern_guard (SovereignBlock.checksum b)) +ℕ 
   sumBerryCurvature bs
 
--- [分类: 宪法公理] [状态: 框架不变量，不可证]
--- 陈数 C = 2 是拓扑不变量，跨 144 块累加收敛。不是"待证的定理"——是四极框架的基石声明。
--- 实验验证: 384K 步 LCM 环巡游中 C = -2 全程不变 (见 06-experimental.md)。
-postulate
-  chernConvergence : ∀ (blocks : List SovereignBlock) → 
-    length blocks ≡ 144 → 
-    sumBerryCurvature blocks ≡ 2
+-- [分类: 宪法条款] 陈数 C = 2 是拓扑不变量 (四极框架基石声明)。
+-- 2026-08 P0 轨道 A 处置: 原 chernConvergence 的 ∀-全称形式为假 —
+--   SovereignBlock.checksum.chern_guard 是自由 Word8 字段,
+--   取 144 个 chern_guard=0 的块即得 sum = 0 ≠ 2 (可计算反驳, ⊥ 可导出), 已删除。
+--   实验验证 (384K 步 LCM 环巡游 C=-2 全程不变, 06-experimental.md) 是
+--   具体主权序列上的观测, 作为注释锚定保留; C=2 常量形式见
+--   Zhonglv.chernInvariant (B 类物理锚定登记)。
 
 --------------------------------------------------------------------------------
 -- 5. 主权块演化

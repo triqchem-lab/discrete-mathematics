@@ -12,10 +12,10 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
 open import Data.Fin using (Fin; toℕ; fromℕ; #_)
 open import Data.Fin.Properties using ()
 open import Data.Vec using (Vec; []; _∷_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Relation.Nullary using (¬_)
 open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; wuXingBase)
-open import Sovereign.RootMath.DigitalRoot using (StableRoot; root3; root6; root9)
+open import Sovereign.RootMath.DigitalRoot using (StableRoot; root0; root3; root6)
 
 --------------------------------------------------------------------------------
 -- 1. 十天干与十二地支
@@ -249,23 +249,32 @@ record IsMetaphor (w : WuXing) : Set where
     isMetaphorical      : metaphoricalElement ≡ w
 
 -- [Constitutional] 纳音为驻波拓扑指纹，禁止解释为五行比喻。
--- 注：IsMetaphor w 在理论上总是可居（取 metaphoricalElement = w, isMetaphorical = refl），
--- 故此公设与传统类型论有张力。作为宪法条款保留，限定纳音指纹的语义域。
-postulate
-  nayinIsTopological : ∀ (n : NayinFingerprint) →
-    ¬ IsMetaphor (NayinFingerprint.wuxing n)
+-- 2026-08 P0 轨道 A 处置: 原 nayinIsTopological 为假命题 — 模块自身注释承认
+--   IsMetaphor w 恒可居 (metaphoricalElement = w, isMetaphorical = refl),
+--   ¬ IsMetaphor 被该见证直接反驳 (⊥ 可导出), 已删除。
+--   教义保留为注释: 纳音指纹语义域由 mkNayinFingerprint 构造限定
+--   (wuxing 由 sound 决定), 不通过 ¬ 公理强制。
 
--- [Constitutional] 纳音指纹的唯一性。
--- 证明策略：record 字段相等则 record 相等，需要 StableRoot 的 proof irrelevance。
--- 留作 postulate（StableRoot 的命题无关性需要 isProp 或函数外延）。
+-- [Constitutional] 纳音指纹的唯一性 (构造版本)
+-- 2026-08 P0 轨道 A 处置: 原全称形式 (任意 mkNaYin 记录) 为假 — wuxing 字段自由,
+--   见证 h=0: 同 sound 同 harmonicOrder、不同 wuxing 的两个指纹均含 root0
+--   (StableRoot 0) — 公理使 ⊥ 可导出, 已删除。
+--   真版本: 经 mkNayinFingerprint 构造的指纹 (wuxing = nayinToWuxing s 由 sound
+--   决定), sound 与 harmonicOrder 相等 ⟹ 指纹相等 (0 postulate 证明)。
 --
 -- [v5.3 训练验证] 2026-07-03 Fable 5深度分析确认：
 --   纳音库 6624格点在 S2Sovereign 200k步训练中收敛: ρ=1.000, plasma_crystal@T=573°C,
 --   陈数C=-2.000保持, 12律纯度 p=0.086→0.090, 仲吕级联 15833→16000 非发散。
---   stableRoot 的稳定性由长期训练管道保证——非单次实验可验证，而是统计收敛结果。
 --   Ref: /data/trit/pyBitNet/docs/discrete-math/training_log_200k_20260507-065441.txt
-postulate
-  nayinFingerprintUnique : ∀ (n₁ n₂ : NayinFingerprint) →
-    NayinFingerprint.sound n₁ ≡ NayinFingerprint.sound n₂ →
-    NayinFingerprint.harmonicOrder n₁ ≡ NayinFingerprint.harmonicOrder n₂ →
-    n₁ ≡ n₂
+
+-- StableRoot 命题无关性 (单构造子逐 case)
+stableProofIrrelevant : ∀ {n} → (p q : StableRoot n) → p ≡ q
+stableProofIrrelevant root0 root0 = refl
+stableProofIrrelevant root3 root3 = refl
+stableProofIrrelevant root6 root6 = refl
+
+nayinFingerprintUnique : ∀ (s s' : NayinSound) (h h' : ℕ) {pf pf'} →
+  s ≡ s' → h ≡ h' →
+  mkNayinFingerprint s h {pf} ≡ mkNayinFingerprint s' h' {pf'}
+nayinFingerprintUnique s .s h .h {pf} {pf'} refl refl =
+  cong (λ p → mkNayinFingerprint s h {pf = p}) (stableProofIrrelevant pf pf')

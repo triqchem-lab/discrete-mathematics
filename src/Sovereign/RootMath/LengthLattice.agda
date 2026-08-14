@@ -12,7 +12,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _/_; _%_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Product using (Σ; ∃; ∃-syntax; _,_)
 open import Data.Vec using (Vec; []; _∷_; lookup; map)
-open import Data.Fin using (Fin; toℕ; fromℕ)
+open import Data.Fin using (Fin; zero; toℕ; fromℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi; applyLossGain)
 open import Sovereign.Base.Lü using (LüName; HuangZhong; LinZhong; TaiCu; NanLu; GuXian; YingZhong; RuiBin; DaLu; YiZe; JiaZhong; WuShe; ZhongLu; lüToIndex; indexToLü)
@@ -64,8 +64,12 @@ data LossGainStep : Set where
            LossGainStep
 
 -- 十二律损益链
-postulate
-  twelveStepChain : Vec LossGainStep 11
+-- 2026-08 P0 轨道 A 处置: 原 twelveStepChain 为不可构造公理 —
+--   LossGainStep 隐式证明要求 applyLossGain (lüToLength from) op ≡ lüToLength to,
+--   但 sunOp 64 = (64·2)/3 = 42 ≠ 43 (应钟取整值), 第 5 步证明不可成立,
+--   Vec LossGainStep 11 为空类型 — 假定其元素即假定 ⊥, 已删除。
+--   事实: 精确 floor 损益链 (81→54→72→48→64→42→…) 与宪法取整格点
+--   (…→43→57→…) 在应钟处分离; 宪法格点为权威锚定, 精确链为诊断子集。
 
 --------------------------------------------------------------------------------
 -- 4. 长度比例的代数性质
@@ -84,8 +88,11 @@ reachableFromBase n = Σ ℕ (λ steps → Σ (Vec LossGainStep steps) (λ chain
     applyChain (mkStep _ _ _ ∷ rest) = applyChain rest
 
 -- 验证十二律都可达
-postulate
-  allReachable : ∀ (lü : LüName) → reachableFromBase (lüToLength lü)
+-- 2026-08 P0 轨道 A 处置: 原 allReachable 为假命题 — 43/57/51 (取整格点)
+--   不可由 sunOp/yiOp 精确链从 81 到达 (64 的下一步精确值 42 ≠ 43),
+--   对应类型为空, 公理使 ⊥ 可导出, 已删除。
+--   可达子集 (精确链): {81, 54, 72, 48, 64, 42, …}; 宪法取整格点为锚定,
+--   不在精确链闭包内 — 两者分属"宪法长度格点"与"算术损益链"两范畴。
 
 --------------------------------------------------------------------------------
 -- 5. LCM 余数序列
@@ -119,9 +126,17 @@ lcmRemainders =
    65536 ∷  -- 仲吕（触发相位同步）
   []
 
--- 仲吕余数 = 65536 = 2¹⁶
-postulate
-  zhongluRemainderIs65536 : Set
-  huangzhongRemainderIs177147 : Set
-  zhonglvReset : ℕ → ℕ
-  zhonglvCorrect : Set
+-- 仲吕余数 = 65536 = 2¹⁶ (2026-08 P0: 原空洞 Set 公理 → refl 定理 + 构造定义)
+zhongluRemainderIs65536 : lookup lcmRemainders (fromℕ 11) ≡ POW2¹⁶
+zhongluRemainderIs65536 = refl
+
+huangzhongRemainderIs177147 : lookup lcmRemainders zero ≡ POW3¹¹
+huangzhongRemainderIs177147 = refl
+
+-- 仲吕重置: LCM 环上归零 (触发相位同步 → 回到环原点)
+zhonglvReset : ℕ → ℕ
+zhonglvReset n = n % SOVEREIGN_LCM
+
+-- 仲吕余数正确性: 仲吕位余数 = 2¹⁶
+zhonglvCorrect : lookup lcmRemainders (fromℕ 11) ≡ POW2¹⁶
+zhonglvCorrect = refl

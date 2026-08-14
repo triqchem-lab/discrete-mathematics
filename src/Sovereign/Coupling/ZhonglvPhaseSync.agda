@@ -32,6 +32,8 @@ module Sovereign.Coupling.ZhonglvPhaseSync where
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _/_; _≤_; _<_; _∸_)
 open import Data.Nat.Properties using (m≤m+n; ≤-trans; *-monoˡ-<; <⇒≤)
 open import Data.Nat.DivMod using (m*n%n≡0)
+open import Data.Nat.Divisibility using (m%n≡0⇒n∣m; n∣m⇒m%n≡0)
+open import Data.Nat.LCM using (lcm-least)
 open import Data.Integer using (ℤ; +_; -[1+_]) renaming (_+_ to _+ℤ_; _-_ to _-ℤ_; _*_ to _*ℤ_; _/_ to _/ℤ_)
 open import Data.Integer.Properties using (+-identityˡ)
 open import Data.Fin using (Fin; toℕ; fromℕ; fromℕ<; #_; zero; suc)
@@ -283,13 +285,18 @@ holonomyToIdentity :
   n % 46 ≡ 0 →
   n % HOLOGRAPHIC_PERIOD ≡ 0
 -- 证明策略：144 | n ∧ 46 | n → lcm(144,46) | n
--- 因 gcd(144,46) = 2，lcm = 3312
--- 此证明需要 Data.Nat.LCM 的 lcm-divides-both，留作 postulate
+-- 因 gcd(144,46) = 2，lcm = 3312 = HOLOGRAPHIC_PERIOD
+-- 2026-08 P0 轨道 C: 原 postulate → 构造性证明 (0 postulate):
+--   m%n≡0⇒n∣m 两次 + lcm-least + n∣m⇒m%n≡0; lcm 144 46 定义性归约到 3312。
 holonomyToIdentity n mod144Zero mod46Zero = holonomyLemma n mod144Zero mod46Zero
   where
-    postulate
-      holonomyLemma : ∀ (n : ℕ) → n % 144 ≡ 0 → n % 46 ≡ 0
-                    → n % HOLOGRAPHIC_PERIOD ≡ 0
+    holonomyLemma : ∀ (n : ℕ) → n % 144 ≡ 0 → n % 46 ≡ 0
+                  → n % HOLOGRAPHIC_PERIOD ≡ 0
+    holonomyLemma n mod144Zero mod46Zero =
+      n∣m⇒m%n≡0 n HOLOGRAPHIC_PERIOD
+        (lcm-least
+          (m%n≡0⇒n∣m n 144 mod144Zero)
+          (m%n≡0⇒n∣m n 46 mod46Zero))
 
 --------------------------------------------------------------------------------
 -- 6. 六十律纳甲与全息商空间的同构

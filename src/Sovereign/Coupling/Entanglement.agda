@@ -239,6 +239,8 @@ record H2O-C60-Spin : Set where
     conversionTime : ℕ  -- ~10 小时
 
 postulate
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
   trappest1Instance : TRAPPIST1Resonance
   h2oC60Instance : H2O-C60-Spin
 

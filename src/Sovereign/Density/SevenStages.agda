@@ -203,7 +203,14 @@ stageToChernBits MuShengHuo   = fsuc (fsuc (fsuc (fsuc (fsuc fzero))))
 stageToChernBits RuKong       = fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))
 
 -- 七阶段周期与陈数守恒的关联
-postulate
-  sevenStageChernRelation : ∀ (stage : SevenStage) →
-    let bits = stageToChernBits stage
-    in toℕ bits ≤ 6
+-- 2026-08 P0 轨道 C: 原 postulate → 7 case 逐构造子 refl 证明 (0 postulate)。
+sevenStageChernRelation : ∀ (stage : SevenStage) →
+  let bits = stageToChernBits stage
+  in toℕ bits ≤ 6
+sevenStageChernRelation KongShengHuo = z≤n                          -- 0 ≤ 6
+sevenStageChernRelation HuoShengTu   = s≤s z≤n                      -- 1 ≤ 6
+sevenStageChernRelation TuShengJin   = s≤s (s≤s z≤n)                -- 2 ≤ 6
+sevenStageChernRelation JinShengShui = s≤s (s≤s (s≤s z≤n))          -- 3 ≤ 6
+sevenStageChernRelation ShuiShengMu  = s≤s (s≤s (s≤s (s≤s z≤n)))    -- 4 ≤ 6
+sevenStageChernRelation MuShengHuo   = s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))) -- 5 ≤ 6
+sevenStageChernRelation RuKong       = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n))))) -- 6 ≤ 6

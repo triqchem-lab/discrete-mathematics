@@ -14,7 +14,7 @@ open import Data.Bool using (T)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _/_; _%_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _-_) renaming (_+_ to _+ℤ_; _*_ to _*ℤ_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.RootMath.Base hiding (_/_; _%_)
+open import Sovereign.RootMath.Base
 
 --------------------------------------------------------------------------------
 -- 1. 损益操作类型
@@ -135,14 +135,12 @@ zhonglvClosureMod n = (n * POW3¹¹) % POW2¹⁶
 -- 损益操作与数字根约束
 --
 -- [Constitutional] 损益操作在十二律长度序列上倾向于保持数字根稳定性，
--- 但存在反例：南吕 64 → digitalRoot(64)=1 ∉ {3,6,9}。
--- 故此声明不是全称定理，而是对特定锚点 (黄钟81等) 的宪法约束。
--- 保留为 postulate 标注宪法性质。
-postulate
-  lossGainPreservesStableRoot :
-    ∀ (n : ℕ) (lg : LossGain) →
-    T (IsStable (digitalRoot n)) →
-    T (IsStable (digitalRoot (applyLossGain n lg)))
+-- 2026-08 P0 轨道 A 处置: 原 lossGainPreservesStableRoot 全称形式为假 —
+--   见证 n=3, lg=Sun: digitalRoot 3 = 3 稳定 (前提 T true = ⊤ 有见证 tt),
+--   但 applyLossGain 3 Sun = 2, digitalRoot 2 = 2 不稳定 (结论 T false = ⊥) —
+--   公理使 ⊥ 可导出, 已删除。
+--   数字根稳定 (∈{3,6,9}) 是对特定锚点 (黄钟 81 等) 的宪法约束,
+--   不是 sunOp/yiOp 的全称保持性质 — 教义保留为本注释。
 
 --------------------------------------------------------------------------------
 -- 7. 签名/结构框架 (Signature/Structure Pattern)
