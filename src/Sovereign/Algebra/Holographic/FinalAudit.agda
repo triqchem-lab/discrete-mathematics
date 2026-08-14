@@ -50,6 +50,7 @@ import Sovereign.Problem.BSD.BSD_General
 -- RH L3 ✅（自 L0+ 升级: 有限域 Weil 定理的整数形式 + Eisenstein 共轭对刚性）
 import Sovereign.Problem.Riemann.WeilRH
 import Sovereign.Problem.Riemann.WeilRigidity     -- t²+3s²=4q, L(E,1)=#E, α+conj(α)=t, αβ=q
+import Sovereign.Problem.Riemann.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
 import Sovereign.Problem.Riemann.RH
 import Sovereign.Problem.Riemann.Galois
 import Sovereign.Problem.BSD.ZetaDiscrete
@@ -67,6 +68,17 @@ import Sovereign.Problem.PvsNP.DetMul
 import Sovereign.Problem.PvsNP.PvsNP_Conjecture
 import Sovereign.Problem.PvsNP.PvsNP_Separation
 import Sovereign.Problem.PvsNP.GF27Separation
+
+-- 编码理论 (P1-2, wiki 94B): GF(9) BCH 码 [8,6,3] + GF(27) 三元循环码
+import Sovereign.Coding.HammingMetric
+import Sovereign.Coding.BCHGF9       -- 最小距离界 + 系统编码 + 单错纠错 (0 postulate)
+import Sovereign.Coding.CyclicGF27   -- γ 根结构 → 长度 26 循环码 + freshman's dream (0 postulate)
+
+-- 有限概率空间 (P1-3, wiki 60A 离散版): 全离散无浮点, 概率 = 整数比交叉相乘
+import Sovereign.Analysis.FiniteProbability  -- GF(3)ⁿ 均匀链 + 有理期望 + Burnside (A₄ 自然/正则作用)
+
+-- Eisenstein 环 (P1-4, wiki 12F/11R): Z[ω] 环公理 8 条 + 范数乘性 + 6 单位 (0 postulate)
+import Sovereign.RootMath.Eisenstein  -- *ᵉ-assoc/comm + conjᵉ-mul + norm-mul + unitGen C₆ 循环
 
 -- Kakeya L3 ✅
 import Sovereign.Problem.Kakeya.KakeyaGF3
