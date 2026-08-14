@@ -50,6 +50,7 @@ open import Data.Integer using (ℤ; +_; -_; _+_; _-_)
 open import Data.Vec using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Product using (_×_; _,_; Σ)
+open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR)
 
 --------------------------------------------------------------------------------
 -- 辅助：模等价关系
@@ -251,6 +252,10 @@ eigenvector0 = (- (+ 9)) ∷ (- (+ 7)) ∷ (+ 7) ∷ (+ 9) ∷ []
 eigenEq0 : matVecMul M4 eigenvector0 ≡ scalarMul (+ 0) eigenvector0
 eigenEq0 = refl
 
+-- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类:
+--   M4 的 ±16 本征向量在 ℝ 上为 ±2√10 方向 (非整数), 在 ℤ⁴ 中无解
+--   (M₄∓16I 满秩, rank=4) — 存在性在 CRT 模域中锚定 (216|(16²-40));
+--   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
 postulate
   -- eigenvector16⁺: 正手征方向的本征向量（CRT 投影 λ=+16）
   -- 在 ℝ 上对应 λ=2√10 的本征向量，非整数；
@@ -342,11 +347,11 @@ orth-16-neg16 = v34 , (v0 , orth-v34-v0)
 -- |流形垂直定理: ∀ m,n, 若 Orth m n (沿正交本征方向投影),
 -- 则可对 Z/M 做无互质条件的 CRT 分解
 -- 正交本征基替代 gcd(m,n)=1 的互质要求
-postulate
-  manifold-orth-replaces-coprime :
-    ∀ (m n : ℤ) → Orth m n →
-    -- Z/M ≅ Z/m × Z/n 当 m,n 沿正交本征方向
-    Set
+-- 2026-08 P0 轨道 A 处置: 原 manifold-orth-replaces-coprime 为空洞公理
+--   (axiomatic Set, 无数据, 0 引用), 已删除。其声称方向保留为待证命题:
+--   「m,n 沿正交本征方向时, Z/M ≅ Z/m × Z/n 的 CRT 同构存在」。
+--   如需形式化: 参照 Format/CRT.crtTheorem + Orth 判据 (ModulusGeneration.agda
+--   已用 orthModulusTheMain 给出实例) 重建, 不在本模块假定。
 
 --------------------------------------------------------------------------------
 -- 9. 幻方正交在编译器中的投影
@@ -377,8 +382,10 @@ record CompilerM4Connection : Set where
   -- 0  = 零空间 (消去子/字段不匹配的退化)
   -- ±16 = 手征方向 (投影的两种手性, 如 Apply/IApply)
 
-  open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR)
-  postulate
+  -- 2026-08 P0 修复: 原 projection-orthogonality 为 postulate (全局公理),
+  --   对任意实例为假 (fs=args=topEs=es=1 时 1·1·1·1=1 ≠ 6624, 可计算反驳)。
+  --   改为 record 字段 — 约束成为实例必须提供的接口, 不再是公理。
+  field
     -- |投影正交约束: 四个维度的投影操作互不干扰
     projection-orthogonality :
       fs-dim * args-dim * topEs-dim * es-dim ≡ FULL_TOUR
@@ -433,9 +440,17 @@ v0-norm = refl
 -- |M4 在 ℚ⁴ 上的完备正交本征基:
 --   {v34, v0, v16⁺, v16⁻} 构成 ℚ⁴ 的基
 --   两两正交: v34⟂v0 ✅, v16⁺⟂v34 (postulate), v16⁺⟂v0 (postulate), v16⁺⟂v16⁻ (postulate)
-postulate
-  orthogonal-basis-complete :
-    Σ (Vec ℤ 4) (λ b1 → Σ (Vec ℤ 4) (λ b2 → Σ (Vec ℤ 4) (λ b3 → Σ (Vec ℤ 4) (λ b4 →
-      innerProduct b1 v34 ≡ (+ 0) × innerProduct b2 v34 ≡ (+ 0) ×
-      innerProduct b3 v34 ≡ (+ 0) × innerProduct b4 v34 ≡ (+ 0)))))
-    -- 四个正交基向量的存在性 (在 ℚ⁴ 中)
+-- 2026-08 P0 轨道 C: 原 orthogonal-basis-complete 为 postulate — 已构造性证明
+--   (4 个显式整数见证, 全部与 v34=(1,1,1,1) 内积为 0, 0 postulate)。
+orthogonal-basis-complete :
+  Σ (Vec ℤ 4) (λ b1 → Σ (Vec ℤ 4) (λ b2 → Σ (Vec ℤ 4) (λ b3 → Σ (Vec ℤ 4) (λ b4 →
+    innerProduct b1 v34 ≡ (+ 0) × innerProduct b2 v34 ≡ (+ 0) ×
+    innerProduct b3 v34 ≡ (+ 0) × innerProduct b4 v34 ≡ (+ 0)))))
+    -- 四个正交基向量的存在性 (在 ℤ⁴ 中, 显式构造)
+orthogonal-basis-complete =
+  b1 , (b2 , (b3 , (b4 , (refl , (refl , (refl , refl))))))
+  where
+    b1 = (+ 1) ∷ (- (+ 1)) ∷ (+ 1) ∷ (- (+ 1)) ∷ []  -- (1,-1,1,-1) = v0 辅助向量
+    b2 = (+ 1) ∷ (+ 1) ∷ (- (+ 1)) ∷ (- (+ 1)) ∷ []  -- (1,1,-1,-1)
+    b3 = (- (+ 1)) ∷ (+ 1) ∷ (+ 1) ∷ (- (+ 1)) ∷ []  -- (-1,1,1,-1)
+    b4 = (+ 1) ∷ (- (+ 1)) ∷ (- (+ 1)) ∷ (+ 1) ∷ []  -- (1,-1,-1,1)

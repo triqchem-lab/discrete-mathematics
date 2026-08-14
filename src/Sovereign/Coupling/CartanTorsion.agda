@@ -99,9 +99,9 @@ a4GroupInstance = record
   ; orderIs12 = refl
   ; generators = c3-id ∷ c3-omega ∷ c3-omega2 ∷ []
   ; _⊙_ = _⊙_
-  ; assoc = ?
-  ; identity = ?
-  ; inverse = ?
+  ; assoc = assocProof
+  ; identity = identityProof
+  ; inverse = inverseProof
   }
   where
     _⊙_ : C3Element → C3Element → C3Element
@@ -111,6 +111,47 @@ a4GroupInstance = record
     c3-omega ⊙ c3-omega2 = c3-id
     c3-omega2 ⊙ c3-omega = c3-id
     c3-omega2 ⊙ c3-omega2 = c3-omega
+
+    -- 2026-08 P0-3: 原 assoc/identity/inverse 为未解 hole — Z₃ 群表逐 case refl 证明
+    -- (27 case 结合律 + 3 case 逆元, 全部定义性归约; 恒等元需逐 case,
+    --  因 x ⊙ c3-id 对变量 x 被首子句匹配阻塞)
+    identityProof : ∀ x → c3-id ⊙ x ≡ x × x ⊙ c3-id ≡ x
+    identityProof c3-id     = refl , refl
+    identityProof c3-omega  = refl , refl
+    identityProof c3-omega2 = refl , refl
+    assocProof : ∀ x y z → (x ⊙ y) ⊙ z ≡ x ⊙ (y ⊙ z)
+    assocProof c3-id     c3-id     c3-id     = refl
+    assocProof c3-id     c3-id     c3-omega  = refl
+    assocProof c3-id     c3-id     c3-omega2 = refl
+    assocProof c3-id     c3-omega  c3-id     = refl
+    assocProof c3-id     c3-omega  c3-omega  = refl
+    assocProof c3-id     c3-omega  c3-omega2 = refl
+    assocProof c3-id     c3-omega2 c3-id     = refl
+    assocProof c3-id     c3-omega2 c3-omega  = refl
+    assocProof c3-id     c3-omega2 c3-omega2 = refl
+    assocProof c3-omega  c3-id     c3-id     = refl
+    assocProof c3-omega  c3-id     c3-omega  = refl
+    assocProof c3-omega  c3-id     c3-omega2 = refl
+    assocProof c3-omega  c3-omega  c3-id     = refl
+    assocProof c3-omega  c3-omega  c3-omega  = refl
+    assocProof c3-omega  c3-omega  c3-omega2 = refl
+    assocProof c3-omega  c3-omega2 c3-id     = refl
+    assocProof c3-omega  c3-omega2 c3-omega  = refl
+    assocProof c3-omega  c3-omega2 c3-omega2 = refl
+    assocProof c3-omega2 c3-id     c3-id     = refl
+    assocProof c3-omega2 c3-id     c3-omega  = refl
+    assocProof c3-omega2 c3-id     c3-omega2 = refl
+    assocProof c3-omega2 c3-omega  c3-id     = refl
+    assocProof c3-omega2 c3-omega  c3-omega  = refl
+    assocProof c3-omega2 c3-omega  c3-omega2 = refl
+    assocProof c3-omega2 c3-omega2 c3-id     = refl
+    assocProof c3-omega2 c3-omega2 c3-omega  = refl
+    assocProof c3-omega2 c3-omega2 c3-omega2 = refl
+
+    inverseProof : ∀ x → ∃[ x⁻¹ ] (x ⊙ x⁻¹ ≡ c3-id × x⁻¹ ⊙ x ≡ c3-id)
+    inverseProof c3-id     = c3-id     , (refl , refl)
+    inverseProof c3-omega  = c3-omega2 , (refl , refl)
+    inverseProof c3-omega2 = c3-omega  , (refl , refl)
 
 --------------------------------------------------------------------------------
 -- 2. 离散纤维丛
@@ -226,18 +267,28 @@ zhonglvTorsion = record
   ; torsionNonzero = λ ()  -- 11 ≠ 0
   }
 
--- 仲吕闭合强制挠率归零
-closeTorsion : DiscreteTorsion → DiscreteTorsion
-closeTorsion torsion = record torsion
-  { torsionValue = + 0
-  ; torsionNonzero = ?  -- 矛盾：闭合后挠率为零
+-- 仲吕闭合后挠率归零 — 2026-08 P0-3 修复:
+--   原 closeTorsion 试图返回 DiscreteTorsion (字段含 torsionNonzero : ≢ +0),
+--   闭合后挠率 = +0 与字段矛盾 (原代码注释自认 "矛盾"), 留下未解 hole。
+--   修复: 新增无 torsionNonzero 约束的 ClosedTorsion 记录作为闭合输出。
+record ClosedTorsion : Set where
+  field
+    phaseIndexAfter12 : ℕ
+    octavePhaseRequired : ℕ
+    torsionValue : ℤ  -- 闭合后恒为 + 0
+
+closeTorsion : DiscreteTorsion → ClosedTorsion
+closeTorsion torsion = record
+  { phaseIndexAfter12 = DiscreteTorsion.phaseIndexAfter12 torsion
+  ; octavePhaseRequired = DiscreteTorsion.octavePhaseRequired torsion
+  ; torsionValue = + 0
   }
 
 -- 定理：仲吕闭合前挠率非零，闭合后归零
 torsionClosedAfterZhonglv : 
   let torsion = zhonglvTorsion
       closed = closeTorsion torsion
-  in DiscreteTorsion.torsionValue closed ≡ + 0
+  in ClosedTorsion.torsionValue closed ≡ + 0
 torsionClosedAfterZhonglv = refl
 
 --------------------------------------------------------------------------------
@@ -388,9 +439,9 @@ postulate
 -- 合法表述
 postulate
   CartanGeometryDefinition ContinuousProjectionOfDiscreteParallelTransport : Set
-
-cartanLegal : CartanGeometryDefinition ≡ ContinuousProjectionOfDiscreteParallelTransport
-cartanLegal = ?  -- 预存未填充, 范畴分离声明
+  -- [轨道 B 登记·范畴分离] 2026-08: 原 cartanLegal = ? 为未填充 hole (隐藏假设),
+  --   升级为显式公理 — 合法表述声明: 定义式与离散平行移动连续投影同型。
+  cartanLegal : CartanGeometryDefinition ≡ ContinuousProjectionOfDiscreteParallelTransport
 
 -- 宪法条款
 postulate

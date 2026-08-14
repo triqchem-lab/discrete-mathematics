@@ -170,12 +170,14 @@ postulate
   noDecomposition : ∀ (block : SovereignBlock) → 
     ¬ Decomposable
 
--- [分类: 宪法公理] [状态: 编码约定]
--- PolarWinding = 144, ToroidalWinding = 46 是宪法常量。% 映射等价是路由表编码约定。
--- 见 08-constants.md。
-postulate
-  polarMod144 : ∀ (coord : ℕ) → coord % PolarWinding ≡ coord % 144
-  toroidalMod46 : ∀ (phase : ℕ) → phase % ToroidalWinding ≡ phase % 46
+-- [分类: 宪法公理] [状态: 编码约定 — 2026-08 P0 轨道 C 由 postulate 升级为 refl 证明]
+-- PolarWinding = 144, ToroidalWinding = 46 是宪法常量 (定义性归约), % 映射等价
+-- 是路由表编码约定。见 08-constants.md。
+polarMod144 : ∀ (coord : ℕ) → coord % PolarWinding ≡ coord % 144
+polarMod144 coord = refl
+
+toroidalMod46 : ∀ (phase : ℕ) → phase % ToroidalWinding ≡ phase % 46
+toroidalMod46 phase = refl
 
 --------------------------------------------------------------------------------
 -- 7. .sov 文件格式定义

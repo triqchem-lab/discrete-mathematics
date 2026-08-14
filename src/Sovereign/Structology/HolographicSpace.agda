@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Structology.HolographicSpace
 -- 全息态与基模 — 信息论闭包的类型基础设施

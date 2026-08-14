@@ -7,51 +7,49 @@
 
 ---
 
-## 目录结构
+## 目录结构（2026-08 P0-4 同步：实际 15 模块）
 
 ```
-src/Sovereign/Algebra/
-├── Jacobian.agda                    综合入口
-└── Jacobian/
-    ├── jac_GF3.agda                 GF(3)² 反例 (形式导数 + 差分算子)
-    ├── jac_Discrete.agda            三种"雅可比"的区分
-    ├── jac_FrobeniusBlind.agda      GF(9)² 反例 (Frobenius 盲区 + 81点)
-    ├── jac_Pigeonhole.agda          鸽巢原理 Fin 9→8 (REWRITE decode9)
-    ├── jac_Matrix.agda              GF(3) 2×2 矩阵全理论 (7215行)
-    ├── jac_Injectivity.agda         单射↔满射 (右逆 + pigeonhole)
-    ├── jac_FunctionTable.agda       函数表矩阵等价性论证
-    ├── jac_NMatrix.agda             9×9 函数表矩阵 (toTrit, 0 postulate)
-    ├── jac_Conjecture.agda          离散 JC 陈述 + 实质定理
-    ├── jac_DiscreteJC.agda          三层综合 + 连续统 JC 关系
-    ├── jac_CRTSpectrum.agda         CRT 四极 × 矩阵谱
-    ├── jac_4320DClosure.agda        729 点鸽巢 + 环面有界性
-    ├── jac_EscapeAnalysis.agda      射影几何逃逸分析 (Alpöge 阻断) 🆕
-    ├── jac_Algorithm.agda           算法规格
-    ├── jac_Theorem.agda             最终定理
-    ├── doc/                         理论文档 (12 篇)
-    └── README.md                    本文件
+src/Sovereign/Algebra/Jacobian/
+├── jac_GF3.agda                 GF(3)² 反例 (形式导数 + 差分算子)
+├── jac_Discrete.agda            三种"雅可比"的区分
+├── jac_Pigeonhole.agda          鸽巢原理 Fin 9→8 (REWRITE decode9)
+├── jac_Matrix.agda              GF(3) 2×2 矩阵全理论 (7215 行)
+├── jac_Injectivity.agda         单射↔满射 (右逆 + pigeonhole)
+├── jac_FunctionTable.agda       函数表矩阵 M_F 等价性论证
+├── jac_NMatrix.agda             9×9 函数表矩阵 (NoZeroRow ∧ ColDistinct, 0 postulate)
+├── jac_GF9Matrix.agda           GF(9) 矩阵与 Frobenius 共轭
+├── jac_CRTDet.agda              CRT 行列式分解定理 (拱顶石, 对齐 dype Compute/Det.hs)
+├── jac_CRTSpectrum.agda         CRT 四极 × 矩阵谱
+├── jac_DiscreteJC.agda          三层综合 + 连续统 JC 关系
+├── jac_AutT6.agda               T⁶ 自同构群
+├── jac_LieGroup.agda            Aut(T⁶/GF(9)) 李群结构
+├── jac_LinearAlgebra.agda       有限域线性代数基元
+├── jac_Topology.agda            拓扑不变量 (dim H_k = nullity − rank)
+├── doc/                         理论文档
+└── README.md                    本文件
 ```
 
-## 编译状态
+## 编译状态（2026-08 实测，全部 exit=0, 0 postulate）
 
 | 模块 | 行数 | postulate | 编译 |
-|------|------|-----------|------|
+|------|------|:---------:|------|
 | jac_GF3 | 324 | 0 | ✅ |
 | jac_Discrete | 122 | 0 | ✅ |
-| jac_FrobeniusBlind | 284 | 0 | ✅ |
-| jac_Pigeonhole | 322 | 0 | ✅ |
-| jac_Conjecture | 112 | 0 | ✅ |
+| jac_Pigeonhole | 331 | 0 | ✅ |
 | jac_Matrix | 7215 | 0 | ✅ |
-| jac_Injectivity | 174 | 0 | ✅ |
+| jac_Injectivity | 202 | 0 | ✅ |
+| jac_FunctionTable | 116 | 0 | ✅ |
+| jac_NMatrix | 173 | 0 | ✅ |
+| jac_GF9Matrix | 164 | 0 | ✅ |
+| jac_CRTDet | 112 | 0 | ✅ |
 | jac_CRTSpectrum | 606 | 0 | ✅ |
-| jac_4320DClosure | 408 | 0 | ✅ |
-| jac_FunctionTable | 131 | 0 | ✅ |
-| jac_NMatrix | 166 | 0 | ✅ |
 | jac_DiscreteJC | 324 | 0 | ✅ |
-| jac_EscapeAnalysis | 127 | 0 | ✅ |
-| jac_Algorithm | 79 | 0 | ✅ |
-| jac_Theorem | 85 | 0 | ✅ |
-| **合计** | **~10480** | **0** | **✅** |
+| jac_AutT6 | 139 | 0 | ✅ |
+| jac_LieGroup | 231 | 0 | ✅ |
+| jac_LinearAlgebra | 76 | 0 | ✅ |
+| jac_Topology | 159 | 0 | ✅ |
+| **合计** | **~10294** | **0** | **✅** |
 
 ## 三层雅可比强度
 
@@ -71,8 +69,8 @@ src/Sovereign/Algebra/
 
 ```
 det(M_F) ≠ 0
-  ⟺ 列互异 ∧ 无全零行     (函数表矩阵结构, jac_FunctionTable)
-  ⟺ F 单射 ∧ F 满射        (行列性质, jac_NMatrix)
+  ⟺ 列互异 ∧ 无全零行     (函数表矩阵结构, jac_FunctionTable / jac_NMatrix)
+  ⟺ F 单射 ∧ F 满射        (行列性质, jac_NMatrix 四方向已证)
   ⟺ F 双射                 (鸽巢原理: pigeonhole-2 + surj→inj)
 ```
 
@@ -89,38 +87,38 @@ det(M_F) ≠ 0
 | 定理 | 文件 | 策略 |
 |------|------|------|
 | fermat3 | jac_GF3 | 3-case refl |
-| σ-shift | jac_FrobeniusBlind | 9-case refl |
-| frob-3to1 | jac_FrobeniusBlind | Σ-构造, 81点验证 |
 | pigeonhole-2 | jac_Pigeonhole | Fin 9→8 + stdlib pigeonhole |
 | surj→inj | jac_Injectivity | 右逆构造 + pigeonhole-2 |
 | det-mul | jac_Matrix | 81-case refl |
 | inverse-correct | jac_Matrix | GF(3) 逆元 + 伴随矩阵 |
-| detNonzero↔bij | jac_NMatrix | toTrit + 列互异论证 |
-| collapse→not-detnonzero | jac_EscapeAnalysis | 函数表矩阵列相同→det=0 |
-| triple-closure-theorem | jac_EscapeAnalysis | 几何+代数+描述完备 ➜ Alpöge 阻断 |
+| detNonzero↔bij | jac_NMatrix | toTrit + 列互异论证 (四方向已证) |
+| crt-det 分解 | jac_CRTDet | CRT 环直积保 det (Duodec π3/π4 环同态) |
 
-### 七大千禧问题离散验证模块
+## 七大千禧问题离散验证模块（2026-08 P0-4 同步）
 
-| 问题 | 模块 | 定理 | refl |
-|------|------|------|------|
-| **YM** | jac_YM_DetMul | det-mul 6561-case + 质量间隙 det≠0 | 6838 |
-| **Hodge** | jac_Hodge | dimℋ=dimH + Hodge分解 | 8 |
-| **BSD** | jac_BSD_L3 | Weil 递推 t₁-t₁₀ | 18 |
-| **Langlands** | jac_GL2_Ortho | GL₂(5760) 特征标正交性 | 3 |
-| **PvsNP** | jac_PvsNP_Separation | Eval≢Invert 分离定理 | 9 |
-| **RH** | jac_RH_FuncEq | 泛函方程 + Hasse界 + trace | 7 |
+原 README 在此列出的 6 个 `jac_*` 七问题模块已迁移/独立成 Problem/ 目录下的正式模块，
+本目录不再重复：
+
+| 问题 | 实际位置 |
+|------|---------|
+| **YM** | `Problem/YangMills/YM_DetMul.agda`（det-mul 6561-case + 质量间隙 det≠0） |
+| **Hodge** | `Problem/Hodge/Hodge.agda`（dimℋ=dimH + Hodge 分解） |
+| **BSD** | `Problem/BSD/BSD.agda`（Weil 递推 t₁-t₁₀；另有 BSD9/BSD_GF27/BSD_GF243） |
+| **Langlands** | `Problem/Langlands/Langlands.agda`（GL2 特征标正交性） |
+| **PvsNP** | `Problem/PvsNP/PvsNP_L15.agda` + `GF27Separation.agda`（Eval≢Invert 分离） |
+| **RH** | `Problem/Riemann/WeilRigidity.agda` + `AlgGeom.agda`（泛函方程 + Hasse 界 + trace） |
 
 ## 依赖
 
 ```
-Jacobian (80 模块, ~15233 行, 0 postulate)
+Jacobian (15 模块, ~10294 行, 0 postulate)
   ├── Sovereign.Base.Trit      (GF(3) 代数, 0 postulate)
   ├── Sovereign.Algebra.Duodecimal (Z/12Z CRT, 0 postulate)
-  ├── Sovereign.Structology.T6     (T⁶ 729格点, 含 REWRITE)
+  ├── Sovereign.Structology.T6     (T⁶ 729 格点, 含 REWRITE)
   ├── Sovereign.Structology.A4Group (A₄ 群, 0 postulate)
-  └── Sovereign.Physics.NSE        (NS 全域精确解, 12定理)
+  └── Sovereign.Physics.NSE        (NS 全域精确解, 12 定理)
 ```
 
 ## 创建日期
 
-2026-07-24 — 更新 2026-07-27 (七问题验收锁定)
+2026-07-24 — 更新 2026-08（P0-4: 目录/编译表/七问题指针与实际代码对齐）

@@ -55,14 +55,15 @@ Anchor_ToroidalWinding_C60 :
   THEORETICAL_TOROIDAL_WINDING ≡ C60_FUNDAMENTAL_MODES
 Anchor_ToroidalWinding_C60 = refl
 
--- 定理 2：能隙分裂同构
+-- 定理 2：能隙分裂对比 (2026-08 P0 轨道 A 处置)
 -- 通过 Scaling 中定义的 EnergyGapScale 值 (289/1000) 计算
 -- THEORETICAL_GAP_ENERGY.value = 3 * (289/1000) = 867/1000 = 0.867
--- 实验验证: H₂O@C₆₀ 能级分裂 0.5 meV ≈ √3 × EnergyGapScale
--- 证明需要有理不等式, 此处声明为实验-理论锚定
-postulate
-  Anchor_EnergyGap_H2O :
-    Scale.Energy.value THEORETICAL_GAP_ENERGY ≡ Scale.Energy.value H2O_C60_SPLITTING
+-- 实验: H₂O@C₆₀ 能级分裂 = 0.5 meV = 5/10。
+-- 原 Anchor_EnergyGap_H2O 为假命题 — 断言 867/1000 ≡ 5/10, 可计算反驳
+--   (两值均为具体有理数, 0.867 ≠ 0.5; 原注释自认 "≈" 却声明 "≡")。
+--   该公理使 ⊥ 可导出, 已删除。
+-- 诚实表述 (保留为注释): 理论与实验为近似关系 0.867 ≈ 0.5 (量级一致,
+--   待有理不等式/量纲校准形式化), 不以等式公理驻留。
 
 --------------------------------------------------------------------------------
 -- 4. 跨尺度验证 (Cross-Scale Verification)

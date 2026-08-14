@@ -95,17 +95,20 @@ wuXingToWinding = record
 -- 4. 宪法定理
 
 -- 缠绕数不可拆分定理
--- [分类: 宪法公理] [状态: 架构保留 — 与 MagicSquare144.agda:114 windingNotDecomposed 对齐. ℕ算术层 refl, CRT纤维层不同 — 待Fin6624类型重构]
--- 对齐 MagicSquare144.agda:114 windingNotDecomposed. 缠绕数是拓扑不变量, 不是几何剖分.
-postulate
-  polarIndecomposable : ¬ (∃[ a ] ∃[ b ] (PolarWinding ≡ a + b × (a ≡ 120 × b ≡ 24)))
+-- [分类: 宪法条款] [状态: 2026-08 P0 轨道 A — 原 polarIndecomposable 为假命题:
+--   ¬ ∃a b (144 ≡ a+b × a≡120 × b≡24), 见证 a=120,b=24 使 144 ≡ 120+24 refl 成立,
+--   该公理使 ⊥ 可导出, 已删除。教义保留为本注释:
+--   缠绕数是拓扑不变量, 不是几何剖分 (120+24 = S² 剖分属几何范畴)。
+--   类型级约束方向: Winding.agda HolomorphicPi 记录 (numerator/denominator 字段),
+--   待 Fin6624 类型重构后以记录字段形式落地, 不以 ℕ 层假命题驻留。]
 
 -- 全息 π 不可约分定理
--- [分类: 宪法公理] [状态: 架构保留 — 与 Winding.agda:92-97 HolomorphicPi 记录对齐. ℕ算术层 k=2, 记录类型不可约分 — 待HolomorphicPi类型级闭合]
--- 对齐 Winding.agda:92-97 HolomorphicPi 记录约束 (numerator≡144, denominator≡46).
--- 宪法禁止 144/46 → 72/23 约分.
-postulate
-  holoPiIrreducible : ¬ (∃[ k ] (k > 1 × 144 ≡ k * 72 × 46 ≡ k * 23))
+-- [分类: 宪法条款] [状态: 2026-08 P0 轨道 A — 原 holoPiIrreducible 为假命题:
+--   ¬ ∃k (k>1 × 144 ≡ k·72 × 46 ≡ k·23), 见证 k=2 (144=2·72, 46=2·23) 直证其反,
+--   该公理使 ⊥ 可导出, 已删除。教义保留为本注释:
+--   宪法禁止 144/46 → 72/23 约分 (全息 π 禁约分)。
+--   类型级约束方向: Winding.agda:92-97 HolomorphicPi 记录 (numerator≡144,
+--   denominator≡46 字段), 待 HolomorphicPi 类型级闭合, 不以 ℕ 层假命题驻留。]
 
 -- 移宫转调唯一合法定理
 -- [分类: 宪法公理] [状态: 架构保留 — 与 T6.agda:12-18 mod-helper 限制同根. 待 REWRITE 规则闭合]

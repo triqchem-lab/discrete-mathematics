@@ -110,10 +110,12 @@ noWindingFrom24 = λ ()
 -- PolarWinding=144 是 T⁶ 环面上 A₄×A₄ 群作用的拓扑不变量
 -- DodecahedronCells+MerkabaCells=120+24=144 是 S² 球面剖分的静态组成
 -- 两者分属不同范畴（拓扑不变量 vs 几何剖分），在 CRT 域中不可等同
--- ¬ 标记强制 Agda 拒绝 refl——数学告知范畴不同
-postulate
-  windingNotDecomposed :
-    ¬ (PolarWinding ≡ DodecahedronCells + MerkabaCells)
+-- 2026-08 P0 轨道 A 处置: 原 windingNotDecomposed
+--   ¬ (PolarWinding ≡ DodecahedronCells + MerkabaCells) 为假命题 —
+--   即 ¬(144 ≡ 120+24), 而 refl : 144 ≡ 120+24 直证其反 (本文件 §4.5 亦承认
+--   P_CRT(144) = P_CRT(120+24)) — 该公理使 ⊥ 可导出, 库不一致, 已删除。
+--   范畴分离教义保留为本注释 (宪法条款); 类型级约束方向:
+--   Winding.agda HolomorphicPi 记录 (numerator/denominator 字段)。
 
 --------------------------------------------------------------------------------
 -- 4.5 CRT 域深层证明：缠绕数 vs 剖分组成 (v5.14)

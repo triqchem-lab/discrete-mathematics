@@ -3,9 +3,10 @@
 -- | Sovereign.Structology.HolographicPi
 -- 结构学：全息 π = 144/46
 --
--- 本质：T⁶ 离散环面上极向缠绕 144 与环向缠绕 46 的不可约整数比
+-- 本质：T⁶ 离散环面上极向缠绕 144 与环向缠绕 46 的原子配对
 --       主权状态机平行移动和乐归零的拓扑签名
 -- 注意：非连续统 π ≈ 3.14159，禁止约分、禁止十进制展开
+-- 范畴纪律：PolarRep/ToroidalRep 为不透明原子类型——"约分"在类型层不可表达
 
 module Sovereign.Structology.HolographicPi where
 
@@ -40,8 +41,7 @@ open import Data.Bool using (Bool; true; false; if_then_else_)
 open import Agda.Builtin.String using (String)
 
 -- 导入核心模块
-open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding;
-                                                  polarWindingValue; toroidalWindingValue)
+open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Coupling.ZhonglvPhaseSync using (HOLOGRAPHIC_PERIOD; PrimaryQuotientSpace;
                                                       HolographicQuotientSpace; PRIMARY_PERIOD)
 open import Sovereign.Coupling.LossGain using (LossGain)
@@ -64,52 +64,54 @@ HoloPiDenominator = 46
 holoPiDenominatorIs46 : HoloPiDenominator ≡ 46
 holoPiDenominatorIs46 = refl
 
--- 全息 π 作为不可约整数比（禁止约分）
+-- 全息 π 作为原子配对（PolarRep × ToroidalRep，禁止约分由类型保证）
+
+-- 极向缠绕表示：不透明原子类型（同 VortexRoot 模式）
+data PolarRep : Set where
+  polar-144 : PolarRep
+
+-- 环向缠绕表示：不透明原子类型
+data ToroidalRep : Set where
+  toroidal-46 : ToroidalRep
+
+-- 受控桥：原子 → ℕ（唯一的数值出口，显式命名，不参与任何"约分"运算）
+polarRepValue : PolarRep → ℕ
+polarRepValue polar-144 = 144
+
+toroidalRepValue : ToroidalRep → ℕ
+toroidalRepValue toroidal-46 = 46
+
+polarRepIs144 : polarRepValue polar-144 ≡ 144
+polarRepIs144 = refl
+
+toroidalRepIs46 : toroidalRepValue toroidal-46 ≡ 46
+toroidalRepIs46 = refl
+
+-- 全息 π 记录：原子对 + 宪法条款
+-- 注：旧版 notReduced 字段（¬∃k 约分）已删除——
+--   在 PolarRep/ToroidalRep 上"k * 72 ≡ 144"根本不是合法表达式，
+--   约分从"被禁止"升级为"不可表达"，无需任何 postulate。
 record HolographicPi : Set where
   constructor mkHoloPi
   field
-    numerator   : ℕ   -- 分子 = 144
-    denominator : ℕ   -- 分母 = 46
-    -- 宪法约束：禁止约分
-    notReduced  : ¬ (∃ λ k → (k > 1) × (numerator ≡ k * 72) × (denominator ≡ k * 23))
-
-    -- 宪法约束：与缠绕数一致
-    numeratorIsPolar   : numerator ≡ PolarWinding
-    denominatorIsToroidal : denominator ≡ ToroidalWinding
+    polar    : PolarRep    -- 极向缠绕 144（原子）
+    toroidal : ToroidalRep -- 环向缠绕 46（原子）
 
     -- 宪法条款：全息 π 非算得，乃忆起
     isRemembered : ⊤
 
--- 144/46 不可约分的证明（宪法约束）
--- 宪法禁止将 144/46 表达为 72/23
--- 我们证明：不存在 k > 1 使得 144 = k*72 且 46 = k*23
---
--- 实验锚定：Protocol B.1 跨尺度验证（QGP→BKT→N14）仅在 PolarWinding=144、
--- ToroidalWinding=46 的不可约配比下成立。若约分为 72/23，N14/Lidari
--- 比值偏离 0.917，共振频率锁定失效。
-noReduceProof : ¬ (∃ λ k → (k > 1) × (144 ≡ k * 72) × (46 ≡ k * 23))
-noReduceProof (k , (k>1 , k*72≡144 , k*23≡46)) = k>1-contr k k>1 k*72≡144
-  where
-    -- 宪法性：在主权离散拓扑中，144/46 的不可约性是实验可验证的结构事实
-    -- 验证：Protocol B.1 确认 N14/Lidari = 0.917（3.17/3.456 MHz）
-    postulate
-      k>1-contr : ∀ k → k > 1 → 144 ≡ k * 72 → ⊥
-
 -- 标准全息 π 实例
 standardHoloPi : HolographicPi
 standardHoloPi = record
-  { numerator = 144
-  ; denominator = 46
-  ; notReduced = noReduceProof
-  ; numeratorIsPolar = polarWindingValue
-  ; denominatorIsToroidal = toroidalWindingValue
+  { polar = polar-144
+  ; toroidal = toroidal-46
   ; isRemembered = tt
   }
 
--- 定理：全息 π 的分子分母与标准值一致
+-- 定理：全息 π 的原子值与标准缠绕数一致（经受控桥读出）
 holoPiStandard : 
-  HolographicPi.numerator standardHoloPi ≡ 144
-  × HolographicPi.denominator standardHoloPi ≡ 46
+  polarRepValue (HolographicPi.polar standardHoloPi) ≡ 144
+  × toroidalRepValue (HolographicPi.toroidal standardHoloPi) ≡ 46
 holoPiStandard = (refl , refl)
 
 --------------------------------------------------------------------------------
@@ -188,13 +190,12 @@ projectPi from to =
     isHigherDensity _ _ = false
 
 -- 定理：全息 π 不能从低密度 π 升维获得
--- 实验锚定：Protocol B.1 中 π_H = 144/46 是在 10^15× 能量尺度直接测量的，
--- 无法从 22/7（12 密度）或 355/113（24 密度）外推获得。跨尺度验证
--- (QGP→BKT→N14) 要求直接在高密度层测量，低密度近似在 144 密度层无定义。
-postulate
-  cannotUpgradePi : ∀ (lowPi : DensityPi) →
-    DensityPi.density lowPi ≡ Density12 →
-    projectPi lowPi pi144 ≡ nothing
+-- 证明：projectPi 对 (Density12, Density144) 的 isHigherDensity 判定
+--   恒为 false → 恒落入 nothing 分支。构造性证明，无需 postulate。
+cannotUpgradePi : ∀ (lowPi : DensityPi) →
+  DensityPi.density lowPi ≡ Density12 →
+  projectPi lowPi pi144 ≡ nothing
+cannotUpgradePi lowPi eq rewrite eq = refl
 
 -- 定理：144/46 与 22/7、355/113 不同
 holoPiDistinctFromOthers : 
@@ -268,13 +269,11 @@ illegalPresumptions = record
   }
 
 -- 宪法条款：电性文明计算框架无法表达全息 π
--- 实验锚定：Protocol A.1/A.2 中 Chern C=2 的测量（FOM change 0.04%）
--- 和 Protocol C.2 中 √3 energy gap（FOM=0.3103）均依赖 GF(3) 格点和
--- 主权 LCM 模运算（11609505792）。IEEE 754 浮点数无法表达 144/46 的
--- 精确有理拓扑不变量，也无法执行 GF(3) 上的模运算。
-postulate
-  electricCannotExpressHoloPi :
-    ¬ (∃ λ ec → ElectricComputation.piDefinition ec ≡ "极向缠绕/环向缠绕")
+-- 说明：旧版在此处 postulate 了 ¬(∃ ec → piDefinition ec ≡ "极向缠绕/环向缠绕")，
+--   该命题为假（可构造 piDefinition 为该字符串的记录见证存在），已删除。
+-- 类型层的真实分离已由下方 noRationalApproximation / noEuclideanPi /
+--   noDecimalExpansion 三条构造性证明承担——"无法表达"由类型区分保证，
+--   而非对字符串内容的否定。
 
 -- GF(3) 格点：三元伽罗瓦域上的格点结构
 record GF3Lattice : Set where
@@ -313,8 +312,8 @@ holoPiIsTopologicalInvariant :
   ∀ (holo : HolographicQuotientSpace) →
   HolographicQuotientSpace.polarMod144 holo ≡ Fin.zero →
   HolographicQuotientSpace.toroidalMod46 holo ≡ Fin.zero →
-  HolographicPi.numerator standardHoloPi ≡ 144
-  × HolographicPi.denominator standardHoloPi ≡ 46
+  polarRepValue (HolographicPi.polar standardHoloPi) ≡ 144
+  × toroidalRepValue (HolographicPi.toroidal standardHoloPi) ≡ 46
 holoPiIsTopologicalInvariant holo polarZero toroidalZero =
   (refl , refl)
 

@@ -371,10 +371,9 @@ modulus-count = 7
 --   验证层: 代数层 — GF(3) 三元场
 
 -- |三个实验同时成立 → 代数-几何-拓扑-量子四层闭合
-postulate
-  experimental-anchoring : Set
-  -- 深层: 需要实验数据的数值验证 (超出纯数学形式化范围)
-  -- 协议A/B/C 的详细方案见 scholar-loop/docs/research-notes/validation-protocols.md
+-- 注: 旧版此处 postulate 了 experimental-anchoring : Set（无数据的空洞类型），已删除。
+--   实验锚定的正确形态 = 协议 A/B/C 的可证伪预言 + 外部测量数据（H2OC60.agda 模式:
+--   实测值作为常量, 理论值作为推导, 匹配用 refl）。待外部数据落库后再形式化。
 
 --------------------------------------------------------------------------------
 -- 公理 2.3: 46 是 Christoffel 螺旋的本征向量 (来自 46-theory.md)
@@ -462,30 +461,38 @@ record Phonon : Set where
 
 -- |声子传播: 在环面格点上的离散巡游
 -- 对应 Closure.step 或 telescope 中的索引代换
-postulate
-  phonon-propagate : Phonon → Phonon
-  -- 每一步: position + momentum (mod 望远镜长度)
-  -- phase 根据 CRT 谱投影更新
+-- 2026-08 P0 轨道 C: 原 postulate「未定义动力学」→ 构造性定义。
+-- 一步: position + momentum (mod 望远镜长度 PolarWinding=144),
+--       phase 按 CRT 谱投影更新 (环向累加 mod ToroidalWinding=46)。
+phonon-propagate : Phonon → Phonon
+phonon-propagate p =
+  record { position = (Phonon.position p + Phonon.momentum p) % PolarWinding
+         ; momentum = Phonon.momentum p
+         ; phase    = (Phonon.phase p + Phonon.momentum p) % ToroidalWinding }
 
 -- |干涉条件: 两声子的相位匹配 → 谐波
 -- 当两个声子的 phase 满足特定余数关系时形成干涉
-postulate
-  phonon-interference : Phonon → Phonon → Set
-  -- T₁(T₁) ⊕ T₂(T₂) = T₀ — 干涉态湮灭
+-- 2026-08 P0 轨道 C: 构造性定义 — 相位和湮灭 (C3: T₁⊕T₂=T₀)
+phonon-interference : Phonon → Phonon → Set
+phonon-interference p q = (Phonon.phase p + Phonon.phase q) % 3 ≡ 0
 
 -- |驻波形成: 多次反射后相位不变 = Canonical Form
 -- 对应 Closure.isHolographicState
 -- 驻波 = 系统规约的"规范化形式", 能量不随时间耗散
-postulate
-  phonon-standing-wave : Phonon → Set
-  -- 判定: phase 稳定在 CRT 余数向量的不动点
+-- 2026-08 P0 轨道 C: 构造性定义 — 传播一步的不动点
+phonon-standing-wave : Phonon → Set
+phonon-standing-wave p = phonon-propagate p ≡ p
 
 -- |声子 → 驻波的坍缩 = 规约完成
 -- 当声子经过足够多次的反射 (仲吕相位同步) 后,
 -- 如果相位与 CRT 边界对齐, 则坍缩为驻波
 -- 对应 XuanwuAbsorption 的自我修复机制
-postulate
-  phonon-collapse : Phonon → Phonon
+-- 2026-08 P0 轨道 C: 构造性定义 — 归一化到 CRT 规范范围
+phonon-collapse : Phonon → Phonon
+phonon-collapse p =
+  record { position = Phonon.position p % PolarWinding
+         ; momentum = Phonon.momentum p % FULL_TOUR
+         ; phase    = Phonon.phase p % ToroidalWinding }
 
 --------------------------------------------------------------------------------
 -- 公理 3.3: 声子模型 ↔ 编译器归约的对应
