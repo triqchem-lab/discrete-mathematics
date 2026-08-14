@@ -1,9 +1,11 @@
 # Postulate 全库登记表 (防止忘记)
 
-> 生成: 2026-08 P0 轮实测 · 全库 **97 个 postulate 块 / 182 条声明 / 31 文件**。
-> 校准: 假/空 = **0** (轨道 A 本会话清零 12 个 ⊥ 可导出假公理, 见文末已清除清单);
-> 合法公理按 A/B/C/D 四类 + E 副本目录登记, 处置纪律见 Constitution/PhysicalAssumptions.agda。
+> 生成: 2026-08 P0 轮实测 · 全库 **88 个 postulate 块 / 169 条声明 / 27 文件**。
+> 校准: 假/空 = **0** (轨道 A 已清零全部 ⊥ 可导出假公理, 见文末已清除清单);
+> 合法公理按 A/B/C/D 四类登记, 处置纪律见 Constitution/PhysicalAssumptions.agda。
 > **本表为防遗忘清单** — 每处新增/消除 postulate 必须同步本表与 PhysicalAssumptions.agda。
+> 注 (2026-08): Jacobian `_standalone/` 旧副本目录已清空删除 (9 个含假公理副本), 不再登记;
+>   雅可比派生模块统一居 `Problem/Riemann/` (AlgGeom/FrobeniusBlind/Galois/RH/Sheaf/Variety/WeilRH/WeilRigidity, 0 postulate)。
 
 ## A 机械约束(REWRITE 系列) (3 块)
 
@@ -358,45 +360,12 @@
 
 ### src/Sovereign/Structology/T6.agda:1475 — 0 条
 
-## E 副本目录(_standalone, 待同步/删除) (9 块)
-
-### src/Sovereign/Algebra/Jacobian/_standalone/Sovereign/Format/CRT.agda:233 — 3 条
-- `crtSec-restricted` : crtSec-restricted : ∀ p → crtProject' (crtReconstruct' p) ≡ᶜ p
-- `crtRet-restricted` : crtRet-restricted : ∀ n → crtReconstruct' (crtProject' n) ≡ᶜ n
-- `crtIso` : crtIso : Iso CRTDom CRTCod crtIso = iso crtProject' crtReconstruct' crtSec-restricted crtRet-restricted
-
-### src/Sovereign/Algebra/Jacobian/_standalone/Sovereign/Structology/MagicSquare144.agda:114 — 2 条
-- `windingNotDecomposed` : windingNotDecomposed : ¬ (PolarWinding ≡ DodecahedronCells + MerkabaCells)
-- `crt-projection-equality` : crt-projection-equality : crtProject PolarWinding ≡ crtProject (DodecahedronCells + MerkabaCells)
-
-### src/Sovereign/Algebra/Jacobian/_standalone/Sovereign/Structology/MagicSquare144.agda:154 — 2 条
-- `crt-fiber-distinction` : crt-fiber-distinction : ∀ (k₁ k₂ : ℕ) → (PolarWinding + k₁ * M) % M ≡ (DodecahedronCells + MerkabaCells + k₂ * M) % M → k₁ ≡ k₂ × (PolarWinding + k₁ * M ≡ Dodec
-- `FULL_TOUR` : FULL_TOUR : ℕ
-
-### src/Sovereign/Algebra/Jacobian/_standalone/Sovereign/Structology/MagicSquare144.agda:271 — 1 条
-- `magicSquareIsStatic` : magicSquareIsStatic : ∀ (cell : MagicCell) → ¬ (MagicCell.value cell ≡ PolarWinding)
-
-### src/Sovereign/Algebra/Jacobian/_standalone/Sovereign/Structology/T6.agda:20 — 2 条
-- `div3k` : div3k : ∀ k → div-helper 0 2 (3 * k) 2 ≡ k
-- `mod3k` : mod3k : ∀ k → mod-helper 0 2 (3 * k) 2 ≡ 0
-
-### src/Sovereign/Algebra/Jacobian/_standalone/Sovereign/Structology/T6.agda:974 — 0 条
-
-### src/Sovereign/Algebra/Jacobian/_standalone/Sovereign/Structology/T6.agda:1473 — 0 条
-
-### src/Sovereign/Algebra/Jacobian/_standalone/Sovereign/Structology/Winding.agda:112 — 1 条
-- `polarInvariant` : polarInvariant : ∀ (f : ℕ → ℕ) → IsLegalTransform f → f PolarWinding ≡ PolarWinding
-
-### src/Sovereign/Algebra/Jacobian/_standalone/Sovereign/Structology/Winding.agda:117 — 2 条
-- `toroidalInvariant` : toroidalInvariant : ∀ (f : ℕ → ℕ) → IsLegalTransform f → f ToroidalWinding ≡ ToroidalWinding
-- `WindingVector` : WindingVector : Set
-
 ## 已清除 (2026-08 P0 轮, 全部 ⊥ 可导出, 勿再引入)
 
 - k>1-contr, electricCannotExpressHoloPi, cannotUpgradePi (HolographicPi)
 - orbit-count-is-4320, total-orbits, orbit-refl/sym/trans 公理化 (ProjectiveOrbit → 重导出)
 - experimental-anchoring (Quantum/Foundation)
-- windingNotDecomposed (MagicSquare144) — ¬(144≡120+24), refl 反证
+- windingNotDecomposed (MagicSquare144 主库 + _standalone 旧副本) — ¬(144≡120+24), refl 反证
 - polarIndecomposable (Boundaries) — 见证 120+24=144
 - holoPiIrreducible (Boundaries) — 见证 k=2 (144=2·72, 46=2·23)
 - Anchor_EnergyGap_H2O (DataAnchors) — 断言 867/1000 ≡ 5/10

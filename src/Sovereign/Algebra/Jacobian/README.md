@@ -96,8 +96,8 @@ det(M_F) ≠ 0
 
 ## 七大千禧问题离散验证模块（2026-08 P0-4 同步）
 
-原 README 在此列出的 6 个 `jac_*` 七问题模块已迁移/独立成 Problem/ 目录下的正式模块，
-本目录不再重复：
+原 README 在此列出的 6 个 `jac_*` 七问题模块已迁移/独立成 Problem/ 目录下的正式模块
+（07-27 拆分 Jacobian 77→24, 53 模块入 Problem/ 七目录并去除 jac_ 前缀），本目录不再重复：
 
 | 问题 | 实际位置 |
 |------|---------|
@@ -106,7 +106,9 @@ det(M_F) ≠ 0
 | **BSD** | `Problem/BSD/BSD.agda`（Weil 递推 t₁-t₁₀；另有 BSD9/BSD_GF27/BSD_GF243） |
 | **Langlands** | `Problem/Langlands/Langlands.agda`（GL2 特征标正交性） |
 | **PvsNP** | `Problem/PvsNP/PvsNP_L15.agda` + `GF27Separation.agda`（Eval≢Invert 分离） |
-| **RH** | `Problem/Riemann/WeilRigidity.agda` + `AlgGeom.agda`（泛函方程 + Hasse 界 + trace） |
+| **RH** | `Problem/Riemann/` 统一居（8 模块, 0 postulate）: `AlgGeom` / `FrobeniusBlind` /
+  `Galois` / `RH` / `Sheaf` / `Variety` / `WeilRH` / `WeilRigidity`
+  （泛函方程 + Hasse 界 + trace; 07-27 拆分自 Jacobian, 已去 jac_ 前缀） |
 
 ## 依赖
 
