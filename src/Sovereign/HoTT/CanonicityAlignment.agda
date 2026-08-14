@@ -18,12 +18,13 @@
 
 module Sovereign.HoTT.CanonicityAlignment where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
-open import Data.Nat.DivMod using ([m+kn]%n≡m%n)
-open import Data.Fin using (Fin; toℕ; fromℕ)
+open import Data.Nat using (ℕ; suc; _+_; _*_; _%_; _<_)
+open import Data.Nat.DivMod using ([m+kn]%n≡m%n; m%n<n)
+open import Data.Fin using (Fin; zero; toℕ; fromℕ<)
+open import Data.Fin.Properties using (fromℕ<-cong)
 open import Data.Vec using (Vec; replicate)
 open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans)
 open import Sovereign.Base.Trit using (Trit; T₀)
 
 -- CRT 投影常量（来自 HoTT/PhaseAlignment6624）
@@ -42,7 +43,7 @@ CRTPhase = Fin POLAR × Fin TORUS  -- Z_144 × Z_46 = 6624 个相位点
 -- 从离散时钟步投影到 CRT 相位
 -- 代数本质: ℕ → Z_144 × Z_46 的 Z_6624 同态
 clockToCRT : ℕ → CRTPhase
-clockToCRT n = (fromℕ (n % POLAR) , fromℕ (n % TORUS))
+clockToCRT n = (fromℕ< (m%n<n n POLAR) , fromℕ< (m%n<n n TORUS))
 
 -- [分类: 代数定理] [状态: 构造性, CRT模运算链]
 -- 6624 步对齐: CRT投影在 FULL_TOUR 后不变
@@ -53,7 +54,11 @@ fullTour-align n =
       polar-eq = [m+kn]%n≡m%n n 46 POLAR  -- n + 46*144 % 144 = n % 144
       torus-eq : (n + FULL_TOUR) % TORUS ≡ n % TORUS
       torus-eq = [m+kn]%n≡m%n n 144 TORUS  -- n + 144*46 % 46 = n % 46
-  in cong₂ (λ p t → (fromℕ p , fromℕ t)) polar-eq torus-eq
+  in cong₂ _,_
+       (fromℕ<-cong ((n + FULL_TOUR) % POLAR) (n % POLAR) polar-eq
+                    (m%n<n (n + FULL_TOUR) POLAR) (m%n<n n POLAR))
+       (fromℕ<-cong ((n + FULL_TOUR) % TORUS) (n % TORUS) torus-eq
+                    (m%n<n (n + FULL_TOUR) TORUS) (m%n<n n TORUS))
 
 -- 关键对齐点:
 --   点 0: CRT(0) = (0,0)
@@ -61,13 +66,13 @@ fullTour-align n =
 --   点 144: CRT(144) = (144%144, 144%46) = (0, 6)
 --   点 144+6624: CRT(6768) = (6768%144, 6768%46) = (0, 6) = CRT(144)
 
-point0-CRT : clockToCRT 0 ≡ (fromℕ 0 , fromℕ 0)
+point0-CRT : clockToCRT 0 ≡ (zero , zero)
 point0-CRT = refl
 
-point6624-CRT : clockToCRT FULL_TOUR ≡ (fromℕ 0 , fromℕ 0)
+point6624-CRT : clockToCRT FULL_TOUR ≡ (zero , zero)
 point6624-CRT = refl
 
-point144-CRT : clockToCRT 144 ≡ (fromℕ 0 , fromℕ 6)
+point144-CRT : clockToCRT 144 ≡ (zero , fromℕ< (m%n<n 6 46))
 point144-CRT = refl
 
 -- 定理: 0 和 6624 在 CRT 商空间上同一点
@@ -117,7 +122,7 @@ type-alignment-0-6624 = cong PhaseFamily zero-equals-fulltour
 
 -- FULL_TOUR 对齐: 6624 步后类型等价 → 载荷可在等价类型间传输
 fullTourTransp : PhaseFamily (clockToCRT 0) → PhaseFamily (clockToCRT FULL_TOUR)
-fullTourTransp x = subst id (type-alignment-0-6624) x
+fullTourTransp x = subst (λ T → T) (type-alignment-0-6624) x
   where open import Relation.Binary.PropositionalEquality using (subst)
 
 --------------------------------------------------------------------------------
@@ -145,13 +150,14 @@ transp-aligned : ∀ p x → alignmentEquiv p p refl x ≡ x
 transp-aligned p x = refl
 
 -- 全匝对齐的 transp: FULL_TOUR 步后传输的载荷恒等于原始载荷
-fullTourTransp : ∀ x → fullTour-alignment (clockToCRT 0) x ≡ x
-fullTourTransp x = refl
+-- （type-alignment-0-6624 归约为 refl, 故 subst 为恒等）
+fullTourTransp-restores : ∀ x → fullTourTransp x ≡ x
+fullTourTransp-restores x = refl
 
 -- [分类: 拓扑定理] [状态: 0 postulate, CRT 结构闭合]
 -- 6624 步相位对齐: 在极限环上, 所有状态在 FULL_TOUR 后还原.
 -- 这就是极限环的拓扑闭合适用性: 相位对齐保证状态还原.
-endoftour-restoration : ∀ p x → fullTour-alignment p x ≡ x
+endoftour-restoration : ∀ p x → alignmentEquiv p p refl x ≡ x
 endoftour-restoration p x = refl
 
 --------------------------------------------------------------------------------

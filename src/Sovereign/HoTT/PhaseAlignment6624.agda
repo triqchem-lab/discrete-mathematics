@@ -26,8 +26,8 @@
 
 module Sovereign.HoTT.PhaseAlignment6624 where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_)
-  using (ℕ; zero; suc; _+_; _*_; _<_; _≤_)
+open import Data.Nat
+  using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _<_; _≤_; s≤s)
 open import Data.Nat.DivMod
   using (m≡m%n+[m/n]*n; [m+kn]%n≡m%n; m%n<n; m<n⇒m%n≡m)
 open import Data.Nat.Properties
@@ -140,22 +140,28 @@ phaseResyncTheorem x =
       q' = q % TORUS
       k = q / TORUS
       
-      -- x = r + POLAR * q
+      -- x = r + POLAR * q（与 decompositionLemma 同款 *-comm 桥）
       x≡r+Pq : x ≡ r + POLAR * q
-      x≡r+Pq = m≡m%n+[m/n]*n x POLAR
-      
+      x≡r+Pq = trans (m≡m%n+[m/n]*n x POLAR)
+                     (cong (λ z → (x % POLAR) + z) (*-comm (x / POLAR) POLAR))
+
       -- q = q' + TORUS * k
       q≡q'+Tk : q ≡ q' + TORUS * k
-      q≡q'+Tk = m≡m%n+[m/n]*n q TORUS
+      q≡q'+Tk = trans (m≡m%n+[m/n]*n q TORUS)
+                      (cong (λ z → (q % TORUS) + z) (*-comm (q / TORUS) TORUS))
       
+      -- 分配律实例（本模块局部定义, 规避跨版本引理形态差异）
+      distr-Pq' : POLAR * (q' + TORUS * k) ≡ POLAR * q' + POLAR * (TORUS * k)
+      distr-Pq' = *-distribˡ-+ POLAR q' (TORUS * k)
+
       -- x = r + POLAR*q' + FULL_TOUR*k
       x≡r+Pq'+Fk : x ≡ r + POLAR * q' + FULL_TOUR * k
       x≡r+Pq'+Fk = begin
         x                  ≡⟨ x≡r+Pq ⟩
-        r + POLAR * q      ≡⟨ cong (r + POLAR *_) q≡q'+Tk ⟩
-        r + POLAR * (q' + TORUS * k) ≡⟨ cong (r +_) (*-distribˡ-+ POLAR q' (TORUS * k)) ⟩
-        r + (POLAR * q' + POLAR * (TORUS * k)) ≡⟨ +-assoc r (POLAR * q') (POLAR * (TORUS * k)) ⟩
-        (r + POLAR * q') + POLAR * (TORUS * k) ≡⟨ cong ((r + POLAR * q') +_) (*-assoc POLAR TORUS k) ⟩
+        r + POLAR * q      ≡⟨ cong (λ z → r + POLAR * z) q≡q'+Tk ⟩
+        r + POLAR * (q' + TORUS * k) ≡⟨ cong (r +_) distr-Pq' ⟩
+        r + (POLAR * q' + POLAR * (TORUS * k)) ≡⟨ sym (+-assoc r (POLAR * q') (POLAR * (TORUS * k))) ⟩
+        (r + POLAR * q') + POLAR * (TORUS * k) ≡⟨ cong ((r + POLAR * q') +_) (sym (*-assoc POLAR TORUS k)) ⟩
         (r + POLAR * q') + (POLAR * TORUS) * k ≡⟨⟩
         (r + POLAR * q') + FULL_TOUR * k ∎
       
@@ -163,7 +169,10 @@ phaseResyncTheorem x =
       x%F≡r+Pq'%F : x % FULL_TOUR ≡ (r + POLAR * q') % FULL_TOUR
       x%F≡r+Pq'%F = begin
         x % FULL_TOUR              ≡⟨ cong (_% FULL_TOUR) x≡r+Pq'+Fk ⟩
-        ((r + POLAR * q') + FULL_TOUR * k) % FULL_TOUR  ≡⟨ [m+kn]%n≡m%n (r + POLAR * q') k FULL_TOUR ⟩
+        ((r + POLAR * q') + FULL_TOUR * k) % FULL_TOUR
+          ≡⟨ cong (_% FULL_TOUR) (cong (λ z → (r + POLAR * q') + z) (*-comm FULL_TOUR k)) ⟩
+        ((r + POLAR * q') + k * FULL_TOUR) % FULL_TOUR
+          ≡⟨ [m+kn]%n≡m%n (r + POLAR * q') k FULL_TOUR ⟩
         (r + POLAR * q') % FULL_TOUR ∎
       
       -- r < POLAR
