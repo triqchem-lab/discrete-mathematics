@@ -74,7 +74,9 @@ crt-det-nonzero = λ ()
 --   π3(det(M)) = det₂_gf3(M₃), π4(det(M)) = det₂_fin4(M₄).
 -- 因此: det(M) ≠ 0 ⟺ det₂_gf3(M₃) ≠ T₀ ∧ det₂_fin4(M₄) ≠ 0.
 --
--- 结论: 任一大矩阵的非退化性判定 = 两个小分量 (3×3 + 4×4) 的 det≠0.
+-- 结论 (2026-08 措辞修正): 任一 N×N Duodec 矩阵的非退化性判定
+--   = 两个 CRT 环分量 (GF(3) 环 + Z/4Z 环) 的 det≠0 — 各分量矩阵仍为 N×N,
+--   不是 3×3/4×4 小矩阵; 「3/4」是环的元素数, 不是矩阵尺寸.
 -- 0 postulate — 全部为 CRT 同构性质的直接推论.
 
 crt-equivalence : det2-gf3 T₁ T₀ T₀ T₁ ≢ T₀
@@ -87,7 +89,7 @@ crt-equivalence = λ ()
 --
 -- 此前所有模块在 N≤3 级别工作 — CRT 分解定理将它们提升为对任意 N 的判定工具:
 --
---   jac_Topology:     dim H_k = nullity - rank. CRT 将 rank 计算归约到 3×3 + 4×4.
+--   jac_Topology:     dim H_k = nullity - rank. CRT 将 rank 计算归约到 GF(3) + Z/4Z 环分量.
 --   jac_Hodge:        dim ℋ = dim H. 同上.
 --   jac_LieGroup:     Aut(T⁶/GF(9)). 群表示由 CRT 分量完全确定.
 --   jac_Complexity:   不可约性判定. det₃/det₄ ≠ 0 → 全局不可约.
@@ -102,7 +104,7 @@ crt-equivalence = λ ()
 -- jac_CRTDet 是离散全息框架的拱顶石定理:
 --   ✅ CRT 同态保持行列式 (Duodec 已证, 144 case refl)
 --   ✅ det ≠ 0 ⟺ 分量 det ≠ 0 (CRT 同构, crt12-roundtrip)
---   ✅ 任意 N 的行列式判定 = 3×3 + 4×4 穷举
+--   ✅ 任意 N×N 的行列式判定 = GF(3) 环分量 + Z/4Z 环分量 (各仍 N×N) 的 det≠0 判定
 --   ✅ 贯通 34 模块的统一判定体系
 --   0 postulate.
 --
