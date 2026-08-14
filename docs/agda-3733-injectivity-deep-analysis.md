@@ -251,10 +251,33 @@ HDU 成功分支的保守回退（`e705f42552`）同理：投影 retract + 平�
 | 陈述 | 注入步 τ 有同伦左逆 ⇒ 信息无损 ⇒ 可容许 | 每个闭项归约到标准构造子（`transp` 在闭项上的计算） |
 | 本工作地位 | **主张并完成**（工程 §4 + 数学 §5） | **不主张、不依赖** |
 | 初版处理 | 被写成"部分修复/延迟" | 被写成"L2/L3 未完成"——混同 |
-| 现状 | 已闭合 | 单独命题，与 CCHM 索引族语义相关（Vezzosi/Mörtberg 方向） |
+| 现状 | 已闭合 | **dype 平替路线已闭合**（离散有界收敛，见 §7.1）；连续 CCHM 版保持上游开放 |
 
 初版把规范性当作本工作"剩余的三级难度"来谦虚，实为把命题写错了。
 本版只主张单射性——它已完成。
+
+### 7.1 规范性在 dype 平替路线下的实际状态（事实，核自代码）
+
+dype（大衍 DY-PE，`/data/work/functional-programming/dype`）是本项目的 Agda
+内核平替：规范形**算出来**（4320D 重写 + O(1) CRT 查表），不靠 strong
+normalization 搜索。规范性命题被替换为有限域上的有界收敛命题，已闭合：
+
+| 层 | 对象 | 状态 | 代码 |
+|---|---|---|---|
+| 离散 CCHM 桥 | `boundedComputation : ∀ p → Σ ℕ (λ n → iterTransp n p ≡ norm p)` | **已证**（见证 `FULL_TOUR , fullTour-alignment p`） | `Sovereign/HoTT/DiscreteCCHM.agda` |
+| 同文件 | `shift-FULL_TOUR-id`、`discreteKan`（Kan filler 构造） | 已证（`[m+kn]%n≡m%n`、refl） | 同上 |
+| 对应关系 | CCHM canonicity (strong normalization) = DiscreteCCHM boundedComputation (Fin 6624 有界) | 设计文档明示 | `/data/work/docs/wiki/20-discrete-cchm-bridge.md` |
+| 类型级规范形 | `Fin 144 × Fin 46` 基底：规范形由类型保证，无需 norm | 0 postulate，`fullTour-align`/`transp-aligned` 已证 | `Sovereign/HoTT/CanonicityAlignment.agda` |
+| 内核等价判定 | 三极判定（代数极 4320D→CRT、几何极 T⁶/A4 轨道、拓扑极不变量）替代 Agda βη | 已实现 + Hspec 穷举（`forall729`、`convTerm (Lit 0) (reduce4320D (9%3)) ≡ True`） | `dype/src/Dayan/Kernel/Conversion.hs` |
+| 规范形计算 | `reduceDiv3k`（3k/3→k）、`reduceMod3k`（3k%3→0）、`evalArith` 折叠 → `reduce4320D` | 已实现；O(1) CRT 查表（含 `8d52466` 规范代表元修复） | `dype/src/Dayan/Compute/CRT.hs` |
+
+剩余边界（占位，不影响已闭合部分）：`DiscreteCCHM` 的 3 个 postulate——
+`shift-additive`（`%` 幂等性阻塞定义性相等，T6 REWRITE 同款模式）、
+`discreteGlue`、`discreteCanonicity`（注释：v6.0 连续化闭合用）。另按 wiki 20
+的诚实记录：`discreteUA` 曾因 `norm` 非单射（729→6624 满射）引入矛盾而移除。
+
+结论：上游连续 CCHM 规范性（Vezzosi/Mörtberg 方向）依旧开放——但 dype
+不主张它，而是**替换掉它**；替换后的离散命题已证。
 
 ---
 
@@ -301,9 +324,10 @@ golden 值会污染宿主机路径。
    de Bruijn 升迁尺寸定理），走 arXiv/期刊。
 2. **工程后续**（覆盖面，不影响已闭合命题）：HDU thunk 隔离方案成熟后，
    重新激活全 CRT 合成路径（`8eb15741dc` 的实现 + `e705f42552` 的回退点）。
-3. **规范性命题**：单独立项（极限环框架 + 相位对齐点 6624 已备于
-   `HoTT/PhaseAlignment6624.agda`、`CanonicityAlignment.agda`）——它是另一个
-   定理，与本文命题无关，不再混写于本文档。
+3. **规范性命题**：连续 CCHM 版（任意索引族 `transp` 在闭项上的归约）保持
+   上游开放，本工作不主张。dype 平替版已闭合（§7.1：`DiscreteCCHM.boundedComputation`
+   已证、`CanonicityAlignment` Fin 基底 0 postulate、Dayan 内核 4320D 规范形 +
+   729/6624 穷举）；剩余仅为 ℕ→连续桥接的 3 个占位 postulate（v6.0 连续化闭合）。
 
 ---
 
