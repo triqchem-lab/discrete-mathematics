@@ -214,6 +214,8 @@ open import Sovereign.HoTT.DiscreteCCHM public hiding (CRTPhase; POLAR; shift)
 open import Sovereign.HoTT.HopfConstruction public  -- P2-2: 真 A₄ 纤维化 (totalSpaceEquiv + 自由轨道)
 -- 零类等价: Hₙ(T⁶) Betti 对称性 + Poincaré 对偶
 open import Sovereign.HoTT.ZeroHomologyEquivalence public
+-- 陈数×欧拉示性数维度阶梯 (2D c₁=χ=2 / 3D 奇维为零+Chern-Simons / T⁶ χ=0 平陈数 / ∞ 周期轨道)
+open import Sovereign.HoTT.ChernEulerLadder public
 
 -- 注: 以下模块尚未创建，待后续会话实现:
 -- Sovereign.Algebra.GF27 (GF(3³) 三次扩张)
