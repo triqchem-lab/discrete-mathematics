@@ -254,6 +254,10 @@ open import Sovereign.Physics.DiscreteEMField3D public
          dz-neg; dz-add;
          pair-cancel-1; pair-cancel-2; pair-cancel-3;
          div-curl-zero-paired; shuffle23)
+-- 78 电磁学: 核心定理层 (div∘curl=0 全形式 + 3D 规范不变性 + 零通量, 0 postulate)
+open import Sovereign.Physics.DiscreteEMCore public
+  using (addVec3; addVec3-right-unit; shuffle22; pair-swap; six-rotate;
+         div-curl-zero; sum9; flux; zero-flux; zero-monopole-flux)
 -- 78 电磁学: 3×3 环面离散场论第一基石 (梯度的旋度为零 + 规范不变性)
 open import Sovereign.Physics.DiscreteEMField public
   using (Point2D; ScalarField; VectorField; add3; neg3;
