@@ -54,8 +54,10 @@ _*ᶜ_ : DiscreteComplex → DiscreteComplex → DiscreteComplex
 conjugate : DiscreteComplex → DiscreteComplex
 conjugate (a +ᵢ b) = a +ᵢ negate b
 
--- 本地定义：二阶相克复振幅
-postulate phaseOvercome2 : Sqrt3
+-- 本地定义：二阶相克复振幅 (2026-08-16 修复: postulate → 构造性定义,
+-- 引用 RootMath/AlgebraicComplex 的 sqrt3 — Sqrt3 型已有构造性值)
+phaseOvercome2 : Sqrt3
+phaseOvercome2 = sqrt3
 
 --------------------------------------------------------------------------------
 -- 1. 底流形与结构群
@@ -235,17 +237,11 @@ postulate
   globalCurvatureSum : ℚ
   globalCurvatureIs4Pi : globalCurvatureSum ≡ (+ 4 /ℚ 1) *ℚ (+ 3 /ℚ 1)  -- 近似 4π
 
--- 陈数守恒：跨块累加收敛至 C=2 (预存未完成证明)
-sumChernContribs : List DiscreteCurvature → ℕ
-sumChernContribs [] = 0
-sumChernContribs (c ∷ cs) = toℕ (DiscreteCurvature.chernLocalContrib c) + sumChernContribs cs
-
-postulate
--- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
---   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
-  chernConservationFromCurvature : 
-    ∀ (curvatures : List DiscreteCurvature) → 
-    sumChernContribs curvatures ≡ 2
+-- [2026-08-16 轨道 A 歼灭] 删除假 postulate chernConservationFromCurvature:
+--   原断言 ∀ curvatures → sumChernContribs curvatures ≡ 2 —
+--   取 curvatures = [] 即得 0 ≡ 2, 可被计算反驳 (轨道 A 判据)。
+--   陈数守恒的正确形态已在 DiscreteKTheory §6 以精确协议
+--   (C = TOTAL_SIGNED/216 = −2) 形式化; 本模块不再持有该全称断言。
 
 --------------------------------------------------------------------------------
 -- 5. 离散挠率（仲吕不交）

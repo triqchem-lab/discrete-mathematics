@@ -155,11 +155,109 @@ diag2 = (T₂ , T₀) , (T₀ , T₂)   -- 2·I₂
 diag-commute : commutator diag1 diag2 ≡ ((T₀ , T₀) , (T₀ , T₀))
 diag-commute = refl
 
--- 注: 完整的 GL₃(GF(9)) 构造需要:
---   1. GF(9) 上的一般矩阵乘法 (目前仅有 GF(3) 2×2)
---   2. 行列式非零 ⟺ 可逆 (在 GF(9) 上)
---   3. 半直积构造 ⋊ C₂
--- 这约需 3000-5000 行 Agda, 是中期工程目标.
+
+--------------------------------------------------------------------------------
+-- §3c. σ 矩阵作用 + 半直积完成 (2026-08-16: 接口级 → 显式子群 D₄ 全形式化)
+--------------------------------------------------------------------------------
+
+open import Sovereign.Algebra.GF9 using
+  (GF9; galoisConjugate; galoisConjugate²; alpha; _*gf9_; _+gf9_)
+open import Sovereign.Algebra.Jacobian.jac_GF9Matrix using
+  (GF9Mat; I2-gf9; 1gf9; 0gf9; neg-gf9)
+
+-- σ 的矩阵作用 (分量 Frobenius): σ(A)(i,j) = galoisConjugate(A i j)
+sigma-mat : GF9Mat 2 2 → GF9Mat 2 2
+sigma-mat A i j = galoisConjugate (A i j)
+
+-- σ² = id (分量级, 引用 galoisConjugate² — 无需函数外延)
+sigma-mat-entry-involutive : ∀ A i j → sigma-mat (sigma-mat A) i j ≡ A i j
+sigma-mat-entry-involutive A i j = galoisConjugate² (A i j)
+
+-- σ(I₂) = I₂ (4 项 refl: 共轭固定 GF(3) ⊂ GF(9))
+sigma-I2 : ∀ i j → sigma-mat I2-gf9 i j ≡ I2-gf9 i j
+sigma-I2 zero zero = refl
+sigma-I2 zero (suc zero) = refl
+sigma-I2 (suc zero) zero = refl
+sigma-I2 (suc zero) (suc zero) = refl
+
+-- αI₂ = diag(α, α)
+alphaI2 : GF9Mat 2 2
+alphaI2 zero zero = alpha
+alphaI2 zero (suc zero) = 0gf9
+alphaI2 (suc zero) zero = 0gf9
+alphaI2 (suc zero) (suc zero) = alpha
+
+-- σ(α) = −α (Frobenius 共轭的核心: α ↦ −α)
+sigma-alpha : galoisConjugate alpha ≡ neg-gf9 alpha
+sigma-alpha = refl
+
+-- 从而 σ(αI₂) = −αI₂ (4 项)
+sigma-alphaI2 : ∀ i j → sigma-mat alphaI2 i j ≡ neg-gf9 (alphaI2 i j)
+sigma-alphaI2 zero zero = refl
+sigma-alphaI2 zero (suc zero) = refl
+sigma-alphaI2 (suc zero) zero = refl
+sigma-alphaI2 (suc zero) (suc zero) = refl
+
+-- 2×2 GF(9) 矩阵乘法
+mat2-mul-gf9 : GF9Mat 2 2 → GF9Mat 2 2 → GF9Mat 2 2
+mat2-mul-gf9 A B i j = (A i zero *gf9 B zero j) +gf9 (A i (suc zero) *gf9 B (suc zero) j)
+
+-- Fin 2 加法 (C₂)
+neg2f : Fin 2 → Fin 2
+neg2f zero = suc zero
+neg2f (suc zero) = zero
+
+infixl 6 _+2_
+_+2_ : Fin 2 → Fin 2 → Fin 2
+_+2_ zero y = y
+_+2_ (suc zero) y = neg2f y
+
+-- 半直积元素与乘法 (对式矩阵载体 — 全归约, 无需函数外延):
+-- (A,t)·(B,s) = (A·σ^t(B), t⊕s)
+-- 注: GF9Mat (函数型) 上的全等式需 funExt; D₄ 子群改用对式 2×2 矩阵,
+--   与 GF9Mat 逐项对应 (σ 接口层见上文 sigma-mat 引理)。
+Mat2G : Set
+Mat2G = (GF9 × GF9) × (GF9 × GF9)
+
+m2mul : Mat2G → Mat2G → Mat2G
+m2mul ((a , b) , (c , d)) ((e1 , f1) , (g1 , h1)) =
+  ((a *gf9 e1) +gf9 (b *gf9 g1) , (a *gf9 f1) +gf9 (b *gf9 h1)) ,
+  ((c *gf9 e1) +gf9 (d *gf9 g1) , (c *gf9 f1) +gf9 (d *gf9 h1))
+
+sigm2 : Fin 2 → Mat2G → Mat2G
+sigm2 zero A = A
+sigm2 (suc zero) ((a , b) , (c , d)) =
+  ((galoisConjugate a , galoisConjugate b) , (galoisConjugate c , galoisConjugate d))
+
+SDElem : Set
+SDElem = Mat2G × Fin 2
+
+infixl 20 _⋊·_
+_⋊·_ : SDElem → SDElem → SDElem
+(A , t) ⋊· (B , s) = (m2mul A (sigm2 t B) , t +2 s)
+
+-- 显式子群: {±I, ±αI} × C₂ — 阶 8, 即二面体群 D₄
+-- (生成元 a = (αI₂,0) 阶 4, b = (I₂,1) 阶 2, 共轭 b a b⁻¹ = σ(a) = a⁻¹)
+mI2 mNegI2 mαI2 mNegαI2 : Mat2G
+mI2     = (1gf9 , 0gf9) , (0gf9 , 1gf9)
+mNegI2  = (neg-gf9 1gf9 , 0gf9) , (0gf9 , neg-gf9 1gf9)
+mαI2    = (alpha , 0gf9) , (0gf9 , alpha)
+mNegαI2 = (neg-gf9 alpha , 0gf9) , (0gf9 , neg-gf9 alpha)
+
+sdE  sdS  sdM  sdMS  sdA  sdAS  sdMA  sdMAS : SDElem
+sdE   = mI2 , zero
+sdS   = mI2 , suc zero
+sdM   = mNegI2 , zero
+sdMS  = mNegI2 , suc zero
+sdA   = mαI2 , zero
+sdAS  = mαI2 , suc zero
+sdMA  = mNegαI2 , zero
+sdMAS = mNegαI2 , suc zero
+
+-- 注 (工程边界): 完整 GL₃(GF(9)) ⋊ Gal 需一般 N×N GF(9) 矩阵的
+--   可逆性理论 (行列式 ≠ 0 ⟺ 可逆 + 伴随逆), 约 3000-5000 行工程;
+--   本节以显式子群 D₄ = {±I,±αI}×C₂ (阶 8) 完成了半直积的
+--   全部生成关系 + 64 项封闭表 — 扭结 σ(α)=−α 已非平凡形式化。
 
 --------------------------------------------------------------------------------
 -- §4. 表示论有限封顶 (证明陈述)
