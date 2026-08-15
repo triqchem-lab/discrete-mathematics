@@ -276,6 +276,14 @@ open import Sovereign.Physics.EntropySpin public
          thermal-a6; ManifoldDim4320; DimensionMapping; dimMap;
          ChiralSpinor; conjugateStandingWave;
          WuXingEntropyState; shengModulation; keModulation)
+-- 渠玉芝熵旋定律形式化 (S=∇×Ψ−κℋ²n̂ 离散化 + 张量反对称 + 离散斯托克斯, 0 postulate)
+open import Sovereign.Physics.EntropySpinLaw public
+  using (QScalar; QVector; dxℚ; dyℚ; dzℚ; qx; qy; qz; curlℚ;
+         kappaQ; normalZ; vscale; vsub; entropySpinLaw;
+         rhoXY; rhoYX; sub-antisym; rho-antisym;
+         sum3ℚ; telescope2; telescope3; merge4; sum3-distrib;
+         sum3-nested-dx-zero; sum3-dy-zero; sum3-nested-dy-zero;
+         massIntegral; scalarSum; massIntegral-curl-zero; entropySpinMass-reduction)
 -- 手征干涉层: C3 → 场论驻波桥 (干涉规则 + 反向波相消 + Frobenius 稳定性, 0 postulate)
 open import Sovereign.Physics.ChiralInterference public
   using (cw; ccw; rest; interfere; cw-ccw-cancel; ccw-cw-cancel;
