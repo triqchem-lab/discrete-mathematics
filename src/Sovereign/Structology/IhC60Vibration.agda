@@ -19,6 +19,9 @@
 --   §4 Γ_perm 重数（内积公式 (d+σ)/2, 10 证书）
 --   §5 Γ_vib 重数向量（2,1,3,4,4,5,6,6,8,7）与主定理: 46 个独立基频
 --   §6 维数守恒: Σ m_R·d_R = 174
+--   §7 特征标正交性全表: ⟨χᵢ,χⱼ⟩ = δᵢⱼ (10×10 = 100 项, 缩放 120 消分母)
+--   §8 选择定则: IR 活性 = T₁u (4 支), Raman = A_g+H_g (10 支),
+--      14 条可观测谱线 + 32 暗模 = 46
 
 module Sovereign.Structology.IhC60Vibration where
 
@@ -520,3 +523,369 @@ dim-174 = refl
 -- 174 = 3×60 − 6（平动+转动自由度排除）
 dof-check : 3 *ℕ 60 ≡ 180
 dof-check = refl
+------------------------------------------------------------------------------
+-- §7. 特征标正交性全表: ⟨χᵢ, χⱼ⟩ = δᵢⱼ (10×10 = 100 项, 缩放 120 消分母)
+------------------------------------------------------------------------------
+
+-- 共轭类大小 (|I_h| = 120): E, 12C5, 12C5², 20C3, 15C2, i, 12S10, 12S10³, 20S6, 15σ
+classSize : Class → ℕ
+classSize CE = 1
+classSize CC5 = 12
+classSize CC52 = 12
+classSize CC3 = 20
+classSize CC2 = 15
+classSize Ci = 1
+classSize CS10 = 12
+classSize CS103 = 12
+classSize CS6 = 20
+classSize Csig = 15
+
+-- |I_h| = Σ |C| = 120
+classSizeSum :
+  classSize CE +ℕ classSize CC5 +ℕ classSize CC52 +ℕ classSize CC3 +ℕ classSize CC2
+  +ℕ classSize Ci +ℕ classSize CS10 +ℕ classSize CS103 +ℕ classSize CS6 +ℕ classSize Csig ≡ 120
+classSizeSum = refl
+
+-- ℕ 缩放: n·(a+bτ) = (na, nb)
+scaleG : ℕ → Golden → Golden
+scaleG n (a , b) = (+ n * a , + n * b)
+
+-- 单项: |C|·χᵢ(C)·χⱼ(C)
+orthoTerm : Irrep → Irrep → Class → Golden
+orthoTerm R S C = scaleG (classSize C) (charTable R C *G charTable S C)
+
+-- 缩放内积: ⟨χᵢ, χⱼ⟩·120 = Σ_C |C|·χᵢ(C)·χⱼ(C) = 120·δᵢⱼ
+-- (I_h 特征标全为实数且在 ℤ[τ], 无需共轭; 乘 120 消除分母, 全整数 refl)
+ortho : Irrep → Irrep → Golden
+ortho R S =
+  orthoTerm R S CE  +G orthoTerm R S CC5  +G orthoTerm R S CC52 +G orthoTerm R S CC3
+  +G orthoTerm R S CC2 +G orthoTerm R S Ci  +G orthoTerm R S CS10 +G orthoTerm R S CS103
+  +G orthoTerm R S CS6 +G orthoTerm R S Csig
+
+-- 100 项正交性: 对角 = 120·1, 非对角 = 0
+orthoAgAg : ortho Ag Ag ≡ (+ 120 , + 0)
+orthoAgAg = refl
+
+orthoAgAu : ortho Ag Au ≡ (+ 0 , + 0)
+orthoAgAu = refl
+
+orthoAgT1g : ortho Ag T1g ≡ (+ 0 , + 0)
+orthoAgT1g = refl
+
+orthoAgT1u : ortho Ag T1u ≡ (+ 0 , + 0)
+orthoAgT1u = refl
+
+orthoAgT2g : ortho Ag T2g ≡ (+ 0 , + 0)
+orthoAgT2g = refl
+
+orthoAgT2u : ortho Ag T2u ≡ (+ 0 , + 0)
+orthoAgT2u = refl
+
+orthoAgGg : ortho Ag Gg ≡ (+ 0 , + 0)
+orthoAgGg = refl
+
+orthoAgGu : ortho Ag Gu ≡ (+ 0 , + 0)
+orthoAgGu = refl
+
+orthoAgHg : ortho Ag Hg ≡ (+ 0 , + 0)
+orthoAgHg = refl
+
+orthoAgHu : ortho Ag Hu ≡ (+ 0 , + 0)
+orthoAgHu = refl
+
+orthoAuAg : ortho Au Ag ≡ (+ 0 , + 0)
+orthoAuAg = refl
+
+orthoAuAu : ortho Au Au ≡ (+ 120 , + 0)
+orthoAuAu = refl
+
+orthoAuT1g : ortho Au T1g ≡ (+ 0 , + 0)
+orthoAuT1g = refl
+
+orthoAuT1u : ortho Au T1u ≡ (+ 0 , + 0)
+orthoAuT1u = refl
+
+orthoAuT2g : ortho Au T2g ≡ (+ 0 , + 0)
+orthoAuT2g = refl
+
+orthoAuT2u : ortho Au T2u ≡ (+ 0 , + 0)
+orthoAuT2u = refl
+
+orthoAuGg : ortho Au Gg ≡ (+ 0 , + 0)
+orthoAuGg = refl
+
+orthoAuGu : ortho Au Gu ≡ (+ 0 , + 0)
+orthoAuGu = refl
+
+orthoAuHg : ortho Au Hg ≡ (+ 0 , + 0)
+orthoAuHg = refl
+
+orthoAuHu : ortho Au Hu ≡ (+ 0 , + 0)
+orthoAuHu = refl
+
+orthoT1gAg : ortho T1g Ag ≡ (+ 0 , + 0)
+orthoT1gAg = refl
+
+orthoT1gAu : ortho T1g Au ≡ (+ 0 , + 0)
+orthoT1gAu = refl
+
+orthoT1gT1g : ortho T1g T1g ≡ (+ 120 , + 0)
+orthoT1gT1g = refl
+
+orthoT1gT1u : ortho T1g T1u ≡ (+ 0 , + 0)
+orthoT1gT1u = refl
+
+orthoT1gT2g : ortho T1g T2g ≡ (+ 0 , + 0)
+orthoT1gT2g = refl
+
+orthoT1gT2u : ortho T1g T2u ≡ (+ 0 , + 0)
+orthoT1gT2u = refl
+
+orthoT1gGg : ortho T1g Gg ≡ (+ 0 , + 0)
+orthoT1gGg = refl
+
+orthoT1gGu : ortho T1g Gu ≡ (+ 0 , + 0)
+orthoT1gGu = refl
+
+orthoT1gHg : ortho T1g Hg ≡ (+ 0 , + 0)
+orthoT1gHg = refl
+
+orthoT1gHu : ortho T1g Hu ≡ (+ 0 , + 0)
+orthoT1gHu = refl
+
+orthoT1uAg : ortho T1u Ag ≡ (+ 0 , + 0)
+orthoT1uAg = refl
+
+orthoT1uAu : ortho T1u Au ≡ (+ 0 , + 0)
+orthoT1uAu = refl
+
+orthoT1uT1g : ortho T1u T1g ≡ (+ 0 , + 0)
+orthoT1uT1g = refl
+
+orthoT1uT1u : ortho T1u T1u ≡ (+ 120 , + 0)
+orthoT1uT1u = refl
+
+orthoT1uT2g : ortho T1u T2g ≡ (+ 0 , + 0)
+orthoT1uT2g = refl
+
+orthoT1uT2u : ortho T1u T2u ≡ (+ 0 , + 0)
+orthoT1uT2u = refl
+
+orthoT1uGg : ortho T1u Gg ≡ (+ 0 , + 0)
+orthoT1uGg = refl
+
+orthoT1uGu : ortho T1u Gu ≡ (+ 0 , + 0)
+orthoT1uGu = refl
+
+orthoT1uHg : ortho T1u Hg ≡ (+ 0 , + 0)
+orthoT1uHg = refl
+
+orthoT1uHu : ortho T1u Hu ≡ (+ 0 , + 0)
+orthoT1uHu = refl
+
+orthoT2gAg : ortho T2g Ag ≡ (+ 0 , + 0)
+orthoT2gAg = refl
+
+orthoT2gAu : ortho T2g Au ≡ (+ 0 , + 0)
+orthoT2gAu = refl
+
+orthoT2gT1g : ortho T2g T1g ≡ (+ 0 , + 0)
+orthoT2gT1g = refl
+
+orthoT2gT1u : ortho T2g T1u ≡ (+ 0 , + 0)
+orthoT2gT1u = refl
+
+orthoT2gT2g : ortho T2g T2g ≡ (+ 120 , + 0)
+orthoT2gT2g = refl
+
+orthoT2gT2u : ortho T2g T2u ≡ (+ 0 , + 0)
+orthoT2gT2u = refl
+
+orthoT2gGg : ortho T2g Gg ≡ (+ 0 , + 0)
+orthoT2gGg = refl
+
+orthoT2gGu : ortho T2g Gu ≡ (+ 0 , + 0)
+orthoT2gGu = refl
+
+orthoT2gHg : ortho T2g Hg ≡ (+ 0 , + 0)
+orthoT2gHg = refl
+
+orthoT2gHu : ortho T2g Hu ≡ (+ 0 , + 0)
+orthoT2gHu = refl
+
+orthoT2uAg : ortho T2u Ag ≡ (+ 0 , + 0)
+orthoT2uAg = refl
+
+orthoT2uAu : ortho T2u Au ≡ (+ 0 , + 0)
+orthoT2uAu = refl
+
+orthoT2uT1g : ortho T2u T1g ≡ (+ 0 , + 0)
+orthoT2uT1g = refl
+
+orthoT2uT1u : ortho T2u T1u ≡ (+ 0 , + 0)
+orthoT2uT1u = refl
+
+orthoT2uT2g : ortho T2u T2g ≡ (+ 0 , + 0)
+orthoT2uT2g = refl
+
+orthoT2uT2u : ortho T2u T2u ≡ (+ 120 , + 0)
+orthoT2uT2u = refl
+
+orthoT2uGg : ortho T2u Gg ≡ (+ 0 , + 0)
+orthoT2uGg = refl
+
+orthoT2uGu : ortho T2u Gu ≡ (+ 0 , + 0)
+orthoT2uGu = refl
+
+orthoT2uHg : ortho T2u Hg ≡ (+ 0 , + 0)
+orthoT2uHg = refl
+
+orthoT2uHu : ortho T2u Hu ≡ (+ 0 , + 0)
+orthoT2uHu = refl
+
+orthoGgAg : ortho Gg Ag ≡ (+ 0 , + 0)
+orthoGgAg = refl
+
+orthoGgAu : ortho Gg Au ≡ (+ 0 , + 0)
+orthoGgAu = refl
+
+orthoGgT1g : ortho Gg T1g ≡ (+ 0 , + 0)
+orthoGgT1g = refl
+
+orthoGgT1u : ortho Gg T1u ≡ (+ 0 , + 0)
+orthoGgT1u = refl
+
+orthoGgT2g : ortho Gg T2g ≡ (+ 0 , + 0)
+orthoGgT2g = refl
+
+orthoGgT2u : ortho Gg T2u ≡ (+ 0 , + 0)
+orthoGgT2u = refl
+
+orthoGgGg : ortho Gg Gg ≡ (+ 120 , + 0)
+orthoGgGg = refl
+
+orthoGgGu : ortho Gg Gu ≡ (+ 0 , + 0)
+orthoGgGu = refl
+
+orthoGgHg : ortho Gg Hg ≡ (+ 0 , + 0)
+orthoGgHg = refl
+
+orthoGgHu : ortho Gg Hu ≡ (+ 0 , + 0)
+orthoGgHu = refl
+
+orthoGuAg : ortho Gu Ag ≡ (+ 0 , + 0)
+orthoGuAg = refl
+
+orthoGuAu : ortho Gu Au ≡ (+ 0 , + 0)
+orthoGuAu = refl
+
+orthoGuT1g : ortho Gu T1g ≡ (+ 0 , + 0)
+orthoGuT1g = refl
+
+orthoGuT1u : ortho Gu T1u ≡ (+ 0 , + 0)
+orthoGuT1u = refl
+
+orthoGuT2g : ortho Gu T2g ≡ (+ 0 , + 0)
+orthoGuT2g = refl
+
+orthoGuT2u : ortho Gu T2u ≡ (+ 0 , + 0)
+orthoGuT2u = refl
+
+orthoGuGg : ortho Gu Gg ≡ (+ 0 , + 0)
+orthoGuGg = refl
+
+orthoGuGu : ortho Gu Gu ≡ (+ 120 , + 0)
+orthoGuGu = refl
+
+orthoGuHg : ortho Gu Hg ≡ (+ 0 , + 0)
+orthoGuHg = refl
+
+orthoGuHu : ortho Gu Hu ≡ (+ 0 , + 0)
+orthoGuHu = refl
+
+orthoHgAg : ortho Hg Ag ≡ (+ 0 , + 0)
+orthoHgAg = refl
+
+orthoHgAu : ortho Hg Au ≡ (+ 0 , + 0)
+orthoHgAu = refl
+
+orthoHgT1g : ortho Hg T1g ≡ (+ 0 , + 0)
+orthoHgT1g = refl
+
+orthoHgT1u : ortho Hg T1u ≡ (+ 0 , + 0)
+orthoHgT1u = refl
+
+orthoHgT2g : ortho Hg T2g ≡ (+ 0 , + 0)
+orthoHgT2g = refl
+
+orthoHgT2u : ortho Hg T2u ≡ (+ 0 , + 0)
+orthoHgT2u = refl
+
+orthoHgGg : ortho Hg Gg ≡ (+ 0 , + 0)
+orthoHgGg = refl
+
+orthoHgGu : ortho Hg Gu ≡ (+ 0 , + 0)
+orthoHgGu = refl
+
+orthoHgHg : ortho Hg Hg ≡ (+ 120 , + 0)
+orthoHgHg = refl
+
+orthoHgHu : ortho Hg Hu ≡ (+ 0 , + 0)
+orthoHgHu = refl
+
+orthoHuAg : ortho Hu Ag ≡ (+ 0 , + 0)
+orthoHuAg = refl
+
+orthoHuAu : ortho Hu Au ≡ (+ 0 , + 0)
+orthoHuAu = refl
+
+orthoHuT1g : ortho Hu T1g ≡ (+ 0 , + 0)
+orthoHuT1g = refl
+
+orthoHuT1u : ortho Hu T1u ≡ (+ 0 , + 0)
+orthoHuT1u = refl
+
+orthoHuT2g : ortho Hu T2g ≡ (+ 0 , + 0)
+orthoHuT2g = refl
+
+orthoHuT2u : ortho Hu T2u ≡ (+ 0 , + 0)
+orthoHuT2u = refl
+
+orthoHuGg : ortho Hu Gg ≡ (+ 0 , + 0)
+orthoHuGg = refl
+
+orthoHuGu : ortho Hu Gu ≡ (+ 0 , + 0)
+orthoHuGu = refl
+
+orthoHuHg : ortho Hu Hg ≡ (+ 0 , + 0)
+orthoHuHg = refl
+
+orthoHuHu : ortho Hu Hu ≡ (+ 120 , + 0)
+orthoHuHu = refl
+
+------------------------------------------------------------------------------
+-- §8. 选择定则: IR 活性 = T₁u 支, Raman 活性 = A_g + H_g 支
+------------------------------------------------------------------------------
+
+-- 偶极算符变换如 T₁u → IR 活性支 = Γ_vib 中 T₁u 的重数 = 4 (引 vib-vector)
+ir-active : vibMult T1u ≡ 4
+ir-active = refl
+
+-- 极化率算符变换如 A_g ⊕ H_g → Raman 活性 = A_g(2) + H_g(8) = 10 个独立频率
+raman-active : vibMult Ag +ℕ vibMult Hg ≡ 10
+raman-active = refl
+
+-- 中心对称选择定则: g/u 宇称互斥 (IR 需 u 支, Raman 需 g 支) → 无共同支
+-- 总观测独立谱线 = 4 (IR) + 10 (Raman) = 14
+observed-lines : vibMult T1u +ℕ vibMult Ag +ℕ vibMult Hg ≡ 14
+observed-lines = refl
+
+-- 简并加权跃迁态: 4·d(T₁u) + 2·d(A_g) + 8·d(H_g) = 4·3 + 2·1 + 8·5 = 54
+weighted-states :
+  vibMult T1u *ℕ dim T1u +ℕ vibMult Ag *ℕ dim Ag +ℕ vibMult Hg *ℕ dim Hg ≡ 54
+weighted-states = refl
+
+-- 选择定则与 46 定理的关系: 46 个独立基频中, 14 个光谱可观测 (IR+Raman),
+-- 其余 32 个为暗模 (红外/拉曼均禁戒) — 46 = 14 + 32
+active-plus-dark : vibMult T1u +ℕ vibMult Ag +ℕ vibMult Hg +ℕ 32 ≡ 46
+active-plus-dark = refl

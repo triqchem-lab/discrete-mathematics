@@ -25,6 +25,8 @@ open import Data.Nat using (ℕ; _+_; _*_; _∸_; _/_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Structology.Winding using (ToroidalWinding)
+open import Sovereign.Structology.IhC60Vibration
+  using (vibMult; Ag; Au; T1g; T1u; T2g; T2u; Gg; Gu; Hg; Hu; freq-46)
 
 --------------------------------------------------------------------------------
 -- S1. H2O@C60 量子态空间
@@ -152,7 +154,17 @@ channels-equals-a4-plus-one = refl
 --------------------------------------------------------------------------------
 
 C60-TotalModes : ℕ ; C60-TotalModes = 174
-C60-FundamentalModes : ℕ ; C60-FundamentalModes = 46
+-- 46 从"定义"变为"引用本定理": 值来自 IhC60Vibration 的 Γ_vib 不可约分解和
+-- (2+1+3+4+4+5+6+6+8+7 = 46), 不再本地硬编码
+C60-FundamentalModes : ℕ
+C60-FundamentalModes =
+  vibMult Ag + vibMult Au + vibMult T1g + vibMult T1u
+  + vibMult T2g + vibMult T2u + vibMult Gg + vibMult Gu
+  + vibMult Hg + vibMult Hu
+
+-- 引用本定理: I_h → 46 (IhC60Vibration.freq-46)
+c60-modes-ref-freq46 : C60-FundamentalModes ≡ 46
+c60-modes-ref-freq46 = freq-46
 
 -- 46 = 环向缠绕数 ToroidalWinding
 c60-modes-equals-toroidal : C60-FundamentalModes ≡ ToroidalWinding

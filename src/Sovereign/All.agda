@@ -64,6 +64,15 @@ open import Sovereign.Structology.ArthurMagicSquare public
          IsV4DiagInvariant; IsArthurMagicSquare; a4ActionOnMatrix;
          zeroMatrix-isArthur)
 
+-- I_h → 46: C60 振动 174 = 3·60−6 维在 I_h 下的不可约分解
+-- (特征标表 100 项 + 正交性 100 项 + 选择定则, 0 postulate)
+open import Sovereign.Structology.IhC60Vibration public
+  using (Irrep; Class; CE; CC5; CC52; CC3; CC2; Ci; CS10; CS103; CS6; Csig;
+         Ag; Au; T1g; T1u; T2g; T2u; Gg; Gu; Hg; Hu;
+         charTable; classSize; classSizeSum; ortho;
+         vibMult; vib-vector; freq-46; dim-174;
+         ir-active; raman-active; observed-lines; weighted-states; active-plus-dark)
+
 -- 稳定态与 Burnside 引理框架
 open import Sovereign.Structology.MotorStableStates public
   using (StableState; IsA4Invariant; zeroMatrix-stable;
