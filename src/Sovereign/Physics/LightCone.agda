@@ -112,7 +112,7 @@ data EntropySpinResult : Set where
 
 -- 熵旋密度函数 (简化模型)
 -- rho_S = C(chern) x StankovRatio / (a+1)
--- 注: 0.0268 是经验常数 (非推导值; 公开检索无出处, 来源待定)。
+-- 注: 0.0268 = 斯坦科夫比例 (经验常数, 非推导值; 出处 pyBitNet 本地文档)。
 -- 见 EntropySpin.agda §2
 StankovRatio : ℕ ; StankovRatio = 268  -- 0.0268 x 10000
 
