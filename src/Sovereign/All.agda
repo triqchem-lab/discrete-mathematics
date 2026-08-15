@@ -284,6 +284,16 @@ open import Sovereign.Physics.EntropySpinLaw public
          sum3ℚ; telescope2; telescope3; merge4; sum3-distrib;
          sum3-nested-dx-zero; sum3-dy-zero; sum3-nested-dy-zero;
          massIntegral; scalarSum; massIntegral-curl-zero; entropySpinMass-reduction)
+-- 熵旋定律库内验证 (ρ_S 反对称 + 离散斯托克斯 + divℚ∘curlℚ=0 + 守恒条件修正, 0 postulate)
+open import Sovereign.Physics.EntropySpinVerification public
+  using (v-rho-antisym; v-stokes;
+         dxℚ-add; dyℚ-add; dzℚ-add; dxℚ-neg; dyℚ-neg; dzℚ-neg;
+         dxℚ-sub; dyℚ-sub; dzℚ-sub;
+         dxdy-commℚ; dydz-commℚ; dzdx-commℚ;
+         pair-cancel-1ℚ; pair-cancel-2ℚ; pair-cancel-3ℚ;
+         six-rotateℚ; pull-last; six-zero; six-zero';
+         divℚ; divℚ-curl-zero; S-field; law-eq;
+         divS-identity; divS-zero-condition)
 -- 手征干涉层: C3 → 场论驻波桥 (干涉规则 + 反向波相消 + Frobenius 稳定性, 0 postulate)
 open import Sovereign.Physics.ChiralInterference public
   using (cw; ccw; rest; interfere; cw-ccw-cancel; ccw-cw-cancel;
