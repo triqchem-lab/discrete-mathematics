@@ -11,6 +11,32 @@ open import Sovereign.Topology.HighDimClosure public using (HighDimView; Enginee
 open import Sovereign.MetaStructure.WuXing public using (WuXing; generate; overcome)
 open import Sovereign.Format.TQ10        public using (TQ10Block; isBlockValid)
 open import Sovereign.Coupling.Dynamics  public using (evolveN) renaming (step to dynStep)
+-- 宇称不守恒 (缠绕深化 → 手性对偶破缺, a≥3) — 0 postulate
+open import Sovereign.Coupling.ParityViolation public
+  using (WuXingAmplitude; isAmplitudeSymmetric; ToroidalPower; toroidalFactor2;
+         ChiralSymmetry; SingleChiral; PairedConserved; BreakingStarted;
+         BreakingObvious; BreakingComplete; parityStatus;
+         parityViolationTheorem; chiralAmplitudeAsymmetric;
+         neutrinoLeftHandedOnly; TritFlip; tritFlipChiralBias;
+         betaDecayAsymmetry; chiralPhaseTransition; phaseTransitionPoint;
+         postPhaseTransitionBreaking; ExperimentalAnchor; WeakNuclearForce;
+         weakForce; weakForceIsomorphism;
+         ForbiddenExpr; LegalExpr; noSpatialReflection; parityViolationLegal)
+-- 自旋 = 手征投影 + 扭量 = T⁶ 复三维坐标 — 0 postulate
+open import Sovereign.Coupling.SpinTwistor public
+  using (SpinLabel; Spin0; Spin12; Spin1; computeSpinProjection;
+         spinProjectionBalanced; spinProjectionSeparated; spinProjectionInactive;
+         Bosonic; Fermionic; spinStatisticsReset; fermionStatisticsReset;
+         ChiralityInContainer; SpinLabelInContainer; StaticContainer;
+         standardStaticContainer; staticContainerNoSpin; staticContainerNoChirality;
+         conjugate-involutive; TwistorPoint; twistorConjugate;
+         conjugateIsChiralFlip; NullGeodesic; zhonglvPath; zhonglvGeodesic;
+         zhonglvPathIsZeroGeodesic; negC; DiscreteHolomorphicCondition;
+         DiscreteTwistorBundle; SpinTwistorUnification;
+         ChiralSeparationProjection; SpinDefinition; spinLegal; spinLegalWitness;
+         T6ComplexCoordinateProjection; TwistorDefinition; twistorLegal;
+         Electron; FundamentalSpacetime; SpinNetwork; QuantumGeometry;
+         notElectronSpin12; notTwistorSpacetime; notSpinNetworkQuantumGeom)
 open import Sovereign.Engine.StateMachine public using (SovereignState; evolve)
 
 -- 群论红灯审查: 六大连续统缺陷的离散修复 (有限阶/Frobenius/原生共轭/
