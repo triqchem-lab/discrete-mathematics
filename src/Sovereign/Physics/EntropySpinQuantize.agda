@@ -214,12 +214,36 @@ quantized-mass H = cong -_ (sum9-unit H)
 chern2-mass : massQ chern2Config ≡ - (2ℚ * m₀)
 chern2-mass = trans (quantized-mass chern2Config) (cong -_ (cong (λ t → t * m₀) chern2-count))
 
--- 诚实边界 (checker 受限, 非数学开放):
---   massIntegral (S-field zeroΨ (fromBool∘H)) ≡ massQ H 的等价链已证至
---   curlPlaneZeroS3 (旋度平面和为零) 与 sum3-distrib 分配步; 剩余单步
---   "0ℚ − Σ₉κ ≡ −Σ₉κ" 的 ℚ 归一化在 Agda 2.9 的 sum 展开上被元变量
---   反演阻塞 (与 skill 附录 8 模式 4 同类: 数学可证, 编译器受限)。
---   不以 postulate 占位; 该等价的两个分量 (旋度零和 + κ 项求和) 均已
---   独立落链, 见 curlPlaneZeroS3 / sum9-unit / sum3-unit。
+--------------------------------------------------------------------------------
+-- §4. 等价闭合: massIntegral (S-field zeroΨ (fromBool∘H)) ≡ massQ H
+--   (此前 checker 受限的单步 "0ℚ − Σ₉κ ≡ −Σ₉κ" 由逐点 sum3-dzero-minus 归一化
+--   路线替代 — 先逐点双零差, 后求和, 无 0ℚ − Σκ 中间态, 无 with)
+--------------------------------------------------------------------------------
+
+κterm : (Point3D → Bool) → Fin 3 → Fin 3 → ℚ
+κterm H i j = (kappaQ * (fromBool (H (i , j , fz)) * fromBool (H (i , j , fz)))) * 1ℚ
+
+-- 质量积分形式 ≡ 规范求和形式 (z 分量逐点展开 → 逐点双零差 → 负和外提)
+massCore : ∀ H →
+  massIntegral (S-field zeroΨ (λ p → fromBool (H p))) ≡ massQ H
+massCore H = begin
+  massIntegral (S-field zeroΨ (λ p → fromBool (H p)))
+    ≡⟨ refl ⟩
+  sum3ℚ (λ i → sum3ℚ (λ j → (0ℚ - 0ℚ) - (0ℚ - 0ℚ) - κterm H i j))
+    ≡⟨ cong₂ _+_
+         (sum3-dzero-minus (λ j → κterm H fz j))
+         (cong₂ _+_
+           (sum3-dzero-minus (λ j → κterm H (fs fz) j))
+           (sum3-dzero-minus (λ j → κterm H (fs (fs fz)) j))) ⟩
+  sum3ℚ (λ i → - sum3ℚ (λ j → κterm H i j))
+    ≡⟨ sum3-neg (λ i → sum3ℚ (λ j → κterm H i j)) ⟩
+  - sum3ℚ (λ i → sum3ℚ (λ j → κterm H i j))
+    ≡⟨ refl ⟩
+  massQ H ∎
+
+-- 接缝 1 完全闭合 (质量积分形式): m ≡ −(countQ9 H · m₀), 一步组合
+quantized-mass-integral : ∀ H →
+  massIntegral (S-field zeroΨ (λ p → fromBool (H p))) ≡ - (countQ9 H * m₀)
+quantized-mass-integral H = trans (massCore H) (quantized-mass H)
 
 -- 0 postulate.-- 0 postulate.

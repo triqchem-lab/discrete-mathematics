@@ -302,7 +302,7 @@ open import Sovereign.Physics.EntropySpinMicro public
 -- 熵旋质量量子化 (两个开放接缝闭合: m ≡ −(N·m₀) 一般 {0,1} 场 + C=2 双活跃点实例, 0 postulate)
 open import Sovereign.Physics.EntropySpinQuantize public
   using (fromBool; m₀; countQ9; point-unit; sum3-unit; sum9-unit;
-         quantized-mass; chern2Config; chern2-mass)
+         quantized-mass; quantized-mass-integral; chern2Config; chern2-mass)
 -- 手征干涉层: C3 → 场论驻波桥 (干涉规则 + 反向波相消 + Frobenius 稳定性, 0 postulate)
 open import Sovereign.Physics.ChiralInterference public
   using (cw; ccw; rest; interfere; cw-ccw-cancel; ccw-cw-cancel;
