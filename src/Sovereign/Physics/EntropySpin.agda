@@ -19,6 +19,15 @@
 --   白皮书); wiki 18-lightcone-matrix-validation.md 的理论来源行另记
 --   "渠玉芝熵旋定理 + 斯瓦鲁驻波谐波理论" (驻波谐波线索的又一称呼,
 --   未与数值 0.0268 绑定)。各方均无推导 — 特征常数/经验常数。
+--
+-- 工程侧与学术侧地位 (2026-08 论文专项检索, 与用户交叉验证一致):
+--   渠玉芝成果形式 = 工业专利 (US6132823A / WO1998019859A1 / AU720767B2,
+--   超导传热介质), 且被 NASA 技术报告引用: NASA NTRS 20080009660
+--   (MSFC/UAH, "Preliminary Results of an Experimental Investigation of
+--   the Qu Superconducting Heat Pipe") — 独立可查的工程锚点。
+--   Google Scholar / Web of Science / IEEE / CNKI 均无渠玉芝署名的
+--   同行评议论文; "熵旋定律"仅见于宣传材料/专利背景/自印文本 —
+--   本库 EntropySpinLaw 的形式化依据是项目内部公理文档 (非同行评审)。
 --   公开互联网检索零结果的原因 = 来源仓库未公开 (非归属不存在)。
 --   数值地位: 项目文档未给出 0.0268 的任何推导, 只有命名与经验对照
 --   (胰岛素 0.020355, 误差 24%) — 经验常数, 非推导值。
