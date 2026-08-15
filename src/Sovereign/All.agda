@@ -13,6 +13,16 @@ open import Sovereign.Format.TQ10        public using (TQ10Block; isBlockValid)
 open import Sovereign.Coupling.Dynamics  public using (evolveN) renaming (step to dynStep)
 open import Sovereign.Engine.StateMachine public using (SovereignState; evolve)
 
+-- 群论红灯审查: 六大连续统缺陷的离散修复 (有限阶/Frobenius/原生共轭/
+-- 有限特征标 GL₂ 代表内积/周期轨道/类结构 — 0 postulate)
+open import Sovereign.Constitution.GroupTheoryRedLight public
+  using (binTet-order; ih-order; d4-order; gl2-order;
+         finite-carriers;
+         frobenius-multiplicative; conjugation-involutive;
+         orth-1-1; orth-1-st; orth-st-st; ps-values; orth-ps-ps;
+         reducibility-witness; frobenius-period; frobenius-lock;
+         class-structure; burnside-total)
+
 -- 量子数学公理基础
 open import Sovereign.Quantum.Foundation public
   using (superposition-table-verified; lcm-modulus; spiral-trit-1;
