@@ -211,6 +211,12 @@ open import Sovereign.Structology.FiniteTopology public
 -- 60 补强: GF(3)² 均匀概率空间 (计数公理 + 独立性)
 open import Sovereign.Analysis.UniformProb public
   using (omega-size; total-prob; additivity; independence; uniformity)
+-- 62 统计: 对称矩阵系综精确迹矩 (奇矩零/μ₂ 精确 Catalan/μ₄ 修正结构)
+open import Sovereign.Analysis.RandomMatrixMoments public
+  using (tr1; tr2; tr3; tr4; row-mmm-1; row-mpm-4; row-ppp-4;
+         sum-tr1; sum-tr3; sum-tr2; sum-tr4;
+         moment-2-exact-catalan; moment-4-correction;
+         moment-2-n3-exact; sum-tr4-n3; moment-4-n3-correction)
 -- 65 数值分析: Q16 规范 + 扩展欧几里得 + 模逆 + GF(3) 消元 (0 postulate)
 open import Sovereign.Coding.NumericalSpec public
   using (Q16-ONE; q16-integer-exact; q16-half-squared;
