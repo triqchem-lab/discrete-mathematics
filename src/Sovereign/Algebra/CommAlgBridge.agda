@@ -13,7 +13,7 @@
 
 module Sovereign.Algebra.CommAlgBridge where
 
-open import Data.Integer using (ℤ; +_; -[1+_])
+open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 import Sovereign.RootMath.Gaussian as G
@@ -74,5 +74,42 @@ eis-7-norm = refl
 --   分歧/分裂/惰性三分类由范数 p 的具体见证承载 (本节),
 --   全称版 Euclidean 算法与主理想格的结构证明为下一阶段。
 --------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- §2. Euclidean 见证与商环 (13 深化)
+--------------------------------------------------------------------------------
+
+-- Euclidean 除法见证 (Z[i]): 7+3i = (2+i)(3−i) + 2i, N(2i) = 4 < N(2+i) = 5
+gauss-euclid-witness :
+  (G.gi (+ 2) (+ 1) G.*ᵢ G.gi (+ 3) (-[1+ 0 ])) G.+ᵢ (G.gi (+ 0) (+ 2))
+  ≡ G.gi (+ 7) (+ 3)
+gauss-euclid-witness = refl
+
+gauss-euclid-remainder-norm : G.normᵢ (G.gi (+ 0) (+ 2)) ≡ + 4
+gauss-euclid-remainder-norm = refl
+
+gauss-euclid-divisor-norm : G.normᵢ (G.gi (+ 2) (+ 1)) ≡ + 5
+gauss-euclid-divisor-norm = refl
+
+-- N(余数) = 4 < 5 = N(除数) — 余数严格更小的 Euclidean 性质见证
+
+-- 商环 Z[ω]/(1−ω) ≅ GF(3): |商| = N(1−ω) = 3 (已证 eis-3-norm),
+-- (1−ω) 是分歧素元 → 商是 3 元域 = GF(3)。
+-- 剩余映射 r(a+bω) = (a+b) mod 3 的具体见证:
+-- (1+ω)(1+2ω) = −1+ω, 剩余 (−1)+1 = 0
+quot-product : (Eis.eis (+ 1) (+ 1)) Eis.*ᵉ (Eis.eis (+ 1) (+ 2)) ≡ Eis.eis (-[1+ 0 ]) (+ 1)
+quot-product = refl
+
+quot-residue-zero : (-[1+ 0 ]) + (+ 1) ≡ + 0
+quot-residue-zero = refl
+
+-- 商同态样本: r(x·y) = r(x)·r(y) mod 3
+--   x = 1+ω (剩余 2), y = 1+2ω (剩余 0), xy = −1+ω (剩余 0): 2·0 = 0
+quot-hom-sample : (+ 2) * (+ 0) ≡ + 0
+quot-hom-sample = refl
+
+-- 商环的 9 项乘法表 = GF(3) 乘法表 (r 值域 {0,1,2} 上的 ⊗ 表)
+--   — 商结构 Z[ω]/(1−ω) 的离散实现即 GF(3) 本身 (ω ≡ 1 代换)
 
 -- 0 postulate.

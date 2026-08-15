@@ -140,13 +140,26 @@ open import Sovereign.Algebra.VortexRoot public
 -- 13H 对接: Z[i]/Z[ω] 分歧与分裂 (2/3 分歧, 5/7 分裂, 范数见证)
 open import Sovereign.Algebra.CommAlgBridge public
   using (gauss-2-ramifies; gauss-2-norm; gauss-5-splits; gauss-5-norm;
-         eis-3-ramifies; eis-3-norm; eis-7-splits; eis-7-norm)
+         eis-3-ramifies; eis-3-norm; eis-7-splits; eis-7-norm;
+         gauss-euclid-witness; gauss-euclid-remainder-norm;
+         gauss-euclid-divisor-norm; quot-product; quot-residue-zero;
+         quot-hom-sample)
 -- 14 对接: GF(9) 范数 1 圆锥 (4 点 = q+1, 亏格 0 Weil 取等)
 open import Sovereign.Algebra.AlgGeomBridge public
   using (conic-point-10; conic-point-01; conic-point-20; conic-point-02;
          conic-nonpoint-11; Norm1; norm1Elem; norm1Mul; norm1-closed;
          norm1-one; norm1-alpha; norm1-mone; norm1-malpha;
-         norm1-cycle-2; norm1-cycle-4)
+         norm1-cycle-2; norm1-cycle-4;
+         onE; onE-01; onE-02; onE-10; EPoint; eadd;
+         e01-order2; e01-order3; e01-order4; hasse-bound)
+-- 08 泛代数: 结构层级 + 三大载体实例 + 同态定理 + 域分类
+open import Sovereign.Algebra.UniversalAlgebra public
+  using (Semigroup; Monoid; Group; AbelianGroup; Ring; IsField;
+         trit-add; trit-mul; trit-ring; duodec-add; gf9-add;
+         gf9-mul-comm; gf9-mul-identityˡ; gf9-mul-identityʳ; gf9-distribʳ;
+         hom-preserves-zero; hom-preserves-eval; Term2; eval;
+         negate-add-hom; negate-is-automorphism;
+         zero-divisor-not-field; trit-field; duodec-not-field)
 -- 离散 K 理论: K₀ Grothendieck 完备化 + 陈特征环 ℤ[ε]/ε² + Bott 周期 (C₂×C₃=C₆)
 open import Sovereign.Algebra.DiscreteKTheory public
 

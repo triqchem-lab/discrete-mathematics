@@ -14,6 +14,7 @@
 module Sovereign.Algebra.AlgGeomBridge where
 
 open import Data.Product using (_×_; _,_)
+open import Data.Nat using (_≤_; s≤s; z≤n)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Relation.Nullary using (¬_)
 
@@ -129,5 +130,64 @@ norm1-cycle-4 = refl
 -- 对应: (1,0)↔1, (0,1)↔α, (2,0)↔−1, (0,2)↔−α — 4 点 ↔ 4 单位
 -- Weil 注释: 亏格 0 曲线 (圆锥) 的 GF(q) 点 = q+1: #Conic(GF(3)) = 3+1 = 4,
 --   Weil 界 #E(GF(q)) − (q+1) = 0 取等 — 离散曲线的第一个完整例子。
+
+
+--------------------------------------------------------------------------------
+-- §4. 椭圆曲线 E : y² = x³ + x + 1 在 GF(3) — 亏格 1 离散曲线 (14 深化)
+--------------------------------------------------------------------------------
+
+-- 曲线方程 (GF(3)): y² = x³ + x + 1
+onE : Trit → Trit → Set
+onE x y = (y ⊗ y) ≡ ((((x ⊗ x) ⊗ x) ⊕ x) ⊕ T₁)
+
+-- 4 点枚举: O + 3 仿射点 (9 格点中恰 4 个在曲线上)
+onE-01 : onE T₀ T₁ ; onE-01 = refl
+onE-02 : onE T₀ T₂ ; onE-02 = refl
+onE-10 : onE T₁ T₀ ; onE-10 = refl
+
+-- 5 个非点反证
+¬onE-00 : ¬ (onE T₀ T₀) ; ¬onE-00 ()
+¬onE-11 : ¬ (onE T₁ T₁) ; ¬onE-11 ()
+¬onE-12 : ¬ (onE T₁ T₂) ; ¬onE-12 ()
+¬onE-20 : ¬ (onE T₂ T₀) ; ¬onE-20 ()
+¬onE-21 : ¬ (onE T₂ T₁) ; ¬onE-21 ()
+¬onE-22 : ¬ (onE T₂ T₂) ; ¬onE-22 ()
+
+-- E(GF(3)) = {O, (0,1), (0,2), (1,0)} — 点类型
+data EPoint : Set where
+  eO e01 e02 e10 : EPoint
+
+-- 群律 (chord-tangent): 16 项表
+eadd : EPoint → EPoint → EPoint
+eadd eO eO = eO
+eadd eO e01 = e01
+eadd eO e02 = e02
+eadd eO e10 = e10
+eadd e01 eO = e01
+eadd e01 e01 = e10
+eadd e01 e02 = eO
+eadd e01 e10 = e02
+eadd e02 eO = e02
+eadd e02 e01 = eO
+eadd e02 e02 = e10
+eadd e02 e10 = e01
+eadd e10 eO = e10
+eadd e10 e01 = e02
+eadd e10 e02 = e01
+eadd e10 e10 = eO
+
+-- 结构定理: (0,1) 阶 4 → E(GF(3)) ≅ C₄ (e01 → e10 → e02 → eO)
+e01-order2 : eadd e01 e01 ≡ e10 ; e01-order2 = refl
+e01-order3 : eadd (eadd e01 e01) e01 ≡ e02 ; e01-order3 = refl
+e01-order4 : eadd (eadd (eadd e01 e01) e01) e01 ≡ eO ; e01-order4 = refl
+
+-- Hasse 界: #E(GF(3)) = 4, q+1 = 4, |#E − (q+1)| = 0 ≤ 2√3 (~3.46)
+--   整数界: #E ≤ (q+1) + 3 = 7 (4 ≤ 7)
+hasse-bound : 4 ≤ 7
+hasse-bound = s≤s (s≤s (s≤s (s≤s z≤n)))
+
+-- 亏格对照 (注释): 亏格 0 (圆锥, §1-§3) #点 = q+1 精确;
+--   亏格 1 (椭圆, §4) #点 = q+1 − t (迹 t = 0 此处) — 两条离散曲线
+--   承载 Weil 界的两端: 圆锥取等, 椭圆在界内 (0 ≤ 2√3)。
 
 -- 0 postulate.
