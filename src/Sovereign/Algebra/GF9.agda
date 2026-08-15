@@ -2,8 +2,13 @@
 module Sovereign.Algebra.GF9 where
 
 -- GF(3²) = GF(3)[x]/(x²+1)
--- 9 个元素的有限域, α² = -1 = 2
--- Galois 群 Gal(GF(9)/GF(3)) ≅ C₂, 生成元 σ(α) = -α (Frobenius)
+-- 9 个元素的有限域。α 是二次扩张 [GF(9):GF(3)]=2 的生成元，满足 α² = -1。
+--   （在 GF(3) 中 -1 ≡ 2，但此处的 "2" 首先是扩张的拓扑序：
+--     [GF(9):GF(3)]=2、|Gal|=2、σ²=id——结构序，不是域内元素值。
+--     算术（x² 等于哪个元素）≠ 数论（什么元素生成了阶为 2 的共轭结构））
+-- Galois 群 Gal(GF(9)/GF(3)) ≅ C₂, 生成元 σ(α) = -α。
+--   σ(x) = x³ 是 Frobenius 自同构——多项式映射，char 3 代数原生涌现，
+--   不是外挂结构（区别于复共轭 z↦z̄：char 0 无 Frobenius，必须额外引入）。
 --
 -- 使用 Sovereign.Base.Trit 作为 GF(3) 底层类型,
 -- 与 Rust sov-math types.rs Trit 对齐。
@@ -727,3 +732,91 @@ open import Sovereign.Base.Trit using (⊗-assoc)
       ≡
       (a ⊗ ((c ⊗ f) ⊕ (d ⊗ e))) ⊕ (b ⊗ ((c ⊗ e) ⊕ (negate (d ⊗ f))))
     imag-eq = trans i-step1 (trans i-step2 (trans i-step3 i-step4))
+
+--------------------------------------------------------------------------------
+-- 13. GF9 本体乘法逆元 — 域结构的最后一环
+-- 在 GF9 = GF3 × GF3 本体上构造逆元（第 10 节只在 GF9Star 上构造）
+-- 零元素映射到自身（正确性定理限定 x ≢ 0，零 case 由假设矛盾排除）
+--------------------------------------------------------------------------------
+
+-- 非零判别: x ≢ y = x ≡ y → ⊥
+_≢_ : GF9 → GF9 → Set
+x ≢ y = x ≡ y → ⊥
+
+gf9-zero : GF9
+gf9-zero = T₀ , T₀
+
+-- 逆元表 (与第 10 节 GF9Star 的 inv 一致: s1↔s1, s2↔s2, sα↔s2α, s1α↔s21α, s12α↔s22α)
+gf9-inv : GF9 → GF9
+gf9-inv (T₀ , T₀) = T₀ , T₀   -- 0 占位 (不被正确性定理覆盖)
+gf9-inv (T₁ , T₀) = T₁ , T₀   -- 1⁻¹ = 1
+gf9-inv (T₂ , T₀) = T₂ , T₀   -- 2⁻¹ = 2 (2×2=4≡1)
+gf9-inv (T₀ , T₁) = T₀ , T₂   -- α⁻¹ = 2α (α×2α=2α²=2×2=4≡1)
+gf9-inv (T₀ , T₂) = T₀ , T₁   -- (2α)⁻¹ = α
+gf9-inv (T₁ , T₁) = T₂ , T₁   -- (1+α)⁻¹ = 2+α
+gf9-inv (T₁ , T₂) = T₂ , T₂   -- (1+2α)⁻¹ = 2+2α
+gf9-inv (T₂ , T₁) = T₁ , T₁   -- (2+α)⁻¹ = 1+α
+gf9-inv (T₂ , T₂) = T₁ , T₂   -- (2+2α)⁻¹ = 1+2α
+
+-- 逆元正确性: ∀ x → x ≢ 0 → x *gf9 gf9-inv x ≡ gf9-one (8 case refl)
+gf9-inv-correct : ∀ x → x ≢ gf9-zero → x *gf9 gf9-inv x ≡ gf9-one
+gf9-inv-correct (T₀ , T₀) neq = ⊥-elim (neq refl)
+gf9-inv-correct (T₁ , T₀) neq = refl
+gf9-inv-correct (T₂ , T₀) neq = refl
+gf9-inv-correct (T₀ , T₁) neq = refl
+gf9-inv-correct (T₀ , T₂) neq = refl
+gf9-inv-correct (T₁ , T₁) neq = refl
+gf9-inv-correct (T₁ , T₂) neq = refl
+gf9-inv-correct (T₂ , T₁) neq = refl
+gf9-inv-correct (T₂ , T₂) neq = refl
+
+-- 右逆由交换律推出: ∀ x → x ≢ 0 → gf9-inv x *gf9 x ≡ gf9-one
+gf9-inv-correctˡ : ∀ x → x ≢ gf9-zero → gf9-inv x *gf9 x ≡ gf9-one
+gf9-inv-correctˡ x neq = trans (*gf9-comm (gf9-inv x) x) (gf9-inv-correct x neq)
+
+-- 域公理形式 (存在性): ∀ x → x ≢ 0 → Σ y → x·y = 1
+gf9-field-inverse : ∀ x → x ≢ gf9-zero → Σ GF9 (λ y → x *gf9 y ≡ gf9-one)
+gf9-field-inverse x neq = gf9-inv x , gf9-inv-correct x neq
+
+--------------------------------------------------------------------------------
+-- 14. 不可否决核心: Frobenius 域同态 + x²+1 无根出生证明
+--   σ(x)=x³ 在 char 3 上原生保持加法与乘法 — 不是外挂结构, 而是
+--   有限域代数的刚性事实 (任何数学家/物理学家/大模型都无法否决的计算)。
+--------------------------------------------------------------------------------
+
+-- Frobenius 保持加法: σ(x+y) = σx + σy (符号证明)
+galoisConjugate-add : ∀ x y →
+  galoisConjugate (x +gf9 y) ≡ galoisConjugate x +gf9 galoisConjugate y
+galoisConjugate-add (a , b) (c , d) = cong (λ t → (a ⊕ c) , t) (negate-⊕ b d)
+
+-- Frobenius 保持乘法: σ(x·y) = σx · σy (符号证明, negate 引理驱动)
+galoisConjugate-mul : ∀ x y →
+  galoisConjugate (x *gf9 y) ≡ galoisConjugate x *gf9 galoisConjugate y
+galoisConjugate-mul (a , b) (c , d) = cong₂ _,_
+  (trans refl (cong (λ t → (a ⊗ c) ⊕ negate t) (sym (negate-⊗-negate b d))))
+  (trans refl
+    (trans (negate-⊕ (a ⊗ d) (b ⊗ c))
+           (cong₂ _⊕_ (trans (negate-⊗ a d) (negate-⊗-comm a d)) (negate-⊗ b c))))
+
+-- Frobenius 单射 (σ² = id 给出左逆)
+galoisConjugate-injective : ∀ x y → galoisConjugate x ≡ galoisConjugate y → x ≡ y
+galoisConjugate-injective x y e =
+  trans (sym (galoisConjugate² x))
+        (trans (cong galoisConjugate e) (galoisConjugate² y))
+
+-- Frobenius 自同构 (三组件: 保加法 × 保乘法 × 单射 — |GF9|=9 有限, 单射即满射)
+frobenius-automorphism :
+  (∀ x y → galoisConjugate (x +gf9 y) ≡ galoisConjugate x +gf9 galoisConjugate y)
+  × (∀ x y → galoisConjugate (x *gf9 y) ≡ galoisConjugate x *gf9 galoisConjugate y)
+  × (∀ x y → galoisConjugate x ≡ galoisConjugate y → x ≡ y)
+frobenius-automorphism = galoisConjugate-add , galoisConjugate-mul , galoisConjugate-injective
+
+-- x²+1 在 GF(3) 上无根 (3 case): 0²+1=1, 1²+1=2, 2²+1=4≡2 皆非零
+-- 二次多项式无根 ⟹ 不可约 ⟹ GF(3)[x]/(x²+1) 为域 — GF(9) 的出生证明
+-- (域公理本身已在本体上构造性验证: ⊕/⊗ 律 + gf9-field-inverse)
+x2p1-no-root : ∀ x → (x ⊗ x) ⊕ T₁ ≡ T₀ → ⊥
+x2p1-no-root T₀ = λ ()
+x2p1-no-root T₁ = λ ()
+x2p1-no-root T₂ = λ ()
+
+-- 0 postulate.
