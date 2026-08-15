@@ -15,7 +15,7 @@ module Sovereign.Algebra.Holographic.4320D where
 --   2 × 12 × 36 × 5 = 4320 (完整全息维度)。
 --
 -- 连接:
---   EntropySpin.agda: ManifoldDim4320 = 2*12*36*5 (镜像, 该模块有编译错误)
+--   EntropySpin.agda: ManifoldDim4320 = 2*12*36*5 (镜像, 2026-08 修复后编译通过)
 --   HoloInformation.agda: 4320D 分解等价性 + 实验锚定 (--cubical 模块)
 --   Duodecimal.agda: Z/12Z 涡旋环 (本体, 根 "123")
 --   AlgebraicPoleUnified.agda: 代数极层级 (Z/12Z 本体 → GF(3)/GF(9) 截面)

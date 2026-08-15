@@ -270,6 +270,12 @@ open import Sovereign.Physics.DiscreteMaxwellTime public
 open import Sovereign.Physics.DiscreteMaxwellConservation public
   using (div-time-comm; yee-B; yee-E; yee-faraday-step; yee-ampere-step;
          gauss-preservation; yee-gauss-preservation)
+-- 熵旋质量涌现 (2026-08 修复版: 原版解析错误已修, 假 refl 定理降级为闭合实例)
+open import Sovereign.Physics.EntropySpin public
+  using (StankovRatio; massEmergence; entropySpinNum; massNum; thermal-a6;
+         ManifoldDim4320; DimensionMapping; dimMap;
+         ChiralSpinor; conjugateStandingWave;
+         WuXingEntropyState; shengModulation; keModulation)
 -- 78 电磁学: 3×3 环面离散场论第一基石 (梯度的旋度为零 + 规范不变性)
 open import Sovereign.Physics.DiscreteEMField public
   using (Point2D; ScalarField; VectorField; add3; neg3;
