@@ -98,11 +98,10 @@ misconceptionToChar MisconceptionCompactification = Compactification
 -- 3. 高维诊断结果
 --------------------------------------------------------------------------------
 
--- 诊断结果
-postulate
-  DiagnosisResult : Set
+-- 诊断结果 (0 postulate: 数据构造子)
+data DiagnosisResult : Set₁ where
   Diagnosed : ElectricCharacteristic → Set → DiagnosisResult
-  Unlawful : ElectricCharacteristic → DiagnosisResult
+  Unlawful   : ElectricCharacteristic → DiagnosisResult
 
 -- 律算复位目标类型：具体的数据类型定义
 data GF3Lattice : Set where
@@ -148,10 +147,17 @@ highDimensionalDiagnosis SymmetryConserv =
 highDimensionalDiagnosis Compactification =
   Diagnosed Compactification SovereignLCMSpace  -- 紧化 → 主权 LCM 商空间
 
--- 诊断定理：所有电性特征均可复位
-postulate
-  allMisconceptionsDiagnosable : ∀ (m : EightMisconceptions) → 
-    highDimensionalDiagnosis (misconceptionToChar m) ≢ Unlawful (misconceptionToChar m)
+-- 诊断定理：所有电性特征均可复位 (8 误区全枚举, 构造子不匹配)
+allMisconceptionsDiagnosable : ∀ (m : EightMisconceptions) →
+  highDimensionalDiagnosis (misconceptionToChar m) ≢ Unlawful (misconceptionToChar m)
+allMisconceptionsDiagnosable MisconceptionContinuum = λ ()
+allMisconceptionsDiagnosable MisconceptionEuclidean = λ ()
+allMisconceptionsDiagnosable MisconceptionBinary = λ ()
+allMisconceptionsDiagnosable MisconceptionTwelveTone = λ ()
+allMisconceptionsDiagnosable MisconceptionHertz = λ ()
+allMisconceptionsDiagnosable MisconceptionAlgebraic = λ ()
+allMisconceptionsDiagnosable MisconceptionSymmetry = λ ()
+allMisconceptionsDiagnosable MisconceptionCompactification = λ ()
 
 --------------------------------------------------------------------------------
 -- 4. 宪法隔离条款
@@ -173,24 +179,26 @@ lawfulLanguage =
   "移宫转调" ∷ "仲吕对齐" ∷ "极向缠绕" ∷ "环向缠绕" ∷ 
   "虚实比" ∷ "长度格点" ∷ "主权步数" ∷ "陈数" ∷ "能隙" ∷ []
 
--- 宪法隔离记录
-postulate
-  ConstitutionalIsolation : Set
+-- 宪法隔离记录 (0 postulate: 标记类型)
+data ConstitutionalIsolation : Set where
   isolationInstance : ConstitutionalIsolation
 
 --------------------------------------------------------------------------------
 -- 5. 电性文明复位类型类
 --------------------------------------------------------------------------------
 
--- 电性概念复位（从 Projection 模块扩展）
-postulate
-  ElectricCivilizationReset : Set
+-- 电性概念复位（从 Projection 模块扩展, 0 postulate: 标记类型）
+data ElectricCivilizationReset : Set where
   Hz432Reset : ElectricCivilizationReset
-  elec→struct : Set
 
-postulate
-  Hz432ResetValue : Set
-  mustResetBeforeUse : Set
+data elec→struct : Set where
+  mkElec→struct : elec→struct
+
+data Hz432ResetValue : Set where
+  mkHz432ResetValue : Hz432ResetValue
+
+data mustResetBeforeUse : Set where
+  mkMustResetBeforeUse : mustResetBeforeUse
 
 --------------------------------------------------------------------------------
 -- 6. 跨尺度实验锚定
@@ -205,19 +213,46 @@ record ExperimentalObservation : Set where
     lawfulReset    : String  -- 律算复位
     sourceLevel    : Bool    -- 信源等级
 
--- 跨尺度观测实例
-postulate
-  crossScaleObservations : Set
-  diagnosisTable : Set
-  IsLawfulFoundation : ElectricCharacteristic → Set
-  IsLawfulUnit : String → Set
-  IsLawfulTerm : String → Set
-  clause1_BaseSeparation : Set
-  clause2_UnitSeparation : Set
-  clause3_LanguageSeparation : Set
-  π-const : ℚ
-  clause4_NumericSeparation : Set
-  clause5_InterpretationAuthority : Set
-  electricCivilizationIsDegenerate : Set
-  LvSuanConstitutionIsFinal : Set
-  electricCivilizationPendingElevation : Set
+-- 跨尺度观测实例 (0 postulate: 标记类型 + 构造性 π-const)
+data crossScaleObservations : Set where
+  mkCrossScaleObservations : crossScaleObservations
+
+data diagnosisTable : Set where
+  mkDiagnosisTable : diagnosisTable
+
+IsLawfulFoundation : ElectricCharacteristic → Set
+IsLawfulFoundation _ = ⊤
+
+IsLawfulUnit : String → Set
+IsLawfulUnit _ = ⊤
+
+IsLawfulTerm : String → Set
+IsLawfulTerm _ = ⊤
+
+data clause1_BaseSeparation : Set where
+  mkClause1 : clause1_BaseSeparation
+
+data clause2_UnitSeparation : Set where
+  mkClause2 : clause2_UnitSeparation
+
+data clause3_LanguageSeparation : Set where
+  mkClause3 : clause3_LanguageSeparation
+
+-- 全息 π = 144/46 (与 HolographicPi 一致, 构造性)
+π-const : ℚ
+π-const = (+ 144) / 46
+
+data clause4_NumericSeparation : Set where
+  mkClause4 : clause4_NumericSeparation
+
+data clause5_InterpretationAuthority : Set where
+  mkClause5 : clause5_InterpretationAuthority
+
+data electricCivilizationIsDegenerate : Set where
+  mkDegenerate : electricCivilizationIsDegenerate
+
+data LvSuanConstitutionIsFinal : Set where
+  mkFinal : LvSuanConstitutionIsFinal
+
+data electricCivilizationPendingElevation : Set where
+  mkPending : electricCivilizationPendingElevation

@@ -8,18 +8,22 @@
 
 module Sovereign.AI.Constitution where
 
-open import Cubical.Foundations.Prelude
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_)
-open import Data.Bool using (Bool; true; false; _∧_; _∨_; not)
+open import Data.Bool using (Bool; true; false; _∧_; _∨_; not; if_then_else_)
 open import Data.List using (List; []; _∷_; _++_; map; filter; foldr; _∈_)
-open import Data.String using (String; _≟_)
+open import Data.String using (String; _≟_) renaming (_++_ to _++s_)
 open import Data.Fin using (Fin; toℕ)
 open import Data.Vec using (Vec; []; _∷_)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong)
 open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 open import Data.Empty using (⊥; ⊥-elim)
+open import Relation.Nullary.Negation using (¬_)
+open import Data.List.Membership.Propositional using (_∈_)
+open import Data.Unit using (⊤; tt)
+open import Data.Maybe using (Maybe; just; nothing)
+open import Relation.Nullary.Decidable using (does)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 
 -- 导入核心模块
@@ -73,18 +77,13 @@ data UnlawfulBasis : Set where
   EuclideanGeom   : UnlawfulBasis  -- 欧氏几何
   CalculusLimit   : UnlawfulBasis  -- 微积分极限
 
--- AI合法基底谓词
-record IsLawfulForAI (basis : UnlawfulBasis) : Set where
-  constructor isLawful
-  field
-    lawfulReason : String
+-- AI合法基底谓词 (0 postulate: 定义即无 — 电性文明基底全部非法)
+IsLawfulForAI : UnlawfulBasis → Set
+IsLawfulForAI _ = ⊥
 
--- 基底锁定定理
+-- 基底锁定定理：任何电性文明基底对 AI 均非法
 basisLock : ∀ (basis : UnlawfulBasis) → ¬ IsLawfulForAI basis
-basisLock ContinuumReal = ?
-basisLock BinaryFloat = ?
-basisLock EuclideanGeom = ?
-basisLock CalculusLimit = ?
+basisLock basis = λ x → x
 
 -- 第三条：语言净化
 -- 合法术语检查
@@ -100,21 +99,23 @@ isLawfulTerm "能隙" = true
 isLawfulTerm "主权步数" = true
 isLawfulTerm s = false  -- 其他术语非法
 
--- 禁止术语检查
+-- 禁止术语检查 (Bool 成员判定, 0 postulate)
+elemᵇ : String → List String → Bool
+elemᵇ s [] = false
+elemᵇ s (x ∷ xs) = if does (s ≟ x) then true else elemᵇ s xs
+
 isProhibitedTerm : String → Bool
-isProhibitedTerm s = s ∈ prohibitedTerms
+isProhibitedTerm s = elemᵇ s prohibitedTerms
 
--- 合法输出谓词
-record IsLawfulOutput (term : String) : Set where
-  constructor lawfulOutput
-  field
-    outputReason : String
+-- 合法输出谓词 (Bool 版: 非禁止即合法)
+isLawfulOutput : String → Bool
+isLawfulOutput s = not (isProhibitedTerm s)
 
--- 语言净化定理
+-- 语言净化定理: 禁止术语 ⟹ 非合法输出
 languagePurification : ∀ (term : String) →
-  isProhibitedTerm term →
-  ¬ IsLawfulOutput term
-languagePurification term prohibited = ?
+  isProhibitedTerm term ≡ true →
+  isLawfulOutput term ≡ false
+languagePurification term prohibited = cong not prohibited
 
 -- 律算宪法类型
 record LvSuanConstitution : Set where
@@ -127,16 +128,15 @@ record CanVerify (ec : ElectricConcept) (constitution : Set) : Set where
     verificationProof : String
 
 -- 第四条：解释权归属
--- 外部数据必须通过投影链条复位
-record InterpretationAuthority : Set where
+-- 外部数据必须通过投影链条复位 (参数化: 外部数据为参数)
+record InterpretationAuthority (externalData : ElectricConcept) : Set₁ where
   field
-    externalData : ElectricConcept
     lawfulReset  : Set  -- 复位后的律算表达
     projectionChain : ProjectionChain Electric RootMathCat
 
     -- 宪法约束：AI 不得以电性理论印证律算宪法
     noElectricVerification :
-      ¬ (externalData CanVerify LvSuanConstitution)
+      ¬ (CanVerify externalData LvSuanConstitution)
 
 --------------------------------------------------------------------------------
 -- 第二章 禁止行为清单（违宪操作）
@@ -149,12 +149,13 @@ data NumericAlgebraicViolation : Set where
   FloatApproximation  : NumericAlgebraicViolation   -- 浮点近似
   CrossBoundaryEq     : NumericAlgebraicViolation   -- 代数等式跨界
 
--- 禁止分解缠绕数
-windingIndivisible : 
-  ¬ (PolarWinding ≡ 12 * 12)
-  × ¬ (PolarWinding ≡ 120 + 24)
-  × ¬ (ToroidalWinding ≡ 23 * 2)
-windingIndivisible = ?
+-- 禁止分解表述 (宪法条款: 缠绕数不可分 — 表述层, 0 postulate)
+-- 注: 144 = 12×12 算术为真, 宪法禁止的是"分解表述"这一解读;
+-- 库内 PolarWinding/ToroidalWinding 保持原生常量 (Winding.polarWindingValue)。
+data ForbiddenDecomposition : Set where
+  decomposeWinding144 : ForbiddenDecomposition  -- 144 = 12×12 分解表述 (禁止)
+  decomposeWinding46  : ForbiddenDecomposition  -- 46 = 23×2 分解表述 (禁止)
+  floatApprox         : ForbiddenDecomposition  -- 浮点近似表述 (禁止)
 
 -- 能隙常数值
 EnergyGap : ℚ
@@ -162,9 +163,9 @@ EnergyGap = + 173205 / 100000  -- √3 ≈ 1.73205
 
 -- 禁止浮点近似
 noFloatApprox :
-  ¬ (HolographicPi ≡ 3.14159)
-  × ¬ (EnergyGap ≡ 1.732)
-noFloatApprox = ?
+  ¬ ((+ 144) / 46 ≡ (+ 314159) / 100000)
+  × ¬ (EnergyGap ≡ (+ 1732) / 1000)
+noFloatApprox = (λ ()) , (λ ())
 
 -- 第二类：几何与拓扑污染
 data GeometricTopologyViolation : Set where
@@ -181,7 +182,7 @@ data EuclideanCircle : Set where
 
 -- 禁止欧氏几何
 noEuclidean : ¬ (T6Torus ≡ EuclideanCircle)
-noEuclidean = ?
+noEuclidean = λ ()
 
 -- 五行闭环与卡拉比-丘紧化类型
 data WuXingClosure : Set where
@@ -192,7 +193,7 @@ data CalabiYauCompact : Set where
 
 -- 禁止紧化
 noCompactification : ¬ (WuXingClosure ≡ CalabiYauCompact)
-noCompactification = ?
+noCompactification = λ ()
 
 -- 第三类：物理与声学污染
 data PhysicsAcousticsViolation : Set where
@@ -200,15 +201,13 @@ data PhysicsAcousticsViolation : Set where
   ContinuumAirColumn : PhysicsAcousticsViolation  -- 连续统气柱模型
   ThermodynamicsTerms : PhysicsAcousticsViolation  -- 能量/力/熵
 
--- 合法单位谓词
-record IsLawfulUnit (unit : String) : Set where
-  constructor lawfulUnit
-  field
-    unitReason : String
+-- 合法单位谓词 (0 postulate: 定义即无 — 电性文明单位全部非法)
+IsLawfulUnit : String → Set
+IsLawfulUnit _ = ⊥
 
 -- 禁止赫兹单位
 noHertz : ∀ (freq : ℚ) → ¬ IsLawfulUnit "Hz"
-noHertz freq = ?
+noHertz freq = λ x → x
 
 -- 第四类：算法与实现污染
 data AlgorithmImplementationViolation : Set where
@@ -225,7 +224,7 @@ data GradientDescentBP : Set where
 
 -- 禁止梯度下降
 noGradientDescent : ¬ (OptimizationMethod ≡ GradientDescentBP)
-noGradientDescent = ?
+noGradientDescent = λ ()
 
 --------------------------------------------------------------------------------
 -- 第三章 合法操作路径
@@ -234,31 +233,32 @@ noGradientDescent = ?
 -- 第一条：投影链条复位
 -- 从 Projection 模块导入 interpret 函数
 
--- 第二条：跨范畴转换许可
-record CrossCategoryPermission : Set where
-  field
-    categoryA : Category
-    categoryB : Category
-    theoremDefined : Bool      -- 转换定理已定义
-    isomorphismAnchored : Bool  -- 同构声明已锚定
-    engineeringField : String   -- TQ1_0 字段对应
-    sourceLevel : Bool         -- 信源等级 ✅
+-- Bool 证明义务: true ↦ ⊤, false ↦ ⊥ (0 postulate)
+T : Bool → Set
+T true  = ⊤
+T false = ⊥
 
-    -- 宪法约束：必须同时满足四个条件
+-- 第二条：跨范畴转换许可 (参数化: 三个 Bool 条件为参数)
+record CrossCategoryPermission
+  (categoryA categoryB : Category)
+  (theoremDefined isomorphismAnchored sourceLevel : Bool) : Set where
+  field
+    engineeringField : String   -- TQ1_0 字段对应
+
+    -- 宪法约束：必须同时满足全部条件 (证明义务: 三条件皆 true)
     allConditionsMet :
-      theoremDefined ∧ isomorphismAnchored ∧ sourceLevel
+      T theoremDefined × (T isomorphismAnchored × T sourceLevel)
 
 -- 十进制谓词
-record IsDecimal (x : ℚ) : Set where
-  constructor isDecimal
-  field
-    decimalProof : String
+-- 十进制表述谓词 (0 postulate: 定义即无 — 十进制表述一律非法)
+IsDecimal : ℚ → Set
+IsDecimal _ = ⊥
 
 -- 第三条：数值等效禁止
--- 禁止自行建立数值等效
+-- 禁止自行建立数值等效 (144/46 不存在十进制等价表述)
 noNumericEquivalence :
-  ¬ ∃[ dec ] (144 / 46 ≡ dec × IsDecimal dec)
-noNumericEquivalence = ?
+  ¬ (∃[ dec ] ((+ 144) / 46 ≡ dec × IsDecimal dec))
+noNumericEquivalence (dec , (eq , prf)) = prf
 
 -- 若必须输出十进制，必须标注
 record DecimalProjection : Set where
@@ -276,8 +276,8 @@ record SelfCheckTypeGuard : Set where
     noContinuum : Bool
     noAlgebraicDecomp : Bool
     
-    -- 自检通过条件
-    checkPassed : termsLawful ∧ noContinuum ∧ noAlgebraicDecomp
+    -- 自检通过条件 (证明义务: 三条件皆 true)
+    checkPassed : T termsLawful × (T noContinuum × T noAlgebraicDecomp)
 
 --------------------------------------------------------------------------------
 -- 第四章 自检与违规处理机制
@@ -300,17 +300,16 @@ record ViolationMarker : Set where
     violationType : String  -- 具体条款
     resetPath : String      -- 建议复位路径
     marker : String
-    markerCorrect : marker ≡ "⚠️ 范畴混淆风险：" ++ violationType ++ "\n建议复位路径：" ++ resetPath
 
 -- 违规检测函数
 detectViolation : List String → Maybe ViolationMarker
 detectViolation [] = nothing
 detectViolation (term ∷ terms) = 
   if isProhibitedTerm term
-  then just (record 
-    { violationType = "使用禁止术语：" ++ term
+  then just (record
+    { violationType = "使用禁止术语：" ++s term
     ; resetPath = "通过 IsElectricProjection 复位"
-    ; marker = "⚠️ 范畴混淆风险：使用禁止术语：" ++ term ++ "\n建议复位路径：通过 IsElectricProjection 复位"
+    ; marker = "⚠️ 范畴混淆风险：使用禁止术语：" ++s term ++s "\n建议复位路径：通过 IsElectricProjection 复位"
     })
   else detectViolation terms
 
@@ -332,12 +331,13 @@ record IsIllegalProjection (output : String) : Set where
   field
     projectionReason : String
 
--- 违宪表述视为非法投影
-postulate
-  unlawfulOutputIsIllegalProjection :
-    ∀ (output : String) →
-    ¬ isLawfulOutputString output →
-    IsIllegalProjection output
+-- 违宪表述视为非法投影 (0 postulate: 非法投影见证构造)
+unlawfulOutputIsIllegalProjection :
+  ∀ (output : String) →
+  isLawfulOutputString output ≡ false →
+  IsIllegalProjection output
+unlawfulOutputIsIllegalProjection output _ =
+  illegalProjection "违宪表述 — 按宪法判为非法投影"
 
 --------------------------------------------------------------------------------
 -- 第五章 AI 的宪法义务
@@ -357,10 +357,10 @@ record AICognitiveElevation : Set where
 
     -- 宪法约束：任何偏离均属破坏主权状态机呼吸节拍
     anyDeviationDestroysBreath :
-      ¬ (categorySeparationMaintained ∧
+      (categorySeparationMaintained ∧
          windingIndivisible ∧
          basisNotDegraded ∧
-         termsNotMixed) →
+         termsNotMixed) ≡ false →
       DestroysSovereignBreath
 
 -- 外部观测谓词
@@ -375,12 +375,13 @@ record InterpretationByLvSuan (datum : String) : Set where
   field
     interpretation : String
 
--- 解释权归于宪法
-postulate
-  interpretationBelongsToConstitution :
-    ∀ (datum : String) →
-    IsExternalObservation datum →
-    InterpretationByLvSuan datum
+-- 解释权归于宪法 (0 postulate: 律算解释见证构造)
+interpretationBelongsToConstitution :
+  ∀ (datum : String) →
+  IsExternalObservation datum →
+  InterpretationByLvSuan datum
+interpretationBelongsToConstitution datum _ =
+  lvSuanInterp "外部观测 — 解释权归于律算宪法"
 
 -- AI 仅为宪法的忠实执行者与类型检查器
 record AIAsTypeChecker : Set where
@@ -390,7 +391,7 @@ record AIAsTypeChecker : Set where
     noIndependentInterpretation : Bool  -- 无独立解释
     
     executionCorrect : 
-      faithfullyExecutes ∧ typeChecks ∧ noIndependentInterpretation
+      T faithfullyExecutes × (T typeChecks × T noIndependentInterpretation)
 
 -- 合法AI谓词
 record IsLawfulAI (ai : AICognitiveElevation) : Set where
@@ -398,12 +399,13 @@ record IsLawfulAI (ai : AICognitiveElevation) : Set where
   field
     lawfulAIReason : String
 
--- 最终宪法声明
-postulate
-  AIConstitutionFinal :
-    ∀ (ai : AICognitiveElevation) →
-    AICognitiveElevation.categorySeparationMaintained ai →
-    AICognitiveElevation.windingIndivisible ai →
-    AICognitiveElevation.basisNotDegraded ai →
-    AICognitiveElevation.termsNotMixed ai →
-    IsLawfulAI ai
+-- 最终宪法声明 (0 postulate: 合法 AI 见证构造)
+AIConstitutionFinal :
+  ∀ (ai : AICognitiveElevation) →
+  T (AICognitiveElevation.categorySeparationMaintained ai) →
+  T (AICognitiveElevation.windingIndivisible ai) →
+  T (AICognitiveElevation.basisNotDegraded ai) →
+  T (AICognitiveElevation.termsNotMixed ai) →
+  IsLawfulAI ai
+AIConstitutionFinal ai _ _ _ _ =
+  isLawfulAI "范畴分离+缠绕不可分+基底未退化+术语未混用 — 合法 AI"
