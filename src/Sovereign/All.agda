@@ -365,6 +365,10 @@ open import Sovereign.Physics.InvisibleOrbitCount public
   using (sigma-fixed-iff-real; conjugatePair-distinct; orbitCount6;
          conj3-involutive; conj3-fixed-only-zero;
          thirteenPairs; invisibleCount27)
+-- 矢量场决定几何相位 (Rust 核算的库内固化: curl∘grad=0/div∘curl=0/divS-identity/量子化, 0 postulate)
+open import Sovereign.Physics.VectorFieldGeometricPhase public
+  using (gradℚ; curlQ-grad-zero; curl-kernel-source-free;
+         entropy-spin-phase-source; curl-flux-vanishes; vector-quantization)
 -- 实验数据锚定 (2025-2026 中微子: KATRIN/MicroBooNE/ACT DR6 定点整数比 + 刚性不等式, 0 postulate)
 open import Sovereign.Physics.DataAnchors public
   using (KATRIN_MNU_UPPER; ACT_DELTA_NEFF_UPPER; MICROBOONE_CL;
