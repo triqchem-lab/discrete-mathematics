@@ -160,6 +160,57 @@ open import Sovereign.Algebra.UniversalAlgebra public
          hom-preserves-zero; hom-preserves-eval; Term2; eval;
          negate-add-hom; negate-is-automorphism;
          zero-divisor-not-field; trit-field; duodec-not-field)
+-- 06 补强: 12 的除数格 (分配格律全表 + Möbius)
+open import Sovereign.Algebra.DivisorLattice public
+  using (Div12; meet; join; min3; max3; min2; max2;
+         meet-comm; join-comm; meet-idem; join-idem; meet-absorb; join-absorb)
+-- 11M 补强: Möbius 反演 + φ(12) (乘性数论离散载体)
+open import Sovereign.Arithmetic.MobiusPhi public
+  using (mu-1; mu-2; mu-3; mu-4; mu-6; mu-12; mobius-sum; phi-12)
+-- 30/32 补强: GF(3) 离散拉普拉斯 — z² 调和 (18 项) + N(z) 非调和反证
+open import Sovereign.Analysis.DiscreteCR public
+  using (u; v; n; Δ; harmonic-u; harmonic-v; not-harmonic-n)
+-- 33 补强: 阶乘/二项系数/Pascal 递推
+open import Sovereign.Analysis.SpecialValues public
+  using (fact-recurrence-6; pascal-3-1; pascal-4-2; pascal-5-2; pascal-6-3;
+         row-sum-4; C6-0; C6-3)
+-- 34/39 补强: Fibonacci mod 3 周期 8
+open import Sovereign.Analysis.DifferenceEq public
+  using (fib-1; fib-2; fib-3; fib-4; fib-5; fib-6; fib-7; fib-period-8)
+-- 41 补强: Q16 常数误差界 (zhonglv/√3)
+open import Sovereign.Analysis.ApproxBounds public
+  using (zhonglv-q16; zhonglv-err; zhonglv-err-bound; delta-sq-err; delta-sq-bound)
+-- 49 补强: 离散能量极小 + 调和中点
+open import Sovereign.Analysis.DiscreteVariational public
+  using (E; energy-0; energy-1; energy-2; minimal-0; minimal-2;
+         harmonic-mid; euler-lagrange-discrete)
+-- 51 补强: PG(2,3) 射影平面 (13 点 13 线, 自对偶)
+open import Sovereign.Structology.ProjPlane public
+  using (pg-points; pg-lines; incidence-count; duality; total-incidence)
+-- 52 补强: Pick 定理格三角形见证
+open import Sovereign.Structology.PickTheorem public
+  using (boundary-points; interior-points; triangle-area; pick-identity)
+-- 53 补强: 离散 Gauss-Bonnet (四面体顶角亏)
+open import Sovereign.Structology.DefectSum public
+  using (tet-vertices; tet-faces; tet-edges; vertex-defect; total-defect;
+         gauss-bonnet; tet-euler)
+-- 54 补强: GF(3) Sierpiński 拓扑 (T₀ 非 T₁)
+open import Sovereign.Structology.FiniteTopology public
+  using (OpenSet; member; union; inter; union-idem; inter-idem;
+         t0-separated; not-t1)
+-- 60 补强: GF(3)² 均匀概率空间 (计数公理 + 独立性)
+open import Sovereign.Analysis.UniformProb public
+  using (omega-size; total-prob; additivity; independence; uniformity)
+-- 68 补强: 平方乘幂步数定理 (3 ≤ 8)
+open import Sovereign.Coding.ExpSquaring public
+  using (sq1; sq2; sq3; exp-sq-result; sq-steps; naive-steps; log-vs-linear)
+-- 82 补强: 三角 Ising 8 构型配分
+open import Sovereign.Physics.IsingTriangle public
+  using (sign; edgeE; E3; aligned-count; mixed-count; partition-counts)
+-- 83 补强: GF(3)² 光锥分类 (5 类光 + 2 类时 + 2 类空)
+open import Sovereign.Physics.DiscreteLightcone public
+  using (q; light-00; light-11; light-12; light-21; time-10; time-20;
+         space-01; space-02; cone-partition)
 -- 12F 补强: GF(9)/GF(3) Galois 对应 (不动域/范数迹满射/Gal = C₂)
 open import Sovereign.Algebra.GaloisBridge public
   using (fix-t0; fix-t1; fix-t2; ¬fix-a0; ¬fix-a2;
