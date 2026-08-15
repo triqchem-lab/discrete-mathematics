@@ -17,6 +17,12 @@ open import Sovereign.Engine.StateMachine public using (SovereignState; evolve)
 open import Sovereign.Quantum.Foundation public
   using (superposition-table-verified; lcm-modulus; spiral-trit-1;
          spiral-trit-2; spiral-trit-4; spiral-trit-7; spiral-trit-8)
+-- 不可克隆定理 (Z[ω] 系数精确版) + 测量坍缩 (构造性)
+open import Sovereign.Quantum.NoCloning public
+  using (QE2; QE4; ket0E; ket1E; psiE; _⊗E_; _+E4_;
+         IsLinear4; IsUnitary4; CloningCircuit; no-cloning-circuit)
+open import Sovereign.Quantum.Measurement public
+  using (collapse; collapse-eigen0; collapse-eigen1; collapse-eigen2)
 
 -- CRT 理论
 open import Sovereign.Format.CRT public

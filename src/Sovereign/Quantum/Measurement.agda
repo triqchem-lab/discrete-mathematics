@@ -8,8 +8,9 @@
 -- 核心结构:
 --   §1. 离散可观测量: Qutrit → Basis3 的映射
 --   §2. 投影测量: 到计算基的投影
---   §3. 测量坍缩: 态 → 基态 (确定性)
---   §4. No-Cloning 离散版: GF(3) 上不可克隆定理
+--   §3. 测量坍缩: 态 → 基态 (构造性, 确定性, 幂等)
+--   §4. 测量结果的有限性: 结果 ∈ {∣0⟩, ∣1⟩, ∣2⟩}
+--   (不可克隆定理见 Quantum.NoCloning — Z[ω] 系数精确版)
 --
 -- 复用: Sovereign.Base.Trit, Quantum.Entanglement
 -- 0 postulate.
@@ -90,6 +91,26 @@ ket1-eigen = refl
 
 ket2-eigen : computational-measure ket2 ≡ ∣2⟩
 ket2-eigen = refl
+
+-- 构造性坍缩 (2026-08 P2-4): 测量后态坍缩为结果对应的基态 (确定性)
+-- 连续: 概率坍缩 |ψ⟩ → Pᵢ|ψ⟩/√⟨ψ|Pᵢ|ψ⟩; 离散 GF(3): 结果即基态指标
+collapse : Observable → Qutrit → Qutrit
+collapse obs ψ = ketOf (obs ψ)
+  where
+  ketOf : Basis3 → Qutrit
+  ketOf ∣0⟩ = ket0
+  ketOf ∣1⟩ = ket1
+  ketOf ∣2⟩ = ket2
+
+-- 坍缩幂等: 本征态坍缩后不变 (测量本征态 = 无扰动)
+collapse-eigen0 : collapse computational-measure ket0 ≡ ket0
+collapse-eigen0 = refl
+
+collapse-eigen1 : collapse computational-measure ket1 ≡ ket1
+collapse-eigen1 = refl
+
+collapse-eigen2 : collapse computational-measure ket2 ≡ ket2
+collapse-eigen2 = refl
 
 --------------------------------------------------------------------------------
 -- §4. 测量结果的有限性
