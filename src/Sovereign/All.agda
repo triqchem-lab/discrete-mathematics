@@ -276,6 +276,15 @@ open import Sovereign.Physics.EntropySpin public
          ManifoldDim4320; DimensionMapping; dimMap;
          ChiralSpinor; conjugateStandingWave;
          WuXingEntropyState; shengModulation; keModulation)
+-- 手征干涉层: C3 → 场论驻波桥 (干涉规则 + 反向波相消 + Frobenius 稳定性, 0 postulate)
+open import Sovereign.Physics.ChiralInterference public
+  using (cw; ccw; rest; interfere; cw-ccw-cancel; ccw-cw-cancel;
+         cw-cw-construct; ccw-ccw-construct; rest-neutral; double-neg;
+         SpinField; interfere-fields; interfere-comm;
+         cwField; ccwField; restField; cw-ccw-field-cancel;
+         waveCW; waveCCW; wave-cancel; wave-cw-construct; wave-ccw-construct;
+         kShift; Standing; rest-standing; const-standing;
+         wave-cancel-forms-standing; cube; frob3-identity; frob-stability)
 -- 78 电磁学: 3×3 环面离散场论第一基石 (梯度的旋度为零 + 规范不变性)
 open import Sovereign.Physics.DiscreteEMField public
   using (Point2D; ScalarField; VectorField; add3; neg3;
