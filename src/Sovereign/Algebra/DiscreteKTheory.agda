@@ -19,7 +19,7 @@ open import Data.Integer using (ℤ; -[1+_]) renaming (+_ to pos)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym; cong; module ≡-Reasoning)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym; cong; cong₂; module ≡-Reasoning)
 open ≡-Reasoning
 
 import Sovereign.Base.Trit as Trit
@@ -312,5 +312,176 @@ k2m-trivial (Trit.T₂ , u) (Trit.T₂ , v) = refl
 --   Quillen K 理论在有限域上: K_{2i}(F₃) = 0 (偶阶为零),
 --   但 K_{2i−1}(F₃) = Z/(3^i−1) ≠ 0 (如 K₃(F₃) = Z/8) —
 --   奇阶非零, 不进入律算合一的离散可观测谱 (Bott 周期 2 折叠)。
+
+--------------------------------------------------------------------------------
+-- §6. 陈数整数化定理 — S² 12 胞腔单极构型的精确协议
+--------------------------------------------------------------------------------
+
+-- 镜像 Rust sov-guard::chern (chern.rs): 同一协议、同一常数、同一交叉相乘比较。
+-- 语义: 缠绕数 W 是路径属性 (Σ 链接符号 ±1); 和乐是 Z[ω] 单位 (Π ω^{±1});
+-- C = TOTAL_SIGNED / 216, 分母 216 = 12 heads × 18 trit (Rust HEADS×18)。
+-- 精确值: C = −432/216 = −2 (浮点版 −1.9999999999999998 的精确化)。
+
+-- §6.1 链接符号表 (Rust trit_link: (a+3−b) mod 3 → {0→0, 1→+1, 2→−1})
+link-sign : Fin 3 → Fin 3 → ℤ
+link-sign fz fz = pos 0
+link-sign fz (fs fz) = -[1+ 0 ]
+link-sign fz (fs (fs fz)) = pos 1
+link-sign (fs fz) fz = pos 1
+link-sign (fs fz) (fs fz) = pos 0
+link-sign (fs fz) (fs (fs fz)) = -[1+ 0 ]
+link-sign (fs (fs fz)) fz = -[1+ 0 ]
+link-sign (fs (fs fz)) (fs fz) = pos 1
+link-sign (fs (fs fz)) (fs (fs fz)) = pos 0
+
+-- §6.2 注入单极的三条边 (Rust inject_c2_monopole 的三个 6-trit 型)
+--   P0 = [0,1,2,1,2,0], P1 = [1,2,0,2,0,1], P2 = [1,1,1,2,2,2]
+--   边 P0P1: 6 × (−1) → 缠绕 −6, 和乐 ω²·ω²·ω²·ω²·ω²·ω² = ω¹² = 1
+edgeW-P0P1 : ℤ
+edgeW-P0P1 =
+  Data.Integer._+_
+    (Data.Integer._+_
+      (Data.Integer._+_
+        (Data.Integer._+_
+          (Data.Integer._+_ (link-sign fz (fs fz)) (link-sign (fs fz) (fs (fs fz))))
+          (link-sign (fs (fs fz)) fz))
+        (link-sign (fs fz) (fs (fs fz))))
+      (link-sign (fs (fs fz)) fz))
+    (link-sign fz (fs fz))
+
+edgeW-P0P1-ok : edgeW-P0P1 ≡ -[1+ 5 ]
+edgeW-P0P1-ok = refl
+
+--   边 P1P2: 0,+1,−1,0,+1,−1 → 缠绕 0
+edgeW-P1P2 : ℤ
+edgeW-P1P2 =
+  Data.Integer._+_
+    (Data.Integer._+_
+      (Data.Integer._+_
+        (Data.Integer._+_
+          (Data.Integer._+_ (link-sign (fs fz) (fs fz)) (link-sign (fs (fs fz)) (fs fz)))
+          (link-sign fz (fs fz)))
+        (link-sign (fs (fs fz)) (fs (fs fz))))
+      (link-sign fz (fs (fs fz))))
+    (link-sign (fs fz) (fs (fs fz)))
+
+edgeW-P1P2-ok : edgeW-P1P2 ≡ pos 0
+edgeW-P1P2-ok = refl
+
+--   边 P2P0: +1,0,−1,+1,0,−1 → 缠绕 0
+edgeW-P2P0 : ℤ
+edgeW-P2P0 =
+  Data.Integer._+_
+    (Data.Integer._+_
+      (Data.Integer._+_
+        (Data.Integer._+_
+          (Data.Integer._+_ (link-sign (fs fz) fz) (link-sign (fs fz) (fs fz)))
+          (link-sign (fs fz) (fs (fs fz))))
+        (link-sign (fs (fs fz)) (fs fz)))
+      (link-sign (fs (fs fz)) (fs (fs fz))))
+    (link-sign (fs (fs fz)) fz)
+
+edgeW-P2P0-ok : edgeW-P2P0 ≡ pos 0
+edgeW-P2P0-ok = refl
+
+-- 注入边和乐: 6 × ω² = ω¹² = 1 (ω³≡1 的 4 次应用)
+edge-holonomy-P0P1 :
+  (((((Eis.unitω2 Eis.*ᵉ Eis.unitω2) Eis.*ᵉ Eis.unitω2) Eis.*ᵉ Eis.unitω2)
+     Eis.*ᵉ Eis.unitω2) Eis.*ᵉ Eis.unitω2) ≡ Eis.unit1
+edge-holonomy-P0P1 = refl
+
+-- §6.3 胞腔回路: 注入胞腔 = 3 边, 缠绕 −6 + 0 + 0 = −6 (Rust cell_loop)
+cellW-injected :
+  Data.Integer._+_ (Data.Integer._+_ edgeW-P0P1 edgeW-P1P2) edgeW-P2P0 ≡ -[1+ 5 ]
+cellW-injected = trans
+  (cong₂ Data.Integer._+_ (cong₂ Data.Integer._+_ edgeW-P0P1-ok edgeW-P1P2-ok) edgeW-P2P0-ok)
+  refl
+
+-- 平凡胞腔 (全零 tryte): 3 边 × 0 = 0
+edgeW-trivial :
+  Data.Integer._+_
+    (Data.Integer._+_
+      (Data.Integer._+_
+        (Data.Integer._+_
+          (Data.Integer._+_ (link-sign fz fz) (link-sign fz fz))
+          (link-sign fz fz))
+        (link-sign fz fz))
+      (link-sign fz fz))
+    (link-sign fz fz) ≡ pos 0
+edgeW-trivial = refl
+
+cellW-trivial :
+  Data.Integer._+_
+    (Data.Integer._+_ (link-sign fz fz) (link-sign fz fz))
+    (link-sign fz fz) ≡ pos 0
+cellW-trivial = refl
+
+-- §6.4 单极总和: 12 heads × 2 轨道 × 3 胞腔 = 72 注入胞腔, 各 −6;
+--       其余 72 胞腔为 0 → TOTAL_SIGNED = 72 × (−6) = −432
+monopole-total : pos 72 Data.Integer.* (-[1+ 5 ]) ≡ -[1+ 431 ]
+monopole-total = refl
+
+-- §6.5 陈数整数化 (Rust ChernExact::equals 的交叉相乘形式, 无除法误差):
+--   C = TOTAL_SIGNED / 216 = −432 / 216 = −2 精确
+--   −432 × 1 = 216 × (−2)
+chern-cross : -[1+ 431 ] Data.Integer.* pos 1 ≡ pos 216 Data.Integer.* (-[1+ 1 ])
+chern-cross = refl
+
+-- 反单极 (定向翻转): TOTAL = +432 → C = +2: 432 × 1 = 216 × 2
+antimonopole-cross : pos 432 Data.Integer.* pos 1 ≡ pos 216 Data.Integer.* pos 2
+antimonopole-cross = refl
+
+-- 平凡格点 (无注入): 144 胞腔回路全零 → C = 0
+trivial-total : pos 144 Data.Integer.* pos 0 ≡ pos 0
+trivial-total = refl
+
+trivial-chern : pos 0 Data.Integer.* pos 1 ≡ pos 216 Data.Integer.* pos 0
+trivial-chern = refl
+
+-- §6.6 ch 链接: 单极线丛 ch(L) = (rank, c₁) = (1, −2) — 与 Rust C=−2 定向一致
+monopole-ch : Ch
+monopole-ch = pos 1 , -[1+ 1 ]
+
+monopole-ch-is-ccw : monopole-ch ≡ chern-bundle-ccw
+monopole-ch-is-ccw = refl
+
+-- K₁ 定向翻转: C=+2 (律算约定) ↔ C=−2 (chern_guard 约定) 之差 = c₁ 取负
+c1-flip : Data.Integer.-_ (pos 2) ≡ -[1+ 1 ]
+c1-flip = refl
+
+-- §6.7 缠绕 vs 离散对数 (语义分界):
+--   缠绕 −6 与和乐离散对数 0 相差 6 = 一整圈 C₆: −6 = 6 × (−1)
+winding-mod6 : -[1+ 5 ] ≡ pos 6 Data.Integer.* (-[1+ 0 ])
+winding-mod6 = refl
+--   陈数用未 mod 的缠绕 (C = −2); chern_state 用 mod 3 相位 (−6 ≡ 0 mod 3)
+--   — 与 ChernEulerLadder §2/§4 的 C₃ 闭合一致。
+
+-- C₆ 离散对数表 (和乐元素上的良定义指数 — 非路径分支)
+unit-index : Eis.Eisenstein → ℤ
+unit-index (Eis.eis (pos 1) (pos 0)) = pos 0           -- 1
+unit-index (Eis.eis (pos 1) (pos 1)) = pos 1           -- 1+ω = −ω²
+unit-index (Eis.eis (pos 0) (pos 1)) = pos 2           -- ω
+unit-index (Eis.eis (-[1+ 0 ]) (pos 0)) = pos 3        -- −1
+unit-index (Eis.eis (-[1+ 0 ]) (-[1+ 0 ])) = pos 4     -- ω² = −1−ω
+unit-index (Eis.eis (pos 0) (-[1+ 0 ])) = pos 5        -- −ω
+unit-index _ = pos 0                                    -- 非单位 (不出现于和乐)
+
+index-of-unit1 : unit-index Eis.unit1 ≡ pos 0
+index-of-unit1 = refl
+
+index-of-omega : unit-index Eis.unitω ≡ pos 2
+index-of-omega = refl
+
+index-of-omega2 : unit-index Eis.unitω2 ≡ pos 4
+index-of-omega2 = refl
+
+index-of-m1 : unit-index Eis.unitm1 ≡ pos 3
+index-of-m1 = refl
+
+-- §6.8 双轨一致性 (文档级声明, 不进入 Agda 定理 — 0 postulate):
+--   Rust sov-guard 测试 test_chern_exact 断言 (TOTAL_SIGNED, 216) = (−432, 216)
+--   且 equals(−2, 1) 为真; 本模块 chern-cross 证明同一算术:
+--   交叉相乘 −432×1 = 216×(−2)。两条轨道对同一协议给出同一精确值 −2,
+--   闭环为数值恒等 — Rust 与 Agda 各自独立验证, 不互相引用。
 
 -- 0 postulate.
