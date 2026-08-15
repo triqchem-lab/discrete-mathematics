@@ -133,6 +133,20 @@ open import Sovereign.Algebra.GF9 public
 open import Sovereign.Algebra.Duodecimal public
 -- 代数极统一视图: L1-L10 完整代数链
 open import Sovereign.Algebra.AlgebraicPoleUnified public
+-- 涡旋根 "123" 本体论层 (数字根 6 / 倍频链 3→6→12 / Merkaba 回绕)
+open import Sovereign.Algebra.VortexRoot public
+  using (root-123-digital-root; doubling-3-6; doubling-6-12; doubling-chain;
+         fourth-harmonic; merkaba-double; merkaba-digital-root; water-state)
+-- 13H 对接: Z[i]/Z[ω] 分歧与分裂 (2/3 分歧, 5/7 分裂, 范数见证)
+open import Sovereign.Algebra.CommAlgBridge public
+  using (gauss-2-ramifies; gauss-2-norm; gauss-5-splits; gauss-5-norm;
+         eis-3-ramifies; eis-3-norm; eis-7-splits; eis-7-norm)
+-- 14 对接: GF(9) 范数 1 圆锥 (4 点 = q+1, 亏格 0 Weil 取等)
+open import Sovereign.Algebra.AlgGeomBridge public
+  using (conic-point-10; conic-point-01; conic-point-20; conic-point-02;
+         conic-nonpoint-11; Norm1; norm1Elem; norm1Mul; norm1-closed;
+         norm1-one; norm1-alpha; norm1-mone; norm1-malpha;
+         norm1-cycle-2; norm1-cycle-4)
 -- 离散 K 理论: K₀ Grothendieck 完备化 + 陈特征环 ℤ[ε]/ε² + Bott 周期 (C₂×C₃=C₆)
 open import Sovereign.Algebra.DiscreteKTheory public
 

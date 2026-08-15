@@ -9,8 +9,9 @@ module Sovereign.Algebra.AlgebraicPoleUnified where
 --   12 是涡旋数学的独立根 (记作 "123"), 不是 3×4 的分解。
 --   3→6→12 是倍频量子纠缠链: 3(基频)→6(二次谐波)→12(四次谐波)。
 --
---   注: VortexRoot.agda 尚未创建, 涡旋根 "123" 的形式化定义待补充。
---   当前以注释标注其本体论地位。
+--   注 (2026-08-16): VortexRoot.agda 已创建 (Sovereign.Algebra.VortexRoot) —
+--   涡旋根 "123" 的本体论层已落位 (数字根 6 / 倍频链 3→6→12 /
+--   Merkaba 回绕 / 本体论地位注释); 代数载体 = Duodecial.agda 的 L0/L0U/L0C。
 --
 -- 层级总览:
 --   === 本体层 (Z/12Z 涡旋环, 根 "123") ===
