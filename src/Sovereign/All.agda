@@ -160,6 +160,17 @@ open import Sovereign.Algebra.UniversalAlgebra public
          hom-preserves-zero; hom-preserves-eval; Term2; eval;
          negate-add-hom; negate-is-automorphism;
          zero-divisor-not-field; trit-field; duodec-not-field)
+-- 12F 补强: GF(9)/GF(3) Galois 对应 (不动域/范数迹满射/Gal = C₂)
+open import Sovereign.Algebra.GaloisBridge public
+  using (fix-t0; fix-t1; fix-t2; ¬fix-a0; ¬fix-a2;
+         fixed-iff-embedded; fix-sigma-is-gf3;
+         norm-surj-1; norm-surj-2; trace-surj-0; trace-surj-1; trace-surj-2;
+         sigma-not-id; sigma-order-2; fix-id)
+-- 18 补强: 短正合列 + 秩-零度 + 边界复形 (同调代数核心机械)
+open import Sovereign.Algebra.HomologicalBridge public
+  using (V1; V2; iota; pi2; iota-injective; im-iota-sub-ker; ker-sub-im-iota;
+         pi-surjective; ses-dimension; ker-M; im-M; rank-nullity;
+         d; d-square-zero; ker-d-sub-im; im-d-sub-ker)
 -- 离散 K 理论: K₀ Grothendieck 完备化 + 陈特征环 ℤ[ε]/ε² + Bott 周期 (C₂×C₃=C₆)
 open import Sovereign.Algebra.DiscreteKTheory public
 
