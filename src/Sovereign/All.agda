@@ -116,6 +116,8 @@ open import Sovereign.Algebra.GF9 public
 open import Sovereign.Algebra.Duodecimal public
 -- 代数极统一视图: L1-L10 完整代数链
 open import Sovereign.Algebra.AlgebraicPoleUnified public
+-- 离散 K 理论: K₀ Grothendieck 完备化 + 陈特征环 ℤ[ε]/ε² + Bott 周期 (C₂×C₃=C₆)
+open import Sovereign.Algebra.DiscreteKTheory public
 
 -- ── 退化/近视/截面 分类学 (v7.0) ─────────────────────────────
 -- GF(2) 退化: 手征丢失, 非环同态
