@@ -9,10 +9,12 @@
 
 module Sovereign.Physics.DataAnchors where
 
-open import Data.Nat using (ℕ)
-open import Data.Integer using (+_)
-open import Data.Rational using (ℚ; _+_; _*_; _/_)
+open import Data.Nat using (ℕ; s≤s)
+open import Data.Nat.Properties using (m≤m+n)
+open import Data.Integer using (+_; +<+)
+open import Data.Rational using (ℚ; _+_; _*_; _/_; _<_; 1ℚ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Rational.Base using (*<*)
 
 import Sovereign.HoTT.Geometry as Geo
 import Sovereign.Physics.Scaling as Scale
@@ -91,3 +93,62 @@ Anchor_WuXing_TrapPist1 = refl
 -- 通过上述锚定，我们建立了：
 -- T6 环面 (数学) <--> C60/H2O (微观物理) <--> TRAPPIST-1 (宏观天文)
 -- 的统一验证链条。
+
+--------------------------------------------------------------------------------
+-- 6. 2025-2026 中微子实验锚定 (KATRIN / MicroBooNE / ACT DR6)
+--   数据来源 (公开文献):
+--     KATRIN  (Science 2025):   m_ν < 0.45 eV (259 天, 3.6×10⁷ 电子)
+--     KATRIN  (Nature 2025-12): 惰性中微子 0 信号, 99.99% CL 排除 Neutrino-4
+--     MicroBooNE (Nature 2025-12): 95% CL 排除单一惰性中微子解释
+--     ACT DR6 (JCAP 2025-09):  ΔN_eff < 0.17
+--   刚性部分 (本模块定理): 有理数不等式的可计算验证 — 质量上界严格亚 eV、
+--     远低于电子质量、排除置信度严格大于 95%、ΔN_eff 严格低于一个额外
+--     中微子种类。全部定点整数比, 无浮点。
+--   解释权 (框架层, 注释): "零观测"持续 → 不可见自由度的结构性不可见
+--     (InvisibleOrbitCount 的 13 共轭对); 短基线异常消解为观测伪迹 —
+--     与"左右旋 = 投影方向"解读一致。解释不占 postulate, 数字全构造性。
+--------------------------------------------------------------------------------
+
+-- KATRIN 中微子质量上界: 0.45 eV (定点整数比)
+KATRIN_MNU_UPPER : ℚ
+KATRIN_MNU_UPPER = (+ 45) / 100
+
+-- ACT DR6 有效中微子种类超额上界: ΔN_eff < 0.17
+ACT_DELTA_NEFF_UPPER : ℚ
+ACT_DELTA_NEFF_UPPER = (+ 17) / 100
+
+-- MicroBooNE 排除置信度: 95%
+MICROBOONE_CL : ℚ
+MICROBOONE_CL = (+ 95) / 100
+
+-- KATRIN 对 Neutrino-4 的排除置信度: 99.99%
+KATRIN_NEUTRINO4_CL : ℚ
+KATRIN_NEUTRINO4_CL = (+ 9999) / 10000
+
+-- 电子质量 (eV): 511000 (定点)
+ELECTRON_MASS_EV : ℚ
+ELECTRON_MASS_EV = (+ 511000) / 1
+
+-- 定理 4: KATRIN 上界严格亚 eV (45/100 < 1, 交叉相乘 45 < 100)
+Anchor_KATRIN_SubEV :
+  KATRIN_MNU_UPPER < 1ℚ
+Anchor_KATRIN_SubEV = *<* (+<+ (s≤s (m≤m+n 9 10)))
+
+-- 定理 5: 中微子质量上界远低于电子质量
+--   (45/100 < 511000/1, 交叉相乘 45 < 51100000)
+Anchor_KATRIN_BelowElectron :
+  KATRIN_MNU_UPPER < ELECTRON_MASS_EV
+Anchor_KATRIN_BelowElectron = *<* (+<+ (s≤s (m≤m+n 9 10219990)))
+
+-- 定理 6: ACT DR6 上界低于一个额外中微子种类 (17/100 < 1)
+Anchor_ACT_BelowOneSpecies :
+  ACT_DELTA_NEFF_UPPER < 1ℚ
+Anchor_ACT_BelowOneSpecies = *<* (+<+ (s≤s (m≤m+n 17 82)))
+
+-- 定理 7: KATRIN 的 Neutrino-4 排除 (99.99%) 严格强于 MicroBooNE (95%)
+--   (950000 < 999900)
+Anchor_KATRIN_StrongerThanMicroBooNE :
+  MICROBOONE_CL < KATRIN_NEUTRINO4_CL
+Anchor_KATRIN_StrongerThanMicroBooNE = *<* (+<+ (s≤s (m≤m+n 190000 9979)))
+
+-- 0 postulate.

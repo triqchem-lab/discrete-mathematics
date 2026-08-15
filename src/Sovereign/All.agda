@@ -365,6 +365,13 @@ open import Sovereign.Physics.InvisibleOrbitCount public
   using (sigma-fixed-iff-real; conjugatePair-distinct; orbitCount6;
          conj3-involutive; conj3-fixed-only-zero;
          thirteenPairs; invisibleCount27)
+-- 实验数据锚定 (2025-2026 中微子: KATRIN/MicroBooNE/ACT DR6 定点整数比 + 刚性不等式, 0 postulate)
+open import Sovereign.Physics.DataAnchors public
+  using (KATRIN_MNU_UPPER; ACT_DELTA_NEFF_UPPER; MICROBOONE_CL;
+         KATRIN_NEUTRINO4_CL; ELECTRON_MASS_EV;
+         Anchor_KATRIN_SubEV; Anchor_KATRIN_BelowElectron;
+         Anchor_ACT_BelowOneSpecies; Anchor_KATRIN_StrongerThanMicroBooNE;
+         Anchor_ToroidalWinding_C60; Anchor_WuXing_TrapPist1)
 -- 离散统计力学补强 (计数型熵 S=W + 配分函数族 z2→z3→z4 + ℚ 熵均匀最大, 0 postulate)
 open import Sovereign.Physics.DiscreteStatMech public
   using (W; countEntropy; W-ok5; W-suc; W-add; countEntropy-mult;
