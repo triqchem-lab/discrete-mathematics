@@ -4,22 +4,25 @@
 -- 物理学：熵旋理论质量涌现机制与 4320D 流形映射
 -- (2026-08 修复版: 原版有解析错误且未入库 — 见 §2b 修复注记)
 --
--- 常数归属 (2026-08 修正): 0.0268 是渠玉芝光超导物理学的"熵旋平衡"
--- 有序度衰减常数 (经验值), 不是乔治·斯坦科夫宇宙法则的常数 —
--- 历史命名 StankovRatio 系归属误植, 保留兼容; 语义名见 quEntropyBalance。
--- 渠玉芝公开事实 (专利/测试锚点): 澳大利亚专利 AU1998055844 与美国专利
--- US-6132823-A (超导传热介质); 无机热超导管经斯坦福研究院 (SRI) 测试,
--- 等效导热系数为金属银的 32,500 倍 — 这些是"熵旋定律"的工程证据,
--- 但公开资料中未检索到 0.0268 的公式/推导 — 故按经验常数对待,
--- 非推导值, 不以定理伪装。原"数据来源"路径 /home/yanli/work/
--- triqchem-lab/... 已不存在 (悬空引用), 此处一并清除。
+-- 常数归属 (2026-08 两轮核查): 0.0268 的公开归属无法裁定。
+--   检索事实: "Stankov ratio 0.0268" 零结果; "0.0268 + 熵旋/渠玉芝/
+--   斯坦科夫" 亦无任何公开出处 — 该数值在斯坦科夫宇宙法则与渠玉芝
+--   熵旋理论中均无公开佐证, 谁先谁后/谁学习谁无法裁定。
+--   可验证的只有工程锚点: 渠玉芝持有专利 AU1998055844 (ipaustralia
+--   申请人 qu-yuzhi) 与 US-6132823-A (freepatentsonline 发明人 QU; YUZHI,
+--   超导传热介质) — 但专利文献不包含 0.0268。SRI 等效导热系数
+--   32,500×银 之说来自宣传资料, 未独立核实。
+--   因此 0.0268 定位为经验常数 (来源待定, 非推导值), 不以任何一方的
+--   理论为既定归属; 历史命名 StankovRatio 保留 (纯仓库内部约定)。
+--   原"数据来源"路径 /home/yanli/work/triqchem-lab/... 已不存在
+--   (悬空引用), 此处一并清除。
 --
 -- 核心映射：
 -- 1. 4320D 维度分解：4320 = 2(手性) × 12(十二律) × 36(苞元谐波) × 5(五行)
 -- 2. 质量涌现公式：m = ∮_C S·dA (熵旋密度积分) —— 本模块只落其
---    定点简化 massEmergence = ρ_S × quEntropyBalance, 路径积分形式是
+--    定点简化 massEmergence = ρ_S × StankovRatio, 路径积分形式是
 --    物理动机注释, 不是已形式化定理 (诚实边界)。
--- 3. 渠玉芝熵旋平衡常数：0.0268 (有序度衰减经验常数, ×10000 定点 = 268)
+-- 3. 有序度衰减经验常数：0.0268 (×10000 定点 = 268; 来源待定, 非推导值)
 --    对应光超导 (a<6 低耗散通道) 与仲吕闭合 (a≥6 热辐射瓦解) 的分界调制。
 -- 4. 共轭回流：左右旋螺旋对抵消形成中心驻波 —— 本模块只有
 --    2 构造子数据类型 + 2×2 Bool 配对表 (协议定义, 不是定理);
@@ -63,20 +66,19 @@ dimMap = record { chiralLayer = 2; luLayer = 12; harmonicLayer = 36; wuxingLayer
 -- 2. 熵旋密度与质量涌现 (定点缩放, 避免 ℚ 变量分母的 NonZero 实例问题)
 --------------------------------------------------------------------------------
 
--- 渠玉芝熵旋平衡常数 (Qu EntropySpin Balance Constant) — 0.0268
--- 地位: 经验常数 (实验拟合值); 公开资料无公式/推导, 非推导值。
-quEntropyBalance : ℚ
-quEntropyBalance = (+ 268) / 10000
-
--- 历史命名 (归属误植 — 0.0268 源自渠玉芝光超导熵旋平衡理论,
--- 非乔治·斯坦科夫; 兼容保留, 新代码用 quEntropyBalance)
+-- 有序度衰减经验常数 — 0.0268 (历史命名 StankovRatio, 仓库内部约定)
+-- 地位 (2026-08 两轮核查): 经验常数, 非推导值; 公开检索中
+--   "Stankov ratio 0.0268" 零结果, "0.0268+熵旋/渠玉芝/斯坦科夫"
+--   亦无任何出处 — 该数值在两理论中均无公开佐证, 归属待定。
+--   可验证的只有工程锚点: 渠玉芝专利 AU1998055844 / US-6132823-A
+--   (超导传热介质), 但专利文献不含 0.0268。
 StankovRatio : ℚ
-StankovRatio = quEntropyBalance
+StankovRatio = (+ 268) / 10000
 
--- 质量涌现在本模块的定点简化: m = ρ_S × quEntropyBalance
+-- 质量涌现在本模块的定点简化: m = ρ_S × StankovRatio
 -- (物理动机注释: m = ∮_C S·dA 在波腹位置的取值 — 未形式化积分)
 massEmergence : ℚ → ℚ
-massEmergence spinDensity = spinDensity *ℚ quEntropyBalance
+massEmergence spinDensity = spinDensity *ℚ StankovRatio
 
 -- 熵旋密度精确分子 (交叉相乘形式, 无截断):
 --   ρ_S(a,C) × 10⁸ × (a+1) = C × 268 × 10⁴
@@ -108,7 +110,7 @@ massNum a c = c * 268 * 268
 --------------------------------------------------------------------------------
 
 -- 定理: 木态 (a=6, 陈数 C=2) 的质量涌现熵旋低于检测阈值 0.001
--- (条件于经验常数 quEntropyBalance = 268/10000; 本定理不推导该常数)
+-- (条件于经验常数 StankovRatio = 268/10000, 来源待定; 本定理不推导该常数)
 -- 形式: 可判定比较 _<?_ 对闭合数值归约为 true (等价于 m(6,2) < 1/1000,
 -- 交叉相乘: 2×268² < 10⁵×7, 即 143648 < 700000)
 thermal-a6 : does (massNum 6 2 <? 100000 * 7) ≡ true
@@ -155,6 +157,6 @@ shengModulation state =
 -- 相克调制：熵旋失衡，相干性衰减
 keModulation : WuXingEntropyState → WuXingEntropyState
 keModulation state =
-  record state { coherence = WuXingEntropyState.coherence state *ℚ quEntropyBalance }
+  record state { coherence = WuXingEntropyState.coherence state *ℚ StankovRatio }
 
 -- 0 postulate.
