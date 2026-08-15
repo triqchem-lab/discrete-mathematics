@@ -211,6 +211,12 @@ open import Sovereign.Structology.FiniteTopology public
 -- 60 补强: GF(3)² 均匀概率空间 (计数公理 + 独立性)
 open import Sovereign.Analysis.UniformProb public
   using (omega-size; total-prob; additivity; independence; uniformity)
+-- 65 数值分析: Q16 规范 + 扩展欧几里得 + 模逆 + GF(3) 消元 (0 postulate)
+open import Sovereign.Coding.NumericalSpec public
+  using (Q16-ONE; q16-integer-exact; q16-half-squared;
+         euclid-step-1; euclid-step-2; euclid-step-3; euclid-step-4;
+         bezout-46-13; mod-inverse-3; inverse-in-range;
+         elim-step-1; elim-step-2; solve-check-1; solve-check-2)
 -- 68 补强: 平方乘幂步数定理 (3 ≤ 8)
 open import Sovereign.Coding.ExpSquaring public
   using (sq1; sq2; sq3; exp-sq-result; sq-steps; naive-steps; log-vs-linear)
