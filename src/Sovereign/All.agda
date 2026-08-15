@@ -211,6 +211,14 @@ open import Sovereign.Structology.FiniteTopology public
 -- 60 补强: GF(3)² 均匀概率空间 (计数公理 + 独立性)
 open import Sovereign.Analysis.UniformProb public
   using (omega-size; total-prob; additivity; independence; uniformity)
+-- 62-20 拟合优度: 幻方识别 χ² 零检验 (Lo Shu 8 线 + 非幻方正检验)
+open import Sovereign.Analysis.GoodnessOfFitGF3 public
+  using (loshu-row-1; loshu-row-2; loshu-row-3;
+         loshu-col-1; loshu-col-2; loshu-col-3;
+         loshu-diag-1; loshu-diag-2; dev; chi2-num;
+         magic-square-chi2-zero; loshu-chi2-zero;
+         nonmagic-chi2-positive-num; nonmagic-detected;
+         nonmagic-two-lines)
 -- 62-10 群表示统计: A₄ Plancherel 分布 + 特征标期望 (列/行正交)
 open import Sovereign.Analysis.SymmetricGroupCharStats public
   using (w1; w1'; w1''; w3; plancherel-normalized;
