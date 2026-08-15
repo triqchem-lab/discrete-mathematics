@@ -19,6 +19,7 @@ open import Data.Integer using (ℤ; -[1+_]) renaming (+_ to pos)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
+open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym; cong; cong₂; module ≡-Reasoning)
 open ≡-Reasoning
 
@@ -484,4 +485,150 @@ index-of-m1 = refl
 --   交叉相乘 −432×1 = 216×(−2)。两条轨道对同一协议给出同一精确值 −2,
 --   闭环为数值恒等 — Rust 与 Agda 各自独立验证, 不互相引用。
 
+
+
+--------------------------------------------------------------------------------
+-- §7. Witt 环 W(F₃) = Z/4 — 判别式/Arf 离散对应 (Milnor 猜想有限域截断)
+--------------------------------------------------------------------------------
+
+-- W(F_q) 标准结论: q ≡ 3 (mod 4) 时 W(F_q) ≅ Z/4, 生成元 ⟨1⟩, 4⟨1⟩ = 0。
+-- F₃ 满足 q=3 ≡ 3 (mod 4): W(F₃) = Z/4。
+-- 离散模型: Fin 4 循环群; 与 Z[i] 单位群 C₄ (Gaussian §2) 同构 —
+-- 毕达哥拉斯复数线的勾股线链接 (Milnor/Voevodsky: Witt 分级 ↔ Milnor K)。
+
+import Sovereign.RootMath.Gaussian as G
+
+Witt4 : Set
+Witt4 = Fin 4
+
+next4 : Fin 4 → Fin 4
+next4 fz = fs fz
+next4 (fs fz) = fs (fs fz)
+next4 (fs (fs fz)) = fs (fs (fs fz))
+next4 (fs (fs (fs fz))) = fz
+
+infixl 6 _+w_
+_+w_ : Fin 4 → Fin 4 → Fin 4
+_+w_ fz y = y
+_+w_ (fs fz) y = next4 y
+_+w_ (fs (fs fz)) y = next4 (next4 y)
+_+w_ (fs (fs (fs fz))) y = next4 (next4 (next4 y))
+
+-- 生成元 ⟨1⟩ = fs fz; 4⟨1⟩ = 0 (周期 4, 4 穷举)
+witt-generator-period : ∀ w → w +w w +w w +w w ≡ fz
+witt-generator-period fz = refl
+witt-generator-period (fs fz) = refl
+witt-generator-period (fs (fs fz)) = refl
+witt-generator-period (fs (fs (fs fz))) = refl
+
+-- W(F₃) ≅ C₄ = Z[i] 单位群: 类 w ↦ 单位 (1, i, −1, −i)
+wittUnit : Fin 4 → G.Gaussian
+wittUnit fz = G.unit1
+wittUnit (fs fz) = G.uniti
+wittUnit (fs (fs fz)) = G.unitm1
+wittUnit (fs (fs (fs fz))) = G.unitmi
+
+-- 交换 (C₄ 交换律): 16 穷举
+witt-comm : ∀ x y → x +w y ≡ y +w x
+witt-comm fz fz = refl
+witt-comm fz (fs fz) = refl
+witt-comm fz (fs (fs fz)) = refl
+witt-comm fz (fs (fs (fs fz))) = refl
+witt-comm (fs fz) fz = refl
+witt-comm (fs fz) (fs fz) = refl
+witt-comm (fs fz) (fs (fs fz)) = refl
+witt-comm (fs fz) (fs (fs (fs fz))) = refl
+witt-comm (fs (fs fz)) fz = refl
+witt-comm (fs (fs fz)) (fs fz) = refl
+witt-comm (fs (fs fz)) (fs (fs fz)) = refl
+witt-comm (fs (fs fz)) (fs (fs (fs fz))) = refl
+witt-comm (fs (fs (fs fz))) fz = refl
+witt-comm (fs (fs (fs fz))) (fs fz) = refl
+witt-comm (fs (fs (fs fz))) (fs (fs fz)) = refl
+witt-comm (fs (fs (fs fz))) (fs (fs (fs fz))) = refl
+
+-- 群同态: wittUnit (x +w y) ≡ wittUnit x *ᵢ wittUnit y (16 穷举)
+wittUnit-hom : ∀ x y → wittUnit (x +w y) ≡ wittUnit x G.*ᵢ wittUnit y
+wittUnit-hom fz fz = refl
+wittUnit-hom fz (fs fz) = refl
+wittUnit-hom fz (fs (fs fz)) = refl
+wittUnit-hom fz (fs (fs (fs fz))) = refl
+wittUnit-hom (fs fz) fz = refl
+wittUnit-hom (fs fz) (fs fz) = refl
+wittUnit-hom (fs fz) (fs (fs fz)) = refl
+wittUnit-hom (fs fz) (fs (fs (fs fz))) = refl
+wittUnit-hom (fs (fs fz)) fz = refl
+wittUnit-hom (fs (fs fz)) (fs fz) = refl
+wittUnit-hom (fs (fs fz)) (fs (fs fz)) = refl
+wittUnit-hom (fs (fs fz)) (fs (fs (fs fz))) = refl
+wittUnit-hom (fs (fs (fs fz))) fz = refl
+wittUnit-hom (fs (fs (fs fz))) (fs fz) = refl
+wittUnit-hom (fs (fs (fs fz))) (fs (fs fz)) = refl
+wittUnit-hom (fs (fs (fs fz))) (fs (fs (fs fz))) = refl
+
+-- 判别式 (第一 Witt 不变量 = Arf 不变量的 GF(3) 离散对应):
+--   F₃^× 的平方只有 {1} (1²=1, 2²=4≡1), 故 F₃^×/F₃^×² = {±1} = C₂
+--   disc : ⟨a⟩ ↦ a mod squares — 值域 = K₁GF3 (§5)
+disc : U3 → K₁GF3
+disc (Trit.T₀ , ())
+disc (Trit.T₁ , _) = fz
+disc (Trit.T₂ , _) = fs fz
+
+disc-unit : disc (Trit.T₁ , tt) ≡ fz
+disc-unit = refl
+
+-- ⟨−1⟩ 的判别式 = K₁ 非平凡元 (negate 翻转) — 判别式 ↔ K₁ 的桥
+disc-mone : disc (Trit.T₂ , tt) ≡ fs fz
+disc-mone = refl
+
+-- 二元形式判别式: disc2(⟨a,b⟩) = (a⊗b) mod squares (4 穷举 + 零 ⊥-elim)
+disc2 : U3 → U3 → K₁GF3
+disc2 (Trit.T₀ , ()) _
+disc2 (Trit.T₁ , _) (Trit.T₀ , ())
+disc2 (Trit.T₂ , _) (Trit.T₀ , ())
+disc2 (Trit.T₁ , _) (Trit.T₁ , _) = fz    -- 1·1 = 1 是平方
+disc2 (Trit.T₁ , _) (Trit.T₂ , _) = fs fz -- 1·(−1) = −1 非平方
+disc2 (Trit.T₂ , _) (Trit.T₁ , _) = fs fz
+disc2 (Trit.T₂ , _) (Trit.T₂ , _) = fz    -- (−1)(−1) = 1 是平方
+
+-- 双曲平面 ⟨1,−1⟩ ~ 0: 判别式 = −1 (非平方) — 双曲判据
+disc2-hyperbolic : disc2 (Trit.T₁ , tt) (Trit.T₂ , tt) ≡ fs fz
+disc2-hyperbolic = refl
+
+-- 各向异性 ⟨1,1⟩, ⟨−1,−1⟩: 判别式 = 1 (平方), 不代表零
+disc2-anisotropic : disc2 (Trit.T₁ , tt) (Trit.T₁ , tt) ≡ fz
+disc2-anisotropic = refl
+
+-- W(F₃) 恰有 4 类, 两两不同 (6 个互异证, 构造子区分; 索引显式标注)
+witt-distinct-01 : ¬ (fz {3} ≡ fs (fz {2}))
+witt-distinct-01 ()
+
+witt-distinct-02 : ¬ (fz {3} ≡ fs (fs (fz {1})))
+witt-distinct-02 ()
+
+witt-distinct-03 : ¬ (fz {3} ≡ fs (fs (fs (fz {0}))))
+witt-distinct-03 ()
+
+witt-distinct-12 : ¬ (fs (fz {2}) ≡ fs (fs (fz {1})))
+witt-distinct-12 ()
+
+witt-distinct-13 : ¬ (fs (fz {2}) ≡ fs (fs (fs (fz {0}))))
+witt-distinct-13 ()
+
+witt-distinct-23 : ¬ (fs (fs (fz {1})) ≡ fs (fs (fs (fz {0}))))
+witt-distinct-23 ()
+
+-- 维数奇偶 (W/I ≅ Z/2 的商映射): w ↦ dim mod 2
+parity : Fin 4 → Fin 2
+parity fz = fz
+parity (fs fz) = fs fz
+parity (fs (fs fz)) = fz
+parity (fs (fs (fs fz))) = fs fz
+
+-- Milnor/Voevodsky 有限域塌缩注释:
+--   K^M_*(F₃)/2 = 0 (n≥2, §5.2) ↔ H^*(F₃, Z/2) = Z/2 (0 次) ↔ I^*/I^{*+1}
+--   Witt 侧: W(F₃) = Z/4, 滤过 W ⊃ I ⊃ I² = 0, 商 Z/2 × Z/2
+--   = (维数奇偶 parity, 判别式 disc) — 判别式 = K₁ 翻转 (§5 的 negate)。
+--   离散世界 Milnor 猜想三合一的塌缩形式: 全部可观测不变量 =
+--   (K₀ 秩, K₁ 翻转, Witt 判别式) 三者同构于 (Z, C₂, C₂)。
 -- 0 postulate.
