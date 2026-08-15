@@ -294,6 +294,11 @@ open import Sovereign.Physics.EntropySpinVerification public
          six-rotateℚ; pull-last; six-zero; six-zero';
          divℚ; divℚ-curl-zero; S-field; law-eq;
          divS-identity; divS-zero-condition)
+-- 熵旋微观输运证明 (通量输运恒等式 + 无损通道 + 阈值通用化 a≥1, 0 postulate)
+open import Sovereign.Physics.EntropySpinMicro public
+  using (zero-minus-zero-plus; planeSum; plane-distrib2;
+         fluxK; heatK; flux-diff; flux-conserved;
+         thermal-general; zeroΨ; pointH; canonical-mass)
 -- 手征干涉层: C3 → 场论驻波桥 (干涉规则 + 反向波相消 + Frobenius 稳定性, 0 postulate)
 open import Sovereign.Physics.ChiralInterference public
   using (cw; ccw; rest; interfere; cw-ccw-cancel; ccw-cw-cancel;
