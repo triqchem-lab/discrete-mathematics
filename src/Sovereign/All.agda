@@ -223,6 +223,17 @@ open import Sovereign.Algebra.LieDiscrete public
 open import Sovereign.Algebra.Jacobian.jac_LieGroup public
   using (expD; expD-id; C2; c2-mul; c2-order; FiniteAutGroup; a4-burnside)
 
+-- 李代数/李群独立建立 (2026-08-16, 与 Jacobian 家族分开, 有意重复):
+-- 李代数: gl(2)-GF(3) 括号 反称 81 + Jacobi 729; so(3) GF(3)³ 叉积 反称 729
+--         + 基 Jacobi 27; 李群: exp_C4/C₆ 单参子群律 16/36 + D₄ 半直积 64
+open import Sovereign.Algebra.Lie.LieAlgebra public
+  using (br; asym; jacobi; br3; asym3; jacobi3; Lie3; Basis3; toVec;
+         cyc12; cyc23; cyc31)
+open import Sovereign.Algebra.Lie.LieGroup public
+  using (expC4; expC4-hom; expC6; expC6-hom; SDElem; _⋊g·_;
+         sdE; sdS; sdM; sdA; sdAS; sdMA; sdMAS;
+         gen-a-square; gen-a-order4; gen-b-order2; twist-order2; d4-conjugation)
+
 -- ── P4 无穷维结构离散替代 (v7.5) ─────────────────────────────
 -- P4-A: 有限状态动力系统 + 轨道周期定理 (鸽巢原理, 0 postulate)
 open import Sovereign.Analysis.FiniteDynamics public
