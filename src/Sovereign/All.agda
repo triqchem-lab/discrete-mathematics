@@ -100,6 +100,7 @@ open import Sovereign.Structology.A4Representations public
          perm-char-decomp; abelianize; c3Char; abelianize-hom;
          χ₁-multiplicative; χ₁'-multiplicative; χ₁''-multiplicative;
          χ₁'-via-abelianization; χ₁''-is-conj-χ₁';
+         a4inv; classify-conjugation-invariant; branching3;
          theorem-dimension-sum-of-squares; theorem-class-count;
          theorem-dim-sum-eq-class-sum;
          FermionGenerations; standardFermionAssignment)

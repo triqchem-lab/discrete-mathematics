@@ -633,6 +633,178 @@ abelianize-hom (Flip (suc (suc zero))) (Flip (zero)) = refl
 abelianize-hom (Flip (suc (suc zero))) (Flip (suc zero)) = refl
 abelianize-hom (Flip (suc (suc zero))) (Flip (suc (suc zero))) = refl
 
+--------------------------------------------------------------------------------
+-- 7.5 共轭类结构验证 + 分支规则 (三个槽位)
+--------------------------------------------------------------------------------
+
+-- 逆元 (13 例, 与 A4Group.inverse 一致)
+a4inv : A4 → A4
+a4inv Id = Id
+a4inv (Rot i zero) = Rot i (suc zero)
+a4inv (Rot i (suc zero)) = Rot i zero
+a4inv (Flip j) = Flip j
+
+-- 共轭不变性: classify 分派在共轭下闭合 (12×12 = 144 case 显式 refl)
+-- 即 {C1,C2,C3,C4} 确为共轭类的并集划分 (类大小 1,4,4,3 由查表构造保证)
+classify-conjugation-invariant : ∀ g x → classify ((g ⊗ x) ⊗ a4inv g) ≡ classify x
+classify-conjugation-invariant (Id) (Id) = refl
+classify-conjugation-invariant (Id) (Rot (zero) (zero)) = refl
+classify-conjugation-invariant (Id) (Rot (zero) (suc zero)) = refl
+classify-conjugation-invariant (Id) (Rot (suc zero) (zero)) = refl
+classify-conjugation-invariant (Id) (Rot (suc zero) (suc zero)) = refl
+classify-conjugation-invariant (Id) (Rot (suc (suc zero)) (zero)) = refl
+classify-conjugation-invariant (Id) (Rot (suc (suc zero)) (suc zero)) = refl
+classify-conjugation-invariant (Id) (Rot (suc (suc (suc zero))) (zero)) = refl
+classify-conjugation-invariant (Id) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+classify-conjugation-invariant (Id) (Flip (zero)) = refl
+classify-conjugation-invariant (Id) (Flip (suc zero)) = refl
+classify-conjugation-invariant (Id) (Flip (suc (suc zero))) = refl
+classify-conjugation-invariant (Rot (zero) (zero)) (Id) = refl
+classify-conjugation-invariant (Rot (zero) (zero)) (Rot (zero) (zero)) = refl
+classify-conjugation-invariant (Rot (zero) (zero)) (Rot (zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (zero) (zero)) (Rot (suc zero) (zero)) = refl
+classify-conjugation-invariant (Rot (zero) (zero)) (Rot (suc zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (zero) (zero)) (Rot (suc (suc zero)) (zero)) = refl
+classify-conjugation-invariant (Rot (zero) (zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+classify-conjugation-invariant (Rot (zero) (zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
+classify-conjugation-invariant (Rot (zero) (zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+classify-conjugation-invariant (Rot (zero) (zero)) (Flip (zero)) = refl
+classify-conjugation-invariant (Rot (zero) (zero)) (Flip (suc zero)) = refl
+classify-conjugation-invariant (Rot (zero) (zero)) (Flip (suc (suc zero))) = refl
+classify-conjugation-invariant (Rot (zero) (suc zero)) (Id) = refl
+classify-conjugation-invariant (Rot (zero) (suc zero)) (Rot (zero) (zero)) = refl
+classify-conjugation-invariant (Rot (zero) (suc zero)) (Rot (zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (zero) (suc zero)) (Rot (suc zero) (zero)) = refl
+classify-conjugation-invariant (Rot (zero) (suc zero)) (Rot (suc zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (zero) (suc zero)) (Rot (suc (suc zero)) (zero)) = refl
+classify-conjugation-invariant (Rot (zero) (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+classify-conjugation-invariant (Rot (zero) (suc zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
+classify-conjugation-invariant (Rot (zero) (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+classify-conjugation-invariant (Rot (zero) (suc zero)) (Flip (zero)) = refl
+classify-conjugation-invariant (Rot (zero) (suc zero)) (Flip (suc zero)) = refl
+classify-conjugation-invariant (Rot (zero) (suc zero)) (Flip (suc (suc zero))) = refl
+classify-conjugation-invariant (Rot (suc zero) (zero)) (Id) = refl
+classify-conjugation-invariant (Rot (suc zero) (zero)) (Rot (zero) (zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (zero)) (Rot (zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (zero)) (Rot (suc zero) (zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (zero)) (Rot (suc zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (zero)) (Rot (suc (suc zero)) (zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (zero)) (Flip (zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (zero)) (Flip (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (zero)) (Flip (suc (suc zero))) = refl
+classify-conjugation-invariant (Rot (suc zero) (suc zero)) (Id) = refl
+classify-conjugation-invariant (Rot (suc zero) (suc zero)) (Rot (zero) (zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (suc zero)) (Rot (zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (suc zero)) (Rot (suc zero) (zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (suc zero)) (Rot (suc zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (suc zero)) (Rot (suc (suc zero)) (zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (suc zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (suc zero)) (Flip (zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (suc zero)) (Flip (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc zero) (suc zero)) (Flip (suc (suc zero))) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (zero)) (Id) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (zero)) (Rot (zero) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (zero)) (Rot (zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (zero)) (Rot (suc zero) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (zero)) (Rot (suc zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (zero)) (Rot (suc (suc zero)) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (zero)) (Flip (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (zero)) (Flip (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (zero)) (Flip (suc (suc zero))) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (suc zero)) (Id) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (suc zero)) (Rot (zero) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (suc zero)) (Rot (zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (suc zero)) (Rot (suc zero) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (suc zero)) (Rot (suc zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (suc zero)) (Rot (suc (suc zero)) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (suc zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (suc zero)) (Flip (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (suc zero)) (Flip (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc zero)) (suc zero)) (Flip (suc (suc zero))) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (zero)) (Id) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (zero)) (Rot (zero) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (zero)) (Rot (zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (zero)) (Rot (suc zero) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (zero)) (Rot (suc zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (zero)) (Rot (suc (suc zero)) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (zero)) (Flip (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (zero)) (Flip (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (zero)) (Flip (suc (suc zero))) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (suc zero)) (Id) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (suc zero)) (Rot (zero) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (suc zero)) (Rot (zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc zero) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc zero) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc (suc zero)) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (suc zero)) (Flip (zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (suc zero)) (Flip (suc zero)) = refl
+classify-conjugation-invariant (Rot (suc (suc (suc zero))) (suc zero)) (Flip (suc (suc zero))) = refl
+classify-conjugation-invariant (Flip (zero)) (Id) = refl
+classify-conjugation-invariant (Flip (zero)) (Rot (zero) (zero)) = refl
+classify-conjugation-invariant (Flip (zero)) (Rot (zero) (suc zero)) = refl
+classify-conjugation-invariant (Flip (zero)) (Rot (suc zero) (zero)) = refl
+classify-conjugation-invariant (Flip (zero)) (Rot (suc zero) (suc zero)) = refl
+classify-conjugation-invariant (Flip (zero)) (Rot (suc (suc zero)) (zero)) = refl
+classify-conjugation-invariant (Flip (zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+classify-conjugation-invariant (Flip (zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
+classify-conjugation-invariant (Flip (zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+classify-conjugation-invariant (Flip (zero)) (Flip (zero)) = refl
+classify-conjugation-invariant (Flip (zero)) (Flip (suc zero)) = refl
+classify-conjugation-invariant (Flip (zero)) (Flip (suc (suc zero))) = refl
+classify-conjugation-invariant (Flip (suc zero)) (Id) = refl
+classify-conjugation-invariant (Flip (suc zero)) (Rot (zero) (zero)) = refl
+classify-conjugation-invariant (Flip (suc zero)) (Rot (zero) (suc zero)) = refl
+classify-conjugation-invariant (Flip (suc zero)) (Rot (suc zero) (zero)) = refl
+classify-conjugation-invariant (Flip (suc zero)) (Rot (suc zero) (suc zero)) = refl
+classify-conjugation-invariant (Flip (suc zero)) (Rot (suc (suc zero)) (zero)) = refl
+classify-conjugation-invariant (Flip (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+classify-conjugation-invariant (Flip (suc zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
+classify-conjugation-invariant (Flip (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+classify-conjugation-invariant (Flip (suc zero)) (Flip (zero)) = refl
+classify-conjugation-invariant (Flip (suc zero)) (Flip (suc zero)) = refl
+classify-conjugation-invariant (Flip (suc zero)) (Flip (suc (suc zero))) = refl
+classify-conjugation-invariant (Flip (suc (suc zero))) (Id) = refl
+classify-conjugation-invariant (Flip (suc (suc zero))) (Rot (zero) (zero)) = refl
+classify-conjugation-invariant (Flip (suc (suc zero))) (Rot (zero) (suc zero)) = refl
+classify-conjugation-invariant (Flip (suc (suc zero))) (Rot (suc zero) (zero)) = refl
+classify-conjugation-invariant (Flip (suc (suc zero))) (Rot (suc zero) (suc zero)) = refl
+classify-conjugation-invariant (Flip (suc (suc zero))) (Rot (suc (suc zero)) (zero)) = refl
+classify-conjugation-invariant (Flip (suc (suc zero))) (Rot (suc (suc zero)) (suc zero)) = refl
+classify-conjugation-invariant (Flip (suc (suc zero))) (Rot (suc (suc (suc zero))) (zero)) = refl
+classify-conjugation-invariant (Flip (suc (suc zero))) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+classify-conjugation-invariant (Flip (suc (suc zero))) (Flip (zero)) = refl
+classify-conjugation-invariant (Flip (suc (suc zero))) (Flip (suc zero)) = refl
+classify-conjugation-invariant (Flip (suc (suc zero))) (Flip (suc (suc zero))) = refl
+
+-- 分支规则 (三个槽位): 三维表示限制到 C₃ 子群 ⟨(1 2 3)⟩ = {Id, Rot zero zero,
+-- Rot zero (suc zero)} 上, 逐点等于三个一维特征标 (平凡, ω, ω²) 之和:
+--   χ₃(e)   = 3 = 1+1+1
+--   χ₃(g)   = 0 = 1+ω+ω²   (1+ω+ω²=0 吃掉 3-轮换迹)
+--   χ₃(g²)  = 0 = 1+ω²+ω
+-- 即 V₃↓⟨g⟩ ≅ 1 ⊕ 1′ ⊕ 1″ — 三个槽位, 每一槽承载一个一维特征标 (一代)。
+branching3 :
+  (character V3 Id ≡ 1ᵉ +ᵉ (1ᵉ +ᵉ 1ᵉ)) ×
+  (character V3 (Rot zero zero) ≡ 1ᵉ +ᵉ (ωᵉ +ᵉ ω²ᵉ)) ×
+  (character V3 (Rot zero (suc zero)) ≡ 1ᵉ +ᵉ (ω²ᵉ +ᵉ ωᵉ))
+branching3 = refl , refl , refl
+
+
 -- 三个一维特征标均为群同态 (genuine 1-dim representations)
 -- V1: 平凡 (处处 1)
 χ₁-multiplicative : ∀ g h → character V1 (g ⊗ h) ≡ character V1 g *ᵉ character V1 h
