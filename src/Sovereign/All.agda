@@ -303,6 +303,14 @@ open import Sovereign.Physics.EntropySpinMicro public
 open import Sovereign.Physics.EntropySpinQuantize public
   using (fromBool; m₀; countQ9; point-unit; sum3-unit; sum9-unit;
          quantized-mass; quantized-mass-integral; chern2Config; chern2-mass)
+-- 离散统计力学补强 (计数型熵 S=W + 配分函数族 z2→z3→z4 + ℚ 熵均匀最大, 0 postulate)
+open import Sovereign.Physics.DiscreteStatMech public
+  using (W; countEntropy; W-ok5; W-suc; W-add; countEntropy-mult;
+         z2-ok; z3-ok; z4-ok; z2-double; z2-triple; norm-z2; norm-z3;
+         tsallis2; tsallis2-uniform; tsallis2-max;
+         tsallis3; tsallis3-uniform; tsallis3-max;
+         collision-min2; collision-min3;
+         shannon2; shannon2-uniform; shannon2-degenerate; dyadic-max2)
 -- 手征干涉层: C3 → 场论驻波桥 (干涉规则 + 反向波相消 + Frobenius 稳定性, 0 postulate)
 open import Sovereign.Physics.ChiralInterference public
   using (cw; ccw; rest; interfere; cw-ccw-cancel; ccw-cw-cancel;
