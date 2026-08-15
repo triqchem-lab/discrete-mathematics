@@ -91,6 +91,19 @@ open import Sovereign.Structology.IhC60Vibration public
          vibMult; vib-vector; freq-46; dim-174;
          ir-active; raman-active; observed-lines; weighted-states; active-plus-dark)
 
+-- A₄ 不可约表示论: 特征标表 {3,1,1′,1″} + 完整第一正交关系 + Abel 化三特征标
+-- (乘性 144 case + sum=0 子空间不变性, 0 postulate)
+open import Sovereign.Structology.A4Representations public
+  using (A4Irrep; ConjugacyClass; charAt; character; dimSqSum;
+         char-orthogonality; irrep-norm-criterion; chars-distinct;
+         basisSumZero; sumZero-invariant; act-preserves-L;
+         perm-char-decomp; abelianize; c3Char; abelianize-hom;
+         χ₁-multiplicative; χ₁'-multiplicative; χ₁''-multiplicative;
+         χ₁'-via-abelianization; χ₁''-is-conj-χ₁';
+         theorem-dimension-sum-of-squares; theorem-class-count;
+         theorem-dim-sum-eq-class-sum;
+         FermionGenerations; standardFermionAssignment)
+
 -- 稳定态与 Burnside 引理框架
 open import Sovereign.Structology.MotorStableStates public
   using (StableState; IsA4Invariant; zeroMatrix-stable;
