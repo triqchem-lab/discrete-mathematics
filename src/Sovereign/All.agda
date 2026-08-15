@@ -235,6 +235,10 @@ open import Sovereign.Coding.NumericalSpec public
          euclid-step-1; euclid-step-2; euclid-step-3; euclid-step-4;
          bezout-46-13; mod-inverse-3; inverse-in-range;
          elim-step-1; elim-step-2; solve-check-1; solve-check-2)
+-- 65 桥接规范: 外部计算结果的可信封装 (Q16/模逆/线性解三契约)
+open import Sovereign.Coding.FFIProtocol public
+  using (Q16Value; q16-quarter; ModInverseResult; modinv-3;
+         modinv-transport; LinearSolveResult; linear-solve-22)
 -- 68 补强: 平方乘幂步数定理 (3 ≤ 8)
 open import Sovereign.Coding.ExpSquaring public
   using (sq1; sq2; sq3; exp-sq-result; sq-steps; naive-steps; log-vs-linear)
