@@ -4,15 +4,23 @@
 -- 物理学：熵旋理论质量涌现机制与 4320D 流形映射
 -- (2026-08 修复版: 原版有解析错误且未入库 — 见 §2b 修复注记)
 --
--- 数据来源：/home/yanli/work/triqchem-lab/quantum-physics/axioms/ENTROPY_SPIN_MASS_EMERGENCE_THEORY.md
--- 核心整合：将渠玉芝熵旋理论与律算拓扑不变量严格对齐。
+-- 常数归属 (2026-08 修正): 0.0268 是渠玉芝光超导物理学的"熵旋平衡"
+-- 有序度衰减常数 (经验值), 不是乔治·斯坦科夫宇宙法则的常数 —
+-- 历史命名 StankovRatio 系归属误植, 保留兼容; 语义名见 quEntropyBalance。
+-- 渠玉芝公开事实 (专利/测试锚点): 澳大利亚专利 AU1998055844 与美国专利
+-- US-6132823-A (超导传热介质); 无机热超导管经斯坦福研究院 (SRI) 测试,
+-- 等效导热系数为金属银的 32,500 倍 — 这些是"熵旋定律"的工程证据,
+-- 但公开资料中未检索到 0.0268 的公式/推导 — 故按经验常数对待,
+-- 非推导值, 不以定理伪装。原"数据来源"路径 /home/yanli/work/
+-- triqchem-lab/... 已不存在 (悬空引用), 此处一并清除。
 --
 -- 核心映射：
 -- 1. 4320D 维度分解：4320 = 2(手性) × 12(十二律) × 36(苞元谐波) × 5(五行)
 -- 2. 质量涌现公式：m = ∮_C S·dA (熵旋密度积分) —— 本模块只落其
---    定点简化 massEmergence = ρ_S × StankovRatio, 路径积分形式是
+--    定点简化 massEmergence = ρ_S × quEntropyBalance, 路径积分形式是
 --    物理动机注释, 不是已形式化定理 (诚实边界)。
--- 3. 斯坦科夫比例：0.0268 (有序度衰减常数, ×10000 定点 = 268)
+-- 3. 渠玉芝熵旋平衡常数：0.0268 (有序度衰减经验常数, ×10000 定点 = 268)
+--    对应光超导 (a<6 低耗散通道) 与仲吕闭合 (a≥6 热辐射瓦解) 的分界调制。
 -- 4. 共轭回流：左右旋螺旋对抵消形成中心驻波 —— 本模块只有
 --    2 构造子数据类型 + 2×2 Bool 配对表 (协议定义, 不是定理);
 --    C₂ Frobenius 不动点的严格证明在 Algebra/GF9.agda (galoisFixedPoint)。
@@ -55,14 +63,20 @@ dimMap = record { chiralLayer = 2; luLayer = 12; harmonicLayer = 36; wuxingLayer
 -- 2. 熵旋密度与质量涌现 (定点缩放, 避免 ℚ 变量分母的 NonZero 实例问题)
 --------------------------------------------------------------------------------
 
--- 斯坦科夫比例常数 (Stankov Ratio) — 0.0268
-StankovRatio : ℚ
-StankovRatio = (+ 268) / 10000
+-- 渠玉芝熵旋平衡常数 (Qu EntropySpin Balance Constant) — 0.0268
+-- 地位: 经验常数 (实验拟合值); 公开资料无公式/推导, 非推导值。
+quEntropyBalance : ℚ
+quEntropyBalance = (+ 268) / 10000
 
--- 质量涌现在本模块的定点简化: m = ρ_S × StankovRatio
+-- 历史命名 (归属误植 — 0.0268 源自渠玉芝光超导熵旋平衡理论,
+-- 非乔治·斯坦科夫; 兼容保留, 新代码用 quEntropyBalance)
+StankovRatio : ℚ
+StankovRatio = quEntropyBalance
+
+-- 质量涌现在本模块的定点简化: m = ρ_S × quEntropyBalance
 -- (物理动机注释: m = ∮_C S·dA 在波腹位置的取值 — 未形式化积分)
 massEmergence : ℚ → ℚ
-massEmergence spinDensity = spinDensity *ℚ StankovRatio
+massEmergence spinDensity = spinDensity *ℚ quEntropyBalance
 
 -- 熵旋密度精确分子 (交叉相乘形式, 无截断):
 --   ρ_S(a,C) × 10⁸ × (a+1) = C × 268 × 10⁴
@@ -94,6 +108,7 @@ massNum a c = c * 268 * 268
 --------------------------------------------------------------------------------
 
 -- 定理: 木态 (a=6, 陈数 C=2) 的质量涌现熵旋低于检测阈值 0.001
+-- (条件于经验常数 quEntropyBalance = 268/10000; 本定理不推导该常数)
 -- 形式: 可判定比较 _<?_ 对闭合数值归约为 true (等价于 m(6,2) < 1/1000,
 -- 交叉相乘: 2×268² < 10⁵×7, 即 143648 < 700000)
 thermal-a6 : does (massNum 6 2 <? 100000 * 7) ≡ true
@@ -140,6 +155,6 @@ shengModulation state =
 -- 相克调制：熵旋失衡，相干性衰减
 keModulation : WuXingEntropyState → WuXingEntropyState
 keModulation state =
-  record state { coherence = WuXingEntropyState.coherence state *ℚ StankovRatio }
+  record state { coherence = WuXingEntropyState.coherence state *ℚ quEntropyBalance }
 
 -- 0 postulate.

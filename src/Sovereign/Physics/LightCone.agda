@@ -112,7 +112,8 @@ data EntropySpinResult : Set where
 
 -- 熵旋密度函数 (简化模型)
 -- rho_S = C(chern) x StankovRatio / (a+1)
--- 见 EntropySpin.agda §2
+-- 注: 0.0268 是渠玉芝熵旋平衡经验常数 (非推导值); 历史命名保留兼容。
+-- 见 EntropySpin.agda §2 (语义名 quEntropyBalance)
 StankovRatio : ℕ ; StankovRatio = 268  -- 0.0268 x 10000
 
 --------------------------------------------------------------------------------

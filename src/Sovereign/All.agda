@@ -272,8 +272,8 @@ open import Sovereign.Physics.DiscreteMaxwellConservation public
          gauss-preservation; yee-gauss-preservation)
 -- 熵旋质量涌现 (2026-08 修复版: 原版解析错误已修, 假 refl 定理降级为闭合实例)
 open import Sovereign.Physics.EntropySpin public
-  using (StankovRatio; massEmergence; entropySpinNum; massNum; thermal-a6;
-         ManifoldDim4320; DimensionMapping; dimMap;
+  using (quEntropyBalance; StankovRatio; massEmergence; entropySpinNum; massNum;
+         thermal-a6; ManifoldDim4320; DimensionMapping; dimMap;
          ChiralSpinor; conjugateStandingWave;
          WuXingEntropyState; shengModulation; keModulation)
 -- 手征干涉层: C3 → 场论驻波桥 (干涉规则 + 反向波相消 + Frobenius 稳定性, 0 postulate)

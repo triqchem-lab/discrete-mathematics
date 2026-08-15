@@ -83,7 +83,8 @@ classifyGF9³ (x , y , z) with classifyGF9 x | classifyGF9 y | classifyGF9 z
 -- 陈数 (拓扑不变量, 384K步不变)
 Chern : ℕ ; Chern = 2
 
--- 斯坦科夫比例 (有序度衰减常数, x10000)
+-- 渠玉芝熵旋平衡常数 (有序度衰减经验常数, ×10000; 公开资料无推导,
+-- 非推导值; 历史命名 Stankov 系归属误植, 保留兼容)
 Stankov : ℕ ; Stankov = 268  -- 0.0268
 
 -- 环向缠绕因子 a: 损益链中的环向幂次
