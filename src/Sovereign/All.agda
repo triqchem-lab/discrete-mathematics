@@ -360,6 +360,11 @@ open import Sovereign.Physics.RightHandedNeutrinoTheorem public
          frobenius-swaps; realOf-nuR-zero;
          conjugate-involutive-nuL; conjugate-orbit-single;
          projection-complementary)
+-- 不可见自由度系统计数 (GF(9) 3不动点+3共轭对 + 空间三坐标 1不动点+13对, 0 postulate)
+open import Sovereign.Physics.InvisibleOrbitCount public
+  using (sigma-fixed-iff-real; conjugatePair-distinct; orbitCount6;
+         conj3-involutive; conj3-fixed-only-zero;
+         thirteenPairs; invisibleCount27)
 -- 离散统计力学补强 (计数型熵 S=W + 配分函数族 z2→z3→z4 + ℚ 熵均匀最大, 0 postulate)
 open import Sovereign.Physics.DiscreteStatMech public
   using (W; countEntropy; W-ok5; W-suc; W-add; countEntropy-mult;
