@@ -245,6 +245,15 @@ open import Sovereign.Coding.ExpSquaring public
 -- 82 补强: 三角 Ising 8 构型配分
 open import Sovereign.Physics.IsingTriangle public
   using (sign; edgeE; E3; aligned-count; mixed-count; partition-counts)
+-- 78 电磁学: 3D 环面 (Fin 3)³ 离散场论第二基石
+-- (梯度的旋度为零 + 旋度散度成对抵消, 全符号证明)
+open import Sovereign.Physics.DiscreteEMField3D public
+  using (Point3D; vx; vy; vz; dz;
+         dz-dx-comm; dz-dy-comm;
+         curl-grad-zero-x; curl-grad-zero-y; curl-grad-zero-z; curl-grad-zero;
+         dz-neg; dz-add;
+         pair-cancel-1; pair-cancel-2; pair-cancel-3;
+         div-curl-zero-paired; shuffle23)
 -- 78 电磁学: 3×3 环面离散场论第一基石 (梯度的旋度为零 + 规范不变性)
 open import Sovereign.Physics.DiscreteEMField public
   using (Point2D; ScalarField; VectorField; add3; neg3;
