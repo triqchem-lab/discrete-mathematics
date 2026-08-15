@@ -104,6 +104,16 @@ open import Sovereign.Structology.A4Representations public
          theorem-dim-sum-eq-class-sum;
          FermionGenerations; standardFermionAssignment)
 
+-- T⁶ 五维物理投影: 3 空间 + 2 手征 + 1 规范相位 显式标注 (0 postulate)
+open import Sovereign.Structology.T6FiveDimensionalProjection public
+  using (Space3; Chiral2; Gauge1; FiveD; DimTag; Space; Chiral; Gauge;
+         Spin; dimTag; spinLabel;
+         recompose; decompose∘recompose; recompose∘decompose; recompose∘labels;
+         spaceOf; chiralOf; gaugeOf; fiveOf; xOf; yOf; zOf; cLOf; cROf; gOf;
+         setGauge; fiveOf-gauge-independent; gaugeOf-setGauge;
+         chiralFlip; chiralFlip-involutive;
+         chiralFlip-preserves-space; chiralFlip-preserves-gauge; project729)
+
 -- 稳定态与 Burnside 引理框架
 open import Sovereign.Structology.MotorStableStates public
   using (StableState; IsA4Invariant; zeroMatrix-stable;
