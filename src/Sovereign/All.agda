@@ -245,6 +245,12 @@ open import Sovereign.Coding.ExpSquaring public
 -- 82 补强: 三角 Ising 8 构型配分
 open import Sovereign.Physics.IsingTriangle public
   using (sign; edgeE; E3; aligned-count; mixed-count; partition-counts)
+-- 78 电磁学: 3×3 环面离散场论第一基石 (梯度的旋度为零 + 规范不变性)
+open import Sovereign.Physics.DiscreteEMField public
+  using (Point2D; ScalarField; VectorField; add3; neg3;
+         add3-comm; add3-assoc; add3-inverse; neg3-add; neg3-involutive;
+         dx; dy; dy-dx-comm; grad; curl; grad-curl-zero;
+         _⊕a_; dx-add; dy-add; curl-linear; gauge-invariance)
 -- 83 补强: GF(3)² 光锥分类 (5 类光 + 2 类时 + 2 类空)
 open import Sovereign.Physics.DiscreteLightcone public
   using (q; light-00; light-11; light-12; light-21; time-10; time-20;
