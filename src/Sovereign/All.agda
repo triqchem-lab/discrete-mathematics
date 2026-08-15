@@ -217,6 +217,12 @@ open import Sovereign.Algebra.FieldExtensionTower
 -- P0 证据已注册至 CompletenessTheorem §8, 0 postulate
 open import Sovereign.Algebra.LieDiscrete public
 
+-- 李线的 Jacobian 侧延伸: 离散 Frobenius-Galois 群代数
+-- (离散指数映射 exp_D=σ^t / Gal(GF(9)/GF(3))≅C₂ / Aut(T⁶/GF(9)) 半直积接口
+--  / SO(3)→A₄ 对齐 — 原在 Jacobian 家族, 2026-08-16 补注册导出面)
+open import Sovereign.Algebra.Jacobian.jac_LieGroup public
+  using (expD; expD-id; C2; c2-mul; c2-order; FiniteAutGroup; a4-burnside)
+
 -- ── P4 无穷维结构离散替代 (v7.5) ─────────────────────────────
 -- P4-A: 有限状态动力系统 + 轨道周期定理 (鸽巢原理, 0 postulate)
 open import Sovereign.Analysis.FiniteDynamics public
