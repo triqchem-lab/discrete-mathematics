@@ -266,6 +266,10 @@ open import Sovereign.Physics.DiscreteMaxwellTime public
          FaradayHolds; AmpereHolds; GaussHolds; FaradayStep; AmpereStep;
          faraday-diff-from-step; amp-diff-from-step; divE-step;
          faraday-preserves-divB; charge-conservation)
+-- 78 电磁学: 守恒层 (Yee 蛙跳 + 高斯保持归纳证明, 0 postulate)
+open import Sovereign.Physics.DiscreteMaxwellConservation public
+  using (div-time-comm; yee-B; yee-E; yee-faraday-step; yee-ampere-step;
+         gauss-preservation; yee-gauss-preservation)
 -- 78 电磁学: 3×3 环面离散场论第一基石 (梯度的旋度为零 + 规范不变性)
 open import Sovereign.Physics.DiscreteEMField public
   using (Point2D; ScalarField; VectorField; add3; neg3;
