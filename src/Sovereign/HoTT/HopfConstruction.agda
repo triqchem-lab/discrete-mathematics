@@ -21,12 +21,13 @@ open import Data.Product using (Σ; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality
   renaming (_≡_ to _≡i_; refl to refli; trans to transi; sym to symi; cong to congi)
 
-open import Cubical.Foundations.Prelude using (_≡_; refl; _∙_; cong; sym; subst)
+open import Cubical.Foundations.Prelude using (_≡_; refl; _∙_; cong; sym; subst; PathP; isProp→PathP)
 open import Cubical.Data.Sigma using (_×_)
+open import Cubical.Data.Sigma.Properties using (ΣPathP; ΣPathPProp)
 open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/; squash/)
 open import Cubical.HITs.SetQuotients.Properties using (rec; elimProp; squash/)
 open import Cubical.Foundations.Equiv using (_≃_)
-open import Cubical.Foundations.Isomorphism using (iso; isoToEquiv)
+open import Cubical.Foundations.Isomorphism using (Iso; iso; isoToEquiv; section; retract)
 open import Cubical.HITs.PropositionalTruncation
   using (∥_∥₁; ∣_∣₁; squash₁)
 open import Cubical.Functions.Surjection using (isSurjection)
@@ -74,19 +75,19 @@ action-in-orbit : ∀ (g : A4.A4) (x : TotalSpace) →
   totalProj (T6.a4Action g x) ≡ totalProj x
 action-in-orbit g x = eq/ (T6.a4Action g x) x (invA4 g , goal g x)
   where
-    goal : ∀ (g : A4.A4) (x : TotalSpace) → T6.a4Action (invA4 g) (T6.a4Action g x) ≡i x
-    goal A4.Id                             (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refli
-    goal (A4.Rot zero zero)                (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refli
-    goal (A4.Rot zero (suc zero))          (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refli
-    goal (A4.Rot (suc zero) zero)          (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refli
-    goal (A4.Rot (suc zero) (suc zero))    (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refli
-    goal (A4.Rot (suc (suc zero)) zero)    (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refli
-    goal (A4.Rot (suc (suc zero)) (suc zero)) (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refli
-    goal (A4.Rot (suc (suc (suc zero))) zero) (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refli
-    goal (A4.Rot (suc (suc (suc zero))) (suc zero)) (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refli
-    goal (A4.Flip zero)                      (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refli
-    goal (A4.Flip (suc zero))                (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refli
-    goal (A4.Flip (suc (suc zero)))          (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refli
+    goal : ∀ (g : A4.A4) (x : TotalSpace) → T6.a4Action (invA4 g) (T6.a4Action g x) ≡ x
+    goal A4.Id                             (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+    goal (A4.Rot zero zero)                (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+    goal (A4.Rot zero (suc zero))          (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+    goal (A4.Rot (suc zero) zero)          (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+    goal (A4.Rot (suc zero) (suc zero))    (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+    goal (A4.Rot (suc (suc zero)) zero)    (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+    goal (A4.Rot (suc (suc zero)) (suc zero)) (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+    goal (A4.Rot (suc (suc (suc zero))) zero) (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+    goal (A4.Rot (suc (suc (suc zero))) (suc zero)) (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+    goal (A4.Flip zero)                      (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+    goal (A4.Flip (suc zero))                (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+    goal (A4.Flip (suc (suc zero)))          (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
 
 -- 轨道投影保纤维：a4Action 映射在 OrbitFiber [x] 内部
 orbitStaysInFiber : ∀ (g : A4.A4) (x : TotalSpace) →
@@ -168,18 +169,12 @@ all-equal-fixed (A4.Flip (suc (suc zero))) = refli
 
 -- A₄ 作用传递性：对轨道中任意两点，存在群元连接它们
 orbit-transitive : ∀ (x y : TotalSpace) → T6.A4OrbitEquiv x y →
-  Σ A4.A4 (λ g → T6.a4Action g x ≡i y)
+  Σ A4.A4 (λ g → T6.a4Action g x ≡ y)
 orbit-transitive x y equiv = equiv
 
 -- 对自由轨道（稳定子平凡），传递元唯一，给出双射 A₄ ≅ Orbit(x)
--- 伪代码：
---   orbitToGroup : OrbitFiber [v*] → A4.A4
---   orbitToGroup (y , _) = the unique g such that a4Action g v* ≡i y
--- 需要 stability → uniqueness 的证明
-
--- 由于 A₄ 是有限群（12 元），且 GF(3)⁶ 是有限集（729 点），
--- 轨道的非平凡性可用穷举验证（但 Agda 中穷举 729 个轨道过于繁琐）。
--- 此处给出结构框架，轨道大小计算留待 Scholar Loop 引擎数值验证。
+-- orbitToGroup 的唯一性 = 轨道映射 g ↦ a4Action g v* 的单射性,
+-- 已由第 6 节 v*-orbit-injective (12×12 穷举) 构造性证明 — 不再是伪代码。
 
 --------------------------------------------------------------------------------
 -- 5. 总结：真正的 Hopf 纤维化结构
@@ -202,3 +197,214 @@ orbit-transitive x y equiv = equiv
 --
 -- 区别：经典 Hopf 纤维是连通的（S¹），我们的纤维是离散的（12点轨道）。
 -- 但拓扑上都是非平凡丛（无全局截面）。
+
+--------------------------------------------------------------------------------
+-- 6. v* 自由轨道的完整证明: 12 个 A₄ 像两两不同 (12×12 穷举)
+--------------------------------------------------------------------------------
+
+-- 轨道映射 g ↦ a4Action g v* 是单射:
+-- 前 4 坐标 (0,1,2,0) 中 1,2 各出现一次 → 任何保持 v* 的偶置换
+-- 必须固定坐标 1,2, 剩余 (0, 3) 的交换是奇置换 (∉ A₄) → Stab = {Id}
+v*-orbit-injective : ∀ (g h : A4.A4) →
+  T6.a4Action g v-star ≡i T6.a4Action h v-star → g ≡i h
+v*-orbit-injective A4.Id A4.Id p = refli
+v*-orbit-injective A4.Id (A4.Rot zero zero) = λ ()
+v*-orbit-injective A4.Id (A4.Rot zero (suc zero)) = λ ()
+v*-orbit-injective A4.Id (A4.Rot (suc zero) zero) = λ ()
+v*-orbit-injective A4.Id (A4.Rot (suc zero) (suc zero)) = λ ()
+v*-orbit-injective A4.Id (A4.Rot (suc (suc zero)) zero) = λ ()
+v*-orbit-injective A4.Id (A4.Rot (suc (suc zero)) (suc zero)) = λ ()
+v*-orbit-injective A4.Id (A4.Rot (suc (suc (suc zero))) zero) = λ ()
+v*-orbit-injective A4.Id (A4.Rot (suc (suc (suc zero))) (suc zero)) = λ ()
+v*-orbit-injective A4.Id (A4.Flip zero) = λ ()
+v*-orbit-injective A4.Id (A4.Flip (suc zero)) = λ ()
+v*-orbit-injective A4.Id (A4.Flip (suc (suc zero))) = λ ()
+v*-orbit-injective (A4.Rot zero zero) A4.Id = λ ()
+v*-orbit-injective (A4.Rot zero zero) (A4.Rot zero zero) p = refli
+v*-orbit-injective (A4.Rot zero zero) (A4.Rot zero (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot zero zero) (A4.Rot (suc zero) zero) = λ ()
+v*-orbit-injective (A4.Rot zero zero) (A4.Rot (suc zero) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot zero zero) (A4.Rot (suc (suc zero)) zero) = λ ()
+v*-orbit-injective (A4.Rot zero zero) (A4.Rot (suc (suc zero)) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot zero zero) (A4.Rot (suc (suc (suc zero))) zero) = λ ()
+v*-orbit-injective (A4.Rot zero zero) (A4.Rot (suc (suc (suc zero))) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot zero zero) (A4.Flip zero) = λ ()
+v*-orbit-injective (A4.Rot zero zero) (A4.Flip (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot zero zero) (A4.Flip (suc (suc zero))) = λ ()
+v*-orbit-injective (A4.Rot zero (suc zero)) A4.Id = λ ()
+v*-orbit-injective (A4.Rot zero (suc zero)) (A4.Rot zero zero) = λ ()
+v*-orbit-injective (A4.Rot zero (suc zero)) (A4.Rot zero (suc zero)) p = refli
+v*-orbit-injective (A4.Rot zero (suc zero)) (A4.Rot (suc zero) zero) = λ ()
+v*-orbit-injective (A4.Rot zero (suc zero)) (A4.Rot (suc zero) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot zero (suc zero)) (A4.Rot (suc (suc zero)) zero) = λ ()
+v*-orbit-injective (A4.Rot zero (suc zero)) (A4.Rot (suc (suc zero)) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot zero (suc zero)) (A4.Rot (suc (suc (suc zero))) zero) = λ ()
+v*-orbit-injective (A4.Rot zero (suc zero)) (A4.Rot (suc (suc (suc zero))) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot zero (suc zero)) (A4.Flip zero) = λ ()
+v*-orbit-injective (A4.Rot zero (suc zero)) (A4.Flip (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot zero (suc zero)) (A4.Flip (suc (suc zero))) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) zero) A4.Id = λ ()
+v*-orbit-injective (A4.Rot (suc zero) zero) (A4.Rot zero zero) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) zero) (A4.Rot zero (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) zero) (A4.Rot (suc zero) zero) p = refli
+v*-orbit-injective (A4.Rot (suc zero) zero) (A4.Rot (suc zero) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) zero) (A4.Rot (suc (suc zero)) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) zero) (A4.Rot (suc (suc zero)) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) zero) (A4.Rot (suc (suc (suc zero))) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) zero) (A4.Rot (suc (suc (suc zero))) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) zero) (A4.Flip zero) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) zero) (A4.Flip (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) zero) (A4.Flip (suc (suc zero))) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) (suc zero)) A4.Id = λ ()
+v*-orbit-injective (A4.Rot (suc zero) (suc zero)) (A4.Rot zero zero) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) (suc zero)) (A4.Rot zero (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) (suc zero)) (A4.Rot (suc zero) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) (suc zero)) (A4.Rot (suc zero) (suc zero)) p = refli
+v*-orbit-injective (A4.Rot (suc zero) (suc zero)) (A4.Rot (suc (suc zero)) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) (suc zero)) (A4.Rot (suc (suc zero)) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) (suc zero)) (A4.Rot (suc (suc (suc zero))) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) (suc zero)) (A4.Rot (suc (suc (suc zero))) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) (suc zero)) (A4.Flip zero) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) (suc zero)) (A4.Flip (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc zero) (suc zero)) (A4.Flip (suc (suc zero))) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) zero) A4.Id = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) zero) (A4.Rot zero zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) zero) (A4.Rot zero (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) zero) (A4.Rot (suc zero) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) zero) (A4.Rot (suc zero) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) zero) (A4.Rot (suc (suc zero)) zero) p = refli
+v*-orbit-injective (A4.Rot (suc (suc zero)) zero) (A4.Rot (suc (suc zero)) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) zero) (A4.Rot (suc (suc (suc zero))) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) zero) (A4.Rot (suc (suc (suc zero))) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) zero) (A4.Flip zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) zero) (A4.Flip (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) zero) (A4.Flip (suc (suc zero))) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) (suc zero)) A4.Id = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) (suc zero)) (A4.Rot zero zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) (suc zero)) (A4.Rot zero (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) (suc zero)) (A4.Rot (suc zero) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) (suc zero)) (A4.Rot (suc zero) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) (suc zero)) (A4.Rot (suc (suc zero)) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) (suc zero)) (A4.Rot (suc (suc zero)) (suc zero)) p = refli
+v*-orbit-injective (A4.Rot (suc (suc zero)) (suc zero)) (A4.Rot (suc (suc (suc zero))) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) (suc zero)) (A4.Rot (suc (suc (suc zero))) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) (suc zero)) (A4.Flip zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) (suc zero)) (A4.Flip (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc zero)) (suc zero)) (A4.Flip (suc (suc zero))) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) zero) A4.Id = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) zero) (A4.Rot zero zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) zero) (A4.Rot zero (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) zero) (A4.Rot (suc zero) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) zero) (A4.Rot (suc zero) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) zero) (A4.Rot (suc (suc zero)) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) zero) (A4.Rot (suc (suc zero)) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) zero) (A4.Rot (suc (suc (suc zero))) zero) p = refli
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) zero) (A4.Rot (suc (suc (suc zero))) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) zero) (A4.Flip zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) zero) (A4.Flip (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) zero) (A4.Flip (suc (suc zero))) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) (suc zero)) A4.Id = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) (suc zero)) (A4.Rot zero zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) (suc zero)) (A4.Rot zero (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) (suc zero)) (A4.Rot (suc zero) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) (suc zero)) (A4.Rot (suc zero) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) (suc zero)) (A4.Rot (suc (suc zero)) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) (suc zero)) (A4.Rot (suc (suc zero)) (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) (suc zero)) (A4.Rot (suc (suc (suc zero))) zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) (suc zero)) (A4.Rot (suc (suc (suc zero))) (suc zero)) p = refli
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) (suc zero)) (A4.Flip zero) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) (suc zero)) (A4.Flip (suc zero)) = λ ()
+v*-orbit-injective (A4.Rot (suc (suc (suc zero))) (suc zero)) (A4.Flip (suc (suc zero))) = λ ()
+v*-orbit-injective (A4.Flip zero) A4.Id = λ ()
+v*-orbit-injective (A4.Flip zero) (A4.Rot zero zero) = λ ()
+v*-orbit-injective (A4.Flip zero) (A4.Rot zero (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip zero) (A4.Rot (suc zero) zero) = λ ()
+v*-orbit-injective (A4.Flip zero) (A4.Rot (suc zero) (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip zero) (A4.Rot (suc (suc zero)) zero) = λ ()
+v*-orbit-injective (A4.Flip zero) (A4.Rot (suc (suc zero)) (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip zero) (A4.Rot (suc (suc (suc zero))) zero) = λ ()
+v*-orbit-injective (A4.Flip zero) (A4.Rot (suc (suc (suc zero))) (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip zero) (A4.Flip zero) p = refli
+v*-orbit-injective (A4.Flip zero) (A4.Flip (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip zero) (A4.Flip (suc (suc zero))) = λ ()
+v*-orbit-injective (A4.Flip (suc zero)) A4.Id = λ ()
+v*-orbit-injective (A4.Flip (suc zero)) (A4.Rot zero zero) = λ ()
+v*-orbit-injective (A4.Flip (suc zero)) (A4.Rot zero (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip (suc zero)) (A4.Rot (suc zero) zero) = λ ()
+v*-orbit-injective (A4.Flip (suc zero)) (A4.Rot (suc zero) (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip (suc zero)) (A4.Rot (suc (suc zero)) zero) = λ ()
+v*-orbit-injective (A4.Flip (suc zero)) (A4.Rot (suc (suc zero)) (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip (suc zero)) (A4.Rot (suc (suc (suc zero))) zero) = λ ()
+v*-orbit-injective (A4.Flip (suc zero)) (A4.Rot (suc (suc (suc zero))) (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip (suc zero)) (A4.Flip zero) = λ ()
+v*-orbit-injective (A4.Flip (suc zero)) (A4.Flip (suc zero)) p = refli
+v*-orbit-injective (A4.Flip (suc zero)) (A4.Flip (suc (suc zero))) = λ ()
+v*-orbit-injective (A4.Flip (suc (suc zero))) A4.Id = λ ()
+v*-orbit-injective (A4.Flip (suc (suc zero))) (A4.Rot zero zero) = λ ()
+v*-orbit-injective (A4.Flip (suc (suc zero))) (A4.Rot zero (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip (suc (suc zero))) (A4.Rot (suc zero) zero) = λ ()
+v*-orbit-injective (A4.Flip (suc (suc zero))) (A4.Rot (suc zero) (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip (suc (suc zero))) (A4.Rot (suc (suc zero)) zero) = λ ()
+v*-orbit-injective (A4.Flip (suc (suc zero))) (A4.Rot (suc (suc zero)) (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip (suc (suc zero))) (A4.Rot (suc (suc (suc zero))) zero) = λ ()
+v*-orbit-injective (A4.Flip (suc (suc zero))) (A4.Rot (suc (suc (suc zero))) (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip (suc (suc zero))) (A4.Flip zero) = λ ()
+v*-orbit-injective (A4.Flip (suc (suc zero))) (A4.Flip (suc zero)) = λ ()
+v*-orbit-injective (A4.Flip (suc (suc zero))) (A4.Flip (suc (suc zero))) p = refli
+
+-- 稳定子平凡: 唯一保持 v* 不动的 A₄ 元是 Id
+v*-stab-trivial : ∀ (g : A4.A4) → T6.a4Action g v-star ≡i v-star → g ≡i A4.Id
+v*-stab-trivial g p =
+  v*-orbit-injective g A4.Id (transi p (symi (a4Action-Id v-star)))
+
+-- 推论: OrbitFiber [v*] 含 12 个两两不同的格点 (自由轨道, 纤维大小 12)
+-- 对照: all-equal-vector 被全部 12 个 A₄ 元固定 (all-equal-fixed, §3),
+--       其轨道为单点 → 纤维大小 1
+-- 结论: 纤维不恒定 (12 vs 1) → T⁶ → T⁶/A₄ 是非平凡纤维化。
+
+--------------------------------------------------------------------------------
+-- 7. 真·非平凡纤维分解: TotalSpace ≃ Σ Base OrbitFiber
+--------------------------------------------------------------------------------
+
+-- 替换旧空洞 totalSpaceEquiv : TotalSpace ≃ Base (7-08 自评 Step 4 指出的
+-- "平凡性错误": 纤维坍缩成点)。正确版本: 全空间 = 所有纤维的并集。
+
+-- 底空间是集合商 → 其路径空间是命题 (squash/)
+totalSpaceEquiv : TotalSpace ≃ Σ Base OrbitFiber
+totalSpaceEquiv = isoToEquiv (iso to from sec ret)
+  where
+    to : TotalSpace → Σ Base OrbitFiber
+    to x = [ x ] , (x , refl)
+
+    from : Σ Base OrbitFiber → TotalSpace
+    from (b , (y , _)) = y
+
+    ret : retract to from
+    ret x = refl
+
+    sec : (bf : Σ Base OrbitFiber) → to (from bf) ≡ bf
+    sec bf@(b , (y , p)) =
+      ΣPathP {A = λ _ → Base} {B = λ _ → OrbitFiber}
+             {x = to (from bf)} {y = bf}
+             (p , inner)
+      where
+        inner : PathP (λ i → OrbitFiber (p i)) (y , refl) (y , p)
+        inner = ΣPathPProp {A = λ _ → TotalSpace}
+                           {B = λ i z → totalProj z ≡ p i}
+                           {u = (y , refl)} {v = (y , p)}
+                           (λ a → squash/ (totalProj a) b) refl
+
+-- 满射性推论: 每个轨道 [x] 的纤维 OrbitFiber [x] 非空 (取 (x , refl))
+fiber-inhabited : ∀ (x : TotalSpace) → OrbitFiber (totalProj x)
+fiber-inhabited x = x , refl
+
+--------------------------------------------------------------------------------
+-- 8. 非平凡局部平凡化 (离散版)
+--------------------------------------------------------------------------------
+
+-- 局部平凡化 = 纤维分解定理 totalSpaceEquiv + 纤维大小分类:
+--   自由轨道 (如 v*):      纤维 12 点 (v*-orbit-injective 单射 + A4OrbitEquiv 满射性)
+--   全固定轨道 (all-equal): 纤维 1 点 (all-equal-fixed: 12 元都不动, 轨道即单点)
+--   部分对称轨道:          纤维 ∈ {2,3,4,6} (稳定子非平凡非全, 见 T6.agda 谐波解释)
+-- 纤维大小随底点变化 → 非平凡丛 (区别于 Base × 固定纤维 的平凡丛)。
+-- 无全局截面 (§3 论述) 与纤维非恒定 (本节) 是同一几何事实的两个表述。

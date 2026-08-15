@@ -211,6 +211,7 @@ open import Sovereign.Structology.HolographicSpace public
 -- ── 同伦类型论扩展 (v7.4) ────────────────────────────────────
 -- 离散 CCHM: CRT 环面上的 C₃ Burnside 群作用
 open import Sovereign.HoTT.DiscreteCCHM public hiding (CRTPhase; POLAR; shift)
+open import Sovereign.HoTT.HopfConstruction public  -- P2-2: 真 A₄ 纤维化 (totalSpaceEquiv + 自由轨道)
 -- 零类等价: Hₙ(T⁶) Betti 对称性 + Poincaré 对偶
 open import Sovereign.HoTT.ZeroHomologyEquivalence public
 
