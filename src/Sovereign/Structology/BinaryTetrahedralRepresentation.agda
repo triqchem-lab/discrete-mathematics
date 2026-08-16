@@ -19,6 +19,15 @@
 -- 诚实边界: 特征标表是外部验证数据 (手写输入, 非从群构造推导), 正交性是
 --   refl 验证。这与 A4Representation 同层 (浅层锚定), 深度证明(矩阵表示
 --   构造 + 群同态)留待后续。
+--
+-- 数据溯源 (Data Provenance):
+--   共轭类索引: 0=1(单位元), 1=-1(中心 Z₂), 2/3=3阶元(两个类),
+--     4/5=6阶元(两个类), 6=4阶元(四元数单位 ±i,±j,±k)。
+--   中心特征分解 (类1=-1 上): χ₁,χ₁′,χ₁″,χ₃ → 1,1,1,3 (提升自 A₄);
+--     χ₂,χ₂′,χ₂″ → -2,-2,-2 (新的二维表示)。
+--   特征标表 = 外部验证数据 (Python 精确枚举 + 正交性, 等价 GAP
+--     CharacterTable("SL(2,3)"))。完整溯源与 Z[ω] 系数表见
+--     docs/cross-level/binary-tetrahedral-data-provenance.md。
 
 module Sovereign.Structology.BinaryTetrahedralRepresentation where
 
