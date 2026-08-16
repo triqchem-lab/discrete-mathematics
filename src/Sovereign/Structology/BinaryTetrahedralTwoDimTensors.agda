@@ -18,7 +18,7 @@ module Sovereign.Structology.BinaryTetrahedralTwoDimTensors where
 open import Data.Fin using (Fin; zero; suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Structology.A4Representation using (Zω; mulZω)
+open import Sovereign.Structology.A4Representation using (Zω; mulZω; conjZω)
 open import Sovereign.Structology.BinaryTetrahedralRepresentation
   using (ConjClass2A4; chi1'-2A4; chi1''-2A4; chi2-2A4; chi2'-2A4; chi2''-2A4)
 
@@ -49,5 +49,20 @@ chi2''-tensor (suc (suc (suc zero))) = refl
 chi2''-tensor (suc (suc (suc (suc zero)))) = refl
 chi2''-tensor (suc (suc (suc (suc (suc zero))))) = refl
 chi2''-tensor (suc (suc (suc (suc (suc (suc zero)))))) = refl
+
+--------------------------------------------------------------------------------
+-- §3. χ₂′ 与 χ₂″ 互为 Frobenius 共轭 (σ: ω ↔ ω², conjZω)
+--   同一驻波构型的两个旋向, 由 σ 交换。
+--------------------------------------------------------------------------------
+
+chi2'-chi2''-conjugate : ∀ (c : ConjClass2A4) →
+  conjZω (chi2'-2A4 c) ≡ chi2''-2A4 c
+chi2'-chi2''-conjugate zero = refl
+chi2'-chi2''-conjugate (suc zero) = refl
+chi2'-chi2''-conjugate (suc (suc zero)) = refl
+chi2'-chi2''-conjugate (suc (suc (suc zero))) = refl
+chi2'-chi2''-conjugate (suc (suc (suc (suc zero)))) = refl
+chi2'-chi2''-conjugate (suc (suc (suc (suc (suc zero))))) = refl
+chi2'-chi2''-conjugate (suc (suc (suc (suc (suc (suc zero)))))) = refl
 
 -- 0 postulate.
