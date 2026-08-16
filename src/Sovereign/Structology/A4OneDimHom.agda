@@ -69,11 +69,19 @@ open import Data.Fin using (Fin; zero; suc)
 open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip; _⊗_)
 
 -- abelianization: A₄ → C₃ = Fin 3 (核为 V₄ = {Id, Flip 0,1,2})
+-- 3 循环两个共轭类 (Python 求解): {R01,R10,R21,R30}→1, {R00,R11,R20,R31}→2
+-- 即 ab(Rot i j) = 1 当 (toℕ i + toℕ j) 奇, = 2 当偶 (非简单按方向分)
 ab : A4 → Fin 3
 ab Id = zero
-ab (Rot i zero) = suc zero            -- 正向 3 循环 → ω
-ab (Rot i (suc zero)) = suc (suc zero)  -- 反向 3 循环 → ω²
-ab (Flip k) = zero                    -- 双对换 → 1 (在 V₄ 交换子群中)
+ab (Rot zero zero) = suc (suc zero)                     -- 2
+ab (Rot zero (suc zero)) = suc zero                     -- 1
+ab (Rot (suc zero) zero) = suc zero                     -- 1
+ab (Rot (suc zero) (suc zero)) = suc (suc zero)         -- 2
+ab (Rot (suc (suc zero)) zero) = suc (suc zero)         -- 2
+ab (Rot (suc (suc zero)) (suc zero)) = suc zero         -- 1
+ab (Rot (suc (suc (suc zero))) zero) = suc zero         -- 1
+ab (Rot (suc (suc (suc zero))) (suc zero)) = suc (suc zero)  -- 2
+ab (Flip k) = zero                                      -- 双对换 → 1 (在 V₄ 中)
 
 -- 一维表示 (值域 Zω, 1×1 矩阵即元素本身)
 ρ1 : A4 → Zω
@@ -91,10 +99,166 @@ ab (Flip k) = zero                    -- 双对换 → 1 (在 V₄ 交换子群�
   ab2 (Flip k) = zero
 
 --------------------------------------------------------------------------------
--- §4. ab-hom 与 ρ₁′ 同态 (下一轮: ab-hom 12×12 穷举 + rho1'-hom 结构证明)
---   声明留待 fill:
---   ab-hom : ∀ g h → ab (g ⊗ h) ≡ add3 (ab g) (ab h)
---   rho1'-hom : ∀ g h → mulZω (ρ1' g) (ρ1' h) ≡ ρ1' (g ⊗ h)
---     = omega-pow-mul (ab g) (ab h) ∘ cong powerω (sym (ab-hom g h))
+--------------------------------------------------------------------------------
+-- §4. ab-hom (12×12 穷举) + ρ₁′ 同态
+--------------------------------------------------------------------------------
+
+ab-hom : ∀ (g h : A4) → ab (g ⊗ h) ≡ add3 (ab g) (ab h)
+ab-hom (Id) (Id) = refl
+ab-hom (Id) (Rot zero zero) = refl
+ab-hom (Id) (Rot zero (suc zero)) = refl
+ab-hom (Id) (Rot (suc zero) zero) = refl
+ab-hom (Id) (Rot (suc zero) (suc zero)) = refl
+ab-hom (Id) (Rot (suc (suc zero)) zero) = refl
+ab-hom (Id) (Rot (suc (suc zero)) (suc zero)) = refl
+ab-hom (Id) (Rot (suc (suc (suc zero))) zero) = refl
+ab-hom (Id) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+ab-hom (Id) (Flip zero) = refl
+ab-hom (Id) (Flip (suc zero)) = refl
+ab-hom (Id) (Flip (suc (suc zero))) = refl
+ab-hom (Rot zero zero) (Id) = refl
+ab-hom (Rot zero zero) (Rot zero zero) = refl
+ab-hom (Rot zero zero) (Rot zero (suc zero)) = refl
+ab-hom (Rot zero zero) (Rot (suc zero) zero) = refl
+ab-hom (Rot zero zero) (Rot (suc zero) (suc zero)) = refl
+ab-hom (Rot zero zero) (Rot (suc (suc zero)) zero) = refl
+ab-hom (Rot zero zero) (Rot (suc (suc zero)) (suc zero)) = refl
+ab-hom (Rot zero zero) (Rot (suc (suc (suc zero))) zero) = refl
+ab-hom (Rot zero zero) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+ab-hom (Rot zero zero) (Flip zero) = refl
+ab-hom (Rot zero zero) (Flip (suc zero)) = refl
+ab-hom (Rot zero zero) (Flip (suc (suc zero))) = refl
+ab-hom (Rot zero (suc zero)) (Id) = refl
+ab-hom (Rot zero (suc zero)) (Rot zero zero) = refl
+ab-hom (Rot zero (suc zero)) (Rot zero (suc zero)) = refl
+ab-hom (Rot zero (suc zero)) (Rot (suc zero) zero) = refl
+ab-hom (Rot zero (suc zero)) (Rot (suc zero) (suc zero)) = refl
+ab-hom (Rot zero (suc zero)) (Rot (suc (suc zero)) zero) = refl
+ab-hom (Rot zero (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+ab-hom (Rot zero (suc zero)) (Rot (suc (suc (suc zero))) zero) = refl
+ab-hom (Rot zero (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+ab-hom (Rot zero (suc zero)) (Flip zero) = refl
+ab-hom (Rot zero (suc zero)) (Flip (suc zero)) = refl
+ab-hom (Rot zero (suc zero)) (Flip (suc (suc zero))) = refl
+ab-hom (Rot (suc zero) zero) (Id) = refl
+ab-hom (Rot (suc zero) zero) (Rot zero zero) = refl
+ab-hom (Rot (suc zero) zero) (Rot zero (suc zero)) = refl
+ab-hom (Rot (suc zero) zero) (Rot (suc zero) zero) = refl
+ab-hom (Rot (suc zero) zero) (Rot (suc zero) (suc zero)) = refl
+ab-hom (Rot (suc zero) zero) (Rot (suc (suc zero)) zero) = refl
+ab-hom (Rot (suc zero) zero) (Rot (suc (suc zero)) (suc zero)) = refl
+ab-hom (Rot (suc zero) zero) (Rot (suc (suc (suc zero))) zero) = refl
+ab-hom (Rot (suc zero) zero) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+ab-hom (Rot (suc zero) zero) (Flip zero) = refl
+ab-hom (Rot (suc zero) zero) (Flip (suc zero)) = refl
+ab-hom (Rot (suc zero) zero) (Flip (suc (suc zero))) = refl
+ab-hom (Rot (suc zero) (suc zero)) (Id) = refl
+ab-hom (Rot (suc zero) (suc zero)) (Rot zero zero) = refl
+ab-hom (Rot (suc zero) (suc zero)) (Rot zero (suc zero)) = refl
+ab-hom (Rot (suc zero) (suc zero)) (Rot (suc zero) zero) = refl
+ab-hom (Rot (suc zero) (suc zero)) (Rot (suc zero) (suc zero)) = refl
+ab-hom (Rot (suc zero) (suc zero)) (Rot (suc (suc zero)) zero) = refl
+ab-hom (Rot (suc zero) (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+ab-hom (Rot (suc zero) (suc zero)) (Rot (suc (suc (suc zero))) zero) = refl
+ab-hom (Rot (suc zero) (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+ab-hom (Rot (suc zero) (suc zero)) (Flip zero) = refl
+ab-hom (Rot (suc zero) (suc zero)) (Flip (suc zero)) = refl
+ab-hom (Rot (suc zero) (suc zero)) (Flip (suc (suc zero))) = refl
+ab-hom (Rot (suc (suc zero)) zero) (Id) = refl
+ab-hom (Rot (suc (suc zero)) zero) (Rot zero zero) = refl
+ab-hom (Rot (suc (suc zero)) zero) (Rot zero (suc zero)) = refl
+ab-hom (Rot (suc (suc zero)) zero) (Rot (suc zero) zero) = refl
+ab-hom (Rot (suc (suc zero)) zero) (Rot (suc zero) (suc zero)) = refl
+ab-hom (Rot (suc (suc zero)) zero) (Rot (suc (suc zero)) zero) = refl
+ab-hom (Rot (suc (suc zero)) zero) (Rot (suc (suc zero)) (suc zero)) = refl
+ab-hom (Rot (suc (suc zero)) zero) (Rot (suc (suc (suc zero))) zero) = refl
+ab-hom (Rot (suc (suc zero)) zero) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+ab-hom (Rot (suc (suc zero)) zero) (Flip zero) = refl
+ab-hom (Rot (suc (suc zero)) zero) (Flip (suc zero)) = refl
+ab-hom (Rot (suc (suc zero)) zero) (Flip (suc (suc zero))) = refl
+ab-hom (Rot (suc (suc zero)) (suc zero)) (Id) = refl
+ab-hom (Rot (suc (suc zero)) (suc zero)) (Rot zero zero) = refl
+ab-hom (Rot (suc (suc zero)) (suc zero)) (Rot zero (suc zero)) = refl
+ab-hom (Rot (suc (suc zero)) (suc zero)) (Rot (suc zero) zero) = refl
+ab-hom (Rot (suc (suc zero)) (suc zero)) (Rot (suc zero) (suc zero)) = refl
+ab-hom (Rot (suc (suc zero)) (suc zero)) (Rot (suc (suc zero)) zero) = refl
+ab-hom (Rot (suc (suc zero)) (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+ab-hom (Rot (suc (suc zero)) (suc zero)) (Rot (suc (suc (suc zero))) zero) = refl
+ab-hom (Rot (suc (suc zero)) (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+ab-hom (Rot (suc (suc zero)) (suc zero)) (Flip zero) = refl
+ab-hom (Rot (suc (suc zero)) (suc zero)) (Flip (suc zero)) = refl
+ab-hom (Rot (suc (suc zero)) (suc zero)) (Flip (suc (suc zero))) = refl
+ab-hom (Rot (suc (suc (suc zero))) zero) (Id) = refl
+ab-hom (Rot (suc (suc (suc zero))) zero) (Rot zero zero) = refl
+ab-hom (Rot (suc (suc (suc zero))) zero) (Rot zero (suc zero)) = refl
+ab-hom (Rot (suc (suc (suc zero))) zero) (Rot (suc zero) zero) = refl
+ab-hom (Rot (suc (suc (suc zero))) zero) (Rot (suc zero) (suc zero)) = refl
+ab-hom (Rot (suc (suc (suc zero))) zero) (Rot (suc (suc zero)) zero) = refl
+ab-hom (Rot (suc (suc (suc zero))) zero) (Rot (suc (suc zero)) (suc zero)) = refl
+ab-hom (Rot (suc (suc (suc zero))) zero) (Rot (suc (suc (suc zero))) zero) = refl
+ab-hom (Rot (suc (suc (suc zero))) zero) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+ab-hom (Rot (suc (suc (suc zero))) zero) (Flip zero) = refl
+ab-hom (Rot (suc (suc (suc zero))) zero) (Flip (suc zero)) = refl
+ab-hom (Rot (suc (suc (suc zero))) zero) (Flip (suc (suc zero))) = refl
+ab-hom (Rot (suc (suc (suc zero))) (suc zero)) (Id) = refl
+ab-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot zero zero) = refl
+ab-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot zero (suc zero)) = refl
+ab-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc zero) zero) = refl
+ab-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc zero) (suc zero)) = refl
+ab-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc (suc zero)) zero) = refl
+ab-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+ab-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc (suc (suc zero))) zero) = refl
+ab-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+ab-hom (Rot (suc (suc (suc zero))) (suc zero)) (Flip zero) = refl
+ab-hom (Rot (suc (suc (suc zero))) (suc zero)) (Flip (suc zero)) = refl
+ab-hom (Rot (suc (suc (suc zero))) (suc zero)) (Flip (suc (suc zero))) = refl
+ab-hom (Flip zero) (Id) = refl
+ab-hom (Flip zero) (Rot zero zero) = refl
+ab-hom (Flip zero) (Rot zero (suc zero)) = refl
+ab-hom (Flip zero) (Rot (suc zero) zero) = refl
+ab-hom (Flip zero) (Rot (suc zero) (suc zero)) = refl
+ab-hom (Flip zero) (Rot (suc (suc zero)) zero) = refl
+ab-hom (Flip zero) (Rot (suc (suc zero)) (suc zero)) = refl
+ab-hom (Flip zero) (Rot (suc (suc (suc zero))) zero) = refl
+ab-hom (Flip zero) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+ab-hom (Flip zero) (Flip zero) = refl
+ab-hom (Flip zero) (Flip (suc zero)) = refl
+ab-hom (Flip zero) (Flip (suc (suc zero))) = refl
+ab-hom (Flip (suc zero)) (Id) = refl
+ab-hom (Flip (suc zero)) (Rot zero zero) = refl
+ab-hom (Flip (suc zero)) (Rot zero (suc zero)) = refl
+ab-hom (Flip (suc zero)) (Rot (suc zero) zero) = refl
+ab-hom (Flip (suc zero)) (Rot (suc zero) (suc zero)) = refl
+ab-hom (Flip (suc zero)) (Rot (suc (suc zero)) zero) = refl
+ab-hom (Flip (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
+ab-hom (Flip (suc zero)) (Rot (suc (suc (suc zero))) zero) = refl
+ab-hom (Flip (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+ab-hom (Flip (suc zero)) (Flip zero) = refl
+ab-hom (Flip (suc zero)) (Flip (suc zero)) = refl
+ab-hom (Flip (suc zero)) (Flip (suc (suc zero))) = refl
+ab-hom (Flip (suc (suc zero))) (Id) = refl
+ab-hom (Flip (suc (suc zero))) (Rot zero zero) = refl
+ab-hom (Flip (suc (suc zero))) (Rot zero (suc zero)) = refl
+ab-hom (Flip (suc (suc zero))) (Rot (suc zero) zero) = refl
+ab-hom (Flip (suc (suc zero))) (Rot (suc zero) (suc zero)) = refl
+ab-hom (Flip (suc (suc zero))) (Rot (suc (suc zero)) zero) = refl
+ab-hom (Flip (suc (suc zero))) (Rot (suc (suc zero)) (suc zero)) = refl
+ab-hom (Flip (suc (suc zero))) (Rot (suc (suc (suc zero))) zero) = refl
+ab-hom (Flip (suc (suc zero))) (Rot (suc (suc (suc zero))) (suc zero)) = refl
+ab-hom (Flip (suc (suc zero))) (Flip zero) = refl
+ab-hom (Flip (suc (suc zero))) (Flip (suc zero)) = refl
+ab-hom (Flip (suc (suc zero))) (Flip (suc (suc zero))) = refl
+
+rho1'-hom : ∀ (g h : A4) → mulZω (ρ1' g) (ρ1' h) ≡ ρ1' (g ⊗ h)
+rho1'-hom g h = begin
+  mulZω (ρ1' g) (ρ1' h)
+    ≡⟨ refl ⟩
+  mulZω (powerω (ab g)) (powerω (ab h))
+    ≡⟨ omega-pow-mul (ab g) (ab h) ⟩
+  powerω (add3 (ab g) (ab h))
+    ≡⟨ cong powerω (sym (ab-hom g h)) ⟩
+  powerω (ab (g ⊗ h))
+    ≡⟨ refl ⟩
+  ρ1' (g ⊗ h) ∎
 
 -- 0 postulate.
