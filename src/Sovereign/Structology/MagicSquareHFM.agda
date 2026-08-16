@@ -3,6 +3,9 @@
 -- 主证明见: ArthurMagicSquare.agda
 {-# OPTIONS --rewriting #-}
 
+-- 【术语边界】本模块「幻方」= 数学数字幻方（行列对角线和相等）。
+-- 非卢先生「矢量方向/变量计数」幻方。辨析见 docs/cross-level/magic-square-terminology.md
+
 -- | Sovereign.Structology.MagicSquareHFM
 -- M4 幻方常数的 HFM 交叉验证
 

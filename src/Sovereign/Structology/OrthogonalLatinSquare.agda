@@ -3,6 +3,10 @@
 -- | Sovereign.Structology.OrthogonalLatinSquare
 -- 正交拉丁方 → 幻方 (Euler 构造, 0 postulate)
 --
+-- 【术语边界】本模块「幻方」= 数学数字幻方（行列对角线和相等）。
+-- 非卢先生「矢量方向/变量计数」幻方（阶数 = 同时在变的矢量方向个数）。
+-- 辨析与知识库依据见 docs/cross-level/magic-square-terminology.md
+--
 -- 深度证明: M₄ 幻方不再手写给定, 而是从一对正交拉丁方 L₁, L₂ 叠加导出:
 --   M₄[i,j] = 4·L₁[i,j] + L₂[i,j] + 1     (符号 0..3, 叠加值 1..16)
 --

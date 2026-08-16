@@ -3,6 +3,10 @@
 -- | Sovereign.Structology.GF9MagicSquare
 -- GF(9) = GF(3)[α]/(α²+1) 正交拉丁方 → 9 阶幻方 (Euler 构造, 0 postulate)
 --
+-- 【术语边界】本模块「幻方」= 数学数字幻方（行列对角线和相等，幻常数 369）。
+-- 非卢先生「矢量方向/变量计数」幻方（阶数 = 同时在变的矢量方向个数）。
+-- 辨析与知识库依据见 docs/cross-level/magic-square-terminology.md
+--
 -- 深度证明: 三进制域 GF(3²) 上的正交拉丁方 L_λ[i,j] = idx(λ·el(i) + el(j))
 -- 由域运算生成, 取 λ=α 与 λ=2α (Galois 共轭对 σ(α)=-α=2α, 即 C₂ 手征共轭),
 -- Euler 叠加 M = 9·L₁ + L₂ + 1 得到 9 阶完全幻方 (幻常数 369)。
