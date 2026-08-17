@@ -14,7 +14,7 @@
 
 **公理一 · 几何闭包（Compactifying Mechanism）**：理论是否在非紧空间（如复平面 ℂ、阿代尔商空间 𝔸_ℚ/ℚ*）上，构造了吸收无穷远逃逸、消除连续谱污染的紧致化机制？
 
-**公理二 · 原生代数共轭（Native Frobenius Automorphism Analog）**：理论是否在特征 0 空间中，显式构造了具备有限域上 Frobenius 自同构 σ(x)=x^p 之代数刚性的原生自同构驱动词（而非反全纯的复数共轭或形式类比）？
+**公理二 · 原生代数共轭（Native Frobenius Automorphism Analog）**：理论是否在特征 0 空间中，显式构造了具备有限域上 Frobenius 自同构 σ(x)=x^p 之代数刚性的原生自同构驱动词？（erratum 2026-08：复共轭同样是 ℂ 的自同构——判据不是"是否自同构"，而是算术强制（幂映射即同态，char p freshman's dream）与典范唯一性（Aut(𝔽₉/𝔽₃)={id,σ}；Aut(ℂ) 有 2^beth 野自同构，复共轭由解析结构挑出，野自同构陈述未形式化、依赖选择公理）；见 docs/cross-level/frobenius-vs-conjugation-erratum.md）
 
 **公理三 · 无循环全局编码（Non-circular Global Spectral Operator）**：理论是否构造出一个无先验假设、非循环依赖 RH 本身的有限/紧致全局矩阵或算子，其谱特征精确等价于 ζ 零点？
 

@@ -54,17 +54,17 @@
 
 复共轭翻转手征（反全纯），σ 翻转 α 手征（α↔−α）——在「翻转手征」这一点上两者行为同构。Slot 6 手征对偶的命名层锚点在修正后仍然成立。
 
-## 六、待清理宿主清单（本次未动，需后续确认）
+## 六、宿主清理状态（2026-08-17 已全部执行）
 
-仍含旧表述「外挂/外源/反全纯」措辞的文件：
-
-1. `docs/群论红灯审查-离散全息修复.md`（含 `ExternalConjugationNotAutomorphic` 标签）
-2. `docs/Riemann/RH-GRH-数学极值相变宣言-正文定稿.md`
-3. `docs/Riemann/RH-GRH-文献检索与元理论断层诊断.md`
-4. `docs/数学大厦底层更新-离散连续界面规范-v7.0.md`
-5. wiki（/data/work/docs/wiki）v6.3 行「char 3 代数原生自同构（区别于 char 0 必须外挂的复共轭）」
-
-Agda 源码侧（GF9.agda、GroupTheoryRedLight.agda）已全部修正；证明内容未动（错误只在注释层）。
+| 宿主 | 处理 |
+|:---|:---|
+| `docs/群论红灯审查-离散全息修复.md`（表行 + L54） | ✅ 已替换：`ConjugationExternallySelected` 新标签，旧标签作废注记 |
+| `docs/Riemann/RH-GRH-数学极值相变宣言-正文定稿.md`（公理二） | ✅ 已加 erratum 注（判据精确化 + 野自同构诚实边界） |
+| `docs/Riemann/RH-GRH-文献检索与元理论断层诊断.md`（L25） | ✅ 已加 erratum 注 |
+| `docs/数学大厦底层更新-离散连续界面规范-v7.0.md`（L109） | ✅ 已替换为精确表述 |
+| wiki `01-algebraic-pole.md` §代数原生 vs 外挂共轭 | ✅ 已加勘误块 + 表行修正 |
+| wiki `103-gf9-conjugate-irrationality.md` | ✅ 已加勘误块 + 表行 + 正文修正 + 更新历史条目 |
+| `docs/Riemann/RH-GRH-文献检索与元理论断层诊断.md` L276（scaling flow 非代数自同构） | 保留（该表述本身正确） |
 
 ---
 
