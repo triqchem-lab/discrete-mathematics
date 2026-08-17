@@ -19,6 +19,15 @@ module Sovereign.Algebra.GF9 where
 --
 -- 使用 Sovereign.Base.Trit 作为 GF(3) 底层类型,
 -- 与 Rust sov-math types.rs Trit 对齐。
+--
+-- 命名层锚点（语料索引，不进证明链）:
+-- 1. char 2 vs char 3: 特征 2 中 x²+1 退化，无 90°（4阶元）；
+--    特征 3 中 α 阶 4，90° 生光。语料"二进制无紫色" ↔ 数学"char 2 无原生 90°"。
+-- 2. |GF(9)*| = 8 = 2³：语料"跟着二的三次方走" ↔ GF(9) 乘法群的阶。
+-- 3. 12 = 3×4 = char 3 × α阶4：语料"三进制元素基础，宇宙12进制"。
+-- 4. ⚠️ "三股麻花" ≠ "三阶元"：GF(9)* 是 8 阶循环群，无 3 阶元素（3∤8）。
+--    正确对应：两股（a+bα 与其共轭）绞合，经 N 坍缩回基座一股。
+--    "三"指特征 3 步长语义，非三阶旋转。
 
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
@@ -218,6 +227,25 @@ alpha-squared = refl
 
 alpha-powers-4 : (alpha *gf9 alpha) *gf9 (alpha *gf9 alpha) ≡ gf9-one
 alpha-powers-4 = refl
+
+-- φ = 1+2α 的幂次 (8 阶元, 45° 半步)
+-- φ² = α, φ⁴ = -1, φ⁸ = 1
+phi : GF9
+phi = T₁ , T₂  -- 1+2α
+
+phi-squared : phi *gf9 phi ≡ alpha
+phi-squared = refl  -- (1+2α)² = α
+
+phi-to-4 : (phi *gf9 phi) *gf9 (phi *gf9 phi) ≡ (T₂ , T₀)
+phi-to-4 = refl  -- φ⁴ = α² = 2 = -1
+
+phi-to-8 : ((phi *gf9 phi) *gf9 (phi *gf9 phi)) *gf9
+            ((phi *gf9 phi) *gf9 (phi *gf9 phi)) ≡ gf9-one
+phi-to-8 = refl  -- φ⁸ = (-1)² = 1
+
+-- φ 的最小性: φ⁴ ≠ 1 (负证)
+phi-not-order-4 : (phi *gf9 phi) *gf9 (phi *gf9 phi) ≡ gf9-one → ⊥
+phi-not-order-4 ()
 
 galoisFixedPoint : ∀ x → galoisConjugate x ≡ x → Σ GF3 (λ a → x ≡ (a , T₀))
 galoisFixedPoint (a , T₀) eq = a , refl
