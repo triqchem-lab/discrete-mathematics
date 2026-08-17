@@ -18,20 +18,23 @@ module Sovereign.Physics.OpticalWindow where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
 open import Sovereign.Algebra.GF9
   using (GF9; _*gf9_; _+gf9_; gf9-one; gf9-zero; galoisNorm; galoisConjugate;
-         alpha; neg-alpha; alpha-squared; alpha-powers-4;
+         galoisNorm-conjugate;
+         alpha; neg-alpha; alpha-squared; alpha-powers-4; alpha-powers-sum-zero;
          galoisConjugate²; norm-mul; *gf9-identityˡ; +gf9-identityˡ)
 open import Sovereign.Physics.DiscreteEMField3D
   using (Point3D; GF3; ScalarField; VectorField; next;
          dx; dy; dz; grad; curl; div; add3; neg3)
 open import Sovereign.Physics.ObservabilityAngle
   using (photon-structure-angle; eye-sampling-angle; visible-light-observable)
+open import Sovereign.Physics.OpticalSampling
+  using (norm-nondegenerate; norm-nondegenerate-at; norm-nondegenerate-witness)
 
 --------------------------------------------------------------------------------
 -- §1. 光的代数定义: α 阶 4, 90° 共振
@@ -75,6 +78,57 @@ light-birth = trans (cong (λ x → x +gf9 (alpha *gf9 alpha)) one-squared)
 -- 光的频率特性:
 -- 光子频率 = Frobenius 主频的谐波
 -- 可见光 = 主频的第一/第二谐波窗口
+
+--------------------------------------------------------------------------------
+-- §1.5 可见窗口定义: N(F(p)) ≠ 0
+--------------------------------------------------------------------------------
+
+-- 可见窗口判据: 场 F 在格点 p 上可见, 当且仅当 N(F(p)) ≠ 0
+-- 即: F(p) 有非零的 90° 共振分量
+
+-- 可见窗口类型: 场配置使得范数非零
+VisibleField : Set
+VisibleField = Σ GF9 (λ x → galoisNorm x ≡ T₁)
+
+-- α 是可见窗口的基本模 (T-A 引用: 1²+α²=0)
+-- 由 light-birth: (gf9-one *gf9 gf9-one) +gf9 (alpha *gf9 alpha) ≡ gf9-zero
+-- 这意味着 α 产生非零范数: N(α) = 1 ≠ 0
+alpha-is-visible : VisibleField
+alpha-is-visible = alpha , refl  -- N(α) = 1
+
+-- α² 也是可见的 (N(α²) = N(α)·N(α) = 1·1 = 1)
+alpha2-is-visible : VisibleField
+alpha2-is-visible = (alpha *gf9 alpha) , norm-mul alpha alpha
+
+-- α³ 也是可见的
+alpha3-is-visible : VisibleField
+alpha3-is-visible = ((alpha *gf9 alpha) *gf9 alpha) ,
+  trans (norm-mul (alpha *gf9 alpha) alpha)
+        (cong (λ x → x ⊗ T₁) (norm-mul alpha alpha))
+
+-- 零场不可见 (N(0) = 0)
+zero-not-visible : galoisNorm gf9-zero ≡ T₀
+zero-not-visible = refl
+
+-- 可见窗口的代数本质:
+-- GF(9) 的乘法群 GF(9)* 有 8 个元素, 其中 4 个范数 = 1
+-- 这 4 个元素构成 ⟨α⟩ 子群 (阶 4): {1, α, α², α³}
+-- 所以: 可见窗口 = ⟨α⟩ 子群的 4 个元素
+
+-- T-A 引用 (光的出生证明):
+-- 1² + α² = 0 在 GF(9) 中成立 (已证 light-birth)
+-- 这意味着: α 是 90° 共振的基本模式, 是可见光的代数基础
+-- 语料: "只要能形成 90 度的电磁场，就能形成光"
+-- 数学: α 阶 4, α² = -1, 1² + α² = 0
+
+-- 可见窗口与频率的关系:
+-- 在频率 ν 下, 场配置 F(ν) 可见 ⟺ N(F(ν)) ≠ 0
+-- 由于 α 对所有频率都可见 (常数场), 可见窗口非空
+-- 这是 OpticalSampling.norm-nondegenerate-at 的直接推论
+
+-- 可见窗口非退化 (引用 OpticalSampling)
+visible-window-nondegenerate : ∀ ν → galoisNorm (norm-nondegenerate-at ν) ≡ T₁
+visible-window-nondegenerate = norm-nondegenerate-witness
 
 --------------------------------------------------------------------------------
 -- §2. 可见光频段: 频率窗口形式化
