@@ -538,6 +538,11 @@ open import Sovereign.Structology.BinaryTetrahedralDefiningRep public
 open import Sovereign.Structology.SL23Cayley public
   using (Mat2; toMat; mulMat2; matI; powMat; order-pow; order-minimal;
          isI; not-isI; toMat-hom)
+-- 推导特征标不可约性 (item 5): ⟨χ,χ⟩·|G| = Σ|c|·χ·χ̄ ≡ 24 整数恒等式
+-- (χ₂ 阶数导出 / χ₂′=χ₂⊗χ₁′ / χ₂″=χ₂⊗χ₁″ 张量积导出, 全部 ⟨χ,χ⟩=1)
+open import Sovereign.Structology.BinaryTetrahedralIrreducibility public
+  using (inner-num; classSizes-sum; chi2-irreducible;
+         chi2'-irreducible; chi2''-irreducible)
 
 -- ── GF(4) 完全幻方五定理 (2026-08-17) ──────────────────────────
 -- T1 正交 / T2′ 转置 L2≡L1ᵀ / T2″ 系数 σ-像 / T-sym 统一判据 a≠b / T3 十线=30
