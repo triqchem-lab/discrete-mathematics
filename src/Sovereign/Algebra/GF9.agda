@@ -7,8 +7,15 @@ module Sovereign.Algebra.GF9 where
 --     [GF(9):GF(3)]=2、|Gal|=2、σ²=id——结构序，不是域内元素值。
 --     算术（x² 等于哪个元素）≠ 数论（什么元素生成了阶为 2 的共轭结构））
 -- Galois 群 Gal(GF(9)/GF(3)) ≅ C₂, 生成元 σ(α) = -α。
---   σ(x) = x³ 是 Frobenius 自同构——多项式映射，char 3 代数原生涌现，
---   不是外挂结构（区别于复共轭 z↦z̄：char 0 无 Frobenius，必须额外引入）。
+--   σ(x) = x³ 是 Frobenius 自同构——幂映射本身即同态 ((x+y)³=x³+y³)。
+--   「原生 vs 外挂」的精确化 (2026-08 erratum, GLM 审计, 见
+--   docs/cross-level/frobenius-vs-conjugation-erratum.md):
+--   复共轭同样是 ℂ 的域自同构 (出生证明同为 ℝ[x]/(x²+1))——真正区别在两点:
+--   (1) σ 由算术强制: 幂映射=同态是 char p 独有 (freshman's dream), char 0 不存在;
+--   (2) 唯一典范: Aut(GF(9)/GF(3)) = {id, σ} 定义即得; Aut(ℂ) 有 2^beth 野自同构,
+--       复共轭的特殊地位由解析/序结构外借赋予。
+--   (旧表述「char 0 无 Frobenius 必须额外引入」已作废: 它混淆了
+--    「是否自同构」与「幂映射刚性+自同构群唯一性」。)
 --
 -- 使用 Sovereign.Base.Trit 作为 GF(3) 底层类型,
 -- 与 Rust sov-math types.rs Trit 对齐。
@@ -781,8 +788,8 @@ gf9-field-inverse x neq = gf9-inv x , gf9-inv-correct x neq
 
 --------------------------------------------------------------------------------
 -- 14. 不可否决核心: Frobenius 域同态 + x²+1 无根出生证明
---   σ(x)=x³ 在 char 3 上原生保持加法与乘法 — 不是外挂结构, 而是
---   有限域代数的刚性事实 (任何数学家/物理学家/大模型都无法否决的计算)。
+--   σ(x)=x³ 在 char 3 上原生保持加法与乘法 — 算术强制的有限域代数刚性事实
+--   (幂映射=同态, 任何数学家/物理学家/大模型都无法否决的计算)。
 --------------------------------------------------------------------------------
 
 -- Frobenius 保持加法: σ(x+y) = σx + σy (符号证明)
@@ -908,5 +915,30 @@ norm-mul x y = embed-gf3-injective (begin
   embed-gf3 (galoisNorm x) *gf9 embed-gf3 (galoisNorm y)
     ≡⟨ sym (embed-gf3-mul (galoisNorm x) (galoisNorm y)) ⟩
   embed-gf3 (galoisNorm x ⊗ galoisNorm y) ∎)
+
+--------------------------------------------------------------------------------
+-- 16. 可分性见证 (erratum 防误读: 「导数为零」仅指幂映射多项式 x³ 的形式导数
+--     3x²=0; 扩张多项式 x²+1 的导数 2x ≠ 0, 扩张可分)
+--------------------------------------------------------------------------------
+
+-- −α (α 的加法逆): (0, 2)
+neg-alpha : GF9
+neg-alpha = T₀ , T₂
+
+neg-alpha-inverse : alpha +gf9 neg-alpha ≡ gf9-zero
+neg-alpha-inverse = refl
+
+-- 可分性见证 1: x²+1 的两根 α, −α 相异 ⟹ 无重根 ⟹ 扩张可分
+alpha-distinct-neg-alpha : alpha ≢ neg-alpha
+alpha-distinct-neg-alpha ()
+
+-- 可分性见证 2: −α 同为 x²+1 的根 ((−α)² = α² = −1 = (2,0))
+neg-alpha-squared : neg-alpha *gf9 neg-alpha ≡ (T₂ , T₀)
+neg-alpha-squared = refl
+
+-- 可分性见证 3: 形式导数在根处非零 f'(α) = 2α = (0,2) ≠ 0
+-- (注: 用显式 ⊥ 形式, 因本模块 _≢_ 是 §13 的 GF9 专用记法)
+formal-derivative-at-alpha-nonzero : (T₂ ⊗ T₁) ≡ T₀ → ⊥
+formal-derivative-at-alpha-nonzero ()
 
 -- 0 postulate.

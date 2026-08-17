@@ -65,10 +65,13 @@ sigma-order-2 : ∀ z → galoisConjugate (galoisConjugate z) ≡ z
 sigma-order-2 = galoisConjugate²
 
 --------------------------------------------------------------------------------
--- §3. 原生共轭修复 (ExternalConjugationNotAutomorphic): 域自同构
+-- §3. 原生共轭修复: 域自同构
+--   (erratum 2026-08: 复共轭同样是 ℂ 的自同构; 原生性精确表述 =
+--    幂映射即同态 (char p 刚性) + Aut(GF(9)/GF(3))={id,σ} 唯一典范,
+--    见 docs/cross-level/frobenius-vs-conjugation-erratum.md)
 --------------------------------------------------------------------------------
 
--- Frobenius 是乘法同态 (原生代数共轭 — 非外源反全纯共轭)
+-- Frobenius 是乘法同态 (原生代数共轭: 算术强制、唯一典范)
 frobenius-multiplicative : ∀ x y →
   galoisConjugate (x *gf9 y) ≡ (galoisConjugate x) *gf9 (galoisConjugate y)
 frobenius-multiplicative = lemma-frobenius-multiplicative
