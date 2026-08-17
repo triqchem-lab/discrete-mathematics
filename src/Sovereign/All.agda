@@ -550,7 +550,9 @@ open import Sovereign.Structology.BinaryTetrahedralIrreducibility public
 open import Sovereign.Structology.GF4AffineMagicSquare public
   using (T1; transpose4; T2′; σ4; T2″; constant-not-conjugated;
          T-sym-square; det-neq-zero; det-zero-eq; T-sym;
-         det-instance-nonzero; M0; T3)
+         det-instance-nonzero; M0; T3;
+         affine-trajectory; trajectory-L1; trajectory-L2;
+         trajectory-step; trajectory-step-nonzero)
   renaming (T1 to T1-orthogonal)  -- 避免与 Format.CRT 的振荡周期 T1 冲突
 
 -- ── GF(9) 幻方链推广: a≠b 判据特征 3 形态 (2026-08) ────────────
@@ -560,7 +562,20 @@ open import Sovereign.Structology.GF9AffineMagicSquare public
   using (twoAlpha; subGF9; orth-diff; orth-diff-nonzero; orth-kernel;
          diag-alpha; diag-alpha-perm; anti-alpha; anti-alpha-perm;
          anti-degen-1; main-degen-2; sep-diff; sep-diff-nonzero;
-         idx-sum-36; magic-constant-369)
+         idx-sum-36; magic-constant-369;
+         trajectory-Lλ; trajectory-step-alpha)
+
+-- ── 动态幻方: 矢量方向动态系统本体类型 (会话裁定 #16, 2026-08) ────
+-- n 阶 = n 个矢量方向同时变化; 动态解 = 轨道; 静态幻方 = 投影切片
+-- 基座双轨: +1 归零 (周期 3) vs ×2 乌比斯环 (周期 2 永不归零)
+-- 卢先生序列 3,5,8,13,21,34,55,89,144, 终点锚定 144 = POLAR_WINDING
+-- (Orbit 类型不导出, 避免与 Structology.T6.Orbit 潜在歧义)
+open import Sovereign.Structology.DynamicMagicSquare public
+  using (VectorDirections; NestedRings; DynamicMagicSquare; snapshot;
+         zero-reset-orbit; zr-period3; mobius-orbit; mobius-period2;
+         mobius-never-zero; orbits-distinct;
+         lu-orders; lu-fib-1; lu-fib-2; lu-fib-3; lu-fib-4;
+         lu-fib-5; lu-fib-6; lu-fib-7; lu-144-polar)
 
 -- ── P4 无穷维结构离散替代 (v7.5) ─────────────────────────────
 -- P4-A: 有限状态动力系统 + 轨道周期定理 (鸽巢原理, 0 postulate)

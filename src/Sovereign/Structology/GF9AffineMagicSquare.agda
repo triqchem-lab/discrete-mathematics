@@ -27,11 +27,15 @@ open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Vec using (Vec; []; _∷_)
 open import Data.Product using (_,_)
 open import Data.Empty using (⊥-elim)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Binary.PropositionalEquality
+  using (_≡_; _≢_; refl; sym; cong; module ≡-Reasoning)
+open ≡-Reasoning
 
 open import Sovereign.Base.Trit using (T₀; T₁; T₂; negate)
 open import Sovereign.Algebra.GF9
-  using (GF9; alpha; gf9-one; gf9-zero; embed-gf3; _+gf9_; _*gf9_)
+  using (GF9; alpha; gf9-one; gf9-zero; embed-gf3; _+gf9_; _*gf9_;
+         +gf9-assoc; +gf9-comm; *gf9-distribˡ-+gf9; *gf9-distribʳ-+gf9;
+         *gf9-identityˡ)
 
 --------------------------------------------------------------------------------
 -- §1. 常数与减法 (idx 编码: idx(a,b) = 3a+b)
@@ -161,5 +165,48 @@ idx-sum-36 = refl
 -- 幻常数 (1-81 编码): 9·36 + 36 + 9 = 369 = 9·(81+1)/2
 magic-constant-369 : 9 * 36 + 36 + 9 ≡ 369
 magic-constant-369 = refl
+
+--------------------------------------------------------------------------------
+-- §7. 动态矢量轨线生成法则 (观测层, 会话裁定 #14)
+--   环同步转动 (i,j) ↦ (i+t, j+t) 经 L_λ(i,j) = λ·i+j 投影为
+--   值环上步长 (λ+1) 的平移: L_λ(i+t, j+t) ≡ L_λ(i,j) + (λ+1)·t
+--   闭合判据: λ+1 ≠ 0 ⟺ λ ≠ -1 ⟹ 主对角 transversal (与 §3 分类一致)
+--------------------------------------------------------------------------------
+
+-- 内交换: x + (y + z) ≡ y + (x + z)
++gf9-inner-swap : ∀ x y z → x +gf9 (y +gf9 z) ≡ y +gf9 (x +gf9 z)
++gf9-inner-swap x y z = begin
+  x +gf9 (y +gf9 z)
+    ≡⟨ sym (+gf9-assoc x y z) ⟩
+  (x +gf9 y) +gf9 z
+    ≡⟨ cong (_+gf9 z) (+gf9-comm x y) ⟩
+  (y +gf9 x) +gf9 z
+    ≡⟨ +gf9-assoc y x z ⟩
+  y +gf9 (x +gf9 z) ∎
+
+-- 轨线生成法则 (一般斜率形): 步长 = μ+1
+trajectory-Lλ : ∀ μ i j t →
+  (μ *gf9 (i +gf9 t)) +gf9 (j +gf9 t)
+  ≡ ((μ *gf9 i) +gf9 j) +gf9 ((μ +gf9 gf9-one) *gf9 t)
+trajectory-Lλ μ i j t = begin
+  (μ *gf9 (i +gf9 t)) +gf9 (j +gf9 t)
+    ≡⟨ cong (_+gf9 (j +gf9 t)) (*gf9-distribˡ-+gf9 μ i t) ⟩
+  ((μ *gf9 i) +gf9 (μ *gf9 t)) +gf9 (j +gf9 t)
+    ≡⟨ +gf9-assoc (μ *gf9 i) (μ *gf9 t) (j +gf9 t) ⟩
+  (μ *gf9 i) +gf9 ((μ *gf9 t) +gf9 (j +gf9 t))
+    ≡⟨ cong ((μ *gf9 i) +gf9_) (+gf9-inner-swap (μ *gf9 t) j t) ⟩
+  (μ *gf9 i) +gf9 (j +gf9 ((μ *gf9 t) +gf9 t))
+    ≡⟨ sym (+gf9-assoc (μ *gf9 i) j ((μ *gf9 t) +gf9 t)) ⟩
+  ((μ *gf9 i) +gf9 j) +gf9 ((μ *gf9 t) +gf9 t)
+    ≡⟨ cong (λ u → ((μ *gf9 i) +gf9 j) +gf9 ((μ *gf9 t) +gf9 u))
+            (sym (*gf9-identityˡ t)) ⟩
+  ((μ *gf9 i) +gf9 j) +gf9 ((μ *gf9 t) +gf9 (gf9-one *gf9 t))
+    ≡⟨ cong (((μ *gf9 i) +gf9 j) +gf9_)
+            (sym (*gf9-distribʳ-+gf9 μ gf9-one t)) ⟩
+  ((μ *gf9 i) +gf9 j) +gf9 ((μ +gf9 gf9-one) *gf9 t) ∎
+
+-- λ=α 实例步长非零: α+1 = (1,1) ≠ 0 ⟹ 主对角闭合 (承 §3 diag-alpha-perm)
+trajectory-step-alpha : (alpha +gf9 gf9-one) ≢ gf9-zero
+trajectory-step-alpha ()
 
 -- 0 postulate.

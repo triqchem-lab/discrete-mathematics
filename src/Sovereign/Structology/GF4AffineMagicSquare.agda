@@ -37,10 +37,13 @@ open import Data.Vec using (Vec; []; _∷_; zipWith)
 open import Data.Bool using (Bool; true)
 open import Data.Product using (_×_; _,_)
 open import Data.Empty using (⊥-elim)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Binary.PropositionalEquality
+  using (_≡_; _≢_; refl; sym; cong; cong₂; module ≡-Reasoning)
+open ≡-Reasoning
 
 open import Sovereign.Structology.GF4
-  using (GF4; g0; g1; ga; gb; add4; mul4)
+  using (GF4; g0; g1; ga; gb; add4; mul4;
+         add4-comm; add4-assoc; distrib-left; distrib-right)
 open import Sovereign.Structology.OrthogonalLatinSquare
   using (L1; L2; super0; allDistinct; orthogonal; sum4; rowSum; column;
          diagSum; antidiagSum)
@@ -161,5 +164,74 @@ T3 : (rowSum M0 zero ≡ 30 × rowSum M0 (suc zero) ≡ 30 ×
       sum4 (column M0 (suc (suc zero))) ≡ 30 × sum4 (column M0 (suc (suc (suc zero)))) ≡ 30)
    × (diagSum M0 ≡ 30 × antidiagSum M0 ≡ 30)
 T3 = (refl , refl , refl , refl) , (refl , refl , refl , refl) , (refl , refl)
+
+--------------------------------------------------------------------------------
+-- §6. 动态矢量轨线生成法则 (观测层, 会话裁定 #14)
+--   环同步转动 (i,j) ↦ (i⊕t, j⊕t) 经仿射映射投影为值环上步长 (a⊕b) 的平移:
+--   L(i⊕t, j⊕t) ≡ L(i,j) ⊕ (a⊕b)·t, 其中 L(i,j) = a·i ⊕ b·j ⊕ c
+--   闭合判据: a⊕b ≠ 0 ⟹ 轨线覆盖全部值 (对角 transversal, 完全幻方)
+--   基座层对应: SP2Ternary.agda (+1 归零周期 3 / ×2 乌比斯环周期 2)
+--------------------------------------------------------------------------------
+
+-- 重组引理: ((a⊕b) ⊕ (c⊕d)) ⊕ e ≡ ((a⊕c) ⊕ e) ⊕ (b⊕d)
+add4-regroup : ∀ a b c d e →
+  add4 (add4 (add4 a b) (add4 c d)) e
+  ≡ add4 (add4 (add4 a c) e) (add4 b d)
+add4-regroup a b c d e = begin
+  add4 (add4 (add4 a b) (add4 c d)) e
+    ≡⟨ add4-assoc (add4 a b) (add4 c d) e ⟩
+  add4 (add4 a b) (add4 (add4 c d) e)
+    ≡⟨ cong (add4 (add4 a b)) (add4-assoc c d e) ⟩
+  add4 (add4 a b) (add4 c (add4 d e))
+    ≡⟨ add4-assoc a b (add4 c (add4 d e)) ⟩
+  add4 a (add4 b (add4 c (add4 d e)))
+    ≡⟨ cong (add4 a) (sym (add4-assoc b c (add4 d e))) ⟩
+  add4 a (add4 (add4 b c) (add4 d e))
+    ≡⟨ cong (λ u → add4 a (add4 u (add4 d e))) (add4-comm b c) ⟩
+  add4 a (add4 (add4 c b) (add4 d e))
+    ≡⟨ cong (add4 a) (add4-assoc c b (add4 d e)) ⟩
+  add4 a (add4 c (add4 b (add4 d e)))
+    ≡⟨ cong (λ u → add4 a (add4 c u)) (sym (add4-assoc b d e)) ⟩
+  add4 a (add4 c (add4 (add4 b d) e))
+    ≡⟨ sym (add4-assoc a c (add4 (add4 b d) e)) ⟩
+  add4 (add4 a c) (add4 (add4 b d) e)
+    ≡⟨ cong (add4 (add4 a c)) (add4-comm (add4 b d) e) ⟩
+  add4 (add4 a c) (add4 e (add4 b d))
+    ≡⟨ sym (add4-assoc (add4 a c) e (add4 b d)) ⟩
+  add4 (add4 (add4 a c) e) (add4 b d) ∎
+
+-- 仿射轨线一般法则: L(i⊕t,j⊕t) ≡ L(i,j) ⊕ (a⊕b)·t
+affine-trajectory : ∀ a b c i j t →
+  add4 (add4 (mul4 a (add4 i t)) (mul4 b (add4 j t))) c
+  ≡ add4 (add4 (add4 (mul4 a i) (mul4 b j)) c) (mul4 (add4 a b) t)
+affine-trajectory a b c i j t = begin
+  add4 (add4 (mul4 a (add4 i t)) (mul4 b (add4 j t))) c
+    ≡⟨ cong (λ u → add4 u c)
+            (cong₂ add4 (distrib-left a i t) (distrib-left b j t)) ⟩
+  add4 (add4 (add4 (mul4 a i) (mul4 a t)) (add4 (mul4 b j) (mul4 b t))) c
+    ≡⟨ add4-regroup (mul4 a i) (mul4 a t) (mul4 b j) (mul4 b t) c ⟩
+  add4 (add4 (add4 (mul4 a i) (mul4 b j)) c) (add4 (mul4 a t) (mul4 b t))
+    ≡⟨ cong (add4 (add4 (add4 (mul4 a i) (mul4 b j)) c))
+            (sym (distrib-right a b t)) ⟩
+  add4 (add4 (add4 (mul4 a i) (mul4 b j)) c) (mul4 (add4 a b) t) ∎
+
+-- L1 = 2i⊕3j⊕2 的轨线: 步长 ga⊕gb = g1
+trajectory-L1 : ∀ i j t →
+  add4 (add4 (mul4 ga (add4 i t)) (mul4 gb (add4 j t))) ga
+  ≡ add4 (add4 (add4 (mul4 ga i) (mul4 gb j)) ga) (mul4 (add4 ga gb) t)
+trajectory-L1 = affine-trajectory ga gb ga
+
+-- L2 = 3i⊕2j⊕2 的轨线: 步长 gb⊕ga = g1
+trajectory-L2 : ∀ i j t →
+  add4 (add4 (mul4 gb (add4 i t)) (mul4 ga (add4 j t))) ga
+  ≡ add4 (add4 (add4 (mul4 gb i) (mul4 ga j)) ga) (mul4 (add4 gb ga) t)
+trajectory-L2 = affine-trajectory gb ga ga
+
+-- 步长值: ga⊕gb = g1 ≠ g0 ⟹ 4-循环覆盖全部值 (闭合判据 a⊕b≠0 的实例)
+trajectory-step : add4 ga gb ≡ g1
+trajectory-step = refl
+
+trajectory-step-nonzero : add4 ga gb ≢ g0
+trajectory-step-nonzero ()
 
 -- 0 postulate.
