@@ -19,4 +19,5 @@ test:
 	agda src/Sovereign/Structology/GF4AffineMagicSquare.agda
 	agda src/Sovereign/Structology/SL23Cayley.agda
 	agda src/Sovereign/Structology/BinaryTetrahedralIrreducibility.agda
+	agda src/Sovereign/Physics/DiscreteStatMech.agda
 	@echo "ALL_PASS"
