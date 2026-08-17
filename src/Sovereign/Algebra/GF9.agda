@@ -14,7 +14,8 @@ module Sovereign.Algebra.GF9 where
 -- 与 Rust sov-math types.rs Trit 对齐。
 
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
+open ≡-Reasoning
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_;
@@ -818,5 +819,94 @@ x2p1-no-root : ∀ x → (x ⊗ x) ⊕ T₁ ≡ T₀ → ⊥
 x2p1-no-root T₀ = λ ()
 x2p1-no-root T₁ = λ ()
 x2p1-no-root T₂ = λ ()
+
+--------------------------------------------------------------------------------
+-- 15. Frobenius 桥接恒等式 (四处叙事缺口的形式化闭合)
+--   σ(x) ≡ x³;  N(x) ≡ x·σ(x);  Tr(x) ≡ x+σ(x);  N(x·y) ≡ N(x)·N(y)
+--   全部 9-case 穷举 refl 或代数推导链, 0 postulate
+--------------------------------------------------------------------------------
+
+-- σ = 立方映射 (特征 3 Freshman's Dream: (a+bα)³ = a³+b³α³ = a-bα)
+frobenius-cube : ∀ x → galoisConjugate x ≡ (x *gf9 x) *gf9 x
+frobenius-cube (T₀ , T₀) = refl
+frobenius-cube (T₀ , T₁) = refl
+frobenius-cube (T₀ , T₂) = refl
+frobenius-cube (T₁ , T₀) = refl
+frobenius-cube (T₁ , T₁) = refl
+frobenius-cube (T₁ , T₂) = refl
+frobenius-cube (T₂ , T₀) = refl
+frobenius-cube (T₂ , T₁) = refl
+frobenius-cube (T₂ , T₂) = refl
+
+-- 范数桥接: N(x) = x·σ(x) (共轭对坍缩为基座单值)
+norm-conj-mul : ∀ x → embed-gf3 (galoisNorm x) ≡ x *gf9 galoisConjugate x
+norm-conj-mul (T₀ , T₀) = refl
+norm-conj-mul (T₀ , T₁) = refl
+norm-conj-mul (T₀ , T₂) = refl
+norm-conj-mul (T₁ , T₀) = refl
+norm-conj-mul (T₁ , T₁) = refl
+norm-conj-mul (T₁ , T₂) = refl
+norm-conj-mul (T₂ , T₀) = refl
+norm-conj-mul (T₂ , T₁) = refl
+norm-conj-mul (T₂ , T₂) = refl
+
+-- 迹桥接: Tr(x) = x+σ(x) (加性坍缩)
+trace-conj-add : ∀ x → embed-gf3 (galoisTrace x) ≡ x +gf9 galoisConjugate x
+trace-conj-add (T₀ , T₀) = refl
+trace-conj-add (T₀ , T₁) = refl
+trace-conj-add (T₀ , T₂) = refl
+trace-conj-add (T₁ , T₀) = refl
+trace-conj-add (T₁ , T₁) = refl
+trace-conj-add (T₁ , T₂) = refl
+trace-conj-add (T₂ , T₀) = refl
+trace-conj-add (T₂ , T₁) = refl
+trace-conj-add (T₂ , T₂) = refl
+
+-- 嵌入保乘: embed(a⊗b) = embed(a)·embed(b)
+embed-gf3-mul : ∀ a b → embed-gf3 (a ⊗ b) ≡ embed-gf3 a *gf9 embed-gf3 b
+embed-gf3-mul T₀ T₀ = refl
+embed-gf3-mul T₀ T₁ = refl
+embed-gf3-mul T₀ T₂ = refl
+embed-gf3-mul T₁ T₀ = refl
+embed-gf3-mul T₁ T₁ = refl
+embed-gf3-mul T₁ T₂ = refl
+embed-gf3-mul T₂ T₀ = refl
+embed-gf3-mul T₂ T₁ = refl
+embed-gf3-mul T₂ T₂ = refl
+
+-- 嵌入单射
+embed-gf3-injective : ∀ {a b} → embed-gf3 a ≡ embed-gf3 b → a ≡ b
+embed-gf3-injective e = cong proj₁ e
+
+-- 中交换: (a·b)·(c·d) ≡ (a·c)·(b·d) (交换律重排)
+mid-swap : ∀ a b c d → ((a *gf9 b) *gf9 (c *gf9 d)) ≡ ((a *gf9 c) *gf9 (b *gf9 d))
+mid-swap a b c d = begin
+  (a *gf9 b) *gf9 (c *gf9 d)
+    ≡⟨ *gf9-assoc a b (c *gf9 d) ⟩
+  a *gf9 (b *gf9 (c *gf9 d))
+    ≡⟨ cong (λ t → a *gf9 t) (sym (*gf9-assoc b c d)) ⟩
+  a *gf9 ((b *gf9 c) *gf9 d)
+    ≡⟨ cong (λ t → a *gf9 (t *gf9 d)) (*gf9-comm b c) ⟩
+  a *gf9 ((c *gf9 b) *gf9 d)
+    ≡⟨ cong (λ t → a *gf9 t) (*gf9-assoc c b d) ⟩
+  a *gf9 (c *gf9 (b *gf9 d))
+    ≡⟨ sym (*gf9-assoc a c (b *gf9 d)) ⟩
+  (a *gf9 c) *gf9 (b *gf9 d) ∎
+
+-- 范数乘性: N(x·y) = N(x)·N(y)
+-- 链: x·y·σ(x·y) = x·y·σx·σy = x·σx·y·σy = N(x)·N(y) (粘贴文本 #13 叙述闭合)
+norm-mul : ∀ x y → galoisNorm (x *gf9 y) ≡ galoisNorm x ⊗ galoisNorm y
+norm-mul x y = embed-gf3-injective (begin
+  embed-gf3 (galoisNorm (x *gf9 y))
+    ≡⟨ norm-conj-mul (x *gf9 y) ⟩
+  (x *gf9 y) *gf9 galoisConjugate (x *gf9 y)
+    ≡⟨ cong ((x *gf9 y) *gf9_) (lemma-frobenius-multiplicative x y) ⟩
+  (x *gf9 y) *gf9 (galoisConjugate x *gf9 galoisConjugate y)
+    ≡⟨ mid-swap x y (galoisConjugate x) (galoisConjugate y) ⟩
+  (x *gf9 galoisConjugate x) *gf9 (y *gf9 galoisConjugate y)
+    ≡⟨ cong₂ _*gf9_ (sym (norm-conj-mul x)) (sym (norm-conj-mul y)) ⟩
+  embed-gf3 (galoisNorm x) *gf9 embed-gf3 (galoisNorm y)
+    ≡⟨ sym (embed-gf3-mul (galoisNorm x) (galoisNorm y)) ⟩
+  embed-gf3 (galoisNorm x ⊗ galoisNorm y) ∎)
 
 -- 0 postulate.
