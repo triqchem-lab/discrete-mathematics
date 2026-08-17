@@ -553,6 +553,15 @@ open import Sovereign.Structology.GF4AffineMagicSquare public
          det-instance-nonzero; M0; T3)
   renaming (T1 to T1-orthogonal)  -- 避免与 Format.CRT 的振荡周期 T1 冲突
 
+-- ── GF(9) 幻方链推广: a≠b 判据特征 3 形态 (2026-08) ────────────
+-- 判据分裂: 正交 ⟺ λ₁≠λ₂ / 主对角 ⟺ λ≠-1 / 副对角 ⟺ λ≠1
+-- 完全幻方实例 λ₁=α, λ₂=2α (十线 369, 81 格表数据 Rust 锁定)
+open import Sovereign.Structology.GF9AffineMagicSquare public
+  using (twoAlpha; subGF9; orth-diff; orth-diff-nonzero; orth-kernel;
+         diag-alpha; diag-alpha-perm; anti-alpha; anti-alpha-perm;
+         anti-degen-1; main-degen-2; sep-diff; sep-diff-nonzero;
+         idx-sum-36; magic-constant-369)
+
 -- ── P4 无穷维结构离散替代 (v7.5) ─────────────────────────────
 -- P4-A: 有限状态动力系统 + 轨道周期定理 (鸽巢原理, 0 postulate)
 open import Sovereign.Analysis.FiniteDynamics public

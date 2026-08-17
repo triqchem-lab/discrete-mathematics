@@ -17,6 +17,7 @@ test:
 	agda src/Sovereign/Geometry/TorusAlgebra.agda
 	agda src/Sovereign/Geometry/TorusFourier.agda
 	agda src/Sovereign/Structology/GF4AffineMagicSquare.agda
+	agda src/Sovereign/Structology/GF9AffineMagicSquare.agda
 	agda src/Sovereign/Structology/SL23Cayley.agda
 	agda src/Sovereign/Structology/BinaryTetrahedralIrreducibility.agda
 	agda src/Sovereign/Physics/DiscreteStatMech.agda
