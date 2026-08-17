@@ -228,6 +228,14 @@ alpha-squared = refl
 alpha-powers-4 : (alpha *gf9 alpha) *gf9 (alpha *gf9 alpha) ≡ gf9-one
 alpha-powers-4 = refl
 
+-- 1 + α + α² + α³ = 0 (GF(9) 加法闭合)
+-- 由 α² = −1 ≡ 2 立得: 1 + α + 2 + 2α = (1+2) + (1+2)α = 0 + 0α = 0
+-- 封死 GF(9) 内部 12 阶元素的存在性
+alpha-powers-sum-zero :
+  ((gf9-one +gf9 alpha) +gf9 (alpha *gf9 alpha)) +gf9
+  ((alpha *gf9 alpha) *gf9 alpha) ≡ (T₀ , T₀)
+alpha-powers-sum-zero = refl
+
 -- φ = 1+2α 的幂次 (8 阶元, 45° 半步)
 -- φ² = α, φ⁴ = -1, φ⁸ = 1
 phi : GF9
