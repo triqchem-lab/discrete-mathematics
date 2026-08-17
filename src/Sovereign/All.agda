@@ -515,6 +515,39 @@ open import Sovereign.Algebra.Lie.LieGroup public
          sdE; sdS; sdM; sdA; sdAS; sdMA; sdMAS;
          gen-a-square; gen-a-order4; gen-b-order2; twist-order2; d4-conjugation)
 
+-- ── GF(4) 四元域与幻方链 (2026-08-17 注册导出面) ───────────────
+-- GF(4) = GF(2)[α]/(α²+α+1) 完整域公理 (交换/结合/单位/逆/分配全 refl, 0 postulate)
+open import Sovereign.Structology.GF4 public
+  using (GF4; g0; g1; ga; gb; add4; mul4; toFin; fromFin)
+-- 手写正交拉丁方对 → Euler 叠加 → 完全幻方 (euler-is-M4=refl, 十线=34)
+-- 数值验证: docs/cross-level/gf4-affine-magic-square-verification.md
+--   L1 = 2i+3j+2, L2 = 3i+2j+2 (GF(4) 仿射, 240 候选唯一命中)
+open import Sovereign.Structology.OrthogonalLatinSquare public
+  using (L1; L2; euler-is-M4; euler-row-magic; euler-col-magic; euler-diag-magic)
+-- GF(4) 域仿射 (i+j, αi+j) → 正交拉丁方 → 半幻方 (行=列=34, 对角 10/58)
+open import Sovereign.Structology.OrthogonalLatinSquareGF4 public
+  using (genL1; genL2; genL1-latin; genL2-latin)
+  renaming (orthogonal to gen-orthogonal; superpose to gen-superpose;
+            semi-magic-rows to gen-semi-rows; semi-magic-cols to gen-semi-cols)
+
+-- ── SL(2,3) = 2·A₄ 定义表示链 (2026-08-17 注册导出面) ──────────
+-- χ₂ 由阶数(特征值结构)推导 + 576 对 Cayley 同态 + 最小阶完整自证
+-- (order-pow: gⁿ=I 24 refl; order-minimal: g^k≠I 75 refl 负证)
+open import Sovereign.Structology.BinaryTetrahedralDefiningRep public
+  using (SL23; orderOf; classOf; chi2FromRep; chi2-correct)
+open import Sovereign.Structology.SL23Cayley public
+  using (Mat2; toMat; mulMat2; matI; powMat; order-pow; order-minimal;
+         isI; not-isI; toMat-hom)
+
+-- ── GF(4) 完全幻方五定理 (2026-08-17) ──────────────────────────
+-- T1 正交 / T2′ 转置 L2≡L1ᵀ / T2″ 系数 σ-像 / T-sym 统一判据 a≠b / T3 十线=30
+-- 三层幻方定义与命名层锚点见模块头注释; 数值验证见 docs/cross-level/
+open import Sovereign.Structology.GF4AffineMagicSquare public
+  using (T1; transpose4; T2′; σ4; T2″; constant-not-conjugated;
+         T-sym-square; det-neq-zero; det-zero-eq; T-sym;
+         det-instance-nonzero; M0; T3)
+  renaming (T1 to T1-orthogonal)  -- 避免与 Format.CRT 的振荡周期 T1 冲突
+
 -- ── P4 无穷维结构离散替代 (v7.5) ─────────────────────────────
 -- P4-A: 有限状态动力系统 + 轨道周期定理 (鸽巢原理, 0 postulate)
 open import Sovereign.Analysis.FiniteDynamics public

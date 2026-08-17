@@ -10,10 +10,15 @@
 
 module Sovereign.Structology.SL23Cayley where
 
+open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero; suc)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Bool using (Bool; true; false; _∧_)
+open import Data.Product using (_×_; _,_)
+open import Data.Empty using (⊥)
+open import Data.Unit using (⊤; tt)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong)
 
-open import Sovereign.Structology.BinaryTetrahedralDefiningRep using (SL23; g0; g1; g2; g3; g4; g5; g6; g7; g8; g9; g10; g11; g12; g13; g14; g15; g16; g17; g18; g19; g20; g21; g22; g23)
+open import Sovereign.Structology.BinaryTetrahedralDefiningRep using (SL23; g0; g1; g2; g3; g4; g5; g6; g7; g8; g9; g10; g11; g12; g13; g14; g15; g16; g17; g18; g19; g20; g21; g22; g23; orderOf)
 
 --------------------------------------------------------------------------------
 -- §1. GF(3) = Fin 3 算术
@@ -1244,5 +1249,127 @@ toMat-hom g23 g20 = refl
 toMat-hom g23 g21 = refl
 toMat-hom g23 g22 = refl
 toMat-hom g23 g23 = refl
+
+--------------------------------------------------------------------------------
+-- §6. 元素阶自证: g^(orderOf g) = I (24 refl, 替代外部 Python 枚举)
+-- 宪法对齐: 标准库信任度=0, 阶数事实必须在库内自证
+--------------------------------------------------------------------------------
+
+matI : Mat2
+matI = mat2 (suc zero) zero zero (suc zero)
+
+powMat : Mat2 → ℕ → Mat2
+powMat m Data.Nat.zero = matI
+powMat m (Data.Nat.suc n) = mulMat2 m (powMat m n)
+
+order-pow : ∀ (g : SL23) → powMat (toMat g) (orderOf g) ≡ matI
+order-pow g0 = refl
+order-pow g1 = refl
+order-pow g2 = refl
+order-pow g3 = refl
+order-pow g4 = refl
+order-pow g5 = refl
+order-pow g6 = refl
+order-pow g7 = refl
+order-pow g8 = refl
+order-pow g9 = refl
+order-pow g10 = refl
+order-pow g11 = refl
+order-pow g12 = refl
+order-pow g13 = refl
+order-pow g14 = refl
+order-pow g15 = refl
+order-pow g16 = refl
+order-pow g17 = refl
+order-pow g18 = refl
+order-pow g19 = refl
+order-pow g20 = refl
+order-pow g21 = refl
+order-pow g22 = refl
+order-pow g23 = refl
+
+--------------------------------------------------------------------------------
+-- §7. 阶的最小性: g^k ≢ I 负证 (1 ≤ k < orderOf g, 共 75 项)
+-- order-pow (§6) + order-minimal (§7) 合证「orderOf 确为最小阶」
+--------------------------------------------------------------------------------
+
+-- Fin 3 可判等
+eq3 : Fin 3 → Fin 3 → Bool
+eq3 zero zero = true
+eq3 zero (suc zero) = false
+eq3 zero (suc (suc zero)) = false
+eq3 (suc zero) zero = false
+eq3 (suc zero) (suc zero) = true
+eq3 (suc zero) (suc (suc zero)) = false
+eq3 (suc (suc zero)) zero = false
+eq3 (suc (suc zero)) (suc zero) = false
+eq3 (suc (suc zero)) (suc (suc zero)) = true
+
+-- 单位元判定
+isI : Mat2 → Bool
+isI (mat2 a b c d) = eq3 a (suc zero) ∧ (eq3 b zero ∧ (eq3 c zero ∧ eq3 d (suc zero)))
+
+isI-matI : isI matI ≡ true
+isI-matI = refl
+
+true≢false : true ≡ false → ⊥
+true≢false ()
+
+not-isI : ∀ {m} → isI m ≡ false → m ≢ matI
+not-isI h eq = true≢false (trans (cong isI (sym eq)) h)
+
+-- 每个元素的最小性检查规格 (阶 n 检查 k = 1..n-1; 阶 1 无负证)
+min-checks : SL23 → Set
+min-checks g0 = isI (powMat (toMat g0) 1) ≡ false × isI (powMat (toMat g0) 2) ≡ false × isI (powMat (toMat g0) 3) ≡ false
+min-checks g1 = isI (powMat (toMat g1) 1) ≡ false × isI (powMat (toMat g1) 2) ≡ false × isI (powMat (toMat g1) 3) ≡ false × isI (powMat (toMat g1) 4) ≡ false × isI (powMat (toMat g1) 5) ≡ false
+min-checks g2 = isI (powMat (toMat g2) 1) ≡ false × isI (powMat (toMat g2) 2) ≡ false
+min-checks g3 = isI (powMat (toMat g3) 1) ≡ false × isI (powMat (toMat g3) 2) ≡ false × isI (powMat (toMat g3) 3) ≡ false
+min-checks g4 = isI (powMat (toMat g4) 1) ≡ false × isI (powMat (toMat g4) 2) ≡ false × isI (powMat (toMat g4) 3) ≡ false × isI (powMat (toMat g4) 4) ≡ false × isI (powMat (toMat g4) 5) ≡ false
+min-checks g5 = isI (powMat (toMat g5) 1) ≡ false × isI (powMat (toMat g5) 2) ≡ false
+min-checks g6 = ⊤
+min-checks g7 = isI (powMat (toMat g7) 1) ≡ false × isI (powMat (toMat g7) 2) ≡ false
+min-checks g8 = isI (powMat (toMat g8) 1) ≡ false × isI (powMat (toMat g8) 2) ≡ false
+min-checks g9 = isI (powMat (toMat g9) 1) ≡ false × isI (powMat (toMat g9) 2) ≡ false
+min-checks g10 = isI (powMat (toMat g10) 1) ≡ false × isI (powMat (toMat g10) 2) ≡ false × isI (powMat (toMat g10) 3) ≡ false
+min-checks g11 = isI (powMat (toMat g11) 1) ≡ false × isI (powMat (toMat g11) 2) ≡ false × isI (powMat (toMat g11) 3) ≡ false × isI (powMat (toMat g11) 4) ≡ false × isI (powMat (toMat g11) 5) ≡ false
+min-checks g12 = isI (powMat (toMat g12) 1) ≡ false × isI (powMat (toMat g12) 2) ≡ false
+min-checks g13 = isI (powMat (toMat g13) 1) ≡ false × isI (powMat (toMat g13) 2) ≡ false × isI (powMat (toMat g13) 3) ≡ false × isI (powMat (toMat g13) 4) ≡ false × isI (powMat (toMat g13) 5) ≡ false
+min-checks g14 = isI (powMat (toMat g14) 1) ≡ false × isI (powMat (toMat g14) 2) ≡ false × isI (powMat (toMat g14) 3) ≡ false
+min-checks g15 = isI (powMat (toMat g15) 1) ≡ false
+min-checks g16 = isI (powMat (toMat g16) 1) ≡ false × isI (powMat (toMat g16) 2) ≡ false × isI (powMat (toMat g16) 3) ≡ false × isI (powMat (toMat g16) 4) ≡ false × isI (powMat (toMat g16) 5) ≡ false
+min-checks g17 = isI (powMat (toMat g17) 1) ≡ false × isI (powMat (toMat g17) 2) ≡ false × isI (powMat (toMat g17) 3) ≡ false × isI (powMat (toMat g17) 4) ≡ false × isI (powMat (toMat g17) 5) ≡ false
+min-checks g18 = isI (powMat (toMat g18) 1) ≡ false × isI (powMat (toMat g18) 2) ≡ false × isI (powMat (toMat g18) 3) ≡ false × isI (powMat (toMat g18) 4) ≡ false × isI (powMat (toMat g18) 5) ≡ false
+min-checks g19 = isI (powMat (toMat g19) 1) ≡ false × isI (powMat (toMat g19) 2) ≡ false × isI (powMat (toMat g19) 3) ≡ false
+min-checks g20 = isI (powMat (toMat g20) 1) ≡ false × isI (powMat (toMat g20) 2) ≡ false
+min-checks g21 = isI (powMat (toMat g21) 1) ≡ false × isI (powMat (toMat g21) 2) ≡ false × isI (powMat (toMat g21) 3) ≡ false × isI (powMat (toMat g21) 4) ≡ false × isI (powMat (toMat g21) 5) ≡ false
+min-checks g22 = isI (powMat (toMat g22) 1) ≡ false × isI (powMat (toMat g22) 2) ≡ false
+min-checks g23 = isI (powMat (toMat g23) 1) ≡ false × isI (powMat (toMat g23) 2) ≡ false × isI (powMat (toMat g23) 3) ≡ false
+
+-- 最小阶定理: ∀ g, 1 ≤ k < orderOf g ⟹ g^k ≢ I (75 项 refl 穷举)
+order-minimal : ∀ (g : SL23) → min-checks g
+order-minimal g0 = refl , refl , refl
+order-minimal g1 = refl , refl , refl , refl , refl
+order-minimal g2 = refl , refl
+order-minimal g3 = refl , refl , refl
+order-minimal g4 = refl , refl , refl , refl , refl
+order-minimal g5 = refl , refl
+order-minimal g6 = tt
+order-minimal g7 = refl , refl
+order-minimal g8 = refl , refl
+order-minimal g9 = refl , refl
+order-minimal g10 = refl , refl , refl
+order-minimal g11 = refl , refl , refl , refl , refl
+order-minimal g12 = refl , refl
+order-minimal g13 = refl , refl , refl , refl , refl
+order-minimal g14 = refl , refl , refl
+order-minimal g15 = refl
+order-minimal g16 = refl , refl , refl , refl , refl
+order-minimal g17 = refl , refl , refl , refl , refl
+order-minimal g18 = refl , refl , refl , refl , refl
+order-minimal g19 = refl , refl , refl
+order-minimal g20 = refl , refl
+order-minimal g21 = refl , refl , refl , refl , refl
+order-minimal g22 = refl , refl
+order-minimal g23 = refl , refl , refl
 
 -- 0 postulate.

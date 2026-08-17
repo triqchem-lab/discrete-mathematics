@@ -16,4 +16,6 @@ test:
 	agda src/Sovereign/Geometry/TorusGeodesic.agda
 	agda src/Sovereign/Geometry/TorusAlgebra.agda
 	agda src/Sovereign/Geometry/TorusFourier.agda
+	agda src/Sovereign/Structology/GF4AffineMagicSquare.agda
+	agda src/Sovereign/Structology/SL23Cayley.agda
 	@echo "ALL_PASS"

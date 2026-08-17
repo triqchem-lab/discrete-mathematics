@@ -1,9 +1,22 @@
 # GF(4) 仿射公式 → 正交拉丁方 → 幻方：数值验证报告
 
+**版本**: v1.1（2026-08-17 晚 — 采纳转置修正与 T-sym 统一判据；命名层锚点已核验保留）
 **日期**：2026-08-17
 **验证工具**：`/home/yanli/work/math/rust/sov-math/sov-validation/src/gf4_magic.rs`
 **复现**：`cd /home/yanli/work/math/rust/sov-math && cargo test -p sov-validation`（1 test，内置 assert，任一失败即 panic）
-**对应 Agda**：`Structology/GF4.agda`、`Structology/OrthogonalLatinSquare.agda`、`Structology/OrthogonalLatinSquareGF4.agda`、`Structology/MagicSquareM4.agda`
+**对应 Agda**：`Structology/GF4.agda`、`Structology/OrthogonalLatinSquare.agda`、`Structology/OrthogonalLatinSquareGF4.agda`、`Structology/MagicSquareM4.agda`、**`Structology/GF4AffineMagicSquare.agda`（五定理，本日落库）**、`Structology/SL23Cayley.agda`（§6/§7 阶自证+负证）
+
+---
+
+## 〇、幻方三层定义（会话裁定）
+
+| 层 | 定义 | 状态 | 用途 |
+|:--:|:-----|:----:|:----:|
+| 1 传统数字幻方 | 行=列=对角和相等（静态验算） | ✅ 已形式化 | 具体实例（MagicSquareM4.agda） |
+| 2 卢先生幻方 | 矢量方向动态系统（n 阶 = n 个矢量方向同时变化） | 🟡 命名层 | 本体论指导，不进证明链 |
+| 3 框架可证幻方 | 正交拉丁方对叠加 + 系数不对称 a≠b（构造推导） | ✅ 可证 | GF4AffineMagicSquare.agda |
+
+**闭合分级**：半闭合（行=列）=半幻方；完全闭合（+对角）=完全幻方；动态闭合（OLS 对同步演化十线等和）↔ 卢先生「矢量对称」。
 
 ---
 
@@ -97,23 +110,43 @@ transversal ⟹ 对角元素和恒 = 0+1+2+3 = 6 ⟹ 叠加对角和 = 4·6+6 = 
 
 **命题**：完全幻方 = 正交拉丁方对（行列式 ≠ 0）+ 双方系数不对称 a≠b。
 
-## 六、系数空间 Frobenius 共轭（修正后的 σ 角色）
+## 六、转置恒等式与 σ 的正确槽位（v1.1 修正）
 
-σ(x)=x² = [0,1,3,2]，故 **σ(2)=3，σ(3)=2**：
+**普适结构是转置**（Rust [8] 节已验证 `transpose(&L1) == L2`）：
 
 ```
-L1 线性系数 (2,3) ──σ──▶ (3,2) = L2 线性系数
+T2': L2(i,j) = L1(j,i)   主对角反射 = 手征交换 → 命名层挂 Slot 4↔5
+```
+
+**系数 σ-像是实例级事实，不是普适结构**：σ(x)=x² = [0,1,3,2]，σ(2)=3、σ(3)=2：
+
+```
+L1 线性系数 (2,3) ──σ──▶ (3,2) = L2 线性系数   → 命名层挂 Slot 6 内部规范相位
 ∀i,j: L2(i,j) = σ(2)·i ⊕ σ(3)·j ⊕ 2   ✅ 16 格全对
 ```
 
-| 层面 | σ 作用 | 结果 |
-|:----:|:------:|:----:|
-| 坐标空间 i↦σ(i) | 变量替换 | ❌ 全部失败（§三） |
-| 系数空间 a↦σ(a) | L1→L2 | ✅ 正交对 + 完全幻方 |
+| 层面 | 操作 | 结果 | 槽位 |
+|:----:|:----:|:----:|:----:|
+| 坐标空间 i↦σ(i) | 变量替换 | ❌ 全部失败（§三） | — |
+| **转置 L1↔L2** | 主对角反射 | ✅ 精确恒等式（普适） | Slot 4↔5 手征交换 |
+| 系数空间 a↦σ(a) | L1 系数→L2 系数 | ✅ 实例级可证 | Slot 6 内部规范相位 |
 
-**诚实边界**：σ(c) = σ(2) = 3 ≠ 2 = c——共轭仅作用在线性系数对 (a,b)，**常数项未共轭**；「L2 是 L1 的完整仿射 σ 像」不成立。另 a⊕b = 1 是 σ-不动点（σ(1)=1），故对角 transversal 条件共轭不变。
+转置与 σ-共轭在 GF(4) 的 {2,3} 轨道上**数值重合**，但来自不同槽位，**不可合并声明**。
 
-与既有框架的对应：2·A₄ 特征标共轭 χ₁′(ω)↔χ₁″(ω²)、E⊥B 的 σ 共轭，同为「共轭对」结构在不同空间的投影；此处 σ 作用在**系数空间**。
+**诚实边界（已入证明层）**：σ(c) = σ(2) = 3 ≠ 2 = c——共轭仅作用在线性系数对 (a,b)，**常数项未共轭**；`L2 = σ(L1)` 整体声明为假，只能证「线性部分 σ-像」（Agda: `constant-not-conjugated : σ4 ga ≢ ga`）。另 a⊕b = 1 是 σ-不动点（σ(1)=1），对角 transversal 条件共轭不变。
+
+**命名层锚点保留**（已核验，不进证明链）：顺/逆时针两向发射、镜像对偶、矢量对称四阶幻方 → 证明层对应转置运算 L1↔L2（Slot 4↔5 交换算子）；泛音公理叙事留在注释，不进入定理。
+
+## 六b、T-sym 统一判据（v1.1 新增）
+
+特征 2 下 Freshman's Dream：
+
+```
+det[[a,b],[b,a]] = a² ⊕ b² = (a⊕b)²      （16 对全验）
+非零 ⟺ a⊕b ≠ 0 ⟺ a ≠ b
+```
+
+**T-sym 将正交性条件与对角 transversal 条件统一为同一判据 a≠b**，与命名层「矢量对称」（a↔b 交换）精确对应。本实例：det[[2,3],[3,2]] = (2⊕3)² = 1 ≠ 0。
 
 ## 七、经典 Dürer M₄ 负结果 + 归属更正
 
@@ -122,28 +155,34 @@ L1 线性系数 (2,3) ──σ──▶ (3,2) = L2 线性系数
 3. **新发现**：库 M4（手写 L1/L2 叠加 +1）**不在经典 Dürer 的 D4 轨道**（8 个旋转/镜像全不匹配；直观判据：Dürer 中 15、14 相邻，库 M4 中 15 在 (2,3)、14 在 (0,2) 不相邻）。库 M4 是另一个关联型（complementary pairs 和 = 17）完全幻方。
 4. **更正**：`OrthogonalLatinSquareGF4.agda` 头注释「手写 L1/L2（来自 Dürer M₄ 分解）」归属有误——应为「来自库 M4（MagicSquareM4.agda）分解」。该模块其余数学内容（genL1 ≢ 手写 L1、域仿射给半幻方）不受影响，均与本报告一致。
 
-## 八、修正后的 Agda 定理清单（待落库）
+## 八、Agda 定理清单（v1.1 已落库 ✅）
+
+**`Structology/GF4AffineMagicSquare.agda`**（0 postulate，2026-08-17 落库）：
 
 ```
--- §1 公式定理 (OrthogonalLatinSquare 或新模块 GF4AffineFormulas)
-L1-formula : ∀ i j → L1[i,j] ≡ 2·i ⊕ 3·j ⊕ 2        -- 16 格 refl
-L2-formula : ∀ i j → L2[i,j] ≡ 3·i ⊕ 2·j ⊕ 2
-coeff-det-nonzero : 2·2 ⊕ 3·3 ≡ 1                    -- 正交根源
-
--- §2 对角引理
-diag-transversal : a ≠ b → L(i,i) 与 L(i,3⊕i) 均为置换
-  -- 依赖: GF(4) 副对角 j = 3⊕i 仿射; (a+b)·i⊕c 双射 ⟺ a+b≠0 ⟺ a≠b
-
--- §3 完全幻方主定理
-M-diagonals : M = 4·L1 + L2 两对角和 ≡ 30            -- 叠加 transversal 和恒 6
-  -- 与已有 euler-is-M4 + 对角和=34 证明合并 ⟹ 十线全 34
-
--- §4 系数共轭 (新增)
-L2-coeff-conj : ∀ i j → L2(i,j) ≡ σ(2)·i ⊕ σ(3)·j ⊕ 2
-  -- 诚实边界注记: σ(2)=3≠2, 常数项不共轭
-
--- 删除: 「Frobenius 补坐标对角线」方案; 「手写对 = Dürer 分解」表述
+T1                    : allDistinct super0 ≡ true          -- 正交 16 对互异 (承 OrthogonalLatinSquare)
+T2′                   : transpose4 L1 ≡ L2                 -- 转置恒等式 (refl), Slot 4↔5
+T2″                   : σ4 ga ≡ gb × σ4 gb ≡ ga            -- 系数 σ-像 (refl), Slot 6
+constant-not-conjugated : σ4 ga ≢ ga                       -- 诚实边界 (λ())
+T-sym-square          : (a⊕b)² ≡ a²⊕b²                     -- Freshman's Dream (16 refl)
+det-neq-zero          : a ≢ b → (a⊕b)² ≢ g0                -- 统一判据 (16 case)
+det-zero-eq           : (a⊕a)² ≡ g0                        -- 退化方向
+T-sym                 : 三合一打包
+det-instance-nonzero  : (ga⊕gb)² ≢ g0                      -- det[[2,3],[3,2]]=1
+T3                    : M0 = 4·L1+L2 十线全 ≡ 30           -- 完全幻方 (refl)
 ```
+
+**`Structology/SL23Cayley.agda` §6/§7**（item 4 完成）：
+
+```
+order-pow     : ∀ g → powMat (toMat g) (orderOf g) ≡ matI   -- gⁿ=I (24 refl)
+order-minimal : ∀ g → min-checks g                          -- g^k≠I 负证 (75 refl)
+not-isI       : isI m ≡ false → m ≢ matI                    -- 负证桥接引理
+```
+
+阶数事实从「Python 枚举信任」升级为库内自证（宪法：标准库信任度=0）。
+
+**删除**：「Frobenius 补坐标对角线」方案；「手写对 = Dürer 分解」表述；断言 L1≡L2 的旧定理 2（为假，已替换为 T2′）。
 
 ## 九、命名层注记
 
