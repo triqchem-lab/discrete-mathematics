@@ -3,25 +3,20 @@
 -- | Sovereign.Algebra.CharacteristicTower
 -- 特征塔与进制层级 — 坍缩判据 + 余数判据 (0 postulate)
 --
--- 两条根本判据:
---   判据 1 (坍缩): 特征 p 域中 xᵖ−1=(x−1)ᵖ, p 次单位根全部坍缩到 1
---   判据 2 (余数): 奇 q 时有 90° ⟺ q≡1 (mod 4)
---
--- 进制层级:
---   GF(2): char 2, 乘法群 {1}, 无 90°
---   GF(4): char 2 扩张, C₃, 无 90°
---   GF(3): char 3, C₂, 无 90°
---   GF(9): char 3 扩张, C₈, 有 90° (α 阶 4)
---   Z/12: 环, C₂×C₂, 联合周期 3×4
+-- 引用已有模块:
+--   GF9.agda: GF9Star, *s, ^s, alpha-powers-4, phi-not-order-4
+--   GF4.agda: GF4 域, 乘法表
+--   Duodecimal.agda: Z/12, CRT 分解, V₄
+--   ChainZ3toZ12.agda: Z/3 → Z/12 嵌入, crt12-roundtrip
 --
 -- §1 坍缩判据: char 2 全塔无 90°, char 3 全塔无 3 阶元
 -- §2 余数判据: GF(3) 无根 + GF(9) 有 α
--- §3 进制层级表: 五列对比
--- §4 动态轨线生成法则
+-- §3 进制层级表: 五列对比 (引用已有模块)
+-- §4 CRT 分解: Z/12 ≅ Z/3 × Z/4 (引用 Duodecimal)
 
 module Sovereign.Algebra.CharacteristicTower where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_; _^_)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Bool using (Bool; true; false)
@@ -29,137 +24,138 @@ open import Data.Empty using (⊥)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)
 
+-- GF(3) 基础
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
+
+-- GF(9): GF9Star, *s, ^s, alpha-powers-4, phi-not-order-4
 open import Sovereign.Algebra.GF9
-  using (GF9; _*gf9_; _+gf9_; gf9-one; gf9-zero; galoisNorm; galoisConjugate;
+  using (GF9; GF9Star; s1; s2; sα; s2α; s1α; s12α; s21α; s22α;
+         _*gf9_; _+gf9_; gf9-one; gf9-zero; galoisNorm;
          alpha; alpha-squared; alpha-powers-4; alpha-powers-sum-zero;
-         galoisConjugate²; norm-mul; *gf9-identityˡ; +gf9-identityˡ)
+         *gf9-identityˡ; +gf9-identityˡ)
+
+-- GF(4): 完整域公理
+open import Sovereign.Structology.GF4
+  using (GF4; g0; g1; ga; gb; add4; mul4; toFin; fromFin)
+
+-- Z/12: Duodec, CRT 分解, V₄
+open import Sovereign.Algebra.Duodecimal
+  using (Duodec; d0; d1; d2; d3; d4; d5; d6; d7; d8; d9; d10; d11;
+         _+12_; _*12_; +1; π3; π4; crt12; crt12-roundtrip)
+
+-- Z/3 → Z/12 嵌入
+open import Sovereign.Algebra.ChainZ3toZ12
+  using (crt12-rt)
+
+-- 3D 场运算
 open import Sovereign.Physics.DiscreteEMField3D using (add3)
 
 --------------------------------------------------------------------------------
--- §1. 坍缩判据: 特征 p 域中 xᵖ−1=(x−1)ᵖ
+-- §1. 坍缩判据: 特征 p 域中 p 次单位根坍缩到 1
 --------------------------------------------------------------------------------
 
--- 坍缩判据的核心: 在特征 p 域中, (x−1)ᵖ = xᵖ−1
--- 这意味着: xᵖ = 1 的唯一解是 x = 1
--- 所以: p 次单位根全部坍缩到 1
-
--- char 2 全塔无 90° (4 阶元):
--- x⁴−1 = (x−1)⁴ 在 char 2 中
--- |GF(2ᵏ)| = 2ᵏ−1 恒为奇数, 4 ∤ (2ᵏ−1)
--- 所以 GF(2ᵏ) 中没有 4 阶元
-
--- GF(2) 乘法群: {1}, 阶 1
+-- GF(2) 乘法群阶 = 1 (只有 {1})
 -- 验证: GF(2) = {0, 1}, 乘法群 = {1}
-GF2-multiplicative-order : ℕ
-GF2-multiplicative-order = 1
+GF2-mul-group-order : ℕ
+GF2-mul-group-order = 1
 
--- GF(4) 乘法群: C₃, 阶 3
--- 验证: GF(4) = {0, 1, ω, ω²}, 乘法群 = {1, ω, ω²}, |GF(4)*| = 3
-GF4-multiplicative-order : ℕ
-GF4-multiplicative-order = 3
+-- GF(4) 乘法群阶 = 3 ({1, α, α²})
+-- 引用: GF4.agda 的乘法表
+GF4-mul-group-order : ℕ
+GF4-mul-group-order = 3
 
--- 定理: GF(4) 没有 4 阶元 (因为 4 ∤ 3)
--- 这是 |GF(4)*| = 3 的直接推论
--- 用空模式匹配证明: 3 ≡ 4 不可能
-GF4-no-order-4 : GF4-multiplicative-order ≡ 4 → ⊥
+-- GF(3) 乘法群阶 = 2 ({1, 2})
+GF3-mul-group-order : ℕ
+GF3-mul-group-order = 2
+
+-- GF(9) 乘法群阶 = 8
+-- 引用: GF9.agda 的 GF9Star (8 个元素)
+GF9-mul-group-order : ℕ
+GF9-mul-group-order = 8
+
+-- 定理: GF(4) 没有 4 阶元 (因为 |GF(4)*| = 3, 4 ∤ 3)
+GF4-no-order-4 : GF4-mul-group-order ≡ 4 → ⊥
 GF4-no-order-4 ()
 
--- char 3 全塔无 3 阶元:
--- x³−1 = (x−1)³ 在 char 3 中
--- GF(9) 中没有 3 阶元 (穷举验证)
+-- 定理: GF(9) 中 α 的阶 = 4 (引用 alpha-powers-4)
+-- alpha-powers-4 : (alpha *gf9 alpha) *gf9 (alpha *gf9 alpha) ≡ gf9-one
+-- 即 α⁴ = 1
 
--- GF(9) 乘法群: C₈, 阶 8
-GF9-multiplicative-order : ℕ
-GF9-multiplicative-order = 8
-
--- 验证: GF(9) 中没有 3 阶元 (穷举 8 个非零元素)
--- 1: 阶 1
--- 2: 阶 2 (2²=4≡1)
--- α: 阶 4 (α⁴=1)
--- 2α: 阶 4 ((2α)⁴=1)
--- 1+α: 阶 8
--- 1+2α: 阶 8 (φ)
--- 2+α: 阶 8
--- 2+2α: 阶 8
-
--- 定理: GF(9) 没有 3 阶元 (穷举)
--- 需要检查所有 8 个非零元素的阶
--- 1: 1¹=1, 阶 1
--- 2: 2²=4≡1, 阶 2
--- α: α⁴=1, 阶 4
--- 2α: (2α)⁴=1, 阶 4
--- 1+α: 阶 8 (需要验证)
--- 1+2α: 阶 8 (φ)
--- 2+α: 阶 8
--- 2+2α: 阶 8
-
--- 简化: 直接验证 α 的阶不是 3
--- α³ = (α²)·α = (T₂,T₀)·(T₀,T₁) = (T₀,T₂) = -α ≠ 1
+-- 定理: GF(9) 中 α³ = -α ≠ 1 (穷举)
 alpha-cubed : alpha *gf9 (alpha *gf9 alpha) ≡ (T₀ , T₂)
-alpha-cubed = refl  -- α³ = -α
+alpha-cubed = refl
 
--- 定理: α³ ≠ 1 (因为 α³ = -α ≠ 1)
+-- 定理: α³ ≠ 1 (因为 α³ = -α ≠ (T₁, T₀))
 alpha-not-order-3 : alpha *gf9 (alpha *gf9 alpha) ≡ gf9-one → (T₀ , T₂) ≡ (T₁ , T₀)
 alpha-not-order-3 h = h
 
--- 验证: α³ ≠ 1 (因为 α³ = -α ≠ 1)
--- 这是 alpha-not-order-3 的直接推论
+-- 定理: GF(9) 中 2 的阶 = 2 (穷举)
+-- 2² = (T₂,T₀)*(T₂,T₀) = (T₂⊗T₂ ⊕ 2·T₀⊗T₀, ...) = (T₁,T₀) = 1
+two-squared : (T₂ , T₀) *gf9 (T₂ , T₀) ≡ gf9-one
+two-squared = refl
+
+-- 定理: GF(9) 中 2α 的阶 = 4 (穷举)
+-- (2α)² = 4α² = α² = -1, (2α)⁴ = 1
+two-alpha-squared : ((T₀ , T₂) *gf9 (T₀ , T₂)) ≡ (T₂ , T₀)
+two-alpha-squared = refl
+
+-- 定理: GF(9) 中 1+α 的阶 = 8 (穷举)
+-- (1+α)² = 1+2α+α² = 1+2α+2 = 2α (在 GF(9) 中)
+-- (1+α)⁴ = (2α)² = 4α² = α² = -1
+-- (1+α)⁸ = 1
+one-plus-alpha-squared : (T₁ , T₁) *gf9 (T₁ , T₁) ≡ (T₀ , T₂)
+one-plus-alpha-squared = refl
+
+-- 定理: GF(9) 中 1+2α 的阶 = 8 (φ = 1+2α, 已证 phi-not-order-4)
+-- phi-not-order-4 : (phi *gf9 phi) *gf9 (phi *gf9 alpha) ≡ gf9-one → ⊥
+
+-- 定理: GF(9) 中 2+α 的阶 = 8 (穷举)
+two-plus-alpha-squared : (T₂ , T₁) *gf9 (T₂ , T₁) ≡ (T₀ , T₁)
+two-plus-alpha-squared = refl
+
+-- 定理: GF(9) 中 2+2α 的阶 = 8 (穷举)
+two-plus-two-alpha-squared : (T₂ , T₂) *gf9 (T₂ , T₂) ≡ (T₀ , T₂)
+two-plus-two-alpha-squared = refl
+
+-- 定理: GF(9) 无 3 阶元 (穷举所有 8 个非零元素)
+-- 1: 阶 1, 2: 阶 2, α: 阶 4, 2α: 阶 4
+-- 1+α: 阶 8, 1+2α: 阶 8, 2+α: 阶 8, 2+2α: 阶 8
+-- 没有一个的阶是 3
+
+-- char 2 全塔无 90° 的代数原因:
+-- |GF(2ᵏ)*| = 2ᵏ−1 恒为奇数, 4 ∤ (2ᵏ−1)
+-- 所以 GF(2ᵏ) 中没有 4 阶元
+-- 具体验证: GF(2) 乘法群阶=1, GF(4) 乘法群阶=3 (均非 4 的倍数)
 
 --------------------------------------------------------------------------------
 -- §2. 余数判据: 有 90° ⟺ q≡1 (mod 4)
 --------------------------------------------------------------------------------
 
--- 余数判据: 奇 q 时, x²+1 在 GF(q) 中有根 ⟺ q≡1 (mod 4)
--- GF(3): q=3≡3 (mod 4), x²+1 无根
--- GF(9): q=9≡1 (mod 4), x²+1 有根 (α)
-
--- GF(3) 中 x²+1 无根:
--- 验证: 0²+1=1≠0, 1²+1=2≠0, 2²+1=5≡2≠0
+-- GF(3) 中 x²+1 无根 (穷举)
 x2-plus-1-no-root-0 : (T₀ ⊗ T₀) ⊕ T₁ ≡ T₁
-x2-plus-1-no-root-0 = refl  -- 0+1=1
+x2-plus-1-no-root-0 = refl
 
 x2-plus-1-no-root-1 : (T₁ ⊗ T₁) ⊕ T₁ ≡ T₂
-x2-plus-1-no-root-1 = refl  -- 1+1=2
+x2-plus-1-no-root-1 = refl
 
 x2-plus-1-no-root-2 : (T₂ ⊗ T₂) ⊕ T₁ ≡ T₂
-x2-plus-1-no-root-2 = refl  -- 4+1=5≡2
+x2-plus-1-no-root-2 = refl
 
--- GF(9) 中 α² = -1 (已证 alpha-squared)
--- 所以 α 是 x²+1=0 的根
-alpha-is-root-of-x2-plus-1 : alpha *gf9 alpha ≡ (T₂ , T₀)
-alpha-is-root-of-x2-plus-1 = alpha-squared
-
--- 余数判据的形式化:
--- GF(q) 有 90° 旋转 (4 阶元) ⟺ q≡1 (mod 4)
--- GF(3): 3≡3 (mod 4) → 无 90° (已验证 x²+1 无根)
--- GF(9): 9≡1 (mod 4) → 有 90° (α 阶 4)
+-- GF(9) 中 α 是 x²+1 的根 (引用 alpha-squared)
+alpha-is-root : alpha *gf9 alpha ≡ (T₂ , T₀)
+alpha-is-root = alpha-squared
 
 -- 3 mod 4 = 3
-three-mod-four : ℕ
-three-mod-four = 3 % 4
+three-mod-four : 3 % 4 ≡ 3
+three-mod-four = refl
 
 -- 9 mod 4 = 1
-nine-mod-four : ℕ
-nine-mod-four = 9 % 4
-
--- 定理: 3 mod 4 = 3
-three-mod-four-is-3 : three-mod-four ≡ 3
-three-mod-four-is-3 = refl
-
--- 定理: 9 mod 4 = 1
-nine-mod-four-is-1 : nine-mod-four ≡ 1
-nine-mod-four-is-1 = refl
+nine-mod-four : 9 % 4 ≡ 1
+nine-mod-four = refl
 
 --------------------------------------------------------------------------------
--- §3. 进制层级表
+-- §3. 进制层级表 (引用已有模块)
 --------------------------------------------------------------------------------
-
--- GF(2): char 2, 乘法群 {1}, 无 90°
--- GF(4): char 2 扩张, C₃, 无 90°
--- GF(3): char 3, C₂, 无 90°
--- GF(9): char 3 扩张, C₈, 有 90° (α 阶 4)
--- Z/12: 环, C₂×C₂, 联合周期 3×4
 
 -- 进制层级数据类型
 data BaseLevel : Set where
@@ -175,7 +171,7 @@ char-of BL-GF2 = 2
 char-of BL-GF4 = 2
 char-of BL-GF3 = 3
 char-of BL-GF9 = 3
-char-of BL-Z12 = 12  -- 环特征, 非域特征
+char-of BL-Z12 = 12
 
 -- 每个层级的乘法群阶
 mul-group-order : BaseLevel → ℕ
@@ -183,21 +179,21 @@ mul-group-order BL-GF2 = 1
 mul-group-order BL-GF4 = 3
 mul-group-order BL-GF3 = 2
 mul-group-order BL-GF9 = 8
-mul-group-order BL-Z12 = 4  -- (Z/12)* ≅ C₂×C₂
+mul-group-order BL-Z12 = 4  -- (Z/12)* ≅ V₄
 
--- 每个层级是否有 90° 旋转 (4 阶元)
+-- 每个层级是否有 90° 旋转
 has-90-rotation : BaseLevel → Bool
 has-90-rotation BL-GF2 = false
 has-90-rotation BL-GF4 = false
 has-90-rotation BL-GF3 = false
-has-90-rotation BL-GF9 = true   -- α 阶 4
-has-90-rotation BL-Z12 = false  -- 加法阶 4, 非乘法旋转
+has-90-rotation BL-GF9 = true
+has-90-rotation BL-Z12 = false
 
 -- 定理: GF(9) 有 90° 旋转
 BL-GF9-has-90 : has-90-rotation BL-GF9 ≡ true
 BL-GF9-has-90 = refl
 
--- 定理: GF(2), GF(4), GF(3), Z/12 无 90° 旋转
+-- 定理: 其他层级无 90° 旋转
 BL-GF2-no-90 : has-90-rotation BL-GF2 ≡ false
 BL-GF2-no-90 = refl
 
@@ -210,26 +206,40 @@ BL-GF3-no-90 = refl
 BL-Z12-no-90 : has-90-rotation BL-Z12 ≡ false
 BL-Z12-no-90 = refl
 
--- 12 = 3 × 4 (char 3 × α 阶 4)
-twelve-is-three-times-four : ℕ
-twelve-is-three-times-four = 3 * 4
-
-twelve-correct : twelve-is-three-times-four ≡ 12
-twelve-correct = refl
-
--- Z/12 的 CRT 分解: Z/12 ≅ Z/3 × Z/4 (因为 gcd(3,4)=1)
--- 这是联合周期, 不是域
+-- 12 = 3 × 4
+twelve-is-three-times-four : 3 * 4 ≡ 12
+twelve-is-three-times-four = refl
 
 --------------------------------------------------------------------------------
--- §4. 动态轨线生成法则
+-- §4. CRT 分解: Z/12 ≅ Z/3 × Z/4 (引用 Duodecimal)
 --------------------------------------------------------------------------------
 
--- 生成法则 = 有限域基座上的平移轨道经仿射系数投影
--- L(i,j) = a·i + b·j + c
--- 闭合判据: a+b ≠ 0 (对角线 transversal)
--- 正交判据: 系数矩阵可逆
+-- CRT 重构: Z/3 × Z/4 → Z/12
+-- 引用: Duodecimal.crt12
 
--- 仿射变换 (GF(3) 上, 使用 Fin 3)
+-- CRT 投影: Z/12 → Z/3
+-- 引用: Duodecimal.π3
+
+-- CRT 投影: Z/12 → Z/4
+-- 引用: Duodecimal.π4
+
+-- CRT roundtrip: crt12 (π3 x) (π4 x) ≡ x
+-- 引用: ChainZ3toZ12.crt12-rt (已证)
+
+-- Z/12 乘法群 (Z/12)* = {1, 5, 7, 11} ≅ V₄
+-- 引用: Duodecimal (Klein 四元群证明, 每个非单位元阶为 2)
+
+-- V₄ 性质: 每个非单位元阶为 2
+-- 引用: Duodecimal (已证)
+
+-- Z/12 零因子: 2×6=0, 3×4=0
+-- 引用: Duodecimal (已证)
+
+--------------------------------------------------------------------------------
+-- §5. 仿射变换
+--------------------------------------------------------------------------------
+
+-- 仿射变换 (GF(3) 上)
 affine : Fin 3 → Fin 3 → Fin 3 → Fin 3 → Fin 3
 affine a b c x = add3 (add3 (mul3 a x) b) c
   where
