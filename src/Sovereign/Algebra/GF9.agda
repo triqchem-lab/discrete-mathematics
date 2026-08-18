@@ -282,6 +282,37 @@ conjugatePair-size-1 a = refl
 conjugatePair-size-2 : galoisConjugate alpha ≡ alpha → ⊥
 conjugatePair-size-2 ()
 
+-- L2: α⁴=1 (α 的 4 次幂等于单位元)
+alpha-powers-4-is-one : (alpha *gf9 alpha) *gf9 (alpha *gf9 alpha) ≡ gf9-one
+alpha-powers-4-is-one = alpha-powers-4
+
+-- L2: σ(x)=x ⇔ x∈GF(3) (Frobenius 不动点恰好是基座)
+-- 正向: σ(a,b)=(a,b) → negate b=b → b=T₀ → x=embed-gf3(a)
+-- 反向: embed-gf3(a)=(a,T₀) → σ(a,T₀)=(a,negate T₀)=(a,T₀) ✓
+sigma-fixed-iff-gf3 : ∀ x →
+  (galoisConjugate x ≡ x → Σ GF3 (λ a → x ≡ embed-gf3 a))
+  × (Σ GF3 (λ a → x ≡ embed-gf3 a) → galoisConjugate x ≡ x)
+sigma-fixed-iff-gf3 (a , b) = forward , backward
+  where
+    -- 正向: σ(a,b)=(a,b) → b=T₀
+    negate-fixes-only-zero : ∀ b → negate b ≡ b → b ≡ T₀
+    negate-fixes-only-zero T₀ h = refl
+    negate-fixes-only-zero T₁ ()  -- negate T₁=T₂≠T₁, 不可能
+    negate-fixes-only-zero T₂ ()  -- negate T₂=T₁≠T₂, 不可能
+
+    forward : galoisConjugate (a , b) ≡ (a , b) → Σ GF3 (λ a₁ → (a , b) ≡ embed-gf3 a₁)
+    forward h = a , cong (a ,_) (negate-fixes-only-zero b (cong proj₂ h))
+
+    backward : Σ GF3 (λ a' → (a , b) ≡ embed-gf3 a') → galoisConjugate (a , b) ≡ (a , b)
+    backward (a' , h) = trans (cong galoisConjugate h)
+                              (trans refl (sym h))
+
+-- 不动点恰好 3 个: embed-gf3 T₀, embed-gf3 T₁, embed-gf3 T₂
+sigma-fixed-count : galoisConjugate (T₀ , T₀) ≡ (T₀ , T₀)
+                   × galoisConjugate (T₁ , T₀) ≡ (T₁ , T₀)
+                   × galoisConjugate (T₂ , T₀) ≡ (T₂ , T₀)
+sigma-fixed-count = refl , refl , refl
+
 --------------------------------------------------------------------------------
 -- 7. Frobenius 乘法同态 + 共轭原生性
 -- 代数证明: 利用 GF(3) 特征 3 的 Freshman's Dream
