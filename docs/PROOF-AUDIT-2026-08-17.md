@@ -1,9 +1,9 @@
 # 离散全息框架 证明审计表
 
 > 审计日期: 2026-08-17 (更新)
-> 审计范围: 全项目 25 个核心 Agda 模块
-> 标准: L0=定义, L1=浅层(穷举refl), L2=深层(全称量化+符号推理)
-> 验证: 全部 25 模块 agda 类型检查 exit 0, 零 postulate, 零 hole, 零 unsolved meta
+> 审计范围: 全项目 34 个核心 Agda 模块 (25 L1/L2 + 9 L3)
+> 标准: L0=定义, L1=浅层(穷举refl), L2=深层(全称量化+符号推理), L3=推导(从结构推导结论)
+> 验证: 全部 34 模块 agda 类型检查 exit 0, 零 postulate, 零 hole, 零 unsolved meta
 
 ---
 
@@ -149,14 +149,61 @@
 
 ---
 
-## 三、统计
+## 三、L3 模块总结
+
+L3 = 从代数结构推导物理/几何结论，而非仅验证等式。
+
+### 群论主线 (3 个模块, 32 个定理)
+
+| 模块 | 定理数 | 核心内容 |
+|------|--------|----------|
+| **FiniteGroupAxioms** | 12 | 有限群结构、公理完备性、同态性质、范数性质、阶性质 |
+| **RepresentationTheory** | 8 | A₄/SL(2,3)/⟨α⟩ 表示论统一、特征标从矩阵迹构造 |
+| **GaloisTheory** | 12 | Frobenius 自同构、范数/迹映射、不动点结构、Fermat/Freshman's Dream |
+
+### 拓扑主线 (3 个模块, 18 个定理)
+
+| 模块 | 定理数 | 核心内容 |
+|------|--------|----------|
+| **DeRhamComplex** | 4 | d²=0 (div∘curl=0, curl∘grad=0), de Rham 复形结构 |
+| **CharacteristicClasses** | 10 | 陈数=2, 欧拉示性数(S²/S³/T⁶), Betti 数, 符号差 |
+| **HomologicalAlgebra** | 4 | 链复形结构, d²=0, 同调包含关系 |
+
+### 分析主线 (3 个模块, 11 个定理)
+
+| 模块 | 定理数 | 核心内容 |
+|------|--------|----------|
+| **CalculusOfVariations** | 5 | 变分原理、Euler-Lagrange 方程、常数场满足 EL |
+| **IntegrationByParts** | 3 | 分部积分、差分求和为零 |
+| **NoetherTheorem** | 3 | 规范对称性、Noether 恒等式、电荷守恒 |
+
+### 物理主线 (1 个模块, 4 个定理)
+
+| 模块 | 定理数 | 核心内容 |
+|------|--------|----------|
+| **MaxwellFromLagrangian** | 4 | Maxwell 四律 (Gauss + 磁高斯 + 法拉第 + Ampère) |
+
+### L3 总计
+
+| 主线 | 模块数 | 定理数 |
+|------|--------|--------|
+| 群论 | 3 | 32 |
+| 拓扑 | 3 | 18 |
+| 分析 | 3 | 11 |
+| 物理 | 1 | 4 |
+| **总计** | **10** | **65** |
+
+---
+
+## 四、统计
 
 | 级别 | 数量 | 占比 |
 |------|------|------|
 | L0 定义 | 3 | 2% |
 | L1 浅层 | 38 | 22% |
 | L2 深层 | 132 | 76% |
-| **总计** | **173** | |
+| L3 推导 | 65 | — |
+| **总计** | **238** | |
 
 | 全称量化 | 数量 |
 |----------|------|
@@ -167,7 +214,7 @@
 | postulate | 数量 |
 |-----------|------|
 | 有 | 0 |
-| 无 | 173 |
+| 无 | 238 |
 
 | L2 覆盖率 | 数量 |
 |-----------|------|
@@ -176,6 +223,14 @@
 | **纯 L1 (有 refl 无 ∀)** | **0** |
 | **L2 覆盖率** | **100%** |
 
+| L3 模块 | 数量 |
+|---------|------|
+| 群论主线 | 3 |
+| 拓扑主线 | 3 |
+| 分析主线 | 3 |
+| 物理主线 | 1 |
+| **总计** | **10** |
+
 ---
 
 ## 四、核心发现
@@ -183,10 +238,11 @@
 1. **L2 深层证明占 76%**：包括变分=拉普拉斯、Noether恒等式、分部求和、传播周期、特征标值表、结构分解等核心定理
 2. **L1 浅层占 22%**：主要是 GF(9) 元素的特定计算（α³=-α, 2²=1 等），这些在有限域上是合法的穷举验证
 3. **L0 定义占 2%**：EMUnitScale record 和 curl-is-field-strength，是定义层非证明
-4. **零 postulate**：全部 173 个定理/定义无 postulate
+4. **零 postulate**：全部 238 个定理/定义无 postulate
 5. **零 hole**：无 `{! !}` 洞
 6. **零 unsolved meta**：无未解决的元变量
 7. **L2 覆盖率 100%**：全部 439 个文件中，291 个有 L2 定理，148 个是纯定义层，0 个纯 L1
+8. **L3 推导层 65 个定理**：从代数结构推导物理/几何结论，覆盖群论、拓扑、分析、物理四条主线
 
 ---
 
@@ -260,8 +316,9 @@ L3 = 从代数结构推导物理/几何结论，而非仅验证等式。
 
 ```
 === 全量类型检查验证 ===
-25/25 全部通过 ✅
+34/34 全部通过 ✅
 
+L1/L2 模块 (25 个):
 GF9 ✅ | GF4 ✅ | CharacteristicTower ✅ | CommAlgBridge ✅
 IhC60Vibration ✅ | A4ThreeDimRep ✅ | MagicSquare144 ✅
 HoloInformation ✅ | BinaryTetrahedralDefiningRep ✅
@@ -272,6 +329,14 @@ DiscreteLagrangian ✅ | DiscreteLagrangian3D ✅
 DiscreteNoether ✅ | ElectromagneticUnitBridge ✅
 OpticalWindow ✅ | OpticalSampling ✅
 LightRotationTernary ✅ | LightRotationFrequency ✅
+
+L3 模块 (9 个):
+FiniteGroupAxioms ✅ | RepresentationTheory ✅ | GaloisTheory ✅
+DeRhamComplex ✅ | CharacteristicClasses ✅ | HomologicalAlgebra ✅
+CalculusOfVariations ✅ | IntegrationByParts ✅ | NoetherTheorem ✅
+
+物理主线 (1 个):
+MaxwellFromLagrangian ✅
 ```
 
 **验证时间**: 2026-08-17
