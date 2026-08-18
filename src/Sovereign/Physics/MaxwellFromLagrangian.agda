@@ -31,6 +31,13 @@ open import Sovereign.Physics.DiscreteEMField3D
          neg3-involutive; neg3-add; curl-grad-zero-x; curl-grad-zero-y; curl-grad-zero-z)
 open import Sovereign.Physics.DiscreteEMCore
   using (div-curl-zero)
+open import Sovereign.Physics.DiscreteMaxwellTime
+  using (VecFieldTime; ScalFieldTime; Time;
+         ΔtV; ΔtS; negVec3;
+         FaradayHolds; AmpereHolds; GaussHolds;
+         FaradayStep; AmpereStep;
+         faraday-diff-from-step; amp-diff-from-step;
+         faraday-preserves-divB; charge-conservation)
 
 open ≡-Reasoning
 
@@ -160,43 +167,66 @@ gauss-law φ p critical = begin
 -- 证明: B = ∇×A → div B = div(curl A) = 0
 -- 引用: DiscreteEMCore.div-curl-zero
 
--- 定律 3: 法拉第定律 (全三维)
--- ∇×E = -Δt B (动态) 或 ∇×E = 0 (静态)
--- 证明: E = -∇φ → curl E = -curl(grad φ) = 0
--- 引用: DiscreteEMField3D.curl-grad-zero-{x,y,z}
+-- 定律 3: 法拉第定律 (动态)
+-- Δt B = -curl E
+-- 证明: Yee 步进构造 → 差分形式逐点成立
+-- 引用: DiscreteMaxwellTime.faraday-diff-from-step
 
--- 定律 4: Ampère 定律
--- ∇×B = μ₀J + ε₀Δt E (有源) 或 ∇×B = Δt E (无源)
--- 证明: δS/δA = 0 → ∇×B = Δt E
--- 关键: 2x = -x in GF(3) (two-is-neg1)
--- 引用: DiscreteLagrangian3D (磁场变分)
+-- 定律 4: Ampère 定律 (动态)
+-- Δt E = curl B - J
+-- 证明: Yee 步进构造 → 差分形式逐点成立
+-- 引用: DiscreteMaxwellTime.amp-diff-from-step
 
--- 四律结构定理 (L3 深层证明)
-maxwell-four-laws :
+-- 四律结构定理 (L3 深层证明) — 完整动力学版本
+maxwell-four-laws-dynamic :
   -- 1. Gauss: div E = 0 (无源)
   (∀ φ p → (∀ p' → div (grad φ) p' ≡ fz) → div (extFieldFromPotential φ) p ≡ fz)
   ×
   -- 2. 磁高斯: div B = 0
   (∀ A p → div (curl A) p ≡ fz)
   ×
-  -- 3. 法拉第: curl E = 0 (静态, 全三维)
-  ((∀ φ p → add3 (dy (dz φ) p) (neg3 (dz (dy φ) p)) ≡ fz)     -- x 分量
-   × (∀ φ p → add3 (dz (dx φ) p) (neg3 (dx (dz φ) p)) ≡ fz)   -- y 分量
-   × (∀ φ p → add3 (dx (dy φ) p) (neg3 (dy (dx φ) p)) ≡ fz))  -- z 分量
+  -- 3. 法拉第 (动态): Δt B = -curl E
+  (∀ B E → FaradayStep B E → FaradayHolds B E)
   ×
-  -- 4. Ampère: 2x = -x in GF(3) (磁场变分的关键)
+  -- 4. Ampère (动态): Δt E = curl B - J
+  (∀ E B J → AmpereStep E B J → AmpereHolds E B J)
+maxwell-four-laws-dynamic = gauss-law , div-curl-zero , faraday-diff-from-step , amp-diff-from-step
+
+-- 静态版本 (特殊情况: Δt = 0)
+maxwell-four-laws-static :
+  -- 1. Gauss: div E = 0 (无源)
+  (∀ φ p → (∀ p' → div (grad φ) p' ≡ fz) → div (extFieldFromPotential φ) p ≡ fz)
+  ×
+  -- 2. 磁高斯: div B = 0
+  (∀ A p → div (curl A) p ≡ fz)
+  ×
+  -- 3. 法拉第 (静态): curl E = 0 (全三维)
+  ((∀ φ p → add3 (dy (dz φ) p) (neg3 (dz (dy φ) p)) ≡ fz)
+   × (∀ φ p → add3 (dz (dx φ) p) (neg3 (dx (dz φ) p)) ≡ fz)
+   × (∀ φ p → add3 (dx (dy φ) p) (neg3 (dy (dx φ) p)) ≡ fz))
+  ×
+  -- 4. Ampère (静态): 2x = -x in GF(3)
   (∀ x → add3 x x ≡ neg3 x)
-maxwell-four-laws = gauss-law , div-curl-zero , (curl-grad-zero-x , curl-grad-zero-y , curl-grad-zero-z) , two-is-neg1
+maxwell-four-laws-static = gauss-law , div-curl-zero , (curl-grad-zero-x , curl-grad-zero-y , curl-grad-zero-z) , two-is-neg1
   where
     two-is-neg1 : ∀ x → add3 x x ≡ neg3 x
     two-is-neg1 fz = refl
     two-is-neg1 (fs fz) = refl
     two-is-neg1 (fs (fs fz)) = refl
 
+-- 守恒定律推论
+-- 1. 电荷守恒: Δt ρ = -div J (从 Ampère + Gauss 推导)
+-- 引用: DiscreteMaxwellTime.charge-conservation
+
+-- 2. 磁高斯守恒: 法拉第步进保持 div B = 0
+-- 引用: DiscreteMaxwellTime.faraday-preserves-divB
+
 -- 四律证明总结:
 -- 1. Gauss: div-neg-grad + gauss-law (本模块)
 -- 2. 磁高斯: div-curl-zero (DiscreteEMCore)
--- 3. 法拉第: curl-grad-zero-{x,y,z} (DiscreteEMField3D)
--- 4. Ampère: two-is-neg1 (本模块, 2x=-x in GF(3))
+-- 3. 法拉第 (动态): faraday-diff-from-step (DiscreteMaxwellTime)
+-- 4. Ampère (动态): amp-diff-from-step (DiscreteMaxwellTime)
+-- 3'. 法拉第 (静态): curl-grad-zero-{x,y,z} (DiscreteEMField3D)
+-- 4'. Ampère (静态): two-is-neg1 (本模块, 2x=-x in GF(3))
 
 -- 0 postulate.
