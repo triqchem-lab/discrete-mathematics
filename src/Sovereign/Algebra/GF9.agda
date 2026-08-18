@@ -30,7 +30,7 @@ module Sovereign.Algebra.GF9 where
 --    "三"指特征 3 步长语义，非三阶旋转。
 
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; subst; module ≡-Reasoning)
 open ≡-Reasoning
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -94,6 +94,11 @@ alpha = T₀ , T₁   -- 0 + 1·α
 -- Galois 共轭: σ(a+bα) = a + (-b)·α = a + negate(b)·α
 galoisConjugate : GF9 → GF9
 galoisConjugate (a , b) = a , negate b
+
+-- 引理: galoisConjugate (a,b) ≡ (a, negate b) (定义等价)
+-- 用于 subst 绕过 *gf9 上下文中的归约阻断
+galoisConjugate-pair : ∀ a b → galoisConjugate (a , b) ≡ (a , negate b)
+galoisConjugate-pair a b = refl
 
 galoisConjugate² : ∀ x → galoisConjugate (galoisConjugate x) ≡ x
 galoisConjugate² (a , b) = cong (a ,_) (negate² b)
@@ -888,19 +893,28 @@ two-mul-is-neg T₁ = refl
 two-mul-is-neg T₂ = refl
 
 -- 范数桥接: N(x) = x·σ(x) (共轭对坍缩为基座单值)
--- L1 穷举证明 (9 case refl): 对 GF(9) 的 9 个元素逐个验证
--- 注: 符号证明需要 negate-⊗ + ⊗-comm + ⊕-inverse 的复杂链,
--- 对 9 元素有限域穷举是合法且高效的方法
+-- L2 符号证明: 用 subst + galoisConjugate-pair 绕过归约阻断
+-- 实部: b⊗b = negate(negate(b⊗b)) = negate((negate b)⊗b) = negate(b⊗(negate b)) = T₂⊗(b⊗(negate b))
+-- 虚部: a⊗(negate b) = negate(a⊗b), 所以 negate(a⊗b) ⊕ (a⊗b) = T₀
 norm-conj-mul : ∀ x → embed-gf3 (galoisNorm x) ≡ x *gf9 galoisConjugate x
-norm-conj-mul (T₀ , T₀) = refl
-norm-conj-mul (T₀ , T₁) = refl
-norm-conj-mul (T₀ , T₂) = refl
-norm-conj-mul (T₁ , T₀) = refl
-norm-conj-mul (T₁ , T₁) = refl
-norm-conj-mul (T₁ , T₂) = refl
-norm-conj-mul (T₂ , T₀) = refl
-norm-conj-mul (T₂ , T₁) = refl
-norm-conj-mul (T₂ , T₂) = refl
+norm-conj-mul (a , b) = subst (λ x → embed-gf3 (galoisNorm (a , b)) ≡ (a , b) *gf9 x)
+                               (sym (galoisConjugate-pair a b))
+                               (cong₂ _,_ real-part imag-part)
+  where
+    -- 实部链: b⊗b ≡ negate(b⊗(negate b))
+    -- b⊗b → negate(negate(b⊗b)) → negate((negate b)⊗b) → negate(b⊗(negate b))
+    real-part : (a ⊗ a) ⊕ (b ⊗ b) ≡ (a ⊗ a) ⊕ negate (b ⊗ negate b)
+    real-part = cong ((a ⊗ a) ⊕_) (
+      trans (sym (negate² (b ⊗ b)))
+        (trans (cong negate (negate-⊗ b b))
+          (cong negate (⊗-comm (negate b) b))))
+
+    -- 虚部链: T₀ ≡ (a⊗(negate b))⊕(b⊗a)
+    imag-part : T₀ ≡ (a ⊗ negate b) ⊕ (b ⊗ a)
+    imag-part = sym (trans (cong (_⊕ (b ⊗ a)) (sym (trans (negate-⊗ a b) (negate-⊗-comm a b))))
+                    (trans (cong (negate (a ⊗ b) ⊕_) (⊗-comm b a))
+                    (trans (⊕-comm (negate (a ⊗ b)) (a ⊗ b))
+                    (⊕-inverse (a ⊗ b)))))
 
 -- 迹桥接: Tr(x) = x+σ(x) (加性坍缩)
 -- L2 符号证明: 对 x=(a,b), LHS = (a⊕a, T₀), RHS = (a⊕a, b⊕negate b)
