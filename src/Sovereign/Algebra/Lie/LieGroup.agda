@@ -409,4 +409,28 @@ sdMAS-cl-sdMA = refl
 sdMAS-cl-sdMAS : sdMAS ⋊g· sdMAS ≡ sdE
 sdMAS-cl-sdMAS = refl
 
+--------------------------------------------------------------------------------
+-- §4. L2 补充定理
+--------------------------------------------------------------------------------
+
+-- L2: exp_C4 单位元
+expC4-identity : expC4 fz ≡ G.unit1
+expC4-identity = refl
+
+-- L2: exp_C4 生成元 (i¹ = i)
+expC4-generator : expC4 (fs fz) ≡ G.uniti
+expC4-generator = refl
+
+-- L2: exp_C6 单位元
+expC6-identity : expC6 fz ≡ Eis.unit1
+expC6-identity = refl
+
+-- L2: D₄ 生成关系总结
+d4-relations :
+  (sdA ⋊g· sdA ≡ sdM)           -- a² = m
+  × (sdA ⋊g· sdA ⋊g· sdA ⋊g· sdA ≡ sdE)  -- a⁴ = e
+  × (sdS ⋊g· sdS ≡ sdE)          -- s² = e
+  × (sdS ⋊g· sdA ⋊g· sdS ≡ sdMA)  -- sas⁻¹ = a⁻¹
+d4-relations = gen-a-square , gen-a-order4 , gen-b-order2 , d4-conjugation
+
 -- 0 postulate.
