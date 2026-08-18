@@ -892,18 +892,30 @@ freshman-dream-gf3 T₂ T₀ = refl
 freshman-dream-gf3 T₂ T₁ = refl
 freshman-dream-gf3 T₂ T₂ = refl
 
+-- GF(9) 核心恒等式: (a,b)³ = (a, negate b)
+-- L1 穷举: 展开乘法公式涉及 α²=-1, 9-case 验证
+gf9-cube-eq : ∀ (a b : Trit) → ((a , b) *gf9 (a , b)) *gf9 (a , b) ≡ (a , negate b)
+gf9-cube-eq T₀ T₀ = refl
+gf9-cube-eq T₀ T₁ = refl
+gf9-cube-eq T₀ T₂ = refl
+gf9-cube-eq T₁ T₀ = refl
+gf9-cube-eq T₁ T₁ = refl
+gf9-cube-eq T₁ T₂ = refl
+gf9-cube-eq T₂ T₀ = refl
+gf9-cube-eq T₂ T₁ = refl
+gf9-cube-eq T₂ T₂ = refl
+
 -- σ = 立方映射 (特征 3 Freshman's Dream: (a+bα)³ = a³+b³α³ = a-bα)
--- L1 穷举: GF(9) 乘法展开涉及 α²=-1, 符号证明需额外代数引理
+-- L2 符号证明: galoisConjugate-pair + gf9-cube-eq + ≡-Reasoning
 frobenius-cube : ∀ x → galoisConjugate x ≡ (x *gf9 x) *gf9 x
-frobenius-cube (T₀ , T₀) = refl
-frobenius-cube (T₀ , T₁) = refl
-frobenius-cube (T₀ , T₂) = refl
-frobenius-cube (T₁ , T₀) = refl
-frobenius-cube (T₁ , T₁) = refl
-frobenius-cube (T₁ , T₂) = refl
-frobenius-cube (T₂ , T₀) = refl
-frobenius-cube (T₂ , T₁) = refl
-frobenius-cube (T₂ , T₂) = refl
+frobenius-cube (a , b) = begin
+  galoisConjugate (a , b)
+    ≡⟨ galoisConjugate-pair a b ⟩
+  (a , negate b)
+    ≡⟨ sym (gf9-cube-eq a b) ⟩
+  ((a , b) *gf9 (a , b)) *gf9 (a , b)
+  ∎
+  where open ≡-Reasoning
 
 -- 辅助引理: T₂ ⊗ x ≡ negate x (在 GF(3) 中 T₂ = -1, 所以 2x = -x)
 two-mul-is-neg : ∀ x → T₂ ⊗ x ≡ negate x
