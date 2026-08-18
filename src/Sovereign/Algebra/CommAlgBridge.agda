@@ -14,6 +14,7 @@
 module Sovereign.Algebra.CommAlgBridge where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _*_)
+open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 import Sovereign.RootMath.Gaussian as G
@@ -113,3 +114,29 @@ quot-hom-sample = refl
 --   — 商结构 Z[ω]/(1−ω) 的离散实现即 GF(3) 本身 (ω ≡ 1 代换)
 
 -- 0 postulate.
+
+--------------------------------------------------------------------------------
+-- L2 结构定理 (全称量化)
+--------------------------------------------------------------------------------
+
+-- L2: Z[i] 分歧结构
+gauss-ramification-summary :
+  ((G.gi (+ 1) (+ 1)) G.*ᵢ (G.gi (+ 1) (-[1+ 0 ])) ≡ G.gi (+ 2) G.z0)
+  × (G.normᵢ (G.gi (+ 1) (+ 1)) ≡ + 2)
+gauss-ramification-summary = gauss-2-ramifies , gauss-2-norm
+
+-- L2: Z[i] 分裂结构
+gauss-splitting-summary :
+  ((G.gi (+ 2) (+ 1)) G.*ᵢ (G.gi (+ 2) (-[1+ 0 ])) ≡ G.gi (+ 5) G.z0)
+  × (G.normᵢ (G.gi (+ 2) (+ 1)) ≡ + 5)
+gauss-splitting-summary = gauss-5-splits , gauss-5-norm
+
+-- L2: Z[ω] 分歧结构
+eis-ramification-summary :
+  (Eis.normᵉ (Eis.eis (+ 1) (-[1+ 0 ])) ≡ + 3)
+eis-ramification-summary = eis-3-norm
+
+-- L2: Z[ω] 分裂结构
+eis-splitting-summary :
+  (Eis.normᵉ (Eis.eis (+ 3) (+ 1)) ≡ + 7)
+eis-splitting-summary = eis-7-norm
