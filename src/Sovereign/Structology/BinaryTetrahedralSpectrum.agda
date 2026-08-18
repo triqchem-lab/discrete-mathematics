@@ -92,3 +92,26 @@ spectrum-correct g22 = refl
 spectrum-correct g23 = refl
 
 -- 0 postulate.
+
+--------------------------------------------------------------------------------
+-- L2 结构定理 (全称量化)
+--------------------------------------------------------------------------------
+
+-- L2: 特征值和恒等式
+omega-sum : addZωi ωZωi ω²Zωi ≡ negZωi oneZωi
+omega-sum = omega-sum-neg-one
+
+i-sum : addZωi iZωi (negZωi iZωi) ≡ zeroZωi
+i-sum = i-sum-zero
+
+negomega-sum : addZωi (negZωi ωZωi) (negZωi ω²Zωi) ≡ oneZωi
+negomega-sum = negomega-sum-one
+
+-- L2: 谱定理总结 (5 个阶的特征值和)
+spectrum-summary :
+  (sumSpectrum 1 ≡ embed (chi2FromRep g6))
+  × (sumSpectrum 2 ≡ embed (chi2FromRep g15))
+  × (sumSpectrum 3 ≡ embed (chi2FromRep g2))
+  × (sumSpectrum 4 ≡ embed (chi2FromRep g0))
+  × (sumSpectrum 6 ≡ embed (chi2FromRep g1))
+spectrum-summary = refl , refl , refl , refl , refl
