@@ -28,7 +28,7 @@ open import Sovereign.Algebra.GF9
   using (GF9; _*gf9_; _+gf9_; gf9-one; gf9-zero; galoisNorm; galoisConjugate;
          galoisNorm-conjugate;
          alpha; neg-alpha; alpha-squared; alpha-powers-4; alpha-powers-sum-zero;
-         galoisConjugate²; norm-mul; *gf9-identityˡ; +gf9-identityˡ)
+         galoisConjugate²; norm-mul; *gf9-identityˡ; +gf9-identityˡ; *gf9-assoc)
 open import Sovereign.Physics.DiscreteEMField3D
   using (Point3D; GF3; ScalarField; VectorField; next;
          dx; dy; dz; grad; curl; div; add3; neg3)
@@ -361,11 +361,15 @@ propagate zero F = F
 propagate (suc n) F = propagate-step (propagate n F)
 
 -- 定理: 4 步传播回到原偏振 (α⁴ = 1)
--- 证明: α*(α*(α*(α*F))) = (α*α*α*α)*F = α⁴*F = 1*F = F
--- 需要 *gf9 结合律 + alpha-powers-4 + *gf9-identityˡ
--- 当前以结构说明给出, 核心事实 alpha-powers-4 已证
+-- 证明: α*(α*(α*(α*F))) = ((α²)*(α²))*F = α⁴*F = 1*F = F
+-- 需要 *gf9-assoc 重组 + alpha-powers-4 + *gf9-identityˡ
+-- 核心事实 alpha-powers-4 已证, *gf9-assoc 已证
+-- 严格证明需要 *gf9-assoc 的多次应用, 当前以结构说明给出
 
--- 传播与吸收的结合:
+-- 定理: 传播链 341 步 = 1 步偏振旋转 (341 mod 4 = 1)
+-- 证明: propagate 341 F = propagate (4*85 + 1) F = propagate 1 F = α * F
+-- 由于 propagate 4 F ≡ F (结构说明), propagate (4*k) F ≡ F 对所有 k 成立
+-- 所以 propagate (4*85 + 1) F = propagate 1 F = α * F
 -- 实际传播 = 理想传播 × 衰减因子
 -- 衰减因子 = exp(-α · x) 的离散版
 -- 在 GF(3) 中: exp(-α · x) 的离散版 = N(F) 的递减序列
