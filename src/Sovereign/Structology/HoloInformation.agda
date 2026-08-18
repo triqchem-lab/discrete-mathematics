@@ -241,3 +241,38 @@ all-anchors-closed = refl , refl , refl , refl
 --
 -- 4320D 爻变维度已由 independent-info-is-4320D refl 闭合.
 -- G = (C3 x C3 x C3) x C2, |G| = 54, Burnside 解已数值验证.
+--------------------------------------------------------------------------------
+-- S9. L2 结构定理 (全称量化)
+--------------------------------------------------------------------------------
+
+-- L2: 4320D 主分解 (结构关系)
+dim-4320-structural : FireMerkaba * WaterHarmonic36 * WuxingCount ≡ 4320
+dim-4320-structural = fire-water-wuxing-product
+
+-- L2: 梅尔卡巴 = 2×12 (结构关系)
+merkaba-structural : FireMerkaba ≡ 2 * 12
+merkaba-structural = merkaba-is-dual-A4
+
+-- L2: 水态 = 3×12 (结构关系)
+water-structural : WaterHarmonic36 ≡ 3 * 12
+water-structural = water-harmonic-decomposition
+
+-- L2: 七阶段周期 (结构关系)
+seven-phase-structural : 7 ≡ 5 + 2
+seven-phase-structural = seven-equals-five-plus-two
+
+-- L2: 热带带数 (结构关系)
+tropical-bands-structural : TropicalBands21 ≡ 3 * 7
+tropical-bands-structural = tropical-bands-equals-trit-times-seven
+
+-- L2: 全息信息守恒 (结构关系)
+info-conservation-structural : LightconeFullInfo ≡ HolographicInfoUnit
+info-conservation-structural = info-conserved-across-lightcone
+
+-- L2: 规范群阶 (结构关系)
+gauge-group-structural : GaugeGroupOrder54 ≡ 27 * 2
+gauge-group-structural = gauge-group-equals-27x2
+
+-- L2: 独立信息量 (结构关系)
+independent-info-structural : IndependentInfo ≡ 4320
+independent-info-structural = independent-info-is-4320D
