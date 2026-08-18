@@ -894,16 +894,10 @@ norm-conj-mul (T₂ , T₁) = refl
 norm-conj-mul (T₂ , T₂) = refl
 
 -- 迹桥接: Tr(x) = x+σ(x) (加性坍缩)
+-- L2 符号证明: 对 x=(a,b), LHS = (a⊕a, T₀), RHS = (a⊕a, b⊕negate b)
+-- 第二分量 T₀ ≡ b⊕negate b 由 sym(⊕-inverse b) 保证
 trace-conj-add : ∀ x → embed-gf3 (galoisTrace x) ≡ x +gf9 galoisConjugate x
-trace-conj-add (T₀ , T₀) = refl
-trace-conj-add (T₀ , T₁) = refl
-trace-conj-add (T₀ , T₂) = refl
-trace-conj-add (T₁ , T₀) = refl
-trace-conj-add (T₁ , T₁) = refl
-trace-conj-add (T₁ , T₂) = refl
-trace-conj-add (T₂ , T₀) = refl
-trace-conj-add (T₂ , T₁) = refl
-trace-conj-add (T₂ , T₂) = refl
+trace-conj-add (a , b) = cong₂ _,_ refl (sym (⊕-inverse b))
 
 -- 嵌入保乘: embed(a⊗b) = embed(a)·embed(b)
 embed-gf3-mul : ∀ a b → embed-gf3 (a ⊗ b) ≡ embed-gf3 a *gf9 embed-gf3 b
