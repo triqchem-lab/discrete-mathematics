@@ -20,8 +20,9 @@ module Sovereign.Physics.MaxwellFromLagrangian where
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Function using (_∘_)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)
+  using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
 
 open import Sovereign.Physics.DiscreteEMField3D
   using (Point3D; GF3; ScalarField; VectorField; next;
@@ -106,17 +107,29 @@ dz-neg φ (i , j , k) = begin
   neg3 (add3 (φ (i , j , next k)) (neg3 (φ (i , j , k))))
   ∎
 
--- 引理: div(neg3∘grad φ) = neg3(div(grad φ))
+-- 辅助引理: vx/vy/vz 投影的展开
+vxextField : ∀ φ → vx (extFieldFromPotential φ) ≡ λ q → neg3 (dx φ q)
+vxextField φ = refl
+
+vyextField : ∀ φ → vy (extFieldFromPotential φ) ≡ λ q → neg3 (dy φ q)
+vyextField φ = refl
+
+vzextField : ∀ φ → vz (extFieldFromPotential φ) ≡ λ q → neg3 (dz φ q)
+vzextField φ = refl
+
+-- 引理: div(extFieldFromPotential φ) = neg3(div(grad φ))
 -- 即: div(-∇φ) = -div(∇φ)
--- HONEST: 此引理需要 dx(neg3∘dx φ) = neg3(dx²φ) 等差分与取负交换的证明。
---   由于 extFieldFromPotential φ p = (neg3(dx φ p), neg3(dy φ p), neg3(dz φ p))
---   而 grad φ p = (dx φ p, dy φ p, dz φ p), 两者结构不同。
---   div 对 extFieldFromPotential 的展开涉及 vx/vy/vz 投影, 无法直接归约。
---   需要证明 dx(λq→neg3(dx φ q)) = neg3(dx²φ) 等分量恒等式。
---   当前状态: 引理声明已给出, 证明待补全。
+-- 证明: 使用 dx-neg, dy-neg, dz-neg 引理 + neg3-add
 div-neg-grad : ∀ φ p →
   div (extFieldFromPotential φ) p ≡ neg3 (div (grad φ) p)
-div-neg-grad φ p = refl  -- HONEST: 待补全证明
+div-neg-grad φ (i , j , k) =
+  trans (cong₂ (λ x y → add3 x (add3 y (dz (λ q → neg3 (dz φ q)) (i , j , k))))
+               (dx-neg (dx φ) (i , j , k))
+               (dy-neg (dy φ) (i , j , k)))
+        (trans (cong (add3 (neg3 (dx (dx φ) (i , j , k))) ∘ add3 (neg3 (dy (dy φ) (i , j , k))))
+                     (dz-neg (dz φ) (i , j , k)))
+               (sym (trans (neg3-add (dx (dx φ) (i , j , k)) (add3 (dy (dy φ) (i , j , k)) (dz (dz φ) (i , j , k))))
+                           (cong (add3 (neg3 (dx (dx φ) (i , j , k)))) (neg3-add (dy (dy φ) (i , j , k)) (dz (dz φ) (i , j , k)))))))
 
 -- Gauss 定律: div E = 0 (当 E = -∇φ 且 δS/δφ = 0)
 -- 由 div-neg-grad + critical 条件组合
