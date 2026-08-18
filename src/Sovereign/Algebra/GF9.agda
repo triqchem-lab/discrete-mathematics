@@ -881,7 +881,16 @@ frobenius-cube (T₂ , T₀) = refl
 frobenius-cube (T₂ , T₁) = refl
 frobenius-cube (T₂ , T₂) = refl
 
+-- 辅助引理: T₂ ⊗ x ≡ negate x (在 GF(3) 中 T₂ = -1, 所以 2x = -x)
+two-mul-is-neg : ∀ x → T₂ ⊗ x ≡ negate x
+two-mul-is-neg T₀ = refl
+two-mul-is-neg T₁ = refl
+two-mul-is-neg T₂ = refl
+
 -- 范数桥接: N(x) = x·σ(x) (共轭对坍缩为基座单值)
+-- L1 穷举证明 (9 case refl): 对 GF(9) 的 9 个元素逐个验证
+-- 注: 符号证明需要 negate-⊗ + ⊗-comm + ⊕-inverse 的复杂链,
+-- 对 9 元素有限域穷举是合法且高效的方法
 norm-conj-mul : ∀ x → embed-gf3 (galoisNorm x) ≡ x *gf9 galoisConjugate x
 norm-conj-mul (T₀ , T₀) = refl
 norm-conj-mul (T₀ , T₁) = refl
