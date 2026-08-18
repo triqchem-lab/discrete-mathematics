@@ -403,6 +403,17 @@ absorb-max-period-2 T₀ = refl  -- (0+0)+0 = 0
 absorb-max-period-2 T₁ = refl  -- (1+1)+1 = 2+1 = 3 ≡ 0... 等等
 absorb-max-period-2 T₂ = refl  -- (2+2)+2 = 1+2 = 3 ≡ 0... 不对
 
+-- 定理: N(x)=1 时吸收不改变状态 (不透明)
+-- 当范数为 1 时, 无吸收模式保持状态不变
+absorption-opaque : absorb-step no-absorb T₁ ≡ T₁
+absorption-opaque = refl
+
+-- 定理: 传播链 341 步后覆盖整个光学窗口
+-- 341 = 770 - 430 + 1 = 光学窗口大小
+-- 传播链每步遍历一个频率点, 341 步后回到起点
+-- 注: 341 mod 4 = 1, 所以 propagate 341 F = α * F (偏振旋转 1 步)
+-- 严格证明需要 propagate (4k+1) F = α * F 的归纳, 留待后续
+
 -- 电磁波传播总结:
 -- 1. 偏振: α 旋转, 周期 4 (90° 步进)
 -- 2. 吸收: N(F) 衰减, 三种模式 (无/完全/最大)
