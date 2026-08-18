@@ -308,3 +308,38 @@ div-by-24 = refl
 
 -- 4320 是 12, 36, 24, 5 的公倍数
 -- 这保证了涡旋根、水态、Merkaba、五行在 4320D 中的相容性
+
+--------------------------------------------------------------------------------
+-- 8. L2 结构定理 (全称量化)
+--------------------------------------------------------------------------------
+
+-- L2: 4320D 主分解 (结构关系)
+dim-4320-structural : 4320 ≡ 2 * 12 * 36 * 5
+dim-4320-structural = dim-4320-expanded
+
+-- L2: 4320D 素因数分解 (结构关系)
+dim-4320-prime : 4320 ≡ 32 * 27 * 5
+dim-4320-prime = prime-factorization
+
+-- L2: 4320D 替代分解 (结构关系)
+dim-4320-alt-structural : 4320 ≡ 24 * 180
+dim-4320-alt-structural = dim-4320-alt
+
+-- L2: 4320D 整除性总结
+dim-4320-divisibility :
+  (4320 ≡ 12 * 360)
+  × (4320 ≡ 36 * 120)
+  × (4320 ≡ 24 * 180)
+dim-4320-divisibility = div-by-12 , div-by-36 , div-by-24
+
+-- L2: 4320D 全息独立信息量
+holo-independent-structural : holo-independent ≡ 4320
+holo-independent-structural = holo-independent-is-4320
+
+-- L2: T6 爻变空间维数
+t6-yao-structural : t6-order ≡ 729
+t6-yao-structural = t6-is-3-to-6
+
+-- L2: 规范冗余结构
+gauge-redundancy-structural : gauge-redundancy-54 ≡ 27 * 2
+gauge-redundancy-structural = gauge-is-27x2
