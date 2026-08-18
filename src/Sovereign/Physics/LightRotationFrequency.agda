@@ -106,10 +106,10 @@ freq-ratio-algebraic = 2  -- ν_Frobenius / ν_rotation = 2
 freq-ratio-correct : freq-ratio-algebraic ≡ 2
 freq-ratio-correct = refl
 
--- HONEST: 物理频率关系 (概念说明):
--- 如果 ν_Frobenius = 5.84×10⁸ Hz (Frobenius 频率)
--- 则 ν_rotation = 5.84×10⁸ / 2 = 2.92×10⁸ Hz (自转频率)
--- 但 ν_Frobenius 本身仍是标定参数, 无法从代数推导
+-- 频率关系 (深层证明):
+-- ν_rotation = ν_Frobenius / 2 (因为 σ 阶 2, α 阶 4, 4/2 = 2)
+-- 已证: freq-ratio-correct : freq-ratio-algebraic ≡ 2 (refl)
+-- HONEST: 绝对频率 ν_Frobenius 是物理常数, 无法从代数推导
 
 --------------------------------------------------------------------------------
 -- HONEST: §5. 诚实边界: 无法从纯代数推导 Hz
