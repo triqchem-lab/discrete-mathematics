@@ -72,6 +72,12 @@ two-order-2 = refl
 -- 元素 α: 阶 4 (α⁴ = 1, 引用 alpha-powers-4)
 -- alpha-powers-4 : (alpha *gf9 alpha) *gf9 (alpha *gf9 alpha) ≡ gf9-one
 
+-- α 的阶恰好是 4:
+-- α⁴ = 1 (已证 alpha-powers-4)
+-- α² = -1 ≠ 1 (已证 alpha-squared: α² = (T₂,T₀))
+-- α³ = -α ≠ 1 (已证 alpha-cubed: α³ = (T₀,T₂))
+-- 所以 α 的阶 = 4, 即 90° 旋转存在
+
 -- 元素 2α: 阶 4 ((2α)² = -1, (2α)⁴ = 1)
 two-alpha-squared : (T₀ , T₂) *gf9 (T₀ , T₂) ≡ (T₂ , T₀)
 two-alpha-squared = refl
@@ -140,6 +146,8 @@ two-plus-two-alpha-cubed = refl  -- (2+2α)³ = 2+α
 -- 定理: GF(9) 无 3 阶元 (穷举所有 8 个元素的立方)
 -- 所有 x³ ≠ 1 (除了 x=1, 阶 1)
 -- 证明: 7 个具体的 x³ ≠ 1 验证 + 1 个 x=1 的平凡情况
+-- 注: 全称版本 GF9-cube-root-unity 需要更复杂的证明技术 (归纳或反证)
+-- 当前以具体验证覆盖所有 8 个非零元素
 
 --------------------------------------------------------------------------------
 -- §3. 余数判据: GF(3) 无根 + GF(9) 有 α
@@ -154,6 +162,14 @@ x2-plus-1-no-root-1 = refl
 
 x2-plus-1-no-root-2 : (T₂ ⊗ T₂) ⊕ T₁ ≡ T₂
 x2-plus-1-no-root-2 = refl
+
+-- GF(3) 中 x²+1 无根 (L2 全称版本)
+-- ∀ x ∈ GF(3), x²+1 ≠ 0
+-- 证明: 对 x 的 3 种情况穷举, 每种 x²+1 ≠ 0
+x2-plus-1-no-root-GF3 : ∀ x → (x ⊗ x) ⊕ T₁ ≡ T₀ → ⊥
+x2-plus-1-no-root-GF3 T₀ ()  -- 0²+1 = 1 ≠ 0
+x2-plus-1-no-root-GF3 T₁ ()  -- 1²+1 = 2 ≠ 0
+x2-plus-1-no-root-GF3 T₂ ()  -- 2²+1 = 5≡2 ≠ 0
 
 -- GF(9) 中 α 是 x²+1 的根
 alpha-is-root : alpha *gf9 alpha ≡ (T₂ , T₀)
