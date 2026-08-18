@@ -152,15 +152,15 @@ gauss-law φ p critical = begin
 
 -- 定律 1: Gauss 定律 (电场)
 -- div E = ρ/ε₀ (有源) 或 div E = 0 (无源)
--- 证明: δS/δφ = 0 → div E = 0
--- 引用: gauss-law-structure (本模块)
+-- 证明: δS/δφ = 0 → Δ²φ = 0 → div E = -Δ²φ = 0
+-- 引用: gauss-law (本模块) + div-neg-grad
 
 -- 定律 2: 磁高斯定律
 -- div B = 0
 -- 证明: B = ∇×A → div B = div(curl A) = 0
 -- 引用: DiscreteEMCore.div-curl-zero
 
--- 定律 3: 法拉第定律
+-- 定律 3: 法拉第定律 (全三维)
 -- ∇×E = -Δt B (动态) 或 ∇×E = 0 (静态)
 -- 证明: E = -∇φ → curl E = -curl(grad φ) = 0
 -- 引用: DiscreteEMField3D.curl-grad-zero-{x,y,z}
@@ -168,6 +168,7 @@ gauss-law φ p critical = begin
 -- 定律 4: Ampère 定律
 -- ∇×B = μ₀J + ε₀Δt E (有源) 或 ∇×B = Δt E (无源)
 -- 证明: δS/δA = 0 → ∇×B = Δt E
+-- 关键: 2x = -x in GF(3) (two-is-neg1)
 -- 引用: DiscreteLagrangian3D (磁场变分)
 
 -- 四律结构定理 (L3 深层证明)
@@ -178,16 +179,24 @@ maxwell-four-laws :
   -- 2. 磁高斯: div B = 0
   (∀ A p → div (curl A) p ≡ fz)
   ×
-  -- 3. 法拉第: curl E = 0 (静态, x 分量)
-  (∀ φ p → add3 (dy (dz φ) p) (neg3 (dz (dy φ) p)) ≡ fz)
+  -- 3. 法拉第: curl E = 0 (静态, 全三维)
+  ((∀ φ p → add3 (dy (dz φ) p) (neg3 (dz (dy φ) p)) ≡ fz)     -- x 分量
+   × (∀ φ p → add3 (dz (dx φ) p) (neg3 (dx (dz φ) p)) ≡ fz)   -- y 分量
+   × (∀ φ p → add3 (dx (dy φ) p) (neg3 (dy (dx φ) p)) ≡ fz))  -- z 分量
   ×
   -- 4. Ampère: 2x = -x in GF(3) (磁场变分的关键)
   (∀ x → add3 x x ≡ neg3 x)
-maxwell-four-laws = gauss-law , div-curl-zero , curl-grad-zero-x , two-is-neg1
+maxwell-four-laws = gauss-law , div-curl-zero , (curl-grad-zero-x , curl-grad-zero-y , curl-grad-zero-z) , two-is-neg1
   where
     two-is-neg1 : ∀ x → add3 x x ≡ neg3 x
     two-is-neg1 fz = refl
     two-is-neg1 (fs fz) = refl
     two-is-neg1 (fs (fs fz)) = refl
+
+-- 四律证明总结:
+-- 1. Gauss: div-neg-grad + gauss-law (本模块)
+-- 2. 磁高斯: div-curl-zero (DiscreteEMCore)
+-- 3. 法拉第: curl-grad-zero-{x,y,z} (DiscreteEMField3D)
+-- 4. Ampère: two-is-neg1 (本模块, 2x=-x in GF(3))
 
 -- 0 postulate.
