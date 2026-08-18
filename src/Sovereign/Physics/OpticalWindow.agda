@@ -361,19 +361,23 @@ propagate : ℕ → GF9 → GF9
 propagate zero F = F
 propagate (suc n) F = propagate-step (propagate n F)
 
--- 辅助引理: α*(α*(α*(α*F))) = F (穷举 9 case refl)
--- 不用 *gf9-assoc, 直接对 F 的 9 种 GF9 值穷举
+-- 辅助引理: α*(α*(α*(α*F))) = F
+-- L2 符号证明: *gf9-assoc 重结合 + alpha-powers-4 + *gf9-identityˡ
 alpha-4-times : ∀ F →
   alpha *gf9 (alpha *gf9 (alpha *gf9 (alpha *gf9 F))) ≡ F
-alpha-4-times (T₀ , T₀) = refl
-alpha-4-times (T₀ , T₁) = refl
-alpha-4-times (T₀ , T₂) = refl
-alpha-4-times (T₁ , T₀) = refl
-alpha-4-times (T₁ , T₁) = refl
-alpha-4-times (T₁ , T₂) = refl
-alpha-4-times (T₂ , T₀) = refl
-alpha-4-times (T₂ , T₁) = refl
-alpha-4-times (T₂ , T₂) = refl
+alpha-4-times F = begin
+  alpha *gf9 (alpha *gf9 (alpha *gf9 (alpha *gf9 F)))
+    ≡⟨ sym (*gf9-assoc alpha alpha (alpha *gf9 (alpha *gf9 F))) ⟩
+  (alpha *gf9 alpha) *gf9 (alpha *gf9 (alpha *gf9 F))
+    ≡⟨ sym (*gf9-assoc (alpha *gf9 alpha) alpha (alpha *gf9 F)) ⟩
+  ((alpha *gf9 alpha) *gf9 alpha) *gf9 (alpha *gf9 F)
+    ≡⟨ sym (*gf9-assoc ((alpha *gf9 alpha) *gf9 alpha) alpha F) ⟩
+  (((alpha *gf9 alpha) *gf9 alpha) *gf9 alpha) *gf9 F
+    ≡⟨ cong (λ x → x *gf9 F) alpha-powers-4 ⟩
+  gf9-one *gf9 F
+    ≡⟨ *gf9-identityˡ F ⟩
+  F
+  ∎
 
 -- 定理: 4 步传播回到原偏振 (α⁴ = 1, 9 case refl)
 propagate-4 : ∀ F → propagate 4 F ≡ F
