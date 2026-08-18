@@ -15,6 +15,7 @@
 module Sovereign.Structology.SL23Trace where
 
 open import Data.Fin using (Fin; zero; suc)
+open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Structology.BinaryTetrahedralDefiningRep
@@ -69,3 +70,21 @@ trace-correct g22 = refl
 trace-correct g23 = refl
 
 -- 0 postulate.
+
+--------------------------------------------------------------------------------
+-- L2 结构定理 (全称量化)
+--------------------------------------------------------------------------------
+
+-- L2: 迹值总结 (由 traceMat 导出)
+-- 单位元类: 迹 = 2 (mod 3)
+trace-identity : traceMat (toMat g6) ≡ classTrace (classOf g6)
+trace-identity = refl
+
+-- L2: 迹值总结 (7 个共轭类)
+trace-values-summary :
+  (traceMat (toMat g6) ≡ classTrace (classOf g6))
+  × (traceMat (toMat g15) ≡ classTrace (classOf g15))
+  × (traceMat (toMat g2) ≡ classTrace (classOf g2))
+  × (traceMat (toMat g0) ≡ classTrace (classOf g0))
+  × (traceMat (toMat g1) ≡ classTrace (classOf g1))
+trace-values-summary = refl , refl , refl , refl , refl
