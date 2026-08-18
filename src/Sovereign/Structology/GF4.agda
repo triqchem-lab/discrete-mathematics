@@ -11,6 +11,7 @@ module Sovereign.Structology.GF4 where
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Product using (Σ; _,_)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥-elim)
 open import Relation.Nullary.Negation using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
@@ -427,5 +428,64 @@ mul4-inv g0 ne = ⊥-elim (ne refl)
 mul4-inv g1 ne = g1 , refl
 mul4-inv ga ne = gb , refl   -- α·(α+1) = 1
 mul4-inv gb ne = ga , refl   -- (α+1)·α = 1
+
+--------------------------------------------------------------------------------
+-- §5. 补充 L2 定理 (全称量化)
+--------------------------------------------------------------------------------
+
+-- 加法左单位元: 0 + x = x
+add4-identityˡ : (x : GF4) → add4 g0 x ≡ x
+add4-identityˡ g0 = refl
+add4-identityˡ g1 = refl
+add4-identityˡ ga = refl
+add4-identityˡ gb = refl
+
+-- 乘法左单位元: 1 * x = x
+mul4-identityˡ : (x : GF4) → mul4 g1 x ≡ x
+mul4-identityˡ g0 = refl
+mul4-identityˡ g1 = refl
+mul4-identityˡ ga = refl
+mul4-identityˡ gb = refl
+
+-- 特征 2: x + x = 0 (自逆)
+add4-self : (x : GF4) → add4 x x ≡ g0
+add4-self g0 = refl
+add4-self g1 = refl
+add4-self ga = refl
+add4-self gb = refl
+
+-- 否定恒等: -x = x (特征 2)
+neg4-identity : (x : GF4) → neg4 x ≡ x
+neg4-identity g0 = refl
+neg4-identity g1 = refl
+neg4-identity ga = refl
+neg4-identity gb = refl
+
+-- 零因子不存在: x*y=0 → x=0 ∨ y=0
+gf4-no-zero-divisors : (x y : GF4) → mul4 x y ≡ g0 → (x ≡ g0) ⊎ (y ≡ g0)
+gf4-no-zero-divisors g0 _ _ = Data.Sum.inj₁ refl
+gf4-no-zero-divisors _ g0 _ = Data.Sum.inj₂ refl
+gf4-no-zero-divisors g1 g1 ()
+gf4-no-zero-divisors g1 ga ()
+gf4-no-zero-divisors g1 gb ()
+gf4-no-zero-divisors ga g1 ()
+gf4-no-zero-divisors ga ga ()
+gf4-no-zero-divisors ga gb ()
+gf4-no-zero-divisors gb g1 ()
+gf4-no-zero-divisors gb ga ()
+gf4-no-zero-divisors gb gb ()
+
+-- 平方映射: x² 的值 (α²=α+1, (α+1)²=α)
+gf4-square-map : GF4 → GF4
+gf4-square-map g0 = g0
+gf4-square-map g1 = g1
+gf4-square-map ga = gb  -- α² = α+1
+gf4-square-map gb = ga  -- (α+1)² = α
+
+gf4-squared : (x : GF4) → mul4 x x ≡ gf4-square-map x
+gf4-squared g0 = refl
+gf4-squared g1 = refl
+gf4-squared ga = refl
+gf4-squared gb = refl
 
 -- 0 postulate.
