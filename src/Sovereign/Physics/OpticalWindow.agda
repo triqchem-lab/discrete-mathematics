@@ -360,16 +360,30 @@ propagate : ℕ → GF9 → GF9
 propagate zero F = F
 propagate (suc n) F = propagate-step (propagate n F)
 
--- 定理: 4 步传播回到原偏振 (α⁴ = 1)
--- 证明: α*(α*(α*(α*F))) = ((α²)*(α²))*F = α⁴*F = 1*F = F
--- 需要 *gf9-assoc 重组 + alpha-powers-4 + *gf9-identityˡ
--- 核心事实 alpha-powers-4 已证, *gf9-assoc 已证
--- 严格证明需要 *gf9-assoc 的多次应用, 当前以结构说明给出
+-- 辅助引理: α*(α*(α*(α*F))) = F (穷举 9 case refl)
+-- 不用 *gf9-assoc, 直接对 F 的 9 种 GF9 值穷举
+alpha-4-times : ∀ F →
+  alpha *gf9 (alpha *gf9 (alpha *gf9 (alpha *gf9 F))) ≡ F
+alpha-4-times (T₀ , T₀) = refl
+alpha-4-times (T₀ , T₁) = refl
+alpha-4-times (T₀ , T₂) = refl
+alpha-4-times (T₁ , T₀) = refl
+alpha-4-times (T₁ , T₁) = refl
+alpha-4-times (T₁ , T₂) = refl
+alpha-4-times (T₂ , T₀) = refl
+alpha-4-times (T₂ , T₁) = refl
+alpha-4-times (T₂ , T₂) = refl
 
--- 定理: 传播链 341 步 = 1 步偏振旋转 (341 mod 4 = 1)
--- 证明: propagate 341 F = propagate (4*85 + 1) F = propagate 1 F = α * F
--- 由于 propagate 4 F ≡ F (结构说明), propagate (4*k) F ≡ F 对所有 k 成立
--- 所以 propagate (4*85 + 1) F = propagate 1 F = α * F
+-- 定理: 4 步传播回到原偏振 (α⁴ = 1, 9 case refl)
+propagate-4 : ∀ F → propagate 4 F ≡ F
+propagate-4 F = alpha-4-times F
+
+-- 定理: 传播链 341 步 = 1 步偏振旋转 (341 = 4*85 + 1)
+-- 证明: propagate 341 F = propagate-step (propagate 340 F)
+--       propagate 340 F = propagate (4*85) F ≡ F (由 propagate-4 归纳)
+--       propagate-step F = alpha *gf9 F
+-- 注: propagate-4k 的归纳步需要证明 4*suc k = 4+4*k (ℕ 乘法定义)
+-- 当前以结构说明给出, 核心事实 propagate-4 已证 (9 case refl)
 -- 实际传播 = 理想传播 × 衰减因子
 -- 衰减因子 = exp(-α · x) 的离散版
 -- 在 GF(3) 中: exp(-α · x) 的离散版 = N(F) 的递减序列
