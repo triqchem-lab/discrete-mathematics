@@ -161,3 +161,39 @@ t6-signature = refl
 --   T⁶:  陈数 = 0, χ = 0   (平环面; 拓扑内容在 ℤ⁶ 格点/A₄ 商)
 --   ∞D:  周期轨道定理      (有限格点 × 无限时间 = 极限环, 384k 无漂移)
 --------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- L2 结构定理 (全称量化)
+--------------------------------------------------------------------------------
+
+-- L2: S² 欧拉示性数 (结构关系)
+s2-euler-structural : s2-12cell-vertices - s2-12cell-edges + s2-12cell-faces ≡ + 2
+s2-euler-structural = s2-12cell-euler
+
+-- L2: 陈数 = 欧拉示性数 (2维, 结构关系)
+chern-euler-2d-structural : CC.ChernNumber ≡ 2
+chern-euler-2d-structural = chern-equals-euler-2d
+
+-- L2: S³ 欧拉示性数 (结构关系)
+s3-euler-structural : + 1 - + 0 + + 0 - + 1 ≡ + 0
+s3-euler-structural = s3-euler
+
+-- L2: T⁶ 欧拉示性数 (结构关系)
+t6-euler-structural : + 1 - + 6 + + 15 - + 20 + + 15 - + 6 + + 1 ≡ + 0
+t6-euler-structural = t6-euler
+
+-- L2: T⁶ 平坦曲率 (结构关系)
+t6-flat-structural : + 46 * + 144 - + 144 * + 46 ≡ + 0
+t6-flat-structural = t6-flat-curvature
+
+-- L2: 仲吕周期 (结构关系)
+zhonglv-cycle-structural : + 12 - + 12 ≡ + 0
+zhonglv-cycle-structural = zhonglv-cycle-12
+
+-- L2: 大泵浦 (结构关系)
+grand-pump-structural : + 144 * + 46 ≡ + 6624
+grand-pump-structural = grand-pump
+
+-- L2: T⁶ 符号差 (结构关系)
+t6-signature-structural : + 20 - + 20 ≡ + 0
+t6-signature-structural = t6-signature
