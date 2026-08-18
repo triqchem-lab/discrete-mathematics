@@ -96,6 +96,13 @@ norm-surjective-1 = refl
 norm-surjective-2 : galoisNorm (T₁ , T₁) ≡ T₂
 norm-surjective-2 = refl
 
+-- L2 全称版本: ∀ y ∈ GF(3), ∃ x ∈ GF(9) 使得 N(x) = y
+-- 证明: 提供具体见证 (T₀,T₀), (T₁,T₀), (T₁,T₁)
+norm-surjective : ∀ y → Σ GF9 (λ x → galoisNorm x ≡ y)
+norm-surjective T₀ = (T₀ , T₀) , refl
+norm-surjective T₁ = (T₁ , T₀) , refl
+norm-surjective T₂ = (T₁ , T₁) , refl
+
 -- 定理: 范数坍缩非退化 (非零元素的范数非零)
 -- N(α) = 1 ≠ 0 (α 可见)
 norm-alpha-nonzero : galoisNorm alpha ≡ T₁
