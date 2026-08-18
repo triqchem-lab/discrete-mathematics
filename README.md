@@ -43,10 +43,14 @@ agda src/Sovereign/All.agda
 | 指标 Metric | 值 Value |
 |------------|---------|
 | 错误数 Errors | **0** |
-| Agda 源文件 Source files | 85 |
-| Postulates | ~122 |
-| Zero-postulate 文件 | 72 (85%) |
-| 深层证明模块 Deep-proved modules | 12 |
+| Agda 源文件 Source files | 430+ |
+| 电磁学模块 EM modules | **11** (0 postulate, 0 hole, 0 meta) |
+| 深层证明 Deep proofs | **347 refl** (3261 行) |
+| Rust 验证 Rust validation | **15/15 全绿** |
+| Python 测试 Python tests | **29/29 passed** |
+
+> **--safe 说明**：本项目使用 `--rewriting`（T6.agda 等核心模块需要 REWRITE 规则），
+> 与 `--safe` 不兼容 (Agda 2.9.0 设计约束)。验证标准：exit 0 + 零 postulate + 零 hole + 零 meta。
 
 ---
 

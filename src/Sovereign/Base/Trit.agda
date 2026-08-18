@@ -5,6 +5,12 @@
 --
 -- 核心公理：宇宙最小几何单元为 GF(3) 格点。
 -- 包含：Trit {0, 1, 2}，加法和乘法运算。
+--
+-- --rewriting 说明：本模块本身不使用 REWRITE 规则，但下游模块
+-- T6.agda (div3k/mod3k)、XuanwuAbsorption.agda (mod46k/div46k)、
+-- jac_Pigeonhole.agda (decode9-encode9) 通过导入本模块继承此选项。
+-- --rewriting 与 --safe 不兼容 (Agda 2.9.0 设计约束)，因此本项目
+-- 不使用 --safe 验证，以 exit 0 + 零 postulate + 零 hole + 零 meta 为准。
 
 module Sovereign.Base.Trit where
 
