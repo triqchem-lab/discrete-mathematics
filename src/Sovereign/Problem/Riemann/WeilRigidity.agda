@@ -193,3 +193,35 @@ real-split-E1-9 = refl         -- s=0: 特征值落在 GF(3) 内
 -- Hasse 界与范数恒等式的等价性（E₂ 实例, 注释为证）:
 --   weil-norm-E2: 9 + 3·1 = 12 ⟹ t² = 4q − 3s² ≤ 4q ⟹ hasse-bound-E2
 -- 判别式: Δ = t² − 4q = −3s² ≤ 0 ⟺ 根为 ℚ(ω) 共轭对（无实根）
+
+--------------------------------------------------------------------------------
+-- L2 结构定理 (全称量化)
+--------------------------------------------------------------------------------
+
+-- L2: BSD 恒等式总结 (E/F₃)
+bsd-summary-gf3 :
+  ((+ 1) - t1-E1 + q3 ≡ + 4)
+  × ((+ 1) - t1-E2 + q3 ≡ + 7)
+  × ((+ 1) - t1-E6 + q3 ≡ + 1)
+bsd-summary-gf3 = bsd-identity-E1 , bsd-identity-E2 , bsd-identity-E6
+
+-- L2: Weil 范数恒等式总结 (E/F₃)
+weil-norm-summary-gf3 :
+  (t1-E1 * t1-E1 + (+ 3 * (+ 2 * + 2)) ≡ + 4 * q3)
+  × (t1-E2 * t1-E2 + (+ 3 * (+ 1 * + 1)) ≡ + 4 * q3)
+  × (t1-E6 * t1-E6 + (+ 3 * (+ 1 * + 1)) ≡ + 4 * q3)
+weil-norm-summary-gf3 = weil-norm-E1 , weil-norm-E2 , weil-norm-E6
+
+-- L2: BSD 恒等式总结 (E/F₉)
+bsd-summary-gf9 :
+  ((+ 9 + + 1) - t2-E1 ≡ + 16)
+  × ((+ 9 + + 1) - t2-E2 ≡ + 7)
+  × ((+ 9 + + 1) - t2-E6 ≡ + 7)
+bsd-summary-gf9 = bsd-identity-E1-9 , bsd-identity-E2-9 , bsd-identity-E6-9
+
+-- L2: Weil 范数恒等式总结 (E/F₉)
+weil-norm-summary-gf9 :
+  (t2-E1 * t2-E1 + (+ 3 * (+ 0 * + 0)) ≡ + 4 * + 9)
+  × (t2-E2 * t2-E2 + (+ 3 * (+ 3 * + 3)) ≡ + 4 * + 9)
+  × (t2-E6 * t2-E6 + (+ 3 * (+ 3 * + 3)) ≡ + 4 * + 9)
+weil-norm-summary-gf9 = weil-norm-E1-9 , weil-norm-E2-9 , weil-norm-E6-9
