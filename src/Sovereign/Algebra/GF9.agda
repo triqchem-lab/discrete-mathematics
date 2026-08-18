@@ -874,7 +874,26 @@ x2p1-no-root T₂ = λ ()
 --   全部 9-case 穷举 refl 或代数推导链, 0 postulate
 --------------------------------------------------------------------------------
 
+-- GF(3) Fermat 小定理: x³ = x (特征 3 域中每个元素满足)
+cube-id : ∀ x → x ⊗ (x ⊗ x) ≡ x
+cube-id T₀ = refl
+cube-id T₁ = refl
+cube-id T₂ = refl
+
+-- GF(3) Freshman's Dream: (x+y)³ = x³+y³ (特征 3 中 3xy²=0, 3x²y=0)
+freshman-dream-gf3 : ∀ x y → (x ⊕ y) ⊗ ((x ⊕ y) ⊗ (x ⊕ y)) ≡ (x ⊗ (x ⊗ x)) ⊕ (y ⊗ (y ⊗ y))
+freshman-dream-gf3 T₀ T₀ = refl
+freshman-dream-gf3 T₀ T₁ = refl
+freshman-dream-gf3 T₀ T₂ = refl
+freshman-dream-gf3 T₁ T₀ = refl
+freshman-dream-gf3 T₁ T₁ = refl
+freshman-dream-gf3 T₁ T₂ = refl
+freshman-dream-gf3 T₂ T₀ = refl
+freshman-dream-gf3 T₂ T₁ = refl
+freshman-dream-gf3 T₂ T₂ = refl
+
 -- σ = 立方映射 (特征 3 Freshman's Dream: (a+bα)³ = a³+b³α³ = a-bα)
+-- L1 穷举: GF(9) 乘法展开涉及 α²=-1, 符号证明需额外代数引理
 frobenius-cube : ∀ x → galoisConjugate x ≡ (x *gf9 x) *gf9 x
 frobenius-cube (T₀ , T₀) = refl
 frobenius-cube (T₀ , T₁) = refl
