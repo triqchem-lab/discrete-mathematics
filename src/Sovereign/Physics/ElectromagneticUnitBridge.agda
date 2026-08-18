@@ -173,6 +173,20 @@ norm-surjective-2 = refl
 norm-zero-is-zero : galoisNorm (T₀ , T₀) ≡ T₀
 norm-zero-is-zero = refl
 
+-- L2 全称版本: ∀ x, N(x)=0 → x=0
+-- 证明: 对 x 的 9 种情况穷举, 除 x=0 外 N(x)≠0
+-- 对非零 x, galoisNorm x 归约为 T₁ 或 T₂, 与 T₀ 不等 → 空模式
+norm-zero-only-for-zero : ∀ x → galoisNorm x ≡ T₀ → x ≡ (T₀ , T₀)
+norm-zero-only-for-zero (T₀ , T₀) h = refl
+norm-zero-only-for-zero (T₁ , T₀) ()
+norm-zero-only-for-zero (T₂ , T₀) ()
+norm-zero-only-for-zero (T₀ , T₁) ()
+norm-zero-only-for-zero (T₀ , T₂) ()
+norm-zero-only-for-zero (T₁ , T₁) ()
+norm-zero-only-for-zero (T₁ , T₂) ()
+norm-zero-only-for-zero (T₂ , T₁) ()
+norm-zero-only-for-zero (T₂ , T₂) ()
+
 norm-one-not-zero : galoisNorm (T₁ , T₀) ≡ T₀ → T₁ ≡ T₀
 norm-one-not-zero ()
 
