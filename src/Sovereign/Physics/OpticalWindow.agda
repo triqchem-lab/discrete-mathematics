@@ -17,6 +17,7 @@
 module Sovereign.Physics.OpticalWindow where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_)
+open import Data.Nat.Properties using (*-suc)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Relation.Binary.PropositionalEquality
@@ -378,12 +379,30 @@ alpha-4-times (T₂ , T₂) = refl
 propagate-4 : ∀ F → propagate 4 F ≡ F
 propagate-4 F = alpha-4-times F
 
--- 定理: 传播链 341 步 = 1 步偏振旋转 (341 = 4*85 + 1)
--- 证明: propagate 341 F = propagate-step (propagate 340 F)
---       propagate 340 F = propagate (4*85) F ≡ F (由 propagate-4 归纳)
---       propagate-step F = alpha *gf9 F
--- 注: propagate-4k 的归纳步需要证明 4*suc k = 4+4*k (ℕ 乘法定义)
--- 当前以结构说明给出, 核心事实 propagate-4 已证 (9 case refl)
+-- 定理: propagate (4*k) F ≡ F (对 k 归纳)
+-- 关键: *-suc 4 k : 4 * suc k ≡ 4 + 4 * k
+-- 然后 propagate (4 + 4k) F = propagate 4 (propagate (4k) F) ≡ propagate (4k) F
+propagate-4k : ∀ k F → propagate (4 * k) F ≡ F
+propagate-4k zero F = refl
+propagate-4k (suc k) F = begin
+  propagate (4 * suc k) F
+    ≡⟨ cong (λ n → propagate n F) (*-suc 4 k) ⟩
+  propagate (4 + 4 * k) F
+    ≡⟨ propagate-4 (propagate (4 * k) F) ⟩
+  propagate (4 * k) F
+    ≡⟨ propagate-4k k F ⟩
+  F ∎
+
+-- 定理: 传播链 341 步 = 1 步偏振旋转 (341 = 4*85 + 1, refl)
+propagate-period-341 : ∀ F → propagate 341 F ≡ alpha *gf9 F
+propagate-period-341 F = begin
+  propagate 341 F
+    ≡⟨ refl ⟩
+  propagate-step (propagate 340 F)
+    ≡⟨ cong propagate-step (propagate-4k 85 F) ⟩
+  propagate-step F
+    ≡⟨ refl ⟩
+  alpha *gf9 F ∎
 -- 实际传播 = 理想传播 × 衰减因子
 -- 衰减因子 = exp(-α · x) 的离散版
 -- 在 GF(3) 中: exp(-α · x) 的离散版 = N(F) 的递减序列
