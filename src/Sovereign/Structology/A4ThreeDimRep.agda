@@ -17,12 +17,14 @@
 module Sovereign.Structology.A4ThreeDimRep where
 
 open import Data.Fin using (Fin; zero; suc)
+open import Data.Integer using (ℤ; +_; -[1+_])
+open import Data.Product using (_×_; _,_)
 open import Data.Vec using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip; _⊗_)
 open import Sovereign.Structology.A4Representation
-  using (Zω; oneZω; zeroZω; negZω; ConjClass; chi3)
+  using (Zω; oneZω; zeroZω; negZω; mkZω; ConjClass; chi3)
 open import Sovereign.Structology.MatrixZω using (Mat; mulMat; trace)
 
 --------------------------------------------------------------------------------
@@ -231,4 +233,34 @@ chi3FromRep (Flip (suc zero)) = refl
 chi3FromRep (Flip (suc (suc zero))) = refl
 
 -- 0 postulate.
+
+--------------------------------------------------------------------------------
+-- §5. L2 补充定理
+--------------------------------------------------------------------------------
+
+-- L2: ρ₃(Id) = I₃ (单位表示)
+rho3-identity : rho3 Id ≡
+  ((oneZω ∷ zeroZω ∷ zeroZω ∷ []) ∷
+   (zeroZω ∷ oneZω ∷ zeroZω ∷ []) ∷
+   (zeroZω ∷ zeroZω ∷ oneZω ∷ []) ∷ [])
+rho3-identity = refl
+
+-- L2: χ₃ 值表 (由 chi3FromRep 直接导出)
+-- Id → 3, 3-循环 → 0, 双对换 → -1
+chi3-id : trace (rho3 Id) ≡ mkZω (+ 3) (+ 0)
+chi3-id = refl
+
+chi3-3cycle : trace (rho3 (Rot zero zero)) ≡ zeroZω
+chi3-3cycle = refl
+
+chi3-double-transposition : trace (rho3 (Flip zero)) ≡ mkZω -[1+ 0 ] (+ 0)
+chi3-double-transposition = refl
+
+-- L2: 特征标值总结 (3, 0, 0, -1)
+chi3-values :
+  (trace (rho3 Id) ≡ mkZω (+ 3) (+ 0))
+  × (trace (rho3 (Rot zero zero)) ≡ zeroZω)
+  × (trace (rho3 (Rot (suc zero) zero)) ≡ zeroZω)
+  × (trace (rho3 (Flip zero)) ≡ mkZω -[1+ 0 ] (+ 0))
+chi3-values = refl , refl , refl , refl
 
