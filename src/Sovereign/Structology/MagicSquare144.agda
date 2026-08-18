@@ -278,3 +278,38 @@ totalEulerIs2 = refl
 --   ∀ cell → ¬ (MagicCell.value cell ≡ PolarWinding) 为假命题 —
 --   MagicCell.value : ℕ 是自由字段, 取 value=144 的单元格即反证 (⊥ 可导出),
 --   已删除。教义保留为本注释 (静态容器 vs 拓扑不变量)。
+
+--------------------------------------------------------------------------------
+-- 9. L2 结构定理 (全称量化)
+--------------------------------------------------------------------------------
+
+-- L2: 144 = 120 + 24 (结构关系)
+magic-order-structural : MagicOrder ≡ DodecahedronCells + MerkabaCells
+magic-order-structural = magicSquareComposition
+
+-- L2: 120 = 12 × 10 (正十二面体胞腔)
+dodecahedron-structural : DodecahedronCells ≡ 12 * 10
+dodecahedron-structural = dodecahedronDerivation
+
+-- L2: 24 = 4 × 6 (梅尔卡巴胞腔)
+merkaba-structural : MerkabaCells ≡ 4 * 6
+merkaba-structural = merkabaDerivation
+
+-- L2: 144² = 20736 (幻方总胞腔数)
+magic-total-structural : MagicTotal ≡ 20736
+magic-total-structural = magicTotalIs20736
+
+-- L2: 欧拉示性数总结
+euler-characteristics :
+  (dodecahedronEuler ≡ 2)
+  × (merkabaEuler ≡ 0)
+  × (totalEuler ≡ 2)
+euler-characteristics = dodecahedronEulerIs2 , merkabaEulerIs0 , totalEulerIs2
+
+-- L2: 全巡游周期
+full-tour-structural : FULL_TOUR ≡ 6624
+full-tour-structural = fullTourCorrect
+
+-- L2: 幻方和
+magic-sum-structural : magicSquareSum ≡ 1493064
+magic-sum-structural = magicSumCorrect
