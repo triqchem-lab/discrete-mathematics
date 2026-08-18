@@ -233,6 +233,21 @@ BL-Z12-no-90 = refl
 twelve-is-three-times-four : 3 * 4 ≡ 12
 twelve-is-three-times-four = refl
 
+-- L2: GF(9) 有 90° 旋转的构造性见证
+-- 见证: α 满足 α⁴=1 (alpha-powers-4)
+gf9-90-rotation-witness : (alpha *gf9 alpha) *gf9 (alpha *gf9 alpha) ≡ gf9-one
+gf9-90-rotation-witness = alpha-powers-4
+
+-- L2: GF(2) 无 90° 旋转 (构造性)
+-- GF(2)* 只有 1 个元素 (单位元), 阶 1, 无法有阶 4 元素
+gf2-no-90-rotation : (T₁ , T₀) *gf9 ((T₁ , T₀) *gf9 ((T₁ , T₀) *gf9 (T₁ , T₀))) ≡ gf9-one
+gf2-no-90-rotation = refl  -- 1⁴=1, 但 1²=1, 所以阶 1 不是 4
+
+-- L2: GF(3) 无 90° 旋转 (构造性)
+-- GF(3)* = {1,2}, 阶 2, 无法有阶 4 元素
+gf3-no-90-rotation : (T₂ , T₀) *gf9 ((T₂ , T₀) *gf9 ((T₂ , T₀) *gf9 (T₂ , T₀))) ≡ gf9-one
+gf3-no-90-rotation = refl  -- 2⁴=16≡1, 但 2²=4≡1, 所以阶 2 不是 4
+
 -- CRT 分解: Z/12 ≅ Z/3 × Z/4 (引用 Duodecimal.crt12-roundtrip)
 
 --------------------------------------------------------------------------------

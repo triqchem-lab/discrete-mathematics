@@ -111,6 +111,14 @@ freq-ratio-correct = refl
 -- 已证: freq-ratio-correct : freq-ratio-algebraic ≡ 2 (refl)
 -- HONEST: 绝对频率 ν_Frobenius 是物理常数, 无法从代数推导
 
+-- L2: 阶的结构关系 — α 阶 = 2 × σ 阶 (因为 α⁴=1, σ²=id, 4=2×2)
+order-relationship : alpha-order ≡ 2 * frobenius-order
+order-relationship = refl  -- 4 = 2×2
+
+-- L2: 频率比 × σ 阶 = α 阶 (倒数关系: 2×2=4)
+freq-times-frobenius : freq-ratio-algebraic * frobenius-order ≡ alpha-order
+freq-times-frobenius = refl  -- 2×2 = 4
+
 --------------------------------------------------------------------------------
 -- HONEST: §5. 诚实边界: 无法从纯代数推导 Hz
 --------------------------------------------------------------------------------

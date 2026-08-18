@@ -19,6 +19,7 @@ module Sovereign.Physics.OpticalSampling where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
+open import Data.Empty using (⊥)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Data.Bool using (Bool; true; false; not; _∧_)
 open import Relation.Binary.PropositionalEquality
@@ -116,6 +117,11 @@ norm-alpha2-nonzero = norm-mul alpha alpha
 -- N(α) = N(-α) = 1
 norm-conjugate-equal : galoisNorm alpha ≡ galoisNorm neg-alpha
 norm-conjugate-equal = galoisNorm-conjugate alpha
+
+-- L2: α⁴ 的范数 = 1 (由 norm-mul + alpha-powers-4 推导)
+-- N(α⁴) = N(α²)·N(α²) = 1·1 = 1
+norm-alpha-power-4 : galoisNorm ((alpha *gf9 alpha) *gf9 (alpha *gf9 alpha)) ≡ T₁
+norm-alpha-power-4 = norm-mul (alpha *gf9 alpha) (alpha *gf9 alpha)
 
 --------------------------------------------------------------------------------
 -- §2.5 范数非退化判据: 光学窗口内存在非零范数的场

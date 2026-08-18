@@ -22,7 +22,7 @@ module Sovereign.Physics.LightRotationTernary where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)
 
@@ -112,6 +112,32 @@ decode-encode-11 = refl
 
 -- 三进制编码的信息容量: 2 Trit = 9 个状态, 编码 4 个旋转状态
 ternary-capacity : ℕ
+
+-- L2: 编码单射性 — 不同旋转状态编码为不同 Trit 对
+encoding-injective : ∀ s₁ s₂ → encode-rotation s₁ ≡ encode-rotation s₂ → s₁ ≡ s₂
+encoding-injective sub4-1  sub4-1  h = refl
+encoding-injective sub4-1  sub4-α  ()  -- (T₀,T₀) ≠ (T₁,T₀)
+encoding-injective sub4-1  sub4-2  ()  -- (T₀,T₀) ≠ (T₀,T₁)
+encoding-injective sub4-1  sub4-2α ()  -- (T₀,T₀) ≠ (T₁,T₁)
+encoding-injective sub4-α  sub4-1  ()  -- (T₁,T₀) ≠ (T₀,T₀)
+encoding-injective sub4-α  sub4-α  h = refl
+encoding-injective sub4-α  sub4-2  ()  -- (T₁,T₀) ≠ (T₀,T₁)
+encoding-injective sub4-α  sub4-2α ()  -- (T₁,T₀) ≠ (T₁,T₁)
+encoding-injective sub4-2  sub4-1  ()  -- (T₀,T₁) ≠ (T₀,T₀)
+encoding-injective sub4-2  sub4-α  ()  -- (T₀,T₁) ≠ (T₁,T₀)
+encoding-injective sub4-2  sub4-2  h = refl
+encoding-injective sub4-2  sub4-2α ()  -- (T₀,T₁) ≠ (T₁,T₁)
+encoding-injective sub4-2α sub4-1  ()  -- (T₁,T₁) ≠ (T₀,T₀)
+encoding-injective sub4-2α sub4-α  ()  -- (T₁,T₁) ≠ (T₁,T₀)
+encoding-injective sub4-2α sub4-2  ()  -- (T₁,T₁) ≠ (T₀,T₁)
+encoding-injective sub4-2α sub4-2α h = refl
+
+-- L2: 解码满射性 — 每个旋转状态都有原像
+decoding-surjective : ∀ s → Σ (Trit × Trit) (λ p → decode-rotation p ≡ s)
+decoding-surjective sub4-1  = (T₀ , T₀) , refl
+decoding-surjective sub4-α  = (T₁ , T₀) , refl
+decoding-surjective sub4-2  = (T₀ , T₁) , refl
+decoding-surjective sub4-2α = (T₁ , T₁) , refl
 ternary-capacity = 9  -- 3²
 
 -- 定理: 编码容量 ≥ 旋转状态数 (9 ≥ 4)
