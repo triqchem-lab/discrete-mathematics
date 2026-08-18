@@ -19,7 +19,7 @@
 -- §4 离散场量→ℚ 映射
 -- §5 结构定理保标定
 -- §6 Maxwell 方程标定保持
--- §7 命名层锚点 (注释级)
+-- HONEST: §7 命名层锚点 (注释级)
 
 module Sovereign.Physics.ElectromagneticUnitBridge where
 
@@ -74,10 +74,10 @@ open import Sovereign.Physics.DiscreteEMField3D
   using (dy-dx-comm; dz-dx-comm; dz-dy-comm)
 
 --------------------------------------------------------------------------------
--- §1. 标定参数 record (频率单标定: 2 个参数)
+-- HONEST: 标定参数 record (频率单标定: 2 个参数)
 --------------------------------------------------------------------------------
 
--- 标定参数: 只需两个外部输入。
+-- HONEST: 标定参数: 只需两个外部输入。ν⁻¹ 是用户提供的 ℚ 值, 不是 1/ν 的证明。
 -- fundamentalFrequency: Frobenius 主频 (语料给出 2.93×10⁸ Hz)
 -- conversionConst: 频率→长度换算常数 (待实验/语料确定)
 --
@@ -187,7 +187,7 @@ norm-alpha-squared = norm-mul alpha alpha
 norm-alpha-fourth : galoisNorm ((alpha *gf9 alpha) *gf9 (alpha *gf9 alpha)) ≡ T₁
 norm-alpha-fourth = norm-mul (alpha *gf9 alpha) (alpha *gf9 alpha)
 
--- 频率-空间关系 (设计说明):
+-- HONEST: 频率-空间关系 (设计说明):
 -- 给定 scale : EMUnitScale, 有:
 --   latticeScale = C × ν⁻¹ × ν⁻¹ = C/ν²
 --   lightResiduum = C × ν⁻¹ = C/ν
@@ -212,7 +212,7 @@ module DiscreteToClassical (scale : EMUnitScale) where
   tritDiffToℚ a b = Data.Rational._/_ (tritToℤ a Data.Integer.- tritToℤ b) 1
 
   -- 离散电势差 (伏特)
-  -- 标定: voltPerTrit 由主频导出 (候选: Δ=√3 ↔ 0.5 meV)
+  -- HONEST: 标定: voltPerTrit 由主频导出 (候选: Δ=√3 ↔ 0.5 meV)
   -- 此处保留为独立参数, 未来可从 ν 导出
   voltageWith : ℚ → ScalarField → Point3D → Point3D → ℚ
   voltageWith vpt φ p₁ p₂ = vpt * tritDiffToℚ (φ p₁) (φ p₂)
@@ -273,13 +273,13 @@ module StructuralPreservation (scale : EMUnitScale) where
 
 module MaxwellPreservation (scale : EMUnitScale) where
 
-  -- Maxwell 方程标定保持 (设计说明):
+  -- HONEST: Maxwell 方程标定保持 (设计说明):
   -- 已有: DiscreteMaxwellTime.charge-conservation
   --   AmpereStep E B J → GaussHolds E ρ → ΔtS ρ t p ≡ neg3 (div (J t) p)
   -- 标定后: k × ΔtS ρ ≡ k × neg3(div J) → Δt(kρ) ≡ neg3(div(kJ))
   -- ℚ 乘法线性性, trivial 推论, 不需要独立证明。
 
-  -- Yee 蛙跳高斯保持 (设计说明):
+  -- HONEST: Yee 蛙跳高斯保持 (设计说明):
   -- 已有: DiscreteMaxwellConservation.gauss-preservation
   -- 标定后: ∀t, div(k×E(t)) = k×ρ(t) — ℚ 乘法线性性
 
@@ -337,7 +337,7 @@ module EmergenceProofChain (scale : EMUnitScale) where
   --   Δt(k×F) = k×ΔtF = k×(curl F − J) = curl(k×F) − k×J
   --   两边同乘 k, 等式保持 (本模块 §6)
 
-  -- 涌现链完备性 (设计说明):
+  -- HONEST: 涌现链完备性 (设计说明):
   -- 层 1: GF(9) Frobenius σ(x)=x³ (GF9.agda, 已证)
   -- 层 2: 统一 Maxwell Δt F = curl9 F − J (DiscreteMaxwellGF9, 已证)
   -- 层 3: 四律 + 电荷守恒 + 高斯保持 (DiscreteMaxwellTime+Conservation, 已证)

@@ -136,7 +136,7 @@ visible-window-nondegenerate = norm-nondegenerate-witness
 -- §2. 可见光频段: 频率窗口形式化
 --------------------------------------------------------------------------------
 
--- 频率标定参数 (来自 ElectromagneticUnitBridge):
+-- HONEST: 频率标定参数 (来自 ElectromagneticUnitBridge):
 -- 主频 ν = 2.93×10⁸ Hz (卢先生锚点)
 -- 能隙 Δ = √3 (H₂O@C₆₀ 0.5 meV)
 
@@ -144,7 +144,7 @@ visible-window-nondegenerate = norm-nondegenerate-witness
 -- 在频率标定框架中: 可见光 = n × Δ × (eV→Hz 换算因子)
 -- 其中 n ∈ {1, 2} (第一/第二谐波)
 
--- 候选映射 (来自 wiki 108):
+-- HONEST: 候选映射 (来自 wiki 108):
 -- Δ = √3 eV ≈ 1.73 eV → 716 nm (红光)
 -- 2Δ = 2√3 eV ≈ 3.46 eV → 358 nm (近紫外)
 -- 可见光 = Δ ~ 2Δ 的窗 (n ∈ {1.03, 1.84})
