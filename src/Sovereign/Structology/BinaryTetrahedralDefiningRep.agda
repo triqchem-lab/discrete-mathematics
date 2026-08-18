@@ -17,6 +17,7 @@ module Sovereign.Structology.BinaryTetrahedralDefiningRep where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero; suc)
+open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Structology.A4Representation using (Zω; oneZω; zeroZω)
@@ -153,3 +154,33 @@ chi2-correct g22 = refl
 chi2-correct g23 = refl
 
 -- 0 postulate.
+
+--------------------------------------------------------------------------------
+-- §4. L2 补充定理
+--------------------------------------------------------------------------------
+
+-- L2: χ₂ 值表 (由 chi2FromRep 直接导出)
+-- 阶 1 → 2, 阶 2 → -2, 阶 3 → -1, 阶 4 → 0, 阶 6 → 1
+chi2-order1 : chi2FromRep g6 ≡ z-two      -- g6 阶 1 → χ₂=2
+chi2-order1 = refl
+
+chi2-order2 : chi2FromRep g15 ≡ z-neg-two  -- g15 阶 2 → χ₂=-2
+chi2-order2 = refl
+
+chi2-order3 : chi2FromRep g2 ≡ z-neg-one  -- g2 阶 3 → χ₂=-1
+chi2-order3 = refl
+
+chi2-order4 : chi2FromRep g0 ≡ zeroZω     -- g0 阶 4 → χ₂=0
+chi2-order4 = refl
+
+chi2-order6 : chi2FromRep g1 ≡ oneZω      -- g1 阶 6 → χ₂=1
+chi2-order6 = refl
+
+-- L2: 特征标值总结 (2, -2, -1, 0, 1)
+chi2-values :
+  (chi2FromRep g6 ≡ z-two)
+  × (chi2FromRep g15 ≡ z-neg-two)
+  × (chi2FromRep g2 ≡ z-neg-one)
+  × (chi2FromRep g0 ≡ zeroZω)
+  × (chi2FromRep g1 ≡ oneZω)
+chi2-values = refl , refl , refl , refl , refl
