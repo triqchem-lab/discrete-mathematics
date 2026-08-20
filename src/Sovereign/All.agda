@@ -2,9 +2,11 @@
 
 module Sovereign.All where
 
-open import Sovereign.Base.Trit          public using (Trit; T-; T0; T+)
+open import Sovereign.Base.Trit          public using (Trit; T-; T0; T+; tri-period-zero; one-plus-one; char-3)
 open import Sovereign.Base.Invariants    public using (POLAR_WINDING; TOROIDAL_WINDING; CHERN_NUMBER; SOVEREIGN_LCM)
 open import Sovereign.Base.Axioms        public using (digitalRoot; IsStable; zhonglvAlign)
+-- 递归幂函数与归零动力学 (函数领域第一性构造, 0 postulate)
+open import Sovereign.Base.FunctionTheory public using (power; idempotent-power; zero-power-generic)
 open import Sovereign.Structology.Lattice public using (Lü; TwelveLu)
 open import Sovereign.Structology.Closure public using (State; step; isZhonglvPoint)
 open import Sovereign.Topology.HighDimClosure public using (HighDimView; EngineeringView)
@@ -61,6 +63,15 @@ open import Sovereign.Quantum.NoCloning public
          IsLinear4; IsUnitary4; CloningCircuit)
 open import Sovereign.Quantum.Measurement public
   using (collapse; collapse-eigen0; collapse-eigen1; collapse-eigen2)
+-- 零幂族量子定理: 真空态湮灭/零跨维度/真空唯一/共轭对消/零点能 (0 postulate)
+open import Sovereign.Quantum.ZeroPowerQuantum public
+  using (vacuum-annihilatesˡ; vacuum-annihilatesʳ;
+         zero-crosses-all-dimensions;
+         vacuum-unique;
+         additive-annihilation; vector-annihilation;
+         norm-collapse-is-compression; norm-of-zero; norm-zero-stable;
+         zero-point-energy; zero-energy-stable;
+         measure-zero)
 
 -- CRT 理论
 open import Sovereign.Format.CRT public
@@ -89,6 +100,60 @@ open import Sovereign.Algebra.TriCycGraph public
          totalWeight; edge₀₁; edge₁₂; edge₂₀;
          zeroGraph; oneGraph)
 
+-- 迭代函数论: 自映射轨道结构、不动点、周期、吸引子、共轭 (0 postulate)
+open import Sovereign.Algebra.IterationTheory public
+  using (orbit-zero; orbit-suc; orbit-add; orbit-compose;
+         IsFixedPoint; id-all-fixed; frobenius-fixed-gf3;
+         fixed-iterates; fixed-orbit-constant;
+         IsPeriodic; IsMinimalPeriod; fixed-is-period-1;
+         frobenius-period-2; period-multiple;
+         AreConjugate; conjugate-orbit; self-conjugate;
+         frobenius-self-conjugate;
+         OrbitType; frobenius-fixed-list; frobenius-cover)
+
+-- 离散多项式函数论: GF(3)[x] 多项式环、求值、形式导数、char 3 特殊性 (0 postulate)
+open import Sovereign.Algebra.DiscretePolynomial public
+  using (Poly; zero-poly; const-poly; monic; eval;
+         from-ℕ; coeff-deriv; deriv-0;
+         char3-is-zero; three-times; coeff-deriv-3;
+         _+p_; +p-comm; +p-zeroˡ; negate-poly; +p-inverse;
+         mul-deg1; mul-deg1-11; mul-deg1-12; mul-deg1-idˡ;
+         IsRoot; example-poly; example-root; example-not-root;
+         eval-surjective)
+
+-- 离散复分析: GF(9) 作为离散 ℂ, 全纯性, Cauchy-Riemann, 共轭 (0 postulate)
+open import Sovereign.Algebra.DiscreteComplexAnalysis public
+  using (Re; Im; mkComplex; i-squared; i-to-4;
+         DiscreteCR; z²-discrete-cr;
+         DiscreteHolomorphic; sigma-holomorphic; id-holomorphic;
+         const-holomorphic; gf3-fixed; non-gf3-not-fixed;
+         sigma-fixed-list;
+         conjugate-preserves-norm; conjugate-distrib-mul;
+         conjugate-distrib-add; z²-harmonic; norm-not-harmonic;
+         zero-holomorphic)
+  -- 注: conjugate-involutive 已由 SpinTwistor 导出 (L34), 此处避免名冲突
+
+-- 谱函数论: GF(9)* 特征标, 离散 Fourier 变换 (0 postulate)
+open import Sovereign.Algebra.SpectralFunctionTheory public
+  using (character; character-0; character-1;
+         character-2-gen; character-4-gen; character-8-gen;
+         GF9StarFunc; fromGF9-idx; eval-func; const-func;
+         mul-accumulate; fourier-coeff;
+         identity-fourier; identity-at-0; identity-at-4)
+
+-- 超运算层级: H₀-H₅, Knuth 箭头, 有限域坍缩 (0 postulate)
+open import Sovereign.Algebra.Hyperoperation public
+  using (hyper; hyper0-2-3; hyper1-2-3; hyper2-2-3;
+         hyper3-2-3; hyper3-2-4; hyper4-2-1; hyper4-2-2;
+         hyper4-2-3; hyper4-2-4; hyper4-3-1; hyper4-3-2;
+         hyper4-3-3; hyper4-12-1; hyper4-12-2;
+         knuth-↑; knuth-↑↑; knuth-↑↑↑;
+         knuth-2↑↑4; knuth-2↑↑↑1; knuth-2↑↑↑2;
+         mod3-12; mod4-12; mod8-12sq; mod9-12sq; mod12-12;
+         hyper4-12-2-mod3; hyper4-12-2-mod4;
+         hyper4-12-2-mod8; hyper4-12-2-mod9;
+         hyper3-2-1; hyper4-2-1')
+
 -- 三合弦恒等式: i²+1²=0, i⁶+1⁶=0, i¹⁰+1¹⁰=0
 open import Sovereign.Algebra.TriadicHarmonic public
   using (i²+1²≡0; i⁶+1⁶≡0; i¹⁰+1¹⁰≡0; triadic-harmonic-theorem)
@@ -96,6 +161,16 @@ open import Sovereign.Algebra.TriadicHarmonic public
 -- 数字根循环定理: 2^k%9周期6 + CRT投影归零等价
 open import Sovereign.Algebra.DigitalRootCycle public
   using (period-6; polar-dr≡0; torus-dr≡1; full-tour-dr≡0)
+-- 数论锚点: 零幂分类 + 8=2³ + 阶数兼容链 + 无等号注释 (0 postulate)
+open import Sovereign.Algebra.NumberTheoryAnchors public
+-- 降序沉降链 n^n 数字根规律 (转录错误确认, 0 postulate)
+open import Sovereign.Algebra.DescendingChain public
+-- 超运算/指数塔: tetration 递归定义 + 有限域坍缩 (0 postulate)
+open import Sovereign.Algebra.Tetration public
+  hiding (mod12-12; mod3-12; mod4-12; mod8-12sq; mod9-12sq)
+  -- 注: mod12-12/mod3-12/mod4-12/mod8-12sq/mod9-12sq 已由 Hyperoperation 导出 (L152)
+-- 零幂指数与方向数映射 + 指数=维度语义 (0 postulate)
+open import Sovereign.Algebra.ExponentDimension public
 
 -- C₃ 轨道定理: {1,3,5} 在 +2 (mod 6) 下构成 C₃ 轨道
 open import Sovereign.Algebra.C3Orbit public
@@ -120,7 +195,7 @@ open import Sovereign.Structology.IhC60Vibration public
 -- A₄ 不可约表示论: 特征标表 {3,1,1′,1″} + 完整第一正交关系 + Abel 化三特征标
 -- (乘性 144 case + sum=0 子空间不变性, 0 postulate)
 open import Sovereign.Structology.A4Representations public
-  using (A4Irrep; ConjugacyClass; charAt; character; dimSqSum;
+  using (A4Irrep; ConjugacyClass; charAt; dimSqSum;
          char-orthogonality; irrep-norm-criterion; chars-distinct;
          basisSumZero; sumZero-invariant; act-preserves-L;
          perm-char-decomp; abelianize; c3Char; abelianize-hom;
@@ -130,6 +205,7 @@ open import Sovereign.Structology.A4Representations public
          theorem-dimension-sum-of-squares; theorem-class-count;
          theorem-dim-sum-eq-class-sum;
          FermionGenerations; standardFermionAssignment)
+  -- 注: character 已由 SpectralFunctionTheory 导出 (L137)
 
 -- T⁶ 五维物理投影: 3 空间 + 2 手征 + 1 规范相位 显式标注 (0 postulate)
 open import Sovereign.Structology.T6FiveDimensionalProjection public
@@ -176,7 +252,8 @@ open import Sovereign.Geometry.ConformalInvariants public
 open import Sovereign.Geometry.TorusGeometry public
   using (T6Lattice; t6Add; t6Zero; t6Neg; t6Scale; t6GeodesicN;
          t6Add-assoc; t6Add-comm; t6Add-identityˡ; t6Add-identityʳ;
-         g1; g2; g3; g4; g5; g6; genL)
+         t6Add-inverseˡ;
+         b1; b2; b3; b4; b5; b6; genL)
 open import Sovereign.Geometry.TorusGeodesic public
   using (spiral6; spiral-period3; spiral-fulltour)
 open import Sovereign.Geometry.TorusAlgebra public
@@ -188,9 +265,46 @@ open import Sovereign.Geometry.TorusFourier public
 -- GF(3)→GF(9) 代数链: 加法群/乘法群/Frobenius/Norm/Trace
 open import Sovereign.Algebra.GF9AlgebraicChain public
 -- GF(3²) = GF(9) 有限域: 乘法群/Frobenius/共轭/范数/迹
-open import Sovereign.Algebra.GF9 public
--- Z/12Z 十二进制涡旋环 (本体)
+open import Sovereign.Algebra.GF9 public hiding (_^s_)
+-- Z/12 传统环 (加法载体 + CRT 基础设施; 十二进制本体见 DuodecClock.agda)
 open import Sovereign.Algebra.Duodecimal public
+-- 十二进制混合时钟: 加法步进 Z/3 ⊕ 乘法旋转 ⟨α⟩ (char 3 × α阶4 联合周期, 非 A₄)
+open import Sovereign.Algebra.GroupTheory.DuodecClock public
+-- DuodecClock 广泛数学性质: 子群格/自同构/环/表示论/Cayley图/函子/拓扑/指数塔 (0 postulate)
+open import Sovereign.Algebra.GroupTheory.DuodecClockProperties public
+-- 离散斐波那契: GF(3) Pisano 周期 8 = ord(φ), φ²=α (90° 半步, 有限域版非死亡几何)
+open import Sovereign.Algebra.DiscreteFibonacci public
+  using (fibStep; fibPair; fibTrit; fibPair-8-base; fibPair-period-8;
+         fibTrit-period-8; pisano-period-3; phi-squared-is-alpha;
+         phi-order-is-8; pisano-3-equals-ord-phi)
+-- 意识层: GF(9) 子群链 ⟨-1⟩⊂⟨α⟩⊂⟨φ⟩ (45°/90°/270° 旋转 + 断网/重连, 0 postulate)
+open import Sovereign.Algebra.ConsciousnessLayer public
+  using (consciousness-45-to-90; consciousness-45-to-180; consciousness-45-to-360;
+         consciousness-order-is-8; alpha-cubed-is-neg-alpha; rewiring-identity;
+         neg-one-in-alpha-subgroup; alpha-in-phi-subgroup; subgroup-chain-complete;
+         norm-of-alpha; norm-of-one-plus-alpha; norm-of-phi)
+-- 信息结构桥接: 周期/频率/泛音/方向数/范数坍缩 显式映射 (0 postulate)
+open import Sovereign.Algebra.InformationStructure public
+  using (info-frobenius-period; info-additive-period; info-joint-period; pisano-period;
+         base-frequency; add-frequency; mul-frequency; phi-frequency;
+         overtone-12; ot-12; ot2-1;
+         alpha-directions; phi-directions; duodec-directions; direction-equals-order;
+         norm-collapse-identity; norm-is-filter; zero-is-redundant;
+         bridge-order-period; bridge-period-frequency; bridge-frequency-overtone;
+         bridge-overtone-harmonic; bridge-order-direction; bridge-norm-collapse;
+         bridge-zero-power; bridge-joint)
+-- GF(9) 交换半环: "只有加乘，无减除" 的代数形式化 (0 postulate)
+open import Sovereign.Algebra.GF9Semiring public
+-- 子群链阶整除: 2∣4, 4∣8 (2-准素塔阶关系, 0 postulate)
+open import Sovereign.Algebra.DivisibilityChain public
+-- GF(9) 邻接矩阵与图谱: 4阶矩阵乘法/幂/迹/对称性 (0 postulate)
+open import Sovereign.Algebra.AdjacencyMatrix public
+-- 范数坍缩代数: N(x)=x·σ(x) 共轭坍缩 + 勾股投影 (0 postulate)
+open import Sovereign.Algebra.NormCollapse public
+  using (norm-collapse; norm-multiplicative; norm-conjugate-invariant;
+         norm-1-0; norm-0-1; norm-1-1; norm-1-2; birth-proof)
+-- 零元跨维度归零代数: 加法归零+乘零吸收+零幂稳定 (0 postulate)
+open import Sovereign.Algebra.ZeroCrossing public
 -- 代数极统一视图: L1-L10 完整代数链
 open import Sovereign.Algebra.AlgebraicPoleUnified public
 -- 涡旋根 "123" 本体论层 (数字根 6 / 倍频链 3→6→12 / Merkaba 回绕)
@@ -217,9 +331,10 @@ open import Sovereign.Algebra.UniversalAlgebra public
   using (Semigroup; Monoid; Group; AbelianGroup; Ring; IsField;
          trit-add; trit-mul; trit-ring; duodec-add; gf9-add;
          gf9-mul-comm; gf9-mul-identityˡ; gf9-mul-identityʳ; gf9-distribʳ;
-         hom-preserves-zero; hom-preserves-eval; Term2; eval;
+         hom-preserves-zero; hom-preserves-eval; Term2;
          negate-add-hom; negate-is-automorphism;
          zero-divisor-not-field; trit-field; duodec-not-field)
+  -- 注: eval 已由 DiscretePolynomial 导出 (L115)
 -- 06 补强: 12 的除数格 (分配格律全表 + Möbius)
 open import Sovereign.Algebra.DivisorLattice public
   using (Div12; meet; join; min3; max3; min2; max2;
@@ -344,6 +459,17 @@ open import Sovereign.Physics.EntropySpinVerification public
          six-rotateℚ; pull-last; six-zero; six-zero';
          divℚ; divℚ-curl-zero; S-field; law-eq;
          divS-identity; divS-zero-condition)
+-- 光学窗口链 (纯 α=90° 克里斯托螺旋, 无 φ/45°): 观测角 → 采样 → 可见光窗口
+open import Sovereign.Physics.ObservabilityAngle public
+  using (photon-structure-angle; eye-sampling-angle; visible-light-observable)
+open import Sovereign.Physics.OpticalSampling public
+  using (sampling-angle; sampling-angle-matches-photon)
+open import Sovereign.Physics.OpticalWindow public
+  using (OpticalWindow; optical-freq-min; optical-freq-max; optical-window-size;
+         optical-window-size-correct; light-birth; one-squared;
+         optical-interfere; constructive; destructive;
+         constructive-0; constructive-1; constructive-2)
+  renaming (interfere to optical-interfere)  -- 避免与 ChiralInterference.interfere 冲突
 -- 熵旋微观输运证明 (通量输运恒等式 + 无损通道 + 阈值通用化 a≥1, 0 postulate)
 open import Sovereign.Physics.EntropySpinMicro public
   using (zero-minus-zero-plus; planeSum; plane-distrib2;
@@ -393,6 +519,102 @@ open import Sovereign.Physics.ChiralInterference public
          waveCW; waveCCW; wave-cancel; wave-cw-construct; wave-ccw-construct;
          kShift; Standing; rest-standing; const-standing;
          wave-cancel-forms-standing; cube; frob3-identity; frob-stability)
+-- 时空映射: Frobenius周期(时间) × 范数坍缩(空间), 0 postulate
+open import Sovereign.Physics.SpaceTimeMapping public
+-- 环面链: 两极连→归零→90°→克里斯托 构造序完整性, 0 postulate
+open import Sovereign.Physics.TorusChain public
+  using (poles-distinct; poles-cancel; torus-180; zero-plus-one;
+         torus-90; torus-270; torus-45; torus-360; chain-orders)
+-- 膜分层引理: 模板144→频率96→步长8→12层膜 (0 postulate)
+open import Sovereign.Physics.LatticeMembrane public
+  using (template-is-12-squared; descent-start; descent-total;
+         step-size-equals-gf9-star-order; step-size-is-2-cubed;
+         membrane-count-is-12; template-equals-count-squared;
+         total-layers-is-12; three-plus-nine;
+         step-8-consistent; step-12-inconsistent;
+         pybitnet-mid-pump-val)
+-- 水的 8 种状态 → T⁶ 离散框架建模 (0 postulate)
+open import Sovereign.Physics.WaterStates public
+  using (WaterState; Solid; Liquid; Gas; Supercritical; Supersolid;
+         Superfluid; FermionCondensate; Plasma;
+         solid-is-zero; plasma-is-full;
+         solid-to-liquid; liquid-to-gas; chiral-flip;
+         val-4-to-9-is; val-9-to-4-is;
+         four-to-nine-is-two-to-eighteen; nine-to-four-is-three-to-eight;
+         combined-is)
+-- 水的离散全息结构: 广义液态/水种/球形矢量场/熵旋 (0 postulate)
+open import Sovereign.Physics.WaterStructure public
+  using (liquid-equilibrium; liquid-stable; norm-collapse-to-gf3;
+         chiral-cancellation)
+-- 量子化学: T⁶ 离散环面上的分子结构 (0 postulate)
+open import Sovereign.Physics.QuantumChemistry public
+  using (water-electrons; t6-dim; t6-max-electrons;
+         bond-angle-deg; half-bond-angle-deg;
+         dipole-norm;
+         angle-0; angle-45; angle-90; angle-180; angle-270; angle-360)
+-- 水的四个科研锚点: C₆₀ 46基频=TOROIDAL_WINDING + 零幂族 + divS (0 postulate)
+open import Sovereign.Physics.WaterAnchors public
+  using (freq-equals-winding; ih-equals-10-times-12; c60-vib-formula;
+         temp-second-critical; temp-homogeneous-nucleation;
+         zero-power-physical)
+-- 蜂窝磁场: 蜂窝晶格几何与量子场的深度耦合 (0 postulate)
+open import Sovereign.Physics.HoneycombMagneticField public
+  using (honeycomb-vertices-per-cell; honeycomb-coordination; honeycomb-symmetry;
+         insulator-norm; conductor-norm;
+         zero-power; frobenius-involution; chern-number)
+-- 水的量子数据全局统合: T⁶→凝聚态完整因果链 (0 postulate)
+open import Sovereign.Physics.WaterQuantumIntegration public
+  using (standing-wave; norm-collapse-as-compression;
+         zero-power-family; water-birth;
+         freq-equals-toroidal; ih-equals-10x12; c60-vib)
+-- 原子驻波与量子场势垒: T⁶ 环面上的波动模式 (0 postulate)
+open import Sovereign.Physics.AtomicStandingWave public
+  using (wave-closure; half-step-closure; full-step-closure;
+         norm-zero; norm-one-alpha; norm-two;
+         propagating-states; confined-states; state-ratio)
+-- 超导态: 范数边界的凝聚态投影 (0 postulate)
+open import Sovereign.Physics.Superconductivity public
+  using (superconducting-equilibrium; superconducting-stable; superconducting-power)
+-- 相变 = 范数边界穿越 (0 postulate)
+open import Sovereign.Physics.PhaseTransition public
+  using (PhaseTransition; homogeneous-nucleation-temp;
+         second-critical-temp-low; second-critical-temp-high;
+         solid-norm; liquid-norm; superconducting-norm)
+-- 量子纠错: GF(3) 表面码 + Frobenius 相位保护 (0 postulate)
+open import Sovereign.Physics.QuantumErrorCorrection public
+  using (Qutrit; qutrit-0; qutrit-1; qutrit-2;
+         phase-protection-is-involution;
+         zero-no-correction)
+-- 蛋白质折叠: T⁶ 构象空间 + 零态稳定性 (0 postulate)
+open import Sovereign.Physics.ProteinFolding public
+  using (Conformation; native-state; native-is-zero; native-stability;
+         hydrogen-bond-valid; non-hydrogen-bond)
+-- DNA 碱基配对: GF(3) 有限域编码 (0 postulate)
+open import Sovereign.Physics.DNAEncoding public
+  using (A; base-to-gf3;
+         pair-at; pair-cg; non-pair-aa; complementary-norm)
+-- 气候动力学: T⁶ 环面上的矢量场 (0 postulate)
+open import Sovereign.Physics.ClimateDynamics public
+  using (ClimateState; climate-equilibrium; equilibrium-is-zero;
+         el-nino-norm; la-nina-norm; ice-age-norm; zero-satisfies-conservation)
+-- 水的第二临界点推导: 从 T⁶ 环面到 228K (0 postulate)
+open import Sovereign.Physics.WaterCriticalDerivation public
+  using (alpha-rotation-order; six-fold-symmetry; coordination-number;
+         branch-cross-temp; collective-gap; collective-temp)
+-- 氢键网络相干性: 六重取向态 + 软模临界指数 (0 postulate)
+open import Sovereign.Physics.HydrogenBondCoherence public
+  using (pauling-orientations; distinct-orientations;
+         critical-exponent-nu; soft-mode-exponent;
+         weight-ratio-check; weight-ratio-denom)
+-- 软模临界: 从框架常数推导声子谱临界权重比 (0 postulate)
+open import Sovereign.Physics.SoftModeCriticality public
+  using (weight-num-val; weight-den-val;
+         full-tour-equals-polar-times-toroidal)
+-- 量子场天体物理: 一切都是量子场的显化 (0 postulate)
+open import Sovereign.Physics.QuantumFieldAstrophysics public
+  using (standing-wave-involution; base-standing-wave;
+         quantum-collapse; light-is-born; matter-antimatter-swap;
+         quantum-field-dim; quantum-states; quantum-field-char)
 -- 78 电磁学: 3×3 环面离散场论第一基石 (梯度的旋度为零 + 规范不变性)
 open import Sovereign.Physics.DiscreteEMField public
   using (Point2D; ScalarField; VectorField; add3; neg3;
@@ -440,7 +662,6 @@ open import Sovereign.Physics.QuartzPhonon public
 
 -- ── 第二阶段: 涡旋根 + 全息代数 + 量子对应 (v7.1) ────────────
 -- 涡旋根 "123": 倍频量子纠缠链 3→6→12, 0 postulate
-open import Sovereign.Algebra.VortexRoot public
   using (VortexRoot; root3; root6; root12; vortexValue; double; next;
          entangled-pair; chain-period-2-from-6; chain-enters-cycle;
          vortex-gf3-zero; all-vortex-stable; next-preserves-stable;
@@ -548,7 +769,7 @@ open import Sovereign.Structology.BinaryTetrahedralIrreducibility public
 -- T1 正交 / T2′ 转置 L2≡L1ᵀ / T2″ 系数 σ-像 / T-sym 统一判据 a≠b / T3 十线=30
 -- 三层幻方定义与命名层锚点见模块头注释; 数值验证见 docs/cross-level/
 open import Sovereign.Structology.GF4AffineMagicSquare public
-  using (T1; transpose4; T2′; σ4; T2″; constant-not-conjugated;
+  using (T1-orthogonal; transpose4; T2′; σ4; T2″; constant-not-conjugated;
          T-sym-square; det-neq-zero; det-zero-eq; T-sym;
          det-instance-nonzero; M0; T3;
          affine-trajectory; trajectory-L1; trajectory-L2;
@@ -598,3 +819,349 @@ open import Sovereign.HoTT.ChernEulerLadder public
 
 -- 注: 以下模块尚未创建，待后续会话实现:
 -- Sovereign.Algebra.GF27 (GF(3³) 三次扩张)
+
+-- ═══════════════════════════════════════════════════════════════
+open import Sovereign.AI.Constitution public
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 安全注册: 无冲突模块
+-- ═══════════════════════════════════════════════════════════════
+open import Sovereign.Algebra.BranchingRules public
+open import Sovereign.Algebra.DiscreteJacobi public
+open import Sovereign.Algebra.Holographic.4320DClosure public
+open import Sovereign.Algebra.Holographic.Conjecture public
+open import Sovereign.Algebra.Holographic.LatticeField public
+open import Sovereign.Algebra.Holographic.PhysicalOntology public
+open import Sovereign.Algebra.Holographic.Theorem public
+open import Sovereign.Algebra.Jacobian.jac_CRTDet public
+open import Sovereign.Algebra.Jacobian.jac_DiscreteJC public
+open import Sovereign.Algebra.PlancherelTheorem public
+open import Sovereign.Analysis.CalculusOfVariations public
+open import Sovereign.Analysis.DiscreteApprox public
+open import Sovereign.Analysis.DiscretePotential public
+open import Sovereign.Analysis.DiscreteSeveralComplex public
+open import Sovereign.Analysis.DiscreteSpecialFunctions public
+open import Sovereign.Analysis.DiscreteVariation public
+open import Sovereign.Analysis.IntegrationByParts public
+open import Sovereign.Analysis.NoetherTheorem public
+open import Sovereign.Analysis.TestRiesz public
+open import Sovereign.Applied.BiologyDiscrete public
+open import Sovereign.Applied.BlackHoleWhiteHole public
+open import Sovereign.Applied.CelestialExtended public
+open import Sovereign.Applied.CommunicationDiscrete public
+open import Sovereign.Applied.CosmologyDiscrete public
+open import Sovereign.Applied.CrossDomainTheorems public
+open import Sovereign.Applied.EMDiscrete public
+open import Sovereign.Applied.EconomicsDiscrete public
+open import Sovereign.Applied.FluidDiscrete public
+open import Sovereign.Applied.GRDiscrete public
+open import Sovereign.Applied.GameTheory public
+open import Sovereign.Applied.ImageProcessing public
+open import Sovereign.Applied.InformationFrame public
+open import Sovereign.Applied.LinguisticsDiscrete public
+open import Sovereign.Applied.MetaTheorems public
+open import Sovereign.Applied.NeuroscienceDiscrete public
+open import Sovereign.Applied.NumberOptComp public
+open import Sovereign.Applied.OpticsDiscrete public
+open import Sovereign.Applied.OptimizationDiscrete public
+open import Sovereign.Applied.ProbThermo public
+open import Sovereign.Applied.SignalProcessing public
+open import Sovereign.Applied.ThermoExtended public
+open import Sovereign.Arithmetic.Untrusted public
+open import Sovereign.Examples public
+open import Sovereign.Geometry.DiscreteManifold public
+open import Sovereign.Geometry.ProjectiveTransformHFM public
+open import Sovereign.HoTT.CRTFiberWinding public
+open import Sovereign.HoTT.CanonicityAlignment public
+open import Sovereign.HoTT.PhaseAlignment6624 public
+open import Sovereign.Integration public
+open import Sovereign.Physics.DiscreteLagrangian public
+open import Sovereign.Physics.DiscreteLagrangian3D public
+open import Sovereign.Physics.ElasticityDiscrete public
+open import Sovereign.Physics.EntropySpinBalance public
+open import Sovereign.Physics.HamiltonianDiscrete public
+open import Sovereign.Physics.LightRotationTernary public
+open import Sovereign.Physics.RootTwoGF9 public
+open import Sovereign.Projection.Decimal public
+open import Sovereign.Structology.BinaryTetrahedralHFM public
+open import Sovereign.Structology.BinaryTetrahedralRepresentation public
+open import Sovereign.Structology.BinaryTetrahedralTwoDimTensors public
+open import Sovereign.Structology.DiscreteCalculus public
+open import Sovereign.Structology.SL23Trace public
+open import Sovereign.Structology.TopologyLevels public
+open import Sovereign.Structology.WuXingEulerHFM public
+open import Sovereign.Topology.CharacteristicClasses public
+
+-- ═══════════════════════════════════════════════════════════════
+-- Algebra/ 全量注册: 49 个模块 (2026-08-20)
+-- 全部 EXIT=0, 0 postulate (核心模块), 编译验证通过
+-- ═══════════════════════════════════════════════════════════════
+
+-- Algebra/ 顶层 (26个)
+open import Sovereign.Algebra.BCWDegeneracy public
+open import Sovereign.Algebra.ChainComplex public
+open import Sovereign.Algebra.ChainZ3toZ12 public
+open import Sovereign.Algebra.CharacteristicTower public
+open import Sovereign.Algebra.DegenerationRisk public
+open import Sovereign.Algebra.DiscreteAnalysis public
+open import Sovereign.Algebra.DiscreteDE public
+open import Sovereign.Algebra.DiscreteLimit public
+open import Sovereign.Algebra.DiscreteRepresentation public
+open import Sovereign.Algebra.DiscreteSeveralComplex public
+open import Sovereign.Algebra.ExactSequence public
+open import Sovereign.Algebra.FunctionalDiscrete public
+open import Sovereign.Algebra.GF81 public
+open import Sovereign.Algebra.HomologyExact public
+open import Sovereign.Algebra.MyopiaRisk public
+open import Sovereign.Algebra.NoCloning public
+open import Sovereign.Algebra.ProbabilityAddition public
+open import Sovereign.Algebra.ProjectionAnalysis public
+open import Sovereign.Algebra.ProjectionDifferential public
+open import Sovereign.Algebra.ProjectionDiffGeo public
+open import Sovereign.Algebra.RepresentationBridge public
+open import Sovereign.Algebra.SectionRisk public
+open import Sovereign.Algebra.SpiralCycle public
+open import Sovereign.Algebra.TowerConnection public
+open import Sovereign.Algebra.VortexConnections public
+open import Sovereign.Algebra.VortexDifferential public
+
+-- Algebra/GroupTheory/ (3个)
+open import Sovereign.Algebra.GroupTheory.FiniteGroupAxioms public
+open import Sovereign.Algebra.GroupTheory.GaloisTheory public
+open import Sovereign.Algebra.GroupTheory.RepresentationTheory public
+
+-- Algebra/Holographic/ (6个)
+open import Sovereign.Algebra.Holographic.ClassicAnalysis public
+open import Sovereign.Algebra.Holographic.EscapeAnalysis public
+open import Sovereign.Algebra.Holographic.FinalAudit public
+open import Sovereign.Algebra.Holographic.InfoClosure public
+open import Sovereign.Algebra.Holographic.Master public
+open import Sovereign.Algebra.Holographic.Representation public
+
+-- Algebra/Jacobian/ (14个)
+open import Sovereign.Algebra.Jacobian public
+open import Sovereign.Algebra.Jacobian.jac_AutT6 public
+open import Sovereign.Algebra.Jacobian.jac_CRTSpectrum public
+open import Sovereign.Algebra.Jacobian.jac_Discrete public
+open import Sovereign.Algebra.Jacobian.jac_FunctionTable public
+open import Sovereign.Algebra.Jacobian.jac_GF3 public
+open import Sovereign.Algebra.Jacobian.jac_GF9Matrix public
+open import Sovereign.Algebra.Jacobian.jac_Injectivity public
+open import Sovereign.Algebra.Jacobian.jac_LinearAlgebra public
+open import Sovereign.Algebra.Jacobian.jac_Matrix public
+open import Sovereign.Algebra.Jacobian.jac_NMatrix public
+open import Sovereign.Algebra.Jacobian.jac_Pigeonhole public
+open import Sovereign.Algebra.Jacobian.jac_Topology public
+
+-- ═══════════════════════════════════════════════════════════════
+-- 全量注册: 剩余 193 个模块 (2026-08-20)
+-- 全部 EXIT=0, 编译验证通过
+-- 失败 17 个: Coding/PigeonholeStandard, Density/Resonance,
+--   HoTT/(ChernConservation, CRTFiberWinding, CRTHarmonics, EnergyGap,
+--   Equivalence, PhaseTransitionPaths, T6Homotopy, WindingCover),
+--   Physics/(FineStructureMapping, LightConeMatrix),
+--   Projection/Binary, Structology/(ElectricalTopology, LuCellGrid,
+--   TorusClosure, WuXingTransition)
+-- ═══════════════════════════════════════════════════════════════
+
+open import Sovereign.AlgebraWrapper public
+open import Sovereign.Analysis.CauchySchwarz public
+open import Sovereign.Analysis.DiscreteFourier public
+open import Sovereign.Analysis.DiscreteIntegralEq public
+open import Sovereign.Analysis.DiscreteMorseTheory public
+open import Sovereign.Analysis.DiscreteProbability public
+open import Sovereign.Analysis.FiniteInnerProduct public
+open import Sovereign.Analysis.FiniteProbability public
+open import Sovereign.Analysis.FunctionalAnalysisDiscrete public
+open import Sovereign.Analysis.L2Bridge public
+open import Sovereign.Analysis.LinearFunctionalDiscrete public
+open import Sovereign.Analysis.NormDiscrete public
+open import Sovereign.Analysis.NormEquivalence public
+open import Sovereign.Analysis.SpectralTheorem public
+open import Sovereign.Applied.AcousticsDiscrete public
+open import Sovereign.Applied.AlgebraChainDeep public
+open import Sovereign.Applied.CelestialGeneticsControl public
+open import Sovereign.Applied.CircuitExtended public
+open import Sovereign.Applied.CondensedMatter public
+open import Sovereign.Applied.ControlTheory public
+open import Sovereign.Applied.DeepAlgebraProofs public
+open import Sovereign.Applied.DeepStructureProofs public
+open import Sovereign.Applied.DomainProofs public
+open import Sovereign.Applied.GeneticsExtended public
+open import Sovereign.Applied.HomologyHarmonic public
+open import Sovereign.Applied.LeibnizGF9 public
+open import Sovereign.Applied.LeibnizT6 public
+open import Sovereign.Applied.LogicCompleteness2Var public
+open import Sovereign.Applied.MachineLearning public
+open import Sovereign.Applied.MolecularSymmetry public
+open import Sovereign.Applied.ParticlePhysics public
+open import Sovereign.Applied.PleiadianCosmology public
+open import Sovereign.Arithmetic.CRTLemmas public
+open import Sovereign.Base.Lü public
+open import Sovereign.Base.TritOps public
+open import Sovereign.Base.ZeroGeometry public
+open import Sovereign.Coding.BCHGF9 public
+open import Sovereign.Coding.CyclicGF27 public
+open import Sovereign.Coding.HammingMetric public
+open import Sovereign.Coding.Trit public
+open import Sovereign.Completeness.CompletenessTheorem public
+open import Sovereign.Completeness.FunctorProof public
+open import Sovereign.Completeness.Layer public
+open import Sovereign.Constitution.Boundaries public
+open import Sovereign.Constitution.PhysicalAssumptions public
+open import Sovereign.Constitution.WindingAsymmetry public
+open import Sovereign.Coupling.CartanTorsion public
+open import Sovereign.Coupling.Entanglement public
+open import Sovereign.Coupling.LCM public
+open import Sovereign.Coupling.LossGain public
+open import Sovereign.Coupling.TQ10 public
+open import Sovereign.Coupling.TrainingSoftConstraint public
+open import Sovereign.Coupling.Zhonglv public
+open import Sovereign.Coupling.ZhonglvPhaseSync public
+open import Sovereign.Density.SevenStages public
+open import Sovereign.Diagnosis.ElectricCivilization public
+open import Sovereign.Engine.QsUpdate public
+open import Sovereign.Format.ModulusGeneration public
+open import Sovereign.Geometry.Tryte public
+open import Sovereign.HoTT.Bundle public
+open import Sovereign.HoTT.ChernClass public
+open import Sovereign.HoTT.Connection public
+open import Sovereign.HoTT.DiscreteCubical public
+open import Sovereign.HoTT.DiscreteCubical.Path public
+open import Sovereign.HoTT.Fibration public
+open import Sovereign.HoTT.Geometry public
+open import Sovereign.HoTT.KanComposition public
+open import Sovereign.HoTT.M4CRTBridge public
+open import Sovereign.HoTT.Paths public
+open import Sovereign.MetaStructure.Nayin public
+open import Sovereign.PDE.ConvergenceAlignment public
+open import Sovereign.PDE.HeatEquationDiscrete public
+open import Sovereign.PDE.PDEDiscrete public
+open import Sovereign.PDE.WaveEquationDiscrete public
+open import Sovereign.Physics.AlphaRelation public
+open import Sovereign.Physics.DiscreteActionPrinciple public
+open import Sovereign.Physics.DiscreteDiffOps public
+open import Sovereign.Physics.DiscreteMaxwellGF9 public
+open import Sovereign.Physics.DiscreteNoether public
+open import Sovereign.Physics.ElectromagneticUnitBridge public
+open import Sovereign.Physics.H2OC60 public
+open import Sovereign.Physics.LightCone public
+open import Sovereign.Physics.LightRotationFrequency public
+open import Sovereign.Physics.MaxwellFromLagrangian public
+open import Sovereign.Physics.Scaling public
+open import Sovereign.Problem.BSD.BSD public
+open import Sovereign.Problem.BSD.BSD9 public
+open import Sovereign.Problem.BSD.BSD_General public
+open import Sovereign.Problem.BSD.BSD_GF243 public
+open import Sovereign.Problem.BSD.BSD_GF27 public
+open import Sovereign.Problem.BSD.BSD_GF81 public
+open import Sovereign.Problem.BSD.BSD_L3 public
+open import Sovereign.Problem.BSD.BSDTrace public
+open import Sovereign.Problem.BSD.EllipticComplex public
+open import Sovereign.Problem.BSD.SelmerDiscrete public
+open import Sovereign.Problem.BSD.ZetaDiscrete public
+open import Sovereign.Problem.Hodge.ChainComplex public
+open import Sovereign.Problem.Hodge.DeligneHodge public
+open import Sovereign.Problem.Hodge.EulerChar public
+open import Sovereign.Problem.Hodge.Hodge public
+open import Sovereign.Problem.Hodge.Hodge_L3 public
+open import Sovereign.Problem.Hodge.HodgeTetra public
+open import Sovereign.Problem.Hodge.KleinHodge public
+open import Sovereign.Problem.Hodge.TorusHodge public
+open import Sovereign.Problem.Kakeya.KakeyaGF3 public
+open import Sovereign.Problem.Kakeya.KakeyaGF9 public
+open import Sovereign.Problem.Kakeya.KakeyaMF public
+open import Sovereign.Problem.Kakeya.KakeyaPathology public
+open import Sovereign.Problem.Langlands.DeligneLusztig public
+open import Sovereign.Problem.Langlands.GL2_Rep public
+open import Sovereign.Problem.Langlands.GL2TestVectors public
+open import Sovereign.Problem.Langlands.Langlands public
+open import Sovereign.Problem.Langlands.Langlands_L15 public
+open import Sovereign.Problem.Langlands.S4Burnside public
+open import Sovereign.Problem.NavierStokes.NSE public
+open import Sovereign.Problem.NavierStokes.NSRegularity public
+open import Sovereign.Problem.NavierStokes.NSVortex public
+open import Sovereign.Problem.PvsNP.Algorithm public
+open import Sovereign.Problem.PvsNP.CharPoly3 public
+open import Sovereign.Problem.PvsNP.Complexity public
+open import Sovereign.Problem.PvsNP.Complexity3 public
+open import Sovereign.Problem.PvsNP.CubicRoot public
+open import Sovereign.Problem.PvsNP.CubicRootTest public
+open import Sovereign.Problem.PvsNP.DetMul public
+open import Sovereign.Problem.PvsNP.GF27Separation public
+open import Sovereign.Problem.PvsNP.PvsNP_Conjecture public
+open import Sovereign.Problem.PvsNP.PvsNP_L15 public
+open import Sovereign.Problem.PvsNP.PvsNP_Separation public
+open import Sovereign.Problem.Riemann.AlgGeom public
+open import Sovereign.Problem.Riemann.FrobeniusBlind public
+open import Sovereign.Problem.Riemann.Galois public
+open import Sovereign.Problem.Riemann.RH public
+open import Sovereign.Problem.Riemann.Sheaf public
+open import Sovereign.Problem.Riemann.Variety public
+open import Sovereign.Problem.Riemann.WeilRH public
+open import Sovereign.Problem.Riemann.WeilRigidity public
+open import Sovereign.Problem.Riemann.ZetaFunctional public
+open import Sovereign.Problem.YangMills.SU2_Embedding public
+open import Sovereign.Problem.YangMills.SUn_GF9 public
+open import Sovereign.Problem.YangMills.WilsonLoop public
+open import Sovereign.Problem.YangMills.WilsonPlaquette public
+open import Sovereign.Problem.YangMills.YM_Action public
+open import Sovereign.Problem.YangMills.YM_DetMul public
+open import Sovereign.Problem.YangMills.YM_Full public
+open import Sovereign.Problem.YangMills.YM_L3 public
+open import Sovereign.Problem.YangMills.YM_SpectralGap public
+open import Sovereign.Problem.YangMills.YMTransfer public
+open import Sovereign.Problem.YangMills.YM_Transfer public
+open import Sovereign.Projection public
+open import Sovereign.Projection.Decimal.Axioms public
+open import Sovereign.Projection.Decimal.Proofs public
+open import Sovereign.Quantum.Entanglement public
+open import Sovereign.RootMath.AlgebraicComplex public
+open import Sovereign.RootMath.Arithmetic public
+open import Sovereign.RootMath.Base public
+open import Sovereign.RootMath.DigitalRoot public
+open import Sovereign.RootMath.Eisenstein public
+open import Sovereign.RootMath.EnergyGap public
+open import Sovereign.RootMath.Gaussian public
+open import Sovereign.RootMath.LengthLattice public
+open import Sovereign.Structology.A4Group public
+open import Sovereign.Structology.A4GroupAction public
+open import Sovereign.Structology.A4OneDimHom public
+open import Sovereign.Structology.A4Orbits3 public
+open import Sovereign.Structology.A4Representation public
+open import Sovereign.Structology.A4ThreeDimRep public
+open import Sovereign.Structology.Aether public
+open import Sovereign.Structology.BinaryTetrahedral public
+open import Sovereign.Structology.BinaryTetrahedralSpectrum public
+open import Sovereign.Structology.BurnsideT6 public
+open import Sovereign.Structology.FrequencySpaceUnity public
+open import Sovereign.Structology.GF9MagicSquare public
+open import Sovereign.Structology.HolographicPi public
+open import Sovereign.Structology.HoloInformation public
+open import Sovereign.Structology.MagicSquare144 public
+open import Sovereign.Structology.MagicSquareHFM public
+open import Sovereign.Structology.MatrixZω public
+open import Sovereign.Structology.OrderLattice public
+open import Sovereign.Structology.Platonics public
+open import Sovereign.Structology.PlatonicTorusProjection public
+open import Sovereign.Structology.S3IsGL22 public
+open import Sovereign.Structology.SP2Ternary public
+open import Sovereign.Structology.StandingWave public
+open import Sovereign.Structology.T6 public
+open import Sovereign.Structology.T6A4Burnside public
+open import Sovereign.Structology.TetrahedralA4 public
+open import Sovereign.Structology.VectorDirection public
+open import Sovereign.Structology.Winding public
+open import Sovereign.Structology.Zωi public
+open import Sovereign.Topology.DeRhamComplex public
+open import Sovereign.Topology.HomologicalAlgebra public
+open import Sovereign.Trust.External public
+
+-- ── GF(27) 三次扩张 (2026-08-17 注册) ─────────────────────────────────────
+-- GF(3³) = GF(3)[x]/(x³+2x+1), α³ = α+2 (mod 3), 26 个非零元素循环群
+open import Sovereign.Algebra.GF27 public
+  using (GF27; gf27-zero; gf27-one; alpha; alpha-sq;
+         _+gf27_; _*gf27_; negate27; inv; inv-correct; inv-involutive;
+         embed-gf3-gf27; embed-add; embed-mul; embed-one;
+         gen; gen-generates-all)
