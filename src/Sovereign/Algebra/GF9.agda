@@ -826,6 +826,16 @@ x ≢ y = x ≡ y → ⊥
 gf9-zero : GF9
 gf9-zero = T₀ , T₀
 
+-- GF9 幂运算: x^n
+gf9-pow : GF9 → ℕ → GF9
+gf9-pow x zero = gf9-one
+gf9-pow x (suc n) = x *gf9 gf9-pow x n
+
+-- 零幂: 0^n = 0 对 n ≥ 1
+zero-power-gf9 : ∀ n → gf9-pow gf9-zero (suc n) ≡ gf9-zero
+zero-power-gf9 zero = refl
+zero-power-gf9 (suc n) = refl
+
 -- 逆元表 (与第 10 节 GF9Star 的 inv 一致: s1↔s1, s2↔s2, sα↔s2α, s1α↔s21α, s12α↔s22α)
 gf9-inv : GF9 → GF9
 gf9-inv (T₀ , T₀) = T₀ , T₀   -- 0 占位 (不被正确性定理覆盖)
