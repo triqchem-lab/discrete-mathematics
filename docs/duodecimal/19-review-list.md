@@ -46,13 +46,16 @@
 
 ## C. 已裁定假定理 (不可恢复)
 
-### C1. Entanglement classical-bound (已删, 归因订正为占位层)
+### C1. Entanglement classical-bound (已删, 归因订正为起点层占位)
 - 原稿 81 case 逐 refl 失败 → 编译层已删 (恢复 937bca0)
-- **归因订正**: 不是"GF(3) 乘法下经典界不成立" —
-  `classical-correlation = a⊗b` 只是 GF(3) 起点层占位; 本框架完整乘法结构在
-  GF(9) 乘法群 (|GF(9)*|=8, α 阶4 = 90° 相位, GF9.agda:25-27) 与 DC12 (特征3×周期4)。
-  经典/量子分离的完备表述应在 GF9/DC12 层承接 (勿以 GF(3) 起点层限制框架)
-- 占位层可见的真违反: bell-violation-proof (设置和 ≠ T₀) 保留
+- **归因订正**: 不是"GF(3) 乘法做不到经典界"。乘法结构分层:
+  - GF(3) = 损益起点层 (特征3, 模3乘) — 无 90° 相位
+  - DC 乘法 = ⟨α⟩ ≅ C₄ = 90° 旋转群 (AlphaPower={1,α,α²=-1,α³=-α},
+    mulAlpha=α^{i+j mod 4}, DuodecClock §1) — 相位信息活在此旋转群
+  - GF(9)* = C₈ ⊇ C₄ — α 的域锚定 (GF9:25 "α 阶 4, 90° 生光")
+- classical-correlation = a⊗b 无 α 相位 = 复现传统模型"压成 ±1 丢 90° 相位"之错,
+  故起点层无法构成经典界; 完备表述待带 α 相位的关联 (DC/GF9 层) 承接
+- 占位层可见真违反: bell-violation-proof (设置和 ≠ T₀) 保留
 
 ### C2. HamiltonianDiscrete (已修绿)
 - mass-gap-theorem: 方向错 (零集⊆{e} 推不出 H(e)=T₀), 需重述
