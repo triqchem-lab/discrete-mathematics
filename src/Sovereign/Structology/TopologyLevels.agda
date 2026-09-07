@@ -12,9 +12,11 @@
 
 module Sovereign.Structology.TopologyLevels where
 
-open import Data.Fin using (Fin; toℕ; fromℕ; _≟_)
-open import Data.Nat using (ℕ; _+_; _*_; _mod_; suc; zero)
-open import Data.Integer using (ℤ; +_; -_; _+_; _-_; _*_)
+open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; fromℕ<; _≟_)
+open import Data.Nat using (ℕ; _+_; _*_; _%_; _∸_)
+open import Data.Nat.DivMod using (m%n<n)
+open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
+open import Data.Integer using (ℤ; +_; -_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- 引入律胞腔网格（作为空间底座）
@@ -40,11 +42,11 @@ module MagneticTopology where
 
   -- 辅助：加法模 60
   _+₆₀_ : Phase₆₀ → Phase₆₀ → Phase₆₀
-  a +₆₀ b = fromℕ ((toℕ a + toℕ b) mod 60)
+  a +₆₀ b = fromℕ< (m%n<n (toℕ a + toℕ b) 60)
 
   -- 辅助：减法模 60
   _-₆₀_ : Phase₆₀ → Phase₆₀ → Phase₆₀
-  a -₆₀ b = fromℕ ((toℕ a + 60 ∸ toℕ b) mod 60)
+  a -₆₀ b = fromℕ< (m%n<n (toℕ a + 60 ∸ toℕ b) 60)
 
   -- 局部曲率计算 (Plaquette Curvature)
   -- 绕一个 1x1 格子顺时针走一圈：
@@ -59,9 +61,9 @@ module MagneticTopology where
   computeCurvature : Connection → LuGridPoint → Phase₆₀
   computeCurvature conn point = 
     let c0 = point
-        c1 = LuGrid.shiftPolar c0 1
-        c2 = LuGrid.shiftToroidal c1 1
-        c3 = LuGrid.shiftToroidal c0 1
+        c1 = LuGrid.shiftPolar c0 (suc zero)
+        c2 = LuGrid.shiftToroidal c1 (suc zero)
+        c3 = LuGrid.shiftToroidal c0 (suc zero)
         
         -- 读取路径上的连接相位 (这里简化为 conn 从起点到终点的相位映射)
         p1 = conn c0 c1
@@ -94,15 +96,15 @@ module NeutralTopology where
   Connection = LuGridPoint → LuGridPoint → Phase_ℤ
   
   -- 辅助：整数加减
-  open import Data.Integer using (_-_) public
+  open import Data.Integer renaming (_+_ to _+ℤ_; _-_ to _-ℤ_; suc to sucℤ)
   
   -- 局部曲率 (Curvature): 整数差值
   computeCurvature : Connection → LuGridPoint → Phase_ℤ
   computeCurvature conn point = 
     let c0 = point
-        c1 = LuGrid.shiftPolar c0 1
-        c2 = LuGrid.shiftToroidal c1 1
-        c3 = LuGrid.shiftToroidal c0 1
+        c1 = LuGrid.shiftPolar c0 (suc zero)
+        c2 = LuGrid.shiftToroidal c1 (suc zero)
+        c3 = LuGrid.shiftToroidal c0 (suc zero)
         
         p1 = conn c0 c1
         p2 = conn c1 c2
@@ -110,7 +112,7 @@ module NeutralTopology where
         p4 = conn c3 c0
         
         -- 整数回路和: p1 + p2 - p3 - p4
-    in (p1 + p2) - (p3 + p4)
+    in (p1 +ℤ p2) -ℤ (p3 +ℤ p4)
 
   -- 陈数 (Chern Number): 全环面的曲率总和
   -- 通过递归遍历 12x12 网格计算
@@ -124,15 +126,12 @@ module NeutralTopology where
         let point = LuGrid.mkGridPoint (fromℕ x) (fromℕ y)
             curv = computeCurvature c point
             rest = sumGrid c x (suc y)
-        in curv + rest
+        in curv +ℤ rest
 
   -- 宪法：陈数锁定 - 构造性证明存在 C=2 的联络
   -- 构造：在 (0,0) 和 (6,6) 处各引入单位曲率 +1
   chern2Connection : Connection
-  chern2Connection c _ with
-    let r = toℕ (LuGrid.gridRow c)
-        col = toℕ (LuGrid.gridCol c)
-    in (r , col)
+  chern2Connection c _ with toℕ (LuGrid.gridRow c) , toℕ (LuGrid.gridCol c)
   chern2Connection _ _ | (0 , 0) = + 1
   chern2Connection _ _ | (6 , 6) = + 1
   chern2Connection _ _ | _ = + 0
@@ -140,7 +139,7 @@ module NeutralTopology where
   chern2Proof : computeChernNumber chern2Connection ≡ + 2
   chern2Proof = refl
 
-  ChernLockingCondition : ∀ (conn : Connection) → ∃[ conn' ∈ Connection ] (computeChernNumber conn' ≡ + 2)
+  ChernLockingCondition : ∀ (conn : Connection) → ∃[ conn' ] (computeChernNumber conn' ≡ + 2)
   ChernLockingCondition conn = chern2Connection , chern2Proof
 
 --------------------------------------------------------------------------------
