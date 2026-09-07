@@ -2637,6 +2637,25 @@ module _ where
           (trans (mul-sub-r r s p)
                  (cong₂ _-_ (*-comm r p) (*-comm s p)))
 
+  mul-add-r : ∀ p q r → (p + q) * r ≡ (p * r) + (q * r)
+  mul-add-r p q r = *-distribʳ-+ r p q
+
+  mul-add-l : ∀ p r s → p * (r + s) ≡ (p * r) + (p * s)
+  mul-add-l p r s =
+    trans (*-comm p (r + s))
+          (trans (mul-add-r r s p)
+                 (cong₂ _+_ (*-comm r p) (*-comm s p)))
+
+  -- 4 项加法重排: (x1+x2)+(x3+x4) ≡ (x1+x3)+(x2+x4)
+  add4-swap : ∀ x1 x2 x3 x4 → (x1 + x2) + (x3 + x4) ≡ (x1 + x3) + (x2 + x4)
+  add4-swap x1 x2 x3 x4 = begin
+    (x1 + x2) + (x3 + x4)   ≡⟨ +-assoc x1 x2 (x3 + x4) ⟩
+    x1 + (x2 + (x3 + x4))   ≡⟨ cong (λ w → x1 + w) (sym (+-assoc x2 x3 x4)) ⟩
+    x1 + ((x2 + x3) + x4)   ≡⟨ cong (λ w → x1 + (w + x4)) (+-comm x2 x3) ⟩
+    x1 + ((x3 + x2) + x4)   ≡⟨ cong (λ w → x1 + w) (+-assoc x3 x2 x4) ⟩
+    x1 + (x3 + (x2 + x4))   ≡⟨ sym (+-assoc x1 x3 (x2 + x4)) ⟩
+    (x1 + x3) + (x2 + x4)   ∎ where open ≡-Reasoning
+
   -- 同值函数求和相等 (点等 → 和等; 归纳: cong₂ _+ᶻ_)
   sumF-ext : ∀ {n : ℕ} {f g : Fin n → Z12Sys} → (∀ i → f i ≡ g i) → sumF f ≡ sumF g
   sumF-ext {zero} {f} {g} h = refl
