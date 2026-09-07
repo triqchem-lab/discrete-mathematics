@@ -3007,3 +3007,125 @@ dual-orthogonality T₂ a3 T₂ a3 (inj₂ neq) = ⊥-elim (neq refl)
 --   3. 反射 ρ 把特征映到其复共轭 (rho-character, 144 case)
 --   4. 载体验证 ζ₃³=1, i²=-1, conj ζ₃=ζ₃² 全部 refl (§1)
 --   5. DC = DuodecPoint (12 元素代数核), 不是无穷的 Doz 数系
+--------------------------------------------------------------------------------
+-- §8′. Z12Sys 乘法结合律 *ᶻ-assoc (4 坐标分量式; Data.Rational.Solver 环反射)
+--
+--   分量展开: 设 R/I/G/H = coords(xy), Rp/Ip/Gp/Hp = coords(yz)。每坐标两侧都是
+--   ℚ 环上变量全泛化的多项式恒等式 (常数仅 +3/1、+1/1), 由 Data.Rational.Solver
+--   反射验证 (非 axiom, 无 postulate 无 hole), 最后 zext 组合四分量为 *ᶻ-assoc。
+--   注: 本文件 §5″ 头注"ℚ 求解器不可用"针对 mkℚ/gcd 归一化字面量目标; 此处变量
+--   全泛化, 求解器可正常验证。
+--------------------------------------------------------------------------------
+open +-*-Solver
+
+-- real coordinate
+zreal-assoc : ∀ a b c d a₂ b₂ c₂ d₂ u v w s →
+  let R = (a * a₂) - (b * b₂) + ((+ 3 / 1) * ((d * d₂) - (c * c₂)))
+      I = (a * b₂) + (b * a₂) - ((+ 3 / 1) * ((c * d₂) + (d * c₂)))
+      G = (a * c₂) + (c * a₂) - ((b * d₂) + (d * b₂))
+      H = (a * d₂) + (d * a₂) + ((b * c₂) + (c * b₂))
+      Rp = (a₂ * u) - (b₂ * v) + ((+ 3 / 1) * ((d₂ * s) - (c₂ * w)))
+      Ip = (a₂ * v) + (b₂ * u) - ((+ 3 / 1) * ((c₂ * s) + (d₂ * w)))
+      Gp = (a₂ * w) + (c₂ * u) - ((b₂ * s) + (d₂ * v))
+      Hp = (a₂ * s) + (d₂ * u) + ((b₂ * w) + (c₂ * v))
+  in ((R * u) - (I * v) + ((+ 3 / 1) * ((H * s) - (G * w))))
+     ≡ ((a * Rp) - (b * Ip) + ((+ 3 / 1) * ((d * Hp) - (c * Gp))))
+zreal-assoc a b c d a₂ b₂ c₂ d₂ u v w s = solve 12
+  (λ a b c d a₂ b₂ c₂ d₂ u v w s →
+    let R = (a :* a₂) :- (b :* b₂) :+ (con (+ 3 / 1) :* ((d :* d₂) :- (c :* c₂)))
+        I = (a :* b₂) :+ (b :* a₂) :- (con (+ 3 / 1) :* ((c :* d₂) :+ (d :* c₂)))
+        G = (a :* c₂) :+ (c :* a₂) :- ((b :* d₂) :+ (d :* b₂))
+        H = (a :* d₂) :+ (d :* a₂) :+ ((b :* c₂) :+ (c :* b₂))
+        Rp = (a₂ :* u) :- (b₂ :* v) :+ (con (+ 3 / 1) :* ((d₂ :* s) :- (c₂ :* w)))
+        Ip = (a₂ :* v) :+ (b₂ :* u) :- (con (+ 3 / 1) :* ((c₂ :* s) :+ (d₂ :* w)))
+        Gp = (a₂ :* w) :+ (c₂ :* u) :- ((b₂ :* s) :+ (d₂ :* v))
+        Hp = (a₂ :* s) :+ (d₂ :* u) :+ ((b₂ :* w) :+ (c₂ :* v))
+    in ((R :* u) :- (I :* v) :+ (con (+ 3 / 1) :* ((H :* s) :- (G :* w))))
+       := ((a :* Rp) :- (b :* Ip) :+ (con (+ 3 / 1) :* ((d :* Hp) :- (c :* Gp)))))
+  refl a b c d a₂ b₂ c₂ d₂ u v w s
+
+-- i coordinate
+zi-assoc : ∀ a b c d a₂ b₂ c₂ d₂ u v w s →
+  let R = (a * a₂) - (b * b₂) + ((+ 3 / 1) * ((d * d₂) - (c * c₂)))
+      I = (a * b₂) + (b * a₂) - ((+ 3 / 1) * ((c * d₂) + (d * c₂)))
+      G = (a * c₂) + (c * a₂) - ((b * d₂) + (d * b₂))
+      H = (a * d₂) + (d * a₂) + ((b * c₂) + (c * b₂))
+      Rp = (a₂ * u) - (b₂ * v) + ((+ 3 / 1) * ((d₂ * s) - (c₂ * w)))
+      Ip = (a₂ * v) + (b₂ * u) - ((+ 3 / 1) * ((c₂ * s) + (d₂ * w)))
+      Gp = (a₂ * w) + (c₂ * u) - ((b₂ * s) + (d₂ * v))
+      Hp = (a₂ * s) + (d₂ * u) + ((b₂ * w) + (c₂ * v))
+  in ((R * v) + (I * u) - ((+ 3 / 1) * ((G * s) + (H * w))))
+     ≡ ((a * Ip) + (b * Rp) - ((+ 3 / 1) * ((c * Hp) + (d * Gp))))
+zi-assoc a b c d a₂ b₂ c₂ d₂ u v w s = solve 12
+  (λ a b c d a₂ b₂ c₂ d₂ u v w s →
+    let R = (a :* a₂) :- (b :* b₂) :+ (con (+ 3 / 1) :* ((d :* d₂) :- (c :* c₂)))
+        I = (a :* b₂) :+ (b :* a₂) :- (con (+ 3 / 1) :* ((c :* d₂) :+ (d :* c₂)))
+        G = (a :* c₂) :+ (c :* a₂) :- ((b :* d₂) :+ (d :* b₂))
+        H = (a :* d₂) :+ (d :* a₂) :+ ((b :* c₂) :+ (c :* b₂))
+        Rp = (a₂ :* u) :- (b₂ :* v) :+ (con (+ 3 / 1) :* ((d₂ :* s) :- (c₂ :* w)))
+        Ip = (a₂ :* v) :+ (b₂ :* u) :- (con (+ 3 / 1) :* ((c₂ :* s) :+ (d₂ :* w)))
+        Gp = (a₂ :* w) :+ (c₂ :* u) :- ((b₂ :* s) :+ (d₂ :* v))
+        Hp = (a₂ :* s) :+ (d₂ :* u) :+ ((b₂ :* w) :+ (c₂ :* v))
+    in ((R :* v) :+ (I :* u) :- (con (+ 3 / 1) :* ((G :* s) :+ (H :* w))))
+       := ((a :* Ip) :+ (b :* Rp) :- (con (+ 3 / 1) :* ((c :* Hp) :+ (d :* Gp)))))
+  refl a b c d a₂ b₂ c₂ d₂ u v w s
+
+-- gamma coordinate
+zg-assoc : ∀ a b c d a₂ b₂ c₂ d₂ u v w s →
+  let R = (a * a₂) - (b * b₂) + ((+ 3 / 1) * ((d * d₂) - (c * c₂)))
+      I = (a * b₂) + (b * a₂) - ((+ 3 / 1) * ((c * d₂) + (d * c₂)))
+      G = (a * c₂) + (c * a₂) - ((b * d₂) + (d * b₂))
+      H = (a * d₂) + (d * a₂) + ((b * c₂) + (c * b₂))
+      Rp = (a₂ * u) - (b₂ * v) + ((+ 3 / 1) * ((d₂ * s) - (c₂ * w)))
+      Ip = (a₂ * v) + (b₂ * u) - ((+ 3 / 1) * ((c₂ * s) + (d₂ * w)))
+      Gp = (a₂ * w) + (c₂ * u) - ((b₂ * s) + (d₂ * v))
+      Hp = (a₂ * s) + (d₂ * u) + ((b₂ * w) + (c₂ * v))
+  in ((R * w) + (G * u) - ((I * s) + (H * v)))
+     ≡ ((a * Gp) + (c * Rp) - ((b * Hp) + (d * Ip)))
+zg-assoc a b c d a₂ b₂ c₂ d₂ u v w s = solve 12
+  (λ a b c d a₂ b₂ c₂ d₂ u v w s →
+    let R = (a :* a₂) :- (b :* b₂) :+ (con (+ 3 / 1) :* ((d :* d₂) :- (c :* c₂)))
+        I = (a :* b₂) :+ (b :* a₂) :- (con (+ 3 / 1) :* ((c :* d₂) :+ (d :* c₂)))
+        G = (a :* c₂) :+ (c :* a₂) :- ((b :* d₂) :+ (d :* b₂))
+        H = (a :* d₂) :+ (d :* a₂) :+ ((b :* c₂) :+ (c :* b₂))
+        Rp = (a₂ :* u) :- (b₂ :* v) :+ (con (+ 3 / 1) :* ((d₂ :* s) :- (c₂ :* w)))
+        Ip = (a₂ :* v) :+ (b₂ :* u) :- (con (+ 3 / 1) :* ((c₂ :* s) :+ (d₂ :* w)))
+        Gp = (a₂ :* w) :+ (c₂ :* u) :- ((b₂ :* s) :+ (d₂ :* v))
+        Hp = (a₂ :* s) :+ (d₂ :* u) :+ ((b₂ :* w) :+ (c₂ :* v))
+    in ((R :* w) :+ (G :* u) :- ((I :* s) :+ (H :* v)))
+       := ((a :* Gp) :+ (c :* Rp) :- ((b :* Hp) :+ (d :* Ip))))
+  refl a b c d a₂ b₂ c₂ d₂ u v w s
+
+-- iγ coordinate
+zig-assoc : ∀ a b c d a₂ b₂ c₂ d₂ u v w s →
+  let R = (a * a₂) - (b * b₂) + ((+ 3 / 1) * ((d * d₂) - (c * c₂)))
+      I = (a * b₂) + (b * a₂) - ((+ 3 / 1) * ((c * d₂) + (d * c₂)))
+      G = (a * c₂) + (c * a₂) - ((b * d₂) + (d * b₂))
+      H = (a * d₂) + (d * a₂) + ((b * c₂) + (c * b₂))
+      Rp = (a₂ * u) - (b₂ * v) + ((+ 3 / 1) * ((d₂ * s) - (c₂ * w)))
+      Ip = (a₂ * v) + (b₂ * u) - ((+ 3 / 1) * ((c₂ * s) + (d₂ * w)))
+      Gp = (a₂ * w) + (c₂ * u) - ((b₂ * s) + (d₂ * v))
+      Hp = (a₂ * s) + (d₂ * u) + ((b₂ * w) + (c₂ * v))
+  in ((R * s) + (H * u)) + ((I * w) + (G * v))
+     ≡ ((a * Hp) + (d * Rp)) + ((b * Gp) + (c * Ip))
+zig-assoc a b c d a₂ b₂ c₂ d₂ u v w s = solve 12
+  (λ a b c d a₂ b₂ c₂ d₂ u v w s →
+    let R = (a :* a₂) :- (b :* b₂) :+ (con (+ 3 / 1) :* ((d :* d₂) :- (c :* c₂)))
+        I = (a :* b₂) :+ (b :* a₂) :- (con (+ 3 / 1) :* ((c :* d₂) :+ (d :* c₂)))
+        G = (a :* c₂) :+ (c :* a₂) :- ((b :* d₂) :+ (d :* b₂))
+        H = (a :* d₂) :+ (d :* a₂) :+ ((b :* c₂) :+ (c :* b₂))
+        Rp = (a₂ :* u) :- (b₂ :* v) :+ (con (+ 3 / 1) :* ((d₂ :* s) :- (c₂ :* w)))
+        Ip = (a₂ :* v) :+ (b₂ :* u) :- (con (+ 3 / 1) :* ((c₂ :* s) :+ (d₂ :* w)))
+        Gp = (a₂ :* w) :+ (c₂ :* u) :- ((b₂ :* s) :+ (d₂ :* v))
+        Hp = (a₂ :* s) :+ (d₂ :* u) :+ ((b₂ :* w) :+ (c₂ :* v))
+    in ((R :* s) :+ (H :* u)) :+ ((I :* w) :+ (G :* v))
+       := ((a :* Hp) :+ (d :* Rp)) :+ ((b :* Gp) :+ (c :* Ip)))
+  refl a b c d a₂ b₂ c₂ d₂ u v w s
+
+-- main assembly
+*ᶻ-assoc : ∀ x y z → (x *ᶻ y) *ᶻ z ≡ x *ᶻ (y *ᶻ z)
+*ᶻ-assoc (a +z b +z c +z d) (a₂ +z b₂ +z c₂ +z d₂) (u +z v +z w +z s) =
+  zext (zreal-assoc a b c d a₂ b₂ c₂ d₂ u v w s)
+       (zi-assoc a b c d a₂ b₂ c₂ d₂ u v w s)
+       (zg-assoc a b c d a₂ b₂ c₂ d₂ u v w s)
+       (zig-assoc a b c d a₂ b₂ c₂ d₂ u v w s)
