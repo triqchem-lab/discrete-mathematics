@@ -30,7 +30,7 @@ open import Data.Fin using (Fin; toℕ) renaming (zero to fzero; suc to fsuc)
 open import Data.Rational using (ℚ; mkℚ; _+_; _-_; _*_; _/_; -_)
 open import Data.Rational.Solver
 open import Data.Integer using (+_; -[1+_]; +0; +[1+_])
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; trans; sym; cong₂; module ≡-Reasoning)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥-elim)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; tritToFin3)
@@ -3129,3 +3129,15 @@ zig-assoc a b c d a₂ b₂ c₂ d₂ u v w s = solve 12
        (zi-assoc a b c d a₂ b₂ c₂ d₂ u v w s)
        (zg-assoc a b c d a₂ b₂ c₂ d₂ u v w s)
        (zig-assoc a b c d a₂ b₂ c₂ d₂ u v w s)
+
+-- 中间四元重排: (a·b)·(c·d) ≡ (a·c)·(b·d) — 交换环推论 (assoc+comm)
+-- 这是 Parseval 组装中 χ 因子抽到相邻所需的引理
+*ᶻ-middle4 : ∀ a b c d → (a *ᶻ b) *ᶻ (c *ᶻ d) ≡ (a *ᶻ c) *ᶻ (b *ᶻ d)
+*ᶻ-middle4 a b c d = begin
+  (a *ᶻ b) *ᶻ (c *ᶻ d)      ≡⟨ *ᶻ-assoc a b (c *ᶻ d) ⟩
+  a *ᶻ (b *ᶻ (c *ᶻ d))      ≡⟨ cong (λ w → a *ᶻ w) (*ᶻ-comm b (c *ᶻ d)) ⟩
+  a *ᶻ ((c *ᶻ d) *ᶻ b)      ≡⟨ sym (*ᶻ-assoc a (c *ᶻ d) b) ⟩
+  (a *ᶻ (c *ᶻ d)) *ᶻ b      ≡⟨ cong (λ w → w *ᶻ b) (sym (*ᶻ-assoc a c d)) ⟩
+  ((a *ᶻ c) *ᶻ d) *ᶻ b      ≡⟨ *ᶻ-assoc (a *ᶻ c) d b ⟩
+  (a *ᶻ c) *ᶻ (d *ᶻ b)      ≡⟨ cong (λ w → (a *ᶻ c) *ᶻ w) (*ᶻ-comm d b) ⟩
+  (a *ᶻ c) *ᶻ (b *ᶻ d)      ∎ where open ≡-Reasoning
