@@ -18,9 +18,10 @@
 
 module Sovereign.Coding.PigeonholeStandard where
 
+open import Data.Nat using (ℕ; suc)
 open import Data.Fin using (Fin)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 
 ------------------------------------------------------------------------------
 -- 组件 1: 单射/满射等价性 (jac_Injectivity.agda, 0 postulate)
@@ -30,11 +31,11 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 --   Surj F → Inj F   (右逆构造)
 ------------------------------------------------------------------------------
 
-Inj : ∀{N} → (Fin N → Fin N) → Set
+Inj : ∀{N : ℕ} → (Fin N → Fin N) → Set
 Inj F = ∀ {x y} → F x ≡ F y → x ≡ y
 
-Surj : ∀{N} → (Fin N → Fin N) → Set
-Surj F = ∀ y → Σ (Fin N) (λ x → F x ≡ y)
+Surj : ∀{N : ℕ} → (Fin N → Fin N) → Set
+Surj {N} F = ∀ y → Σ (Fin N) (λ x → F x ≡ y)
 
 -- 引用: jac_Pigeonhole.pigeonhole-2, jac_Injectivity.surj→inj
 
@@ -64,13 +65,14 @@ record FinEncoding (N : Set) (n : ℕ) : Set₁ where
 -- 用于 jac_4320DClosure.agda 的 729 点鸽巢推广.
 ------------------------------------------------------------------------------
 
--- 引用分离接口
+-- 引用分离接口 (签名对齐 jac_Pigeonhole.agda: compress {n} k j (k≢j) → Fin n)
 record SeparatedRecursion : Set₁ where
   field
-    compress   : ∀{n} → Fin (suc n) → Fin (suc n) → (λ i → i) → Fin n
-    expand     : ∀{n} → Fin (suc n) → Fin n → Fin (suc n)
-    expand∘compress : ∀{n} k j ne → expand k (compress k j ne) ≡ j
-    -- 以上三个函数来自 jac_Pigeonhole, 已编译, 引用时不触发归一化
+    compress   : {n : ℕ} → (k : Fin (suc n)) → (j : Fin (suc n)) → k ≢ j → Fin n
+    expand     : {n : ℕ} → (k : Fin (suc n)) → Fin n → Fin (suc n)
+    expand∘compress : {n : ℕ} (k : Fin (suc n)) (j : Fin (suc n)) (k≢j : k ≢ j) →
+                      expand k (compress k j k≢j) ≡ j
+    -- 以上函数来自 jac_Pigeonhole, 已编译, 引用时不触发归一化
 
 ------------------------------------------------------------------------------
 -- 综合定理: 鸽巢原理的形式化标准化
