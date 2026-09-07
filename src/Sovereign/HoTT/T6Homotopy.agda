@@ -15,13 +15,14 @@
 
 module Sovereign.HoTT.T6Homotopy where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; _<_)
+open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; _<_; s≤s)
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)
 open import Data.Fin.Properties using (toℕ<n)
 open import Data.Vec using (Vec; []; _∷_)
-open import Data.Nat.Properties using (≤-refl; ≤-pred; +-mono-≤; *-mono-≤; m<n⇒m≤n)
+open import Data.Nat.Properties using (≤-refl; ≤-pred; +-mono-≤; *-mono-≤; m<1+n⇒m≤n)
 open import Data.Product using (_×_; _,_; Σ; Σ-syntax)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans)
 
 open import Sovereign.Structology.T6
   using (T6Lattice; GF3; polarStep; toroidalStep; iterate; step1; step1-cubed-id)
@@ -53,47 +54,47 @@ data PathT6 : T6Lattice → T6Lattice → Set where
   cons : ∀ {p q r} → StepDir → PathT6 q r → PathT6 p r  -- 一步 + 余下路径
   -- 注意: cons 的源点是 p (任意), 第一步从 p 到 q (由 applyStep p dir 确定)
 
--- 实际: 更简单的定义——路径 = 步进列表
-record DiscretePath (start : T6Lattice) : Set where
-  constructor path
-  field
-    steps : Vec StepDir 144  -- 最多 144 步 (极向周期)
-    target : T6Lattice
-    -- apply-path 关系由 evaluate 函数验证
-
--- 路径执行: 从起点依次应用步进, 到达终点
-evaluate : (start : T6Lattice) → Vec StepDir 144 → T6Lattice
-evaluate start []       = start
-evaluate start (d ∷ ds) = evaluate (applyStep start d) ds
-
---------------------------------------------------------------------------------
--- 3. 环路 = 起点=终点的路径
---------------------------------------------------------------------------------
-
--- 环路面类型: 从 p 到 p 的路径
-LoopT6 : T6Lattice → Set
-LoopT6 p = Σ (Vec StepDir 144) (λ steps → evaluate p steps ≡ p)
-
--- 零环路 (0 步)
-zeroLoop : ∀ p → LoopT6 p
-zeroLoop p = [] , refl
-
--- 极向环路 (3 步, 周期 3)
-polarLoop : ∀ p → LoopT6 p
-polarLoop p = Polar⁺ ∷ Polar⁺ ∷ Polar⁺ ∷ [] , polarHolonomy p
-  where open Sovereign.Structology.T6 using (polarHolonomy)
-
--- 环向... 需要 toroidalHolonomy (postulate)
--- toroidalLoop p = Toroidal⁺ ∷ Toroidal⁺ ∷ ... ∷ [] , toroidalHolonomy p
-
--- 极向基本环路 (144 步 = 3×48)
-polarFullLoop : ∀ p → LoopT6 p
-polarFullLoop p = replicate 144 Polar⁺ , polarHolonomy p
-  where
-    replicate : ℕ → StepDir → Vec StepDir 144
-    replicate zero    d = []
-    replicate (suc n) d = d ∷ replicate n d
-    open Sovereign.Structology.T6 using (polarHolonomy)
+-- [待核对·草稿矛盾] -- 实际: 更简单的定义——路径 = 步进列表
+-- [待核对·草稿矛盾] record DiscretePath (start : T6Lattice) : Set where
+-- [待核对·草稿矛盾]   constructor path
+-- [待核对·草稿矛盾]   field
+-- [待核对·草稿矛盾]     steps : Vec StepDir 144  -- 最多 144 步 (极向周期)
+-- [待核对·草稿矛盾]     target : T6Lattice
+-- [待核对·草稿矛盾]     -- apply-path 关系由 evaluate 函数验证
+--
+-- [待核对·草稿矛盾] -- 路径执行: 从起点依次应用步进, 到达终点
+-- [待核对·草稿矛盾] evaluate : (start : T6Lattice) → Vec StepDir 144 → T6Lattice
+-- [待核对·草稿矛盾] evaluate start []       = start
+-- [待核对·草稿矛盾] evaluate start (d ∷ ds) = evaluate (applyStep start d) ds
+--
+-- [待核对·草稿矛盾] --------------------------------------------------------------------------------
+-- [待核对·草稿矛盾] -- 3. 环路 = 起点=终点的路径
+-- [待核对·草稿矛盾] --------------------------------------------------------------------------------
+--
+-- [待核对·草稿矛盾] -- 环路面类型: 从 p 到 p 的路径
+-- [待核对·草稿矛盾] LoopT6 : T6Lattice → Set
+-- [待核对·草稿矛盾] LoopT6 p = Σ (Vec StepDir 144) (λ steps → evaluate p steps ≡ p)
+--
+-- [待核对·草稿矛盾] -- 零环路 (0 步)
+-- [待核对·草稿矛盾] zeroLoop : ∀ p → LoopT6 p
+-- [待核对·草稿矛盾] zeroLoop p = [] , refl
+--
+-- [待核对·草稿矛盾] -- 极向环路 (3 步, 周期 3)
+-- [待核对·草稿矛盾] polarLoop : ∀ p → LoopT6 p
+-- [待核对·草稿矛盾] polarLoop p = Polar⁺ ∷ Polar⁺ ∷ Polar⁺ ∷ [] , polarHolonomy p
+-- [待核对·草稿矛盾]   where open Sovereign.Structology.T6 using (polarHolonomy)
+--
+-- [待核对·草稿矛盾] -- 环向... 需要 toroidalHolonomy (postulate)
+-- [待核对·草稿矛盾] -- toroidalLoop p = Toroidal⁺ ∷ Toroidal⁺ ∷ ... ∷ [] , toroidalHolonomy p
+--
+-- [待核对·草稿矛盾] -- 极向基本环路 (144 步 = 3×48)
+-- [待核对·草稿矛盾] polarFullLoop : ∀ p → LoopT6 p
+-- [待核对·草稿矛盾] polarFullLoop p = replicate 144 Polar⁺ , polarHolonomy p
+-- [待核对·草稿矛盾]   where
+-- [待核对·草稿矛盾]     replicate : ℕ → StepDir → Vec StepDir 144
+-- [待核对·草稿矛盾]     replicate zero    d = []
+-- [待核对·草稿矛盾]     replicate (suc n) d = d ∷ replicate n d
+-- [待核对·草稿矛盾]     open Sovereign.Structology.T6 using (polarHolonomy)
 
 --------------------------------------------------------------------------------
 -- 4. 环路空间结构
@@ -107,6 +108,7 @@ polarFullLoop p = replicate 144 Polar⁺ , polarHolonomy p
 --------------------------------------------------------------------------------
 
 -- 坐标独立步进: 只改变第 i 个坐标
+-- (step1 复用 T6.step1: +1 mod 3)
 stepCoord : Fin 6 → T6Lattice → T6Lattice
 stepCoord i (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) with toℕ i
 ... | 0 = step1 v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []
@@ -115,36 +117,29 @@ stepCoord i (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) with to�
 ... | 3 = v₀ ∷ v₁ ∷ v₂ ∷ step1 v₃ ∷ v₄ ∷ v₅ ∷ []
 ... | 4 = v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ step1 v₄ ∷ v₅ ∷ []
 ... | _ = v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ step1 v₅ ∷ []
-  where
-    step1 : GF3 → GF3
-    step1 v with toℕ v
-    ... | 0 = suc zero
-    ... | 1 = suc (suc zero)
-    ... | _ = zero
 
 -- 单坐标周期: 每个坐标 3 步归零 (GF(3) 周 期为 3)
 -- 证明: step1 三次 = id (已由 T6.agda 的 step1-cubed-id 证明)
 --   对 Vec GF3 6, 每个坐标独立, 逐坐标三次归零
 singleCoordPeriod3 : ∀ (p : T6Lattice) (i : Fin 6)
   → stepCoord i (stepCoord i (stepCoord i p)) ≡ p
-singleCoordPeriod3 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i with toℕ i
--- 坐标 0
-... | 0 = cong (λ x → x ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (step1³ v₀)
+singleCoordPeriod3 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero =
+  cong (λ x → x ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (step1-cubed-id v₀)
 -- 坐标 1
-... | 1 = cong (λ x → v₀ ∷ x ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (step1³ v₁)
+singleCoordPeriod3 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) =
+  cong (λ x → v₀ ∷ x ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (step1-cubed-id v₁)
 -- 坐标 2
-... | 2 = cong (λ x → v₀ ∷ v₁ ∷ x ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (step1³ v₂)
+singleCoordPeriod3 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) =
+  cong (λ x → v₀ ∷ v₁ ∷ x ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (step1-cubed-id v₂)
 -- 坐标 3
-... | 3 = cong (λ x → v₀ ∷ v₁ ∷ v₂ ∷ x ∷ v₄ ∷ v₅ ∷ []) (step1³ v₃)
+singleCoordPeriod3 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) =
+  cong (λ x → v₀ ∷ v₁ ∷ v₂ ∷ x ∷ v₄ ∷ v₅ ∷ []) (step1-cubed-id v₃)
 -- 坐标 4
-... | 4 = cong (λ x → v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ x ∷ v₅ ∷ []) (step1³ v₄)
+singleCoordPeriod3 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) =
+  cong (λ x → v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ x ∷ v₅ ∷ []) (step1-cubed-id v₄)
 -- 坐标 5
-... | _ = cong (λ x → v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ x ∷ []) (step1³ v₅)
-  where
-    step1³ : ∀ (v : GF3) → step1 (step1 (step1 v)) ≡ v
-    step1³ v = step1-cubed-id v
-
--- 基本群生成元: 6 个坐标独立的 3 阶元
+singleCoordPeriod3 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) =
+  cong (λ x → v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ x ∷ []) (step1-cubed-id v₅)
 -- π₁(T⁶) = ⟨g₁,...,g₆ | gᵢ³=1, gᵢgⱼ=gⱼgᵢ⟩
 -- 阶 = 3⁶ = 729 = |T⁶Lattice|
 --
@@ -156,39 +151,42 @@ singleCoordPeriod3 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i 
 -- 因为不同坐标独立操作
 commute-coords : ∀ (p : T6Lattice) (i j : Fin 6) → i ≢ j
   → stepCoord i (stepCoord j p) ≡ stepCoord j (stepCoord i p)
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j with toℕ i | toℕ j
--- i=0, j=1
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 0 | 1 = refl
--- i=0, j=2
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 0 | 2 = refl
--- i=0, j=3
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 0 | 3 = refl
--- i=0, j=4
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 0 | 4 = refl
--- i=0, j=5
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 0 | _ = refl
--- i=1, j=0
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 1 | 0 = refl
--- i=1, j=2
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 1 | 2 = refl
--- i=1, j=3
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 1 | 3 = refl
--- i=1, j=4
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 1 | 4 = refl
--- i=1, j=5
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 1 | _ = refl
--- i=2, j=0
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 2 | 0 = refl
--- i=2, j=1
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 2 | 1 = refl
--- i=2, j=3
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 2 | 3 = refl
--- i=2, j=4
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 2 | 4 = refl
--- i=2, j=5
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) i j i≢j | 2 | _ = refl
--- remaining cases (i=3,4,5) all refl by symmetry
-commute-coords _ _ _ _ | _ | _ = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero zero i≢j = ⊥-elim (i≢j refl)
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero (suc zero) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero (suc (suc zero)) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero (suc (suc (suc zero))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero (suc (suc (suc (suc zero)))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero (suc (suc (suc (suc (suc zero))))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) zero i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) (suc zero) i≢j = ⊥-elim (i≢j refl)
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) (suc (suc zero)) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) (suc (suc (suc zero))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) (suc (suc (suc (suc zero)))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) (suc (suc (suc (suc (suc zero))))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) zero i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) (suc zero) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) (suc (suc zero)) i≢j = ⊥-elim (i≢j refl)
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) (suc (suc (suc zero))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) (suc (suc (suc (suc zero)))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) (suc (suc (suc (suc (suc zero))))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) zero i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) (suc zero) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) (suc (suc zero)) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) (suc (suc (suc zero))) i≢j = ⊥-elim (i≢j refl)
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) (suc (suc (suc (suc zero)))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) (suc (suc (suc (suc (suc zero))))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) zero i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) (suc zero) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) (suc (suc zero)) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) (suc (suc (suc zero))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) (suc (suc (suc (suc zero)))) i≢j = ⊥-elim (i≢j refl)
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc zero))))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) zero i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) (suc zero) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) (suc (suc zero)) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) (suc (suc (suc zero))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc zero)))) i≢j = refl
+commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc zero))))) i≢j = ⊥-elim (i≢j refl)
 
 -- 定理: π₁(T⁶) ≅ T⁶Lattice (基本群同构于格点加法群)
 --   阶 = 3⁶ = 729
@@ -218,39 +216,39 @@ commute-coords _ _ _ _ | _ | _ = refl
 --   3. CRT 模数 M = 6624 × 1752640
 --------------------------------------------------------------------------------
 
---------------------------------------------------------------------------------
--- 6. T⁶ 编码/解码: T6Lattice ↔ Fin 729
+-- [待核对·草稿] --------------------------------------------------------------------------------
+-- [待核对·草稿] -- 6. T⁶ 编码/解码: T6Lattice ↔ Fin 729
+-- [待核对·草稿] --
+-- [待核对·草稿] -- Vec GF3 6 → 基 3 数 → Fin 729
+-- [待核对·草稿] -- 证明 allLatticePoints 完备性: 每个格点有唯一索引
+-- [待核对·草稿] --------------------------------------------------------------------------------
 --
--- Vec GF3 6 → 基 3 数 → Fin 729
--- 证明 allLatticePoints 完备性: 每个格点有唯一索引
---------------------------------------------------------------------------------
-
-encodeT6 : T6Lattice → Fin 729
-encodeT6 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) =
-  let val = toℕ v₀ + toℕ v₁ * 3 + toℕ v₂ * 9 + toℕ v₃ * 27 + toℕ v₄ * 81 + toℕ v₅ * 243
-  in fromℕ val
-
--- 编码的完备性: 基 3 展开值域 [0, 728], 即 < 729
--- 4320D 风格: 每个坐标 ≤ 2, *-mono-≤ + +-mono-≤ 链
-encodeT6-complete : ∀ (p : T6Lattice) → toℕ (encodeT6 p) < 729
-encodeT6-complete (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) =
-  let vᵢ≤2 : ∀ (v : GF3) → toℕ v ≤ 2
-      vᵢ≤2 v = ≤-pred (toℕ<n v)
-      
-      b₁ = *-mono-≤ (≤-refl {3}) (vᵢ≤2 v₁)   -- 3*v₁ ≤ 6
-      b₂ = *-mono-≤ (≤-refl {9}) (vᵢ≤2 v₂)   -- 9*v₂ ≤ 18
-      b₃ = *-mono-≤ (≤-refl {27}) (vᵢ≤2 v₃)  -- 27*v₃ ≤ 54
-      b₄ = *-mono-≤ (≤-refl {81}) (vᵢ≤2 v₄)  -- 81*v₄ ≤ 162
-      b₅ = *-mono-≤ (≤-refl {243}) (vᵢ≤2 v₅) -- 243*v₅ ≤ 486
-      
-      s0 = +-mono-≤ (vᵢ≤2 v₀) b₁  -- v0 + 3*v1 ≤ 8
-      s1 = +-mono-≤ s0 b₂           -- + 9*v2 ≤ 26
-      s2 = +-mono-≤ s1 b₃           -- + 27*v3 ≤ 80
-      s3 = +-mono-≤ s2 b₄           -- + 81*v4 ≤ 242
-      total = +-mono-≤ s3 b₅        -- + 243*v5 ≤ 728
-  in s≤s total
-
--- 连接 Aether.agda 的 allLatticePointsComplete:
---   若 allLatticePoints = Vec.tabulate (λ i → decodeT6 i),
---   则 ∀ p, lookup allLatticePoints (encodeT6 p) ≡ p.
--- 这消除了 Aether 中的 postulate.
+-- [待核对·草稿] encodeT6 : T6Lattice → Fin 729
+-- [待核对·草稿] encodeT6 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) =
+-- [待核对·草稿]   let val = toℕ v₀ + toℕ v₁ * 3 + toℕ v₂ * 9 + toℕ v₃ * 27 + toℕ v₄ * 81 + toℕ v₅ * 243
+-- [待核对·草稿]   in fromℕ val
+--
+-- [待核对·草稿] -- 编码的完备性: 基 3 展开值域 [0, 728], 即 < 729
+-- [待核对·草稿] -- 4320D 风格: 每个坐标 ≤ 2, *-mono-≤ + +-mono-≤ 链
+-- [待核对·草稿] encodeT6-complete : ∀ (p : T6Lattice) → toℕ (encodeT6 p) < 729
+-- [待核对·草稿] encodeT6-complete (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) =
+-- [待核对·草稿]   let vᵢ≤2 : ∀ (v : GF3) → toℕ v ≤ 2
+-- [待核对·草稿]       vᵢ≤2 v = ≤-pred (toℕ<n v)
+--
+-- [待核对·草稿]       b₁ = *-mono-≤ (≤-refl {3}) (vᵢ≤2 v₁)   -- 3*v₁ ≤ 6
+-- [待核对·草稿]       b₂ = *-mono-≤ (≤-refl {9}) (vᵢ≤2 v₂)   -- 9*v₂ ≤ 18
+-- [待核对·草稿]       b₃ = *-mono-≤ (≤-refl {27}) (vᵢ≤2 v₃)  -- 27*v₃ ≤ 54
+-- [待核对·草稿]       b₄ = *-mono-≤ (≤-refl {81}) (vᵢ≤2 v₄)  -- 81*v₄ ≤ 162
+-- [待核对·草稿]       b₅ = *-mono-≤ (≤-refl {243}) (vᵢ≤2 v₅) -- 243*v₅ ≤ 486
+--
+-- [待核对·草稿]       s0 = +-mono-≤ (vᵢ≤2 v₀) b₁  -- v0 + 3*v1 ≤ 8
+-- [待核对·草稿]       s1 = +-mono-≤ s0 b₂           -- + 9*v2 ≤ 26
+-- [待核对·草稿]       s2 = +-mono-≤ s1 b₃           -- + 27*v3 ≤ 80
+-- [待核对·草稿]       s3 = +-mono-≤ s2 b₄           -- + 81*v4 ≤ 242
+-- [待核对·草稿]       total = +-mono-≤ s3 b₅        -- + 243*v5 ≤ 728
+-- [待核对·草稿]   in s≤s total
+--
+-- [待核对·草稿] -- 连接 Aether.agda 的 allLatticePointsComplete:
+-- [待核对·草稿] --   若 allLatticePoints = Vec.tabulate (λ i → decodeT6 i),
+-- [待核对·草稿] --   则 ∀ p, lookup allLatticePoints (encodeT6 p) ≡ p.
+-- [待核对·草稿] -- 这消除了 Aether 中的 postulate.
