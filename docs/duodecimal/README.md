@@ -42,6 +42,7 @@
 | [15-flt-mathematical-position.md](15-flt-mathematical-position.md) | 离散基座上的 FLT：精确声明/已证定理/边界（致数学界立场文件） | P0 |
 | [16-dc12-layer-adjudication.md](16-dc12-layer-adjudication.md) | DC12 论文 L0-L7 逐层裁定：哪些已证/哪些不可证 | P1 |
 | [17-dc-fourier-analysis.md](17-dc-fourier-analysis.md) | DC 傅里叶分析层：特征→正交→对偶完备→Parseval 完整形式化 | P0 |
+| [18-dihedral-d12-analysis.md](18-dihedral-d12-analysis.md) | D₁₂ 二面体群模块分析：数学内容/错误定位/复用绿库的修复路径 | P1 |
 
 ---
 
