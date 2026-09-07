@@ -13,9 +13,8 @@
 module Sovereign.Structology.ElectricalTopology where
 
 -- ⚠️ UNTRUSTED: 连续统复数，仅用于对照
-open import Data.Complex using (Complex; _+i_; re; im; _+ᶜ_; _-ᶜ_)
-open import Data.Fin using (Fin; toℕ)
-open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_)
+open import Data.Fin using (Fin; zero; suc; toℕ)
+open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_; 0ℚ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 import Sovereign.Structology.LuCellGrid as LuGrid
@@ -48,9 +47,9 @@ Connection = LuGridPoint → LuGridPoint → Phase_Cont
 computeCurvature : Connection → LuGridPoint → Phase_Cont
 computeCurvature conn p = 
   let c0 = p
-      c1 = LuGrid.shiftPolar c0 1
-      c2 = LuGrid.shiftToroidal c1 1
-      c3 = LuGrid.shiftToroidal c0 1
+      c1 = LuGrid.shiftPolar c0 (suc zero)
+      c2 = LuGrid.shiftToroidal c1 (suc zero)
+      c3 = LuGrid.shiftToroidal c0 (suc zero)
       
       p1 = conn c0 c1
       p2 = conn c1 c2
@@ -63,7 +62,7 @@ computeCurvature conn p =
 computeChernNumber : Connection → Phase_Cont
 computeChernNumber conn = 
   -- 假设对所有网格求和
-  0 -- 占位符
+  0ℚ -- 占位: 全网格求和(本文件框架层)
 
 -- 宪法诊断：
 -- 在电性文明中，无法通过代码保证 ChernNumber 是整数（如 2）。
