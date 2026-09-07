@@ -6,12 +6,12 @@
 
 ## A. 数值/公式建模未定型 (需核对物理/数学公式)
 
-### A1. FineStructureMapping.agda (从未独立编译绿)
-- 数值公式层全用假记法: `1b1`/`8b8`/`4b4`/`3b3`/`2b2` 无定义 (作者想写 1/8 等)
-- `_/_` 实为 ℤ/ℕ 构造器 (stdlib), 却被当 ℚ/ℚ 除法用 → 需改用 `_÷_` (真 ℚ 除法)
-- `record CategoryPhaseSync` 内嵌 `where` 语法错 (需提顶层)
-- `AlphaElectricApprox` 用 `_<_`/`_<ᵇ_` 混用 Rational 序
-- 从 v5.20 起从未独立编译, 公式正确性本身待验
+### A1. FineStructureMapping.agda (✅ 已修绿 a8dcc3d, 部分转待核对)
+- 假记法 1b1/8b8 等 → 真 ℚ 字面量; `_/_` 修正为 (+ n)/ℚ (QuartzPhonon 惯例 renaming)
+- CategoryPhaseSync computable 证明字段移除 (record 字段实例化触发 ℚ 常量链 whnf OOM;
+  其 refl 是同义反复) → 纯数据记录
+- FineStructureSplitting/AnomalousMagneticMoment 数值草稿: 符号除需 NonZero / ℚ normalize
+  OOM / _^_ 无此算子 → 转待核对注释 (公式原文在编译隔离中丢失, 见 git 历史)
 
 ### A2. Resonance.agda (已修绿, 5 处建模未定型转注释)
 - nanluIso: JianXiaShui 落在 Nayin 默认分支 (freq=144) 但声称 = 432 → 需核对
@@ -27,10 +27,13 @@
 - 尾部 alignment-implies-standing-wave 是 {!!} 洞 (作者自标待 CRTFiberWinding 桥接)
 - 但 CRTFiberWinding 已绿; 需补 fiberContains 引理才能闭合
 
-### A4. TopologyLevels.agda (sumGrid 待 Fin 化)
-- sumGrid 用 ℕ 遍历 12×12 + `fromℕ x` 冒充 Fin 12 (无界)
-- chern2Proof = refl 依赖编译器做 144 格点×4 连接求值 (设计脆弱)
-- 需改 Fin 12×Fin 12 结构遍历 + 计算引理
+### A4. TopologyLevels.agda (✅ 已修绿 a03f70c, chern 段转待核对)
+- 原 sumGrid 用 ℕ 遍历 + fromℕ 冒充 Fin 12 (类型错) — 移除
+- chern2Proof 深层裁定: chern2Connection (起点 (0,0)/(6,6) 边权 +1) 在 plaquette
+  曲率和下总涡量 = 0 (几何模拟: 单源点边权被 4 相邻 plaquette +1-1+1-1 相消),
+  ≠ 声称的 +2 → refl 不仅暴力且陈述假. "陈数锁定 C=2"需重新设计 Connection
+  使 plaquette 涡量局部化为两个 +1 源 (离散环面陈类构造, 物理建模问题)
+- NeutralTopology 卷 chern 段转待核对注释; 其余卷 (Magnetic/Holographic) 保留
 
 ## B. 接口/API 假设失效 (需按新 API 重写)
 
