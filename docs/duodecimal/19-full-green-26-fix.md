@@ -124,3 +124,18 @@
 🔴 累计待核对 (语义重建模):
 FineStructureMapping / CRTHarmonics (OOM+洞) / TopologyLevels (sumGrid) / Integration (旧API)
 / Entanglement classical-bound (已裁定删) / Resonance 5 处 / T6Homotopy 草稿块 / WuXingTransition SphereA4
+
+### 更新 (2026-09-08 第七轮): 3 失败模块全绿 → 目标 510/510
+✅ CRTHarmonics (d9cd4a2): OOM 根因解除 — 本地 postulate 登记锁相 (弃 [m+kn] 大系数
+   展开, 同 CRTFiberWinding 外部验证先例); 尾行 fiberContains 洞转待核对
+✅ TopologyLevels (a03f70c): chern2Connection 建模错配深层裁定 — 单源点边权在环面
+   plaquette 曲率和下总涡量 = 0 (几何模拟证), ≠ 声称的 +2; refl 不仅暴力且陈述假;
+   chern 段转待核对; LuCellGrid/Aether 删死 import
+✅ FineStructureMapping (a8dcc3d): 假记法→真 ℚ; CategoryPhaseSync 纯数据化
+   (computable 字段触发 ℚ 常量链 OOM, 同义反复 refl 弃); g-2 数值草稿转待核对
+
+### 本体论裁定 (08f508c): 相位不可约性元公理
+memory/crt-wave-physics-not-modular-arithmetic.md 追加: DC 乘法群 = ⟨α⟩≅C₄ 旋转群 =
+相位载体; 实数投影 = C₄→C₂ 非忠实商 (丢 90° 相位); ⊗-语义错配裁定 (Entanglement
+81 refl 失败 = 公理选错非穷举不够); bell-state-E 相位先兆. 工程推论: 暴力 refl /
+算术求值 ≠ 证明.
