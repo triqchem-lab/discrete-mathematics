@@ -94,7 +94,8 @@
 | NormCollapse (`Algebra/`) | 0 | 0 | ✅ |
 | DihedralD12 (`Algebra/Dihedral/`) | 0 | 0 | ✅ (2026-09-07 修复入库) |
 | DCTopos / ElectronCloud (`Algebra/Dihedral/`) | 0 | 0 | ✅ (2026-09-07 修复入库) |
-| DiscreteMetric / CayleyMetric (`Algebra/Dihedral/`) | — | — | ⚠️ 含假定理/空洞证明, 审计不追 (头注标注) |
+| DiscreteMetric (`Algebra/Dihedral/`) | 0 | 0 | ✅ 重建 (损益投影真性质, 2026-09-07) |
+| CayleyMetric (`Algebra/Dihedral/`) | 0 | 0 | ✅ 重建 (真字度量三公理穷举, 2026-09-07) |
 
 ## 快速导航
 
