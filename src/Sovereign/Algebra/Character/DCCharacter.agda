@@ -2597,6 +2597,40 @@ module _ where
     trans (conj-+ᶻ (f fzero) (sumF (λ i → f (fsuc i))))
           (cong (λ w → conjᶻ (f fzero) +ᶻ w) (conj-sumF (λ i → f (fsuc i))))
 
+  -- 同值函数求和相等 (点等 → 和等; 归纳: cong₂ _+ᶻ_)
+  sumF-ext : ∀ {n : ℕ} {f g : Fin n → Z12Sys} → (∀ i → f i ≡ g i) → sumF f ≡ sumF g
+  sumF-ext {zero} {f} {g} h = refl
+  sumF-ext {suc n} {f} {g} h =
+    cong₂ (λ u v → u +ᶻ v) (h fzero) (sumF-ext {n} (λ i → h (fsuc i)))
+
+  -- 四项重排: (x+ᶻy)+ᶻ(z+ᶻw) ≡ (x+ᶻz)+ᶻ(y+ᶻw) (分量 ℚ pair-shuffle)
+  +ᶻ-shuffle4 : ∀ x y z w → (x +ᶻ y) +ᶻ (z +ᶻ w) ≡ (x +ᶻ z) +ᶻ (y +ᶻ w)
+  +ᶻ-shuffle4 (a +z b +z c +z d) (a' +z b' +z c' +z d')
+               (a'' +z b'' +z c'' +z d'') (a''' +z b''' +z c''' +z d''') =
+    zext (pair-shuffle a a' a'' a''')
+         (pair-shuffle b b' b'' b''')
+         (pair-shuffle c c' c'' c''')
+         (pair-shuffle d d' d'' d''')
+
+  -- 加法线性: Σ(a+ᶻb) ≡ (Σa)+ᶻ(Σb) (基步 sym zid, 归纳步 shuffle4)
+  sumF-+ : ∀ {n : ℕ} (a b : Fin n → Z12Sys) →
+    sumF (λ j → a j +ᶻ b j) ≡ sumF a +ᶻ sumF b
+  sumF-+ {zero} a b = sym (zidˡ z0)
+  sumF-+ {suc n} a b =
+    trans (cong (λ w → (a fzero +ᶻ b fzero) +ᶻ w)
+                (sumF-+ {n} (λ j → a (fsuc j)) (λ j → b (fsuc j))))
+          (+ᶻ-shuffle4 (a fzero) (b fzero)
+                       (sumF (λ j → a (fsuc j))) (sumF (λ j → b (fsuc j))))
+
+  -- 双和交换: Σ_i Σ_j g i j ≡ Σ_j Σ_i g i j (归纳; 配 sumF-+/sumF-comm2 递归)
+  sumF-comm2 : ∀ {m n : ℕ} (g : Fin m → Fin n → Z12Sys) →
+    sumF (λ i → sumF (λ j → g i j)) ≡ sumF (λ j → sumF (λ i → g i j))
+  sumF-comm2 {zero} {n} g = sym (sumF-zero {n})
+  sumF-comm2 {suc m} {n} g =
+    trans (cong (λ w → sumF (λ j → g fzero j) +ᶻ w)
+                (sumF-comm2 {m} (λ i j → g (fsuc i) j)))
+          (sym (sumF-+ (λ j → g fzero j) (λ j → sumF (λ i → g (fsuc i) j))))
+
 
 dual-self : ∀ (t : Trit) (a : AlphaPower) →
   sum-over-characters (λ idx → dc-character idx (t , a) *ᶻ conjᶻ (dc-character idx (t , a)))
