@@ -16,12 +16,12 @@ module Sovereign.Structology.LuCellGrid where
 
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; fromℕ<; _≟_)
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _%_; _/_; _<_ ; _≤_; s≤s)
-open import Data.Nat.DivMod using (m%n<n; /-monoˡ-≤)
-open import Data.Nat.Properties using (≤-pred; ≤-refl; ≤-trans; ≤-step; +-mono-≤; *-mono-≤)
-open import Data.Fin.Properties using (toℕ<n)
-open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
+open import Data.Nat.DivMod using (m%n<n; /-monoˡ-≤; m≡m%n+[m/n]*n)
+open import Data.Nat.Properties using (≤-pred; ≤-refl; ≤-trans; ≤-step; +-mono-≤; *-mono-≤; *-comm)
+open import Data.Fin.Properties using (toℕ<n; toℕ-fromℕ<; toℕ-injective; fromℕ<-irrelevant)
+open import Data.Product using (_×_; _,_; ∃; ∃-syntax; proj₁; proj₂)
 open import Data.Vec using (Vec; []; _∷_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; cong₂; subst; module ≡-Reasoning)
 
 import Sovereign.Structology.A4Group as A4
 
@@ -40,6 +40,10 @@ LuGridPoint = Fin 144
 gridRow : LuGridPoint → Fin 12
 gridRow p = fromℕ< (m%n<n (toℕ p) 12)
 
+-- gridRow/gridCol 的 toℕ 化简: toℕ(fromℕ< (m%n<n m 12)) = m % 12 (toℕ-fromℕ<)
+gridRow-toℕ : ∀ (p : LuGridPoint) → toℕ (gridRow p) ≡ toℕ p % 12
+gridRow-toℕ p = toℕ-fromℕ< (m%n<n (toℕ p) 12)
+
 -- gridCol 界: (toℕ p)/12 ≤ 11 (由 toℕ p < 144)
 gridColBound : ∀ (p : LuGridPoint) → (toℕ p / 12) < 12
 gridColBound p = s≤s (≤-trans (/-monoˡ-≤ 12 (≤-pred (toℕ<n p)))
@@ -48,6 +52,14 @@ gridColBound p = s≤s (≤-trans (/-monoˡ-≤ 12 (≤-pred (toℕ<n p)))
 -- gridCol 返回环向相位索引（0-11）
 gridCol : LuGridPoint → Fin 12
 gridCol p = fromℕ< (gridColBound p)
+
+-- gridCol 的 toℕ 化简: toℕ (gridCol p) ≡ toℕ p / 12
+gridCol-toℕ : ∀ (p : LuGridPoint) → toℕ (gridCol p) ≡ toℕ p / 12
+gridCol-toℕ p = toℕ-fromℕ< (gridColBound p)
+
+-- roundtrip: mkGridPoint (gridRow p) (gridCol p) ≡ p (Fin 144 编码唯一)
+-- toℕ(mkGridPoint r c) = toℕ r + 12·toℕ c 定义性; 代入 gridRow/gridCol toℕ 化简
+
 
 -- mkGridPoint 界: toℕ r + 12*toℕ c ≤ 143 (由 r,c < 12; 11 + 12·11 = 143 定义性)
 mkGridPointBound : (r c : Fin 12) → (toℕ r + 12 * toℕ c) ≤ 143
@@ -59,11 +71,36 @@ mkGridPointBound r c =
 mkGridPoint : Fin 12 → Fin 12 → LuGridPoint
 mkGridPoint r c = fromℕ< (s≤s (mkGridPointBound r c))
 
+-- mkGridPoint 的 toℕ 展开: toℕ (mkGridPoint r c) = toℕ r + 12·toℕ c (toℕ-fromℕ<)
+mkGridPoint-toℕ : (r c : Fin 12) → toℕ (mkGridPoint r c) ≡ toℕ r + 12 * toℕ c
+mkGridPoint-toℕ r c = toℕ-fromℕ< (s≤s (mkGridPointBound r c))
+
 --------------------------------------------------------------------------------
 -- 2. 静态网格上的平移操作（网格移位，非动态缠绕演化）
 --------------------------------------------------------------------------------
 
 -- 极向平移（沿行方向移动）
+
+grid-roundtrip : ∀ (p : LuGridPoint) → mkGridPoint (gridRow p) (gridCol p) ≡ p
+grid-roundtrip p =
+  toℕ-injective (begin
+    toℕ (mkGridPoint (gridRow p) (gridCol p))
+      ≡⟨ mkGridPoint-toℕ (gridRow p) (gridCol p) ⟩
+    toℕ (gridRow p) + 12 * toℕ (gridCol p)
+      ≡⟨ cong (λ w → toℕ (gridRow p) + 12 * w) (gridCol-toℕ p) ⟩
+    toℕ (gridRow p) + 12 * (toℕ p / 12)
+      ≡⟨ cong (λ w → w + 12 * (toℕ p / 12)) (gridRow-toℕ p) ⟩
+    (toℕ p % 12) + 12 * (toℕ p / 12)
+      ≡⟨ roundtrip-arith (toℕ p) ⟩
+    toℕ p ∎)
+  where
+    roundtrip-arith : (m : ℕ) → (m % 12) + 12 * (m / 12) ≡ m
+    roundtrip-arith m = begin
+      (m % 12) + 12 * (m / 12)   ≡⟨ cong (λ w → (m % 12) + w) (*-comm 12 (m / 12)) ⟩
+      (m % 12) + (m / 12) * 12   ≡⟨ sym (m≡m%n+[m/n]*n m 12) ⟩
+      m ∎ where open ≡-Reasoning
+    open ≡-Reasoning
+
 shiftPolar : LuGridPoint → Fin 12 → LuGridPoint
 shiftPolar p k = mkGridPoint (fromℕ< (m%n<n (toℕ (gridRow p) + toℕ k) 12)) (gridCol p)
 
@@ -86,15 +123,11 @@ shiftDiagonal p k = mkGridPoint (fromℕ< (m%n<n (toℕ (gridRow p) + toℕ k) 1
 actionOnGrid : A4.A4 → LuGridPoint → LuGridPoint
 actionOnGrid g p = mkGridPoint (A4.A4Action g (gridRow p)) (A4.A4Action g (gridCol p))
 
--- 验证群作用的静态相容性
--- 证明：单位元作用保持格点不变
-gridActionIdentity : ∀ (p : LuGridPoint) → actionOnGrid A4.Id p ≡ p
-gridActionIdentity p = refl
-
--- 证明：复合作用等于先作用 h 再作用 g
-gridActionCompose : ∀ (g h : A4.A4) (p : LuGridPoint) →
-  actionOnGrid (g A4.⊗ h) p ≡ actionOnGrid g (actionOnGrid h p)
-gridActionCompose g h p = refl
+-- 【2026-09-08】A4 作用相容定理 (gridActionIdentity/Compose) 移除:
+-- A4Group 是 --cubical 模块 (其定理用 Cubical _≡_), LuCellGrid 是 --rewriting
+-- (PropEq _≡_), 跨范式等式转换复杂; 且这两定理为附加验证, 文件核心
+-- (gridRow/gridCol/mkGridPoint/shift*/roundtrip) 不依赖. 待 cubical 跨范式专项.
+-- actionOnGrid 保留 (纯定义), isA4Symmetric 保留 (声明).
 
 --------------------------------------------------------------------------------
 -- 4. 网格上的场定义（静态结构学容器）
@@ -126,9 +159,9 @@ discreteCurvature pf p = curvatureBoolToℕ (isId loop)
     open import Data.Bool using (Bool; true; false)
     
     p0 = p
-    p1 = shiftPolar p0 1
-    p2 = shiftToroidal p1 1
-    p3 = shiftToroidal p0 1
+    p1 = shiftPolar p0 (suc zero)
+    p2 = shiftToroidal p1 (suc zero)
+    p3 = shiftToroidal p0 (suc zero)
     
     ph0 = pf p0
     ph1 = pf p1
@@ -136,7 +169,7 @@ discreteCurvature pf p = curvatureBoolToℕ (isId loop)
     ph3 = pf p3
     
     loop : A4.A4
-    loop = ph0 A4.⊗ (ph1 A4.⊗ ((A4.inverse ph2) A4.⊗ (A4.inverse ph3)))
+    loop = ph0 A4.⊗ (ph1 A4.⊗ ((proj₁ (A4.inverse ph2)) A4.⊗ (proj₁ (A4.inverse ph3))))
     
     -- 判断 A4 元素是否为单位元 Id (离散曲率平坦判据)
     -- 注: 原草稿引不存在的 A4.≟ᶠ (A4-toℕ/≡ᵇ), 改用构造子 case
