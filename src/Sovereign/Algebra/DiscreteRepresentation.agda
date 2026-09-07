@@ -86,11 +86,13 @@ open import Sovereign.Algebra.GF9
 reprC1 : A4
 reprC1 = Id
 
+-- 共轭类代表元 (按 A4Representations.lookup-class 权威:
+--   Rot 0 0 = (1 2 3) → C3 (ω² 类); Rot 0 1 = (1 3 2) → C2 (ω 类))
 reprC2 : A4
-reprC2 = Rot fzero fzero
+reprC2 = Rot fzero (fsuc fzero)
 
 reprC3 : A4
-reprC3 = Rot fzero (fsuc fzero)
+reprC3 = Rot fzero fzero
 
 reprC4 : A4
 reprC4 = Flip fzero
