@@ -31,6 +31,7 @@ open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_)
 open import Data.Integer using (+_; -[1+_])
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Data.Empty using (⊥-elim)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; tritToFin3)
 open import Sovereign.Algebra.GroupTheory.DuodecClock using
   (DuodecPoint; AlphaPower; a0; a1; a2; a3; mixedOp; mulAlpha; alphaInv; rho; alphaToFin4)
@@ -2043,6 +2044,192 @@ sum-over-DC f =
   (f (T₁ , a0) +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ
   (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))
 
+--------------------------------------------------------------------------------
+-- §5′. 正交性与自内积 (2026-09-07 第二层: 逐索引 refl 穷举)
+--
+-- 关键观察: 具体索引 (u,v) 下, 12 项求和的每一项都归约为具体 Z12Sys 值,
+-- 故无需符号环引理, 逐 (u,v)(u',v') 穷举即可.
+-- 非对角 132 case: 12 项和 = z0 (refl 可验, 如 z1+ζ₃+ζ₃² 通道求和 = 0);
+-- 对角 24 case (12×2): 假设 neq : u≢u' ⊎ v≢v' 在对角上为空, ⊥-elim 消解.
+--------------------------------------------------------------------------------
+
+orthogonality : ∀ u v u' v' →
+  (u ≢ u' ⊎ v ≢ v') →
+  sum-over-DC (λ x → dc-character (u , v) x *ᶻ conjᶻ (dc-character (u' , v') x))
+  ≡ z0
+orthogonality T₀ a0 T₀ a0 (inj₁ neq) = ⊥-elim (neq refl)
+orthogonality T₀ a0 T₀ a0 (inj₂ neq) = ⊥-elim (neq refl)
+orthogonality T₀ a0 T₀ a1 neq = refl
+orthogonality T₀ a0 T₀ a2 neq = refl
+orthogonality T₀ a0 T₀ a3 neq = refl
+orthogonality T₀ a0 T₁ a0 neq = refl
+orthogonality T₀ a0 T₁ a1 neq = refl
+orthogonality T₀ a0 T₁ a2 neq = refl
+orthogonality T₀ a0 T₁ a3 neq = refl
+orthogonality T₀ a0 T₂ a0 neq = refl
+orthogonality T₀ a0 T₂ a1 neq = refl
+orthogonality T₀ a0 T₂ a2 neq = refl
+orthogonality T₀ a0 T₂ a3 neq = refl
+orthogonality T₀ a1 T₀ a0 neq = refl
+orthogonality T₀ a1 T₀ a1 (inj₁ neq) = ⊥-elim (neq refl)
+orthogonality T₀ a1 T₀ a1 (inj₂ neq) = ⊥-elim (neq refl)
+orthogonality T₀ a1 T₀ a2 neq = refl
+orthogonality T₀ a1 T₀ a3 neq = refl
+orthogonality T₀ a1 T₁ a0 neq = refl
+orthogonality T₀ a1 T₁ a1 neq = refl
+orthogonality T₀ a1 T₁ a2 neq = refl
+orthogonality T₀ a1 T₁ a3 neq = refl
+orthogonality T₀ a1 T₂ a0 neq = refl
+orthogonality T₀ a1 T₂ a1 neq = refl
+orthogonality T₀ a1 T₂ a2 neq = refl
+orthogonality T₀ a1 T₂ a3 neq = refl
+orthogonality T₀ a2 T₀ a0 neq = refl
+orthogonality T₀ a2 T₀ a1 neq = refl
+orthogonality T₀ a2 T₀ a2 (inj₁ neq) = ⊥-elim (neq refl)
+orthogonality T₀ a2 T₀ a2 (inj₂ neq) = ⊥-elim (neq refl)
+orthogonality T₀ a2 T₀ a3 neq = refl
+orthogonality T₀ a2 T₁ a0 neq = refl
+orthogonality T₀ a2 T₁ a1 neq = refl
+orthogonality T₀ a2 T₁ a2 neq = refl
+orthogonality T₀ a2 T₁ a3 neq = refl
+orthogonality T₀ a2 T₂ a0 neq = refl
+orthogonality T₀ a2 T₂ a1 neq = refl
+orthogonality T₀ a2 T₂ a2 neq = refl
+orthogonality T₀ a2 T₂ a3 neq = refl
+orthogonality T₀ a3 T₀ a0 neq = refl
+orthogonality T₀ a3 T₀ a1 neq = refl
+orthogonality T₀ a3 T₀ a2 neq = refl
+orthogonality T₀ a3 T₀ a3 (inj₁ neq) = ⊥-elim (neq refl)
+orthogonality T₀ a3 T₀ a3 (inj₂ neq) = ⊥-elim (neq refl)
+orthogonality T₀ a3 T₁ a0 neq = refl
+orthogonality T₀ a3 T₁ a1 neq = refl
+orthogonality T₀ a3 T₁ a2 neq = refl
+orthogonality T₀ a3 T₁ a3 neq = refl
+orthogonality T₀ a3 T₂ a0 neq = refl
+orthogonality T₀ a3 T₂ a1 neq = refl
+orthogonality T₀ a3 T₂ a2 neq = refl
+orthogonality T₀ a3 T₂ a3 neq = refl
+orthogonality T₁ a0 T₀ a0 neq = refl
+orthogonality T₁ a0 T₀ a1 neq = refl
+orthogonality T₁ a0 T₀ a2 neq = refl
+orthogonality T₁ a0 T₀ a3 neq = refl
+orthogonality T₁ a0 T₁ a0 (inj₁ neq) = ⊥-elim (neq refl)
+orthogonality T₁ a0 T₁ a0 (inj₂ neq) = ⊥-elim (neq refl)
+orthogonality T₁ a0 T₁ a1 neq = refl
+orthogonality T₁ a0 T₁ a2 neq = refl
+orthogonality T₁ a0 T₁ a3 neq = refl
+orthogonality T₁ a0 T₂ a0 neq = refl
+orthogonality T₁ a0 T₂ a1 neq = refl
+orthogonality T₁ a0 T₂ a2 neq = refl
+orthogonality T₁ a0 T₂ a3 neq = refl
+orthogonality T₁ a1 T₀ a0 neq = refl
+orthogonality T₁ a1 T₀ a1 neq = refl
+orthogonality T₁ a1 T₀ a2 neq = refl
+orthogonality T₁ a1 T₀ a3 neq = refl
+orthogonality T₁ a1 T₁ a0 neq = refl
+orthogonality T₁ a1 T₁ a1 (inj₁ neq) = ⊥-elim (neq refl)
+orthogonality T₁ a1 T₁ a1 (inj₂ neq) = ⊥-elim (neq refl)
+orthogonality T₁ a1 T₁ a2 neq = refl
+orthogonality T₁ a1 T₁ a3 neq = refl
+orthogonality T₁ a1 T₂ a0 neq = refl
+orthogonality T₁ a1 T₂ a1 neq = refl
+orthogonality T₁ a1 T₂ a2 neq = refl
+orthogonality T₁ a1 T₂ a3 neq = refl
+orthogonality T₁ a2 T₀ a0 neq = refl
+orthogonality T₁ a2 T₀ a1 neq = refl
+orthogonality T₁ a2 T₀ a2 neq = refl
+orthogonality T₁ a2 T₀ a3 neq = refl
+orthogonality T₁ a2 T₁ a0 neq = refl
+orthogonality T₁ a2 T₁ a1 neq = refl
+orthogonality T₁ a2 T₁ a2 (inj₁ neq) = ⊥-elim (neq refl)
+orthogonality T₁ a2 T₁ a2 (inj₂ neq) = ⊥-elim (neq refl)
+orthogonality T₁ a2 T₁ a3 neq = refl
+orthogonality T₁ a2 T₂ a0 neq = refl
+orthogonality T₁ a2 T₂ a1 neq = refl
+orthogonality T₁ a2 T₂ a2 neq = refl
+orthogonality T₁ a2 T₂ a3 neq = refl
+orthogonality T₁ a3 T₀ a0 neq = refl
+orthogonality T₁ a3 T₀ a1 neq = refl
+orthogonality T₁ a3 T₀ a2 neq = refl
+orthogonality T₁ a3 T₀ a3 neq = refl
+orthogonality T₁ a3 T₁ a0 neq = refl
+orthogonality T₁ a3 T₁ a1 neq = refl
+orthogonality T₁ a3 T₁ a2 neq = refl
+orthogonality T₁ a3 T₁ a3 (inj₁ neq) = ⊥-elim (neq refl)
+orthogonality T₁ a3 T₁ a3 (inj₂ neq) = ⊥-elim (neq refl)
+orthogonality T₁ a3 T₂ a0 neq = refl
+orthogonality T₁ a3 T₂ a1 neq = refl
+orthogonality T₁ a3 T₂ a2 neq = refl
+orthogonality T₁ a3 T₂ a3 neq = refl
+orthogonality T₂ a0 T₀ a0 neq = refl
+orthogonality T₂ a0 T₀ a1 neq = refl
+orthogonality T₂ a0 T₀ a2 neq = refl
+orthogonality T₂ a0 T₀ a3 neq = refl
+orthogonality T₂ a0 T₁ a0 neq = refl
+orthogonality T₂ a0 T₁ a1 neq = refl
+orthogonality T₂ a0 T₁ a2 neq = refl
+orthogonality T₂ a0 T₁ a3 neq = refl
+orthogonality T₂ a0 T₂ a0 (inj₁ neq) = ⊥-elim (neq refl)
+orthogonality T₂ a0 T₂ a0 (inj₂ neq) = ⊥-elim (neq refl)
+orthogonality T₂ a0 T₂ a1 neq = refl
+orthogonality T₂ a0 T₂ a2 neq = refl
+orthogonality T₂ a0 T₂ a3 neq = refl
+orthogonality T₂ a1 T₀ a0 neq = refl
+orthogonality T₂ a1 T₀ a1 neq = refl
+orthogonality T₂ a1 T₀ a2 neq = refl
+orthogonality T₂ a1 T₀ a3 neq = refl
+orthogonality T₂ a1 T₁ a0 neq = refl
+orthogonality T₂ a1 T₁ a1 neq = refl
+orthogonality T₂ a1 T₁ a2 neq = refl
+orthogonality T₂ a1 T₁ a3 neq = refl
+orthogonality T₂ a1 T₂ a0 neq = refl
+orthogonality T₂ a1 T₂ a1 (inj₁ neq) = ⊥-elim (neq refl)
+orthogonality T₂ a1 T₂ a1 (inj₂ neq) = ⊥-elim (neq refl)
+orthogonality T₂ a1 T₂ a2 neq = refl
+orthogonality T₂ a1 T₂ a3 neq = refl
+orthogonality T₂ a2 T₀ a0 neq = refl
+orthogonality T₂ a2 T₀ a1 neq = refl
+orthogonality T₂ a2 T₀ a2 neq = refl
+orthogonality T₂ a2 T₀ a3 neq = refl
+orthogonality T₂ a2 T₁ a0 neq = refl
+orthogonality T₂ a2 T₁ a1 neq = refl
+orthogonality T₂ a2 T₁ a2 neq = refl
+orthogonality T₂ a2 T₁ a3 neq = refl
+orthogonality T₂ a2 T₂ a0 neq = refl
+orthogonality T₂ a2 T₂ a1 neq = refl
+orthogonality T₂ a2 T₂ a2 (inj₁ neq) = ⊥-elim (neq refl)
+orthogonality T₂ a2 T₂ a2 (inj₂ neq) = ⊥-elim (neq refl)
+orthogonality T₂ a2 T₂ a3 neq = refl
+orthogonality T₂ a3 T₀ a0 neq = refl
+orthogonality T₂ a3 T₀ a1 neq = refl
+orthogonality T₂ a3 T₀ a2 neq = refl
+orthogonality T₂ a3 T₀ a3 neq = refl
+orthogonality T₂ a3 T₁ a0 neq = refl
+orthogonality T₂ a3 T₁ a1 neq = refl
+orthogonality T₂ a3 T₁ a2 neq = refl
+orthogonality T₂ a3 T₁ a3 neq = refl
+orthogonality T₂ a3 T₂ a0 neq = refl
+orthogonality T₂ a3 T₂ a1 neq = refl
+orthogonality T₂ a3 T₂ a2 neq = refl
+orthogonality T₂ a3 T₂ a3 (inj₁ neq) = ⊥-elim (neq refl)
+orthogonality T₂ a3 T₂ a3 (inj₂ neq) = ⊥-elim (neq refl)
+
+self-inner-product : ∀ u v →
+  sum-over-DC (λ x → dc-character (u , v) x *ᶻ conjᶻ (dc-character (u , v) x))
+  ≡ ((+ 12 / 1) +z (+ 0 / 1) +z (+ 0 / 1) +z (+ 0 / 1))
+self-inner-product T₀ a0 = refl
+self-inner-product T₀ a1 = refl
+self-inner-product T₀ a2 = refl
+self-inner-product T₀ a3 = refl
+self-inner-product T₁ a0 = refl
+self-inner-product T₁ a1 = refl
+self-inner-product T₁ a2 = refl
+self-inner-product T₁ a3 = refl
+self-inner-product T₂ a0 = refl
+self-inner-product T₂ a1 = refl
+self-inner-product T₂ a2 = refl
+self-inner-product T₂ a3 = refl
+
 -- 离散傅里叶变换: f̂(u,v) = Σ_x f(x) · conj(χ_(u,v)(x))
 dc-dft : DCFunction Z12Sys → CharacterIndex → Z12Sys
 dc-dft f idx = sum-over-DC (λ x → f x *ᶻ conjᶻ (dc-character idx x))
@@ -2050,9 +2237,9 @@ dc-dft f idx = sum-over-DC (λ x → f x *ᶻ conjᶻ (dc-character idx x))
 --------------------------------------------------------------------------------
 -- §7. 【裁定】正交性 / 自内积 / Parseval —— 未形式化, 不留 hole
 --
---   正交性 Σ_x χ_δ(x) = 0 (δ ≠ id) 与 Parseval 等式需要对符号和 f 使用
---   Z12Sys 的分配律与几何级数引理 (ℚ 系数重排), 超出逐点 refl 范围,
---   是下一层形式化任务。草稿的 4 个 hole 已按宪法 (0 hole) 删除。
+--   正交性与自内积已在 §5′ 完成 (逐索引 refl 穷举: 132+24 与 12 case)。
+--   仍余 Parseval: 需要对符号 f 的双重求和交换 + Z12Sys 分配律
+--   (ℚ 系数重排), 是下一层任务。草稿的 hole 已按宪法 (0 hole) 删除。
 --
 --   依赖侧标注: 载体 Z12Sys 与特征同态/反射定理 (§1-§5) 完全本地形式化
 --   (ℚ 定点坐标 + DuodecClock 分量运算); §6/§7 的求和框架仅是定义。
