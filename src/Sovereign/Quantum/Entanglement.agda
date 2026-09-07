@@ -211,23 +211,20 @@ classical-bell-sum a b a' b' =
   ((classical-correlation a b ⊕ classical-correlation a b') ⊕ 
   classical-correlation a' b) ⊕ classical-correlation a' b'
 
--- 【2026-09-08 裁定·表述修正】classical-bound 原稿 81 case 逐 refl 失败, 已删.
---   归因订正 (勿以 GF(3) 乘法群限制本框架):
---   classical-correlation a b = a⊗b 只是【起点层 GF(3) 占位】.
+-- 【2026-09-08 裁定·本体论】classical-bound 原稿 81 case 逐 refl 失败, 已删.
+--   终极归因 (勿以 GF(3) 乘法群限制本框架):
+--   classical-correlation a b = a⊗b 是【起点层 GF(3) 占位】, 只处理幅度, 未接相位层.
 --   本框架的乘法结构分层:
---     · GF(3)  = 损益起点层 (特征 3, 模 3 乘) — 只有幅度, 无 90° 相位
---     · DC 乘法 = ⟨α⟩ ≅ C₄ = 90° 旋转群 (AlphaPower = {1, α, α²=-1, α³=-α},
---       mulAlpha = α^{i+j mod 4}) — DuodecClock.agda §1. 相位信息活在此旋转群:
---       DuodecPoint = (损益 Trit, 相位 AlphaPower)
---     · GF(9)* = C₈ ⊇ C₄ — α 的域锚定 (GF9.agda:25 "特征 3 中 α 阶 4, 90° 生光")
---   纠缠关联的"非局域乘法"须携带 α 相位 (即取值带 C₄ 旋转, 而非 GF(3) mod-3 乘
---   或 ±1 实数). 传统模型把测量值压成 {±1} 实数, 恰好丢掉 α 的 90° 相位 —
---   只剩 180° 反射 (a2=-1) 的退化 — 这正是本框架批评传统的落点.
---   classical-correlation 用 a⊗b 作"经典关联" = 复现了同样的丢相位错误,
---   故在此起点层无法构成经典界. 这不是"GF(3) 乘做不到", 而是相位层未接入.
---   真 Bell 违反 (占位层内可见) 见 bell-violation-proof (设置和 ≠ T₀).
---   经典/量子分离的完备表述待带 α 相位的关联 (DC/GF9 层) 承接
---   (见 19-review-list A 类).
+--     · GF(3)  = 幅度起点层 (特征 3, 模 3 乘) — 无 90° 相位
+--     · DC 乘法 = ⟨α⟩ ≅ C₄ = 90° 旋转群 (AlphaPower, mulAlpha=α^{i+j mod 4},
+--       DuodecClock.agda §1) — DuodecPoint = GF(3)×C₄, 相位信息活在此旋转群
+--     · GF(9)* = C₈ ⊇ C₄ — α 的域锚定 (GF9.agda:25 "α 阶 4, 90° 生光")
+--   传统压 {±1} 实数 = C₄→C₂ 非忠实商, 丢 α 的 90° 相位 — 本框架批评传统的落点.
+--   classical-correlation 用 a⊗b (无 α 相位) 当"经典关联"复现同一错误 → 占位层
+--   无法构成经典界. 81 refl 失败是【公理选错 (⊗-语义错配)】, 非穷举不够.
+--   §5 bell-state-E 超出 {T₀,T₁,T₂} 的编码 = C₄ 相位结构的不自觉触及 (Phase-Harbinger).
+--   完备表述待带 α 相位的关联 (DC/GF9 层) 承接.
+--   详见 memory/crt-wave-physics-not-modular-arithmetic.md §相位不可约性元公理.
 
 -- 【2026-09-08 裁定】classical-no-violation 依赖 classical-bound, 随之移除.
 
