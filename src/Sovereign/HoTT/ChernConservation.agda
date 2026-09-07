@@ -15,10 +15,12 @@
 
 module Sovereign.HoTT.ChernConservation where
 
-open import Data.Vec using (Vec; lookup; _∷_; []; map; zipWith; length; sum)
+open import Data.Vec using (Vec; lookup; _∷_; []; _++_; map; zipWith; length; sum; foldr)
 open import Data.Fin using (Fin; zero; suc; toℕ)
+open import Data.Nat using (ℕ; suc)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; subst; module ≡-Reasoning)
+open import Data.Integer.Properties using (+-comm; +-assoc; neg-distrib-+; +-identityʳ; +-inverseʳ)
 open import Relation.Binary.PropositionalEquality.Properties using (subst-∘; ≡-Reasoning)
 
 import Sovereign.Base.Trit as Trit
@@ -68,17 +70,18 @@ stepTransport delta fiber = map (λ x → x + delta) fiber
 -- 3. 离散曲率与陈数 (Discrete Curvature & Chern Number)
 --------------------------------------------------------------------------------
 
+-- 循环左移辅助 (模块级; let 内定义报 record pattern 解析问题, 提顶层绕开)
+rotLeft : Vec ℤ 30 → Vec ℤ 30
+rotLeft (x ∷ xs) = xs ++ (x ∷ [])
+
 -- 定义局部曲率：相邻格点的差分 (Discrete Derivative)
 -- K_i = t_{i+1} - t_i
 -- 注意：这是一个循环向量，t_{30} 接回 t_0
 localCurvature : AlgebraicFiber → Vec ℤ 30
 localCurvature f = 
   let 
-    -- 循环移位：将向量向左移一位 (t1, t2, ..., t0)
-    shifted = rotateLeft f
-    rotateLeft : Vec ℤ 30 → Vec ℤ 30
-    rotateLeft (x ∷ xs) = xs ∷ x
-    rotateLeft [] = [] -- 实际上不可能发生
+    -- 循环移位 (rotLeft 模块级定义)
+    shifted = rotLeft f
     
     -- 差分
     diffVec = zipWith _-_ shifted f
@@ -86,8 +89,12 @@ localCurvature f =
 
 -- 定义全局陈数：所有局部曲率之和
 -- C = Σ K_i
+-- ℤ 向量求和 (Data.Vec.sum 只对 ℕ)
+zsum : {n : ℕ} → Vec ℤ n → ℤ
+zsum = foldr _ _+_ (+ 0)
+
 chernNumber : AlgebraicFiber → ℤ
-chernNumber f = sum (localCurvature f)
+chernNumber f = zsum (localCurvature f)
 
 --------------------------------------------------------------------------------
 -- 4. 核心定理证明 (Theorem: Chern Number Conservation)
@@ -95,13 +102,34 @@ chernNumber f = sum (localCurvature f)
 
 -- 引理：平移后的差分等于原差分
 -- (x+d) - (y+d) = x - y
+shuffle4 : ∀ a b c d → (a + b) + (c + d) ≡ (a + c) + (b + d)
+shuffle4 a b c d = begin
+  (a + b) + (c + d)
+    ≡⟨ sym (+-assoc (a + b) c d) ⟩
+  ((a + b) + c) + d
+    ≡⟨ cong (λ w → w + d) (+-assoc a b c) ⟩
+  (a + (b + c)) + d
+    ≡⟨ cong (λ w → (a + w) + d) (+-comm b c) ⟩
+  (a + (c + b)) + d
+    ≡⟨ cong (λ w → w + d) (sym (+-assoc a c b)) ⟩
+  ((a + c) + b) + d
+    ≡⟨ +-assoc (a + c) b d ⟩
+  (a + c) + (b + d) ∎ where open ≡-Reasoning
+
+-- 平移差分不变: (x+d)-(y+d) = x-y (真证, 原假 refl)
 diffInvariant : ∀ (x y d : ℤ) → (x + d) - (y + d) ≡ x - y
-diffInvariant x y d = refl -- 整数环上的平凡等式
+diffInvariant x y d = begin
+  (x + d) - (y + d)     ≡⟨ refl ⟩
+  (x + d) + (- (y + d)) ≡⟨ cong (λ w → (x + d) + w) (neg-distrib-+ y d) ⟩
+  (x + d) + ((- y) + (- d)) ≡⟨ shuffle4 x d (- y) (- d) ⟩
+  (x + (- y)) + (d + (- d)) ≡⟨ cong (λ w → (x + (- y)) + w) (+-inverseʳ d) ⟩
+  (x + (- y)) + (+ 0)    ≡⟨ +-identityʳ (x + (- y)) ⟩
+  x + (- y)              ≡⟨ refl ⟩
+  x - y                  ∎ where open ≡-Reasoning
 
 -- 引理：平移向量的局部曲率向量与原向量相同
 curvatureVectorInvariant : ∀ (f : AlgebraicFiber) (d : ℤ) → 
   localCurvature (stepTransport d f) ≡ localCurvature f
-curvatureVectorInvariant [] d = refl
 curvatureVectorInvariant (x ∷ xs) d = 
   cong₂ (λ h t → h ∷ t) 
     (diffInvariant (lookup (xs ∷ x) zero) x d) -- 这里需要更复杂的 Fin 索引证明
