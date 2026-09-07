@@ -537,6 +537,46 @@ rho-involution (T₂ , a1) = refl
 rho-involution (T₂ , a2) = refl
 rho-involution (T₂ , a3) = refl
 
+-- ── ρ 的代数性质层 (rho 属 DC 群论层; 从谱层上提, DihedralD12 等复用) ──
+
+-- 分量自同态: negate 保持 ⊕ (9 case)
+rho-neg-homo : ∀ x y → negate (x ⊕ y) ≡ negate x ⊕ negate y
+rho-neg-homo T₀ T₀ = refl; rho-neg-homo T₀ T₁ = refl; rho-neg-homo T₀ T₂ = refl
+rho-neg-homo T₁ T₀ = refl; rho-neg-homo T₁ T₁ = refl; rho-neg-homo T₁ T₂ = refl
+rho-neg-homo T₂ T₀ = refl; rho-neg-homo T₂ T₁ = refl; rho-neg-homo T₂ T₂ = refl
+
+-- 分量自同态: alphaInv 保持 mulAlpha (16 case; C₄ 交换故同/反同态重合)
+rho-alphaInv-homo : ∀ a b →
+  alphaInv (mulAlpha a b) ≡ mulAlpha (alphaInv a) (alphaInv b)
+rho-alphaInv-homo a0 a0 = refl; rho-alphaInv-homo a0 a1 = refl
+rho-alphaInv-homo a0 a2 = refl; rho-alphaInv-homo a0 a3 = refl
+rho-alphaInv-homo a1 a0 = refl; rho-alphaInv-homo a1 a1 = refl
+rho-alphaInv-homo a1 a2 = refl; rho-alphaInv-homo a1 a3 = refl
+rho-alphaInv-homo a2 a0 = refl; rho-alphaInv-homo a2 a1 = refl
+rho-alphaInv-homo a2 a2 = refl; rho-alphaInv-homo a2 a3 = refl
+rho-alphaInv-homo a3 a0 = refl; rho-alphaInv-homo a3 a1 = refl
+rho-alphaInv-homo a3 a2 = refl; rho-alphaInv-homo a3 a3 = refl
+
+-- ρ 是 mixedOp 自同态: rho(x·y) = rho(x)·rho(y)
+rho-mixedOp : ∀ p q → rho (mixedOp p q) ≡ mixedOp (rho p) (rho q)
+rho-mixedOp (x , a) (y , b) =
+  cong₂ _,_ (rho-neg-homo x y) (rho-alphaInv-homo a b)
+
+-- ρ = 逆元: rho p ≡ duodec-inv p (两者定义逐字相同: (negate t, alphaInv a), 12 case)
+rho-is-inv : ∀ p → rho p ≡ duodec-inv p
+rho-is-inv (T₀ , a0) = refl
+rho-is-inv (T₀ , a1) = refl
+rho-is-inv (T₀ , a2) = refl
+rho-is-inv (T₀ , a3) = refl
+rho-is-inv (T₁ , a0) = refl
+rho-is-inv (T₁ , a1) = refl
+rho-is-inv (T₁ , a2) = refl
+rho-is-inv (T₁ , a3) = refl
+rho-is-inv (T₂ , a0) = refl
+rho-is-inv (T₂ , a1) = refl
+rho-is-inv (T₂ , a2) = refl
+rho-is-inv (T₂ , a3) = refl
+
 -- 逻辑等价 (本地, 双向蕴含): A ↔ B = (A → B) × (B → A)
 -- 避免引入 Function.Bundles 的 _↔_ (proof 结构就是双向函数的积)
 _↔_ : Set → Set → Set
