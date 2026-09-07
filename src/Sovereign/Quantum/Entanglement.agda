@@ -209,93 +209,13 @@ classical-bell-sum a b a' b' =
   ((classical-correlation a b ⊕ classical-correlation a b') ⊕ 
   classical-correlation a' b) ⊕ classical-correlation a' b'
 
--- 经典界定理: 对所有确定策略，Bell 不等式之和 = T₀
-classical-bound : ∀ a b a' b' → classical-bell-sum a b a' b' ≡ T₀
-classical-bound T₀ T₀ T₀ T₀ = refl
-classical-bound T₀ T₀ T₀ T₁ = refl
-classical-bound T₀ T₀ T₀ T₂ = refl
-classical-bound T₀ T₀ T₁ T₀ = refl
-classical-bound T₀ T₀ T₁ T₁ = refl
-classical-bound T₀ T₀ T₁ T₂ = refl
-classical-bound T₀ T₀ T₂ T₀ = refl
-classical-bound T₀ T₀ T₂ T₁ = refl
-classical-bound T₀ T₀ T₂ T₂ = refl
-classical-bound T₀ T₁ T₀ T₀ = refl
-classical-bound T₀ T₁ T₀ T₁ = refl
-classical-bound T₀ T₁ T₀ T₂ = refl
-classical-bound T₀ T₁ T₁ T₀ = refl
-classical-bound T₀ T₁ T₁ T₁ = refl
-classical-bound T₀ T₁ T₁ T₂ = refl
-classical-bound T₀ T₁ T₂ T₀ = refl
-classical-bound T₀ T₁ T₂ T₁ = refl
-classical-bound T₀ T₁ T₂ T₂ = refl
-classical-bound T₀ T₂ T₀ T₀ = refl
-classical-bound T₀ T₂ T₀ T₁ = refl
-classical-bound T₀ T₂ T₀ T₂ = refl
-classical-bound T₀ T₂ T₁ T₀ = refl
-classical-bound T₀ T₂ T₁ T₁ = refl
-classical-bound T₀ T₂ T₁ T₂ = refl
-classical-bound T₀ T₂ T₂ T₀ = refl
-classical-bound T₀ T₂ T₂ T₁ = refl
-classical-bound T₀ T₂ T₂ T₂ = refl
-classical-bound T₁ T₀ T₀ T₀ = refl
-classical-bound T₁ T₀ T₀ T₁ = refl
-classical-bound T₁ T₀ T₀ T₂ = refl
-classical-bound T₁ T₀ T₁ T₀ = refl
-classical-bound T₁ T₀ T₁ T₁ = refl
-classical-bound T₁ T₀ T₁ T₂ = refl
-classical-bound T₁ T₀ T₂ T₀ = refl
-classical-bound T₁ T₀ T₂ T₁ = refl
-classical-bound T₁ T₀ T₂ T₂ = refl
-classical-bound T₁ T₁ T₀ T₀ = refl
-classical-bound T₁ T₁ T₀ T₁ = refl
-classical-bound T₁ T₁ T₀ T₂ = refl
-classical-bound T₁ T₁ T₁ T₀ = refl
-classical-bound T₁ T₁ T₁ T₁ = refl
-classical-bound T₁ T₁ T₁ T₂ = refl
-classical-bound T₁ T₁ T₂ T₀ = refl
-classical-bound T₁ T₁ T₂ T₁ = refl
-classical-bound T₁ T₁ T₂ T₂ = refl
-classical-bound T₁ T₂ T₀ T₀ = refl
-classical-bound T₁ T₂ T₀ T₁ = refl
-classical-bound T₁ T₂ T₀ T₂ = refl
-classical-bound T₁ T₂ T₁ T₀ = refl
-classical-bound T₁ T₂ T₁ T₁ = refl
-classical-bound T₁ T₂ T₁ T₂ = refl
-classical-bound T₁ T₂ T₂ T₀ = refl
-classical-bound T₁ T₂ T₂ T₁ = refl
-classical-bound T₁ T₂ T₂ T₂ = refl
-classical-bound T₂ T₀ T₀ T₀ = refl
-classical-bound T₂ T₀ T₀ T₁ = refl
-classical-bound T₂ T₀ T₀ T₂ = refl
-classical-bound T₂ T₀ T₁ T₀ = refl
-classical-bound T₂ T₀ T₁ T₁ = refl
-classical-bound T₂ T₀ T₁ T₂ = refl
-classical-bound T₂ T₀ T₂ T₀ = refl
-classical-bound T₂ T₀ T₂ T₁ = refl
-classical-bound T₂ T₀ T₂ T₂ = refl
-classical-bound T₂ T₁ T₀ T₀ = refl
-classical-bound T₂ T₁ T₀ T₁ = refl
-classical-bound T₂ T₁ T₀ T₂ = refl
-classical-bound T₂ T₁ T₁ T₀ = refl
-classical-bound T₂ T₁ T₁ T₁ = refl
-classical-bound T₂ T₁ T₁ T₂ = refl
-classical-bound T₂ T₁ T₂ T₀ = refl
-classical-bound T₂ T₁ T₂ T₁ = refl
-classical-bound T₂ T₁ T₂ T₂ = refl
-classical-bound T₂ T₂ T₀ T₀ = refl
-classical-bound T₂ T₂ T₀ T₁ = refl
-classical-bound T₂ T₂ T₀ T₂ = refl
-classical-bound T₂ T₂ T₁ T₀ = refl
-classical-bound T₂ T₂ T₁ T₁ = refl
-classical-bound T₂ T₂ T₁ T₂ = refl
-classical-bound T₂ T₂ T₂ T₀ = refl
-classical-bound T₂ T₂ T₂ T₁ = refl
-classical-bound T₂ T₂ T₂ T₂ = refl
+-- 【2026-09-08 裁定】classical-bound 是假定理 (穷举 36 反例):
+--   classical-correlation a b = a⊗b (GF3 乘), 和可为非零 (如 (T₀,T₀,T₁,T₁) 和 = T₁).
+--   真 Bell 违反见 bell-violation-proof (存在设置使和 ≠ T₀). 本假定理删除.
+-- 经典"局域界"需要测量值 ∈ {±1} 编码, 在 GF3 0/1/2 乘法下不成立.
 
--- 经典界推论: 对所有确定策略，Bell 不等式不被违反
-classical-no-violation : ∀ a b a' b' → classical-bell-sum a b a' b' ≢ T₀ → ⊥
-classical-no-violation a b a' b' neq = neq (classical-bound a b a' b')
+
+-- 【2026-09-08 裁定】classical-no-violation 随 classical-bound 同假 (依赖其反例), 已删.
 
 -- §7. Bell 违反证明
 -- Bell 态 |Φ⁺⟩ = |00⟩+|11⟩+|22⟩ 在某些测量设置下违反经典界
