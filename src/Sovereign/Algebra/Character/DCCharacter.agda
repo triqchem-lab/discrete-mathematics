@@ -2274,7 +2274,7 @@ dc-dft f idx = sum-over-DC (λ x → f x *ᶻ conjᶻ (dc-character idx x))
 
 module _ where
   open import Data.Rational.Properties
-    using (+-comm; +-assoc; *-comm; *-distribˡ-+; *-distribʳ-+; neg-distrib-+;
+    using (+-comm; +-assoc; *-comm; *-assoc; *-distribˡ-+; *-distribʳ-+; neg-distrib-+;
            +-identityˡ; +-identityʳ; neg-distribˡ-*; neg-distribʳ-*; *-zeroˡ; *-zeroʳ)
   open import Relation.Binary.PropositionalEquality using (sym; trans; cong; cong₂; module ≡-Reasoning)
 
@@ -2655,6 +2655,64 @@ module _ where
     x1 + ((x3 + x2) + x4)   ≡⟨ cong (λ w → x1 + w) (+-assoc x3 x2 x4) ⟩
     x1 + (x3 + (x2 + x4))   ≡⟨ sym (+-assoc x1 x3 (x2 + x4)) ⟩
     (x1 + x3) + (x2 + x4)   ∎ where open ≡-Reasoning
+
+
+  -- ── Gaussian ℚ[i] 结合律 (Z12Sys = ℚ[i]⊗ℚ[γ] 分层基块; 草稿验证后移植) ──
+
+  gm-real : ∀ a b c d e f →
+    ((a * c - b * d) * e) - ((a * d + b * c) * f)
+    ≡ (a * (c * e - d * f)) - (b * (c * f + d * e))
+  gm-real a b c d e f = begin
+    ((a * c - b * d) * e) - ((a * d + b * c) * f)
+      ≡⟨ cong₂ _-_ (mul-sub-r (a * c) (b * d) e) (mul-add-r (a * d) (b * c) f) ⟩
+    ((a * c) * e - (b * d) * e) - ((a * d) * f + (b * c) * f)
+      ≡⟨ cong₂ _-_
+           (cong₂ _-_ (*-assoc a c e) (*-assoc b d e))
+           (cong₂ _+_ (*-assoc a d f) (*-assoc b c f)) ⟩
+    (a * (c * e) - b * (d * e)) - (a * (d * f) + b * (c * f))
+      ≡⟨ cong (λ w → (a * (c * e) + (- (b * (d * e)))) + w)
+             (neg-distrib-+ (a * (d * f)) (b * (c * f))) ⟩
+    (a * (c * e) + (- (b * (d * e)))) + ((- (a * (d * f))) + (- (b * (c * f))))
+      ≡⟨ add4-swap (a * (c * e)) (- (b * (d * e))) (- (a * (d * f))) (- (b * (c * f))) ⟩
+    (a * (c * e) + (- (a * (d * f)))) + ((- (b * (d * e))) + (- (b * (c * f))))
+      ≡⟨ cong (λ w → (a * (c * e) + (- (a * (d * f)))) + w)
+             (+-comm (- (b * (d * e))) (- (b * (c * f)))) ⟩
+    (a * (c * e) + (- (a * (d * f)))) + ((- (b * (c * f))) + (- (b * (d * e))))
+      ≡⟨ cong (λ w → (a * (c * e)) + (- (a * (d * f))) + w)
+             (sym (neg-distrib-+ (b * (c * f)) (b * (d * e)))) ⟩
+    (a * (c * e) + (- (a * (d * f)))) + (- ((b * (c * f)) + (b * (d * e))))
+      ≡⟨ cong (λ w → (a * (c * e) + (- (a * (d * f)))) + (- w))
+             (sym (mul-add-l b (c * f) (d * e))) ⟩
+    (a * (c * e) + (- (a * (d * f)))) + (- (b * (c * f + d * e)))
+      ≡⟨⟩
+    ((a * (c * e)) - (a * (d * f))) - (b * (c * f + d * e))
+      ≡⟨ cong₂ _-_ (sym (mul-sub-l a (c * e) (d * f))) refl ⟩
+    (a * (c * e - d * f)) - (b * (c * f + d * e))
+    ∎ where open ≡-Reasoning
+
+  gm-imag : ∀ a b c d e f →
+    ((a * d + b * c) * e) + ((a * c - b * d) * f)
+    ≡ (a * (d * e + c * f)) + (b * (c * e - d * f))
+  gm-imag a b c d e f = begin
+    ((a * d + b * c) * e) + ((a * c - b * d) * f)
+      ≡⟨ cong₂ _+_ (mul-add-r (a * d) (b * c) e) (mul-sub-r (a * c) (b * d) f) ⟩
+    ((a * d) * e + (b * c) * e) + ((a * c) * f - (b * d) * f)
+      ≡⟨ cong₂ _+_
+           (cong₂ _+_ (*-assoc a d e) (*-assoc b c e))
+           (cong₂ _-_ (*-assoc a c f) (*-assoc b d f)) ⟩
+    (a * (d * e) + b * (c * e)) + (a * (c * f) - b * (d * f))
+      ≡⟨⟩
+    (a * (d * e) + b * (c * e)) + (a * (c * f) + (- (b * (d * f))))
+      ≡⟨ add4-swap (a * (d * e)) (b * (c * e)) (a * (c * f)) (- (b * (d * f))) ⟩
+    (a * (d * e) + a * (c * f)) + (b * (c * e) + (- (b * (d * f))))
+      ≡⟨ cong₂ _+_
+           (sym (mul-add-l a (d * e) (c * f)))
+           (sym (mul-sub-l b (c * e) (d * f))) ⟩
+    a * ((d * e) + (c * f)) + b * ((c * e) - (d * f))
+      ≡⟨⟩
+    (a * (d * e + c * f)) + (b * (c * e - d * f))
+    ∎ where open ≡-Reasoning
+
 
   -- 同值函数求和相等 (点等 → 和等; 归纳: cong₂ _+ᶻ_)
   sumF-ext : ∀ {n : ℕ} {f g : Fin n → Z12Sys} → (∀ i → f i ≡ g i) → sumF f ≡ sumF g
