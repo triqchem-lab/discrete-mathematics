@@ -16,18 +16,32 @@
 module Sovereign.Structology.TorusClosure where
 
 open import Data.Fin using (Fin)
+open import Data.Nat using (ℕ)
 open import Data.Product using (Σ; _,_)
+open import Relation.Binary.PropositionalEquality using (_≡_)
+
+-- 代数共轭可见性 (σ 域自同构的接口): 占位定义, 语义见 jac_4320DClosure
+record FrobeniusVisible : Set₁ where
+  field
+    frobenius : ∀ {A : Set} → (A → A) → A → A  -- 原生 Frobenius σ(x)=x³ (接口签名)
+
+-- 描述完备矩阵 (全局函数表 M_F): 占位定义, 语义见 jac_EscapeAnalysis
+record GlobalMatrix : Set₁ where
+  field
+    matrixSize : ℕ
+    exactDecide : Fin matrixSize → Set  -- 全局函数表精确判定 (接口签名)
 
 -- T⁶ = 729 格点, 每个点有唯一 Fin 729 编码
 record TorusClosure (F : Set → Set) : Set₁ where
   field
     finite : Set
     size   : ℕ            -- |finite| = 729
+    decode : Fin size → finite
     closed : ∀ x → Σ (Fin size) (λ i → decode i ≡ x)  -- 每个点有唯一 Fin 索引
 
 -- 三重闭包条件
-record TripleClosure : Set₁ where
+record TripleClosure (F : Set → Set) : Set₁ where
   field
-    geometric   : TorusClosure   -- 几何闭包
+    geometric   : TorusClosure F   -- 几何闭包
     algebraic   : FrobeniusVisible  -- 代数共轭 (σ)
     descriptive : GlobalMatrix    -- 描述完备 (M_F)
