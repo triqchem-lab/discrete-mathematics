@@ -172,3 +172,15 @@ R₁₂ 的零因子是**投影层外加结构**，不是本源的。
 3. **P1**：定义 ZeroOblivion record
 4. **P1**：证明 ¬ (mulAlpha 经 toDuodec 等于 *12)
 5. **P2**：理想格、模与表示
+
+## 十、傅里叶层更新 (2026-09-07)
+
+DC 特征分解层已从"框架完成、求和部分待补充"推进到**完整闭环**:
+
+- Z12Sys 载体 = ℚ(ζ₁₂) 真交换环 (*ᶻ-assoc/comm/distrib/middle4 全证)
+- 特征同态性 (1728 refl)、正交性、自内积、对偶完备性
+- **Parseval/Plancherel**: Σ_x|f(x)|² = (1/12)·Σ_k|f̂(k)|² (0 postulate 0 hole)
+
+详见 [17-dc-fourier-analysis.md](17-dc-fourier-analysis.md)。
+旧"求和部分待补充"表述已过时。谱定理 (对称矩阵对角化) 仍需 ℚ(ζ₁₂) 外载体, 仍未形式化。
+

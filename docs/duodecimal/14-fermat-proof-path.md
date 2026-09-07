@@ -171,3 +171,8 @@ L4 层（两模块，互补）:
   （当前全绿: 8/8 exit=0, 零 postulate/hole）。
 - 群论/特征层裁定记录: DCCayleyGraph 假命题 P·A·P=A⁻¹ 已删除;
   DCCharacter 载体重建为 ℚ(ζ₁₂)（Sqrt3 全实域容不下单位根），特征同态性 1728 case refl。
+- **Parseval/Plancherel 完成** (2026-09-07): DCCharacter 傅里叶层闭环 —
+  特征同态性/正交性/自内积/对偶完备性 + 主定理
+  `parseval : Σ_x|f(x)|² = (1/12)·Σ_k|f̂(k)|²` (0 postulate 0 hole)。
+  Z12Sys 载体补全为真交换环 (*ᶻ-assoc 等); 组装全程 sumF 结构归纳,
+  无 144 项字面树。详见 [17-dc-fourier-analysis.md](17-dc-fourier-analysis.md)。

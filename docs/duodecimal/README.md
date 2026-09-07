@@ -41,6 +41,7 @@
 | [14-fermat-proof-path.md](14-fermat-proof-path.md) | Fermat 离散投影链：依赖路线图 + 验证闸门（工程方法） | P1 |
 | [15-flt-mathematical-position.md](15-flt-mathematical-position.md) | 离散基座上的 FLT：精确声明/已证定理/边界（致数学界立场文件） | P0 |
 | [16-dc12-layer-adjudication.md](16-dc12-layer-adjudication.md) | DC12 论文 L0-L7 逐层裁定：哪些已证/哪些不可证 | P1 |
+| [17-dc-fourier-analysis.md](17-dc-fourier-analysis.md) | DC 傅里叶分析层：特征→正交→对偶完备→Parseval 完整形式化 | P0 |
 
 ---
 
@@ -123,8 +124,11 @@
 ### 特征分解
 
 - **文件**: `src/Sovereign/Algebra/Character/DCCharacter.agda`
-- **内容**: DC 的特征分解 χ_(u,v)
-- **状态**: 框架完成，求和部分待补充
+- **内容**: DC 的特征分解 χ_(u,v)（载体 Z12Sys = ℚ(ζ₁₂)）
+- **状态**: ✅ 完成 — 特征同态性(1728 refl)、正交性(156)、自内积(=12)、
+  对偶完备性 Σ_k χ_k(x)·conj χ_k(y) = 12·δ_xy、conj 引理族、
+  **Parseval/Plancherel**：Σ_x|f(x)|² = (1/12)·Σ_k|f̂(k)|²（0 postulate 0 hole）
+  详见 [17-dc-fourier-analysis.md](17-dc-fourier-analysis.md)
 
 ### 谱理论与 Cayley 图
 
