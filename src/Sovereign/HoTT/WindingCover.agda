@@ -15,11 +15,12 @@ module Sovereign.HoTT.WindingCover where
 open import Data.Nat using (ℕ; _+_; _*_) renaming (zero to ℕzero; suc to ℕsuc)
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)
 open import Data.Integer using (ℤ; +_; -[1+_])
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans)
+open import Relation.Nullary using (Dec; yes; no)
 open import Data.Product using (_×_; _,_)
 
 import Sovereign.Structology.T6 as T6
-open import Data.Fin.Properties using (_≟_)
+open import Data.Fin.Properties using (_≟_; toℕ-injective; toℕ-fromℕ)
 open import Data.Fin using (fromℕ; lower₁)
 
 --------------------------------------------------------------------------------
@@ -44,9 +45,14 @@ FullCover _ = Fin 144 × Fin 46
 
 private
   incMod : ∀ n → Fin n → Fin n
-  incMod (suc n) i with i ≟ fromℕ n
+  incMod (ℕsuc n) i with i ≟ fromℕ n
   ... | yes _ = zero           -- 末位 → 回绕
-  ... | no ¬last = suc (lower₁ i ¬last)  -- 非末位 → +1, bound 不变
+  ... | no ¬last = suc (lower₁ i noLast)  -- 非末位 → +1, bound 不变
+    where
+    -- lower₁ 需要 n ≢ toℕ i; with 给出 i ≢ fromℕ n. 经 toℕ 往返桥接:
+    --   n ≡ toℕ i  ⇒  toℕ i ≡ n ≡ toℕ (fromℕ n)  ⇒(单射) i ≡ fromℕ n  (矛盾)
+    noLast : n ≢ toℕ i
+    noLast h = ¬last (toℕ-injective (trans (sym h) (sym (toℕ-fromℕ n))))
 
 -- 沿一步极向步进，绕数 +1 (mod 144)
 polarTransport : (p : T6.T6Lattice) → PolarCover p → PolarCover (T6.polarStep p)
