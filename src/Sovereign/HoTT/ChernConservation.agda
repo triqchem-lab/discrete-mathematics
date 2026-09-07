@@ -16,6 +16,7 @@
 module Sovereign.HoTT.ChernConservation where
 
 open import Data.Vec using (Vec; lookup; _∷_; []; _++_; map; zipWith; length; sum; foldr)
+open import Data.Vec.Properties using (map-++)
 open import Data.Fin using (Fin; zero; suc; toℕ)
 open import Data.Nat using (ℕ; suc)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)
@@ -73,6 +74,15 @@ stepTransport delta fiber = map (λ x → x + delta) fiber
 -- 循环左移辅助 (模块级; let 内定义报 record pattern 解析问题, 提顶层绕开)
 rotLeft : Vec ℤ 30 → Vec ℤ 30
 rotLeft (x ∷ xs) = xs ++ (x ∷ [])
+
+-- rotLeft 与 map 交换: rotLeft (map f v) = map f (rotLeft v) (map-++)
+rotLeft-map : (f : ℤ → ℤ) (v : Vec ℤ 30) → rotLeft (map f v) ≡ map f (rotLeft v)
+rotLeft-map f (x ∷ xs) = begin
+  rotLeft (map f (x ∷ xs))    ≡⟨ refl ⟩
+  rotLeft (f x ∷ map f xs)    ≡⟨ refl ⟩
+  (map f xs) ++ (f x ∷ [])    ≡⟨ sym (map-++ f xs (x ∷ [])) ⟩
+  map f (xs ++ (x ∷ []))      ≡⟨ refl ⟩
+  map f (rotLeft (x ∷ xs))    ∎ where open ≡-Reasoning
 
 -- 定义局部曲率：相邻格点的差分 (Discrete Derivative)
 -- K_i = t_{i+1} - t_i
