@@ -49,3 +49,8 @@
 
 ### 模式确认 (26 模块共性)
 每个失败模块 = 机械 import 修复 (可做) + 未完成真证明 (需理解该模块数学对象 + 跨模块一致性). 机械部分本轮已系统处理; 真证明部分是数天级专项.
+
+### 澄清 (2026-09-08): Equivalence Trit 统一确认
+四模块 StateMachine/Connection/Bundle/LCM 全 import **Sovereign.Coding.Trit** (Fin 3) — 类型统一 ✓。
+真障碍: stepSection 的 isEven/delta 在 let 内, 泛型 phase 不归约; 证明需 phase 按 toℕ 奇偶分解
+(Fin 144 → fromℕ< 结构) 或 mod/% 桥. 专门一轮证明任务.
