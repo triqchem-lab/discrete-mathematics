@@ -59,3 +59,12 @@
 许多"未完成证明"模块的核心定理**定义性 refl 可闭合** — 前提是识别正确数学对象
 (Equivalence: stepSection 按 phase 奇偶给 delta=1/2, 偶=TransportPolarLoss/奇=TransportPolar;
 泛型 sec + 具体 phase 归约 → refl). 修复 = 删假命题 + 奇偶分派穷举.
+
+### 更新 (2026-09-08 第三轮): 全绿 7 个
+✅ PigeonholeStandard / Equivalence (144case) / ChernConservation (rotLeft-map+zw-diff) /
+   Entanglement (删假定理) / LuCellGrid (Fin roundtrip) / DiscreteCalculus /
+   + T6.Rewrite 删除. 突破模式: 未完成证明常是定义性 refl + 正确对象识别;
+   Fin roundtrip 用 toℕ-fromℕ< + m≡m%n+[m/n]*n.
+
+🔶 TopologyLevels: _mod_→_%_ + fromℕ→fromℕ< + mkGridPoint 类型 (同 LuCellGrid 深改造, 待续)
+🔶 Resonance: 3 数学洞; ElectricalTopology: FileNotFound (依赖检查)
