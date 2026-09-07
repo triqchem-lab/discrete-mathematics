@@ -3,6 +3,7 @@
 > 分析 (2026-09-07): fable5-thinking 结构反思 + proof-engineer 形式化审查
 > 对象: `src/Sovereign/Algebra/Dihedral/DihedralD12.agda` (246 行草稿, 未编译)
 > 结论: 数学内容正确且近乎完整, 卡在 3 处局部错误, 修复需补 2 条小引理即可复用绿库闭合。
+> **更新 (2026-09-07)**: 已按 §五 修复路径落地入库 (commit 7fa4d99), 编译通过 0 postulate 0 hole。
 
 ## 一、这个模块数学上是什么
 

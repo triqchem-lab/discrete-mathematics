@@ -113,8 +113,10 @@
 ### 二面体群 D₁₂
 
 - **文件**: `src/Sovereign/Algebra/Dihedral/DihedralD12.agda`
-- **内容**: D₁₂ = DC ⋊ ⟨ρ⟩，24阶二面体群
-- **状态**: ❌ 未编译草稿 (编译失败 NoParse@145, 无下游引用)
+- **内容**: D₁₂ = DC ⋊ ⟨ρ⟩，24阶二面体群（库中首个非交换群）
+- **状态**: ✅ 完成 (2026-09-07 修复入库, 0 postulate 0 hole)
+  群公理归约 DC / srs=r⁻¹ 验证 / 非交换构造反例 / DC 嵌入单射
+  分析见 [18-dihedral-d12-analysis.md](18-dihedral-d12-analysis.md)
 
 ### 短正合列
 
