@@ -26,7 +26,7 @@ module Sovereign.Algebra.Character.DCCharacter where
 
 open import Data.Product using (_×_; _,_)
 open import Data.Nat using (ℕ; zero; suc) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
-open import Data.Fin using (Fin; zero; suc; toℕ)
+open import Data.Fin using (Fin; toℕ) renaming (zero to fzero; suc to fsuc)
 open import Data.Rational using (ℚ; mkℚ; _+_; _-_; _*_; _/_; -_)
 open import Data.Rational.Solver
 open import Data.Integer using (+_; -[1+_]; +0; +[1+_])
@@ -2047,6 +2047,13 @@ sum-over-DC f =
   (f (T₁ , a0) +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ
   (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))
 
+-- 归纳求和算子: 对 Fin n 结构归纳 (依赖类型论: 以结构而非字面穷举发展理论)
+-- sumF {n} f = f fzero +ᶻ (f (fsuc fzero) +ᶻ ... +ᶻ f (fromℕ (n-1)))
+-- 使 Parseval 所需性质 (线性性/交换/conj 穿入) 成为结构归纳定理, 免 144 项字面树重排
+sumF : ∀ {n : ℕ} → (Fin n → Z12Sys) → Z12Sys
+sumF {zero} f = z0
+sumF {suc n} f = f fzero +ᶻ sumF (λ i → f (fsuc i))
+
 -- 12 个特征上的求和 (对偶正交性 / Parseval RHS 用)
 sum-over-characters : (CharacterIndex → Z12Sys) → Z12Sys
 sum-over-characters g =
@@ -2251,7 +2258,7 @@ dc-dft f idx = sum-over-DC (λ x → f x *ᶻ conjᶻ (dc-character idx x))
 module _ where
   open import Data.Rational.Properties
     using (+-comm; +-assoc; *-comm; *-distribˡ-+; *-distribʳ-+; neg-distrib-+;
-           +-identityˡ; neg-distribˡ-*; neg-distribʳ-*)
+           +-identityˡ; +-identityʳ; neg-distribˡ-*; neg-distribʳ-*)
   open import Relation.Binary.PropositionalEquality using (sym; trans; cong; cong₂)
 
   -- 记录延拓: 分量相等则值相等 (单构造子记录)
@@ -2510,6 +2517,20 @@ module _ where
          (conj-i a b a' b' c d c' d')
          (conj-γ a c a' c' b d b' d')
          (conj-iγ a d a' d' b c b' c')
+
+  -- 零元族 (求和结构引理地基; ℚ +-identity 分量直推)
+  zidˡ : ∀ x → z0 +ᶻ x ≡ x
+  zidˡ (a +z b +z c +z d) =
+    zext (+-identityˡ a) (+-identityˡ b) (+-identityˡ c) (+-identityˡ d)
+
+  zidʳ : ∀ x → x +ᶻ z0 ≡ x
+  zidʳ (a +z b +z c +z d) =
+    zext (+-identityʳ a) (+-identityʳ b) (+-identityʳ c) (+-identityʳ d)
+
+  -- 归纳: 全零函数的和为零 (基步 refl, 归纳步 zidˡ)
+  sumF-zero : ∀ {n : ℕ} → sumF (λ (_ : Fin n) → z0) ≡ z0
+  sumF-zero {zero} = refl
+  sumF-zero {suc n} = trans (zidˡ (sumF (λ (_ : Fin n) → z0))) (sumF-zero {n})
 
 
 dual-self : ∀ (t : Trit) (a : AlphaPower) →
