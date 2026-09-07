@@ -75,3 +75,36 @@
    Resonance (3 建模洞: nayinFingerprint StableRoot / zhonglvClosure 归零态实现 / 第三洞)
 进度总计: 8 全绿 (Pigeonhole/Equivalence/Chern/Entanglement/LuCellGrid/DiscreteCalculus/
   ElectricalTopology + T6.Rewrite删), 4 部分深修中.
+
+### 更新 (2026-09-08 第五轮): 全绿 6 + 编译内存纪律
+
+✅ 本轮新增全绿 (全部加 `+RTS -M6G -RTS` 堆限制验证):
+- HamiltonianDiscrete (4a8664e): ↔ 结合括号; ℕ/⊎/Sum 导入; 两条不可证定理
+  (mass-gap-theorem 方向错 + energy-conservation 引未定义 mixedOp^n/模型反例) → 待核对注释
+- LightConeMatrix (): Data.Nat 缺 zero/suc → lc-iterate 解析错
+- T6Homotopy (d38b52d): step1 复用 T6 顶层(删重复 where); singleCoordPeriod3/commute-coords
+  改 Fin 构造器 6+36 case 穷举 (with toℕ 不具体化 i 致嵌套不归约); 矛盾路径块(固定 Vec 144 却用
+  [])/§6 编码(§6 用 fromℕ val 冒充 Fin 729) → 待核对注释
+- WindingCover (): incMod 需 yes/no + ℕsuc 重命名模式 + lower₁ 经 toℕ-injective/toℕ-fromℕ 桥
+- PhaseTransitionPaths (589ff31): 换 cubical→stdlib 导入(去 --cubical 无用); 五段路径几何对纠正
+  (原 startOk/endOk 反向致 Td≡Oh 假等式); 闭环假命题(无复合构造子) → 待核对
+- Projection/Binary (): 假字面量 0b0/0b1/1b1→Fin 构造器; yes/no/case_of_ 导入; projectTritToBit
+  直接构造器匹配(with toℕ 穷举触发 CoverageIssue); restore 去 case_of_ 保定义性折合; 证明去错误
+  injective 引理(空模式 () 更直接)
+- CRTFiberWinding (914f1e0): s≤s/z≤n 从 Nat.Properties 移到 Data.Nat (stdlib2.4 改名)
+
+🔴 归待核对 (非纯工程, 需语义重建模):
+- FineStructureMapping: 数值公式层全用假记法 (1b1/8b8/0b0 无定义), _/_ 实为 ℤ/ℕ 构造器却当 ℚ/ℚ
+  用; record 内嵌 where 语法错; 从 v5.20 起从未独立编译绿
+- CRTHarmonics: **编译 OOM 根因** = 大系数 mod-helper 展开. harmonic k = X0 + (k*T2)*T1 对
+  T2=177147 时 [m+kn]%n≡m%n 归纳证明项展开爆炸 (>6G/80s), 系数 65536 则秒过. 项目既定解法是
+  REWRITE (XuanwuAbsorption mod46k 先例). 且尾行是 {!!} 洞 (待 CRTFiberWinding 桥接), 作者自标草稿.
+
+### ⚠️ 编译内存纪律 (重要教训)
+1. **必须加堆限制**: `agda +RTS -M6G -RTS --guardedness` — 无限制编译时自定义 REWRITE 规则
+   触发的归一化展开可吃满整机内存 (61G), 拖垮系统.
+2. 文档依据: wiki 02-geometric-pole.md:588 "REWRITE 将类型检查内存从 OOM 天花板(~8GB)压到常数级"
+   — 一旦模块编译超过 ~6-8G 堆, 说明触发了不该发生的展开, 应定位修复而非加大堆.
+3. 大系数 mod-helper 展开是已知编译器限制 (proof-engineer 附录1): 符号参数大数 %/ 展开为
+   mod-helper/div-helper 无法归约 → 用 REWRITE 规则 (T6 div3k / Xuanwu mod46k) 或结构定义.
+4. `check_all_modules.sh` 无堆限制, 已改用带 `+RTS -M6G` 版本跑全库.
