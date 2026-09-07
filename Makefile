@@ -1,25 +1,27 @@
+AGDA = agda +RTS -M8G -H6G -A128M -RTS
+
 test:
-	agda src/Sovereign/Algebra/TriCycGraph.agda
-	agda src/Sovereign/Structology/ArthurMagicSquare.agda
-	agda src/Sovereign/Structology/MotorStableStates.agda
-	agda src/Sovereign/Physics/QuantumMotor.agda
-	agda src/Sovereign/Algebra/TriadicHarmonic.agda
-	agda src/Sovereign/Algebra/DigitalRootCycle.agda
-	agda src/Sovereign/Algebra/C3Orbit.agda
-	agda src/Sovereign/Geometry/ProjectiveCore.agda
-	agda src/Sovereign/Geometry/ProjectiveOrbit.agda
-	agda src/Sovereign/Geometry/ProjectiveInvariants.agda
-	agda src/Sovereign/Geometry/ProjectiveTransform.agda
-	agda src/Sovereign/Geometry/ConformalCore.agda
-	agda src/Sovereign/Geometry/ConformalInvariants.agda
-	agda src/Sovereign/Geometry/TorusGeometry.agda
-	agda src/Sovereign/Geometry/TorusGeodesic.agda
-	agda src/Sovereign/Geometry/TorusAlgebra.agda
-	agda src/Sovereign/Geometry/TorusFourier.agda
-	agda src/Sovereign/Structology/GF4AffineMagicSquare.agda
-	agda src/Sovereign/Structology/GF9AffineMagicSquare.agda
-	agda src/Sovereign/Structology/DynamicMagicSquare.agda
-	agda src/Sovereign/Structology/SL23Cayley.agda
-	agda src/Sovereign/Structology/BinaryTetrahedralIrreducibility.agda
-	agda src/Sovereign/Physics/DiscreteStatMech.agda
+	$(AGDA) src/Sovereign/Algebra/TriCycGraph.agda
+	$(AGDA) src/Sovereign/Structology/ArthurMagicSquare.agda
+	$(AGDA) src/Sovereign/Structology/MotorStableStates.agda
+	$(AGDA) src/Sovereign/Physics/QuantumMotor.agda
+	$(AGDA) src/Sovereign/Algebra/TriadicHarmonic.agda
+	$(AGDA) src/Sovereign/Algebra/DigitalRootCycle.agda
+	$(AGDA) src/Sovereign/Algebra/C3Orbit.agda
+	$(AGDA) src/Sovereign/Geometry/ProjectiveCore.agda
+	$(AGDA) src/Sovereign/Geometry/ProjectiveOrbit.agda
+	$(AGDA) src/Sovereign/Geometry/ProjectiveInvariants.agda
+	$(AGDA) src/Sovereign/Geometry/ProjectiveTransform.agda
+	$(AGDA) src/Sovereign/Geometry/ConformalCore.agda
+	$(AGDA) src/Sovereign/Geometry/ConformalInvariants.agda
+	$(AGDA) src/Sovereign/Geometry/TorusGeometry.agda
+	$(AGDA) src/Sovereign/Geometry/TorusGeodesic.agda
+	$(AGDA) src/Sovereign/Geometry/TorusAlgebra.agda
+	$(AGDA) src/Sovereign/Geometry/TorusFourier.agda
+	$(AGDA) src/Sovereign/Structology/GF4AffineMagicSquare.agda
+	$(AGDA) src/Sovereign/Structology/GF9AffineMagicSquare.agda
+	$(AGDA) src/Sovereign/Structology/DynamicMagicSquare.agda
+	$(AGDA) src/Sovereign/Structology/SL23Cayley.agda
+	$(AGDA) src/Sovereign/Structology/BinaryTetrahedralIrreducibility.agda
+	$(AGDA) src/Sovereign/Physics/DiscreteStatMech.agda
 	@echo "ALL_PASS"
