@@ -30,6 +30,7 @@
 module Sovereign.Problem.Fermat.FermatL4_Mod12Cycle where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Product using (_×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; cong₂; module ≡-Reasoning)
@@ -281,3 +282,27 @@ four-const = refl
 -- 湮灭类 d6: 6,0,0
 six-annihilate : pow12 d6 3 ≡ d0
 six-annihilate = refl
+
+--------------------------------------------------------------------------------
+-- §8. 大衍核心锚定 — "mod 12 穷尽全部相位信息"的代数根据 (2026-09-07 接链)
+--
+-- R₁₂ 层建模的合法性来自最低公理基座 DayanCore:
+--   DC = ⟨δ, φ | δ³ = id, φ⁴ = id, δφ = φδ⟩ ≅ C₃ × C₄ ≅ C₁₂,
+--   载体 DuodecPoint = Trit × AlphaPower, 联合周期 12 = lcm(3,4)
+--   由抽象定理 dayan-joint-order-12 ((δ∘φ)¹² = id, 归纳导出) 给出.
+-- 本模块在 R₁₂ 环上的单位群 V₄/幂周期分类是这一 12 阶交换群结构
+-- 经 CRT 投影后的环论切片: 依赖侧全部本地形式化, 无连续统.
+--------------------------------------------------------------------------------
+
+open import Function.Base using (_∘_)
+open import Sovereign.Base.Trit using (Trit)
+open import Sovereign.Algebra.GroupTheory.DuodecClock
+  using (DuodecPoint; AlphaPower)
+open import Sovereign.Algebra.GroupTheory.DayanCore
+  using (DayanCore; duodec-dayan-core; dayan-joint-order-12; iterate)
+
+dayan-anchor : ∀ (t : Trit) (a : AlphaPower) →
+  iterate
+    (DayanCore.δ duodec-dayan-core ∘ DayanCore.φ duodec-dayan-core)
+    12 (t , a) ≡ (t , a)
+dayan-anchor = λ t a → dayan-joint-order-12 duodec-dayan-core (t , a)

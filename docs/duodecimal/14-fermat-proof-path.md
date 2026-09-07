@@ -155,3 +155,19 @@ L4 层（两模块，互补）:
 |------|------|
 | 2026-09-07 | 建本文档；建 `engineering/check_fermat_chain.sh` 闸门（L0→L3 全绿实测） |
 | 2026-09-07 | FermatL1 补 `pow3-even-channel`（定理 C，闭合 13-flt §9.2 A–D 声称） |
+
+---
+
+## 更新 (2026-09-07): 大衍核心接链 + 群论闸门
+
+- **DayanCore** (`Algebra/GroupTheory/DayanCore.agda`) 形式化最低公理基座
+  DC = ⟨δ, φ | δ³=id, φ⁴=id, δφ=φδ⟩ ≅ C₃×C₄≅C₁₂:
+  抽象定理 `dayan-joint-order-12 : (δ∘φ)¹² = id`（迭代交换律 + 周期分解归纳导出，非穷举）。
+- **接链**: `FermatL4_Mod12Cycle` §8 新增 `dayan-anchor`——R₁₂ 层 "mod 12 穷尽相位信息"
+  的合法性现在显式挂在表现级基座上，Problem 层依赖边闭合。
+- **新闸门**: `engineering/check_group_chain.sh` 管理群论链
+  DuodecClock → DuodecClockProperties → DCGroup → InformationStructure →
+  NormExactSequence → NormHomomorphism → CyclicGroupStructure → DayanCore
+  （当前全绿: 8/8 exit=0, 零 postulate/hole）。
+- 群论/特征层裁定记录: DCCayleyGraph 假命题 P·A·P=A⁻¹ 已删除;
+  DCCharacter 载体重建为 ℚ(ζ₁₂)（Sqrt3 全实域容不下单位根），特征同态性 1728 case refl。
