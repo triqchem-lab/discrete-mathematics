@@ -27,9 +27,9 @@ module Sovereign.Algebra.Character.DCCharacter where
 open import Data.Product using (_×_; _,_)
 open import Data.Nat using (ℕ; zero; suc) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
 open import Data.Fin using (Fin; zero; suc; toℕ)
-open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_; -_)
+open import Data.Rational using (ℚ; mkℚ; _+_; _-_; _*_; _/_; -_)
 open import Data.Rational.Solver
-open import Data.Integer using (+_; -[1+_])
+open import Data.Integer using (+_; -[1+_]; +0; +[1+_])
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥-elim)
@@ -76,8 +76,10 @@ _+ᶻ_ (a +z b +z c +z d) (a' +z b' +z c' +z d') =
   (a + a') +z (b + b') +z (c + c') +z (d + d')
 
 -- 复共轭 (域自同构): i ↦ -i, γ ↦ -γ; conj ζ₃ = ζ₃², conj i = i³ = -i
+-- 共轭用一元 -_ (与 stdlib neg-distrib-* 引理族直接对接;
+-- 所有 conjᶻ 使用点均为 refl 证明, 定义变更零级联)
 conjᶻ : Z12Sys → Z12Sys
-conjᶻ (a +z b +z c +z d) = a +z (negq b) +z (negq c) +z d
+conjᶻ (a +z b +z c +z d) = a +z (- b) +z (- c) +z d
 
 -- 单位根
 ζ₃ : Z12Sys   -- 三次单位根: -1/2 + γ/2
@@ -2249,7 +2251,7 @@ dc-dft f idx = sum-over-DC (λ x → f x *ᶻ conjᶻ (dc-character idx x))
 module _ where
   open import Data.Rational.Properties
     using (+-comm; +-assoc; *-comm; *-distribˡ-+; *-distribʳ-+; neg-distrib-+;
-           +-identityˡ)
+           +-identityˡ; neg-distribˡ-*; neg-distribʳ-*)
   open import Relation.Binary.PropositionalEquality using (sym; trans; cong; cong₂)
 
   -- 记录延拓: 分量相等则值相等 (单构造子记录)
@@ -2382,6 +2384,133 @@ module _ where
     trans (*ᶻ-comm z (x +ᶻ y))
       (trans (*ᶻ-distribˡ x y z)
              (cong₂ (λ r t → r +ᶻ t) (*ᶻ-comm x z) (*ᶻ-comm y z)))
+
+  -- ── 共轭引理族 (conjᶻ 与 +ᶻ/*ᶻ 交换; Parseval 组装必需) ──
+
+  -- ℚ 双重取负 (Properties 无 ℚ 版; -_ 是构造子级符号翻转, 3-case refl)
+  neg-involutive-ℚ : ∀ p → - (- p) ≡ p
+  neg-involutive-ℚ (mkℚ +[1+ n ] d _) = refl
+  neg-involutive-ℚ (mkℚ +0 d _) = refl
+  neg-involutive-ℚ (mkℚ -[1+ n ] d _) = refl
+
+  -- (−p)(−q) = pq
+  negneg-mul : ∀ p q → (- p) * (- q) ≡ p * q
+  negneg-mul p q =
+    trans (sym (neg-distribˡ-* p (- q)))
+      (trans (cong Data.Rational.-_ (sym (neg-distribʳ-* p q)))
+             (neg-involutive-ℚ (p * q)))
+
+  -- p − (−q) = p + q
+  p-minus-minus : ∀ p q → p - (- q) ≡ p + q
+  p-minus-minus p q = cong (\w → p + w) (neg-involutive-ℚ q)
+
+  -- −(X − Y) = (−X) + Y
+  neg-minus : ∀ X Y → - (X - Y) ≡ (- X) + Y
+  neg-minus X Y =
+    trans (neg-distrib-+ X (- Y))
+          (cong (\w → (- X) + w) (neg-involutive-ℚ Y))
+
+  conj-+ᶻ : ∀ x y → conjᶻ (x +ᶻ y) ≡ conjᶻ x +ᶻ conjᶻ y
+  conj-+ᶻ (a +z b +z c +z d) (a' +z b' +z c' +z d') =
+    zext refl (neg-distrib-+ b b') (neg-distrib-+ c c') refl
+
+  conj-involutive : ∀ x → conjᶻ (conjᶻ x) ≡ x
+  conj-involutive (a +z b +z c +z d) =
+    zext refl (neg-involutive-ℚ b) (neg-involutive-ℚ c) refl
+
+  -- conj 与 *ᶻ 交换: 两侧各归约到规范形再组合 (每分量独立命名引理)
+  conj-real : ∀ a a' b b' c c' d d' →
+    ((a * a' - b * b') + (+ 3 / 1) * (d * d' - c * c'))
+    ≡ ((a * a' - (- b) * (- b')) + (+ 3 / 1) * (d * d' - (- c) * (- c')))
+  conj-real a a' b b' c c' d d' =
+    cong₂ _+_
+      (sym (cong (\w → a * a' - w) (negneg-mul b b')))
+      (sym (cong (\w → (+ 3 / 1) * (d * d' - w)) (negneg-mul c c')))
+
+  conj-i-L : ∀ a b a' b' c d c' d' →
+    - (((a * b') + (b * a')) - (+ 3 / 1) * ((c * d') + (d * c')))
+    ≡ ((- (a * b')) + (- (b * a'))) + (+ 3 / 1) * ((c * d') + (d * c'))
+  conj-i-L a b a' b' c d c' d' =
+    trans (neg-minus ((a * b') + (b * a')) ((+ 3 / 1) * ((c * d') + (d * c'))))
+          (cong (\w → w + (+ 3 / 1) * ((c * d') + (d * c')))
+                (neg-distrib-+ (a * b') (b * a')))
+
+  conj-i-R-sub : ∀ c d c' d' →
+    (+ 3 / 1) * (((- c) * d') + d * (- c'))
+    ≡ - ((+ 3 / 1) * ((c * d') + (d * c')))
+  conj-i-R-sub c d c' d' =
+    trans (cong (\x → (+ 3 / 1) * x) inner)
+          (sym (neg-distribʳ-* (+ 3 / 1) ((c * d') + (d * c'))))
+    where
+      inner : ((- c) * d') + d * (- c') ≡ (- ((c * d') + (d * c')))
+      inner =
+        trans (cong₂ _+_ (sym (neg-distribˡ-* c d')) (sym (neg-distribʳ-* d c')))
+              (sym (neg-distrib-+ (c * d') (d * c')))
+
+  conj-i-R : ∀ a b a' b' c d c' d' →
+    ((a * (- b') + (- b) * a')
+     - (+ 3 / 1) * (((- c) * d') + d * (- c')))
+    ≡ ((- (a * b')) + (- (b * a'))) + (+ 3 / 1) * ((c * d') + (d * c'))
+  conj-i-R a b a' b' c d c' d' =
+    trans (cong (\w → (a * (- b') + (- b) * a') - w)
+                (conj-i-R-sub c d c' d'))
+    (trans (p-minus-minus (a * (- b') + (- b) * a')
+                          ((+ 3 / 1) * ((c * d') + (d * c'))))
+           (cong (\w → w + (+ 3 / 1) * ((c * d') + (d * c')))
+                 (cong₂ _+_ (sym (neg-distribʳ-* a b')) (sym (neg-distribˡ-* b a')))))
+
+  conj-i : ∀ a b a' b' c d c' d' →
+    - (((a * b') + (b * a')) - (+ 3 / 1) * ((c * d') + (d * c')))
+    ≡ ((a * (- b') + (- b) * a')
+       - (+ 3 / 1) * (((- c) * d') + d * (- c')))
+  conj-i a b a' b' c d c' d' =
+    trans (conj-i-L a b a' b' c d c' d') (sym (conj-i-R a b a' b' c d c' d'))
+
+  conj-γ-L : ∀ a c a' c' b d b' d' →
+    - (((a * c') + (c * a')) - ((b * d') + (d * b')))
+    ≡ ((- (a * c')) + (- (c * a'))) + ((b * d') + (d * b'))
+  conj-γ-L a c a' c' b d b' d' =
+    trans (neg-minus ((a * c') + (c * a')) ((b * d') + (d * b')))
+          (cong (\w → w + ((b * d') + (d * b')))
+                (neg-distrib-+ (a * c') (c * a')))
+
+  conj-γ-R : ∀ a c a' c' b d b' d' →
+    ((a * (- c') + (- c) * a')
+     - (((- b) * d') + d * (- b')))
+    ≡ ((- (a * c')) + (- (c * a'))) + ((b * d') + (d * b'))
+  conj-γ-R a c a' c' b d b' d' =
+    trans (cong (\w → (a * (- c') + (- c) * a') - w)
+                (conj-γ-R-sub b d b' d'))
+    (trans (p-minus-minus (a * (- c') + (- c) * a') ((b * d') + (d * b')))
+           (cong (\w → w + ((b * d') + (d * b')))
+                 (cong₂ _+_ (sym (neg-distribʳ-* a c')) (sym (neg-distribˡ-* c a')))))
+    where
+      conj-γ-R-sub : ∀ b d b' d' →
+        ((- b) * d') + d * (- b') ≡ - ((b * d') + (d * b'))
+      conj-γ-R-sub b d b' d' =
+        trans (cong₂ _+_ (sym (neg-distribˡ-* b d')) (sym (neg-distribʳ-* d b')))
+              (sym (neg-distrib-+ (b * d') (d * b')))
+
+  conj-γ : ∀ a c a' c' b d b' d' →
+    - (((a * c') + (c * a')) - ((b * d') + (d * b')))
+    ≡ ((a * (- c') + (- c) * a') - (((- b) * d') + d * (- b')))
+  conj-γ a c a' c' b d b' d' =
+    trans (conj-γ-L a c a' c' b d b' d') (sym (conj-γ-R a c a' c' b d b' d'))
+
+  conj-iγ : ∀ a d a' d' b c b' c' →
+    ((a * d') + (d * a')) + ((b * c') + (c * b'))
+    ≡ ((a * d') + (d * a')) + (((- b) * (- c')) + ((- c) * (- b')))
+  conj-iγ a d a' d' b c b' c' =
+    cong (\w → ((a * d') + (d * a')) + w)
+         (cong₂ _+_ (sym (negneg-mul b c')) (sym (negneg-mul c b')))
+
+  conj-*ᶻ : ∀ x y → conjᶻ (x *ᶻ y) ≡ conjᶻ x *ᶻ conjᶻ y
+  conj-*ᶻ (a +z b +z c +z d) (a' +z b' +z c' +z d') =
+    zext (conj-real a a' b b' c c' d d')
+         (conj-i a b a' b' c d c' d')
+         (conj-γ a c a' c' b d b' d')
+         (conj-iγ a d a' d' b c b' c')
+
 
 dual-self : ∀ (t : Trit) (a : AlphaPower) →
   sum-over-characters (λ idx → dc-character idx (t , a) *ᶻ conjᶻ (dc-character idx (t , a)))
