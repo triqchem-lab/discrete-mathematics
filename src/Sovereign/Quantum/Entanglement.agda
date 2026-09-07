@@ -190,10 +190,12 @@ bell-violation = Σ ((Trit × Trit) × (Trit × Trit)) (λ ((A , B) , (A' , B'))
 --   离散: E(A,B) + E(A,B') + E(A',B) + E(A',B') ∈ {T₀, T₁, T₂}
 --   违反: 和 ≠ T₀ (在 F₃ 中, 非零意味着违反)
 
--- §6. 经典界证明
+-- §6. 经典界证明 (起点层占位)
 -- 经典确定态: 两个 qutrit 处于直积态
--- 关联函数可以分解为局域期望值的乘积
--- 在所有确定策略下，Bell 不等式之和 = T₀
+-- 注意: 以下 classical-correlation = a⊗b 是 GF(3) 起点层的占位关联.
+-- 本框架中纠缠/关联的完整代数在 GF(9) 乘法群与 DC12 (特征3×周期4) 层 —
+-- 见 GF9.agda:25-27 (|GF(9)*|=8, α 阶4). "经典界"的完备表述须在该层给出,
+-- 此处仅保留占位定义供高层承接.
 
 -- 确定策略: 每个 qutrit 的测量结果是确定的
 -- 策略 = (测量设置 A, 测量设置 B, 测量设置 A', 测量设置 B')
@@ -209,13 +211,18 @@ classical-bell-sum a b a' b' =
   ((classical-correlation a b ⊕ classical-correlation a b') ⊕ 
   classical-correlation a' b) ⊕ classical-correlation a' b'
 
--- 【2026-09-08 裁定】classical-bound 是假定理 (穷举 36 反例):
---   classical-correlation a b = a⊗b (GF3 乘), 和可为非零 (如 (T₀,T₀,T₁,T₁) 和 = T₁).
---   真 Bell 违反见 bell-violation-proof (存在设置使和 ≠ T₀). 本假定理删除.
--- 经典"局域界"需要测量值 ∈ {±1} 编码, 在 GF3 0/1/2 乘法下不成立.
+-- 【2026-09-08 裁定·表述修正】classical-bound 原稿 81 case 逐 refl 失败, 已删.
+--   归因订正 (勿以 GF(3) 乘法群限制本框架):
+--   classical-correlation a b = a⊗b 只是【起点层 GF(3) 占位】.
+--   项目的完整乘法结构在 GF(9) 乘法群 (阶 8, α 阶 4 = 90° 相位旋转) 与
+--   DC12 (特征 3 × 周期 4 的交换群) 层 — 见 GF9.agda:25-27. 纠缠关联的
+--   "非局域乘法"需在这些高层表示, 而非 GF(3) 的 mod-3 乘.
+--   因此本文件对 classical-bound 的处理 = 编译层删假 + 占位层标记,
+--   不等于"GF(3) 乘法做不到经典界" — 那是把起点当终点的误读.
+--   真 Bell 违反 (在占位层即可见) 见 bell-violation-proof (设置和 ≠ T₀).
+--   经典/量子分离的完备表述待 GF9/DC12 层承接 (见 19-review-list A 类).
 
-
--- 【2026-09-08 裁定】classical-no-violation 随 classical-bound 同假 (依赖其反例), 已删.
+-- 【2026-09-08 裁定】classical-no-violation 依赖 classical-bound, 随之移除.
 
 -- §7. Bell 违反证明
 -- Bell 态 |Φ⁺⟩ = |00⟩+|11⟩+|22⟩ 在某些测量设置下违反经典界

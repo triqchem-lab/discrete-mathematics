@@ -46,9 +46,13 @@
 
 ## C. 已裁定假定理 (不可恢复)
 
-### C1. Entanglement classical-bound (已恢复 937bca0 权威裁定)
-- classical-bell-sum 用 ⊗ 乘法关联, 81 策略中 36 个和 ≠ T₀ → 假定理
-- 权威版: 删 classical-bound/no-violation, 保留 bell-violation-proof (37 真违反)
+### C1. Entanglement classical-bound (已删, 归因订正为占位层)
+- 原稿 81 case 逐 refl 失败 → 编译层已删 (恢复 937bca0)
+- **归因订正**: 不是"GF(3) 乘法下经典界不成立" —
+  `classical-correlation = a⊗b` 只是 GF(3) 起点层占位; 本框架完整乘法结构在
+  GF(9) 乘法群 (|GF(9)*|=8, α 阶4 = 90° 相位, GF9.agda:25-27) 与 DC12 (特征3×周期4)。
+  经典/量子分离的完备表述应在 GF9/DC12 层承接 (勿以 GF(3) 起点层限制框架)
+- 占位层可见的真违反: bell-violation-proof (设置和 ≠ T₀) 保留
 
 ### C2. HamiltonianDiscrete (已修绿)
 - mass-gap-theorem: 方向错 (零集⊆{e} 推不出 H(e)=T₀), 需重述
