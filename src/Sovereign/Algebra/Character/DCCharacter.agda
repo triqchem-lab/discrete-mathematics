@@ -2258,7 +2258,7 @@ dc-dft f idx = sum-over-DC (λ x → f x *ᶻ conjᶻ (dc-character idx x))
 module _ where
   open import Data.Rational.Properties
     using (+-comm; +-assoc; *-comm; *-distribˡ-+; *-distribʳ-+; neg-distrib-+;
-           +-identityˡ; +-identityʳ; neg-distribˡ-*; neg-distribʳ-*)
+           +-identityˡ; +-identityʳ; neg-distribˡ-*; neg-distribʳ-*; *-zeroˡ; *-zeroʳ)
   open import Relation.Binary.PropositionalEquality using (sym; trans; cong; cong₂)
 
   -- 记录延拓: 分量相等则值相等 (单构造子记录)
@@ -2531,6 +2531,71 @@ module _ where
   sumF-zero : ∀ {n : ℕ} → sumF (λ (_ : Fin n) → z0) ≡ z0
   sumF-zero {zero} = refl
   sumF-zero {suc n} = trans (zidˡ (sumF (λ (_ : Fin n) → z0))) (sumF-zero {n})
+
+  -- ℚ 常数归零小引理 (0±0=0, 3*0=0; 具体字面 refl)
+  q0m : (+ 0 / 1) - (+ 0 / 1) ≡ (+ 0 / 1)
+  q0m = refl
+  q0p : (+ 0 / 1) + (+ 0 / 1) ≡ (+ 0 / 1)
+  q0p = refl
+  q·0s : ∀ p q → p ≡ (+ 0 / 1) → q ≡ (+ 0 / 1) → p - q ≡ (+ 0 / 1)
+  q·0s p q ep eq = trans (cong₂ _-_ ep eq) q0m
+  q·0p : ∀ p q → p ≡ (+ 0 / 1) → q ≡ (+ 0 / 1) → p + q ≡ (+ 0 / 1)
+  q·0p p q ep eq = trans (cong₂ _+_ ep eq) q0p
+  q·0z : ∀ X → X ≡ (+ 0 / 1) → (+ 3 / 1) * X ≡ (+ 0 / 1)
+  q·0z X eX = trans (cong ((+ 3 / 1) *_) eX) (*-zeroʳ (+ 3 / 1))
+
+  -- 右零元: x *ᶻ z0 = z0 (各分量归零; 用 a*0=0 使符号系数归常数)
+  *ᶻ-zeroʳ : ∀ x → x *ᶻ z0 ≡ z0
+  *ᶻ-zeroʳ (a +z b +z c +z d) = zext real i compg iγ
+    where
+      p·0 : ∀ p → p * (+ 0 / 1) ≡ (+ 0 / 1)
+      p·0 p = *-zeroʳ p
+      real : ((a * (+ 0 / 1)) - (b * (+ 0 / 1)))
+             + ((+ 3 / 1) * ((d * (+ 0 / 1)) - (c * (+ 0 / 1))))
+             ≡ (+ 0 / 1)
+      real = q·0p ((a * (+ 0 / 1)) - (b * (+ 0 / 1)))
+                  ((+ 3 / 1) * ((d * (+ 0 / 1)) - (c * (+ 0 / 1))))
+                  (q·0s (a * (+ 0 / 1)) (b * (+ 0 / 1)) (p·0 a) (p·0 b))
+                  (q·0z ((d * (+ 0 / 1)) - (c * (+ 0 / 1)))
+                        (q·0s (d * (+ 0 / 1)) (c * (+ 0 / 1)) (p·0 d) (p·0 c)))
+      i : ((a * (+ 0 / 1)) + (b * (+ 0 / 1)))
+          - ((+ 3 / 1) * ((c * (+ 0 / 1)) + (d * (+ 0 / 1))))
+          ≡ (+ 0 / 1)
+      i = q·0s ((a * (+ 0 / 1)) + (b * (+ 0 / 1)))
+               ((+ 3 / 1) * ((c * (+ 0 / 1)) + (d * (+ 0 / 1))))
+               (q·0p (a * (+ 0 / 1)) (b * (+ 0 / 1)) (p·0 a) (p·0 b))
+               (q·0z ((c * (+ 0 / 1)) + (d * (+ 0 / 1)))
+                     (q·0p (c * (+ 0 / 1)) (d * (+ 0 / 1)) (p·0 c) (p·0 d)))
+      compg : ((a * (+ 0 / 1)) + (c * (+ 0 / 1)))
+              - ((b * (+ 0 / 1)) + (d * (+ 0 / 1)))
+              ≡ (+ 0 / 1)
+      compg = q·0s ((a * (+ 0 / 1)) + (c * (+ 0 / 1)))
+                   ((b * (+ 0 / 1)) + (d * (+ 0 / 1)))
+                   (q·0p (a * (+ 0 / 1)) (c * (+ 0 / 1)) (p·0 a) (p·0 c))
+                   (q·0p (b * (+ 0 / 1)) (d * (+ 0 / 1)) (p·0 b) (p·0 d))
+      iγ : ((a * (+ 0 / 1)) + (d * (+ 0 / 1)))
+           + ((b * (+ 0 / 1)) + (c * (+ 0 / 1)))
+           ≡ (+ 0 / 1)
+      iγ = q·0p ((a * (+ 0 / 1)) + (d * (+ 0 / 1)))
+                ((b * (+ 0 / 1)) + (c * (+ 0 / 1)))
+                (q·0p (a * (+ 0 / 1)) (d * (+ 0 / 1)) (p·0 a) (p·0 d))
+                (q·0p (b * (+ 0 / 1)) (c * (+ 0 / 1)) (p·0 b) (p·0 c))
+
+  -- 左因子穿过归纳求和 (结构归纳: 基步 *ᶻ-zeroʳ, 归纳步 *ᶻ-distribʳ + 递归)
+  sumF-mull : ∀ {n : ℕ} (A : Z12Sys) (f : Fin n → Z12Sys) →
+    A *ᶻ sumF f ≡ sumF (λ i → A *ᶻ f i)
+  sumF-mull {zero} A f = *ᶻ-zeroʳ A
+  sumF-mull {suc n} A f =
+    trans (*ᶻ-distribʳ (f fzero) (sumF (λ i → f (fsuc i))) A)
+          (cong (λ w → (A *ᶻ f fzero) +ᶻ w) (sumF-mull A (λ i → f (fsuc i))))
+
+  -- 共轭穿过归纳求和 (基步 conjᶻ z0 = z0 refl, 归纳步 conj-+ᶻ + 递归)
+  conj-sumF : ∀ {n : ℕ} (f : Fin n → Z12Sys) →
+    conjᶻ (sumF f) ≡ sumF (λ i → conjᶻ (f i))
+  conj-sumF {zero} f = refl
+  conj-sumF {suc n} f =
+    trans (conj-+ᶻ (f fzero) (sumF (λ i → f (fsuc i))))
+          (cong (λ w → conjᶻ (f fzero) +ᶻ w) (conj-sumF (λ i → f (fsuc i))))
 
 
 dual-self : ∀ (t : Trit) (a : AlphaPower) →
