@@ -14,11 +14,14 @@
 
 module Sovereign.Structology.LuCellGrid where
 
-open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; _≟_)
-open import Data.Nat using (ℕ; _+_; _*_; _∸_; _mod_)
+open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; fromℕ<; _≟_)
+open import Data.Nat using (ℕ; _+_; _*_; _∸_; _%_; _/_; _<_ ; _≤_; s≤s)
+open import Data.Nat.DivMod using (m%n<n; /-monoˡ-≤)
+open import Data.Nat.Properties using (≤-pred; ≤-refl; ≤-trans; ≤-step; +-mono-≤; *-mono-≤)
+open import Data.Fin.Properties using (toℕ<n)
 open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 open import Data.Vec using (Vec; []; _∷_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; subst)
 
 import Sovereign.Structology.A4Group as A4
 
@@ -35,15 +38,26 @@ LuGridPoint = Fin 144
 -- 宪法授权的二维寻址投影（仅用于静态布局，禁止用于动态分解）
 -- gridRow 返回极向相位索引（0-11）
 gridRow : LuGridPoint → Fin 12
-gridRow p = fromℕ ((toℕ p) mod 12)
+gridRow p = fromℕ< (m%n<n (toℕ p) 12)
+
+-- gridCol 界: (toℕ p)/12 ≤ 11 (由 toℕ p < 144)
+gridColBound : ∀ (p : LuGridPoint) → (toℕ p / 12) < 12
+gridColBound p = s≤s (≤-trans (/-monoˡ-≤ 12 (≤-pred (toℕ<n p)))
+                              (subst (λ x → x ≤ 11) refl (≤-refl {11})))
 
 -- gridCol 返回环向相位索引（0-11）
 gridCol : LuGridPoint → Fin 12
-gridCol p = fromℕ ((toℕ p) / 12)
+gridCol p = fromℕ< (gridColBound p)
+
+-- mkGridPoint 界: toℕ r + 12*toℕ c ≤ 143 (由 r,c < 12; 11 + 12·11 = 143 定义性)
+mkGridPointBound : (r c : Fin 12) → (toℕ r + 12 * toℕ c) ≤ 143
+mkGridPointBound r c =
+  ≤-trans (+-mono-≤ (≤-pred (toℕ<n r)) (*-mono-≤ (≤-refl {12}) (≤-pred (toℕ<n c))))
+          (≤-refl {143})
 
 -- 从行/列构造格点索引（宪法授权的静态组合）
 mkGridPoint : Fin 12 → Fin 12 → LuGridPoint
-mkGridPoint r c = fromℕ (toℕ r + 12 * toℕ c)
+mkGridPoint r c = fromℕ< (s≤s (mkGridPointBound r c))
 
 --------------------------------------------------------------------------------
 -- 2. 静态网格上的平移操作（网格移位，非动态缠绕演化）
@@ -51,16 +65,16 @@ mkGridPoint r c = fromℕ (toℕ r + 12 * toℕ c)
 
 -- 极向平移（沿行方向移动）
 shiftPolar : LuGridPoint → Fin 12 → LuGridPoint
-shiftPolar p k = mkGridPoint (fromℕ ((toℕ (gridRow p) + toℕ k) mod 12)) (gridCol p)
+shiftPolar p k = mkGridPoint (fromℕ ((toℕ (gridRow p) + toℕ k) % 12)) (gridCol p)
 
 -- 环向平移（沿列方向移动）
 shiftToroidal : LuGridPoint → Fin 12 → LuGridPoint
-shiftToroidal p k = mkGridPoint (gridRow p) (fromℕ ((toℕ (gridCol p) + toℕ k) mod 12))
+shiftToroidal p k = mkGridPoint (gridRow p) (fromℕ ((toℕ (gridCol p) + toℕ k) % 12))
 
 -- 斜向平移（对角移位）
 shiftDiagonal : LuGridPoint → Fin 12 → LuGridPoint
-shiftDiagonal p k = mkGridPoint (fromℕ ((toℕ (gridRow p) + toℕ k) mod 12))
-                                 (fromℕ ((toℕ (gridCol p) + toℕ k) mod 12))
+shiftDiagonal p k = mkGridPoint (fromℕ ((toℕ (gridRow p) + toℕ k) % 12))
+                                 (fromℕ ((toℕ (gridCol p) + toℕ k) % 12))
 
 --------------------------------------------------------------------------------
 -- 3. A4 群在律胞腔网格上的静态置换
@@ -107,7 +121,7 @@ PhaseField = LuGridPoint → A4.A4
 -- 如果曲率非零，说明存在拓扑荷
 
 discreteCurvature : PhaseField → LuGridPoint → ℕ
-discreteCurvature pf p = curvatureBoolToℕ (loop A4.≟ᶠ A4.Id)
+discreteCurvature pf p = curvatureBoolToℕ (isId loop)
   where
     open import Data.Bool using (Bool; true; false)
     
@@ -124,12 +138,12 @@ discreteCurvature pf p = curvatureBoolToℕ (loop A4.≟ᶠ A4.Id)
     loop : A4.A4
     loop = ph0 A4.⊗ (ph1 A4.⊗ ((A4.inverse ph2) A4.⊗ (A4.inverse ph3)))
     
-    -- A4 群的可判定相等
-    _≟ᶠ_ : A4.A4 → A4.A4 → Bool
-    x ≟ᶠ y with A4.A4-toℕ x | A4.A4-toℕ y
-    x ≟ᶠ y | nx | ny = Data.Nat.≡ᵇ nx ny
-    
-    open import Data.Nat using (_≡ᵇ_)
+    -- 判断 A4 元素是否为单位元 Id (离散曲率平坦判据)
+    -- 注: 原草稿引不存在的 A4.≟ᶠ (A4-toℕ/≡ᵇ), 改用构造子 case
+    isId : A4.A4 → Bool
+    isId A4.Id = true
+    isId (A4.Rot _ _) = false
+    isId (A4.Flip _) = false
     
     curvatureBoolToℕ : Bool → ℕ
     curvatureBoolToℕ true = 0   -- 平坦（无曲率）
