@@ -2748,6 +2748,70 @@ module _ where
                 (sumF-comm2 {m} (λ i j → g (fsuc i) j)))
           (sym (sumF-+ (λ j → g fzero j) (λ j → sumF (λ i → g (fsuc i) j))))
 
+  -- ── real 分量组装的 4 个积木块 (*ᶻ-assoc real 用; 各块独立验证) ──
+
+  rblock : ∀ a b c d a₂ b₂ c₂ d₂ u →
+    (((a * a₂ - b * b₂) + ((+ 3 / 1) * ((d * d₂) - (c * c₂)))) * u)
+    ≡ ((a * a₂ * u - b * b₂ * u)
+       + (((+ 3 / 1) * (d * d₂ * u)) - ((+ 3 / 1) * (c * c₂ * u))))
+  rblock a b c d a₂ b₂ c₂ d₂ u = begin
+    (((a * a₂ - b * b₂) + ((+ 3 / 1) * ((d * d₂) - (c * c₂)))) * u)
+      ≡⟨ mul-add-r (a * a₂ - b * b₂) ((+ 3 / 1) * ((d * d₂) - (c * c₂))) u ⟩
+    ((a * a₂ - b * b₂) * u) + (((+ 3 / 1) * ((d * d₂) - (c * c₂))) * u)
+      ≡⟨ cong₂ _+_ (mul-sub-r (a * a₂) (b * b₂) u)
+           (*-assoc (+ 3 / 1) ((d * d₂) - (c * c₂)) u) ⟩
+    ((a * a₂ * u) - (b * b₂ * u)) + ((+ 3 / 1) * (((d * d₂) - (c * c₂)) * u))
+      ≡⟨ cong (λ w → ((a * a₂ * u) - (b * b₂ * u)) + ((+ 3 / 1) * w))
+           (mul-sub-r (d * d₂) (c * c₂) u) ⟩
+    ((a * a₂ * u) - (b * b₂ * u)) + ((+ 3 / 1) * ((d * d₂ * u) - (c * c₂ * u)))
+      ≡⟨ cong (λ w → ((a * a₂ * u) - (b * b₂ * u)) + w)
+           (mul-sub-l (+ 3 / 1) (d * d₂ * u) (c * c₂ * u)) ⟩
+    ((a * a₂ * u) - (b * b₂ * u))
+      + (((+ 3 / 1) * (d * d₂ * u)) - ((+ 3 / 1) * (c * c₂ * u)))
+    ∎ where open ≡-Reasoning
+
+  iblk : ∀ a b a₂ b₂ c d c₂ d₂ v →
+    (((a * b₂ + b * a₂) - ((+ 3 / 1) * ((c * d₂) + (d * c₂)))) * v)
+    ≡ ((a * b₂ * v + b * a₂ * v)
+       - (((+ 3 / 1) * (c * d₂ * v)) + ((+ 3 / 1) * (d * c₂ * v))))
+  iblk a b a₂ b₂ c d c₂ d₂ v = begin
+    (((a * b₂ + b * a₂) - ((+ 3 / 1) * ((c * d₂) + (d * c₂)))) * v)
+      ≡⟨ mul-sub-r (a * b₂ + b * a₂) ((+ 3 / 1) * ((c * d₂) + (d * c₂))) v ⟩
+    ((a * b₂ + b * a₂) * v) - (((+ 3 / 1) * ((c * d₂) + (d * c₂))) * v)
+      ≡⟨ cong₂ _-_ (mul-add-r (a * b₂) (b * a₂) v)
+           (*-assoc (+ 3 / 1) ((c * d₂) + (d * c₂)) v) ⟩
+    ((a * b₂ * v + b * a₂ * v)) - ((+ 3 / 1) * (((c * d₂) + (d * c₂)) * v))
+      ≡⟨ cong (λ w → ((a * b₂ * v + b * a₂ * v)) - ((+ 3 / 1) * w))
+           (mul-add-r (c * d₂) (d * c₂) v) ⟩
+    ((a * b₂ * v + b * a₂ * v)) - ((+ 3 / 1) * ((c * d₂ * v) + (d * c₂ * v)))
+      ≡⟨ cong (λ w → ((a * b₂ * v + b * a₂ * v)) - w)
+           (mul-add-l (+ 3 / 1) (c * d₂ * v) (d * c₂ * v)) ⟩
+    ((a * b₂ * v + b * a₂ * v))
+      - (((+ 3 / 1) * (c * d₂ * v)) + ((+ 3 / 1) * (d * c₂ * v)))
+    ∎ where open ≡-Reasoning
+
+  hblk : ∀ a d a₂ d₂ b c b₂ c₂ s →
+    (((a * d₂ + d * a₂) + (b * c₂ + c * b₂)) * s)
+    ≡ ((a * d₂ * s + d * a₂ * s) + (b * c₂ * s + c * b₂ * s))
+  hblk a d a₂ d₂ b c b₂ c₂ s = begin
+    (((a * d₂ + d * a₂) + (b * c₂ + c * b₂)) * s)
+      ≡⟨ mul-add-r (a * d₂ + d * a₂) (b * c₂ + c * b₂) s ⟩
+    ((a * d₂ + d * a₂) * s) + ((b * c₂ + c * b₂) * s)
+      ≡⟨ cong₂ _+_ (mul-add-r (a * d₂) (d * a₂) s) (mul-add-r (b * c₂) (c * b₂) s) ⟩
+    ((a * d₂ * s + d * a₂ * s)) + ((b * c₂ * s + c * b₂ * s))
+    ∎ where open ≡-Reasoning
+
+  gblk : ∀ a c a₂ c₂ b d b₂ d₂ w →
+    (((a * c₂ + c * a₂) - (b * d₂ + d * b₂)) * w)
+    ≡ ((a * c₂ * w + c * a₂ * w) - (b * d₂ * w + d * b₂ * w))
+  gblk a c a₂ c₂ b d b₂ d₂ w = begin
+    (((a * c₂ + c * a₂) - (b * d₂ + d * b₂)) * w)
+      ≡⟨ mul-sub-r (a * c₂ + c * a₂) (b * d₂ + d * b₂) w ⟩
+    ((a * c₂ + c * a₂) * w) - ((b * d₂ + d * b₂) * w)
+      ≡⟨ cong₂ _-_ (mul-add-r (a * c₂) (c * a₂) w) (mul-add-r (b * d₂) (d * b₂) w) ⟩
+    ((a * c₂ * w + c * a₂ * w)) - ((b * d₂ * w + d * b₂ * w))
+    ∎ where open ≡-Reasoning
+
 
 dual-self : ∀ (t : Trit) (a : AlphaPower) →
   sum-over-characters (λ idx → dc-character idx (t , a) *ᶻ conjᶻ (dc-character idx (t , a)))
