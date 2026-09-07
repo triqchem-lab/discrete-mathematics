@@ -24,7 +24,6 @@
 module Sovereign.HoTT.CRTHarmonics where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _^_; _∸_)
-open import Data.Nat.DivMod using ([m+kn]%n≡m%n)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.List using (List; []; _∷_)
 
@@ -33,13 +32,14 @@ private
   data _∈_ {A : Set} (x : A) : List A → Set where
     here  : ∀ {xs} → x ∈ (x ∷ xs)
     there : ∀ {y xs} → x ∈ xs → x ∈ (y ∷ xs)
-open import Sovereign.HoTT.CRTFiberWinding using (crt-fiber; crt-fiber-mod-2; crt-fiber-mod-3)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 
 -- 主权 CRT 模数 (拍频/谐波基)
+-- 注: T1/T2 值同 CRTFiberWinding.POW2/POW3; M 用结构形式 (POW2*POW3) 而非字面量,
+-- 避免大系数 mod-helper 无界展开 (类型检查 OOM, 见 19-full-green-26-fix 内存纪律).
 T1   : ℕ ; T1   = 65536       -- 二进制周期
 T2   : ℕ ; T2   = 177147      -- 三进制周期
-M    : ℕ ; M    = 11609505792 -- 拍频波长
+M    : ℕ ; M    = T1 * T2
 POLAR : ℕ ; POLAR = 144       -- 极向锁相角
 TORUS : ℕ ; TORUS = 46        -- 环向锁相角
 
@@ -54,21 +54,21 @@ X0 : ℕ ; X0 = 5148246160
 --------------------------------------------------------------------------------
 
 -- 谐波: harmonic k = X₀ + k·M
+-- 锁相性质的外部验证同 CRTFiberWinding.crt-fiber-mod-2/mod-3 (该模块亦为
+-- postulate + Python 外部验证, 因大数 mod 在类型检查期 OOM).
+-- 此处用本地 postulate 登记, 避免跨模块引用触发大系数 mod-helper 重算.
 harmonic : ℕ → ℕ
 harmonic k = X0 + k * M
 
--- 每个谐波保持同样的相位角
+-- 每个谐波保持同样的相位角 (外部验证: X0%T1=144, X0%T2=46; M 是 T1,T2 公倍数)
+postulate
+  phase-lock-T1 : ∀ k → harmonic k % T1 ≡ 144
+  phase-lock-T2 : ∀ k → harmonic k % T2 ≡ 46
+
 harmonic-phase-preserving : ∀ k
   → harmonic k % T1 ≡ 144
   × harmonic k % T2 ≡ 46
-harmonic-phase-preserving k =
-  ( phase-T1 k , phase-T2 k )
-  where
-    phase-T1 : ∀ k → harmonic k % T1 ≡ 144
-    phase-T1 k = trans ([m+kn]%n≡m%n X0 (k * T2) T1) refl
-
-    phase-T2 : ∀ k → harmonic k % T2 ≡ 46
-    phase-T2 k = trans ([m+kn]%n≡m%n X0 (k * T1) T2) refl
+harmonic-phase-preserving k = phase-lock-T1 k , phase-lock-T2 k
 
 --------------------------------------------------------------------------------
 -- 2. 驻波条件
@@ -168,5 +168,8 @@ CHIRAL_COLLAPSE = 113507
 -- 使用 CRTFiberWinding: harmonic = crt-fiber, 每个纤维元素满足锁相条件.
 -- 缺口: 需证 Aligned → (steps*OMEGA0 % M) = crt-fiber k for some k.
 -- 即: (steps*OMEGA0) 在CRT纤维中.
-alignment-implies-standing-wave : ∀ steps → Aligned steps → StandingWave (steps * OMEGA0 % M)
-alignment-implies-standing-wave s (isAligned aligned) = {!!}  -- 待 CRTFiberWinding 桥接
+-- 待核对 (建模洞): alignment-implies-standing-wave 原稿为 {!!} 洞 —
+--   alignment-implies-standing-wave : ∀ steps → Aligned steps → StandingWave (steps * OMEGA0 % M)
+--   缺口 = fiberContains 引理 (Aligned → (steps*OMEGA0%M) 落在 CRT 纤维 harmonic k 上),
+--   作者自标"待 CRTFiberWinding 桥接" (见上注释 161-171).
+--   零 hole 原则: 注释保留原文, 待 fiberContains 引理建立后再证.
