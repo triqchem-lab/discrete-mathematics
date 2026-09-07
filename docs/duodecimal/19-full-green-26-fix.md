@@ -54,3 +54,8 @@
 四模块 StateMachine/Connection/Bundle/LCM 全 import **Sovereign.Coding.Trit** (Fin 3) — 类型统一 ✓。
 真障碍: stepSection 的 isEven/delta 在 let 内, 泛型 phase 不归约; 证明需 phase 按 toℕ 奇偶分解
 (Fin 144 → fromℕ< 结构) 或 mod/% 桥. 专门一轮证明任务.
+
+### 突破模式 (2026-09-08 Equivalence 完成)
+许多"未完成证明"模块的核心定理**定义性 refl 可闭合** — 前提是识别正确数学对象
+(Equivalence: stepSection 按 phase 奇偶给 delta=1/2, 偶=TransportPolarLoss/奇=TransportPolar;
+泛型 sec + 具体 phase 归约 → refl). 修复 = 删假命题 + 奇偶分派穷举.
