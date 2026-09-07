@@ -3141,3 +3141,567 @@ zig-assoc a b c d a₂ b₂ c₂ d₂ u v w s = solve 12
   ((a *ᶻ c) *ᶻ d) *ᶻ b      ≡⟨ *ᶻ-assoc (a *ᶻ c) d b ⟩
   (a *ᶻ c) *ᶻ (d *ᶻ b)      ≡⟨ cong (λ w → (a *ᶻ c) *ᶻ w) (*ᶻ-comm d b) ⟩
   (a *ᶻ c) *ᶻ (b *ᶻ d)      ∎ where open ≡-Reasoning
+
+-- §9″. Parseval/Plancherel 恒等式 (2026-09-07, 机器证明完成)
+--
+-- 数学内容: 对任意 f : DuodecPoint → Z12Sys (DC 上的函数, DC = Trit×AlphaPower, |DC|=12),
+--   离散傅里叶变换 f̂(idx) = dc-dft f idx = Σ_x f x · conj(χ_idx x) 满足
+--   Σ_{x∈DC} |f(x)|² = (1/12)·Σ_{idx∈Char} |f̂(idx)|²    (Parseval/Plancherel)
+--
+-- 组装策略 (§5″ 已建代数地基之上, 全部 0 postulate 0 hole):
+--   1. 把两个字面和 (sum-over-DC / sum-over-characters) 桥到归纳求和 sumF{12}
+--      (桥引理 bridge12/dcOver-sumF/charOver-sumF: sumF{12} 末尾多一个 z0)。
+--   2. Fin 索引枚举 dc-points / chr12, 特征值 χF, 对偶核 kerFin。
+--      kerFin i j = Σ_k conj(χ(k,i))·χ(k,j) 逐点求值 = 12·δ(i,j):
+--      12 self refl + 132 off refl (对偶完备性, 无需引用 dual-self/-orthogonality)。
+--   3. Fin 空间 Plancherel (plancherelFin): 展开 |f̂(k)|² (conj-dftFin / *ᶻ-middle4),
+--      三重求和换序 (sumF-comm2), 对角吸收 (diag-collapse/pick), 得
+--      Σ_k |f̂(k)|² = 12·Σ_i |f(i)|²。
+--   4. 标量消去 (scal112·scal12 = z1, z1 单位元, cancel112-12) 得 ÷12 主定理 parseval。
+-- 注: §7 旧注释"Parseval 未形式化"已被本节取代, 本节保留其历史陈述不改动。
+--
+
+-- §9″. Parseval/Plancherel 机器证明 (2026-09-07) —— 泛型 Fin 求和引理
+-- 全部新增顶层定理位于本文件末尾 (col-0)。用 sumF{12} 结构归纳 + 逐点 refl 对偶核
+-- (12 self + 132 off) 组装有限傅里叶变换的 Parseval 恒等式, 0 postulate 0 hole。
+
+fsuc-inj : ∀ {n} {j p : Fin n} → fsuc j ≡ fsuc p → j ≡ p
+fsuc-inj refl = refl
+
+fsuc-≢-inj : ∀ {n} {j p : Fin n} → j ≢ p → fsuc j ≢ fsuc p
+fsuc-≢-inj neq e = neq (fsuc-inj e)
+
+fsuc≢fzero : ∀ {n} {j : Fin n} → fsuc j ≢ fzero
+fsuc≢fzero ()
+
+fzero≢fsuc : ∀ {n} {j : Fin n} → fzero ≢ fsuc j
+fzero≢fsuc ()
+
+≢-sym : ∀ {n} {i j : Fin n} → i ≢ j → j ≢ i
+≢-sym neq e = neq (sym e)
+
+*ᶻ-zeroˡ : ∀ x → z0 *ᶻ x ≡ z0
+*ᶻ-zeroˡ x = trans (*ᶻ-comm z0 x) (*ᶻ-zeroʳ x)
+
+sumF-mulr : ∀ {n} (f : Fin n → Z12Sys) (A : Z12Sys) →
+  sumF {n} f *ᶻ A ≡ sumF {n} (λ i → f i *ᶻ A)
+sumF-mulr {zero} f A = *ᶻ-zeroˡ A
+sumF-mulr {suc n} f A = begin
+  sumF {suc n} f *ᶻ A
+    ≡⟨ refl ⟩
+  (f fzero +ᶻ sumF {n} (λ j → f (fsuc j))) *ᶻ A
+    ≡⟨ *ᶻ-distribˡ (f fzero) (sumF {n} (λ j → f (fsuc j))) A ⟩
+  (f fzero *ᶻ A) +ᶻ ((sumF {n} (λ j → f (fsuc j))) *ᶻ A)
+    ≡⟨ cong (λ w → (f fzero *ᶻ A) +ᶻ w) (sumF-mulr (λ j → f (fsuc j)) A) ⟩
+  (f fzero *ᶻ A) +ᶻ sumF {n} (λ j → f (fsuc j) *ᶻ A)
+    ≡⟨ refl ⟩
+  sumF {suc n} (λ i → f i *ᶻ A)
+  ∎
+  where open ≡-Reasoning
+
+-- 两和之积 = 二重和 (sumF-prod)
+sumF-prod : ∀ {m n} (g : Fin m → Z12Sys) (h : Fin n → Z12Sys) →
+  sumF {m} g *ᶻ sumF {n} h ≡ sumF {m} (λ i → sumF {n} (λ j → g i *ᶻ h j))
+sumF-prod {m} {n} g h =
+  trans (sumF-mulr {m} g (sumF {n} h))
+        (sym (sumF-ext {m} (λ i → sym (sumF-mull {n} (g i) h))))
+
+-- pick: 只在 p 处非零 (其余全 z0) 的函数, 其 Fin n 求和 = 该点值 h p
+pick : ∀ {n} (h : Fin n → Z12Sys) (p : Fin n) →
+  (∀ j → j ≢ p → h j ≡ z0) → sumF {n} h ≡ h p
+pick {zero} h () hyp
+pick {suc n} h fzero hyp = begin
+  sumF {suc n} h
+    ≡⟨ refl ⟩
+  h fzero +ᶻ sumF {n} (λ j → h (fsuc j))
+    ≡⟨ cong (λ w → h fzero +ᶻ w)
+            (sumF-ext {n} {λ j → h (fsuc j)} {λ j → z0} (λ j → hyp (fsuc j) fsuc≢fzero)) ⟩
+  h fzero +ᶻ sumF {n} (λ j → z0)
+    ≡⟨ cong (λ w → h fzero +ᶻ w) (sumF-zero {n}) ⟩
+  h fzero +ᶻ z0
+    ≡⟨ zidʳ (h fzero) ⟩
+  h fzero
+  ∎
+  where open ≡-Reasoning
+pick {suc n} h (fsuc p) hyp = begin
+  sumF {suc n} h
+    ≡⟨ refl ⟩
+  h fzero +ᶻ sumF {n} (λ j → h (fsuc j))
+    ≡⟨ cong (λ w → w +ᶻ sumF {n} (λ j → h (fsuc j))) (hyp fzero fzero≢fsuc) ⟩
+  z0 +ᶻ sumF {n} (λ j → h (fsuc j))
+    ≡⟨ zidˡ (sumF {n} (λ j → h (fsuc j))) ⟩
+  sumF {n} (λ j → h (fsuc j))
+    ≡⟨ pick {n} (λ j → h (fsuc j)) p (λ j j≢p → hyp (fsuc j) (fsuc-≢-inj j≢p)) ⟩
+  h (fsuc p)
+  ∎
+  where open ≡-Reasoning
+
+-- 对角吸收: 带核 K 的二重和 (K 对角 = s, 非对角 = z0) 塌缩为 s·Σ(uᵢ·vᵢ)
+diag-collapse : ∀ {n} (u v : Fin n → Z12Sys) (K : Fin n → Fin n → Z12Sys) (s : Z12Sys) →
+  (∀ p → K p p ≡ s) →
+  (∀ p j → p ≢ j → K p j ≡ z0) →
+  sumF {n} (λ i → sumF {n} (λ j → (u i *ᶻ v j) *ᶻ K i j))
+  ≡ s *ᶻ sumF {n} (λ i → u i *ᶻ v i)
+diag-collapse {n} u v K s self off = begin
+  sumF {n} (λ i → sumF {n} (λ j → (u i *ᶻ v j) *ᶻ K i j))
+    ≡⟨ sumF-ext (λ i →
+         pick {n} (λ j → (u i *ᶻ v j) *ᶻ K i j) i
+                (λ j j≢i → offterm i j (≢-sym j≢i))) ⟩
+  sumF {n} (λ i → (u i *ᶻ v i) *ᶻ K i i)
+    ≡⟨ sumF-ext (λ i → cong (λ w → (u i *ᶻ v i) *ᶻ w) (self i)) ⟩
+  sumF {n} (λ i → (u i *ᶻ v i) *ᶻ s)
+    ≡⟨ sym (sumF-mulr {n} (λ i → u i *ᶻ v i) s) ⟩
+  sumF {n} (λ i → u i *ᶻ v i) *ᶻ s
+    ≡⟨ *ᶻ-comm (sumF {n} (λ i → u i *ᶻ v i)) s ⟩
+  s *ᶻ sumF {n} (λ i → u i *ᶻ v i)
+  ∎
+  where
+    open ≡-Reasoning
+    offterm : ∀ i j → i ≢ j → (u i *ᶻ v j) *ᶻ K i j ≡ z0
+    offterm i j i≢j =
+      trans (cong (λ w → (u i *ᶻ v j) *ᶻ w) (off i j i≢j))
+            (*ᶻ-zeroʳ (u i *ᶻ v j))
+
+-- 桥引理: sumF{12} 末尾多一个 z0 (sum-over-DC/-characters 无); bridge12 消去它
+bridge12 : ∀ (x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 : Z12Sys) →
+  (x0 +ᶻ (x1 +ᶻ (x2 +ᶻ (x3 +ᶻ (x4 +ᶻ (x5 +ᶻ (x6 +ᶻ (x7 +ᶻ (x8 +ᶻ (x9 +ᶻ (x10 +ᶻ (x11 +ᶻ z0))))))))))))
+  ≡ (x0 +ᶻ (x1 +ᶻ (x2 +ᶻ (x3 +ᶻ (x4 +ᶻ (x5 +ᶻ (x6 +ᶻ (x7 +ᶻ (x8 +ᶻ (x9 +ᶻ (x10 +ᶻ x11)))))))))))
+bridge12 x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 =
+  cong (λ w → x0 +ᶻ (x1 +ᶻ (x2 +ᶻ (x3 +ᶻ (x4 +ᶻ (x5 +ᶻ (x6 +ᶻ (x7 +ᶻ (x8 +ᶻ (x9 +ᶻ (x10 +ᶻ w))))))))))) (zidʳ x11)
+
+-- 标量元素 (ℚ 常数嵌入 1 分量, 宪法禁浮点: 全部定点整数比)
+scalℚ : ℚ → Z12Sys
+scalℚ q = q +z (+ 0 / 1) +z (+ 0 / 1) +z (+ 0 / 1)
+
+scal12 : Z12Sys
+scal12 = scalℚ (+ 12 / 1)
+
+scal112 : Z12Sys
+scal112 = scalℚ (+ 1 / 12)
+
+
+-- ============ Part B: 特征枚举与 Fin 空间离散傅里叶 ============
+
+-- 特征索引枚举 chr12 (与 sum-over-characters 字面序一致)
+chr12 : Fin 12 → CharacterIndex
+chr12 (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) = (T₂ , a3)
+chr12 (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) = (T₂ , a2)
+chr12 (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) = (T₂ , a1)
+chr12 (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) = (T₂ , a0)
+chr12 (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) = (T₁ , a3)
+chr12 (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) = (T₁ , a2)
+chr12 (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) = (T₁ , a1)
+chr12 (fsuc (fsuc (fsuc (fsuc fzero)))) = (T₁ , a0)
+chr12 (fsuc (fsuc (fsuc fzero))) = (T₀ , a3)
+chr12 (fsuc (fsuc fzero)) = (T₀ , a2)
+chr12 (fsuc fzero) = (T₀ , a1)
+chr12 fzero = (T₀ , a0)
+
+-- 由 Fin 指标化的特征值: χF k i = χ(chr12 k)(dc-points i)
+χF : Fin 12 → Fin 12 → Z12Sys
+χF k i = dc-character (chr12 k) (dc-points i)
+
+-- Fin 上对偶核: kerFin i j = Σ_k conj(χ(k,i))·χ(k,j)  (逐点 refl: 对偶完备性)
+kerFin : Fin 12 → Fin 12 → Z12Sys
+kerFin i j = sumF {12} (λ k → conjᶻ (χF k i) *ᶻ χF k j)
+
+-- Fin 空间离散傅里叶变换 dftFin
+dftFin : (Fin 12 → Z12Sys) → Fin 12 → Z12Sys
+dftFin fF k = sumF {12} (λ i → fF i *ᶻ conjᶻ (χF k i))
+
+
+
+
+-- ============ Part B′: 对偶核逐点值 (12 self + 132 off, 全部 refl) ============
+kerFinSelf : ∀ (p : Fin 12) → kerFin p p ≡ scal12
+kerFinSelf fzero = refl
+kerFinSelf (fsuc fzero) = refl
+kerFinSelf (fsuc (fsuc fzero)) = refl
+kerFinSelf (fsuc (fsuc (fsuc fzero))) = refl
+kerFinSelf (fsuc (fsuc (fsuc (fsuc fzero)))) = refl
+kerFinSelf (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) = refl
+kerFinSelf (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) = refl
+kerFinSelf (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) = refl
+kerFinSelf (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) = refl
+kerFinSelf (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) = refl
+kerFinSelf (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) = refl
+kerFinSelf (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) = refl
+
+kerFinOff : ∀ (p j : Fin 12) → p ≢ j → kerFin p j ≡ z0
+kerFinOff fzero fzero neq = ⊥-elim (neq refl)
+kerFinOff fzero (fsuc fzero) neq = refl
+kerFinOff fzero (fsuc (fsuc fzero)) neq = refl
+kerFinOff fzero (fsuc (fsuc (fsuc fzero))) neq = refl
+kerFinOff fzero (fsuc (fsuc (fsuc (fsuc fzero)))) neq = refl
+kerFinOff fzero (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) neq = refl
+kerFinOff fzero (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) neq = refl
+kerFinOff fzero (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) neq = refl
+kerFinOff fzero (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) neq = refl
+kerFinOff fzero (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) neq = refl
+kerFinOff fzero (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) neq = refl
+kerFinOff fzero (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) neq = refl
+kerFinOff (fsuc fzero) fzero neq = refl
+kerFinOff (fsuc fzero) (fsuc fzero) neq = ⊥-elim (neq refl)
+kerFinOff (fsuc fzero) (fsuc (fsuc fzero)) neq = refl
+kerFinOff (fsuc fzero) (fsuc (fsuc (fsuc fzero))) neq = refl
+kerFinOff (fsuc fzero) (fsuc (fsuc (fsuc (fsuc fzero)))) neq = refl
+kerFinOff (fsuc fzero) (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) neq = refl
+kerFinOff (fsuc fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) neq = refl
+kerFinOff (fsuc fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) neq = refl
+kerFinOff (fsuc fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) neq = refl
+kerFinOff (fsuc fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) neq = refl
+kerFinOff (fsuc fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) neq = refl
+kerFinOff (fsuc fzero) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) neq = refl
+kerFinOff (fsuc (fsuc fzero)) fzero neq = refl
+kerFinOff (fsuc (fsuc fzero)) (fsuc fzero) neq = refl
+kerFinOff (fsuc (fsuc fzero)) (fsuc (fsuc fzero)) neq = ⊥-elim (neq refl)
+kerFinOff (fsuc (fsuc fzero)) (fsuc (fsuc (fsuc fzero))) neq = refl
+kerFinOff (fsuc (fsuc fzero)) (fsuc (fsuc (fsuc (fsuc fzero)))) neq = refl
+kerFinOff (fsuc (fsuc fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) neq = refl
+kerFinOff (fsuc (fsuc fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) neq = refl
+kerFinOff (fsuc (fsuc fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) neq = refl
+kerFinOff (fsuc (fsuc fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) neq = refl
+kerFinOff (fsuc (fsuc fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) neq = refl
+kerFinOff (fsuc (fsuc fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) neq = refl
+kerFinOff (fsuc (fsuc fzero)) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc fzero))) fzero neq = refl
+kerFinOff (fsuc (fsuc (fsuc fzero))) (fsuc fzero) neq = refl
+kerFinOff (fsuc (fsuc (fsuc fzero))) (fsuc (fsuc fzero)) neq = refl
+kerFinOff (fsuc (fsuc (fsuc fzero))) (fsuc (fsuc (fsuc fzero))) neq = ⊥-elim (neq refl)
+kerFinOff (fsuc (fsuc (fsuc fzero))) (fsuc (fsuc (fsuc (fsuc fzero)))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc fzero))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc fzero)))) fzero neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc fzero)))) (fsuc fzero) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc fzero)))) (fsuc (fsuc fzero)) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc fzero)))) (fsuc (fsuc (fsuc fzero))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc fzero)))) (fsuc (fsuc (fsuc (fsuc fzero)))) neq = ⊥-elim (neq refl)
+kerFinOff (fsuc (fsuc (fsuc (fsuc fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc fzero)))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) fzero neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) (fsuc fzero) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) (fsuc (fsuc fzero)) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) (fsuc (fsuc (fsuc fzero))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) (fsuc (fsuc (fsuc (fsuc fzero)))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) neq = ⊥-elim (neq refl)
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) fzero neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) (fsuc fzero) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) (fsuc (fsuc fzero)) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) (fsuc (fsuc (fsuc fzero))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) (fsuc (fsuc (fsuc (fsuc fzero)))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) neq = ⊥-elim (neq refl)
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) fzero neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) (fsuc fzero) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) (fsuc (fsuc fzero)) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) (fsuc (fsuc (fsuc fzero))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) (fsuc (fsuc (fsuc (fsuc fzero)))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) neq = ⊥-elim (neq refl)
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) fzero neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) (fsuc fzero) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) (fsuc (fsuc fzero)) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) (fsuc (fsuc (fsuc fzero))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) (fsuc (fsuc (fsuc (fsuc fzero)))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) neq = ⊥-elim (neq refl)
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) fzero neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) (fsuc fzero) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) (fsuc (fsuc fzero)) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) (fsuc (fsuc (fsuc fzero))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) (fsuc (fsuc (fsuc (fsuc fzero)))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) neq = ⊥-elim (neq refl)
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) fzero neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) (fsuc fzero) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) (fsuc (fsuc fzero)) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) (fsuc (fsuc (fsuc fzero))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) (fsuc (fsuc (fsuc (fsuc fzero)))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) neq = ⊥-elim (neq refl)
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) fzero neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) (fsuc fzero) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) (fsuc (fsuc fzero)) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) (fsuc (fsuc (fsuc fzero))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) (fsuc (fsuc (fsuc (fsuc fzero)))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) neq = refl
+kerFinOff (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) neq = ⊥-elim (neq refl)
+-- ============ Part C: Fin 空间 Plancherel 组装引擎 ============
+
+-- conj 与 dftFin 交换 (conj 穿入求和, conj-*ᶻ, conj-involutive)
+conj-dftFin : ∀ (fF : Fin 12 → Z12Sys) k →
+  conjᶻ (dftFin fF k) ≡ sumF {12} (λ j → conjᶻ (fF j) *ᶻ χF k j)
+conj-dftFin fF k = begin
+  conjᶻ (dftFin fF k)
+    ≡⟨ refl ⟩
+  conjᶻ (sumF {12} (λ i → fF i *ᶻ conjᶻ (χF k i)))
+    ≡⟨ conj-sumF {12} (λ i → fF i *ᶻ conjᶻ (χF k i)) ⟩
+  sumF {12} (λ i → conjᶻ (fF i *ᶻ conjᶻ (χF k i)))
+    ≡⟨ sumF-ext (λ i → conj-*ᶻ (fF i) (conjᶻ (χF k i))) ⟩
+  sumF {12} (λ i → conjᶻ (fF i) *ᶻ conjᶻ (conjᶻ (χF k i)))
+    ≡⟨ sumF-ext (λ i → cong (λ w → conjᶻ (fF i) *ᶻ w) (conj-involutive (χF k i))) ⟩
+  sumF {12} (λ i → conjᶻ (fF i) *ᶻ χF k i)
+  ∎
+  where open ≡-Reasoning
+
+-- reshape: |f̂(k)|² = 二重和 (经 *ᶻ-middle4 把 χ 因子抽到相邻)
+reshapeFin : ∀ (fF : Fin 12 → Z12Sys) k →
+  dftFin fF k *ᶻ conjᶻ (dftFin fF k)
+  ≡ sumF {12} (λ i → sumF {12} (λ j →
+        (fF i *ᶻ conjᶻ (fF j)) *ᶻ (conjᶻ (χF k i) *ᶻ χF k j)))
+reshapeFin fF k = begin
+  dftFin fF k *ᶻ conjᶻ (dftFin fF k)
+    ≡⟨ cong (λ w → dftFin fF k *ᶻ w) (conj-dftFin fF k) ⟩
+  dftFin fF k *ᶻ sumF {12} (λ j → conjᶻ (fF j) *ᶻ χF k j)
+    ≡⟨ refl ⟩
+  sumF {12} (λ i → fF i *ᶻ conjᶻ (χF k i)) *ᶻ sumF {12} (λ j → conjᶻ (fF j) *ᶻ χF k j)
+    ≡⟨ sumF-prod (λ i → fF i *ᶻ conjᶻ (χF k i)) (λ j → conjᶻ (fF j) *ᶻ χF k j) ⟩
+  sumF {12} (λ i → sumF {12} (λ j →
+        (fF i *ᶻ conjᶻ (χF k i)) *ᶻ (conjᶻ (fF j) *ᶻ χF k j)))
+    ≡⟨ sumF-ext (λ i → sumF-ext (λ j →
+         *ᶻ-middle4 (fF i) (conjᶻ (χF k i)) (conjᶻ (fF j)) (χF k j))) ⟩
+  sumF {12} (λ i → sumF {12} (λ j →
+        (fF i *ᶻ conjᶻ (fF j)) *ᶻ (conjᶻ (χF k i) *ᶻ χF k j)))
+  ∎
+  where open ≡-Reasoning
+
+-- 三重求和换序: Σ_k Σ_i Σ_j ≡ Σ_i Σ_j Σ_k
+triple-swap : ∀ (f : Fin 12 → Fin 12 → Fin 12 → Z12Sys) →
+  sumF {12} (λ k → sumF {12} (λ i → sumF {12} (λ j → f k i j)))
+  ≡ sumF {12} (λ i → sumF {12} (λ j → sumF {12} (λ k → f k i j)))
+triple-swap f =
+  trans (sumF-comm2 {12} {12} (λ k i → sumF {12} (λ j → f k i j)))
+        (sumF-ext (λ i → sumF-comm2 {12} {12} (λ k j → f k i j)))
+
+-- 把 a_ij 抽到内层 Σ_k 之前 (sumF-mull 反向)
+inner-factorFin : ∀ (fF : Fin 12 → Z12Sys) (i j : Fin 12) →
+  sumF {12} (λ k → (fF i *ᶻ conjᶻ (fF j)) *ᶻ (conjᶻ (χF k i) *ᶻ χF k j))
+  ≡ (fF i *ᶻ conjᶻ (fF j)) *ᶻ kerFin i j
+inner-factorFin fF i j =
+  sym (sumF-mull {12} (fF i *ᶻ conjᶻ (fF j)) (λ k → conjᶻ (χF k i) *ᶻ χF k j))
+
+-- Fin 空间 Plancherel (12 形式): Σ_k |f̂(k)|² = 12·Σ_i |f(i)|²
+plancherelFin : ∀ (fF : Fin 12 → Z12Sys) →
+  sumF {12} (λ k → dftFin fF k *ᶻ conjᶻ (dftFin fF k))
+  ≡ scal12 *ᶻ sumF {12} (λ i → fF i *ᶻ conjᶻ (fF i))
+plancherelFin fF = begin
+  sumF {12} (λ k → dftFin fF k *ᶻ conjᶻ (dftFin fF k))
+    ≡⟨ sumF-ext (λ k → reshapeFin fF k) ⟩
+  sumF {12} (λ k → sumF {12} (λ i → sumF {12} (λ j →
+        (fF i *ᶻ conjᶻ (fF j)) *ᶻ (conjᶻ (χF k i) *ᶻ χF k j))))
+    ≡⟨ triple-swap (λ k i j →
+         (fF i *ᶻ conjᶻ (fF j)) *ᶻ (conjᶻ (χF k i) *ᶻ χF k j)) ⟩
+  sumF {12} (λ i → sumF {12} (λ j → sumF {12} (λ k →
+        (fF i *ᶻ conjᶻ (fF j)) *ᶻ (conjᶻ (χF k i) *ᶻ χF k j))))
+    ≡⟨ sumF-ext (λ i → sumF-ext (λ j → inner-factorFin fF i j)) ⟩
+  sumF {12} (λ i → sumF {12} (λ j → (fF i *ᶻ conjᶻ (fF j)) *ᶻ kerFin i j))
+    ≡⟨ diag-collapse {12} fF (λ j → conjᶻ (fF j)) kerFin scal12 kerFinSelf kerFinOff ⟩
+  scal12 *ᶻ sumF {12} (λ i → fF i *ᶻ conjᶻ (fF i))
+  ∎
+  where open ≡-Reasoning
+
+
+-- ============ Part D: 桥到 sum-over-DC / sum-over-characters ============
+
+-- sum-over-DC g (无末尾 z0) ≡ sumF{12} (λ i → g (dc-points i))
+dcOver-sumF : ∀ (g : DuodecPoint → Z12Sys) →
+  sum-over-DC g ≡ sumF {12} (λ i → g (dc-points i))
+dcOver-sumF g = sym (bridge12 (g (T₀ , a0)) (g (T₀ , a1)) (g (T₀ , a2)) (g (T₀ , a3))
+                              (g (T₁ , a0)) (g (T₁ , a1)) (g (T₁ , a2)) (g (T₁ , a3))
+                              (g (T₂ , a0)) (g (T₂ , a1)) (g (T₂ , a2)) (g (T₂ , a3)))
+
+-- sum-over-characters g (无末尾 z0) ≡ sumF{12} (λ k → g (chr12 k))
+charOver-sumF : ∀ (g : CharacterIndex → Z12Sys) →
+  sum-over-characters g ≡ sumF {12} (λ k → g (chr12 k))
+charOver-sumF g = sym (bridge12 (g (T₀ , a0)) (g (T₀ , a1)) (g (T₀ , a2)) (g (T₀ , a3))
+                                (g (T₁ , a0)) (g (T₁ , a1)) (g (T₁ , a2)) (g (T₁ , a3))
+                                (g (T₂ , a0)) (g (T₂ , a1)) (g (T₂ , a2)) (g (T₂ , a3)))
+
+-- 特征索引 chr12 k 处的 dc-dft 恰为 f∘dc-points 的 Fin 空间 dftFin
+dftFinBridge : ∀ (f : DuodecPoint → Z12Sys) (k : Fin 12) →
+  dc-dft f (chr12 k) ≡ dftFin (λ i → f (dc-points i)) k
+dftFinBridge f k = trans
+  (dcOver-sumF (λ x → f x *ᶻ conjᶻ (dc-character (chr12 k) x)))
+  refl
+
+
+-- ============ Part E: sum-over-* Plancherel + 标量消去 (÷12) ============
+
+-- z1 是乘法单位元 (每分量 ℚ 环反射)
+z1-lunit : ∀ x → z1 *ᶻ x ≡ x
+z1-lunit (r +z s +z t +z u) = zext (zunit-r r s t u) (zunit-i r s t u) (zunit-g r s t u) (zunit-h r s t u)
+  where
+    open +-*-Solver
+    -- 展开: z1 = 1 +z 0 +z 0 +z 0; z1 *ᶻ (r +z s +z t +z u) 各分量为:
+    -- real: (1*r - 0*s) + 3*(0*u - 0*t) ; i: (1*s + 0*r) - 3*(0*u + 0*t)
+    -- gam:  (1*t + 0*r) - (0*u + 0*s) ;  iγ: (1*u + 0*r) + (0*t + 0*s)
+    zunit-r : ∀ r s t u →
+      ((((+ 1 / 1) * r) - ((+ 0 / 1) * s)) + ((+ 3 / 1) * (((+ 0 / 1) * u) - ((+ 0 / 1) * t)))) ≡ r
+    zunit-r r s t u = solve 4 (λ r s t u →
+      ((con (+ 1 / 1) :* r) :- (con (+ 0 / 1) :* s))
+      :+ (con (+ 3 / 1) :* ((con (+ 0 / 1) :* u) :- (con (+ 0 / 1) :* t)))
+      := r) refl r s t u
+    zunit-i : ∀ r s t u →
+      ((((+ 1 / 1) * s) + ((+ 0 / 1) * r)) - ((+ 3 / 1) * (((+ 0 / 1) * u) + ((+ 0 / 1) * t)))) ≡ s
+    zunit-i r s t u = solve 4 (λ r s t u →
+      ((con (+ 1 / 1) :* s) :+ (con (+ 0 / 1) :* r))
+      :- (con (+ 3 / 1) :* ((con (+ 0 / 1) :* u) :+ (con (+ 0 / 1) :* t)))
+      := s) refl r s t u
+    zunit-g : ∀ r s t u →
+      ((((+ 1 / 1) * t) + ((+ 0 / 1) * r)) - (((+ 0 / 1) * u) + ((+ 0 / 1) * s))) ≡ t
+    zunit-g r s t u = solve 4 (λ r s t u →
+      ((con (+ 1 / 1) :* t) :+ (con (+ 0 / 1) :* r))
+      :- ((con (+ 0 / 1) :* u) :+ (con (+ 0 / 1) :* s))
+      := t) refl r s t u
+    zunit-h : ∀ r s t u →
+      ((((+ 1 / 1) * u) + ((+ 0 / 1) * r)) + (((+ 0 / 1) * t) + ((+ 0 / 1) * s))) ≡ u
+    zunit-h r s t u = solve 4 (λ r s t u →
+      ((con (+ 1 / 1) :* u) :+ (con (+ 0 / 1) :* r))
+      :+ ((con (+ 0 / 1) :* t) :+ (con (+ 0 / 1) :* s))
+      := u) refl r s t u
+
+-- 标量积 = 乘积的标量 (坐标级, 环反射)
+scal-mult : ∀ p q → scalℚ p *ᶻ scalℚ q ≡ scalℚ (p * q)
+scal-mult p q = zext (smult-r p q) (smult-i p q) (smult-g p q) (smult-h p q)
+  where
+    open +-*-Solver
+    smult-r : ∀ p q → (((p * q) - ((+ 0 / 1) * (+ 0 / 1))) + ((+ 3 / 1) * (((+ 0 / 1) * (+ 0 / 1)) - ((+ 0 / 1) * (+ 0 / 1))))) ≡ (p * q)
+    smult-r p q = solve 2 (λ p q →
+      ((p :* q) :- (con (+ 0 / 1) :* con (+ 0 / 1)))
+      :+ (con (+ 3 / 1) :* ((con (+ 0 / 1) :* con (+ 0 / 1)) :- (con (+ 0 / 1) :* con (+ 0 / 1))))
+      := (p :* q)) refl p q
+    smult-i : ∀ p q → (((p * (+ 0 / 1)) + ((+ 0 / 1) * q)) - ((+ 3 / 1) * (((+ 0 / 1) * (+ 0 / 1)) + ((+ 0 / 1) * (+ 0 / 1))))) ≡ (+ 0 / 1)
+    smult-i p q = solve 2 (λ p q →
+      ((p :* con (+ 0 / 1)) :+ (con (+ 0 / 1) :* q))
+      :- (con (+ 3 / 1) :* ((con (+ 0 / 1) :* con (+ 0 / 1)) :+ (con (+ 0 / 1) :* con (+ 0 / 1))))
+      := con (+ 0 / 1)) refl p q
+    smult-g : ∀ p q → (((p * (+ 0 / 1)) + ((+ 0 / 1) * q)) - (((+ 0 / 1) * (+ 0 / 1)) + ((+ 0 / 1) * (+ 0 / 1)))) ≡ (+ 0 / 1)
+    smult-g p q = solve 2 (λ p q →
+      ((p :* con (+ 0 / 1)) :+ (con (+ 0 / 1) :* q))
+      :- ((con (+ 0 / 1) :* con (+ 0 / 1)) :+ (con (+ 0 / 1) :* con (+ 0 / 1)))
+      := con (+ 0 / 1)) refl p q
+    smult-h : ∀ p q → (((p * (+ 0 / 1)) + ((+ 0 / 1) * q)) + (((+ 0 / 1) * (+ 0 / 1)) + ((+ 0 / 1) * (+ 0 / 1)))) ≡ (+ 0 / 1)
+    smult-h p q = solve 2 (λ p q →
+      ((p :* con (+ 0 / 1)) :+ (con (+ 0 / 1) :* q))
+      :+ ((con (+ 0 / 1) :* con (+ 0 / 1)) :+ (con (+ 0 / 1) :* con (+ 0 / 1)))
+      := con (+ 0 / 1)) refl p q
+
+-- 具体复合: (1/12)·12 = 1 (静态环反射)
+sc112-comp : scal112 *ᶻ scal12 ≡ z1
+sc112-comp = zext s12c-r s12c-i s12c-g s12c-h
+  where
+    open +-*-Solver
+    s12c-r : ((((+ 1 / 12) * (+ 12 / 1)) - ((+ 0 / 1) * (+ 0 / 1)))
+          + ((+ 3 / 1) * (((+ 0 / 1) * (+ 0 / 1)) - ((+ 0 / 1) * (+ 0 / 1))))) ≡ (+ 1 / 1)
+    s12c-r = solve 0 (
+      (con (+ 1 / 12) :* con (+ 12 / 1)) :- (con (+ 0 / 1) :* con (+ 0 / 1))
+      :+ (con (+ 3 / 1) :* ((con (+ 0 / 1) :* con (+ 0 / 1)) :- (con (+ 0 / 1) :* con (+ 0 / 1))))
+      := con (+ 1 / 1)) refl
+    s12c-i : ((((+ 1 / 12) * (+ 0 / 1)) + ((+ 0 / 1) * (+ 12 / 1)))
+          - ((+ 3 / 1) * (((+ 0 / 1) * (+ 0 / 1)) + ((+ 0 / 1) * (+ 0 / 1))))) ≡ (+ 0 / 1)
+    s12c-i = solve 0 (
+      (con (+ 1 / 12) :* con (+ 0 / 1)) :+ (con (+ 0 / 1) :* con (+ 12 / 1))
+      :- (con (+ 3 / 1) :* ((con (+ 0 / 1) :* con (+ 0 / 1)) :+ (con (+ 0 / 1) :* con (+ 0 / 1))))
+      := con (+ 0 / 1)) refl
+    s12c-g : ((((+ 1 / 12) * (+ 0 / 1)) + ((+ 0 / 1) * (+ 12 / 1)))
+          - (((+ 0 / 1) * (+ 0 / 1)) + ((+ 0 / 1) * (+ 0 / 1)))) ≡ (+ 0 / 1)
+    s12c-g = solve 0 (
+      (con (+ 1 / 12) :* con (+ 0 / 1)) :+ (con (+ 0 / 1) :* con (+ 12 / 1))
+      :- ((con (+ 0 / 1) :* con (+ 0 / 1)) :+ (con (+ 0 / 1) :* con (+ 0 / 1)))
+      := con (+ 0 / 1)) refl
+    s12c-h : ((((+ 1 / 12) * (+ 0 / 1)) + ((+ 0 / 1) * (+ 12 / 1)))
+          + (((+ 0 / 1) * (+ 0 / 1)) + ((+ 0 / 1) * (+ 0 / 1)))) ≡ (+ 0 / 1)
+    s12c-h = solve 0 (
+      (con (+ 1 / 12) :* con (+ 0 / 1)) :+ (con (+ 0 / 1) :* con (+ 12 / 1))
+      :+ ((con (+ 0 / 1) :* con (+ 0 / 1)) :+ (con (+ 0 / 1) :* con (+ 0 / 1)))
+      := con (+ 0 / 1)) refl
+
+-- 消去律: (1/12)·(12·x) ≡ x
+cancel112-12 : ∀ x → scal112 *ᶻ (scal12 *ᶻ x) ≡ x
+cancel112-12 x = begin
+  scal112 *ᶻ (scal12 *ᶻ x)
+    ≡⟨ sym (*ᶻ-assoc scal112 scal12 x) ⟩
+  (scal112 *ᶻ scal12) *ᶻ x
+    ≡⟨ cong (λ w → w *ᶻ x) sc112-comp ⟩
+  z1 *ᶻ x
+    ≡⟨ z1-lunit x ⟩
+  x
+  ∎
+  where open ≡-Reasoning
+
+-- dftPlancherel (12 形式, sum-over-* 语言): Σ_idx |f̂(idx)|² = 12·Σ_x |f(x)|²
+dftPlancherel : ∀ (f : DuodecPoint → Z12Sys) →
+  sum-over-characters (λ idx → dc-dft f idx *ᶻ conjᶻ (dc-dft f idx))
+  ≡ scal12 *ᶻ sum-over-DC (λ x → f x *ᶻ conjᶻ (f x))
+dftPlancherel f = begin
+  sum-over-characters (λ idx → dc-dft f idx *ᶻ conjᶻ (dc-dft f idx))
+    ≡⟨ charOver-sumF (λ idx → dc-dft f idx *ᶻ conjᶻ (dc-dft f idx)) ⟩
+  sumF {12} (λ k → dc-dft f (chr12 k) *ᶻ conjᶻ (dc-dft f (chr12 k)))
+    ≡⟨ sumF-ext (λ k → cong₂ _*ᶻ_ (dftFinBridge f k) (cong conjᶻ (dftFinBridge f k))) ⟩
+  sumF {12} (λ k → dftFin (λ i → f (dc-points i)) k *ᶻ conjᶻ (dftFin (λ i → f (dc-points i)) k))
+    ≡⟨ plancherelFin (λ i → f (dc-points i)) ⟩
+  scal12 *ᶻ sumF {12} (λ i → f (dc-points i) *ᶻ conjᶻ (f (dc-points i)))
+    ≡⟨ cong (λ w → scal12 *ᶻ w) (sym (dcOver-sumF (λ x → f x *ᶻ conjᶻ (f x)))) ⟩
+  scal12 *ᶻ sum-over-DC (λ x → f x *ᶻ conjᶻ (f x))
+  ∎
+  where open ≡-Reasoning
+
+-- parseval (÷12 形式): Σ_x |f(x)|² = (1/12)·Σ_idx |f̂(idx)|²  —— 主定理
+parseval : ∀ (f : DuodecPoint → Z12Sys) →
+  sum-over-DC (λ x → f x *ᶻ conjᶻ (f x))
+  ≡ scal112 *ᶻ sum-over-characters (λ idx → dc-dft f idx *ᶻ conjᶻ (dc-dft f idx))
+parseval f = sym (begin
+  scal112 *ᶻ sum-over-characters (λ idx → dc-dft f idx *ᶻ conjᶻ (dc-dft f idx))
+    ≡⟨ cong (λ w → scal112 *ᶻ w) (dftPlancherel f) ⟩
+  scal112 *ᶻ (scal12 *ᶻ sum-over-DC (λ x → f x *ᶻ conjᶻ (f x)))
+    ≡⟨ cancel112-12 (sum-over-DC (λ x → f x *ᶻ conjᶻ (f x))) ⟩
+  sum-over-DC (λ x → f x *ᶻ conjᶻ (f x))
+  ∎)
+  where open ≡-Reasoning
+
