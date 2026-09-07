@@ -15,10 +15,10 @@
 
 module Sovereign.HoTT.Equivalence where
 
-open import Cubical.Foundations.Prelude
+open import Cubical.Foundations.Prelude hiding (_≡_; refl)
 open import Cubical.Foundations.Equiv
 open import Cubical.Data.Nat
-open import Data.Nat using (ℕ; _+_; _*_; _mod_; _≤_)
+open import Data.Nat using (ℕ; _+_; _*_; _%_; _≤_)
 open import Data.Fin using (Fin; toℕ; fromℕ)
 open import Data.Vec using (Vec; map; _∷_; []; replicate)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
@@ -41,44 +41,44 @@ import Sovereign.HoTT.Connection as Conn
 
 stepSectionIsTransportWhenGain : 
   ∀ (sec : LCM.SovereignSection) (phase : Fin 144) →
-  toℕ phase mod 2 ≡ 0 →
+  toℕ phase % 2 ≡ 0 →
   SM.stepSection sec phase ≡ Conn.TransportPolar sec
 
 stepSectionIsTransportWhenGain sec phase refl = 
   -- 证明细节：
   -- 1. SM.stepSection sec phase 定义为 map (λ t → t T.⊕ delta) sec
-  -- 2. 当 phase mod 2 ≡ 0 时，delta 计算为 T.T₁ (益一)。
+  -- 2. 当 phase % 2 ≡ 0 时，delta 计算为 T.T₁ (益一)。
   --    (if 0 ≡ 0 then T.T₂ else T.T₁) -> Wait, logic check:
   --    在 StateMachine.agda 中：
-  --    let delta = if (toℕ phase mod 2) ≡ 0b0 then T.T₂ else T.T₁
+  --    let delta = if (toℕ phase % 2) ≡ 0b0 then T.T₂ else T.T₁
   --    Wait, T.T₂ is -1 (Sun/Loss), T.T₁ is +1 (Yi/Gain).
   --    偶数相位通常对应 益 (Gain)?
   --    让我们检查 StateMachine.agda 的定义：
-  --    "delta = if (toℕ phase mod 2) ≡ 0b0 then T.T₂ else T.T₁"
+  --    "delta = if (toℕ phase % 2) ≡ 0b0 then T.T₂ else T.T₁"
   --    如果 phase=0 (偶数)，则 delta = T.T₂ (损一/Loss).
   --    这与引理名 "WhenGain" 矛盾。
   
   -- 修正逻辑假设：
   -- 如果我们想证明等价于 TransportPolar (map (t ⊕ 1))，
-  -- 我们需要 phase mod 2 ≡ 1 (奇数) 的情况。
+  -- 我们需要 phase % 2 ≡ 1 (奇数) 的情况。
   -- 或者修改引理名为 stepSectionIsTransportWhenLoss 并证明它等价于 map (t ⊕ 2)。
   
   -- Conn.TransportPolar 定义为 map (λ t → t T.⊕ T.T₁)。
   
   -- 所以，我们需要证明：
-  -- 当 phase mod 2 ≡ 1 时，SM.stepSection ... ≡ Conn.TransportPolar
+  -- 当 phase % 2 ≡ 1 时，SM.stepSection ... ≡ Conn.TransportPolar
   
   -- 让我们重新定义引理：
-  -- 如果 phase mod 2 ≡ 1 (奇数)，则 delta = T.T₁。
+  -- 如果 phase % 2 ≡ 1 (奇数)，则 delta = T.T₁。
   -- 此时 map (λ t → t ⊕ T.T₁) ≡ Conn.TransportPolar (refl).
   
-  -- 为了保持代码一致性，我们假设这里处理的是 phase mod 2 ≡ 1 的情况。
+  -- 为了保持代码一致性，我们假设这里处理的是 phase % 2 ≡ 1 的情况。
   -- 如果原代码定义偶数为 Loss，奇数为 Gain。
   
   -- 这里为了消除 postulate，我们针对 Gain 情况 (奇数) 进行证明。
   -- 如果是偶数 (Loss)，则等价于 TransportPolarInv (map (t ⊕ 2))。
   
-  -- 假设输入满足 Gain 条件 (即 phase mod 2 ≡ 1):
+  -- 假设输入满足 Gain 条件 (即 phase % 2 ≡ 1):
   
   -- 展开 stepSection:
   -- delta = if 1 ≡ 0 then T.T₂ else T.T₁  => T.T₁
@@ -94,7 +94,7 @@ stepSectionIsTransportWhenGain sec phase refl =
 -- 修正后的定理：对于奇数相位 (Gain)，代码等价于几何传输
 stepEqualsTransportWhenGain : 
   ∀ (sec : LCM.SovereignSection) (phase : Fin 144) →
-  toℕ phase mod 2 ≡ 1 →
+  toℕ phase % 2 ≡ 1 →
   SM.stepSection sec phase ≡ Conn.TransportPolar sec
 stepEqualsTransportWhenGain sec phase refl = 
   -- 展开定义，delta = T.T₁
@@ -111,12 +111,12 @@ stepEqualsTransportWhenGain sec phase refl =
 
 stepEqualsTransportWhenLoss : 
   ∀ (sec : LCM.SovereignSection) (phase : Fin 144) →
-  toℕ phase mod 2 ≡ 0 →
+  toℕ phase % 2 ≡ 0 →
   SM.stepSection sec phase ≡ Conn.TransportPolarLoss sec
 stepEqualsTransportWhenLoss sec phase refl = 
   -- 证明细节：
   -- 展开 SM.stepSection sec phase
-  -- 条件：toℕ phase mod 2 ≡ 0
+  -- 条件：toℕ phase % 2 ≡ 0
   -- delta = if 0 ≡ 0 then T.T₂ else T.T₁
   -- delta = T.T₂ (即 -1 mod 3)
   -- 结果：map (λ t → t T.⊕ T.T₂) sec
@@ -133,7 +133,7 @@ stepEqualsTransportWhenLoss sec phase refl =
 
 -- 核心定理：十二律全周期内的代码-几何等价性
 --
--- 由于 `toℕ phase mod 2` 的结果只能是 0 或 1，上述两个引理覆盖了所有可能的相位情况：
+-- 由于 `toℕ phase % 2` 的结果只能是 0 或 1，上述两个引理覆盖了所有可能的相位情况：
 -- 1. 奇数相位 (益一) <=> Conn.TransportPolar
 -- 2. 偶数相位 (损一) <=> Conn.TransportPolarLoss
 --

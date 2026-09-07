@@ -33,3 +33,19 @@
 ## 验证
 
 `./engineering/check_all_modules.sh` 全库独立编译扫描 (485/511 基线).
+
+## 更新 (2026-09-08 第二轮)
+
+### 本轮新增修复
+- Resonance 机械修复 (0f8c1fb): Rational _*_→_*ℚ_/删未用+-/Cubical hide ≡,refl/补 WuXing/JianXiaShui/wuXingBase/toℚ/computeEffect 填 — 剩 3 数学洞 (nayinFingerprint StableRoot/zhonglv 语义)
+- Equivalence 部分: Cubical hide + mod→% — 核心 3 函数 (stepSection≡TransportPolar) 为未完成真证明
+
+### 关键发现: Equivalence 证明的深层结构
+- SovereignSection = Vec (Coding.Trit) 30; Bun.Fiber = Vec (Base.Trit?) 30 — 需确认是否同类型
+- StateMachine.stepSection 用 Coding.Trit; Connection.TransportPolar 用另一 T — **跨模块 Trit 统一**是证明前提
+- stepSection delta 由 isEven (toℕ(toℕ phase mod 2) ≡ᵇ 0) 决定; 前提 `toℕ phase % 2 ≡ 0` 需桥到 isEven
+- 证明路径: 桥 %↔isEven → stepSection 展开 delta=1/2 → map(+T₁/T₂) = TransportPolar/Loss
+- 阻塞: Coding.Trit vs Base.Trit vs Connection.T 三 Trit 类型一致性未清
+
+### 模式确认 (26 模块共性)
+每个失败模块 = 机械 import 修复 (可做) + 未完成真证明 (需理解该模块数学对象 + 跨模块一致性). 机械部分本轮已系统处理; 真证明部分是数天级专项.
