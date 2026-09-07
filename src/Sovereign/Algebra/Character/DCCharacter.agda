@@ -2276,7 +2276,7 @@ module _ where
   open import Data.Rational.Properties
     using (+-comm; +-assoc; *-comm; *-distribˡ-+; *-distribʳ-+; neg-distrib-+;
            +-identityˡ; +-identityʳ; neg-distribˡ-*; neg-distribʳ-*; *-zeroˡ; *-zeroʳ)
-  open import Relation.Binary.PropositionalEquality using (sym; trans; cong; cong₂)
+  open import Relation.Binary.PropositionalEquality using (sym; trans; cong; cong₂; module ≡-Reasoning)
 
   -- 记录延拓: 分量相等则值相等 (单构造子记录)
   zext : ∀ {a b c d a' b' c' d' : ℚ} →
@@ -2613,6 +2613,29 @@ module _ where
   conj-sumF {suc n} f =
     trans (conj-+ᶻ (f fzero) (sumF (λ i → f (fsuc i))))
           (cong (λ w → conjᶻ (f fzero) +ᶻ w) (conj-sumF (λ i → f (fsuc i))))
+
+  -- ── 减法分配工具箱 (*ᶻ-assoc 各分量展开的基础, 隔离验证通过) ──
+
+  -- ℚ 减法与加负号定义性一致 (p - q = p + (-q))
+  q-minus-def : ∀ p q → p - q ≡ p + (Data.Rational.- q)
+  q-minus-def p q = refl
+
+  -- (p - q) * r ≡ (p*r) - (q*r)    右分配对减法
+  mul-sub-r : ∀ p q r → (p - q) * r ≡ (p * r) - (q * r)
+  mul-sub-r p q r = begin
+    (p - q) * r              ≡⟨⟩
+    (p + (- q)) * r          ≡⟨ *-distribʳ-+ r p (- q) ⟩
+    p * r + ((- q) * r)      ≡⟨ cong (λ w → p * r + w) (sym (neg-distribˡ-* q r)) ⟩
+    p * r + (- (q * r))      ≡⟨⟩
+    p * r - (q * r)          ∎
+    where open ≡-Reasoning
+
+  -- p * (r - s) ≡ (p*r) - (p*s)    左分配对减法
+  mul-sub-l : ∀ p r s → p * (r - s) ≡ (p * r) - (p * s)
+  mul-sub-l p r s =
+    trans (*-comm p (r - s))                          -- p*(r-s) ≡ (r-s)*p
+          (trans (mul-sub-r r s p)
+                 (cong₂ _-_ (*-comm r p) (*-comm s p)))
 
   -- 同值函数求和相等 (点等 → 和等; 归纳: cong₂ _+ᶻ_)
   sumF-ext : ∀ {n : ℕ} {f g : Fin n → Z12Sys} → (∀ i → f i ≡ g i) → sumF f ≡ sumF g
