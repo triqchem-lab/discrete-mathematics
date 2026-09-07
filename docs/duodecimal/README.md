@@ -38,6 +38,9 @@
 | [09-complex-numbers.md](09-complex-numbers.md) | 体系复数概念：GF(9)/Gaussian/Eisenstein/Sqrt3/Sqrt2 | P0 |
 | [10-norm-collapse.md](10-norm-collapse.md) | 范数坍缩：勾股定理的局限性 | P0 |
 | [13-flt-analysis.md](13-flt-analysis.md) | 费马大定理的十二进制分析：Archimedes 序依赖的诊断 | P0 |
+| [14-fermat-proof-path.md](14-fermat-proof-path.md) | Fermat 离散投影链：依赖路线图 + 验证闸门（工程方法） | P1 |
+| [15-flt-mathematical-position.md](15-flt-mathematical-position.md) | 离散基座上的 FLT：精确声明/已证定理/边界（致数学界立场文件） | P0 |
+| [16-dc12-layer-adjudication.md](16-dc12-layer-adjudication.md) | DC12 论文 L0-L7 逐层裁定：哪些已证/哪些不可证 | P1 |
 
 ---
 
@@ -100,6 +103,8 @@
 - **我要理解复数概念** → [09-complex-numbers.md](09-complex-numbers.md)
 - **我要理解范数坍缩/勾股定理** → [10-norm-collapse.md](10-norm-collapse.md)
 - **我要理解费马大定理在本框架中的定位** → [13-flt-analysis.md](13-flt-analysis.md)
+- **我要看 Fermat 证明链的依赖图/验证闸门** → [14-fermat-proof-path.md](14-fermat-proof-path.md)
+- **我要看致数学界的 FLT 立场声明** → [15-flt-mathematical-position.md](15-flt-mathematical-position.md)
 
 ## 新增模块（形式化文章中的新概念）
 

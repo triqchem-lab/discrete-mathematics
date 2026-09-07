@@ -16,6 +16,8 @@
 --   pow3-step2     : x ≢ 0 → x^(m+2) = x^m   (两步周期)
 --   pow3-even      : x ≢ 0 → x^(2k)  = 1
 --   pow3-odd       : x ≢ 0 → x^(2k+1) = x
+--   pow3-even-channel : ∀ x → x^(2k) ∈ {T₁, T₀}  (定理 C, 含零通道;
+--                      对应 13-flt-analysis.md §9.2 计划)
 --
 -- 依赖: FermatL0 (pow3 定义, 零幂族, 非零分类)
 
@@ -23,12 +25,13 @@ module Sovereign.Problem.Fermat.FermatL1 where
 
 open import Data.Nat using (ℕ; zero; suc; _*_)
 open import Data.Product using (_×_; _,_)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; cong₂; module ≡-Reasoning)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_; _⊕_; ⊗-identityˡ; ⊗-identityʳ; ⊗-assoc)
 
-open import Sovereign.Problem.Fermat.FermatL0 using (pow3; _≢₃_)
+open import Sovereign.Problem.Fermat.FermatL0 using (pow3; _≢₃_; pow3-zero-odd)
 
 --------------------------------------------------------------------------------
 -- §1. 平方坍缩: 非零元的平方 = 1 (特征 3 的第一原理)
@@ -84,6 +87,23 @@ pow3-odd x xz (suc n) = begin
   pow3 x (suc (n * 2))            ≡⟨ pow3-odd x xz n ⟩
   x                               ∎
   where open ≡-Reasoning
+
+--------------------------------------------------------------------------------
+-- §4b. 偶次幂的 {T₁, T₀} 通道 (定理 C, 13-flt-analysis.md §9.2)
+--
+-- 对含零在内的全体 GF(3) 元素: 偶次幂只落在 {T₁, T₀} 两个值 —
+--   非零元: x^(2k) = T₁ (pow3-even, 平方坍缩的升幂继承)
+--   零元素: 0^(2k) = T₀ (k ≥ 1, 零幂族; k = 0 时 x⁰ = T₁ 约定)
+--   (suc n) * 2 按定义展开为 suc (suc (n * 2)), 与 pow3-zero-odd 的形状匹配.
+--------------------------------------------------------------------------------
+
+pow3-even-channel : ∀ x n → pow3 x (n * 2) ≡ T₁ ⊎ pow3 x (n * 2) ≡ T₀
+pow3-even-channel x zero     = inj₁ refl                       -- x⁰ = T₁
+pow3-even-channel T₀ (suc n) = inj₂ (pow3-zero-odd n)          -- 零幂族
+pow3-even-channel T₁ (suc n) =
+  inj₁ (trans (pow3-step2 T₁ (λ ()) (n * 2)) (pow3-even T₁ (λ ()) n))
+pow3-even-channel T₂ (suc n) =
+  inj₁ (trans (pow3-step2 T₂ (λ ()) (n * 2)) (pow3-even T₂ (λ ()) n))
 
 --------------------------------------------------------------------------------
 -- §5. 周期 2 的语义汇总 (本层主定理)
