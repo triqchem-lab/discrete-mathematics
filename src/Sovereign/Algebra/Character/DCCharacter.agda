@@ -2047,12 +2047,29 @@ sum-over-DC f =
   (f (T₁ , a0) +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ
   (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))
 
+-- DC 的 12 点枚举 (与 sum-over-DC 字面序逐位一致; 使字面和 = sumF{12})
+dc-points : Fin 12 → DuodecPoint
+dc-points (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))))) = (T₂ , a3)
+dc-points (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))))) = (T₂ , a2)
+dc-points (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))))) = (T₂ , a1)
+dc-points (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))))) = (T₂ , a0)
+dc-points (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) = (T₁ , a3)
+dc-points (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) = (T₁ , a2)
+dc-points (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) = (T₁ , a1)
+dc-points (fsuc (fsuc (fsuc (fsuc fzero)))) = (T₁ , a0)
+dc-points (fsuc (fsuc (fsuc fzero))) = (T₀ , a3)
+dc-points (fsuc (fsuc fzero)) = (T₀ , a2)
+dc-points (fsuc fzero) = (T₀ , a1)
+dc-points fzero = (T₀ , a0)
+
+
 -- 归纳求和算子: 对 Fin n 结构归纳 (依赖类型论: 以结构而非字面穷举发展理论)
 -- sumF {n} f = f fzero +ᶻ (f (fsuc fzero) +ᶻ ... +ᶻ f (fromℕ (n-1)))
 -- 使 Parseval 所需性质 (线性性/交换/conj 穿入) 成为结构归纳定理, 免 144 项字面树重排
 sumF : ∀ {n : ℕ} → (Fin n → Z12Sys) → Z12Sys
 sumF {zero} f = z0
 sumF {suc n} f = f fzero +ᶻ sumF (λ i → f (fsuc i))
+
 
 -- 12 个特征上的求和 (对偶正交性 / Parseval RHS 用)
 sum-over-characters : (CharacterIndex → Z12Sys) → Z12Sys
