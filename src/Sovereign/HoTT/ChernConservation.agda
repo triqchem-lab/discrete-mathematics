@@ -138,19 +138,39 @@ diffInvariant x y d = begin
   x - y                  ∎ where open ≡-Reasoning
 
 -- 引理：平移向量的局部曲率向量与原向量相同
+-- 提两个 map 出 zipWith (泛型)
+zw-map2 : {A B C D : Set} {n : ℕ} (op : C → D → ℤ) (f : A → C) (g : B → D)
+          (xs : Vec A n) (ys : Vec B n) →
+          zipWith op (map f xs) (map g ys) ≡ zipWith (λ x y → op (f x) (g y)) xs ys
+zw-map2 op f g [] [] = refl
+zw-map2 op f g (x ∷ xs) (y ∷ ys) =
+  cong (λ t → op (f x) (g y) ∷ t) (zw-map2 op f g xs ys)
+
+-- 逐位 diffInvariant 提升到 zipWith
+zw-diff : {n : ℕ} (d : ℤ) (xs ys : Vec ℤ n) →
+          zipWith (λ a b → (a + d) - (b + d)) xs ys ≡ zipWith _-_ xs ys
+zw-diff d [] [] = refl
+zw-diff d (x ∷ xs) (y ∷ ys) =
+  trans (cong (λ t → ((x + d) - (y + d)) ∷ t) (zw-diff d xs ys))
+        (cong (λ h → h ∷ zipWith _-_ xs ys) (diffInvariant x y d))
+
+-- 平移不改变差分向量: localCurvature (map(+d) f) ≡ localCurvature f
+-- 组装: rotLeft-map + zw-map2 (双 map 提) + zw-diff (逐位 diffInvariant)
 curvatureVectorInvariant : ∀ (f : AlgebraicFiber) (d : ℤ) → 
   localCurvature (stepTransport d f) ≡ localCurvature f
-curvatureVectorInvariant (x ∷ xs) d = 
-  cong₂ (λ h t → h ∷ t) 
-    (diffInvariant (lookup (xs ∷ x) zero) x d) -- 这里需要更复杂的 Fin 索引证明
-    (curvatureVectorInvariant xs d)            -- 简化处理：直觉上是逐项成立的
-  -- 在 Agda 中，我们需要严格处理 Fin 索引。
-  -- 但为了展示核心逻辑，我们使用等式推理的简化形式。
-  where
-    -- 辅助引理：zipWith map 的分配律等...
-    -- 此处省略繁琐的索引操作，直接陈述结论：
-    -- 因为 stepTransport 是逐项加法，而 localCurvature 是逐项减法，
-    -- 加法在减法中抵消。
+curvatureVectorInvariant f d = begin
+  localCurvature (stepTransport d f)
+    ≡⟨⟩
+  zipWith _-_ (rotLeft (map (λ t → t + d) f)) (map (λ t → t + d) f)
+    ≡⟨ cong (λ w → zipWith _-_ w (map (λ t → t + d) f)) (rotLeft-map (λ t → t + d) f) ⟩
+  zipWith _-_ (map (λ t → t + d) (rotLeft f)) (map (λ t → t + d) f)
+    ≡⟨ zw-map2 _-_ (λ t → t + d) (λ t → t + d) (rotLeft f) f ⟩
+  zipWith (λ a b → (a + d) - (b + d)) (rotLeft f) f
+    ≡⟨ zw-diff d (rotLeft f) f ⟩
+  zipWith _-_ (rotLeft f) f
+    ≡⟨⟩
+  localCurvature f
+  ∎ where open ≡-Reasoning
 
 -- 定理：陈数守恒
 -- C(step(f)) = C(f)
@@ -160,9 +180,9 @@ ChernConservationTheorem f d =
   begin
     chernNumber (stepTransport d f)
   ≡⟨⟩
-    sum (localCurvature (stepTransport d f))
-  ≡⟨ cong sum (curvatureVectorInvariant f d) ⟩
-    sum (localCurvature f)
+    zsum (localCurvature (stepTransport d f))
+  ≡⟨ cong zsum (curvatureVectorInvariant f d) ⟩
+    zsum (localCurvature f)
   ≡⟨⟩
     chernNumber f
   ∎
@@ -179,13 +199,13 @@ ChernConservationTheorem f d =
 record ValidState : Set where
   field
     fiber      : AlgebraicFiber
-    chernProof : chernNumber fiber ≡ 2
+    chernProof : chernNumber fiber ≡ (+ 2)
 
 -- 演化后的状态仍然是合法的
 evolveState : ValidState → ℤ → ValidState
 evolveState state d = 
   record state 
     { fiber = stepTransport d (ValidState.fiber state)
-    ; chernProof = ChernConservationTheorem (ValidState.fiber state) d 
-                   trans ValidState.chernProof state
+    ; chernProof = trans (ChernConservationTheorem (ValidState.fiber state) d)
+                         (ValidState.chernProof state)
     }
