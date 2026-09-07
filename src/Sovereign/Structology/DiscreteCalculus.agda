@@ -10,10 +10,10 @@
 module Sovereign.Structology.DiscreteCalculus where
 
 -- ⚠️ 宪法合规：使用代数复数替代连续统复数
-open import Sovereign.RootMath.AlgebraicComplex using (Sqrt3; _+s3_; _+ˢ_; _*ˢ_; sqrt3)
+open import Sovereign.RootMath.AlgebraicComplex using (Sqrt3; _+s3_; _+ˢ_; _-ˢ_; _*ˢ_; sqrt3)
 open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_; 1ℚ; 0ℚ; neg)
 open import Data.Integer using (ℤ; +_; -_)
-open import Data.Fin using (Fin; toℕ; fromℕ)
+open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _mod_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
@@ -41,7 +41,7 @@ StandingWaveField = LuGridPoint → Sqrt3
 
 -- 零场 (寂静态)
 zeroField : StandingWaveField
-zeroField c = 0b0 +s3 0b0
+zeroField c = ((+ 0) / 1) +s3 ((+ 0) / 1)
 
 -- 常数场 (均匀态)
 constantField : Sqrt3 → StandingWaveField
@@ -57,12 +57,12 @@ constantField z c = z
 -- 极向偏导 (∂_p)
 -- 对应十二律损益链的步进
 partialPolar : StandingWaveField → StandingWaveField
-partialPolar f point = f (shiftPolar point 1) -ˢ f point
+partialPolar f point = f (shiftPolar point (suc zero)) -ˢ f point
 
 -- 环向偏导 (∂_t)
 -- 对应五行模数区的跃迁
 partialToroidal : StandingWaveField → StandingWaveField
-partialToroidal f point = f (shiftToroidal point 1) -ˢ f point
+partialToroidal f point = f (shiftToroidal point (suc zero)) -ˢ f point
 
 -- 混合偏导 (∂_p ∂_t)
 -- 对应极向与环向的交叉干涉 (Cross-Interference)
@@ -80,22 +80,22 @@ mixedPartial f point =
 
 -- 辅助：反向平移 (用于计算中心差分)
 shiftPolarNeg : LuGridPoint → LuGridPoint
-shiftPolarNeg point = shiftPolar point 11  -- +11 等价于 -1 mod 12
+shiftPolarNeg point = shiftPolar point (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))  -- +11 等价于 -1 mod 12
 
 shiftToroidalNeg : LuGridPoint → LuGridPoint
-shiftToroidalNeg point = shiftToroidal point 11
+shiftToroidalNeg point = shiftToroidal point (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))
 
 -- 离散拉普拉斯算子 (Discrete Laplacian)
 -- Δf = (f_右 + f_左 + f_上 + f_下) - 4 * f_中
 DiscreteLaplacian : StandingWaveField → StandingWaveField
 DiscreteLaplacian f cell = 
-  let f_right = f (shiftPolar cell 1)
+  let f_right = f (shiftPolar cell (suc zero))
       f_left  = f (shiftPolarNeg cell)
-      f_up    = f (shiftToroidal cell 1)
+      f_up    = f (shiftToroidal cell (suc zero))
       f_down  = f (shiftToroidalNeg cell)
       f_center = f cell
-      four = 4ℚ +s3 0b0
-  in (f_right +ˢ f_left +ˢ f_up +ˢ f_down) -ˢ (four *ˢ f_center)
+      four = ((+ 4) / 1) +s3 ((+ 0) / 1)
+  in (((f_right +ˢ f_left) +ˢ f_up) +ˢ f_down) -ˢ (four *ˢ f_center)
 
 --------------------------------------------------------------------------------
 -- 5. 探索：离散曲率 (Discrete Curvature / Berry Phase)
