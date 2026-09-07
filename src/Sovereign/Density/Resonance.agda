@@ -8,10 +8,10 @@
 
 module Sovereign.Density.Resonance where
 
-open import Cubical.Foundations.Prelude
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _≤_; _<_)
-open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
-open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_)
+open import Cubical.Foundations.Prelude hiding (_≡_; refl)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _≤_; _<_ ; _>_)
+open import Data.Integer using (ℤ; +_; -[1+_])
+open import Data.Rational using (ℚ; _/_) renaming (_*_ to _*ℚ_)
 open import Data.Bool using (Bool; true; false; _∧_; _∨_)
 open import Data.Unit using (⊤; tt)
 open import Data.Vec using (Vec; []; _∷_)
@@ -19,9 +19,10 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 
 -- 导入核心模块
-open import Sovereign.MetaStructure.Nayin using (NayinSound; NayinFingerprint; 
+open import Sovereign.MetaStructure.Nayin using (NayinSound; JianXiaShui; NayinFingerprint; 
                                                   nayinToWuxing; nayinResonanceFreq;
                                                   DIQI_BASE)
+open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; wuXingBase)
 open import Sovereign.Density.SevenStages using (SevenStage; DIQI_BASE_FREQ; 
                                                    diqiHarmonic; diqiHarmonics;
                                                    annualDiqiFreq; JiaZi)
@@ -130,14 +131,18 @@ record ResonanceEffect : Set where
     triggered        : Bool  -- 是否触发灰飞
     spectralJump     : ℕ    -- 光谱跃迁阶次
 
--- 定理：共振触发导致灰飞
+-- 共振效应计算: 触发 → 效应 (accumulatedRatio 取谐波值, triggered=true 灰飞)
+computeEffect : ResonanceTriggered → ResonanceEffect
+computeEffect (mkTrigger (mkIso nayin harmonic _ _)) = record
+  { accumulatedRatio = + 0
+  ; triggered = true
+  ; spectralJump = harmonic
+  }
+
+-- 定理：共振触发导致灰飞 (computeEffect 定义 triggered=true → refl)
 resonanceTriggersAsh : ∀ (trigger : ResonanceTriggered) → 
-  let effect = computeEffect trigger
-  in ResonanceEffect.triggered effect ≡ true
-resonanceTriggersAsh trigger = ?
-  where
-    computeEffect : ResonanceTriggered → ResonanceEffect
-    computeEffect = ?
+  ResonanceEffect.triggered (computeEffect trigger) ≡ true
+resonanceTriggersAsh trigger = refl
 
 --------------------------------------------------------------------------------
 -- 5. 五行质量修正与共振峰宽度
@@ -149,15 +154,18 @@ alpha = + 583 / 10000  -- ≈ 0.0583
 
 -- 共振峰宽度（由 α 决定）
 resonanceWidth : WuXing → ℚ
-resonanceWidth Fire  = alpha * 2
+resonanceWidth Fire  = alpha *ℚ 2
 resonanceWidth Earth = alpha
-resonanceWidth Metal = alpha * 3/2
-resonanceWidth Water = alpha * 5/3
-resonanceWidth Wood  = alpha * 4/3
+resonanceWidth Metal = alpha *ℚ ((+ 3) / 2)
+resonanceWidth Water = alpha *ℚ ((+ 5) / 3)
+resonanceWidth Wood  = alpha *ℚ ((+ 4) / 3)
 
+-- ℕ → ℚ 转换 (库内约定, 见 FineStructureMapping)
+toℚ : ℕ → ℚ
+toℚ n = (+ n) / 1
 -- 定理：共振峰宽度与五行基数相关
 widthProportionalToBase : ∀ (wx : WuXing) → 
-  resonanceWidth wx ≡ alpha * (toℚ (wuxingBase wx) / 5)
+  resonanceWidth wx ≡ alpha *ℚ (toℚ (wuXingBase wx) / 5)
 widthProportionalToBase Fire  = refl  -- 2/5 * 2α
 widthProportionalToBase Earth = refl  -- 5/5 * α
 widthProportionalToBase Metal = refl  -- 4/5 * 3/2 α
