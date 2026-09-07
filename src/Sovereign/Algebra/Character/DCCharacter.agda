@@ -27,7 +27,8 @@ module Sovereign.Algebra.Character.DCCharacter where
 open import Data.Product using (_×_; _,_)
 open import Data.Nat using (ℕ; zero; suc) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
 open import Data.Fin using (Fin; zero; suc; toℕ)
-open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_)
+open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_; -_)
+open import Data.Rational.Solver
 open import Data.Integer using (+_; -[1+_])
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
@@ -2247,7 +2248,8 @@ dc-dft f idx = sum-over-DC (λ x → f x *ᶻ conjᶻ (dc-character idx x))
 
 module _ where
   open import Data.Rational.Properties
-    using (+-comm; +-assoc; *-comm; *-distribʳ-+; neg-distrib-+)
+    using (+-comm; +-assoc; *-comm; *-distribˡ-+; *-distribʳ-+; neg-distrib-+;
+           +-identityˡ)
   open import Relation.Binary.PropositionalEquality using (sym; trans; cong; cong₂)
 
   -- 记录延拓: 分量相等则值相等 (单构造子记录)
@@ -2288,11 +2290,98 @@ module _ where
            ≡ (((a' * d) + (d' * a)) + ((b' * c) + (c' * b)))
       iγ = cong₂ _+_ (trans (cong₂ _+_ (*-comm a d') (*-comm d a')) (+-comm (d' * a) (a' * d)))
                      (trans (cong₂ _+_ (*-comm b c') (*-comm c b')) (+-comm (c' * b) (b' * c)))
+  -- ── 分配律 (手写分量链) ──
+  -- ℚ 求解器不可用: gcd 不定义归约, refl 卡在 mkℚ (0 / gcd 0 1);
+  -- 改用 stdlib ℚ 环定理 (*-distribʳ-+ / *-distribˡ-+ / neg-distrib-+) 手写分量链。
+  -- 注: Parseval 组装只需分配律 (+ᶻ 交换/结合), 不需 *ᶻ-assoc。
 
---------------------------------------------------------------------------------
--- §5‴. 对偶正交性: Σ_idx χ idx p ·ᶻ conj χ idx q = 12·δ(p,q)
---      (Parseval 组装的钥匙; 132 非对角 refl + 24 对角 ⊥-elim + 12 自内积 refl)
---------------------------------------------------------------------------------
+  trans-refl : ∀ {A : Set} (x : A) → x ≡ x
+  trans-refl x = refl
+
+  pair-shuffle : ∀ p q r t → (p + q) + (r + t) ≡ (p + r) + (q + t)
+  pair-shuffle p q r t =
+    trans (+-assoc p q (r + t))
+      (trans (cong (\x → p + x)
+                (trans (sym (+-assoc q r t))
+                  (trans (cong (\y → y + t) (+-comm q r)) (+-assoc r q t))))
+        (sym (+-assoc p r (q + t))))
+
+  minus-shuffle : ∀ p q r t → ((p + q) - (r + t)) ≡ ((p - r) + (q - t))
+  minus-shuffle p q r t =
+    trans (cong (\x → (p + q) + x) (neg-distrib-+ r t))
+          (pair-shuffle p q (Data.Rational.- r) (Data.Rational.- t))
+
+  *ᶻ-distribˡ : ∀ x y z → (x +ᶻ y) *ᶻ z ≡ (x *ᶻ z) +ᶻ (y *ᶻ z)
+  *ᶻ-distribˡ (a +z b +z c +z d) (a' +z b' +z c' +z d') (u +z v +z w +z s) =
+    zext real i compg iγ
+    where
+      m3 = (+ 3 / 1)
+      real : (((a + a') * u - (b + b') * v) + m3 * ((d + d') * s - (c + c') * w))
+             ≡ (((a * u - b * v) + m3 * (d * s - c * w))
+                + ((a' * u - b' * v) + m3 * (d' * s - c' * w)))
+      real =
+        trans (cong₂ _+_
+          (trans (cong₂ _-_ (*-distribʳ-+ u a a') (*-distribʳ-+ v b b'))
+                 (minus-shuffle (a * u) (a' * u) (b * v) (b' * v)))
+          (trans (cong (\x → m3 * x)
+                   (trans (cong₂ _-_ (*-distribʳ-+ s d d') (*-distribʳ-+ w c c'))
+                          (minus-shuffle (d * s) (d' * s) (c * w) (c' * w))))
+                 (*-distribˡ-+ m3 (d * s - c * w) (d' * s - c' * w))))
+        (pair-shuffle (a * u - b * v) (a' * u - b' * v)
+                      (m3 * (d * s - c * w)) (m3 * (d' * s - c' * w)))
+      -- 子步骤分离 (≤3 层 trans): 先展开+重排, 再保持减号结构
+      i-step1 : (a + a') * v + (b + b') * u ≡ (a * v + b * u) + (a' * v + b' * u)
+      i-step1 = trans (cong₂ _+_ (*-distribʳ-+ v a a') (*-distribʳ-+ u b b'))
+                      (pair-shuffle (a * v) (a' * v) (b * u) (b' * u))
+
+      i-step2 : m3 * ((c + c') * s + (d + d') * w)
+                ≡ m3 * (c * s + d * w) + m3 * (c' * s + d' * w)
+      i-step2 = trans (cong (\x → m3 * x)
+                       (trans (cong₂ _+_ (*-distribʳ-+ s c c') (*-distribʳ-+ w d d'))
+                              (pair-shuffle (c * s) (c' * s) (d * w) (d' * w))))
+                      (*-distribˡ-+ m3 (c * s + d * w) (c' * s + d' * w))
+
+      i : (((a + a') * v + (b + b') * u) - m3 * ((c + c') * s + (d + d') * w))
+          ≡ (((a * v + b * u) - m3 * (c * s + d * w))
+             + ((a' * v + b' * u) - m3 * (c' * s + d' * w)))
+      i = trans (cong (\x → (a + a') * v + (b + b') * u - x) i-step2)
+          (trans (cong (\y → y - (m3 * (c * s + d * w) + m3 * (c' * s + d' * w))) i-step1)
+                 (minus-shuffle (a * v + b * u) (a' * v + b' * u)
+                                (m3 * (c * s + d * w)) (m3 * (c' * s + d' * w))))
+
+      compg-step1 : (a + a') * w + (c + c') * u ≡ (a * w + c * u) + (a' * w + c' * u)
+      compg-step1 = trans (cong₂ _+_ (*-distribʳ-+ w a a') (*-distribʳ-+ u c c'))
+                          (pair-shuffle (a * w) (a' * w) (c * u) (c' * u))
+
+      compg-step2 : (b + b') * s + (d + d') * v ≡ (b * s + d * v) + (b' * s + d' * v)
+      compg-step2 = trans (cong₂ _+_ (*-distribʳ-+ s b b') (*-distribʳ-+ v d d'))
+                          (pair-shuffle (b * s) (b' * s) (d * v) (d' * v))
+
+      compg : (((a + a') * w + (c + c') * u) - ((b + b') * s + (d + d') * v))
+              ≡ (((a * w + c * u) - (b * s + d * v))
+                 + ((a' * w + c' * u) - (b' * s + d' * v)))
+      compg = trans (cong (\x → (a + a') * w + (c + c') * u - x) compg-step2)
+          (trans (cong (\y → y - ((b * s + d * v) + (b' * s + d' * v))) compg-step1)
+                 (minus-shuffle (a * w + c * u) (a' * w + c' * u)
+                                (b * s + d * v) (b' * s + d' * v)))
+
+      iγ : (((a + a') * s + (d + d') * u) + ((b + b') * w + (c + c') * v))
+           ≡ (((a * s + d * u) + (b * w + c * v))
+              + ((a' * s + d' * u) + (b' * w + c' * v)))
+      iγ =
+        trans (cong₂ _+_
+          (trans (cong₂ _+_ (*-distribʳ-+ s a a') (*-distribʳ-+ u d d'))
+                 (pair-shuffle (a * s) (a' * s) (d * u) (d' * u)))
+          (trans (cong₂ _+_ (*-distribʳ-+ w b b') (*-distribʳ-+ v c c'))
+                 (pair-shuffle (b * w) (b' * w) (c * v) (c' * v))))
+        (pair-shuffle (a * s + d * u) (a' * s + d' * u)
+                      (b * w + c * v) (b' * w + c' * v))
+
+  *ᶻ-distribʳ : ∀ x y z → z *ᶻ (x +ᶻ y) ≡ (z *ᶻ x) +ᶻ (z *ᶻ y)
+  *ᶻ-distribʳ x y z =
+    trans (*ᶻ-comm z (x +ᶻ y))
+      (trans (*ᶻ-distribˡ x y z)
+             (cong₂ (λ r t → r +ᶻ t) (*ᶻ-comm x z) (*ᶻ-comm y z)))
 
 dual-self : ∀ (t : Trit) (a : AlphaPower) →
   sum-over-characters (λ idx → dc-character idx (t , a) *ᶻ conjᶻ (dc-character idx (t , a)))
