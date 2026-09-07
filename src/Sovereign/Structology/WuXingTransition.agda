@@ -700,6 +700,7 @@ faceStabilizer Hexahedron   = 4
 faceStabilizer Octahedron   = 3
 faceStabilizer Dodecahedron = 5
 faceStabilizer Icosahedron  = 3
+faceStabilizer SphereA4     = 3  -- S²/A₄ 12胞腔最小三角胞腔, 五行不触及
 
 -- 8.2 Orbit-Stabilizer: |G| = F × |stab(f)|
 -- 每个立体的对称群阶 = 面数 × 面稳定子阶
@@ -726,6 +727,7 @@ vertexStabilizer Hexahedron   = 3
 vertexStabilizer Octahedron   = 4
 vertexStabilizer Dodecahedron = 3
 vertexStabilizer Icosahedron  = 5
+vertexStabilizer SphereA4     = 3  -- 占位 (2E/V=60/14 非整), 五行不触及
 
 orbit-stabilizer-via-vertices :
   (groupOrder Fire  ≡ vertexCount Tetrahedron  * vertexStabilizer Tetrahedron)  ×
@@ -753,6 +755,16 @@ factorial-verification :
   (groupOrder Water ≡ 60)    -- 60 = 5!/2
 factorial-verification = refl , refl , refl
 
+data FacePolygon : Set where
+  Triangle : FacePolygon  -- 3 条边, 正三角形面
+  Square   : FacePolygon  -- 4 条边, 正方形面
+  Pentagon : FacePolygon  -- 5 条边, 正五边形面
+
+-- 多边形的边数（= 面的旋转稳定子阶）
+polygonSides : FacePolygon → ℕ
+polygonSides Triangle = 3
+polygonSides Square   = 4
+polygonSides Pentagon = 5
 -- 8.5 群阶的几何公式推导 (v5.13): 从面数×面边数直接计算
 -- 核心公式:
 --   |G_rot| = faceCount × polygonSides  (纯旋转群阶)
@@ -796,16 +808,8 @@ geometric-group-order-with-z2 = refl , refl , refl , refl , refl
 --------------------------------------------------------------------------------
 
 -- 9.1 面多边形类型（正多边形的边数 = 旋转对称阶）
-data FacePolygon : Set where
-  Triangle : FacePolygon  -- 3 条边, 正三角形面
-  Square   : FacePolygon  -- 4 条边, 正方形面
-  Pentagon : FacePolygon  -- 5 条边, 正五边形面
-
--- 多边形的边数（= 面的旋转稳定子阶）
-polygonSides : FacePolygon → ℕ
-polygonSides Triangle = 3
-polygonSides Square   = 4
-polygonSides Pentagon = 5
+-- 9.1 面多边形类型已前移至 §8.5 (geometric-group-order 需先定义)
+-- FacePolygon / polygonSides 定义见上方 §8.5 前
 
 -- 9.2 顶点度数类型（顶点处的面数 = 顶点旋转稳定子阶）
 data VertexDegree : Set where
@@ -825,6 +829,7 @@ platonicFacePolygon Hexahedron   = Square
 platonicFacePolygon Octahedron   = Triangle
 platonicFacePolygon Dodecahedron = Pentagon
 platonicFacePolygon Icosahedron  = Triangle
+platonicFacePolygon SphereA4     = Triangle  -- 12胞腔最小三角剖分占位
 
 -- 9.4 柏拉图立体 → 顶点度数映射
 platonicVertexDegree : PlatonicSolid → VertexDegree
@@ -833,6 +838,7 @@ platonicVertexDegree Hexahedron   = deg3
 platonicVertexDegree Octahedron   = deg4
 platonicVertexDegree Dodecahedron = deg3
 platonicVertexDegree Icosahedron  = deg5
+platonicVertexDegree SphereA4     = deg3  -- 占位, 五行不触及
 
 -- 9.5 从结构类型推导 faceStabilizer（替代硬编码）
 derivedFaceStabilizer : PlatonicSolid → ℕ
