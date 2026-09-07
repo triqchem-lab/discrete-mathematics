@@ -19,7 +19,7 @@
 
 module Sovereign.Physics.LightConeMatrix where
 
-open import Data.Nat using (ℕ; _+_; _*_; _∸_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
