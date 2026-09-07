@@ -92,6 +92,26 @@ record Ring (A : Set) : Set₁ where
     distribʳ  : ∀ x y z → (y + z) * x ≡ (y * x) + (z * x)
     zeroʳ     : ∀ x → x * e ≡ e
 
+-- 交换半环 (无加法逆元/乘法逆元, 只有加乘 + 零幺 + 结合交换 + 分配 + 零吸收)
+-- 对应语料 "没有减号和除号……只有加号和乘号" (word_46)
+record CommSemiring (A : Set) : Set₁ where
+  infixl 20 _+_ ; infixl 25 _*_
+  field
+    _+_ _*_   : A → A → A
+    zero one  : A
+    +-assoc   : ∀ x y z → (x + y) + z ≡ x + (y + z)
+    +-comm    : ∀ x y → x + y ≡ y + x
+    +-idˡ     : ∀ x → zero + x ≡ x
+    +-idʳ     : ∀ x → x + zero ≡ x
+    *-assoc   : ∀ x y z → (x * y) * z ≡ x * (y * z)
+    *-comm    : ∀ x y → x * y ≡ y * x
+    *-idˡ     : ∀ x → one * x ≡ x
+    *-idʳ     : ∀ x → x * one ≡ x
+    distribˡ  : ∀ x y z → x * (y + z) ≡ (x * y) + (x * z)
+    distribʳ  : ∀ x y z → (y + z) * x ≡ (y * x) + (z * x)
+    zeroˡ     : ∀ x → zero * x ≡ zero
+    zeroʳ     : ∀ x → x * zero ≡ zero
+
 record IsField (A : Set) : Set₁ where
   infixl 20 _+_ ; infixl 25 _*_
   field

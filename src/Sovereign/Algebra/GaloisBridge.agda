@@ -67,12 +67,17 @@ fixed-iff-embedded (T₂ , T₂) h = ⊥-elim (¬fix-2b h)
 -- §2. 范数与迹的满射性
 --------------------------------------------------------------------------------
 
--- 范数满射: 每个 GF(3)^× 值都有 GF(9)^× 原像 (2 项)
+-- 范数同态: N : GF(9)^× → GF(3)^× 是乘法同态 (norm-mul, GF9.agda)
+--   值域 = {1, 2} = GF(3)^× 满射 (T₁ 原像: gf9-one, α; T₂ 原像: (1,1) = 1+α)
+-- 坍缩点 (信息丢失): 核 ker N = {x ∈ GF(9)^× | N(x)=1} = ⟨α⟩ ≅ C₄ (4 个元素)
+--   相位子群 ⟨α⟩ = {1, α, α², α³} 全部坍缩到范数值 T₁
+--   即 4→1: 相位乘法信息 (α 的 4 阶旋转) 在范数下丢失
 norm-surj-1 : galoisNorm gf9-one ≡ T₁ ; norm-surj-1 = refl
 norm-surj-2 : galoisNorm (T₀ , T₁) ≡ T₁ ; norm-surj-2 = refl
--- 注: N(α) = 1, N(1) = 1 — GF(3)^× 的唯一非平凡值即 1 (2² ≡ 1);
---   非平方元 2 ∈ GF(3) 无 GF(9) 原像? — N(a+bα) = a²+b² ∈ {0,1} —
---   范数像 = {0,1} ⊂ GF(3), 满射到 {0,1} (2 项如上)
+-- T₂ 的原像 (与 NormCollapse.norm-1-1 一致): N(1+α) = 1²+1² = 2
+norm-surj-3 : galoisNorm (T₁ , T₁) ≡ T₂ ; norm-surj-3 = refl
+-- 相位信息丢失的证据: N(α) = N(1) = N(α²) = N(α³) = 1 (4 个相位元同像)
+--   见 FiniteGroupAxioms.norm-is-one : ∀ p → galoisNorm (embedG p) ≡ T₁
 
 -- 迹满射: 每个 GF(3) 值都有原像 (3 项)
 trace-surj-0 : galoisTrace (T₀ , T₀) ≡ T₀ ; trace-surj-0 = refl
