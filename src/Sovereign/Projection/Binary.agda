@@ -18,8 +18,9 @@ open import Data.Maybe using (Maybe; just; nothing)
 open import Data.Product using (_×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Nullary using (¬_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
+open import Function using (case_of_)
+open import Relation.Nullary using (¬_; yes; no)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong)
 
 import Sovereign.Coding.Trit as T
 
@@ -32,10 +33,10 @@ Bit : Set
 Bit = Fin 2
 
 B₀ : Bit
-B₀ = 0b0
+B₀ = zero
 
 B₁ : Bit
-B₁ = 0b1
+B₁ = suc zero
 
 --------------------------------------------------------------------------------
 -- 2. 上下文定义 (Context for Restoration)
@@ -59,10 +60,9 @@ open Context public
 -- T₁ (平衡/1) → 1
 -- T₂ (表达/2) → 0 (信息折叠！与 T₀ 无法区分)
 projectTritToBit : T.Trit → Bit
-projectTritToBit t with T.toℕ t
-... | 0 = B₀
-... | 1 = B₁
-... | 2 = B₀  -- ⚠️ 拓扑信息在此丢失
+projectTritToBit zero          = B₀  -- T₀ (吸收/0) → 0
+projectTritToBit (suc zero)    = B₁  -- T₁ (平衡/1) → 1
+projectTritToBit (suc (suc _)) = B₀  -- T₂ (表达/2) → 0, ⚠️ 拓扑信息在此丢失
 
 --------------------------------------------------------------------------------
 -- 4. 投影信息丢失证明 (Proof of Lossiness)
@@ -104,16 +104,14 @@ private
   wuxingDefaultRecovery zero = T.T₀                  -- 火 (Fire, Base 2)
   wuxingDefaultRecovery (suc zero) = T.T₂            -- 土 (Earth, Base 5)
   wuxingDefaultRecovery (suc (suc zero)) = T.T₀      -- 金 (Metal, Base 4)
-  wuxingDefaultRecovery (suc (suc (suc zero))) = T.T₀-- 水 (Water, Base 6)
+  wuxingDefaultRecovery (suc (suc (suc zero))) = T.T₀ -- 水 (Water, Base 6)
   wuxingDefaultRecovery (suc (suc (suc (suc zero)))) = T.T₀ -- 木 (Wood, Base 8)
   wuxingDefaultRecovery _ = T.T₀                     -- 安全回退
 
 -- 恢复函数
 restoreTritWithContext : Bit → Context → T.Trit
-restoreTritWithContext b ctx =
-  case b of λ where
-    B₁ → T.T₁  -- Bit 1 必然恢复为平衡态 T₁
-    B₀ → wuxingDefaultRecovery (Context.wuxingMask ctx) -- Bit 0 依据五行偏好恢复
+restoreTritWithContext zero    ctx = wuxingDefaultRecovery (Context.wuxingMask ctx)  -- Bit 0 依据五行偏好恢复
+restoreTritWithContext (suc _) ctx = T.T₁  -- Bit 1 必然恢复为平衡态 T₁
 
 --------------------------------------------------------------------------------
 -- 6. 上下文恢复正确性证明 (Proof of Contextual Restoration)
@@ -128,15 +126,12 @@ restoreT1Perfect ctx = refl
 -- 证明：基于 wuxingDefaultRecovery 的显式定义进行情况分析
 restoreT0CorrectInNonEarthRegions :
   ∀ (ctx : Context) →
-  Context.wuxingMask ctx ≢ 1b1 → -- 排除土区
+  Context.wuxingMask ctx ≢ (suc zero) → -- 排除土区
   restoreTritWithContext (projectTritToBit T.T₀) ctx ≡ T.T₀
 restoreT0CorrectInNonEarthRegions ctx mask≢1 =
-  let projBit = projectTritToBit T.T₀  -- = B₀
-      restored = restoreTritWithContext B₀ ctx  -- = wuxingDefaultRecovery (wuxingMask ctx)
-      mask = Context.wuxingMask ctx
-  in prove mask mask≢1
+  prove (Context.wuxingMask ctx) mask≢1
   where
-    prove : (m : Fin 5) → m ≢ 1b1 → wuxingDefaultRecovery m ≡ T.T₀
+    prove : (m : Fin 5) → m ≢ (suc zero) → wuxingDefaultRecovery m ≡ T.T₀
     prove zero _ = refl          -- 火 → T₀
     prove (suc zero) not1 = ⊥-elim (not1 refl)  -- 土 → 矛盾
     prove (suc (suc zero)) _ = refl  -- 金 → T₀
@@ -147,27 +142,14 @@ restoreT0CorrectInNonEarthRegions ctx mask≢1 =
 -- 定理：对于 T₂，如果五行偏好是 T₂ (土区)，则恢复正确
 restoreT2CorrectInEarthRegion :
   ∀ (ctx : Context) →
-  Context.wuxingMask ctx ≡ 1b1 → -- 仅限土区
+  Context.wuxingMask ctx ≡ (suc zero) → -- 仅限土区
   restoreTritWithContext (projectTritToBit T.T₂) ctx ≡ T.T₂
 restoreT2CorrectInEarthRegion ctx mask≡1 =
-  let projBit = projectTritToBit T.T₂  -- = B₀
-      restored = restoreTritWithContext B₀ ctx  -- = wuxingDefaultRecovery (wuxingMask ctx)
-      mask = Context.wuxingMask ctx
-  in prove mask mask≡1
+  prove (Context.wuxingMask ctx) mask≡1
   where
-    prove : (m : Fin 5) → m ≡ 1b1 → wuxingDefaultRecovery m ≡ T.T₂
-    prove zero eq = ⊥-elim (injective-zero eq)  -- 火 ≠ 土
+    prove : (m : Fin 5) → m ≡ (suc zero) → wuxingDefaultRecovery m ≡ T.T₂
+    prove zero ()
     prove (suc zero) _ = refl  -- 土 → T₂
-    prove (suc (suc zero)) eq = ⊥-elim (injective-suc eq)  -- 金 ≠ 土
-    prove (suc (suc (suc zero))) eq = ⊥-elim (injective-suc eq)  -- 水 ≠ 土
-    prove (suc (suc (suc (suc zero)))) eq = ⊥-elim (injective-suc eq)  -- 木 ≠ 土
-
-    injective-zero : {n : ℕ} → 0b0 ≡ suc n → ⊥
-    injective-zero ()
-
-    injective-suc : {n m : ℕ} → suc n ≡ suc m → n ≡ m → ⊥
-    injective-suc {_} {zero} () _
-    injective-suc {zero} {suc _} refl _
-    injective-suc {suc _} {suc _} refl _ = refl
-
-    open import Data.Empty using (⊥-elim)
+    prove (suc (suc zero)) ()
+    prove (suc (suc (suc zero))) ()
+    prove (suc (suc (suc (suc zero)))) ()
