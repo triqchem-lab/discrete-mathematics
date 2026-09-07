@@ -80,19 +80,19 @@
 
 ## 最终完成状态
 
-**全部 9 个模块，0 个 Agda 洞，0 个 postulate，形式化完成。**
+> ⚠️ 修正 (2026-09-07): 下表早期把 Dihedral/ 下 7 个未编译草稿误标 ✅。
+> 真实状态: DCCharacter/DCGroup/DCCayleyGraph/NormCollapse 的绿版分别在
+> Algebra/Character、Algebra/GroupTheory、Algebra/Spectral、Algebra/ 下; 
+> Dihedral/ 目录的 7 个文件全部编译失败、从未进 git、无下游引用 (见 §附: Dihedral 草稿审计)。
 
-| 模块 | ? | postulate | 状态 |
+| 模块 (绿版路径) | ? | postulate | 状态 |
 |------|:-:|:---------:|:----:|
-| DihedralD12 | 0 | 0 | ✅ |
-| ShortExactSequence | 0 | 0 | ✅ |
-| DCCharacter | 0 | 0 | ✅ |
-| DCCayleyGraph | 0 | 0 | ✅ |
-| DCTopos | 0 | 0 | ✅ |
-| DCGroup | 0 | 0 | ✅ |
-| NormCollapse | 0 | 0 | ✅ |
-| ElectronCloud | 0 | 0 | ✅ |
-| CayleyMetric | 0 | 0 | ✅ |
+| DCCharacter (`Algebra/Character/`) | 0 | 0 | ✅ |
+| DCGroup (`Algebra/GroupTheory/`) | 0 | 0 | ✅ |
+| DCCayleyGraph (`Algebra/Spectral/`) | 0 | 0 | ✅ |
+| NormCollapse (`Algebra/`) | 0 | 0 | ✅ |
+| DihedralD12 / ShortExactSequence / DCTopos | — | — | ❌ 草稿 |
+| ElectronCloud / CayleyMetric / DiscreteMetric | — | — | ❌ 草稿 |
 
 ## 快速导航
 
@@ -113,13 +113,14 @@
 
 - **文件**: `src/Sovereign/Algebra/Dihedral/DihedralD12.agda`
 - **内容**: D₁₂ = DC ⋊ ⟨ρ⟩，24阶二面体群
-- **状态**: 框架完成，部分证明待补充
+- **状态**: ❌ 未编译草稿 (编译失败 NoParse@145, 无下游引用)
 
 ### 短正合列
 
 - **文件**: `src/Sovereign/Algebra/Dihedral/ShortExactSequence.agda`
 - **内容**: 1 → C₄ → DC → F₃ → 1 (分裂)
-- **状态**: ✅ 完成
+- **状态**: ❌ 未编译草稿 (UnequalTypes GF9Star; 分裂性已有绿版
+  DCGroup/群论链覆盖)
 
 ### 特征分解
 
@@ -134,13 +135,13 @@
 
 - **文件**: `src/Sovereign/Algebra/Spectral/DCCayleyGraph.agda`
 - **内容**: DC 的 Cayley 图与谱理论
-- **状态**: 框架完成，矩阵计算待补充
+- **状态**: ⚠️ 部分编译 (ρ 自同构/邻接对称已证; 谱定理判定删除见文件裁定注释)
 
 ### 拓扑斯
 
 - **文件**: `src/Sovereign/Algebra/Dihedral/DCTopos.agda`
 - **内容**: DC 的拓扑斯结构
-- **状态**: 框架完成，判定性部分待补充
+- **状态**: ❌ 未编译草稿 (NotInScope@74, 无下游引用)
 
 ## 新增模块
 
