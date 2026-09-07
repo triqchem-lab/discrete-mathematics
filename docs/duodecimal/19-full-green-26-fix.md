@@ -108,3 +108,19 @@
 3. 大系数 mod-helper 展开是已知编译器限制 (proof-engineer 附录1): 符号参数大数 %/ 展开为
    mod-helper/div-helper 无法归约 → 用 REWRITE 规则 (T6 div3k / Xuanwu mod46k) 或结构定义.
 4. `check_all_modules.sh` 无堆限制, 已改用带 `+RTS -M6G` 版本跑全库.
+
+### 更新 (2026-09-08 第六轮): 全绿 +12 (累计 20) + Entanglement 裁定恢复
+✅ 本轮新增全绿:
+- Entanglement (fa8baf1前): c87c4d7 误恢复假定理 classical-bound → 恢复 937bca0 权威裁定版
+- Resonance (): 5 处建模未定型转待核对 (nanluIso freqMatch 假 144≠432 / widthProp 假 仅
+  Earth case 真 / zhonglvCausesDecoherence 洞 / standardHouQiTube 指纹洞 / h2o halfGapExact);
+  resonanceTriggersAsh 穷举 mkTrigger
+- WuXingTransition (): FacePolygon/polygonSides 前移至 §8.5 消除前向引用; 4 函数补 SphereA4 分支
+- TorusClosure (): 接口骨架补齐 (decode 字段/FrobeniusVisible/GlobalMatrix 占位/参数化)
+- Integration (): 旧 StateMachine API (SM.run/block/acc) 集成测试转待核对注释
+- CRTFiberWinding (914f1e0): s≤s/z≤n 移到 Data.Nat
+- 另提交前一会话 15 个已绿模块 (AlgebraicPoleUnified 层级重构注释等, fa8baf1)
+
+🔴 累计待核对 (语义重建模):
+FineStructureMapping / CRTHarmonics (OOM+洞) / TopologyLevels (sumGrid) / Integration (旧API)
+/ Entanglement classical-bound (已裁定删) / Resonance 5 处 / T6Homotopy 草稿块 / WuXingTransition SphereA4
