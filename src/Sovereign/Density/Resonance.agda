@@ -16,6 +16,7 @@ open import Data.Bool using (Bool; true; false; _∧_; _∨_)
 open import Data.Unit using (⊤; tt)
 open import Data.Vec using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 
 -- 导入核心模块
@@ -27,7 +28,6 @@ open import Sovereign.Density.SevenStages using (SevenStage; DIQI_BASE_FREQ;
                                                    diqiHarmonic; diqiHarmonics;
                                                    annualDiqiFreq; JiaZi)
 open import Sovereign.RootMath.EnergyGap using (energyGap; energyGapIsSqrt3; halfGapExact)
-open import Sovereign.Coupling.Zhonglv using (SovereignState; zhonglvClosure)
 
 --------------------------------------------------------------------------------
 -- 1. 地气声子谱
@@ -66,20 +66,15 @@ record HouQiTube : Set where
     harmonicOrder   : ℕ    -- 优选谐波阶次
     nayinFingerprint : NayinFingerprint  -- 纳音指纹
 
--- 标准候气管：有效长度统一调谐至约 19.271cm
-standardHouQiTube : HouQiTube
-standardHouQiTube = record
-  { effectiveLength = + 19271 / 1000  -- 19.271 cm
-  ; endCorrection = + 271 / 10000     -- 端口修正
-  ; harmonicOrder = 3                  -- 优选第 3 谐波（432 Hz）
-  ; nayinFingerprint = ?              -- 南吕纳音指纹
-  }
-
--- 定理：候气管有效长度与地气声子谱第 3 谐波匹配
-tubeMatches3rdHarmonic : 
-  HouQiTube.harmonicOrder standardHouQiTube ≡ 3
-  × diqiPhononSpectrum 3 ≡ 1008
-tubeMatches3rdHarmonic = (refl , refl)
+-- 待核对 (建模洞): standardHouQiTube 原稿 nayinFingerprint = ? 无法填充 —
+--   NayinFingerprint 需 StableRoot (wuXingBase wuxing * harmonicOrder) 证明,
+--   需专门的指纹数学 (摘要 nayinFingerprint StableRoot 洞). tubeMatches3rdHarmonic
+--   引用 standardHouQiTube, 一并注释. HouQiTube record 定义保留.
+-- standardHouQiTube : HouQiTube
+-- standardHouQiTube = record { effectiveLength = + 19271/1000; ...; nayinFingerprint = ? }
+-- tubeMatches3rdHarmonic : HouQiTube.harmonicOrder standardHouQiTube ≡ 3
+--   × diqiPhononSpectrum 3 ≡ 1008
+-- tubeMatches3rdHarmonic = (refl , refl)
 
 --------------------------------------------------------------------------------
 -- 3. 纳音驻波同构
@@ -103,18 +98,17 @@ record NayinHarmonicIsomorphism : Set where
     freqMatch  : nayinResonanceFreq nayin ≡ diqiPhononSpectrum harmonic
     wuxingMatch : nayinToWuxing nayin ≡ wuxingFromHarmonic harmonic
 
--- 南吕纳音：对应于 JianXiaShui（涧下水，南吕地支为酉/亥之前）
-NanLuNayin : NayinSound
-NanLuNayin = JianXiaShui
-
--- 标准同构实例：南吕 432 Hz ↔ 地气第 3 谐波
-nanluIso : NayinHarmonicIsomorphism
-nanluIso = record
-  { nayin = NanLuNayin  -- 南吕纳音
-  ; harmonic = 1         -- 第 3 谐波（索引 1）
-  ; freqMatch = refl     -- 432 Hz = 432 Hz
-  ; wuxingMatch = refl   -- 火 = 火
-  }
+-- 待核对 (物理语义): 南吕/涧下水纳音驻波同构实例 nanluIso 原稿:
+--   NanLuNayin : NayinSound
+--   NanLuNayin = JianXiaShui
+--   nanluIso : NayinHarmonicIsomorphism
+--   nanluIso = record { nayin = NanLuNayin; harmonic = 1;
+--     freqMatch = refl; wuxingMatch = refl }
+-- freqMatch 假: nayinResonanceFreq JianXiaShui = 144×nayinPreferredHarmonic JianXiaShui,
+-- 而 JianXiaShui 落在 Nayin 默认分支 (_=1) → freq = 144; 但 harmonic=1 对应
+-- diqiPhononSpectrum 1 = 432. 144 ≠ 432. 需核对 JianXiaShui 是否应在 Nayin 表中
+-- 映射到 3 次谐波 (南吕 432Hz 的物理断言), 属跨模块语义核对, 非编译修复.
+-- NayinHarmonicIsomorphism 类型定义本身保留 (上面), 实例待核对后再建.
 
 --------------------------------------------------------------------------------
 -- 4. 共振触发条件
@@ -142,7 +136,7 @@ computeEffect (mkTrigger (mkIso nayin harmonic _ _)) = record
 -- 定理：共振触发导致灰飞 (computeEffect 定义 triggered=true → refl)
 resonanceTriggersAsh : ∀ (trigger : ResonanceTriggered) → 
   ResonanceEffect.triggered (computeEffect trigger) ≡ true
-resonanceTriggersAsh trigger = refl
+resonanceTriggersAsh (mkTrigger (mkIso _ _ _ _)) = refl
 
 --------------------------------------------------------------------------------
 -- 5. 五行质量修正与共振峰宽度
@@ -154,41 +148,34 @@ alpha = + 583 / 10000  -- ≈ 0.0583
 
 -- 共振峰宽度（由 α 决定）
 resonanceWidth : WuXing → ℚ
-resonanceWidth Fire  = alpha *ℚ 2
+resonanceWidth Fire  = alpha *ℚ ((+ 2) / 1)
 resonanceWidth Earth = alpha
 resonanceWidth Metal = alpha *ℚ ((+ 3) / 2)
 resonanceWidth Water = alpha *ℚ ((+ 5) / 3)
 resonanceWidth Wood  = alpha *ℚ ((+ 4) / 3)
 
--- ℕ → ℚ 转换 (库内约定, 见 FineStructureMapping)
-toℚ : ℕ → ℚ
-toℚ n = (+ n) / 1
--- 定理：共振峰宽度与五行基数相关
-widthProportionalToBase : ∀ (wx : WuXing) → 
-  resonanceWidth wx ≡ alpha *ℚ (toℚ (wuXingBase wx) / 5)
-widthProportionalToBase Fire  = refl  -- 2/5 * 2α
-widthProportionalToBase Earth = refl  -- 5/5 * α
-widthProportionalToBase Metal = refl  -- 4/5 * 3/2 α
-widthProportionalToBase Water = refl  -- 6/5 * 5/3 α
-widthProportionalToBase Wood  = refl  -- 8/5 * 4/3 α
+-- 待核对 (建模矛盾): widthProportionalToBase 原稿:
+--   widthProportionalToBase : ∀ (wx : WuXing) →
+--     resonanceWidth wx ≡ alpha *ℚ (toℚ (wuXingBase wx) / 5)
+-- 穷举核验: 仅 Earth 成立 (α = α·5/5), Fire/Metal/Water/Wood 均不成立 —
+-- resonanceWidth (Fire=2α, Metal=3α/2, Water=5α/3, Wood=4α/3) 与 alpha*(base/5)
+-- 不成比例. resonanceWidth 定义与公式是两套不一致建模, 需语义统一 (待核对).
+-- resonanceWidth 函数定义保留 (上), 假定理注释.
 
 --------------------------------------------------------------------------------
 -- 6. 仲吕相位同步节拍与退相干
 --------------------------------------------------------------------------------
 
--- 仲吕相位同步节拍控制退相干时间
-decoherenceTime : ℕ → ℕ
-decoherenceTime zhonglvCount = zhonglvCount * 12  -- 每 12 步一次相位同步
-
--- 定理：仲吕相位同步导致退相干
-zhonglvCausesDecoherence : ∀ (count : ℕ) → 
-  decoherenceTime count > 0 → 
-  let state = applyZhonglvPhaseSync count
-  in SovereignState.accumulator state ≡ + 0
-zhonglvCausesDecoherence count ge = ?
-  where
-    applyZhonglvPhaseSync : ℕ → SovereignState
-    applyZhonglvPhaseSync n = ?
+-- 待核对 (建模未定型): 仲吕相位同步节拍与退相干 — 原 zhonglvCausesDecoherence:
+--   decoherenceTime : ℕ → ℕ
+--   decoherenceTime zhonglvCount = zhonglvCount * 12  -- 每 12 步一次相位同步
+--   zhonglvCausesDecoherence : ∀ (count : ℕ) →
+--     decoherenceTime count > 0 →
+--     let state = applyZhonglvPhaseSync count
+--     in SovereignState.accumulator state ≡ + 0
+--   zhonglvCausesDecoherence count ge = ?   (证明体与 applyZhonglvPhaseSync 均为 ? 洞,
+--   且其语义 "仲吕同步 → 累加器归零" 需 Zhonglv.evolveStep 的实际行为核对)
+-- 此定理为未完成草稿 (洞), 注释保留待语义核对后再证.
 
 --------------------------------------------------------------------------------
 -- 7. 实验锚定
@@ -203,7 +190,7 @@ record H2O-C60-Splitting : Set where
 
 h2oC60Instance : H2O-C60-Splitting
 h2oC60Instance = record
-  { energySplit = 56632 / 65536  -- halfGapExact
+  { energySplit = halfGapExact  -- = Δ/2 精确锚定 (原稿 56632/65536 无法 ≡ postulate)
   ; threshold = + 866025 / 1000000
   ; harmonicMatch = refl
   }
