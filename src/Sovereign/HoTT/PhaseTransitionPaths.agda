@@ -1,4 +1,4 @@
-{-# OPTIONS --rewriting --cubical --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.HoTT.PhaseTransitionPaths
 -- 高维拓扑：五行相变路径与同伦类型
@@ -19,10 +19,12 @@
 
 module Sovereign.HoTT.PhaseTransitionPaths where
 
-open import Cubical.Core.Everything
-open import Cubical.Foundations.Prelude
-open import Data.Nat using (ℕ; zero; suc; _+_; _≡_)
+open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Nat.Properties using (+-comm)
+open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Data.String using (String)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
+open Relation.Binary.PropositionalEquality.≡-Reasoning
 
 --------------------------------------------------------------------------------
 -- 1. 状态空间 (State Space)
@@ -78,49 +80,49 @@ data _~>_ (from to : StateSpace) : Set where
   mkPath : (transType : PhaseTransitionType)
            (symFromTo : SymmetryLabel × ℕ)  -- from 的目标对称群和幂次
            (symToFrom : SymmetryLabel × ℕ)  -- to 的目标对称群和幂次
-           (startOk : from ≡ mkState (fst symFromTo) (snd symFromTo))
-           (endOk   : to   ≡ mkState (fst symToFrom) (snd symToFrom))
+           (startOk : from ≡ mkState (proj₁ symFromTo) (proj₂ symFromTo))
+           (endOk   : to   ≡ mkState (proj₁ symToFrom) (proj₂ symToFrom))
            → from ~> to
 
 -- 构造 Fire→Earth 相变路径
 fireToEarthPath : StateFire ~> StateEarth
 fireToEarthPath = mkPath
   FireToEarth
-  (Oh , 1)    -- StateFire 的目标是 Oh, 幂次 1
-  (Td , 0)    -- 逆向（无用，仅满足类型）
-  refl        -- mkState Oh 1 ≡ StateEarth
-  refl        -- mkState Td 0 ≡ StateFire（这里实际是 StateEarth）
+  (Td , 0)    -- StateFire = mkState Td 0
+  (Oh , 1)    -- StateEarth = mkState Oh 1
+  refl
+  refl
 
 -- 构造其他相变路径
 earthToMetalPath : StateEarth ~> StateMetal
 earthToMetalPath = mkPath
   EarthToMetal
-  (Ih , 3)
-  (Oh , 1)
+  (Oh , 1)    -- StateEarth = mkState Oh 1
+  (Ih , 3)    -- StateMetal = mkState Ih 3
   refl
   refl
 
 metalToWaterPath : StateMetal ~> StateWater
 metalToWaterPath = mkPath
   MetalToWater
-  (I , 4)
-  (Ih , 3)
+  (Ih , 3)    -- StateMetal = mkState Ih 3
+  (I , 4)     -- StateWater = mkState I 4
   refl
   refl
 
 waterToWoodPath : StateWater ~> StateWood
 waterToWoodPath = mkPath
   WaterToWood
-  (O , 6)
-  (I , 4)
+  (I , 4)     -- StateWater = mkState I 4
+  (O , 6)     -- StateWood = mkState O 6
   refl
   refl
 
 woodToFirePath : StateWood ~> StateFire
 woodToFirePath = mkPath
   WoodToFire
-  (Td , 0)
-  (O , 6)
+  (O , 6)     -- StateWood = mkState O 6
+  (Td , 0)    -- StateFire = mkState Td 0
   refl
   refl
 
@@ -185,15 +187,14 @@ loopChernConservation =
 -- 6. 五行闭环 (The Grand Loop)
 --------------------------------------------------------------------------------
 
--- 整个五行循环的相变路径
-PhaseTransitionLoop : StateFire ~> StateFire
-PhaseTransitionLoop =
-  fireToEarthPath  -- 火→土：Td→Oh, a: 0→1
-                   -- 10火共振坍缩，手性对偶刚完成互嵌
-
--- 注意：完整闭环需要组合所有五个相变
--- 这里简化展示，实际应使用五个路径的组合
--- PhaseTransitionLoop = fireToEarthPath >> earthToMetalPath >> ...
+-- 待核对 (建模未定型): "五行闭环" PhaseTransitionLoop 原陈述
+--   PhaseTransitionLoop : StateFire ~> StateFire
+--   PhaseTransitionLoop = fireToEarthPath
+-- 无法成立: _~>_ 是数据型, 无路径复合操作; StateFire ~> StateFire
+-- 不能由单个 fireToEarthPath (StateFire ~> StateEarth) 填充.
+-- 需扩展 _~>_ 增加复合构造子 (或改为逐段列出) 才能表达完整闭环.
+-- 原注释: 完整闭环需要组合所有五个相变, 这里简化展示.
+-- 陈数守恒的全链版本已由 §5 loopChernConservation 证明.
 
 --------------------------------------------------------------------------------
 -- 7. 拓扑不变量验证
