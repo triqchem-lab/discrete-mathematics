@@ -65,16 +65,16 @@ mkGridPoint r c = fromℕ< (s≤s (mkGridPointBound r c))
 
 -- 极向平移（沿行方向移动）
 shiftPolar : LuGridPoint → Fin 12 → LuGridPoint
-shiftPolar p k = mkGridPoint (fromℕ ((toℕ (gridRow p) + toℕ k) % 12)) (gridCol p)
+shiftPolar p k = mkGridPoint (fromℕ< (m%n<n (toℕ (gridRow p) + toℕ k) 12)) (gridCol p)
 
 -- 环向平移（沿列方向移动）
 shiftToroidal : LuGridPoint → Fin 12 → LuGridPoint
-shiftToroidal p k = mkGridPoint (gridRow p) (fromℕ ((toℕ (gridCol p) + toℕ k) % 12))
+shiftToroidal p k = mkGridPoint (gridRow p) (fromℕ< (m%n<n (toℕ (gridCol p) + toℕ k) 12))
 
 -- 斜向平移（对角移位）
 shiftDiagonal : LuGridPoint → Fin 12 → LuGridPoint
-shiftDiagonal p k = mkGridPoint (fromℕ ((toℕ (gridRow p) + toℕ k) % 12))
-                                 (fromℕ ((toℕ (gridCol p) + toℕ k) % 12))
+shiftDiagonal p k = mkGridPoint (fromℕ< (m%n<n (toℕ (gridRow p) + toℕ k) 12))
+                                 (fromℕ< (m%n<n (toℕ (gridCol p) + toℕ k) 12))
 
 --------------------------------------------------------------------------------
 -- 3. A4 群在律胞腔网格上的静态置换
