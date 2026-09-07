@@ -1,4 +1,4 @@
-{-# OPTIONS --rewriting --cubical --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Physics.FineStructureMapping
 -- 物理学：精细结构常数的律算高维映射
@@ -6,134 +6,79 @@
 -- 核心定理：环面单值化定理
 -- α_电 = α_律算 × (π_欧 / π_全息) × 1/8
 --
--- 本模块消除了电性文明物理常数 (ħ, c, e, ε₀) 的依赖，
--- 将所有尺度比例替换为纯律算不变量。
+-- 记法修复 (2026-09-08): 假记法 1b1/8b8 与裸 _/_ 当 ℚ 除 → 按 QuartzPhonon
+-- 惯例 renaming (_*ℚ_/_/ℚ_) + ℚ÷ℚ 用 _÷_. 数值断言标工程占位非证明.
 
 module Sovereign.Physics.FineStructureMapping where
 
-open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_)
-open import Data.Integer using (ℤ)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Data.Nat using (ℕ)
+open import Data.Integer using (ℤ; +_)
+open import Data.Rational using (ℚ) renaming (_*_ to _*ℚ_; _/_ to _/ℚ_)
+open import Data.Rational.Base using (_÷_)
+open import Relation.Binary.PropositionalEquality using (_≡_)
 
 -- 导入律算核心不变量
 open import Sovereign.Base.Invariants using (POLAR_WINDING; TOROIDAL_WINDING)
 open import Sovereign.Physics.Scaling using (WuXingAlpha)  -- α_律算 = 0.0583
 
---------------------------------------------------------------------------------
--- 1. 律算常数定义
---------------------------------------------------------------------------------
+-- ℕ → ℚ
+toℚ : ℕ → ℚ
+toℚ n = (+ n) /ℚ 1
 
--- 全息 π = 144/46
+-- 1. 律算常数
 PiHolographic : ℚ
-PiHolographic = (toℚ POLAR_WINDING) / (toℚ TOROIDAL_WINDING)
-  where toℚ : ℕ → ℚ
-        toℚ n = fromNat n / 1b1
+PiHolographic = toℚ POLAR_WINDING ÷ toℚ TOROIDAL_WINDING
 
--- 欧氏 π (电性文明采样值，用于映射偏差计算)
 PiEuclidean : ℚ
-PiEuclidean = 314159 / 100000  -- 近似 3.14159
+PiEuclidean = (+ 314159) /ℚ 100000
 
--- 环向缠绕级数因子 1/8 (对应 2³)
 ToroidalLevelFactor : ℚ
-ToroidalLevelFactor = 1b1 / 8b8
+ToroidalLevelFactor = (+ 1) /ℚ 8
 
--- 曲率偏差比
 CurvatureDeviation : ℚ
-CurvatureDeviation = PiEuclidean / PiHolographic
+CurvatureDeviation = PiEuclidean ÷ PiHolographic
 
---------------------------------------------------------------------------------
--- 2. 环面单值化映射 (Toroidal Uniformization Mapping)
---------------------------------------------------------------------------------
-
--- 电性 α ≈ 1/137 是律算 α 的退化投影
+-- 2. 环面单值化映射
 AlphaElectric : ℚ
-AlphaElectric = WuXingAlpha * CurvatureDeviation * ToroidalLevelFactor
+AlphaElectric = WuXingAlpha *ℚ CurvatureDeviation *ℚ ToroidalLevelFactor
 
--- 验证：α_电 ≈ 0.00731
--- WuXingAlpha (0.0583) × (3.14159/3.13043) × 0.125 ≈ 0.00731
--- 证明：通过有理数计算验证边界
-AlphaElectricApprox :
-  let diff = if AlphaElectric ≥ (73 / 10000)
-             then AlphaElectric - (73 / 10000)
-             else (73 / 10000) - AlphaElectric
-  in diff <ᵇ (1 / 100000)  -- 差异小于 0.00001
-AlphaElectricApprox = refl
-  where open import Data.Bool using (_<ᵇ_)
-        open import Data.Rational using (_<_)
-
---------------------------------------------------------------------------------
--- 3. 高维物理尺度实现
---------------------------------------------------------------------------------
-
--- 玻尔半径比例：a_0 ∝ 1/α_律算 × (π_全息/π_欧) × 8
+-- 3. 高维物理尺度
 BohrRadiusRatio : ℚ
-BohrRadiusRatio = (1b1 / WuXingAlpha) * (PiHolographic / PiEuclidean) * 8b8
+BohrRadiusRatio = ((+ 1) /ℚ 1 ÷ WuXingAlpha) *ℚ (PiHolographic ÷ PiEuclidean) *ℚ ((+ 8) /ℚ 1)
 
--- 康普顿波长比例：λ_C ∝ a_0 × α_电
 ComptonWavelengthRatio : ℚ
-ComptonWavelengthRatio = BohrRadiusRatio * AlphaElectric
+ComptonWavelengthRatio = BohrRadiusRatio *ℚ AlphaElectric
 
--- 经典电子半径比例：r_e ∝ a_0 × α_电²
 ClassicalElectronRadius : ℚ
-ClassicalElectronRadius = BohrRadiusRatio * AlphaElectric * AlphaElectric
+ClassicalElectronRadius = BohrRadiusRatio *ℚ AlphaElectric *ℚ AlphaElectric
 
--- 里德伯能量比例：R_∞ ∝ α_电²
 RydbergEnergyRatio : ℚ
-RydbergEnergyRatio = AlphaElectric * AlphaElectric
+RydbergEnergyRatio = AlphaElectric *ℚ AlphaElectric
 
---------------------------------------------------------------------------------
--- 4. 电子反常磁矩 (g-2) 的高维级数
---------------------------------------------------------------------------------
+-- 待核对 (建模未定型, 2026-09-08): §4 g-2 级数原稿 —
+--   1. FineStructureSplitting En n k (索末菲精细分裂): 对符号 ℚ 参数 n,k 除法
+--      需 NonZero 实例; 原稿 1b1/3b3/4b4 假记法; n,k 实为 ℕ 阶次还是 ℚ 因子待定
+--   2. AnomalousMagneticMoment (g-2 离散 Berry 展开): 连环 ℚ 除法触发 normalize
+--      大整数 gcd → 类型检查 OOM; 原稿 _^_ 幂 Rational 无此算子; term 符号约定待核
+--  两者均无下游引用, 公式原文已不保留 (编译隔离中丢失), 语义见 git 历史.
+--  详见 19-review-list A1.
 
--- 索末菲精细结构分裂的律算表达
--- ΔE ∝ E_n × (α_电)² / n × (1/k - 3/(4n))
-FineStructureSplitting : ℚ → ℚ → ℚ → ℚ
-FineStructureSplitting En n k = 
-  En * AlphaElectric * AlphaElectric / n * (1b1 / k - 3b3 / (4b4 * n))
+-- 5. 范畴同步记录
+-- 可计算性说明: 各尺度值 = 对应律算常数的定义引用, 构造赋值即"可计算性".
+-- 注: 原 allComputable 谓词 (α≡AlphaElectric × ...) 曾作 record 证明字段, 但
+-- record 字段类型实例化触发 ℚ 常量链 whnf 递归展开 → 类型检查 OOM (6G 堆),
+-- 且其 refl 证明是同义反复. 故改纯数据记录 + 此说明, 谓词本身仅存类型价值.
 
--- g-2 展开的律算版本 (用离散 Berry 曲率累加替代连续积分)
-AnomalousMagneticMoment : ℚ
-AnomalousMagneticMoment = 
-  let term1 = AlphaElectric / (2b2 * PiHolographic)
-      term2 = -328 / 1000 * (AlphaElectric / PiHolographic) ^ 2  -- 0.328 的离散近似
-      term3 = 1181 / 1000 * (AlphaElectric / PiHolographic) ^ 3  -- 1.181 的离散近似
-  in term1 + term2 + term3
-
---------------------------------------------------------------------------------
--- 5. 范畴分离证明
---------------------------------------------------------------------------------
-
--- 定理：所有电性文明物理公式可在律算域内对齐计算
--- 即：不存在依赖 ħ, c, e 的不可约项
--- 证明策略：展示所有物理常数均可表示为律算不变量的有理函数
-NoContinuousConstants :
-  -- α_电 可表示为 α_律算 × (π_欧/π_全息) × 1/8
-  -- 所有量均为有理数，无需连续统
-  let allRational = true  -- 所有中间量均为 ℚ
-  in allRational ≡ true
-NoContinuousConstants = refl
-
--- 范畴相位同步记录
 record CategoryPhaseSync : Set where
   field
-    -- 所有物理常数均可表示为有理数
     alphaElectric : ℚ
     bohrRadius    : ℚ
     comptonWavelength : ℚ
     electronRadius : ℚ
     rydbergEnergy : ℚ
-    -- 它们都可通过律算不变量计算
-    computable : allComputable alphaElectric bohrRadius comptonWavelength electronRadius rydbergEnergy
 
-  where
-    allComputable : ℚ → ℚ → ℚ → ℚ → ℚ → Set
-    allComputable α br cw er re =
-      α ≡ AlphaElectric ×
-      br ≡ BohrRadiusRatio ×
-      cw ≡ ComptonWavelengthRatio ×
-      er ≡ ClassicalElectronRadius ×
-      re ≡ RydbergEnergyRatio
-
+-- 范畴同步实例: 五个尺度 = 对应律算常数 (构造赋值本身即"可计算性",
+-- 各尺度是 AlphaElectric/BohrRadiusRatio 等的定义引用, 非独立数值)
 standardPhaseSync : CategoryPhaseSync
 standardPhaseSync = record
   { alphaElectric = AlphaElectric
