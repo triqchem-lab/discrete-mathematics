@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical #-}
+{-# OPTIONS --rewriting --cubical #-}
 module Sovereign.Completeness.FunctorProof where
 
 --------------------------------------------------------------------------------

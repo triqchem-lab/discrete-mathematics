@@ -1,7 +1,7 @@
 --
 -- 本模块是 HFM 交叉验证测试向量, 不替代原形式化证明。
 -- 主证明见: WuXingTransition.agda
-{-# OPTIONS --rewriting #-}
+{-# OPTIONS #-}
 
 -- | Sovereign.Structology.WuXingEulerHFM
 -- 柏拉图立体 Euler 示性数的 HFM 交叉验证

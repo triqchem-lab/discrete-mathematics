@@ -1,7 +1,7 @@
 --
 -- 本模块是 HFM 交叉验证测试向量, 不替代原形式化证明。
 -- 主证明见: ProjectiveTransform.agda
-{-# OPTIONS --rewriting #-}
+{-# OPTIONS #-}
 
 -- | Sovereign.Geometry.ProjectiveTransformHFM
 -- A₄×C₃ 直积的 HFM 交叉验证

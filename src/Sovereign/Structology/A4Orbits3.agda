@@ -1,6 +1,6 @@
 -- 本模块是 HFM 交叉验证测试向量, 不替代原形式化证明。
 -- 主证明见: A4Representations.agda, BurnsideT6.agda
-{-# OPTIONS --rewriting #-}
+{-# OPTIONS #-}
 
 -- | Sovereign.Structology.A4Orbits3
 -- A₄ 三维不可约表示在 GF(3)³ (=27 点) 上的 Burnside 轨道计数

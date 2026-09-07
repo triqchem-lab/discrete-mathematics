@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
-{-# OPTIONS --rewriting --termination-depth=2 #-}
+{-# OPTIONS --termination-depth=2 #-}
 
 -- | Sovereign.Projection.Decimal.Axioms
 -- 十进制数字根计算与判定

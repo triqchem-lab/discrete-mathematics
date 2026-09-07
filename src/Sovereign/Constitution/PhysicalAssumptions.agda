@@ -69,7 +69,7 @@ data PostulateClass : Set where
 --   ✅ 2026-08 P0 追加: CartanTorsion 4 处未解 hole 闭合 (Z₃ 群公理 27+3+3 case
 --     refl; closeTorsion 挠率矛盾重设计为 ClosedTorsion 记录); cartanLegal
 --     hole 升级为显式公理 (B 登记注释)
---   ✅ 2026-08 P0 追加: HolographicSpace.agda 补 --rewriting 头, InfectiveImport
+--   ✅ 2026-08 P0 追加: HolographicSpace.agda 补 头, InfectiveImport
 --     消除, theorem-maximality-4320 编译绿
 
 -- ④ 已清除（eliminated, 证据）:

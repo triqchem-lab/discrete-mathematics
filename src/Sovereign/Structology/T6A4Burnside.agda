@@ -1,7 +1,7 @@
 --
 -- 本模块是 HFM 交叉验证测试向量, 不替代原形式化证明。
 -- 主证明见: T6.agda, BurnsideT6.agda
-{-# OPTIONS --rewriting #-}
+{-# OPTIONS #-}
 
 -- | Sovereign.Structology.T6A4Burnside
 -- T⁶/A₄ Burnside 轨道计数：A₄ 置换 T⁶ 前 4 个坐标

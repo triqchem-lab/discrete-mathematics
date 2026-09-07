@@ -1,7 +1,7 @@
 --
 -- 本模块是 HFM 交叉验证测试向量, 不替代原形式化证明。
 -- 主证明见: BinaryTetrahedral.agda
-{-# OPTIONS --rewriting #-}
+{-# OPTIONS #-}
 
 -- | Sovereign.Structology.BinaryTetrahedralHFM
 -- Q₈ 置换群构造 + 2A₄ ≅ Q₈ ⋊ C₃ 的 HFM 交叉验证

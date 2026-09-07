@@ -94,6 +94,8 @@ ket2-eigen = refl
 
 -- 构造性坍缩 (2026-08 P2-4): 测量后态坍缩为结果对应的基态 (确定性)
 -- 连续: 概率坍缩 |ψ⟩ → Pᵢ|ψ⟩/√⟨ψ|Pᵢ|ψ⟩; 离散 GF(3): 结果即基态指标
+-- 注意: 这是范数（密度）坍缩，不是概率坍缩
+-- 态空间仍是 GF(3)³=27 维，非平凡叠加仍然存在
 collapse : Observable → Qutrit → Qutrit
 collapse obs ψ = ketOf (obs ψ)
   where

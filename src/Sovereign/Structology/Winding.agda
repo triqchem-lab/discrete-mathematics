@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Structology.Winding
 -- 结构学：极向缠绕数 144、环向缠绕数 46

@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.HoTT.ZeroHomologyEquivalence
 -- 零类等价: Hₙ(T⁶) 的零类在同调对偶下等价。

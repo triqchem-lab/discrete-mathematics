@@ -6,7 +6,8 @@ module Sovereign.Algebra.AlgebraicPoleUnified where
 --
 -- 本体论层级 (修正后):
 --   Z/12Z 涡旋环是代数极的本体 (根 "123"), GF(3) 和 GF(9) 是它的截面。
---   12 是涡旋数学的独立根 (记作 "123"), 不是 3×4 的分解。
+--   12 = 3×4 = char(GF(3)) × ord(α) — 两个独立周期的联合闭合点。
+--   DuodecClock = Trit × AlphaPower 是本源坐标; Z/12 是其加法投影。
 --   3→6→12 是倍频量子纠缠链: 3(基频)→6(二次谐波)→12(四次谐波)。
 --
 --   注 (2026-08-16): VortexRoot.agda 已创建 (Sovereign.Algebra.VortexRoot) —
@@ -14,32 +15,41 @@ module Sovereign.Algebra.AlgebraicPoleUnified where
 --   Merkaba 回绕 / 本体论地位注释); 代数载体 = Duodecial.agda 的 L0/L0U/L0C。
 --
 -- 层级总览:
---   === 本体层 (Z/12Z 涡旋环, 根 "123") ===
---   L0:  Z/12Z 加法群 — 十二律循环 / 涡旋相位 (本体)
+--   === 本源层 (DuodecClock: Trit × AlphaPower) ===
+--   AP0: DuodecPoint = Trit × AlphaPower — 本源十二进制坐标 (周期 3×4=12)
+--
+--   === 投影层 (Duodecimal: Z/12Z) ===
+--   L8:  C₁₂ = (Duodec, +12) — 加法投影 (群同构)
+--   L9:  R₁₂ = (Duodec, +12, *12) — 环投影 (有零因子)
+--   L10: CRT 分解 Z/12Z ≅ Z/3Z × Z/4Z
 --   L0U: (Z/12Z)* ≅ V₄ — 四象 (Klein 四元群)
 --   L0C: CRT 分解 Z/12Z ≅ Z/3Z × Z/4Z — 三×四结构
 --
---   === mod 3 投影截面 (GF(3)) ===
---   S1:  GF(3) 加法群 (Z/3Z, +) — Z/12Z 的 mod 3 投影
+--   === GF 生成层 (独立代数域) ===
+--   L1:  GF(3) = Trit — 损益域 (char=3, 独立生成元, 不是 Z/12 的投影)
+--   L2:  GF(3)* = {T₁, T₂} — 乘法群 (阶 2)
 --   S2:  GF(3) 乘法群 (Z/2Z, ×) — {1,2}
 --
---   === Frobenius 共轭截面 (GF(9)) ===
---   C1:  GF(9) 加法群 ((Z/3Z)², +) — 二维共轭叠加
---   C2:  GF(9) 乘法群 (Z/8Z, ×) — 量子纠缠
---   C3:  Frobenius σ — 共轭（手征翻转）
---   C4:  Norm N(z) = z·σ(z) — 模长 (共轭截面→投影截面)
---   C5:  Trace Tr(z) = z+σ(z) — 投影 (共轭截面→投影截面)
+--   === GF 扩张层 ===
+--   L3:  GF(9) = GF(3)[α]/(α²+1) — 相位域 (α⁴=1, 独立扩张)
+--   L4:  GF(9)* — 乘法群 (阶 8, 循环)
+--   L5:  Frobenius σ — 共轭 (σ(x)=x³)
+--   L6:  Norm N(z) = z·σ(z) — 范数坍缩 (9→3, 信息压缩)
+--   L7:  Trace Tr(z) = z+σ(z) — 迹坍缩 (加性压缩)
 --
--- 本体→截面连接:
---   L0→S1: Z/12Z → GF(3) (π3 环同态, mod 3 投影)
---   S1→C1: GF(3) ↪ GF(9) (embed-gf3, 虚部为 0)
---   C1→S1: GF(9) → GF(3) (Norm/Trace 投影到截面)
---   C1→L0: GF(9) → GF(3) → Z/12Z (通过 CRT 截面回到本体)
+-- 连接映射:
+--   L1→AP0: (t, _) = (t, a0) — GF(3) 作为 DuodecPoint 第一分量
+--   AP0→L8: toDuodec — 群同构 (DuodecPoint ≅ Duodec)
+--   L8→L1: π3 : Duodec → Trit — mod 3 投影 (环同态)
+--   L3→L1: galoisNorm : GF9 → GF3 — 范数坍缩 (乘法同态)
+--   L3→L1: galoisTrace : GF9 → GF3 — 迹坍缩 (加法同态)
 --
--- 倍频纠缠链 (涡旋根 "123"):
---   3 (基频, GF(3) 三态) → 6 (二次谐波) → 12 (四次谐波, Z/12Z 闭合)
---   24 = 12×2 → dr(24)=6 (Merkaba 回绕)
---   36 = 12×3 (水态, 三个涡旋周期)
+-- 联合周期:
+--   3 = char(GF(3)) — 损益周期
+--   4 = ord(α) — 相位周期
+--   12 = LCM(3,4) — 联合归零点
+--   24 = 12×2 — 双倍联合周期
+--   36 = 12×3 — 三倍联合周期
 --
 -- 0 postulate — 全部构造性证明
 --------------------------------------------------------------------------------
@@ -263,7 +273,7 @@ embed-L1→L3-multiplicative T₂ T₀ = refl; embed-L1→L3-multiplicative T₂
 embed-L1→L3-injective : ∀ a b → embed-gf3 a ≡ embed-gf3 b → a ≡ b
 embed-L1→L3-injective a .a refl = refl
 
--- 3b. L0→S1: Z/12Z → GF(3) 环同态 (π3, 本体投影到截面)
+-- 3b. L8→L1: Duodec → Trit 环同态 (π3, 投影层→生成层)
 -- π3 保持加法和乘法 (已在 Duodecimal 中证明)
 
 π3-ring-homomorphism : Σ (∀ x y → π3 (x +12 y) ≡ π3 x ⊕ π3 y)
@@ -281,7 +291,7 @@ embed-L1→L3-injective a .a refl = refl
 π3-not-injective-witness : Σ Duodec (λ x → Σ Duodec (λ y → π3 x ≡ π3 y))
 π3-not-injective-witness = d0 , (d3 , refl)
 
--- 3c. C1→L0 连接: GF(9) → GF(3) → Z/12Z (共轭截面→投影截面→本体)
+-- 3c. L3→L8 连接: GF(9) → GF(3) → Duodec (GF扩张→GF生成→投影层)
 -- 通过 Norm (C4) 或 Trace (C5) 先投影到 GF(3), 再通过 CRT 截面回到本体
 
 -- Norm 路径: GF(9) → GF(3) (galoisNorm)
@@ -307,7 +317,7 @@ trace-path-roundtrip : ∀ x → π3 (gf9-to-duodec-via-trace x) ≡ galoisTrace
 trace-path-roundtrip x = crt12-inv-π3 (galoisTrace x) zero
 
 --------------------------------------------------------------------------------
--- 4. 三角循环: S1 → C1 → L0 → S1 的闭合性 (截面→共轭→本体→截面)
+-- 4. 三角循环: L1 → L3 → L8 → L1 的闭合性 (GF生成→GF扩张→投影层→GF生成)
 --------------------------------------------------------------------------------
 
 -- 从 GF(3) 出发, 经 GF(9) 嵌入, 再经 Norm 回到 GF(3): 恒等
@@ -329,7 +339,7 @@ crt-section-right-inverse : ∀ a → π3 (crt12 a zero) ≡ a
 crt-section-right-inverse a = crt12-inv-π3 a zero
 
 --------------------------------------------------------------------------------
--- 5. 完备性声明: 代数极 = Z/12Z (本体) × GF(3) (截面) × GF(9) (共轭截面)
+-- 5. 完备性声明: 代数极 = DuodecPoint (本源) × GF(3) (生成元) × GF(9) (扩张域)
 --------------------------------------------------------------------------------
 
 -- 代数极载体: 本体 × 截面 × 共轭截面

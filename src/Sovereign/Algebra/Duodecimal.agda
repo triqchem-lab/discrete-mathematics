@@ -2,12 +2,23 @@
 module Sovereign.Algebra.Duodecimal where
 
 --------------------------------------------------------------------------------
--- Z/12Z 十二进制环 — 独立的逢 12 进位代数结构
+-- | Sovereign.Algebra.Duodecimal
+-- Duodecimal — 十二进制投影层
+--
+-- 本模块定义 Z/12Z 的扁平标签和环结构。
+-- **投影层**：DuodecClock (Trit × AlphaPower) 是本源，本模块是其加法投影。
+--
+-- 载体: {d0..d11}
+-- 加法: C₁₂ = (Duodec, +12) ≅ DuodecClock (群同构)
+-- 乘法: R₁₂ = (Duodec, +12, *12) — 整数模 12 乘法（有零因子，非 DuodecClock 乘法）
+-- CRT: Z/12Z ≅ Z/3Z × Z/4Z (gcd(3,4)=1)
+-- 零因子: 2×6≡0, 3×4≡0 (环投影产物)
+-- 12 = char(GF(3)) × ord(α) = 3 × 4 (联合闭合点)
 --
 -- 代数链扩展 (GF9AlgebraicChain L1-L7 之后):
---   L8:  Z/12Z 加法群 — 十二律循环
---   L9:  (Z/12Z)* ≅ V₄ — 四象 (Klein 四元群)
---   L10: CRT 分解 Z/12Z ≅ Z/3Z × Z/4Z — 三×四结构
+--   L8:  C₁₂ = (Duodec, +12) — 加法投影 (群同构)
+--   L9:  R₁₂ = (Duodec, +12, *12) — 环投影 (有零因子)
+--   L10: CRT 分解 Z/12Z ≅ Z/3Z × Z/4Z
 --
 -- 核心性质:
 --   12 个元素 {0..11}, 逢 12 进位
