@@ -13,7 +13,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; s≤
 open import Data.Nat.DivMod using (_/_; _%_; m%n<n; m%n+[m/n]*n≡m)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m+n; m≤n+m; +-mono-≤; *-mono-≤; ≤-pred; m≤n⇒m≤1+n)
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; fromℕ<)
-open import Data.Fin.Properties using (fromℕ<-toℕ; toℕ<n; fromℕ<-irrelevant)
+open import Data.Fin.Properties using (fromℕ<-toℕ; toℕ<n)
 open import Data.Vec using (Vec; []; _∷_; lookup; tabulate)
 open import Data.Vec.Properties using (lookup∘tabulate)
 open import Data.Integer using (ℤ; +_; -[1+_]) renaming (_+_ to _+ℤ_; _*_ to _*ℤ_)

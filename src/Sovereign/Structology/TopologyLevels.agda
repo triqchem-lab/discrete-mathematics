@@ -14,6 +14,7 @@ module Sovereign.Structology.TopologyLevels where
 
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; fromℕ<; _≟_)
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _∸_)
+open import Data.Vec using (Vec; tabulate; foldr′)
 open import Data.Nat.DivMod using (m%n<n)
 open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 open import Data.Integer using (ℤ; +_; -_)
@@ -114,33 +115,18 @@ module NeutralTopology where
         -- 整数回路和: p1 + p2 - p3 - p4
     in (p1 +ℤ p2) -ℤ (p3 +ℤ p4)
 
-  -- 陈数 (Chern Number): 全环面的曲率总和
-  -- 通过递归遍历 12x12 网格计算
-  computeChernNumber : Connection → Phase_ℤ
-  computeChernNumber conn = sumGrid conn 0 0
-    where
-      sumGrid : Connection → ℕ → ℕ → Phase_ℤ
-      sumGrid _ 12 _ = + 0
-      sumGrid c x 12 = sumGrid c (x + 1) 0
-      sumGrid c x y =
-        let point = LuGrid.mkGridPoint (fromℕ x) (fromℕ y)
-            curv = computeCurvature c point
-            rest = sumGrid c x (suc y)
-        in curv +ℤ rest
-
-  -- 宪法：陈数锁定 - 构造性证明存在 C=2 的联络
-  -- 构造：在 (0,0) 和 (6,6) 处各引入单位曲率 +1
-  chern2Connection : Connection
-  chern2Connection c _ with toℕ (LuGrid.gridRow c) , toℕ (LuGrid.gridCol c)
-  chern2Connection _ _ | (0 , 0) = + 1
-  chern2Connection _ _ | (6 , 6) = + 1
-  chern2Connection _ _ | _ = + 0
-
-  chern2Proof : computeChernNumber chern2Connection ≡ + 2
-  chern2Proof = refl
-
-  ChernLockingCondition : ∀ (conn : Connection) → ∃[ conn' ] (computeChernNumber conn' ≡ + 2)
-  ChernLockingCondition conn = chern2Connection , chern2Proof
+  -- 待核对 (建模错配, 2026-09-08): NeutralTopology 卷的"陈数锁定"原稿 —
+  --   chern2Connection : Connection  (起点 (0,0)/(6,6) 的边权 +1, 其余 +0)
+  --   computeChernNumber conn = 全 144 格点 computeCurvature 的 plaquette 曲率和
+  --   chern2Proof : computeChernNumber chern2Connection ≡ + 2 ; chern2Proof = refl
+  --   几何模拟裁定: 单点"起点边权"源在环面 plaquette 曲率和下贡献恒为 0
+  --   (每个源点是 4 个相邻 plaquette 的边起点, +1-1+1-1 相消), 故
+  --   computeChernNumber chern2Connection 实为 0 ≠ +2 — chern2Proof 的 refl
+  --   不仅依赖 144 格点暴力求值 (算术冒充证明, 违反形式化纪律), 且陈述本身为假.
+  --   "在 (0,0)/(6,6) 各放 +1 曲率 → 陈数 2" 需重新设计 Connection 使 plaquette
+  --   涡量真正局部化为两个 +1 源 — 这是离散环面陈类构造的物理建模问题, 非编译修复.
+  --   原文 (chern2Connection/computeChernNumber/chern2Proof/ChernLockingCondition)
+  --   已注释保留, 待语义核对后重建. 详见 19-review-list A4.
 
 --------------------------------------------------------------------------------
 -- 第三卷：全息文明 (4320 Density) —— 瞬时拓扑公理
