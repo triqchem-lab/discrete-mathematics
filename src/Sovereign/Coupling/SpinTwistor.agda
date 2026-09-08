@@ -33,6 +33,7 @@ open ≡-Reasoning
 open import Relation.Nullary using (¬_)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; negate)
+open import Sovereign.Algebra.GF9 using (GF9; alpha; galoisConjugate; galoisConjugate²)
 open import Sovereign.Coupling.CartanTorsion
   using (DiscreteComplex; _+ᵢ_; _+ᶜ_; conjugate)
 open import Sovereign.Coupling.Zhonglv using (SovereignState)
@@ -250,6 +251,47 @@ conjugateIsChiralFlip (mkTwistor (a +ᵢ b) (c +ᵢ d) (e +ᵢ f) tt) = begin
     ≡⟨ cong (λ z → mkTwistor (a +ᵢ b) (c +ᵢ d) z tt)
             (conjugate-involutive (e +ᵢ f)) ⟩
   mkTwistor (a +ᵢ b) (c +ᵢ d) (e +ᵢ f) tt ∎
+
+--------------------------------------------------------------------------------
+-- 3b. GF9 扭量层 (2026-09-08 实质对齐展示群, 无连续统)
+--
+-- 上述 TwistorPoint 用本地 DiscreteComplex (本质=GF9 但为独立类型). 本层
+-- 用标准 GF9 直接定义扭量 — 不用连续统, 不复制复结构:
+--   扭量点 = GF9³ (三个复坐标 z1,z2,z3, 各为 GF9 = GF3×GF3 元素)
+--   扭量共轭 = galoisConjugate (标准 GF9 Frobenius σ, 逐坐标)
+--   手性对偶 = (z, σz) GF9 共轭对 (对齐展示群本源纠缠)
+--------------------------------------------------------------------------------
+
+-- GF9 扭量点: 3 个 GF9 复坐标 (无连续统, 无 ℚ/√3)
+record TwistorPoint9 : Set where
+  constructor mkTwistor9
+  field
+    z1 : GF9   -- 复坐标 1 (幅度 + α 相位)
+    z2 : GF9   -- 复坐标 2
+    z3 : GF9   -- 复坐标 3
+
+-- 扭量 GF9 共轭 (Frobenius σ 逐坐标): σ(z1,z2,z3) = (σz1, σz2, σz3)
+twistorConjugate9 : TwistorPoint9 → TwistorPoint9
+twistorConjugate9 (mkTwistor9 z1 z2 z3) =
+  mkTwistor9 (galoisConjugate z1) (galoisConjugate z2) (galoisConjugate z3)
+
+-- 对合: σ(σ tw) = tw (GF9 σ 阶 2, 手性对偶往返; 逐坐标 galoisConjugate²)
+conjugateIsChiralFlip9 : ∀ (tw : TwistorPoint9) →
+  twistorConjugate9 (twistorConjugate9 tw) ≡ tw
+conjugateIsChiralFlip9 (mkTwistor9 z1 z2 z3) = begin
+  mkTwistor9 (galoisConjugate (galoisConjugate z1))
+            (galoisConjugate (galoisConjugate z2))
+            (galoisConjugate (galoisConjugate z3))
+    ≡⟨ cong (λ w → mkTwistor9 w (galoisConjugate (galoisConjugate z2))
+                                (galoisConjugate (galoisConjugate z3)))
+            (galoisConjugate² z1) ⟩
+  mkTwistor9 z1 (galoisConjugate (galoisConjugate z2))
+               (galoisConjugate (galoisConjugate z3))
+    ≡⟨ cong (λ w → mkTwistor9 z1 w (galoisConjugate (galoisConjugate z3)))
+            (galoisConjugate² z2) ⟩
+  mkTwistor9 z1 z2 (galoisConjugate (galoisConjugate z3))
+    ≡⟨ cong (mkTwistor9 z1 z2) (galoisConjugate² z3) ⟩
+  mkTwistor9 z1 z2 z3 ∎
 
 --------------------------------------------------------------------------------
 -- 4. 零测地线与仲吕闭合路径 (引用 Zhonglv.SovereignState)
