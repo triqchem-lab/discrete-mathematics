@@ -160,6 +160,20 @@
 
 **SpinTwistor**: 已实质对齐 (8db5985) — §3b 标准 GF9 扭量层 TwistorPoint9=GF9³, 无连续统
 
+### 📋 代数链对齐调查 (2026-09-08)
+
+**已对齐本源 (DuodecPoint/GF9⟨α⟩)**: DuodecClock/DCGroup/Day anCore/DuodecClockProperties/GF9/
+GF9AlgebraicChain/AlgebraicPoleUnified(L0已本源化)/GF9Semiring/NormExactSequence/CyclicGroupStructure
+
+**未对齐候选** (待评估是否需本源化):
+| 模块 | 载体 | 状况 |
+|------|------|------|
+| VortexRoot/Connections/Tower/Differential (4) | **Duodec(Z/12 投影)** | 自述"以 Duodecial 为载体" — Z12 涡旋环层, 未本源化 |
+| GF27/GF243 | 独立 GF(3³)/GF(3⁵) | 独立扩张未接 GF9 链 |
+| GF81/GF729 | import GF9 + 独立 | 部分接 |
+
+**待澄清**: Vortex 族的 Z/12 涡旋环是独立层(涡旋语义在投影环) 还是应按 AlgebraicPole L0 模式本源化到 DuodecPoint; GF27+ 独立扩张是否需统一到 GF9 链
+
 ### 📋 ParityViolation 对齐评估 (2026-09-08, 低优先不强制)
 
 - 宇称破缺 = 环向缠绕深度 a 驱动 (a≥3), 手性对偶只是分类标签
