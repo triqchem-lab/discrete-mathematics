@@ -781,6 +781,19 @@ conv-distribˡ (x₀ , x₁ , x₂) (y₀ , y₁ , y₂) (z₀ , z₁ , z₂) =
   (trans (reduce5-additive (conv x y) (conv x z))
          (cong₂ _+F_ (sym (*F-via-conv x y)) (sym (*F-via-conv x z)))))
 
+-- 显式类型的 +F 同余: 裸 cong₂ _+F_ 在复合项上触发 *F 展开而失败;
+-- 显式标注 λ (u v : GF729F) → u +F v 则可用 (逐层剥离技巧)
+cong-+F : ∀ {a b c d : GF729F} → a ≡ c → b ≡ d → (a +F b) ≡ (c +F d)
+cong-+F {a} {b} {c} {d} p q = cong₂ (λ (u v : GF729F) → u +F v) p q
+
+-- 左分配律 (复合项可用版): 用 cong-+F 替代裸 cong₂
+*F-distribˡ' : ∀ x y z → x *F (y +F z) ≡ (x *F y) +F (x *F z)
+*F-distribˡ' x y z =
+  trans (*F-via-conv x (y +F z))
+  (trans (cong reduce5 (conv-distribˡ x y z))
+  (trans (reduce5-additive (conv x y) (conv x z))
+         (cong-+F (sym (*F-via-conv x y)) (sym (*F-via-conv x z)))))
+
 -- 右分配律 (由交换律 + 左分配律)
 *F-distribʳ : ∀ x y z → (x +F y) *F z ≡ (x *F z) +F (y *F z)
 *F-distribʳ x y z =
