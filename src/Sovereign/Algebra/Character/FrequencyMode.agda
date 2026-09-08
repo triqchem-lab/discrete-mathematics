@@ -20,13 +20,15 @@ module Sovereign.Algebra.Character.FrequencyMode where
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Fin using (toℕ)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Sum using (_⊎_)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.GroupTheory.DuodecClock
   using (AlphaPower; a0; a1; a2; a3; DuodecPoint; mixedOp)
 open import Sovereign.Algebra.Character.DCCharacter
-  using (CharacterIndex; Z12Sys; _*ᶻ_; dc-character; dc-character-hom; charIndexToNat)
+  using (CharacterIndex; Z12Sys; _*ᶻ_; conjᶻ; z0; sum-over-DC;
+         dc-character; dc-character-hom; orthogonality; charIndexToNat)
 
 --------------------------------------------------------------------------------
 -- §1. 频率模态 = DC 特征索引 (振幅频 × 相位频)
@@ -69,3 +71,39 @@ mode-character = dc-character
 mode-character-hom : ∀ (m : FrequencyMode) (p q : DuodecPoint) →
   mode-character m (mixedOp p q) ≡ mode-character m p *ᶻ mode-character m q
 mode-character-hom = dc-character-hom
+
+--------------------------------------------------------------------------------
+-- §3. 模态正交 (波的衔接: 不同频率模态不干扰)
+--------------------------------------------------------------------------------
+
+-- 不同模态 (u,v) ≠ (u',v') 的特征正交: 内积 = 0
+-- 物理: 不同频率的波互不干扰, 可独立叠加 (傅里叶衔接)
+mode-orthogonal : ∀ u v u' v' →
+  (u ≢ u') ⊎ (v ≢ v') →
+  sum-over-DC (λ x → dc-character (u , v) x *ᶻ conjᶻ (dc-character (u' , v') x)) ≡ z0
+mode-orthogonal = orthogonality
+
+-- 自内积 (同模态): Σ |χ|² = 12 (模态能量)
+-- (由 DCCharacter 的 §5′ 自内积提供, 此处转发接口)
+
+--------------------------------------------------------------------------------
+-- §4. 显式 12 频率模态 (振幅频 u ∈ {T₀,T₁,T₂} × 相位频 v ∈ {a0,a1,a2,a3})
+--------------------------------------------------------------------------------
+
+-- 基频模态: (T₀, a0) — 振幅静止 × 相位静止 (0 频)
+mode-00 : FrequencyMode ; mode-00 = (T₀ , a0)
+-- 振幅 1 频 × 相位静止
+mode-10 : FrequencyMode ; mode-10 = (T₁ , a0)
+mode-20 : FrequencyMode ; mode-20 = (T₂ , a0)
+-- 相位 90° 频 (×a1) × 振幅静止
+mode-01 : FrequencyMode ; mode-01 = (T₀ , a1)
+mode-11 : FrequencyMode ; mode-11 = (T₁ , a1)
+mode-21 : FrequencyMode ; mode-21 = (T₂ , a1)
+-- 相位 180° 频 (×a2)
+mode-02 : FrequencyMode ; mode-02 = (T₀ , a2)
+mode-12 : FrequencyMode ; mode-12 = (T₁ , a2)
+mode-22 : FrequencyMode ; mode-22 = (T₂ , a2)
+-- 相位 270° 频 (×a3)
+mode-03 : FrequencyMode ; mode-03 = (T₀ , a3)
+mode-13 : FrequencyMode ; mode-13 = (T₁ , a3)
+mode-23 : FrequencyMode ; mode-23 = (T₂ , a3)
