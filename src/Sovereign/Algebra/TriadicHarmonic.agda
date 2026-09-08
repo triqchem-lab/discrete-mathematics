@@ -1,7 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Algebra.TriadicHarmonic
--- 三合弦恒等式: i²+1²=0, i⁶+1⁶=0, i¹⁰+1¹⁰=0
+-- 三合弦恒等式: i²+1²=0², i⁶+1⁶=0⁶, i¹⁰+1¹⁰=0¹⁰ (旋转相位归零, 指数非算术)
 --
 -- 数学意义 (GF(3) 三元框架):
 --   在 GF(9) = GF(3)(α) 中, alpha = (T₀,T₁), 满足 α² = -1, α⁴ = 1。
@@ -26,7 +26,8 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; con
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Sovereign.Base.Trit using (T₀; T₁; T₂)
 open import Sovereign.Algebra.GF9
-  using (GF9; _+gf9_; _*gf9_; alpha; gf9-one; alpha-squared; alpha-powers-4;
+  using (GF9; _+gf9_; _*gf9_; alpha; gf9-one; gf9-zero; gf9-pow;
+         alpha-squared; alpha-powers-4; zero-power-gf9;
          *gf9-identityˡ; *gf9-identityʳ; *gf9-comm)
 
 -- GF(9) 中的零元和 1
@@ -52,19 +53,38 @@ open import Sovereign.Algebra.GF9
 α¹⁰≡α² : α¹⁰ ≡ α²
 α¹⁰≡α² = trans (cong (_*gf9 α⁴) α⁶≡α²) (trans (cong (λ x → α² *gf9 x) α⁴≡𝟙) (*gf9-identityʳ α²))
 
--- ── 三合弦恒等式 (使用幂次归约) ──
+-- ── 三合弦恒等式 (旋转相位归零, 非数值计算) ──
+--
+-- 语义修正 (2026-09-08): 右侧不是裸零 𝟘, 而是带相位指数的归零 0ⁿ.
+--   0 的指数是旋转相位标记 (河图地数 2/6/10 = C₄ 相位周次), 不是算术上标.
+--   α²+1=0 不是"算术等于零", 而是"旋转到相位零" — 相位信息在 0ⁿ 的指数中.
+--   0²/0⁶/0¹⁰ 作为 gf9-pow 𝟘 n 项保留指数; 它们确实归零由 zero-power-gf9 保证.
+--   (对照 FunctionTheory 零幂族: 0ⁿ 是带指数的项, 证明归零是另一件事)
 
--- 存在公理: i² + 1² = 0 (α²=-1 → α²+1=0, refl)
-i²+1²≡0 : α² +gf9 𝟙 ≡ 𝟘
-i²+1²≡0 = refl
+-- 相位零记号: 0² = 零的二次相位幂 (项, 指数是结构)
+𝟘² : GF9 ; 𝟘² = gf9-pow gf9-zero 2
+𝟘⁶ : GF9 ; 𝟘⁶ = gf9-pow gf9-zero 6
+𝟘¹⁰ : GF9 ; 𝟘¹⁰ = gf9-pow gf9-zero 10
 
--- 动态公理: i⁶ + 1⁶ = 0 (α⁶=α² → 归约到 i²+1²≡0)
-i⁶+1⁶≡0 : α⁶ +gf9 𝟙 ≡ 𝟘
-i⁶+1⁶≡0 = trans (cong (_+gf9 𝟙) α⁶≡α²) i²+1²≡0
+-- 0ⁿ 确为相位零 (由 zero-power-gf9: 0^(suc n) ≡ 0)
+-- 0² 归零: 2 = suc 1
+𝟘²-归零 : 𝟘² ≡ gf9-zero ; 𝟘²-归零 = zero-power-gf9 1
+-- 0⁶ 归零: 6 = suc 5
+𝟘⁶-归零 : 𝟘⁶ ≡ gf9-zero ; 𝟘⁶-归零 = zero-power-gf9 5
+-- 0¹⁰ 归零: 10 = suc 9
+𝟘¹⁰-归零 : 𝟘¹⁰ ≡ gf9-zero ; 𝟘¹⁰-归零 = zero-power-gf9 9
 
--- 闭合公理: i¹⁰ + 1¹⁰ = 0 (α¹⁰=α² → 归约到 i²+1²≡0)
-i¹⁰+1¹⁰≡0 : α¹⁰ +gf9 𝟙 ≡ 𝟘
-i¹⁰+1¹⁰≡0 = trans (cong (_+gf9 𝟙) α¹⁰≡α²) i²+1²≡0
+-- 存在公理: i² + 1² = 0² (旋转 2 步 (α²=-1) 到相位零, 指数 2)
+i²+1²≡0² : α² +gf9 𝟙 ≡ 𝟘²
+i²+1²≡0² = trans refl (sym 𝟘²-归零)
+
+-- 动态公理: i⁶ + 1⁶ = 0⁶ (α⁶=α² → 旋转 6 步, C₄ 折叠回 α², 相位零指数 6)
+i⁶+1⁶≡0⁶ : α⁶ +gf9 𝟙 ≡ 𝟘⁶
+i⁶+1⁶≡0⁶ = trans (cong (_+gf9 𝟙) α⁶≡α²) (trans refl (sym 𝟘⁶-归零))
+
+-- 闭合公理: i¹⁰ + 1¹⁰ = 0¹⁰ (α¹⁰=α² → 旋转 10 步, C₄ 折叠回 α², 相位零指数 10)
+i¹⁰+1¹⁰≡0¹⁰ : α¹⁰ +gf9 𝟙 ≡ 𝟘¹⁰
+i¹⁰+1¹⁰≡0¹⁰ = trans (cong (_+gf9 𝟙) α¹⁰≡α²) (trans refl (sym 𝟘¹⁰-归零))
 
 -- ── α 的幂次定义 (群论层) ──
 
@@ -202,5 +222,5 @@ open import Data.List using (List; _∷_; [])
 生成成对偶闭合 = refl , refl , refl , refl
 
 
-triadic-harmonic-theorem : (α² +gf9 𝟙 ≡ 𝟘) × (α⁶ +gf9 𝟙 ≡ 𝟘) × (α¹⁰ +gf9 𝟙 ≡ 𝟘)
-triadic-harmonic-theorem = (i²+1²≡0 , i⁶+1⁶≡0 , i¹⁰+1¹⁰≡0)
+triadic-harmonic-theorem : (α² +gf9 𝟙 ≡ 𝟘²) × (α⁶ +gf9 𝟙 ≡ 𝟘⁶) × (α¹⁰ +gf9 𝟙 ≡ 𝟘¹⁰)
+triadic-harmonic-theorem = (i²+1²≡0² , i⁶+1⁶≡0⁶ , i¹⁰+1¹⁰≡0¹⁰)
