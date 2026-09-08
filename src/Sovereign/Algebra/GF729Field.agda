@@ -26,6 +26,7 @@
 module Sovereign.Algebra.GF729Field where
 
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
 open import Data.Nat using (ℕ; _^_) renaming (_*_ to _*ℕ_)
@@ -922,6 +923,234 @@ scalar-extractˡ : ∀ c x y → (c *s x) *F y ≡ c *s (x *F y)
 scalar-extractˡ c x y =
   trans (cong reduce5 (conv-scalar c x y))
         (reduce5-scalar c (conv x y))
+
+--------------------------------------------------------------------------------
+-- §15. 乘法结合律 *F-assoc (构造性证明, 非穷举)
+--
+-- 策略: *F 对每个变元都是 GF9-线性的 (加法 + 标量), 故按基 {1, t, t²} 展开.
+--   三级嵌套 linear-ext:
+--     z-层 (b1,b2 基): assoc-Z  →  y-层 (b1 基): assoc-Y  →  x-层: *F-assoc
+--   基三元组 27 个具体情形 (assoc-basis) 全部由 GF9 约化直接得出.
+--   这是符号证明 + 有限基验证, 非 729 全域穷举.
+--------------------------------------------------------------------------------
+
+record Linear (f : GF729F → GF729F) : Set where
+  field
+    ladd : ∀ a b → f (a +F b) ≡ f a +F f b
+    lscalar : ∀ c w → f (embed-9 c *F w) ≡ embed-9 c *F f w
+open Linear
+ecA : ∀ c x y → embed-9 c *F (x *F y) ≡ (embed-9 c *F x) *F y
+ecA c x y = trans (sym (scalar-mul c (x *F y)))
+                  (trans (sym (scalar-extractˡ c x y))
+                         (cong (λ u → u *F y) (scalar-mul c x)))
+-- Level 1: 基三元组 (27 refl) — 用 Basis 枚举
+Basis : GF729F → Set
+Basis b = (b ≡ gf729F-one) ⊎ (b ≡ t) ⊎ (b ≡ t *F t)
+-- 三个基元素的 assoc (27 个具体)
+assoc-basis : ∀ b1 b2 b3 → Basis b1 → Basis b2 → Basis b3 →
+  ((b1 *F b2) *F b3) ≡ (b1 *F (b2 *F b3))
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ refl)) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ refl)) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₁ refl) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₂ (inj₂ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₂ (inj₂ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₂ (inj₂ refl)) (inj₂ (inj₂ refl)) = refl
+
+mul-t : ∀ c → embed-9 c *F t ≡ (gf9-zero , c , gf9-zero)
+mul-t c = trans (sym (scalar-mul c t))
+                (cong-triple (gf9-zero-mulʳ c) (*gf9-identityʳ c) (gf9-zero-mulʳ c))
+mul-t2 : ∀ c → embed-9 c *F (t *F t) ≡ (gf9-zero , gf9-zero , c)
+mul-t2 c = trans (sym (scalar-mul c (t *F t)))
+                 (cong-triple (gf9-zero-mulʳ c) (gf9-zero-mulʳ c) (*gf9-identityʳ c))
+decomp : ∀ (x₀ x₁ x₂ : GF9) →
+  (embed-9 x₀ +F ((embed-9 x₁ *F t) +F (embed-9 x₂ *F (t *F t)))) ≡ (x₀ , x₁ , x₂)
+decomp x₀ x₁ x₂ =
+  trans (cong₂ (λ u v → u +F v) refl
+               (trans (cong₂ (λ u v → u +F v) (mul-t x₁) (mul-t2 x₂)) (inner x₁ x₂)))
+        (outer x₀ x₁ x₂)
+  where
+    inner : ∀ x₁ x₂ → ((gf9-zero , x₁ , gf9-zero) +F (gf9-zero , gf9-zero , x₂)) ≡ (gf9-zero , x₁ , x₂)
+    inner x₁ x₂ = cong-triple (+gf9-identityˡ gf9-zero) (+gf9-identityʳ x₁) (+gf9-identityˡ x₂)
+    outer : ∀ x₀ x₁ x₂ → ((x₀ , gf9-zero , gf9-zero) +F (gf9-zero , x₁ , x₂)) ≡ (x₀ , x₁ , x₂)
+    outer x₀ x₁ x₂ = cong-triple (+gf9-identityʳ x₀) (+gf9-identityˡ x₁) (+gf9-identityˡ x₂)
+
+
+
+-- ============================================================
+-- 三级嵌套线性扩展 → *F-assoc
+-- ============================================================
+
+-- 标量穿过左乘: x *F (embed c *F w) ≡ embed c *F (x *F w)
+scalar-left : ∀ x c w → x *F (embed-9 c *F w) ≡ embed-9 c *F (x *F w)
+scalar-left x c w =
+  trans (*F-comm x (embed-9 c *F w))
+        (trans (sym (ecA c w x))
+               (cong (embed-9 c *F_) (*F-comm w x)))
+
+-- ============================================================
+-- 三级嵌套: 对 x, y, z 依次线性扩展
+-- ============================================================
+
+-- 线性映射按基展开 (f 显式)
+expand3 : ∀ (f : GF729F → GF729F) → Linear f → ∀ (a b c : GF9) →
+  f (a , b , c) ≡ ((embed-9 a *F f gf729F-one)
+                +F ((embed-9 b *F f t) +F (embed-9 c *F f (t *F t))))
+expand3 f L a b c =
+  trans (cong f (sym (decomp a b c)))
+    (trans (ladd L (embed-9 a) ((embed-9 b *F t) +F (embed-9 c *F (t *F t))))
+           (cong₂ (λ u v → u +F v)
+                  (trans (cong f (sym (*F-identityʳ (embed-9 a)))) (lscalar L a gf729F-one))
+                  (trans (ladd L (embed-9 b *F t) (embed-9 c *F (t *F t)))
+                         (cong₂ (λ u v → u +F v) (lscalar L b t) (lscalar L c (t *F t))))))
+linear-ext3 : ∀ (f g : GF729F → GF729F) → Linear f → Linear g →
+  f gf729F-one ≡ g gf729F-one → f t ≡ g t → f (t *F t) ≡ g (t *F t) →
+  ∀ x → f x ≡ g x
+linear-ext3 f g L L' e1 et et2 (a , b , c) =
+  trans (expand3 f L a b c)
+  (trans (cong₂ (λ p q → p +F q)
+            (cong (λ w → embed-9 a *F w) e1)
+            (cong₂ (λ p q → p +F q)
+              (cong (λ w → embed-9 b *F w) et)
+              (cong (λ w → embed-9 c *F w) et2)))
+         (sym (expand3 g L' a b c)))
+
+-- z-层: 对固定 b1 b2 (基), ∀ z. (b1*b2)*z ≡ b1*(b2*z)
+LinZ : ∀ b1 b2 → Linear (λ z → (b1 *F b2) *F z)
+LinZ b1 b2 = record
+  { ladd = λ a b → *F-distribˡ (b1 *F b2) a b
+  ; lscalar = λ c w → scalar-left (b1 *F b2) c w }
+LinZ' : ∀ b1 b2 → Linear (λ z → b1 *F (b2 *F z))
+LinZ' b1 b2 = record
+  { ladd = λ a b → trans (cong (b1 *F_) (*F-distribˡ b2 a b))
+                         (*F-distribˡ b1 (b2 *F a) (b2 *F b))
+  ; lscalar = λ c w → trans (cong (b1 *F_) (scalar-left b2 c w))
+                            (scalar-left b1 c (b2 *F w)) }
+z-e1 : ∀ b1 b2 → (b1 *F b2) *F gf729F-one ≡ b1 *F (b2 *F gf729F-one)
+z-e1 b1 b2 = trans (*F-identityʳ (b1 *F b2))
+                    (sym (cong (b1 *F_) (*F-identityʳ b2)))
+
+-- z-层结论: 对基元素 b1 b2, ∀ z. (b1*b2)*z ≡ b1*(b2*z)
+assoc-Z : ∀ b1 b2 → Basis b1 → Basis b2 → ∀ z → (b1 *F b2) *F z ≡ b1 *F (b2 *F z)
+assoc-Z b1 b2 (inj₁ r1) (inj₁ r2) z =
+  linear-ext3 (λ w → (b1 *F b2) *F w) (λ w → b1 *F (b2 *F w))
+              (LinZ b1 b2) (LinZ' b1 b2) (z-e1 b1 b2) z-et z-et2 z
+  where
+    z-et : (b1 *F b2) *F t ≡ b1 *F (b2 *F t)
+    z-et = assoc-basis b1 b2 t (inj₁ r1) (inj₁ r2) (inj₂ (inj₁ refl))
+    z-et2 : (b1 *F b2) *F (t *F t) ≡ b1 *F (b2 *F (t *F t))
+    z-et2 = assoc-basis b1 b2 (t *F t) (inj₁ r1) (inj₁ r2) (inj₂ (inj₂ refl))
+assoc-Z b1 b2 (inj₁ r1) (inj₂ (inj₁ r2)) z =
+  linear-ext3 (λ w → (b1 *F b2) *F w) (λ w → b1 *F (b2 *F w))
+              (LinZ b1 b2) (LinZ' b1 b2) (z-e1 b1 b2) z-et z-et2 z
+  where
+    z-et : (b1 *F b2) *F t ≡ b1 *F (b2 *F t)
+    z-et = assoc-basis b1 b2 t (inj₁ r1) (inj₂ (inj₁ r2)) (inj₂ (inj₁ refl))
+    z-et2 : (b1 *F b2) *F (t *F t) ≡ b1 *F (b2 *F (t *F t))
+    z-et2 = assoc-basis b1 b2 (t *F t) (inj₁ r1) (inj₂ (inj₁ r2)) (inj₂ (inj₂ refl))
+assoc-Z b1 b2 (inj₁ r1) (inj₂ (inj₂ r2)) z =
+  linear-ext3 (λ w → (b1 *F b2) *F w) (λ w → b1 *F (b2 *F w))
+              (LinZ b1 b2) (LinZ' b1 b2) (z-e1 b1 b2) z-et z-et2 z
+  where
+    z-et : (b1 *F b2) *F t ≡ b1 *F (b2 *F t)
+    z-et = assoc-basis b1 b2 t (inj₁ r1) (inj₂ (inj₂ r2)) (inj₂ (inj₁ refl))
+    z-et2 : (b1 *F b2) *F (t *F t) ≡ b1 *F (b2 *F (t *F t))
+    z-et2 = assoc-basis b1 b2 (t *F t) (inj₁ r1) (inj₂ (inj₂ r2)) (inj₂ (inj₂ refl))
+assoc-Z b1 b2 (inj₂ (inj₁ r1)) b2b z =
+  linear-ext3 (λ w → (b1 *F b2) *F w) (λ w → b1 *F (b2 *F w))
+              (LinZ b1 b2) (LinZ' b1 b2) (z-e1 b1 b2) z-et z-et2 z
+  where
+    z-et : (b1 *F b2) *F t ≡ b1 *F (b2 *F t)
+    z-et = assoc-basis b1 b2 t (inj₂ (inj₁ r1)) b2b (inj₂ (inj₁ refl))
+    z-et2 : (b1 *F b2) *F (t *F t) ≡ b1 *F (b2 *F (t *F t))
+    z-et2 = assoc-basis b1 b2 (t *F t) (inj₂ (inj₁ r1)) b2b (inj₂ (inj₂ refl))
+assoc-Z b1 b2 (inj₂ (inj₂ r1)) b2b z =
+  linear-ext3 (λ w → (b1 *F b2) *F w) (λ w → b1 *F (b2 *F w))
+              (LinZ b1 b2) (LinZ' b1 b2) (z-e1 b1 b2) z-et z-et2 z
+  where
+    z-et : (b1 *F b2) *F t ≡ b1 *F (b2 *F t)
+    z-et = assoc-basis b1 b2 t (inj₂ (inj₂ r1)) b2b (inj₂ (inj₁ refl))
+    z-et2 : (b1 *F b2) *F (t *F t) ≡ b1 *F (b2 *F (t *F t))
+    z-et2 = assoc-basis b1 b2 (t *F t) (inj₂ (inj₂ r1)) b2b (inj₂ (inj₂ refl))
+
+
+-- y-层: 固定 b1 (基), 对 y 线性扩展 → ∀ y z. (b1*y)*z ≡ b1*(y*z)
+LinY : ∀ b1 z → Linear (λ y → (b1 *F y) *F z)
+LinY b1 z = record
+  { ladd = λ a b → trans (cong (λ u → u *F z) (*F-distribˡ b1 a b))
+                         (*F-distribʳ (b1 *F a) (b1 *F b) z)
+  ; lscalar = λ c w → trans (cong (λ u → u *F z) (scalar-left b1 c w))
+                            (sym (ecA c (b1 *F w) z)) }
+LinY' : ∀ b1 z → Linear (λ y → b1 *F (y *F z))
+LinY' b1 z = record
+  { ladd = λ a b → trans (cong (b1 *F_) (*F-distribʳ a b z))
+                         (*F-distribˡ b1 (a *F z) (b *F z))
+  ; lscalar = λ c w → trans (cong (b1 *F_) (sym (ecA c w z)))
+                            (scalar-left b1 c (w *F z)) }
+y-e1 : ∀ b1 z → (b1 *F gf729F-one) *F z ≡ b1 *F (gf729F-one *F z)
+y-e1 b1 z = trans (cong (λ u → u *F z) (*F-identityʳ b1))
+                  (trans refl (cong (b1 *F_) (sym (*F-identityˡ z))))
+y-et : ∀ b1 → Basis b1 → ∀ z → (b1 *F t) *F z ≡ b1 *F (t *F z)
+y-et b1 (inj₁ r1) = assoc-Z b1 t (inj₁ r1) (inj₂ (inj₁ refl))
+y-et b1 (inj₂ (inj₁ r1)) = assoc-Z b1 t (inj₂ (inj₁ r1)) (inj₂ (inj₁ refl))
+y-et b1 (inj₂ (inj₂ r1)) = assoc-Z b1 t (inj₂ (inj₂ r1)) (inj₂ (inj₁ refl))
+y-et2 : ∀ b1 → Basis b1 → ∀ z → (b1 *F (t *F t)) *F z ≡ b1 *F ((t *F t) *F z)
+y-et2 b1 (inj₁ r1) = assoc-Z b1 (t *F t) (inj₁ r1) (inj₂ (inj₂ refl))
+y-et2 b1 (inj₂ (inj₁ r1)) = assoc-Z b1 (t *F t) (inj₂ (inj₁ r1)) (inj₂ (inj₂ refl))
+y-et2 b1 (inj₂ (inj₂ r1)) = assoc-Z b1 (t *F t) (inj₂ (inj₂ r1)) (inj₂ (inj₂ refl))
+-- y-层结论
+assoc-Y : ∀ b1 → Basis b1 → ∀ y z → (b1 *F y) *F z ≡ b1 *F (y *F z)
+assoc-Y b1 rb y z =
+  linear-ext3 (λ w → (b1 *F w) *F z) (λ w → b1 *F (w *F z))
+              (LinY b1 z) (LinY' b1 z) (y-e1 b1 z) (y-et b1 rb z) (y-et2 b1 rb z) y
+
+-- x-层: 对 x 线性扩展 → ∀ x y z. (x*y)*z ≡ x*(y*z)  ★结合律★
+LinX : ∀ y z → Linear (λ x → (x *F y) *F z)
+LinX y z = record
+  { ladd = λ a b → trans (cong (λ u → u *F z) (*F-distribʳ a b y))
+                         (*F-distribʳ (a *F y) (b *F y) z)
+  ; lscalar = λ c w → trans (cong (λ u → u *F z) (sym (ecA c w y)))
+                            (trans (cong (λ u → u *F z) (sym (scalar-mul c (w *F y))))
+                                   (trans (scalar-extractˡ c (w *F y) z)
+                                          (scalar-mul c ((w *F y) *F z)))) }
+LinX' : ∀ y z → Linear (λ x → x *F (y *F z))
+LinX' y z = record
+  { ladd = λ a b → *F-distribʳ a b (y *F z)
+  ; lscalar = λ c w → trans (cong (λ u → u *F (y *F z)) (sym (scalar-mul c w)))
+                            (trans (scalar-extractˡ c w (y *F z))
+                                   (scalar-mul c (w *F (y *F z)))) }
+x-e1 : ∀ y z → (gf729F-one *F y) *F z ≡ gf729F-one *F (y *F z)
+x-e1 y z = trans (cong (λ u → u *F z) (*F-identityˡ y))
+                  (sym (*F-identityˡ (y *F z)))
+x-et : ∀ y z → (t *F y) *F z ≡ t *F (y *F z)
+x-et y z = assoc-Y t (inj₂ (inj₁ refl)) y z
+x-et2 : ∀ y z → ((t *F t) *F y) *F z ≡ (t *F t) *F (y *F z)
+x-et2 y z = assoc-Y (t *F t) (inj₂ (inj₂ refl)) y z
+-- ★ 乘法结合律 ★
+*F-assoc : ∀ x y z → (x *F y) *F z ≡ x *F (y *F z)
+*F-assoc x y z =
+  linear-ext3 (λ w → (w *F y) *F z) (λ w → w *F (y *F z))
+              (LinX y z) (LinX' y z) (x-e1 y z) (x-et y z) (x-et2 y z) x
 
 -- σ(t) = t³ 验证 (由约化 t³ = 2t + α)
 frobenius-t : frobenius t ≡ t *F (t *F t)
