@@ -25,6 +25,8 @@ open import Data.Nat using (ℕ; _+_; _*_) renaming (_^_ to _^ℕ_)
 open import Data.Fin using (Fin; zero; suc; toℕ)
 open import Data.Vec using (Vec; []; _∷_; zipWith)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
+open import Data.Empty using (⊥)
+open import Relation.Nullary.Negation using (¬_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; sym; trans)
 
@@ -36,6 +38,13 @@ open import Sovereign.Base.Trit
 
 open import Sovereign.Structology.T6
   using (T6Lattice; GF3; t6Cardinality; toℕ-sum)
+
+-- 展示群相位源: GF(9) = GF(3)[α]/(α²+1) 与 90° 旋转群 ⟨α⟩ ≅ C₄
+open import Sovereign.Algebra.GF9
+  using (GF9; alpha; galoisConjugate)
+open import Sovereign.Algebra.GroupTheory.DuodecClock
+  using (AlphaPower; mulAlpha)
+  renaming (a0 to p0; a1 to p1; a2 to p2; a3 to p3)
 
 --------------------------------------------------------------------------------
 -- §1. GF(3) 在 Fin 3 上的加法群结构
@@ -575,3 +584,166 @@ gf729-additive-group = record
   ; assoc     = +gf729-assoc
   ; inverse   = +gf729-inverse
   }
+
+--------------------------------------------------------------------------------
+-- §10. 展示群相位对齐: GF729 上的 90° 旋转周期 (2026-09-08)
+--
+-- 本源: GF729 = GF(3⁶) 视作 GF(9)-向量空间 GF9³ ([GF729:GF9]=3, 即 6=2×3).
+-- GF9⟨α⟩ (α² = -1, 90° 旋转相位源) 是 GF729 内嵌的子域相位.
+-- 本节把"乘 α"这一 90° 旋转实现为加法群上的几何作用:
+--   每块 GF9 (u,v) ↦ (neg v, u)  (α(a+bα) = aα + bα² = -b + aα, α² = -1)
+-- 相位周期由结构给出 (非算术判定):
+--   αRotate⁴ = id  (90°×4 = 360° 几何回位)
+--   αRotate² = neg729 (180° 翻转; 90° 与 180° 两步不塌缩为一步)
+--   αRotate 与加法相容 (旋转线性)
+--   AlphaPower ⟨α⟩ 的 mulAlpha 群作用经 act 同态实现 (C₄ 作用忠实)
+--   GF9 → GF729 的嵌入把 GF9 的乘 α 旋转带到 αRotate (相位源对齐)
+-- 0 postulate — 全部构造性证明
+--------------------------------------------------------------------------------
+
+-- GF(3) 分量取反对加法的分配 (旋转线性用, 9 case)
+neg₃-add : ∀ u v → neg₃ (u +₃ v) ≡ neg₃ u +₃ neg₃ v
+neg₃-add zero zero = refl
+neg₃-add zero (suc zero) = refl
+neg₃-add zero (suc (suc zero)) = refl
+neg₃-add (suc zero) zero = refl
+neg₃-add (suc zero) (suc zero) = refl
+neg₃-add (suc zero) (suc (suc zero)) = refl
+neg₃-add (suc (suc zero)) zero = refl
+neg₃-add (suc (suc zero)) (suc zero) = refl
+neg₃-add (suc (suc zero)) (suc (suc zero)) = refl
+
+-- Trit 取反 ↔ Fin 3 取反 的桥接 (Trit 层 GF9 系数旋转到 Fin3 层)
+trit-neg-bridge : ∀ t → tritToFin3 (negate t) ≡ neg₃ (tritToFin3 t)
+trit-neg-bridge T₀ = refl
+trit-neg-bridge T₁ = refl
+trit-neg-bridge T₂ = refl
+
+-- 90° 旋转: 3 个 GF9 块各自乘 α — (u,v) ↦ (neg v, u)
+alphaRotate : GF729Vec → GF729Vec
+alphaRotate (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ []) =
+  neg₃ a4 ∷ a5 ∷ neg₃ a2 ∷ a3 ∷ neg₃ a0 ∷ a1 ∷ []
+
+-- 两次旋转 = 180° 翻转 = 逐分量取反 (α² = -1 在加法层的实现)
+alphaRotate-flip : ∀ x → alphaRotate (alphaRotate x) ≡ neg729 x
+alphaRotate-flip (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ []) = refl
+
+-- 四次旋转几何回位 (α⁴ = 1; 90° 周期闭合)
+alphaRotate-4 : ∀ x → alphaRotate (alphaRotate (alphaRotate (alphaRotate x))) ≡ x
+alphaRotate-4 x =
+  trans (alphaRotate-flip (alphaRotate (alphaRotate x)))
+        (trans (cong neg729 (alphaRotate-flip x)) (neg729² x))
+
+-- 旋转与加法相容: 旋转是加法群的自同构 (线性)
+alphaRotate-add : ∀ x y →
+  alphaRotate (x +gf729 y) ≡ alphaRotate x +gf729 alphaRotate y
+alphaRotate-add (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ [])
+                (b5 ∷ b4 ∷ b3 ∷ b2 ∷ b1 ∷ b0 ∷ []) =
+  cong₂ _∷_ (neg₃-add a4 b4)
+    (cong₂ _∷_ refl
+      (cong₂ _∷_ (neg₃-add a2 b2)
+        (cong₂ _∷_ refl
+          (cong₂ _∷_ (neg₃-add a0 b0)
+            (cong₂ _∷_ refl refl)))))
+
+-- GF9 乘 α 旋转 (相位源上的 90°): (a,b) ↦ (neg b, a)
+gf9-rotate : GF9 → GF9
+gf9-rotate (a , b) = (negate b , a)
+
+-- GF9 相位源 → GF729 的嵌入 (GF9 落入第 1 块, 其余块为 0)
+embed-9-729 : GF9 → GF729Vec
+embed-9-729 (a , b) = tritToFin3 a ∷ tritToFin3 b ∷ zero ∷ zero ∷ zero ∷ zero ∷ []
+
+-- 嵌入保旋转: GF9 的乘 α 在嵌入下正是 GF729 的 alphaRotate (相位源对齐)
+embed-rotate : ∀ x → embed-9-729 (gf9-rotate x) ≡ alphaRotate (embed-9-729 x)
+embed-rotate (a , b) = cong₂ _∷_ (trit-neg-bridge b)
+  (cong₂ _∷_ refl
+    (cong₂ _∷_ refl (cong₂ _∷_ refl (cong₂ _∷_ refl (cong₂ _∷_ refl refl)))))
+
+-- 推论: 嵌入的 α 旋转一次落到嵌入的 α² (90° 走一步 = 相位乘 α)
+embed-α-rotates : alphaRotate (embed-9-729 alpha) ≡ embed-9-729 (T₂ , T₀)
+embed-α-rotates = refl
+
+-- AlphaPower ⟨α⟩ 的群作用: pᵢ 作为 90°×i 旋转作用在 GF729 加法群上
+-- p0 = α⁰ = 1   ↦ 恒等
+-- p1 = α        ↦ alphaRotate (90°)
+-- p2 = α² = -1  ↦ 两次旋转 (180°, = neg729)
+-- p3 = α³ = -α  ↦ 三次旋转 (270°)
+act : AlphaPower → GF729Vec → GF729Vec
+act p0 x = x
+act p1 x = alphaRotate x
+act p2 x = alphaRotate (alphaRotate x)
+act p3 x = alphaRotate (alphaRotate (alphaRotate x))
+
+-- act 是乘法作用: act (a·b) x ≡ act a (act b x) — C₄ 周期由 ⟨α⟩ 乘法表驱动 (16 case)
+act-hom : ∀ a b x → act (mulAlpha a b) x ≡ act a (act b x)
+-- a = p0: mulAlpha p0 b = b (单位)
+act-hom p0 b x = refl
+-- a = p1 (乘 α: 一步旋转)
+act-hom p1 p0 x = refl
+act-hom p1 p1 x = refl
+act-hom p1 p2 x = refl
+act-hom p1 p3 x = sym (alphaRotate-4 x)
+-- a = p2 (乘 α²: 两步旋转)
+act-hom p2 p0 x = refl
+act-hom p2 p1 x = refl
+act-hom p2 p2 x = sym (alphaRotate-4 x)
+act-hom p2 p3 x = sym (alphaRotate-4 (alphaRotate x))
+-- a = p3 (乘 α³: 三步旋转)
+act-hom p3 p0 x = refl
+act-hom p3 p1 x = sym (alphaRotate-4 x)
+act-hom p3 p2 x = sym (alphaRotate-4 (alphaRotate x))
+act-hom p3 p3 x = sym (alphaRotate-4 (alphaRotate (alphaRotate x)))
+
+-- 每步旋转都是加法自同构 (群作用的线性)
+act-add : ∀ a x y → act a (x +gf729 y) ≡ act a x +gf729 act a y
+act-add p0 x y = refl
+act-add p1 x y = alphaRotate-add x y
+act-add p2 x y =
+  trans (cong alphaRotate (alphaRotate-add x y))
+        (alphaRotate-add (alphaRotate x) (alphaRotate y))
+act-add p3 x y =
+  trans (cong alphaRotate (act-add p2 x y))
+        (alphaRotate-add (alphaRotate (alphaRotate x))
+                         (alphaRotate (alphaRotate y)))
+
+-- 相位共轭 (Frobenius 在 GF9 相位源的形态): 每块 GF9 (u,v) ↦ (u, neg v)
+-- 即 α ↦ -α 复共轭沿 3 块同时作用 — 展示群 galoisConjugate 的宿主扩展
+gf729-conj : GF729Vec → GF729Vec
+gf729-conj (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ []) =
+  a5 ∷ neg₃ a4 ∷ a3 ∷ neg₃ a2 ∷ a1 ∷ neg₃ a0 ∷ []
+
+-- 共轭是对合 (两次共轭回位)
+gf729-conj² : ∀ x → gf729-conj (gf729-conj x) ≡ x
+gf729-conj² (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ []) =
+  cong₂ _∷_ refl
+    (cong₂ _∷_ (neg₃² a4)
+      (cong₂ _∷_ refl
+        (cong₂ _∷_ (neg₃² a2)
+          (cong₂ _∷_ refl
+            (cong₂ _∷_ (neg₃² a0) refl)))))
+
+-- 共轭是加法自同构
+gf729-conj-add : ∀ x y →
+  gf729-conj (x +gf729 y) ≡ gf729-conj x +gf729 gf729-conj y
+gf729-conj-add (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ [])
+               (b5 ∷ b4 ∷ b3 ∷ b2 ∷ b1 ∷ b0 ∷ []) =
+  cong₂ _∷_ refl
+    (cong₂ _∷_ (neg₃-add a4 b4)
+      (cong₂ _∷_ refl
+        (cong₂ _∷_ (neg₃-add a2 b2)
+          (cong₂ _∷_ refl
+            (cong₂ _∷_ (neg₃-add a0 b0) refl)))))
+
+-- 嵌入保共轭: GF9 的 galoisConjugate 在嵌入下正是 gf729-conj (相位源对齐)
+embed-conj : ∀ x → embed-9-729 (galoisConjugate x) ≡ gf729-conj (embed-9-729 x)
+embed-conj (a , b) = cong₂ _∷_ refl
+  (cong₂ _∷_ (trit-neg-bridge b)
+    (cong₂ _∷_ refl (cong₂ _∷_ refl (cong₂ _∷_ refl (cong₂ _∷_ refl refl)))))
+
+-- 共轭夹住旋转翻转方向: conj∘R∘conj = R³ (几何: 共轭把 90° 周期方向反转)
+-- 逐块验证: 每块 GF9 上 (u,v) ↦ (neg v, u) 与共轭 (u,v) ↦ (u, neg v) 组合
+conj-rot-conj : ∀ x →
+  gf729-conj (alphaRotate (gf729-conj x)) ≡
+  alphaRotate (alphaRotate (alphaRotate x))
+conj-rot-conj (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ []) = refl
