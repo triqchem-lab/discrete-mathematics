@@ -365,6 +365,16 @@ frobenius-injective x y eq = begin
 frobenius-alpha : frobenius alpha ≡ (T₂ , T₁ , T₀)
 frobenius-alpha = refl
 
+-- Frobenius 与多项式的关系 (2026-09-08): σ(α) = α³ 正是约化多项式
+-- x³+2x+1 (α³=α+2) 的驱动 — σ 把 α 映到它的 Galois 共轭 α³=α+2.
+-- σ(α) = α³ (显式连接 frobenius-alpha 与 alpha-cubed)
+frobenius-alpha-is-cube : frobenius alpha ≡ alpha *gf27 (alpha *gf27 alpha)
+frobenius-alpha-is-cube = refl
+
+-- σ(α) = α+2 (多项式根关系: α³=α+2, 见 alpha-cubed-struct)
+-- σ 遍历 Galois 共轭 {α, σα, σ²α}: σ(α)=α³=α+2, σ²(α)=α^9=α²+α+1...
+-- (Frobenius = 多项式 x³+2x+1 的根在 GF(27) 中的共轭作用)
+
 -- (frobenius-mul 保乘法: 与 GF81 同, 项目 Frobenius 均未证乘法同态 —
 --  GF9 因 2 分量简单特例证了; GF27/GF81 3/4 分量机械代数留待. σ 的
 --  保加+阶3+单射+生成元像已确立其域自同构地位.)
