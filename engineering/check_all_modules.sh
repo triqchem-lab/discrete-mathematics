@@ -6,7 +6,7 @@
 #   多核本地机全量验证请用 check_all_modules_parallel.sh (快 ~10 倍).
 #
 # 用法:
-#   ./engineering/check_all_modules.sh                    # 默认堆上限 4G
+#   ./engineering/check_all_modules.sh                    # 默认堆上限 6G
 #   HEAP=6G ./engineering/check_all_modules.sh            # 调堆上限 (≤ 容器内存)
 #   AGDA=agda ./engineering/check_all_modules.sh
 #
@@ -14,7 +14,7 @@
 set -u
 cd "$(dirname "$0")/.."
 AGDA="${AGDA:-$HOME/.local/bin/agda}"
-HEAP="${HEAP:-4G}"          # 每进程堆上限; CI 8GB 容器用 4G 安全
+HEAP="${HEAP:-6G}"          # 每进程堆上限 (经验常数: 全库模块在此上限内通过)
 SRC="src/Sovereign"
 pass=0
 fail=0
