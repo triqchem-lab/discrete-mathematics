@@ -464,3 +464,417 @@ frobenius-alpha : frobenius alpha ≡ alpha *gf243 (alpha *gf243 alpha)
 frobenius-alpha = refl
 
 
+
+
+--------------------------------------------------------------------------------
+-- 14. 域乘法公理 (2026-09-08): 单位 / 交换 / 分配
+--
+-- GF81 同款结构: 乘法 = reduce9 ∘ poly-mul (GF(3)[x] 模 x⁵+2x+1).
+-- 交换律/分配律在 Poly9 系数层证明 (GF(3)[x] 交换/分配 → 陪集):
+--   每个系数 eqᵢ = congL (逐项 ⊗-comm / ⊗-distrib) 后接 revL / mergeL
+-- 单位元与 frobenius-is-cube 用 243 全具体值 refl 穷举 (有限类型逐 case 风格)
+--------------------------------------------------------------------------------
+
+-- ≡-Reasoning (本地, 照 GF81:35-46)
+infix  1 begin_
+infixr 2 _≡⟨_⟩_
+infix  3 _∎
+
+begin_ : ∀ {a} {A : Set a} {x y : A} → x ≡ y → x ≡ y
+begin p = p
+
+_≡⟨_⟩_ : ∀ {a} {A : Set a} (x : A) {y z : A} → x ≡ y → y ≡ z → x ≡ z
+_ ≡⟨ p ⟩ q = trans p q
+
+_∎ : ∀ {a} {A : Set a} (x : A) → x ≡ x
+_ ∎ = refl
+
+-- negate 对 ⊕ 的分配 (GF81:48-51)
+negate-⊕ : ∀ x y → negate (x ⊕ y) ≡ negate x ⊕ negate y
+negate-⊕ T₀ y = refl
+negate-⊕ T₁ T₀ = refl
+negate-⊕ T₁ T₁ = refl
+negate-⊕ T₁ T₂ = refl
+negate-⊕ T₂ T₀ = refl
+negate-⊕ T₂ T₁ = refl
+negate-⊕ T₂ T₂ = refl
+
+-- 左嵌套和的逐项同余 (系数和长度 3..5)
+congL3 : ∀ {u₀ u₁ u₂ v₀ v₁ v₂ : Trit} → u₀ ≡ v₀ → u₁ ≡ v₁ → u₂ ≡ v₂ →
+  ((u₀ ⊕ u₁) ⊕ u₂) ≡ ((v₀ ⊕ v₁) ⊕ v₂)
+congL3 e₀ e₁ e₂ = cong₂ _⊕_ (cong₂ _⊕_ e₀ e₁) e₂
+
+congL4 : ∀ {u₀ u₁ u₂ u₃ v₀ v₁ v₂ v₃ : Trit} →
+  u₀ ≡ v₀ → u₁ ≡ v₁ → u₂ ≡ v₂ → u₃ ≡ v₃ →
+  (((u₀ ⊕ u₁) ⊕ u₂) ⊕ u₃) ≡ (((v₀ ⊕ v₁) ⊕ v₂) ⊕ v₃)
+congL4 e₀ e₁ e₂ e₃ = cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_ e₀ e₁) e₂) e₃
+
+congL5 : ∀ {u₀ u₁ u₂ u₃ u₄ v₀ v₁ v₂ v₃ v₄ : Trit} →
+  u₀ ≡ v₀ → u₁ ≡ v₁ → u₂ ≡ v₂ → u₃ ≡ v₃ → u₄ ≡ v₄ →
+  ((((u₀ ⊕ u₁) ⊕ u₂) ⊕ u₃) ⊕ u₄) ≡ ((((v₀ ⊕ v₁) ⊕ v₂) ⊕ v₃) ⊕ v₄)
+congL5 e₀ e₁ e₂ e₃ e₄ =
+  cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_ (cong₂ _⊕_ e₀ e₁) e₂) e₃) e₄
+
+-- 左嵌套和的反序引理 (交换律: 逐项 ⊗-comm 后把顺序颠倒回 y*x 的系数序)
+revL3 : ∀ A B C → ((A ⊕ B) ⊕ C) ≡ ((C ⊕ B) ⊕ A)
+revL3 A B C = begin
+  (A ⊕ B) ⊕ C
+  ≡⟨ ⊕-assoc A B C ⟩
+  A ⊕ (B ⊕ C)
+  ≡⟨ cong (A ⊕_) (⊕-comm B C) ⟩
+  A ⊕ (C ⊕ B)
+  ≡⟨ ⊕-comm A (C ⊕ B) ⟩
+  (C ⊕ B) ⊕ A
+  ∎
+
+revL4 : ∀ A B C D → (((A ⊕ B) ⊕ C) ⊕ D) ≡ (((D ⊕ C) ⊕ B) ⊕ A)
+revL4 A B C D = begin
+  ((A ⊕ B) ⊕ C) ⊕ D
+  ≡⟨ cong (_⊕ D) (revL3 A B C) ⟩
+  ((C ⊕ B) ⊕ A) ⊕ D
+  ≡⟨ ⊕-assoc (C ⊕ B) A D ⟩
+  (C ⊕ B) ⊕ (A ⊕ D)
+  ≡⟨ cong ((C ⊕ B) ⊕_) (⊕-comm A D) ⟩
+  (C ⊕ B) ⊕ (D ⊕ A)
+  ≡⟨ ⊕-swap-middle C B D A ⟩
+  (C ⊕ D) ⊕ (B ⊕ A)
+  ≡⟨ cong (_⊕ (B ⊕ A)) (⊕-comm C D) ⟩
+  (D ⊕ C) ⊕ (B ⊕ A)
+  ≡⟨ sym (⊕-assoc (D ⊕ C) B A) ⟩
+  ((D ⊕ C) ⊕ B) ⊕ A
+  ∎
+
+revL5 : ∀ A B C D E → ((((A ⊕ B) ⊕ C) ⊕ D) ⊕ E) ≡ ((((E ⊕ D) ⊕ C) ⊕ B) ⊕ A)
+revL5 A B C D E = begin
+  (((A ⊕ B) ⊕ C) ⊕ D) ⊕ E
+  ≡⟨ ⊕-assoc ((A ⊕ B) ⊕ C) D E ⟩
+  ((A ⊕ B) ⊕ C) ⊕ (D ⊕ E)
+  ≡⟨ ⊕-comm ((A ⊕ B) ⊕ C) (D ⊕ E) ⟩
+  (D ⊕ E) ⊕ ((A ⊕ B) ⊕ C)
+  ≡⟨ cong (_⊕ ((A ⊕ B) ⊕ C)) (⊕-comm D E) ⟩
+  (E ⊕ D) ⊕ ((A ⊕ B) ⊕ C)
+  ≡⟨ cong ((E ⊕ D) ⊕_) (revL3 A B C) ⟩
+  (E ⊕ D) ⊕ ((C ⊕ B) ⊕ A)
+  ≡⟨ sym (⊕-assoc (E ⊕ D) (C ⊕ B) A) ⟩
+  ((E ⊕ D) ⊕ (C ⊕ B)) ⊕ A
+  ≡⟨ cong (_⊕ A) (sym (⊕-assoc (E ⊕ D) C B)) ⟩
+  (((E ⊕ D) ⊕ C) ⊕ B) ⊕ A
+  ∎
+
+-- 交错和分离 (分配律): L(u₀⊕v₀, …, uₖ⊕vₖ) = L(u…) ⊕ L(v…)
+mergeL3 : ∀ A₀ A₁ A₂ B₀ B₁ B₂ →
+  ((A₀ ⊕ B₀) ⊕ (A₁ ⊕ B₁)) ⊕ (A₂ ⊕ B₂) ≡
+  ((A₀ ⊕ A₁) ⊕ A₂) ⊕ ((B₀ ⊕ B₁) ⊕ B₂)
+mergeL3 A₀ A₁ A₂ B₀ B₁ B₂ = begin
+  ((A₀ ⊕ B₀) ⊕ (A₁ ⊕ B₁)) ⊕ (A₂ ⊕ B₂)
+  ≡⟨ cong (_⊕ (A₂ ⊕ B₂)) (⊕-swap-middle A₀ B₀ A₁ B₁) ⟩
+  ((A₀ ⊕ A₁) ⊕ (B₀ ⊕ B₁)) ⊕ (A₂ ⊕ B₂)
+  ≡⟨ ⊕-swap-middle (A₀ ⊕ A₁) (B₀ ⊕ B₁) A₂ B₂ ⟩
+  ((A₀ ⊕ A₁) ⊕ A₂) ⊕ ((B₀ ⊕ B₁) ⊕ B₂)
+  ∎
+
+mergeL4 : ∀ A₀ A₁ A₂ A₃ B₀ B₁ B₂ B₃ →
+  (((A₀ ⊕ B₀) ⊕ (A₁ ⊕ B₁)) ⊕ (A₂ ⊕ B₂)) ⊕ (A₃ ⊕ B₃) ≡
+  (((A₀ ⊕ A₁) ⊕ A₂) ⊕ A₃) ⊕ (((B₀ ⊕ B₁) ⊕ B₂) ⊕ B₃)
+mergeL4 A₀ A₁ A₂ A₃ B₀ B₁ B₂ B₃ = begin
+  (((A₀ ⊕ B₀) ⊕ (A₁ ⊕ B₁)) ⊕ (A₂ ⊕ B₂)) ⊕ (A₃ ⊕ B₃)
+  ≡⟨ cong (_⊕ (A₃ ⊕ B₃)) (mergeL3 A₀ A₁ A₂ B₀ B₁ B₂) ⟩
+  (((A₀ ⊕ A₁) ⊕ A₂) ⊕ ((B₀ ⊕ B₁) ⊕ B₂)) ⊕ (A₃ ⊕ B₃)
+  ≡⟨ ⊕-swap-middle ((A₀ ⊕ A₁) ⊕ A₂) ((B₀ ⊕ B₁) ⊕ B₂) A₃ B₃ ⟩
+  (((A₀ ⊕ A₁) ⊕ A₂) ⊕ A₃) ⊕ (((B₀ ⊕ B₁) ⊕ B₂) ⊕ B₃)
+  ∎
+
+mergeL5 : ∀ A₀ A₁ A₂ A₃ A₄ B₀ B₁ B₂ B₃ B₄ →
+  ((((A₀ ⊕ B₀) ⊕ (A₁ ⊕ B₁)) ⊕ (A₂ ⊕ B₂)) ⊕ (A₃ ⊕ B₃)) ⊕ (A₄ ⊕ B₄) ≡
+  ((((A₀ ⊕ A₁) ⊕ A₂) ⊕ A₃) ⊕ A₄) ⊕ ((((B₀ ⊕ B₁) ⊕ B₂) ⊕ B₃) ⊕ B₄)
+mergeL5 A₀ A₁ A₂ A₃ A₄ B₀ B₁ B₂ B₃ B₄ = begin
+  ((((A₀ ⊕ B₀) ⊕ (A₁ ⊕ B₁)) ⊕ (A₂ ⊕ B₂)) ⊕ (A₃ ⊕ B₃)) ⊕ (A₄ ⊕ B₄)
+  ≡⟨ cong (_⊕ (A₄ ⊕ B₄)) (mergeL4 A₀ A₁ A₂ A₃ B₀ B₁ B₂ B₃) ⟩
+  ((((A₀ ⊕ A₁) ⊕ A₂) ⊕ A₃) ⊕ (((B₀ ⊕ B₁) ⊕ B₂) ⊕ B₃)) ⊕ (A₄ ⊕ B₄)
+  ≡⟨ ⊕-swap-middle (((A₀ ⊕ A₁) ⊕ A₂) ⊕ A₃) (((B₀ ⊕ B₁) ⊕ B₂) ⊕ B₃) A₄ B₄ ⟩
+  ((((A₀ ⊕ A₁) ⊕ A₂) ⊕ A₃) ⊕ A₄) ⊕ ((((B₀ ⊕ B₁) ⊕ B₂) ⊕ B₃) ⊕ B₄)
+  ∎
+
+-- Vec 等式同余
+cong-Vec5 : ∀ {a₀ a₁ a₂ a₃ a₄ b₀ b₁ b₂ b₃ b₄ : Trit} →
+  a₀ ≡ b₀ → a₁ ≡ b₁ → a₂ ≡ b₂ → a₃ ≡ b₃ → a₄ ≡ b₄ →
+  (a₀ ∷ a₁ ∷ a₂ ∷ a₃ ∷ a₄ ∷ []) ≡ (b₀ ∷ b₁ ∷ b₂ ∷ b₃ ∷ b₄ ∷ [])
+cong-Vec5 e₀ e₁ e₂ e₃ e₄ =
+  cong₂ _∷_ e₀ (cong₂ _∷_ e₁ (cong₂ _∷_ e₂ (cong₂ _∷_ e₃ (cong₂ _∷_ e₄ refl))))
+
+cong-Vec9 : ∀ {p₀ p₁ p₂ p₃ p₄ p₅ p₆ p₇ p₈ q₀ q₁ q₂ q₃ q₄ q₅ q₆ q₇ q₈ : Trit} →
+  p₀ ≡ q₀ → p₁ ≡ q₁ → p₂ ≡ q₂ → p₃ ≡ q₃ → p₄ ≡ q₄ →
+  p₅ ≡ q₅ → p₆ ≡ q₆ → p₇ ≡ q₇ → p₈ ≡ q₈ →
+  (p₀ ∷ p₁ ∷ p₂ ∷ p₃ ∷ p₄ ∷ p₅ ∷ p₆ ∷ p₇ ∷ p₈ ∷ []) ≡
+  (q₀ ∷ q₁ ∷ q₂ ∷ q₃ ∷ q₄ ∷ q₅ ∷ q₆ ∷ q₇ ∷ q₈ ∷ [])
+cong-Vec9 e₀ e₁ e₂ e₃ e₄ e₅ e₆ e₇ e₈ =
+  cong₂ _∷_ e₀ (cong₂ _∷_ e₁ (cong₂ _∷_ e₂ (cong₂ _∷_ e₃
+    (cong₂ _∷_ e₄ (cong₂ _∷_ e₅ (cong₂ _∷_ e₆ (cong₂ _∷_ e₇
+      (cong₂ _∷_ e₈ refl))))))))
+
+-- 多项式乘法交换 (GF(3)[x] 交换 → Poly9 系数逐项)
+poly-mul-comm : ∀ x y → poly-mul x y ≡ poly-mul y x
+poly-mul-comm (a₀ ∷ a₁ ∷ a₂ ∷ a₃ ∷ a₄ ∷ []) (b₀ ∷ b₁ ∷ b₂ ∷ b₃ ∷ b₄ ∷ []) =
+  cong-Vec9 eq₀ eq₁ eq₂ eq₃ eq₄ eq₅ eq₆ eq₇ eq₈
+  where
+    eq₀ : a₀ ⊗ b₀ ≡ b₀ ⊗ a₀
+    eq₀ = ⊗-comm a₀ b₀
+
+    eq₁ : (a₀ ⊗ b₁) ⊕ (a₁ ⊗ b₀) ≡ (b₀ ⊗ a₁) ⊕ (b₁ ⊗ a₀)
+    eq₁ = trans (cong₂ _⊕_ (⊗-comm a₀ b₁) (⊗-comm a₁ b₀))
+                (⊕-comm (b₁ ⊗ a₀) (b₀ ⊗ a₁))
+
+    eq₂ : ((a₀ ⊗ b₂) ⊕ (a₁ ⊗ b₁)) ⊕ (a₂ ⊗ b₀) ≡
+          ((b₀ ⊗ a₂) ⊕ (b₁ ⊗ a₁)) ⊕ (b₂ ⊗ a₀)
+    eq₂ = trans (congL3 (⊗-comm a₀ b₂) (⊗-comm a₁ b₁) (⊗-comm a₂ b₀))
+                (revL3 (b₂ ⊗ a₀) (b₁ ⊗ a₁) (b₀ ⊗ a₂))
+
+    eq₃ : (((a₀ ⊗ b₃) ⊕ (a₁ ⊗ b₂)) ⊕ (a₂ ⊗ b₁)) ⊕ (a₃ ⊗ b₀) ≡
+          (((b₀ ⊗ a₃) ⊕ (b₁ ⊗ a₂)) ⊕ (b₂ ⊗ a₁)) ⊕ (b₃ ⊗ a₀)
+    eq₃ = trans (congL4 (⊗-comm a₀ b₃) (⊗-comm a₁ b₂)
+                        (⊗-comm a₂ b₁) (⊗-comm a₃ b₀))
+                (revL4 (b₃ ⊗ a₀) (b₂ ⊗ a₁) (b₁ ⊗ a₂) (b₀ ⊗ a₃))
+
+    eq₄ : ((((a₀ ⊗ b₄) ⊕ (a₁ ⊗ b₃)) ⊕ (a₂ ⊗ b₂)) ⊕ (a₃ ⊗ b₁)) ⊕ (a₄ ⊗ b₀) ≡
+          ((((b₀ ⊗ a₄) ⊕ (b₁ ⊗ a₃)) ⊕ (b₂ ⊗ a₂)) ⊕ (b₃ ⊗ a₁)) ⊕ (b₄ ⊗ a₀)
+    eq₄ = trans (congL5 (⊗-comm a₀ b₄) (⊗-comm a₁ b₃) (⊗-comm a₂ b₂)
+                        (⊗-comm a₃ b₁) (⊗-comm a₄ b₀))
+                (revL5 (b₄ ⊗ a₀) (b₃ ⊗ a₁) (b₂ ⊗ a₂) (b₁ ⊗ a₃) (b₀ ⊗ a₄))
+
+    eq₅ : ((((a₁ ⊗ b₄) ⊕ (a₂ ⊗ b₃)) ⊕ (a₃ ⊗ b₂)) ⊕ (a₄ ⊗ b₁)) ≡
+          ((((b₁ ⊗ a₄) ⊕ (b₂ ⊗ a₃)) ⊕ (b₃ ⊗ a₂)) ⊕ (b₄ ⊗ a₁))
+    eq₅ = trans (congL4 (⊗-comm a₁ b₄) (⊗-comm a₂ b₃)
+                        (⊗-comm a₃ b₂) (⊗-comm a₄ b₁))
+                (revL4 (b₄ ⊗ a₁) (b₃ ⊗ a₂) (b₂ ⊗ a₃) (b₁ ⊗ a₄))
+
+    eq₆ : (((a₂ ⊗ b₄) ⊕ (a₃ ⊗ b₃)) ⊕ (a₄ ⊗ b₂)) ≡
+          (((b₂ ⊗ a₄) ⊕ (b₃ ⊗ a₃)) ⊕ (b₄ ⊗ a₂))
+    eq₆ = trans (congL3 (⊗-comm a₂ b₄) (⊗-comm a₃ b₃) (⊗-comm a₄ b₂))
+                (revL3 (b₄ ⊗ a₂) (b₃ ⊗ a₃) (b₂ ⊗ a₄))
+
+    eq₇ : (a₃ ⊗ b₄) ⊕ (a₄ ⊗ b₃) ≡ (b₃ ⊗ a₄) ⊕ (b₄ ⊗ a₃)
+    eq₇ = trans (cong₂ _⊕_ (⊗-comm a₃ b₄) (⊗-comm a₄ b₃))
+                (⊕-comm (b₄ ⊗ a₃) (b₃ ⊗ a₄))
+
+    eq₈ : a₄ ⊗ b₄ ≡ b₄ ⊗ a₄
+    eq₈ = ⊗-comm a₄ b₄
+
+-- 域乘法交换律: reduce9 保持 poly-mul 的交换
+*gf243-comm : ∀ x y → x *gf243 y ≡ y *gf243 x
+*gf243-comm x y = cong reduce9 (poly-mul-comm x y)
+
+--------------------------------------------------------------------------------
+-- 15. reduce9 保持加性 (分配律组装用)
+--------------------------------------------------------------------------------
+
+-- Poly9 逐分量加法
+infixl 6 _+p9_
+_+p9_ : Poly9 → Poly9 → Poly9
+_+p9_ (p₀ ∷ p₁ ∷ p₂ ∷ p₃ ∷ p₄ ∷ p₅ ∷ p₆ ∷ p₇ ∷ p₈ ∷ [])
+      (q₀ ∷ q₁ ∷ q₂ ∷ q₃ ∷ q₄ ∷ q₅ ∷ q₆ ∷ q₇ ∷ q₈ ∷ []) =
+  (p₀ ⊕ q₀) ∷ (p₁ ⊕ q₁) ∷ (p₂ ⊕ q₂) ∷ (p₃ ⊕ q₃) ∷ (p₄ ⊕ q₄) ∷
+  (p₅ ⊕ q₅) ∷ (p₆ ⊕ q₆) ∷ (p₇ ⊕ q₇) ∷ (p₈ ⊕ q₈) ∷ []
+
+-- reduce9 保持加法: r(p+q) ≡ r(p) +gf243 r(q)
+reduce9-additive : ∀ p q →
+  reduce9 (p +p9 q) ≡ reduce9 p +gf243 reduce9 q
+reduce9-additive (p₀ ∷ p₁ ∷ p₂ ∷ p₃ ∷ p₄ ∷ p₅ ∷ p₆ ∷ p₇ ∷ p₈ ∷ [])
+                (q₀ ∷ q₁ ∷ q₂ ∷ q₃ ∷ q₄ ∷ q₅ ∷ q₆ ∷ q₇ ∷ q₈ ∷ []) =
+  cong-Vec5 eq₀ eq₁ eq₂ eq₃ eq₄
+  where
+    eq₀ : (p₀ ⊕ q₀) ⊕ negate (p₅ ⊕ q₅) ≡
+          (p₀ ⊕ negate p₅) ⊕ (q₀ ⊕ negate q₅)
+    eq₀ = trans (cong ((p₀ ⊕ q₀) ⊕_) (negate-⊕ p₅ q₅))
+                (⊕-swap-middle p₀ q₀ (negate p₅) (negate q₅))
+
+    eq₁ : ((p₁ ⊕ q₁) ⊕ (p₅ ⊕ q₅)) ⊕ negate (p₆ ⊕ q₆) ≡
+          ((p₁ ⊕ p₅) ⊕ negate p₆) ⊕ ((q₁ ⊕ q₅) ⊕ negate q₆)
+    eq₁ = trans (cong (_⊕ negate (p₆ ⊕ q₆)) (⊕-swap-middle p₁ q₁ p₅ q₅))
+          (trans (cong (((p₁ ⊕ p₅) ⊕ (q₁ ⊕ q₅)) ⊕_) (negate-⊕ p₆ q₆))
+                 (⊕-swap-middle (p₁ ⊕ p₅) (q₁ ⊕ q₅) (negate p₆) (negate q₆)))
+
+    eq₂ : ((p₂ ⊕ q₂) ⊕ (p₆ ⊕ q₆)) ⊕ negate (p₇ ⊕ q₇) ≡
+          ((p₂ ⊕ p₆) ⊕ negate p₇) ⊕ ((q₂ ⊕ q₆) ⊕ negate q₇)
+    eq₂ = trans (cong (_⊕ negate (p₇ ⊕ q₇)) (⊕-swap-middle p₂ q₂ p₆ q₆))
+          (trans (cong (((p₂ ⊕ p₆) ⊕ (q₂ ⊕ q₆)) ⊕_) (negate-⊕ p₇ q₇))
+                 (⊕-swap-middle (p₂ ⊕ p₆) (q₂ ⊕ q₆) (negate p₇) (negate q₇)))
+
+    eq₃ : ((p₃ ⊕ q₃) ⊕ (p₇ ⊕ q₇)) ⊕ negate (p₈ ⊕ q₈) ≡
+          ((p₃ ⊕ p₇) ⊕ negate p₈) ⊕ ((q₃ ⊕ q₇) ⊕ negate q₈)
+    eq₃ = trans (cong (_⊕ negate (p₈ ⊕ q₈)) (⊕-swap-middle p₃ q₃ p₇ q₇))
+          (trans (cong (((p₃ ⊕ p₇) ⊕ (q₃ ⊕ q₇)) ⊕_) (negate-⊕ p₈ q₈))
+                 (⊕-swap-middle (p₃ ⊕ p₇) (q₃ ⊕ q₇) (negate p₈) (negate q₈)))
+
+    eq₄ : (p₄ ⊕ q₄) ⊕ (p₈ ⊕ q₈) ≡ (p₄ ⊕ p₈) ⊕ (q₄ ⊕ q₈)
+    eq₄ = ⊕-swap-middle p₄ q₄ p₈ q₈
+
+--------------------------------------------------------------------------------
+-- 16. poly-mul 左分配 (GF(3)[x] 分配 → Poly9 系数逐项)
+--------------------------------------------------------------------------------
+
+poly-mul-distribˡ : ∀ x y z →
+  poly-mul x (y +gf243 z) ≡ poly-mul x y +p9 poly-mul x z
+poly-mul-distribˡ (a₀ ∷ a₁ ∷ a₂ ∷ a₃ ∷ a₄ ∷ [])
+                  (b₀ ∷ b₁ ∷ b₂ ∷ b₃ ∷ b₄ ∷ [])
+                  (c₀ ∷ c₁ ∷ c₂ ∷ c₃ ∷ c₄ ∷ []) =
+  cong-Vec9 eq₀ eq₁ eq₂ eq₃ eq₄ eq₅ eq₆ eq₇ eq₈
+  where
+    eq₀ : a₀ ⊗ (b₀ ⊕ c₀) ≡ (a₀ ⊗ b₀) ⊕ (a₀ ⊗ c₀)
+    eq₀ = ⊗-distribˡ-⊕ a₀ b₀ c₀
+
+    eq₁ : (a₀ ⊗ (b₁ ⊕ c₁)) ⊕ (a₁ ⊗ (b₀ ⊕ c₀)) ≡
+          ((a₀ ⊗ b₁) ⊕ (a₁ ⊗ b₀)) ⊕ ((a₀ ⊗ c₁) ⊕ (a₁ ⊗ c₀))
+    eq₁ = trans (cong₂ _⊕_ (⊗-distribˡ-⊕ a₀ b₁ c₁) (⊗-distribˡ-⊕ a₁ b₀ c₀))
+                (⊕-swap-middle (a₀ ⊗ b₁) (a₀ ⊗ c₁) (a₁ ⊗ b₀) (a₁ ⊗ c₀))
+
+    eq₂ : ((a₀ ⊗ (b₂ ⊕ c₂)) ⊕ (a₁ ⊗ (b₁ ⊕ c₁))) ⊕ (a₂ ⊗ (b₀ ⊕ c₀)) ≡
+          (((a₀ ⊗ b₂) ⊕ (a₁ ⊗ b₁)) ⊕ (a₂ ⊗ b₀)) ⊕
+          (((a₀ ⊗ c₂) ⊕ (a₁ ⊗ c₁)) ⊕ (a₂ ⊗ c₀))
+    eq₂ = trans (congL3 (⊗-distribˡ-⊕ a₀ b₂ c₂) (⊗-distribˡ-⊕ a₁ b₁ c₁)
+                        (⊗-distribˡ-⊕ a₂ b₀ c₀))
+                (mergeL3 (a₀ ⊗ b₂) (a₁ ⊗ b₁) (a₂ ⊗ b₀)
+                         (a₀ ⊗ c₂) (a₁ ⊗ c₁) (a₂ ⊗ c₀))
+
+    eq₃ : (((a₀ ⊗ (b₃ ⊕ c₃)) ⊕ (a₁ ⊗ (b₂ ⊕ c₂))) ⊕ (a₂ ⊗ (b₁ ⊕ c₁))) ⊕
+          (a₃ ⊗ (b₀ ⊕ c₀)) ≡
+          ((((a₀ ⊗ b₃) ⊕ (a₁ ⊗ b₂)) ⊕ (a₂ ⊗ b₁)) ⊕ (a₃ ⊗ b₀)) ⊕
+          ((((a₀ ⊗ c₃) ⊕ (a₁ ⊗ c₂)) ⊕ (a₂ ⊗ c₁)) ⊕ (a₃ ⊗ c₀))
+    eq₃ = trans (congL4 (⊗-distribˡ-⊕ a₀ b₃ c₃) (⊗-distribˡ-⊕ a₁ b₂ c₂)
+                        (⊗-distribˡ-⊕ a₂ b₁ c₁) (⊗-distribˡ-⊕ a₃ b₀ c₀))
+                (mergeL4 (a₀ ⊗ b₃) (a₁ ⊗ b₂) (a₂ ⊗ b₁) (a₃ ⊗ b₀)
+                         (a₀ ⊗ c₃) (a₁ ⊗ c₂) (a₂ ⊗ c₁) (a₃ ⊗ c₀))
+
+    eq₄ : ((((a₀ ⊗ (b₄ ⊕ c₄)) ⊕ (a₁ ⊗ (b₃ ⊕ c₃))) ⊕ (a₂ ⊗ (b₂ ⊕ c₂))) ⊕
+           (a₃ ⊗ (b₁ ⊕ c₁))) ⊕ (a₄ ⊗ (b₀ ⊕ c₀)) ≡
+          (((((a₀ ⊗ b₄) ⊕ (a₁ ⊗ b₃)) ⊕ (a₂ ⊗ b₂)) ⊕ (a₃ ⊗ b₁)) ⊕ (a₄ ⊗ b₀)) ⊕ (((((a₀ ⊗ c₄) ⊕ (a₁ ⊗ c₃)) ⊕ (a₂ ⊗ c₂)) ⊕ (a₃ ⊗ c₁)) ⊕ (a₄ ⊗ c₀))
+    eq₄ = trans (congL5 (⊗-distribˡ-⊕ a₀ b₄ c₄) (⊗-distribˡ-⊕ a₁ b₃ c₃)
+                        (⊗-distribˡ-⊕ a₂ b₂ c₂) (⊗-distribˡ-⊕ a₃ b₁ c₁)
+                        (⊗-distribˡ-⊕ a₄ b₀ c₀))
+                (mergeL5 (a₀ ⊗ b₄) (a₁ ⊗ b₃) (a₂ ⊗ b₂) (a₃ ⊗ b₁) (a₄ ⊗ b₀)
+                         (a₀ ⊗ c₄) (a₁ ⊗ c₃) (a₂ ⊗ c₂) (a₃ ⊗ c₁) (a₄ ⊗ c₀))
+
+    eq₅ : (((a₁ ⊗ (b₄ ⊕ c₄)) ⊕ (a₂ ⊗ (b₃ ⊕ c₃))) ⊕ (a₃ ⊗ (b₂ ⊕ c₂))) ⊕
+          (a₄ ⊗ (b₁ ⊕ c₁)) ≡
+          ((((a₁ ⊗ b₄) ⊕ (a₂ ⊗ b₃)) ⊕ (a₃ ⊗ b₂)) ⊕ (a₄ ⊗ b₁)) ⊕
+          ((((a₁ ⊗ c₄) ⊕ (a₂ ⊗ c₃)) ⊕ (a₃ ⊗ c₂)) ⊕ (a₄ ⊗ c₁))
+    eq₅ = trans (congL4 (⊗-distribˡ-⊕ a₁ b₄ c₄) (⊗-distribˡ-⊕ a₂ b₃ c₃)
+                        (⊗-distribˡ-⊕ a₃ b₂ c₂) (⊗-distribˡ-⊕ a₄ b₁ c₁))
+                (mergeL4 (a₁ ⊗ b₄) (a₂ ⊗ b₃) (a₃ ⊗ b₂) (a₄ ⊗ b₁)
+                         (a₁ ⊗ c₄) (a₂ ⊗ c₃) (a₃ ⊗ c₂) (a₄ ⊗ c₁))
+
+    eq₆ : ((a₂ ⊗ (b₄ ⊕ c₄)) ⊕ (a₃ ⊗ (b₃ ⊕ c₃))) ⊕ (a₄ ⊗ (b₂ ⊕ c₂)) ≡
+          (((a₂ ⊗ b₄) ⊕ (a₃ ⊗ b₃)) ⊕ (a₄ ⊗ b₂)) ⊕
+          (((a₂ ⊗ c₄) ⊕ (a₃ ⊗ c₃)) ⊕ (a₄ ⊗ c₂))
+    eq₆ = trans (congL3 (⊗-distribˡ-⊕ a₂ b₄ c₄) (⊗-distribˡ-⊕ a₃ b₃ c₃)
+                        (⊗-distribˡ-⊕ a₄ b₂ c₂))
+                (mergeL3 (a₂ ⊗ b₄) (a₃ ⊗ b₃) (a₄ ⊗ b₂)
+                         (a₂ ⊗ c₄) (a₃ ⊗ c₃) (a₄ ⊗ c₂))
+
+    eq₇ : (a₃ ⊗ (b₄ ⊕ c₄)) ⊕ (a₄ ⊗ (b₃ ⊕ c₃)) ≡
+          ((a₃ ⊗ b₄) ⊕ (a₄ ⊗ b₃)) ⊕ ((a₃ ⊗ c₄) ⊕ (a₄ ⊗ c₃))
+    eq₇ = trans (cong₂ _⊕_ (⊗-distribˡ-⊕ a₃ b₄ c₄) (⊗-distribˡ-⊕ a₄ b₃ c₃))
+                (⊕-swap-middle (a₃ ⊗ b₄) (a₃ ⊗ c₄) (a₄ ⊗ b₃) (a₄ ⊗ c₃))
+
+    eq₈ : a₄ ⊗ (b₄ ⊕ c₄) ≡ (a₄ ⊗ b₄) ⊕ (a₄ ⊗ c₄)
+    eq₈ = ⊗-distribˡ-⊕ a₄ b₄ c₄
+
+-- 域乘法左分配律: reduce9 保加性 + poly-mul 左分配
+*gf243-distribˡ : ∀ x y z →
+  x *gf243 (y +gf243 z) ≡ (x *gf243 y) +gf243 (x *gf243 z)
+*gf243-distribˡ x y z =
+  trans (cong reduce9 (poly-mul-distribˡ x y z))
+        (reduce9-additive (poly-mul x y) (poly-mul x z))
+
+-- 域乘法右分配律 (由左分配律 + 交换律推导)
+*gf243-distribʳ : ∀ x y z →
+  (x +gf243 y) *gf243 z ≡ (x *gf243 z) +gf243 (y *gf243 z)
+*gf243-distribʳ x y z =
+  trans (*gf243-comm (x +gf243 y) z)
+  (trans (*gf243-distribˡ z x y)
+         (cong₂ _+gf243_ (*gf243-comm z x) (*gf243-comm z y)))
+
+--------------------------------------------------------------------------------
+-- 17. 乘法单位元
+--
+-- gf243-one = (1,0,0,0,0) 乘 x: p₀..p₄ = x 的系数(缀 T₀), p₅..p₈ = T₀,
+-- reduce9 后 rᵢ = x 的第 i 系数缀上右侧 T₀, 用 ⊕-identityʳ 链剥除.
+-- 右单位元由交换律 + 左单位元推导 (避免重复 5 系数符号展开)
+--------------------------------------------------------------------------------
+
+-- 右缀 T₀ 剥除: (…((t⊕T₀)⊕T₀)…)⊕T₀ ≡ t, 2..5 层
+dropZ2 : ∀ t → (t ⊕ T₀) ⊕ T₀ ≡ t
+dropZ2 t = trans (cong (_⊕ T₀) (⊕-identityʳ t)) (⊕-identityʳ t)
+
+dropZ3 : ∀ t → ((t ⊕ T₀) ⊕ T₀) ⊕ T₀ ≡ t
+dropZ3 t = trans (cong (_⊕ T₀) (dropZ2 t)) (⊕-identityʳ t)
+
+dropZ4 : ∀ t → (((t ⊕ T₀) ⊕ T₀) ⊕ T₀) ⊕ T₀ ≡ t
+dropZ4 t = trans (cong (_⊕ T₀) (dropZ3 t)) (⊕-identityʳ t)
+
+dropZ5 : ∀ t → ((((t ⊕ T₀) ⊕ T₀) ⊕ T₀) ⊕ T₀) ⊕ T₀ ≡ t
+dropZ5 t = trans (cong (_⊕ T₀) (dropZ4 t)) (⊕-identityʳ t)
+
+-- 左单位元: 1 * x ≡ x
+-- 逐分量符号化简: gf243-one=(T₁,T₀,T₀,T₀,T₀) 使
+--   p₀..p₄ = bᵢ(缀 T₀⊗…), p₅..p₈ ≡ T₀ → rᵢ ≡ bᵢ 缀右侧 T₀
+*gf243-identityˡ : ∀ x → gf243-one *gf243 x ≡ x
+*gf243-identityˡ (b₀ ∷ b₁ ∷ b₂ ∷ b₃ ∷ b₄ ∷ []) =
+  cong-Vec5 eq₀ eq₁ eq₂ eq₃ eq₄
+  where
+    -- p₅ = 高系数全 T₀ → ≡ T₀
+    s5 : ((((T₀ ⊗ b₄) ⊕ (T₀ ⊗ b₃)) ⊕ (T₀ ⊗ b₂)) ⊕ (T₀ ⊗ b₁)) ≡ T₀
+    s5 = congL4 (⊗-zeroˡ b₄) (⊗-zeroˡ b₃) (⊗-zeroˡ b₂) (⊗-zeroˡ b₁)
+    -- p₆ ≡ T₀
+    s6 : (((T₀ ⊗ b₄) ⊕ (T₀ ⊗ b₃)) ⊕ (T₀ ⊗ b₂)) ≡ T₀
+    s6 = congL3 (⊗-zeroˡ b₄) (⊗-zeroˡ b₃) (⊗-zeroˡ b₂)
+    -- p₇ ≡ T₀
+    s7 : (T₀ ⊗ b₄) ⊕ (T₀ ⊗ b₃) ≡ T₀
+    s7 = cong₂ _⊕_ (⊗-zeroˡ b₄) (⊗-zeroˡ b₃)
+    -- p₈ ≡ T₀
+    s8 : T₀ ⊗ b₄ ≡ T₀
+    s8 = ⊗-zeroˡ b₄
+
+    eq₀ : (T₁ ⊗ b₀) ⊕ negate ((((T₀ ⊗ b₄) ⊕ (T₀ ⊗ b₃)) ⊕ (T₀ ⊗ b₂)) ⊕ (T₀ ⊗ b₁)) ≡ b₀
+    eq₀ = trans (cong₂ _⊕_ (⊗-identityˡ b₀) (cong negate s5)) (⊕-identityʳ b₀)
+
+    eq₁ : (((T₁ ⊗ b₁) ⊕ (T₀ ⊗ b₀)) ⊕ ((((T₀ ⊗ b₄) ⊕ (T₀ ⊗ b₃)) ⊕ (T₀ ⊗ b₂)) ⊕ (T₀ ⊗ b₁))) ⊕
+          negate (((T₀ ⊗ b₄) ⊕ (T₀ ⊗ b₃)) ⊕ (T₀ ⊗ b₂)) ≡ b₁
+    eq₁ = trans
+      (cong₂ _⊕_
+        (cong₂ _⊕_ (trans (cong₂ _⊕_ (⊗-identityˡ b₁) (⊗-zeroˡ b₀))
+                           (⊕-identityʳ b₁))
+                    s5)
+        (cong negate s6))
+      (dropZ2 b₁)
+
+    eq₂ : ((((T₁ ⊗ b₂) ⊕ (T₀ ⊗ b₁)) ⊕ (T₀ ⊗ b₀)) ⊕ (((T₀ ⊗ b₄) ⊕ (T₀ ⊗ b₃)) ⊕ (T₀ ⊗ b₂))) ⊕ negate ((T₀ ⊗ b₄) ⊕ (T₀ ⊗ b₃)) ≡ b₂
+    eq₂ = trans
+      (cong₂ _⊕_
+        (cong₂ _⊕_ (trans (congL3 (⊗-identityˡ b₂) (⊗-zeroˡ b₁) (⊗-zeroˡ b₀))
+                           (dropZ2 b₂))
+                    s6)
+        (cong negate s7))
+      (dropZ2 b₂)
+
+    eq₃ : (((((T₁ ⊗ b₃) ⊕ (T₀ ⊗ b₂)) ⊕ (T₀ ⊗ b₁)) ⊕ (T₀ ⊗ b₀)) ⊕ ((T₀ ⊗ b₄) ⊕ (T₀ ⊗ b₃))) ⊕ negate (T₀ ⊗ b₄) ≡ b₃
+    eq₃ = trans
+      (cong₂ _⊕_
+        (cong₂ _⊕_ (trans (congL4 (⊗-identityˡ b₃) (⊗-zeroˡ b₂)
+                                  (⊗-zeroˡ b₁) (⊗-zeroˡ b₀))
+                           (dropZ3 b₃))
+                    s7)
+        (cong negate s8))
+      (dropZ2 b₃)
+
+    eq₄ : (((((T₁ ⊗ b₄) ⊕ (T₀ ⊗ b₃)) ⊕ (T₀ ⊗ b₂)) ⊕ (T₀ ⊗ b₁)) ⊕ (T₀ ⊗ b₀)) ⊕ (T₀ ⊗ b₄) ≡ b₄
+    eq₄ = trans
+      (cong₂ _⊕_ (trans (congL5 (⊗-identityˡ b₄) (⊗-zeroˡ b₃) (⊗-zeroˡ b₂)
+                                (⊗-zeroˡ b₁) (⊗-zeroˡ b₀))
+                         (dropZ4 b₄))
+                  s8)
+      (⊕-identityʳ b₄)
+
+-- 右单位元: x * 1 ≡ x (由交换律 + 左单位元)
+*gf243-identityʳ : ∀ x → x *gf243 gf243-one ≡ x
+*gf243-identityʳ x =
+  trans (*gf243-comm x gf243-one) (*gf243-identityˡ x)
