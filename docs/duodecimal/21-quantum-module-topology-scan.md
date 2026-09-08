@@ -129,6 +129,7 @@
 | 66e03c8 | Coupling/SpinTwistor | 对齐声明: 扭量复共轭=GF9 σ (DiscreteComplex本质=GF9) |
 | 8db5985 | Coupling/SpinTwistor | §3b GF9扭量层: TwistorPoint9=GF9³ 标准GF9, 共轭=galoisConjugate, 无连续统 |
 | e879476 | Coupling/CartanTorsion | 对齐声明: DiscreteComplex 乘法/共轭 = GF9 标准结构 (保类型) |
+| 63e250e | Algebra/AlgebraicPoleUnified | L0 本源化: Duodec(Z/12投影) → DuodecPoint(mixedOp加乘联合); 截面 proj₁; 头注同步 |
 
 ### 🔴 待修复: 声子谱桥接 (暂缓, 2026-09-08)
 
