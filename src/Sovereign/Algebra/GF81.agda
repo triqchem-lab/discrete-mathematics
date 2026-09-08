@@ -569,6 +569,14 @@ alpha6-normal = T₀ , T₀ , T₁ , T₂  -- α² + 2α³
 alpha9-normal : GF81
 alpha9-normal = T₀ , T₁ , T₁ , T₁  -- α + α² + α³
 
+-- Frobenius 与多项式的关系 (2026-09-08): σ(α) = α³ 正是约化多项式
+-- x⁴+x+2 (α⁴=2x+1) 的驱动 — σ 把 α 映到 Galois 共轭 α³.
+-- σ(α) = α³ (显式连接 frobenius-alpha 与立方)
+frobenius-alpha-is-cube : frobenius alpha ≡ alpha *gf81 (alpha *gf81 alpha)
+frobenius-alpha-is-cube = refl
+-- (Frobenius 遍历 Galois 共轭 {α, σα, σ²α, σ³α} = {α, α³, α⁹, α²⁷};
+--  阶 4 = 扩张次数 [GF(81):GF(3)] = 约化多项式次数)
+
 -- σ⁴ = id (四次 Frobenius 是恒等)
 -- 27 case 穷举 (a 不变, 对 b,c,d 穷举)
 frobenius⁴-id : ∀ x →
