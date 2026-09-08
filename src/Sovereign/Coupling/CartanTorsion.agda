@@ -36,6 +36,11 @@ open import Sovereign.Coupling.Zhonglv using (SovereignState; chernConservation)
 open import Sovereign.MetaStructure.WuXing using (WuXing; Chirality; LeftHanded; RightHanded)
 
 -- 离散复数: a + bi, i² = -1 (本质 = GF(9) = GF(3)[i]/(i²+1))
+--
+-- 对齐声明 (2026-09-08): 本 record DiscreteComplex 的乘法 _*ᶜ_ (ac-bd,ad+bc)
+-- 与共轭 conjugate (a-bi) 正是 GF(9) 标准域的 _*gf9_ 与 galoisConjugate
+-- (GF9 = GF(3)[α]/(α²+1), α²=-1)。此处保持本地类型 (被 SpinTwistor 等依赖,
+-- 硬换标准 GF9 破下游), 以声明标注其展示群 GF9 归属。
 record DiscreteComplex : Set where
   constructor _+ᵢ_
   field
