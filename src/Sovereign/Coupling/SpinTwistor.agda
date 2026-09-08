@@ -199,6 +199,13 @@ staticContainerNoChirality sc = StaticContainer.noChirality sc
 
 --------------------------------------------------------------------------------
 -- 3. 扭量 = T⁶ 复三维格点坐标 (复共轭 ↔ 手性对偶)
+--
+-- 对齐声明 (2026-09-08): 本层 DiscreteComplex (a+ᵢb, i²=-1) 本质 = GF(9)
+-- (CartanTorsion.agda:38 注: "本质 = GF(9) = GF(3)[i]/(i²+1)"), 故:
+--   扭量复共轭 conjugate = GF(9) Frobenius σ (galoisConjugate)
+--   手性对偶 (z, conj z) = GF9 共轭对 (对齐展示群本源纠缠, 同 ChiralInterference§6)
+-- 离散复结构选择是本地实现 (DiscreteComplex record), 与标准 GF9 pair 同构;
+-- 此处保持现有类型不动 (硬换破下游), 以声明标注其展示群归属.
 --------------------------------------------------------------------------------
 
 -- Trit 双负 (本地, 3 例)
