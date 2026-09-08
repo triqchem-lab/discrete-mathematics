@@ -964,6 +964,10 @@ frobenius-cube (a , b) = begin
   ∎
   where open ≡-Reasoning
 
+-- 右结合变体: σ(x) = x·(x·x) (frobenius-is-cube 全称, 经结合律转)
+frobenius-is-cube : ∀ x → galoisConjugate x ≡ x *gf9 (x *gf9 x)
+frobenius-is-cube x = trans (frobenius-cube x) (*gf9-assoc x x x)
+
 -- 辅助引理: T₂ ⊗ x ≡ negate x (在 GF(3) 中 T₂ = -1, 所以 2x = -x)
 two-mul-is-neg : ∀ x → T₂ ⊗ x ≡ negate x
 two-mul-is-neg T₀ = refl
