@@ -278,9 +278,18 @@ GF729 只形式化加法群 (乘法太复杂).
   - 对抗验证: 具体点 (原点/t/含α混合点) 上构造性证明与独立 `refl` 计算一致。
 
 **技术债 (诚实记录)**:
-- `GF27`(27)/`GF81`(81)/`GF243`(243) 的 `frobenius-is-cube` 仍是 refl 穷举;
-  GF27/81/243 均缺 `frobenius-mul` (保乘)。
-  构造化范式已在 GF729Field 打通 (Semilinear + semilinear-ext3), 可迁移。
+- ✅ **GF27/GF81/GF243 已全部构造化 (2026-09-09)**, 351 条 refl 穷举全部删除:
+  | 模块 | 维度 | 穷举删除 | 框架 | 提交 |
+  |------|------|---------|------|------|
+  | GF27 | 3 | 27 → 0 | Linear27 (ladd+lscalar) | b409a9b |
+  | GF81 | 4 | 81 → 0 | Lin81 (ladd 导出 lscalar) | 91f1644 |
+  | GF243 | 5 | 243 → 0 | Lin243 (ladd 导出 lscalar) | f1b0551 |
+  - 三者原本均缺 `frobenius-add` (GF81/GF243) 与 `*gf-assoc`;
+    本轮补齐并导出 `frobenius-mul` (经 cube-mul + mul-square + mul-perm)。
+  - 范式沉淀: `memory/frobenius-constructivization.md`;
+    工程陷阱写入 proof-engineer 附录 10。
+- 剩余同类穷举 (非本链): `DiscreteRepresentation` 的 9-case (≤27, 可接受);
+  GF9/FiniteGroupAxioms 已是符号证明。
 
 ### 📋 ParityViolation 对齐评估 (2026-09-08, 低优先不强制)
 

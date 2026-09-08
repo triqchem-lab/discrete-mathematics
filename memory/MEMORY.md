@@ -1,2 +1,3 @@
 - [双轨制开发与宪法约束](dual_track_constitution.md) — Agda 形式化 + Python 工程验证，宪法级约束必须遵守
 - [四文明密度层级与范畴分离](civilization_categories.md) — 电性12d/磁性24d/中性144d/全息4320d，禁止跨层级混用
+- [Frobenius 构造化范式](frobenius-constructivization.md) — GF(3^n) 有限域: 线性框架 + 基展开替换 3^n 条 refl 穷举 (GF27/81/243/729 已完成)
