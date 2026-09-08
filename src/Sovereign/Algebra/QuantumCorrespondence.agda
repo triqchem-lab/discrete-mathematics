@@ -10,7 +10,7 @@ module Sovereign.Algebra.QuantumCorrespondence where
 --
 -- 三者统一: 叠加 × 纠缠 × 相位 = 完整量子结构
 --
--- 0 postulate — 全部构造性证明, 引用 Trit/GF9/Duodecimal 已有定理
+-- 0 postulate — 全部构造性证明, 引用 Trit/GF9/DuodecClock 已有定理
 --------------------------------------------------------------------------------
 
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
@@ -23,10 +23,8 @@ open import Sovereign.Algebra.GF9 using (GF9; GF3; galoisConjugate; galoisConjug
   _*gf9_; _+gf9_; alpha; embed-gf3; gf9-one;
   lemma-frobenius-multiplicative; conjugatePair-size-2;
   *gf9-identityˡ; *gf9-identityʳ; *gf9-comm; *gf9-assoc)
-open import Sovereign.Algebra.Duodecimal using (Duodec; d0; d1; d2; d3; d4; d5;
-  d6; d7; d8; d9; d10; d11;
-  +1; _+12_; +1^12-id; +12-assoc; +12-comm; +12-identityˡ; +12-identityʳ;
-  +12-inverse; neg12; toℕ₁₂)
+-- 本源相位层: DuodecClock 的 ⟨α⟩ 旋转群 (AlphaPower/mulAlpha), 非 Duodec/Z12 投影
+open import Sovereign.Algebra.GroupTheory.DuodecClock using (AlphaPower; a0; a1; a2; a3; mulAlpha)
 
 --------------------------------------------------------------------------------
 -- 1. 叠加定理 — GF(3) 加法群的量子叠加结构
@@ -118,49 +116,30 @@ entanglement-trivial-on-real : ∀ a → galoisConjugate (embed-gf3 a) ≡ embed
 entanglement-trivial-on-real a = refl
 
 --------------------------------------------------------------------------------
--- 3. 涡旋相位定理 — Z/12Z 循环群的涡旋相位结构
+-- 3. 本源相位定理 — GF9⟨α⟩ 旋转群 (展示群本源相位层)
 --
--- 12 个元素 {d0..d11} 对应 12 个涡旋相位位置
--- +1 是相位旋转 (前进一个相位)
--- 12 步回到原点 (周期 12)
+-- 相位 = ⟨α⟩ = {a0,a1,a2,a3} (AlphaPower), mulAlpha = α 旋转
+-- α 阶 4: 90°×4 = 360° 回原点 (本源), 非 Z/12 加法投影 (+1)
+-- (旧版用 Duodec/Z12 +1 是投影层 — 2026-09-08 对齐本源改为 ⟨α⟩)
 --------------------------------------------------------------------------------
 
--- 12 次相位旋转的复合
-+1^12 : Duodec → Duodec
-+1^12 x = +1 (+1 (+1 (+1 (+1 (+1 (+1 (+1 (+1 (+1 (+1 (+1 x)))))))))))
+-- α 的 4 次旋转 = 恒等 (本源相位全圈: ×a1 走 4 步回位, 90°×4=360°)
+-- 注: 不用 DuodecClock.mulAlpha^4 (其语义是 a 的自乘迭代, 非 ×a1 平移)
+-- 显式 4 层 mulAlpha a1 (×α 走 4 步): a1 阶 4, a1⁴·a = a0·a = a
+alpha-phase-period : ∀ a →
+  mulAlpha a1 (mulAlpha a1 (mulAlpha a1 (mulAlpha a1 a))) ≡ a
+alpha-phase-period a0 = refl
+alpha-phase-period a1 = refl
+alpha-phase-period a2 = refl
+alpha-phase-period a3 = refl
 
--- 涡旋相位周期: 12 步回到原点
-vortex-phase-period : ∀ x → +1^12 x ≡ x
-vortex-phase-period = +1^12-id
-
--- 相位加法结合律
-vortex-phase-assoc : ∀ x y z → (x +12 y) +12 z ≡ x +12 (y +12 z)
-vortex-phase-assoc = +12-assoc
-
--- 相位加法交换律
-vortex-phase-comm : ∀ x y → x +12 y ≡ y +12 x
-vortex-phase-comm = +12-comm
-
--- 相位单位元: d0 (黄钟) 是零相位
-vortex-phase-identityˡ : ∀ x → d0 +12 x ≡ x
-vortex-phase-identityˡ = +12-identityˡ
-
-vortex-phase-identityʳ : ∀ x → x +12 d0 ≡ x
-vortex-phase-identityʳ = +12-identityʳ
-
--- 相位逆元: 每个相位都有逆相位
-vortex-phase-inverse : ∀ x → x +12 neg12 x ≡ d0
-vortex-phase-inverse = +12-inverse
-
--- 相位与十二律的对应: d0=黄钟, d1=大吕, ..., d11=应钟
--- (由 Duodecimal.agda 的 duodecToLü 提供)
--- 相位计数 = 12, 由 Duodec 的 12 个构造子保证
+-- 本源相位周期语义: ⟨α⟩ 阶 4 — 相位全圈 (对比旧 vortex Duodec+1^12 投影周期 12)
 
 --------------------------------------------------------------------------------
 -- 4. 三者统一 — 完整量子结构
 --
--- 叠加（GF(3) 加法群）× 纠缠（GF(9) Frobenius）× 相位（Z/12Z 循环）
--- = 完整量子代数结构
+-- 叠加（GF(3) 加法群）× 纠缠（GF(9) Frobenius）× 相位（GF9⟨α⟩ 旋转群）
+-- = 完整量子代数结构 (2026-09-08: 相位从 Z/12 投影对齐到本源 ⟨α⟩)
 --------------------------------------------------------------------------------
 
 record QuantumStructure : Set where
@@ -176,10 +155,10 @@ record QuantumStructure : Set where
     ent-involutive  : ∀ x → ent-map (ent-map x) ≡ x
     ent-homomorphic : ∀ x y → ent-map (x *gf9 y) ≡ (ent-map x) *gf9 (ent-map y)
 
-    -- 相位: Z/12Z 循环群的 12 周期性
-    phase-period : ∀ x → +1^12 x ≡ x
+    -- 相位: GF9⟨α⟩ 旋转群的 4 周期性 (本源 ×a1, 90° 步进)
+    phase-period : ∀ a → mulAlpha a1 (mulAlpha a1 (mulAlpha a1 (mulAlpha a1 a))) ≡ a
 
--- 见证: GF(3) ⊕ × GF(9) σ × Z/12Z +1 构成完整量子结构
+-- 见证: GF(3) ⊕ × GF(9) σ × ⟨α⟩ mulAlpha 构成完整量子结构
 quantum-structure-witness : QuantumStructure
 quantum-structure-witness = record
   { sup-op         = _⊕_
@@ -189,7 +168,7 @@ quantum-structure-witness = record
   ; ent-map        = galoisConjugate
   ; ent-involutive = galoisConjugate²
   ; ent-homomorphic = lemma-frobenius-multiplicative
-  ; phase-period   = +1^12-id
+  ; phase-period   = alpha-phase-period
   }
 
 -- 量子结构的乘法结合律 (由 GF9 *gf9-assoc 保证)
