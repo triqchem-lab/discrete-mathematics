@@ -263,14 +263,18 @@ GF729 只形式化加法群 (乘法太复杂).
 - 构造性证明 (符号, 非穷举): char3 / *F-distribˡ/ʳ / frobenius-add / scalar-extractˡ
 - GF9 环同态 embed-9 (保加保乘)
 
+**构造性进展**:
+- ✅ `*F-assoc` 已闭合 (71afe27): 三级嵌套线性扩展 (Linear/expand3/linear-ext3),
+  27 个基三元组 + assoc-Z→assoc-Y→assoc, 非穷举。
+- ✅ `scalar-extractˡ` (6d09f91)、`*F-distribˡ/ʳ`、`char3`、`frobenius-add` (08d337a)。
+
 **技术债 (诚实记录, 未完成)**:
-- `GF729Field.frobenius-is-cube` 仍是 **729 条 refl 穷举** (待构造化)
-- 阻塞点: 缺 `*F-assoc`。已有 `scalar-extractˡ` ((c·x)*F y ≡ c·(x*F y)) 作基础,
-  但基 {1,t,t²} 上的双线性扩展尚未闭合。
+- `GF729Field.frobenius-is-cube` 仍是 **729 条 refl 穷举** (待构造化)。
+- 构造化路径已明确: σ 与立方映射均为 `galoisConjugate`-半线性
+  (`semilinear-ext` 已验证可用), 两者在基 {1,t,t²} 上相等 (3 个 refl 已确认);
+  还缺 `sigma-scalar` (σ 保标量) 与 `cube-add` (Freshman's dream)。
 - `GF27`(27)/`GF81`(81)/`GF243`(243) 的 `frobenius-is-cube` 同样是 refl 穷举;
   GF27/81/243 均缺 `frobenius-mul` (保乘)。
-- 这些穷举是有限域上的**正确但非构造**的验证。构造化路径已由 GF9 示范
-  (`frobenius-cube` 符号证明 + `gf9-cube-eq` 9 case)。
 
 ### 📋 ParityViolation 对齐评估 (2026-09-08, 低优先不强制)
 
