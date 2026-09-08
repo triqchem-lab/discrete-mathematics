@@ -371,6 +371,36 @@ frobenius-alpha = refl
 frobenius-alpha-is-cube : frobenius alpha ≡ alpha *gf27 (alpha *gf27 alpha)
 frobenius-alpha-is-cube = refl
 
+-- 全称立方定理: σ(x) = x·(x·x) (27 case 穷举, 具体值 refl)
+frobenius-is-cube : ∀ x → frobenius x ≡ x *gf27 (x *gf27 x)
+frobenius-is-cube (T₀ , T₀ , T₀) = refl
+frobenius-is-cube (T₀ , T₀ , T₁) = refl
+frobenius-is-cube (T₀ , T₀ , T₂) = refl
+frobenius-is-cube (T₀ , T₁ , T₀) = refl
+frobenius-is-cube (T₀ , T₁ , T₁) = refl
+frobenius-is-cube (T₀ , T₁ , T₂) = refl
+frobenius-is-cube (T₀ , T₂ , T₀) = refl
+frobenius-is-cube (T₀ , T₂ , T₁) = refl
+frobenius-is-cube (T₀ , T₂ , T₂) = refl
+frobenius-is-cube (T₁ , T₀ , T₀) = refl
+frobenius-is-cube (T₁ , T₀ , T₁) = refl
+frobenius-is-cube (T₁ , T₀ , T₂) = refl
+frobenius-is-cube (T₁ , T₁ , T₀) = refl
+frobenius-is-cube (T₁ , T₁ , T₁) = refl
+frobenius-is-cube (T₁ , T₁ , T₂) = refl
+frobenius-is-cube (T₁ , T₂ , T₀) = refl
+frobenius-is-cube (T₁ , T₂ , T₁) = refl
+frobenius-is-cube (T₁ , T₂ , T₂) = refl
+frobenius-is-cube (T₂ , T₀ , T₀) = refl
+frobenius-is-cube (T₂ , T₀ , T₁) = refl
+frobenius-is-cube (T₂ , T₀ , T₂) = refl
+frobenius-is-cube (T₂ , T₁ , T₀) = refl
+frobenius-is-cube (T₂ , T₁ , T₁) = refl
+frobenius-is-cube (T₂ , T₁ , T₂) = refl
+frobenius-is-cube (T₂ , T₂ , T₀) = refl
+frobenius-is-cube (T₂ , T₂ , T₁) = refl
+frobenius-is-cube (T₂ , T₂ , T₂) = refl
+
 -- σ(α) = α+2 (多项式根关系: α³=α+2, 见 alpha-cubed-struct)
 -- σ 遍历 Galois 共轭 {α, σα, σ²α}: σ(α)=α³=α+2, σ²(α)=α^9=α²+α+1...
 -- (Frobenius = 多项式 x³+2x+1 的根在 GF(27) 中的共轭作用)
