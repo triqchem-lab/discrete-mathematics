@@ -324,6 +324,12 @@ sigma-fixed-count = refl , refl , refl
 sigma-alpha : galoisConjugate alpha ≡ (T₀ , T₂)
 sigma-alpha = refl
 
+-- Frobenius 与多项式的关系 (2026-09-08): σ(α) = α³ = -α
+-- (约化多项式 x²+1: α²=-1, 故 α³=α·α²=-α; σ 把 α 映到 Galois 共轭 -α)
+frobenius-alpha-is-cube : galoisConjugate alpha ≡ alpha *gf9 (alpha *gf9 alpha)
+frobenius-alpha-is-cube = refl
+-- (Frobenius 遍历 Galois 共轭 {α, σα} = {α, -α}; 阶 2 = 扩张次数 [GF(9):GF(3)])
+
 -- Frobenius 乘法同态: σ(x·y) ≡ σ(x)·σ(y)
 -- 代数证明: 在特征 3 域中 (ab)³ = a³b³
 -- 归约到 Trit 层 negate 的分配律 + 线性
