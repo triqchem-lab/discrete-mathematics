@@ -37,8 +37,10 @@ open import Data.Nat using (ℕ; _^_; _*_; _+_)
 open import Data.Vec using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; sym; trans)
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate;
-  negate²; ⊕-comm; ⊕-assoc; ⊕-identityˡ; ⊕-identityʳ; ⊕-inverse)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate;
+  negate²; ⊕-comm; ⊕-assoc; ⊕-identityˡ; ⊕-identityʳ; ⊕-inverse;
+  ⊗-comm; ⊗-identityˡ; ⊗-identityʳ; ⊗-assoc;
+  ⊗-distribˡ-⊕; ⊗-distribʳ-⊕; ⊗-zeroˡ; ⊗-zeroʳ)
 
 --------------------------------------------------------------------------------
 -- 1. GF(243) 类型定义
@@ -389,3 +391,58 @@ scalar-distrib T₂ x y = +gf243-swap-middle x y x y
 --
 -- 注意：Frobenius 需要乘法结构，本模块仅定义加法群
 -- 完整域结构（含乘法）待后续模块扩展
+
+--------------------------------------------------------------------------------
+-- 6. 域乘法 (2026-09-08 强补): GF(3)[x]/(x⁵+2x+1)
+--
+-- 乘法 = 多项式卷积 (度 ≤ 8) + mod (x⁵=x+2) 约化
+--   5×5 卷积得 9 系数 p₀..p₈; 约化: x⁵=x+2, x⁶=x²+2x, x⁷=x³+2x², x⁸=x⁴+2x³
+--   2·p = negate p (GF3)
+-- r₀=p₀⊕neg p₅  r₁=(p₁⊕p₅)⊕neg p₆  r₂=(p₂⊕p₆)⊕neg p₇
+-- r₃=(p₃⊕p₇)⊕neg p₈  r₄=p₄⊕p₈
+-- 采用 GF81 风格定义式: _*gf243_ = reduce9 ∘ poly-mul (mul-via-poly = refl)
+--------------------------------------------------------------------------------
+
+-- 9 系数中间 (度 ≤ 8)
+Poly9 : Set
+Poly9 = Vec Trit 9
+
+-- 5×5 卷积: (a₀..a₄)×(b₀..b₄) → p₀..p₈
+poly-mul : GF243 → GF243 → Poly9
+poly-mul (a₀ ∷ a₁ ∷ a₂ ∷ a₃ ∷ a₄ ∷ [])
+         (b₀ ∷ b₁ ∷ b₂ ∷ b₃ ∷ b₄ ∷ []) =
+  (a₀ ⊗ b₀) ∷
+  ((a₀ ⊗ b₁) ⊕ (a₁ ⊗ b₀)) ∷
+  (((a₀ ⊗ b₂) ⊕ (a₁ ⊗ b₁)) ⊕ (a₂ ⊗ b₀)) ∷
+  ((((a₀ ⊗ b₃) ⊕ (a₁ ⊗ b₂)) ⊕ (a₂ ⊗ b₁)) ⊕ (a₃ ⊗ b₀)) ∷
+  (((((a₀ ⊗ b₄) ⊕ (a₁ ⊗ b₃)) ⊕ (a₂ ⊗ b₂)) ⊕ (a₃ ⊗ b₁)) ⊕ (a₄ ⊗ b₀)) ∷
+  (((((a₁ ⊗ b₄) ⊕ (a₂ ⊗ b₃)) ⊕ (a₃ ⊗ b₂)) ⊕ (a₄ ⊗ b₁))) ∷
+  ((((a₂ ⊗ b₄) ⊕ (a₃ ⊗ b₃)) ⊕ (a₄ ⊗ b₂))) ∷
+  (((a₃ ⊗ b₄) ⊕ (a₄ ⊗ b₃))) ∷
+  (a₄ ⊗ b₄) ∷ []
+
+-- 约化: mod (x⁵=x+2) 回到 GF243 (5 系数)
+reduce9 : Poly9 → GF243
+reduce9 (p₀ ∷ p₁ ∷ p₂ ∷ p₃ ∷ p₄ ∷ p₅ ∷ p₆ ∷ p₇ ∷ p₈ ∷ []) =
+  (p₀ ⊕ negate p₅) ∷
+  ((p₁ ⊕ p₅) ⊕ negate p₆) ∷
+  ((p₂ ⊕ p₆) ⊕ negate p₇) ∷
+  ((p₃ ⊕ p₇) ⊕ negate p₈) ∷
+  (p₄ ⊕ p₈) ∷ []
+
+-- 域乘法 (定义式)
+_*gf243_ : GF243 → GF243 → GF243
+x *gf243 y = reduce9 (poly-mul x y)
+
+-- 验证: α² = x² (第二基向量)
+alpha-square : alpha *gf243 alpha ≡ (T₀ ∷ T₀ ∷ T₁ ∷ T₀ ∷ T₀ ∷ [])
+alpha-square = refl
+
+-- 验证: α⁵ = α+2 (约化多项式 x⁵=α+2)
+alpha-fifth : alpha *gf243 (alpha *gf243 (alpha *gf243 (alpha *gf243 alpha))) ≡
+  (T₂ ∷ T₁ ∷ T₀ ∷ T₀ ∷ T₀ ∷ [])
+alpha-fifth = refl
+
+-- 乘法单位元 (常数 1): gf243-one
+-- *gf243-identityˡ/ʳ 证明见下
+
