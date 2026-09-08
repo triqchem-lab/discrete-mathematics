@@ -18,6 +18,7 @@ module Sovereign.Algebra.GF81 where
 -- 0 postulate — 全部构造性证明
 
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; sym; trans)
 open import Data.Nat using (ℕ; zero; suc; _^_; _*_; _+_)
@@ -577,92 +578,8 @@ frobenius-alpha-is-cube = refl
 -- (Frobenius 遍历 Galois 共轭 {α, σα, σ²α, σ³α} = {α, α³, α⁹, α²⁷};
 --  阶 4 = 扩张次数 [GF(81):GF(3)] = 约化多项式次数)
 
--- frobenius-is-cube: σ(x) = x³ (全域真定理)
--- 81 case 穷举 (立方耦合四坐标不能留自由坐标)
-frobenius-is-cube : ∀ x → frobenius x ≡ x *gf81 (x *gf81 x)
-frobenius-is-cube (T₀ , T₀ , T₀ , T₀) = refl
-frobenius-is-cube (T₀ , T₀ , T₀ , T₁) = refl
-frobenius-is-cube (T₀ , T₀ , T₀ , T₂) = refl
-frobenius-is-cube (T₀ , T₀ , T₁ , T₀) = refl
-frobenius-is-cube (T₀ , T₀ , T₁ , T₁) = refl
-frobenius-is-cube (T₀ , T₀ , T₁ , T₂) = refl
-frobenius-is-cube (T₀ , T₀ , T₂ , T₀) = refl
-frobenius-is-cube (T₀ , T₀ , T₂ , T₁) = refl
-frobenius-is-cube (T₀ , T₀ , T₂ , T₂) = refl
-frobenius-is-cube (T₀ , T₁ , T₀ , T₀) = refl
-frobenius-is-cube (T₀ , T₁ , T₀ , T₁) = refl
-frobenius-is-cube (T₀ , T₁ , T₀ , T₂) = refl
-frobenius-is-cube (T₀ , T₁ , T₁ , T₀) = refl
-frobenius-is-cube (T₀ , T₁ , T₁ , T₁) = refl
-frobenius-is-cube (T₀ , T₁ , T₁ , T₂) = refl
-frobenius-is-cube (T₀ , T₁ , T₂ , T₀) = refl
-frobenius-is-cube (T₀ , T₁ , T₂ , T₁) = refl
-frobenius-is-cube (T₀ , T₁ , T₂ , T₂) = refl
-frobenius-is-cube (T₀ , T₂ , T₀ , T₀) = refl
-frobenius-is-cube (T₀ , T₂ , T₀ , T₁) = refl
-frobenius-is-cube (T₀ , T₂ , T₀ , T₂) = refl
-frobenius-is-cube (T₀ , T₂ , T₁ , T₀) = refl
-frobenius-is-cube (T₀ , T₂ , T₁ , T₁) = refl
-frobenius-is-cube (T₀ , T₂ , T₁ , T₂) = refl
-frobenius-is-cube (T₀ , T₂ , T₂ , T₀) = refl
-frobenius-is-cube (T₀ , T₂ , T₂ , T₁) = refl
-frobenius-is-cube (T₀ , T₂ , T₂ , T₂) = refl
-frobenius-is-cube (T₁ , T₀ , T₀ , T₀) = refl
-frobenius-is-cube (T₁ , T₀ , T₀ , T₁) = refl
-frobenius-is-cube (T₁ , T₀ , T₀ , T₂) = refl
-frobenius-is-cube (T₁ , T₀ , T₁ , T₀) = refl
-frobenius-is-cube (T₁ , T₀ , T₁ , T₁) = refl
-frobenius-is-cube (T₁ , T₀ , T₁ , T₂) = refl
-frobenius-is-cube (T₁ , T₀ , T₂ , T₀) = refl
-frobenius-is-cube (T₁ , T₀ , T₂ , T₁) = refl
-frobenius-is-cube (T₁ , T₀ , T₂ , T₂) = refl
-frobenius-is-cube (T₁ , T₁ , T₀ , T₀) = refl
-frobenius-is-cube (T₁ , T₁ , T₀ , T₁) = refl
-frobenius-is-cube (T₁ , T₁ , T₀ , T₂) = refl
-frobenius-is-cube (T₁ , T₁ , T₁ , T₀) = refl
-frobenius-is-cube (T₁ , T₁ , T₁ , T₁) = refl
-frobenius-is-cube (T₁ , T₁ , T₁ , T₂) = refl
-frobenius-is-cube (T₁ , T₁ , T₂ , T₀) = refl
-frobenius-is-cube (T₁ , T₁ , T₂ , T₁) = refl
-frobenius-is-cube (T₁ , T₁ , T₂ , T₂) = refl
-frobenius-is-cube (T₁ , T₂ , T₀ , T₀) = refl
-frobenius-is-cube (T₁ , T₂ , T₀ , T₁) = refl
-frobenius-is-cube (T₁ , T₂ , T₀ , T₂) = refl
-frobenius-is-cube (T₁ , T₂ , T₁ , T₀) = refl
-frobenius-is-cube (T₁ , T₂ , T₁ , T₁) = refl
-frobenius-is-cube (T₁ , T₂ , T₁ , T₂) = refl
-frobenius-is-cube (T₁ , T₂ , T₂ , T₀) = refl
-frobenius-is-cube (T₁ , T₂ , T₂ , T₁) = refl
-frobenius-is-cube (T₁ , T₂ , T₂ , T₂) = refl
-frobenius-is-cube (T₂ , T₀ , T₀ , T₀) = refl
-frobenius-is-cube (T₂ , T₀ , T₀ , T₁) = refl
-frobenius-is-cube (T₂ , T₀ , T₀ , T₂) = refl
-frobenius-is-cube (T₂ , T₀ , T₁ , T₀) = refl
-frobenius-is-cube (T₂ , T₀ , T₁ , T₁) = refl
-frobenius-is-cube (T₂ , T₀ , T₁ , T₂) = refl
-frobenius-is-cube (T₂ , T₀ , T₂ , T₀) = refl
-frobenius-is-cube (T₂ , T₀ , T₂ , T₁) = refl
-frobenius-is-cube (T₂ , T₀ , T₂ , T₂) = refl
-frobenius-is-cube (T₂ , T₁ , T₀ , T₀) = refl
-frobenius-is-cube (T₂ , T₁ , T₀ , T₁) = refl
-frobenius-is-cube (T₂ , T₁ , T₀ , T₂) = refl
-frobenius-is-cube (T₂ , T₁ , T₁ , T₀) = refl
-frobenius-is-cube (T₂ , T₁ , T₁ , T₁) = refl
-frobenius-is-cube (T₂ , T₁ , T₁ , T₂) = refl
-frobenius-is-cube (T₂ , T₁ , T₂ , T₀) = refl
-frobenius-is-cube (T₂ , T₁ , T₂ , T₁) = refl
-frobenius-is-cube (T₂ , T₁ , T₂ , T₂) = refl
-frobenius-is-cube (T₂ , T₂ , T₀ , T₀) = refl
-frobenius-is-cube (T₂ , T₂ , T₀ , T₁) = refl
-frobenius-is-cube (T₂ , T₂ , T₀ , T₂) = refl
-frobenius-is-cube (T₂ , T₂ , T₁ , T₀) = refl
-frobenius-is-cube (T₂ , T₂ , T₁ , T₁) = refl
-frobenius-is-cube (T₂ , T₂ , T₁ , T₂) = refl
-frobenius-is-cube (T₂ , T₂ , T₂ , T₀) = refl
-frobenius-is-cube (T₂ , T₂ , T₂ , T₁) = refl
-frobenius-is-cube (T₂ , T₂ , T₂ , T₂) = refl
-
-
+-- frobenius-is-cube: σ(x) = x³ — 构造性证明见文件末尾 §15
+-- (替换原 81 case refl 穷举; Lin81 + linear-ext4 基展开)
 -- σ⁴ = id (四次 Frobenius 是恒等)
 -- 27 case 穷举 (a 不变, 对 b,c,d 穷举)
 frobenius⁴-id : ∀ x →
@@ -960,3 +877,593 @@ two-divides-four = refl
 -- 1 ∣ 4 的构造性证据
 one-divides-four : 4 ≡ 1 * 4
 one-divides-four = refl
+
+-- 显式标注同余 (复合项上裸 cong₂ 会触发展开失败)
+cong-+81 : ∀ {a b c d : GF81} → a ≡ c → b ≡ d → (a +gf81 b) ≡ (c +gf81 d)
+cong-+81 p q = cong₂ (λ (u v : GF81) → u +gf81 v) p q
+
+cong-*81 : ∀ {a b c d : GF81} → a ≡ c → b ≡ d → (a *gf81 b) ≡ (c *gf81 d)
+cong-*81 p q = cong₂ (λ (u v : GF81) → u *gf81 v) p q
+
+--------------------------------------------------------------------------------
+-- §1. Trit 层辅助
+--------------------------------------------------------------------------------
+
+dn-trit : ∀ t → t ⊕ t ≡ negate t
+dn-trit T₀ = refl
+dn-trit T₁ = refl
+dn-trit T₂ = refl
+
+⊗-cube-id : ∀ t → t ⊗ (t ⊗ t) ≡ t
+⊗-cube-id T₀ = refl
+⊗-cube-id T₁ = refl
+⊗-cube-id T₂ = refl
+
+neg-⊗-r : ∀ A z → negate (A ⊗ z) ≡ A ⊗ negate z
+neg-⊗-r A z = trans (negate-⊗ A z) (negate-⊗-comm A z)
+
+-- 4 项分配 (pull A out of a 4-term nested sum)
+distrib-nest4 : ∀ A p q r s →
+  A ⊗ (p ⊕ (q ⊕ (r ⊕ s))) ≡ ((A ⊗ p) ⊕ ((A ⊗ q) ⊕ ((A ⊗ r) ⊕ (A ⊗ s))))
+distrib-nest4 A p q r s = begin
+  A ⊗ (p ⊕ (q ⊕ (r ⊕ s)))
+    ≡⟨ ⊗-distribˡ-⊕ A p (q ⊕ (r ⊕ s)) ⟩
+  (A ⊗ p) ⊕ (A ⊗ (q ⊕ (r ⊕ s)))
+    ≡⟨ cong ((A ⊗ p) ⊕_) (⊗-distribˡ-⊕ A q (r ⊕ s)) ⟩
+  (A ⊗ p) ⊕ ((A ⊗ q) ⊕ (A ⊗ (r ⊕ s)))
+    ≡⟨ cong ((A ⊗ p) ⊕_) (cong ((A ⊗ q) ⊕_) (⊗-distribˡ-⊕ A r s)) ⟩
+  (A ⊗ p) ⊕ ((A ⊗ q) ⊕ ((A ⊗ r) ⊕ (A ⊗ s)))
+  ∎
+
+--------------------------------------------------------------------------------
+-- §2. GF(3) 标量 (重复加法) 与基元素
+--------------------------------------------------------------------------------
+
+_*s81_ : Trit → GF81 → GF81
+T₀ *s81 x = gf81-zero
+T₁ *s81 x = x
+T₂ *s81 x = x +gf81 x
+
+alpha2 : GF81
+alpha2 = T₀ , T₀ , T₁ , T₀
+
+alpha3 : GF81
+alpha3 = T₀ , T₀ , T₀ , T₁
+
+s81-one : ∀ a → a *s81 gf81-one ≡ (a , T₀ , T₀ , T₀)
+s81-one T₀ = refl
+s81-one T₁ = refl
+s81-one T₂ = refl
+
+s81-alpha : ∀ b → b *s81 alpha ≡ (T₀ , b , T₀ , T₀)
+s81-alpha T₀ = refl
+s81-alpha T₁ = refl
+s81-alpha T₂ = refl
+
+s81-alpha2 : ∀ c → c *s81 alpha2 ≡ (T₀ , T₀ , c , T₀)
+s81-alpha2 T₀ = refl
+s81-alpha2 T₁ = refl
+s81-alpha2 T₂ = refl
+
+s81-alpha3 : ∀ d → d *s81 alpha3 ≡ (T₀ , T₀ , T₀ , d)
+s81-alpha3 T₀ = refl
+s81-alpha3 T₁ = refl
+s81-alpha3 T₂ = refl
+
+-- 基分解: (a,b,c,d) = a·1 + (b·α + (c·α² + d·α³))
+decomp81 : ∀ (a b c d : Trit) →
+  (a , b , c , d) ≡ (a *s81 gf81-one) +gf81 ((b *s81 alpha) +gf81 ((c *s81 alpha2) +gf81 (d *s81 alpha3)))
+decomp81 a b c d = sym (begin
+  (a *s81 gf81-one) +gf81 ((b *s81 alpha) +gf81 ((c *s81 alpha2) +gf81 (d *s81 alpha3)))
+    ≡⟨ cong-+81 (s81-one a)
+         (cong-+81 (s81-alpha b) (cong-+81 (s81-alpha2 c) (s81-alpha3 d))) ⟩
+  (a , T₀ , T₀ , T₀) +gf81 ((T₀ , b , T₀ , T₀) +gf81 ((T₀ , T₀ , c , T₀) +gf81 (T₀ , T₀ , T₀ , d)))
+    ≡⟨ cong ((a , T₀ , T₀ , T₀) +gf81_)
+            (cong ((T₀ , b , T₀ , T₀) +gf81_)
+                  (cong-quad refl refl (⊕-identityʳ c) (⊕-identityˡ d))) ⟩
+  (a , T₀ , T₀ , T₀) +gf81 ((T₀ , b , T₀ , T₀) +gf81 (T₀ , T₀ , c , d))
+    ≡⟨ cong ((a , T₀ , T₀ , T₀) +gf81_)
+            (cong-quad (⊕-identityˡ T₀) (⊕-identityʳ b) (⊕-identityˡ c) (⊕-identityˡ d)) ⟩
+  (a , T₀ , T₀ , T₀) +gf81 (T₀ , b , c , d)
+    ≡⟨ cong-quad (⊕-identityʳ a) (⊕-identityˡ b) (⊕-identityˡ c) (⊕-identityˡ d) ⟩
+  (a , b , c , d)
+  ∎)
+
+--------------------------------------------------------------------------------
+-- §3. Lin81 框架 (只含加法性; lscalar 由 ladd 导出)
+--------------------------------------------------------------------------------
+
+record Lin81 (f : GF81 → GF81) : Set where
+  field
+    ladd : ∀ a b → f (a +gf81 b) ≡ f a +gf81 f b
+open Lin81
+
+-- 幂等消去: u ≡ u+u → u ≡ 0
+cancel-idem : ∀ u → u ≡ u +gf81 u → u ≡ gf81-zero
+cancel-idem u h = begin
+  u
+    ≡⟨ sym (+gf81-identityʳ u) ⟩
+  u +gf81 gf81-zero
+    ≡⟨ cong (u +gf81_) (sym (+gf81-inverse u)) ⟩
+  u +gf81 (u +gf81 negate81 u)
+    ≡⟨ sym (+gf81-assoc u u (negate81 u)) ⟩
+  (u +gf81 u) +gf81 negate81 u
+    ≡⟨ cong (_+gf81 negate81 u) (sym h) ⟩
+  u +gf81 negate81 u
+    ≡⟨ +gf81-inverse u ⟩
+  gf81-zero
+  ∎
+
+-- 左零乘: u·0 ≡ 0
+zero-mul-l : ∀ u → u *gf81 gf81-zero ≡ gf81-zero
+zero-mul-l u =
+  cancel-idem (u *gf81 gf81-zero)
+    (trans (cong (u *gf81_) (sym (+gf81-identityˡ gf81-zero)))
+           (*gf81-distribˡ u gf81-zero gf81-zero))
+
+-- 左零乘: 0·u ≡ 0 (由分配律 + 幂等消去)
+zero-mul-l81 : ∀ u → gf81-zero *gf81 u ≡ gf81-zero
+zero-mul-l81 u = cancel-idem (gf81-zero *gf81 u) (*gf81-distribʳ gf81-zero gf81-zero u)
+
+-- 加法性 ⇒ f 0 ≡ 0
+f0-zero : ∀ (f : GF81 → GF81) → (∀ a b → f (a +gf81 b) ≡ f a +gf81 f b) →
+  f gf81-zero ≡ gf81-zero
+f0-zero f ladd =
+  cancel-idem (f gf81-zero)
+    (trans (cong f (sym (+gf81-identityˡ gf81-zero))) (ladd gf81-zero gf81-zero))
+
+-- 标量律由 ladd 导出 (GF(3) 标量 = 重复加法)
+lscalar-der : ∀ (f : GF81 → GF81) → (∀ a b → f (a +gf81 b) ≡ f a +gf81 f b) →
+  ∀ c w → f (c *s81 w) ≡ c *s81 (f w)
+lscalar-der f ladd T₀ w = f0-zero f ladd
+lscalar-der f ladd T₁ w = refl
+lscalar-der f ladd T₂ w = ladd w w
+
+-- 线性映射按基展开
+expand4 : ∀ (f : GF81 → GF81) → Lin81 f → ∀ (a b c d : Trit) →
+  f (a , b , c , d) ≡ (a *s81 (f gf81-one))
+    +gf81 ((b *s81 (f alpha)) +gf81 ((c *s81 (f alpha2)) +gf81 (d *s81 (f alpha3))))
+expand4 f L a b c d =
+  trans (cong f (decomp81 a b c d))
+    (trans (ladd L (a *s81 gf81-one)
+                  ((b *s81 alpha) +gf81 ((c *s81 alpha2) +gf81 (d *s81 alpha3))))
+    (trans (cong-+81 (lscalar-der f (ladd L) a gf81-one)
+                     (trans (ladd L (b *s81 alpha) ((c *s81 alpha2) +gf81 (d *s81 alpha3)))
+                            (cong-+81 (lscalar-der f (ladd L) b alpha)
+                                      (trans (ladd L (c *s81 alpha2) (d *s81 alpha3))
+                                             (cong-+81 (lscalar-der f (ladd L) c alpha2)
+                                                       (lscalar-der f (ladd L) d alpha3))))))
+           refl))
+
+-- 两个线性映射在基上一致 → 全域一致
+linear-ext4 : ∀ (f g : GF81 → GF81) → Lin81 f → Lin81 g →
+  f gf81-one ≡ g gf81-one → f alpha ≡ g alpha →
+  f alpha2 ≡ g alpha2 → f alpha3 ≡ g alpha3 → ∀ x → f x ≡ g x
+linear-ext4 f g L L' e0 e1 e2 e3 (a , b , c , d) =
+  trans (expand4 f L a b c d)
+    (trans (cong-+81 (cong (λ w → a *s81 w) e0)
+                     (cong-+81 (cong (λ w → b *s81 w) e1)
+                               (cong-+81 (cong (λ w → c *s81 w) e2)
+                                         (cong (λ w → d *s81 w) e3))))
+           (sym (expand4 g L' a b c d)))
+
+--------------------------------------------------------------------------------
+-- §4. 纯 +gf81 引理
+--------------------------------------------------------------------------------
+
+dn81 : ∀ u → (u +gf81 u) ≡ negate81 u
+dn81 (a , b , c , d) = cong-quad (dn-trit a) (dn-trit b) (dn-trit c) (dn-trit d)
+
+neg-add-zero81 : ∀ B → (negate81 B) +gf81 B ≡ gf81-zero
+neg-add-zero81 B = trans (+gf81-comm (negate81 B) B) (+gf81-inverse B)
+
+cancel-neg81 : ∀ A B → (A +gf81 negate81 B) +gf81 B ≡ A
+cancel-neg81 A B =
+  trans (+gf81-assoc A (negate81 B) B)
+        (trans (cong (A +gf81_) (neg-add-zero81 B)) (+gf81-identityʳ A))
+
+c-cancel81 : ∀ C D → C +gf81 (negate81 C +gf81 D) ≡ D
+c-cancel81 C D =
+  trans (sym (+gf81-assoc C (negate81 C) D))
+        (trans (cong (_+gf81 D) (+gf81-inverse C)) (+gf81-identityˡ D))
+
+swap4-81 : ∀ A B C D → (A +gf81 B) +gf81 (C +gf81 D) ≡ (A +gf81 C) +gf81 (B +gf81 D)
+swap4-81 A B C D =
+  trans (sym (+gf81-assoc (A +gf81 B) C D))
+    (trans (cong (λ u → u +gf81 D) (+gf81-assoc A B C))
+      (trans (cong (λ u → (A +gf81 u) +gf81 D) (+gf81-comm B C))
+        (trans (cong (λ u → u +gf81 D) (sym (+gf81-assoc A C B)))
+          (+gf81-assoc (A +gf81 C) B D))))
+
+cm1-81 : ∀ A B C D → ((A +gf81 negate81 B) +gf81 C) +gf81 (B +gf81 (negate81 C +gf81 D))
+                      ≡ ((A +gf81 negate81 B) +gf81 B) +gf81 (C +gf81 (negate81 C +gf81 D))
+cm1-81 A B C D = swap4-81 (A +gf81 negate81 B) C B (negate81 C +gf81 D)
+
+cm2-81 : ∀ A B C D → ((A +gf81 negate81 B) +gf81 B) +gf81 (C +gf81 (negate81 C +gf81 D)) ≡ A +gf81 D
+cm2-81 A B C D =
+  trans (cong (_+gf81 (C +gf81 (negate81 C +gf81 D))) (cancel-neg81 A B))
+        (cong (A +gf81_) (c-cancel81 C D))
+
+cancel-mid81 : ∀ A B C D → ((A +gf81 negate81 B) +gf81 C) +gf81 ((B +gf81 negate81 C) +gf81 D) ≡ A +gf81 D
+cancel-mid81 A B C D =
+  trans (cong (((A +gf81 negate81 B) +gf81 C) +gf81_) (+gf81-assoc B (negate81 C) D))
+        (trans (cm1-81 A B C D) (cm2-81 A B C D))
+
+--------------------------------------------------------------------------------
+-- §5. 乘法结合律 *gf81-assoc
+--------------------------------------------------------------------------------
+
+Basis81 : GF81 → Set
+Basis81 b = (b ≡ gf81-one) ⊎ (b ≡ alpha) ⊎ (b ≡ alpha2) ⊎ (b ≡ alpha3)
+
+assoc-basis : ∀ b1 b2 b3 → Basis81 b1 → Basis81 b2 → Basis81 b3 →
+  ((b1 *gf81 b2) *gf81 b3) ≡ (b1 *gf81 (b2 *gf81 b3))
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+
+LinZ : ∀ b1 b2 → Lin81 (λ z → (b1 *gf81 b2) *gf81 z)
+LinZ b1 b2 = record { ladd = λ a b → *gf81-distribˡ (b1 *gf81 b2) a b }
+LinZ' : ∀ b1 b2 → Lin81 (λ z → b1 *gf81 (b2 *gf81 z))
+LinZ' b1 b2 = record
+  { ladd = λ a b → trans (cong (b1 *gf81_) (*gf81-distribˡ b2 a b))
+                         (*gf81-distribˡ b1 (b2 *gf81 a) (b2 *gf81 b)) }
+z-e1 : ∀ b1 b2 → (b1 *gf81 b2) *gf81 gf81-one ≡ b1 *gf81 (b2 *gf81 gf81-one)
+z-e1 b1 b2 = trans (*gf81-identityʳ (b1 *gf81 b2))
+                    (sym (cong (b1 *gf81_) (*gf81-identityʳ b2)))
+
+assoc-Z : ∀ b1 b2 → Basis81 b1 → Basis81 b2 → ∀ z →
+  (b1 *gf81 b2) *gf81 z ≡ b1 *gf81 (b2 *gf81 z)
+assoc-Z b1 b2 rb1 rb2 z =
+  linear-ext4 (λ w → (b1 *gf81 b2) *gf81 w) (λ w → b1 *gf81 (b2 *gf81 w))
+              (LinZ b1 b2) (LinZ' b1 b2) (z-e1 b1 b2) z-ea z-ea2 z-ea3 z
+  where
+    z-ea : (b1 *gf81 b2) *gf81 alpha ≡ b1 *gf81 (b2 *gf81 alpha)
+    z-ea = assoc-basis b1 b2 alpha rb1 rb2 (inj₂ (inj₁ refl))
+    z-ea2 : (b1 *gf81 b2) *gf81 alpha2 ≡ b1 *gf81 (b2 *gf81 alpha2)
+    z-ea2 = assoc-basis b1 b2 alpha2 rb1 rb2 (inj₂ (inj₂ (inj₁ refl)))
+    z-ea3 : (b1 *gf81 b2) *gf81 alpha3 ≡ b1 *gf81 (b2 *gf81 alpha3)
+    z-ea3 = assoc-basis b1 b2 alpha3 rb1 rb2 (inj₂ (inj₂ (inj₂ refl)))
+
+LinY : ∀ b1 z → Lin81 (λ y → (b1 *gf81 y) *gf81 z)
+LinY b1 z = record
+  { ladd = λ a b → trans (cong (λ u → u *gf81 z) (*gf81-distribˡ b1 a b))
+                         (*gf81-distribʳ (b1 *gf81 a) (b1 *gf81 b) z) }
+LinY' : ∀ b1 z → Lin81 (λ y → b1 *gf81 (y *gf81 z))
+LinY' b1 z = record
+  { ladd = λ a b → trans (cong (b1 *gf81_) (*gf81-distribʳ a b z))
+                         (*gf81-distribˡ b1 (a *gf81 z) (b *gf81 z)) }
+y-e1 : ∀ b1 z → (b1 *gf81 gf81-one) *gf81 z ≡ b1 *gf81 (gf81-one *gf81 z)
+y-e1 b1 z = trans (cong (λ u → u *gf81 z) (*gf81-identityʳ b1))
+                  (cong (b1 *gf81_) (sym (*gf81-identityˡ z)))
+y-ea : ∀ b1 → Basis81 b1 → ∀ z → (b1 *gf81 alpha) *gf81 z ≡ b1 *gf81 (alpha *gf81 z)
+y-ea b1 rb = assoc-Z b1 alpha rb (inj₂ (inj₁ refl))
+y-ea2 : ∀ b1 → Basis81 b1 → ∀ z → (b1 *gf81 alpha2) *gf81 z ≡ b1 *gf81 (alpha2 *gf81 z)
+y-ea2 b1 rb = assoc-Z b1 alpha2 rb (inj₂ (inj₂ (inj₁ refl)))
+y-ea3 : ∀ b1 → Basis81 b1 → ∀ z → (b1 *gf81 alpha3) *gf81 z ≡ b1 *gf81 (alpha3 *gf81 z)
+y-ea3 b1 rb = assoc-Z b1 alpha3 rb (inj₂ (inj₂ (inj₂ refl)))
+
+assoc-Y : ∀ b1 → Basis81 b1 → ∀ y z → (b1 *gf81 y) *gf81 z ≡ b1 *gf81 (y *gf81 z)
+assoc-Y b1 rb y z =
+  linear-ext4 (λ w → (b1 *gf81 w) *gf81 z) (λ w → b1 *gf81 (w *gf81 z))
+              (LinY b1 z) (LinY' b1 z) (y-e1 b1 z) (y-ea b1 rb z) (y-ea2 b1 rb z) (y-ea3 b1 rb z) y
+
+LinX : ∀ y z → Lin81 (λ x → (x *gf81 y) *gf81 z)
+LinX y z = record
+  { ladd = λ a b → trans (cong (λ u → u *gf81 z) (*gf81-distribʳ a b y))
+                         (*gf81-distribʳ (a *gf81 y) (b *gf81 y) z) }
+LinX' : ∀ y z → Lin81 (λ x → x *gf81 (y *gf81 z))
+LinX' y z = record { ladd = λ a b → *gf81-distribʳ a b (y *gf81 z) }
+x-e1 : ∀ y z → (gf81-one *gf81 y) *gf81 z ≡ gf81-one *gf81 (y *gf81 z)
+x-e1 y z = trans (cong (λ u → u *gf81 z) (*gf81-identityˡ y))
+                  (sym (*gf81-identityˡ (y *gf81 z)))
+x-ea : ∀ y z → (alpha *gf81 y) *gf81 z ≡ alpha *gf81 (y *gf81 z)
+x-ea y z = assoc-Y alpha (inj₂ (inj₁ refl)) y z
+x-ea2 : ∀ y z → (alpha2 *gf81 y) *gf81 z ≡ alpha2 *gf81 (y *gf81 z)
+x-ea2 y z = assoc-Y alpha2 (inj₂ (inj₂ (inj₁ refl))) y z
+x-ea3 : ∀ y z → (alpha3 *gf81 y) *gf81 z ≡ alpha3 *gf81 (y *gf81 z)
+x-ea3 y z = assoc-Y alpha3 (inj₂ (inj₂ (inj₂ refl))) y z
+
+-- ★ 乘法结合律 ★
+*gf81-assoc : ∀ x y z → (x *gf81 y) *gf81 z ≡ x *gf81 (y *gf81 z)
+*gf81-assoc x y z =
+  linear-ext4 (λ w → (w *gf81 y) *gf81 z) (λ w → w *gf81 (y *gf81 z))
+              (LinX y z) (LinX' y z) (x-e1 y z) (x-ea y z) (x-ea2 y z) (x-ea3 y z) x
+
+--------------------------------------------------------------------------------
+-- §6. σ 保加 (frobenius-add) — GF81 原先缺失
+--------------------------------------------------------------------------------
+
+frobenius-add : ∀ x y → frobenius (x +gf81 y) ≡ frobenius x +gf81 frobenius y
+frobenius-add (a₁ , b₁ , c₁ , d₁) (a₂ , b₂ , c₂ , d₂) = cong-quad eq₀ eq₁ eq₂ eq₃
+  where
+    eq₀ : a₁ ⊕ a₂ ≡ a₁ ⊕ a₂
+    eq₀ = refl
+    -- σ(a,b,c,d) = (a, d, c⊕d, (b⊕neg c)⊕d)
+    eq₁ : d₁ ⊕ d₂ ≡ d₁ ⊕ d₂
+    eq₁ = refl
+    eq₂ : (c₁ ⊕ c₂) ⊕ (d₁ ⊕ d₂) ≡ (c₁ ⊕ d₁) ⊕ (c₂ ⊕ d₂)
+    eq₂ = swap-middle c₁ c₂ d₁ d₂
+    eq₃ : ((b₁ ⊕ b₂) ⊕ negate (c₁ ⊕ c₂)) ⊕ (d₁ ⊕ d₂)
+        ≡ ((b₁ ⊕ negate c₁) ⊕ d₁) ⊕ ((b₂ ⊕ negate c₂) ⊕ d₂)
+    eq₃ = begin
+      ((b₁ ⊕ b₂) ⊕ negate (c₁ ⊕ c₂)) ⊕ (d₁ ⊕ d₂)
+        ≡⟨ cong (λ u → ((b₁ ⊕ b₂) ⊕ u) ⊕ (d₁ ⊕ d₂)) (negate-⊕ c₁ c₂) ⟩
+      ((b₁ ⊕ b₂) ⊕ (negate c₁ ⊕ negate c₂)) ⊕ (d₁ ⊕ d₂)
+        ≡⟨ cong (_⊕ (d₁ ⊕ d₂)) (swap-middle b₁ b₂ (negate c₁) (negate c₂)) ⟩
+      ((b₁ ⊕ negate c₁) ⊕ (b₂ ⊕ negate c₂)) ⊕ (d₁ ⊕ d₂)
+        ≡⟨ swap-middle (b₁ ⊕ negate c₁) (b₂ ⊕ negate c₂) d₁ d₂ ⟩
+      ((b₁ ⊕ negate c₁) ⊕ d₁) ⊕ ((b₂ ⊕ negate c₂) ⊕ d₂)
+      ∎
+
+LF81 : Lin81 frobenius
+LF81 = record { ladd = frobenius-add }
+
+--------------------------------------------------------------------------------
+-- §7. Freshman's dream 与立方映射
+--------------------------------------------------------------------------------
+
+negF-is-scalar : ∀ x → negate81 x ≡ T₂ *s81 x
+negF-is-scalar (x₀ , x₁ , x₂ , x₃) =
+  cong-quad (sym (dn-trit x₀)) (sym (dn-trit x₁)) (sym (dn-trit x₂)) (sym (dn-trit x₃))
+
+-- 标量提取 (左): (c·x)·y = c·(x·y) — 由 Lin81 + 标量律导出
+scalar-extract-l81 : ∀ c x y → (c *s81 x) *gf81 y ≡ c *s81 (x *gf81 y)
+scalar-extract-l81 T₀ x y = zero-mul-l81 y
+scalar-extract-l81 T₁ x y = refl
+scalar-extract-l81 T₂ x y = *gf81-distribʳ x x y
+
+negF-mulˡ : ∀ x y → negate81 x *gf81 y ≡ negate81 (x *gf81 y)
+negF-mulˡ x y =
+  trans (cong (_*gf81 y) (negF-is-scalar x))
+        (trans (scalar-extract-l81 T₂ x y) (sym (negF-is-scalar (x *gf81 y))))
+
+-- 标量提取 (右)
+scalar-extract-r81 : ∀ c x y → x *gf81 (c *s81 y) ≡ c *s81 (x *gf81 y)
+scalar-extract-r81 T₀ x y = trans (cong (x *gf81_) refl) (zero-mul-l x)
+scalar-extract-r81 T₁ x y = refl
+scalar-extract-r81 T₂ x y = *gf81-distribˡ x y y
+
+negF-mulʳ : ∀ x y → x *gf81 negate81 y ≡ negate81 (x *gf81 y)
+negF-mulʳ x y =
+  trans (cong (x *gf81_) (negF-is-scalar y))
+        (trans (scalar-extract-r81 T₂ x y) (sym (negF-is-scalar (x *gf81 y))))
+
+-- (-x)·(-y) ≡ x·y
+neg-mul-neg : ∀ x y → negate81 x *gf81 negate81 y ≡ x *gf81 y
+neg-mul-neg x y =
+  trans (negF-mulˡ x (negate81 y))
+        (trans (cong negate81 (negF-mulʳ x y)) (negate81² (x *gf81 y)))
+
+-- (w+w)·(w+w) ≡ w·w  (特征 3: w+w = -w)
+two-mul-sq : ∀ w → (w +gf81 w) *gf81 (w +gf81 w) ≡ w *gf81 w
+two-mul-sq w =
+  trans (cong-*81 (dn81 w) (dn81 w)) (neg-mul-neg w w)
+
+sq-raw : ∀ a b → (a +gf81 b) *gf81 (a +gf81 b)
+  ≡ ((a *gf81 a) +gf81 (a *gf81 b)) +gf81 ((b *gf81 a) +gf81 (b *gf81 b))
+sq-raw a b =
+  trans (*gf81-distribʳ a b (a +gf81 b))
+        (cong-+81 (*gf81-distribˡ a a b) (*gf81-distribˡ b a b))
+
+sq-mid : ∀ a b → ((a *gf81 a) +gf81 (a *gf81 b)) +gf81 ((b *gf81 a) +gf81 (b *gf81 b))
+                 ≡ ((a *gf81 a) +gf81 (a *gf81 b)) +gf81 ((a *gf81 b) +gf81 (b *gf81 b))
+sq-mid a b =
+  trans (swap4-81 (a *gf81 a) (a *gf81 b) (b *gf81 a) (b *gf81 b))
+        (cong (_+gf81 ((a *gf81 b) +gf81 (b *gf81 b)))
+              (cong ((a *gf81 a) +gf81_) (*gf81-comm b a)))
+
+sq-end : ∀ A B C → (A +gf81 B) +gf81 (B +gf81 C) ≡ (A +gf81 negate81 B) +gf81 C
+sq-end A B C =
+  trans (+gf81-assoc A B (B +gf81 C))
+        (trans (cong (A +gf81_)
+                     (trans (sym (+gf81-assoc B B C)) (cong (_+gf81 C) (dn81 B))))
+               (sym (+gf81-assoc A (negate81 B) C)))
+
+sq-canon : ∀ a b → (a +gf81 b) *gf81 (a +gf81 b)
+  ≡ ((a *gf81 a) +gf81 negate81 (a *gf81 b)) +gf81 (b *gf81 b)
+sq-canon a b =
+  trans (sq-raw a b) (trans (sq-mid a b) (sq-end (a *gf81 a) (a *gf81 b) (b *gf81 b)))
+
+distrib3-81 : ∀ X Y Z W → ((X +gf81 Y) +gf81 Z) *gf81 W
+                           ≡ ((X *gf81 W) +gf81 (Y *gf81 W)) +gf81 (Z *gf81 W)
+distrib3-81 X Y Z W =
+  trans (*gf81-distribʳ (X +gf81 Y) Z W)
+        (cong-+81 (*gf81-distribʳ X Y W) refl)
+
+blk2-abs : ∀ A B → (A *gf81 B) *gf81 A ≡ (A *gf81 A) *gf81 B
+blk2-abs A B =
+  trans (*gf81-assoc A B A)
+        (trans (cong (A *gf81_) (*gf81-comm B A)) (sym (*gf81-assoc A A B)))
+
+cube-blkA : ∀ a b →
+  (((a *gf81 a) +gf81 negate81 (a *gf81 b)) +gf81 (b *gf81 b)) *gf81 a
+  ≡ ((a *gf81 (a *gf81 a)) +gf81 negate81 ((a *gf81 a) *gf81 b)) +gf81 (a *gf81 (b *gf81 b))
+cube-blkA a b =
+  trans (distrib3-81 (a *gf81 a) (negate81 (a *gf81 b)) (b *gf81 b) a)
+        (cong-+81 (cong-+81 (*gf81-comm (a *gf81 a) a)
+                            (trans (negF-mulˡ (a *gf81 b) a)
+                                   (cong negate81 (blk2-abs a b))))
+                  (*gf81-comm (b *gf81 b) a))
+
+blkB-neg : ∀ a b → negate81 (a *gf81 b) *gf81 b ≡ negate81 (a *gf81 (b *gf81 b))
+blkB-neg a b = trans (negF-mulˡ (a *gf81 b) b) (cong negate81 (*gf81-assoc a b b))
+
+cube-blkB : ∀ a b →
+  (((a *gf81 a) +gf81 negate81 (a *gf81 b)) +gf81 (b *gf81 b)) *gf81 b
+  ≡ (((a *gf81 a) *gf81 b) +gf81 negate81 (a *gf81 (b *gf81 b))) +gf81 (b *gf81 (b *gf81 b))
+cube-blkB a b =
+  trans (distrib3-81 (a *gf81 a) (negate81 (a *gf81 b)) (b *gf81 b) b)
+        (cong-+81 (cong (((a *gf81 a) *gf81 b) +gf81_) (blkB-neg a b))
+                  (*gf81-comm (b *gf81 b) b))
+
+cube-cancel : ∀ a b →
+  (((a *gf81 (a *gf81 a)) +gf81 negate81 ((a *gf81 a) *gf81 b)) +gf81 (a *gf81 (b *gf81 b)))
+  +gf81 ((((a *gf81 a) *gf81 b) +gf81 negate81 (a *gf81 (b *gf81 b))) +gf81 (b *gf81 (b *gf81 b)))
+  ≡ (a *gf81 (a *gf81 a)) +gf81 (b *gf81 (b *gf81 b))
+cube-cancel a b =
+  cancel-mid81 (a *gf81 (a *gf81 a)) ((a *gf81 a) *gf81 b) (a *gf81 (b *gf81 b)) (b *gf81 (b *gf81 b))
+
+cube-expand : ∀ a b → (a +gf81 b) *gf81 ((a +gf81 b) *gf81 (a +gf81 b))
+  ≡ (((a *gf81 a) +gf81 negate81 (a *gf81 b)) +gf81 (b *gf81 b)) *gf81 (a +gf81 b)
+cube-expand a b =
+  trans (cong ((a +gf81 b) *gf81_) (sq-canon a b))
+        (*gf81-comm (a +gf81 b) (((a *gf81 a) +gf81 negate81 (a *gf81 b)) +gf81 (b *gf81 b)))
+
+cube-distrib : ∀ a b →
+  (((a *gf81 a) +gf81 negate81 (a *gf81 b)) +gf81 (b *gf81 b)) *gf81 (a +gf81 b)
+  ≡ ((((a *gf81 a) +gf81 negate81 (a *gf81 b)) +gf81 (b *gf81 b)) *gf81 a)
+    +gf81 ((((a *gf81 a) +gf81 negate81 (a *gf81 b)) +gf81 (b *gf81 b)) *gf81 b)
+cube-distrib a b = *gf81-distribˡ (((a *gf81 a) +gf81 negate81 (a *gf81 b)) +gf81 (b *gf81 b)) a b
+
+-- ★ Freshman's dream ★
+cube-add : ∀ a b → (a +gf81 b) *gf81 ((a +gf81 b) *gf81 (a +gf81 b))
+  ≡ (a *gf81 (a *gf81 a)) +gf81 (b *gf81 (b *gf81 b))
+cube-add a b =
+  trans (cube-expand a b)
+  (trans (cube-distrib a b)
+  (trans (cong-+81 (cube-blkA a b) (cube-blkB a b))
+         (cube-cancel a b)))
+
+--------------------------------------------------------------------------------
+-- §8. 立方映射的 GF(3)-线性
+--------------------------------------------------------------------------------
+
+cubeMap81 : GF81 → GF81
+cubeMap81 x = x *gf81 (x *gf81 x)
+
+sq-scalar : ∀ c w → (c *s81 w) *gf81 (c *s81 w) ≡ (c ⊗ c) *s81 (w *gf81 w)
+sq-scalar T₀ w = zero-mul-l81 (T₀ *s81 w)
+sq-scalar T₁ w = refl
+sq-scalar T₂ w = trans (two-mul-sq w) refl
+
+cube-scalar : ∀ c w →
+  (c *s81 w) *gf81 ((c *s81 w) *gf81 (c *s81 w)) ≡ c *s81 (w *gf81 (w *gf81 w))
+cube-scalar T₀ w = zero-mul-l81 (w *gf81 (w *gf81 w))
+cube-scalar T₁ w = refl
+cube-scalar T₂ w = begin
+  (w +gf81 w) *gf81 ((w +gf81 w) *gf81 (w +gf81 w))
+    ≡⟨ cong ((w +gf81 w) *gf81_) (two-mul-sq w) ⟩
+  (w +gf81 w) *gf81 (w *gf81 w)
+    ≡⟨ scalar-extract-l81 T₂ w (w *gf81 w) ⟩
+  T₂ *s81 (w *gf81 (w *gf81 w))
+  ∎
+
+LC81 : Lin81 cubeMap81
+LC81 = record { ladd = cube-add }
+
+-- ★ σ(x) = x³ ★
+frobenius-is-cube : ∀ x → frobenius x ≡ x *gf81 (x *gf81 x)
+frobenius-is-cube =
+  linear-ext4 frobenius cubeMap81 LF81 LC81 refl refl refl refl
+
+--------------------------------------------------------------------------------
+-- §9. σ 保乘法
+--------------------------------------------------------------------------------
+
+mul-square : ∀ x y → (x *gf81 y) *gf81 (x *gf81 y) ≡ (x *gf81 x) *gf81 (y *gf81 y)
+mul-square x y = begin
+  (x *gf81 y) *gf81 (x *gf81 y)
+    ≡⟨ *gf81-assoc x y (x *gf81 y) ⟩
+  x *gf81 (y *gf81 (x *gf81 y))
+    ≡⟨ cong (x *gf81_) (sym (*gf81-assoc y x y)) ⟩
+  x *gf81 ((y *gf81 x) *gf81 y)
+    ≡⟨ cong (x *gf81_) (cong (_*gf81 y) (*gf81-comm y x)) ⟩
+  x *gf81 ((x *gf81 y) *gf81 y)
+    ≡⟨ cong (x *gf81_) (*gf81-assoc x y y) ⟩
+  x *gf81 (x *gf81 (y *gf81 y))
+    ≡⟨ sym (*gf81-assoc x x (y *gf81 y)) ⟩
+  (x *gf81 x) *gf81 (y *gf81 y)
+  ∎
+
+mul-perm : ∀ a b c d → (a *gf81 b) *gf81 (c *gf81 d) ≡ (a *gf81 c) *gf81 (b *gf81 d)
+mul-perm a b c d = begin
+  (a *gf81 b) *gf81 (c *gf81 d)
+    ≡⟨ *gf81-assoc a b (c *gf81 d) ⟩
+  a *gf81 (b *gf81 (c *gf81 d))
+    ≡⟨ cong (a *gf81_) (sym (*gf81-assoc b c d)) ⟩
+  a *gf81 ((b *gf81 c) *gf81 d)
+    ≡⟨ cong (a *gf81_) (cong (_*gf81 d) (*gf81-comm b c)) ⟩
+  a *gf81 ((c *gf81 b) *gf81 d)
+    ≡⟨ cong (a *gf81_) (*gf81-assoc c b d) ⟩
+  a *gf81 (c *gf81 (b *gf81 d))
+    ≡⟨ sym (*gf81-assoc a c (b *gf81 d)) ⟩
+  (a *gf81 c) *gf81 (b *gf81 d)
+  ∎
+
+cube-mul : ∀ x y → (x *gf81 y) *gf81 ((x *gf81 y) *gf81 (x *gf81 y))
+                  ≡ (x *gf81 (x *gf81 x)) *gf81 (y *gf81 (y *gf81 y))
+cube-mul x y = begin
+  (x *gf81 y) *gf81 ((x *gf81 y) *gf81 (x *gf81 y))
+    ≡⟨ cong ((x *gf81 y) *gf81_) (mul-square x y) ⟩
+  (x *gf81 y) *gf81 ((x *gf81 x) *gf81 (y *gf81 y))
+    ≡⟨ mul-perm x y (x *gf81 x) (y *gf81 y) ⟩
+  (x *gf81 (x *gf81 x)) *gf81 (y *gf81 (y *gf81 y))
+  ∎
+
+frobenius-mul : ∀ x y → frobenius (x *gf81 y) ≡ frobenius x *gf81 frobenius y
+frobenius-mul x y =
+  trans (frobenius-is-cube (x *gf81 y))
+  (trans (cube-mul x y)
+         (cong-*81 (sym (frobenius-is-cube x)) (sym (frobenius-is-cube y))))
