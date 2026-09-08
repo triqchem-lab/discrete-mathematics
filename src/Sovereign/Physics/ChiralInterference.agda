@@ -34,6 +34,7 @@ open import Relation.Binary.PropositionalEquality
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; fin3ToTrit; ⊕-comm; ⊕-inverse; negate²)
 open import Sovereign.Physics.DiscreteEMField3D using (Point3D; next)
+open import Sovereign.Algebra.GF9 using (GF9; gf9-one; gf9-zero; alpha; _+gf9_; _*gf9_; galoisConjugate; galoisConjugate²)
 
 --------------------------------------------------------------------------------
 -- §1. 干涉规则 (闭合表, 语义命名)
@@ -166,4 +167,37 @@ frob-stability φ st p =
   trans (trans (frob3-identity (φ p)) (st p))
         (sym (frob3-identity (φ (kShift p))))
 
+--------------------------------------------------------------------------------
+-- §6. GF9 手征层 (2026-09-08 对齐展示群): 非平凡 Frobenius 共轭手征
+--
+-- §5 诚实边界已言明: GF(3) 上 Frobenius 平凡, CW/CCW 只是加法逆元对 (x⊕-x=0),
+-- 真正的共轭手征 (α, σα) 需 GF(9) — σ(a+bα)=a-bα 阶 2 (非平凡).
+-- 本层把 ChiralInterference 对齐到 GF9 手征 (与 Entanglement§8/QC 同族):
+--   cw9 = α (左旋相位), ccw9 = σ(α) = -α (右旋相位) — Frobenius 共轭对
+--   干涉 = GF9 场, 相位携带 (非 GF3 标量)
+--------------------------------------------------------------------------------
+
+-- GF9 手征对: (α, σα) — Frobenius 共轭对 (非平凡, 真正的左右旋)
+cw9 ccw9 : GF9
+cw9  = alpha            -- 左旋: α (90° 相位)
+ccw9 = galoisConjugate alpha  -- 右旋: σ(α) = -α (共轭)
+
+-- 共轭对合: σ(σ x) = x (手征对偶往返)
+ccw9-involutive : galoisConjugate ccw9 ≡ cw9
+ccw9-involutive = galoisConjugate² alpha
+
+-- GF9 手征场: 逐点携带 GF9 值 (含 α 相位)
+SpinField9 : Set
+SpinField9 = Point3D → GF9
+
+-- GF9 干涉 (逐点 GF9 加法)
+interfere9 : GF9 → GF9 → GF9
+interfere9 x y = x +gf9 y
+
+-- 手征相消: α ⊕ σ(α) — GF9 中共轭对干涉
+-- (GF9 加法: (a,b)+(c,d)=(a⊕c, b⊕d); α=(T₀,T₁), σα=(T₀,T₂), 虚部 T₁⊕T₂=T₀)
+cw9-ccw9-cancel : interfere9 cw9 ccw9 ≡ gf9-zero
+cw9-ccw9-cancel = refl
+
+-- GF9 手征对合: 右旋再共轭回左旋 (与 §1 GF3 cw/ccw 的区别: 这里是 Frobenius 对)
 -- 0 postulate.
