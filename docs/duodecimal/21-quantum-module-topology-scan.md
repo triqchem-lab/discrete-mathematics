@@ -124,6 +124,8 @@
 | 0a75b3c | Algebra/Character/FrequencyMode | 频率模态接口: DC 特征谱作频率地基 |
 | c2ea868 | FrequencyMode | 模态正交 + 显式 12 模态 (mode-00..mode-23) |
 | cd35907 | Structology/StandingWave | 三代驻波 = DC 幅度频率模态 (相位静止 a0) |
+| 4b9e909 | Physics/ChiralInterference | §6 GF9 手征层: CW/CCW → GF9 共轭对(α,σα), σ 非平凡阶2 |
+| 49985d6 | Quantum/Foundation | 公理3 纠缠=GF9 共轭实现落地 (注释→实际定义) |
 
 ### 🔴 待修复: 声子谱桥接 (暂缓, 2026-09-08)
 
