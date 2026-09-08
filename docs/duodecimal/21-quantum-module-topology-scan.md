@@ -186,6 +186,14 @@ GF9AlgebraicChain/AlgebraicPoleUnified(L0已本源化)/GF9Semiring/NormExactSequ
 3/5 次扩张是另分支). 不需统一. 各含 GF3 为公共子域, 高层收敛于 GF(3^lcm).
 GF729 只形式化加法群 (乘法太复杂).
 
+### 📋 GF27 Frobenius 补全 (2026-09-08, 部分完成)
+
+**展示群特性对齐**: GF(3^n) 扩张自动有 Frobenius 自同构 (特征3 x↦x³) — GF27 缺实现已补:
+- ✅ frobenius 显式定义 (5a11f3e): σ(a,b,c)=((a⊕neg b)⊕c, b⊕c, c)
+- ✅ frobenius-add 保加法 (negate-⊕ + swap-middle)
+- ✅ frobenius³-id (27 case, 阶 3) + frobenius-injective
+- 🔴 frobenius-mul 保乘法: 待续 (3分量 Trit 代数符号证明长, 需 80-150 行)
+
 ### 📋 ParityViolation 对齐评估 (2026-09-08, 低优先不强制)
 
 - 宇称破缺 = 环向缠绕深度 a 驱动 (a≥3), 手性对偶只是分类标签
