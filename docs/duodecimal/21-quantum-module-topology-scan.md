@@ -158,3 +158,11 @@
 2. CartanTorsion 应重构到 DC 结构群 + GF9⟨α⟩ (大改)
 
 **SpinTwistor**: 已实质对齐 (8db5985) — §3b 标准 GF9 扭量层 TwistorPoint9=GF9³, 无连续统
+
+### 📋 ParityViolation 对齐评估 (2026-09-08, 低优先不强制)
+
+- 宇称破缺 = 环向缠绕深度 a 驱动 (a≥3), 手性对偶只是分类标签
+- WuXingAmplitude 是**抽象三态标签** (AmpGenerate/Overcome/Overcome2), ω 仅在注释
+- 无 GF9 共轭运算, 无 Zω 值 — 代码本身离散, 连续统记号只在注释
+- **评估**: 硬引入 GF9 改变抽象层次且无明确物理增益, 不强改; 注释层可标注
+  其 ω 振幅与三次单位根/DC 幅度频率同族
