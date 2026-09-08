@@ -39,6 +39,7 @@ open import Sovereign.Format.CRT using (POW2; POW3; M; crtProject; crtReconstruc
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR)
 open import Sovereign.RootMath.DigitalRoot using (digitalRoot)
+open import Sovereign.Algebra.GF9 using (GF9; alpha; galoisConjugate; galoisConjugate²)
 
 --------------------------------------------------------------------------------
 -- 公理 1: 离散第一性
@@ -151,6 +152,23 @@ entanglement-is-from-base = Sovereign.Base.Trit.verifyMul
 --   共轭对 α⊗σ(α) = α⊗(-α) 不可分离
 --   Sovereign.Coupling.Entanglement = 共享缠绕数的五行同步
 --   纠缠 = 乘法群作用 (非局域), 叠加 = 加法群作用 (局域平移)
+
+-- 公理 3 的实现 (2026-09-08): 纠缠 = GF(9) Frobenius 共轭对 (α, σα)
+-- 此前仅为注释声明, 现落地为实际定义 (对齐展示群本源纠缠)
+entanglement-pair-gf9 : GF9 × GF9
+entanglement-pair-gf9 = alpha , galoisConjugate alpha
+
+-- σ 是对合: σ(σ x) = x (测量一个确定其共轭伙伴)
+entanglement-involutive-gf9 : ∀ x → galoisConjugate (galoisConjugate x) ≡ x
+entanglement-involutive-gf9 = galoisConjugate²
+
+-- σ(α) = -α: 共轭对的具体值 (虚部 T₁ → T₂)
+entanglement-conjugate-alpha : galoisConjugate alpha ≡ (T₀ , T₂)
+entanglement-conjugate-alpha = refl
+
+-- 纠缠不可分离: α ≠ σ(α) (σ(α) 定义性 = (T₀,T₂) ≠ α = (T₀,T₁))
+entanglement-nonseparable-gf9 : galoisConjugate alpha ≢ alpha
+entanglement-nonseparable-gf9 ()
 
 --------------------------------------------------------------------------------
 -- 公理 4: 截断商空间
