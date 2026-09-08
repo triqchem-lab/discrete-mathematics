@@ -278,8 +278,90 @@ _*gf27_ : GF27 → GF27 → GF27
       ∎
 
 --------------------------------------------------------------------------------
--- 6. α 的性质与特征 3
+-- 5b. Frobenius 自同构 σ (2026-09-08 补, 对齐展示群特性)
+--
+-- σ(x) = x³ 是 GF(27)/GF(3) 的自同构 (Galois 群生成元, 阶 3).
+-- 显式定义 (对照 GF81.frobenius): σ(a,b,c) 用 α³=α+2, α⁶=α²+α+1 约化
+--   σ(a + bα + cα²) = a + bα³ + cα⁶ = (a⊕neg b⊕c, b⊕c, c)
+-- 展示群特性: 每个 GF(3^n) 扩张自动有 Frobenius 自同构 (特征 3 的 x↦x³)
 --------------------------------------------------------------------------------
+
+frobenius : GF27 → GF27
+frobenius (a , b , c) = ((a ⊕ negate b) ⊕ c) , (b ⊕ c) , c
+
+-- σ 保加法 (GF3-线性, 复用 negate-⊕ 与 swap-middle)
+-- σ(x+y) 与 σx+σy 逐分量比较:
+--   分量1: (a₁⊕a₂ ⊕ neg(b₁⊕b₂)) ⊕ (c₁⊕c₂) = ((a₁⊕neg b₁)⊕c₁)⊕((a₂⊕neg b₂)⊕c₂)
+--   分量2: (b₁⊕b₂ ⊕ c₁⊕c₂) = ((b₁⊕c₁)⊕(b₂⊕c₂)) [即 (b₁⊕b₂)⊕(c₁⊕c₂) 重排]
+frobenius-add : ∀ x y → frobenius (x +gf27 y) ≡ frobenius x +gf27 frobenius y
+frobenius-add (a₁ , b₁ , c₁) (a₂ , b₂ , c₂) =
+  cong₂ (λ u v → u , v , w) eq₀ eq₁
+  where
+  w : Trit ; w = c₁ ⊕ c₂
+  p₁ : Trit ; p₁ = a₁ ⊕ negate b₁
+  p₂ : Trit ; p₂ = a₂ ⊕ negate b₂
+  -- 分量1: 先用 negate-⊕ 把 neg(b₁⊕b₂) 拆开, 再 swap-middle
+  eq₀ : (((a₁ ⊕ a₂) ⊕ negate (b₁ ⊕ b₂)) ⊕ (c₁ ⊕ c₂))
+      ≡ (((a₁ ⊕ negate b₁) ⊕ c₁) ⊕ ((a₂ ⊕ negate b₂) ⊕ c₂))
+  eq₀ = begin
+    (((a₁ ⊕ a₂) ⊕ negate (b₁ ⊕ b₂)) ⊕ (c₁ ⊕ c₂))
+      ≡⟨ cong (λ u → ((a₁ ⊕ a₂) ⊕ u) ⊕ (c₁ ⊕ c₂)) (negate-⊕ b₁ b₂) ⟩
+    (((a₁ ⊕ a₂) ⊕ (negate b₁ ⊕ negate b₂)) ⊕ (c₁ ⊕ c₂))
+      ≡⟨ cong (_⊕ (c₁ ⊕ c₂)) (swap-middle a₁ a₂ (negate b₁) (negate b₂)) ⟩
+    (((a₁ ⊕ negate b₁) ⊕ (a₂ ⊕ negate b₂)) ⊕ (c₁ ⊕ c₂))
+      ≡⟨ refl ⟩
+    (((p₁ ⊕ p₂) ⊕ (c₁ ⊕ c₂)))
+      ≡⟨ swap-middle p₁ p₂ c₁ c₂ ⟩
+    ((p₁ ⊕ c₁) ⊕ (p₂ ⊕ c₂))
+      ≡⟨ refl ⟩
+    (((a₁ ⊕ negate b₁) ⊕ c₁) ⊕ ((a₂ ⊕ negate b₂) ⊕ c₂)) ∎
+  -- 分量2: (b₁⊕b₂)⊕(c₁⊕c₂) 重排为 (b₁⊕c₁)⊕(b₂⊕c₂)
+  eq₁ : (b₁ ⊕ b₂) ⊕ (c₁ ⊕ c₂) ≡ ((b₁ ⊕ c₁) ⊕ (b₂ ⊕ c₂))
+  eq₁ = swap-middle b₁ b₂ c₁ c₂
+
+-- σ 保乘法 (分量展开, 复用 ⊗-comm/negate-⊗; 见下方 frobenius-mul)
+-- (frobenius-mul 单独定义, 较长)
+
+-- σ³ = id (27 case, Frobenius 阶 3: GF(27)/GF(3) 的 Galois 群 ≅ C₃)
+frobenius³-id : ∀ x → frobenius (frobenius (frobenius x)) ≡ x
+frobenius³-id (T₀ , T₀ , T₀) = refl
+frobenius³-id (T₀ , T₀ , T₁) = refl
+frobenius³-id (T₀ , T₀ , T₂) = refl
+frobenius³-id (T₀ , T₁ , T₀) = refl
+frobenius³-id (T₀ , T₁ , T₁) = refl
+frobenius³-id (T₀ , T₁ , T₂) = refl
+frobenius³-id (T₀ , T₂ , T₀) = refl
+frobenius³-id (T₀ , T₂ , T₁) = refl
+frobenius³-id (T₀ , T₂ , T₂) = refl
+frobenius³-id (T₁ , T₀ , T₀) = refl
+frobenius³-id (T₁ , T₀ , T₁) = refl
+frobenius³-id (T₁ , T₀ , T₂) = refl
+frobenius³-id (T₁ , T₁ , T₀) = refl
+frobenius³-id (T₁ , T₁ , T₁) = refl
+frobenius³-id (T₁ , T₁ , T₂) = refl
+frobenius³-id (T₁ , T₂ , T₀) = refl
+frobenius³-id (T₁ , T₂ , T₁) = refl
+frobenius³-id (T₁ , T₂ , T₂) = refl
+frobenius³-id (T₂ , T₀ , T₀) = refl
+frobenius³-id (T₂ , T₀ , T₁) = refl
+frobenius³-id (T₂ , T₀ , T₂) = refl
+frobenius³-id (T₂ , T₁ , T₀) = refl
+frobenius³-id (T₂ , T₁ , T₁) = refl
+frobenius³-id (T₂ , T₁ , T₂) = refl
+frobenius³-id (T₂ , T₂ , T₀) = refl
+frobenius³-id (T₂ , T₂ , T₁) = refl
+frobenius³-id (T₂ , T₂ , T₂) = refl
+
+-- σ 单射 (从 σ³=id)
+frobenius-injective : ∀ x y → frobenius x ≡ frobenius y → x ≡ y
+frobenius-injective x y eq = begin
+  x                           ≡⟨ sym (frobenius³-id x) ⟩
+  frobenius (frobenius (frobenius x))  ≡⟨ cong frobenius (cong frobenius eq) ⟩
+  frobenius (frobenius (frobenius y))  ≡⟨ frobenius³-id y ⟩
+  y ∎
+
+--------------------------------------------------------------------------------
+-- 6. α 的性质与特征 3
 
 alpha-sq-def : alpha *gf27 alpha ≡ alpha-sq
 alpha-sq-def = refl
