@@ -20,7 +20,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
 open ≡-Reasoning
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate;
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; negate²;
   ⊕-comm; ⊕-assoc; ⊕-identityˡ; ⊕-identityʳ; ⊕-inverse;
   ⊗-comm; ⊗-assoc; ⊗-distribˡ-⊕; ⊗-distribʳ-⊕)
 open import Sovereign.Algebra.GF27 using (negate-⊕)
@@ -82,89 +82,6 @@ br-I2-any : brM m5 m1 ≡ mzero ; br-I2-any = refl
 br-I2-E12 : brM m5 m2 ≡ mzero ; br-I2-E12 = refl
 br-E12-E12 : brM m2 m2 ≡ mzero ; br-E12-E12 = refl
 -- 反称: [X,Y] + [Y,X] = 0 (81 项穷举)
-asym : ∀ X Y → mtadd (brM X Y) (brM Y X) ≡ mzero
-asym m0 m0 = refl
-asym m0 m1 = refl
-asym m0 m2 = refl
-asym m0 m3 = refl
-asym m0 m4 = refl
-asym m0 m5 = refl
-asym m0 m6 = refl
-asym m0 m7 = refl
-asym m0 m8 = refl
-asym m1 m0 = refl
-asym m1 m1 = refl
-asym m1 m2 = refl
-asym m1 m3 = refl
-asym m1 m4 = refl
-asym m1 m5 = refl
-asym m1 m6 = refl
-asym m1 m7 = refl
-asym m1 m8 = refl
-asym m2 m0 = refl
-asym m2 m1 = refl
-asym m2 m2 = refl
-asym m2 m3 = refl
-asym m2 m4 = refl
-asym m2 m5 = refl
-asym m2 m6 = refl
-asym m2 m7 = refl
-asym m2 m8 = refl
-asym m3 m0 = refl
-asym m3 m1 = refl
-asym m3 m2 = refl
-asym m3 m3 = refl
-asym m3 m4 = refl
-asym m3 m5 = refl
-asym m3 m6 = refl
-asym m3 m7 = refl
-asym m3 m8 = refl
-asym m4 m0 = refl
-asym m4 m1 = refl
-asym m4 m2 = refl
-asym m4 m3 = refl
-asym m4 m4 = refl
-asym m4 m5 = refl
-asym m4 m6 = refl
-asym m4 m7 = refl
-asym m4 m8 = refl
-asym m5 m0 = refl
-asym m5 m1 = refl
-asym m5 m2 = refl
-asym m5 m3 = refl
-asym m5 m4 = refl
-asym m5 m5 = refl
-asym m5 m6 = refl
-asym m5 m7 = refl
-asym m5 m8 = refl
-asym m6 m0 = refl
-asym m6 m1 = refl
-asym m6 m2 = refl
-asym m6 m3 = refl
-asym m6 m4 = refl
-asym m6 m5 = refl
-asym m6 m6 = refl
-asym m6 m7 = refl
-asym m6 m8 = refl
-asym m7 m0 = refl
-asym m7 m1 = refl
-asym m7 m2 = refl
-asym m7 m3 = refl
-asym m7 m4 = refl
-asym m7 m5 = refl
-asym m7 m6 = refl
-asym m7 m7 = refl
-asym m7 m8 = refl
-asym m8 m0 = refl
-asym m8 m1 = refl
-asym m8 m2 = refl
-asym m8 m3 = refl
-asym m8 m4 = refl
-asym m8 m5 = refl
-asym m8 m6 = refl
-asym m8 m7 = refl
-asym m8 m8 = refl
-
 -- Jacobi: [[X,Y],Z] + [[Y,Z],X] + [[Z,X],Y] = 0 (729 项穷举)
 jacobi : ∀ X Y Z → mtadd (br (brM X Y) (toMat Z)) (mtadd (br (brM Y Z) (toMat X)) (br (brM Z X) (toMat Y))) ≡ mzero
 jacobi m0 m0 m0 = refl
@@ -1164,3 +1081,76 @@ asym3 (a , b , c) (d , e , f) = cong₃ (λ p q r → p , q , r) c0 c1 c2
         ≡⟨ ⊕-inverse ((b ⊗ d) ⊕ (a ⊗ e)) ⟩
       T₀
       ∎
+
+--------------------------------------------------------------------------------
+-- 反称性 asym (构造性: br = XY - YX, 替代原 81 case 穷举)
+--------------------------------------------------------------------------------
+
+cong4 : ∀ {a b c d a' b' c' d' : Trit} →
+  a ≡ a' → b ≡ b' → c ≡ c' → d ≡ d' →
+  ((a , b) , (c , d)) ≡ ((a' , b') , (c' , d'))
+cong4 refl refl refl refl = refl
+
+mtadd-comm : ∀ X Y → mtadd X Y ≡ mtadd Y X
+mtadd-comm ((a , b) , (c , d)) ((e , f) , (g , h)) =
+  cong4 (⊕-comm a e) (⊕-comm b f) (⊕-comm c g) (⊕-comm d h)
+
+mtadd-assoc : ∀ X Y Z → mtadd (mtadd X Y) Z ≡ mtadd X (mtadd Y Z)
+mtadd-assoc ((a , b) , (c , d)) ((e , f) , (g , h)) ((i , j) , (k , l)) =
+  cong4 (⊕-assoc a e i) (⊕-assoc b f j) (⊕-assoc c g k) (⊕-assoc d h l)
+
+mtadd-inverse : ∀ X → mtadd X (mtneg X) ≡ mzero
+mtadd-inverse ((a , b) , (c , d)) =
+  cong4 (⊕-inverse a) (⊕-inverse b) (⊕-inverse c) (⊕-inverse d)
+
+mtadd-identityˡ : ∀ X → mtadd mzero X ≡ X
+mtadd-identityˡ ((a , b) , (c , d)) =
+  cong4 (⊕-identityˡ a) (⊕-identityˡ b) (⊕-identityˡ c) (⊕-identityˡ d)
+
+mtadd-identityʳ : ∀ X → mtadd X mzero ≡ X
+mtadd-identityʳ ((a , b) , (c , d)) =
+  cong4 (⊕-identityʳ a) (⊕-identityʳ b) (⊕-identityʳ c) (⊕-identityʳ d)
+
+mtadd-swap4 : ∀ A B C D → mtadd (mtadd A B) (mtadd C D) ≡ mtadd (mtadd A C) (mtadd B D)
+mtadd-swap4 ((a₁ , b₁) , (c₁ , d₁)) ((a₂ , b₂) , (c₂ , d₂))
+             ((a₃ , b₃) , (c₃ , d₃)) ((a₄ , b₄) , (c₄ , d₄)) =
+  cong4 (swap4-m a₁ a₂ a₃ a₄) (swap4-m b₁ b₂ b₃ b₄) (swap4-m c₁ c₂ c₃ c₄) (swap4-m d₁ d₂ d₃ d₄)
+  where
+    swap4-m : ∀ A B C D → (A ⊕ B) ⊕ (C ⊕ D) ≡ (A ⊕ C) ⊕ (B ⊕ D)
+    swap4-m A B C D =
+      trans (sym (⊕-assoc (A ⊕ B) C D))
+        (trans (cong (λ u → u ⊕ D) (⊕-assoc A B C))
+          (trans (cong (λ u → (A ⊕ u) ⊕ D) (⊕-comm B C))
+            (trans (cong (λ u → u ⊕ D) (sym (⊕-assoc A C B)))
+              (⊕-assoc (A ⊕ C) B D))))
+
+mtneg-add : ∀ X Y → mtneg (mtadd X Y) ≡ mtadd (mtneg X) (mtneg Y)
+mtneg-add ((a , b) , (c , d)) ((e , f) , (g , h)) =
+  cong4 (negate-⊕ a e) (negate-⊕ b f) (negate-⊕ c g) (negate-⊕ d h)
+
+mtneg-involutive : ∀ X → mtneg (mtneg X) ≡ X
+mtneg-involutive ((a , b) , (c , d)) = cong4 (negate² a) (negate² b) (negate² c) (negate² d)
+
+-- br X Y = mtmul X Y + mtneg (mtmul Y X) (定义)
+br-eq : ∀ X Y → br X Y ≡ mtadd (mtmul X Y) (mtneg (mtmul Y X))
+br-eq X Y = refl
+
+-- ★ asym: 用 swap4 + inverseʳ ★
+asym : ∀ X Y → mtadd (br X Y) (br Y X) ≡ mzero
+asym X Y = begin
+  mtadd (br X Y) (br Y X)
+    ≡⟨⟩
+  mtadd (mtadd (mtmul X Y) (mtneg (mtmul Y X)))
+        (mtadd (mtmul Y X) (mtneg (mtmul X Y)))
+    ≡⟨ mtadd-swap4 (mtmul X Y) (mtneg (mtmul Y X)) (mtmul Y X) (mtneg (mtmul X Y)) ⟩
+  mtadd (mtadd (mtmul X Y) (mtmul Y X))
+        (mtadd (mtneg (mtmul Y X)) (mtneg (mtmul X Y)))
+    ≡⟨ cong₂ (λ (u v : Mat2T) → mtadd u v) refl
+             (sym (mtneg-add (mtmul Y X) (mtmul X Y))) ⟩
+  mtadd (mtadd (mtmul X Y) (mtmul Y X)) (mtneg (mtadd (mtmul Y X) (mtmul X Y)))
+    ≡⟨ cong₂ (λ (u v : Mat2T) → mtadd u v)
+             (mtadd-comm (mtmul X Y) (mtmul Y X)) refl ⟩
+  mtadd (mtadd (mtmul Y X) (mtmul X Y)) (mtneg (mtadd (mtmul Y X) (mtmul X Y)))
+    ≡⟨ mtadd-inverse (mtadd (mtmul Y X) (mtmul X Y)) ⟩
+  mzero
+  ∎
