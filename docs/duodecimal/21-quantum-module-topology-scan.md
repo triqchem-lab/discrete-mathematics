@@ -244,23 +244,33 @@ GF729 只形式化加法群 (乘法太复杂).
 **GF729 域乘法不强补** (与 GF243 评估一致): 无不可约多项式 (line 550 "需选择 6 次不可约多项式, 本模块不处理"),
 纯 T⁶ 格点加法工具 (非 GF(3⁶) 域载体, 系数 Fin3 非 Trit), **域乘法定义不补**
 
-### 📋 GF729 展示群相位对齐 (2026-09-08, c449e38)
+### 📋 GF729 展示群相位对齐 — 群论修正 (2026-09-08)
 
-**区辨**: 展示群对齐 ≠ 域乘法。GF729 仍是加法向量空间 GF9³ ([GF729:GF9]=3, 6=2×3);
-**90° 相位周期在加法层由结构承载**, 无需不可约多项式:
+**⚠️ 修正记录**: 初版 (c449e38) 把相位写成"逐坐标乘 α"的坐标计算, 且误改上游 GF9.agda
+加 fixity。用户指正: **相位旋转是 GF(9)× ≅ C₈ 的 4 阶循环子群 ⟨α⟩, 这是群论**;
+且下游无权改上游基础定义。已撤销 (dd377a2) 并群论重写 (088ce6e)。
 
-- `alphaRotate`: 3 块 GF9 各自乘 α — (u,v)↦(neg v,u), α²=-1 的几何关系
-- `alphaRotate-flip`: R²=neg729 (180°); `alphaRotate-4`: R⁴=id (周期闭合); `alphaRotate-add`: 线性
-- `act`: AlphaPower⟨α⟩ 4 阶群作用 (p0=id, p1=R, p2=R², p3=R³); `act-hom` 16 case 由 mulAlpha 乘法表驱动; `act-add`
-- `embed-9-729`+`embed-rotate`: GF9 乘α旋转在嵌入下 = alphaRotate (相位源对齐)
-- `gf729-conj`: galoisConjugate 沿块作用 (u,v)↦(u,neg v); conj²/conj-add; `embed-conj` 嵌入保共轭
-- `conj-rot-conj`: conj∘R∘conj = R³ (共轭翻转旋转方向)
+**正确的群论定位** (`PhaseSubgroup.agda`, 0 postulate, 不改上游):
+- GF(9)× ≅ C₈ 循环 (gen=1+α, `gen-generates-all` + `gen-order-8` 阶恰 8)
+- **⟨α⟩ 是 C₈ 的 4 阶循环子群**: α=gen⁶ (`gen-pow-6`), ⟨α⟩={gen⁰,gen²,gen⁴,gen⁶}
+- **阶恰为 4**: α⁴=1 (上界) + α²≠1 + α≠1 (下界, 排除 1/2 阶)
+- **4 | 8** (拉格朗日) + 4 阶元存在 (双侧阶证明)
+- **相位旋转 = C₄ 循环作用**: rot x = x·α, 4-循环 orbit s1↦sα↦s2↦s2α↦s1, rot⁴=id, rot²=取负(180°)
+- **AlphaPower ≅ ⟨α⟩**: `alphaPowerToGF9` 保乘 (`mulAlpha-hom`), 抽象 C₄ 阶恰 4
 
-相位/旋转全部由结构定义 + 构造性证明给出, **无阶数算术判定** (C₄ 是几何周期非乘法群阶标签)。
-0 postulate, 下游 TowerConnection 编译绿。
+**GF729Field (GF(9) 三次扩张域)** — 独立模块, 不改 GF729 的 T⁶ 工具定位:
+- 域乘法 *F (卷积+约化 t³=2t+α), 0 postulate
+- 构造性证明 (符号, 非穷举): char3 / *F-distribˡ/ʳ / frobenius-add / scalar-extractˡ
+- GF9 环同态 embed-9 (保加保乘)
 
-**对齐结论**: GF729 现带 90° 旋转周期 (R⁴=id) + AlphaPower 群作用 + 共轭 — 展示群相位结构已就位;
-缺项仅为 GF9 的 α⁴=1 型周期证明已由 DuodecClock 本源承载, 域乘法保持不补 (T⁶ 工具定位不变)。
+**技术债 (诚实记录, 未完成)**:
+- `GF729Field.frobenius-is-cube` 仍是 **729 条 refl 穷举** (待构造化)
+- 阻塞点: 缺 `*F-assoc`。已有 `scalar-extractˡ` ((c·x)*F y ≡ c·(x*F y)) 作基础,
+  但基 {1,t,t²} 上的双线性扩展尚未闭合。
+- `GF27`(27)/`GF81`(81)/`GF243`(243) 的 `frobenius-is-cube` 同样是 refl 穷举;
+  GF27/81/243 均缺 `frobenius-mul` (保乘)。
+- 这些穷举是有限域上的**正确但非构造**的验证。构造化路径已由 GF9 示范
+  (`frobenius-cube` 符号证明 + `gf9-cube-eq` 9 case)。
 
 ### 📋 ParityViolation 对齐评估 (2026-09-08, 低优先不强制)
 
