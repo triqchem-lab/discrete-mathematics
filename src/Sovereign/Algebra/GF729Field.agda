@@ -44,7 +44,7 @@ open import Sovereign.Algebra.GF9
          *gf9-identityˡ; *gf9-identityʳ; *gf9-comm; *gf9-assoc;
          *gf9-distribˡ-+gf9; *gf9-distribʳ-+gf9;
          negate-⊕; negate-⊗; negate-⊗-negate; negate-⊗-comm; two-mul-is-neg;
-         galoisConjugate; galoisConjugate-add; galoisConjugate-mul)
+         galoisConjugate; galoisConjugate-add; galoisConjugate-mul; frobenius-cube)
 
 open ≡-Reasoning
 
@@ -127,16 +127,17 @@ gf9-negate : GF9 → GF9
 gf9-negate (a , b) = (negate a , negate b)
 
 -- p₃ 的 GF9 取反
+-- 注: 采用 let-free 直接坐标形式 (库内 GF243/GF81 惯例)。
+-- let 绑定会使 Agda 对复合项的投影不归约 (f args .projᵢ 卡住),
+-- 直接坐标形式使 *F 在字面三元组上完全归约。
 _*F_ : GF729F → GF729F → GF729F
 (x₀ , x₁ , x₂) *F (y₀ , y₁ , y₂) =
-  let p₀ = x₀ *gf9 y₀
-      p₁ = (x₀ *gf9 y₁) +gf9 (x₁ *gf9 y₀)
-      p₂ = ((x₀ *gf9 y₂) +gf9 (x₁ *gf9 y₁)) +gf9 (x₂ *gf9 y₀)
-      p₃ = (x₁ *gf9 y₂) +gf9 (x₂ *gf9 y₁)
-      p₄ = x₂ *gf9 y₂
-  in  (p₀ +gf9 (p₃ *gf9 alpha)) ,
-      ((p₁ +gf9 (gf9-negate p₃)) +gf9 (p₄ *gf9 alpha)) ,
-      (p₂ +gf9 (gf9-negate p₄))
+  ((x₀ *gf9 y₀) +gf9 (((x₁ *gf9 y₂) +gf9 (x₂ *gf9 y₁)) *gf9 alpha)) ,
+  ((((x₀ *gf9 y₁) +gf9 (x₁ *gf9 y₀))
+    +gf9 (gf9-negate ((x₁ *gf9 y₂) +gf9 (x₂ *gf9 y₁))))
+   +gf9 ((x₂ *gf9 y₂) *gf9 alpha)) ,
+  ((((x₀ *gf9 y₂) +gf9 (x₁ *gf9 y₁)) +gf9 (x₂ *gf9 y₀))
+   +gf9 (gf9-negate (x₂ *gf9 y₂)))
 
 
 --------------------------------------------------------------------------------
@@ -602,19 +603,14 @@ gf9-neg : GF9 → GF9
 gf9-neg (a , b) = (negate a , negate b)
 
 -- σ 的坐标公式
+-- 注: 同样采用 let-free 形式, 使 frobenius 在抽象坐标变量上归约
+-- (σ(t)=α·1+2·t 即 s0=α, s1=(T₂,T₀); σ(t)²=2+t+t²)
 frobenius : GF729F → GF729F
 frobenius (x₀ , x₁ , x₂) =
-  let y₀ = galoisConjugate x₀
-      y₁ = galoisConjugate x₁
-      y₂ = galoisConjugate x₂
-      -- y₁ · σ(t) = y₁ · (α, (2,0), 0)
-      -- σ(t) 的分量: s0=α, s1=(T₂,T₀), s2=0
-      s0 = alpha
-      s1 = (T₂ , T₀)
-      -- y₂ · σ(t)² = y₂ · ((2,0), α, 1)
-  in  ((y₀ +gf9 (y₁ *gf9 s0)) +gf9 (y₂ *gf9 (T₂ , T₀))) ,
-      ((y₁ *gf9 s1) +gf9 (y₂ *gf9 alpha)) ,
-      y₂
+  ((galoisConjugate x₀ +gf9 (galoisConjugate x₁ *gf9 alpha))
+   +gf9 (galoisConjugate x₂ *gf9 (T₂ , T₀))) ,
+  ((galoisConjugate x₁ *gf9 (T₂ , T₀)) +gf9 (galoisConjugate x₂ *gf9 alpha)) ,
+  galoisConjugate x₂
 
 
 --------------------------------------------------------------------------------
@@ -1176,739 +1172,307 @@ frobenius-t-orbit :
   frobenius (frobenius (frobenius (frobenius (frobenius (frobenius t))))) ≡ t
 frobenius-t-orbit = refl
 
--- frobenius-is-cube: σ(x) = x·x·x (立方映射, 展示群特性)
--- 关键恒等: σ 在 GF9 上 = 立方 (galoisConjugate c ≡ c³), σ(t) = t³
--- 故 σ(x₀+x₁t+x₂t²) = x₀³ + x₁³t³ + x₂³(t³)² 由 σ 是域自同构
--- 直接以坐标展开验证 (729 case 穷举)
+--------------------------------------------------------------------------------
+-- §16. Freshman's dream 与构造性 Frobenius (替换 729 穷举)
+--
+-- 审计: 原 frobenius-is-cube 为 729 条 refl 穷举 (暴力计算), 非构造性证明.
+-- 本节给出符号证明:
+--   (1) 特征 3 下 (a+b)³ = a³ + b³ (Freshman's dream, 立方映射保加法)
+--   (2) σ 与立方映射皆 GF9-半线性
+--   (3) 二者在基 {1, t, t²} 上一致 → 全域相等 (semilinear-ext3)
+--
+-- 逐层剥离技巧 (库内先例 GF243 cong-Vec9):
+--   · cong-+F: 显式标注类型的 +F 同余 (裸 cong₂ _+F_ 触发 *F 展开)
+--   · 纯 +F 引理 (§16.1) 隔离 conversion 干扰
+--   · *F 引理分块 (blkA/blkB), 用 cong-+F 组装
+--------------------------------------------------------------------------------
 
--- frobenius-is-cube: σ(x) = x³ (全域真定理, 729 case 穷举)
+-- §16.1 特征 3 的消去律与 4 项交换 (纯 +F)
+
+neg-add-zero : ∀ B → (negF B) +F B ≡ gf729F-zero
+neg-add-zero B = trans (+F-comm (negF B) B) (+F-inverse B)
+
+-- (A +F negF B) +F B ≡ A
+cancel-neg : ∀ A B → (A +F negF B) +F B ≡ A
+cancel-neg A B =
+  trans (+F-assoc A (negF B) B)
+        (trans (cong (A +F_) (neg-add-zero B)) (+F-identityʳ A))
+
+-- C +F (negF C +F D) ≡ D
+c-cancel : ∀ C D → C +F (negF C +F D) ≡ D
+c-cancel C D =
+  trans (sym (+F-assoc C (negF C) D))
+        (trans (cong (_+F D) (+F-inverse C)) (+F-identityˡ D))
+
+swap4 : ∀ A B C D → (A +F B) +F (C +F D) ≡ (A +F C) +F (B +F D)
+swap4 A B C D =
+  trans (sym (+F-assoc (A +F B) C D))
+    (trans (cong (λ u → u +F D) (+F-assoc A B C))
+      (trans (cong (λ u → (A +F u) +F D) (+F-comm B C))
+        (trans (cong (λ u → u +F D) (sym (+F-assoc A C B)))
+          (+F-assoc (A +F C) B D))))
+
+-- ((A + -B) + C) + ((B + -C) + D) ≡ A + D
+cm1 : ∀ A B C D → ((A +F negF B) +F C) +F (B +F (negF C +F D))
+                   ≡ ((A +F negF B) +F B) +F (C +F (negF C +F D))
+cm1 A B C D = swap4 (A +F negF B) C B (negF C +F D)
+
+cm2 : ∀ A B C D → ((A +F negF B) +F B) +F (C +F (negF C +F D)) ≡ A +F D
+cm2 A B C D =
+  trans (cong (_+F (C +F (negF C +F D))) (cancel-neg A B))
+        (cong (A +F_) (c-cancel C D))
+
+cancel-mid : ∀ A B C D → ((A +F negF B) +F C) +F ((B +F negF C) +F D) ≡ A +F D
+cancel-mid A B C D =
+  trans (cong (((A +F negF B) +F C) +F_) (+F-assoc B (negF C) D))
+        (trans (cm1 A B C D) (cm2 A B C D))
+
+-- §16.2 特征 3 与取反的乘法性质
+
+dn : ∀ u → (u +F u) ≡ negF u
+dn u = cong-triple (c0 (proj₁ u)) (c0 (proj₁ (proj₂ u))) (c0 (proj₂ (proj₂ u)))
+  where
+    c0 : ∀ (x : GF9) → (x +gf9 x) ≡ (negate (proj₁ x) , negate (proj₂ x))
+    c0 (a , b) = cong₂ _,_ (d a) (d b)
+      where
+        d : ∀ s → (s ⊕ s) ≡ negate s
+        d T₀ = refl
+        d T₁ = refl
+        d T₂ = refl
+
+negF-is-scalar : ∀ x → negF x ≡ (T₂ , T₀) *s x
+negF-is-scalar (x₀ , x₁ , x₂) =
+  cong-triple (gf9-neg-is-mul x₀) (gf9-neg-is-mul x₁) (gf9-neg-is-mul x₂)
+
+negF-mulˡ : ∀ x y → negF x *F y ≡ negF (x *F y)
+negF-mulˡ x y =
+  trans (cong (_*F y) (negF-is-scalar x))
+        (trans (scalar-extractˡ (T₂ , T₀) x y) (sym (negF-is-scalar (x *F y))))
+
+-- §16.3 平方展开: (a+b)² = a² - ab + b²
+
+sq-raw : ∀ a b → (a +F b) *F (a +F b)
+  ≡ ((a *F a) +F (a *F b)) +F ((b *F a) +F (b *F b))
+sq-raw a b =
+  trans (*F-distribʳ a b (a +F b))
+        (cong₂ (λ u v → u +F v) (*F-distribˡ a a b) (*F-distribˡ b a b))
+
+sq-mid : ∀ a b → ((a *F a) +F (a *F b)) +F ((b *F a) +F (b *F b))
+                 ≡ ((a *F a) +F (a *F b)) +F ((a *F b) +F (b *F b))
+sq-mid a b =
+  trans (swap4 (a *F a) (a *F b) (b *F a) (b *F b))
+        (cong (_+F ((a *F b) +F (b *F b)))
+              (cong ((a *F a) +F_) (*F-comm b a)))
+
+sq-end : ∀ A B C → (A +F B) +F (B +F C) ≡ (A +F negF B) +F C
+sq-end A B C =
+  trans (+F-assoc A B (B +F C))
+        (trans (cong (A +F_)
+                     (trans (sym (+F-assoc B B C)) (cong (_+F C) (dn B))))
+               (sym (+F-assoc A (negF B) C)))
+
+sq-canon : ∀ a b → (a +F b) *F (a +F b)
+  ≡ ((a *F a) +F negF (a *F b)) +F (b *F b)
+sq-canon a b =
+  trans (sq-raw a b) (trans (sq-mid a b) (sq-end (a *F a) (a *F b) (b *F b)))
+
+-- §16.4 三次展开: (a+b)³ = a³ + b³
+
+distrib2 : ∀ X Y W → (X +F Y) *F W ≡ (X *F W) +F (Y *F W)
+distrib2 X Y W =
+  trans (*F-comm (X +F Y) W)
+        (trans (*F-distribˡ' W X Y)
+               (cong-+F (*F-comm W X) (*F-comm W Y)))
+
+distrib3 : ∀ X Y Z W → ((X +F Y) +F Z) *F W
+                       ≡ ((X *F W) +F (Y *F W)) +F (Z *F W)
+distrib3 X Y Z W =
+  trans (distrib2 (X +F Y) Z W) (cong-+F (distrib2 X Y W) refl)
+
+blk2-abs : ∀ A B → (A *F B) *F A ≡ (A *F A) *F B
+blk2-abs A B =
+  trans (*F-assoc A B A)
+        (trans (cong (A *F_) (*F-comm B A)) (sym (*F-assoc A A B)))
+
+cube-blkA : ∀ a b →
+  (((a *F a) +F negF (a *F b)) +F (b *F b)) *F a
+  ≡ ((a *F (a *F a)) +F negF ((a *F a) *F b)) +F (a *F (b *F b))
+cube-blkA a b =
+  trans (distrib3 (a *F a) (negF (a *F b)) (b *F b) a)
+        (cong-+F (cong-+F (*F-comm (a *F a) a)
+                          (trans (negF-mulˡ (a *F b) a)
+                                 (cong negF (blk2-abs a b))))
+                  (*F-comm (b *F b) a))
+
+blkB-neg : ∀ a b → negF (a *F b) *F b ≡ negF (a *F (b *F b))
+blkB-neg a b = trans (negF-mulˡ (a *F b) b) (cong negF (*F-assoc a b b))
+
+cong2-snd : ∀ P Q R → Q ≡ R → (P +F Q) ≡ (P +F R)
+cong2-snd P Q R p = cong-+F refl p
+
+cube-blkB : ∀ a b →
+  (((a *F a) +F negF (a *F b)) +F (b *F b)) *F b
+  ≡ (((a *F a) *F b) +F negF (a *F (b *F b))) +F (b *F (b *F b))
+cube-blkB a b =
+  trans (distrib3 (a *F a) (negF (a *F b)) (b *F b) b)
+        (cong-+F (cong2-snd ((a *F a) *F b) (negF (a *F b) *F b)
+                            (negF (a *F (b *F b))) (blkB-neg a b))
+                 (*F-comm (b *F b) b))
+
+cube-cancel : ∀ a b →
+  (((a *F (a *F a)) +F negF ((a *F a) *F b)) +F (a *F (b *F b)))
+  +F ((((a *F a) *F b) +F negF (a *F (b *F b))) +F (b *F (b *F b)))
+  ≡ (a *F (a *F a)) +F (b *F (b *F b))
+cube-cancel a b =
+  cancel-mid (a *F (a *F a)) ((a *F a) *F b) (a *F (b *F b)) (b *F (b *F b))
+
+-- 抽象左乘同余 (避免 cong 直接含 *F 上下文)
+mul-cong : ∀ A B C → B ≡ C → A *F B ≡ A *F C
+mul-cong A B C p = cong (A *F_) p
+
+cube-expand : ∀ a b → (a +F b) *F ((a +F b) *F (a +F b))
+  ≡ (((a *F a) +F negF (a *F b)) +F (b *F b)) *F (a +F b)
+cube-expand a b =
+  trans (mul-cong (a +F b) ((a +F b) *F (a +F b))
+                  (((a *F a) +F negF (a *F b)) +F (b *F b)) (sq-canon a b))
+        (*F-comm (a +F b) (((a *F a) +F negF (a *F b)) +F (b *F b)))
+
+cube-distrib : ∀ a b →
+  (((a *F a) +F negF (a *F b)) +F (b *F b)) *F (a +F b)
+  ≡ ((((a *F a) +F negF (a *F b)) +F (b *F b)) *F a)
+    +F ((((a *F a) +F negF (a *F b)) +F (b *F b)) *F b)
+cube-distrib a b = *F-distribˡ' (((a *F a) +F negF (a *F b)) +F (b *F b)) a b
+
+-- ★ Freshman's dream: (a+b)³ ≡ a³ + b³ (立方映射保加法) ★
+cube-add : ∀ a b → (a +F b) *F ((a +F b) *F (a +F b))
+  ≡ (a *F (a *F a)) +F (b *F (b *F b))
+cube-add a b =
+  trans (cube-expand a b)
+  (trans (cube-distrib a b)
+  (trans (cong-+F (cube-blkA a b) (cube-blkB a b))
+         (cube-cancel a b)))
+
+-- §16.5 σ 与立方映射的 GF9-半线性
+
+gf9-factor : ∀ g a₀ a₁ a₂ →
+  ((g *gf9 a₀) +gf9 ((g *gf9 a₁) *gf9 alpha)) +gf9 ((g *gf9 a₂) *gf9 (T₂ , T₀))
+  ≡ g *gf9 ((a₀ +gf9 (a₁ *gf9 alpha)) +gf9 (a₂ *gf9 (T₂ , T₀)))
+gf9-factor g a₀ a₁ a₂ =
+  trans (cong₂ (λ u v → ((g *gf9 a₀) +gf9 u) +gf9 v)
+               (*gf9-assoc g a₁ alpha)
+               (*gf9-assoc g a₂ (T₂ , T₀)))
+        (sym (trans (*gf9-distribˡ-+gf9 g (a₀ +gf9 (a₁ *gf9 alpha)) (a₂ *gf9 (T₂ , T₀)))
+                    (cong₂ (λ u v → u +gf9 v)
+                           (*gf9-distribˡ-+gf9 g a₀ (a₁ *gf9 alpha)) refl)))
+
+gf9-factor2 : ∀ g a₁ a₂ →
+  ((g *gf9 a₁) *gf9 (T₂ , T₀)) +gf9 ((g *gf9 a₂) *gf9 alpha)
+  ≡ g *gf9 ((a₁ *gf9 (T₂ , T₀)) +gf9 (a₂ *gf9 alpha))
+gf9-factor2 g a₁ a₂ =
+  trans (cong₂ (λ u v → u +gf9 v)
+               (*gf9-assoc g a₁ (T₂ , T₀))
+               (*gf9-assoc g a₂ alpha))
+        (sym (*gf9-distribˡ-+gf9 g (a₁ *gf9 (T₂ , T₀)) (a₂ *gf9 alpha)))
+
+-- σ 的标量半线性: σ(c·x) ≡ σ(c)·σ(x)
+frobenius-scalar : ∀ c w →
+  frobenius (embed-9 c *F w) ≡ embed-9 (galoisConjugate c) *F frobenius w
+frobenius-scalar c (w₀ , w₁ , w₂) =
+  trans (cong frobenius (sym (scalar-mul c (w₀ , w₁ , w₂))))
+  (trans (cong-triple
+            (trans (cong₂ (λ u v → u +gf9 v)
+                          (cong₂ (λ u v → u +gf9 (v *gf9 alpha))
+                                 (galoisConjugate-mul c w₀)
+                                 (galoisConjugate-mul c w₁))
+                          (cong₂ _*gf9_ (galoisConjugate-mul c w₂) refl))
+                   (gf9-factor (galoisConjugate c) (galoisConjugate w₀)
+                               (galoisConjugate w₁) (galoisConjugate w₂)))
+            (trans (cong₂ (λ u v → u +gf9 v)
+                          (cong₂ _*gf9_ (galoisConjugate-mul c w₁) refl)
+                          (cong₂ _*gf9_ (galoisConjugate-mul c w₂) refl))
+                   (gf9-factor2 (galoisConjugate c) (galoisConjugate w₁)
+                                (galoisConjugate w₂)))
+            (galoisConjugate-mul c w₂))
+         (scalar-mul (galoisConjugate c) (frobenius (w₀ , w₁ , w₂))))
+
+-- 标量两次穿透: embed c *F (embed d *F X) ≡ embed (c·d) *F X
+scalar-mul2 : ∀ c d X →
+  embed-9 c *F (embed-9 d *F X) ≡ embed-9 (c *gf9 d) *F X
+scalar-mul2 c d X =
+  trans (sym (scalar-mul c (embed-9 d *F X)))
+  (trans (cong (c *s_) (sym (scalar-mul d X)))
+  (trans (scalar-assoc c d X) (scalar-mul (c *gf9 d) X)))
+
+sq-scalar : ∀ c w →
+  (embed-9 c *F w) *F (embed-9 c *F w) ≡ embed-9 (c *gf9 c) *F (w *F w)
+sq-scalar c w =
+  trans (sym (ecA c w (embed-9 c *F w)))
+  (trans (cong (embed-9 c *F_) (scalar-left w c w))
+         (scalar-mul2 c c (w *F w)))
+
+-- 立方映射的标量半线性: (c·w)³ ≡ σ(c)·w³
+cube-scalar : ∀ c w →
+  (embed-9 c *F w) *F ((embed-9 c *F w) *F (embed-9 c *F w))
+  ≡ embed-9 (galoisConjugate c) *F (w *F (w *F w))
+cube-scalar c w =
+  trans (sym (ecA c w ((embed-9 c *F w) *F (embed-9 c *F w))))
+  (trans (cong (embed-9 c *F_) (cong (w *F_) (sq-scalar c w)))
+  (trans (cong (embed-9 c *F_) (scalar-left w (c *gf9 c) (w *F w)))
+  (trans (scalar-mul2 c (c *gf9 c) (w *F (w *F w)))
+         (cong (λ d → embed-9 d *F (w *F (w *F w)))
+               (trans (*gf9-comm c (c *gf9 c)) (sym (frobenius-cube c)))))))
+
+-- 半线性映射 (关于 GF9 的 Frobenius)
+record Semilinear (f : GF729F → GF729F) : Set where
+  field
+    sadd : ∀ a b → f (a +F b) ≡ f a +F f b
+    sscalar : ∀ c w → f (embed-9 c *F w) ≡ embed-9 (galoisConjugate c) *F f w
+open Semilinear
+
+-- 半线性映射按基 {1, t, t²} 展开
+expand3-sem : ∀ (f : GF729F → GF729F) → Semilinear f → ∀ (a b c : GF9) →
+  f (a , b , c) ≡ ((embed-9 (galoisConjugate a) *F f gf729F-one)
+                +F ((embed-9 (galoisConjugate b) *F f t)
+                    +F (embed-9 (galoisConjugate c) *F f (t *F t))))
+expand3-sem f L a b c =
+  trans (cong f (sym (decomp a b c)))
+    (trans (sadd L (embed-9 a) ((embed-9 b *F t) +F (embed-9 c *F (t *F t))))
+           (cong₂ (λ u v → u +F v)
+                  (trans (cong f (sym (*F-identityʳ (embed-9 a)))) (sscalar L a gf729F-one))
+                  (trans (sadd L (embed-9 b *F t) (embed-9 c *F (t *F t)))
+                         (cong₂ (λ u v → u +F v) (sscalar L b t) (sscalar L c (t *F t))))))
+
+-- 两个半线性映射在基上一致 → 全域一致
+semilinear-ext3 : ∀ (f g : GF729F → GF729F) → Semilinear f → Semilinear g →
+  f gf729F-one ≡ g gf729F-one → f t ≡ g t → f (t *F t) ≡ g (t *F t) →
+  ∀ x → f x ≡ g x
+semilinear-ext3 f g L L' e1 et et2 (a , b , c) =
+  trans (expand3-sem f L a b c)
+  (trans (cong₂ (λ p q → p +F q)
+            (cong (λ w → embed-9 (galoisConjugate a) *F w) e1)
+            (cong₂ (λ p q → p +F q)
+              (cong (λ w → embed-9 (galoisConjugate b) *F w) et)
+              (cong (λ w → embed-9 (galoisConjugate c) *F w) et2)))
+         (sym (expand3-sem g L' a b c)))
+
+SemF : Semilinear frobenius
+SemF = record { sadd = frobenius-add ; sscalar = frobenius-scalar }
+
+cubeMap : GF729F → GF729F
+cubeMap x = x *F (x *F x)
+
+SemC : Semilinear cubeMap
+SemC = record { sadd = cube-add ; sscalar = cube-scalar }
+
+-- §16.6 ★ frobenius-is-cube: σ(x) = x³ (构造性, 非 729 穷举) ★
+
+frobenius-one : frobenius gf729F-one ≡ gf729F-one *F (gf729F-one *F gf729F-one)
+frobenius-one = refl
+
+frobenius-t2 : frobenius (t *F t) ≡ (t *F t) *F ((t *F t) *F (t *F t))
+frobenius-t2 = refl
+
 frobenius-is-cube : ∀ x → frobenius x ≡ x *F (x *F x)
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₀ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₁ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₀) , (T₂ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₀ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₁ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₁) , (T₂ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₀ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₁ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₀ , T₂) , (T₂ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₀ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₁ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₀) , (T₂ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₀ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₁ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₁) , (T₂ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₀ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₁ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₁ , T₂) , (T₂ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₀ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₁ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₀) , (T₂ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₀ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₁ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₁) , (T₂ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₀ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₁ , T₂) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₀) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₀) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₀) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₀) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₀) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₀) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₀) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₀) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₀) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₁) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₁) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₁) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₁) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₁) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₁) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₁) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₁) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₁) , (T₂ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₂) , (T₀ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₂) , (T₀ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₂) , (T₀ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₂) , (T₁ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₂) , (T₁ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₂) , (T₁ , T₂)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₂) , (T₂ , T₀)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₂) , (T₂ , T₁)) = refl
-frobenius-is-cube ((T₂ , T₂) , (T₂ , T₂) , (T₂ , T₂)) = refl
+frobenius-is-cube = semilinear-ext3 frobenius cubeMap SemF SemC refl frobenius-t frobenius-t2
+
+

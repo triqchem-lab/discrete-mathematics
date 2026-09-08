@@ -267,14 +267,20 @@ GF729 只形式化加法群 (乘法太复杂).
 - ✅ `*F-assoc` 已闭合 (71afe27): 三级嵌套线性扩展 (Linear/expand3/linear-ext3),
   27 个基三元组 + assoc-Z→assoc-Y→assoc, 非穷举。
 - ✅ `scalar-extractˡ` (6d09f91)、`*F-distribˡ/ʳ`、`char3`、`frobenius-add` (08d337a)。
+- ✅ **`frobenius-is-cube` 已构造化 (729 穷举已删除)**:
+  - `cube-add` (Freshman's dream, 特征 3): (a+b)³ ≡ a³+b³, 由平方展开 + 分块分配 + 中间相消
+  - `frobenius-scalar` / `cube-scalar`: σ 与立方映射的 GF9-半线性
+  - `record Semilinear` + `semilinear-ext3`: 半线性映射按基 {1,t,t²} 展开
+  - `frobenius-is-cube = semilinear-ext3 frobenius cubeMap SemF SemC refl frobenius-t frobenius-t2`
+  - 关键修复: `*F` 与 `frobenius` 改为 **let-free 直接坐标形式** —
+    原 `let` 绑定使 Agda conversion checking 对复合项无法归一化
+    (`f args .projᵢ` 卡住), 这是库内唯一带 `let` 的域乘法。
+  - 对抗验证: 具体点 (原点/t/含α混合点) 上构造性证明与独立 `refl` 计算一致。
 
-**技术债 (诚实记录, 未完成)**:
-- `GF729Field.frobenius-is-cube` 仍是 **729 条 refl 穷举** (待构造化)。
-- 构造化路径已明确: σ 与立方映射均为 `galoisConjugate`-半线性
-  (`semilinear-ext` 已验证可用), 两者在基 {1,t,t²} 上相等 (3 个 refl 已确认);
-  还缺 `sigma-scalar` (σ 保标量) 与 `cube-add` (Freshman's dream)。
-- `GF27`(27)/`GF81`(81)/`GF243`(243) 的 `frobenius-is-cube` 同样是 refl 穷举;
+**技术债 (诚实记录)**:
+- `GF27`(27)/`GF81`(81)/`GF243`(243) 的 `frobenius-is-cube` 仍是 refl 穷举;
   GF27/81/243 均缺 `frobenius-mul` (保乘)。
+  构造化范式已在 GF729Field 打通 (Semilinear + semilinear-ext3), 可迁移。
 
 ### 📋 ParityViolation 对齐评估 (2026-09-08, 低优先不强制)
 
