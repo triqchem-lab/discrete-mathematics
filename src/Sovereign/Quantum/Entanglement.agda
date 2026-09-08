@@ -23,6 +23,7 @@ open import Data.Empty using (⊥)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
+open import Sovereign.Algebra.GF9 using (GF9; gf9-one; gf9-zero; alpha; alpha-squared; alpha-powers-4; _*gf9_; galoisConjugate; galoisConjugate²)
 
 --------------------------------------------------------------------------------
 -- §1. 离散量子态 (qutrit)
@@ -275,4 +276,70 @@ bell-violation-proof-2 : Σ (Trit × Trit × Trit × Trit)
 bell-violation-proof-2 = 
   ((T₁ , T₁ , T₁ , T₁) , 
    λ eq → T₂≢T₀ eq)
+
+--------------------------------------------------------------------------------
+-- §8. GF9 本源纠缠层 (2026-09-08 对齐展示群本源)
+--
+-- 理论对齐: 以上 §1-§7 是 GF3 起点层 (⊗-语义错配已裁定, 见注释 §6).
+-- 本层是纠缠的本源表达 — 依展示群本源三合一:
+--   纠缠 = GF9 Frobenius 共轭对 (α, σα), 不可分离
+--   (相位 = ⟨α⟩ 旋转见 §8c; 幅度 = GF3 见 §1)
+-- 复用: QuantumCorrespondence.agda §2 的 GF9 共轭纠缠样板 + GF9.agda 已证引理.
+-- 0 postulate.
+--------------------------------------------------------------------------------
+
+-- §8a. GF9 本源量子态: 二能级带相位 (a, b) = a|0⟩ + b|1⟩, a,b ∈ GF(9)
+-- 幅度在 GF3 层, 相位由 GF9 的 α 携带 — 不丢失相位
+Qutrit9 : Set
+Qutrit9 = GF9 × GF9
+
+-- GF9 零元 (幅度零, 相位零)
+gf9-0 : GF9
+gf9-0 = gf9-zero
+
+-- 基态嵌入: |0⟩ = (1, 0), |1⟩ = (0, 1) — GF9 系数
+ket0g : Qutrit9
+ket0g = gf9-one , gf9-0
+
+ket1g : Qutrit9
+ket1g = gf9-0 , gf9-one
+
+-- §8b. GF9 本源纠缠: Frobenius 共轭对 (α, σα)
+-- σ(a+bα) = a-bα, σ 是对合 (σ²=id), α ≠ σ(α) — 纠缠对不可分离
+entanglement-pair9 : GF9 × GF9
+entanglement-pair9 = alpha , galoisConjugate alpha
+
+-- 纠缠对的具体值: σ(α) = -α = (T₀, T₂)
+entanglement-concrete9 : galoisConjugate alpha ≡ (T₀ , T₂)
+entanglement-concrete9 = refl
+
+-- 共轭对合: σ(σ x) ≡ x (测量一个确定另一个)
+entanglement-involutive9 : ∀ x → galoisConjugate (galoisConjugate x) ≡ x
+entanglement-involutive9 = galoisConjugate²
+
+-- 纠缠不可分离: α ≠ σ(α) — 共轭对是真正不同的两个态
+-- σ(α) 定义性 = (T₀,T₂) ≠ α = (T₀,T₁) (虚部 T₂ ≠ T₁), 直接空模式
+entanglement-nonseparable9 : galoisConjugate alpha ≢ alpha
+entanglement-nonseparable9 ()
+
+-- 纠缠态 = 叠加 |0⟩,|1⟩ 中系数为 GF9 (含 α 相位)
+-- 例: 最大纠缠态 (α|0⟩ + σ(α)|1⟩ 型) — 两分量各带共轭相位
+bell-state9 : Qutrit9
+bell-state9 = alpha , galoisConjugate alpha
+
+-- §8c. 相位 = ⟨α⟩ 旋转 (本源相位层)
+-- α 是 GF(9) 中阶 4 的旋转生成元: α⁴ = 1 (90°×4 = 360°)
+-- α² = -1: 相位半圈
+
+-- α² = -1 (相位 180°)
+phase-half-turn : alpha *gf9 alpha ≡ (T₂ , T₀)
+phase-half-turn = alpha-squared
+
+-- α⁴ = 1 (相位全圈 360°): (α²)² = (-1)² = 1
+-- 相位旋转群 ⟨α⟩ 阶 4 = 本源相位层闭合 (90°×4 回原点)
+phase-full-turn : (alpha *gf9 alpha) *gf9 (alpha *gf9 alpha) ≡ gf9-one
+phase-full-turn = alpha-powers-4
+
+-- 纠缠对经相位旋转闭合: 本层纠缠载体 α 携带本源 90° 相位
+-- (对比 §1-§7 的 GF3 Bell 表 — 那里无 α 相位, 是 ⊗-语义错配源头)
 
