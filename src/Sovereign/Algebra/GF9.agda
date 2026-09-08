@@ -130,6 +130,9 @@ _+gf9_ : GF9 → GF9 → GF9
 _*gf9_ : GF9 → GF9 → GF9
 (a , b) *gf9 (c , d) = ((a ⊗ c) ⊕ (negate (b ⊗ d))) , ((a ⊗ d) ⊕ (b ⊗ c))
 
+infixl 6 _+gf9_
+infixl 7 _*gf9_
+
 gf9-one : GF9
 gf9-one = T₁ , T₀
 
