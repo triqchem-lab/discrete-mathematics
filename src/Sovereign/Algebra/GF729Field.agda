@@ -42,7 +42,7 @@ open import Sovereign.Algebra.GF9
          +gf9-comm; +gf9-assoc; +gf9-identityˡ; +gf9-identityʳ; +gf9-inverse;
          *gf9-identityˡ; *gf9-identityʳ; *gf9-comm; *gf9-assoc;
          *gf9-distribˡ-+gf9; *gf9-distribʳ-+gf9;
-         negate-⊕; negate-⊗; negate-⊗-negate; negate-⊗-comm;
+         negate-⊕; negate-⊗; negate-⊗-negate; negate-⊗-comm; two-mul-is-neg;
          galoisConjugate; galoisConjugate-add; galoisConjugate-mul)
 
 open ≡-Reasoning
@@ -614,6 +614,249 @@ frobenius (x₀ , x₁ , x₂) =
   in  ((y₀ +gf9 (y₁ *gf9 s0)) +gf9 (y₂ *gf9 (T₂ , T₀))) ,
       ((y₁ *gf9 s1) +gf9 (y₂ *gf9 alpha)) ,
       y₂
+
+
+--------------------------------------------------------------------------------
+-- §11. 构造性域公理 (修正: refl 穷举 → 符号构造证明)
+--
+-- 审计发现原 frobenius-is-cube 为 729 条 refl 穷举 (暴力计算), 且缺
+-- *F-distrib/char3 — 构造性证明的必要前提. 本节补齐 (复用 GF9 域公理).
+--------------------------------------------------------------------------------
+
+-- GF9 特征 3
+gf9-char3 : ∀ x → ((x +gf9 x) +gf9 x) ≡ gf9-zero
+gf9-char3 (a , b) = cong₂ _,_ (trit-char3 a) (trit-char3 b)
+  where
+    trit-char3 : ∀ t → ((t ⊕ t) ⊕ t) ≡ T₀
+    trit-char3 T₀ = refl
+    trit-char3 T₁ = refl
+    trit-char3 T₂ = refl
+
++F-char3 : ∀ x → ((x +F x) +F x) ≡ gf729F-zero
++F-char3 (x₀ , x₁ , x₂) =
+  cong-triple (gf9-char3 x₀) (gf9-char3 x₁) (gf9-char3 x₂)
+
+-- 取反分配 (GF9)
+gf9-neg-add : ∀ x y → gf9-negate (x +gf9 y) ≡ gf9-negate x +gf9 gf9-negate y
+gf9-neg-add (a , b) (c , d) = cong₂ _,_ (negate-⊕ a c) (negate-⊕ b d)
+
+-- GF9 取反 = 乘 (-1) (结构根据: -(x) = (-1)·x, 域乘法)
+gf9-neg-is-mul : ∀ x → gf9-negate x ≡ (T₂ , T₀) *gf9 x
+gf9-neg-is-mul (a , b) =
+  sym (cong₂ _,_
+    (trans (cong₂ (λ u v → u ⊕ negate v) (two-mul-is-neg a) (⊗-zeroˡ b))
+           (⊕-identityʳ (negate a)))
+    (trans (cong ((T₂ ⊗ b) ⊕_) (⊗-zeroˡ a))
+      (trans (⊕-identityʳ (T₂ ⊗ b)) (two-mul-is-neg b))))
+
+-- -(x·y) ≡ (-x)·y  (由 -(x·y) = (-1)·(x·y) = ((-1)·x)·y = (-x)·y, 结合律)
+gf9-neg-mul : ∀ x y → gf9-negate (x *gf9 y) ≡ gf9-negate x *gf9 y
+gf9-neg-mul x y =
+  trans (gf9-neg-is-mul (x *gf9 y))
+    (trans (sym (*gf9-assoc (T₂ , T₀) x y))
+           (cong (λ u → u *gf9 y) (sym (gf9-neg-is-mul x))))
+
+-- 4 项交换
+gf9-swap4 : ∀ A B C D → ((A +gf9 B) +gf9 (C +gf9 D)) ≡ ((A +gf9 C) +gf9 (B +gf9 D))
+gf9-swap4 A B C D =
+  trans (sym (+gf9-assoc (A +gf9 B) C D))
+    (trans (cong (λ u → u +gf9 D) (+gf9-assoc A B C))
+      (trans (cong (λ u → (A +gf9 u) +gf9 D) (+gf9-comm B C))
+        (trans (cong (λ u → u +gf9 D) (sym (+gf9-assoc A C B)))
+          (+gf9-assoc (A +gf9 C) B D))))
+
+-- 6 项归并: ((A+B)+(C+D))+(E+F) ≡ ((A+C)+E)+((B+D)+F)
+gf9-merge6 : ∀ A B C D E F →
+  (((A +gf9 B) +gf9 (C +gf9 D)) +gf9 (E +gf9 F))
+  ≡ (((A +gf9 C) +gf9 E) +gf9 ((B +gf9 D) +gf9 F))
+gf9-merge6 A B C D E F =
+  trans (cong (λ u → u +gf9 (E +gf9 F)) (gf9-swap4 A B C D))
+    (gf9-swap4 (A +gf9 C) (B +gf9 D) E F)
+
+--------------------------------------------------------------------------------
+-- 卷积/约化分解 (Poly5, 度 ≤ 4)
+--------------------------------------------------------------------------------
+
+Poly5 : Set
+Poly5 = GF9 × GF9 × GF9 × GF9 × GF9
+
+-- 3×3 卷积 → 5 系数
+conv : GF729F → GF729F → Poly5
+conv (x₀ , x₁ , x₂) (y₀ , y₁ , y₂) =
+  (x₀ *gf9 y₀) ,
+  ((x₀ *gf9 y₁) +gf9 (x₁ *gf9 y₀)) ,
+  (((x₀ *gf9 y₂) +gf9 (x₁ *gf9 y₁)) +gf9 (x₂ *gf9 y₀)) ,
+  ((x₁ *gf9 y₂) +gf9 (x₂ *gf9 y₁)) ,
+  (x₂ *gf9 y₂)
+
+-- 约化 t³ = 2t + α, t⁴ = 2t² + αt
+reduce5 : Poly5 → GF729F
+reduce5 (p₀ , p₁ , p₂ , p₃ , p₄) =
+  (p₀ +gf9 (p₃ *gf9 alpha)) ,
+  ((p₁ +gf9 (gf9-negate p₃)) +gf9 (p₄ *gf9 alpha)) ,
+  (p₂ +gf9 (gf9-negate p₄))
+
+-- *F = reduce5 ∘ conv (定义等式)
+*F-via-conv : ∀ x y → x *F y ≡ reduce5 (conv x y)
+*F-via-conv x y = refl
+
+-- Poly5 逐分量加法
+infixl 6 _+p5_
+_+p5_ : Poly5 → Poly5 → Poly5
+(p₀ , p₁ , p₂ , p₃ , p₄) +p5 (q₀ , q₁ , q₂ , q₃ , q₄) =
+  (p₀ +gf9 q₀) , (p₁ +gf9 q₁) , (p₂ +gf9 q₂) , (p₃ +gf9 q₃) , (p₄ +gf9 q₄)
+
+cong-5 : ∀ {a₀ a₁ a₂ a₃ a₄ b₀ b₁ b₂ b₃ b₄ : GF9} →
+  a₀ ≡ b₀ → a₁ ≡ b₁ → a₂ ≡ b₂ → a₃ ≡ b₃ → a₄ ≡ b₄ →
+  (a₀ , a₁ , a₂ , a₃ , a₄) ≡ (b₀ , b₁ , b₂ , b₃ , b₄)
+cong-5 refl refl refl refl refl = refl
+
+
+-- reduce5 保持加法: r(p+q) ≡ r(p) +F r(q)
+reduce5-additive : ∀ p q → reduce5 (p +p5 q) ≡ reduce5 p +F reduce5 q
+reduce5-additive (p₀ , p₁ , p₂ , p₃ , p₄) (q₀ , q₁ , q₂ , q₃ , q₄) =
+  cong-triple eq₀ eq₁ eq₂
+  where
+    eq₀ : (p₀ +gf9 q₀) +gf9 ((p₃ +gf9 q₃) *gf9 alpha)
+        ≡ (p₀ +gf9 (p₃ *gf9 alpha)) +gf9 (q₀ +gf9 (q₃ *gf9 alpha))
+    eq₀ = trans (cong ((p₀ +gf9 q₀) +gf9_) (*gf9-distribʳ-+gf9 p₃ q₃ alpha))
+                (gf9-swap4 p₀ q₀ (p₃ *gf9 alpha) (q₃ *gf9 alpha))
+
+    eq₁ : ((p₁ +gf9 q₁) +gf9 gf9-negate (p₃ +gf9 q₃)) +gf9 ((p₄ +gf9 q₄) *gf9 alpha)
+        ≡ ((p₁ +gf9 (gf9-negate p₃)) +gf9 (p₄ *gf9 alpha))
+          +gf9 ((q₁ +gf9 (gf9-negate q₃)) +gf9 (q₄ *gf9 alpha))
+    eq₁ = trans (cong₂ (λ u v → ((p₁ +gf9 q₁) +gf9 u) +gf9 v)
+                        (gf9-neg-add p₃ q₃)
+                        (*gf9-distribʳ-+gf9 p₄ q₄ alpha))
+                (trans (cong (λ u → u +gf9 ((p₄ *gf9 alpha) +gf9 (q₄ *gf9 alpha)))
+                             (gf9-swap4 p₁ q₁ (gf9-negate p₃) (gf9-negate q₃)))
+                       (gf9-swap4 (p₁ +gf9 gf9-negate p₃) (q₁ +gf9 gf9-negate q₃)
+                                  (p₄ *gf9 alpha) (q₄ *gf9 alpha)))
+
+    eq₂ : (p₂ +gf9 q₂) +gf9 gf9-negate (p₄ +gf9 q₄)
+        ≡ (p₂ +gf9 (gf9-negate p₄)) +gf9 (q₂ +gf9 (gf9-negate q₄))
+    eq₂ = trans (cong ((p₂ +gf9 q₂) +gf9_) (gf9-neg-add p₄ q₄))
+                (gf9-swap4 p₂ q₂ (gf9-negate p₄) (gf9-negate q₄))
+
+-- conv 左线性: conv x (y+z) ≡ conv x y +p5 conv x z
+conv-distribˡ : ∀ x y z → conv x (y +F z) ≡ conv x y +p5 conv x z
+conv-distribˡ (x₀ , x₁ , x₂) (y₀ , y₁ , y₂) (z₀ , z₁ , z₂) =
+  cong-5 eq₀ eq₁ eq₂ eq₃ eq₄
+  where
+    eq₀ : x₀ *gf9 (y₀ +gf9 z₀) ≡ (x₀ *gf9 y₀) +gf9 (x₀ *gf9 z₀)
+    eq₀ = *gf9-distribˡ-+gf9 x₀ y₀ z₀
+
+    eq₁ : (x₀ *gf9 (y₁ +gf9 z₁)) +gf9 (x₁ *gf9 (y₀ +gf9 z₀))
+        ≡ ((x₀ *gf9 y₁) +gf9 (x₁ *gf9 y₀)) +gf9 ((x₀ *gf9 z₁) +gf9 (x₁ *gf9 z₀))
+    eq₁ = trans (cong₂ _+gf9_ (*gf9-distribˡ-+gf9 x₀ y₁ z₁)
+                             (*gf9-distribˡ-+gf9 x₁ y₀ z₀))
+                (gf9-swap4 (x₀ *gf9 y₁) (x₀ *gf9 z₁) (x₁ *gf9 y₀) (x₁ *gf9 z₀))
+
+    eq₂ : ((x₀ *gf9 (y₂ +gf9 z₂)) +gf9 (x₁ *gf9 (y₁ +gf9 z₁))) +gf9 (x₂ *gf9 (y₀ +gf9 z₀))
+        ≡ (((x₀ *gf9 y₂) +gf9 (x₁ *gf9 y₁)) +gf9 (x₂ *gf9 y₀))
+          +gf9 (((x₀ *gf9 z₂) +gf9 (x₁ *gf9 z₁)) +gf9 (x₂ *gf9 z₀))
+    eq₂ = trans (cong₂ (λ u v → u +gf9 v)
+                        (trans (cong₂ _+gf9_ (*gf9-distribˡ-+gf9 x₀ y₂ z₂)
+                                             (*gf9-distribˡ-+gf9 x₁ y₁ z₁))
+                               (gf9-swap4 (x₀ *gf9 y₂) (x₀ *gf9 z₂) (x₁ *gf9 y₁) (x₁ *gf9 z₁)))
+                        (*gf9-distribˡ-+gf9 x₂ y₀ z₀))
+                (gf9-swap4 ((x₀ *gf9 y₂) +gf9 (x₁ *gf9 y₁)) ((x₀ *gf9 z₂) +gf9 (x₁ *gf9 z₁))
+                           (x₂ *gf9 y₀) (x₂ *gf9 z₀))
+
+    eq₃ : (x₁ *gf9 (y₂ +gf9 z₂)) +gf9 (x₂ *gf9 (y₁ +gf9 z₁))
+        ≡ ((x₁ *gf9 y₂) +gf9 (x₂ *gf9 y₁)) +gf9 ((x₁ *gf9 z₂) +gf9 (x₂ *gf9 z₁))
+    eq₃ = trans (cong₂ _+gf9_ (*gf9-distribˡ-+gf9 x₁ y₂ z₂)
+                             (*gf9-distribˡ-+gf9 x₂ y₁ z₁))
+                (gf9-swap4 (x₁ *gf9 y₂) (x₁ *gf9 z₂) (x₂ *gf9 y₁) (x₂ *gf9 z₁))
+
+    eq₄ : x₂ *gf9 (y₂ +gf9 z₂) ≡ (x₂ *gf9 y₂) +gf9 (x₂ *gf9 z₂)
+    eq₄ = *gf9-distribˡ-+gf9 x₂ y₂ z₂
+
+-- 左分配律
+*F-distribˡ : ∀ x y z → x *F (y +F z) ≡ (x *F y) +F (x *F z)
+*F-distribˡ x y z =
+  trans (*F-via-conv x (y +F z))
+  (trans (cong reduce5 (conv-distribˡ x y z))
+  (trans (reduce5-additive (conv x y) (conv x z))
+         (cong₂ _+F_ (sym (*F-via-conv x y)) (sym (*F-via-conv x z)))))
+
+-- 右分配律 (由交换律 + 左分配律)
+*F-distribʳ : ∀ x y z → (x +F y) *F z ≡ (x *F z) +F (y *F z)
+*F-distribʳ x y z =
+  trans (*F-comm (x +F y) z)
+  (trans (*F-distribˡ z x y)
+         (cong₂ _+F_ (*F-comm z x) (*F-comm z y)))
+
+
+
+--------------------------------------------------------------------------------
+-- §13. Frobenius 保加 (符号证明, 替代穷举)
+--
+-- σ(x) = y₀ + y₁·α - y₂  (分量0),  -y₁ + y₂·α  (分量1),  y₂  (分量2)
+-- 其中 yᵢ = galoisConjugate xᵢ. 由 galoisConjugate-add (GF9 已证) + GF9 分配律,
+-- σ 是加性的 — 无需穷举.
+--------------------------------------------------------------------------------
+
+-- 三分量同余 (GF729F 展开)
+cong-F : ∀ {a₀ a₁ a₂ b₀ b₁ b₂ : GF9} →
+  a₀ ≡ b₀ → a₁ ≡ b₁ → a₂ ≡ b₂ → (a₀ , a₁ , a₂) ≡ (b₀ , b₁ , b₂)
+cong-F refl refl refl = refl
+
+frobenius-add : ∀ x y → frobenius (x +F y) ≡ frobenius x +F frobenius y
+frobenius-add (x₀ , x₁ , x₂) (y₀ , y₁ , y₂) =
+  cong-F (eq0 x₀ x₁ x₂ y₀ y₁ y₂) (eq1 x₀ x₁ x₂ y₀ y₁ y₂)
+         (galoisConjugate-add x₂ y₂)
+  where
+    -- σ 的 GF9 分量 (展开定义)
+    σ0 : GF9 → GF9 → GF9 → GF9
+    σ0 a b c = (galoisConjugate a +gf9 (galoisConjugate b *gf9 alpha))
+               +gf9 (galoisConjugate c *gf9 (T₂ , T₀))
+    σ1 : GF9 → GF9 → GF9 → GF9
+    σ1 a b c = (galoisConjugate b *gf9 (T₂ , T₀)) +gf9 (galoisConjugate c *gf9 alpha)
+
+    -- (A+B)·c = A·c + B·c
+    distrib-r : ∀ A B c → (A +gf9 B) *gf9 c ≡ (A *gf9 c) +gf9 (B *gf9 c)
+    distrib-r = *gf9-distribʳ-+gf9
+
+    -- (a+b) + (c+d) 重排
+    swap2 : ∀ a b c d → (a +gf9 b) +gf9 (c +gf9 d) ≡ (a +gf9 c) +gf9 (b +gf9 d)
+    swap2 a b c d =
+      trans (sym (+gf9-assoc (a +gf9 b) c d))
+        (trans (cong (λ u → u +gf9 d) (+gf9-assoc a b c))
+          (trans (cong (λ u → (a +gf9 u) +gf9 d) (+gf9-comm b c))
+            (trans (cong (λ u → u +gf9 d) (sym (+gf9-assoc a c b)))
+              (+gf9-assoc (a +gf9 c) b d))))
+
+    eq0 : ∀ x₀ x₁ x₂ y₀ y₁ y₂ →
+      σ0 (x₀ +gf9 y₀) (x₁ +gf9 y₁) (x₂ +gf9 y₂) ≡ (σ0 x₀ x₁ x₂) +gf9 (σ0 y₀ y₁ y₂)
+    eq0 x₀ x₁ x₂ y₀ y₁ y₂ =
+      trans (cong₂ (λ u v → (u +gf9 v) +gf9 (galoisConjugate (x₂ +gf9 y₂) *gf9 (T₂ , T₀)))
+                   (galoisConjugate-add x₀ y₀)
+                   (trans (cong₂ _*gf9_ (galoisConjugate-add x₁ y₁) refl)
+                          (distrib-r (galoisConjugate x₁) (galoisConjugate y₁) alpha)))
+        (trans (cong₂ _+gf9_ (swap2 (galoisConjugate x₀) (galoisConjugate y₀)
+                                    (galoisConjugate x₁ *gf9 alpha)
+                                    (galoisConjugate y₁ *gf9 alpha))
+                               (trans (cong₂ _*gf9_ (galoisConjugate-add x₂ y₂) refl)
+                                      (distrib-r (galoisConjugate x₂) (galoisConjugate y₂) (T₂ , T₀))))
+               (swap2 ((galoisConjugate x₀) +gf9 (galoisConjugate x₁ *gf9 alpha))
+                      ((galoisConjugate y₀) +gf9 (galoisConjugate y₁ *gf9 alpha))
+                      (galoisConjugate x₂ *gf9 (T₂ , T₀))
+                      (galoisConjugate y₂ *gf9 (T₂ , T₀))))
+
+    eq1 : ∀ x₀ x₁ x₂ y₀ y₁ y₂ →
+      σ1 (x₀ +gf9 y₀) (x₁ +gf9 y₁) (x₂ +gf9 y₂) ≡ (σ1 x₀ x₁ x₂) +gf9 (σ1 y₀ y₁ y₂)
+    eq1 x₀ x₁ x₂ y₀ y₁ y₂ =
+      trans (cong₂ _+gf9_
+                   (trans (cong₂ _*gf9_ (galoisConjugate-add x₁ y₁) refl)
+                          (distrib-r (galoisConjugate x₁) (galoisConjugate y₁) (T₂ , T₀)))
+                   (trans (cong₂ _*gf9_ (galoisConjugate-add x₂ y₂) refl)
+                          (distrib-r (galoisConjugate x₂) (galoisConjugate y₂) alpha)))
+            (swap2 (galoisConjugate x₁ *gf9 (T₂ , T₀))
+                   (galoisConjugate y₁ *gf9 (T₂ , T₀))
+                   (galoisConjugate x₂ *gf9 alpha)
+                   (galoisConjugate y₂ *gf9 alpha))
+
 
 -- σ(t) = t³ 验证 (由约化 t³ = 2t + α)
 frobenius-t : frobenius t ≡ t *F (t *F t)
