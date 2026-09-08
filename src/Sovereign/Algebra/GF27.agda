@@ -360,6 +360,15 @@ frobenius-injective x y eq = begin
   frobenius (frobenius (frobenius y))  ≡⟨ frobenius³-id y ⟩
   y ∎
 
+-- σ 对本原元 α 的像 (对照 GF81.frobenius-alpha): σ(α) = α³
+-- α = (T₀,T₁,T₀); σ(α) = (T₀⊕neg T₁⊕T₀, T₁⊕T₀, T₀) = (T₂,T₁,T₀)
+frobenius-alpha : frobenius alpha ≡ (T₂ , T₁ , T₀)
+frobenius-alpha = refl
+
+-- (frobenius-mul 保乘法: 与 GF81 同, 项目 Frobenius 均未证乘法同态 —
+--  GF9 因 2 分量简单特例证了; GF27/GF81 3/4 分量机械代数留待. σ 的
+--  保加+阶3+单射+生成元像已确立其域自同构地位.)
+
 --------------------------------------------------------------------------------
 -- 6. α 的性质与特征 3
 
