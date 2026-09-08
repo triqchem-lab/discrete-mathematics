@@ -17,9 +17,13 @@ module Sovereign.Algebra.Lie.LieAlgebra where
 
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
+open ≡-Reasoning
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate;
+  ⊕-comm; ⊕-assoc; ⊕-identityˡ; ⊕-identityʳ; ⊕-inverse;
+  ⊗-comm; ⊗-assoc; ⊗-distribˡ-⊕; ⊗-distribʳ-⊕)
+open import Sovereign.Algebra.GF27 using (negate-⊕)
 
 --------------------------------------------------------------------------------
 -- §1. 局部 2×2 GF(3) 矩阵环 (对式, 全归约)
@@ -943,737 +947,6 @@ br3-x2x1 : br3 x2 x1 ≡ neg3v x3 ; br3-x2x1 = refl
 br3-x3x2 : br3 x3 x2 ≡ neg3v x1 ; br3-x3x2 = refl
 
 -- 反称 (27×27 = 729 项穷举): [x,y] + [y,x] = 0
-asym3 : ∀ x y → add3 (br3 x y) (br3 y x) ≡ zero3
-asym3 (T₀ , T₀ , T₀) (T₀ , T₀ , T₀) = refl
-asym3 (T₀ , T₀ , T₀) (T₀ , T₀ , T₁) = refl
-asym3 (T₀ , T₀ , T₀) (T₀ , T₀ , T₂) = refl
-asym3 (T₀ , T₀ , T₀) (T₀ , T₁ , T₀) = refl
-asym3 (T₀ , T₀ , T₀) (T₀ , T₁ , T₁) = refl
-asym3 (T₀ , T₀ , T₀) (T₀ , T₁ , T₂) = refl
-asym3 (T₀ , T₀ , T₀) (T₀ , T₂ , T₀) = refl
-asym3 (T₀ , T₀ , T₀) (T₀ , T₂ , T₁) = refl
-asym3 (T₀ , T₀ , T₀) (T₀ , T₂ , T₂) = refl
-asym3 (T₀ , T₀ , T₀) (T₁ , T₀ , T₀) = refl
-asym3 (T₀ , T₀ , T₀) (T₁ , T₀ , T₁) = refl
-asym3 (T₀ , T₀ , T₀) (T₁ , T₀ , T₂) = refl
-asym3 (T₀ , T₀ , T₀) (T₁ , T₁ , T₀) = refl
-asym3 (T₀ , T₀ , T₀) (T₁ , T₁ , T₁) = refl
-asym3 (T₀ , T₀ , T₀) (T₁ , T₁ , T₂) = refl
-asym3 (T₀ , T₀ , T₀) (T₁ , T₂ , T₀) = refl
-asym3 (T₀ , T₀ , T₀) (T₁ , T₂ , T₁) = refl
-asym3 (T₀ , T₀ , T₀) (T₁ , T₂ , T₂) = refl
-asym3 (T₀ , T₀ , T₀) (T₂ , T₀ , T₀) = refl
-asym3 (T₀ , T₀ , T₀) (T₂ , T₀ , T₁) = refl
-asym3 (T₀ , T₀ , T₀) (T₂ , T₀ , T₂) = refl
-asym3 (T₀ , T₀ , T₀) (T₂ , T₁ , T₀) = refl
-asym3 (T₀ , T₀ , T₀) (T₂ , T₁ , T₁) = refl
-asym3 (T₀ , T₀ , T₀) (T₂ , T₁ , T₂) = refl
-asym3 (T₀ , T₀ , T₀) (T₂ , T₂ , T₀) = refl
-asym3 (T₀ , T₀ , T₀) (T₂ , T₂ , T₁) = refl
-asym3 (T₀ , T₀ , T₀) (T₂ , T₂ , T₂) = refl
-asym3 (T₀ , T₀ , T₁) (T₀ , T₀ , T₀) = refl
-asym3 (T₀ , T₀ , T₁) (T₀ , T₀ , T₁) = refl
-asym3 (T₀ , T₀ , T₁) (T₀ , T₀ , T₂) = refl
-asym3 (T₀ , T₀ , T₁) (T₀ , T₁ , T₀) = refl
-asym3 (T₀ , T₀ , T₁) (T₀ , T₁ , T₁) = refl
-asym3 (T₀ , T₀ , T₁) (T₀ , T₁ , T₂) = refl
-asym3 (T₀ , T₀ , T₁) (T₀ , T₂ , T₀) = refl
-asym3 (T₀ , T₀ , T₁) (T₀ , T₂ , T₁) = refl
-asym3 (T₀ , T₀ , T₁) (T₀ , T₂ , T₂) = refl
-asym3 (T₀ , T₀ , T₁) (T₁ , T₀ , T₀) = refl
-asym3 (T₀ , T₀ , T₁) (T₁ , T₀ , T₁) = refl
-asym3 (T₀ , T₀ , T₁) (T₁ , T₀ , T₂) = refl
-asym3 (T₀ , T₀ , T₁) (T₁ , T₁ , T₀) = refl
-asym3 (T₀ , T₀ , T₁) (T₁ , T₁ , T₁) = refl
-asym3 (T₀ , T₀ , T₁) (T₁ , T₁ , T₂) = refl
-asym3 (T₀ , T₀ , T₁) (T₁ , T₂ , T₀) = refl
-asym3 (T₀ , T₀ , T₁) (T₁ , T₂ , T₁) = refl
-asym3 (T₀ , T₀ , T₁) (T₁ , T₂ , T₂) = refl
-asym3 (T₀ , T₀ , T₁) (T₂ , T₀ , T₀) = refl
-asym3 (T₀ , T₀ , T₁) (T₂ , T₀ , T₁) = refl
-asym3 (T₀ , T₀ , T₁) (T₂ , T₀ , T₂) = refl
-asym3 (T₀ , T₀ , T₁) (T₂ , T₁ , T₀) = refl
-asym3 (T₀ , T₀ , T₁) (T₂ , T₁ , T₁) = refl
-asym3 (T₀ , T₀ , T₁) (T₂ , T₁ , T₂) = refl
-asym3 (T₀ , T₀ , T₁) (T₂ , T₂ , T₀) = refl
-asym3 (T₀ , T₀ , T₁) (T₂ , T₂ , T₁) = refl
-asym3 (T₀ , T₀ , T₁) (T₂ , T₂ , T₂) = refl
-asym3 (T₀ , T₀ , T₂) (T₀ , T₀ , T₀) = refl
-asym3 (T₀ , T₀ , T₂) (T₀ , T₀ , T₁) = refl
-asym3 (T₀ , T₀ , T₂) (T₀ , T₀ , T₂) = refl
-asym3 (T₀ , T₀ , T₂) (T₀ , T₁ , T₀) = refl
-asym3 (T₀ , T₀ , T₂) (T₀ , T₁ , T₁) = refl
-asym3 (T₀ , T₀ , T₂) (T₀ , T₁ , T₂) = refl
-asym3 (T₀ , T₀ , T₂) (T₀ , T₂ , T₀) = refl
-asym3 (T₀ , T₀ , T₂) (T₀ , T₂ , T₁) = refl
-asym3 (T₀ , T₀ , T₂) (T₀ , T₂ , T₂) = refl
-asym3 (T₀ , T₀ , T₂) (T₁ , T₀ , T₀) = refl
-asym3 (T₀ , T₀ , T₂) (T₁ , T₀ , T₁) = refl
-asym3 (T₀ , T₀ , T₂) (T₁ , T₀ , T₂) = refl
-asym3 (T₀ , T₀ , T₂) (T₁ , T₁ , T₀) = refl
-asym3 (T₀ , T₀ , T₂) (T₁ , T₁ , T₁) = refl
-asym3 (T₀ , T₀ , T₂) (T₁ , T₁ , T₂) = refl
-asym3 (T₀ , T₀ , T₂) (T₁ , T₂ , T₀) = refl
-asym3 (T₀ , T₀ , T₂) (T₁ , T₂ , T₁) = refl
-asym3 (T₀ , T₀ , T₂) (T₁ , T₂ , T₂) = refl
-asym3 (T₀ , T₀ , T₂) (T₂ , T₀ , T₀) = refl
-asym3 (T₀ , T₀ , T₂) (T₂ , T₀ , T₁) = refl
-asym3 (T₀ , T₀ , T₂) (T₂ , T₀ , T₂) = refl
-asym3 (T₀ , T₀ , T₂) (T₂ , T₁ , T₀) = refl
-asym3 (T₀ , T₀ , T₂) (T₂ , T₁ , T₁) = refl
-asym3 (T₀ , T₀ , T₂) (T₂ , T₁ , T₂) = refl
-asym3 (T₀ , T₀ , T₂) (T₂ , T₂ , T₀) = refl
-asym3 (T₀ , T₀ , T₂) (T₂ , T₂ , T₁) = refl
-asym3 (T₀ , T₀ , T₂) (T₂ , T₂ , T₂) = refl
-asym3 (T₀ , T₁ , T₀) (T₀ , T₀ , T₀) = refl
-asym3 (T₀ , T₁ , T₀) (T₀ , T₀ , T₁) = refl
-asym3 (T₀ , T₁ , T₀) (T₀ , T₀ , T₂) = refl
-asym3 (T₀ , T₁ , T₀) (T₀ , T₁ , T₀) = refl
-asym3 (T₀ , T₁ , T₀) (T₀ , T₁ , T₁) = refl
-asym3 (T₀ , T₁ , T₀) (T₀ , T₁ , T₂) = refl
-asym3 (T₀ , T₁ , T₀) (T₀ , T₂ , T₀) = refl
-asym3 (T₀ , T₁ , T₀) (T₀ , T₂ , T₁) = refl
-asym3 (T₀ , T₁ , T₀) (T₀ , T₂ , T₂) = refl
-asym3 (T₀ , T₁ , T₀) (T₁ , T₀ , T₀) = refl
-asym3 (T₀ , T₁ , T₀) (T₁ , T₀ , T₁) = refl
-asym3 (T₀ , T₁ , T₀) (T₁ , T₀ , T₂) = refl
-asym3 (T₀ , T₁ , T₀) (T₁ , T₁ , T₀) = refl
-asym3 (T₀ , T₁ , T₀) (T₁ , T₁ , T₁) = refl
-asym3 (T₀ , T₁ , T₀) (T₁ , T₁ , T₂) = refl
-asym3 (T₀ , T₁ , T₀) (T₁ , T₂ , T₀) = refl
-asym3 (T₀ , T₁ , T₀) (T₁ , T₂ , T₁) = refl
-asym3 (T₀ , T₁ , T₀) (T₁ , T₂ , T₂) = refl
-asym3 (T₀ , T₁ , T₀) (T₂ , T₀ , T₀) = refl
-asym3 (T₀ , T₁ , T₀) (T₂ , T₀ , T₁) = refl
-asym3 (T₀ , T₁ , T₀) (T₂ , T₀ , T₂) = refl
-asym3 (T₀ , T₁ , T₀) (T₂ , T₁ , T₀) = refl
-asym3 (T₀ , T₁ , T₀) (T₂ , T₁ , T₁) = refl
-asym3 (T₀ , T₁ , T₀) (T₂ , T₁ , T₂) = refl
-asym3 (T₀ , T₁ , T₀) (T₂ , T₂ , T₀) = refl
-asym3 (T₀ , T₁ , T₀) (T₂ , T₂ , T₁) = refl
-asym3 (T₀ , T₁ , T₀) (T₂ , T₂ , T₂) = refl
-asym3 (T₀ , T₁ , T₁) (T₀ , T₀ , T₀) = refl
-asym3 (T₀ , T₁ , T₁) (T₀ , T₀ , T₁) = refl
-asym3 (T₀ , T₁ , T₁) (T₀ , T₀ , T₂) = refl
-asym3 (T₀ , T₁ , T₁) (T₀ , T₁ , T₀) = refl
-asym3 (T₀ , T₁ , T₁) (T₀ , T₁ , T₁) = refl
-asym3 (T₀ , T₁ , T₁) (T₀ , T₁ , T₂) = refl
-asym3 (T₀ , T₁ , T₁) (T₀ , T₂ , T₀) = refl
-asym3 (T₀ , T₁ , T₁) (T₀ , T₂ , T₁) = refl
-asym3 (T₀ , T₁ , T₁) (T₀ , T₂ , T₂) = refl
-asym3 (T₀ , T₁ , T₁) (T₁ , T₀ , T₀) = refl
-asym3 (T₀ , T₁ , T₁) (T₁ , T₀ , T₁) = refl
-asym3 (T₀ , T₁ , T₁) (T₁ , T₀ , T₂) = refl
-asym3 (T₀ , T₁ , T₁) (T₁ , T₁ , T₀) = refl
-asym3 (T₀ , T₁ , T₁) (T₁ , T₁ , T₁) = refl
-asym3 (T₀ , T₁ , T₁) (T₁ , T₁ , T₂) = refl
-asym3 (T₀ , T₁ , T₁) (T₁ , T₂ , T₀) = refl
-asym3 (T₀ , T₁ , T₁) (T₁ , T₂ , T₁) = refl
-asym3 (T₀ , T₁ , T₁) (T₁ , T₂ , T₂) = refl
-asym3 (T₀ , T₁ , T₁) (T₂ , T₀ , T₀) = refl
-asym3 (T₀ , T₁ , T₁) (T₂ , T₀ , T₁) = refl
-asym3 (T₀ , T₁ , T₁) (T₂ , T₀ , T₂) = refl
-asym3 (T₀ , T₁ , T₁) (T₂ , T₁ , T₀) = refl
-asym3 (T₀ , T₁ , T₁) (T₂ , T₁ , T₁) = refl
-asym3 (T₀ , T₁ , T₁) (T₂ , T₁ , T₂) = refl
-asym3 (T₀ , T₁ , T₁) (T₂ , T₂ , T₀) = refl
-asym3 (T₀ , T₁ , T₁) (T₂ , T₂ , T₁) = refl
-asym3 (T₀ , T₁ , T₁) (T₂ , T₂ , T₂) = refl
-asym3 (T₀ , T₁ , T₂) (T₀ , T₀ , T₀) = refl
-asym3 (T₀ , T₁ , T₂) (T₀ , T₀ , T₁) = refl
-asym3 (T₀ , T₁ , T₂) (T₀ , T₀ , T₂) = refl
-asym3 (T₀ , T₁ , T₂) (T₀ , T₁ , T₀) = refl
-asym3 (T₀ , T₁ , T₂) (T₀ , T₁ , T₁) = refl
-asym3 (T₀ , T₁ , T₂) (T₀ , T₁ , T₂) = refl
-asym3 (T₀ , T₁ , T₂) (T₀ , T₂ , T₀) = refl
-asym3 (T₀ , T₁ , T₂) (T₀ , T₂ , T₁) = refl
-asym3 (T₀ , T₁ , T₂) (T₀ , T₂ , T₂) = refl
-asym3 (T₀ , T₁ , T₂) (T₁ , T₀ , T₀) = refl
-asym3 (T₀ , T₁ , T₂) (T₁ , T₀ , T₁) = refl
-asym3 (T₀ , T₁ , T₂) (T₁ , T₀ , T₂) = refl
-asym3 (T₀ , T₁ , T₂) (T₁ , T₁ , T₀) = refl
-asym3 (T₀ , T₁ , T₂) (T₁ , T₁ , T₁) = refl
-asym3 (T₀ , T₁ , T₂) (T₁ , T₁ , T₂) = refl
-asym3 (T₀ , T₁ , T₂) (T₁ , T₂ , T₀) = refl
-asym3 (T₀ , T₁ , T₂) (T₁ , T₂ , T₁) = refl
-asym3 (T₀ , T₁ , T₂) (T₁ , T₂ , T₂) = refl
-asym3 (T₀ , T₁ , T₂) (T₂ , T₀ , T₀) = refl
-asym3 (T₀ , T₁ , T₂) (T₂ , T₀ , T₁) = refl
-asym3 (T₀ , T₁ , T₂) (T₂ , T₀ , T₂) = refl
-asym3 (T₀ , T₁ , T₂) (T₂ , T₁ , T₀) = refl
-asym3 (T₀ , T₁ , T₂) (T₂ , T₁ , T₁) = refl
-asym3 (T₀ , T₁ , T₂) (T₂ , T₁ , T₂) = refl
-asym3 (T₀ , T₁ , T₂) (T₂ , T₂ , T₀) = refl
-asym3 (T₀ , T₁ , T₂) (T₂ , T₂ , T₁) = refl
-asym3 (T₀ , T₁ , T₂) (T₂ , T₂ , T₂) = refl
-asym3 (T₀ , T₂ , T₀) (T₀ , T₀ , T₀) = refl
-asym3 (T₀ , T₂ , T₀) (T₀ , T₀ , T₁) = refl
-asym3 (T₀ , T₂ , T₀) (T₀ , T₀ , T₂) = refl
-asym3 (T₀ , T₂ , T₀) (T₀ , T₁ , T₀) = refl
-asym3 (T₀ , T₂ , T₀) (T₀ , T₁ , T₁) = refl
-asym3 (T₀ , T₂ , T₀) (T₀ , T₁ , T₂) = refl
-asym3 (T₀ , T₂ , T₀) (T₀ , T₂ , T₀) = refl
-asym3 (T₀ , T₂ , T₀) (T₀ , T₂ , T₁) = refl
-asym3 (T₀ , T₂ , T₀) (T₀ , T₂ , T₂) = refl
-asym3 (T₀ , T₂ , T₀) (T₁ , T₀ , T₀) = refl
-asym3 (T₀ , T₂ , T₀) (T₁ , T₀ , T₁) = refl
-asym3 (T₀ , T₂ , T₀) (T₁ , T₀ , T₂) = refl
-asym3 (T₀ , T₂ , T₀) (T₁ , T₁ , T₀) = refl
-asym3 (T₀ , T₂ , T₀) (T₁ , T₁ , T₁) = refl
-asym3 (T₀ , T₂ , T₀) (T₁ , T₁ , T₂) = refl
-asym3 (T₀ , T₂ , T₀) (T₁ , T₂ , T₀) = refl
-asym3 (T₀ , T₂ , T₀) (T₁ , T₂ , T₁) = refl
-asym3 (T₀ , T₂ , T₀) (T₁ , T₂ , T₂) = refl
-asym3 (T₀ , T₂ , T₀) (T₂ , T₀ , T₀) = refl
-asym3 (T₀ , T₂ , T₀) (T₂ , T₀ , T₁) = refl
-asym3 (T₀ , T₂ , T₀) (T₂ , T₀ , T₂) = refl
-asym3 (T₀ , T₂ , T₀) (T₂ , T₁ , T₀) = refl
-asym3 (T₀ , T₂ , T₀) (T₂ , T₁ , T₁) = refl
-asym3 (T₀ , T₂ , T₀) (T₂ , T₁ , T₂) = refl
-asym3 (T₀ , T₂ , T₀) (T₂ , T₂ , T₀) = refl
-asym3 (T₀ , T₂ , T₀) (T₂ , T₂ , T₁) = refl
-asym3 (T₀ , T₂ , T₀) (T₂ , T₂ , T₂) = refl
-asym3 (T₀ , T₂ , T₁) (T₀ , T₀ , T₀) = refl
-asym3 (T₀ , T₂ , T₁) (T₀ , T₀ , T₁) = refl
-asym3 (T₀ , T₂ , T₁) (T₀ , T₀ , T₂) = refl
-asym3 (T₀ , T₂ , T₁) (T₀ , T₁ , T₀) = refl
-asym3 (T₀ , T₂ , T₁) (T₀ , T₁ , T₁) = refl
-asym3 (T₀ , T₂ , T₁) (T₀ , T₁ , T₂) = refl
-asym3 (T₀ , T₂ , T₁) (T₀ , T₂ , T₀) = refl
-asym3 (T₀ , T₂ , T₁) (T₀ , T₂ , T₁) = refl
-asym3 (T₀ , T₂ , T₁) (T₀ , T₂ , T₂) = refl
-asym3 (T₀ , T₂ , T₁) (T₁ , T₀ , T₀) = refl
-asym3 (T₀ , T₂ , T₁) (T₁ , T₀ , T₁) = refl
-asym3 (T₀ , T₂ , T₁) (T₁ , T₀ , T₂) = refl
-asym3 (T₀ , T₂ , T₁) (T₁ , T₁ , T₀) = refl
-asym3 (T₀ , T₂ , T₁) (T₁ , T₁ , T₁) = refl
-asym3 (T₀ , T₂ , T₁) (T₁ , T₁ , T₂) = refl
-asym3 (T₀ , T₂ , T₁) (T₁ , T₂ , T₀) = refl
-asym3 (T₀ , T₂ , T₁) (T₁ , T₂ , T₁) = refl
-asym3 (T₀ , T₂ , T₁) (T₁ , T₂ , T₂) = refl
-asym3 (T₀ , T₂ , T₁) (T₂ , T₀ , T₀) = refl
-asym3 (T₀ , T₂ , T₁) (T₂ , T₀ , T₁) = refl
-asym3 (T₀ , T₂ , T₁) (T₂ , T₀ , T₂) = refl
-asym3 (T₀ , T₂ , T₁) (T₂ , T₁ , T₀) = refl
-asym3 (T₀ , T₂ , T₁) (T₂ , T₁ , T₁) = refl
-asym3 (T₀ , T₂ , T₁) (T₂ , T₁ , T₂) = refl
-asym3 (T₀ , T₂ , T₁) (T₂ , T₂ , T₀) = refl
-asym3 (T₀ , T₂ , T₁) (T₂ , T₂ , T₁) = refl
-asym3 (T₀ , T₂ , T₁) (T₂ , T₂ , T₂) = refl
-asym3 (T₀ , T₂ , T₂) (T₀ , T₀ , T₀) = refl
-asym3 (T₀ , T₂ , T₂) (T₀ , T₀ , T₁) = refl
-asym3 (T₀ , T₂ , T₂) (T₀ , T₀ , T₂) = refl
-asym3 (T₀ , T₂ , T₂) (T₀ , T₁ , T₀) = refl
-asym3 (T₀ , T₂ , T₂) (T₀ , T₁ , T₁) = refl
-asym3 (T₀ , T₂ , T₂) (T₀ , T₁ , T₂) = refl
-asym3 (T₀ , T₂ , T₂) (T₀ , T₂ , T₀) = refl
-asym3 (T₀ , T₂ , T₂) (T₀ , T₂ , T₁) = refl
-asym3 (T₀ , T₂ , T₂) (T₀ , T₂ , T₂) = refl
-asym3 (T₀ , T₂ , T₂) (T₁ , T₀ , T₀) = refl
-asym3 (T₀ , T₂ , T₂) (T₁ , T₀ , T₁) = refl
-asym3 (T₀ , T₂ , T₂) (T₁ , T₀ , T₂) = refl
-asym3 (T₀ , T₂ , T₂) (T₁ , T₁ , T₀) = refl
-asym3 (T₀ , T₂ , T₂) (T₁ , T₁ , T₁) = refl
-asym3 (T₀ , T₂ , T₂) (T₁ , T₁ , T₂) = refl
-asym3 (T₀ , T₂ , T₂) (T₁ , T₂ , T₀) = refl
-asym3 (T₀ , T₂ , T₂) (T₁ , T₂ , T₁) = refl
-asym3 (T₀ , T₂ , T₂) (T₁ , T₂ , T₂) = refl
-asym3 (T₀ , T₂ , T₂) (T₂ , T₀ , T₀) = refl
-asym3 (T₀ , T₂ , T₂) (T₂ , T₀ , T₁) = refl
-asym3 (T₀ , T₂ , T₂) (T₂ , T₀ , T₂) = refl
-asym3 (T₀ , T₂ , T₂) (T₂ , T₁ , T₀) = refl
-asym3 (T₀ , T₂ , T₂) (T₂ , T₁ , T₁) = refl
-asym3 (T₀ , T₂ , T₂) (T₂ , T₁ , T₂) = refl
-asym3 (T₀ , T₂ , T₂) (T₂ , T₂ , T₀) = refl
-asym3 (T₀ , T₂ , T₂) (T₂ , T₂ , T₁) = refl
-asym3 (T₀ , T₂ , T₂) (T₂ , T₂ , T₂) = refl
-asym3 (T₁ , T₀ , T₀) (T₀ , T₀ , T₀) = refl
-asym3 (T₁ , T₀ , T₀) (T₀ , T₀ , T₁) = refl
-asym3 (T₁ , T₀ , T₀) (T₀ , T₀ , T₂) = refl
-asym3 (T₁ , T₀ , T₀) (T₀ , T₁ , T₀) = refl
-asym3 (T₁ , T₀ , T₀) (T₀ , T₁ , T₁) = refl
-asym3 (T₁ , T₀ , T₀) (T₀ , T₁ , T₂) = refl
-asym3 (T₁ , T₀ , T₀) (T₀ , T₂ , T₀) = refl
-asym3 (T₁ , T₀ , T₀) (T₀ , T₂ , T₁) = refl
-asym3 (T₁ , T₀ , T₀) (T₀ , T₂ , T₂) = refl
-asym3 (T₁ , T₀ , T₀) (T₁ , T₀ , T₀) = refl
-asym3 (T₁ , T₀ , T₀) (T₁ , T₀ , T₁) = refl
-asym3 (T₁ , T₀ , T₀) (T₁ , T₀ , T₂) = refl
-asym3 (T₁ , T₀ , T₀) (T₁ , T₁ , T₀) = refl
-asym3 (T₁ , T₀ , T₀) (T₁ , T₁ , T₁) = refl
-asym3 (T₁ , T₀ , T₀) (T₁ , T₁ , T₂) = refl
-asym3 (T₁ , T₀ , T₀) (T₁ , T₂ , T₀) = refl
-asym3 (T₁ , T₀ , T₀) (T₁ , T₂ , T₁) = refl
-asym3 (T₁ , T₀ , T₀) (T₁ , T₂ , T₂) = refl
-asym3 (T₁ , T₀ , T₀) (T₂ , T₀ , T₀) = refl
-asym3 (T₁ , T₀ , T₀) (T₂ , T₀ , T₁) = refl
-asym3 (T₁ , T₀ , T₀) (T₂ , T₀ , T₂) = refl
-asym3 (T₁ , T₀ , T₀) (T₂ , T₁ , T₀) = refl
-asym3 (T₁ , T₀ , T₀) (T₂ , T₁ , T₁) = refl
-asym3 (T₁ , T₀ , T₀) (T₂ , T₁ , T₂) = refl
-asym3 (T₁ , T₀ , T₀) (T₂ , T₂ , T₀) = refl
-asym3 (T₁ , T₀ , T₀) (T₂ , T₂ , T₁) = refl
-asym3 (T₁ , T₀ , T₀) (T₂ , T₂ , T₂) = refl
-asym3 (T₁ , T₀ , T₁) (T₀ , T₀ , T₀) = refl
-asym3 (T₁ , T₀ , T₁) (T₀ , T₀ , T₁) = refl
-asym3 (T₁ , T₀ , T₁) (T₀ , T₀ , T₂) = refl
-asym3 (T₁ , T₀ , T₁) (T₀ , T₁ , T₀) = refl
-asym3 (T₁ , T₀ , T₁) (T₀ , T₁ , T₁) = refl
-asym3 (T₁ , T₀ , T₁) (T₀ , T₁ , T₂) = refl
-asym3 (T₁ , T₀ , T₁) (T₀ , T₂ , T₀) = refl
-asym3 (T₁ , T₀ , T₁) (T₀ , T₂ , T₁) = refl
-asym3 (T₁ , T₀ , T₁) (T₀ , T₂ , T₂) = refl
-asym3 (T₁ , T₀ , T₁) (T₁ , T₀ , T₀) = refl
-asym3 (T₁ , T₀ , T₁) (T₁ , T₀ , T₁) = refl
-asym3 (T₁ , T₀ , T₁) (T₁ , T₀ , T₂) = refl
-asym3 (T₁ , T₀ , T₁) (T₁ , T₁ , T₀) = refl
-asym3 (T₁ , T₀ , T₁) (T₁ , T₁ , T₁) = refl
-asym3 (T₁ , T₀ , T₁) (T₁ , T₁ , T₂) = refl
-asym3 (T₁ , T₀ , T₁) (T₁ , T₂ , T₀) = refl
-asym3 (T₁ , T₀ , T₁) (T₁ , T₂ , T₁) = refl
-asym3 (T₁ , T₀ , T₁) (T₁ , T₂ , T₂) = refl
-asym3 (T₁ , T₀ , T₁) (T₂ , T₀ , T₀) = refl
-asym3 (T₁ , T₀ , T₁) (T₂ , T₀ , T₁) = refl
-asym3 (T₁ , T₀ , T₁) (T₂ , T₀ , T₂) = refl
-asym3 (T₁ , T₀ , T₁) (T₂ , T₁ , T₀) = refl
-asym3 (T₁ , T₀ , T₁) (T₂ , T₁ , T₁) = refl
-asym3 (T₁ , T₀ , T₁) (T₂ , T₁ , T₂) = refl
-asym3 (T₁ , T₀ , T₁) (T₂ , T₂ , T₀) = refl
-asym3 (T₁ , T₀ , T₁) (T₂ , T₂ , T₁) = refl
-asym3 (T₁ , T₀ , T₁) (T₂ , T₂ , T₂) = refl
-asym3 (T₁ , T₀ , T₂) (T₀ , T₀ , T₀) = refl
-asym3 (T₁ , T₀ , T₂) (T₀ , T₀ , T₁) = refl
-asym3 (T₁ , T₀ , T₂) (T₀ , T₀ , T₂) = refl
-asym3 (T₁ , T₀ , T₂) (T₀ , T₁ , T₀) = refl
-asym3 (T₁ , T₀ , T₂) (T₀ , T₁ , T₁) = refl
-asym3 (T₁ , T₀ , T₂) (T₀ , T₁ , T₂) = refl
-asym3 (T₁ , T₀ , T₂) (T₀ , T₂ , T₀) = refl
-asym3 (T₁ , T₀ , T₂) (T₀ , T₂ , T₁) = refl
-asym3 (T₁ , T₀ , T₂) (T₀ , T₂ , T₂) = refl
-asym3 (T₁ , T₀ , T₂) (T₁ , T₀ , T₀) = refl
-asym3 (T₁ , T₀ , T₂) (T₁ , T₀ , T₁) = refl
-asym3 (T₁ , T₀ , T₂) (T₁ , T₀ , T₂) = refl
-asym3 (T₁ , T₀ , T₂) (T₁ , T₁ , T₀) = refl
-asym3 (T₁ , T₀ , T₂) (T₁ , T₁ , T₁) = refl
-asym3 (T₁ , T₀ , T₂) (T₁ , T₁ , T₂) = refl
-asym3 (T₁ , T₀ , T₂) (T₁ , T₂ , T₀) = refl
-asym3 (T₁ , T₀ , T₂) (T₁ , T₂ , T₁) = refl
-asym3 (T₁ , T₀ , T₂) (T₁ , T₂ , T₂) = refl
-asym3 (T₁ , T₀ , T₂) (T₂ , T₀ , T₀) = refl
-asym3 (T₁ , T₀ , T₂) (T₂ , T₀ , T₁) = refl
-asym3 (T₁ , T₀ , T₂) (T₂ , T₀ , T₂) = refl
-asym3 (T₁ , T₀ , T₂) (T₂ , T₁ , T₀) = refl
-asym3 (T₁ , T₀ , T₂) (T₂ , T₁ , T₁) = refl
-asym3 (T₁ , T₀ , T₂) (T₂ , T₁ , T₂) = refl
-asym3 (T₁ , T₀ , T₂) (T₂ , T₂ , T₀) = refl
-asym3 (T₁ , T₀ , T₂) (T₂ , T₂ , T₁) = refl
-asym3 (T₁ , T₀ , T₂) (T₂ , T₂ , T₂) = refl
-asym3 (T₁ , T₁ , T₀) (T₀ , T₀ , T₀) = refl
-asym3 (T₁ , T₁ , T₀) (T₀ , T₀ , T₁) = refl
-asym3 (T₁ , T₁ , T₀) (T₀ , T₀ , T₂) = refl
-asym3 (T₁ , T₁ , T₀) (T₀ , T₁ , T₀) = refl
-asym3 (T₁ , T₁ , T₀) (T₀ , T₁ , T₁) = refl
-asym3 (T₁ , T₁ , T₀) (T₀ , T₁ , T₂) = refl
-asym3 (T₁ , T₁ , T₀) (T₀ , T₂ , T₀) = refl
-asym3 (T₁ , T₁ , T₀) (T₀ , T₂ , T₁) = refl
-asym3 (T₁ , T₁ , T₀) (T₀ , T₂ , T₂) = refl
-asym3 (T₁ , T₁ , T₀) (T₁ , T₀ , T₀) = refl
-asym3 (T₁ , T₁ , T₀) (T₁ , T₀ , T₁) = refl
-asym3 (T₁ , T₁ , T₀) (T₁ , T₀ , T₂) = refl
-asym3 (T₁ , T₁ , T₀) (T₁ , T₁ , T₀) = refl
-asym3 (T₁ , T₁ , T₀) (T₁ , T₁ , T₁) = refl
-asym3 (T₁ , T₁ , T₀) (T₁ , T₁ , T₂) = refl
-asym3 (T₁ , T₁ , T₀) (T₁ , T₂ , T₀) = refl
-asym3 (T₁ , T₁ , T₀) (T₁ , T₂ , T₁) = refl
-asym3 (T₁ , T₁ , T₀) (T₁ , T₂ , T₂) = refl
-asym3 (T₁ , T₁ , T₀) (T₂ , T₀ , T₀) = refl
-asym3 (T₁ , T₁ , T₀) (T₂ , T₀ , T₁) = refl
-asym3 (T₁ , T₁ , T₀) (T₂ , T₀ , T₂) = refl
-asym3 (T₁ , T₁ , T₀) (T₂ , T₁ , T₀) = refl
-asym3 (T₁ , T₁ , T₀) (T₂ , T₁ , T₁) = refl
-asym3 (T₁ , T₁ , T₀) (T₂ , T₁ , T₂) = refl
-asym3 (T₁ , T₁ , T₀) (T₂ , T₂ , T₀) = refl
-asym3 (T₁ , T₁ , T₀) (T₂ , T₂ , T₁) = refl
-asym3 (T₁ , T₁ , T₀) (T₂ , T₂ , T₂) = refl
-asym3 (T₁ , T₁ , T₁) (T₀ , T₀ , T₀) = refl
-asym3 (T₁ , T₁ , T₁) (T₀ , T₀ , T₁) = refl
-asym3 (T₁ , T₁ , T₁) (T₀ , T₀ , T₂) = refl
-asym3 (T₁ , T₁ , T₁) (T₀ , T₁ , T₀) = refl
-asym3 (T₁ , T₁ , T₁) (T₀ , T₁ , T₁) = refl
-asym3 (T₁ , T₁ , T₁) (T₀ , T₁ , T₂) = refl
-asym3 (T₁ , T₁ , T₁) (T₀ , T₂ , T₀) = refl
-asym3 (T₁ , T₁ , T₁) (T₀ , T₂ , T₁) = refl
-asym3 (T₁ , T₁ , T₁) (T₀ , T₂ , T₂) = refl
-asym3 (T₁ , T₁ , T₁) (T₁ , T₀ , T₀) = refl
-asym3 (T₁ , T₁ , T₁) (T₁ , T₀ , T₁) = refl
-asym3 (T₁ , T₁ , T₁) (T₁ , T₀ , T₂) = refl
-asym3 (T₁ , T₁ , T₁) (T₁ , T₁ , T₀) = refl
-asym3 (T₁ , T₁ , T₁) (T₁ , T₁ , T₁) = refl
-asym3 (T₁ , T₁ , T₁) (T₁ , T₁ , T₂) = refl
-asym3 (T₁ , T₁ , T₁) (T₁ , T₂ , T₀) = refl
-asym3 (T₁ , T₁ , T₁) (T₁ , T₂ , T₁) = refl
-asym3 (T₁ , T₁ , T₁) (T₁ , T₂ , T₂) = refl
-asym3 (T₁ , T₁ , T₁) (T₂ , T₀ , T₀) = refl
-asym3 (T₁ , T₁ , T₁) (T₂ , T₀ , T₁) = refl
-asym3 (T₁ , T₁ , T₁) (T₂ , T₀ , T₂) = refl
-asym3 (T₁ , T₁ , T₁) (T₂ , T₁ , T₀) = refl
-asym3 (T₁ , T₁ , T₁) (T₂ , T₁ , T₁) = refl
-asym3 (T₁ , T₁ , T₁) (T₂ , T₁ , T₂) = refl
-asym3 (T₁ , T₁ , T₁) (T₂ , T₂ , T₀) = refl
-asym3 (T₁ , T₁ , T₁) (T₂ , T₂ , T₁) = refl
-asym3 (T₁ , T₁ , T₁) (T₂ , T₂ , T₂) = refl
-asym3 (T₁ , T₁ , T₂) (T₀ , T₀ , T₀) = refl
-asym3 (T₁ , T₁ , T₂) (T₀ , T₀ , T₁) = refl
-asym3 (T₁ , T₁ , T₂) (T₀ , T₀ , T₂) = refl
-asym3 (T₁ , T₁ , T₂) (T₀ , T₁ , T₀) = refl
-asym3 (T₁ , T₁ , T₂) (T₀ , T₁ , T₁) = refl
-asym3 (T₁ , T₁ , T₂) (T₀ , T₁ , T₂) = refl
-asym3 (T₁ , T₁ , T₂) (T₀ , T₂ , T₀) = refl
-asym3 (T₁ , T₁ , T₂) (T₀ , T₂ , T₁) = refl
-asym3 (T₁ , T₁ , T₂) (T₀ , T₂ , T₂) = refl
-asym3 (T₁ , T₁ , T₂) (T₁ , T₀ , T₀) = refl
-asym3 (T₁ , T₁ , T₂) (T₁ , T₀ , T₁) = refl
-asym3 (T₁ , T₁ , T₂) (T₁ , T₀ , T₂) = refl
-asym3 (T₁ , T₁ , T₂) (T₁ , T₁ , T₀) = refl
-asym3 (T₁ , T₁ , T₂) (T₁ , T₁ , T₁) = refl
-asym3 (T₁ , T₁ , T₂) (T₁ , T₁ , T₂) = refl
-asym3 (T₁ , T₁ , T₂) (T₁ , T₂ , T₀) = refl
-asym3 (T₁ , T₁ , T₂) (T₁ , T₂ , T₁) = refl
-asym3 (T₁ , T₁ , T₂) (T₁ , T₂ , T₂) = refl
-asym3 (T₁ , T₁ , T₂) (T₂ , T₀ , T₀) = refl
-asym3 (T₁ , T₁ , T₂) (T₂ , T₀ , T₁) = refl
-asym3 (T₁ , T₁ , T₂) (T₂ , T₀ , T₂) = refl
-asym3 (T₁ , T₁ , T₂) (T₂ , T₁ , T₀) = refl
-asym3 (T₁ , T₁ , T₂) (T₂ , T₁ , T₁) = refl
-asym3 (T₁ , T₁ , T₂) (T₂ , T₁ , T₂) = refl
-asym3 (T₁ , T₁ , T₂) (T₂ , T₂ , T₀) = refl
-asym3 (T₁ , T₁ , T₂) (T₂ , T₂ , T₁) = refl
-asym3 (T₁ , T₁ , T₂) (T₂ , T₂ , T₂) = refl
-asym3 (T₁ , T₂ , T₀) (T₀ , T₀ , T₀) = refl
-asym3 (T₁ , T₂ , T₀) (T₀ , T₀ , T₁) = refl
-asym3 (T₁ , T₂ , T₀) (T₀ , T₀ , T₂) = refl
-asym3 (T₁ , T₂ , T₀) (T₀ , T₁ , T₀) = refl
-asym3 (T₁ , T₂ , T₀) (T₀ , T₁ , T₁) = refl
-asym3 (T₁ , T₂ , T₀) (T₀ , T₁ , T₂) = refl
-asym3 (T₁ , T₂ , T₀) (T₀ , T₂ , T₀) = refl
-asym3 (T₁ , T₂ , T₀) (T₀ , T₂ , T₁) = refl
-asym3 (T₁ , T₂ , T₀) (T₀ , T₂ , T₂) = refl
-asym3 (T₁ , T₂ , T₀) (T₁ , T₀ , T₀) = refl
-asym3 (T₁ , T₂ , T₀) (T₁ , T₀ , T₁) = refl
-asym3 (T₁ , T₂ , T₀) (T₁ , T₀ , T₂) = refl
-asym3 (T₁ , T₂ , T₀) (T₁ , T₁ , T₀) = refl
-asym3 (T₁ , T₂ , T₀) (T₁ , T₁ , T₁) = refl
-asym3 (T₁ , T₂ , T₀) (T₁ , T₁ , T₂) = refl
-asym3 (T₁ , T₂ , T₀) (T₁ , T₂ , T₀) = refl
-asym3 (T₁ , T₂ , T₀) (T₁ , T₂ , T₁) = refl
-asym3 (T₁ , T₂ , T₀) (T₁ , T₂ , T₂) = refl
-asym3 (T₁ , T₂ , T₀) (T₂ , T₀ , T₀) = refl
-asym3 (T₁ , T₂ , T₀) (T₂ , T₀ , T₁) = refl
-asym3 (T₁ , T₂ , T₀) (T₂ , T₀ , T₂) = refl
-asym3 (T₁ , T₂ , T₀) (T₂ , T₁ , T₀) = refl
-asym3 (T₁ , T₂ , T₀) (T₂ , T₁ , T₁) = refl
-asym3 (T₁ , T₂ , T₀) (T₂ , T₁ , T₂) = refl
-asym3 (T₁ , T₂ , T₀) (T₂ , T₂ , T₀) = refl
-asym3 (T₁ , T₂ , T₀) (T₂ , T₂ , T₁) = refl
-asym3 (T₁ , T₂ , T₀) (T₂ , T₂ , T₂) = refl
-asym3 (T₁ , T₂ , T₁) (T₀ , T₀ , T₀) = refl
-asym3 (T₁ , T₂ , T₁) (T₀ , T₀ , T₁) = refl
-asym3 (T₁ , T₂ , T₁) (T₀ , T₀ , T₂) = refl
-asym3 (T₁ , T₂ , T₁) (T₀ , T₁ , T₀) = refl
-asym3 (T₁ , T₂ , T₁) (T₀ , T₁ , T₁) = refl
-asym3 (T₁ , T₂ , T₁) (T₀ , T₁ , T₂) = refl
-asym3 (T₁ , T₂ , T₁) (T₀ , T₂ , T₀) = refl
-asym3 (T₁ , T₂ , T₁) (T₀ , T₂ , T₁) = refl
-asym3 (T₁ , T₂ , T₁) (T₀ , T₂ , T₂) = refl
-asym3 (T₁ , T₂ , T₁) (T₁ , T₀ , T₀) = refl
-asym3 (T₁ , T₂ , T₁) (T₁ , T₀ , T₁) = refl
-asym3 (T₁ , T₂ , T₁) (T₁ , T₀ , T₂) = refl
-asym3 (T₁ , T₂ , T₁) (T₁ , T₁ , T₀) = refl
-asym3 (T₁ , T₂ , T₁) (T₁ , T₁ , T₁) = refl
-asym3 (T₁ , T₂ , T₁) (T₁ , T₁ , T₂) = refl
-asym3 (T₁ , T₂ , T₁) (T₁ , T₂ , T₀) = refl
-asym3 (T₁ , T₂ , T₁) (T₁ , T₂ , T₁) = refl
-asym3 (T₁ , T₂ , T₁) (T₁ , T₂ , T₂) = refl
-asym3 (T₁ , T₂ , T₁) (T₂ , T₀ , T₀) = refl
-asym3 (T₁ , T₂ , T₁) (T₂ , T₀ , T₁) = refl
-asym3 (T₁ , T₂ , T₁) (T₂ , T₀ , T₂) = refl
-asym3 (T₁ , T₂ , T₁) (T₂ , T₁ , T₀) = refl
-asym3 (T₁ , T₂ , T₁) (T₂ , T₁ , T₁) = refl
-asym3 (T₁ , T₂ , T₁) (T₂ , T₁ , T₂) = refl
-asym3 (T₁ , T₂ , T₁) (T₂ , T₂ , T₀) = refl
-asym3 (T₁ , T₂ , T₁) (T₂ , T₂ , T₁) = refl
-asym3 (T₁ , T₂ , T₁) (T₂ , T₂ , T₂) = refl
-asym3 (T₁ , T₂ , T₂) (T₀ , T₀ , T₀) = refl
-asym3 (T₁ , T₂ , T₂) (T₀ , T₀ , T₁) = refl
-asym3 (T₁ , T₂ , T₂) (T₀ , T₀ , T₂) = refl
-asym3 (T₁ , T₂ , T₂) (T₀ , T₁ , T₀) = refl
-asym3 (T₁ , T₂ , T₂) (T₀ , T₁ , T₁) = refl
-asym3 (T₁ , T₂ , T₂) (T₀ , T₁ , T₂) = refl
-asym3 (T₁ , T₂ , T₂) (T₀ , T₂ , T₀) = refl
-asym3 (T₁ , T₂ , T₂) (T₀ , T₂ , T₁) = refl
-asym3 (T₁ , T₂ , T₂) (T₀ , T₂ , T₂) = refl
-asym3 (T₁ , T₂ , T₂) (T₁ , T₀ , T₀) = refl
-asym3 (T₁ , T₂ , T₂) (T₁ , T₀ , T₁) = refl
-asym3 (T₁ , T₂ , T₂) (T₁ , T₀ , T₂) = refl
-asym3 (T₁ , T₂ , T₂) (T₁ , T₁ , T₀) = refl
-asym3 (T₁ , T₂ , T₂) (T₁ , T₁ , T₁) = refl
-asym3 (T₁ , T₂ , T₂) (T₁ , T₁ , T₂) = refl
-asym3 (T₁ , T₂ , T₂) (T₁ , T₂ , T₀) = refl
-asym3 (T₁ , T₂ , T₂) (T₁ , T₂ , T₁) = refl
-asym3 (T₁ , T₂ , T₂) (T₁ , T₂ , T₂) = refl
-asym3 (T₁ , T₂ , T₂) (T₂ , T₀ , T₀) = refl
-asym3 (T₁ , T₂ , T₂) (T₂ , T₀ , T₁) = refl
-asym3 (T₁ , T₂ , T₂) (T₂ , T₀ , T₂) = refl
-asym3 (T₁ , T₂ , T₂) (T₂ , T₁ , T₀) = refl
-asym3 (T₁ , T₂ , T₂) (T₂ , T₁ , T₁) = refl
-asym3 (T₁ , T₂ , T₂) (T₂ , T₁ , T₂) = refl
-asym3 (T₁ , T₂ , T₂) (T₂ , T₂ , T₀) = refl
-asym3 (T₁ , T₂ , T₂) (T₂ , T₂ , T₁) = refl
-asym3 (T₁ , T₂ , T₂) (T₂ , T₂ , T₂) = refl
-asym3 (T₂ , T₀ , T₀) (T₀ , T₀ , T₀) = refl
-asym3 (T₂ , T₀ , T₀) (T₀ , T₀ , T₁) = refl
-asym3 (T₂ , T₀ , T₀) (T₀ , T₀ , T₂) = refl
-asym3 (T₂ , T₀ , T₀) (T₀ , T₁ , T₀) = refl
-asym3 (T₂ , T₀ , T₀) (T₀ , T₁ , T₁) = refl
-asym3 (T₂ , T₀ , T₀) (T₀ , T₁ , T₂) = refl
-asym3 (T₂ , T₀ , T₀) (T₀ , T₂ , T₀) = refl
-asym3 (T₂ , T₀ , T₀) (T₀ , T₂ , T₁) = refl
-asym3 (T₂ , T₀ , T₀) (T₀ , T₂ , T₂) = refl
-asym3 (T₂ , T₀ , T₀) (T₁ , T₀ , T₀) = refl
-asym3 (T₂ , T₀ , T₀) (T₁ , T₀ , T₁) = refl
-asym3 (T₂ , T₀ , T₀) (T₁ , T₀ , T₂) = refl
-asym3 (T₂ , T₀ , T₀) (T₁ , T₁ , T₀) = refl
-asym3 (T₂ , T₀ , T₀) (T₁ , T₁ , T₁) = refl
-asym3 (T₂ , T₀ , T₀) (T₁ , T₁ , T₂) = refl
-asym3 (T₂ , T₀ , T₀) (T₁ , T₂ , T₀) = refl
-asym3 (T₂ , T₀ , T₀) (T₁ , T₂ , T₁) = refl
-asym3 (T₂ , T₀ , T₀) (T₁ , T₂ , T₂) = refl
-asym3 (T₂ , T₀ , T₀) (T₂ , T₀ , T₀) = refl
-asym3 (T₂ , T₀ , T₀) (T₂ , T₀ , T₁) = refl
-asym3 (T₂ , T₀ , T₀) (T₂ , T₀ , T₂) = refl
-asym3 (T₂ , T₀ , T₀) (T₂ , T₁ , T₀) = refl
-asym3 (T₂ , T₀ , T₀) (T₂ , T₁ , T₁) = refl
-asym3 (T₂ , T₀ , T₀) (T₂ , T₁ , T₂) = refl
-asym3 (T₂ , T₀ , T₀) (T₂ , T₂ , T₀) = refl
-asym3 (T₂ , T₀ , T₀) (T₂ , T₂ , T₁) = refl
-asym3 (T₂ , T₀ , T₀) (T₂ , T₂ , T₂) = refl
-asym3 (T₂ , T₀ , T₁) (T₀ , T₀ , T₀) = refl
-asym3 (T₂ , T₀ , T₁) (T₀ , T₀ , T₁) = refl
-asym3 (T₂ , T₀ , T₁) (T₀ , T₀ , T₂) = refl
-asym3 (T₂ , T₀ , T₁) (T₀ , T₁ , T₀) = refl
-asym3 (T₂ , T₀ , T₁) (T₀ , T₁ , T₁) = refl
-asym3 (T₂ , T₀ , T₁) (T₀ , T₁ , T₂) = refl
-asym3 (T₂ , T₀ , T₁) (T₀ , T₂ , T₀) = refl
-asym3 (T₂ , T₀ , T₁) (T₀ , T₂ , T₁) = refl
-asym3 (T₂ , T₀ , T₁) (T₀ , T₂ , T₂) = refl
-asym3 (T₂ , T₀ , T₁) (T₁ , T₀ , T₀) = refl
-asym3 (T₂ , T₀ , T₁) (T₁ , T₀ , T₁) = refl
-asym3 (T₂ , T₀ , T₁) (T₁ , T₀ , T₂) = refl
-asym3 (T₂ , T₀ , T₁) (T₁ , T₁ , T₀) = refl
-asym3 (T₂ , T₀ , T₁) (T₁ , T₁ , T₁) = refl
-asym3 (T₂ , T₀ , T₁) (T₁ , T₁ , T₂) = refl
-asym3 (T₂ , T₀ , T₁) (T₁ , T₂ , T₀) = refl
-asym3 (T₂ , T₀ , T₁) (T₁ , T₂ , T₁) = refl
-asym3 (T₂ , T₀ , T₁) (T₁ , T₂ , T₂) = refl
-asym3 (T₂ , T₀ , T₁) (T₂ , T₀ , T₀) = refl
-asym3 (T₂ , T₀ , T₁) (T₂ , T₀ , T₁) = refl
-asym3 (T₂ , T₀ , T₁) (T₂ , T₀ , T₂) = refl
-asym3 (T₂ , T₀ , T₁) (T₂ , T₁ , T₀) = refl
-asym3 (T₂ , T₀ , T₁) (T₂ , T₁ , T₁) = refl
-asym3 (T₂ , T₀ , T₁) (T₂ , T₁ , T₂) = refl
-asym3 (T₂ , T₀ , T₁) (T₂ , T₂ , T₀) = refl
-asym3 (T₂ , T₀ , T₁) (T₂ , T₂ , T₁) = refl
-asym3 (T₂ , T₀ , T₁) (T₂ , T₂ , T₂) = refl
-asym3 (T₂ , T₀ , T₂) (T₀ , T₀ , T₀) = refl
-asym3 (T₂ , T₀ , T₂) (T₀ , T₀ , T₁) = refl
-asym3 (T₂ , T₀ , T₂) (T₀ , T₀ , T₂) = refl
-asym3 (T₂ , T₀ , T₂) (T₀ , T₁ , T₀) = refl
-asym3 (T₂ , T₀ , T₂) (T₀ , T₁ , T₁) = refl
-asym3 (T₂ , T₀ , T₂) (T₀ , T₁ , T₂) = refl
-asym3 (T₂ , T₀ , T₂) (T₀ , T₂ , T₀) = refl
-asym3 (T₂ , T₀ , T₂) (T₀ , T₂ , T₁) = refl
-asym3 (T₂ , T₀ , T₂) (T₀ , T₂ , T₂) = refl
-asym3 (T₂ , T₀ , T₂) (T₁ , T₀ , T₀) = refl
-asym3 (T₂ , T₀ , T₂) (T₁ , T₀ , T₁) = refl
-asym3 (T₂ , T₀ , T₂) (T₁ , T₀ , T₂) = refl
-asym3 (T₂ , T₀ , T₂) (T₁ , T₁ , T₀) = refl
-asym3 (T₂ , T₀ , T₂) (T₁ , T₁ , T₁) = refl
-asym3 (T₂ , T₀ , T₂) (T₁ , T₁ , T₂) = refl
-asym3 (T₂ , T₀ , T₂) (T₁ , T₂ , T₀) = refl
-asym3 (T₂ , T₀ , T₂) (T₁ , T₂ , T₁) = refl
-asym3 (T₂ , T₀ , T₂) (T₁ , T₂ , T₂) = refl
-asym3 (T₂ , T₀ , T₂) (T₂ , T₀ , T₀) = refl
-asym3 (T₂ , T₀ , T₂) (T₂ , T₀ , T₁) = refl
-asym3 (T₂ , T₀ , T₂) (T₂ , T₀ , T₂) = refl
-asym3 (T₂ , T₀ , T₂) (T₂ , T₁ , T₀) = refl
-asym3 (T₂ , T₀ , T₂) (T₂ , T₁ , T₁) = refl
-asym3 (T₂ , T₀ , T₂) (T₂ , T₁ , T₂) = refl
-asym3 (T₂ , T₀ , T₂) (T₂ , T₂ , T₀) = refl
-asym3 (T₂ , T₀ , T₂) (T₂ , T₂ , T₁) = refl
-asym3 (T₂ , T₀ , T₂) (T₂ , T₂ , T₂) = refl
-asym3 (T₂ , T₁ , T₀) (T₀ , T₀ , T₀) = refl
-asym3 (T₂ , T₁ , T₀) (T₀ , T₀ , T₁) = refl
-asym3 (T₂ , T₁ , T₀) (T₀ , T₀ , T₂) = refl
-asym3 (T₂ , T₁ , T₀) (T₀ , T₁ , T₀) = refl
-asym3 (T₂ , T₁ , T₀) (T₀ , T₁ , T₁) = refl
-asym3 (T₂ , T₁ , T₀) (T₀ , T₁ , T₂) = refl
-asym3 (T₂ , T₁ , T₀) (T₀ , T₂ , T₀) = refl
-asym3 (T₂ , T₁ , T₀) (T₀ , T₂ , T₁) = refl
-asym3 (T₂ , T₁ , T₀) (T₀ , T₂ , T₂) = refl
-asym3 (T₂ , T₁ , T₀) (T₁ , T₀ , T₀) = refl
-asym3 (T₂ , T₁ , T₀) (T₁ , T₀ , T₁) = refl
-asym3 (T₂ , T₁ , T₀) (T₁ , T₀ , T₂) = refl
-asym3 (T₂ , T₁ , T₀) (T₁ , T₁ , T₀) = refl
-asym3 (T₂ , T₁ , T₀) (T₁ , T₁ , T₁) = refl
-asym3 (T₂ , T₁ , T₀) (T₁ , T₁ , T₂) = refl
-asym3 (T₂ , T₁ , T₀) (T₁ , T₂ , T₀) = refl
-asym3 (T₂ , T₁ , T₀) (T₁ , T₂ , T₁) = refl
-asym3 (T₂ , T₁ , T₀) (T₁ , T₂ , T₂) = refl
-asym3 (T₂ , T₁ , T₀) (T₂ , T₀ , T₀) = refl
-asym3 (T₂ , T₁ , T₀) (T₂ , T₀ , T₁) = refl
-asym3 (T₂ , T₁ , T₀) (T₂ , T₀ , T₂) = refl
-asym3 (T₂ , T₁ , T₀) (T₂ , T₁ , T₀) = refl
-asym3 (T₂ , T₁ , T₀) (T₂ , T₁ , T₁) = refl
-asym3 (T₂ , T₁ , T₀) (T₂ , T₁ , T₂) = refl
-asym3 (T₂ , T₁ , T₀) (T₂ , T₂ , T₀) = refl
-asym3 (T₂ , T₁ , T₀) (T₂ , T₂ , T₁) = refl
-asym3 (T₂ , T₁ , T₀) (T₂ , T₂ , T₂) = refl
-asym3 (T₂ , T₁ , T₁) (T₀ , T₀ , T₀) = refl
-asym3 (T₂ , T₁ , T₁) (T₀ , T₀ , T₁) = refl
-asym3 (T₂ , T₁ , T₁) (T₀ , T₀ , T₂) = refl
-asym3 (T₂ , T₁ , T₁) (T₀ , T₁ , T₀) = refl
-asym3 (T₂ , T₁ , T₁) (T₀ , T₁ , T₁) = refl
-asym3 (T₂ , T₁ , T₁) (T₀ , T₁ , T₂) = refl
-asym3 (T₂ , T₁ , T₁) (T₀ , T₂ , T₀) = refl
-asym3 (T₂ , T₁ , T₁) (T₀ , T₂ , T₁) = refl
-asym3 (T₂ , T₁ , T₁) (T₀ , T₂ , T₂) = refl
-asym3 (T₂ , T₁ , T₁) (T₁ , T₀ , T₀) = refl
-asym3 (T₂ , T₁ , T₁) (T₁ , T₀ , T₁) = refl
-asym3 (T₂ , T₁ , T₁) (T₁ , T₀ , T₂) = refl
-asym3 (T₂ , T₁ , T₁) (T₁ , T₁ , T₀) = refl
-asym3 (T₂ , T₁ , T₁) (T₁ , T₁ , T₁) = refl
-asym3 (T₂ , T₁ , T₁) (T₁ , T₁ , T₂) = refl
-asym3 (T₂ , T₁ , T₁) (T₁ , T₂ , T₀) = refl
-asym3 (T₂ , T₁ , T₁) (T₁ , T₂ , T₁) = refl
-asym3 (T₂ , T₁ , T₁) (T₁ , T₂ , T₂) = refl
-asym3 (T₂ , T₁ , T₁) (T₂ , T₀ , T₀) = refl
-asym3 (T₂ , T₁ , T₁) (T₂ , T₀ , T₁) = refl
-asym3 (T₂ , T₁ , T₁) (T₂ , T₀ , T₂) = refl
-asym3 (T₂ , T₁ , T₁) (T₂ , T₁ , T₀) = refl
-asym3 (T₂ , T₁ , T₁) (T₂ , T₁ , T₁) = refl
-asym3 (T₂ , T₁ , T₁) (T₂ , T₁ , T₂) = refl
-asym3 (T₂ , T₁ , T₁) (T₂ , T₂ , T₀) = refl
-asym3 (T₂ , T₁ , T₁) (T₂ , T₂ , T₁) = refl
-asym3 (T₂ , T₁ , T₁) (T₂ , T₂ , T₂) = refl
-asym3 (T₂ , T₁ , T₂) (T₀ , T₀ , T₀) = refl
-asym3 (T₂ , T₁ , T₂) (T₀ , T₀ , T₁) = refl
-asym3 (T₂ , T₁ , T₂) (T₀ , T₀ , T₂) = refl
-asym3 (T₂ , T₁ , T₂) (T₀ , T₁ , T₀) = refl
-asym3 (T₂ , T₁ , T₂) (T₀ , T₁ , T₁) = refl
-asym3 (T₂ , T₁ , T₂) (T₀ , T₁ , T₂) = refl
-asym3 (T₂ , T₁ , T₂) (T₀ , T₂ , T₀) = refl
-asym3 (T₂ , T₁ , T₂) (T₀ , T₂ , T₁) = refl
-asym3 (T₂ , T₁ , T₂) (T₀ , T₂ , T₂) = refl
-asym3 (T₂ , T₁ , T₂) (T₁ , T₀ , T₀) = refl
-asym3 (T₂ , T₁ , T₂) (T₁ , T₀ , T₁) = refl
-asym3 (T₂ , T₁ , T₂) (T₁ , T₀ , T₂) = refl
-asym3 (T₂ , T₁ , T₂) (T₁ , T₁ , T₀) = refl
-asym3 (T₂ , T₁ , T₂) (T₁ , T₁ , T₁) = refl
-asym3 (T₂ , T₁ , T₂) (T₁ , T₁ , T₂) = refl
-asym3 (T₂ , T₁ , T₂) (T₁ , T₂ , T₀) = refl
-asym3 (T₂ , T₁ , T₂) (T₁ , T₂ , T₁) = refl
-asym3 (T₂ , T₁ , T₂) (T₁ , T₂ , T₂) = refl
-asym3 (T₂ , T₁ , T₂) (T₂ , T₀ , T₀) = refl
-asym3 (T₂ , T₁ , T₂) (T₂ , T₀ , T₁) = refl
-asym3 (T₂ , T₁ , T₂) (T₂ , T₀ , T₂) = refl
-asym3 (T₂ , T₁ , T₂) (T₂ , T₁ , T₀) = refl
-asym3 (T₂ , T₁ , T₂) (T₂ , T₁ , T₁) = refl
-asym3 (T₂ , T₁ , T₂) (T₂ , T₁ , T₂) = refl
-asym3 (T₂ , T₁ , T₂) (T₂ , T₂ , T₀) = refl
-asym3 (T₂ , T₁ , T₂) (T₂ , T₂ , T₁) = refl
-asym3 (T₂ , T₁ , T₂) (T₂ , T₂ , T₂) = refl
-asym3 (T₂ , T₂ , T₀) (T₀ , T₀ , T₀) = refl
-asym3 (T₂ , T₂ , T₀) (T₀ , T₀ , T₁) = refl
-asym3 (T₂ , T₂ , T₀) (T₀ , T₀ , T₂) = refl
-asym3 (T₂ , T₂ , T₀) (T₀ , T₁ , T₀) = refl
-asym3 (T₂ , T₂ , T₀) (T₀ , T₁ , T₁) = refl
-asym3 (T₂ , T₂ , T₀) (T₀ , T₁ , T₂) = refl
-asym3 (T₂ , T₂ , T₀) (T₀ , T₂ , T₀) = refl
-asym3 (T₂ , T₂ , T₀) (T₀ , T₂ , T₁) = refl
-asym3 (T₂ , T₂ , T₀) (T₀ , T₂ , T₂) = refl
-asym3 (T₂ , T₂ , T₀) (T₁ , T₀ , T₀) = refl
-asym3 (T₂ , T₂ , T₀) (T₁ , T₀ , T₁) = refl
-asym3 (T₂ , T₂ , T₀) (T₁ , T₀ , T₂) = refl
-asym3 (T₂ , T₂ , T₀) (T₁ , T₁ , T₀) = refl
-asym3 (T₂ , T₂ , T₀) (T₁ , T₁ , T₁) = refl
-asym3 (T₂ , T₂ , T₀) (T₁ , T₁ , T₂) = refl
-asym3 (T₂ , T₂ , T₀) (T₁ , T₂ , T₀) = refl
-asym3 (T₂ , T₂ , T₀) (T₁ , T₂ , T₁) = refl
-asym3 (T₂ , T₂ , T₀) (T₁ , T₂ , T₂) = refl
-asym3 (T₂ , T₂ , T₀) (T₂ , T₀ , T₀) = refl
-asym3 (T₂ , T₂ , T₀) (T₂ , T₀ , T₁) = refl
-asym3 (T₂ , T₂ , T₀) (T₂ , T₀ , T₂) = refl
-asym3 (T₂ , T₂ , T₀) (T₂ , T₁ , T₀) = refl
-asym3 (T₂ , T₂ , T₀) (T₂ , T₁ , T₁) = refl
-asym3 (T₂ , T₂ , T₀) (T₂ , T₁ , T₂) = refl
-asym3 (T₂ , T₂ , T₀) (T₂ , T₂ , T₀) = refl
-asym3 (T₂ , T₂ , T₀) (T₂ , T₂ , T₁) = refl
-asym3 (T₂ , T₂ , T₀) (T₂ , T₂ , T₂) = refl
-asym3 (T₂ , T₂ , T₁) (T₀ , T₀ , T₀) = refl
-asym3 (T₂ , T₂ , T₁) (T₀ , T₀ , T₁) = refl
-asym3 (T₂ , T₂ , T₁) (T₀ , T₀ , T₂) = refl
-asym3 (T₂ , T₂ , T₁) (T₀ , T₁ , T₀) = refl
-asym3 (T₂ , T₂ , T₁) (T₀ , T₁ , T₁) = refl
-asym3 (T₂ , T₂ , T₁) (T₀ , T₁ , T₂) = refl
-asym3 (T₂ , T₂ , T₁) (T₀ , T₂ , T₀) = refl
-asym3 (T₂ , T₂ , T₁) (T₀ , T₂ , T₁) = refl
-asym3 (T₂ , T₂ , T₁) (T₀ , T₂ , T₂) = refl
-asym3 (T₂ , T₂ , T₁) (T₁ , T₀ , T₀) = refl
-asym3 (T₂ , T₂ , T₁) (T₁ , T₀ , T₁) = refl
-asym3 (T₂ , T₂ , T₁) (T₁ , T₀ , T₂) = refl
-asym3 (T₂ , T₂ , T₁) (T₁ , T₁ , T₀) = refl
-asym3 (T₂ , T₂ , T₁) (T₁ , T₁ , T₁) = refl
-asym3 (T₂ , T₂ , T₁) (T₁ , T₁ , T₂) = refl
-asym3 (T₂ , T₂ , T₁) (T₁ , T₂ , T₀) = refl
-asym3 (T₂ , T₂ , T₁) (T₁ , T₂ , T₁) = refl
-asym3 (T₂ , T₂ , T₁) (T₁ , T₂ , T₂) = refl
-asym3 (T₂ , T₂ , T₁) (T₂ , T₀ , T₀) = refl
-asym3 (T₂ , T₂ , T₁) (T₂ , T₀ , T₁) = refl
-asym3 (T₂ , T₂ , T₁) (T₂ , T₀ , T₂) = refl
-asym3 (T₂ , T₂ , T₁) (T₂ , T₁ , T₀) = refl
-asym3 (T₂ , T₂ , T₁) (T₂ , T₁ , T₁) = refl
-asym3 (T₂ , T₂ , T₁) (T₂ , T₁ , T₂) = refl
-asym3 (T₂ , T₂ , T₁) (T₂ , T₂ , T₀) = refl
-asym3 (T₂ , T₂ , T₁) (T₂ , T₂ , T₁) = refl
-asym3 (T₂ , T₂ , T₁) (T₂ , T₂ , T₂) = refl
-asym3 (T₂ , T₂ , T₂) (T₀ , T₀ , T₀) = refl
-asym3 (T₂ , T₂ , T₂) (T₀ , T₀ , T₁) = refl
-asym3 (T₂ , T₂ , T₂) (T₀ , T₀ , T₂) = refl
-asym3 (T₂ , T₂ , T₂) (T₀ , T₁ , T₀) = refl
-asym3 (T₂ , T₂ , T₂) (T₀ , T₁ , T₁) = refl
-asym3 (T₂ , T₂ , T₂) (T₀ , T₁ , T₂) = refl
-asym3 (T₂ , T₂ , T₂) (T₀ , T₂ , T₀) = refl
-asym3 (T₂ , T₂ , T₂) (T₀ , T₂ , T₁) = refl
-asym3 (T₂ , T₂ , T₂) (T₀ , T₂ , T₂) = refl
-asym3 (T₂ , T₂ , T₂) (T₁ , T₀ , T₀) = refl
-asym3 (T₂ , T₂ , T₂) (T₁ , T₀ , T₁) = refl
-asym3 (T₂ , T₂ , T₂) (T₁ , T₀ , T₂) = refl
-asym3 (T₂ , T₂ , T₂) (T₁ , T₁ , T₀) = refl
-asym3 (T₂ , T₂ , T₂) (T₁ , T₁ , T₁) = refl
-asym3 (T₂ , T₂ , T₂) (T₁ , T₁ , T₂) = refl
-asym3 (T₂ , T₂ , T₂) (T₁ , T₂ , T₀) = refl
-asym3 (T₂ , T₂ , T₂) (T₁ , T₂ , T₁) = refl
-asym3 (T₂ , T₂ , T₂) (T₁ , T₂ , T₂) = refl
-asym3 (T₂ , T₂ , T₂) (T₂ , T₀ , T₀) = refl
-asym3 (T₂ , T₂ , T₂) (T₂ , T₀ , T₁) = refl
-asym3 (T₂ , T₂ , T₂) (T₂ , T₀ , T₂) = refl
-asym3 (T₂ , T₂ , T₂) (T₂ , T₁ , T₀) = refl
-asym3 (T₂ , T₂ , T₂) (T₂ , T₁ , T₁) = refl
-asym3 (T₂ , T₂ , T₂) (T₂ , T₁ , T₂) = refl
-asym3 (T₂ , T₂ , T₂) (T₂ , T₂ , T₀) = refl
-asym3 (T₂ , T₂ , T₂) (T₂ , T₂ , T₁) = refl
-asym3 (T₂ , T₂ , T₂) (T₂ , T₂ , T₂) = refl
-
 -- 基枚举 (构造子 — 供 Jacobi 27 项穷举模式匹配)
 data Basis3 : Set where
   e1 e2 e3 : Basis3
@@ -1719,3 +992,175 @@ jacobi3 e3 e3 e3 = refl
 -- 基 Jacobi 27 项导出 — 三线性归约的结构证明留待深化 (未以 postulate 驻留)。
 
 -- 0 postulate.
+
+--------------------------------------------------------------------------------
+-- 反称性 asym3 (构造性: br3 双线性, 替代原 729 case 穷举)
+--------------------------------------------------------------------------------
+
+swap4 : ∀ A B C D → (A ⊕ B) ⊕ (C ⊕ D) ≡ (A ⊕ C) ⊕ (B ⊕ D)
+swap4 A B C D =
+  trans (sym (⊕-assoc (A ⊕ B) C D))
+    (trans (cong (λ u → u ⊕ D) (⊕-assoc A B C))
+      (trans (cong (λ u → (A ⊕ u) ⊕ D) (⊕-comm B C))
+        (trans (cong (λ u → u ⊕ D) (sym (⊕-assoc A C B)))
+          (⊕-assoc (A ⊕ C) B D))))
+
+-- 分量加法交换/结合
+add3-comm : ∀ x y → add3 x y ≡ add3 y x
+add3-comm (a , b , c) (d , e , f) = cong₃ (λ p q r → p , q , r) (⊕-comm a d) (⊕-comm b e) (⊕-comm c f)
+  where
+    cong₃ : ∀ {A B C D : Set} {x y : A} {u v : B} {r s : C} (g : A → B → C → D) →
+      x ≡ y → u ≡ v → r ≡ s → g x u r ≡ g y v s
+    cong₃ g refl refl refl = refl
+
+add3-assoc : ∀ x y z → add3 (add3 x y) z ≡ add3 x (add3 y z)
+add3-assoc (a , b , c) (d , e , f) (g , h , i) =
+  cong₃ (λ p q r → p , q , r) (⊕-assoc a d g) (⊕-assoc b e h) (⊕-assoc c f i)
+  where
+    cong₃ : ∀ {A B C D : Set} {x y : A} {u v : B} {r s : C} (g : A → B → C → D) →
+      x ≡ y → u ≡ v → r ≡ s → g x u r ≡ g y v s
+    cong₃ g refl refl refl = refl
+
+-- br3 保加法 (左线性, 逐分量)
+br3-addˡ : ∀ x y z → br3 (add3 x y) z ≡ add3 (br3 x z) (br3 y z)
+br3-addˡ (a₁ , b₁ , c₁) (a₂ , b₂ , c₂) (d , e , f) =
+  cong₃ (λ p q r → p , q , r) c0 c1 c2
+  where
+    cong₃ : ∀ {A B C D : Set} {x y : A} {u v : B} {r s : C} (g : A → B → C → D) →
+      x ≡ y → u ≡ v → r ≡ s → g x u r ≡ g y v s
+    cong₃ g refl refl refl = refl
+    c0 : ((b₁ ⊕ b₂) ⊗ f) ⊕ negate ((c₁ ⊕ c₂) ⊗ e)
+       ≡ ((b₁ ⊗ f) ⊕ negate (c₁ ⊗ e)) ⊕ ((b₂ ⊗ f) ⊕ negate (c₂ ⊗ e))
+    c0 = begin
+      ((b₁ ⊕ b₂) ⊗ f) ⊕ negate ((c₁ ⊕ c₂) ⊗ e)
+        ≡⟨ cong₂ _⊕_ (⊗-distribʳ-⊕ b₁ b₂ f) (cong negate (⊗-distribʳ-⊕ c₁ c₂ e)) ⟩
+      ((b₁ ⊗ f) ⊕ (b₂ ⊗ f)) ⊕ negate ((c₁ ⊗ e) ⊕ (c₂ ⊗ e))
+        ≡⟨ cong (((b₁ ⊗ f) ⊕ (b₂ ⊗ f)) ⊕_) (negate-⊕ (c₁ ⊗ e) (c₂ ⊗ e)) ⟩
+      ((b₁ ⊗ f) ⊕ (b₂ ⊗ f)) ⊕ (negate (c₁ ⊗ e) ⊕ negate (c₂ ⊗ e))
+        ≡⟨ swap4 (b₁ ⊗ f) (b₂ ⊗ f) (negate (c₁ ⊗ e)) (negate (c₂ ⊗ e)) ⟩
+      ((b₁ ⊗ f) ⊕ negate (c₁ ⊗ e)) ⊕ ((b₂ ⊗ f) ⊕ negate (c₂ ⊗ e))
+      ∎
+    c1 : ((c₁ ⊕ c₂) ⊗ d) ⊕ negate ((a₁ ⊕ a₂) ⊗ f)
+       ≡ ((c₁ ⊗ d) ⊕ negate (a₁ ⊗ f)) ⊕ ((c₂ ⊗ d) ⊕ negate (a₂ ⊗ f))
+    c1 = begin
+      ((c₁ ⊕ c₂) ⊗ d) ⊕ negate ((a₁ ⊕ a₂) ⊗ f)
+        ≡⟨ cong₂ _⊕_ (⊗-distribʳ-⊕ c₁ c₂ d) (cong negate (⊗-distribʳ-⊕ a₁ a₂ f)) ⟩
+      ((c₁ ⊗ d) ⊕ (c₂ ⊗ d)) ⊕ negate ((a₁ ⊗ f) ⊕ (a₂ ⊗ f))
+        ≡⟨ cong (((c₁ ⊗ d) ⊕ (c₂ ⊗ d)) ⊕_) (negate-⊕ (a₁ ⊗ f) (a₂ ⊗ f)) ⟩
+      ((c₁ ⊗ d) ⊕ (c₂ ⊗ d)) ⊕ (negate (a₁ ⊗ f) ⊕ negate (a₂ ⊗ f))
+        ≡⟨ swap4 (c₁ ⊗ d) (c₂ ⊗ d) (negate (a₁ ⊗ f)) (negate (a₂ ⊗ f)) ⟩
+      ((c₁ ⊗ d) ⊕ negate (a₁ ⊗ f)) ⊕ ((c₂ ⊗ d) ⊕ negate (a₂ ⊗ f))
+      ∎
+    c2 : ((a₁ ⊕ a₂) ⊗ e) ⊕ negate ((b₁ ⊕ b₂) ⊗ d)
+       ≡ ((a₁ ⊗ e) ⊕ negate (b₁ ⊗ d)) ⊕ ((a₂ ⊗ e) ⊕ negate (b₂ ⊗ d))
+    c2 = begin
+      ((a₁ ⊕ a₂) ⊗ e) ⊕ negate ((b₁ ⊕ b₂) ⊗ d)
+        ≡⟨ cong₂ _⊕_ (⊗-distribʳ-⊕ a₁ a₂ e) (cong negate (⊗-distribʳ-⊕ b₁ b₂ d)) ⟩
+      ((a₁ ⊗ e) ⊕ (a₂ ⊗ e)) ⊕ negate ((b₁ ⊗ d) ⊕ (b₂ ⊗ d))
+        ≡⟨ cong (((a₁ ⊗ e) ⊕ (a₂ ⊗ e)) ⊕_) (negate-⊕ (b₁ ⊗ d) (b₂ ⊗ d)) ⟩
+      ((a₁ ⊗ e) ⊕ (a₂ ⊗ e)) ⊕ (negate (b₁ ⊗ d) ⊕ negate (b₂ ⊗ d))
+        ≡⟨ swap4 (a₁ ⊗ e) (a₂ ⊗ e) (negate (b₁ ⊗ d)) (negate (b₂ ⊗ d)) ⟩
+      ((a₁ ⊗ e) ⊕ negate (b₁ ⊗ d)) ⊕ ((a₂ ⊗ e) ⊕ negate (b₂ ⊗ d))
+      ∎
+
+-- br3 保加法 (右线性)
+br3-addʳ : ∀ x y z → br3 x (add3 y z) ≡ add3 (br3 x y) (br3 x z)
+br3-addʳ (a , b , c) (d₁ , e₁ , f₁) (d₂ , e₂ , f₂) =
+  cong₃ (λ p q r → p , q , r) c0 c1 c2
+  where
+    cong₃ : ∀ {A B C D : Set} {x y : A} {u v : B} {r s : C} (g : A → B → C → D) →
+      x ≡ y → u ≡ v → r ≡ s → g x u r ≡ g y v s
+    cong₃ g refl refl refl = refl
+    c0 : (b ⊗ (f₁ ⊕ f₂)) ⊕ negate (c ⊗ (e₁ ⊕ e₂))
+       ≡ ((b ⊗ f₁) ⊕ negate (c ⊗ e₁)) ⊕ ((b ⊗ f₂) ⊕ negate (c ⊗ e₂))
+    c0 = begin
+      (b ⊗ (f₁ ⊕ f₂)) ⊕ negate (c ⊗ (e₁ ⊕ e₂))
+        ≡⟨ cong₂ _⊕_ (⊗-distribˡ-⊕ b f₁ f₂) (cong negate (⊗-distribˡ-⊕ c e₁ e₂)) ⟩
+      ((b ⊗ f₁) ⊕ (b ⊗ f₂)) ⊕ negate ((c ⊗ e₁) ⊕ (c ⊗ e₂))
+        ≡⟨ cong (((b ⊗ f₁) ⊕ (b ⊗ f₂)) ⊕_) (negate-⊕ (c ⊗ e₁) (c ⊗ e₂)) ⟩
+      ((b ⊗ f₁) ⊕ (b ⊗ f₂)) ⊕ (negate (c ⊗ e₁) ⊕ negate (c ⊗ e₂))
+        ≡⟨ swap4 (b ⊗ f₁) (b ⊗ f₂) (negate (c ⊗ e₁)) (negate (c ⊗ e₂)) ⟩
+      ((b ⊗ f₁) ⊕ negate (c ⊗ e₁)) ⊕ ((b ⊗ f₂) ⊕ negate (c ⊗ e₂))
+      ∎
+    c1 : (c ⊗ (d₁ ⊕ d₂)) ⊕ negate (a ⊗ (f₁ ⊕ f₂))
+       ≡ ((c ⊗ d₁) ⊕ negate (a ⊗ f₁)) ⊕ ((c ⊗ d₂) ⊕ negate (a ⊗ f₂))
+    c1 = begin
+      (c ⊗ (d₁ ⊕ d₂)) ⊕ negate (a ⊗ (f₁ ⊕ f₂))
+        ≡⟨ cong₂ _⊕_ (⊗-distribˡ-⊕ c d₁ d₂) (cong negate (⊗-distribˡ-⊕ a f₁ f₂)) ⟩
+      ((c ⊗ d₁) ⊕ (c ⊗ d₂)) ⊕ negate ((a ⊗ f₁) ⊕ (a ⊗ f₂))
+        ≡⟨ cong (((c ⊗ d₁) ⊕ (c ⊗ d₂)) ⊕_) (negate-⊕ (a ⊗ f₁) (a ⊗ f₂)) ⟩
+      ((c ⊗ d₁) ⊕ (c ⊗ d₂)) ⊕ (negate (a ⊗ f₁) ⊕ negate (a ⊗ f₂))
+        ≡⟨ swap4 (c ⊗ d₁) (c ⊗ d₂) (negate (a ⊗ f₁)) (negate (a ⊗ f₂)) ⟩
+      ((c ⊗ d₁) ⊕ negate (a ⊗ f₁)) ⊕ ((c ⊗ d₂) ⊕ negate (a ⊗ f₂))
+      ∎
+    c2 : (a ⊗ (e₁ ⊕ e₂)) ⊕ negate (b ⊗ (d₁ ⊕ d₂))
+       ≡ ((a ⊗ e₁) ⊕ negate (b ⊗ d₁)) ⊕ ((a ⊗ e₂) ⊕ negate (b ⊗ d₂))
+    c2 = begin
+      (a ⊗ (e₁ ⊕ e₂)) ⊕ negate (b ⊗ (d₁ ⊕ d₂))
+        ≡⟨ cong₂ _⊕_ (⊗-distribˡ-⊕ a e₁ e₂) (cong negate (⊗-distribˡ-⊕ b d₁ d₂)) ⟩
+      ((a ⊗ e₁) ⊕ (a ⊗ e₂)) ⊕ negate ((b ⊗ d₁) ⊕ (b ⊗ d₂))
+        ≡⟨ cong (((a ⊗ e₁) ⊕ (a ⊗ e₂)) ⊕_) (negate-⊕ (b ⊗ d₁) (b ⊗ d₂)) ⟩
+      ((a ⊗ e₁) ⊕ (a ⊗ e₂)) ⊕ (negate (b ⊗ d₁) ⊕ negate (b ⊗ d₂))
+        ≡⟨ swap4 (a ⊗ e₁) (a ⊗ e₂) (negate (b ⊗ d₁)) (negate (b ⊗ d₂)) ⟩
+      ((a ⊗ e₁) ⊕ negate (b ⊗ d₁)) ⊕ ((a ⊗ e₂) ⊕ negate (b ⊗ d₂))
+      ∎
+
+-- add3 分量零律
+add3-zeroˡ : ∀ x → add3 zero3 x ≡ x
+add3-zeroˡ (a , b , c) = cong₃ (λ p q r → p , q , r) (⊕-identityˡ a) (⊕-identityˡ b) (⊕-identityˡ c)
+  where
+    cong₃ : ∀ {A B C D : Set} {x y : A} {u v : B} {r s : C} (g : A → B → C → D) →
+      x ≡ y → u ≡ v → r ≡ s → g x u r ≡ g y v s
+    cong₃ g refl refl refl = refl
+
+-- ★ asym3: br3 x y + br3 y x = 0 ★
+asym3 : ∀ x y → add3 (br3 x y) (br3 y x) ≡ zero3
+asym3 (a , b , c) (d , e , f) = cong₃ (λ p q r → p , q , r) c0 c1 c2
+  where
+    cong₃ : ∀ {A B C D : Set} {x y : A} {u v : B} {r s : C} (g : A → B → C → D) →
+      x ≡ y → u ≡ v → r ≡ s → g x u r ≡ g y v s
+    cong₃ g refl refl refl = refl
+    neg-add-zero : ∀ u → (negate u) ⊕ u ≡ T₀
+    neg-add-zero u = trans (⊕-comm (negate u) u) (⊕-inverse u)
+    c0 : ((b ⊗ f) ⊕ negate (c ⊗ e)) ⊕ ((e ⊗ c) ⊕ negate (f ⊗ b)) ≡ T₀
+    c0 = begin
+      ((b ⊗ f) ⊕ negate (c ⊗ e)) ⊕ ((e ⊗ c) ⊕ negate (f ⊗ b))
+        ≡⟨ cong (((b ⊗ f) ⊕ negate (c ⊗ e)) ⊕_) (cong₂ (λ (u v : Trit) → u ⊕ negate v) (⊗-comm e c) (⊗-comm f b)) ⟩
+      ((b ⊗ f) ⊕ negate (c ⊗ e)) ⊕ ((c ⊗ e) ⊕ negate (b ⊗ f))
+        ≡⟨ swap4 (b ⊗ f) (negate (c ⊗ e)) (c ⊗ e) (negate (b ⊗ f)) ⟩
+      ((b ⊗ f) ⊕ (c ⊗ e)) ⊕ (negate (c ⊗ e) ⊕ negate (b ⊗ f))
+        ≡⟨ cong (((b ⊗ f) ⊕ (c ⊗ e)) ⊕_) (sym (negate-⊕ (c ⊗ e) (b ⊗ f))) ⟩
+      ((b ⊗ f) ⊕ (c ⊗ e)) ⊕ negate ((c ⊗ e) ⊕ (b ⊗ f))
+        ≡⟨ cong (λ u → u ⊕ negate ((c ⊗ e) ⊕ (b ⊗ f))) (⊕-comm (b ⊗ f) (c ⊗ e)) ⟩
+      ((c ⊗ e) ⊕ (b ⊗ f)) ⊕ negate ((c ⊗ e) ⊕ (b ⊗ f))
+        ≡⟨ ⊕-inverse ((c ⊗ e) ⊕ (b ⊗ f)) ⟩
+      T₀
+      ∎
+    c1 : ((c ⊗ d) ⊕ negate (a ⊗ f)) ⊕ ((f ⊗ a) ⊕ negate (d ⊗ c)) ≡ T₀
+    c1 = begin
+      ((c ⊗ d) ⊕ negate (a ⊗ f)) ⊕ ((f ⊗ a) ⊕ negate (d ⊗ c))
+        ≡⟨ cong (((c ⊗ d) ⊕ negate (a ⊗ f)) ⊕_) (cong₂ (λ (u v : Trit) → u ⊕ negate v) (⊗-comm f a) (⊗-comm d c)) ⟩
+      ((c ⊗ d) ⊕ negate (a ⊗ f)) ⊕ ((a ⊗ f) ⊕ negate (c ⊗ d))
+        ≡⟨ swap4 (c ⊗ d) (negate (a ⊗ f)) (a ⊗ f) (negate (c ⊗ d)) ⟩
+      ((c ⊗ d) ⊕ (a ⊗ f)) ⊕ (negate (a ⊗ f) ⊕ negate (c ⊗ d))
+        ≡⟨ cong (((c ⊗ d) ⊕ (a ⊗ f)) ⊕_) (sym (negate-⊕ (a ⊗ f) (c ⊗ d))) ⟩
+      ((c ⊗ d) ⊕ (a ⊗ f)) ⊕ negate ((a ⊗ f) ⊕ (c ⊗ d))
+        ≡⟨ cong (λ u → u ⊕ negate ((a ⊗ f) ⊕ (c ⊗ d))) (⊕-comm (c ⊗ d) (a ⊗ f)) ⟩
+      ((a ⊗ f) ⊕ (c ⊗ d)) ⊕ negate ((a ⊗ f) ⊕ (c ⊗ d))
+        ≡⟨ ⊕-inverse ((a ⊗ f) ⊕ (c ⊗ d)) ⟩
+      T₀
+      ∎
+    c2 : ((a ⊗ e) ⊕ negate (b ⊗ d)) ⊕ ((d ⊗ b) ⊕ negate (e ⊗ a)) ≡ T₀
+    c2 = begin
+      ((a ⊗ e) ⊕ negate (b ⊗ d)) ⊕ ((d ⊗ b) ⊕ negate (e ⊗ a))
+        ≡⟨ cong (((a ⊗ e) ⊕ negate (b ⊗ d)) ⊕_) (cong₂ (λ (u v : Trit) → u ⊕ negate v) (⊗-comm d b) (⊗-comm e a)) ⟩
+      ((a ⊗ e) ⊕ negate (b ⊗ d)) ⊕ ((b ⊗ d) ⊕ negate (a ⊗ e))
+        ≡⟨ swap4 (a ⊗ e) (negate (b ⊗ d)) (b ⊗ d) (negate (a ⊗ e)) ⟩
+      ((a ⊗ e) ⊕ (b ⊗ d)) ⊕ (negate (b ⊗ d) ⊕ negate (a ⊗ e))
+        ≡⟨ cong (((a ⊗ e) ⊕ (b ⊗ d)) ⊕_) (sym (negate-⊕ (b ⊗ d) (a ⊗ e))) ⟩
+      ((a ⊗ e) ⊕ (b ⊗ d)) ⊕ negate ((b ⊗ d) ⊕ (a ⊗ e))
+        ≡⟨ cong (λ u → u ⊕ negate ((b ⊗ d) ⊕ (a ⊗ e))) (⊕-comm (a ⊗ e) (b ⊗ d)) ⟩
+      ((b ⊗ d) ⊕ (a ⊗ e)) ⊕ negate ((b ⊗ d) ⊕ (a ⊗ e))
+        ≡⟨ ⊕-inverse ((b ⊗ d) ⊕ (a ⊗ e)) ⟩
+      T₀
+      ∎
