@@ -97,3 +97,35 @@ frobenius-is-cube = linear-extN frobenius cubeMap LF LC refl…
 5. 0 postulate / 0 hole / 0 sorry 审计
 6. 全库 `check_all_modules_parallel.sh` 绿
 7. 提交 (附验证证据)
+
+---
+
+## 扩展: 展示群与结构层构造化 (2026-09-09)
+
+在 GF(3^n) 之后, 同一"分解 + 结构律"方法论推广到展示群与结构层:
+
+| 模块 | 删除穷举 | 构造化手段 | 提交 |
+|------|---------|-----------|------|
+| CyclicGF27 | 5×729 = 3645 | 乘法桥 mul-bridge → 复用 GF27 构造性结果 | 7ac13b7 |
+| DCCharacter | 1728 + 144 | 展示群双通道分解 (加法通道 tritToZ ⊕ / 相位通道 alphaToZ mulAlpha) | f91df08 |
+| LieAlgebra | 729 (asym3) + 81 (asym) | br3 双线性 / br = XY−YX 代数恒等式 | ad0ba64, b4671f5 |
+
+**展示群 DC = ⟨δ, φ | δ³, φ⁴, δφ=φδ⟩ 同态分解范式** (DCCharacter):
+```
+χ(u,v)(p·q) = χ(u,v)(p)·χ(u,v)(q)
+  · 加法通道: tritToZ 保 ⊕ (9 case) + tritToZ-dist
+  · 相位通道: alpha-pow-mul (纯 AlphaPower 层) + alphaToZ-mul (16 case)
+  · 组装: Z12Sys 交换环重排
+```
+关键教训: **先证纯代数层恒等式 (AlphaPower 层无 ℚ), 再组装** — 直接在 Z12Sys
+层做会撞上 ℚ 归一化分歧 (`mkℚ 1/1` vs `negsuc 0`)。
+
+**未完成 (诚实记录)**:
+- `LieAlgebra.jacobi` (729 条) 仍为穷举。已备齐全部基础设施 (矩阵环
+  结合/分配/负元律 + br-br 展开), 但 `cong₂` 在含 `mtmul` 复合项上的
+  元变量推断反复失败; 需改用逐分量 `cong4` 组合或 Poly 层提升。
+- `SL23Cayley.toMat-hom` (576)、A4 表示层 144-tier 未动。
+
+**方法论沉淀**: 穷举的构造化不是"找更短的证明", 而是**找结构分解** —
+把 3^n / 12×12×12 / 27×27 的全域检查, 化为少数代数律 (线性/双线性/同态) 的
+组合。分解点通常是: (a) 通道独立 (展示群), (b) 基展开 (有限域), (c) 代数恒等式 (交换子)。
