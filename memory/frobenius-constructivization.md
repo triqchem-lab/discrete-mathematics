@@ -121,9 +121,12 @@ frobenius-is-cube = linear-extN frobenius cubeMap LF LC refl…
 层做会撞上 ℚ 归一化分歧 (`mkℚ 1/1` vs `negsuc 0`)。
 
 **未完成 (诚实记录)**:
-- `LieAlgebra.jacobi` (729 条) 仍为穷举。已备齐全部基础设施 (矩阵环
-  结合/分配/负元律 + br-br 展开), 但 `cong₂` 在含 `mtmul` 复合项上的
-  元变量推断反复失败; 需改用逐分量 `cong4` 组合或 Poly 层提升。
+- `LieAlgebra.jacobi` (729 条) 仍为穷举。基础设施已全部就位并提交 (a62b9da):
+  矩阵加法群律 / 乘法分配律 / 结合律 / 负元律 / br-br 12 项展开式
+  (`jacobi-expand`)。剩余工作是 12 项按循环单项配对消去。
+  **卡点**: `cong`/`cong₂` 在含 `mtmul` 复合项上推断元变量反复失败
+  (与 GF729 的 `let` 问题同源); 可行路线是改用逐分量 `cong4` 手工组合,
+  或提升到 Poly 层。这是一次"基础设施完备但组装未完成"的诚实状态。
 - `SL23Cayley.toMat-hom` (576)、A4 表示层 144-tier 未动。
 
 **方法论沉淀**: 穷举的构造化不是"找更短的证明", 而是**找结构分解** —
