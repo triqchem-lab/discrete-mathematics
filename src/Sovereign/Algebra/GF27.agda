@@ -7,6 +7,7 @@ module Sovereign.Algebra.GF27 where
 -- 乘法群 GF(27)* ≅ Z/26Z, 生成元 α (阶 26, α¹³=2=-1)
 
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; sym; trans)
 open import Data.Nat using (ℕ; zero; suc)
@@ -33,6 +34,9 @@ _ ≡⟨ p ⟩ q = trans p q
 
 _∎ : ∀ {a} {A : Set a} (x : A) → x ≡ x
 _ ∎ = refl
+
+-- 显式标注同余: 裸 cong₂ _+gf27_ / _*gf27_ 在复合项上触发乘法展开而失败
+-- (定义于 GF27 类型之后, 见 §1 末)
 
 negate-⊕ : ∀ x y → negate (x ⊕ y) ≡ negate x ⊕ negate y
 negate-⊕ T₀ y = refl
@@ -147,6 +151,11 @@ negate27 (a , b , c) = negate a , negate b , negate c
 +gf27-inverse (a , b , c) =
   cong-triple (⊕-inverse a) (⊕-inverse b) (⊕-inverse c)
 
+-- 显式标注同余: 裸 cong₂ _+gf27_ / _*gf27_ 在复合项上触发乘法展开而失败
+cong-+27 : ∀ {a b c d : GF27} → a ≡ c → b ≡ d → (a +gf27 b) ≡ (c +gf27 d)
+cong-+27 p q = cong₂ (λ (u v : GF27) → u +gf27 v) p q
+
+
 --------------------------------------------------------------------------------
 -- 3. 乘法 — α³ = α+2, α⁴ = α²+2α
 --------------------------------------------------------------------------------
@@ -157,6 +166,10 @@ _*gf27_ : GF27 → GF27 → GF27
     ((a ⊗ d) ⊕ negate ((b ⊗ f) ⊕ (c ⊗ e)))
   , (((a ⊗ e) ⊕ (b ⊗ d)) ⊕ ((b ⊗ f) ⊕ ((c ⊗ e) ⊕ negate (c ⊗ f))))
   , (((a ⊗ f) ⊕ (b ⊗ e)) ⊕ ((c ⊗ d) ⊕ (c ⊗ f)))
+
+-- 显式标注乘法同余 (复合项上裸 cong₂ 会触发展开失败)
+cong-*27 : ∀ {a b c d : GF27} → a ≡ c → b ≡ d → (a *gf27 b) ≡ (c *gf27 d)
+cong-*27 p q = cong₂ (λ (u v : GF27) → u *gf27 v) p q
 
 --------------------------------------------------------------------------------
 -- 4. 乘法单位元
@@ -371,36 +384,8 @@ frobenius-alpha = refl
 frobenius-alpha-is-cube : frobenius alpha ≡ alpha *gf27 (alpha *gf27 alpha)
 frobenius-alpha-is-cube = refl
 
--- 全称立方定理: σ(x) = x·(x·x) (27 case 穷举, 具体值 refl)
-frobenius-is-cube : ∀ x → frobenius x ≡ x *gf27 (x *gf27 x)
-frobenius-is-cube (T₀ , T₀ , T₀) = refl
-frobenius-is-cube (T₀ , T₀ , T₁) = refl
-frobenius-is-cube (T₀ , T₀ , T₂) = refl
-frobenius-is-cube (T₀ , T₁ , T₀) = refl
-frobenius-is-cube (T₀ , T₁ , T₁) = refl
-frobenius-is-cube (T₀ , T₁ , T₂) = refl
-frobenius-is-cube (T₀ , T₂ , T₀) = refl
-frobenius-is-cube (T₀ , T₂ , T₁) = refl
-frobenius-is-cube (T₀ , T₂ , T₂) = refl
-frobenius-is-cube (T₁ , T₀ , T₀) = refl
-frobenius-is-cube (T₁ , T₀ , T₁) = refl
-frobenius-is-cube (T₁ , T₀ , T₂) = refl
-frobenius-is-cube (T₁ , T₁ , T₀) = refl
-frobenius-is-cube (T₁ , T₁ , T₁) = refl
-frobenius-is-cube (T₁ , T₁ , T₂) = refl
-frobenius-is-cube (T₁ , T₂ , T₀) = refl
-frobenius-is-cube (T₁ , T₂ , T₁) = refl
-frobenius-is-cube (T₁ , T₂ , T₂) = refl
-frobenius-is-cube (T₂ , T₀ , T₀) = refl
-frobenius-is-cube (T₂ , T₀ , T₁) = refl
-frobenius-is-cube (T₂ , T₀ , T₂) = refl
-frobenius-is-cube (T₂ , T₁ , T₀) = refl
-frobenius-is-cube (T₂ , T₁ , T₁) = refl
-frobenius-is-cube (T₂ , T₁ , T₂) = refl
-frobenius-is-cube (T₂ , T₂ , T₀) = refl
-frobenius-is-cube (T₂ , T₂ , T₁) = refl
-frobenius-is-cube (T₂ , T₂ , T₂) = refl
-
+-- 全称立方定理: σ(x) = x³ — 构造性证明见文件末尾 §13
+-- (替换原 27 case refl 穷举; 见 §13 半线性框架 + 基一致)
 -- σ(α) = α+2 (多项式根关系: α³=α+2, 见 alpha-cubed-struct)
 -- σ 遍历 Galois 共轭 {α, σα, σ²α}: σ(α)=α³=α+2, σ²(α)=α^9=α²+α+1...
 -- (Frobenius = 多项式 x³+2x+1 的根在 GF(27) 中的共轭作用)
@@ -916,3 +901,580 @@ sub13-embed sub13-18 = pow18
 sub13-embed sub13-20 = pow20
 sub13-embed sub13-22 = pow22
 sub13-embed sub13-24 = pow24
+
+--------------------------------------------------------------------------------
+-- §1. Trit 层辅助
+--------------------------------------------------------------------------------
+
+-- 2·t = negate t
+two-mul-neg : ∀ t → T₂ ⊗ t ≡ negate t
+two-mul-neg T₀ = refl
+two-mul-neg T₁ = refl
+two-mul-neg T₂ = refl
+
+-- 特征 3: t + t = negate t
+dn-trit : ∀ t → t ⊕ t ≡ negate t
+dn-trit T₀ = refl
+dn-trit T₁ = refl
+dn-trit T₂ = refl
+
+-- 立方幂等: t ⊗ (t ⊗ t) = t (GF(3) 的 Frobenius 固定素域)
+⊗-cube-id : ∀ t → t ⊗ (t ⊗ t) ≡ t
+⊗-cube-id T₀ = refl
+⊗-cube-id T₁ = refl
+⊗-cube-id T₂ = refl
+
+-- 四项乘积重排: (c⊗x)⊗(d⊗y) ≡ (c⊗d)⊗(x⊗y)
+⊗-4 : ∀ c x d y → (c ⊗ x) ⊗ (d ⊗ y) ≡ (c ⊗ d) ⊗ (x ⊗ y)
+⊗-4 c x d y = begin
+  (c ⊗ x) ⊗ (d ⊗ y)
+    ≡⟨ ⊗-assoc c x (d ⊗ y) ⟩
+  c ⊗ (x ⊗ (d ⊗ y))
+    ≡⟨ cong (c ⊗_) (sym (⊗-assoc x d y)) ⟩
+  c ⊗ ((x ⊗ d) ⊗ y)
+    ≡⟨ cong (c ⊗_) (cong (_⊗ y) (⊗-comm x d)) ⟩
+  c ⊗ ((d ⊗ x) ⊗ y)
+    ≡⟨ cong (c ⊗_) (⊗-assoc d x y) ⟩
+  c ⊗ (d ⊗ (x ⊗ y))
+    ≡⟨ sym (⊗-assoc c d (x ⊗ y)) ⟩
+  (c ⊗ d) ⊗ (x ⊗ y)
+  ∎
+
+-- negate(A⊗z) ≡ A⊗negate z
+neg-⊗-r : ∀ A z → negate (A ⊗ z) ≡ A ⊗ negate z
+neg-⊗-r A z = trans (negate-⊗ A z) (negate-⊗-comm A z)
+
+-- 分配出标量: A⊗((p⊕q) ⊕ (r ⊕ (s⊕t))) ≡ ((A⊗p)⊕(A⊗q)) ⊕ ((A⊗r)⊕((A⊗s)⊕(A⊗t)))
+distrib-nest : ∀ A p q r s t →
+  A ⊗ ((p ⊕ q) ⊕ (r ⊕ (s ⊕ t)))
+  ≡ ((A ⊗ p) ⊕ (A ⊗ q)) ⊕ ((A ⊗ r) ⊕ ((A ⊗ s) ⊕ (A ⊗ t)))
+distrib-nest A p q r s t = begin
+  A ⊗ ((p ⊕ q) ⊕ (r ⊕ (s ⊕ t)))
+    ≡⟨ ⊗-distribˡ-⊕ A (p ⊕ q) (r ⊕ (s ⊕ t)) ⟩
+  (A ⊗ (p ⊕ q)) ⊕ (A ⊗ (r ⊕ (s ⊕ t)))
+    ≡⟨ cong₂ _⊕_ (⊗-distribˡ-⊕ A p q) (⊗-distribˡ-⊕ A r (s ⊕ t)) ⟩
+  ((A ⊗ p) ⊕ (A ⊗ q)) ⊕ ((A ⊗ r) ⊕ (A ⊗ (s ⊕ t)))
+    ≡⟨ cong (((A ⊗ p) ⊕ (A ⊗ q)) ⊕_)
+            (cong ((A ⊗ r) ⊕_) (⊗-distribˡ-⊕ A s t)) ⟩
+  ((A ⊗ p) ⊕ (A ⊗ q)) ⊕ ((A ⊗ r) ⊕ ((A ⊗ s) ⊕ (A ⊗ t)))
+  ∎
+
+--------------------------------------------------------------------------------
+-- §2. GF(3) 标量作用与基分解
+--------------------------------------------------------------------------------
+
+_*s27_ : Trit → GF27 → GF27
+c *s27 (x , y , z) = (c ⊗ x) , (c ⊗ y) , (c ⊗ z)
+
+s27-one : ∀ a → a *s27 gf27-one ≡ (a , T₀ , T₀)
+s27-one a = cong-triple (⊗-identityʳ a) (⊗-zeroʳ a) (⊗-zeroʳ a)
+
+s27-alpha : ∀ b → b *s27 alpha ≡ (T₀ , b , T₀)
+s27-alpha b = cong-triple (⊗-zeroʳ b) (⊗-identityʳ b) (⊗-zeroʳ b)
+
+s27-alpha-sq : ∀ c → c *s27 alpha-sq ≡ (T₀ , T₀ , c)
+s27-alpha-sq c = cong-triple (⊗-zeroʳ c) (⊗-zeroʳ c) (⊗-identityʳ c)
+
+-- 基分解: (a,b,c) = a·1 + (b·α + c·α²)
+decomp27 : ∀ (a b c : Trit) →
+  (a , b , c) ≡ (a *s27 gf27-one) +gf27 ((b *s27 alpha) +gf27 (c *s27 alpha-sq))
+decomp27 a b c = sym (begin
+  (a *s27 gf27-one) +gf27 ((b *s27 alpha) +gf27 (c *s27 alpha-sq))
+    ≡⟨ cong-+27 (s27-one a) (cong-+27 (s27-alpha b) (s27-alpha-sq c)) ⟩
+  (a , T₀ , T₀) +gf27 ((T₀ , b , T₀) +gf27 (T₀ , T₀ , c))
+    ≡⟨ cong ((a , T₀ , T₀) +gf27_)
+            (cong-triple (⊕-identityˡ T₀) (⊕-identityʳ b) (⊕-identityˡ c)) ⟩
+  (a , T₀ , T₀) +gf27 (T₀ , b , c)
+    ≡⟨ cong-triple (⊕-identityʳ a) (⊕-identityˡ b) (⊕-identityˡ c) ⟩
+  (a , b , c)
+  ∎)
+
+--------------------------------------------------------------------------------
+-- §3. GF(3)-线性框架
+--------------------------------------------------------------------------------
+
+record Linear27 (f : GF27 → GF27) : Set where
+  field
+    ladd : ∀ a b → f (a +gf27 b) ≡ f a +gf27 f b
+    lscalar : ∀ c w → f (c *s27 w) ≡ c *s27 (f w)
+open Linear27
+
+-- 线性映射按基展开
+expand3 : ∀ (f : GF27 → GF27) → Linear27 f → ∀ (a b c : Trit) →
+  f (a , b , c) ≡ (a *s27 (f gf27-one))
+                +gf27 ((b *s27 (f alpha)) +gf27 (c *s27 (f alpha-sq)))
+expand3 f L a b c =
+  trans (cong f (decomp27 a b c))
+    (trans (ladd L (a *s27 gf27-one) ((b *s27 alpha) +gf27 (c *s27 alpha-sq)))
+      (cong-+27 (lscalar L a gf27-one)
+        (trans (ladd L (b *s27 alpha) (c *s27 alpha-sq))
+               (cong-+27 (lscalar L b alpha) (lscalar L c alpha-sq)))))
+
+-- 两个线性映射在基上一致 → 全域一致
+linear-ext3 : ∀ (f g : GF27 → GF27) → Linear27 f → Linear27 g →
+  f gf27-one ≡ g gf27-one → f alpha ≡ g alpha → f alpha-sq ≡ g alpha-sq →
+  ∀ x → f x ≡ g x
+linear-ext3 f g L L' e1 ea ea2 (a , b , c) =
+  trans (expand3 f L a b c)
+    (trans (cong₂ (λ p q → p +gf27 q)
+              (cong (λ w → a *s27 w) e1)
+              (cong₂ (λ p q → p +gf27 q)
+                (cong (λ w → b *s27 w) ea)
+                (cong (λ w → c *s27 w) ea2)))
+           (sym (expand3 g L' a b c)))
+
+--------------------------------------------------------------------------------
+-- §4. 标量层 (双线性原语)
+--------------------------------------------------------------------------------
+
+-- 标量结合: c·(d·x) = (c⊗d)·x
+scalar-assoc27 : ∀ c d x → c *s27 (d *s27 x) ≡ (c ⊗ d) *s27 x
+scalar-assoc27 c d (x , y , z) =
+  cong-triple (sym (⊗-assoc c d x)) (sym (⊗-assoc c d y)) (sym (⊗-assoc c d z))
+
+-- 双线性原语: (c·x)·(d·y) = (c⊗d)·(x·y)
+mul-scalar-scalar : ∀ c d x y →
+  (c *s27 x) *gf27 (d *s27 y) ≡ (c ⊗ d) *s27 (x *gf27 y)
+mul-scalar-scalar c d (x₀ , x₁ , x₂) (y₀ , y₁ , y₂) =
+  cong-triple comp0 comp1 comp2
+  where
+    comp0 : ((c ⊗ x₀) ⊗ (d ⊗ y₀)) ⊕ negate (((c ⊗ x₁) ⊗ (d ⊗ y₂)) ⊕ ((c ⊗ x₂) ⊗ (d ⊗ y₁)))
+          ≡ (c ⊗ d) ⊗ ((x₀ ⊗ y₀) ⊕ negate ((x₁ ⊗ y₂) ⊕ (x₂ ⊗ y₁)))
+    comp0 = begin
+      ((c ⊗ x₀) ⊗ (d ⊗ y₀)) ⊕ negate (((c ⊗ x₁) ⊗ (d ⊗ y₂)) ⊕ ((c ⊗ x₂) ⊗ (d ⊗ y₁)))
+        ≡⟨ cong₂ _⊕_ (⊗-4 c x₀ d y₀)
+                     (cong negate (cong₂ _⊕_ (⊗-4 c x₁ d y₂) (⊗-4 c x₂ d y₁))) ⟩
+      ((c ⊗ d) ⊗ (x₀ ⊗ y₀)) ⊕ negate (((c ⊗ d) ⊗ (x₁ ⊗ y₂)) ⊕ ((c ⊗ d) ⊗ (x₂ ⊗ y₁)))
+        ≡⟨ cong (((c ⊗ d) ⊗ (x₀ ⊗ y₀)) ⊕_)
+                (negate-⊕ ((c ⊗ d) ⊗ (x₁ ⊗ y₂)) ((c ⊗ d) ⊗ (x₂ ⊗ y₁))) ⟩
+      ((c ⊗ d) ⊗ (x₀ ⊗ y₀)) ⊕ (negate ((c ⊗ d) ⊗ (x₁ ⊗ y₂)) ⊕ negate ((c ⊗ d) ⊗ (x₂ ⊗ y₁)))
+        ≡⟨ cong (((c ⊗ d) ⊗ (x₀ ⊗ y₀)) ⊕_)
+                (cong₂ _⊕_ (neg-⊗-r (c ⊗ d) (x₁ ⊗ y₂)) (neg-⊗-r (c ⊗ d) (x₂ ⊗ y₁))) ⟩
+      ((c ⊗ d) ⊗ (x₀ ⊗ y₀)) ⊕ (((c ⊗ d) ⊗ negate (x₁ ⊗ y₂)) ⊕ ((c ⊗ d) ⊗ negate (x₂ ⊗ y₁)))
+        ≡⟨ sym (trans (⊗-distribˡ-⊕ (c ⊗ d) (x₀ ⊗ y₀) (negate (x₁ ⊗ y₂) ⊕ negate (x₂ ⊗ y₁)))
+                      (cong (((c ⊗ d) ⊗ (x₀ ⊗ y₀)) ⊕_)
+                            (⊗-distribˡ-⊕ (c ⊗ d) (negate (x₁ ⊗ y₂)) (negate (x₂ ⊗ y₁))))) ⟩
+      (c ⊗ d) ⊗ ((x₀ ⊗ y₀) ⊕ (negate (x₁ ⊗ y₂) ⊕ negate (x₂ ⊗ y₁)))
+        ≡⟨ cong ((c ⊗ d) ⊗_)
+                (cong ((x₀ ⊗ y₀) ⊕_) (sym (negate-⊕ (x₁ ⊗ y₂) (x₂ ⊗ y₁)))) ⟩
+      (c ⊗ d) ⊗ ((x₀ ⊗ y₀) ⊕ negate ((x₁ ⊗ y₂) ⊕ (x₂ ⊗ y₁)))
+      ∎
+    comp1 : (((c ⊗ x₀) ⊗ (d ⊗ y₁)) ⊕ ((c ⊗ x₁) ⊗ (d ⊗ y₀)))
+          ⊕ (((c ⊗ x₁) ⊗ (d ⊗ y₂)) ⊕ (((c ⊗ x₂) ⊗ (d ⊗ y₁)) ⊕ negate ((c ⊗ x₂) ⊗ (d ⊗ y₂))))
+          ≡ (c ⊗ d) ⊗ (((x₀ ⊗ y₁) ⊕ (x₁ ⊗ y₀)) ⊕ ((x₁ ⊗ y₂) ⊕ ((x₂ ⊗ y₁) ⊕ negate (x₂ ⊗ y₂))))
+    comp1 = begin
+      (((c ⊗ x₀) ⊗ (d ⊗ y₁)) ⊕ ((c ⊗ x₁) ⊗ (d ⊗ y₀)))
+        ⊕ (((c ⊗ x₁) ⊗ (d ⊗ y₂)) ⊕ (((c ⊗ x₂) ⊗ (d ⊗ y₁)) ⊕ negate ((c ⊗ x₂) ⊗ (d ⊗ y₂))))
+        ≡⟨ cong₂ _⊕_
+             (cong₂ _⊕_ (⊗-4 c x₀ d y₁) (⊗-4 c x₁ d y₀))
+             (cong₂ _⊕_ (⊗-4 c x₁ d y₂)
+                        (cong₂ _⊕_ (⊗-4 c x₂ d y₁) (cong negate (⊗-4 c x₂ d y₂)))) ⟩
+      (((c ⊗ d) ⊗ (x₀ ⊗ y₁)) ⊕ ((c ⊗ d) ⊗ (x₁ ⊗ y₀)))
+        ⊕ (((c ⊗ d) ⊗ (x₁ ⊗ y₂)) ⊕ (((c ⊗ d) ⊗ (x₂ ⊗ y₁)) ⊕ negate ((c ⊗ d) ⊗ (x₂ ⊗ y₂))))
+        ≡⟨ cong ((((c ⊗ d) ⊗ (x₀ ⊗ y₁)) ⊕ ((c ⊗ d) ⊗ (x₁ ⊗ y₀))) ⊕_)
+                (cong (((c ⊗ d) ⊗ (x₁ ⊗ y₂)) ⊕_)
+                      (cong (((c ⊗ d) ⊗ (x₂ ⊗ y₁)) ⊕_)
+                            (neg-⊗-r (c ⊗ d) (x₂ ⊗ y₂)))) ⟩
+      (((c ⊗ d) ⊗ (x₀ ⊗ y₁)) ⊕ ((c ⊗ d) ⊗ (x₁ ⊗ y₀)))
+        ⊕ (((c ⊗ d) ⊗ (x₁ ⊗ y₂)) ⊕ (((c ⊗ d) ⊗ (x₂ ⊗ y₁)) ⊕ ((c ⊗ d) ⊗ negate (x₂ ⊗ y₂))))
+        ≡⟨ sym (distrib-nest (c ⊗ d) (x₀ ⊗ y₁) (x₁ ⊗ y₀) (x₁ ⊗ y₂) (x₂ ⊗ y₁) (negate (x₂ ⊗ y₂))) ⟩
+      (c ⊗ d) ⊗ (((x₀ ⊗ y₁) ⊕ (x₁ ⊗ y₀)) ⊕ ((x₁ ⊗ y₂) ⊕ ((x₂ ⊗ y₁) ⊕ negate (x₂ ⊗ y₂))))
+      ∎
+    comp2 : (((c ⊗ x₀) ⊗ (d ⊗ y₂)) ⊕ ((c ⊗ x₁) ⊗ (d ⊗ y₁)))
+          ⊕ (((c ⊗ x₂) ⊗ (d ⊗ y₀)) ⊕ ((c ⊗ x₂) ⊗ (d ⊗ y₂)))
+          ≡ (c ⊗ d) ⊗ (((x₀ ⊗ y₂) ⊕ (x₁ ⊗ y₁)) ⊕ ((x₂ ⊗ y₀) ⊕ (x₂ ⊗ y₂)))
+    comp2 = begin
+      (((c ⊗ x₀) ⊗ (d ⊗ y₂)) ⊕ ((c ⊗ x₁) ⊗ (d ⊗ y₁)))
+        ⊕ (((c ⊗ x₂) ⊗ (d ⊗ y₀)) ⊕ ((c ⊗ x₂) ⊗ (d ⊗ y₂)))
+        ≡⟨ cong₂ _⊕_
+             (cong₂ _⊕_ (⊗-4 c x₀ d y₂) (⊗-4 c x₁ d y₁))
+             (cong₂ _⊕_ (⊗-4 c x₂ d y₀) (⊗-4 c x₂ d y₂)) ⟩
+      (((c ⊗ d) ⊗ (x₀ ⊗ y₂)) ⊕ ((c ⊗ d) ⊗ (x₁ ⊗ y₁)))
+        ⊕ (((c ⊗ d) ⊗ (x₂ ⊗ y₀)) ⊕ ((c ⊗ d) ⊗ (x₂ ⊗ y₂)))
+        ≡⟨ sym (begin
+             (c ⊗ d) ⊗ (((x₀ ⊗ y₂) ⊕ (x₁ ⊗ y₁)) ⊕ ((x₂ ⊗ y₀) ⊕ (x₂ ⊗ y₂)))
+               ≡⟨ ⊗-distribˡ-⊕ (c ⊗ d) ((x₀ ⊗ y₂) ⊕ (x₁ ⊗ y₁)) ((x₂ ⊗ y₀) ⊕ (x₂ ⊗ y₂)) ⟩
+             ((c ⊗ d) ⊗ ((x₀ ⊗ y₂) ⊕ (x₁ ⊗ y₁))) ⊕ ((c ⊗ d) ⊗ ((x₂ ⊗ y₀) ⊕ (x₂ ⊗ y₂)))
+               ≡⟨ cong₂ _⊕_ (⊗-distribˡ-⊕ (c ⊗ d) (x₀ ⊗ y₂) (x₁ ⊗ y₁))
+                            (⊗-distribˡ-⊕ (c ⊗ d) (x₂ ⊗ y₀) (x₂ ⊗ y₂)) ⟩
+             (((c ⊗ d) ⊗ (x₀ ⊗ y₂)) ⊕ ((c ⊗ d) ⊗ (x₁ ⊗ y₁)))
+               ⊕ (((c ⊗ d) ⊗ (x₂ ⊗ y₀)) ⊕ ((c ⊗ d) ⊗ (x₂ ⊗ y₂)))
+             ∎) ⟩
+      (c ⊗ d) ⊗ (((x₀ ⊗ y₂) ⊕ (x₁ ⊗ y₁)) ⊕ ((x₂ ⊗ y₀) ⊕ (x₂ ⊗ y₂)))
+      ∎
+
+-- 标量作用恒等: 1·x ≡ x
+s27-one-gen : ∀ x → T₁ *s27 x ≡ x
+s27-one-gen (a , b , c) = cong-triple (⊗-identityˡ a) (⊗-identityˡ b) (⊗-identityˡ c)
+
+-- 标量提取 (左): (c·x)·y = c·(x·y)
+scalar-extractˡ : ∀ c x y → (c *s27 x) *gf27 y ≡ c *s27 (x *gf27 y)
+scalar-extractˡ c x y =
+  trans (cong ((c *s27 x) *gf27_) (sym (s27-one-gen y)))
+  (trans (mul-scalar-scalar c T₁ x y)
+         (cong (λ d → d *s27 (x *gf27 y)) (⊗-identityʳ c)))
+
+-- 标量提取 (右): x·(c·y) = c·(x·y)
+scalar-extractʳ : ∀ c x y → x *gf27 (c *s27 y) ≡ c *s27 (x *gf27 y)
+scalar-extractʳ c x y =
+  trans (cong (_*gf27 (c *s27 y)) (sym (s27-one-gen x)))
+  (trans (mul-scalar-scalar T₁ c x y)
+         (cong (λ d → d *s27 (x *gf27 y)) (⊗-identityˡ c)))
+
+--------------------------------------------------------------------------------
+-- §5. σ 的 GF(3)-线性
+--------------------------------------------------------------------------------
+
+frobenius-scalar : ∀ c w → frobenius (c *s27 w) ≡ c *s27 (frobenius w)
+frobenius-scalar c (w₀ , w₁ , w₂) = cong-triple eq0 eq1 refl
+  where
+    eq1 : (c ⊗ w₁) ⊕ (c ⊗ w₂) ≡ c ⊗ (w₁ ⊕ w₂)
+    eq1 = sym (⊗-distribˡ-⊕ c w₁ w₂)
+    eq0 : ((c ⊗ w₀) ⊕ negate (c ⊗ w₁)) ⊕ (c ⊗ w₂)
+        ≡ c ⊗ ((w₀ ⊕ negate w₁) ⊕ w₂)
+    eq0 =
+      trans (cong (λ u → ((c ⊗ w₀) ⊕ u) ⊕ (c ⊗ w₂)) (neg-⊗-r c w₁))
+      (trans (cong (_⊕ (c ⊗ w₂)) (sym (⊗-distribˡ-⊕ c w₀ (negate w₁))))
+             (sym (⊗-distribˡ-⊕ c (w₀ ⊕ negate w₁) w₂)))
+
+LF27 : Linear27 frobenius
+LF27 = record { ladd = frobenius-add ; lscalar = frobenius-scalar }
+
+--------------------------------------------------------------------------------
+-- §6. 纯 +gf27 引理 (特征 3 消去)
+--------------------------------------------------------------------------------
+
+dn27 : ∀ u → (u +gf27 u) ≡ negate27 u
+dn27 (a , b , c) = cong-triple (dn-trit a) (dn-trit b) (dn-trit c)
+
+neg-add-zero27 : ∀ B → (negate27 B) +gf27 B ≡ gf27-zero
+neg-add-zero27 B = trans (+gf27-comm (negate27 B) B) (+gf27-inverse B)
+
+cancel-neg27 : ∀ A B → (A +gf27 negate27 B) +gf27 B ≡ A
+cancel-neg27 A B =
+  trans (+gf27-assoc A (negate27 B) B)
+        (trans (cong (A +gf27_) (neg-add-zero27 B)) (+gf27-identityʳ A))
+
+c-cancel27 : ∀ C D → C +gf27 (negate27 C +gf27 D) ≡ D
+c-cancel27 C D =
+  trans (sym (+gf27-assoc C (negate27 C) D))
+        (trans (cong (_+gf27 D) (+gf27-inverse C)) (+gf27-identityˡ D))
+
+swap4-27 : ∀ A B C D → (A +gf27 B) +gf27 (C +gf27 D) ≡ (A +gf27 C) +gf27 (B +gf27 D)
+swap4-27 A B C D =
+  trans (sym (+gf27-assoc (A +gf27 B) C D))
+    (trans (cong (λ u → u +gf27 D) (+gf27-assoc A B C))
+      (trans (cong (λ u → (A +gf27 u) +gf27 D) (+gf27-comm B C))
+        (trans (cong (λ u → u +gf27 D) (sym (+gf27-assoc A C B)))
+          (+gf27-assoc (A +gf27 C) B D))))
+
+cm1-27 : ∀ A B C D → ((A +gf27 negate27 B) +gf27 C) +gf27 (B +gf27 (negate27 C +gf27 D))
+                      ≡ ((A +gf27 negate27 B) +gf27 B) +gf27 (C +gf27 (negate27 C +gf27 D))
+cm1-27 A B C D = swap4-27 (A +gf27 negate27 B) C B (negate27 C +gf27 D)
+
+cm2-27 : ∀ A B C D → ((A +gf27 negate27 B) +gf27 B) +gf27 (C +gf27 (negate27 C +gf27 D)) ≡ A +gf27 D
+cm2-27 A B C D =
+  trans (cong (_+gf27 (C +gf27 (negate27 C +gf27 D))) (cancel-neg27 A B))
+        (cong (A +gf27_) (c-cancel27 C D))
+
+cancel-mid27 : ∀ A B C D → ((A +gf27 negate27 B) +gf27 C) +gf27 ((B +gf27 negate27 C) +gf27 D) ≡ A +gf27 D
+cancel-mid27 A B C D =
+  trans (cong (((A +gf27 negate27 B) +gf27 C) +gf27_) (+gf27-assoc B (negate27 C) D))
+        (trans (cm1-27 A B C D) (cm2-27 A B C D))
+
+--------------------------------------------------------------------------------
+-- §7. 乘法结合律 *gf27-assoc (三级嵌套线性扩展)
+--------------------------------------------------------------------------------
+
+Basis27 : GF27 → Set
+Basis27 b = (b ≡ gf27-one) ⊎ (b ≡ alpha) ⊎ (b ≡ alpha-sq)
+
+assoc-basis : ∀ b1 b2 b3 → Basis27 b1 → Basis27 b2 → Basis27 b3 →
+  ((b1 *gf27 b2) *gf27 b3) ≡ (b1 *gf27 (b2 *gf27 b3))
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ refl)) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ refl)) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₁ refl) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₂ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₂ (inj₂ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₂ (inj₂ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ refl)) (inj₂ (inj₂ refl)) (inj₂ (inj₂ refl)) = refl
+
+-- z-层
+LinZ : ∀ b1 b2 → Linear27 (λ z → (b1 *gf27 b2) *gf27 z)
+LinZ b1 b2 = record
+  { ladd = λ a b → *gf27-distribˡ (b1 *gf27 b2) a b
+  ; lscalar = λ c w → scalar-extractʳ c (b1 *gf27 b2) w }
+LinZ' : ∀ b1 b2 → Linear27 (λ z → b1 *gf27 (b2 *gf27 z))
+LinZ' b1 b2 = record
+  { ladd = λ a b → trans (cong (b1 *gf27_) (*gf27-distribˡ b2 a b))
+                         (*gf27-distribˡ b1 (b2 *gf27 a) (b2 *gf27 b))
+  ; lscalar = λ c w → trans (cong (b1 *gf27_) (scalar-extractʳ c b2 w))
+                            (scalar-extractʳ c b1 (b2 *gf27 w)) }
+z-e1 : ∀ b1 b2 → (b1 *gf27 b2) *gf27 gf27-one ≡ b1 *gf27 (b2 *gf27 gf27-one)
+z-e1 b1 b2 = trans (*gf27-identityʳ (b1 *gf27 b2))
+                    (sym (cong (b1 *gf27_) (*gf27-identityʳ b2)))
+
+assoc-Z : ∀ b1 b2 → Basis27 b1 → Basis27 b2 → ∀ z →
+  (b1 *gf27 b2) *gf27 z ≡ b1 *gf27 (b2 *gf27 z)
+assoc-Z b1 b2 rb1 rb2 z =
+  linear-ext3 (λ w → (b1 *gf27 b2) *gf27 w) (λ w → b1 *gf27 (b2 *gf27 w))
+              (LinZ b1 b2) (LinZ' b1 b2) (z-e1 b1 b2) z-et z-et2 z
+  where
+    z-et : (b1 *gf27 b2) *gf27 alpha ≡ b1 *gf27 (b2 *gf27 alpha)
+    z-et = assoc-basis b1 b2 alpha rb1 rb2 (inj₂ (inj₁ refl))
+    z-et2 : (b1 *gf27 b2) *gf27 alpha-sq ≡ b1 *gf27 (b2 *gf27 alpha-sq)
+    z-et2 = assoc-basis b1 b2 alpha-sq rb1 rb2 (inj₂ (inj₂ refl))
+
+-- y-层
+LinY : ∀ b1 z → Linear27 (λ y → (b1 *gf27 y) *gf27 z)
+LinY b1 z = record
+  { ladd = λ a b → trans (cong (λ u → u *gf27 z) (*gf27-distribˡ b1 a b))
+                         (*gf27-distribʳ (b1 *gf27 a) (b1 *gf27 b) z)
+  ; lscalar = λ c w → trans (cong (λ u → u *gf27 z) (scalar-extractʳ c b1 w))
+                            (scalar-extractˡ c (b1 *gf27 w) z) }
+LinY' : ∀ b1 z → Linear27 (λ y → b1 *gf27 (y *gf27 z))
+LinY' b1 z = record
+  { ladd = λ a b → trans (cong (b1 *gf27_) (*gf27-distribʳ a b z))
+                         (*gf27-distribˡ b1 (a *gf27 z) (b *gf27 z))
+  ; lscalar = λ c w → trans (cong (b1 *gf27_) (scalar-extractˡ c w z))
+                            (scalar-extractʳ c b1 (w *gf27 z)) }
+y-e1 : ∀ b1 z → (b1 *gf27 gf27-one) *gf27 z ≡ b1 *gf27 (gf27-one *gf27 z)
+y-e1 b1 z = trans (cong (λ u → u *gf27 z) (*gf27-identityʳ b1))
+                  (cong (b1 *gf27_) (sym (*gf27-identityˡ z)))
+y-et : ∀ b1 → Basis27 b1 → ∀ z → (b1 *gf27 alpha) *gf27 z ≡ b1 *gf27 (alpha *gf27 z)
+y-et b1 rb = assoc-Z b1 alpha rb (inj₂ (inj₁ refl))
+y-et2 : ∀ b1 → Basis27 b1 → ∀ z → (b1 *gf27 alpha-sq) *gf27 z ≡ b1 *gf27 (alpha-sq *gf27 z)
+y-et2 b1 rb = assoc-Z b1 alpha-sq rb (inj₂ (inj₂ refl))
+
+assoc-Y : ∀ b1 → Basis27 b1 → ∀ y z → (b1 *gf27 y) *gf27 z ≡ b1 *gf27 (y *gf27 z)
+assoc-Y b1 rb y z =
+  linear-ext3 (λ w → (b1 *gf27 w) *gf27 z) (λ w → b1 *gf27 (w *gf27 z))
+              (LinY b1 z) (LinY' b1 z) (y-e1 b1 z) (y-et b1 rb z) (y-et2 b1 rb z) y
+
+-- x-层
+LinX : ∀ y z → Linear27 (λ x → (x *gf27 y) *gf27 z)
+LinX y z = record
+  { ladd = λ a b → trans (cong (λ u → u *gf27 z) (*gf27-distribʳ a b y))
+                         (*gf27-distribʳ (a *gf27 y) (b *gf27 y) z)
+  ; lscalar = λ c w → trans (cong (λ u → u *gf27 z) (scalar-extractˡ c w y))
+                            (scalar-extractˡ c (w *gf27 y) z) }
+LinX' : ∀ y z → Linear27 (λ x → x *gf27 (y *gf27 z))
+LinX' y z = record
+  { ladd = λ a b → *gf27-distribʳ a b (y *gf27 z)
+  ; lscalar = λ c w → scalar-extractˡ c w (y *gf27 z) }
+x-e1 : ∀ y z → (gf27-one *gf27 y) *gf27 z ≡ gf27-one *gf27 (y *gf27 z)
+x-e1 y z = trans (cong (λ u → u *gf27 z) (*gf27-identityˡ y))
+                  (sym (*gf27-identityˡ (y *gf27 z)))
+x-et : ∀ y z → (alpha *gf27 y) *gf27 z ≡ alpha *gf27 (y *gf27 z)
+x-et y z = assoc-Y alpha (inj₂ (inj₁ refl)) y z
+x-et2 : ∀ y z → (alpha-sq *gf27 y) *gf27 z ≡ alpha-sq *gf27 (y *gf27 z)
+x-et2 y z = assoc-Y alpha-sq (inj₂ (inj₂ refl)) y z
+
+-- ★ 乘法结合律 ★
+*gf27-assoc : ∀ x y z → (x *gf27 y) *gf27 z ≡ x *gf27 (y *gf27 z)
+*gf27-assoc x y z =
+  linear-ext3 (λ w → (w *gf27 y) *gf27 z) (λ w → w *gf27 (y *gf27 z))
+              (LinX y z) (LinX' y z) (x-e1 y z) (x-et y z) (x-et2 y z) x
+
+--------------------------------------------------------------------------------
+-- §8. 立方展开与 Freshman's dream (特征 3: (a+b)³ = a³+b³)
+--------------------------------------------------------------------------------
+
+-- negate27 = (-1)· 标量作用
+negF-is-scalar : ∀ x → negate27 x ≡ T₂ *s27 x
+negF-is-scalar (x₀ , x₁ , x₂) =
+  cong-triple (sym (two-mul-neg x₀)) (sym (two-mul-neg x₁)) (sym (two-mul-neg x₂))
+
+negF-mulˡ : ∀ x y → negate27 x *gf27 y ≡ negate27 (x *gf27 y)
+negF-mulˡ x y =
+  trans (cong (_*gf27 y) (negF-is-scalar x))
+        (trans (scalar-extractˡ T₂ x y) (sym (negF-is-scalar (x *gf27 y))))
+
+sq-raw : ∀ a b → (a +gf27 b) *gf27 (a +gf27 b)
+  ≡ ((a *gf27 a) +gf27 (a *gf27 b)) +gf27 ((b *gf27 a) +gf27 (b *gf27 b))
+sq-raw a b =
+  trans (*gf27-distribʳ a b (a +gf27 b))
+        (cong₂ (λ u v → u +gf27 v) (*gf27-distribˡ a a b) (*gf27-distribˡ b a b))
+
+sq-mid : ∀ a b → ((a *gf27 a) +gf27 (a *gf27 b)) +gf27 ((b *gf27 a) +gf27 (b *gf27 b))
+                 ≡ ((a *gf27 a) +gf27 (a *gf27 b)) +gf27 ((a *gf27 b) +gf27 (b *gf27 b))
+sq-mid a b =
+  trans (swap4-27 (a *gf27 a) (a *gf27 b) (b *gf27 a) (b *gf27 b))
+        (cong (_+gf27 ((a *gf27 b) +gf27 (b *gf27 b)))
+              (cong ((a *gf27 a) +gf27_) (*gf27-comm b a)))
+
+sq-end : ∀ A B C → (A +gf27 B) +gf27 (B +gf27 C) ≡ (A +gf27 negate27 B) +gf27 C
+sq-end A B C =
+  trans (+gf27-assoc A B (B +gf27 C))
+        (trans (cong (A +gf27_)
+                     (trans (sym (+gf27-assoc B B C)) (cong (_+gf27 C) (dn27 B))))
+               (sym (+gf27-assoc A (negate27 B) C)))
+
+sq-canon : ∀ a b → (a +gf27 b) *gf27 (a +gf27 b)
+  ≡ ((a *gf27 a) +gf27 negate27 (a *gf27 b)) +gf27 (b *gf27 b)
+sq-canon a b =
+  trans (sq-raw a b) (trans (sq-mid a b) (sq-end (a *gf27 a) (a *gf27 b) (b *gf27 b)))
+
+distrib2-27 : ∀ X Y W → (X +gf27 Y) *gf27 W ≡ (X *gf27 W) +gf27 (Y *gf27 W)
+distrib2-27 = *gf27-distribʳ
+
+distrib3-27 : ∀ X Y Z W → ((X +gf27 Y) +gf27 Z) *gf27 W
+                           ≡ ((X *gf27 W) +gf27 (Y *gf27 W)) +gf27 (Z *gf27 W)
+distrib3-27 X Y Z W =
+  trans (distrib2-27 (X +gf27 Y) Z W) (cong-+27 (distrib2-27 X Y W) refl)
+
+blk2-abs : ∀ A B → (A *gf27 B) *gf27 A ≡ (A *gf27 A) *gf27 B
+blk2-abs A B =
+  trans (*gf27-assoc A B A)
+        (trans (cong (A *gf27_) (*gf27-comm B A)) (sym (*gf27-assoc A A B)))
+
+cube-blkA : ∀ a b →
+  (((a *gf27 a) +gf27 negate27 (a *gf27 b)) +gf27 (b *gf27 b)) *gf27 a
+  ≡ ((a *gf27 (a *gf27 a)) +gf27 negate27 ((a *gf27 a) *gf27 b)) +gf27 (a *gf27 (b *gf27 b))
+cube-blkA a b =
+  trans (distrib3-27 (a *gf27 a) (negate27 (a *gf27 b)) (b *gf27 b) a)
+        (cong-+27 (cong-+27 (*gf27-comm (a *gf27 a) a)
+                          (trans (negF-mulˡ (a *gf27 b) a)
+                                 (cong negate27 (blk2-abs a b))))
+                  (*gf27-comm (b *gf27 b) a))
+
+blkB-neg : ∀ a b → negate27 (a *gf27 b) *gf27 b ≡ negate27 (a *gf27 (b *gf27 b))
+blkB-neg a b = trans (negF-mulˡ (a *gf27 b) b) (cong negate27 (*gf27-assoc a b b))
+
+cube-blkB : ∀ a b →
+  (((a *gf27 a) +gf27 negate27 (a *gf27 b)) +gf27 (b *gf27 b)) *gf27 b
+  ≡ (((a *gf27 a) *gf27 b) +gf27 negate27 (a *gf27 (b *gf27 b))) +gf27 (b *gf27 (b *gf27 b))
+cube-blkB a b =
+  trans (distrib3-27 (a *gf27 a) (negate27 (a *gf27 b)) (b *gf27 b) b)
+        (cong-+27 (cong (((a *gf27 a) *gf27 b) +gf27_) (blkB-neg a b))
+                  (*gf27-comm (b *gf27 b) b))
+
+cube-cancel : ∀ a b →
+  (((a *gf27 (a *gf27 a)) +gf27 negate27 ((a *gf27 a) *gf27 b)) +gf27 (a *gf27 (b *gf27 b)))
+  +gf27 ((((a *gf27 a) *gf27 b) +gf27 negate27 (a *gf27 (b *gf27 b))) +gf27 (b *gf27 (b *gf27 b)))
+  ≡ (a *gf27 (a *gf27 a)) +gf27 (b *gf27 (b *gf27 b))
+cube-cancel a b =
+  cancel-mid27 (a *gf27 (a *gf27 a)) ((a *gf27 a) *gf27 b) (a *gf27 (b *gf27 b)) (b *gf27 (b *gf27 b))
+
+cube-expand : ∀ a b → (a +gf27 b) *gf27 ((a +gf27 b) *gf27 (a +gf27 b))
+  ≡ (((a *gf27 a) +gf27 negate27 (a *gf27 b)) +gf27 (b *gf27 b)) *gf27 (a +gf27 b)
+cube-expand a b =
+  trans (cong ((a +gf27 b) *gf27_) (sq-canon a b))
+        (*gf27-comm (a +gf27 b) (((a *gf27 a) +gf27 negate27 (a *gf27 b)) +gf27 (b *gf27 b)))
+
+cube-distrib : ∀ a b →
+  (((a *gf27 a) +gf27 negate27 (a *gf27 b)) +gf27 (b *gf27 b)) *gf27 (a +gf27 b)
+  ≡ ((((a *gf27 a) +gf27 negate27 (a *gf27 b)) +gf27 (b *gf27 b)) *gf27 a)
+    +gf27 ((((a *gf27 a) +gf27 negate27 (a *gf27 b)) +gf27 (b *gf27 b)) *gf27 b)
+cube-distrib a b = *gf27-distribˡ (((a *gf27 a) +gf27 negate27 (a *gf27 b)) +gf27 (b *gf27 b)) a b
+
+-- ★ Freshman's dream ★
+cube-add : ∀ a b → (a +gf27 b) *gf27 ((a +gf27 b) *gf27 (a +gf27 b))
+  ≡ (a *gf27 (a *gf27 a)) +gf27 (b *gf27 (b *gf27 b))
+cube-add a b =
+  trans (cube-expand a b)
+  (trans (cube-distrib a b)
+  (trans (cong-+27 (cube-blkA a b) (cube-blkB a b))
+         (cube-cancel a b)))
+
+--------------------------------------------------------------------------------
+-- §9. 立方映射的 GF(3)-线性
+--------------------------------------------------------------------------------
+
+cubeMap : GF27 → GF27
+cubeMap x = x *gf27 (x *gf27 x)
+
+sq-scalar : ∀ c w →
+  (c *s27 w) *gf27 (c *s27 w) ≡ (c ⊗ c) *s27 (w *gf27 w)
+sq-scalar c w = mul-scalar-scalar c c w w
+
+cube-scalar : ∀ c w →
+  (c *s27 w) *gf27 ((c *s27 w) *gf27 (c *s27 w)) ≡ c *s27 (w *gf27 (w *gf27 w))
+cube-scalar c w =
+  trans (cong ((c *s27 w) *gf27_) (sq-scalar c w))
+  (trans (scalar-extractˡ c w ((c ⊗ c) *s27 (w *gf27 w)))
+  (trans (cong (c *s27_) (scalar-extractʳ (c ⊗ c) w (w *gf27 w)))
+  (trans (scalar-assoc27 c (c ⊗ c) (w *gf27 (w *gf27 w)))
+         (cong (λ d → d *s27 (w *gf27 (w *gf27 w))) (⊗-cube-id c)))))
+
+LC27 : Linear27 cubeMap
+LC27 = record { ladd = cube-add ; lscalar = cube-scalar }
+
+-- ★ σ(x) = x³ (构造性: 两个线性映射在基上一致) ★
+frobenius-is-cube : ∀ x → frobenius x ≡ x *gf27 (x *gf27 x)
+frobenius-is-cube = linear-ext3 frobenius cubeMap LF27 LC27 refl refl refl
+
+--------------------------------------------------------------------------------
+-- §10. σ 保乘法 (由 frobenius-is-cube 导出)
+--
+-- σ(xy) = (xy)³ = x³y³ = σ(x)σ(y)  [结合律 + 交换律]
+--------------------------------------------------------------------------------
+
+-- 平方分配: (x·y)² = x²·y²
+mul-square : ∀ x y → (x *gf27 y) *gf27 (x *gf27 y) ≡ (x *gf27 x) *gf27 (y *gf27 y)
+mul-square x y = begin
+  (x *gf27 y) *gf27 (x *gf27 y)
+    ≡⟨ *gf27-assoc x y (x *gf27 y) ⟩
+  x *gf27 (y *gf27 (x *gf27 y))
+    ≡⟨ cong (x *gf27_) (sym (*gf27-assoc y x y)) ⟩
+  x *gf27 ((y *gf27 x) *gf27 y)
+    ≡⟨ cong (x *gf27_) (cong (_*gf27 y) (*gf27-comm y x)) ⟩
+  x *gf27 ((x *gf27 y) *gf27 y)
+    ≡⟨ cong (x *gf27_) (*gf27-assoc x y y) ⟩
+  x *gf27 (x *gf27 (y *gf27 y))
+    ≡⟨ sym (*gf27-assoc x x (y *gf27 y)) ⟩
+  (x *gf27 x) *gf27 (y *gf27 y)
+  ∎
+
+-- 四项重排: (a·b)·(c·d) = (a·c)·(b·d)
+mul-perm : ∀ a b c d → (a *gf27 b) *gf27 (c *gf27 d) ≡ (a *gf27 c) *gf27 (b *gf27 d)
+mul-perm a b c d = begin
+  (a *gf27 b) *gf27 (c *gf27 d)
+    ≡⟨ *gf27-assoc a b (c *gf27 d) ⟩
+  a *gf27 (b *gf27 (c *gf27 d))
+    ≡⟨ cong (a *gf27_) (sym (*gf27-assoc b c d)) ⟩
+  a *gf27 ((b *gf27 c) *gf27 d)
+    ≡⟨ cong (a *gf27_) (cong (_*gf27 d) (*gf27-comm b c)) ⟩
+  a *gf27 ((c *gf27 b) *gf27 d)
+    ≡⟨ cong (a *gf27_) (*gf27-assoc c b d) ⟩
+  a *gf27 (c *gf27 (b *gf27 d))
+    ≡⟨ sym (*gf27-assoc a c (b *gf27 d)) ⟩
+  (a *gf27 c) *gf27 (b *gf27 d)
+  ∎
+
+-- ★ 立方保乘法: (x·y)³ = x³·y³ ★
+cube-mul : ∀ x y → (x *gf27 y) *gf27 ((x *gf27 y) *gf27 (x *gf27 y))
+                  ≡ (x *gf27 (x *gf27 x)) *gf27 (y *gf27 (y *gf27 y))
+cube-mul x y = begin
+  (x *gf27 y) *gf27 ((x *gf27 y) *gf27 (x *gf27 y))
+    ≡⟨ cong ((x *gf27 y) *gf27_) (mul-square x y) ⟩
+  (x *gf27 y) *gf27 ((x *gf27 x) *gf27 (y *gf27 y))
+    ≡⟨ mul-perm x y (x *gf27 x) (y *gf27 y) ⟩
+  (x *gf27 (x *gf27 x)) *gf27 (y *gf27 (y *gf27 y))
+  ∎
+
+frobenius-mul : ∀ x y → frobenius (x *gf27 y) ≡ frobenius x *gf27 frobenius y
+frobenius-mul x y =
+  trans (frobenius-is-cube (x *gf27 y))
+  (trans (cube-mul x y)
+         (cong-*27 (sym (frobenius-is-cube x)) (sym (frobenius-is-cube y))))
