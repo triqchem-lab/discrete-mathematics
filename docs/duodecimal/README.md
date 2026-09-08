@@ -159,4 +159,5 @@
 | 文件 | 内容 | 状态 |
 |------|------|:----:|
 | [12-rigorous-type-theory.md](12-rigorous-type-theory.md) | 律算框架类型论展示群的严谨定义 | ✅ |
-| [20-dc-type-theory-positioning.md](20-dc-type-theory-positioning.md) | 杜德克时钟理论定位：守卫类型论模型 + 几何拓扑动力学 | ✅ |
+| [20-dc-type-theory-positioning.md](20-dc-type-theory-positioning.md) | 杜德克时钟本源元理论：生成结构定位 | ✅ |
+| [21-quantum-module-topology-scan.md](21-quantum-module-topology-scan.md) | 量子类代码拓扑扫描与展示群本源对齐缺口 | ✅ |
