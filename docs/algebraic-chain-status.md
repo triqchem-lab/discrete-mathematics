@@ -17,14 +17,23 @@
 
 **状态：** ✅ 完成 (0 postulate)
 
-### 1.2 代数链扩展 (Duodecimal)
+### 1.2 代数链扩展 (DuodecClock 本源 + 投影层)
 
-**扩展层级：**
-- **L8**: Z/12Z 加法群 — 十二律循环
-- **L9**: (Z/12Z)* ≅ V₄ — 四象 (Klein 四元群)
+> 本体论修正 (2026-08): 本源 = DuodecPoint = Trit × AlphaPower (加法步进 Z/3 ⊕
+> 乘法旋转 ⟨α⟩≅C₄); Duodec (Z/12) 是它的加法群投影, 非本源. 层级编号见
+> AlgebraicPoleUnified.agda 头注 (AP0 本源 → L8-L10 投影).
+
+**本源层：**
+- **AP0**: DuodecPoint = Trit × AlphaPower — 本源十二进制坐标 (周期 3×4=12)
+
+**投影层 (L8-L10)：**
+- **L8**: C₁₂ = (Duodec, +12) — 加法投影 (群同构 DuodecPoint ≅ Duodec)
+- **L9**: R₁₂ = (Duodec, +12, *12) — 环投影 (有零因子)
+- **L0U**: (Z/12Z)* ≅ V₄ — 四象 (Klein 四元群, 单位群)
 - **L10**: CRT 分解 Z/12Z ≅ Z/3Z × Z/4Z — 三×四结构
 
-**文件位置：** `src/Sovereign/Algebra/Duodecimal.agda`
+**文件位置：** `src/Sovereign/Algebra/GroupTheory/DuodecClock.agda` (本源 AP0)
++ `src/Sovereign/Algebra/Duodecimal.agda` (投影层 L8-L10)
 
 **状态：** ✅ 完成 (0 postulate)
 
@@ -51,22 +60,15 @@
 - `l6-proofs`: NormProofs (conjugate-invariant)
 - `l7-proofs`: TraceProofs (formula)
 
-### 2.2 代数链扩展 (L8-L10)
+### 2.2 代数链扩展 (L8-L10) — 投影层
+| 层级 | 内容 | 本源/投影 | 状态 | 证明方式 |
+|------|------|----------|------|----------|
+| L8 | C₁₂ = (Duodec, +12) — 加法投影 | 投影 | ✅ 完成 | 穷举 refl (144 case) |
+| L9 | R₁₂ = (Duodec, +12, *12) — 环投影 | 投影 | ✅ 完成 | 穷举 refl (64 case) |
+| L10 | CRT 分解 Z/12Z ≅ Z/3Z × Z/4Z | 投影 | ✅ 完成 | 穷举 refl (12 case) |
 
-| 层级 | 内容 | 状态 | 证明方式 |
-|------|------|------|----------|
-| L8 | Z/12Z 加法群 | ✅ 完成 | 穷举 refl (144 case) |
-| L9 | (Z/12Z)* ≅ V₄ | ✅ 完成 | 穷举 refl (64 case) |
-| L10 | CRT 分解 | ✅ 完成 | 穷举 refl (12 case) |
-
-**关键证明：**
-- `+12-assoc`: ∀ x y z → (x +12 y) +12 z ≡ x +12 (y +12 z)
-- `+12-comm`: ∀ x y → x +12 y ≡ y +12 x (144 case)
-- `*u-assoc`: ∀ x y z → (x *u y) *u z ≡ x *u (y *u z) (64 case)
-- `*u-comm`: ∀ x y → x *u y ≡ y *u x (16 case)
-- `crt12-roundtrip`: ∀ x → crt12 (π3 x) (π4 x) ≡ x (12 case)
-- `crt12-inv-π3`: ∀ a b → π3 (crt12 a b) ≡ a (12 case)
-- `crt12-inv-π4`: ∀ a b → π4 (crt12 a b) ≡ b (12 case)
+> **注**: L8-L10 是 DuodecClock (AP0) 的投影层，不是本源。
+> 本源定义见 `DuodecClock.agda` (DuodecPoint = Trit × AlphaPower)。
 
 ## 3. 与 wiki 的对比
 
@@ -99,7 +101,7 @@
 ### 4.1 适用于不同类型的代数结构
 
 - **有限域**：GF(3), GF(9), GF(27), GF(81)
-- **环**：Z/12Z (Duodec)
+- **联合周期**：加法步进 Z/3 ⊕ 乘法旋转 ⟨α⟩（`DuodecClock.agda` 的 `DuodecPoint`）；Z/12 (Duodec) 仅为抽象加法群投影，环乘法不参与
 - **群**：加法群、乘法群、子群
 
 ### 4.2 适用于不同层次的证明
