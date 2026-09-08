@@ -358,16 +358,20 @@ embed-mul-r1 : ∀ c d →
   ((gf9-zero *gf9 gf9-zero) *gf9 alpha)
   ≡ gf9-zero
 embed-mul-r1 c d =
-  trans (cong (λ u → (u +gf9 (gf9-zero *gf9 d)) +gf9
-                        gf9-negate ((gf9-zero *gf9 gf9-zero) +gf9 (gf9-zero *gf9 gf9-zero)) +gf9
+  trans (cong (λ u → ((u +gf9 (gf9-zero *gf9 d)) +gf9
+                        gf9-negate ((gf9-zero *gf9 gf9-zero) +gf9 (gf9-zero *gf9 gf9-zero))) +gf9
                         ((gf9-zero *gf9 gf9-zero) *gf9 alpha))
                (gf9-zero-mulʳ c))
-    (trans (cong (λ u → (gf9-zero +gf9 u) +gf9
+    (trans (cong (λ u → ((gf9-zero +gf9 u) +gf9
+                          gf9-negate ((gf9-zero *gf9 gf9-zero) +gf9 (gf9-zero *gf9 gf9-zero))) +gf9
                           ((gf9-zero *gf9 gf9-zero) *gf9 alpha))
-                 (trans (cong gf9-negate (gf9-zero-addˡ gf9-zero)) neg-zero))
-      (trans (cong (λ u → (gf9-zero +gf9 gf9-zero) +gf9 u) (gf9-zero-mulˡ alpha))
-        (trans (cong (λ u → u +gf9 gf9-zero) (gf9-zero-addˡ gf9-zero))
-               (gf9-zero-addʳ gf9-zero))))
+                 (gf9-zero-mulˡ d))
+      (trans (cong (λ u → ((gf9-zero +gf9 gf9-zero) +gf9 u) +gf9
+                            ((gf9-zero *gf9 gf9-zero) *gf9 alpha))
+                   (trans (cong gf9-negate (gf9-zero-addˡ gf9-zero)) neg-zero))
+        (trans (cong (λ u → (gf9-zero +gf9 gf9-zero) +gf9 u) (gf9-zero-mulˡ alpha))
+          (trans (cong (λ u → u +gf9 gf9-zero) (gf9-zero-addˡ gf9-zero))
+                 (gf9-zero-addʳ gf9-zero)))))
 
 embed-mul-r2 : ∀ c d →
   (((c *gf9 gf9-zero) +gf9 (gf9-zero *gf9 gf9-zero)) +gf9 (gf9-zero *gf9 d)) +gf9
