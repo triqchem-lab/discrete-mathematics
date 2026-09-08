@@ -241,8 +241,26 @@ GF729 只形式化加法群 (乘法太复杂).
 - 代数链 GF(3²)/GF(3³)/GF(3⁴)/GF(3⁵) 全部覆盖, 下游 TowerConnection 编译绿
 - 0 postulate: 四个文件全部无 postulate
 
-**GF729 不强补** (与 GF243 评估一致): 无不可约多项式 (line 550 "需选择 6 次不可约多项式, 本模块不处理"),
-纯 T⁶ 格点加法工具 (非 GF(3⁶) 域载体, 系数 Fin3 非 Trit), 连乘法定义不补
+**GF729 域乘法不强补** (与 GF243 评估一致): 无不可约多项式 (line 550 "需选择 6 次不可约多项式, 本模块不处理"),
+纯 T⁶ 格点加法工具 (非 GF(3⁶) 域载体, 系数 Fin3 非 Trit), **域乘法定义不补**
+
+### 📋 GF729 展示群相位对齐 (2026-09-08, c449e38)
+
+**区辨**: 展示群对齐 ≠ 域乘法。GF729 仍是加法向量空间 GF9³ ([GF729:GF9]=3, 6=2×3);
+**90° 相位周期在加法层由结构承载**, 无需不可约多项式:
+
+- `alphaRotate`: 3 块 GF9 各自乘 α — (u,v)↦(neg v,u), α²=-1 的几何关系
+- `alphaRotate-flip`: R²=neg729 (180°); `alphaRotate-4`: R⁴=id (周期闭合); `alphaRotate-add`: 线性
+- `act`: AlphaPower⟨α⟩ 4 阶群作用 (p0=id, p1=R, p2=R², p3=R³); `act-hom` 16 case 由 mulAlpha 乘法表驱动; `act-add`
+- `embed-9-729`+`embed-rotate`: GF9 乘α旋转在嵌入下 = alphaRotate (相位源对齐)
+- `gf729-conj`: galoisConjugate 沿块作用 (u,v)↦(u,neg v); conj²/conj-add; `embed-conj` 嵌入保共轭
+- `conj-rot-conj`: conj∘R∘conj = R³ (共轭翻转旋转方向)
+
+相位/旋转全部由结构定义 + 构造性证明给出, **无阶数算术判定** (C₄ 是几何周期非乘法群阶标签)。
+0 postulate, 下游 TowerConnection 编译绿。
+
+**对齐结论**: GF729 现带 90° 旋转周期 (R⁴=id) + AlphaPower 群作用 + 共轭 — 展示群相位结构已就位;
+缺项仅为 GF9 的 α⁴=1 型周期证明已由 DuodecClock 本源承载, 域乘法保持不补 (T⁶ 工具定位不变)。
 
 ### 📋 ParityViolation 对齐评估 (2026-09-08, 低优先不强制)
 
