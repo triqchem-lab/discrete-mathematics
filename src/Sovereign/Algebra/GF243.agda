@@ -35,6 +35,7 @@ module Sovereign.Algebra.GF243 where
 
 open import Data.Nat using (ℕ; _^_; _*_; _+_)
 open import Data.Vec using (Vec; []; _∷_)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; sym; trans)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate;
@@ -879,249 +880,666 @@ dropZ5 t = trans (cong (_⊕ T₀) (dropZ4 t)) (⊕-identityʳ t)
 *gf243-identityʳ x =
   trans (*gf243-comm x gf243-one) (*gf243-identityˡ x)
 
--- frobenius-is-cube: σ(x) = x³ (全域真定理)
--- 243 case 穷举 (5 分量立方耦合, 不能留自由坐标)
+-- frobenius-is-cube: σ(x) = x³ — 构造性证明见文件末尾 §15
+-- (替换原 243 case refl 穷举; Lin243 + linear-ext5 基展开)
+
+-- 显式标注同余 (复合项上裸 cong₂ 会触发展开失败)
+cong-+243 : ∀ {a b c d : GF243} → a ≡ c → b ≡ d → (a +gf243 b) ≡ (c +gf243 d)
+cong-+243 p q = cong₂ (λ (u v : GF243) → u +gf243 v) p q
+
+cong-*243 : ∀ {a b c d : GF243} → a ≡ c → b ≡ d → (a *gf243 b) ≡ (c *gf243 d)
+cong-*243 p q = cong₂ (λ (u v : GF243) → u *gf243 v) p q
+
+--------------------------------------------------------------------------------
+-- §1. Trit 层辅助
+--------------------------------------------------------------------------------
+
+dn-trit : ∀ t → t ⊕ t ≡ negate t
+dn-trit T₀ = refl
+dn-trit T₁ = refl
+dn-trit T₂ = refl
+
+⊗-cube-id : ∀ t → t ⊗ (t ⊗ t) ≡ t
+⊗-cube-id T₀ = refl
+⊗-cube-id T₁ = refl
+⊗-cube-id T₂ = refl
+
+neg-⊗ : ∀ x y → negate (x ⊗ y) ≡ (negate x) ⊗ y
+neg-⊗ T₀ y = refl
+neg-⊗ T₁ T₀ = refl; neg-⊗ T₁ T₁ = refl; neg-⊗ T₁ T₂ = refl
+neg-⊗ T₂ T₀ = refl; neg-⊗ T₂ T₁ = refl; neg-⊗ T₂ T₂ = refl
+
+neg-⊗-comm : ∀ x y → (negate x) ⊗ y ≡ x ⊗ (negate y)
+neg-⊗-comm T₀ y = refl
+neg-⊗-comm T₁ T₀ = refl; neg-⊗-comm T₁ T₁ = refl; neg-⊗-comm T₁ T₂ = refl
+neg-⊗-comm T₂ T₀ = refl; neg-⊗-comm T₂ T₁ = refl; neg-⊗-comm T₂ T₂ = refl
+
+neg-⊗-r : ∀ A z → negate (A ⊗ z) ≡ A ⊗ negate z
+neg-⊗-r A z = trans (neg-⊗ A z) (neg-⊗-comm A z)
+
+--------------------------------------------------------------------------------
+-- §2. 基元素与标量
+--------------------------------------------------------------------------------
+
+alpha2 : GF243
+alpha2 = T₀ ∷ T₀ ∷ T₁ ∷ T₀ ∷ T₀ ∷ []
+
+alpha3 : GF243
+alpha3 = T₀ ∷ T₀ ∷ T₀ ∷ T₁ ∷ T₀ ∷ []
+
+alpha4 : GF243
+alpha4 = T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₁ ∷ []
+
+s243-one : ∀ a → a *s243 gf243-one ≡ a ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []
+s243-one T₀ = refl
+s243-one T₁ = refl
+s243-one T₂ = refl
+
+s243-alpha : ∀ b → b *s243 alpha ≡ T₀ ∷ b ∷ T₀ ∷ T₀ ∷ T₀ ∷ []
+s243-alpha T₀ = refl
+s243-alpha T₁ = refl
+s243-alpha T₂ = refl
+
+s243-alpha2 : ∀ c → c *s243 alpha2 ≡ T₀ ∷ T₀ ∷ c ∷ T₀ ∷ T₀ ∷ []
+s243-alpha2 T₀ = refl
+s243-alpha2 T₁ = refl
+s243-alpha2 T₂ = refl
+
+s243-alpha3 : ∀ d → d *s243 alpha3 ≡ T₀ ∷ T₀ ∷ T₀ ∷ d ∷ T₀ ∷ []
+s243-alpha3 T₀ = refl
+s243-alpha3 T₁ = refl
+s243-alpha3 T₂ = refl
+
+s243-alpha4 : ∀ e → e *s243 alpha4 ≡ T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ e ∷ []
+s243-alpha4 T₀ = refl
+s243-alpha4 T₁ = refl
+s243-alpha4 T₂ = refl
+
+-- 基分解: (a,b,c,d,e) = a·1 + (b·α + (c·α² + (d·α³ + e·α⁴)))
+decomp243 : ∀ (a b c d e : Trit) →
+  (a ∷ b ∷ c ∷ d ∷ e ∷ [])
+  ≡ (a *s243 gf243-one) +gf243 ((b *s243 alpha) +gf243 ((c *s243 alpha2)
+      +gf243 ((d *s243 alpha3) +gf243 (e *s243 alpha4))))
+decomp243 a b c d e = sym (begin
+  (a *s243 gf243-one) +gf243 ((b *s243 alpha) +gf243 ((c *s243 alpha2)
+      +gf243 ((d *s243 alpha3) +gf243 (e *s243 alpha4))))
+    ≡⟨ cong-+243 (s243-one a)
+         (cong-+243 (s243-alpha b) (cong-+243 (s243-alpha2 c)
+           (cong-+243 (s243-alpha3 d) (s243-alpha4 e)))) ⟩
+  (a ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) +gf243 ((T₀ ∷ b ∷ T₀ ∷ T₀ ∷ T₀ ∷ [])
+    +gf243 ((T₀ ∷ T₀ ∷ c ∷ T₀ ∷ T₀ ∷ []) +gf243 ((T₀ ∷ T₀ ∷ T₀ ∷ d ∷ T₀ ∷ [])
+      +gf243 (T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ e ∷ []))))
+    ≡⟨ cong ((a ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) +gf243_)
+         (cong ((T₀ ∷ b ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) +gf243_)
+           (cong ((T₀ ∷ T₀ ∷ c ∷ T₀ ∷ T₀ ∷ []) +gf243_)
+             (add-zero-r5 d e))) ⟩
+  (a ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) +gf243 ((T₀ ∷ b ∷ T₀ ∷ T₀ ∷ T₀ ∷ [])
+    +gf243 ((T₀ ∷ T₀ ∷ c ∷ T₀ ∷ T₀ ∷ []) +gf243 (T₀ ∷ T₀ ∷ T₀ ∷ d ∷ e ∷ [])))
+    ≡⟨ cong ((a ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) +gf243_)
+         (cong ((T₀ ∷ b ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) +gf243_)
+           (cong-5 (⊕-identityˡ T₀) (⊕-identityˡ T₀) (⊕-identityʳ c) (⊕-identityˡ d) (⊕-identityˡ e))) ⟩
+  (a ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) +gf243 ((T₀ ∷ b ∷ T₀ ∷ T₀ ∷ T₀ ∷ [])
+    +gf243 (T₀ ∷ T₀ ∷ c ∷ d ∷ e ∷ []))
+    ≡⟨ cong ((a ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) +gf243_)
+         (cong-5 (⊕-identityˡ T₀) (⊕-identityʳ b) (⊕-identityˡ c) (⊕-identityˡ d) (⊕-identityˡ e)) ⟩
+  (a ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) +gf243 (T₀ ∷ b ∷ c ∷ d ∷ e ∷ [])
+    ≡⟨ cong-5 (⊕-identityʳ a) (⊕-identityˡ b) (⊕-identityˡ c) (⊕-identityˡ d) (⊕-identityˡ e) ⟩
+  (a ∷ b ∷ c ∷ d ∷ e ∷ [])
+  ∎)
+  where
+    cong-5 : ∀ {p₀ p₁ p₂ p₃ p₄ q₀ q₁ q₂ q₃ q₄ : Trit} →
+      p₀ ≡ q₀ → p₁ ≡ q₁ → p₂ ≡ q₂ → p₃ ≡ q₃ → p₄ ≡ q₄ →
+      (p₀ ∷ p₁ ∷ p₂ ∷ p₃ ∷ p₄ ∷ []) ≡ (q₀ ∷ q₁ ∷ q₂ ∷ q₃ ∷ q₄ ∷ [])
+    cong-5 refl refl refl refl refl = refl
+    add-zero-r5 : ∀ d e → (T₀ ∷ T₀ ∷ T₀ ∷ d ∷ T₀ ∷ []) +gf243 (T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ e ∷ [])
+                              ≡ (T₀ ∷ T₀ ∷ T₀ ∷ d ∷ e ∷ [])
+    add-zero-r5 d e = cong-5 (⊕-identityˡ T₀) (⊕-identityˡ T₀) (⊕-identityˡ T₀) (⊕-identityʳ d) (⊕-identityˡ e)
+
+--------------------------------------------------------------------------------
+-- §3. Lin243 框架
+--------------------------------------------------------------------------------
+
+record Lin243 (f : GF243 → GF243) : Set where
+  field
+    ladd : ∀ a b → f (a +gf243 b) ≡ f a +gf243 f b
+open Lin243
+
+cancel-idem : ∀ u → u ≡ u +gf243 u → u ≡ gf243-zero
+cancel-idem u h = begin
+  u
+    ≡⟨ sym (+gf243-identityʳ u) ⟩
+  u +gf243 gf243-zero
+    ≡⟨ cong (u +gf243_) (sym (+gf243-inverse u)) ⟩
+  u +gf243 (u +gf243 gf243-negate u)
+    ≡⟨ sym (+gf243-assoc u u (gf243-negate u)) ⟩
+  (u +gf243 u) +gf243 gf243-negate u
+    ≡⟨ cong (_+gf243 gf243-negate u) (sym h) ⟩
+  u +gf243 gf243-negate u
+    ≡⟨ +gf243-inverse u ⟩
+  gf243-zero
+  ∎
+
+zero-mul-l243 : ∀ u → gf243-zero *gf243 u ≡ gf243-zero
+zero-mul-l243 u = cancel-idem (gf243-zero *gf243 u) (*gf243-distribʳ gf243-zero gf243-zero u)
+
+zero-mul-r243 : ∀ u → u *gf243 gf243-zero ≡ gf243-zero
+zero-mul-r243 u = cancel-idem (u *gf243 gf243-zero)
+  (trans (cong (u *gf243_) (sym (+gf243-identityˡ gf243-zero))) (*gf243-distribˡ u gf243-zero gf243-zero))
+
+f0-zero : ∀ (f : GF243 → GF243) → (∀ a b → f (a +gf243 b) ≡ f a +gf243 f b) →
+  f gf243-zero ≡ gf243-zero
+f0-zero f ladd =
+  cancel-idem (f gf243-zero)
+    (trans (cong f (sym (+gf243-identityˡ gf243-zero))) (ladd gf243-zero gf243-zero))
+
+lscalar-der : ∀ (f : GF243 → GF243) → (∀ a b → f (a +gf243 b) ≡ f a +gf243 f b) →
+  ∀ c w → f (c *s243 w) ≡ c *s243 (f w)
+lscalar-der f ladd T₀ w = f0-zero f ladd
+lscalar-der f ladd T₁ w = refl
+lscalar-der f ladd T₂ w = ladd w w
+
+expand5 : ∀ (f : GF243 → GF243) → Lin243 f → ∀ (a b c d e : Trit) →
+  f (a ∷ b ∷ c ∷ d ∷ e ∷ [])
+  ≡ (a *s243 (f gf243-one)) +gf243 ((b *s243 (f alpha))
+      +gf243 ((c *s243 (f alpha2)) +gf243 ((d *s243 (f alpha3)) +gf243 (e *s243 (f alpha4)))))
+expand5 f L a b c d e =
+  trans (cong f (decomp243 a b c d e))
+    (trans (ladd L (a *s243 gf243-one)
+                  ((b *s243 alpha) +gf243 ((c *s243 alpha2) +gf243 ((d *s243 alpha3) +gf243 (e *s243 alpha4)))))
+    (trans (cong-+243 (lscalar-der f (ladd L) a gf243-one)
+                      (trans (ladd L (b *s243 alpha) ((c *s243 alpha2) +gf243 ((d *s243 alpha3) +gf243 (e *s243 alpha4))))
+                             (cong-+243 (lscalar-der f (ladd L) b alpha)
+                                        (trans (ladd L (c *s243 alpha2) ((d *s243 alpha3) +gf243 (e *s243 alpha4)))
+                                               (cong-+243 (lscalar-der f (ladd L) c alpha2)
+                                                          (trans (ladd L (d *s243 alpha3) (e *s243 alpha4))
+                                                                 (cong-+243 (lscalar-der f (ladd L) d alpha3)
+                                                                            (lscalar-der f (ladd L) e alpha4))))))))
+           refl))
+
+linear-ext5 : ∀ (f g : GF243 → GF243) → Lin243 f → Lin243 g →
+  f gf243-one ≡ g gf243-one → f alpha ≡ g alpha → f alpha2 ≡ g alpha2 →
+  f alpha3 ≡ g alpha3 → f alpha4 ≡ g alpha4 → ∀ x → f x ≡ g x
+linear-ext5 f g L L' e0 e1 e2 e3 e4 (a ∷ b ∷ c ∷ d ∷ ee ∷ []) =
+  trans (expand5 f L a b c d ee)
+    (trans (cong-+243 (cong (λ w → a *s243 w) e0)
+                      (cong-+243 (cong (λ w → b *s243 w) e1)
+                                (cong-+243 (cong (λ w → c *s243 w) e2)
+                                          (cong-+243 (cong (λ w → d *s243 w) e3)
+                                                    (cong (λ w → ee *s243 w) e4)))))
+           (sym (expand5 g L' a b c d ee)))
+
+--------------------------------------------------------------------------------
+-- §4. 纯 +gf243 引理
+--------------------------------------------------------------------------------
+
+dn243 : ∀ u → (u +gf243 u) ≡ gf243-negate u
+dn243 (a ∷ b ∷ c ∷ d ∷ e ∷ []) =
+  cong-Vec5 (dn-trit a) (dn-trit b) (dn-trit c) (dn-trit d) (dn-trit e)
+
+neg-add-zero243 : ∀ B → (gf243-negate B) +gf243 B ≡ gf243-zero
+neg-add-zero243 B = trans (+gf243-comm (gf243-negate B) B) (+gf243-inverse B)
+
+cancel-neg243 : ∀ A B → (A +gf243 gf243-negate B) +gf243 B ≡ A
+cancel-neg243 A B =
+  trans (+gf243-assoc A (gf243-negate B) B)
+        (trans (cong (A +gf243_) (neg-add-zero243 B)) (+gf243-identityʳ A))
+
+c-cancel243 : ∀ C D → C +gf243 (gf243-negate C +gf243 D) ≡ D
+c-cancel243 C D =
+  trans (sym (+gf243-assoc C (gf243-negate C) D))
+        (trans (cong (_+gf243 D) (+gf243-inverse C)) (+gf243-identityˡ D))
+
+swap4-243 : ∀ A B C D → (A +gf243 B) +gf243 (C +gf243 D) ≡ (A +gf243 C) +gf243 (B +gf243 D)
+swap4-243 = +gf243-swap-middle
+
+cm1-243 : ∀ A B C D → ((A +gf243 gf243-negate B) +gf243 C) +gf243 (B +gf243 (gf243-negate C +gf243 D))
+                      ≡ ((A +gf243 gf243-negate B) +gf243 B) +gf243 (C +gf243 (gf243-negate C +gf243 D))
+cm1-243 A B C D = swap4-243 (A +gf243 gf243-negate B) C B (gf243-negate C +gf243 D)
+
+cm2-243 : ∀ A B C D → ((A +gf243 gf243-negate B) +gf243 B) +gf243 (C +gf243 (gf243-negate C +gf243 D)) ≡ A +gf243 D
+cm2-243 A B C D =
+  trans (cong (_+gf243 (C +gf243 (gf243-negate C +gf243 D))) (cancel-neg243 A B))
+        (cong (A +gf243_) (c-cancel243 C D))
+
+cancel-mid243 : ∀ A B C D → ((A +gf243 gf243-negate B) +gf243 C) +gf243 ((B +gf243 gf243-negate C) +gf243 D) ≡ A +gf243 D
+cancel-mid243 A B C D =
+  trans (cong (((A +gf243 gf243-negate B) +gf243 C) +gf243_) (+gf243-assoc B (gf243-negate C) D))
+        (trans (cm1-243 A B C D) (cm2-243 A B C D))
+
+--------------------------------------------------------------------------------
+-- §5. 乘法结合律
+--------------------------------------------------------------------------------
+
+Basis243 : GF243 → Set
+Basis243 b = (b ≡ gf243-one) ⊎ (b ≡ alpha) ⊎ (b ≡ alpha2) ⊎ (b ≡ alpha3) ⊎ (b ≡ alpha4)
+
+assoc-basis : ∀ b1 b2 b3 → Basis243 b1 → Basis243 b2 → Basis243 b3 →
+  ((b1 *gf243 b2) *gf243 b3) ≡ (b1 *gf243 (b2 *gf243 b3))
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₁ refl) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₁ refl)))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) (inj₂ (inj₂ (inj₂ (inj₂ refl)))) = refl
+
+LinZ : ∀ b1 b2 → Lin243 (λ z → (b1 *gf243 b2) *gf243 z)
+LinZ b1 b2 = record { ladd = λ a b → *gf243-distribˡ (b1 *gf243 b2) a b }
+LinZ' : ∀ b1 b2 → Lin243 (λ z → b1 *gf243 (b2 *gf243 z))
+LinZ' b1 b2 = record
+  { ladd = λ a b → trans (cong (b1 *gf243_) (*gf243-distribˡ b2 a b))
+                         (*gf243-distribˡ b1 (b2 *gf243 a) (b2 *gf243 b)) }
+z-e1 : ∀ b1 b2 → (b1 *gf243 b2) *gf243 gf243-one ≡ b1 *gf243 (b2 *gf243 gf243-one)
+z-e1 b1 b2 = trans (*gf243-identityʳ (b1 *gf243 b2))
+                    (sym (cong (b1 *gf243_) (*gf243-identityʳ b2)))
+
+assoc-Z : ∀ b1 b2 → Basis243 b1 → Basis243 b2 → ∀ z →
+  (b1 *gf243 b2) *gf243 z ≡ b1 *gf243 (b2 *gf243 z)
+assoc-Z b1 b2 rb1 rb2 z =
+  linear-ext5 (λ w → (b1 *gf243 b2) *gf243 w) (λ w → b1 *gf243 (b2 *gf243 w))
+              (LinZ b1 b2) (LinZ' b1 b2) (z-e1 b1 b2) z-ea z-ea2 z-ea3 z-ea4 z
+  where
+    z-ea : (b1 *gf243 b2) *gf243 alpha ≡ b1 *gf243 (b2 *gf243 alpha)
+    z-ea = assoc-basis b1 b2 alpha rb1 rb2 (inj₂ (inj₁ refl))
+    z-ea2 : (b1 *gf243 b2) *gf243 alpha2 ≡ b1 *gf243 (b2 *gf243 alpha2)
+    z-ea2 = assoc-basis b1 b2 alpha2 rb1 rb2 (inj₂ (inj₂ (inj₁ refl)))
+    z-ea3 : (b1 *gf243 b2) *gf243 alpha3 ≡ b1 *gf243 (b2 *gf243 alpha3)
+    z-ea3 = assoc-basis b1 b2 alpha3 rb1 rb2 (inj₂ (inj₂ (inj₂ (inj₁ refl))))
+    z-ea4 : (b1 *gf243 b2) *gf243 alpha4 ≡ b1 *gf243 (b2 *gf243 alpha4)
+    z-ea4 = assoc-basis b1 b2 alpha4 rb1 rb2 (inj₂ (inj₂ (inj₂ (inj₂ refl))))
+
+LinY : ∀ b1 z → Lin243 (λ y → (b1 *gf243 y) *gf243 z)
+LinY b1 z = record
+  { ladd = λ a b → trans (cong (λ u → u *gf243 z) (*gf243-distribˡ b1 a b))
+                         (*gf243-distribʳ (b1 *gf243 a) (b1 *gf243 b) z) }
+LinY' : ∀ b1 z → Lin243 (λ y → b1 *gf243 (y *gf243 z))
+LinY' b1 z = record
+  { ladd = λ a b → trans (cong (b1 *gf243_) (*gf243-distribʳ a b z))
+                         (*gf243-distribˡ b1 (a *gf243 z) (b *gf243 z)) }
+y-e1 : ∀ b1 z → (b1 *gf243 gf243-one) *gf243 z ≡ b1 *gf243 (gf243-one *gf243 z)
+y-e1 b1 z = trans (cong (λ u → u *gf243 z) (*gf243-identityʳ b1))
+                  (cong (b1 *gf243_) (sym (*gf243-identityˡ z)))
+y-ea : ∀ b1 → Basis243 b1 → ∀ z → (b1 *gf243 alpha) *gf243 z ≡ b1 *gf243 (alpha *gf243 z)
+y-ea b1 rb = assoc-Z b1 alpha rb (inj₂ (inj₁ refl))
+y-ea2 : ∀ b1 → Basis243 b1 → ∀ z → (b1 *gf243 alpha2) *gf243 z ≡ b1 *gf243 (alpha2 *gf243 z)
+y-ea2 b1 rb = assoc-Z b1 alpha2 rb (inj₂ (inj₂ (inj₁ refl)))
+y-ea3 : ∀ b1 → Basis243 b1 → ∀ z → (b1 *gf243 alpha3) *gf243 z ≡ b1 *gf243 (alpha3 *gf243 z)
+y-ea3 b1 rb = assoc-Z b1 alpha3 rb (inj₂ (inj₂ (inj₂ (inj₁ refl))))
+y-ea4 : ∀ b1 → Basis243 b1 → ∀ z → (b1 *gf243 alpha4) *gf243 z ≡ b1 *gf243 (alpha4 *gf243 z)
+y-ea4 b1 rb = assoc-Z b1 alpha4 rb (inj₂ (inj₂ (inj₂ (inj₂ refl))))
+
+assoc-Y : ∀ b1 → Basis243 b1 → ∀ y z → (b1 *gf243 y) *gf243 z ≡ b1 *gf243 (y *gf243 z)
+assoc-Y b1 rb y z =
+  linear-ext5 (λ w → (b1 *gf243 w) *gf243 z) (λ w → b1 *gf243 (w *gf243 z))
+              (LinY b1 z) (LinY' b1 z) (y-e1 b1 z) (y-ea b1 rb z) (y-ea2 b1 rb z) (y-ea3 b1 rb z) (y-ea4 b1 rb z) y
+
+LinX : ∀ y z → Lin243 (λ x → (x *gf243 y) *gf243 z)
+LinX y z = record
+  { ladd = λ a b → trans (cong (λ u → u *gf243 z) (*gf243-distribʳ a b y))
+                         (*gf243-distribʳ (a *gf243 y) (b *gf243 y) z) }
+LinX' : ∀ y z → Lin243 (λ x → x *gf243 (y *gf243 z))
+LinX' y z = record { ladd = λ a b → *gf243-distribʳ a b (y *gf243 z) }
+x-e1 : ∀ y z → (gf243-one *gf243 y) *gf243 z ≡ gf243-one *gf243 (y *gf243 z)
+x-e1 y z = trans (cong (λ u → u *gf243 z) (*gf243-identityˡ y))
+                  (sym (*gf243-identityˡ (y *gf243 z)))
+x-ea : ∀ y z → (alpha *gf243 y) *gf243 z ≡ alpha *gf243 (y *gf243 z)
+x-ea y z = assoc-Y alpha (inj₂ (inj₁ refl)) y z
+x-ea2 : ∀ y z → (alpha2 *gf243 y) *gf243 z ≡ alpha2 *gf243 (y *gf243 z)
+x-ea2 y z = assoc-Y alpha2 (inj₂ (inj₂ (inj₁ refl))) y z
+x-ea3 : ∀ y z → (alpha3 *gf243 y) *gf243 z ≡ alpha3 *gf243 (y *gf243 z)
+x-ea3 y z = assoc-Y alpha3 (inj₂ (inj₂ (inj₂ (inj₁ refl)))) y z
+x-ea4 : ∀ y z → (alpha4 *gf243 y) *gf243 z ≡ alpha4 *gf243 (y *gf243 z)
+x-ea4 y z = assoc-Y alpha4 (inj₂ (inj₂ (inj₂ (inj₂ refl)))) y z
+
+-- ★ 乘法结合律 ★
+*gf243-assoc : ∀ x y z → (x *gf243 y) *gf243 z ≡ x *gf243 (y *gf243 z)
+*gf243-assoc x y z =
+  linear-ext5 (λ w → (w *gf243 y) *gf243 z) (λ w → w *gf243 (y *gf243 z))
+              (LinX y z) (LinX' y z) (x-e1 y z) (x-ea y z) (x-ea2 y z) (x-ea3 y z) (x-ea4 y z) x
+
+--------------------------------------------------------------------------------
+-- §6. σ 保加 (frobenius-add) — GF243 原先缺失
+--------------------------------------------------------------------------------
+
+-- σ(a₀,a₁,a₂,a₃,a₄) = (a₀⊕neg a₃, neg a₂⊕a₃, a₂⊕a₄, a₁⊕a₄, neg a₃⊕a₄)
+frobenius-add : ∀ x y → frobenius (x +gf243 y) ≡ frobenius x +gf243 frobenius y
+frobenius-add (a₀ ∷ a₁ ∷ a₂ ∷ a₃ ∷ a₄ ∷ []) (b₀ ∷ b₁ ∷ b₂ ∷ b₃ ∷ b₄ ∷ []) =
+  cong-Vec5 eq0 eq1 eq2 eq3 eq4
+  where
+    eq0 : (a₀ ⊕ b₀) ⊕ negate (a₃ ⊕ b₃) ≡ (a₀ ⊕ negate a₃) ⊕ (b₀ ⊕ negate b₃)
+    eq0 = trans (cong ((a₀ ⊕ b₀) ⊕_) (negate-⊕ a₃ b₃)) (⊕-swap-middle a₀ b₀ (negate a₃) (negate b₃))
+    eq1 : negate (a₂ ⊕ b₂) ⊕ (a₃ ⊕ b₃) ≡ (negate a₂ ⊕ a₃) ⊕ (negate b₂ ⊕ b₃)
+    eq1 = trans (cong (_⊕ (a₃ ⊕ b₃)) (negate-⊕ a₂ b₂)) (⊕-swap-middle (negate a₂) (negate b₂) a₃ b₃)
+    eq2 : (a₂ ⊕ b₂) ⊕ (a₄ ⊕ b₄) ≡ (a₂ ⊕ a₄) ⊕ (b₂ ⊕ b₄)
+    eq2 = ⊕-swap-middle a₂ b₂ a₄ b₄
+    eq3 : (a₁ ⊕ b₁) ⊕ (a₄ ⊕ b₄) ≡ (a₁ ⊕ a₄) ⊕ (b₁ ⊕ b₄)
+    eq3 = ⊕-swap-middle a₁ b₁ a₄ b₄
+    eq4 : negate (a₃ ⊕ b₃) ⊕ (a₄ ⊕ b₄) ≡ (negate a₃ ⊕ a₄) ⊕ (negate b₃ ⊕ b₄)
+    eq4 = trans (cong (_⊕ (a₄ ⊕ b₄)) (negate-⊕ a₃ b₃)) (⊕-swap-middle (negate a₃) (negate b₃) a₄ b₄)
+
+LF243 : Lin243 frobenius
+LF243 = record { ladd = frobenius-add }
+
+--------------------------------------------------------------------------------
+-- §7. Freshman's dream 与立方映射
+--------------------------------------------------------------------------------
+
+negF-is-scalar : ∀ x → gf243-negate x ≡ T₂ *s243 x
+negF-is-scalar (x₀ ∷ x₁ ∷ x₂ ∷ x₃ ∷ x₄ ∷ []) =
+  cong-Vec5 (sym (dn-trit x₀)) (sym (dn-trit x₁)) (sym (dn-trit x₂)) (sym (dn-trit x₃)) (sym (dn-trit x₄))
+
+-- 标量提取 (左)
+scalar-extract-l243 : ∀ c x y → (c *s243 x) *gf243 y ≡ c *s243 (x *gf243 y)
+scalar-extract-l243 T₀ x y = zero-mul-l243 y
+scalar-extract-l243 T₁ x y = refl
+scalar-extract-l243 T₂ x y = *gf243-distribʳ x x y
+
+-- 标量提取 (右)
+scalar-extract-r243 : ∀ c x y → x *gf243 (c *s243 y) ≡ c *s243 (x *gf243 y)
+scalar-extract-r243 T₀ x y = zero-mul-r243 x
+scalar-extract-r243 T₁ x y = refl
+scalar-extract-r243 T₂ x y = *gf243-distribˡ x y y
+
+negF-mulˡ : ∀ x y → gf243-negate x *gf243 y ≡ gf243-negate (x *gf243 y)
+negF-mulˡ x y =
+  trans (cong (_*gf243 y) (negF-is-scalar x))
+        (trans (scalar-extract-l243 T₂ x y) (sym (negF-is-scalar (x *gf243 y))))
+
+negF-mulʳ : ∀ x y → x *gf243 gf243-negate y ≡ gf243-negate (x *gf243 y)
+negF-mulʳ x y =
+  trans (cong (x *gf243_) (negF-is-scalar y))
+        (trans (scalar-extract-r243 T₂ x y) (sym (negF-is-scalar (x *gf243 y))))
+
+neg-mul-neg : ∀ x y → gf243-negate x *gf243 gf243-negate y ≡ x *gf243 y
+neg-mul-neg x y =
+  trans (negF-mulˡ x (gf243-negate y))
+        (trans (cong gf243-negate (negF-mulʳ x y)) (gf243-negate² (x *gf243 y)))
+
+-- (w+w)·(w+w) ≡ w·w
+two-mul-sq : ∀ w → (w +gf243 w) *gf243 (w +gf243 w) ≡ w *gf243 w
+two-mul-sq w = trans (cong-*243 (dn243 w) (dn243 w)) (neg-mul-neg w w)
+
+sq-raw : ∀ a b → (a +gf243 b) *gf243 (a +gf243 b)
+  ≡ ((a *gf243 a) +gf243 (a *gf243 b)) +gf243 ((b *gf243 a) +gf243 (b *gf243 b))
+sq-raw a b =
+  trans (*gf243-distribʳ a b (a +gf243 b))
+        (cong-+243 (*gf243-distribˡ a a b) (*gf243-distribˡ b a b))
+
+sq-mid : ∀ a b → ((a *gf243 a) +gf243 (a *gf243 b)) +gf243 ((b *gf243 a) +gf243 (b *gf243 b))
+                 ≡ ((a *gf243 a) +gf243 (a *gf243 b)) +gf243 ((a *gf243 b) +gf243 (b *gf243 b))
+sq-mid a b =
+  trans (swap4-243 (a *gf243 a) (a *gf243 b) (b *gf243 a) (b *gf243 b))
+        (cong (_+gf243 ((a *gf243 b) +gf243 (b *gf243 b)))
+              (cong ((a *gf243 a) +gf243_) (*gf243-comm b a)))
+
+sq-end : ∀ A B C → (A +gf243 B) +gf243 (B +gf243 C) ≡ (A +gf243 gf243-negate B) +gf243 C
+sq-end A B C =
+  trans (+gf243-assoc A B (B +gf243 C))
+        (trans (cong (A +gf243_)
+                     (trans (sym (+gf243-assoc B B C)) (cong (_+gf243 C) (dn243 B))))
+               (sym (+gf243-assoc A (gf243-negate B) C)))
+
+sq-canon : ∀ a b → (a +gf243 b) *gf243 (a +gf243 b)
+  ≡ ((a *gf243 a) +gf243 gf243-negate (a *gf243 b)) +gf243 (b *gf243 b)
+sq-canon a b =
+  trans (sq-raw a b) (trans (sq-mid a b) (sq-end (a *gf243 a) (a *gf243 b) (b *gf243 b)))
+
+distrib3-243 : ∀ X Y Z W → ((X +gf243 Y) +gf243 Z) *gf243 W
+                           ≡ ((X *gf243 W) +gf243 (Y *gf243 W)) +gf243 (Z *gf243 W)
+distrib3-243 X Y Z W =
+  trans (*gf243-distribʳ (X +gf243 Y) Z W)
+        (cong-+243 (*gf243-distribʳ X Y W) refl)
+
+blk2-abs : ∀ A B → (A *gf243 B) *gf243 A ≡ (A *gf243 A) *gf243 B
+blk2-abs A B =
+  trans (*gf243-assoc A B A)
+        (trans (cong (A *gf243_) (*gf243-comm B A)) (sym (*gf243-assoc A A B)))
+
+cube-blkA : ∀ a b →
+  (((a *gf243 a) +gf243 gf243-negate (a *gf243 b)) +gf243 (b *gf243 b)) *gf243 a
+  ≡ ((a *gf243 (a *gf243 a)) +gf243 gf243-negate ((a *gf243 a) *gf243 b)) +gf243 (a *gf243 (b *gf243 b))
+cube-blkA a b =
+  trans (distrib3-243 (a *gf243 a) (gf243-negate (a *gf243 b)) (b *gf243 b) a)
+        (cong-+243 (cong-+243 (*gf243-comm (a *gf243 a) a)
+                             (trans (negF-mulˡ (a *gf243 b) a)
+                                    (cong gf243-negate (blk2-abs a b))))
+                  (*gf243-comm (b *gf243 b) a))
+
+blkB-neg : ∀ a b → gf243-negate (a *gf243 b) *gf243 b ≡ gf243-negate (a *gf243 (b *gf243 b))
+blkB-neg a b = trans (negF-mulˡ (a *gf243 b) b) (cong gf243-negate (*gf243-assoc a b b))
+
+cube-blkB : ∀ a b →
+  (((a *gf243 a) +gf243 gf243-negate (a *gf243 b)) +gf243 (b *gf243 b)) *gf243 b
+  ≡ (((a *gf243 a) *gf243 b) +gf243 gf243-negate (a *gf243 (b *gf243 b))) +gf243 (b *gf243 (b *gf243 b))
+cube-blkB a b =
+  trans (distrib3-243 (a *gf243 a) (gf243-negate (a *gf243 b)) (b *gf243 b) b)
+        (cong-+243 (cong (((a *gf243 a) *gf243 b) +gf243_) (blkB-neg a b))
+                  (*gf243-comm (b *gf243 b) b))
+
+cube-cancel : ∀ a b →
+  (((a *gf243 (a *gf243 a)) +gf243 gf243-negate ((a *gf243 a) *gf243 b)) +gf243 (a *gf243 (b *gf243 b)))
+  +gf243 ((((a *gf243 a) *gf243 b) +gf243 gf243-negate (a *gf243 (b *gf243 b))) +gf243 (b *gf243 (b *gf243 b)))
+  ≡ (a *gf243 (a *gf243 a)) +gf243 (b *gf243 (b *gf243 b))
+cube-cancel a b =
+  cancel-mid243 (a *gf243 (a *gf243 a)) ((a *gf243 a) *gf243 b) (a *gf243 (b *gf243 b)) (b *gf243 (b *gf243 b))
+
+cube-expand : ∀ a b → (a +gf243 b) *gf243 ((a +gf243 b) *gf243 (a +gf243 b))
+  ≡ (((a *gf243 a) +gf243 gf243-negate (a *gf243 b)) +gf243 (b *gf243 b)) *gf243 (a +gf243 b)
+cube-expand a b =
+  trans (cong ((a +gf243 b) *gf243_) (sq-canon a b))
+        (*gf243-comm (a +gf243 b) (((a *gf243 a) +gf243 gf243-negate (a *gf243 b)) +gf243 (b *gf243 b)))
+
+cube-distrib : ∀ a b →
+  (((a *gf243 a) +gf243 gf243-negate (a *gf243 b)) +gf243 (b *gf243 b)) *gf243 (a +gf243 b)
+  ≡ ((((a *gf243 a) +gf243 gf243-negate (a *gf243 b)) +gf243 (b *gf243 b)) *gf243 a)
+    +gf243 ((((a *gf243 a) +gf243 gf243-negate (a *gf243 b)) +gf243 (b *gf243 b)) *gf243 b)
+cube-distrib a b = *gf243-distribˡ (((a *gf243 a) +gf243 gf243-negate (a *gf243 b)) +gf243 (b *gf243 b)) a b
+
+-- ★ Freshman's dream ★
+cube-add : ∀ a b → (a +gf243 b) *gf243 ((a +gf243 b) *gf243 (a +gf243 b))
+  ≡ (a *gf243 (a *gf243 a)) +gf243 (b *gf243 (b *gf243 b))
+cube-add a b =
+  trans (cube-expand a b)
+  (trans (cube-distrib a b)
+  (trans (cong-+243 (cube-blkA a b) (cube-blkB a b))
+         (cube-cancel a b)))
+
+--------------------------------------------------------------------------------
+-- §8. 立方映射的 GF(3)-线性
+--------------------------------------------------------------------------------
+
+cubeMap243 : GF243 → GF243
+cubeMap243 x = x *gf243 (x *gf243 x)
+
+sq-scalar : ∀ c w → (c *s243 w) *gf243 (c *s243 w) ≡ (c ⊗ c) *s243 (w *gf243 w)
+sq-scalar T₀ w = zero-mul-l243 (T₀ *s243 w)
+sq-scalar T₁ w = refl
+sq-scalar T₂ w = trans (two-mul-sq w) refl
+
+cube-scalar : ∀ c w →
+  (c *s243 w) *gf243 ((c *s243 w) *gf243 (c *s243 w)) ≡ c *s243 (w *gf243 (w *gf243 w))
+cube-scalar T₀ w = zero-mul-l243 ((T₀ *s243 w) *gf243 (T₀ *s243 w))
+cube-scalar T₁ w = refl
+cube-scalar T₂ w = begin
+  (w +gf243 w) *gf243 ((w +gf243 w) *gf243 (w +gf243 w))
+    ≡⟨ cong ((w +gf243 w) *gf243_) (two-mul-sq w) ⟩
+  (w +gf243 w) *gf243 (w *gf243 w)
+    ≡⟨ scalar-extract-l243 T₂ w (w *gf243 w) ⟩
+  T₂ *s243 (w *gf243 (w *gf243 w))
+  ∎
+
+LC243 : Lin243 cubeMap243
+LC243 = record { ladd = cube-add }
+
+-- ★ σ(x) = x³ ★
 frobenius-is-cube : ∀ x → frobenius x ≡ x *gf243 (x *gf243 x)
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₀ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₀ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₀ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₀ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₀ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₀ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₁ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₁ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₁ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₁ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₁ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₁ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₁ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₁ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₁ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₂ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₂ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₂ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₂ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₂ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₂ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₂ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₂ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₀ ∷ T₂ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₀ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₀ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₀ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₀ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₀ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₀ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₀ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₀ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₁ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₁ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₁ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₁ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₁ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₁ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₁ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₁ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₁ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₂ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₂ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₂ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₂ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₂ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₂ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₂ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₂ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₁ ∷ T₂ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₀ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₀ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₀ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₀ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₀ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₀ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₀ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₀ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₁ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₁ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₁ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₁ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₁ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₁ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₁ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₁ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₁ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₂ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₂ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₂ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₂ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₂ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₂ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₂ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₂ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₀ ∷ T₂ ∷ T₂ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₀ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₀ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₀ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₀ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₀ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₀ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₁ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₁ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₁ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₁ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₁ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₁ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₁ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₁ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₁ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₂ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₂ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₂ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₂ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₂ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₂ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₂ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₂ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₀ ∷ T₂ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₀ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₀ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₀ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₀ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₀ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₀ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₀ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₀ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₁ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₁ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₁ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₁ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₁ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₁ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₁ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₁ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₁ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₂ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₂ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₂ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₂ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₂ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₂ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₂ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₂ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₁ ∷ T₂ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₀ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₀ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₀ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₀ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₀ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₀ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₀ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₀ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₁ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₁ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₁ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₁ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₁ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₁ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₁ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₁ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₁ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₂ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₂ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₂ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₂ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₂ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₂ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₂ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₂ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₁ ∷ T₂ ∷ T₂ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₀ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₀ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₀ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₀ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₀ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₀ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₀ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₁ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₁ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₁ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₁ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₁ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₁ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₁ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₁ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₁ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₂ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₂ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₂ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₂ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₂ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₂ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₂ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₂ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₀ ∷ T₂ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₀ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₀ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₀ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₀ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₀ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₀ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₀ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₀ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₁ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₁ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₁ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₁ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₁ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₁ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₁ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₁ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₁ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₂ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₂ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₂ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₂ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₂ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₂ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₂ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₂ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₁ ∷ T₂ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₀ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₀ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₀ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₀ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₀ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₀ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₀ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₀ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₀ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₁ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₁ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₁ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₁ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₁ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₁ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₁ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₁ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₁ ∷ T₂ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₂ ∷ T₀ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₂ ∷ T₀ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₂ ∷ T₀ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₂ ∷ T₁ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₂ ∷ T₁ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₂ ∷ T₁ ∷ T₂ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₂ ∷ T₂ ∷ T₀ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₂ ∷ T₂ ∷ T₁ ∷ []) = refl
-frobenius-is-cube (T₂ ∷ T₂ ∷ T₂ ∷ T₂ ∷ T₂ ∷ []) = refl
+frobenius-is-cube =
+  linear-ext5 frobenius cubeMap243 LF243 LC243 refl refl refl refl refl
+
+--------------------------------------------------------------------------------
+-- §9. σ 保乘法
+--------------------------------------------------------------------------------
+
+mul-square : ∀ x y → (x *gf243 y) *gf243 (x *gf243 y) ≡ (x *gf243 x) *gf243 (y *gf243 y)
+mul-square x y = begin
+  (x *gf243 y) *gf243 (x *gf243 y)
+    ≡⟨ *gf243-assoc x y (x *gf243 y) ⟩
+  x *gf243 (y *gf243 (x *gf243 y))
+    ≡⟨ cong (x *gf243_) (sym (*gf243-assoc y x y)) ⟩
+  x *gf243 ((y *gf243 x) *gf243 y)
+    ≡⟨ cong (x *gf243_) (cong (_*gf243 y) (*gf243-comm y x)) ⟩
+  x *gf243 ((x *gf243 y) *gf243 y)
+    ≡⟨ cong (x *gf243_) (*gf243-assoc x y y) ⟩
+  x *gf243 (x *gf243 (y *gf243 y))
+    ≡⟨ sym (*gf243-assoc x x (y *gf243 y)) ⟩
+  (x *gf243 x) *gf243 (y *gf243 y)
+  ∎
+
+mul-perm : ∀ a b c d → (a *gf243 b) *gf243 (c *gf243 d) ≡ (a *gf243 c) *gf243 (b *gf243 d)
+mul-perm a b c d = begin
+  (a *gf243 b) *gf243 (c *gf243 d)
+    ≡⟨ *gf243-assoc a b (c *gf243 d) ⟩
+  a *gf243 (b *gf243 (c *gf243 d))
+    ≡⟨ cong (a *gf243_) (sym (*gf243-assoc b c d)) ⟩
+  a *gf243 ((b *gf243 c) *gf243 d)
+    ≡⟨ cong (a *gf243_) (cong (_*gf243 d) (*gf243-comm b c)) ⟩
+  a *gf243 ((c *gf243 b) *gf243 d)
+    ≡⟨ cong (a *gf243_) (*gf243-assoc c b d) ⟩
+  a *gf243 (c *gf243 (b *gf243 d))
+    ≡⟨ sym (*gf243-assoc a c (b *gf243 d)) ⟩
+  (a *gf243 c) *gf243 (b *gf243 d)
+  ∎
+
+cube-mul : ∀ x y → (x *gf243 y) *gf243 ((x *gf243 y) *gf243 (x *gf243 y))
+                  ≡ (x *gf243 (x *gf243 x)) *gf243 (y *gf243 (y *gf243 y))
+cube-mul x y = begin
+  (x *gf243 y) *gf243 ((x *gf243 y) *gf243 (x *gf243 y))
+    ≡⟨ cong ((x *gf243 y) *gf243_) (mul-square x y) ⟩
+  (x *gf243 y) *gf243 ((x *gf243 x) *gf243 (y *gf243 y))
+    ≡⟨ mul-perm x y (x *gf243 x) (y *gf243 y) ⟩
+  (x *gf243 (x *gf243 x)) *gf243 (y *gf243 (y *gf243 y))
+  ∎
+
+frobenius-mul : ∀ x y → frobenius (x *gf243 y) ≡ frobenius x *gf243 frobenius y
+frobenius-mul x y =
+  trans (frobenius-is-cube (x *gf243 y))
+  (trans (cube-mul x y)
+         (cong-*243 (sym (frobenius-is-cube x)) (sym (frobenius-is-cube y))))
