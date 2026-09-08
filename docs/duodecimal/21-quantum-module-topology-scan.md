@@ -126,6 +126,8 @@
 | cd35907 | Structology/StandingWave | 三代驻波 = DC 幅度频率模态 (相位静止 a0) |
 | 4b9e909 | Physics/ChiralInterference | §6 GF9 手征层: CW/CCW → GF9 共轭对(α,σα), σ 非平凡阶2 |
 | 49985d6 | Quantum/Foundation | 公理3 纠缠=GF9 共轭实现落地 (注释→实际定义) |
+| 66e03c8 | Coupling/SpinTwistor | 对齐声明: 扭量复共轭=GF9 σ (DiscreteComplex本质=GF9, 保类型) |
+| e879476 | Coupling/CartanTorsion | 对齐声明: DiscreteComplex 乘法/共轭 = GF9 标准结构 (保类型) |
 
 ### 🔴 待修复: 声子谱桥接 (暂缓, 2026-09-08)
 
