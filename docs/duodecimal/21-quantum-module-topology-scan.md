@@ -126,7 +126,8 @@
 | cd35907 | Structology/StandingWave | 三代驻波 = DC 幅度频率模态 (相位静止 a0) |
 | 4b9e909 | Physics/ChiralInterference | §6 GF9 手征层: CW/CCW → GF9 共轭对(α,σα), σ 非平凡阶2 |
 | 49985d6 | Quantum/Foundation | 公理3 纠缠=GF9 共轭实现落地 (注释→实际定义) |
-| 66e03c8 | Coupling/SpinTwistor | 对齐声明: 扭量复共轭=GF9 σ (DiscreteComplex本质=GF9, 保类型) |
+| 66e03c8 | Coupling/SpinTwistor | 对齐声明: 扭量复共轭=GF9 σ (DiscreteComplex本质=GF9) |
+| 8db5985 | Coupling/SpinTwistor | §3b GF9扭量层: TwistorPoint9=GF9³ 标准GF9, 共轭=galoisConjugate, 无连续统 |
 | e879476 | Coupling/CartanTorsion | 对齐声明: DiscreteComplex 乘法/共轭 = GF9 标准结构 (保类型) |
 
 ### 🔴 待修复: 声子谱桥接 (暂缓, 2026-09-08)
@@ -156,4 +157,4 @@
 1. A₄+Sqrt3 是嘉当挠场的独立正确选择 (非交换结构群 + 能隙域), 保留仅声明区别
 2. CartanTorsion 应重构到 DC 结构群 + GF9⟨α⟩ (大改)
 
-**SpinTwistor**: 已对齐 (复结构=GF9, 扭量共轭=GF9σ 已声明), 无需深化
+**SpinTwistor**: 已实质对齐 (8db5985) — §3b 标准 GF9 扭量层 TwistorPoint9=GF9³, 无连续统
