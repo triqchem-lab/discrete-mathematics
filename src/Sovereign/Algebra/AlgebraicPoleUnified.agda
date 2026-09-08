@@ -111,6 +111,12 @@ open import Sovereign.Algebra.Duodecimal using (
   π3-homo-+; π3-homo-*;
   zero-divisor-2×6; zero-divisor-3×4; not-a-field)
 
+-- 本源层: DuodecClock (DuodecPoint = Trit × AlphaPower, mixedOp 群)
+-- L0 本源化 (2026-09-08): L0 载体从 Duodec(Z/12 投影) 改本源 DuodecPoint
+open import Sovereign.Algebra.GroupTheory.DuodecClock using (
+  DuodecPoint; AlphaPower; a0; mixedOp; duodec-e; duodec-inv;
+  mixedOp-assoc; mixedOp-comm; mixedOp-identityˡ; mixedOp-identityʳ; mixedOp-inverse)
+
 --------------------------------------------------------------------------------
 -- 1. 统一代数极 record — Z/12Z 涡旋环本体 + 截面
 --
@@ -119,9 +125,10 @@ open import Sovereign.Algebra.Duodecimal using (
 
 record AlgebraicPole : Set₁ where
   field
-    -- === 本体层: Z/12Z 涡旋环 (根 "123") ===
+    -- === 本源层: DuodecPoint (杜德克时钟本源, 加乘联合) ===
 
-    -- L0: Z/12Z 加法群 — 十二律循环 / 涡旋相位 (本体)
+    -- L0: DuodecPoint 本源 — mixedOp 群 (加法步进 Z/3 ⊕ 乘法旋转 ⟨α⟩)
+    -- (2026-09-08 本源化: 载体从 Duodec/Z12 投影改本源 DuodecPoint)
     L0-carrier : Set
     L0-op      : L0-carrier → L0-carrier → L0-carrier
     L0-id      : L0-carrier
@@ -183,7 +190,7 @@ record AlgebraicPole : Set₁ where
 
     -- === 本体→截面连接 ===
     connect-S1→C1 : S1-carrier → C1-carrier  -- GF(3) ↪ GF(9) (截面嵌入共轭)
-    connect-L0→S1 : L0-carrier → S1-carrier  -- Z/12Z → GF(3) (π3, 本体投影到截面)
+    connect-L0→S1 : L0-carrier → S1-carrier  -- DuodecPoint → GF(3) (本源幅度投影 proj₁)
 
 --------------------------------------------------------------------------------
 -- 2. 具体实例化 — 用已有证明填充 AlgebraicPole
@@ -191,16 +198,16 @@ record AlgebraicPole : Set₁ where
 
 algebraic-pole : AlgebraicPole
 algebraic-pole = record
-  { L0-carrier = Duodec
-  ; L0-op      = _+12_
-  ; L0-id      = d0
-  ; L0-inv     = neg12
+  { L0-carrier = DuodecPoint   -- 本源: DuodecPoint (非 Duodec/Z12 投影)
+  ; L0-op      = mixedOp       -- 加乘联合 (幅度⊕, 相位×α)
+  ; L0-id      = duodec-e
+  ; L0-inv     = duodec-inv
   ; L0-proofs  = record
-    { assoc     = +12-assoc
-    ; comm      = +12-comm
-    ; identityˡ = +12-identityˡ
-    ; identityʳ = +12-identityʳ
-    ; inverseʳ  = +12-inverse
+    { assoc     = mixedOp-assoc
+    ; comm      = mixedOp-comm
+    ; identityˡ = mixedOp-identityˡ
+    ; identityʳ = mixedOp-identityʳ
+    ; inverseʳ  = mixedOp-inverse
     }
 
   ; L0U-carrier = DuodecUnit
@@ -227,8 +234,8 @@ algebraic-pole = record
   ; S2-inv     = gf3s-inv
   ; S2-proofs  = l2-proofs
 
-  ; L0C-π3  = π3
-  ; L0C-crt = λ a → crt12 a zero  -- π3 分量的 CRT 截面 (π4 = 0)
+  ; L0C-π3  = proj₁   -- 本源第一分量 (DuodecPoint → Trit = GF3)
+  ; L0C-crt = λ a → (a , a0)  -- 本源截面: 幅度 a, 相位归零 a0
 
   ; C1-carrier = GF9
   ; C1-op      = _+gf9_
@@ -249,7 +256,7 @@ algebraic-pole = record
   ; C5-trace = galoisTrace
 
   ; connect-S1→C1 = embed-gf3
-  ; connect-L0→S1 = π3
+  ; connect-L0→S1 = proj₁  -- 本源第一分量 → GF(3) (幅度投影)
   }
 
 --------------------------------------------------------------------------------
