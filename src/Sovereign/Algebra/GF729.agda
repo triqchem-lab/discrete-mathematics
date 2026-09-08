@@ -34,6 +34,7 @@ open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_;
          tritToFin3; fin3ToTrit; tr-to-f3-to-tr; f3-to-tr-to-f3;
          ⊕-identityˡ; ⊕-identityʳ; ⊕-comm; ⊕-assoc; ⊕-inverse;
+         ⊗-identityʳ; ⊗-zeroʳ;
          negate; negate²)
 
 open import Sovereign.Structology.T6
@@ -41,7 +42,7 @@ open import Sovereign.Structology.T6
 
 -- 展示群相位源: GF(9) = GF(3)[α]/(α²+1) 与 90° 旋转群 ⟨α⟩ ≅ C₄
 open import Sovereign.Algebra.GF9
-  using (GF9; alpha; galoisConjugate)
+  using (GF9; alpha; galoisConjugate; _*gf9_)
 open import Sovereign.Algebra.GroupTheory.DuodecClock
   using (AlphaPower; mulAlpha)
   renaming (a0 to p0; a1 to p1; a2 to p2; a3 to p3)
@@ -650,6 +651,18 @@ alphaRotate-add (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ [])
 gf9-rotate : GF9 → GF9
 gf9-rotate (a , b) = (negate b , a)
 
+-- 锚定: gf9-rotate 就是真实的域乘法 x *gf9 α (非坐标断言 — 由 GF9 乘法定义化简)
+-- 这是相位旋转的数学根据: 90° 旋转 = 乘 α, α² = -1 出自 x²+1 约化
+gf9-rotate-is-mul : ∀ x → gf9-rotate x ≡ x *gf9 alpha
+gf9-rotate-is-mul (a , b) = cong₂ _,_
+  (sym (trans (cong₂ (λ u v → u ⊕ negate v) (⊗-zeroʳ a) (⊗-identityʳ b))
+              (⊕-identityˡ (negate b))))
+  (sym (trans (cong₂ _⊕_ (⊗-identityʳ a) (⊗-zeroʳ b)) (⊕-identityʳ a)))
+
+-- 推论: 乘 α 再乘 α = 乘 α² = -1 作用 (α² = -1, 两次 90° = 180° 翻转)
+gf9-rotate²-is-neg : ∀ x → gf9-rotate (gf9-rotate x) ≡ (negate (proj₁ x) , negate (proj₂ x))
+gf9-rotate²-is-neg (a , b) = refl
+
 -- GF9 相位源 → GF729 的嵌入 (GF9 落入第 1 块, 其余块为 0)
 embed-9-729 : GF9 → GF729Vec
 embed-9-729 (a , b) = tritToFin3 a ∷ tritToFin3 b ∷ zero ∷ zero ∷ zero ∷ zero ∷ []
@@ -747,3 +760,70 @@ conj-rot-conj : ∀ x →
   gf729-conj (alphaRotate (gf729-conj x)) ≡
   alphaRotate (alphaRotate (alphaRotate x))
 conj-rot-conj (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ []) = refl
+
+-- 坐标读出与 Fin 3 不等判定 (忠实性证明用)
+c0 : GF729Vec → Fin 3
+c0 (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ []) = a5
+
+c1 : GF729Vec → Fin 3
+c1 (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ []) = a4
+
+-- Fin 3 显式命名值 (钉住隐式索引, 避免 Fin 层级 meta 阻塞)
+f0 : Fin 3
+f0 = zero
+f1 : Fin 3
+f1 = suc zero
+f2 : Fin 3
+f2 = suc (suc zero)
+
+fin0≠1 : ¬ (f0 ≡ f1)
+fin0≠1 ()
+
+fin0≠2 : ¬ (f0 ≡ f2)
+fin0≠2 ()
+
+fin1≠2 : ¬ (f1 ≡ f2)
+fin1≠2 ()
+
+-- act 的忠实性 (4 阶群作用非退化): 4 个相位步长作用在 α 上互不相同
+-- 检验点 = 嵌入的 α, 其轨道长度恰为 4 (周期不塌缩为 1 或 2)
+act-witness : GF729Vec
+act-witness = embed-9-729 alpha
+
+
+-- α⁰ 作用 = 恒等 (0,1)
+act-p0-witness : act p0 act-witness ≡ act-witness
+act-p0-witness = refl
+
+-- α¹ 作用: (0,1) ↦ (2,0)  — 第 1 分量 0↦2
+act-p1-witness : c0 (act p1 act-witness) ≡ suc (suc zero)
+act-p1-witness = refl
+
+-- α² 作用: (0,1) ↦ (0,2)  — 第 1 分量 0 (但第 2 分量变 2, 非恒等)
+act-p2-witness : c1 (act p2 act-witness) ≡ suc (suc zero)
+act-p2-witness = refl
+
+-- α³ 作用: (0,1) ↦ (1,0)  — 第 1 分量 1
+act-p3-witness : c0 (act p3 act-witness) ≡ suc zero
+act-p3-witness = refl
+
+-- 忠实性: 四个作用在检验点上给出四个不同结果 (0,1)/(2,0)/(0,2)/(1,0)
+-- α⁰ 的第 1 分量 = 0
+c0-p0 : c0 (act p0 act-witness) ≡ zero
+c0-p0 = refl
+
+-- α⁰ 的第 2 分量 = 1
+c1-p0 : c1 (act p0 act-witness) ≡ suc zero
+c1-p0 = refl
+
+-- α¹ 与 α⁰ 不同 (第 1 分量 2 ≠ 0): zero ≡ suc (suc zero)
+act-faithful-p1 : ¬ (act p1 act-witness ≡ act p0 act-witness)
+act-faithful-p1 h = fin0≠2 (trans (sym c0-p0) (trans (sym (cong c0 h)) act-p1-witness))
+
+-- α² 与 α⁰ 不同 (第 2 分量 2 ≠ 1): suc zero ≡ suc (suc zero)
+act-faithful-p2 : ¬ (act p2 act-witness ≡ act p0 act-witness)
+act-faithful-p2 h = fin1≠2 (trans (sym c1-p0) (trans (sym (cong c1 h)) act-p2-witness))
+
+-- α³ 与 α⁰ 不同 (第 1 分量 1 ≠ 0): zero ≡ suc zero
+act-faithful-p3 : ¬ (act p3 act-witness ≡ act p0 act-witness)
+act-faithful-p3 h = fin0≠1 (trans (sym c0-p0) (trans (sym (cong c0 h)) act-p3-witness))
