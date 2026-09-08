@@ -110,3 +110,31 @@
 - 本源元理论定位: 20-dc-type-theory-positioning.md
 - 已提升样板（纠缠部分）: QuantumCorrespondence.agda §2 (GF9 σ 共轭)
 - 量子几何公理: Quantum/Foundation.agda 公理2(叠加=T⁶平移) 公理3(纠缠=GF9共轭)
+
+---
+
+## 六、对齐专项进度 (2026-09-08)
+
+### 已完成对齐
+
+| 提交 | 模块 | 对齐内容 |
+|------|------|---------|
+| d7cf316 | Quantum/Entanglement | §8 GF9 本源纠缠层 (Qutrit9=GF9×GF9, 共轭对(α,σα), 相位⟨α⟩) |
+| 00a86b4 | QuantumCorrespondence | 相位本源化: Duodec+1(Z/12投影) → AlphaPower mulAlpha(⟨α⟩旋转群) |
+| 0a75b3c | Algebra/Character/FrequencyMode | 频率模态接口: DC 特征谱作频率地基 |
+| c2ea868 | FrequencyMode | 模态正交 + 显式 12 模态 (mode-00..mode-23) |
+| cd35907 | Structology/StandingWave | 三代驻波 = DC 幅度频率模态 (相位静止 a0) |
+
+### 🔴 待修复: 声子谱桥接 (暂缓, 2026-09-08)
+
+**目标**: SevenStages/Nayin 的"144×奇次谐波" ↔ FrequencyMode (DC 模态)
+
+**障碍** (桥接未做, 记录待后续):
+- SevenStages `diqiHarmonic n = 144 × (2n+1)` (144,432,720... Hz) 是 **ℕ 物理频率层**
+- FrequencyMode 是 **DC 群论频率层** (12 模态 = 振幅频 F₃ × 相位频 C₄)
+- 两者量纲/层次不同, **无现成数学桥**
+- SevenStages.agda:121 红线: 基频 144 与极向缠绕 144 相等但**禁止称"144 的投影"**
+- 144 与 DC 的 12 无已声明的结构关系 (144=12² 关联被红线排除)
+- **不可臆造映射** (硬桥会违背红线 + 物理未定)
+
+**待后续**: 需澄清声子基频 144 与 DC 频率模态的真实物理关系 (代数模态层 vs 物理 Hz 层经标定桥? 还是独立两层) 后再修
