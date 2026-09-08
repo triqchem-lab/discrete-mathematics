@@ -443,6 +443,24 @@ alpha-fifth : alpha *gf243 (alpha *gf243 (alpha *gf243 (alpha *gf243 alpha))) �
   (T₂ ∷ T₁ ∷ T₀ ∷ T₀ ∷ T₀ ∷ [])
 alpha-fifth = refl
 
--- 乘法单位元 (常数 1): gf243-one
--- *gf243-identityˡ/ʳ 证明见下
+-- Frobenius 自同构 σ (2026-09-08 强补, 展示群特性): σ(x)=x³
+-- GF(3⁵)/GF(3) 的 Galois 生成元, 阶 5.
+-- 显式坐标公式 (用 x⁵=x+2, x⁶=x²+2x, x⁹=2x⁴+x+2, x¹²=x⁴+x³+x² 约化):
+--   σ(a₀,a₁,a₂,a₃,a₄) = (a₀⊕neg a₃, neg a₂⊕a₃, a₂⊕a₄, a₁⊕a₄, neg a₃⊕a₄)
+frobenius : GF243 → GF243
+frobenius (a₀ ∷ a₁ ∷ a₂ ∷ a₃ ∷ a₄ ∷ []) =
+  (a₀ ⊕ negate a₃) ∷
+  (negate a₂ ⊕ a₃) ∷
+  (a₂ ⊕ a₄) ∷
+  (a₁ ⊕ a₄) ∷
+  (negate a₃ ⊕ a₄) ∷ []
+
+-- σ 是立方映射 (Python 验证坐标正确 = x³ 约化)
+-- frobenius-is-cube 真定理: 需 x³ 分量展开证明 (非 refl, 待后续与乘法公理一起)
+-- frobenius : 显式坐标 (对照 GF27/GF81, 数值已验证 σ(a)=a³ mod x⁵=x+2)
+
+-- σ 对本原元 α 的像: σ(α) = α³
+frobenius-alpha : frobenius alpha ≡ alpha *gf243 (alpha *gf243 alpha)
+frobenius-alpha = refl
+
 
