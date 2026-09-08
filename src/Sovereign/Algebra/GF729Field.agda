@@ -858,6 +858,71 @@ frobenius-add (x₀ , x₁ , x₂) (y₀ , y₁ , y₂) =
                    (galoisConjugate y₂ *gf9 alpha))
 
 
+
+--------------------------------------------------------------------------------
+-- §14. 标量线性与构造性结合律基础
+--
+-- conv/reduce5 对 GF9 标量线性 → (c·x)*F y ≡ c·(x*F y).
+-- 由 GF9 结合律/分配律符号证明 (逐分量).
+--------------------------------------------------------------------------------
+
+-- Poly5 标量作用
+_*sp_ : GF9 → Poly5 → Poly5
+c *sp (p₀ , p₁ , p₂ , p₃ , p₄) =
+  (c *gf9 p₀) , (c *gf9 p₁) , (c *gf9 p₂) , (c *gf9 p₃) , (c *gf9 p₄)
+
+-- negate(x⊗y) ≡ x⊗(negate y)
+nm : ∀ x y → negate (x ⊗ y) ≡ x ⊗ (negate y)
+nm x y = trans (negate-⊗ x y) (negate-⊗-comm x y)
+
+-- negate (x ⊗ negate y) ≡ x ⊗ y
+nm-u : ∀ x y → negate (x ⊗ negate y) ≡ x ⊗ y
+nm-u x y = trans (nm x (negate y)) (cong (x ⊗_) (negate² y))
+
+-- -(c·u) ≡ c·(-u)  [逐分量]
+neg-mul : ∀ c u → gf9-negate (c *gf9 u) ≡ c *gf9 gf9-negate u
+neg-mul (c₁ , c₂) (u₁ , u₂) =
+  cong₂ _,_
+    (trans (negate-⊕ (c₁ ⊗ u₁) (negate (c₂ ⊗ u₂)))
+           (cong₂ _⊕_ (nm c₁ u₁)
+                       (trans (negate² (c₂ ⊗ u₂)) (sym (nm-u c₂ u₂)))))
+    (trans (negate-⊕ (c₁ ⊗ u₂) (c₂ ⊗ u₁))
+           (cong₂ _⊕_ (nm c₁ u₂) (nm c₂ u₁)))
+
+-- conv 保持标量: conv (c *s x) y ≡ c *sp (conv x y)
+conv-scalar : ∀ c x y → conv (c *s x) y ≡ c *sp (conv x y)
+conv-scalar c (x₀ , x₁ , x₂) (y₀ , y₁ , y₂) = cong-5
+  (*gf9-assoc c x₀ y₀)
+  (trans (cong₂ _+gf9_ (*gf9-assoc c x₀ y₁) (*gf9-assoc c x₁ y₀))
+         (sym (*gf9-distribˡ-+gf9 c (x₀ *gf9 y₁) (x₁ *gf9 y₀))))
+  (trans (cong₂ _+gf9_
+           (trans (cong₂ _+gf9_ (*gf9-assoc c x₀ y₂) (*gf9-assoc c x₁ y₁))
+                  (sym (*gf9-distribˡ-+gf9 c (x₀ *gf9 y₂) (x₁ *gf9 y₁))))
+           (*gf9-assoc c x₂ y₀))
+         (sym (*gf9-distribˡ-+gf9 c ((x₀ *gf9 y₂) +gf9 (x₁ *gf9 y₁)) (x₂ *gf9 y₀))))
+  (trans (cong₂ _+gf9_ (*gf9-assoc c x₁ y₂) (*gf9-assoc c x₂ y₁))
+         (sym (*gf9-distribˡ-+gf9 c (x₁ *gf9 y₂) (x₂ *gf9 y₁))))
+  (*gf9-assoc c x₂ y₂)
+
+-- reduce5 保持标量: reduce5 (c *sp p) ≡ c *s (reduce5 p)
+reduce5-scalar : ∀ c p → reduce5 (c *sp p) ≡ c *s (reduce5 p)
+reduce5-scalar c (p₀ , p₁ , p₂ , p₃ , p₄) = cong-triple
+  (trans (cong ((c *gf9 p₀) +gf9_) (*gf9-assoc c p₃ alpha))
+         (sym (*gf9-distribˡ-+gf9 c p₀ (p₃ *gf9 alpha))))
+  (trans (cong₂ (λ u v → u +gf9 v)
+            (trans (cong ((c *gf9 p₁) +gf9_) (neg-mul c p₃))
+                   (sym (*gf9-distribˡ-+gf9 c p₁ (gf9-negate p₃))))
+            (*gf9-assoc c p₄ alpha))
+         (sym (*gf9-distribˡ-+gf9 c (p₁ +gf9 gf9-negate p₃) (p₄ *gf9 alpha))))
+  (trans (cong ((c *gf9 p₂) +gf9_) (neg-mul c p₄))
+         (sym (*gf9-distribˡ-+gf9 c p₂ (gf9-negate p₄))))
+
+-- 标量抽取: (c·x)*F y ≡ c·(x*F y)
+scalar-extractˡ : ∀ c x y → (c *s x) *F y ≡ c *s (x *F y)
+scalar-extractˡ c x y =
+  trans (cong reduce5 (conv-scalar c x y))
+        (reduce5-scalar c (conv x y))
+
 -- σ(t) = t³ 验证 (由约化 t³ = 2t + α)
 frobenius-t : frobenius t ≡ t *F (t *F t)
 frobenius-t = refl
