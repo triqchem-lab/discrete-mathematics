@@ -90,7 +90,7 @@ record ZeroOblivion : Set where
 ```
 
 - 关系在 **record** 中，不是 HIT 构造子
-- 证明是 **refl**（穷举），不是路径合成
+- 核对是 **refl**（穷举），不是路径合成 — refl 仅确认定义自洽，非结构来源 (2026-09-08)
 
 ### 2.4 Frobenius 刚性（从 GF9 诱导）
 
@@ -111,7 +111,7 @@ galoisConjugate (a , b) = (a , negate b)
 |---------|-------------|
 | 集合 G 加上二元运算 | 载体类型由生成元构造 |
 | 元素是集合成员 x ∈ G | 项由构造子 `Trit`, `AlphaPower`, `_,_` 生成 |
-| 关系是逻辑公理 | 关系是 record 字段，证明是 refl |
+| 关系是逻辑公理 | 关系是 record 字段，核对是 refl（定义自洽确认） |
 | 自同构是任意双射 | 自同构由生成元上的作用递归定义 |
 | 同构抹杀结构 | 生成元和关系是结构的一部分 |
 | 信息截断（12 点 + 运算表） | 信息保留（生成来源、关系、Frobenius 刚性） |
@@ -127,7 +127,8 @@ galoisConjugate (a , b) = (a , negate b)
 &\ + \text{生成元族 (data, 带代数来源标记)} \\
 &\ + \text{关系族 (record 字段)} \\
 &\ + \text{刚性作用 (Frobenius 从 GF9 诱导)} \\
-&\ + \text{结构证明 (refl, 0 postulate)}
+&\ + \text{结构证明 (refl, 0 postulate)} \\
+&\ + \text{注 (2026-09-08): 刚性在定义层, refl 仅作有限核对, 不产生结构}
 \end{aligned}}
 \]
 
@@ -142,7 +143,8 @@ DC 不再是 C₁₂ 的抽象，而是：
 \text{刚性: } \sigma(t, \alpha^k) = (t, \alpha^{-k})_{\text{Frobenius}} \\
 \text{相位: } \text{每元素携带 } C_4 \text{ 位置 (0°/90°/180°/270°, 不可约) (2026-09-08)} \\
 \text{时钟: } \mathrm{mixedOp}^{12} p = p = \text{走钟一圈 (12 步联合演化) (2026-09-08)} \\
-\text{证明: 全部为 refl (穷举)}
+\text{归零: } \mathrm{mixedOp}^{12} = id = \text{联合归零 (周期闭合, 与时钟配对) (2026-09-08)} \\
+\text{核对: refl 穷举仅确认定义自洽, 非结构来源 (2026-09-08)}
 \end{array}
 \right)
 \]
@@ -204,6 +206,7 @@ Cubical Agda 提供：
 > - 刚性 = `galoisConjugate`（Frobenius，从 GF9 诱导）
 > - **相位** (2026-09-08) = 每元素携带 C₄ 位置 (0°/90°/180°/270°)
 > - **时钟** (2026-09-08) = `mixedOp^12` 走钟一圈的联合演化
-> - 证明 = `refl`（穷举，非 HIT）
+> - **归零** (2026-09-08) = `mixedOp^12` 联合归零 = 周期闭合（与时钟配对）
+> - 核对 = `refl` 穷举仅确认定义自洽，非结构来源（刚性在 C₄/σ/归零的定义层）
 > 
 > **类型论基础 = Cubical Agda**（代码库已用 `--cubical`）

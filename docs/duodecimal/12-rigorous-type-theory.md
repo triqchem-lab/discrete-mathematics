@@ -92,6 +92,13 @@ record ZeroOblivion : Set where
 
 **关键**：关系是 `record` 字段，**不是 HIT 构造子**。证明用 `refl`（穷举），非路径合成。
 
+**refl 定位 (2026-09-08 裁定)**：`refl` 是**定义性相等的确认**，不是数学内容的构造。它：
+- 是**标量/序**：只在"两词项定义性相同"这条线上核对，无方向、无层次
+- **不产生结构**：相位（C₄ 旋转）、共轭性、Frobenius 自同构、归零闭合**全部由类型与定义承载**（`data AlphaPower`、`mulAlpha`、`galoisConjugate`、`sigmaDC`、`mixedOp` 本身），refl 穷举只是事后确认这些归纳定义自洽（有限类型的表核对），**不创造任何数学对象**
+- 与"算术求值冒充证明"（如 `chern2Proof = refl` 让编译器算 144 格点）是同一类误用——refl 是验证，不是构造
+
+**故展示群定义中不写"证明 = refl 穷举（构造性程序）"**——数学刚性在定义层（C₄ 是 `AlphaPower` 的定义、σ 是 `galoisConjugate` 的定义、归零是 `mixedOp` 的定义），refl 仅作有限穷举核对。
+
 ---
 
 ### 定义 2.5（Frobenius 刚性的精确表述）
