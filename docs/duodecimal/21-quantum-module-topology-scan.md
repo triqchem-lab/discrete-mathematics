@@ -226,6 +226,21 @@ GF729 只形式化加法群 (乘法太复杂).
 - 乘法公理(单位/交换/分配) + σ 保加/阶5 + frobenius-is-cube: **另立后续** (数百行机械证明, 需本地 ≡-Reasoning)
 - **判定**: 乘法定义+Frobenius σ 已满足当前对齐 (展示群特性 σ 就位)
 
+### 📋 GF243 乘法公理 + frobenius-is-cube 全域收官 (2026-09-08)
+
+**GF243 乘法公理 (ac050c5, 0 postulate, +414 行)**
+- 基础设施: 本地 ≡-Reasoning / negate-⊕ / 左嵌套和工具 (congL3-5/revL3-5/mergeL3-5) / cong-Vec5/cong-Vec9
+- poly-mul-comm (⊗-comm 逐项 + revL) → *gf243-comm = cong reduce9
+- poly-mul-distribˡ (⊗-distrib + mergeL) + reduce9-additive (negate-⊕ + ⊕-swap-middle) → *gf243-distribˡ
+- *gf243-identityˡ: 逐分量符号化简 (T₀⊗ 项 ⊗-zero 归零 + dropZ 链剥 T₀ 缀), 右单位 = 交换律 + 左单位
+- *gf243-distribʳ 由左分配 + 交换律
+
+**frobenius-is-cube 全域真定理 (cb4cb72 GF27/81, d0abeb9 GF243)**
+- GF9 f4f6940: 符号证明 frobenius-is-cube x = trans (frobenius-cube x) (*gf9-assoc x x x)
+- GF27 27 case / GF81 81 case / GF243 243 case 穷举全 refl (σ(x)=x³ 与 reduce9∘poly-mul 立方逐元素一致)
+- 代数链 GF(3²)/GF(3³)/GF(3⁴)/GF(3⁵) 全部覆盖, 下游 TowerConnection 编译绿
+- 0 postulate: 四个文件全部无 postulate
+
 **GF729 不强补** (与 GF243 评估一致): 无不可约多项式 (line 550 "需选择 6 次不可约多项式, 本模块不处理"),
 纯 T⁶ 格点加法工具 (非 GF(3⁶) 域载体, 系数 Fin3 非 Trit), 连乘法定义不补
 
