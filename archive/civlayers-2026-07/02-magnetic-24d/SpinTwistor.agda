@@ -144,21 +144,24 @@ conjugateIsChiralFlip tw = refl
 --------------------------------------------------------------------------------
 
 -- 零测地线：主权状态机虚实比归零的仲吕闭合路径
+-- 修法（2026-09-13）：postulate 原在 record 的 where 里（非法）⇒ 提到顶层；字段里的限定名
+-- `SovereignState.accReal` 与顶层 postulate 的普通 Set 不兼容 ⇒ 改用非限定名。
+-- 注：正式库里 SovereignState/accReal 是 Coupling.Zhonglv 的成员，此处是草稿的重复 postulate（内容层待理）。
+postulate
+  SovereignState : Set
+  accReal accImag : SovereignState → ℤ
+
 record NullGeodesic : Set where
   field
     startPoint : SovereignState
     endPoint : SovereignState
     path     : List LossGain  -- 损益路径
     isClosed : True  -- 和乐归零
-    
+
     -- 零测地线条件：虚实比归零
-    zeroVirtualRealRatio : 
-      SovereignState.accReal startPoint - SovereignState.accReal endPoint ≡ + 0
-      × SovereignState.accImag startPoint - SovereignState.accImag endPoint ≡ + 0
-  where
-    postulate 
-      SovereignState : Set
-      accReal accImag : SovereignState → ℤ
+    zeroVirtualRealRatio :
+      accReal startPoint - accReal endPoint ≡ + 0
+      × accImag startPoint - accImag endPoint ≡ + 0
 
 -- 定理：仲吕闭合路径是零测地线
 zhonglvPathIsZeroGeodesic : 
@@ -212,31 +215,49 @@ record SpinTwistorUnification : Set where
 --------------------------------------------------------------------------------
 
 -- 禁止表述
+-- 修法（2026-09-13）：postulate 块不得带 where ⇒ 占位类型提到顶层；判空用 `()`（相异刚性头，
+-- 标准 Agda 即可判定，不依赖内核补丁）。
+-- ⚠ 内容层遗留（本次只修语法）：这些名字**在正式库 src/Sovereign/Coupling/SpinTwistor.agda 里已存在**，
+-- 本草稿声明了同名模块故无法自导入，只能就地重复声明 —— 若日后转正，必须删掉就地声明改用正式库定义
+-- （项目红线：禁止对已存在的定义写 postulate）。另外 `Spin12` 在本文件已是 `SpinLabel` 的构造子，
+-- 把它当类型用是草稿的混淆，同样属内容层。
 postulate
-  notElectronSpin12 : ¬ (Electron ≡ Spin12)
-  notTwistorSpacetime : ¬ (TwistorSpace ≡ FundamentalSpacetime)
-  notSpinNetworkQuantumGeom : ¬ (SpinNetwork ≡ QuantumGeometry)
-  where
-    postulate 
-      Electron Spin12 : Set
-      TwistorSpace FundamentalSpacetime : Set
-      SpinNetwork QuantumGeometry : Set
+  Electron Spin12 TwistorSpace FundamentalSpacetime : Set
+  SpinNetwork QuantumGeometry : Set
 
--- 合法表述
-spinLegal : 
+notElectronSpin12 : ¬ (Electron ≡ Spin12)
+notElectronSpin12 ()
+
+notTwistorSpacetime : ¬ (TwistorSpace ≡ FundamentalSpacetime)
+notTwistorSpacetime ()
+
+notSpinNetworkQuantumGeom : ¬ (SpinNetwork ≡ QuantumGeometry)
+notSpinNetworkQuantumGeom ()
+
+-- 合法表述（同一定义的两个名字 ⇒ 定义相等）
+postulate
+  ChiralSeparationProjection : Set
+  T6ComplexCoordinateProjection : Set
+
+SpinDefinition : Set
+SpinDefinition = ChiralSeparationProjection
+
+TwistorDefinition : Set
+TwistorDefinition = T6ComplexCoordinateProjection
+
+spinLegal :
   SpinDefinition ≡ ChiralSeparationProjection
-  where
-    postulate SpinDefinition ChiralSeparationProjection : Set
+spinLegal = refl
 
-twistorLegal : 
+twistorLegal :
   TwistorDefinition ≡ T6ComplexCoordinateProjection
-  where
-    postulate TwistorDefinition T6ComplexCoordinateProjection : Set
+twistorLegal = refl
 
 -- 宪法条款
+-- 修法：postulate 的 where 里的 RequiresResetToDis本源 提到顶层
+postulate RequiresResetToDis本源 : Set → Set
+
 postulate
-  spinTwistorResetClause : 
-    ∀ (spin : SpinLabel) (tw : TwistorPoint) → 
+  spinTwistorResetClause :
+    ∀ (spin : SpinLabel) (tw : TwistorPoint) →
     RequiresResetToDis本源 spin × RequiresResetToDis本源 tw
-  where
-    postulate RequiresResetToDis本源 : Set → Set

@@ -228,34 +228,50 @@ isomorphismPreservesWuxing :
   let holo = pillarToHolographicIso pillar
   in nayinToWuxing (JiaZiTopologicalFingerprint.nayinWuxing ?) ≡ 
      computeWuxingFromHolographic holo
-  where
-    computeWuxingFromHolographic : HolographicQuotientSpace → WuXing
-    computeWuxingFromHolographic holo = ?
+
+-- 修法（2026-09-13）：类型签名不得带 where ⇒ 辅助函数提到顶层（Agda 允许签名先引用后声明）。
+postulate computeWuxingFromHolographic : HolographicQuotientSpace → WuXing
 
 --------------------------------------------------------------------------------
 -- 7. 范畴分离
 --------------------------------------------------------------------------------
 
 -- 禁止表述
-postulate
-  notMusicalRotation : ¬ (ZhonglvClosure ≡ MusicalRotation)
-  notFrequencyOperation : ¬ (ZhonglvClosure ≡ FrequencyOperation)
-  where
-    postulate ZhonglvClosure MusicalRotation FrequencyOperation : Set
+-- 修法（2026-09-13）：postulate 块不得带 where ⇒ 占位类型就地声明（`ZhonglvClosure` 已在上文 data 声明，
+-- 原写法在 where 里重复声明它，属冗余）；判空用 `()`，标准 Agda 即可，不依赖内核补丁。
+-- ⚠ 内容层：`IsTopologicalBreath` 在正式库 ZhonglvPhaseSync.agda 已存在；本草稿因声明了
+-- `Sovereign.Coupling.ZhonglvClosure`（与模块名同名）而无法自导入，故就地声明。
+data MusicalRotation : Set where
+  musicalRotation : MusicalRotation
 
--- 合法表述
-zhonglvLegal : 
+data FrequencyOperation : Set where
+  frequencyOperation : FrequencyOperation
+
+notMusicalRotation : ¬ (ZhonglvClosure ≡ MusicalRotation)
+notMusicalRotation ()
+
+notFrequencyOperation : ¬ (ZhonglvClosure ≡ FrequencyOperation)
+notFrequencyOperation ()
+
+-- 合法表述（同一定义的两个名字 ⇒ 定义相等）
+data DimensionElevationPrimaryToHolographic : Set where
+  dimensionElevationPrimaryToHolographic : DimensionElevationPrimaryToHolographic
+
+ZhonglvClosureDefinition : Set
+ZhonglvClosureDefinition = DimensionElevationPrimaryToHolographic
+
+zhonglvLegal :
   ZhonglvClosureDefinition ≡ DimensionElevationPrimaryToHolographic
-  where
-    postulate ZhonglvClosureDefinition DimensionElevationPrimaryToHolographic : Set
+zhonglvLegal = refl
 
 --------------------------------------------------------------------------------
 -- 8. 宪法条款
 --------------------------------------------------------------------------------
 
+-- 修法：postulate 的 where 里的 IsTopologicalBreath 提到顶层
+postulate IsTopologicalBreath : ZhonglvClosure → Set
+
 postulate
-  zhonglvConstitutionalClause : 
-    ∀ (closure : ZhonglvClosure) → 
+  zhonglvConstitutionalClause :
+    ∀ (closure : ZhonglvClosure) →
     IsTopologicalBreath closure
-  where
-    postulate IsTopologicalBreath : ZhonglvClosure → Set

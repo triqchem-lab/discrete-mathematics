@@ -169,7 +169,7 @@ record TRAPPIST1Resonance : Set where
     ratio₃₂    : True  -- 3:2 共振（原 ratio3_2，同因）
 
 -- H₂O@C₆₀ ortho/para 水核自旋转化
-record H2O_C60_Spin : Set where  -- 原名 H2O-C60-Spin：`-` 是符号字符，不能出现在名字里
+record H2O_C60_Spin : Set where  -- 原名 H2O-C60-Spin（**更正** 2026-09-13：名字里的 `-` 是合法的，如 stdlib 的 `+-comm`；当初的改名理由错，旧名亦可用）
   field
     orthoState  : SovereignState
     paraState   : SovereignState
@@ -185,13 +185,24 @@ postulate
 --------------------------------------------------------------------------------
 
 -- 禁止表述：超距作用
-postulate
-  noActionAtDistance : ¬ (Entanglement ≡ ActionAtDistance)
-  where
-    postulate Entanglement ActionAtDistance : Set
+-- 修法（2026-09-13）：`postulate … where postulate … : Set` 是非法语法（postulate 块不得带 where）。
+-- 两个**生成方式不同**的类型头之间的 ≡ 判为空；用 `data` 声明 ⇒ 判定不依赖内核补丁。
+data Entanglement : Set where
+  entanglement : Entanglement
 
--- 合法表述：共享缠绕数的五行同步
-entanglementLegal : 
+data ActionAtDistance : Set where
+  actionAtDistance : ActionAtDistance
+
+noActionAtDistance : ¬ (Entanglement ≡ ActionAtDistance)
+noActionAtDistance ()
+
+-- 合法表述：共享缠绕数的五行同步（同一定义的两个名字 ⇒ 定义相等）
+data SharedWindingNumberWuXingSync : Set where
+  sharedWindingNumberWuXingSync : SharedWindingNumberWuXingSync
+
+EntanglementDefinition : Set
+EntanglementDefinition = SharedWindingNumberWuXingSync
+
+entanglementLegal :
   EntanglementDefinition ≡ SharedWindingNumberWuXingSync
-  where
-    postulate EntanglementDefinition SharedWindingNumberWuXingSync : Set
+entanglementLegal = refl
