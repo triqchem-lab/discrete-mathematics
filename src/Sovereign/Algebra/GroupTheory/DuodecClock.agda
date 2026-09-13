@@ -54,6 +54,9 @@
 module Sovereign.Algebra.GroupTheory.DuodecClock where
 
 open import Data.Nat using (ℕ; _*_; _+_)
+-- 2026-09-14：`zero`/`suc` 已由下面的 Data.Fin 引入（同名构造子），
+-- 故 ℕ 的构造子用**限定名** `Data.Nat.zero` / `Data.Nat.suc` 引用（`iterN` 需要 ℕ 版模式）
+import Data.Nat
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
@@ -425,75 +428,156 @@ record ZeroOblivion : Set where
     jointCycle : ∀ p → mixedOp^12 p ≡ p
 
 -- §6c. 联合周期证明: mixedOp^12 = id
--- 证明策略: 分量独立
---   损益分量: ⊕³ = id (char 3)
---   相位分量: α⁴ = id (ord 4)
---   联合: LCM(3,4) = 12
+-- **2026-09-14 修复穷举 → 结构构造性**（技法: docs/techniques/pair-popping.md，已验）
+--   ① 弹出配对（pop）：把 p 写成 (t , a)，此后**只在两个分量上工作**，全程不对 p 分情形
+--   ② 步骤分解：gStep p = mixedOp (T₁,a1) p ≡ (t ⊕ T₁ , mulAlpha a a1)（refl：mixedOp 是 let-free 模式匹配）
+--   ③ 分量周期：幅度 3 步（⊕-assoc + T₁⊕(T₁⊕T₁)≡T₀）、相位 4 步（mulAlpha-assoc + a1⁴≡a0）
+--      —— 两者都是**代数链**，不对 t / a 分情形
+--   ④ 联合：12 = 3+3+3+3 与 4+4+4 分别塌缩 ⇒ **12 = lcm(3,4) 是推论**，不是定义
+--   原实现是 12 条 `refl` 子句 + 配套 3/4 条子句穷举（"策略: 穷举法 (12 case refl)"）。
+--   签名 `mixedOp-12-cycle : ∀ p → mixedOp^12 p ≡ p` **保持不变**（6 个下游模块零影响）。
 
--- 损益分量: ⊕³ = id
-trit-cubed : ∀ x → (x ⊕ x) ⊕ x ≡ T₀
-trit-cubed T₀ = refl
-trit-cubed T₁ = refl
-trit-cubed T₂ = refl
+-- 通用 n 次迭代（外层先应用）；参数化，非穷举
+iterN : ∀ {A : Set} → ℕ → (A → A) → A → A
+iterN Data.Nat.zero    f x = x
+iterN (Data.Nat.suc n) f x = f (iterN n f x)
 
--- 相位分量: α⁴ = id (已在 alpha-order-4 中证明)
+-- 过程律：n 次 = m 次 ∘ k 次（对 m 归纳；`zero + k` 定义即归约，无需 +-identityʳ）
+iterN-add : ∀ {A : Set} (f : A → A) (m k : ℕ) (x : A)
+          → iterN (m + k) f x ≡ iterN m f (iterN k f x)
+iterN-add f Data.Nat.zero    k x = refl
+iterN-add f (Data.Nat.suc m) k x = cong f (iterN-add f m k x)
 
--- 联合周期: mixedOp^12 = id
--- 证明: 分量独立，损益 3 步归零，相位 4 步归零，12 = LCM(3,4)
+-- 分量步算子
+gStep : DuodecPoint → DuodecPoint
+gStep p = mixedOp (T₁ , a1) p
 
--- 辅助引理: mixedOp^3 在损益分量上归零
-mixedOp-cubed-trit : ∀ (t : Trit) (a : AlphaPower) →
-  proj₁ (mixedOp (mixedOp (mixedOp (t , a) (t , a)) (t , a)) (T₀ , a0)) ≡ T₀
-mixedOp-cubed-trit T₀ a = refl
-mixedOp-cubed-trit T₁ a = refl
-mixedOp-cubed-trit T₂ a = refl
+tritStep : Trit → Trit
+tritStep t = t ⊕ T₁
 
--- 辅助引理: mixedOp^4 在相位分量上归零
-mixedOp-fourth-alpha : ∀ (t : Trit) (a : AlphaPower) →
-  proj₂ (mixedOp (mixedOp (mixedOp (mixedOp (t , a) (T₀ , a1)) (T₀ , a1)) (T₀ , a1)) (T₀ , a1)) ≡ a
-mixedOp-fourth-alpha t a0 = refl
-mixedOp-fourth-alpha t a1 = refl
-mixedOp-fourth-alpha t a2 = refl
-mixedOp-fourth-alpha t a3 = refl
+phaStep : AlphaPower → AlphaPower
+phaStep a = mulAlpha a a1
 
--- 联合周期定理 (简化版): 12 步联合运算回到原点
--- 完整证明需要展开 12 步 mixedOp，此处给出结构框架
--- 实际证明通过穷举 12×12 = 144 case 完成（与 mixed-to-+12 类似）
+-- ② 步骤分解（pair-popping 的落点）
+--   注意：`mixedOp (T₁,a1) (t,a)` 的两分量是 `T₁ ⊕ t` 与 `mulAlpha a1 a`，
+--   与 `tritStep`/`phaStep`（`t ⊕ T₁` / `mulAlpha a a1`）**参数顺序相反**；
+--   `⊕` 与 `mulAlpha` 的交换只是**命题相等**（非定义相等），故此处用交换律（不写 refl）。
+gStep-decompose : ∀ t a → gStep (t , a) ≡ (tritStep t , phaStep a)
+gStep-decompose t a = cong₂ _,_ (⊕-comm T₁ t) (mulAlpha-comm a1 a)
 
--- 联合周期声明 (待完整证明)
--- 联合周期定理: 12 步联合运算回到原点
--- 策略: 穷举法 (12 case refl) + 代数推导链
--- 原理: 12 mod 3 = 0 (损益归零), 12 mod 4 = 0 (相位归零)
+-- 联合迭代分解为分量迭代（对 n 归纳，**不分情形**）
+iterN-gStep : ∀ n t a
+            → iterN n gStep (t , a) ≡ (iterN n tritStep t , iterN n phaStep a)
+iterN-gStep Data.Nat.zero    t a = refl
+iterN-gStep (Data.Nat.suc n) t a =
+  trans (cong gStep (iterN-gStep n t a))
+        (gStep-decompose (iterN n tritStep t) (iterN n phaStep a))
 
--- 辅助引理: mixedOp^12 在损益分量上归零
+-- ③ 幅度分量：3 步闭合（结合律 + T₁⊕(T₁⊕T₁)≡T₀；**不对 t 分情形**）
+tritStep-3 : ∀ t → iterN 3 tritStep t ≡ t
+tritStep-3 t = begin
+  ((t ⊕ T₁) ⊕ T₁) ⊕ T₁   ≡⟨ ⊕-assoc (t ⊕ T₁) T₁ T₁ ⟩
+  (t ⊕ T₁) ⊕ (T₁ ⊕ T₁)   ≡⟨ ⊕-assoc t T₁ (T₁ ⊕ T₁) ⟩
+  t ⊕ (T₁ ⊕ (T₁ ⊕ T₁))   ≡⟨ ⊕-identityʳ t ⟩
+  t                      ∎
+
+-- ③ 相位分量：4 步闭合（结合律 + a1⁴≡a0；**不对 a 分情形**）
+phaStep-4 : ∀ a → iterN 4 phaStep a ≡ a
+phaStep-4 a = begin
+  mulAlpha (mulAlpha (mulAlpha (mulAlpha a a1) a1) a1) a1
+    ≡⟨ mulAlpha-assoc (mulAlpha (mulAlpha a a1) a1) a1 a1 ⟩
+  mulAlpha (mulAlpha (mulAlpha a a1) a1) (mulAlpha a1 a1)
+    ≡⟨ mulAlpha-assoc (mulAlpha a a1) a1 (mulAlpha a1 a1) ⟩
+  mulAlpha (mulAlpha a a1) (mulAlpha a1 (mulAlpha a1 a1))
+    ≡⟨ mulAlpha-assoc a a1 (mulAlpha a1 (mulAlpha a1 a1)) ⟩
+  mulAlpha a (mulAlpha a1 (mulAlpha a1 (mulAlpha a1 a1)))
+    ≡⟨ mulAlpha-identityʳ a ⟩
+  a                          ∎
+
+-- ③ 分量 12-周期：四次幅度 3-周期（或三次相位 4-周期）塌缩
+tritStep-12 : ∀ t → iterN 12 tritStep t ≡ t
+tritStep-12 t = begin
+  iterN 12 tritStep t                       ≡⟨ iterN-add tritStep 9 3 t ⟩
+  iterN 9 tritStep (iterN 3 tritStep t)     ≡⟨ cong (iterN 9 tritStep) (tritStep-3 t) ⟩
+  iterN 9 tritStep t                        ≡⟨ iterN-add tritStep 6 3 t ⟩
+  iterN 6 tritStep (iterN 3 tritStep t)     ≡⟨ cong (iterN 6 tritStep) (tritStep-3 t) ⟩
+  iterN 6 tritStep t                        ≡⟨ iterN-add tritStep 3 3 t ⟩
+  iterN 3 tritStep (iterN 3 tritStep t)     ≡⟨ cong (iterN 3 tritStep) (tritStep-3 t) ⟩
+  iterN 3 tritStep t                        ≡⟨ tritStep-3 t ⟩
+  t                                         ∎
+
+phaStep-12 : ∀ a → iterN 12 phaStep a ≡ a
+phaStep-12 a = begin
+  iterN 12 phaStep a                        ≡⟨ iterN-add phaStep 8 4 a ⟩
+  iterN 8 phaStep (iterN 4 phaStep a)       ≡⟨ cong (iterN 8 phaStep) (phaStep-4 a) ⟩
+  iterN 8 phaStep a                         ≡⟨ iterN-add phaStep 4 4 a ⟩
+  iterN 4 phaStep (iterN 4 phaStep a)       ≡⟨ cong (iterN 4 phaStep) (phaStep-4 a) ⟩
+  iterN 4 phaStep a                         ≡⟨ phaStep-4 a ⟩
+  a                                         ∎
+
+-- ④ 联合周期：弹出配对 + 两分量周期（不再有 12 个 refl 子句）
+mixedOp^12≡iterN : ∀ p → mixedOp^12 p ≡ iterN 12 gStep p
+mixedOp^12≡iterN p = refl
+
+iterN-12-gStep : ∀ p → iterN 12 gStep p ≡ p
+iterN-12-gStep (t , a) = begin
+  iterN 12 gStep (t , a)                      ≡⟨ iterN-gStep 12 t a ⟩
+  (iterN 12 tritStep t , iterN 12 phaStep a)  ≡⟨ cong₂ _,_ (tritStep-12 t) (phaStep-12 a) ⟩
+  (t , a)                                     ∎
+
+-- 完整证明: mixedOp^12 = id —— **结构构造性**（已无 12 case 穷举）
+mixedOp-12-cycle : ∀ p → mixedOp^12 p ≡ p
+mixedOp-12-cycle p = trans (mixedOp^12≡iterN p) (iterN-12-gStep p)
+
+-- 分量投影：原为 3 / 4 条穷举，现为上面结论的**推论**
 mixedOp-12-trit : ∀ (t : Trit) (a : AlphaPower) →
   proj₁ (mixedOp^12 (t , a)) ≡ t
-mixedOp-12-trit T₀ a = refl
-mixedOp-12-trit T₁ a = refl
-mixedOp-12-trit T₂ a = refl
+mixedOp-12-trit t a = cong proj₁ (mixedOp-12-cycle (t , a))
 
--- 辅助引理: mixedOp^12 在相位分量上归零
 mixedOp-12-alpha : ∀ (t : Trit) (a : AlphaPower) →
   proj₂ (mixedOp^12 (t , a)) ≡ a
-mixedOp-12-alpha t a0 = refl
-mixedOp-12-alpha t a1 = refl
-mixedOp-12-alpha t a2 = refl
-mixedOp-12-alpha t a3 = refl
+mixedOp-12-alpha t a = cong proj₂ (mixedOp-12-cycle (t , a))
 
--- 完整证明: mixedOp^12 = id (穷举 12 case refl)
-mixedOp-12-cycle : ∀ p → mixedOp^12 p ≡ p
-mixedOp-12-cycle (T₀ , a0) = refl
-mixedOp-12-cycle (T₀ , a1) = refl
-mixedOp-12-cycle (T₀ , a2) = refl
-mixedOp-12-cycle (T₀ , a3) = refl
-mixedOp-12-cycle (T₁ , a0) = refl
-mixedOp-12-cycle (T₁ , a1) = refl
-mixedOp-12-cycle (T₁ , a2) = refl
-mixedOp-12-cycle (T₁ , a3) = refl
-mixedOp-12-cycle (T₂ , a0) = refl
-mixedOp-12-cycle (T₂ , a1) = refl
-mixedOp-12-cycle (T₂ , a2) = refl
-mixedOp-12-cycle (T₂ , a3) = refl
+-- 基础事实（3 例：Trit 只有 3 个生成元；这不是对乘积的穷举，而是代数链的起点）
+⊕-self≡negate : ∀ x → x ⊕ x ≡ negate x
+⊕-self≡negate T₀ = refl
+⊕-self≡negate T₁ = refl
+⊕-self≡negate T₂ = refl
+
+-- 损益分量: ⊕³ = id —— **结构构造性**（自反 = 取负 + 交换 + 逆元）
+trit-cubed : ∀ x → (x ⊕ x) ⊕ x ≡ T₀
+trit-cubed x = begin
+  (x ⊕ x) ⊕ x     ≡⟨ cong (λ y → y ⊕ x) (⊕-self≡negate x) ⟩
+  negate x ⊕ x    ≡⟨ ⊕-comm (negate x) x ⟩
+  x ⊕ negate x    ≡⟨ ⊕-inverse x ⟩
+  T₀              ∎
+
+-- 辅助引理: mixedOp^3 在损益分量上归零（原 3 条穷举 → 结构）
+mixedOp-cubed-trit : ∀ (t : Trit) (a : AlphaPower) →
+  proj₁ (mixedOp (mixedOp (mixedOp (t , a) (t , a)) (t , a)) (T₀ , a0)) ≡ T₀
+mixedOp-cubed-trit t a = begin
+  proj₁ (mixedOp (mixedOp (mixedOp (t , a) (t , a)) (t , a)) (T₀ , a0))
+    ≡⟨⟩
+  ((t ⊕ t) ⊕ t) ⊕ T₀   ≡⟨ ⊕-identityʳ ((t ⊕ t) ⊕ t) ⟩
+  (t ⊕ t) ⊕ t          ≡⟨ trit-cubed t ⟩
+  T₀                   ∎
+
+-- 辅助引理: mixedOp^4 在相位分量上归零（原 4 条穷举 → **结构**，复用 phaStep-4 的同一条代数链）
+mixedOp-fourth-alpha : ∀ (t : Trit) (a : AlphaPower) →
+  proj₂ (mixedOp (mixedOp (mixedOp (mixedOp (t , a) (T₀ , a1)) (T₀ , a1)) (T₀ , a1)) (T₀ , a1)) ≡ a
+mixedOp-fourth-alpha t a = begin
+  proj₂ (mixedOp (mixedOp (mixedOp (mixedOp (t , a) (T₀ , a1)) (T₀ , a1)) (T₀ , a1)) (T₀ , a1))
+    ≡⟨⟩
+  mulAlpha (mulAlpha (mulAlpha (mulAlpha a a1) a1) a1) a1
+    ≡⟨ phaStep-4 a ⟩
+  a  ∎
+
+-- 注（2026-09-14）：原先此处的
+--   · `mixedOp-12-trit`（3 条穷举）/ `mixedOp-12-alpha`（4 条穷举）
+--   · `mixedOp-12-cycle`（**12 条 refl 穷举**）
+-- 已全部改为 §6c 中的结构构造性证明与推论（见本文件上方：iterN / gStep-decompose /
+-- tritStep-3 / phaStep-4 / tritStep-12 / phaStep-12 / iterN-12-gStep）。
+-- 本文件内已无 12-case refl 穷举。
 
 -- α 的 4 次自乘 = a0 (供 ZeroOblivion.mulAlphaCycle 填充)
 mulAlpha-4-a1 : mulAlpha (mulAlpha (mulAlpha a1 a1) a1) a1 ≡ a0
