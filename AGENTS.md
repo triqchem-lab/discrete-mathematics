@@ -49,6 +49,15 @@ Agda 形式化证明 + Python 工程验证双轨制。
 - REWRITE 规则传染性: import 带重写规则模块的模块必须自带 `--rewriting`（Agda 保证 subject reduction 的强制检查）。
   少数模块刻意不开（如 `HolographicSpace.agda` 注释: 类型保持 ∀ n 参数化、避免 Fin 归一化展开）——
   由此触发的 InfectiveImport 报错是 **Agda 2.9.0 开发版固有限制/兼容性问题**，非代码缺陷，不要当 bug 修
+  - ⚠ **2026-09-14 实测修正（条件比原表述更宽）**：传染源是 **OPTIONS 里的 `--rewriting` 旗标本体**，与模块里**有没有规则无关**。
+    对照实测：一个**零规则**、只声明 `--rewriting` 的模块，其下游（只开 `--guardedness`）照样 `rc=42 [InfectiveImport]`。
+    计数：全库 **537** 个模块声明 `--rewriting`，其中只有 **8** 个真含 `{-# REWRITE … #-}`；
+    DC 链闭包（`Base/Trit` → `Algebra/{GF9,Duodecimal}` → `GroupTheory/{DuodecClock,DayanCore,DCGroup}` 等 9 模块）**规则条数 = 0**，
+    `Base/Trit.agda:9` 亦自述「本模块本身不使用 REWRITE 规则」——但库内消费者只开 `--guardedness` 时依旧 rc=42，报错源指着 `Base/Trit`。
+  - ✅ **可达成的收益**：把 DC 链闭包 9 个模块做「同内容、改名、仅去旗标」的影子副本后**逐个 rc=0**，
+    且只开 `--guardedness` 的消费者 import 整链 **rc=0** ⇒ 这条链上「下游零旗标」可**纯源码层**达成，且**语义风险为零**
+    （链内 0 条规则 ⇒ 去旗标只解锁、不破坏）。未做：真改库内那 9 处 pragma（`Base/Trit` 被 300+ 模块 import，需单独任务 + 全量重编）。
+  - 证据: `docs/techniques/pgm-assessment.md` Q1/Q1b、dype `docs/theory/PGM-metatheory-and-plan.md` §4「P1 泛化验证」
 - 宪法约束（详见 `memory/dual_track_constitution.md`）: 禁浮点数（无理数用定点整数比）、禁 postulate、范畴分离、144/46 全息 π 禁止约分、十二律长度表静态、标准库信任度=0
 - 工作区现状: `src/Sovereign/Algebra/GF9.agda` 有未提交改动；`src/_test_irrelevant.agda` 是未跟踪草稿
 

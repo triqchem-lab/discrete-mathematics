@@ -27,6 +27,36 @@ using the --rewriting flag from a module which does not.
 
 ---
 
+## Q1b ── 旗标本体即传染源；真实 DC 链「去旗标」可零成本（2026-09-14 实测）
+
+**机制精确化**：传染源**不是规则**，而是 OPTIONS 里的 **`--rewriting` 旗标本体**。
+对照实测：造一个**零规则**、只声明 `--rewriting` 的模块，其下游（只开 `--guardedness`）仍
+**rc=42 `[InfectiveImport] using the --rewriting flag from a module which does not`**。
+
+**规模事实**（grep 实测）：全库 **537** 个模块声明 `--rewriting`，其中只有 **8** 个真含 `{-# REWRITE … #-}`。
+DC 链传递闭包（`Base/Trit`、`Algebra/{GF9,Duodecimal,DivisibilityChain,UniversalAlgebra}`、
+`GroupTheory/{DuodecClock,DuodecClockProperties,DayanCore,DCGroup}`）**规则条数 = 0**；
+`Base/Trit.agda:9` 自述「本模块本身不使用 REWRITE 规则」，但库内消费者只开 `--guardedness` 时依旧 rc=42（报错源指着 `Base/Trit`）。
+
+**影子树实验**（`src/Sovereign/Trust/_shadow/`：9 个模块 = 同内容 + 改名 + 仅去旗标，用后删除）：
+
+| 实测 | 结果 |
+|---|---|
+| 影子树逐模块编译（只 `--guardedness`） | **9/9 rc=0** |
+| 只开 `--guardedness` 的消费者 import 影子 `DCGroup` + `DayanCore` | **rc=0** |
+
+⇒ ① 「另写一个无规则变体模块」在真实链上**无效**（基底惯例性带旗标 ⇒ 下游照样被迫开旗标）；
+② 但**沿闭包删掉旗标**可让「下游零旗标」在真实 DC 链上**达成**，且语义风险为零（链内 0 条规则 ⇒ 只解锁、不破坏）；
+③ 变更 A / P2 的必要性因此**收窄到真正带规则的那 8 个模块及其下游**。
+**未做**：真改库内那 9 处 pragma（`Base/Trit` 被 300+ 模块 import，属跨模块改动，需单独任务 + 全量重编）。
+
+> 影子树是零风险 A/B 手段：同内容 + 改名 + 只去旗标，答案与真改等价——
+> **不要为了测一个 pragma 去动被 300+ 模块依赖的基底**。
+> （首轮影子实验我因 sed 只匹配了 `--rewriting --guardedness`、漏掉「只带 `--rewriting`」的两种写法而 rc=42；
+> 报错行 `70.1-72.37` 直指漏改的 `GF9`/`Duodecimal`——**先读报错行号，比先猜快**。）
+
+---
+
 ## Q2 ── 以**已定义运算**写的关系，大多声明不成 L2 规则
 
 | 探针 | 规则形式 | 结果 |
