@@ -53,8 +53,8 @@ python3 -m pytest engineering/tests/   # 29 passed
 | 错误数 Errors | **0** |
 | 源文件 Source files | **464** |
 | 核心绿链 Core chain (独立编译) | 群论/傅里叶/域链等模块化验证 |
-| postulate 文件 Files with postulate | **16** (43 声明, 集中在 Coupling/RootMath/Structology 物理桥接层) |
-| 0-postulate 核心链 Core chain | **18 模块** (Base/Algebra/Geometry 全部 0 postulate) |
+| postulate 模块 Modules with `postulate` | **27**（2026-09-14 全量静态扫描，块式 + 单行式两种写法）＝ 5 个带 `{-# REWRITE #-}` 语法依据 ／ 14 个带项目自认的桥接公理登记注释 ／ 8 个无任何标记；另有 **41 处单行式** `postulate` 属判定器 `postulateNames` 漏扫面 · 明细见 [`docs/techniques/postulate-audit.md`](docs/techniques/postulate-audit.md) |
+| 0-postulate 核心链 Core chain | **`Base/` 与 `Algebra/` 全部 0 postulate**；`Geometry/` **例外 3**：`ConformalCore`、`ProjectiveCore`、`ProjectiveOrbit`（结构定律仍为 postulate）· 旧记「16 文件 / 43 声明」「Geometry 全部 0 postulate」已按实测更正（依据同上） |
 | `make -B test` | **ALL_PASS** |
 
 > **--safe 说明**：本项目使用 `--rewriting`（T6.agda 等核心模块需要 REWRITE 规则），
