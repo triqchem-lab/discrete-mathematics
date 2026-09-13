@@ -16,6 +16,10 @@ open import Data.Bool using (Bool; true; false)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; _≢_)
 
+-- B 档「Mat2 合并」: 复用 Sovereign.Algebra.Matrix2 的参数化矩阵定义，
+-- 本模块只保留 GF(2) 算术与 GL(2,2) 的 6 个矩阵。
+open import Sovereign.Algebra.Matrix2 using () renaming (Mat2 to Mat2F; mkMat2 to mat2; mulMat2 to mulMat2F)
+
 --------------------------------------------------------------------------------
 -- §1. GF(2) 算术
 --------------------------------------------------------------------------------
@@ -34,17 +38,14 @@ gmul true b = b
 -- §2. 2×2 矩阵 over GF(2)
 --------------------------------------------------------------------------------
 
-record Mat2 : Set where
-  constructor mat2
-  field
-    m00 m01 m10 m11 : Bool
+-- Mat2 = 参数化矩阵的特例（系数域 GF(2) = Bool）；构造子 mat2 来自 Matrix2.mkMat2
+Mat2 : Set
+Mat2 = Mat2F Bool
 
-open Mat2
+-- 字段投影 m00/m01/m10/m11 由 Matrix2 的 `open Mat2 public` 提供
 
 mulMat2 : Mat2 → Mat2 → Mat2
-mulMat2 (mat2 a b c d) (mat2 e f g h) =
-  mat2 (gadd (gmul a e) (gmul b g)) (gadd (gmul a f) (gmul b h))
-       (gadd (gmul c e) (gmul d g)) (gadd (gmul c f) (gmul d h))
+mulMat2 = mulMat2F gadd gmul
 
 det2 : Mat2 → Bool
 det2 (mat2 a b c d) = gadd (gmul a d) (gmul b c)

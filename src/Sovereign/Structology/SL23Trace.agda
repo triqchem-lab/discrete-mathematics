@@ -20,14 +20,14 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Structology.BinaryTetrahedralDefiningRep
   using (SL23; g0; g1; g2; g3; g4; g5; g6; g7; g8; g9; g10; g11; g12; g13; g14; g15; g16; g17; g18; g19; g20; g21; g22; g23; classOf)
-open import Sovereign.Structology.SL23Cayley using (Mat2; mat2; toMat; add3)
+open import Sovereign.Structology.SL23Cayley using (Mat2; toMat; add3)
 
 --------------------------------------------------------------------------------
 -- §1. 迹 (mod 3)
 --------------------------------------------------------------------------------
 
 traceMat : Mat2 → Fin 3
-traceMat (mat2 a b c d) = add3 a d
+traceMat record{m00 = a; m11 = d} = add3 a d
 
 -- 每个共轭类的迹 (mod 3): [Id, -I, 3a, 3b, 6a, 6b, 4a] → [2,1,2,2,1,1,0]
 classTrace : Fin 7 → Fin 3

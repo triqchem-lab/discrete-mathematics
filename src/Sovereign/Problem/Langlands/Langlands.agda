@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- jac_Langlands: GL₂(GF(9)) 共轭类 + 特征标 — 深度形式化
+-- Sovereign.Problem.Langlands.Langlands（旧名 jac_Langlands）
+-- GL₂(GF(9)) 共轭类 + 特征标 — 深度形式化
 --
 -- 深度提升: 共轭类大小从代数公式参数化推导 (q=9).
 -- 类个数: (q-1), (q-1)(q-2)/2, q(q-1)/2, q-1 — 需要除法, 用具体值.

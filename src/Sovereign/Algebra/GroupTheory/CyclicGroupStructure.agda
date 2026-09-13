@@ -11,8 +11,8 @@
 -- L3 核心 (0 postulate, 分量级 cong₂ 组合 + 归纳, 无 eta 障碍):
 --   trit-cubed-α        : ⊕³ = id (Trit 特征 3)
 --   alpha-pow4-id       : α⁴ = id (AlphaPower 阶 4)
---   mixedOp-power-add   : 幂加法律 (分量级, 归纳于 n)
---   dc-order-12         : DC 阶 12 联合周期 (3×4 分量正交)
+--   mixedOp-power-add   : 幂加法律 — **实现在 ClockIteration.agda §2**（本文件只承诺, 未在此定义）
+--   mixedOp-power-12    : 联合周期 12 — **实现在 ClockIteration.agda §5**（本文件只承诺, 未在此定义）
 --   dc-cyclic-structure : DC = C₃ × C₄ 交换群 (分量级打包)
 --
 -- 依赖: DuodecClock (mixedOp, mulAlpha, DuodecPoint, 分量级群公理)

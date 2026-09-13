@@ -139,8 +139,10 @@ reducibility-witness = refl
 -- §5. 同伦锁定修复 (HomotopyInflationWithoutGaloisLock): 周期轨道
 --------------------------------------------------------------------------------
 
-open import Sovereign.Analysis.FiniteDynamics using
-  (frobenius-orbit-period; frobenius-period-tight; frobenius-fixed-iff; orbit)
+-- ⚠ 归位后（2026-09-11）: 通用件从 Analysis 取，GF9 专用件从 Algebra.FrobeniusOrbit 取
+open import Sovereign.Analysis.FiniteDynamics using (orbit)
+open import Sovereign.Algebra.FrobeniusOrbit using
+  (frobenius-orbit-period; frobenius-period-tight; frobenius-fixed-iff)
 
 -- Frobenius 轨道的刚性: 周期 2 处处成立 (软路径 → 有限置换)
 frobenius-period : ∀ x → orbit galoisConjugate x 2 ≡ x

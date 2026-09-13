@@ -17,13 +17,13 @@
 --   gf9-pow8        : ∀ x → x ≢ 0 → x⁸ = 1        (C₈ 周期, 9 case 穷举)
 --   phi-3-11/11-19  : φ³ = φ¹¹ = φ¹⁹              (mod 8 平移不变实例,
 --                                                  φ 阶恰 8, 非平凡)
---   c8-summary      : C₈ 周期汇总 (穷举可判定)
+--   c8-summary      : C₈ 周期汇总 (§2 × §3 × §4 打包, 本层主定理单一入口)
 --
 -- 依赖: GF9 (gf9-pow, phi, alpha), FermatL0 (幂定义层)
 
 module Sovereign.Problem.Fermat.FermatL3 where
 
-open import Data.Product using (_,_)
+open import Data.Product using (_×_; _,_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
@@ -88,10 +88,21 @@ phi-pow8 = refl
 --   生成元 φ: φ⁸ = 1, φ⁴ ≠ 1 (GF9.agda 引用) = phi-pow8 + phi-not-order-4
 --   mod 8 平移不变: φ³ = φ¹¹ = φ¹⁹           = phi-3-11/phi-11-19 (§3)
 
-{-
--- 汇总: 幂的律全貌 (L1 × L3)
---   GF(3)×: x^(2k) = 1,  x^(2k+1) = x       (周期 2, 奇偶坍缩)
+-- 汇总: 幂的律全貌 (L1 × L3) —— 本层主定理的单一入口
+--   GF(3)×: x^(2k) = 1,  x^(2k+1) = x       (周期 2, 奇偶坍缩; 见 FermatL1)
 --   GF(9)×: x⁸ = 1 ∀ x ≠ 0                  (周期 8, C₈)
+--   生成元 φ 阶恰 8: φ⁸ = 1 且 φ⁴ ≠ 1 (后者见 GF9.agda phi-not-order-4)
+--   mod 8 平移不变: φ³ = φ¹¹ = φ¹⁹
 --   联合 12 = LCM(3,4) 进制: 指数维度在此坐标系中无 Archimedes 序内容
 --   裁决引用: docs/duodecimal/13-flt-analysis.md §8.3
--}
+--
+-- 注 (2026-09-10): 此处原是被 {- -} 注释掉的「汇总」文本 —— 头注释承诺了 c8-summary
+-- 而文件里只有注释块, 从未成为定义（由 engineering/tests/doc_code_drift.py 扫出）。
+-- 现按项目惯例（对照 LCMVortexConnection.lcm-summary / CommAlgBridge.*-summary）
+-- 落成真定义；元组用显式括号, 因为 _,_ 无 fixity 声明（默认非结合）。
+c8-summary :
+    (∀ x → x ≢₉ gf9-zero → gf9-pow x 8 ≡ gf9-one)   -- C₈ 周期 (§2)
+  × (gf9-pow phi 8 ≡ gf9-one)                        -- 生成元 φ 的 8 阶证据 (§4)
+  × (gf9-pow phi 3 ≡ gf9-pow phi 11)                 -- mod 8 平移不变 (§3)
+  × (gf9-pow phi 11 ≡ gf9-pow phi 19)                -- mod 8 平移不变 (§3)
+c8-summary = gf9-pow8 , (phi-pow8 , (phi-3-11 , phi-11-19))

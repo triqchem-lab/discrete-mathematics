@@ -664,90 +664,160 @@ embed-gf9-add : ∀ x y →
 embed-gf9-add (a , b) (c , d) =
   cong-quad refl (negate-⊕ b d) refl refl
 
--- 嵌入保持乘法 (81 case 穷举)
+-- 嵌入保持乘法: 构造性证明（原 81 = 9×9 条 refl 全表已删除）
+-- 两侧都是 4 个 Trit 变量 (a,b,c,d) 的**公式**（poly-mul 的每项恰为 xᵢ⊗yⱼ, reduce-p7 为 ⊕/⊖ 线性）,
+-- 故用 char-3 原子代数逐分量证明: 记 Z=b⊗d, A=a⊗d, B=b⊗c, C=a⊗c,
+--   p₀=C, p₁=⊖A⊖B, p₂=p₃=A⊕B⊕Z, p₄=p₅=⊖Z, p₆=Z
+--   r₀=C⊕⊖Z（直接）, r₁=⊖A⊕⊖B（配对相消 Z⊕⊖Z=0）, r₂=r₃=A⊕B（三连相消 Z⊕Z⊕Z=0, char 3）
+-- oracle 回执 ce3dbf14…（81 点穷举 + 符号展开）; 探针 _ProbeGF81.agda 已单独编译通过。
 embed-gf9-mul : ∀ x y →
   embed-gf9 (x *gf9 y) ≡ embed-gf9 x *gf81 embed-gf9 y
-embed-gf9-mul (T₀ , T₀) (T₀ , T₀) = refl
-embed-gf9-mul (T₀ , T₀) (T₀ , T₁) = refl
-embed-gf9-mul (T₀ , T₀) (T₀ , T₂) = refl
-embed-gf9-mul (T₀ , T₀) (T₁ , T₀) = refl
-embed-gf9-mul (T₀ , T₀) (T₁ , T₁) = refl
-embed-gf9-mul (T₀ , T₀) (T₁ , T₂) = refl
-embed-gf9-mul (T₀ , T₀) (T₂ , T₀) = refl
-embed-gf9-mul (T₀ , T₀) (T₂ , T₁) = refl
-embed-gf9-mul (T₀ , T₀) (T₂ , T₂) = refl
-embed-gf9-mul (T₀ , T₁) (T₀ , T₀) = refl
-embed-gf9-mul (T₀ , T₁) (T₀ , T₁) = refl
-embed-gf9-mul (T₀ , T₁) (T₀ , T₂) = refl
-embed-gf9-mul (T₀ , T₁) (T₁ , T₀) = refl
-embed-gf9-mul (T₀ , T₁) (T₁ , T₁) = refl
-embed-gf9-mul (T₀ , T₁) (T₁ , T₂) = refl
-embed-gf9-mul (T₀ , T₁) (T₂ , T₀) = refl
-embed-gf9-mul (T₀ , T₁) (T₂ , T₁) = refl
-embed-gf9-mul (T₀ , T₁) (T₂ , T₂) = refl
-embed-gf9-mul (T₀ , T₂) (T₀ , T₀) = refl
-embed-gf9-mul (T₀ , T₂) (T₀ , T₁) = refl
-embed-gf9-mul (T₀ , T₂) (T₀ , T₂) = refl
-embed-gf9-mul (T₀ , T₂) (T₁ , T₀) = refl
-embed-gf9-mul (T₀ , T₂) (T₁ , T₁) = refl
-embed-gf9-mul (T₀ , T₂) (T₁ , T₂) = refl
-embed-gf9-mul (T₀ , T₂) (T₂ , T₀) = refl
-embed-gf9-mul (T₀ , T₂) (T₂ , T₁) = refl
-embed-gf9-mul (T₀ , T₂) (T₂ , T₂) = refl
-embed-gf9-mul (T₁ , T₀) (T₀ , T₀) = refl
-embed-gf9-mul (T₁ , T₀) (T₀ , T₁) = refl
-embed-gf9-mul (T₁ , T₀) (T₀ , T₂) = refl
-embed-gf9-mul (T₁ , T₀) (T₁ , T₀) = refl
-embed-gf9-mul (T₁ , T₀) (T₁ , T₁) = refl
-embed-gf9-mul (T₁ , T₀) (T₁ , T₂) = refl
-embed-gf9-mul (T₁ , T₀) (T₂ , T₀) = refl
-embed-gf9-mul (T₁ , T₀) (T₂ , T₁) = refl
-embed-gf9-mul (T₁ , T₀) (T₂ , T₂) = refl
-embed-gf9-mul (T₁ , T₁) (T₀ , T₀) = refl
-embed-gf9-mul (T₁ , T₁) (T₀ , T₁) = refl
-embed-gf9-mul (T₁ , T₁) (T₀ , T₂) = refl
-embed-gf9-mul (T₁ , T₁) (T₁ , T₀) = refl
-embed-gf9-mul (T₁ , T₁) (T₁ , T₁) = refl
-embed-gf9-mul (T₁ , T₁) (T₁ , T₂) = refl
-embed-gf9-mul (T₁ , T₁) (T₂ , T₀) = refl
-embed-gf9-mul (T₁ , T₁) (T₂ , T₁) = refl
-embed-gf9-mul (T₁ , T₁) (T₂ , T₂) = refl
-embed-gf9-mul (T₁ , T₂) (T₀ , T₀) = refl
-embed-gf9-mul (T₁ , T₂) (T₀ , T₁) = refl
-embed-gf9-mul (T₁ , T₂) (T₀ , T₂) = refl
-embed-gf9-mul (T₁ , T₂) (T₁ , T₀) = refl
-embed-gf9-mul (T₁ , T₂) (T₁ , T₁) = refl
-embed-gf9-mul (T₁ , T₂) (T₁ , T₂) = refl
-embed-gf9-mul (T₁ , T₂) (T₂ , T₀) = refl
-embed-gf9-mul (T₁ , T₂) (T₂ , T₁) = refl
-embed-gf9-mul (T₁ , T₂) (T₂ , T₂) = refl
-embed-gf9-mul (T₂ , T₀) (T₀ , T₀) = refl
-embed-gf9-mul (T₂ , T₀) (T₀ , T₁) = refl
-embed-gf9-mul (T₂ , T₀) (T₀ , T₂) = refl
-embed-gf9-mul (T₂ , T₀) (T₁ , T₀) = refl
-embed-gf9-mul (T₂ , T₀) (T₁ , T₁) = refl
-embed-gf9-mul (T₂ , T₀) (T₁ , T₂) = refl
-embed-gf9-mul (T₂ , T₀) (T₂ , T₀) = refl
-embed-gf9-mul (T₂ , T₀) (T₂ , T₁) = refl
-embed-gf9-mul (T₂ , T₀) (T₂ , T₂) = refl
-embed-gf9-mul (T₂ , T₁) (T₀ , T₀) = refl
-embed-gf9-mul (T₂ , T₁) (T₀ , T₁) = refl
-embed-gf9-mul (T₂ , T₁) (T₀ , T₂) = refl
-embed-gf9-mul (T₂ , T₁) (T₁ , T₀) = refl
-embed-gf9-mul (T₂ , T₁) (T₁ , T₁) = refl
-embed-gf9-mul (T₂ , T₁) (T₁ , T₂) = refl
-embed-gf9-mul (T₂ , T₁) (T₂ , T₀) = refl
-embed-gf9-mul (T₂ , T₁) (T₂ , T₁) = refl
-embed-gf9-mul (T₂ , T₁) (T₂ , T₂) = refl
-embed-gf9-mul (T₂ , T₂) (T₀ , T₀) = refl
-embed-gf9-mul (T₂ , T₂) (T₀ , T₁) = refl
-embed-gf9-mul (T₂ , T₂) (T₀ , T₂) = refl
-embed-gf9-mul (T₂ , T₂) (T₁ , T₀) = refl
-embed-gf9-mul (T₂ , T₂) (T₁ , T₁) = refl
-embed-gf9-mul (T₂ , T₂) (T₁ , T₂) = refl
-embed-gf9-mul (T₂ , T₂) (T₂ , T₀) = refl
-embed-gf9-mul (T₂ , T₂) (T₂ , T₁) = refl
-embed-gf9-mul (T₂ , T₂) (T₂ , T₂) = refl
+embed-gf9-mul (a , b) (c , d) = cong-quad eq0 eq1 eq2 eq3
+  where
+    Z = b ⊗ d
+    A = a ⊗ d
+    B = b ⊗ c
+    C = a ⊗ c
+
+    --------------------------------------------------------------------------
+    -- §1 char-3 原子代数（配对相消 ⊕-inverse / 三连相消 ⊕-char3 / 双重否定）
+    --------------------------------------------------------------------------
+    nn : ∀ (x : Trit) → negate (negate x) ≡ x
+    nn T₀ = refl
+    nn T₁ = refl
+    nn T₂ = refl
+
+    -- ⊖x ⊕ ⊖x = x  (char 3: -2 ≡ 1)
+    dd : ∀ (x : Trit) → (negate x ⊕ negate x) ≡ x
+    dd x = trans (⊕-double (negate x)) (nn x)
+
+    -- (Z ⊕ B) ⊕ ⊖Z ≡ B
+    tail : ((Z ⊕ B) ⊕ negate Z) ≡ B
+    tail = trans (⊕-assoc Z B (negate Z))
+             (trans (cong (Z ⊕_) (⊕-comm B (negate Z)))
+               (trans (sym (⊕-assoc Z (negate Z) B))
+                 (trans (cong (_⊕ B) (⊕-inverse Z)) (⊕-identityˡ B))))
+
+    -- ⊖Z ⊕ (⊖Z ⊕ B) ≡ Z ⊕ B
+    inner : (negate Z ⊕ (negate Z ⊕ B)) ≡ (Z ⊕ B)
+    inner = trans (sym (⊕-assoc (negate Z) (negate Z) B)) (cong (_⊕ B) (dd Z))
+
+    -- ((X ⊕ (Z ⊕ B)) ⊕ ⊖Z) ≡ X ⊕ B   （中间的 Z 被尾部的 ⊖Z 吃掉）
+    step-tail : ∀ (X : Trit) → ((X ⊕ (Z ⊕ B)) ⊕ negate Z) ≡ (X ⊕ B)
+    step-tail X = trans (⊕-assoc X (Z ⊕ B) (negate Z)) (cong (X ⊕_) tail)
+
+    -- (Z ⊕ (⊖Z ⊕ Z)) ≡ Z
+    zinner : (Z ⊕ (negate Z ⊕ Z)) ≡ Z
+    zinner = trans (sym (⊕-assoc Z (negate Z) Z))
+               (trans (cong (_⊕ Z) (⊕-inverse Z)) (⊕-identityˡ Z))
+
+    -- (Z ⊕ (Z ⊕ Z)) ≡ T₀   （char 3 三连相消）
+    zthree : (Z ⊕ (Z ⊕ Z)) ≡ T₀
+    zthree = trans (sym (⊕-assoc Z Z Z)) (⊕-char3 Z)
+
+    zpart : ((Z ⊕ (negate Z ⊕ Z)) ⊕ (Z ⊕ Z)) ≡ T₀
+    zpart = trans (cong (_⊕ (Z ⊕ Z)) zinner) zthree
+
+    -- 配对相消: ⊖Z ⊕ (Z ⊕ ⊖Z) ≡ ⊖Z
+    h0 : (negate Z ⊕ (Z ⊕ negate Z)) ≡ negate Z
+    h0 = trans (cong (negate Z ⊕_) (⊕-inverse Z)) (⊕-identityʳ (negate Z))
+
+    --------------------------------------------------------------------------
+    -- §2 原子改写: 把 ⊖b⊗d / b⊗⊖d / ⊖b⊗⊖d / a⊗⊖d / ⊖b⊗c 化到 ⊖Z / Z / ⊖A / ⊖B
+    --------------------------------------------------------------------------
+    W1 : (negate b ⊗ d) ≡ negate Z
+    W1 = trans (negate-⊗-comm b d) (⊗-negate-r b d)
+
+    W2 : (b ⊗ negate d) ≡ negate Z
+    W2 = ⊗-negate-r b d
+
+    W3 : (negate b ⊗ negate d) ≡ Z
+    W3 = negate-⊗-negate b d
+
+    W4 : (a ⊗ negate d) ≡ negate A
+    W4 = ⊗-negate-r a d
+
+    W5 : (negate b ⊗ c) ≡ negate B
+    W5 = trans (negate-⊗-comm b c) (⊗-negate-r b c)
+
+    --------------------------------------------------------------------------
+    -- §3 四个分量（对应 reduce-p7 的 r₀..r₃）
+    --------------------------------------------------------------------------
+    -- p₄ 归一化: (⊖b⊗d) ⊕ (Z ⊕ (b⊗⊖d)) ≡ ⊖Z ⊕ (Z ⊕ ⊖Z) ≡ ⊖Z
+    r0a : ((negate b ⊗ d) ⊕ (Z ⊕ (b ⊗ negate d))) ≡ (negate Z ⊕ (Z ⊕ negate Z))
+    r0a = trans (cong (_⊕ (Z ⊕ (b ⊗ negate d))) W1)
+            (cong (negate Z ⊕_) (cong (Z ⊕_) W2))
+
+    rho4 : ((negate b ⊗ d) ⊕ (Z ⊕ (b ⊗ negate d))) ≡ (negate Z)
+    rho4 = trans r0a h0
+
+    -- 分量 0:  C ⊕ ⊖Z  ≡  C ⊕ p₄
+    eq0 = cong (C ⊕_) (sym rho4)
+
+    -- 分量 1:  ⊖(A ⊕ B)  ≡  (p₁ ⊕ ⊖p₄) ⊕ p₅,  p₁ = (a⊗⊖d) ⊕ (⊖b⊗c),  p₅ = Z ⊕ Z
+    n4b : (negate (negate Z) ⊕ negate (Z ⊕ negate Z)) ≡ (Z ⊕ (negate Z ⊕ Z))
+    n4b = trans (cong (_⊕ negate (Z ⊕ negate Z)) (nn Z))
+            (cong (Z ⊕_) (trans (negate-⊕ Z (negate Z)) (cong (negate Z ⊕_) (nn Z))))
+
+    n4 : negate ((negate b ⊗ d) ⊕ (Z ⊕ (b ⊗ negate d))) ≡ (Z ⊕ (negate Z ⊕ Z))
+    n4 = trans (cong negate r0a)
+           (trans (negate-⊕ (negate Z) (Z ⊕ negate Z)) n4b)
+
+    h1 : (((negate A ⊕ negate B) ⊕ (Z ⊕ (negate Z ⊕ Z))) ⊕ (Z ⊕ Z))
+         ≡ (negate A ⊕ negate B)
+    h1 = trans (⊕-assoc (negate A ⊕ negate B) (Z ⊕ (negate Z ⊕ Z)) (Z ⊕ Z))
+           (trans (cong ((negate A ⊕ negate B) ⊕_) zpart)
+             (⊕-identityʳ (negate A ⊕ negate B)))
+
+    r1a : ((a ⊗ negate d) ⊕ (negate b ⊗ c)) ≡ (negate A ⊕ negate B)
+    r1a = trans (cong (_⊕ (negate b ⊗ c)) W4) (cong (negate A ⊕_) W5)
+
+    r1b : (((a ⊗ negate d) ⊕ (negate b ⊗ c))
+            ⊕ negate ((negate b ⊗ d) ⊕ (Z ⊕ (b ⊗ negate d))))
+          ≡ ((negate A ⊕ negate B) ⊕ (Z ⊕ (negate Z ⊕ Z)))
+    r1b = trans (cong (_⊕ negate ((negate b ⊗ d) ⊕ (Z ⊕ (b ⊗ negate d)))) r1a)
+            (cong ((negate A ⊕ negate B) ⊕_) n4)
+
+    rh1 : ((((a ⊗ negate d) ⊕ (negate b ⊗ c))
+             ⊕ negate ((negate b ⊗ d) ⊕ (Z ⊕ (b ⊗ negate d))))
+           ⊕ (Z ⊕ Z))
+          ≡ (negate A ⊕ negate B)
+    rh1 = trans (cong (_⊕ (Z ⊕ Z)) r1b) h1
+
+    eq1 = trans (negate-⊕ A B) (sym rh1)
+
+    -- 分量 2:  A ⊕ B  ≡  (p₂ ⊕ ⊖p₅) ⊕ p₆,  p₂ = (a⊗d) ⊕ ((⊖b⊗⊖d) ⊕ B)
+    rest2 : (((A ⊕ (Z ⊕ B)) ⊕ Z) ⊕ Z) ≡ (A ⊕ B)
+    rest2 = trans (⊕-assoc (A ⊕ (Z ⊕ B)) Z Z)
+              (trans (cong ((A ⊕ (Z ⊕ B)) ⊕_) (⊕-double Z)) (step-tail A))
+
+    h2 : (((A ⊕ (Z ⊕ B)) ⊕ (negate Z ⊕ negate Z)) ⊕ Z) ≡ (A ⊕ B)
+    h2 = trans (cong (_⊕ Z) (cong ((A ⊕ (Z ⊕ B)) ⊕_) (dd Z))) rest2
+
+    r2a : ((a ⊗ d) ⊕ ((negate b ⊗ negate d) ⊕ B)) ≡ (A ⊕ (Z ⊕ B))
+    r2a = cong (A ⊕_) (cong (_⊕ B) W3)
+
+    rh2 : ((((a ⊗ d) ⊕ ((negate b ⊗ negate d) ⊕ B)) ⊕ negate (Z ⊕ Z)) ⊕ Z)
+          ≡ (A ⊕ B)
+    rh2 = trans (cong (_⊕ Z) (cong (_⊕ negate (Z ⊕ Z)) r2a))
+            (trans (cong (_⊕ Z) (cong ((A ⊕ (Z ⊕ B)) ⊕_) (negate-⊕ Z Z)))
+              (trans (cong (_⊕ Z) (cong ((A ⊕ (Z ⊕ B)) ⊕_) (dd Z))) rest2))
+
+    eq2 = sym rh2
+
+    -- 分量 3:  A ⊕ B  ≡  p₃ ⊕ ⊖p₆,  p₃ = (a⊗d) ⊕ ((⊖b⊗d) ⊕ ((b⊗⊖d) ⊕ B))
+    h3 : ((A ⊕ (negate Z ⊕ (negate Z ⊕ B))) ⊕ negate Z) ≡ (A ⊕ B)
+    h3 = trans (cong (_⊕ negate Z) (cong (A ⊕_) inner)) (step-tail A)
+
+    r3a : ((negate b ⊗ d) ⊕ ((b ⊗ negate d) ⊕ B)) ≡ (negate Z ⊕ (negate Z ⊕ B))
+    r3a = trans (cong (_⊕ ((b ⊗ negate d) ⊕ B)) W1)
+            (cong (negate Z ⊕_) (cong (_⊕ B) W2))
+
+    rh3 : (((a ⊗ d) ⊕ ((negate b ⊗ d) ⊕ ((b ⊗ negate d) ⊕ B))) ⊕ negate Z)
+          ≡ (A ⊕ B)
+    rh3 = trans (cong (_⊕ negate Z) (cong (A ⊕_) r3a)) h3
+
+    eq3 = sym rh3
 
 -- 嵌入保持单位元
 embed-gf9-one : embed-gf9 (T₁ , T₀) ≡ gf81-one

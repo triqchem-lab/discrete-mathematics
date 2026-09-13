@@ -20,6 +20,10 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym
 
 open import Sovereign.Structology.BinaryTetrahedralDefiningRep using (SL23; g0; g1; g2; g3; g4; g5; g6; g7; g8; g9; g10; g11; g12; g13; g14; g15; g16; g17; g18; g19; g20; g21; g22; g23; orderOf)
 
+-- B 档「Mat2 合并」: 复用 Sovereign.Algebra.Matrix2 的参数化矩阵定义。
+open import Sovereign.Algebra.Matrix2 using () renaming (Mat2 to Mat2F; mkMat2 to mkMat2; mulMat2 to mulMat2F)
+open import Sovereign.Algebra.Matrix2 as M2 using ()
+
 --------------------------------------------------------------------------------
 -- §1. GF(3) = Fin 3 算术
 --------------------------------------------------------------------------------
@@ -44,17 +48,19 @@ mul3 (suc (suc zero)) (suc (suc zero)) = suc zero
 -- §2. 2×2 矩阵 over Fin 3
 --------------------------------------------------------------------------------
 
-record Mat2 : Set where
-  constructor mat2
-  field
-    m00 m01 m10 m11 : Fin 3
+-- Mat2 = 参数化矩阵的特例（系数域 GF(3) = Fin 3）
+Mat2 : Set
+Mat2 = Mat2F (Fin 3)
 
-open Mat2
+-- 字段投影 m00/m01/m10/m11 由 Matrix2 的 `open Mat2 public` 提供
+
+-- 构造子 mat2 来自 Matrix2.mkMat2（导入时重命名）。在 SL23Cayley 内再定义为
+-- 普通函数，使其可被下游模块 `using (mat2)` 导入（重命名构造子不随 using 导出）。
+mat2 : Fin 3 → Fin 3 → Fin 3 → Fin 3 → Mat2
+mat2 = mkMat2
 
 mulMat2 : Mat2 → Mat2 → Mat2
-mulMat2 (mat2 a b c d) (mat2 e f g h) =
-  mat2 (add3 (mul3 a e) (mul3 b g)) (add3 (mul3 a f) (mul3 b h))
-       (add3 (mul3 c e) (mul3 d g)) (add3 (mul3 c f) (mul3 d h))
+mulMat2 = mulMat2F add3 mul3
 
 --------------------------------------------------------------------------------
 -- §3. SL(2,3) 的 24 个矩阵
@@ -1307,7 +1313,7 @@ eq3 (suc (suc zero)) (suc (suc zero)) = true
 
 -- 单位元判定
 isI : Mat2 → Bool
-isI (mat2 a b c d) = eq3 a (suc zero) ∧ (eq3 b zero ∧ (eq3 c zero ∧ eq3 d (suc zero)))
+isI A = eq3 (M2.m00 A) (suc zero) ∧ (eq3 (M2.m01 A) zero ∧ (eq3 (M2.m10 A) zero ∧ eq3 (M2.m11 A) (suc zero)))
 
 isI-matI : isI matI ≡ true
 isI-matI = refl

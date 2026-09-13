@@ -3,3 +3,10 @@ _build/
 __pycache__/
 *.pyc
 src/Sovereign/Algebra/Jacobian/_standalone
+# ABC/IUTT 参考文献 PDF（只保留 refs/README.md 的溯源记录；见该文件§三）
+src/Sovereign/Problem/ABC/refs/*.pdf
+src/MAlonzo/
+.reasonix/
+.qwen/
+docs/agda/docx/
+docs/agda/txt/

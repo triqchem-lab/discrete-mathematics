@@ -175,6 +175,11 @@ gf729-zero : GF729Vec
 gf729-zero = zero ∷ zero ∷ zero ∷ zero ∷ zero ∷ zero ∷ []
 
 -- 逐分量 GF(3) 加法
+-- fixity：**自有运算符，定义处声明**（对齐 GF27.agda:127 / GF81.agda:117 / GF243.agda:672 /
+-- GF729Field.agda:701 的加法惯例，均为 infixl 6）。注意：fixity 只能声明在同作用域内定义的名字，
+-- 故此类声明合法；而 `_⊕_`/`_⊗_` 是 Trit.agda 导入的，在本库不能在使用处声明
+--（见 prover_limits: agda-fixity-cannot-be-imported）。
+infixl 6 _+gf729_
 _+gf729_ : GF729Vec → GF729Vec → GF729Vec
 (a5 ∷ a4 ∷ a3 ∷ a2 ∷ a1 ∷ a0 ∷ []) +gf729 (b5 ∷ b4 ∷ b3 ∷ b2 ∷ b1 ∷ b0 ∷ []) =
   (a5 +₃ b5) ∷ (a4 +₃ b4) ∷ (a3 +₃ b3) ∷ (a2 +₃ b2) ∷ (a1 +₃ b1) ∷ (a0 +₃ b0) ∷ []

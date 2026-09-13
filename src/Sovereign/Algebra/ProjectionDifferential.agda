@@ -34,6 +34,9 @@ open import Sovereign.Base.Trit using (
   ⊕-identityˡ; ⊕-identityʳ; ⊗-identityʳ; ⊗-zeroʳ)
 open import Sovereign.Algebra.DegenerationTaxonomy using (
   Degeneration; Section; not-injective; mk-degeneration)
+-- B 档「Mat2 合并」: 复用参数化矩阵定义（系数域 Trit = GF(3)）
+open import Sovereign.Algebra.Matrix2 using () renaming (Mat2 to Mat2F; mkMat2 to mkMat; mulMat2 to mulMat2F; trace to traceF)
+open import Sovereign.Algebra.Matrix2 as M2 using ()
 
 --------------------------------------------------------------------------------
 -- §1. GF(3) 函数空间与差分算子 (MSC 34-35)
@@ -241,18 +244,17 @@ gf3-difference = mkDiffVsDiff
 -- 无穷维投影: 谱可连续 (丢失离散性)。
 --------------------------------------------------------------------------------
 
-record Mat2x2 : Set where
-  constructor mkMat
-  field
-    m₀₀ m₀₁ m₁₀ m₁₁ : Trit
+-- Mat2x2 = 参数化矩阵的特例（系数域 Trit = GF(3)）；构造子 mkMat 来自 Matrix2.mkMat2
+Mat2x2 : Set
+Mat2x2 = Mat2F Trit
 
 -- 迹: tr(A) = a₀₀ + a₁₁
 trace : Mat2x2 → Trit
-trace A = let open Mat2x2 A in m₀₀ ⊕ m₁₁
+trace = traceF _⊕_
 
 -- 行列式: det(A) = a₀₀·a₁₁ - a₀₁·a₁₀
 det : Mat2x2 → Trit
-det A = let open Mat2x2 A in (m₀₀ ⊗ m₁₁) ⊕ negate (m₀₁ ⊗ m₁₀)
+det A = (M2.m00 A ⊗ M2.m11 A) ⊕ negate (M2.m01 A ⊗ M2.m10 A)
 
 -- 矩阵计数: 4 个 GF(3) 元素 → 3⁴ = 81 个矩阵
 mat2x2-count : 3 * 3 * 3 * 3 ≡ 81
