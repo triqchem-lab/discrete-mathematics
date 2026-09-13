@@ -19,6 +19,12 @@ Agda 形式化证明 + Python 工程验证双轨制。
 - 测试集: **`make test` 是 no-op** — `test/` 目录遮蔽了 make target。必须用 `make -B test` ✅（17 模块，ALL_PASS）
 - Python 测试: 在仓库根运行 `python3 -m pytest engineering/tests/` ✅ 29 passed
   （`cd engineering` 后运行会因 `engineering` 包不在 path 而 collection error）
+- 结构 lint 门禁: `engineering/check_structure_lint.sh [ROOT]`（默认 `src`；**不编译**，静态查
+  「module 名≠路径 / 非法目录分量（含 `-`）/ 非法标识符（`_` 接字面量）/ `where` 滥用（挂在
+  postulate·data·record·类型签名上）/ `?` 洞（WARN）」）。**为什么需要**：`check_all_modules_parallel.sh`
+  只扫 `src/Sovereign`，其它目录里的草稿会「从未编译、也从未进门禁」——2026-09-13 的实例
+  （`src/{01-electric-12d,02-magnetic-24d,03-neutral-144d}`）已归档到 `archive/civlayers-2026-07/`。
+  修法：路径与 module 名对齐；`where` 只留给函数子句。
 - 编译产物: `_build/`、`*.agdai`（gitignored），不要删除
 
 ## Architecture
