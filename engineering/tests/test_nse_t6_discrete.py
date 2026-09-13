@@ -428,12 +428,17 @@ class TestA2DivGradDivRefuted(unittest.TestCase):
         self.assertGreater(total, 0)
 
     def test_A2_explicit_polynomial_witness(self):
-        """确定性反例：v₀ = x₀·x₁，其余分量 0 —— lap(div v) 在原点非零"""
-        v = (tuple((x[0] * x[1]) % P for x in POINTS),
-             const_field(0), const_field(0),
-             const_field(0), const_field(0), const_field(0))
+        """确定性见证：v = 第 0 分量在原点取 1、其余为 0 —— lap(div v) 存在非零点。
+
+        2026-09-13 更正：原写法取 v₀ = x₀·x₁，实测 lap(div v) ≡ 0（729 点全 0）——
+        因为 div v = D₀(x₀·x₁) = x₁ 是**线性**函数，二阶差分恒零 ⇒ 该见证退化（不是命题错）。
+        本见证由穷举给出（oracle 回执 51f6655a…：4374 个单位基向量上 lap(div ·) 均非零），
+        且改用 ∃ 点口径（原点处是否非零未单独验证，不冒充）。
+        """
+        v0 = tuple(1 if k == IDX[ORIGIN] else 0 for k in range(N_POINTS))
+        v = (v0,) + tuple(const_field(0) for _ in range(DIM - 1))
         g = div(grad(div(v)))
-        self.assertNotEqual(g[IDX[ORIGIN]], 0)
+        self.assertGreater(sum(1 for k in range(N_POINTS) if g[k] != 0), 0)
 
 
 # ------------------------------------------------------------
@@ -477,14 +482,17 @@ class TestA3IncompressibilityPreservation(unittest.TestCase):
         self.assertGreater(bad, 0)
 
     def test_A3_parent_nsstep_explicit_witness(self):
-        """确定性反例：势 ψ₀ = x₀·x₁, ψ₁ = 0, ψ₂ = x₁·x₂ 时原点处 div(nsStep) ≠ 0"""
-        p0 = tuple((x[0] * x[1]) % P for x in POINTS)
-        p1 = const_field(0)
-        p2 = tuple((x[1] * x[2]) % P for x in POINTS)
-        v = incompressible_from_potentials(p0, p1, p2)
+        """确定性反例：取 incompressible_family 的第 0 个场（势构造）—— div(nsStep_parent v) 存在非零点。
+
+        2026-09-13 更正：原写法取势 ψ₀ = x₀·x₁, ψ₁ = 0, ψ₂ = x₁·x₂，实测
+        div(ns_step_parent v) ≡ 0（729 点全 0）⇒ 见证退化（命题本身由本类的
+        test_A3_parent_nsstep_refuted 在同一族上证实可满足）。本见证由穷举给出
+        （oracle 回执 51f6655a…：该场满足 div v ≡ 0 且给出父口径实反例，序号 0）。
+        """
+        v = incompressible_family(N_INCOMP)[0]
         self.assertTrue(field_is_zero(div(v)))          # 前提：不可压
         d = div(ns_step_parent(v))
-        self.assertNotEqual(d[IDX[ORIGIN]], 0)          # 结论：不保持
+        self.assertGreater(sum(1 for k in range(N_POINTS) if d[k] != 0), 0)  # 结论：不保持（∃ 点）
 
     def test_A3_adv_leibniz_identity(self):
         """对流项用到的乘积法则（真命题）：
@@ -527,12 +535,20 @@ class TestA4DivAdvRefuted(unittest.TestCase):
         self.assertEqual((-v[1][IDX[ORIGIN]]) % P, 2)       # -v₁ = 2 ≠ 0
 
     def test_A4_componentwise_reading_refuted(self):
-        """分量口径：∃ i, x 使 div(adv v)(x) ≠ -v_i(x)"""
+        """分量口径：∃ i, x 使 div(adv v)(x) ≠ -v_i(x)。
+
+        2026-09-13 更正：原断言要求「全部 729×6 = 4374 处都不等」，与自己的 docstring（∃）
+        矛盾，且实测不符：不匹配恰好 **729** 处，且**只集中在分量 i = 1**
+        （oracle 回执 51f6655a… 的分布 = {1: 729}）。此处按 docstring 的 ∃ 口径写，
+        并把实测的分布钉成断言（比原来的错误等式更强且为真）。
+        """
         v = tuple(const_field(c) for c in (0, 1, 0, 0, 0, 0))
         d = div(adv(v))
         mismatches = [(k, i) for k in range(N_POINTS) for i in range(DIM)
                       if d[k] != (-v[i][k]) % P]
-        self.assertEqual(len(mismatches), N_POINTS * DIM)   # 全部 729×6 处都不等
+        self.assertGreater(len(mismatches), 0)               # ∃ 见证
+        self.assertEqual({i for _, i in mismatches}, {1})    # 只集中在分量 1
+        self.assertEqual(len(mismatches), N_POINTS)          # 恰好每点一处
 
     def test_A4_counterexample_count_over_family(self):
         bad = 0
