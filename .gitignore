@@ -10,3 +10,5 @@ src/MAlonzo/
 .qwen/
 docs/agda/docx/
 docs/agda/txt/
+.mimosa/
+.zcode/

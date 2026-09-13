@@ -1,0 +1,36 @@
+name: duodec-compcert-verify
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  gcc-verify:
+    name: 数学正确性验证（62 项断言 vs Agda 定理）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: gcc 编译并运行断言
+        run: |
+          cd verification/compcert-duodec
+          gcc -O2 -Wall -o duodec_gcc duodec_verify.c
+          ./duodec_gcc
+          echo "exit=$? (0 = ALL PASS)"
+
+  compcert-verify:
+    # 编译正确性：CompCert 3.17 带数学验证器的 C 编译器
+    # 在安装有 /opt/CompCert 的机器上执行 make verify-compcert
+    name: CompCert 编译验证（可选，需本机安装）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 检查 CompCert 是否可用
+        run: |
+          if command -v /opt/CompCert/bin/ccomp >/dev/null 2>&1; then
+            cd verification/compcert-duodec
+            /opt/CompCert/bin/ccomp -O2 -o duodec_cc duodec_verify.c
+            ./duodec_cc
+            echo "exit=$? (0 = ALL PASS)"
+          else
+            echo "CompCert 未安装，跳过（本机安装后自动生效）"
+          fi
