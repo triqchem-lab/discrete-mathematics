@@ -10,7 +10,7 @@
 module Sovereign.Coupling.ZhonglvClosure where
 
 open import Cubical.Foundations.Prelude
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; _∸_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; _∸_; _/_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Fin using (Fin; toℕ; fromℕ)
 open import Data.Vec using (Vec; []; _∷_)
@@ -128,7 +128,9 @@ zhonglvPrimarySpace = pillarToPrimarySpace zhonglvPillar
 zhonglvCannotZeroBoth : 
   PrimaryQuotientSpace.polarMod12 zhonglvPrimarySpace ≢ 0
   × PrimaryQuotientSpace.toroidalMod10 zhonglvPrimarySpace ≢ 0
-zhonglvCannotZeroBoth = (λ () , λ ())  -- 11 ≠ 0, 1 ≠ 0
+-- 修法（2026-09-13）：`(λ () , λ ())` 里的第一个 λ 会把 `, λ ()` 吞进抽象子句 ⇒ ParseError
+--（最小复现：`zl = λ () , λ ()` 在任意文件上同错，与内核补丁无关）。逐个加括号即可。
+zhonglvCannotZeroBoth = (λ ()) , (λ ())  -- 11 ≠ 0, 1 ≠ 0
 
 -- 仲吕不交：在初级商空间中无法同时满足极向归零与环向归零
 zhonglvIncommensurable : 
@@ -140,19 +142,20 @@ zhonglvIncommensurable = ?  -- 证明：60n ≠ 3312 对任何整数 n
 --------------------------------------------------------------------------------
 
 -- 仲吕闭合：从初级商空间升维到全息商空间
+-- 修法（2026-09-13）：`data … where` 非法（where 不得挂在 data 声明上），把 closureCorrect 提到顶层。
+closureCorrect : PrimaryQuotientSpace → HolographicQuotientSpace → Set
+closureCorrect prim holo =
+  -- 升维后极向模 12 展开为模 144
+  Fin 144 → Fin 12 ×
+  -- 升维后环向模 10 展开为模 46
+  Fin 46 → Fin 10
+
 data ZhonglvClosure : Set where
-  mkClosure : 
-    (primarySpace : PrimaryQuotientSpace) → 
-    (holographicSpace : HolographicQuotientSpace) → 
-    {proof : closureCorrect primarySpace holographicSpace} → 
+  mkClosure :
+    (primarySpace : PrimaryQuotientSpace) →
+    (holographicSpace : HolographicQuotientSpace) →
+    {proof : closureCorrect primarySpace holographicSpace} →
     ZhonglvClosure
-  where
-    closureCorrect : PrimaryQuotientSpace → HolographicQuotientSpace → Set
-    closureCorrect prim holo = 
-      -- 升维后极向模 12 展开为模 144
-      Fin 144 → Fin 12 ×
-      -- 升维后环向模 10 展开为模 46
-      Fin 46 → Fin 10
 
 -- 升维映射：模 12 → 模 144
 liftPolar : Fin 12 → Fin 144

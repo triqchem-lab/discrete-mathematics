@@ -136,10 +136,12 @@ zhonglvSyncEffect pair = ?
       EvolveZhonglv : DynamicEvolution
 
 -- 推论：纠缠对不可分离
+-- 修法（2026-09-13）：类型签名不得带 where（原写法非法）；postulate 提到顶层。
+-- 注：本行仍是 `?` 洞（草稿内容缺口，非语法错），见文件头 DRAFT 标注。
+postulate SeparatePair : EntangledPair → Set
+
 entangledInseparable : ∀ (pair : EntangledPair) → 
   ¬ ∃[ sep ] SeparatePair pair
-  where
-    postulate SeparatePair : EntangledPair → Set
 entangledInseparable pair = ?
 
 --------------------------------------------------------------------------------
@@ -163,11 +165,11 @@ entangledChernConservation pair = ?
 record TRAPPIST1Resonance : Set where
   field
     planetPairs : List EntangledPair  -- 共振行星对
-    ratio8_5    : True  -- 8:5 共振
-    ratio3_2    : True  -- 3:2 共振
+    ratio₈₅    : True  -- 8:5 共振（原 ratio8_5：Agda 禁止 `_` 后接字面量，实测报 “the part 5 is not valid”）
+    ratio₃₂    : True  -- 3:2 共振（原 ratio3_2，同因）
 
 -- H₂O@C₆₀ ortho/para 水核自旋转化
-record H2O-C60-Spin : Set where
+record H2O_C60_Spin : Set where  -- 原名 H2O-C60-Spin：`-` 是符号字符，不能出现在名字里
   field
     orthoState  : SovereignState
     paraState   : SovereignState

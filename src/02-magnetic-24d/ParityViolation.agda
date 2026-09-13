@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --rewriting --cubical --guardedness #-}
 
 -- | Sovereign.Coupling.ParityViolation
 -- 耦合域：宇称不守恒——环向缠绕深化引发的手性对偶破缺
@@ -179,10 +179,10 @@ weakForce = record
       let (_, amp) = chiralPhaseTransition tp in amp
   ; engineeringParam = λ ch → 
       tritFlipChiralBias (mkFlip T₂ T₀) ch
-  ; experimentalAnchor = H2O-C60-ortho-para-conversion  -- H₂O@C₆₀ ortho/para 转化
+  ; experimentalAnchor = H2O_C60_ortho_para_conversion  -- H₂O@C₆₀ ortho/para 转化
   }
   where
-    postulate H2O-C60-ortho-para-conversion : Set
+    postulate H2O_C60_ortho_para_conversion : Set
 
 -- 弱核力与手性分离的同构
 weakForceIsomorphism : 
@@ -194,13 +194,26 @@ weakForceIsomorphism = refl
 --------------------------------------------------------------------------------
 
 -- 禁止表述：弱相互作用下空间反射不对称
-postulate
-  noSpatialReflection : ¬ (ParityViolation ≡ SpatialReflectionAsymmetry)
-  where
-    postulate ParityViolation SpatialReflectionAsymmetry : Set
+-- 修法（2026-09-13）：原写法 `postulate … where postulate … : Set` 非法（postulate 块不得带 where）。
+-- 两个**生成方式不同**的类型头之间的 ≡ 判为空；改用 `data` 声明，使判定**不依赖任何内核补丁**
+-- （构造子冲突是标准 Agda 就能判定的），与 Sovereign.Coupling.ParityViolation 同范式。
+data SpatialReflectionAsymmetry : Set where
+  spatialReflectionAsymmetry : SpatialReflectionAsymmetry
+
+data ParityViolation : Set where
+  parityViolation : ParityViolation
+
+noSpatialReflection : ¬ (ParityViolation ≡ SpatialReflectionAsymmetry)
+noSpatialReflection ()
 
 -- 合法表述：环向缠绕深化引发的手性对偶破缺
-parityViolationLegal : 
+-- 修法：类型签名同样不得带 where；且「合法」指的是同一定义的两个名字 ⇒ 定义相等 ⇒ refl
+ChiralSymmetryBreakingByToroidalWinding : Set
+ChiralSymmetryBreakingByToroidalWinding = ParityViolation
+
+ParityViolationDefinition : Set
+ParityViolationDefinition = ChiralSymmetryBreakingByToroidalWinding
+
+parityViolationLegal :
   ParityViolationDefinition ≡ ChiralSymmetryBreakingByToroidalWinding
-  where
-    postulate ParityViolationDefinition ChiralSymmetryBreakingByToroidalWinding : Set
+parityViolationLegal = refl

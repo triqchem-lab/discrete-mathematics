@@ -73,6 +73,11 @@ computeSpinProjection (mkPower a) beta =
 --------------------------------------------------------------------------------
 
 -- 静态结构学容器：仅提供格点舞台，无手性、无自旋、无动力学
+-- 修法（2026-09-13）：原写法把两个 postulate 放在 record 的 where 里（非法），提到顶层。
+postulate
+  ChiralityInContainer : Chirality → Set
+  SpinLabelInContainer : SpinLabel → Set
+
 record StaticContainer : Set where
   field
     cellPartition : ℕ  -- 格点剖分 (如 144)
@@ -82,11 +87,6 @@ record StaticContainer : Set where
     -- 宪法约束：静态容器无手性
     noChirality : ¬ ∃[ c ] (ChiralityInContainer c)
     noSpin : ¬ ∃[ s ] (SpinLabelInContainer s)
-  where
-    postulate 
-      ChiralityInContainer : Chirality → Set
-      SpinLabelInContainer : SpinLabel → Set
-
 -- 证明：静态容器无自旋
 staticContainerNoSpin : ∀ (sc : StaticContainer) → 
   ¬ ∃[ s ] (StaticContainer.SpinLabelInContainer sc s)
@@ -125,7 +125,7 @@ record TwistorPoint : Set where
 -- 扭量变换：对应移宫转调中的缠绕数跃迁
 record TwistorTransformation : Set where
   field
-   损益操作 : LossGain
+    损益操作 : LossGain
     conformalModulusChange : ℚ → ℚ  -- 环面共形模 τ 变换
     windingJump : PolarWinding × ToroidalWinding  -- 缠绕数跃迁
 
