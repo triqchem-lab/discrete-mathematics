@@ -24,4 +24,9 @@ test:
 	$(AGDA) src/Sovereign/Structology/SL23Cayley.agda
 	$(AGDA) src/Sovereign/Structology/BinaryTetrahedralIrreducibility.agda
 	$(AGDA) src/Sovereign/Physics/DiscreteStatMech.agda
+	$(AGDA) src/Sovereign/Format/Positional.agda
+	$(AGDA) src/Sovereign/Format/Doz.agda
+	$(AGDA) src/Sovereign/Format/DigitField.agda
+	$(AGDA) src/Sovereign/Format/DigitRealization.agda
+	$(AGDA) src/Sovereign/Problem/ABC/ABCL1.agda
 	@echo "ALL_PASS"

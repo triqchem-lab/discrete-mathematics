@@ -1,89 +1,128 @@
-# M3: 概念连通图
+# M3: 概念连通图 (Concept Graph)
 
-## 核心概念拓扑
+> **更新** — 反映 502 模块 / 119,086 行的当前概念结构。
+> 更新时间: 2026-08-20 (北京时间)
 
-```
-                    全息观测 (L8)
-                         │
-                    Π_H = 144/46
-                         │
-          ┌──────────────┼──────────────┐
-          │              │              │
-     陈数 C=±2      仲吕倍频 ×8    纳音孤子 ρ=0.38
-     (拓扑守恒)     (频率级联)      (极限环)
-          │              │              │
-          └──────────────┼──────────────┘
-                         │
-                   FULL_TOUR = 6624
-                   (相位对齐点)
-                         │
-          ┌──────────────┼──────────────┐
-          │              │              │
-     T⁶ 环面 (L4)   手征离合 (L3)   LCM 桥
-     144×46 格点    Z[ω] 振幅     (acc×3¹¹)>>16
-          │              │              │
-          └──────────────┼──────────────┘
-                         │
-                    GF(3) (L1)
-                    {0,1,2} Trit
-```
+---
 
-## CRT 域的四条路径
-
-### 数论路径
-```
-GF(3) → Z/3¹¹Z → CRT 同构 Z/M ≅ Z/65536 × Z/177147 → 互质性 → 双模投影
-```
-
-### 谐波路径
-```
-T¹=65536, T²=177147 → 拍频 M=11609505792 → 驻波条件 → 谐波阶梯 → X₀=5148246160
-```
-
-### 拓扑路径
-```
-GF(3)⁶ → T⁶ 环面 → 万有覆盖 → 缠绕数 144/46 → A₄ 覆盖 → 陈数 C=±2
-```
-
-### 谱路径
-```
-M₄ 幻方 (4×4) → 16²≡40(mod 216) → 谱截断 ±2√10→±16 → T⁶ 正交投影
-```
-
-## 关键定理依赖链
+## 1. 核心数学对象及其连接
 
 ```
-alignmentIdentity (FULL_TOUR ≡ 144×46)
-    │
-    ├──→ closureTheorem (∀n, n·6624 % 144 ≡ 0, n·6624 % 46 ≡ 0)
-    │         │
-    │         └──→ L2: Kan 纤维化边界闭合
-    │
-    ├──→ phaseResyncAxiom (x%6624 ≡ (x%144) + 144·((x/144)%46))
-    │         │
-    │         └──→ L3: 索引族单值语义基础
-    │
-    └──→ 144/46 不可约性 → Π_H 全息不变
+          GF(3) [Base/Trit]
+           │
+     ┌─────┼─────────┐
+     ↓     ↓         ↓
+   GF(9)  Fin 3    Z/3 加法
+     │              │
+     ├──→ ⟨α⟩(4阶) ─┼→ DuodecClock(12阶交换群)
+     │              │
+     ├──→ GF9Star(8阶循环群)
+     │
+     ├──→ T⁶ 环面 [Structology/T6]
+     │     ├──→ Winding(缠绕数)
+     │     ├──→ A₄ 群作用
+     │     └──→ HoTT 同伦
+     │
+     ├──→ Jacobian [Algebra/Jacobian/*]
+     │     ├──→ jac_GF3 → jac_GF9Matrix
+     │     ├──→ jac_Pigeonhole → jac_Injectivity
+     │     └──→ jac_Topology → jac_LieGroup
+     │
+     └──→ Holographic [Algebra/Holographic/*]
+           ├──→ 4320D → 4320DClosure
+           └──→ Theorem → Conjecture
 ```
 
-## 概念到代码的映射
+---
 
-| 概念 | 模块 | 关键函数/类型 |
-|------|------|-------------|
-| Trit {0,1,2} | `Base/Trit.agda` | `Trit`, `toℕ` |
-| GF(3) 群 | `RootMath/Base.agda` | `GF3`, `step1-cubed-id` |
-| 缠绕数 144/46 | `Structology/Winding.agda` | `PolarWinding`, `ToroidalWinding` |
-| T⁶ 环面 | `Structology/T6.agda` | `T6Lattice`, `polarStep`, `toroidalStep` |
-| FULL_TOUR 6624 | `Structology/MagicSquare144.agda` | `FULL_TOUR` |
-| 6624 相位对齐 | `HoTT/PhaseAlignment6624.agda` | `closureTheorem`, `phaseResyncAxiom` |
-| CRT 同构 | `Format/CRT.agda` | `crtTheorem` |
-| CRT 纤维 | `HoTT/CRTFiberWinding.agda` | `X₀=5148246160` |
-| 谐波驻波 | `HoTT/CRTHarmonics.agda` | `harmonic-phase-preserving` |
-| M₄ 幻方桥 | `HoTT/M4CRTBridge.agda` | `16²≡40(mod216)` |
-| T⁶ 同伦 | `HoTT/T6Homotopy.agda` | `π₁(T⁶)≅GF(3)⁶` |
-| 陈数 C=±2 | `HoTT/ChernClass.agda` | `ChernInvariant` |
-| 能隙 Δ²=3 | `RootMath/EnergyGap.agda` | `C3 生成元`, `弦长 √3` |
-| A₄ 表示 | `Structology/A4Representations.agda` | `{3,1,1′,1″}` |
-| Christoffel 螺旋 | `Structology/WuXingTransition.agda` | `损益交替 [1,2,1,2,1,2]` |
-| 仲吕闭合 | `Coupling/ZhonglvClosure.agda` | `isZhonglvPoint` |
-| LCM 桥 | `Coupling/LCM.agda` | `SOVEREIGN_LCM = 11609505792` |
+## 2. 概念域映射
+
+### 2.1 代数域
+
+| 概念 | 核心模块 | 连接到 |
+|------|----------|--------|
+| **GF(3)** | Base/Trit | → GF(9), Fin 3, Z/3 |
+| **GF(9)** | Algebra/GF9 | → Duodecimal, Jacobian, 所有 Problem/ |
+| **GF(27)** | Algebra/GF27 | → GF81, Problem/PvsNP |
+| **GF(81)** | Algebra/GF81 | → GF243, Problem/BSD |
+| **GF(243)** | Algebra/GF243 | → Problem/BSD_GF243 |
+| **GF(729)** | Algebra/GF729 | → 顶层有限域 |
+| **Z/12** | Algebra/Duodecimal | → DuodecClock, 十二律 |
+| **A₄** | Structology/A4Group | → Burnside, 表示论, Problem/Langlands |
+| **二元四面体群** | Structology/BinaryTetrahedral | → 表示论, 不可约性 |
+
+### 2.2 几何拓扑域
+
+| 概念 | 核心模块 | 连接到 |
+|------|----------|--------|
+| **T⁶ 环面** | Structology/T6 | → Winding, HoTT, Physics |
+| **射影几何** | Geometry/ProjectiveCore | → 4320D G-轨道 |
+| **共形几何** | Geometry/ConformalCore | → 1458 轨道 |
+| **环面几何** | Geometry/TorusGeometry | → Fourier, Geodesic |
+| **陈类** | HoTT/ChernClass | → ChernConservation, ChernEulerLadder |
+
+### 2.3 物理域
+
+| 概念 | 核心模块 | 连接到 |
+|------|----------|--------|
+| **电磁场** | Physics/DiscreteEMCore | → EMField, Maxwell, EMField3D |
+| **量子力学** | Quantum/Foundation | → NoCloning, Measurement |
+| **热力学** | Physics/EntropySpin* | → 6 个 EntropySpin 子模块 |
+| **相对论** | Physics/DiscreteLagrangian | → Lagrangian3D, Hamiltonian |
+
+### 2.4 千禧年问题域
+
+| 问题 | 核心模块 | 依赖链 |
+|------|----------|--------|
+| **BSD** | Problem/BSD/* (11) | GF81 → EllipticComplex → BSD_L3 |
+| **Hodge** | Problem/Hodge/* (8) | ChainComplex → Hodge(分解) / Hodge_L3(猜想) |
+| **P vs NP** | Problem/PvsNP/* (11) | GF27Separation → Complexity3 |
+| **Riemann** | Problem/Riemann/* (9) | ZetaFunctional → WeilRH |
+| **Yang-Mills** | Problem/YangMills/* (11) | WilsonLoop → YM_SpectralGap |
+| **Langlands** | Problem/Langlands/* (6) | GL2TestVectors → Langlands_L15 |
+| **Kakeya** | Problem/Kakeya/* (4) | KakeyaGF3 + KakeyaGF9 → Pathology |
+| **Navier-Stokes** | Problem/NavierStokes/* (3) | NSRegularity → NSVortex |
+
+---
+
+## 3. 概念依赖核心链
+
+```
+数学公理层:  Base/Trit → Base/Invariants → Base/Axioms
+    ↓
+代数构造层:  GF(9) → Duodecimal → GroupTheory/DuodecClock
+    ↓
+结构层:      T⁶ → A₄ → Winding → Structology/*
+    ↓
+几何层:      ProjectiveCore → ConformalCore → TorusGeometry
+    ↓
+同伦层:      HoTT/* (CRT → Chern → Hopf → Kan)
+    ↓
+物理层:      Physics/* (EM → Quantum → Thermo)
+    ↓
+问题层:      Problem/* (七大千禧年 + Kakeya)
+    ↓
+应用层:      Applied/* (工程 + 生物 + 经济)
+```
+
+---
+
+## 4. 五行概念映射
+
+```
+     火 (Tetrahedron/A₄) ←→ Structology/A4Group
+      ↕
+  土 (Hexahedron) ←→ Structology/Platonics
+      ↕
+  金 (Dodecahedron/Iₕ) ←→ Structology/IhC60Vibration
+      ↕
+  水 (Icosahedron) ←→ Structology/WuXingEulerHFM
+      ↕
+  木 (Octahedron) ←→ MetaStructure/WuXing
+      ↕
+  空 (S²/A₄ 12胞腔) ←→ Base/ZeroGeometry
+```
+
+---
+
+> 此文件手动维护，反映概念层面的结构连接。
