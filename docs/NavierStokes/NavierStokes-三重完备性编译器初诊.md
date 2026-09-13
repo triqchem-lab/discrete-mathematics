@@ -2,7 +2,7 @@
 
 > **编译器**：三重完备性公理（《数学极值相变宣言》序章）
 > **日期**：2026-07-27
-> **⚠ 重要**：本项目已在 `src/Sovereign/Physics/NSE.agda`（12定理/0 postulate）和 `src/Sovereign/PDE/ConvergenceAlignment.agda` 中建立了 NS 方程的 GF(3) 离散精确解——这是七千禧年问题中唯一一个已在本框架内有 0-postulate 参考实现的问题。
+> **⚠ 重要**：本项目已在 `src/Sovereign/Problem/NavierStokes/NSE.agda`（12定理/0 postulate；2026-09-10 复核：模块已由 `Physics/` 迁至 `Problem/NavierStokes/`）和 `src/Sovereign/PDE/ConvergenceAlignment.agda` 中建立了 NS 方程的 GF(3) 离散精确解——这是七千禧年问题中唯一一个已在本框架内有 0-postulate 参考实现的问题。
 
 ---
 

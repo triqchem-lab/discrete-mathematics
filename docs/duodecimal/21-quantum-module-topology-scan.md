@@ -5,6 +5,14 @@
 **视角**: 最新依赖类型论展示群本源（DuodecClock = GF3 幅度 × GF9⟨α⟩ 相位 × 归零闭合）
 **范围**: 11 个量子类模块（Quantum/ + Physics/Quantum* + Algebra/Coupling/Structology 相关）
 
+> **⚠ 状态更新 (2026-09-09 核验)**：本文 §二/§三/§四 是 2026-09-08 的**初扫快照**，其中对
+> `Quantum/Entanglement`（C 类纯 GF3）与 `QuantumCorrespondence`（相位停在 Duodec+1 投影层）
+> 的「未对齐」判定**已被后续提交修复**，与本文 §六「已完成对齐」表自相矛盾。
+> **当前状态以 §六 与代码为准**：
+> - `Algebra/QuantumCorrespondence.agda:27` 已 `open import ... DuodecClock using (AlphaPower; a0; a1; a2; a3; mulAlpha)`（提交 00a86b4）；
+> - `Quantum/Entanglement.agda:26` 已引入 GF9 共轭，§8 为「GF9 本源纠缠层」（提交 d7cf316）。
+> §二/§三/§四 保留原文以存初扫记录，引用时请先读本横幅。
+
 ---
 
 ## 〇、审视标尺：展示群本源三合一

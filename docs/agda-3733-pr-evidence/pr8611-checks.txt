@@ -1,0 +1,35 @@
+Cabal Linux debug all, 9.14.1	pass	5m19s	https://github.com/agda/agda/actions/runs/29147141926/job/86530516410	
+Cabal Linux debug, 9.14.1	pass	5m4s	https://github.com/agda/agda/actions/runs/29147141926/job/86530516334	
+Cabal Linux doctest, 9.14.1	pass	5m49s	https://github.com/agda/agda/actions/runs/29147141926/job/86530516368	
+Cabal Linux, 9.10.3	pass	6m14s	https://github.com/agda/agda/actions/runs/29147141926/job/86530516365	
+Cabal Linux, 9.12.4	pass	6m47s	https://github.com/agda/agda/actions/runs/29147141926/job/86530516337	
+Cabal Linux, 9.14.1	pass	5m19s	https://github.com/agda/agda/actions/runs/29147141926/job/86530516335	
+Cabal Linux, 9.2.8	pass	5m44s	https://github.com/agda/agda/actions/runs/29147141926/job/86530516336	
+Cabal Linux, 9.4.8	pass	5m53s	https://github.com/agda/agda/actions/runs/29147141926/job/86530516343	
+Cabal Linux, 9.6.7	pass	6m14s	https://github.com/agda/agda/actions/runs/29147141926/job/86530516352	
+Cabal Linux, 9.8.4	pass	5m40s	https://github.com/agda/agda/actions/runs/29147141926/job/86530516341	
+Cabal Windows, 9.14.1	pass	18m9s	https://github.com/agda/agda/actions/runs/29147141926/job/86530516340	
+Cabal macOS, 9.14.1	pass	11m42s	https://github.com/agda/agda/actions/runs/29147141926/job/86530516354	
+auto-cancel	pass	5s	https://github.com/agda/agda/actions/runs/29147141925/job/86530506181	
+auto-cancel	pass	7s	https://github.com/agda/agda/actions/runs/29147141926/job/86530506177	
+auto-cancel	pass	6s	https://github.com/agda/agda/actions/runs/29147141930/job/86530506157	
+build	pass	21m47s	https://github.com/agda/agda/actions/runs/29147141942/job/86530506218	
+build (9.14.1, ubuntu-24.04)	pass	3m37s	https://github.com/agda/agda/actions/runs/29147141943/job/86530506198	
+cabal install	pass	4m43s	https://github.com/agda/agda/actions/runs/29147141925/job/86530513999	
+cabal install --lib	pass	5m3s	https://github.com/agda/agda/actions/runs/29147141925/job/86530513991	
+check	pass	20s	https://github.com/agda/agda/actions/runs/29147141945/job/86530506185	
+cleanup	pass	7s	https://github.com/agda/agda/actions/runs/31384380033/job/93441414238	
+cubical	pass	13m52s	https://github.com/agda/agda/actions/runs/29147141942/job/86531994995	
+docs/readthedocs.org:agda	pass	0	https://agda--8611.org.readthedocs.build/en/8611/	Read the Docs build succeeded!
+interaction-latex-html	pass	3m25s	https://github.com/agda/agda/actions/runs/29147141942/job/86531994976	
+stack (9.10.3, ubuntu-24.04)	pass	9m36s	https://github.com/agda/agda/actions/runs/29147141930/job/86530516799	
+stack (9.12.4, macos-15)	pass	17m54s	https://github.com/agda/agda/actions/runs/29147141930/job/86530516768	
+stack (9.12.4, ubuntu-24.04)	pass	10m15s	https://github.com/agda/agda/actions/runs/29147141930/job/86530516760	
+stack (9.12.4, windows-2025)	pass	10m0s	https://github.com/agda/agda/actions/runs/29147141930/job/86530516786	
+stack (9.2.8, ubuntu-24.04)	pass	10m1s	https://github.com/agda/agda/actions/runs/29147141930/job/86530516761	
+stack (9.4.8, ubuntu-24.04)	pass	10m24s	https://github.com/agda/agda/actions/runs/29147141930/job/86530516752	
+stack (9.6.7, ubuntu-24.04)	pass	9m5s	https://github.com/agda/agda/actions/runs/29147141930/job/86530516754	
+stack (9.8.4, ubuntu-24.04)	pass	9m7s	https://github.com/agda/agda/actions/runs/29147141930/job/86530516775	
+stdlib-test	pass	9m54s	https://github.com/agda/agda/actions/runs/29147141942/job/86531994974	
+build	skipping	0	https://github.com/agda/agda/actions/runs/29147141928/job/86530506389	
+test	pass	11m35s	https://github.com/agda/agda/actions/runs/29147141942/job/86531994970	

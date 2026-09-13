@@ -222,14 +222,25 @@ Claude FLT 是连续统数学自洽性的**工程丰碑**——它证明"若你�
 | 勾股三元组必含 3 的倍数 | 上表 n=2 偶情形推论 | ✅（推论） |
 | 上述事实的 Agda 固化 | — | ⏳ 待办 |
 
-### 9.2 后续行动（待确认后执行）
+### 9.2 后续行动（**2026-09-10 复核：第 1 项已由 Fermat 链完成**）
 
-1. **Agda 固化**：`src/Sovereign/Problem/Fermat/NormCollapse.agda`（新目录）
-   - 定理 A：`∀ x → x ≢ T₀ → x ⊗ x ≡ T₁`（GF(3)× 幂周期 2，已有 `src/Sovereign/Algebra/Dihedral/NormCollapse.agda` 平方坍缩，需补 n 参数化版本）
-   - 定理 B：n 奇 ⇒ `pow3 x n ≡ x`（GF(3)× 上逐 n 归纳，n = 2k+1）
-   - 定理 C：n 偶 ⇒ `pow3 x n ∈ {0,1}`（平方坍缩继承）
-   - 定理 D：`∀ x → x ≢ 0 → pow9 x 8 ≡ 1`（GF(9)× C₈ 周期，9 case refl）
-   - 零 postulate，穷举/refl 风格，与 KakeyaGF3/KakeyaGF9 模式一致
+1. ~~**Agda 固化**~~ → **已落地，但不在本文档原先写的路径上**。
+   - ⚠ 原文写的 `src/Sovereign/Problem/Fermat/NormCollapse.agda`（新目录）**从未创建**；
+     原文引用的「已有 `src/Sovereign/Algebra/Dihedral/NormCollapse.agda`」路径也**不存在**——
+     该模块的真身是 **`src/Sovereign/Algebra/NormCollapse.agda`**（范数坍缩
+     N(x) = x·σ(x)，`norm-collapse` / `norm-multiplicative`）
+   - 四条定理的**实际落地位置**（`src/Sovereign/Problem/Fermat/`，Fermat 链 L0–L1）：
+
+     | 原定理 | 现符号 | 位置 |
+     | --- | --- | --- |
+     | A：`x ≢ T₀ → x ⊗ x ≡ T₁` | `nonzero-square` | `FermatL1.agda:41` |
+     | B：n 奇 ⇒ `pow3 x n ≡ x` | `pow3-odd` | `FermatL1.agda:77` |
+     | C：n 偶 ⇒ `pow3 x n ∈ {0,1}` | `pow3-even-channel`（`⊎ T₁ / T₀`） | `FermatL1.agda:100` |
+     | D：`x ≢ 0 → pow9 x 8 ≡ 1`（GF(9)× 的 C₈ 周期） | 未单列；由 `GF9.gen-generates-all`（GF9.agda:539，`gen` 8 阶）承载 | `Algebra/GF9.agda:539` |
+
+   - 基础件 `pow3` / `pow3-expand` 在 `FermatL0.agda:45,50`；链上有 `FermatL2/L3`、
+     `FermatL4_Mod12Cycle`、`FermatL4_NatLift`（`red₃-pow` 把 GF(3) 层幂拉回 ℕ）
+   - 零 postulate 的目标**在链上成立**（L1 为 `refl`/穷举风格，与 KakeyaGF3/KakeyaGF9 一致）
 2. **本文档登记**：`docs/duodecimal/README.md` 文件结构表追加 13 号条目
 
 ---

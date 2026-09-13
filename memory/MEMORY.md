@@ -1,3 +1,5 @@
 - [双轨制开发与宪法约束](dual_track_constitution.md) — Agda 形式化 + Python 工程验证，宪法级约束必须遵守
 - [四文明密度层级与范畴分离](civilization_categories.md) — 电性12d/磁性24d/中性144d/全息4320d，禁止跨层级混用
 - [Frobenius 构造化范式](frobenius-constructivization.md) — GF(3^n) 有限域: 线性框架 + 基展开替换 3^n 条 refl 穷举 (GF27/81/243/729 已完成)
+- [裁决器口径：只用 Agda 不用 dype](toolchain-agda-only-no-dype.md) — 人类指示 2026-09-13；例外是交叉验证；附 agdaBin 现状与「注释也作废回执」的坑
+- [证明技术：配对弹出](../docs/techniques/pair-popping.md) — **已迁至 docs/techniques/（正式技术文档）**；一句话：交换结合和式里的相反数对弹出相消，M9 Jacobi 729→1 行、det 乘法性 6561→1 行

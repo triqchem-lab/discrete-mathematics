@@ -43,6 +43,12 @@
 | [16-dc12-layer-adjudication.md](16-dc12-layer-adjudication.md) | DC12 论文 L0-L7 逐层裁定：哪些已证/哪些不可证 | P1 |
 | [17-dc-fourier-analysis.md](17-dc-fourier-analysis.md) | DC 傅里叶分析层：特征→正交→对偶完备→Parseval 完整形式化 | P0 |
 | [18-dihedral-d12-analysis.md](18-dihedral-d12-analysis.md) | D₁₂ 二面体群模块分析：数学内容/错误定位/复用绿库的修复路径 | P1 |
+| [19-full-green-26-fix.md](19-full-green-26-fix.md) | 全绿 26 模块修复记录 | P2 |
+| [19-review-list.md](19-review-list.md) | 复核清单 | P2 |
+| [20-dc-type-theory-positioning.md](20-dc-type-theory-positioning.md) | DC 的类型论定位（不从投影/同构出发） | P0 |
+| [21-quantum-module-topology-scan.md](21-quantum-module-topology-scan.md) | 量子模块拓扑扫描 | P2 |
+| [22-doz-formalization.md](22-doz-formalization.md) | **Doz 记数法层的形式化**（Positional 泛型位值制 + base 12 实例 + 机器对接） | P0 |
+| [23-two-arithmetic-dimensions.md](23-two-arithmetic-dimensions.md) | **环的两个底层算术维度与 DC 的对应**（IUTT 原文核实 + 两维度壁垒定理 + 边界） | P0 |
 
 ---
 
@@ -122,10 +128,20 @@
 
 ### 短正合列
 
-- **文件**: `src/Sovereign/Algebra/Dihedral/ShortExactSequence.agda`
+- **文件**: ~~`src/Sovereign/Algebra/Dihedral/ShortExactSequence.agda`~~
+  ⚠ **该路径不存在，且从未入库**（`git log --diff-filter=AD` 为空）——草稿文件已
+  从工作区删除，本节此前把它当现存文件列在「文件」栏，是失效指路。
+- **绿版（现行覆盖）**:
+  - `src/Sovereign/Algebra/GroupTheory/DuodecClockProperties.agda`
+    ── `quotient-alpha : DuodecPoint → Trit`（商映射，满射 `quot-alpha-surjective`）、
+    `quot-alpha-kernel : ∀ a → quotient-alpha (T₀ , a) ≡ T₀`（核 = ⟨α⟩）、
+    `quot-size = 3`。这就是 DC 侧 `1 → ⟨α⟩ → DC → C₃ → 1` 的核-像精确性。
+  - `src/Sovereign/Algebra/GroupTheory/NormExactSequence.agda`
+    ── 平行的 `1 → C₄ → C₈ → C₂ → 1` **不分裂**（见 `18-dihedral-d12-analysis.md`：
+    与 D₁₂ 的非交换性互补）。
 - **内容**: 1 → C₄ → DC → F₃ → 1 (分裂)
-- **状态**: ❌ 未编译草稿 (UnequalTypes GF9Star; 分裂性已有绿版
-  DCGroup/群论链覆盖)
+- **状态**: ❌ 未编译草稿（UnequalTypes GF9Star）——**草稿已删除**；分裂性由上述
+  两个绿版模块覆盖，不在本表另立条目。
 
 ### 特征分解
 

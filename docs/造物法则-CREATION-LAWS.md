@@ -404,7 +404,7 @@ C3 旋转交替 (Christoffel螺旋 [1→2→4→8→7→5], 周期6)
 | Z₂ 因子生命周期 | `Structology/WuXingTransition.agda` | — | — |
 | 宇称不守恒 + 手征分离 | `Coupling/ParityViolation.agda` | — | — |
 | 自旋 = 手征投影 | `Coupling/SpinTwistor.agda` | — | — |
-| 三代 + C3 孤子 | `Physics/NSE.agda` (§9, T10) | `nayin_soliton_l5.h` | `train.py` (SOLITON_EIGENVALUES) |
+| 三代 + C3 孤子 | `Problem/NavierStokes/NSE.agda` (§9, T10) | `nayin_soliton_l5.h` | `train.py` (SOLITON_EIGENVALUES) |
 | 12 力场 | — | `liquid_quartz_dynamics.h` | `train.py` (EIGEN_Z_FORCES) |
 | 全息极限环 L8 | — | `holographic_limit_l8.h` | — |
 | QGP 跨尺度验证 | — | — | `train.py` (C3_CYCLE_STEPS etc.) |

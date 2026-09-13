@@ -127,7 +127,7 @@ export PATH=/opt/agda2.9/bin:$PATH
 agda src/Sovereign/HoTT/PhaseTransitionPaths.agda
 
 # 类型检查宪法总纲
-agda src/Sovereign/Constitution.agda
+agda src/Sovereign/AI/Constitution.agda
 ```
 
 ## 附录：项目状态思维导图

@@ -13,7 +13,7 @@
 | **十二进制（本源）** | \(\mathbb{Z}/3\mathbb{Z}_{\text{加}} \oplus \langle\alpha\rangle_{\text{乘}}\)，即 `DuodecPoint = Trit × AlphaPower` | **本源时钟结构** |
 | **Duodec / C₁₂** | 与上面**加法群同构**的 12 元循环群 | **抽象加法投影**（同构像，不是生成定义） |
 | **R₁₂ 环** | 带零因子的交换环 \(\mathbb{Z}/12\mathbb{Z}\) | **更粗的环投影**（乘法来自整数模 12，**不是** GF(9) 的 \(\langle\alpha\rangle\) 乘法） |
-| **Doz 位值** | 以 12 为底的位值制 | **记数法层**（尚未系统形式化） |
+| **Doz 位值** | 以 12 为底的位值制 | **记数法层**（✅ 2026-09-13 已形式化：`Sovereign.Format.Doz`，见 [22-doz-formalization.md](22-doz-formalization.md)） |
 
 ---
 

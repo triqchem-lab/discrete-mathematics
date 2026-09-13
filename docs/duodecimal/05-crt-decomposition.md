@@ -221,6 +221,8 @@ CRT 的 mod 4 分量 = Fin 4 ↔ AlphaPower ↔ ⟨α⟩ ⊂ GF(9)*
 
 ## 八、未解决的问题
 
-1. **π₄ 的同态性**：π₄ 是否保持 `+12`？需要证明。
+1. **π₄ 的同态性**：✅ **已解决 (2026-09-09)** —— `src/Sovereign/Algebra/Pi4Homomorphism.agda`
+   证明 `π4-homo-+ : ∀ x y → π4 (x +12 y) ≡ (π4 x) +4 (π4 y)`（Fin 4 侧 `_+4_` 由 `fin4-suc` 迭代定义；
+   证明图 4 节点：`π4-+1`(12 refl) → `pi4-iter`(归纳) + `fin4-suc-4`(4 refl) → 12-case 主定理；0 postulate）。
 2. **CRT 与 *12**：crt12 是否保持环乘法？需要证明。
 3. **CRT 与 mulAlpha**：如何从 CRT 分量重构 mulAlpha？

@@ -1,0 +1,5 @@
+# PR #8611 head ref 固化记录（2026-09-10T20:47:07+08:00）
+origin (agda/agda) refs/pull/8611/head:
+abedbc22d5fb63eb5a1ff3bf3fbbe53803e18391	refs/pull/8611/head
+本地归档分支 pr8611-archive:
+abedbc22d5fb63eb5a1ff3bf3fbbe53803e18391 2026-07-11 17:04:13 +0800 fix: add +RTS -M6G via AGDA_TESTS_OPTIONS for std-lib-succeed
