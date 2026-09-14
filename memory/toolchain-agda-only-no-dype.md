@@ -1,10 +1,19 @@
 ---
 name: toolchain-agda-only-no-dype
-description: 裁决器口径——只用 Agda，不用 dype（除非做交叉验证）；附 agdaBin 当前状态与两个已踩过的坑
+description: 本数学库的裁决器口径——proof_compile 走 agda 通道（不请求 dype）；附 agdaBin 现状与两个已踩过的坑。dype 自身的状态见 dype 仓 docs/TOOLCHAIN-STATUS.md
 type: project
 ---
 
-# 裁决器口径：只用 Agda，不用 dype（2026-09-13 人类指示）
+# 裁决器口径：本库的形式化一律用 Agda（2026-09-13 人类指示）
+
+> **适用域（必读）**
+> 本条的定义域是：**本数学库（`discrete-mathematics`）的形式化该用哪个裁决器** ——
+> `proof_compile` 走哪条通道、哪颗内核的结论可以写进台账 `proven`。
+> **不适用于 dype 编译器项目（`/data/work/functional-programming/dype`）自身的架构问题**
+> （包边界、内核归属、`Dayan.Kernel.Conversion` 接不接进内核、A/B 行为对拍怎么做）——
+> 那些由 dype 仓自己的判据决定，**本条不作为其依据**；dype 侧的数据已迁至
+> dype 仓 `docs/TOOLCHAIN-STATUS.md`（2026-09-14 按域拆分）。
+> ⚠ 反例（真实发生过）：把本条套用到「是否把 Dayan 判定层接入内核」，是**定义域混淆**。
 
 ## 1. 决定
 
@@ -12,8 +21,6 @@ type: project
 - **不主动请求 `checker:"dype"`**。
 - **唯一例外：交叉验证** —— 需要第二个独立内核对同一命题做行为对拍时才用 dype；
   此时结论必须标注「非权威，需 Agda 复核」，且**不得**以 dype 通过作为节点 `proven` 的证据。
-- 依据：dype 是项目自研**实验性内核**，不作裁决权威；且当前两个 dype 二进制都因
-  `data dir /src/data` 不存在而跑不起来（实测：`proof_compile` 把它列在「被跳过的检查器」）。
 
 ## 2. agdaBin 现状（实测，会漂）
 
@@ -41,6 +48,8 @@ type: project
 
 ## 5. 锚点
 
-- 配置：`impl/local-paths.json`（键 `agdaBin` / `dypeRoot`）
+- 配置：`impl/local-paths.json`（键 `agdaBin`；`dypeRoot` 指向 dype 仓）
 - 台账流水 2026-09-13：`decision`（本口径）+ `handoff`（agdaBin 修复与重签，回执 `c19ba03d…`）
+- **dype 侧数据**（实验性内核定位、二进制 `/src/data` 阻塞、交叉验证纪律、包布局实测）：
+  dype 仓 `docs/TOOLCHAIN-STATUS.md`
 - 相关外部参照：`docs/NavierStokes/`、OpenAI Lean 仓库（`/data/work/leanprover/NavierStokesAndEuler`）
