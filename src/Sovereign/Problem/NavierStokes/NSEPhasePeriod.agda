@@ -17,26 +17,21 @@
 --   反例注记所说的「周期 = lcm(各旋转阶)」的可用形式 (每个阶整除 4 ⇒ lcm 整除 4)。
 --
 -- 结构 (全部构造性, 无 postulate / 无 hole):
---   §1 路径类型 Path 与累积 accumPath
+--   §1 路径累积 accumPath (乘法, 右结合)
 --   §2 拼接同态 accumPath-++  (归纳 + mulAlpha-assoc)
 --   §3 主定理 accumPath-repeat-4 : 重复 4 次 ⇒ a0
 --   §4 推论 accumPath-order-divides-4 : 单周期累积的四次幂 = a0
 --   §5 对抗验证: 反例路径 (a1,a1,a1,a2) 的**单周期**累积确为 a1 ≠ a0 (refl),
 --      但按 §3 重复 4 次后回归 —— 两个断言同时为真, 不冲突。
 --
--- ⚠ 依赖纪律 (2026-09-14): 本模块**只** import 已在缓存中的 stdlib 模块
---   (Relation.Binary.PropositionalEquality / DuodecClock / NSEPhaseField)。
---   **不** import `Data.List`: 它的接口在本机缓存中陈旧, 会迫使 Agda
---   重新检查并**回写 agda-stdlib/_build/**, 而该目录在工作区外
---   (沙箱只读 ⇒ exit 42 且错误数 0)。路径类型只有 3 个构造子, 本地定义即可,
---   这样编译**完全不触碰标准库目录**。
---
--- 依赖: Sovereign.Problem.NavierStokes.NSEPhaseField (取 rotate/rotate-4)
+-- 依赖: Data.List (stdlib, 已由 sovereign.agda-lib 注册为 depend: standard-library-2.4)
+--       Sovereign.Problem.NavierStokes.NSEPhaseField (取其 rotate/rotate-4)
 --       Sovereign.Algebra.GroupTheory.DuodecClock (AlphaPower/mulAlpha)
 -- 0 postulate / 0 hole
 
 module Sovereign.Problem.NavierStokes.NSEPhasePeriod where
 
+open import Data.List using (List; []; _∷_; _++_; [_])
 open import Relation.Binary.PropositionalEquality using
   (_≡_; _≢_; refl; sym; cong; module ≡-Reasoning)
 
@@ -46,44 +41,30 @@ open import Sovereign.Algebra.GroupTheory.DuodecClock using (
 open import Sovereign.Problem.NavierStokes.NSEPhaseField using (rotate; rotate-4)
 
 --------------------------------------------------------------------------------
--- §1. 路径类型与路径累积
+-- §1. 路径累积: 一串相位元的乘积
 --
--- 语义: 一条路径 ps = p₁ ∷ p₂ ∷ … ∷ [] 表示依次施加的相位转动;
+-- 语义: 一条路径 ps = [p₁,…,pₙ] 表示依次施加的相位转动;
 --       其累积效应是首尾相接的乘积 p₁·p₂·…·pₙ ( ∈ C₄)。
---
--- (本地归纳类型, 不引入 Data.List —— 见模块头的依赖纪律)
 --------------------------------------------------------------------------------
 
-data Path : Set where
-  ⟨⟩   : Path
-  _∷_  : AlphaPower → Path → Path
-
-infixr 5 _∷_
-
-accumPath : Path → AlphaPower
-accumPath ⟨⟩       = a0
+accumPath : List AlphaPower → AlphaPower
+accumPath []       = a0
 accumPath (p ∷ ps) = mulAlpha p (accumPath ps)
 
 --------------------------------------------------------------------------------
--- §2. 拼接: Path 的串联与其同态律
+-- §2. 拼接同态: accumPath (ps ++ qs) ≡ accumPath ps · accumPath qs
 --
 -- 这是把「路径」与「群乘法」接起来的关键引理 —— 有了它,
 -- 重复路径的累积才能化为「同一元素的自乘幂」。
 --------------------------------------------------------------------------------
 
-_++P_ : Path → Path → Path
-⟨⟩      ++P qs = qs
-(p ∷ ps) ++P qs = p ∷ (ps ++P qs)
-
-infixr 5 _++P_
-
-accumPath-++ : ∀ (ps qs : Path) →
-  accumPath (ps ++P qs) ≡ mulAlpha (accumPath ps) (accumPath qs)
-accumPath-++ ⟨⟩      qs = sym (mulAlpha-identityˡ (accumPath qs))
+accumPath-++ : ∀ (ps qs : List AlphaPower) →
+  accumPath (ps ++ qs) ≡ mulAlpha (accumPath ps) (accumPath qs)
+accumPath-++ []       qs = sym (mulAlpha-identityˡ (accumPath qs))
 accumPath-++ (p ∷ ps) qs = begin
-    accumPath ((p ∷ ps) ++P qs)
+    accumPath ((p ∷ ps) ++ qs)
   ≡⟨ refl ⟩
-    mulAlpha p (accumPath (ps ++P qs))
+    mulAlpha p (accumPath (ps ++ qs))
   ≡⟨ cong (mulAlpha p) (accumPath-++ ps qs) ⟩
     mulAlpha p (mulAlpha (accumPath ps) (accumPath qs))
   ≡⟨ sym (mulAlpha-assoc p (accumPath ps) (accumPath qs)) ⟩
@@ -103,14 +84,14 @@ accumPath-++ (p ∷ ps) qs = begin
 -- 注意: 结论**与路径细节无关** —— 所有路径信息都被吸收进 P ∈ C₄。
 --------------------------------------------------------------------------------
 
-accumPath-repeat-4 : ∀ (ps : Path) →
-  accumPath (ps ++P ps ++P ps ++P ps) ≡ a0
+accumPath-repeat-4 : ∀ (ps : List AlphaPower) →
+  accumPath (ps ++ ps ++ ps ++ ps) ≡ a0
 accumPath-repeat-4 ps = begin
-    accumPath (ps ++P (ps ++P (ps ++P ps)))
-  ≡⟨ accumPath-++ ps (ps ++P (ps ++P ps)) ⟩
-    mulAlpha P (accumPath (ps ++P (ps ++P ps)))
-  ≡⟨ cong (mulAlpha P) (accumPath-++ ps (ps ++P ps)) ⟩
-    mulAlpha P (mulAlpha P (accumPath (ps ++P ps)))
+    accumPath (ps ++ (ps ++ (ps ++ ps)))
+  ≡⟨ accumPath-++ ps (ps ++ (ps ++ ps)) ⟩
+    mulAlpha P (accumPath (ps ++ (ps ++ ps)))
+  ≡⟨ cong (mulAlpha P) (accumPath-++ ps (ps ++ ps)) ⟩
+    mulAlpha P (mulAlpha P (accumPath (ps ++ ps)))
   ≡⟨ cong (λ z → mulAlpha P (mulAlpha P z)) (accumPath-++ ps ps) ⟩
     mulAlpha P (mulAlpha P (mulAlpha P (accumPath ps)))
   ≡⟨ cong (λ z → mulAlpha P (mulAlpha P (mulAlpha P z)))
@@ -131,7 +112,7 @@ accumPath-repeat-4 ps = begin
 -- 每个 P ∈ C₄ 的阶 ∈ {1,2,4}, 均整除 4 ⇒ 路径的周期整除 4。
 --------------------------------------------------------------------------------
 
-accumPath-order-divides-4 : ∀ (ps : Path) →
+accumPath-order-divides-4 : ∀ (ps : List AlphaPower) →
   mulAlpha (accumPath ps) (mulAlpha (accumPath ps)
     (mulAlpha (accumPath ps) (accumPath ps))) ≡ a0
 accumPath-order-divides-4 ps = begin
@@ -157,8 +138,8 @@ accumPath-order-divides-4 ps = begin
 --------------------------------------------------------------------------------
 
 -- (1) 单周期反例: [a1,a1,a1,a2] 的累积 = a1·a1·a1·a2 = a1 ≠ a0
-counterexample-path : Path
-counterexample-path = a1 ∷ a1 ∷ a1 ∷ a2 ∷ ⟨⟩
+counterexample-path : List AlphaPower
+counterexample-path = a1 ∷ a1 ∷ a1 ∷ a2 ∷ []
 
 counterexample-accum : accumPath counterexample-path ≡ a1
 counterexample-accum = refl
@@ -168,23 +149,20 @@ counterexample-nonzero ()
 
 -- (2) 同一路径重复 4 次 ⇒ 回归 (即 §3 的实例, 由定理直接给出)
 counterexample-repeat-4 :
-  accumPath (counterexample-path ++P counterexample-path
-             ++P counterexample-path ++P counterexample-path) ≡ a0
+  accumPath (counterexample-path ++ counterexample-path
+             ++ counterexample-path ++ counterexample-path) ≡ a0
 counterexample-repeat-4 = accumPath-repeat-4 counterexample-path
 
 -- (3) 退化路径: 空路径的累积 = a0, 且重复仍为 a0
-empty-accum : accumPath ⟨⟩ ≡ a0
+empty-accum : accumPath [] ≡ a0
 empty-accum = refl
 
-empty-repeat : accumPath (⟨⟩ ++P ⟨⟩ ++P ⟨⟩ ++P ⟨⟩) ≡ a0
+empty-repeat : accumPath ([] ++ [] ++ [] ++ []) ≡ a0
 empty-repeat = refl
 
 -- (4) 单元素路径 [a1]: 单周期累积 = a1 (阶 4), 四次幂回归
-singleton-path : Path
-singleton-path = a1 ∷ ⟨⟩
-
-singleton-accum : accumPath singleton-path ≡ a1
+singleton-accum : accumPath [ a1 ] ≡ a1
 singleton-accum = refl
 
 singleton-order : mulAlpha a1 (mulAlpha a1 (mulAlpha a1 a1)) ≡ a0
-singleton-order = accumPath-order-divides-4 singleton-path
+singleton-order = accumPath-order-divides-4 [ a1 ]
