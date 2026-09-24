@@ -26,7 +26,7 @@ open import Sovereign.Base.Trit using
   (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-assoc; ⊕-comm; ⊕-identityˡ; ⊕-identityʳ)
 open import Sovereign.Problem.NavierStokes.NSEOnT6 using
   (C3; Torus6; ScalarField; sum3; shift3; sum3-+; negate-⊕)
-open import Sovereign.Problem.NavierStokes.NSEFluxTelescope using (cancel3)
+open import Sovereign.Problem.NavierStokes.NSEFluxTelescope using (cancel3; swap2)
 
 open ≡-Reasoning
 
@@ -69,41 +69,32 @@ fold1-negate : ∀ (g : C3 → Trit) →
 fold1-negate g = sum3-negate (g fzero) (g (fsuc fzero)) (g (fsuc (fsuc fzero)))
 
 --------------------------------------------------------------------------------
--- §1.3 旋转不变: Σ(g ∘ shift3) ≡ Σ g（C₃ 三点轮转）
+-- §1.3 旋转不变: Σ(g ∘ shift3) ≡ Σ g（C₃ 三点轮转）—— **置换型配对重排**
 --
--- 27 case（三个求和值的全枚举, 恰在库内穷举法上限内）。
--- 这是「移位不变性」的 C₃ 版; 6 层全环面版本见 §2 的装配计划。
+-- 判型（技术文档 §2/§4.3）: `sum3 b c a ≡ sum3 a b c` 是**同项异位、无符号变化**
+-- ⇒ **置换型**, 用 `swap2`（非 `swap4`/`cancel-pair`）。两步交换把 a 从第三位换到首位。
+-- **命题一字不改**（原 27 条 refl 穷举已替换, 全程不分情形）。
 --------------------------------------------------------------------------------
 
 sum3-shift-vals : ∀ (a b c : Trit) →
   sum3 b c a ≡ sum3 a b c
-sum3-shift-vals T₀ T₀ T₀ = refl
-sum3-shift-vals T₀ T₀ T₁ = refl
-sum3-shift-vals T₀ T₀ T₂ = refl
-sum3-shift-vals T₀ T₁ T₀ = refl
-sum3-shift-vals T₀ T₁ T₁ = refl
-sum3-shift-vals T₀ T₁ T₂ = refl
-sum3-shift-vals T₀ T₂ T₀ = refl
-sum3-shift-vals T₀ T₂ T₁ = refl
-sum3-shift-vals T₀ T₂ T₂ = refl
-sum3-shift-vals T₁ T₀ T₀ = refl
-sum3-shift-vals T₁ T₀ T₁ = refl
-sum3-shift-vals T₁ T₀ T₂ = refl
-sum3-shift-vals T₁ T₁ T₀ = refl
-sum3-shift-vals T₁ T₁ T₁ = refl
-sum3-shift-vals T₁ T₁ T₂ = refl
-sum3-shift-vals T₁ T₂ T₀ = refl
-sum3-shift-vals T₁ T₂ T₁ = refl
-sum3-shift-vals T₁ T₂ T₂ = refl
-sum3-shift-vals T₂ T₀ T₀ = refl
-sum3-shift-vals T₂ T₀ T₁ = refl
-sum3-shift-vals T₂ T₀ T₂ = refl
-sum3-shift-vals T₂ T₁ T₀ = refl
-sum3-shift-vals T₂ T₁ T₁ = refl
-sum3-shift-vals T₂ T₁ T₂ = refl
-sum3-shift-vals T₂ T₂ T₀ = refl
-sum3-shift-vals T₂ T₂ T₁ = refl
-sum3-shift-vals T₂ T₂ T₂ = refl
+sum3-shift-vals a b c = begin
+    sum3 b c a
+  ≡⟨ cong (b ⊕_) (swap2 c a T₀) ⟩
+    b ⊕ (a ⊕ (c ⊕ T₀))
+  ≡⟨ swap2 b a (c ⊕ T₀) ⟩
+    sum3 a b c
+  ∎
+
+-- 对抗验证（技术文档 §7④: 删去的逐 case 证据以具体点 refl 补回）
+sum3-shift-spot₁ : sum3 T₁ T₂ T₀ ≡ sum3 T₀ T₁ T₂
+sum3-shift-spot₁ = refl
+
+sum3-shift-spot₂ : sum3 T₂ T₁ T₂ ≡ sum3 T₂ T₂ T₁
+sum3-shift-spot₂ = refl
+
+sum3-shift-spot₃ : sum3 T₀ T₀ T₁ ≡ sum3 T₁ T₀ T₀
+sum3-shift-spot₃ = refl
 
 fold1-shift : ∀ (g : C3 → Trit) → fold1 (λ y → g (shift3 y)) ≡ fold1 g
 fold1-shift g = sum3-shift-vals (g fzero) (g (fsuc fzero)) (g (fsuc (fsuc fzero)))

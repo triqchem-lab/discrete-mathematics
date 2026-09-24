@@ -36,48 +36,107 @@
 
 module Sovereign.Problem.NavierStokes.NSEFluxTelescope where
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Relation.Binary.PropositionalEquality using
+  (_≡_; refl; sym; trans; cong; module ≡-Reasoning)
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate)
+open import Sovereign.Base.Trit using
+  (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-assoc; ⊕-comm; ⊕-identityˡ)
 open import Sovereign.Problem.NavierStokes.NSEOnT6 using (
   C3; Torus6; ScalarField; Field; shiftAt; shiftAt-cubed; diffF; div; nsStep; sum3)
 
+open ≡-Reasoning
+
 --------------------------------------------------------------------------------
--- §1. GF(3) 三段循环差分之和恒为零
+-- §0. 配对弹出工具三件套（照 `docs/techniques/pair-popping.md` §3；本地副本
+--      —— 与 `jac_Matrix` 自备 Trit 版 `⊕-swap4` 同例, 不拉入 Lie 依赖）
+--------------------------------------------------------------------------------
+
+-- 置换型: 2 项交换（技术文档 §3 表 `⊕-swap2`）
+swap2 : ∀ x y z → x ⊕ (y ⊕ z) ≡ y ⊕ (x ⊕ z)
+swap2 x y z =
+  trans (sym (⊕-assoc x y z))
+  (trans (cong (_⊕ z) (⊕-comm x y))
+         (⊕-assoc y x z))
+
+-- 相消型: 弹出后消（技术文档 §3 表 `cancel-pair` 与其头部反向变体, 两种都要）
+plus-negate-zero : ∀ t → t ⊕ negate t ≡ T₀
+plus-negate-zero T₀ = refl
+plus-negate-zero T₁ = refl
+plus-negate-zero T₂ = refl
+
+negate-plus-zero : ∀ t → negate t ⊕ t ≡ T₀
+negate-plus-zero T₀ = refl
+negate-plus-zero T₁ = refl
+negate-plus-zero T₂ = refl
+
+cancel-pair : ∀ t z → (t ⊕ negate t) ⊕ z ≡ z
+cancel-pair t z = trans (cong (_⊕ z) (plus-negate-zero t)) (⊕-identityˡ z)
+
+cancel-pair' : ∀ t z → (negate t ⊕ t) ⊕ z ≡ z
+cancel-pair' t z = trans (cong (_⊕ z) (negate-plus-zero t)) (⊕-identityˡ z)
+
+-- 右缘形状的弹出（`t ⊕ (neg t ⊕ z)` / `neg t ⊕ (t ⊕ z)` —— swap2/相消型的常用后处理）
+pop-pair : ∀ t z → t ⊕ (negate t ⊕ z) ≡ z
+pop-pair t z = trans (sym (⊕-assoc t (negate t) z)) (cancel-pair t z)
+
+pop-pair' : ∀ t z → negate t ⊕ (t ⊕ z) ≡ z
+pop-pair' t z = trans (sym (⊕-assoc (negate t) t z)) (cancel-pair' t z)
+
+--------------------------------------------------------------------------------
+-- §1. GF(3) 三段循环差分之和恒为零 —— **配对弹出版**（原 27 条 refl 穷举已替换）
 --
--- (b−a) + (c−b) + (a−c) = 0 —— 右嵌套 sum3 逐层展开后逐 case 归约。
--- 27 case ≤ 27 ⇒ 符合库内穷举法纪律（≤27 case 允许, >27 须符号化）。
+-- 判型（技术文档 §2）: 六原子 b/−a/c/−b/a/−c 含 **3 对相反数**（b/−b、c/−c、a/−a）
+-- ⇒ **相消型**。结构 = 展平到右缘字（3 × assoc）→ 3 × `swap2` 把 −b 换到 b 旁
+--   → 弹出 (b,−b) → 弹出 (a,−a)（`pop-pair'`）→ 弹出 (c,−c) ⇒ T₀。
+-- **命题一字不改**（与穷举版同型）; 全程不对任何变量分情形。
 --------------------------------------------------------------------------------
 
 cancel3 : ∀ (a b c : Trit) →
   sum3 (b ⊕ negate a) (c ⊕ negate b) (a ⊕ negate c) ≡ T₀
-cancel3 T₀ T₀ T₀ = refl
-cancel3 T₀ T₀ T₁ = refl
-cancel3 T₀ T₀ T₂ = refl
-cancel3 T₀ T₁ T₀ = refl
-cancel3 T₀ T₁ T₁ = refl
-cancel3 T₀ T₁ T₂ = refl
-cancel3 T₀ T₂ T₀ = refl
-cancel3 T₀ T₂ T₁ = refl
-cancel3 T₀ T₂ T₂ = refl
-cancel3 T₁ T₀ T₀ = refl
-cancel3 T₁ T₀ T₁ = refl
-cancel3 T₁ T₀ T₂ = refl
-cancel3 T₁ T₁ T₀ = refl
-cancel3 T₁ T₁ T₁ = refl
-cancel3 T₁ T₁ T₂ = refl
-cancel3 T₁ T₂ T₀ = refl
-cancel3 T₁ T₂ T₁ = refl
-cancel3 T₁ T₂ T₂ = refl
-cancel3 T₂ T₀ T₀ = refl
-cancel3 T₂ T₀ T₁ = refl
-cancel3 T₂ T₀ T₂ = refl
-cancel3 T₂ T₁ T₀ = refl
-cancel3 T₂ T₁ T₁ = refl
-cancel3 T₂ T₁ T₂ = refl
-cancel3 T₂ T₂ T₀ = refl
-cancel3 T₂ T₂ T₁ = refl
-cancel3 T₂ T₂ T₂ = refl
+cancel3 a b c = begin
+    (b ⊕ negate a) ⊕ ((c ⊕ negate b) ⊕ ((a ⊕ negate c) ⊕ T₀))
+  ≡⟨ flatten ⟩
+    b ⊕ (negate a ⊕ (c ⊕ (negate b ⊕ (a ⊕ (negate c ⊕ T₀)))))
+  ≡⟨ cong (b ⊕_) (swap2 (negate a) c (negate b ⊕ (a ⊕ (negate c ⊕ T₀)))) ⟩
+    b ⊕ (c ⊕ (negate a ⊕ (negate b ⊕ (a ⊕ (negate c ⊕ T₀)))))
+  ≡⟨ cong (b ⊕_) (cong (c ⊕_) (swap2 (negate a) (negate b) (a ⊕ (negate c ⊕ T₀)))) ⟩
+    b ⊕ (c ⊕ (negate b ⊕ (negate a ⊕ (a ⊕ (negate c ⊕ T₀)))))
+  ≡⟨ cong (b ⊕_) (swap2 c (negate b) (negate a ⊕ (a ⊕ (negate c ⊕ T₀)))) ⟩
+    b ⊕ (negate b ⊕ (c ⊕ (negate a ⊕ (a ⊕ (negate c ⊕ T₀)))))
+  ≡⟨ pop-pair b (c ⊕ (negate a ⊕ (a ⊕ (negate c ⊕ T₀)))) ⟩
+    c ⊕ (negate a ⊕ (a ⊕ (negate c ⊕ T₀)))
+  ≡⟨ cong (c ⊕_) (pop-pair' a (negate c ⊕ T₀)) ⟩
+    c ⊕ (negate c ⊕ T₀)
+  ≡⟨ pop-pair c T₀ ⟩
+    T₀
+  ∎
+  where
+    flatten :
+      (b ⊕ negate a) ⊕ ((c ⊕ negate b) ⊕ ((a ⊕ negate c) ⊕ T₀))
+      ≡ b ⊕ (negate a ⊕ (c ⊕ (negate b ⊕ (a ⊕ (negate c ⊕ T₀)))))
+    flatten =
+      trans (⊕-assoc b (negate a) ((c ⊕ negate b) ⊕ ((a ⊕ negate c) ⊕ T₀)))
+      (cong (b ⊕_)
+        (trans (cong (negate a ⊕_) (⊕-assoc c (negate b) ((a ⊕ negate c) ⊕ T₀)))
+               (cong (λ z → negate a ⊕ (c ⊕ (negate b ⊕ z)))
+                     (⊕-assoc a (negate c) T₀))))
+
+-- 对抗验证（技术文档 §7④: 删去的逐 case 证据以**具体点 refl** 补回）
+cancel3-spot₁ : sum3 (T₁ ⊕ negate T₂) (T₂ ⊕ negate T₁) (T₂ ⊕ negate T₂) ≡ T₀
+cancel3-spot₁ = refl
+
+cancel3-spot₂ : sum3 (T₂ ⊕ negate T₂) (T₀ ⊕ negate T₂) (T₂ ⊕ negate T₀) ≡ T₀
+cancel3-spot₂ = refl
+
+cancel3-spot₃ : sum3 (T₁ ⊕ negate T₁) (T₁ ⊕ negate T₁) (T₁ ⊕ negate T₁) ≡ T₀
+cancel3-spot₃ = refl
+
+cancel3-spot₄ : sum3 (T₂ ⊕ negate T₀) (T₁ ⊕ negate T₂) (T₀ ⊕ negate T₁) ≡ T₀
+cancel3-spot₄ = refl
+
+-- 判型备注（为什么表定义类**不改**）: `rotate-4`/`plus-negate-zero`/`negate-plus-zero`
+-- 等是**表事实**（运算由表子句给出）, 按技术文档 §2 反例行「表 vs 公式 ⇒ 穷举就是内容」
+-- 保留小规模穷举 —— 这是「先判型再动手」纪律本身。
 
 --------------------------------------------------------------------------------
 -- §2. 轴向循环净通量恒为零（判据 C 的量 = axisFlux）
