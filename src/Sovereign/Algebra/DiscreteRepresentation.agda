@@ -576,36 +576,60 @@ frobenius-involutive s21α = refl
 frobenius-involutive s22α = refl
 
 -- Frobenius 保持乘法: σ(x·y) = σ(x)·σ(y)
+open import Sovereign.Algebra.GF9 using (_*s_; *s-toGF9; toGF9; toGF9-inj; *gf9-assoc; *gf9-comm)
+
+-- 【结构化重证】frobenius-multiplicative 原 57 case（GF9Star 8×8 表展开）
+-- → 立方分配结构链。数学内容: σ(x) = x³（Frobenius）⇒ σ(xy) = (xy)³ = x³y³
+--   （C₈ 交换群），表只是它的展开。
+-- 星乘结合/交换经 toGF9 嵌入从 *gf9-assoc/comm 导出（免 64/56 表）。
+
+s-assoc : ∀ x y z → (x *s y) *s z ≡ x *s (y *s z)
+s-assoc x y z = toGF9-inj (
+  trans (*s-toGF9 (x *s y) z)
+  (trans (cong (λ w → w *gf9 toGF9 z) (*s-toGF9 x y))
+  (trans (*gf9-assoc (toGF9 x) (toGF9 y) (toGF9 z))
+  (trans (cong (λ w → toGF9 x *gf9 w) (sym (*s-toGF9 y z)))
+         (sym (*s-toGF9 x (y *s z)))))))
+
+s-comm : ∀ x y → x *s y ≡ y *s x
+s-comm x y = toGF9-inj (
+  trans (*s-toGF9 x y)
+  (trans (*gf9-comm (toGF9 x) (toGF9 y))
+         (sym (*s-toGF9 y x))))
+
+sq : GF9Star → GF9Star
+sq z = z *s z
+
+frob-cube : ∀ z → frobeniusStar z ≡ sq z *s z
+frob-cube s1 = refl; frob-cube s2 = refl
+frob-cube sα = refl; frob-cube s2α = refl
+frob-cube s1α = refl; frob-cube s12α = refl
+frob-cube s21α = refl; frob-cube s22α = refl
+
+sq-mul : ∀ x y → sq (x *s y) ≡ sq x *s sq y
+sq-mul x y =
+  trans (cong ((x *s y) *s_) (s-comm x y))
+  (trans (s-assoc x y (y *s x))
+  (trans (cong (x *s_) (sym (s-assoc y y x)))
+  (trans (cong (x *s_) (s-comm (sq y) x))
+         (sym (s-assoc x x (sq y))))))
+
+cube-distribute : ∀ x y → sq (x *s y) *s (x *s y) ≡ (sq x *s x) *s (sq y *s y)
+cube-distribute x y =
+  trans (cong (λ z → z *s (x *s y)) (sq-mul x y))
+  (trans (s-assoc (sq x) (sq y) (x *s y))
+  (trans (cong (sq x *s_) (sym (s-assoc (sq y) x y)))
+  (trans (cong (sq x *s_) (cong (λ z → z *s y) (s-comm (sq y) x)))
+  (trans (cong (sq x *s_) (s-assoc x (sq y) y))
+         (sym (s-assoc (sq x) x (sq y *s y)))))))
+
 frobenius-multiplicative : ∀ x y → frobeniusStar (x *s y) ≡ frobeniusStar x *s frobeniusStar y
-frobenius-multiplicative s1 y = refl
-frobenius-multiplicative s2 s1 = refl ; frobenius-multiplicative s2 s2 = refl
-frobenius-multiplicative s2 sα = refl ; frobenius-multiplicative s2 s2α = refl
-frobenius-multiplicative s2 s1α = refl ; frobenius-multiplicative s2 s12α = refl
-frobenius-multiplicative s2 s21α = refl ; frobenius-multiplicative s2 s22α = refl
-frobenius-multiplicative sα s1 = refl ; frobenius-multiplicative sα s2 = refl
-frobenius-multiplicative sα sα = refl ; frobenius-multiplicative sα s2α = refl
-frobenius-multiplicative sα s1α = refl ; frobenius-multiplicative sα s12α = refl
-frobenius-multiplicative sα s21α = refl ; frobenius-multiplicative sα s22α = refl
-frobenius-multiplicative s2α s1 = refl ; frobenius-multiplicative s2α s2 = refl
-frobenius-multiplicative s2α sα = refl ; frobenius-multiplicative s2α s2α = refl
-frobenius-multiplicative s2α s1α = refl ; frobenius-multiplicative s2α s12α = refl
-frobenius-multiplicative s2α s21α = refl ; frobenius-multiplicative s2α s22α = refl
-frobenius-multiplicative s1α s1 = refl ; frobenius-multiplicative s1α s2 = refl
-frobenius-multiplicative s1α sα = refl ; frobenius-multiplicative s1α s2α = refl
-frobenius-multiplicative s1α s1α = refl ; frobenius-multiplicative s1α s12α = refl
-frobenius-multiplicative s1α s21α = refl ; frobenius-multiplicative s1α s22α = refl
-frobenius-multiplicative s12α s1 = refl ; frobenius-multiplicative s12α s2 = refl
-frobenius-multiplicative s12α sα = refl ; frobenius-multiplicative s12α s2α = refl
-frobenius-multiplicative s12α s1α = refl ; frobenius-multiplicative s12α s12α = refl
-frobenius-multiplicative s12α s21α = refl ; frobenius-multiplicative s12α s22α = refl
-frobenius-multiplicative s21α s1 = refl ; frobenius-multiplicative s21α s2 = refl
-frobenius-multiplicative s21α sα = refl ; frobenius-multiplicative s21α s2α = refl
-frobenius-multiplicative s21α s1α = refl ; frobenius-multiplicative s21α s12α = refl
-frobenius-multiplicative s21α s21α = refl ; frobenius-multiplicative s21α s22α = refl
-frobenius-multiplicative s22α s1 = refl ; frobenius-multiplicative s22α s2 = refl
-frobenius-multiplicative s22α sα = refl ; frobenius-multiplicative s22α s2α = refl
-frobenius-multiplicative s22α s1α = refl ; frobenius-multiplicative s22α s12α = refl
-frobenius-multiplicative s22α s21α = refl ; frobenius-multiplicative s22α s22α = refl
+frobenius-multiplicative x y =
+  trans (frob-cube (x *s y))
+  (trans (cube-distribute x y)
+  (sym (trans (cong (λ z → z *s frobeniusStar y) (frob-cube x))
+              (cong (λ z → (sq x *s x) *s z) (frob-cube y)))))
+
 
 -- Frobenius 轨道验证
 -- σ·χ₀ = χ₀ (不动点)
