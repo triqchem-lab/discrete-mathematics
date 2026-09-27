@@ -655,153 +655,146 @@ diagonal v = tabulate (λ i →
 -- 由于 mixedOp 是交换的，A[i,j] = A[j,i]
 
 -- 展开邻接矩阵验证 (框架)
+open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Nat.Properties using (+-comm; +-assoc)
+open import Relation.Nullary using (Dec; yes; no)
+open import Sovereign.Algebra.GroupTheory.DuodecClock using
+  (mixedOp; duodec-inv; mixedOp-assoc; mixedOp-comm; duodec-e)
+open import Sovereign.Algebra.Dihedral.CayleyMetric using (ident-l)
+
+-- 【结构化重证】原 adjacency-symmetric 144 case（12×12 乘积穷举）→ 群代数链。
+-- 数学内容: Cayley 邻接 = Σ_{g∈S} ind(g·p = q), S = {gen1,gen1⁻¹,gen2,gen2⁻¹} = S⁻¹；
+--   ind(g·p = q) = ind(g⁻¹·q = p)（逆反演）+ S 对逆封闭 ⇒ 逐项配对相等 + ℕ 加法交换。
+
+inv-left : ∀ g → mixedOp (duodec-inv g) g ≡ duodec-e
+inv-left g = trans (mixedOp-comm (duodec-inv g) g) (inv-right' g)
+  where
+    inv-right' : ∀ h → mixedOp h (duodec-inv h) ≡ duodec-e
+    inv-right' (T₀ , a0) = refl; inv-right' (T₀ , a1) = refl
+    inv-right' (T₀ , a2) = refl; inv-right' (T₀ , a3) = refl
+    inv-right' (T₁ , a0) = refl; inv-right' (T₁ , a1) = refl
+    inv-right' (T₁ , a2) = refl; inv-right' (T₁ , a3) = refl
+    inv-right' (T₂ , a0) = refl; inv-right' (T₂ , a1) = refl
+    inv-right' (T₂ , a2) = refl; inv-right' (T₂ , a3) = refl
+
+step-fwd : ∀ g p q → mixedOp g p ≡ q → mixedOp (duodec-inv g) q ≡ p
+step-fwd g p q e =
+  trans (cong (mixedOp (duodec-inv g)) (sym e))
+  (trans (sym (mixedOp-assoc (duodec-inv g) g p))
+  (trans (cong (λ z → mixedOp z p) (inv-left g))
+         (ident-l p)))
+
+step-bwd : ∀ g p q → mixedOp (duodec-inv g) q ≡ p → mixedOp g p ≡ q
+step-bwd g p q e =
+  trans (cong (mixedOp g) (sym e))
+  (trans (sym (mixedOp-assoc g (duodec-inv g) q))
+  (trans (cong (λ z → mixedOp z q) (inv-right' g))
+         (ident-l q)))
+  where
+    inv-right' : ∀ h → mixedOp h (duodec-inv h) ≡ duodec-e
+    inv-right' (T₀ , a0) = refl; inv-right' (T₀ , a1) = refl
+    inv-right' (T₀ , a2) = refl; inv-right' (T₀ , a3) = refl
+    inv-right' (T₁ , a0) = refl; inv-right' (T₁ , a1) = refl
+    inv-right' (T₁ , a2) = refl; inv-right' (T₁ , a3) = refl
+    inv-right' (T₂ , a0) = refl; inv-right' (T₂ , a1) = refl
+    inv-right' (T₂ , a2) = refl; inv-right' (T₂ , a3) = refl
+
+-- 【结构化重证】adjacency-symmetric 原 144 case（12×12 乘积穷举）→ 群代数链。
+-- 数学内容: Cayley 邻接 = Σ_{g∈S} ind(g·p = q), S = {gen1,gen1⁻¹,gen2,gen2⁻¹} = S⁻¹；
+--   ind(g·p = q) = ind(g⁻¹·q = p)（逆反演）+ S 对逆封闭 ⇒ 逐项配对 + ℕ 加法交换。
+
+lookup-tab : ∀ {n} {A : Set} (f : Fin n → A) (i : Fin n) → lookup (tabulate f) i ≡ f i
+lookup-tab f zero = refl
+lookup-tab f (suc i) = lookup-tab (λ j → f (suc j)) i
+
+-- 逆反演指标恒等式（Bool 层）: ind(g·p = q) = ind(g⁻¹·q = p)
+flipE : ∀ g p q →
+  does (mixedOp g p ≟dp q) ≡ does (mixedOp (duodec-inv g) q ≟dp p)
+flipE g p q with mixedOp g p ≟dp q | mixedOp (duodec-inv g) q ≟dp p
+... | yes e | yes e' = refl
+... | yes e | no ne = ⊥-elim (ne (step-fwd g p q e))
+... | no ne | yes e = ⊥-elim (ne (step-bwd g p q e))
+... | no _  | no _  = refl
+
+-- ℕ 层指标
+flipE' : ∀ g p q →
+  (if does (mixedOp g p ≟dp q) then 1 else 0)
+  ≡ (if does (mixedOp (duodec-inv g) q ≟dp p) then 1 else 0)
+flipE' g p q = cong (λ z → if z then 1 else 0) (flipE g p q)
+
+-- 邻接四元式（生成集 S 的指示和）与逐点体
+adjBody : Fin 12 → Fin 12 → ℕ
+adjBody i j =
+  let
+    p = fromIndex i
+    q = fromIndex j
+    val : DuodecPoint → ℕ
+    val g = if does (mixedOp g p ≟dp q) then 1 else 0
+  in val gen1 + val gen1-inv + val gen2 + val gen2-inv
+
+adj4 : DuodecPoint → DuodecPoint → ℕ
+adj4 p q =
+  (if does (mixedOp gen1 p ≟dp q) then 1 else 0)
+  + (if does (mixedOp gen1-inv p ≟dp q) then 1 else 0)
+  + (if does (mixedOp gen2 p ≟dp q) then 1 else 0)
+  + (if does (mixedOp gen2-inv p ≟dp q) then 1 else 0)
+
+inv-gen1 : duodec-inv gen1 ≡ gen1-inv
+inv-gen1 = refl
+inv-gen1i : duodec-inv gen1-inv ≡ gen1
+inv-gen1i = refl
+inv-gen2 : duodec-inv gen2 ≡ gen2-inv
+inv-gen2 = refl
+inv-gen2i : duodec-inv gen2-inv ≡ gen2
+inv-gen2i = refl
+
+reorder4 : ∀ a b c d → ((b + a) + d) + c ≡ ((a + b) + c) + d
+reorder4 a b c d =
+  trans (cong (λ z → z + c) (cong (λ w → w + d) (+-comm b a)))
+  (trans (+-assoc (a + b) d c)
+  (trans (cong (λ z → (a + b) + z) (+-comm d c))
+         (sym (+-assoc (a + b) c d))))
+
+adj4-sym : ∀ p q → adj4 q p ≡ adj4 p q
+adj4-sym p q =
+  trans (cong (λ z → ((z + val' g1i) + val' g2) + val' g2i) (flipE' gen1 q p))
+  (trans (cong (λ z → ((val g1' + z) + val' g2) + val' g2i) (flipE' gen1-inv q p))
+  (trans (cong (λ z → ((val g1' + val g1i') + z) + val' g2i) (flipE' gen2 q p))
+  (trans (cong (λ z → ((val g1' + val g1i') + val g2') + z) (flipE' gen2-inv q p))
+  (trans (cong (λ z → ((val z + val g1i') + val g2') + val g2i') inv-gen1)
+  (trans (cong (λ z → ((val g1i + val z) + val g2') + val g2i') inv-gen1i)
+  (trans (cong (λ z → ((val g1i + val g1) + val z) + val g2i') inv-gen2)
+  (trans (cong (λ z → ((val g1i + val g1) + val g2i) + val z) inv-gen2i)
+         (reorder4 (val g1) (val g1i) (val g2) (val g2i)))))))))
+  where
+    val : DuodecPoint → ℕ
+    val g = if does (mixedOp g p ≟dp q) then 1 else 0
+    val' : DuodecPoint → ℕ
+    val' g = if does (mixedOp g q ≟dp p) then 1 else 0
+    g1 = gen1
+    g1i = gen1-inv
+    g2 = gen2
+    g2i = gen2-inv
+    g1' = duodec-inv gen1
+    g1i' = duodec-inv gen1-inv
+    g2' = duodec-inv gen2
+    g2i' = duodec-inv gen2-inv
+
 adjacency-symmetric : ∀ i j →
   lookup (lookup adjacency-matrix i) j ≡
   lookup (lookup adjacency-matrix j) i
-adjacency-symmetric zero zero = refl
-adjacency-symmetric zero (suc zero) = refl
-adjacency-symmetric zero (suc (suc zero)) = refl
-adjacency-symmetric zero (suc (suc (suc zero))) = refl
-adjacency-symmetric zero (suc (suc (suc (suc zero)))) = refl
-adjacency-symmetric zero (suc (suc (suc (suc (suc zero))))) = refl
-adjacency-symmetric zero (suc (suc (suc (suc (suc (suc zero)))))) = refl
-adjacency-symmetric zero (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-adjacency-symmetric zero (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-adjacency-symmetric zero (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-adjacency-symmetric zero (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-adjacency-symmetric zero (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-adjacency-symmetric (suc zero) zero = refl
-adjacency-symmetric (suc zero) (suc zero) = refl
-adjacency-symmetric (suc zero) (suc (suc zero)) = refl
-adjacency-symmetric (suc zero) (suc (suc (suc zero))) = refl
-adjacency-symmetric (suc zero) (suc (suc (suc (suc zero)))) = refl
-adjacency-symmetric (suc zero) (suc (suc (suc (suc (suc zero))))) = refl
-adjacency-symmetric (suc zero) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-adjacency-symmetric (suc zero) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-adjacency-symmetric (suc zero) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-adjacency-symmetric (suc zero) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-adjacency-symmetric (suc zero) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-adjacency-symmetric (suc zero) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-adjacency-symmetric (suc (suc zero)) zero = refl
-adjacency-symmetric (suc (suc zero)) (suc zero) = refl
-adjacency-symmetric (suc (suc zero)) (suc (suc zero)) = refl
-adjacency-symmetric (suc (suc zero)) (suc (suc (suc zero))) = refl
-adjacency-symmetric (suc (suc zero)) (suc (suc (suc (suc zero)))) = refl
-adjacency-symmetric (suc (suc zero)) (suc (suc (suc (suc (suc zero))))) = refl
-adjacency-symmetric (suc (suc zero)) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-adjacency-symmetric (suc (suc zero)) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-adjacency-symmetric (suc (suc zero)) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-adjacency-symmetric (suc (suc zero)) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-adjacency-symmetric (suc (suc zero)) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-adjacency-symmetric (suc (suc zero)) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-adjacency-symmetric (suc (suc (suc zero))) zero = refl
-adjacency-symmetric (suc (suc (suc zero))) (suc zero) = refl
-adjacency-symmetric (suc (suc (suc zero))) (suc (suc zero)) = refl
-adjacency-symmetric (suc (suc (suc zero))) (suc (suc (suc zero))) = refl
-adjacency-symmetric (suc (suc (suc zero))) (suc (suc (suc (suc zero)))) = refl
-adjacency-symmetric (suc (suc (suc zero))) (suc (suc (suc (suc (suc zero))))) = refl
-adjacency-symmetric (suc (suc (suc zero))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-adjacency-symmetric (suc (suc (suc zero))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-adjacency-symmetric (suc (suc (suc zero))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-adjacency-symmetric (suc (suc (suc zero))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-adjacency-symmetric (suc (suc (suc zero))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-adjacency-symmetric (suc (suc (suc zero))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc zero)))) zero = refl
-adjacency-symmetric (suc (suc (suc (suc zero)))) (suc zero) = refl
-adjacency-symmetric (suc (suc (suc (suc zero)))) (suc (suc zero)) = refl
-adjacency-symmetric (suc (suc (suc (suc zero)))) (suc (suc (suc zero))) = refl
-adjacency-symmetric (suc (suc (suc (suc zero)))) (suc (suc (suc (suc zero)))) = refl
-adjacency-symmetric (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc zero))))) = refl
-adjacency-symmetric (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-adjacency-symmetric (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc zero))))) zero = refl
-adjacency-symmetric (suc (suc (suc (suc (suc zero))))) (suc zero) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc zero))))) (suc (suc zero)) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc zero))))) (suc (suc (suc zero))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc zero)))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc zero))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc zero)))))) zero = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc zero)))))) (suc zero) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc zero)) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc zero))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc zero)))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc zero))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc zero))))))) zero = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc zero) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc zero)) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc zero))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc zero)))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc zero))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) zero = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc zero) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc zero)) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc zero))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc zero)))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc zero))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) zero = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc zero) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc zero)) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc zero))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc zero)))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc zero))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) zero = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc zero) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc zero)) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc zero))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc zero)))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc zero))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) zero = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc zero) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc zero)) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc zero))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc zero)))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc zero))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-adjacency-symmetric (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
+adjacency-symmetric i j =
+  trans (adj-entry i j) (trans (adj4-sym (fromIndex j) (fromIndex i))
+                               (sym (adj-entry j i)))
+  where
+    adj-entry : ∀ a b → lookup (lookup adjacency-matrix a) b ≡ adj4 (fromIndex a) (fromIndex b)
+    adj-entry a b =
+      trans (cong (λ row → lookup row b)
+                  (lookup-tab (λ i → tabulate (λ j → adjBody i j)) a))
+            (trans (lookup-tab (λ j → adjBody a j) b) refl)
+
+
+
 
 
 --------------------------------------------------------------------------------
