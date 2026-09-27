@@ -211,166 +211,8 @@ sum-over-characters g =
 -- 对角 24 case (12×2): 假设 neq : u≢u' ⊎ v≢v' 在对角上为空, ⊥-elim 消解.
 --------------------------------------------------------------------------------
 
-orthogonality : ∀ u v u' v' →
-  (u ≢ u' ⊎ v ≢ v') →
-  sum-over-DC (λ x → dc-character (u , v) x *ᶻ conjᶻ (dc-character (u' , v') x))
-  ≡ z0
-orthogonality T₀ a0 T₀ a0 (inj₁ neq) = ⊥-elim (neq refl)
-orthogonality T₀ a0 T₀ a0 (inj₂ neq) = ⊥-elim (neq refl)
-orthogonality T₀ a0 T₀ a1 neq = refl
-orthogonality T₀ a0 T₀ a2 neq = refl
-orthogonality T₀ a0 T₀ a3 neq = refl
-orthogonality T₀ a0 T₁ a0 neq = refl
-orthogonality T₀ a0 T₁ a1 neq = refl
-orthogonality T₀ a0 T₁ a2 neq = refl
-orthogonality T₀ a0 T₁ a3 neq = refl
-orthogonality T₀ a0 T₂ a0 neq = refl
-orthogonality T₀ a0 T₂ a1 neq = refl
-orthogonality T₀ a0 T₂ a2 neq = refl
-orthogonality T₀ a0 T₂ a3 neq = refl
-orthogonality T₀ a1 T₀ a0 neq = refl
-orthogonality T₀ a1 T₀ a1 (inj₁ neq) = ⊥-elim (neq refl)
-orthogonality T₀ a1 T₀ a1 (inj₂ neq) = ⊥-elim (neq refl)
-orthogonality T₀ a1 T₀ a2 neq = refl
-orthogonality T₀ a1 T₀ a3 neq = refl
-orthogonality T₀ a1 T₁ a0 neq = refl
-orthogonality T₀ a1 T₁ a1 neq = refl
-orthogonality T₀ a1 T₁ a2 neq = refl
-orthogonality T₀ a1 T₁ a3 neq = refl
-orthogonality T₀ a1 T₂ a0 neq = refl
-orthogonality T₀ a1 T₂ a1 neq = refl
-orthogonality T₀ a1 T₂ a2 neq = refl
-orthogonality T₀ a1 T₂ a3 neq = refl
-orthogonality T₀ a2 T₀ a0 neq = refl
-orthogonality T₀ a2 T₀ a1 neq = refl
-orthogonality T₀ a2 T₀ a2 (inj₁ neq) = ⊥-elim (neq refl)
-orthogonality T₀ a2 T₀ a2 (inj₂ neq) = ⊥-elim (neq refl)
-orthogonality T₀ a2 T₀ a3 neq = refl
-orthogonality T₀ a2 T₁ a0 neq = refl
-orthogonality T₀ a2 T₁ a1 neq = refl
-orthogonality T₀ a2 T₁ a2 neq = refl
-orthogonality T₀ a2 T₁ a3 neq = refl
-orthogonality T₀ a2 T₂ a0 neq = refl
-orthogonality T₀ a2 T₂ a1 neq = refl
-orthogonality T₀ a2 T₂ a2 neq = refl
-orthogonality T₀ a2 T₂ a3 neq = refl
-orthogonality T₀ a3 T₀ a0 neq = refl
-orthogonality T₀ a3 T₀ a1 neq = refl
-orthogonality T₀ a3 T₀ a2 neq = refl
-orthogonality T₀ a3 T₀ a3 (inj₁ neq) = ⊥-elim (neq refl)
-orthogonality T₀ a3 T₀ a3 (inj₂ neq) = ⊥-elim (neq refl)
-orthogonality T₀ a3 T₁ a0 neq = refl
-orthogonality T₀ a3 T₁ a1 neq = refl
-orthogonality T₀ a3 T₁ a2 neq = refl
-orthogonality T₀ a3 T₁ a3 neq = refl
-orthogonality T₀ a3 T₂ a0 neq = refl
-orthogonality T₀ a3 T₂ a1 neq = refl
-orthogonality T₀ a3 T₂ a2 neq = refl
-orthogonality T₀ a3 T₂ a3 neq = refl
-orthogonality T₁ a0 T₀ a0 neq = refl
-orthogonality T₁ a0 T₀ a1 neq = refl
-orthogonality T₁ a0 T₀ a2 neq = refl
-orthogonality T₁ a0 T₀ a3 neq = refl
-orthogonality T₁ a0 T₁ a0 (inj₁ neq) = ⊥-elim (neq refl)
-orthogonality T₁ a0 T₁ a0 (inj₂ neq) = ⊥-elim (neq refl)
-orthogonality T₁ a0 T₁ a1 neq = refl
-orthogonality T₁ a0 T₁ a2 neq = refl
-orthogonality T₁ a0 T₁ a3 neq = refl
-orthogonality T₁ a0 T₂ a0 neq = refl
-orthogonality T₁ a0 T₂ a1 neq = refl
-orthogonality T₁ a0 T₂ a2 neq = refl
-orthogonality T₁ a0 T₂ a3 neq = refl
-orthogonality T₁ a1 T₀ a0 neq = refl
-orthogonality T₁ a1 T₀ a1 neq = refl
-orthogonality T₁ a1 T₀ a2 neq = refl
-orthogonality T₁ a1 T₀ a3 neq = refl
-orthogonality T₁ a1 T₁ a0 neq = refl
-orthogonality T₁ a1 T₁ a1 (inj₁ neq) = ⊥-elim (neq refl)
-orthogonality T₁ a1 T₁ a1 (inj₂ neq) = ⊥-elim (neq refl)
-orthogonality T₁ a1 T₁ a2 neq = refl
-orthogonality T₁ a1 T₁ a3 neq = refl
-orthogonality T₁ a1 T₂ a0 neq = refl
-orthogonality T₁ a1 T₂ a1 neq = refl
-orthogonality T₁ a1 T₂ a2 neq = refl
-orthogonality T₁ a1 T₂ a3 neq = refl
-orthogonality T₁ a2 T₀ a0 neq = refl
-orthogonality T₁ a2 T₀ a1 neq = refl
-orthogonality T₁ a2 T₀ a2 neq = refl
-orthogonality T₁ a2 T₀ a3 neq = refl
-orthogonality T₁ a2 T₁ a0 neq = refl
-orthogonality T₁ a2 T₁ a1 neq = refl
-orthogonality T₁ a2 T₁ a2 (inj₁ neq) = ⊥-elim (neq refl)
-orthogonality T₁ a2 T₁ a2 (inj₂ neq) = ⊥-elim (neq refl)
-orthogonality T₁ a2 T₁ a3 neq = refl
-orthogonality T₁ a2 T₂ a0 neq = refl
-orthogonality T₁ a2 T₂ a1 neq = refl
-orthogonality T₁ a2 T₂ a2 neq = refl
-orthogonality T₁ a2 T₂ a3 neq = refl
-orthogonality T₁ a3 T₀ a0 neq = refl
-orthogonality T₁ a3 T₀ a1 neq = refl
-orthogonality T₁ a3 T₀ a2 neq = refl
-orthogonality T₁ a3 T₀ a3 neq = refl
-orthogonality T₁ a3 T₁ a0 neq = refl
-orthogonality T₁ a3 T₁ a1 neq = refl
-orthogonality T₁ a3 T₁ a2 neq = refl
-orthogonality T₁ a3 T₁ a3 (inj₁ neq) = ⊥-elim (neq refl)
-orthogonality T₁ a3 T₁ a3 (inj₂ neq) = ⊥-elim (neq refl)
-orthogonality T₁ a3 T₂ a0 neq = refl
-orthogonality T₁ a3 T₂ a1 neq = refl
-orthogonality T₁ a3 T₂ a2 neq = refl
-orthogonality T₁ a3 T₂ a3 neq = refl
-orthogonality T₂ a0 T₀ a0 neq = refl
-orthogonality T₂ a0 T₀ a1 neq = refl
-orthogonality T₂ a0 T₀ a2 neq = refl
-orthogonality T₂ a0 T₀ a3 neq = refl
-orthogonality T₂ a0 T₁ a0 neq = refl
-orthogonality T₂ a0 T₁ a1 neq = refl
-orthogonality T₂ a0 T₁ a2 neq = refl
-orthogonality T₂ a0 T₁ a3 neq = refl
-orthogonality T₂ a0 T₂ a0 (inj₁ neq) = ⊥-elim (neq refl)
-orthogonality T₂ a0 T₂ a0 (inj₂ neq) = ⊥-elim (neq refl)
-orthogonality T₂ a0 T₂ a1 neq = refl
-orthogonality T₂ a0 T₂ a2 neq = refl
-orthogonality T₂ a0 T₂ a3 neq = refl
-orthogonality T₂ a1 T₀ a0 neq = refl
-orthogonality T₂ a1 T₀ a1 neq = refl
-orthogonality T₂ a1 T₀ a2 neq = refl
-orthogonality T₂ a1 T₀ a3 neq = refl
-orthogonality T₂ a1 T₁ a0 neq = refl
-orthogonality T₂ a1 T₁ a1 neq = refl
-orthogonality T₂ a1 T₁ a2 neq = refl
-orthogonality T₂ a1 T₁ a3 neq = refl
-orthogonality T₂ a1 T₂ a0 neq = refl
-orthogonality T₂ a1 T₂ a1 (inj₁ neq) = ⊥-elim (neq refl)
-orthogonality T₂ a1 T₂ a1 (inj₂ neq) = ⊥-elim (neq refl)
-orthogonality T₂ a1 T₂ a2 neq = refl
-orthogonality T₂ a1 T₂ a3 neq = refl
-orthogonality T₂ a2 T₀ a0 neq = refl
-orthogonality T₂ a2 T₀ a1 neq = refl
-orthogonality T₂ a2 T₀ a2 neq = refl
-orthogonality T₂ a2 T₀ a3 neq = refl
-orthogonality T₂ a2 T₁ a0 neq = refl
-orthogonality T₂ a2 T₁ a1 neq = refl
-orthogonality T₂ a2 T₁ a2 neq = refl
-orthogonality T₂ a2 T₁ a3 neq = refl
-orthogonality T₂ a2 T₂ a0 neq = refl
-orthogonality T₂ a2 T₂ a1 neq = refl
-orthogonality T₂ a2 T₂ a2 (inj₁ neq) = ⊥-elim (neq refl)
-orthogonality T₂ a2 T₂ a2 (inj₂ neq) = ⊥-elim (neq refl)
-orthogonality T₂ a2 T₂ a3 neq = refl
-orthogonality T₂ a3 T₀ a0 neq = refl
-orthogonality T₂ a3 T₀ a1 neq = refl
-orthogonality T₂ a3 T₀ a2 neq = refl
-orthogonality T₂ a3 T₀ a3 neq = refl
-orthogonality T₂ a3 T₁ a0 neq = refl
-orthogonality T₂ a3 T₁ a1 neq = refl
-orthogonality T₂ a3 T₁ a2 neq = refl
-orthogonality T₂ a3 T₁ a3 neq = refl
-orthogonality T₂ a3 T₂ a0 neq = refl
-orthogonality T₂ a3 T₂ a1 neq = refl
-orthogonality T₂ a3 T₂ a2 neq = refl
-orthogonality T₂ a3 T₂ a3 (inj₁ neq) = ⊥-elim (neq refl)
-orthogonality T₂ a3 T₂ a3 (inj₂ neq) = ⊥-elim (neq refl)
+-- orthogonality 结构版见 Part A′（环律可见区）
+
 
 self-inner-product : ∀ u v →
   sum-over-DC (λ x → dc-character (u , v) x *ᶻ conjᶻ (dc-character (u , v) x))
@@ -953,166 +795,8 @@ dual-self T₂ a1 = refl
 dual-self T₂ a2 = refl
 dual-self T₂ a3 = refl
 
-dual-orthogonality : ∀ (t : Trit) (a : AlphaPower) (t' : Trit) (a' : AlphaPower) →
-  (t ≢ t' ⊎ a ≢ a') →
-  sum-over-characters (λ idx → dc-character idx (t , a) *ᶻ conjᶻ (dc-character idx (t' , a')))
-  ≡ z0
-dual-orthogonality T₀ a0 T₀ a0 (inj₁ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₀ a0 T₀ a0 (inj₂ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₀ a0 T₀ a1 neq = refl
-dual-orthogonality T₀ a0 T₀ a2 neq = refl
-dual-orthogonality T₀ a0 T₀ a3 neq = refl
-dual-orthogonality T₀ a0 T₁ a0 neq = refl
-dual-orthogonality T₀ a0 T₁ a1 neq = refl
-dual-orthogonality T₀ a0 T₁ a2 neq = refl
-dual-orthogonality T₀ a0 T₁ a3 neq = refl
-dual-orthogonality T₀ a0 T₂ a0 neq = refl
-dual-orthogonality T₀ a0 T₂ a1 neq = refl
-dual-orthogonality T₀ a0 T₂ a2 neq = refl
-dual-orthogonality T₀ a0 T₂ a3 neq = refl
-dual-orthogonality T₀ a1 T₀ a0 neq = refl
-dual-orthogonality T₀ a1 T₀ a1 (inj₁ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₀ a1 T₀ a1 (inj₂ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₀ a1 T₀ a2 neq = refl
-dual-orthogonality T₀ a1 T₀ a3 neq = refl
-dual-orthogonality T₀ a1 T₁ a0 neq = refl
-dual-orthogonality T₀ a1 T₁ a1 neq = refl
-dual-orthogonality T₀ a1 T₁ a2 neq = refl
-dual-orthogonality T₀ a1 T₁ a3 neq = refl
-dual-orthogonality T₀ a1 T₂ a0 neq = refl
-dual-orthogonality T₀ a1 T₂ a1 neq = refl
-dual-orthogonality T₀ a1 T₂ a2 neq = refl
-dual-orthogonality T₀ a1 T₂ a3 neq = refl
-dual-orthogonality T₀ a2 T₀ a0 neq = refl
-dual-orthogonality T₀ a2 T₀ a1 neq = refl
-dual-orthogonality T₀ a2 T₀ a2 (inj₁ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₀ a2 T₀ a2 (inj₂ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₀ a2 T₀ a3 neq = refl
-dual-orthogonality T₀ a2 T₁ a0 neq = refl
-dual-orthogonality T₀ a2 T₁ a1 neq = refl
-dual-orthogonality T₀ a2 T₁ a2 neq = refl
-dual-orthogonality T₀ a2 T₁ a3 neq = refl
-dual-orthogonality T₀ a2 T₂ a0 neq = refl
-dual-orthogonality T₀ a2 T₂ a1 neq = refl
-dual-orthogonality T₀ a2 T₂ a2 neq = refl
-dual-orthogonality T₀ a2 T₂ a3 neq = refl
-dual-orthogonality T₀ a3 T₀ a0 neq = refl
-dual-orthogonality T₀ a3 T₀ a1 neq = refl
-dual-orthogonality T₀ a3 T₀ a2 neq = refl
-dual-orthogonality T₀ a3 T₀ a3 (inj₁ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₀ a3 T₀ a3 (inj₂ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₀ a3 T₁ a0 neq = refl
-dual-orthogonality T₀ a3 T₁ a1 neq = refl
-dual-orthogonality T₀ a3 T₁ a2 neq = refl
-dual-orthogonality T₀ a3 T₁ a3 neq = refl
-dual-orthogonality T₀ a3 T₂ a0 neq = refl
-dual-orthogonality T₀ a3 T₂ a1 neq = refl
-dual-orthogonality T₀ a3 T₂ a2 neq = refl
-dual-orthogonality T₀ a3 T₂ a3 neq = refl
-dual-orthogonality T₁ a0 T₀ a0 neq = refl
-dual-orthogonality T₁ a0 T₀ a1 neq = refl
-dual-orthogonality T₁ a0 T₀ a2 neq = refl
-dual-orthogonality T₁ a0 T₀ a3 neq = refl
-dual-orthogonality T₁ a0 T₁ a0 (inj₁ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₁ a0 T₁ a0 (inj₂ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₁ a0 T₁ a1 neq = refl
-dual-orthogonality T₁ a0 T₁ a2 neq = refl
-dual-orthogonality T₁ a0 T₁ a3 neq = refl
-dual-orthogonality T₁ a0 T₂ a0 neq = refl
-dual-orthogonality T₁ a0 T₂ a1 neq = refl
-dual-orthogonality T₁ a0 T₂ a2 neq = refl
-dual-orthogonality T₁ a0 T₂ a3 neq = refl
-dual-orthogonality T₁ a1 T₀ a0 neq = refl
-dual-orthogonality T₁ a1 T₀ a1 neq = refl
-dual-orthogonality T₁ a1 T₀ a2 neq = refl
-dual-orthogonality T₁ a1 T₀ a3 neq = refl
-dual-orthogonality T₁ a1 T₁ a0 neq = refl
-dual-orthogonality T₁ a1 T₁ a1 (inj₁ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₁ a1 T₁ a1 (inj₂ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₁ a1 T₁ a2 neq = refl
-dual-orthogonality T₁ a1 T₁ a3 neq = refl
-dual-orthogonality T₁ a1 T₂ a0 neq = refl
-dual-orthogonality T₁ a1 T₂ a1 neq = refl
-dual-orthogonality T₁ a1 T₂ a2 neq = refl
-dual-orthogonality T₁ a1 T₂ a3 neq = refl
-dual-orthogonality T₁ a2 T₀ a0 neq = refl
-dual-orthogonality T₁ a2 T₀ a1 neq = refl
-dual-orthogonality T₁ a2 T₀ a2 neq = refl
-dual-orthogonality T₁ a2 T₀ a3 neq = refl
-dual-orthogonality T₁ a2 T₁ a0 neq = refl
-dual-orthogonality T₁ a2 T₁ a1 neq = refl
-dual-orthogonality T₁ a2 T₁ a2 (inj₁ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₁ a2 T₁ a2 (inj₂ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₁ a2 T₁ a3 neq = refl
-dual-orthogonality T₁ a2 T₂ a0 neq = refl
-dual-orthogonality T₁ a2 T₂ a1 neq = refl
-dual-orthogonality T₁ a2 T₂ a2 neq = refl
-dual-orthogonality T₁ a2 T₂ a3 neq = refl
-dual-orthogonality T₁ a3 T₀ a0 neq = refl
-dual-orthogonality T₁ a3 T₀ a1 neq = refl
-dual-orthogonality T₁ a3 T₀ a2 neq = refl
-dual-orthogonality T₁ a3 T₀ a3 neq = refl
-dual-orthogonality T₁ a3 T₁ a0 neq = refl
-dual-orthogonality T₁ a3 T₁ a1 neq = refl
-dual-orthogonality T₁ a3 T₁ a2 neq = refl
-dual-orthogonality T₁ a3 T₁ a3 (inj₁ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₁ a3 T₁ a3 (inj₂ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₁ a3 T₂ a0 neq = refl
-dual-orthogonality T₁ a3 T₂ a1 neq = refl
-dual-orthogonality T₁ a3 T₂ a2 neq = refl
-dual-orthogonality T₁ a3 T₂ a3 neq = refl
-dual-orthogonality T₂ a0 T₀ a0 neq = refl
-dual-orthogonality T₂ a0 T₀ a1 neq = refl
-dual-orthogonality T₂ a0 T₀ a2 neq = refl
-dual-orthogonality T₂ a0 T₀ a3 neq = refl
-dual-orthogonality T₂ a0 T₁ a0 neq = refl
-dual-orthogonality T₂ a0 T₁ a1 neq = refl
-dual-orthogonality T₂ a0 T₁ a2 neq = refl
-dual-orthogonality T₂ a0 T₁ a3 neq = refl
-dual-orthogonality T₂ a0 T₂ a0 (inj₁ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₂ a0 T₂ a0 (inj₂ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₂ a0 T₂ a1 neq = refl
-dual-orthogonality T₂ a0 T₂ a2 neq = refl
-dual-orthogonality T₂ a0 T₂ a3 neq = refl
-dual-orthogonality T₂ a1 T₀ a0 neq = refl
-dual-orthogonality T₂ a1 T₀ a1 neq = refl
-dual-orthogonality T₂ a1 T₀ a2 neq = refl
-dual-orthogonality T₂ a1 T₀ a3 neq = refl
-dual-orthogonality T₂ a1 T₁ a0 neq = refl
-dual-orthogonality T₂ a1 T₁ a1 neq = refl
-dual-orthogonality T₂ a1 T₁ a2 neq = refl
-dual-orthogonality T₂ a1 T₁ a3 neq = refl
-dual-orthogonality T₂ a1 T₂ a0 neq = refl
-dual-orthogonality T₂ a1 T₂ a1 (inj₁ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₂ a1 T₂ a1 (inj₂ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₂ a1 T₂ a2 neq = refl
-dual-orthogonality T₂ a1 T₂ a3 neq = refl
-dual-orthogonality T₂ a2 T₀ a0 neq = refl
-dual-orthogonality T₂ a2 T₀ a1 neq = refl
-dual-orthogonality T₂ a2 T₀ a2 neq = refl
-dual-orthogonality T₂ a2 T₀ a3 neq = refl
-dual-orthogonality T₂ a2 T₁ a0 neq = refl
-dual-orthogonality T₂ a2 T₁ a1 neq = refl
-dual-orthogonality T₂ a2 T₁ a2 neq = refl
-dual-orthogonality T₂ a2 T₁ a3 neq = refl
-dual-orthogonality T₂ a2 T₂ a0 neq = refl
-dual-orthogonality T₂ a2 T₂ a1 neq = refl
-dual-orthogonality T₂ a2 T₂ a2 (inj₁ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₂ a2 T₂ a2 (inj₂ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₂ a2 T₂ a3 neq = refl
-dual-orthogonality T₂ a3 T₀ a0 neq = refl
-dual-orthogonality T₂ a3 T₀ a1 neq = refl
-dual-orthogonality T₂ a3 T₀ a2 neq = refl
-dual-orthogonality T₂ a3 T₀ a3 neq = refl
-dual-orthogonality T₂ a3 T₁ a0 neq = refl
-dual-orthogonality T₂ a3 T₁ a1 neq = refl
-dual-orthogonality T₂ a3 T₁ a2 neq = refl
-dual-orthogonality T₂ a3 T₁ a3 neq = refl
-dual-orthogonality T₂ a3 T₂ a0 neq = refl
-dual-orthogonality T₂ a3 T₂ a1 neq = refl
-dual-orthogonality T₂ a3 T₂ a2 neq = refl
-dual-orthogonality T₂ a3 T₂ a3 (inj₁ neq) = ⊥-elim (neq refl)
-dual-orthogonality T₂ a3 T₂ a3 (inj₂ neq) = ⊥-elim (neq refl)
+-- dual-orthogonality 结构版见 Part A″（环律可见区）
+
 
 --------------------------------------------------------------------------------
 -- §7. 【裁定】正交性 / 自内积 / Parseval —— 未形式化, 不留 hole
@@ -1424,6 +1108,209 @@ chr12 fzero = (T₀ , a0)
 -- 由 Fin 指标化的特征值: χF k i = χ(chr12 k)(dc-points i)
 χF : Fin 12 → Fin 12 → Z12Sys
 χF k i = dc-character (chr12 k) (dc-points i)
+
+-- ============ Part A′: orthogonality 结构版（因子分解;环律可见区） ============
+open import Data.Product using (proj₁; proj₂)
+-- 数学内容: Σ_x χ_g(x)·conjχ_h(x) = z0（g≠h）——*ᶻ-middle4 分 t/α 两腿，
+-- ≠ 假设恰好杀掉一腿（tri-leg 9 case / alp-leg 16 case, 均 ≤27 ✓）。
+
+triF : Trit → Trit → Trit → Z12Sys
+triF u u' t = tritToZ (u ⊗ t) *ᶻ conjᶻ (tritToZ (u' ⊗ t))
+
+alpF : AlphaPower → AlphaPower → AlphaPower → Z12Sys
+alpF v v' a = alphaToZ (alpha-pow v a) *ᶻ conjᶻ (alphaToZ (alpha-pow v' a))
+
+sF3 : (Trit → Z12Sys) → Z12Sys
+sF3 F = F T₀ +ᶻ (F T₁ +ᶻ F T₂)
+
+sF4 : (AlphaPower → Z12Sys) → Z12Sys
+sF4 G = G a0 +ᶻ (G a1 +ᶻ (G a2 +ᶻ G a3))
+
+summand-factor : ∀ u u' v v' t a →
+  dc-character (u , v) (t , a) *ᶻ conjᶻ (dc-character (u' , v') (t , a))
+  ≡ triF u u' t *ᶻ alpF v v' a
+summand-factor u u' v v' t a =
+  trans (cong (λ z → (tritToZ (u ⊗ t) *ᶻ alphaToZ (alpha-pow v a)) *ᶻ z)
+              (conj-*ᶻ (tritToZ (u' ⊗ t)) (alphaToZ (alpha-pow v' a))))
+        (*ᶻ-middle4 (tritToZ (u ⊗ t)) (alphaToZ (alpha-pow v a))
+                    (conjᶻ (tritToZ (u' ⊗ t))) (conjᶻ (alphaToZ (alpha-pow v' a))))
+
+sum-over-DC-ext : ∀ {f g : DuodecPoint → Z12Sys} →
+  (∀ x → f x ≡ g x) → sum-over-DC f ≡ sum-over-DC g
+sum-over-DC-ext {f} {g} h =
+  trans (cong (λ z → (z +ᶻ (f (T₀ , a1) +ᶻ (f (T₀ , a2) +ᶻ (f (T₀ , a3) +ᶻ (f (T₁ , a0) +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₀ , a0)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (z +ᶻ (f (T₀ , a2) +ᶻ (f (T₀ , a3) +ᶻ (f (T₁ , a0) +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₀ , a1)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (z +ᶻ (f (T₀ , a3) +ᶻ (f (T₁ , a0) +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₀ , a2)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (z +ᶻ (f (T₁ , a0) +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₀ , a3)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (z +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₁ , a0)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (z +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₁ , a1)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (g (T₁ , a1) +ᶻ (z +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₁ , a2)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (g (T₁ , a1) +ᶻ (g (T₁ , a2) +ᶻ (z +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₁ , a3)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (g (T₁ , a1) +ᶻ (g (T₁ , a2) +ᶻ (g (T₁ , a3) +ᶻ (z +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₂ , a0)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (g (T₁ , a1) +ᶻ (g (T₁ , a2) +ᶻ (g (T₁ , a3) +ᶻ (g (T₂ , a0) +ᶻ (z +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₂ , a1)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (g (T₁ , a1) +ᶻ (g (T₁ , a2) +ᶻ (g (T₁ , a3) +ᶻ (g (T₂ , a0) +ᶻ (g (T₂ , a1) +ᶻ (z +ᶻ f (T₂ , a3))))))))))))) (h (T₂ , a2)))
+         (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (g (T₁ , a1) +ᶻ (g (T₁ , a2) +ᶻ (g (T₁ , a3) +ᶻ (g (T₂ , a0) +ᶻ (g (T₂ , a1) +ᶻ (g (T₂ , a2) +ᶻ z)))))))))))) (h (T₂ , a3)))))))))))))
+
+tri-leg : ∀ u u' → u ≢ u' → sF3 (triF u u') ≡ z0
+tri-leg T₀ T₀ neq = ⊥-elim (neq refl)
+tri-leg T₀ T₁ neq = refl
+tri-leg T₀ T₂ neq = refl
+tri-leg T₁ T₀ neq = refl
+tri-leg T₁ T₁ neq = ⊥-elim (neq refl)
+tri-leg T₁ T₂ neq = refl
+tri-leg T₂ T₀ neq = refl
+tri-leg T₂ T₁ neq = refl
+tri-leg T₂ T₂ neq = ⊥-elim (neq refl)
+
+alp-leg : ∀ v v' → v ≢ v' → sF4 (alpF v v') ≡ z0
+alp-leg a0 a0 neq = ⊥-elim (neq refl)
+alp-leg a0 a1 neq = refl; alp-leg a0 a2 neq = refl; alp-leg a0 a3 neq = refl
+alp-leg a1 a0 neq = refl; alp-leg a1 a1 neq = ⊥-elim (neq refl)
+alp-leg a1 a2 neq = refl; alp-leg a1 a3 neq = refl
+alp-leg a2 a0 neq = refl; alp-leg a2 a1 neq = refl; alp-leg a2 a2 neq = ⊥-elim (neq refl)
+alp-leg a2 a3 neq = refl
+alp-leg a3 a0 neq = refl; alp-leg a3 a1 neq = refl; alp-leg a3 a2 neq = refl
+alp-leg a3 a3 neq = ⊥-elim (neq refl)
+
+sum-factor-tri-alp : ∀ (F : Trit → Z12Sys) (G : AlphaPower → Z12Sys) →
+  sum-over-DC (λ x → F (proj₁ x) *ᶻ G (proj₂ x)) ≡ sF3 F *ᶻ sF4 G
+sum-factor-tri-alp F G = sym (
+  trans (*ᶻ-distribˡ (F T₀) (F T₁ +ᶻ F T₂) (sF4 G))
+  (trans (cong (λ z → (F T₀ *ᶻ sF4 G) +ᶻ z) (*ᶻ-distribˡ (F T₁) (F T₂) (sF4 G)))
+  (trans (cong (λ z → z +ᶻ ((F T₁ *ᶻ sF4 G) +ᶻ (F T₂ *ᶻ sF4 G))) (distr4 F T₀ G))
+  (trans (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ (F T₀ *ᶻ G a3)))) +ᶻ (z +ᶻ (F T₂ *ᶻ sF4 G))) (distr4 F T₁ G))
+  (trans (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ (F T₀ *ᶻ G a3)))) +ᶻ (((F T₁ *ᶻ G a0) +ᶻ ((F T₁ *ᶻ G a1) +ᶻ ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3)))) +ᶻ z)) (distr4 F T₂ G))
+         (regroup12 F G))))))
+  where
+      distr4 : ∀ (F : Trit → Z12Sys) (i : Trit) (G : AlphaPower → Z12Sys) →
+        F i *ᶻ sF4 G ≡ ((F i *ᶻ G a0) +ᶻ ((F i *ᶻ G a1) +ᶻ ((F i *ᶻ G a2) +ᶻ (F i *ᶻ G a3))))
+      distr4 F i G =
+        trans (*ᶻ-distribʳ (G a0) (G a1 +ᶻ (G a2 +ᶻ G a3)) (F i))
+        (trans (cong (λ z → (F i *ᶻ G a0) +ᶻ z) (*ᶻ-distribʳ (G a1) (G a2 +ᶻ G a3) (F i)))
+               (cong (λ z → (F i *ᶻ G a0) +ᶻ ((F i *ᶻ G a1) +ᶻ z)) (*ᶻ-distribʳ (G a2) (G a3) (F i))))
+      regroup12 : ∀ (F : Trit → Z12Sys) (G : AlphaPower → Z12Sys) →
+        (((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ (F T₀ *ᶻ G a3)))) +ᶻ (((F T₁ *ᶻ G a0) +ᶻ ((F T₁ *ᶻ G a1) +ᶻ ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3)))) +ᶻ ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3)))))) ≡ sum-over-DC (λ x → F (proj₁ x) *ᶻ G (proj₂ x))
+      regroup12 F G =
+        trans (+ᶻ-assoc (F T₀ *ᶻ G a0) ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ (F T₀ *ᶻ G a3))) (((F T₁ *ᶻ G a0) +ᶻ ((F T₁ *ᶻ G a1) +ᶻ ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3)))) +ᶻ ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3))))))
+        (trans (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ z)) (+ᶻ-assoc (F T₀ *ᶻ G a1) ((F T₀ *ᶻ G a2) +ᶻ (F T₀ *ᶻ G a3)) (((F T₁ *ᶻ G a0) +ᶻ ((F T₁ *ᶻ G a1) +ᶻ ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3)))) +ᶻ ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3)))))))
+        (trans (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ z))) (+ᶻ-assoc (F T₀ *ᶻ G a2) (F T₀ *ᶻ G a3) (((F T₁ *ᶻ G a0) +ᶻ ((F T₁ *ᶻ G a1) +ᶻ ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3)))) +ᶻ ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3)))))))
+        (trans (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ ((F T₀ *ᶻ G a3) +ᶻ z))))) (+ᶻ-assoc (F T₁ *ᶻ G a0) ((F T₁ *ᶻ G a1) +ᶻ ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3))) ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3))))))
+        (trans (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ ((F T₀ *ᶻ G a3) +ᶻ ((F T₁ *ᶻ G a0) +ᶻ z)))))) (+ᶻ-assoc (F T₁ *ᶻ G a1) ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3)) ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3))))))
+               (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ ((F T₀ *ᶻ G a3) +ᶻ ((F T₁ *ᶻ G a0) +ᶻ ((F T₁ *ᶻ G a1) +ᶻ z))))))) (+ᶻ-assoc (F T₁ *ᶻ G a2) (F T₁ *ᶻ G a3) ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3))))))))))
+
+
+orthogonality : ∀ u v u' v' →
+  (u ≢ u' ⊎ v ≢ v') →
+  sum-over-DC (λ x → dc-character (u , v) x *ᶻ conjᶻ (dc-character (u' , v') x))
+  ≡ z0
+orthogonality u v u' v' (inj₁ neq) =
+  trans (sum-over-DC-ext (λ x → summand-factor u u' v v' (proj₁ x) (proj₂ x)))
+        (trans (sum-factor-tri-alp (triF u u') (alpF v v'))
+        (trans (cong (λ z → z *ᶻ sF4 (alpF v v')) (tri-leg u u' neq))
+               (*ᶻ-zeroˡ (sF4 (alpF v v')))))
+orthogonality u v u' v' (inj₂ neq) =
+  trans (sum-over-DC-ext (λ x → summand-factor u u' v v' (proj₁ x) (proj₂ x)))
+        (trans (sum-factor-tri-alp (triF u u') (alpF v v'))
+        (trans (cong (λ z → sF3 (triF u u') *ᶻ z) (alp-leg v v' neq))
+               (*ᶻ-zeroʳ (sF3 (triF u u')))))
+
+-- ============ Part A″: dual-orthogonality 结构版（镜像;环律可见区） ============
+-- 数学内容: Σ_idx χ_idx(x)·conjχ_idx(x') = z0（x≠x'）——与 Part A′ 镜像
+--   （指标/点角色互换），同一套因子分解件。
+
+triG : Trit → Trit → Trit → Z12Sys
+triG t t' u = tritToZ (u ⊗ t) *ᶻ conjᶻ (tritToZ (u ⊗ t'))
+
+alpG : AlphaPower → AlphaPower → AlphaPower → Z12Sys
+alpG a a' v = alphaToZ (alpha-pow v a) *ᶻ conjᶻ (alphaToZ (alpha-pow v a'))
+
+summand-factor-dual : ∀ t a t' a' u v →
+  dc-character (u , v) (t , a) *ᶻ conjᶻ (dc-character (u , v) (t' , a'))
+  ≡ triG t t' u *ᶻ alpG a a' v
+summand-factor-dual t a t' a' u v =
+  trans (cong (λ z → (tritToZ (u ⊗ t) *ᶻ alphaToZ (alpha-pow v a)) *ᶻ z)
+              (conj-*ᶻ (tritToZ (u ⊗ t')) (alphaToZ (alpha-pow v a'))))
+        (*ᶻ-middle4 (tritToZ (u ⊗ t)) (alphaToZ (alpha-pow v a))
+                    (conjᶻ (tritToZ (u ⊗ t'))) (conjᶻ (alphaToZ (alpha-pow v a'))))
+
+sum-over-characters-ext : ∀ {f g : CharacterIndex → Z12Sys} →
+  (∀ x → f x ≡ g x) → sum-over-characters f ≡ sum-over-characters g
+sum-over-characters-ext {f} {g} h =
+  trans (cong (λ z → (z +ᶻ (f (T₀ , a1) +ᶻ (f (T₀ , a2) +ᶻ (f (T₀ , a3) +ᶻ (f (T₁ , a0) +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₀ , a0)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (z +ᶻ (f (T₀ , a2) +ᶻ (f (T₀ , a3) +ᶻ (f (T₁ , a0) +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₀ , a1)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (z +ᶻ (f (T₀ , a3) +ᶻ (f (T₁ , a0) +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₀ , a2)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (z +ᶻ (f (T₁ , a0) +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₀ , a3)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (z +ᶻ (f (T₁ , a1) +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₁ , a0)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (z +ᶻ (f (T₁ , a2) +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₁ , a1)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (g (T₁ , a1) +ᶻ (z +ᶻ (f (T₁ , a3) +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₁ , a2)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (g (T₁ , a1) +ᶻ (g (T₁ , a2) +ᶻ (z +ᶻ (f (T₂ , a0) +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₁ , a3)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (g (T₁ , a1) +ᶻ (g (T₁ , a2) +ᶻ (g (T₁ , a3) +ᶻ (z +ᶻ (f (T₂ , a1) +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₂ , a0)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (g (T₁ , a1) +ᶻ (g (T₁ , a2) +ᶻ (g (T₁ , a3) +ᶻ (g (T₂ , a0) +ᶻ (z +ᶻ (f (T₂ , a2) +ᶻ f (T₂ , a3))))))))))))) (h (T₂ , a1)))
+  (trans (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (g (T₁ , a1) +ᶻ (g (T₁ , a2) +ᶻ (g (T₁ , a3) +ᶻ (g (T₂ , a0) +ᶻ (g (T₂ , a1) +ᶻ (z +ᶻ f (T₂ , a3))))))))))))) (h (T₂ , a2)))
+         (cong (λ z → (g (T₀ , a0) +ᶻ (g (T₀ , a1) +ᶻ (g (T₀ , a2) +ᶻ (g (T₀ , a3) +ᶻ (g (T₁ , a0) +ᶻ (g (T₁ , a1) +ᶻ (g (T₁ , a2) +ᶻ (g (T₁ , a3) +ᶻ (g (T₂ , a0) +ᶻ (g (T₂ , a1) +ᶻ (g (T₂ , a2) +ᶻ z)))))))))))) (h (T₂ , a3)))))))))))))
+
+triG-leg : ∀ t t' → t ≢ t' → sF3 (triG t t') ≡ z0
+triG-leg T₀ T₀ neq = ⊥-elim (neq refl)
+triG-leg T₀ T₁ neq = refl
+triG-leg T₀ T₂ neq = refl
+triG-leg T₁ T₀ neq = refl
+triG-leg T₁ T₁ neq = ⊥-elim (neq refl)
+triG-leg T₁ T₂ neq = refl
+triG-leg T₂ T₀ neq = refl
+triG-leg T₂ T₁ neq = refl
+triG-leg T₂ T₂ neq = ⊥-elim (neq refl)
+
+alpG-leg : ∀ a a' → a ≢ a' → sF4 (alpG a a') ≡ z0
+alpG-leg a0 a0 neq = ⊥-elim (neq refl)
+alpG-leg a0 a1 neq = refl; alpG-leg a0 a2 neq = refl; alpG-leg a0 a3 neq = refl
+alpG-leg a1 a0 neq = refl; alpG-leg a1 a1 neq = ⊥-elim (neq refl)
+alpG-leg a1 a2 neq = refl; alpG-leg a1 a3 neq = refl
+alpG-leg a2 a0 neq = refl; alpG-leg a2 a1 neq = refl; alpG-leg a2 a2 neq = ⊥-elim (neq refl)
+alpG-leg a2 a3 neq = refl
+alpG-leg a3 a0 neq = refl; alpG-leg a3 a1 neq = refl; alpG-leg a3 a2 neq = refl
+alpG-leg a3 a3 neq = ⊥-elim (neq refl)
+
+sum-factor-dual : ∀ (F : Trit → Z12Sys) (G : AlphaPower → Z12Sys) →
+  sum-over-characters (λ x → F (proj₁ x) *ᶻ G (proj₂ x)) ≡ sF3 F *ᶻ sF4 G
+sum-factor-dual F G = sym (
+  trans (*ᶻ-distribˡ (F T₀) (F T₁ +ᶻ F T₂) (sF4 G))
+  (trans (cong (λ z → (F T₀ *ᶻ sF4 G) +ᶻ z) (*ᶻ-distribˡ (F T₁) (F T₂) (sF4 G)))
+  (trans (cong (λ z → z +ᶻ ((F T₁ *ᶻ sF4 G) +ᶻ (F T₂ *ᶻ sF4 G))) (distr4d F T₀ G))
+  (trans (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ (F T₀ *ᶻ G a3)))) +ᶻ (z +ᶻ (F T₂ *ᶻ sF4 G))) (distr4d F T₁ G))
+  (trans (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ (F T₀ *ᶻ G a3)))) +ᶻ (((F T₁ *ᶻ G a0) +ᶻ ((F T₁ *ᶻ G a1) +ᶻ ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3)))) +ᶻ z)) (distr4d F T₂ G))
+         (regroup12d F G))))))
+  where
+      distr4d : ∀ (F : Trit → Z12Sys) (i : Trit) (G : AlphaPower → Z12Sys) →
+        F i *ᶻ sF4 G ≡ ((F i *ᶻ G a0) +ᶻ ((F i *ᶻ G a1) +ᶻ ((F i *ᶻ G a2) +ᶻ (F i *ᶻ G a3))))
+      distr4d F i G =
+        trans (*ᶻ-distribʳ (G a0) (G a1 +ᶻ (G a2 +ᶻ G a3)) (F i))
+        (trans (cong (λ z → (F i *ᶻ G a0) +ᶻ z) (*ᶻ-distribʳ (G a1) (G a2 +ᶻ G a3) (F i)))
+               (cong (λ z → (F i *ᶻ G a0) +ᶻ ((F i *ᶻ G a1) +ᶻ z)) (*ᶻ-distribʳ (G a2) (G a3) (F i))))
+      regroup12d : ∀ (F : Trit → Z12Sys) (G : AlphaPower → Z12Sys) →
+        (((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ (F T₀ *ᶻ G a3)))) +ᶻ (((F T₁ *ᶻ G a0) +ᶻ ((F T₁ *ᶻ G a1) +ᶻ ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3)))) +ᶻ ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3)))))) ≡ sum-over-characters (λ x → F (proj₁ x) *ᶻ G (proj₂ x))
+      regroup12d F G =
+        trans (+ᶻ-assoc (F T₀ *ᶻ G a0) ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ (F T₀ *ᶻ G a3))) (((F T₁ *ᶻ G a0) +ᶻ ((F T₁ *ᶻ G a1) +ᶻ ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3)))) +ᶻ ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3))))))
+        (trans (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ z)) (+ᶻ-assoc (F T₀ *ᶻ G a1) ((F T₀ *ᶻ G a2) +ᶻ (F T₀ *ᶻ G a3)) (((F T₁ *ᶻ G a0) +ᶻ ((F T₁ *ᶻ G a1) +ᶻ ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3)))) +ᶻ ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3)))))))
+        (trans (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ z))) (+ᶻ-assoc (F T₀ *ᶻ G a2) (F T₀ *ᶻ G a3) (((F T₁ *ᶻ G a0) +ᶻ ((F T₁ *ᶻ G a1) +ᶻ ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3)))) +ᶻ ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3)))))))
+        (trans (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ ((F T₀ *ᶻ G a3) +ᶻ z))))) (+ᶻ-assoc (F T₁ *ᶻ G a0) ((F T₁ *ᶻ G a1) +ᶻ ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3))) ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3))))))
+        (trans (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ ((F T₀ *ᶻ G a3) +ᶻ ((F T₁ *ᶻ G a0) +ᶻ z)))))) (+ᶻ-assoc (F T₁ *ᶻ G a1) ((F T₁ *ᶻ G a2) +ᶻ (F T₁ *ᶻ G a3)) ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3))))))
+               (cong (λ z → ((F T₀ *ᶻ G a0) +ᶻ ((F T₀ *ᶻ G a1) +ᶻ ((F T₀ *ᶻ G a2) +ᶻ ((F T₀ *ᶻ G a3) +ᶻ ((F T₁ *ᶻ G a0) +ᶻ ((F T₁ *ᶻ G a1) +ᶻ z))))))) (+ᶻ-assoc (F T₁ *ᶻ G a2) (F T₁ *ᶻ G a3) ((F T₂ *ᶻ G a0) +ᶻ ((F T₂ *ᶻ G a1) +ᶻ ((F T₂ *ᶻ G a2) +ᶻ (F T₂ *ᶻ G a3))))))))))
+
+
+dual-orthogonality : ∀ (t : Trit) (a : AlphaPower) (t' : Trit) (a' : AlphaPower) →
+  (t ≢ t' ⊎ a ≢ a') →
+  sum-over-characters (λ idx → dc-character idx (t , a) *ᶻ conjᶻ (dc-character idx (t' , a')))
+  ≡ z0
+dual-orthogonality t a t' a' (inj₁ neq) =
+  trans (sum-over-characters-ext (λ x → summand-factor-dual t a t' a' (proj₁ x) (proj₂ x)))
+        (trans (sum-factor-dual (triG t t') (alpG a a'))
+        (trans (cong (λ z → z *ᶻ sF4 (alpG a a')) (triG-leg t t' neq))
+               (*ᶻ-zeroˡ (sF4 (alpG a a')))))
+dual-orthogonality t a t' a' (inj₂ neq) =
+  trans (sum-over-characters-ext (λ x → summand-factor-dual t a t' a' (proj₁ x) (proj₂ x)))
+        (trans (sum-factor-dual (triG t t') (alpG a a'))
+        (trans (cong (λ z → sF3 (triG t t') *ᶻ z) (alpG-leg a a' neq))
+               (*ᶻ-zeroʳ (sF3 (triG t t')))))
 
 -- Fin 上对偶核: kerFin i j = Σ_k conj(χ(k,i))·χ(k,j)  (逐点 refl: 对偶完备性)
 kerFin : Fin 12 → Fin 12 → Z12Sys
