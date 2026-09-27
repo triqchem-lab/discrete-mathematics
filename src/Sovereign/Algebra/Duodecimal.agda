@@ -598,6 +598,118 @@ addSum-mulT (Data.Nat.suc k) t =
 π3-homo-* d10 y = trans (π3-fold12 10 y) (addSum-mulT 10 (π3 y))
 π3-homo-* d11 y = trans (π3-fold12 11 y) (addSum-mulT 11 (π3 y))
 
+-- ============================================================================
+-- L4: π4 环同态（CRT 第 4 腿; 4 | 12 ⇒ ℤ/12 → ℤ/4）
+-- 先算后验证: engineering/oracle_pi4_homo.py 全域 144/144 双腿零失败
+-- 结构化套件镜像 π3-homo 族（指数表 + 迭代归纳 + 绕回 + 均匀子句）
+-- ============================================================================
+
+suc4 : Fin 4 → Fin 4
+suc4 zero = suc zero
+suc4 (suc zero) = suc (suc zero)
+suc4 (suc (suc zero)) = suc (suc (suc zero))
+suc4 (suc (suc (suc zero))) = zero
+
+suc4-4 : ∀ t → suc4 (suc4 (suc4 (suc4 t))) ≡ t
+suc4-4 zero = refl
+suc4-4 (suc zero) = refl
+suc4-4 (suc (suc zero)) = refl
+suc4-4 (suc (suc (suc zero))) = refl
+
+_+4_ : Fin 4 → Fin 4 → Fin 4
+zero +4 y = y
+(suc zero) +4 y = suc4 y
+(suc (suc zero)) +4 y = suc4 (suc4 y)
+(suc (suc (suc zero))) +4 y = suc4 (suc4 (suc4 y))
+
+pow4 : Data.Nat.ℕ → Fin 4 → Fin 4
+pow4 Data.Nat.zero t = t
+pow4 (Data.Nat.suc k) t = suc4 (pow4 k t)
+
+π4-+1 : ∀ d → π4 (+1 d) ≡ suc4 (π4 d)
+π4-+1 d0 = refl; π4-+1 d1 = refl; π4-+1 d2 = refl; π4-+1 d3 = refl
+π4-+1 d4 = refl; π4-+1 d5 = refl; π4-+1 d6 = refl; π4-+1 d7 = refl
+π4-+1 d8 = refl; π4-+1 d9 = refl; π4-+1 d10 = refl; π4-+1 d11 = refl
+
+π4-+1-iter : ∀ k y → π4 (pow1 k y) ≡ pow4 k (π4 y)
+π4-+1-iter Data.Nat.zero y = refl
+π4-+1-iter (Data.Nat.suc k) y =
+  trans (π4-+1 (pow1 k y)) (cong suc4 (π4-+1-iter k y))
+
++4-suc : ∀ u y → suc4 (u +4 y) ≡ (suc4 u) +4 y
++4-suc zero y = refl
++4-suc (suc zero) y = refl
++4-suc (suc (suc zero)) y = refl
++4-suc (suc (suc (suc zero))) y = suc4-4 y
+
++4-pow4 : ∀ k y → pow4 k zero +4 y ≡ pow4 k y
++4-pow4 Data.Nat.zero y = refl
++4-pow4 (Data.Nat.suc k) y =
+  trans (sym (+4-suc (pow4 k zero) y)) (cong suc4 (+4-pow4 k y))
+
+π4-homo-+ : ∀ x y → π4 (x +12 y) ≡ π4 x +4 π4 y
+π4-homo-+ d0 y = trans (π4-+1-iter 0 y) (sym (+4-pow4 0 (π4 y)))
+π4-homo-+ d1 y = trans (π4-+1-iter 1 y) (sym (+4-pow4 1 (π4 y)))
+π4-homo-+ d2 y = trans (π4-+1-iter 2 y) (sym (+4-pow4 2 (π4 y)))
+π4-homo-+ d3 y = trans (π4-+1-iter 3 y) (sym (+4-pow4 3 (π4 y)))
+π4-homo-+ d4 y = trans (π4-+1-iter 4 y) (sym (+4-pow4 4 (π4 y)))
+π4-homo-+ d5 y = trans (π4-+1-iter 5 y) (sym (+4-pow4 5 (π4 y)))
+π4-homo-+ d6 y = trans (π4-+1-iter 6 y) (sym (+4-pow4 6 (π4 y)))
+π4-homo-+ d7 y = trans (π4-+1-iter 7 y) (sym (+4-pow4 7 (π4 y)))
+π4-homo-+ d8 y = trans (π4-+1-iter 8 y) (sym (+4-pow4 8 (π4 y)))
+π4-homo-+ d9 y = trans (π4-+1-iter 9 y) (sym (+4-pow4 9 (π4 y)))
+π4-homo-+ d10 y = trans (π4-+1-iter 10 y) (sym (+4-pow4 10 (π4 y)))
+π4-homo-+ d11 y = trans (π4-+1-iter 11 y) (sym (+4-pow4 11 (π4 y)))
+
+_*4_ : Fin 4 → Fin 4 → Fin 4
+zero *4 t = zero
+(suc zero) *4 t = t
+(suc (suc zero)) *4 t = t +4 t
+(suc (suc (suc zero))) *4 t = (t +4 t) +4 t
+
+addSum4 : Data.Nat.ℕ → Fin 4 → Fin 4
+addSum4 Data.Nat.zero t = zero
+addSum4 (Data.Nat.suc k) t = addSum4 k t +4 t
+
+*4-suc : ∀ a t → (a *4 t) +4 t ≡ (suc4 a) *4 t
+*4-suc zero zero = refl; *4-suc zero (suc zero) = refl
+*4-suc zero (suc (suc zero)) = refl; *4-suc zero (suc (suc (suc zero))) = refl
+*4-suc (suc zero) zero = refl; *4-suc (suc zero) (suc zero) = refl
+*4-suc (suc zero) (suc (suc zero)) = refl
+*4-suc (suc zero) (suc (suc (suc zero))) = refl
+*4-suc (suc (suc zero)) zero = refl; *4-suc (suc (suc zero)) (suc zero) = refl
+*4-suc (suc (suc zero)) (suc (suc zero)) = refl
+*4-suc (suc (suc zero)) (suc (suc (suc zero))) = refl
+*4-suc (suc (suc (suc zero))) zero = refl
+*4-suc (suc (suc (suc zero))) (suc zero) = refl
+*4-suc (suc (suc (suc zero))) (suc (suc zero)) = refl
+*4-suc (suc (suc (suc zero))) (suc (suc (suc zero))) = refl
+
+π4-fold12 : ∀ k y → π4 (fold12 k y) ≡ addSum4 k (π4 y)
+π4-fold12 Data.Nat.zero y = refl
+π4-fold12 (Data.Nat.suc k) y =
+  trans (π4-homo-+ (fold12 k y) y) (cong (λ z → z +4 π4 y) (π4-fold12 k y))
+
+addSum4-*4 : ∀ k t → addSum4 k t ≡ pow4 k zero *4 t
+addSum4-*4 Data.Nat.zero t = refl
+addSum4-*4 (Data.Nat.suc k) t =
+  trans (cong (λ z → z +4 t) (addSum4-*4 k t))
+        (*4-suc (pow4 k zero) t)
+
+π4-homo-* : ∀ x y → π4 (x *12 y) ≡ π4 x *4 π4 y
+π4-homo-* d0 y = trans (π4-fold12 0 y) (addSum4-*4 0 (π4 y))
+π4-homo-* d1 y = trans (π4-fold12 1 y) (addSum4-*4 1 (π4 y))
+π4-homo-* d2 y = trans (π4-fold12 2 y) (addSum4-*4 2 (π4 y))
+π4-homo-* d3 y = trans (π4-fold12 3 y) (addSum4-*4 3 (π4 y))
+π4-homo-* d4 y = trans (π4-fold12 4 y) (addSum4-*4 4 (π4 y))
+π4-homo-* d5 y = trans (π4-fold12 5 y) (addSum4-*4 5 (π4 y))
+π4-homo-* d6 y = trans (π4-fold12 6 y) (addSum4-*4 6 (π4 y))
+π4-homo-* d7 y = trans (π4-fold12 7 y) (addSum4-*4 7 (π4 y))
+π4-homo-* d8 y = trans (π4-fold12 8 y) (addSum4-*4 8 (π4 y))
+π4-homo-* d9 y = trans (π4-fold12 9 y) (addSum4-*4 9 (π4 y))
+π4-homo-* d10 y = trans (π4-fold12 10 y) (addSum4-*4 10 (π4 y))
+π4-homo-* d11 y = trans (π4-fold12 11 y) (addSum4-*4 11 (π4 y))
+
 --------------------------------------------------------------------------------
 -- 14. 代数链总结
 --------------------------------------------------------------------------------
