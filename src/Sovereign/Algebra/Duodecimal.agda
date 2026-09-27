@@ -34,7 +34,7 @@ open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym; cong)
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-assoc; ⊕-comm; ⊕-identityˡ; ⊗-distribˡ-⊕)
 
 --------------------------------------------------------------------------------
 -- 1. Duodec 数据类型 — Z/12Z 的 12 个元素
@@ -500,83 +500,103 @@ lü-cycle x = refl
 -- 13. GF(3) 连接 — 环同态 π3: Z/12Z → Z/3Z
 --------------------------------------------------------------------------------
 
--- π3 保持加法: π3(x +12 y) ≡ π3(x) ⊕ π3(y) (144 case 穷举 refl)
-π3-homo-+ : ∀ x y → π3 (x +12 y) ≡ π3 x ⊕ π3 y
-π3-homo-+ d0 d0 = refl; π3-homo-+ d0 d1 = refl; π3-homo-+ d0 d2 = refl; π3-homo-+ d0 d3 = refl
-π3-homo-+ d0 d4 = refl; π3-homo-+ d0 d5 = refl; π3-homo-+ d0 d6 = refl; π3-homo-+ d0 d7 = refl
-π3-homo-+ d0 d8 = refl; π3-homo-+ d0 d9 = refl; π3-homo-+ d0 d10 = refl; π3-homo-+ d0 d11 = refl
-π3-homo-+ d1 d0 = refl; π3-homo-+ d1 d1 = refl; π3-homo-+ d1 d2 = refl; π3-homo-+ d1 d3 = refl
-π3-homo-+ d1 d4 = refl; π3-homo-+ d1 d5 = refl; π3-homo-+ d1 d6 = refl; π3-homo-+ d1 d7 = refl
-π3-homo-+ d1 d8 = refl; π3-homo-+ d1 d9 = refl; π3-homo-+ d1 d10 = refl; π3-homo-+ d1 d11 = refl
-π3-homo-+ d2 d0 = refl; π3-homo-+ d2 d1 = refl; π3-homo-+ d2 d2 = refl; π3-homo-+ d2 d3 = refl
-π3-homo-+ d2 d4 = refl; π3-homo-+ d2 d5 = refl; π3-homo-+ d2 d6 = refl; π3-homo-+ d2 d7 = refl
-π3-homo-+ d2 d8 = refl; π3-homo-+ d2 d9 = refl; π3-homo-+ d2 d10 = refl; π3-homo-+ d2 d11 = refl
-π3-homo-+ d3 d0 = refl; π3-homo-+ d3 d1 = refl; π3-homo-+ d3 d2 = refl; π3-homo-+ d3 d3 = refl
-π3-homo-+ d3 d4 = refl; π3-homo-+ d3 d5 = refl; π3-homo-+ d3 d6 = refl; π3-homo-+ d3 d7 = refl
-π3-homo-+ d3 d8 = refl; π3-homo-+ d3 d9 = refl; π3-homo-+ d3 d10 = refl; π3-homo-+ d3 d11 = refl
-π3-homo-+ d4 d0 = refl; π3-homo-+ d4 d1 = refl; π3-homo-+ d4 d2 = refl; π3-homo-+ d4 d3 = refl
-π3-homo-+ d4 d4 = refl; π3-homo-+ d4 d5 = refl; π3-homo-+ d4 d6 = refl; π3-homo-+ d4 d7 = refl
-π3-homo-+ d4 d8 = refl; π3-homo-+ d4 d9 = refl; π3-homo-+ d4 d10 = refl; π3-homo-+ d4 d11 = refl
-π3-homo-+ d5 d0 = refl; π3-homo-+ d5 d1 = refl; π3-homo-+ d5 d2 = refl; π3-homo-+ d5 d3 = refl
-π3-homo-+ d5 d4 = refl; π3-homo-+ d5 d5 = refl; π3-homo-+ d5 d6 = refl; π3-homo-+ d5 d7 = refl
-π3-homo-+ d5 d8 = refl; π3-homo-+ d5 d9 = refl; π3-homo-+ d5 d10 = refl; π3-homo-+ d5 d11 = refl
-π3-homo-+ d6 d0 = refl; π3-homo-+ d6 d1 = refl; π3-homo-+ d6 d2 = refl; π3-homo-+ d6 d3 = refl
-π3-homo-+ d6 d4 = refl; π3-homo-+ d6 d5 = refl; π3-homo-+ d6 d6 = refl; π3-homo-+ d6 d7 = refl
-π3-homo-+ d6 d8 = refl; π3-homo-+ d6 d9 = refl; π3-homo-+ d6 d10 = refl; π3-homo-+ d6 d11 = refl
-π3-homo-+ d7 d0 = refl; π3-homo-+ d7 d1 = refl; π3-homo-+ d7 d2 = refl; π3-homo-+ d7 d3 = refl
-π3-homo-+ d7 d4 = refl; π3-homo-+ d7 d5 = refl; π3-homo-+ d7 d6 = refl; π3-homo-+ d7 d7 = refl
-π3-homo-+ d7 d8 = refl; π3-homo-+ d7 d9 = refl; π3-homo-+ d7 d10 = refl; π3-homo-+ d7 d11 = refl
-π3-homo-+ d8 d0 = refl; π3-homo-+ d8 d1 = refl; π3-homo-+ d8 d2 = refl; π3-homo-+ d8 d3 = refl
-π3-homo-+ d8 d4 = refl; π3-homo-+ d8 d5 = refl; π3-homo-+ d8 d6 = refl; π3-homo-+ d8 d7 = refl
-π3-homo-+ d8 d8 = refl; π3-homo-+ d8 d9 = refl; π3-homo-+ d8 d10 = refl; π3-homo-+ d8 d11 = refl
-π3-homo-+ d9 d0 = refl; π3-homo-+ d9 d1 = refl; π3-homo-+ d9 d2 = refl; π3-homo-+ d9 d3 = refl
-π3-homo-+ d9 d4 = refl; π3-homo-+ d9 d5 = refl; π3-homo-+ d9 d6 = refl; π3-homo-+ d9 d7 = refl
-π3-homo-+ d9 d8 = refl; π3-homo-+ d9 d9 = refl; π3-homo-+ d9 d10 = refl; π3-homo-+ d9 d11 = refl
-π3-homo-+ d10 d0 = refl; π3-homo-+ d10 d1 = refl; π3-homo-+ d10 d2 = refl; π3-homo-+ d10 d3 = refl
-π3-homo-+ d10 d4 = refl; π3-homo-+ d10 d5 = refl; π3-homo-+ d10 d6 = refl; π3-homo-+ d10 d7 = refl
-π3-homo-+ d10 d8 = refl; π3-homo-+ d10 d9 = refl; π3-homo-+ d10 d10 = refl; π3-homo-+ d10 d11 = refl
-π3-homo-+ d11 d0 = refl; π3-homo-+ d11 d1 = refl; π3-homo-+ d11 d2 = refl; π3-homo-+ d11 d3 = refl
-π3-homo-+ d11 d4 = refl; π3-homo-+ d11 d5 = refl; π3-homo-+ d11 d6 = refl; π3-homo-+ d11 d7 = refl
-π3-homo-+ d11 d8 = refl; π3-homo-+ d11 d9 = refl; π3-homo-+ d11 d10 = refl; π3-homo-+ d11 d11 = refl
+-- π3 保持加法/乘法（环同态）: 【结构化重证】原各 144 case（12×12 乘积穷举, >27）
+-- → 12 case × 结构链。零件: π3-+1（+1 的 π3 差分, 12 case 表事实 ✓）
+--   + ℕ 迭代（addT/addSum/pow1/fold12）+ 重排（addT-shift, ⊕ 交换结合）
+--   + 分配（addSum-mulT, ⊗ 侧）+ 归纳（π3-+1-iter / π3-fold12）
+-- 签名不变, 下游零影响。
 
--- π3 保持乘法: π3(x *12 y) ≡ π3(x) ⊗ π3(y) (144 case 穷举 refl)
+⊗-comm : ∀ a b → a ⊗ b ≡ b ⊗ a
+⊗-comm T₀ T₀ = refl; ⊗-comm T₀ T₁ = refl; ⊗-comm T₀ T₂ = refl
+⊗-comm T₁ T₀ = refl; ⊗-comm T₁ T₁ = refl; ⊗-comm T₁ T₂ = refl
+⊗-comm T₂ T₀ = refl; ⊗-comm T₂ T₁ = refl; ⊗-comm T₂ T₂ = refl
+
+⊗T0 : ∀ t → T₀ ⊗ t ≡ T₀
+⊗T0 T₀ = refl; ⊗T0 T₁ = refl; ⊗T0 T₂ = refl
+
+⊗T1 : ∀ t → T₁ ⊗ t ≡ t
+⊗T1 T₀ = refl; ⊗T1 T₁ = refl; ⊗T1 T₂ = refl
+
+⊗-distribʳ-⊕ : ∀ a b t → (a ⊗ t) ⊕ (b ⊗ t) ≡ (a ⊕ b) ⊗ t
+⊗-distribʳ-⊕ a b t =
+  trans (cong (λ z → z ⊕ (b ⊗ t)) (⊗-comm a t))
+  (trans (cong (λ z → (t ⊗ a) ⊕ z) (⊗-comm b t))
+  (trans (sym (⊗-distribˡ-⊕ t a b))
+         (⊗-comm t (a ⊕ b))))
+
+π3-+1 : ∀ d → π3 (+1 d) ≡ π3 d ⊕ T₁
+π3-+1 d0 = refl; π3-+1 d1 = refl; π3-+1 d2 = refl; π3-+1 d3 = refl
+π3-+1 d4 = refl; π3-+1 d5 = refl; π3-+1 d6 = refl; π3-+1 d7 = refl
+π3-+1 d8 = refl; π3-+1 d9 = refl; π3-+1 d10 = refl; π3-+1 d11 = refl
+
+addT : ℕ → Trit → Trit
+addT Data.Nat.zero t = t
+addT (Data.Nat.suc k) t = addT k t ⊕ T₁
+
+addSum : ℕ → Trit → Trit
+addSum Data.Nat.zero t = T₀
+addSum (Data.Nat.suc k) t = addSum k t ⊕ t
+
+pow1 : ℕ → Duodec → Duodec
+pow1 Data.Nat.zero y = y
+pow1 (Data.Nat.suc k) y = +1 (pow1 k y)
+
+fold12 : ℕ → Duodec → Duodec
+fold12 Data.Nat.zero y = d0
+fold12 (Data.Nat.suc k) y = fold12 k y +12 y
+
+π3-+1-iter : ∀ k y → π3 (pow1 k y) ≡ addT k (π3 y)
+π3-+1-iter Data.Nat.zero y = refl
+π3-+1-iter (Data.Nat.suc k) y =
+  trans (π3-+1 (pow1 k y)) (cong (λ z → z ⊕ T₁) (π3-+1-iter k y))
+
+addT-shift : ∀ k t → addT k t ≡ addT k T₀ ⊕ t
+addT-shift Data.Nat.zero t = sym (⊕-identityˡ t)
+addT-shift (Data.Nat.suc k) t =
+  trans (cong (λ z → z ⊕ T₁) (addT-shift k t))
+  (trans (⊕-assoc (addT k T₀) t T₁)
+  (trans (cong (λ z → addT k T₀ ⊕ z) (⊕-comm t T₁))
+  (trans (sym (⊕-assoc (addT k T₀) T₁ t)) refl)))
+
+π3-homo-+ : ∀ x y → π3 (x +12 y) ≡ π3 x ⊕ π3 y
+π3-homo-+ d0 y = trans (π3-+1-iter 0 y) (addT-shift 0 (π3 y))
+π3-homo-+ d1 y = trans (π3-+1-iter 1 y) (addT-shift 1 (π3 y))
+π3-homo-+ d2 y = trans (π3-+1-iter 2 y) (addT-shift 2 (π3 y))
+π3-homo-+ d3 y = trans (π3-+1-iter 3 y) (addT-shift 3 (π3 y))
+π3-homo-+ d4 y = trans (π3-+1-iter 4 y) (addT-shift 4 (π3 y))
+π3-homo-+ d5 y = trans (π3-+1-iter 5 y) (addT-shift 5 (π3 y))
+π3-homo-+ d6 y = trans (π3-+1-iter 6 y) (addT-shift 6 (π3 y))
+π3-homo-+ d7 y = trans (π3-+1-iter 7 y) (addT-shift 7 (π3 y))
+π3-homo-+ d8 y = trans (π3-+1-iter 8 y) (addT-shift 8 (π3 y))
+π3-homo-+ d9 y = trans (π3-+1-iter 9 y) (addT-shift 9 (π3 y))
+π3-homo-+ d10 y = trans (π3-+1-iter 10 y) (addT-shift 10 (π3 y))
+π3-homo-+ d11 y = trans (π3-+1-iter 11 y) (addT-shift 11 (π3 y))
+
+π3-fold12 : ∀ k y → π3 (fold12 k y) ≡ addSum k (π3 y)
+π3-fold12 Data.Nat.zero y = refl
+π3-fold12 (Data.Nat.suc k) y =
+  trans (π3-homo-+ (fold12 k y) y) (cong (λ z → z ⊕ π3 y) (π3-fold12 k y))
+
+addSum-mulT : ∀ k t → addSum k t ≡ addT k T₀ ⊗ t
+addSum-mulT Data.Nat.zero t = sym (⊗T0 t)
+addSum-mulT (Data.Nat.suc k) t =
+  trans (cong (λ z → z ⊕ t) (addSum-mulT k t))
+  (trans (cong (λ z → (addT k T₀ ⊗ t) ⊕ z) (sym (⊗T1 t)))
+         (⊗-distribʳ-⊕ (addT k T₀) T₁ t))
+
 π3-homo-* : ∀ x y → π3 (x *12 y) ≡ π3 x ⊗ π3 y
-π3-homo-* d0 d0 = refl; π3-homo-* d0 d1 = refl; π3-homo-* d0 d2 = refl; π3-homo-* d0 d3 = refl
-π3-homo-* d0 d4 = refl; π3-homo-* d0 d5 = refl; π3-homo-* d0 d6 = refl; π3-homo-* d0 d7 = refl
-π3-homo-* d0 d8 = refl; π3-homo-* d0 d9 = refl; π3-homo-* d0 d10 = refl; π3-homo-* d0 d11 = refl
-π3-homo-* d1 d0 = refl; π3-homo-* d1 d1 = refl; π3-homo-* d1 d2 = refl; π3-homo-* d1 d3 = refl
-π3-homo-* d1 d4 = refl; π3-homo-* d1 d5 = refl; π3-homo-* d1 d6 = refl; π3-homo-* d1 d7 = refl
-π3-homo-* d1 d8 = refl; π3-homo-* d1 d9 = refl; π3-homo-* d1 d10 = refl; π3-homo-* d1 d11 = refl
-π3-homo-* d2 d0 = refl; π3-homo-* d2 d1 = refl; π3-homo-* d2 d2 = refl; π3-homo-* d2 d3 = refl
-π3-homo-* d2 d4 = refl; π3-homo-* d2 d5 = refl; π3-homo-* d2 d6 = refl; π3-homo-* d2 d7 = refl
-π3-homo-* d2 d8 = refl; π3-homo-* d2 d9 = refl; π3-homo-* d2 d10 = refl; π3-homo-* d2 d11 = refl
-π3-homo-* d3 d0 = refl; π3-homo-* d3 d1 = refl; π3-homo-* d3 d2 = refl; π3-homo-* d3 d3 = refl
-π3-homo-* d3 d4 = refl; π3-homo-* d3 d5 = refl; π3-homo-* d3 d6 = refl; π3-homo-* d3 d7 = refl
-π3-homo-* d3 d8 = refl; π3-homo-* d3 d9 = refl; π3-homo-* d3 d10 = refl; π3-homo-* d3 d11 = refl
-π3-homo-* d4 d0 = refl; π3-homo-* d4 d1 = refl; π3-homo-* d4 d2 = refl; π3-homo-* d4 d3 = refl
-π3-homo-* d4 d4 = refl; π3-homo-* d4 d5 = refl; π3-homo-* d4 d6 = refl; π3-homo-* d4 d7 = refl
-π3-homo-* d4 d8 = refl; π3-homo-* d4 d9 = refl; π3-homo-* d4 d10 = refl; π3-homo-* d4 d11 = refl
-π3-homo-* d5 d0 = refl; π3-homo-* d5 d1 = refl; π3-homo-* d5 d2 = refl; π3-homo-* d5 d3 = refl
-π3-homo-* d5 d4 = refl; π3-homo-* d5 d5 = refl; π3-homo-* d5 d6 = refl; π3-homo-* d5 d7 = refl
-π3-homo-* d5 d8 = refl; π3-homo-* d5 d9 = refl; π3-homo-* d5 d10 = refl; π3-homo-* d5 d11 = refl
-π3-homo-* d6 d0 = refl; π3-homo-* d6 d1 = refl; π3-homo-* d6 d2 = refl; π3-homo-* d6 d3 = refl
-π3-homo-* d6 d4 = refl; π3-homo-* d6 d5 = refl; π3-homo-* d6 d6 = refl; π3-homo-* d6 d7 = refl
-π3-homo-* d6 d8 = refl; π3-homo-* d6 d9 = refl; π3-homo-* d6 d10 = refl; π3-homo-* d6 d11 = refl
-π3-homo-* d7 d0 = refl; π3-homo-* d7 d1 = refl; π3-homo-* d7 d2 = refl; π3-homo-* d7 d3 = refl
-π3-homo-* d7 d4 = refl; π3-homo-* d7 d5 = refl; π3-homo-* d7 d6 = refl; π3-homo-* d7 d7 = refl
-π3-homo-* d7 d8 = refl; π3-homo-* d7 d9 = refl; π3-homo-* d7 d10 = refl; π3-homo-* d7 d11 = refl
-π3-homo-* d8 d0 = refl; π3-homo-* d8 d1 = refl; π3-homo-* d8 d2 = refl; π3-homo-* d8 d3 = refl
-π3-homo-* d8 d4 = refl; π3-homo-* d8 d5 = refl; π3-homo-* d8 d6 = refl; π3-homo-* d8 d7 = refl
-π3-homo-* d8 d8 = refl; π3-homo-* d8 d9 = refl; π3-homo-* d8 d10 = refl; π3-homo-* d8 d11 = refl
-π3-homo-* d9 d0 = refl; π3-homo-* d9 d1 = refl; π3-homo-* d9 d2 = refl; π3-homo-* d9 d3 = refl
-π3-homo-* d9 d4 = refl; π3-homo-* d9 d5 = refl; π3-homo-* d9 d6 = refl; π3-homo-* d9 d7 = refl
-π3-homo-* d9 d8 = refl; π3-homo-* d9 d9 = refl; π3-homo-* d9 d10 = refl; π3-homo-* d9 d11 = refl
-π3-homo-* d10 d0 = refl; π3-homo-* d10 d1 = refl; π3-homo-* d10 d2 = refl; π3-homo-* d10 d3 = refl
-π3-homo-* d10 d4 = refl; π3-homo-* d10 d5 = refl; π3-homo-* d10 d6 = refl; π3-homo-* d10 d7 = refl
-π3-homo-* d10 d8 = refl; π3-homo-* d10 d9 = refl; π3-homo-* d10 d10 = refl; π3-homo-* d10 d11 = refl
-π3-homo-* d11 d0 = refl; π3-homo-* d11 d1 = refl; π3-homo-* d11 d2 = refl; π3-homo-* d11 d3 = refl
-π3-homo-* d11 d4 = refl; π3-homo-* d11 d5 = refl; π3-homo-* d11 d6 = refl; π3-homo-* d11 d7 = refl
-π3-homo-* d11 d8 = refl; π3-homo-* d11 d9 = refl; π3-homo-* d11 d10 = refl; π3-homo-* d11 d11 = refl
+π3-homo-* d0 y = trans (π3-fold12 0 y) (addSum-mulT 0 (π3 y))
+π3-homo-* d1 y = trans (π3-fold12 1 y) (addSum-mulT 1 (π3 y))
+π3-homo-* d2 y = trans (π3-fold12 2 y) (addSum-mulT 2 (π3 y))
+π3-homo-* d3 y = trans (π3-fold12 3 y) (addSum-mulT 3 (π3 y))
+π3-homo-* d4 y = trans (π3-fold12 4 y) (addSum-mulT 4 (π3 y))
+π3-homo-* d5 y = trans (π3-fold12 5 y) (addSum-mulT 5 (π3 y))
+π3-homo-* d6 y = trans (π3-fold12 6 y) (addSum-mulT 6 (π3 y))
+π3-homo-* d7 y = trans (π3-fold12 7 y) (addSum-mulT 7 (π3 y))
+π3-homo-* d8 y = trans (π3-fold12 8 y) (addSum-mulT 8 (π3 y))
+π3-homo-* d9 y = trans (π3-fold12 9 y) (addSum-mulT 9 (π3 y))
+π3-homo-* d10 y = trans (π3-fold12 10 y) (addSum-mulT 10 (π3 y))
+π3-homo-* d11 y = trans (π3-fold12 11 y) (addSum-mulT 11 (π3 y))
 
 --------------------------------------------------------------------------------
 -- 14. 代数链总结
