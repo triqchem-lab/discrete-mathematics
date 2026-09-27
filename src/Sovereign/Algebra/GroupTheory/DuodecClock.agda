@@ -72,7 +72,7 @@ open import Sovereign.Algebra.GF9
          _+gf9_; _*gf9_; *gf9-assoc)
 open import Sovereign.Algebra.Duodecimal
   using (Duodec; π3; π4; crt12; crt12-roundtrip; crt12-inv-π3; crt12-inv-π4;
-         _+12_; _*12_; d0; d1; d2; d4; d8)
+         +1; _+12_; _*12_; d0; d1; d2; d4; d8)
 
 open ≡-Reasoning
 
@@ -297,21 +297,81 @@ clock-duodec-roundtrip (x , a) = cong₂ _,_
   (trans (cong fin4ToAlpha (crt12-inv-π4 x (alphaToFin4 a)))
          (alpha-fin4-roundtrip a))
 
--- 联合时钟同态: 混合运算 (加法⊕乘法) 在抽象层 = Z/12 加法 (144 case refl,
--- 由 /home/yanli/work/math cpp/tests/test_duodec_crt.cpp 生成并验证 144/144)
+-- 联合时钟同态: 混合运算 (加法⊕乘法) 在抽象层 = Z/12 加法
+-- 【结构化重证】原 144 case refl（C++ 测试生成）已替换为「生成元共轭 + 迭代」结构链:
+--   144 = 12×12 乘积穷举（>27, 违反符号化纪律）→ 生成元步进共轭(12 case 表事实 ✓)
+--        + 迭代归纳(0 case) + 指数表(12 case ✓) + 交换/结合(复用 mulAlpha 三定律)
+--   签名保持不变, 下游零影响。
+
+-- 生成元右步共轭: toDuodec (q ∘ gen) = +1 (toDuodec q)（12 case 表事实 ✓）
+gen-stepR : ∀ q → toDuodec (mixedOp q (T₁ , a1)) ≡ +1 (toDuodec q)
+gen-stepR (T₀ , a0) = refl; gen-stepR (T₀ , a1) = refl
+gen-stepR (T₀ , a2) = refl; gen-stepR (T₀ , a3) = refl
+gen-stepR (T₁ , a0) = refl; gen-stepR (T₁ , a1) = refl
+gen-stepR (T₁ , a2) = refl; gen-stepR (T₁ , a3) = refl
+gen-stepR (T₂ , a0) = refl; gen-stepR (T₂ , a1) = refl
+gen-stepR (T₂ , a2) = refl; gen-stepR (T₂ , a3) = refl
+
+-- 右迭代（gen 右乘 k 次）与 +1 迭代
+powL : ℕ → DuodecPoint → DuodecPoint
+powL Data.Nat.zero q = q
+powL (Data.Nat.suc k) q = mixedOp (powL k q) (T₁ , a1)
+
++1^ : ℕ → Duodec → Duodec
++1^ Data.Nat.zero y = y
++1^ (Data.Nat.suc k) y = +1 (+1^ k y)
+
+stepR-iter : ∀ k q → toDuodec (powL k q) ≡ +1^ k (toDuodec q)
+stepR-iter Data.Nat.zero q = refl
+stepR-iter (Data.Nat.suc k) q = trans (gen-stepR (powL k q)) (cong +1 (stepR-iter k q))
+
+-- 右迭代 = 左乘幂: powL k q ≡ gen^k ∘ q（交换+结合; 归纳）
+powL-gen : ∀ k q → powL k q ≡ mixedOp (powL k duodec-e) q
+powL-gen Data.Nat.zero q = refl
+powL-gen (Data.Nat.suc k) q =
+  trans (cong (λ z → mixedOp z (T₁ , a1)) (powL-gen k q))
+  (trans (mixedOp-assoc (powL k duodec-e) q (T₁ , a1))
+  (trans (cong (mixedOp (powL k duodec-e)) (mixedOp-comm q (T₁ , a1)))
+  (trans (sym (mixedOp-assoc (powL k duodec-e) (T₁ , a1) q)) refl)))
+
+-- 指数表（生成序: 幅度 3 步 × 相位 4 步）与 +12 的迭代形（各 12 case ✓）
+index : DuodecPoint → ℕ
+index (T₀ , a0) = Data.Nat.zero
+index (T₁ , a1) = Data.Nat.suc Data.Nat.zero
+index (T₂ , a2) = Data.Nat.suc (Data.Nat.suc Data.Nat.zero)
+index (T₀ , a3) = Data.Nat.suc (Data.Nat.suc (Data.Nat.suc Data.Nat.zero))
+index (T₁ , a0) = 4
+index (T₂ , a1) = 5
+index (T₀ , a2) = 6
+index (T₁ , a3) = 7
+index (T₂ , a0) = 8
+index (T₀ , a1) = 9
+index (T₁ , a2) = 10
+index (T₂ , a3) = 11
+
+index-sound : ∀ p → powL (index p) duodec-e ≡ p
+index-sound (T₀ , a0) = refl; index-sound (T₀ , a1) = refl
+index-sound (T₀ , a2) = refl; index-sound (T₀ , a3) = refl
+index-sound (T₁ , a0) = refl; index-sound (T₁ , a1) = refl
+index-sound (T₁ , a2) = refl; index-sound (T₁ , a3) = refl
+index-sound (T₂ , a0) = refl; index-sound (T₂ , a1) = refl
+index-sound (T₂ , a2) = refl; index-sound (T₂ , a3) = refl
+
++12-index : ∀ p y → toDuodec p +12 y ≡ +1^ (index p) y
++12-index (T₀ , a0) y = refl; +12-index (T₀ , a1) y = refl
++12-index (T₀ , a2) y = refl; +12-index (T₀ , a3) y = refl
++12-index (T₁ , a0) y = refl; +12-index (T₁ , a1) y = refl
++12-index (T₁ , a2) y = refl; +12-index (T₁ , a3) y = refl
++12-index (T₂ , a0) y = refl; +12-index (T₂ , a1) y = refl
++12-index (T₂ , a2) y = refl; +12-index (T₂ , a3) y = refl
+
+-- 主定理（结构链: p = gen^k → 右迭代 → 生成元共轭 → +12 迭代形）
 mixed-to-+12 : ∀ p q → toDuodec (mixedOp p q) ≡ toDuodec p +12 toDuodec q
-mixed-to-+12 (T₀ , a0) (T₀ , a0) = refl; mixed-to-+12 (T₀ , a0) (T₀ , a1) = refl; mixed-to-+12 (T₀ , a0) (T₀ , a2) = refl; mixed-to-+12 (T₀ , a0) (T₀ , a3) = refl; mixed-to-+12 (T₀ , a0) (T₁ , a0) = refl; mixed-to-+12 (T₀ , a0) (T₁ , a1) = refl; mixed-to-+12 (T₀ , a0) (T₁ , a2) = refl; mixed-to-+12 (T₀ , a0) (T₁ , a3) = refl; mixed-to-+12 (T₀ , a0) (T₂ , a0) = refl; mixed-to-+12 (T₀ , a0) (T₂ , a1) = refl; mixed-to-+12 (T₀ , a0) (T₂ , a2) = refl; mixed-to-+12 (T₀ , a0) (T₂ , a3) = refl
-mixed-to-+12 (T₀ , a1) (T₀ , a0) = refl; mixed-to-+12 (T₀ , a1) (T₀ , a1) = refl; mixed-to-+12 (T₀ , a1) (T₀ , a2) = refl; mixed-to-+12 (T₀ , a1) (T₀ , a3) = refl; mixed-to-+12 (T₀ , a1) (T₁ , a0) = refl; mixed-to-+12 (T₀ , a1) (T₁ , a1) = refl; mixed-to-+12 (T₀ , a1) (T₁ , a2) = refl; mixed-to-+12 (T₀ , a1) (T₁ , a3) = refl; mixed-to-+12 (T₀ , a1) (T₂ , a0) = refl; mixed-to-+12 (T₀ , a1) (T₂ , a1) = refl; mixed-to-+12 (T₀ , a1) (T₂ , a2) = refl; mixed-to-+12 (T₀ , a1) (T₂ , a3) = refl
-mixed-to-+12 (T₀ , a2) (T₀ , a0) = refl; mixed-to-+12 (T₀ , a2) (T₀ , a1) = refl; mixed-to-+12 (T₀ , a2) (T₀ , a2) = refl; mixed-to-+12 (T₀ , a2) (T₀ , a3) = refl; mixed-to-+12 (T₀ , a2) (T₁ , a0) = refl; mixed-to-+12 (T₀ , a2) (T₁ , a1) = refl; mixed-to-+12 (T₀ , a2) (T₁ , a2) = refl; mixed-to-+12 (T₀ , a2) (T₁ , a3) = refl; mixed-to-+12 (T₀ , a2) (T₂ , a0) = refl; mixed-to-+12 (T₀ , a2) (T₂ , a1) = refl; mixed-to-+12 (T₀ , a2) (T₂ , a2) = refl; mixed-to-+12 (T₀ , a2) (T₂ , a3) = refl
-mixed-to-+12 (T₀ , a3) (T₀ , a0) = refl; mixed-to-+12 (T₀ , a3) (T₀ , a1) = refl; mixed-to-+12 (T₀ , a3) (T₀ , a2) = refl; mixed-to-+12 (T₀ , a3) (T₀ , a3) = refl; mixed-to-+12 (T₀ , a3) (T₁ , a0) = refl; mixed-to-+12 (T₀ , a3) (T₁ , a1) = refl; mixed-to-+12 (T₀ , a3) (T₁ , a2) = refl; mixed-to-+12 (T₀ , a3) (T₁ , a3) = refl; mixed-to-+12 (T₀ , a3) (T₂ , a0) = refl; mixed-to-+12 (T₀ , a3) (T₂ , a1) = refl; mixed-to-+12 (T₀ , a3) (T₂ , a2) = refl; mixed-to-+12 (T₀ , a3) (T₂ , a3) = refl
-mixed-to-+12 (T₁ , a0) (T₀ , a0) = refl; mixed-to-+12 (T₁ , a0) (T₀ , a1) = refl; mixed-to-+12 (T₁ , a0) (T₀ , a2) = refl; mixed-to-+12 (T₁ , a0) (T₀ , a3) = refl; mixed-to-+12 (T₁ , a0) (T₁ , a0) = refl; mixed-to-+12 (T₁ , a0) (T₁ , a1) = refl; mixed-to-+12 (T₁ , a0) (T₁ , a2) = refl; mixed-to-+12 (T₁ , a0) (T₁ , a3) = refl; mixed-to-+12 (T₁ , a0) (T₂ , a0) = refl; mixed-to-+12 (T₁ , a0) (T₂ , a1) = refl; mixed-to-+12 (T₁ , a0) (T₂ , a2) = refl; mixed-to-+12 (T₁ , a0) (T₂ , a3) = refl
-mixed-to-+12 (T₁ , a1) (T₀ , a0) = refl; mixed-to-+12 (T₁ , a1) (T₀ , a1) = refl; mixed-to-+12 (T₁ , a1) (T₀ , a2) = refl; mixed-to-+12 (T₁ , a1) (T₀ , a3) = refl; mixed-to-+12 (T₁ , a1) (T₁ , a0) = refl; mixed-to-+12 (T₁ , a1) (T₁ , a1) = refl; mixed-to-+12 (T₁ , a1) (T₁ , a2) = refl; mixed-to-+12 (T₁ , a1) (T₁ , a3) = refl; mixed-to-+12 (T₁ , a1) (T₂ , a0) = refl; mixed-to-+12 (T₁ , a1) (T₂ , a1) = refl; mixed-to-+12 (T₁ , a1) (T₂ , a2) = refl; mixed-to-+12 (T₁ , a1) (T₂ , a3) = refl
-mixed-to-+12 (T₁ , a2) (T₀ , a0) = refl; mixed-to-+12 (T₁ , a2) (T₀ , a1) = refl; mixed-to-+12 (T₁ , a2) (T₀ , a2) = refl; mixed-to-+12 (T₁ , a2) (T₀ , a3) = refl; mixed-to-+12 (T₁ , a2) (T₁ , a0) = refl; mixed-to-+12 (T₁ , a2) (T₁ , a1) = refl; mixed-to-+12 (T₁ , a2) (T₁ , a2) = refl; mixed-to-+12 (T₁ , a2) (T₁ , a3) = refl; mixed-to-+12 (T₁ , a2) (T₂ , a0) = refl; mixed-to-+12 (T₁ , a2) (T₂ , a1) = refl; mixed-to-+12 (T₁ , a2) (T₂ , a2) = refl; mixed-to-+12 (T₁ , a2) (T₂ , a3) = refl
-mixed-to-+12 (T₁ , a3) (T₀ , a0) = refl; mixed-to-+12 (T₁ , a3) (T₀ , a1) = refl; mixed-to-+12 (T₁ , a3) (T₀ , a2) = refl; mixed-to-+12 (T₁ , a3) (T₀ , a3) = refl; mixed-to-+12 (T₁ , a3) (T₁ , a0) = refl; mixed-to-+12 (T₁ , a3) (T₁ , a1) = refl; mixed-to-+12 (T₁ , a3) (T₁ , a2) = refl; mixed-to-+12 (T₁ , a3) (T₁ , a3) = refl; mixed-to-+12 (T₁ , a3) (T₂ , a0) = refl; mixed-to-+12 (T₁ , a3) (T₂ , a1) = refl; mixed-to-+12 (T₁ , a3) (T₂ , a2) = refl; mixed-to-+12 (T₁ , a3) (T₂ , a3) = refl
-mixed-to-+12 (T₂ , a0) (T₀ , a0) = refl; mixed-to-+12 (T₂ , a0) (T₀ , a1) = refl; mixed-to-+12 (T₂ , a0) (T₀ , a2) = refl; mixed-to-+12 (T₂ , a0) (T₀ , a3) = refl; mixed-to-+12 (T₂ , a0) (T₁ , a0) = refl; mixed-to-+12 (T₂ , a0) (T₁ , a1) = refl; mixed-to-+12 (T₂ , a0) (T₁ , a2) = refl; mixed-to-+12 (T₂ , a0) (T₁ , a3) = refl; mixed-to-+12 (T₂ , a0) (T₂ , a0) = refl; mixed-to-+12 (T₂ , a0) (T₂ , a1) = refl; mixed-to-+12 (T₂ , a0) (T₂ , a2) = refl; mixed-to-+12 (T₂ , a0) (T₂ , a3) = refl
-mixed-to-+12 (T₂ , a1) (T₀ , a0) = refl; mixed-to-+12 (T₂ , a1) (T₀ , a1) = refl; mixed-to-+12 (T₂ , a1) (T₀ , a2) = refl; mixed-to-+12 (T₂ , a1) (T₀ , a3) = refl; mixed-to-+12 (T₂ , a1) (T₁ , a0) = refl; mixed-to-+12 (T₂ , a1) (T₁ , a1) = refl; mixed-to-+12 (T₂ , a1) (T₁ , a2) = refl; mixed-to-+12 (T₂ , a1) (T₁ , a3) = refl; mixed-to-+12 (T₂ , a1) (T₂ , a0) = refl; mixed-to-+12 (T₂ , a1) (T₂ , a1) = refl; mixed-to-+12 (T₂ , a1) (T₂ , a2) = refl; mixed-to-+12 (T₂ , a1) (T₂ , a3) = refl
-mixed-to-+12 (T₂ , a2) (T₀ , a0) = refl; mixed-to-+12 (T₂ , a2) (T₀ , a1) = refl; mixed-to-+12 (T₂ , a2) (T₀ , a2) = refl; mixed-to-+12 (T₂ , a2) (T₀ , a3) = refl; mixed-to-+12 (T₂ , a2) (T₁ , a0) = refl; mixed-to-+12 (T₂ , a2) (T₁ , a1) = refl; mixed-to-+12 (T₂ , a2) (T₁ , a2) = refl; mixed-to-+12 (T₂ , a2) (T₁ , a3) = refl; mixed-to-+12 (T₂ , a2) (T₂ , a0) = refl; mixed-to-+12 (T₂ , a2) (T₂ , a1) = refl; mixed-to-+12 (T₂ , a2) (T₂ , a2) = refl; mixed-to-+12 (T₂ , a2) (T₂ , a3) = refl
-mixed-to-+12 (T₂ , a3) (T₀ , a0) = refl; mixed-to-+12 (T₂ , a3) (T₀ , a1) = refl; mixed-to-+12 (T₂ , a3) (T₀ , a2) = refl; mixed-to-+12 (T₂ , a3) (T₀ , a3) = refl; mixed-to-+12 (T₂ , a3) (T₁ , a0) = refl; mixed-to-+12 (T₂ , a3) (T₁ , a1) = refl; mixed-to-+12 (T₂ , a3) (T₁ , a2) = refl; mixed-to-+12 (T₂ , a3) (T₁ , a3) = refl; mixed-to-+12 (T₂ , a3) (T₂ , a0) = refl; mixed-to-+12 (T₂ , a3) (T₂ , a1) = refl; mixed-to-+12 (T₂ , a3) (T₂ , a2) = refl; mixed-to-+12 (T₂ , a3) (T₂ , a3) = refl
+mixed-to-+12 p q =
+  trans (cong toDuodec (cong (λ z → mixedOp z q) (sym (index-sound p))))
+  (trans (sym (cong toDuodec (powL-gen (index p) q)))
+  (trans (stepR-iter (index p) q)
+         (sym (+12-index p (toDuodec q)))))
 
 --------------------------------------------------------------------------------
 -- §5. 语义锚点 — char 3 归零与 α 阶 4（联合周期 12 = 3 × 4）
