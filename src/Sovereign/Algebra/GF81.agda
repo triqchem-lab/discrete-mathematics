@@ -1166,11 +1166,72 @@ cancel-mid81 A B C D =
 Basis81 : GF81 → Set
 Basis81 b = (b ≡ gf81-one) ⊎ (b ≡ alpha) ⊎ (b ≡ alpha2) ⊎ (b ≡ alpha3)
 
--- 【结构化重证】原 64/125 case 乘积穷举 → 一行实例化结合律（Basis 证据忽略）
 assoc-basis : ∀ b1 b2 b3 → Basis81 b1 → Basis81 b2 → Basis81 b3 →
   ((b1 *gf81 b2) *gf81 b3) ≡ (b1 *gf81 (b2 *gf81 b3))
-assoc-basis x y z _ _ _ = *gf81-assoc x y z
-
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₁ refl) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₁ refl)) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₁ refl))) = refl
+assoc-basis _ _ _ (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) (inj₂ (inj₂ (inj₂ refl))) = refl
 
 LinZ : ∀ b1 b2 → Lin81 (λ z → (b1 *gf81 b2) *gf81 z)
 LinZ b1 b2 = record { ladd = λ a b → *gf81-distribˡ (b1 *gf81 b2) a b }
