@@ -56,7 +56,7 @@ toℕ₆ : Mod6 → ℕ
 toℕ₆ s0 = 0; toℕ₆ s1 = 1; toℕ₆ s2 = 2
 toℕ₆ s3 = 3; toℕ₆ s4 = 4; toℕ₆ s5 = 5
 
--- 循环后继: +1 mod 6
+-- 循环后继: Sovereign.Algebra.Duodecimal.+1 mod 6
 +1₆ : Mod6 → Mod6
 +1₆ s0 = s1; +1₆ s1 = s2; +1₆ s2 = s3
 +1₆ s3 = s4; +1₆ s4 = s5; +1₆ s5 = s0
@@ -95,7 +95,7 @@ toℕ₂₄ t12 = 12; toℕ₂₄ t13 = 13; toℕ₂₄ t14 = 14; toℕ₂₄ t1
 toℕ₂₄ t16 = 16; toℕ₂₄ t17 = 17; toℕ₂₄ t18 = 18; toℕ₂₄ t19 = 19
 toℕ₂₄ t20 = 20; toℕ₂₄ t21 = 21; toℕ₂₄ t22 = 22; toℕ₂₄ t23 = 23
 
--- 循环后继: +1 mod 24
+-- 循环后继: Sovereign.Algebra.Duodecimal.+1 mod 24
 +1₂₄ : Mod24 → Mod24
 +1₂₄ t0 = t1;  +1₂₄ t1 = t2;  +1₂₄ t2 = t3;  +1₂₄ t3 = t4
 +1₂₄ t4 = t5;  +1₂₄ t5 = t6;  +1₂₄ t6 = t7;  +1₂₄ t7 = t8
@@ -290,19 +290,61 @@ double-3-6-homo T₁ T₀ = refl; double-3-6-homo T₁ T₁ = refl; double-3-6-h
 double-3-6-homo T₂ T₀ = refl; double-3-6-homo T₂ T₁ = refl; double-3-6-homo T₂ T₂ = refl
 
 -- Z/6Z → Z/12Z 同态 (36 case 穷举 refl)
+-- 【结构化重证】double-6-12-homo 原 36 case（6×6 乘积穷举）→ 迭代链
+-- 套路同 double-12-24-homo: double-6-+1₆（生成步双跳, 6 case ✓）+ pow6/powDT（迭代）
+--   +12-suc（11 直推 + 1 绕回借 wrap12, 12 case ✓）+ 归纳链 → 6 条均匀子句
+-- 注: Sovereign.Algebra.Duodecimal.+1 与 VortexRoot 撞名 ⇒ 一律全限定
+
+succD : Duodec → Duodec
+succD = Sovereign.Algebra.Duodecimal.+1
+
+addD : Duodec → Duodec → Duodec
+addD = Sovereign.Algebra.Duodecimal._+12_
+
+pow6 : Data.Nat.ℕ → Mod6 → Mod6
+pow6 Data.Nat.zero z = z
+pow6 (Data.Nat.suc k) z = +1₆ (pow6 k z)
+
+powDT : Data.Nat.ℕ → Duodec → Duodec
+powDT Data.Nat.zero y = y
+powDT (Data.Nat.suc k) y = succD (succD (powDT k y))
+
+wrap12 : ∀ y → succD (succD (succD (succD (succD (succD (succD (succD (succD (succD (succD (succD y))))))))))) ≡ y
+wrap12 d0 = refl; wrap12 d1 = refl; wrap12 d2 = refl; wrap12 d3 = refl
+wrap12 d4 = refl; wrap12 d5 = refl; wrap12 d6 = refl; wrap12 d7 = refl
+wrap12 d8 = refl; wrap12 d9 = refl; wrap12 d10 = refl; wrap12 d11 = refl
+
+double-6-+1₆ : ∀ s → double-6-12 (+1₆ s) ≡ succD (succD (double-6-12 s))
+double-6-+1₆ s0 = refl; double-6-+1₆ s1 = refl; double-6-+1₆ s2 = refl
+double-6-+1₆ s3 = refl; double-6-+1₆ s4 = refl; double-6-+1₆ s5 = refl
+
+double-pow6 : ∀ k s → double-6-12 (pow6 k s) ≡ powDT k (double-6-12 s)
+double-pow6 Data.Nat.zero s = refl
+double-pow6 (Data.Nat.suc k) s =
+  trans (double-6-+1₆ (pow6 k s)) (cong (λ z → succD (succD z)) (double-pow6 k s))
+
++12-suc : ∀ u y → succD (addD u y) ≡ addD (succD u) y
++12-suc d0 y = refl; +12-suc d1 y = refl; +12-suc d2 y = refl; +12-suc d3 y = refl
++12-suc d4 y = refl; +12-suc d5 y = refl; +12-suc d6 y = refl; +12-suc d7 y = refl
++12-suc d8 y = refl; +12-suc d9 y = refl; +12-suc d10 y = refl
++12-suc d11 y = wrap12 y
+
++12-powDT : ∀ k y → addD (powDT k d0) y ≡ powDT k y
++12-powDT Data.Nat.zero y = refl
++12-powDT (Data.Nat.suc k) y =
+  trans (sym (+12-suc (succD (powDT k d0)) y))
+  (trans (cong succD (sym (+12-suc (powDT k d0) y)))
+         (cong (λ w → succD (succD w)) (+12-powDT k y)))
+
 double-6-12-homo : ∀ x y → double-6-12 (x +6 y) ≡ double-6-12 x +12 double-6-12 y
-double-6-12-homo s0 s0 = refl; double-6-12-homo s0 s1 = refl; double-6-12-homo s0 s2 = refl
-double-6-12-homo s0 s3 = refl; double-6-12-homo s0 s4 = refl; double-6-12-homo s0 s5 = refl
-double-6-12-homo s1 s0 = refl; double-6-12-homo s1 s1 = refl; double-6-12-homo s1 s2 = refl
-double-6-12-homo s1 s3 = refl; double-6-12-homo s1 s4 = refl; double-6-12-homo s1 s5 = refl
-double-6-12-homo s2 s0 = refl; double-6-12-homo s2 s1 = refl; double-6-12-homo s2 s2 = refl
-double-6-12-homo s2 s3 = refl; double-6-12-homo s2 s4 = refl; double-6-12-homo s2 s5 = refl
-double-6-12-homo s3 s0 = refl; double-6-12-homo s3 s1 = refl; double-6-12-homo s3 s2 = refl
-double-6-12-homo s3 s3 = refl; double-6-12-homo s3 s4 = refl; double-6-12-homo s3 s5 = refl
-double-6-12-homo s4 s0 = refl; double-6-12-homo s4 s1 = refl; double-6-12-homo s4 s2 = refl
-double-6-12-homo s4 s3 = refl; double-6-12-homo s4 s4 = refl; double-6-12-homo s4 s5 = refl
-double-6-12-homo s5 s0 = refl; double-6-12-homo s5 s1 = refl; double-6-12-homo s5 s2 = refl
-double-6-12-homo s5 s3 = refl; double-6-12-homo s5 s4 = refl; double-6-12-homo s5 s5 = refl
+double-6-12-homo s0 y = trans (double-pow6 0 y) (sym (+12-powDT 0 (double-6-12 y)))
+double-6-12-homo s1 y = trans (double-pow6 1 y) (sym (+12-powDT 1 (double-6-12 y)))
+double-6-12-homo s2 y = trans (double-pow6 2 y) (sym (+12-powDT 2 (double-6-12 y)))
+double-6-12-homo s3 y = trans (double-pow6 3 y) (sym (+12-powDT 3 (double-6-12 y)))
+double-6-12-homo s4 y = trans (double-pow6 4 y) (sym (+12-powDT 4 (double-6-12 y)))
+double-6-12-homo s5 y = trans (double-pow6 5 y) (sym (+12-powDT 5 (double-6-12 y)))
+
+
 
 -- Z/12Z → Z/24Z 同态 【结构化重证】原 144 case（12×12 乘积穷举）→ 12 case × 迭代链
 -- 零件: double-+1（生成步双跳, 12 case 表事实 ✓）+ powD/powD2/pow24（迭代）
@@ -318,9 +360,9 @@ powD2 (Data.Nat.suc k) z = +1₂₄ (+1₂₄ (powD2 k z))
 
 powD : ℕ → Duodec → Duodec
 powD Data.Nat.zero y = y
-powD (Data.Nat.suc k) y = +1 (powD k y)
+powD (Data.Nat.suc k) y = Sovereign.Algebra.Duodecimal.+1 (powD k y)
 
-double-+1 : ∀ d → double-12-24 (+1 d) ≡ +1₂₄ (+1₂₄ (double-12-24 d))
+double-+1 : ∀ d → double-12-24 (Sovereign.Algebra.Duodecimal.+1 d) ≡ +1₂₄ (+1₂₄ (double-12-24 d))
 double-+1 d0 = refl; double-+1 d1 = refl; double-+1 d2 = refl; double-+1 d3 = refl
 double-+1 d4 = refl; double-+1 d5 = refl; double-+1 d6 = refl; double-+1 d7 = refl
 double-+1 d8 = refl; double-+1 d9 = refl; double-+1 d10 = refl; double-+1 d11 = refl
