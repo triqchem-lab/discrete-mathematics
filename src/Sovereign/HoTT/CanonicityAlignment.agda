@@ -41,7 +41,7 @@ CRTPhase = Fin POLAR × Fin TORUS  -- Z_144 × Z_46 = 6624 个相位点
 
 -- FULL_TOUR = 144 × 46 = 6624: 全匝相位对齐
 -- 从离散时钟步投影到 CRT 相位
--- 代数本质: ℕ → Z_144 × Z_46 的 Z_6624 同态
+-- 对齐本质: ℕ → 极向 144 × 环向 46 的相位巡游（物理波系统：谐振对齐；不是模运算定理）
 clockToCRT : ℕ → CRTPhase
 clockToCRT n = (fromℕ< (m%n<n n POLAR) , fromℕ< (m%n<n n TORUS))
 
