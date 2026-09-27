@@ -86,311 +86,118 @@ dcDistance x y = dcWordLength (mixedOp (duodec-inv x) y)
 --------------------------------------------------------------------------------
 
 -- 公理 1: 正定性 (144 case: 对角 refl, 非对角前提矛盾 λ())
-dc-distance-positive : ∀ x y → dcDistance x y ≡ 0 → x ≡ y
-dc-distance-positive (T₀ , a0) (T₀ , a0) eq = refl
-dc-distance-positive (T₀ , a0) (T₀ , a1) ()
-dc-distance-positive (T₀ , a0) (T₀ , a2) ()
-dc-distance-positive (T₀ , a0) (T₀ , a3) ()
-dc-distance-positive (T₀ , a0) (T₁ , a0) ()
-dc-distance-positive (T₀ , a0) (T₁ , a1) ()
-dc-distance-positive (T₀ , a0) (T₁ , a2) ()
-dc-distance-positive (T₀ , a0) (T₁ , a3) ()
-dc-distance-positive (T₀ , a0) (T₂ , a0) ()
-dc-distance-positive (T₀ , a0) (T₂ , a1) ()
-dc-distance-positive (T₀ , a0) (T₂ , a2) ()
-dc-distance-positive (T₀ , a0) (T₂ , a3) ()
-dc-distance-positive (T₀ , a1) (T₀ , a0) ()
-dc-distance-positive (T₀ , a1) (T₀ , a1) eq = refl
-dc-distance-positive (T₀ , a1) (T₀ , a2) ()
-dc-distance-positive (T₀ , a1) (T₀ , a3) ()
-dc-distance-positive (T₀ , a1) (T₁ , a0) ()
-dc-distance-positive (T₀ , a1) (T₁ , a1) ()
-dc-distance-positive (T₀ , a1) (T₁ , a2) ()
-dc-distance-positive (T₀ , a1) (T₁ , a3) ()
-dc-distance-positive (T₀ , a1) (T₂ , a0) ()
-dc-distance-positive (T₀ , a1) (T₂ , a1) ()
-dc-distance-positive (T₀ , a1) (T₂ , a2) ()
-dc-distance-positive (T₀ , a1) (T₂ , a3) ()
-dc-distance-positive (T₀ , a2) (T₀ , a0) ()
-dc-distance-positive (T₀ , a2) (T₀ , a1) ()
-dc-distance-positive (T₀ , a2) (T₀ , a2) eq = refl
-dc-distance-positive (T₀ , a2) (T₀ , a3) ()
-dc-distance-positive (T₀ , a2) (T₁ , a0) ()
-dc-distance-positive (T₀ , a2) (T₁ , a1) ()
-dc-distance-positive (T₀ , a2) (T₁ , a2) ()
-dc-distance-positive (T₀ , a2) (T₁ , a3) ()
-dc-distance-positive (T₀ , a2) (T₂ , a0) ()
-dc-distance-positive (T₀ , a2) (T₂ , a1) ()
-dc-distance-positive (T₀ , a2) (T₂ , a2) ()
-dc-distance-positive (T₀ , a2) (T₂ , a3) ()
-dc-distance-positive (T₀ , a3) (T₀ , a0) ()
-dc-distance-positive (T₀ , a3) (T₀ , a1) ()
-dc-distance-positive (T₀ , a3) (T₀ , a2) ()
-dc-distance-positive (T₀ , a3) (T₀ , a3) eq = refl
-dc-distance-positive (T₀ , a3) (T₁ , a0) ()
-dc-distance-positive (T₀ , a3) (T₁ , a1) ()
-dc-distance-positive (T₀ , a3) (T₁ , a2) ()
-dc-distance-positive (T₀ , a3) (T₁ , a3) ()
-dc-distance-positive (T₀ , a3) (T₂ , a0) ()
-dc-distance-positive (T₀ , a3) (T₂ , a1) ()
-dc-distance-positive (T₀ , a3) (T₂ , a2) ()
-dc-distance-positive (T₀ , a3) (T₂ , a3) ()
-dc-distance-positive (T₁ , a0) (T₀ , a0) ()
-dc-distance-positive (T₁ , a0) (T₀ , a1) ()
-dc-distance-positive (T₁ , a0) (T₀ , a2) ()
-dc-distance-positive (T₁ , a0) (T₀ , a3) ()
-dc-distance-positive (T₁ , a0) (T₁ , a0) eq = refl
-dc-distance-positive (T₁ , a0) (T₁ , a1) ()
-dc-distance-positive (T₁ , a0) (T₁ , a2) ()
-dc-distance-positive (T₁ , a0) (T₁ , a3) ()
-dc-distance-positive (T₁ , a0) (T₂ , a0) ()
-dc-distance-positive (T₁ , a0) (T₂ , a1) ()
-dc-distance-positive (T₁ , a0) (T₂ , a2) ()
-dc-distance-positive (T₁ , a0) (T₂ , a3) ()
-dc-distance-positive (T₁ , a1) (T₀ , a0) ()
-dc-distance-positive (T₁ , a1) (T₀ , a1) ()
-dc-distance-positive (T₁ , a1) (T₀ , a2) ()
-dc-distance-positive (T₁ , a1) (T₀ , a3) ()
-dc-distance-positive (T₁ , a1) (T₁ , a0) ()
-dc-distance-positive (T₁ , a1) (T₁ , a1) eq = refl
-dc-distance-positive (T₁ , a1) (T₁ , a2) ()
-dc-distance-positive (T₁ , a1) (T₁ , a3) ()
-dc-distance-positive (T₁ , a1) (T₂ , a0) ()
-dc-distance-positive (T₁ , a1) (T₂ , a1) ()
-dc-distance-positive (T₁ , a1) (T₂ , a2) ()
-dc-distance-positive (T₁ , a1) (T₂ , a3) ()
-dc-distance-positive (T₁ , a2) (T₀ , a0) ()
-dc-distance-positive (T₁ , a2) (T₀ , a1) ()
-dc-distance-positive (T₁ , a2) (T₀ , a2) ()
-dc-distance-positive (T₁ , a2) (T₀ , a3) ()
-dc-distance-positive (T₁ , a2) (T₁ , a0) ()
-dc-distance-positive (T₁ , a2) (T₁ , a1) ()
-dc-distance-positive (T₁ , a2) (T₁ , a2) eq = refl
-dc-distance-positive (T₁ , a2) (T₁ , a3) ()
-dc-distance-positive (T₁ , a2) (T₂ , a0) ()
-dc-distance-positive (T₁ , a2) (T₂ , a1) ()
-dc-distance-positive (T₁ , a2) (T₂ , a2) ()
-dc-distance-positive (T₁ , a2) (T₂ , a3) ()
-dc-distance-positive (T₁ , a3) (T₀ , a0) ()
-dc-distance-positive (T₁ , a3) (T₀ , a1) ()
-dc-distance-positive (T₁ , a3) (T₀ , a2) ()
-dc-distance-positive (T₁ , a3) (T₀ , a3) ()
-dc-distance-positive (T₁ , a3) (T₁ , a0) ()
-dc-distance-positive (T₁ , a3) (T₁ , a1) ()
-dc-distance-positive (T₁ , a3) (T₁ , a2) ()
-dc-distance-positive (T₁ , a3) (T₁ , a3) eq = refl
-dc-distance-positive (T₁ , a3) (T₂ , a0) ()
-dc-distance-positive (T₁ , a3) (T₂ , a1) ()
-dc-distance-positive (T₁ , a3) (T₂ , a2) ()
-dc-distance-positive (T₁ , a3) (T₂ , a3) ()
-dc-distance-positive (T₂ , a0) (T₀ , a0) ()
-dc-distance-positive (T₂ , a0) (T₀ , a1) ()
-dc-distance-positive (T₂ , a0) (T₀ , a2) ()
-dc-distance-positive (T₂ , a0) (T₀ , a3) ()
-dc-distance-positive (T₂ , a0) (T₁ , a0) ()
-dc-distance-positive (T₂ , a0) (T₁ , a1) ()
-dc-distance-positive (T₂ , a0) (T₁ , a2) ()
-dc-distance-positive (T₂ , a0) (T₁ , a3) ()
-dc-distance-positive (T₂ , a0) (T₂ , a0) eq = refl
-dc-distance-positive (T₂ , a0) (T₂ , a1) ()
-dc-distance-positive (T₂ , a0) (T₂ , a2) ()
-dc-distance-positive (T₂ , a0) (T₂ , a3) ()
-dc-distance-positive (T₂ , a1) (T₀ , a0) ()
-dc-distance-positive (T₂ , a1) (T₀ , a1) ()
-dc-distance-positive (T₂ , a1) (T₀ , a2) ()
-dc-distance-positive (T₂ , a1) (T₀ , a3) ()
-dc-distance-positive (T₂ , a1) (T₁ , a0) ()
-dc-distance-positive (T₂ , a1) (T₁ , a1) ()
-dc-distance-positive (T₂ , a1) (T₁ , a2) ()
-dc-distance-positive (T₂ , a1) (T₁ , a3) ()
-dc-distance-positive (T₂ , a1) (T₂ , a0) ()
-dc-distance-positive (T₂ , a1) (T₂ , a1) eq = refl
-dc-distance-positive (T₂ , a1) (T₂ , a2) ()
-dc-distance-positive (T₂ , a1) (T₂ , a3) ()
-dc-distance-positive (T₂ , a2) (T₀ , a0) ()
-dc-distance-positive (T₂ , a2) (T₀ , a1) ()
-dc-distance-positive (T₂ , a2) (T₀ , a2) ()
-dc-distance-positive (T₂ , a2) (T₀ , a3) ()
-dc-distance-positive (T₂ , a2) (T₁ , a0) ()
-dc-distance-positive (T₂ , a2) (T₁ , a1) ()
-dc-distance-positive (T₂ , a2) (T₁ , a2) ()
-dc-distance-positive (T₂ , a2) (T₁ , a3) ()
-dc-distance-positive (T₂ , a2) (T₂ , a0) ()
-dc-distance-positive (T₂ , a2) (T₂ , a1) ()
-dc-distance-positive (T₂ , a2) (T₂ , a2) eq = refl
-dc-distance-positive (T₂ , a2) (T₂ , a3) ()
-dc-distance-positive (T₂ , a3) (T₀ , a0) ()
-dc-distance-positive (T₂ , a3) (T₀ , a1) ()
-dc-distance-positive (T₂ , a3) (T₀ , a2) ()
-dc-distance-positive (T₂ , a3) (T₀ , a3) ()
-dc-distance-positive (T₂ , a3) (T₁ , a0) ()
-dc-distance-positive (T₂ , a3) (T₁ , a1) ()
-dc-distance-positive (T₂ , a3) (T₁ , a2) ()
-dc-distance-positive (T₂ , a3) (T₁ , a3) ()
-dc-distance-positive (T₂ , a3) (T₂ , a0) ()
-dc-distance-positive (T₂ , a3) (T₂ , a1) ()
-dc-distance-positive (T₂ , a3) (T₂ , a2) ()
-dc-distance-positive (T₂ , a3) (T₂ , a3) eq = refl
-dc-distance-zero : ∀ x → dcDistance x x ≡ 0
-dc-distance-zero (T₀ , a0) = refl
-dc-distance-zero (T₀ , a1) = refl
-dc-distance-zero (T₀ , a2) = refl
-dc-distance-zero (T₀ , a3) = refl
-dc-distance-zero (T₁ , a0) = refl
-dc-distance-zero (T₁ , a1) = refl
-dc-distance-zero (T₁ , a2) = refl
-dc-distance-zero (T₁ , a3) = refl
-dc-distance-zero (T₂ , a0) = refl
-dc-distance-zero (T₂ , a1) = refl
-dc-distance-zero (T₂ , a2) = refl
-dc-distance-zero (T₂ , a3) = refl
+open import Sovereign.Algebra.GroupTheory.DuodecClock using
+  (AlphaPower; a0; a1; a2; a3; mulAlpha; alphaInv; duodec-e; duodec-inv; mixedOp;
+   mixedOp-assoc; mulAlpha-comm)
+open import Sovereign.Algebra.GroupTheory.DCInvolution using (alphaInv-involutive)
 
--- 公理 2: 对称性 (144 case)
+-- 【结构化重证】原 dc-distance-positive / dc-distance-sym 各 144 case
+-- （12×12 乘积穷举）→ 群代数链 + 局部小表（均 ≤27 ✓）。
+-- 核心恒等式: y⁻¹x = (x⁻¹y)⁻¹（逆反演）+ 群消去 + 字长逆不变。
+
+neg-neg : ∀ t → negate (negate t) ≡ t
+neg-neg T₀ = refl; neg-neg T₁ = refl; neg-neg T₂ = refl
+
+neg-⊕-homo : ∀ a b → negate (a ⊕ b) ≡ negate a ⊕ negate b
+neg-⊕-homo T₀ T₀ = refl; neg-⊕-homo T₀ T₁ = refl; neg-⊕-homo T₀ T₂ = refl
+neg-⊕-homo T₁ T₀ = refl; neg-⊕-homo T₁ T₁ = refl; neg-⊕-homo T₁ T₂ = refl
+neg-⊕-homo T₂ T₀ = refl; neg-⊕-homo T₂ T₁ = refl; neg-⊕-homo T₂ T₂ = refl
+
+comm-⊕ : ∀ a b → a ⊕ b ≡ b ⊕ a
+comm-⊕ T₀ T₀ = refl; comm-⊕ T₀ T₁ = refl; comm-⊕ T₀ T₂ = refl
+comm-⊕ T₁ T₀ = refl; comm-⊕ T₁ T₁ = refl; comm-⊕ T₁ T₂ = refl
+comm-⊕ T₂ T₀ = refl; comm-⊕ T₂ T₁ = refl; comm-⊕ T₂ T₂ = refl
+
+ident-l : ∀ p → mixedOp duodec-e p ≡ p
+ident-l (T₀ , a0) = refl; ident-l (T₀ , a1) = refl
+ident-l (T₀ , a2) = refl; ident-l (T₀ , a3) = refl
+ident-l (T₁ , a0) = refl; ident-l (T₁ , a1) = refl
+ident-l (T₁ , a2) = refl; ident-l (T₁ , a3) = refl
+ident-l (T₂ , a0) = refl; ident-l (T₂ , a1) = refl
+ident-l (T₂ , a2) = refl; ident-l (T₂ , a3) = refl
+
+ident-r : ∀ p → mixedOp p duodec-e ≡ p
+ident-r (T₀ , a0) = refl; ident-r (T₀ , a1) = refl
+ident-r (T₀ , a2) = refl; ident-r (T₀ , a3) = refl
+ident-r (T₁ , a0) = refl; ident-r (T₁ , a1) = refl
+ident-r (T₁ , a2) = refl; ident-r (T₁ , a3) = refl
+ident-r (T₂ , a0) = refl; ident-r (T₂ , a1) = refl
+ident-r (T₂ , a2) = refl; ident-r (T₂ , a3) = refl
+
+inv-right : ∀ p → mixedOp p (duodec-inv p) ≡ duodec-e
+inv-right (T₀ , a0) = refl; inv-right (T₀ , a1) = refl
+inv-right (T₀ , a2) = refl; inv-right (T₀ , a3) = refl
+inv-right (T₁ , a0) = refl; inv-right (T₁ , a1) = refl
+inv-right (T₁ , a2) = refl; inv-right (T₁ , a3) = refl
+inv-right (T₂ , a0) = refl; inv-right (T₂ , a1) = refl
+inv-right (T₂ , a2) = refl; inv-right (T₂ , a3) = refl
+
+dcWordLength-inv : ∀ g → dcWordLength (duodec-inv g) ≡ dcWordLength g
+dcWordLength-inv (T₀ , a0) = refl; dcWordLength-inv (T₀ , a1) = refl
+dcWordLength-inv (T₀ , a2) = refl; dcWordLength-inv (T₀ , a3) = refl
+dcWordLength-inv (T₁ , a0) = refl; dcWordLength-inv (T₁ , a1) = refl
+dcWordLength-inv (T₁ , a2) = refl; dcWordLength-inv (T₁ , a3) = refl
+dcWordLength-inv (T₂ , a0) = refl; dcWordLength-inv (T₂ , a1) = refl
+dcWordLength-inv (T₂ , a2) = refl; dcWordLength-inv (T₂ , a3) = refl
+
+wordlength-zero : ∀ g → dcWordLength g ≡ 0 → g ≡ duodec-e
+wordlength-zero (T₀ , a0) eq = refl
+wordlength-zero (T₀ , a1) ()
+wordlength-zero (T₀ , a2) ()
+wordlength-zero (T₀ , a3) ()
+wordlength-zero (T₁ , a0) ()
+wordlength-zero (T₁ , a1) ()
+wordlength-zero (T₁ , a2) ()
+wordlength-zero (T₁ , a3) ()
+wordlength-zero (T₂ , a0) ()
+wordlength-zero (T₂ , a1) ()
+wordlength-zero (T₂ , a2) ()
+wordlength-zero (T₂ , a3) ()
+
+alphaInv-mul : ∀ u v → alphaInv (mulAlpha u v) ≡ mulAlpha (alphaInv u) (alphaInv v)
+alphaInv-mul a0 a0 = refl; alphaInv-mul a0 a1 = refl
+alphaInv-mul a0 a2 = refl; alphaInv-mul a0 a3 = refl
+alphaInv-mul a1 a0 = refl; alphaInv-mul a1 a1 = refl
+alphaInv-mul a1 a2 = refl; alphaInv-mul a1 a3 = refl
+alphaInv-mul a2 a0 = refl; alphaInv-mul a2 a1 = refl
+alphaInv-mul a2 a2 = refl; alphaInv-mul a2 a3 = refl
+alphaInv-mul a3 a0 = refl; alphaInv-mul a3 a1 = refl
+alphaInv-mul a3 a2 = refl; alphaInv-mul a3 a3 = refl
+
+-- 逆反演恒等式: y⁻¹x = (x⁻¹y)⁻¹
+inv-swap : ∀ x y → mixedOp (duodec-inv y) x ≡ duodec-inv (mixedOp (duodec-inv x) y)
+inv-swap (tx , a) (ty , b) =
+  trans (cong (λ z → (z , mulAlpha (alphaInv b) a)) comp-t)
+        (cong (λ z → (negate (negate tx ⊕ ty) , z)) comp-a)
+  where
+    comp-t : negate ty ⊕ tx ≡ negate (negate tx ⊕ ty)
+    comp-t = sym (trans (neg-⊕-homo (negate tx) ty)
+                        (trans (cong (λ z → z ⊕ negate ty) (neg-neg tx))
+                               (comm-⊕ tx (negate ty))))
+    comp-a : mulAlpha (alphaInv b) a ≡ alphaInv (mulAlpha (alphaInv a) b)
+    comp-a = sym (trans (alphaInv-mul (alphaInv a) b)
+                        (trans (cong (λ z → mulAlpha z (alphaInv b)) (alphaInv-involutive a))
+                               (mulAlpha-comm a (alphaInv b))))
+
+-- 群消去: x⁻¹y = e → x = y
+cancel-left : ∀ x y → mixedOp (duodec-inv x) y ≡ duodec-e → x ≡ y
+cancel-left x y eq =
+  trans (sym (ident-r x))
+  (trans (cong (mixedOp x) (sym eq))
+  (trans (sym (mixedOp-assoc x (duodec-inv x) y))
+  (trans (cong (λ z → mixedOp z y) (inv-right x))
+         (ident-l y))))
+
+dc-distance-positive : ∀ x y → dcDistance x y ≡ 0 → x ≡ y
+dc-distance-positive x y eq =
+  cancel-left x y (wordlength-zero (mixedOp (duodec-inv x) y) eq)
+
 dc-distance-sym : ∀ x y → dcDistance x y ≡ dcDistance y x
-dc-distance-sym (T₀ , a0) (T₀ , a0) = refl
-dc-distance-sym (T₀ , a0) (T₀ , a1) = refl
-dc-distance-sym (T₀ , a0) (T₀ , a2) = refl
-dc-distance-sym (T₀ , a0) (T₀ , a3) = refl
-dc-distance-sym (T₀ , a0) (T₁ , a0) = refl
-dc-distance-sym (T₀ , a0) (T₁ , a1) = refl
-dc-distance-sym (T₀ , a0) (T₁ , a2) = refl
-dc-distance-sym (T₀ , a0) (T₁ , a3) = refl
-dc-distance-sym (T₀ , a0) (T₂ , a0) = refl
-dc-distance-sym (T₀ , a0) (T₂ , a1) = refl
-dc-distance-sym (T₀ , a0) (T₂ , a2) = refl
-dc-distance-sym (T₀ , a0) (T₂ , a3) = refl
-dc-distance-sym (T₀ , a1) (T₀ , a0) = refl
-dc-distance-sym (T₀ , a1) (T₀ , a1) = refl
-dc-distance-sym (T₀ , a1) (T₀ , a2) = refl
-dc-distance-sym (T₀ , a1) (T₀ , a3) = refl
-dc-distance-sym (T₀ , a1) (T₁ , a0) = refl
-dc-distance-sym (T₀ , a1) (T₁ , a1) = refl
-dc-distance-sym (T₀ , a1) (T₁ , a2) = refl
-dc-distance-sym (T₀ , a1) (T₁ , a3) = refl
-dc-distance-sym (T₀ , a1) (T₂ , a0) = refl
-dc-distance-sym (T₀ , a1) (T₂ , a1) = refl
-dc-distance-sym (T₀ , a1) (T₂ , a2) = refl
-dc-distance-sym (T₀ , a1) (T₂ , a3) = refl
-dc-distance-sym (T₀ , a2) (T₀ , a0) = refl
-dc-distance-sym (T₀ , a2) (T₀ , a1) = refl
-dc-distance-sym (T₀ , a2) (T₀ , a2) = refl
-dc-distance-sym (T₀ , a2) (T₀ , a3) = refl
-dc-distance-sym (T₀ , a2) (T₁ , a0) = refl
-dc-distance-sym (T₀ , a2) (T₁ , a1) = refl
-dc-distance-sym (T₀ , a2) (T₁ , a2) = refl
-dc-distance-sym (T₀ , a2) (T₁ , a3) = refl
-dc-distance-sym (T₀ , a2) (T₂ , a0) = refl
-dc-distance-sym (T₀ , a2) (T₂ , a1) = refl
-dc-distance-sym (T₀ , a2) (T₂ , a2) = refl
-dc-distance-sym (T₀ , a2) (T₂ , a3) = refl
-dc-distance-sym (T₀ , a3) (T₀ , a0) = refl
-dc-distance-sym (T₀ , a3) (T₀ , a1) = refl
-dc-distance-sym (T₀ , a3) (T₀ , a2) = refl
-dc-distance-sym (T₀ , a3) (T₀ , a3) = refl
-dc-distance-sym (T₀ , a3) (T₁ , a0) = refl
-dc-distance-sym (T₀ , a3) (T₁ , a1) = refl
-dc-distance-sym (T₀ , a3) (T₁ , a2) = refl
-dc-distance-sym (T₀ , a3) (T₁ , a3) = refl
-dc-distance-sym (T₀ , a3) (T₂ , a0) = refl
-dc-distance-sym (T₀ , a3) (T₂ , a1) = refl
-dc-distance-sym (T₀ , a3) (T₂ , a2) = refl
-dc-distance-sym (T₀ , a3) (T₂ , a3) = refl
-dc-distance-sym (T₁ , a0) (T₀ , a0) = refl
-dc-distance-sym (T₁ , a0) (T₀ , a1) = refl
-dc-distance-sym (T₁ , a0) (T₀ , a2) = refl
-dc-distance-sym (T₁ , a0) (T₀ , a3) = refl
-dc-distance-sym (T₁ , a0) (T₁ , a0) = refl
-dc-distance-sym (T₁ , a0) (T₁ , a1) = refl
-dc-distance-sym (T₁ , a0) (T₁ , a2) = refl
-dc-distance-sym (T₁ , a0) (T₁ , a3) = refl
-dc-distance-sym (T₁ , a0) (T₂ , a0) = refl
-dc-distance-sym (T₁ , a0) (T₂ , a1) = refl
-dc-distance-sym (T₁ , a0) (T₂ , a2) = refl
-dc-distance-sym (T₁ , a0) (T₂ , a3) = refl
-dc-distance-sym (T₁ , a1) (T₀ , a0) = refl
-dc-distance-sym (T₁ , a1) (T₀ , a1) = refl
-dc-distance-sym (T₁ , a1) (T₀ , a2) = refl
-dc-distance-sym (T₁ , a1) (T₀ , a3) = refl
-dc-distance-sym (T₁ , a1) (T₁ , a0) = refl
-dc-distance-sym (T₁ , a1) (T₁ , a1) = refl
-dc-distance-sym (T₁ , a1) (T₁ , a2) = refl
-dc-distance-sym (T₁ , a1) (T₁ , a3) = refl
-dc-distance-sym (T₁ , a1) (T₂ , a0) = refl
-dc-distance-sym (T₁ , a1) (T₂ , a1) = refl
-dc-distance-sym (T₁ , a1) (T₂ , a2) = refl
-dc-distance-sym (T₁ , a1) (T₂ , a3) = refl
-dc-distance-sym (T₁ , a2) (T₀ , a0) = refl
-dc-distance-sym (T₁ , a2) (T₀ , a1) = refl
-dc-distance-sym (T₁ , a2) (T₀ , a2) = refl
-dc-distance-sym (T₁ , a2) (T₀ , a3) = refl
-dc-distance-sym (T₁ , a2) (T₁ , a0) = refl
-dc-distance-sym (T₁ , a2) (T₁ , a1) = refl
-dc-distance-sym (T₁ , a2) (T₁ , a2) = refl
-dc-distance-sym (T₁ , a2) (T₁ , a3) = refl
-dc-distance-sym (T₁ , a2) (T₂ , a0) = refl
-dc-distance-sym (T₁ , a2) (T₂ , a1) = refl
-dc-distance-sym (T₁ , a2) (T₂ , a2) = refl
-dc-distance-sym (T₁ , a2) (T₂ , a3) = refl
-dc-distance-sym (T₁ , a3) (T₀ , a0) = refl
-dc-distance-sym (T₁ , a3) (T₀ , a1) = refl
-dc-distance-sym (T₁ , a3) (T₀ , a2) = refl
-dc-distance-sym (T₁ , a3) (T₀ , a3) = refl
-dc-distance-sym (T₁ , a3) (T₁ , a0) = refl
-dc-distance-sym (T₁ , a3) (T₁ , a1) = refl
-dc-distance-sym (T₁ , a3) (T₁ , a2) = refl
-dc-distance-sym (T₁ , a3) (T₁ , a3) = refl
-dc-distance-sym (T₁ , a3) (T₂ , a0) = refl
-dc-distance-sym (T₁ , a3) (T₂ , a1) = refl
-dc-distance-sym (T₁ , a3) (T₂ , a2) = refl
-dc-distance-sym (T₁ , a3) (T₂ , a3) = refl
-dc-distance-sym (T₂ , a0) (T₀ , a0) = refl
-dc-distance-sym (T₂ , a0) (T₀ , a1) = refl
-dc-distance-sym (T₂ , a0) (T₀ , a2) = refl
-dc-distance-sym (T₂ , a0) (T₀ , a3) = refl
-dc-distance-sym (T₂ , a0) (T₁ , a0) = refl
-dc-distance-sym (T₂ , a0) (T₁ , a1) = refl
-dc-distance-sym (T₂ , a0) (T₁ , a2) = refl
-dc-distance-sym (T₂ , a0) (T₁ , a3) = refl
-dc-distance-sym (T₂ , a0) (T₂ , a0) = refl
-dc-distance-sym (T₂ , a0) (T₂ , a1) = refl
-dc-distance-sym (T₂ , a0) (T₂ , a2) = refl
-dc-distance-sym (T₂ , a0) (T₂ , a3) = refl
-dc-distance-sym (T₂ , a1) (T₀ , a0) = refl
-dc-distance-sym (T₂ , a1) (T₀ , a1) = refl
-dc-distance-sym (T₂ , a1) (T₀ , a2) = refl
-dc-distance-sym (T₂ , a1) (T₀ , a3) = refl
-dc-distance-sym (T₂ , a1) (T₁ , a0) = refl
-dc-distance-sym (T₂ , a1) (T₁ , a1) = refl
-dc-distance-sym (T₂ , a1) (T₁ , a2) = refl
-dc-distance-sym (T₂ , a1) (T₁ , a3) = refl
-dc-distance-sym (T₂ , a1) (T₂ , a0) = refl
-dc-distance-sym (T₂ , a1) (T₂ , a1) = refl
-dc-distance-sym (T₂ , a1) (T₂ , a2) = refl
-dc-distance-sym (T₂ , a1) (T₂ , a3) = refl
-dc-distance-sym (T₂ , a2) (T₀ , a0) = refl
-dc-distance-sym (T₂ , a2) (T₀ , a1) = refl
-dc-distance-sym (T₂ , a2) (T₀ , a2) = refl
-dc-distance-sym (T₂ , a2) (T₀ , a3) = refl
-dc-distance-sym (T₂ , a2) (T₁ , a0) = refl
-dc-distance-sym (T₂ , a2) (T₁ , a1) = refl
-dc-distance-sym (T₂ , a2) (T₁ , a2) = refl
-dc-distance-sym (T₂ , a2) (T₁ , a3) = refl
-dc-distance-sym (T₂ , a2) (T₂ , a0) = refl
-dc-distance-sym (T₂ , a2) (T₂ , a1) = refl
-dc-distance-sym (T₂ , a2) (T₂ , a2) = refl
-dc-distance-sym (T₂ , a2) (T₂ , a3) = refl
-dc-distance-sym (T₂ , a3) (T₀ , a0) = refl
-dc-distance-sym (T₂ , a3) (T₀ , a1) = refl
-dc-distance-sym (T₂ , a3) (T₀ , a2) = refl
-dc-distance-sym (T₂ , a3) (T₀ , a3) = refl
-dc-distance-sym (T₂ , a3) (T₁ , a0) = refl
-dc-distance-sym (T₂ , a3) (T₁ , a1) = refl
-dc-distance-sym (T₂ , a3) (T₁ , a2) = refl
-dc-distance-sym (T₂ , a3) (T₁ , a3) = refl
-dc-distance-sym (T₂ , a3) (T₂ , a0) = refl
-dc-distance-sym (T₂ , a3) (T₂ , a1) = refl
-dc-distance-sym (T₂ , a3) (T₂ , a2) = refl
-dc-distance-sym (T₂ , a3) (T₂ , a3) = refl
+dc-distance-sym x y =
+  trans (sym (dcWordLength-inv (mixedOp (duodec-inv x) y)))
+        (cong dcWordLength (sym (inv-swap x y)))
+
+
 
 -- 公理 3: 三角不等式 (1728 case 穷举, 数值核对成立)
 dc-distance-triangle : ∀ x y z → dcDistance x z ≤ dcDistance x y + dcDistance y z

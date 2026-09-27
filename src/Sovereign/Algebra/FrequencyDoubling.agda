@@ -304,44 +304,70 @@ double-6-12-homo s4 s3 = refl; double-6-12-homo s4 s4 = refl; double-6-12-homo s
 double-6-12-homo s5 s0 = refl; double-6-12-homo s5 s1 = refl; double-6-12-homo s5 s2 = refl
 double-6-12-homo s5 s3 = refl; double-6-12-homo s5 s4 = refl; double-6-12-homo s5 s5 = refl
 
--- Z/12Z → Z/24Z 同态 (144 case 穷举 refl)
+-- Z/12Z → Z/24Z 同态 【结构化重证】原 144 case（12×12 乘积穷举）→ 12 case × 迭代链
+-- 零件: double-+1（生成步双跳, 12 case 表事实 ✓）+ powD/powD2/pow24（迭代）
+--       +24-suc（23 直推 + 1 绕回借 pow24-24, 24 case ✓）+ 归纳链
+
+pow24 : ℕ → Mod24 → Mod24
+pow24 Data.Nat.zero z = z
+pow24 (Data.Nat.suc n) z = +1₂₄ (pow24 n z)
+
+powD2 : ℕ → Mod24 → Mod24
+powD2 Data.Nat.zero z = z
+powD2 (Data.Nat.suc k) z = +1₂₄ (+1₂₄ (powD2 k z))
+
+powD : ℕ → Duodec → Duodec
+powD Data.Nat.zero y = y
+powD (Data.Nat.suc k) y = +1 (powD k y)
+
+double-+1 : ∀ d → double-12-24 (+1 d) ≡ +1₂₄ (+1₂₄ (double-12-24 d))
+double-+1 d0 = refl; double-+1 d1 = refl; double-+1 d2 = refl; double-+1 d3 = refl
+double-+1 d4 = refl; double-+1 d5 = refl; double-+1 d6 = refl; double-+1 d7 = refl
+double-+1 d8 = refl; double-+1 d9 = refl; double-+1 d10 = refl; double-+1 d11 = refl
+
+double-powD : ∀ k y → double-12-24 (powD k y) ≡ powD2 k (double-12-24 y)
+double-powD Data.Nat.zero y = refl
+double-powD (Data.Nat.suc k) y =
+  trans (double-+1 (powD k y)) (cong (λ z → +1₂₄ (+1₂₄ z)) (double-powD k y))
+
+pow24-24 : ∀ z → pow24 24 z ≡ z
+pow24-24 t0 = refl; pow24-24 t1 = refl; pow24-24 t2 = refl; pow24-24 t3 = refl
+pow24-24 t4 = refl; pow24-24 t5 = refl; pow24-24 t6 = refl; pow24-24 t7 = refl
+pow24-24 t8 = refl; pow24-24 t9 = refl; pow24-24 t10 = refl; pow24-24 t11 = refl
+pow24-24 t12 = refl; pow24-24 t13 = refl; pow24-24 t14 = refl; pow24-24 t15 = refl
+pow24-24 t16 = refl; pow24-24 t17 = refl; pow24-24 t18 = refl; pow24-24 t19 = refl
+pow24-24 t20 = refl; pow24-24 t21 = refl; pow24-24 t22 = refl; pow24-24 t23 = refl
+
++24-suc : ∀ u z → (+1₂₄ u) +24 z ≡ +1₂₄ (u +24 z)
++24-suc t0 z = refl; +24-suc t1 z = refl; +24-suc t2 z = refl; +24-suc t3 z = refl
++24-suc t4 z = refl; +24-suc t5 z = refl; +24-suc t6 z = refl; +24-suc t7 z = refl
++24-suc t8 z = refl; +24-suc t9 z = refl; +24-suc t10 z = refl; +24-suc t11 z = refl
++24-suc t12 z = refl; +24-suc t13 z = refl; +24-suc t14 z = refl; +24-suc t15 z = refl
++24-suc t16 z = refl; +24-suc t17 z = refl; +24-suc t18 z = refl; +24-suc t19 z = refl
++24-suc t20 z = refl; +24-suc t21 z = refl; +24-suc t22 z = refl
++24-suc t23 z = sym (pow24-24 z)
+
++24-powD2 : ∀ k z → powD2 k t0 +24 z ≡ powD2 k z
++24-powD2 Data.Nat.zero z = refl
++24-powD2 (Data.Nat.suc k) z =
+  trans (+24-suc (+1₂₄ (powD2 k t0)) z)
+  (trans (cong +1₂₄ (+24-suc (powD2 k t0) z))
+         (cong (λ w → +1₂₄ (+1₂₄ w)) (+24-powD2 k z)))
+
 double-12-24-homo : ∀ x y → double-12-24 (x +12 y) ≡ double-12-24 x +24 double-12-24 y
-double-12-24-homo d0 d0 = refl; double-12-24-homo d0 d1 = refl; double-12-24-homo d0 d2 = refl; double-12-24-homo d0 d3 = refl
-double-12-24-homo d0 d4 = refl; double-12-24-homo d0 d5 = refl; double-12-24-homo d0 d6 = refl; double-12-24-homo d0 d7 = refl
-double-12-24-homo d0 d8 = refl; double-12-24-homo d0 d9 = refl; double-12-24-homo d0 d10 = refl; double-12-24-homo d0 d11 = refl
-double-12-24-homo d1 d0 = refl; double-12-24-homo d1 d1 = refl; double-12-24-homo d1 d2 = refl; double-12-24-homo d1 d3 = refl
-double-12-24-homo d1 d4 = refl; double-12-24-homo d1 d5 = refl; double-12-24-homo d1 d6 = refl; double-12-24-homo d1 d7 = refl
-double-12-24-homo d1 d8 = refl; double-12-24-homo d1 d9 = refl; double-12-24-homo d1 d10 = refl; double-12-24-homo d1 d11 = refl
-double-12-24-homo d2 d0 = refl; double-12-24-homo d2 d1 = refl; double-12-24-homo d2 d2 = refl; double-12-24-homo d2 d3 = refl
-double-12-24-homo d2 d4 = refl; double-12-24-homo d2 d5 = refl; double-12-24-homo d2 d6 = refl; double-12-24-homo d2 d7 = refl
-double-12-24-homo d2 d8 = refl; double-12-24-homo d2 d9 = refl; double-12-24-homo d2 d10 = refl; double-12-24-homo d2 d11 = refl
-double-12-24-homo d3 d0 = refl; double-12-24-homo d3 d1 = refl; double-12-24-homo d3 d2 = refl; double-12-24-homo d3 d3 = refl
-double-12-24-homo d3 d4 = refl; double-12-24-homo d3 d5 = refl; double-12-24-homo d3 d6 = refl; double-12-24-homo d3 d7 = refl
-double-12-24-homo d3 d8 = refl; double-12-24-homo d3 d9 = refl; double-12-24-homo d3 d10 = refl; double-12-24-homo d3 d11 = refl
-double-12-24-homo d4 d0 = refl; double-12-24-homo d4 d1 = refl; double-12-24-homo d4 d2 = refl; double-12-24-homo d4 d3 = refl
-double-12-24-homo d4 d4 = refl; double-12-24-homo d4 d5 = refl; double-12-24-homo d4 d6 = refl; double-12-24-homo d4 d7 = refl
-double-12-24-homo d4 d8 = refl; double-12-24-homo d4 d9 = refl; double-12-24-homo d4 d10 = refl; double-12-24-homo d4 d11 = refl
-double-12-24-homo d5 d0 = refl; double-12-24-homo d5 d1 = refl; double-12-24-homo d5 d2 = refl; double-12-24-homo d5 d3 = refl
-double-12-24-homo d5 d4 = refl; double-12-24-homo d5 d5 = refl; double-12-24-homo d5 d6 = refl; double-12-24-homo d5 d7 = refl
-double-12-24-homo d5 d8 = refl; double-12-24-homo d5 d9 = refl; double-12-24-homo d5 d10 = refl; double-12-24-homo d5 d11 = refl
-double-12-24-homo d6 d0 = refl; double-12-24-homo d6 d1 = refl; double-12-24-homo d6 d2 = refl; double-12-24-homo d6 d3 = refl
-double-12-24-homo d6 d4 = refl; double-12-24-homo d6 d5 = refl; double-12-24-homo d6 d6 = refl; double-12-24-homo d6 d7 = refl
-double-12-24-homo d6 d8 = refl; double-12-24-homo d6 d9 = refl; double-12-24-homo d6 d10 = refl; double-12-24-homo d6 d11 = refl
-double-12-24-homo d7 d0 = refl; double-12-24-homo d7 d1 = refl; double-12-24-homo d7 d2 = refl; double-12-24-homo d7 d3 = refl
-double-12-24-homo d7 d4 = refl; double-12-24-homo d7 d5 = refl; double-12-24-homo d7 d6 = refl; double-12-24-homo d7 d7 = refl
-double-12-24-homo d7 d8 = refl; double-12-24-homo d7 d9 = refl; double-12-24-homo d7 d10 = refl; double-12-24-homo d7 d11 = refl
-double-12-24-homo d8 d0 = refl; double-12-24-homo d8 d1 = refl; double-12-24-homo d8 d2 = refl; double-12-24-homo d8 d3 = refl
-double-12-24-homo d8 d4 = refl; double-12-24-homo d8 d5 = refl; double-12-24-homo d8 d6 = refl; double-12-24-homo d8 d7 = refl
-double-12-24-homo d8 d8 = refl; double-12-24-homo d8 d9 = refl; double-12-24-homo d8 d10 = refl; double-12-24-homo d8 d11 = refl
-double-12-24-homo d9 d0 = refl; double-12-24-homo d9 d1 = refl; double-12-24-homo d9 d2 = refl; double-12-24-homo d9 d3 = refl
-double-12-24-homo d9 d4 = refl; double-12-24-homo d9 d5 = refl; double-12-24-homo d9 d6 = refl; double-12-24-homo d9 d7 = refl
-double-12-24-homo d9 d8 = refl; double-12-24-homo d9 d9 = refl; double-12-24-homo d9 d10 = refl; double-12-24-homo d9 d11 = refl
-double-12-24-homo d10 d0 = refl; double-12-24-homo d10 d1 = refl; double-12-24-homo d10 d2 = refl; double-12-24-homo d10 d3 = refl
-double-12-24-homo d10 d4 = refl; double-12-24-homo d10 d5 = refl; double-12-24-homo d10 d6 = refl; double-12-24-homo d10 d7 = refl
-double-12-24-homo d10 d8 = refl; double-12-24-homo d10 d9 = refl; double-12-24-homo d10 d10 = refl; double-12-24-homo d10 d11 = refl
-double-12-24-homo d11 d0 = refl; double-12-24-homo d11 d1 = refl; double-12-24-homo d11 d2 = refl; double-12-24-homo d11 d3 = refl
-double-12-24-homo d11 d4 = refl; double-12-24-homo d11 d5 = refl; double-12-24-homo d11 d6 = refl; double-12-24-homo d11 d7 = refl
-double-12-24-homo d11 d8 = refl; double-12-24-homo d11 d9 = refl; double-12-24-homo d11 d10 = refl; double-12-24-homo d11 d11 = refl
+double-12-24-homo d0 y = trans (double-powD 0 y) (sym (+24-powD2 0 (double-12-24 y)))
+double-12-24-homo d1 y = trans (double-powD 1 y) (sym (+24-powD2 1 (double-12-24 y)))
+double-12-24-homo d2 y = trans (double-powD 2 y) (sym (+24-powD2 2 (double-12-24 y)))
+double-12-24-homo d3 y = trans (double-powD 3 y) (sym (+24-powD2 3 (double-12-24 y)))
+double-12-24-homo d4 y = trans (double-powD 4 y) (sym (+24-powD2 4 (double-12-24 y)))
+double-12-24-homo d5 y = trans (double-powD 5 y) (sym (+24-powD2 5 (double-12-24 y)))
+double-12-24-homo d6 y = trans (double-powD 6 y) (sym (+24-powD2 6 (double-12-24 y)))
+double-12-24-homo d7 y = trans (double-powD 7 y) (sym (+24-powD2 7 (double-12-24 y)))
+double-12-24-homo d8 y = trans (double-powD 8 y) (sym (+24-powD2 8 (double-12-24 y)))
+double-12-24-homo d9 y = trans (double-powD 9 y) (sym (+24-powD2 9 (double-12-24 y)))
+double-12-24-homo d10 y = trans (double-powD 10 y) (sym (+24-powD2 10 (double-12-24 y)))
+double-12-24-homo d11 y = trans (double-powD 11 y) (sym (+24-powD2 11 (double-12-24 y)))
+
 
 --------------------------------------------------------------------------------
 -- 7b. 单射性 — 倍频映射是单射（信息保持）
