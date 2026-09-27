@@ -334,153 +334,99 @@ reflection-matrix = tabulate (λ i →
 -- 这等于 identity-matrix-12[i,j]
 
 -- 展开 12×12 矩阵乘法验证 (框架)
+open import Data.Fin using () renaming (_≟_ to _≟f_)
+open import Data.Empty using (⊥; ⊥-elim)
+open import Relation.Nullary using (Dec; yes; no)
+open import Data.Nat.Properties using (+-identityʳ)
+
+-- 【结构化重证】reflection-involution 原 144 case（12×12 矩阵逐项穷举）
+-- → one-hot 坍缩 + 对合。数学内容: P_ρ 是对合置换 ρ 的置换矩阵 ⇒ P² = P_{ρ∘ρ} = I。
+
+lookup-tab : ∀ {n} {A : Set} (f : Fin n → A) (i : Fin n) → lookup (tabulate f) i ≡ f i
+lookup-tab f zero = refl
+lookup-tab f (suc i) = lookup-tab (λ j → f (suc j)) i
+
+indD : DuodecPoint → DuodecPoint → ℕ
+indD a b = if does (a ≟dp b) then 1 else 0
+
+squeeze : ∀ m → (m + 0) + 0 ≡ m
+squeeze m = trans (+-identityʳ (m + 0)) (+-identityʳ m)
+
+tabulate-cong : ∀ {n} {A : Set} {f g : Fin n → A} →
+  (∀ i → f i ≡ g i) → tabulate f ≡ tabulate g
+tabulate-cong {zero} p = refl
+tabulate-cong {suc n} {f = f} {g = g} p =
+  trans (cong (λ z → z ∷ tabulate (λ x → f (suc x))) (p zero))
+        (cong (g zero ∷_) (tabulate-cong {n} (λ i → p (suc i))))
+
+-- 行/列镜像（与矩阵体定义可转换）
+rowFn : Fin 12 → Vec ℕ 12
+rowFn x = tabulate (λ j → indD (rho (fromIndex x)) (fromIndex j))
+
+colFn : Fin 12 → Vec ℕ 12
+colFn y = tabulate (λ k → indD (rho (fromIndex k)) (fromIndex y))
+
+mulRowFn : Fin 12 → Vec ℕ 12
+mulRowFn i = tabulate (λ j → dotProduct (getRow reflection-matrix i) (getCol reflection-matrix j))
+
+fromIndex-inj : ∀ a b → fromIndex a ≡ fromIndex b → a ≡ b
+fromIndex-inj a b e =
+  trans (sym (toIndex-fromIndex a)) (trans (cong toIndex e) (toIndex-fromIndex b))
+
+-- one-hot 坍缩: Σ_k ind(a = e_k) * v k ≡ v (toIndex a)（12 case, 各归约到 (v + 0) + 0）
+one-hot : ∀ (a : DuodecPoint) (v : Fin 12 → ℕ) →
+  dotProduct (tabulate (λ k → indD a (fromIndex k))) (tabulate v) ≡ v (toIndex a)
+one-hot (T₀ , a0) v = squeeze (v (toIndex (T₀ , a0)))
+one-hot (T₀ , a1) v = squeeze (v (toIndex (T₀ , a1)))
+one-hot (T₀ , a2) v = squeeze (v (toIndex (T₀ , a2)))
+one-hot (T₀ , a3) v = squeeze (v (toIndex (T₀ , a3)))
+one-hot (T₁ , a0) v = squeeze (v (toIndex (T₁ , a0)))
+one-hot (T₁ , a1) v = squeeze (v (toIndex (T₁ , a1)))
+one-hot (T₁ , a2) v = squeeze (v (toIndex (T₁ , a2)))
+one-hot (T₁ , a3) v = squeeze (v (toIndex (T₁ , a3)))
+one-hot (T₂ , a0) v = squeeze (v (toIndex (T₂ , a0)))
+one-hot (T₂ , a1) v = squeeze (v (toIndex (T₂ , a1)))
+one-hot (T₂ , a2) v = squeeze (v (toIndex (T₂ , a2)))
+one-hot (T₂ , a3) v = squeeze (v (toIndex (T₂ , a3)))
+
+entry-form : ∀ a b → lookup (lookup reflection-matrix a) b ≡ indD (rho (fromIndex a)) (fromIndex b)
+entry-form a b = trans (cong (λ row → lookup row b) (lookup-tab rowFn a)) (lookup-tab (λ j → indD (rho (fromIndex a)) (fromIndex j)) b)
+
+getRow-form : ∀ i → getRow reflection-matrix i ≡ rowFn i
+getRow-form i = lookup-tab rowFn i
+
+getCol-form : ∀ j → getCol reflection-matrix j ≡ colFn j
+getCol-form j = tabulate-cong (λ k → entry-form k j)
+
+dot-collapse : ∀ i j →
+  lookup (lookup (reflection-matrix *M12 reflection-matrix) i) j
+  ≡ indD (fromIndex i) (fromIndex j)
+dot-collapse i j =
+  trans (cong (λ row → lookup row j) (lookup-tab mulRowFn i))
+  (trans (lookup-tab (λ jj → dotProduct (getRow reflection-matrix i) (getCol reflection-matrix jj)) j)
+  (trans (cong₂ dotProduct (getRow-form i) (getCol-form j))
+  (trans (one-hot (rho (fromIndex i)) (λ k → indD (rho (fromIndex k)) (fromIndex j)))
+  (trans (cong (λ z → indD z (fromIndex j)) (cong rho (fromIndex-toIndex (rho (fromIndex i)))))
+         (cong (λ z → indD z (fromIndex j)) (rho-involution (fromIndex i)))))))
+
+idx-bridge : ∀ i j → indD (fromIndex i) (fromIndex j) ≡ (if does (i ≟f j) then 1 else 0)
+idx-bridge i j with fromIndex i ≟dp fromIndex j | i ≟f j
+... | yes e | yes e' = refl
+... | yes e | no ne = ⊥-elim (ne (fromIndex-inj i j e))
+... | no ne | yes e = ⊥-elim (ne (cong fromIndex e))
+... | no _  | no _  = refl
+
+id-entry : ∀ a b → lookup (lookup identity-matrix-12 a) b ≡ (if does (a ≟f b) then 1 else 0)
+id-entry a b = trans (cong (λ row → lookup row b)
+                           (lookup-tab (λ x → tabulate (λ y → if does (x ≟f y) then 1 else 0)) a))
+                     (lookup-tab (λ y → if does (a ≟f y) then 1 else 0) b)
+
 reflection-involution : ∀ i j →
   lookup (lookup (reflection-matrix *M12 reflection-matrix) i) j ≡
   lookup (lookup identity-matrix-12 i) j
-reflection-involution zero zero = refl
-reflection-involution zero (suc zero) = refl
-reflection-involution zero (suc (suc zero)) = refl
-reflection-involution zero (suc (suc (suc zero))) = refl
-reflection-involution zero (suc (suc (suc (suc zero)))) = refl
-reflection-involution zero (suc (suc (suc (suc (suc zero))))) = refl
-reflection-involution zero (suc (suc (suc (suc (suc (suc zero)))))) = refl
-reflection-involution zero (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-reflection-involution zero (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-reflection-involution zero (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-reflection-involution zero (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-reflection-involution zero (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-reflection-involution (suc zero) zero = refl
-reflection-involution (suc zero) (suc zero) = refl
-reflection-involution (suc zero) (suc (suc zero)) = refl
-reflection-involution (suc zero) (suc (suc (suc zero))) = refl
-reflection-involution (suc zero) (suc (suc (suc (suc zero)))) = refl
-reflection-involution (suc zero) (suc (suc (suc (suc (suc zero))))) = refl
-reflection-involution (suc zero) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-reflection-involution (suc zero) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-reflection-involution (suc zero) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-reflection-involution (suc zero) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-reflection-involution (suc zero) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-reflection-involution (suc zero) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-reflection-involution (suc (suc zero)) zero = refl
-reflection-involution (suc (suc zero)) (suc zero) = refl
-reflection-involution (suc (suc zero)) (suc (suc zero)) = refl
-reflection-involution (suc (suc zero)) (suc (suc (suc zero))) = refl
-reflection-involution (suc (suc zero)) (suc (suc (suc (suc zero)))) = refl
-reflection-involution (suc (suc zero)) (suc (suc (suc (suc (suc zero))))) = refl
-reflection-involution (suc (suc zero)) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-reflection-involution (suc (suc zero)) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-reflection-involution (suc (suc zero)) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-reflection-involution (suc (suc zero)) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-reflection-involution (suc (suc zero)) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-reflection-involution (suc (suc zero)) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-reflection-involution (suc (suc (suc zero))) zero = refl
-reflection-involution (suc (suc (suc zero))) (suc zero) = refl
-reflection-involution (suc (suc (suc zero))) (suc (suc zero)) = refl
-reflection-involution (suc (suc (suc zero))) (suc (suc (suc zero))) = refl
-reflection-involution (suc (suc (suc zero))) (suc (suc (suc (suc zero)))) = refl
-reflection-involution (suc (suc (suc zero))) (suc (suc (suc (suc (suc zero))))) = refl
-reflection-involution (suc (suc (suc zero))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-reflection-involution (suc (suc (suc zero))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-reflection-involution (suc (suc (suc zero))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-reflection-involution (suc (suc (suc zero))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-reflection-involution (suc (suc (suc zero))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-reflection-involution (suc (suc (suc zero))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-reflection-involution (suc (suc (suc (suc zero)))) zero = refl
-reflection-involution (suc (suc (suc (suc zero)))) (suc zero) = refl
-reflection-involution (suc (suc (suc (suc zero)))) (suc (suc zero)) = refl
-reflection-involution (suc (suc (suc (suc zero)))) (suc (suc (suc zero))) = refl
-reflection-involution (suc (suc (suc (suc zero)))) (suc (suc (suc (suc zero)))) = refl
-reflection-involution (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc zero))))) = refl
-reflection-involution (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-reflection-involution (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-reflection-involution (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-reflection-involution (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-reflection-involution (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-reflection-involution (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc zero))))) zero = refl
-reflection-involution (suc (suc (suc (suc (suc zero))))) (suc zero) = refl
-reflection-involution (suc (suc (suc (suc (suc zero))))) (suc (suc zero)) = refl
-reflection-involution (suc (suc (suc (suc (suc zero))))) (suc (suc (suc zero))) = refl
-reflection-involution (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc zero)))) = refl
-reflection-involution (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc zero))))) = refl
-reflection-involution (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-reflection-involution (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc zero)))))) zero = refl
-reflection-involution (suc (suc (suc (suc (suc (suc zero)))))) (suc zero) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc zero)) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc zero))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc zero)))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc zero))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc zero)))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc zero))))))) zero = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc zero) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc zero)) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc zero))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc zero)))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc zero))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc zero))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) zero = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc zero) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc zero)) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc zero))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc zero)))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc zero))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) zero = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc zero) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc zero)) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc zero))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc zero)))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc zero))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) zero = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc zero) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc zero)) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc zero))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc zero)))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc zero))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) zero = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc zero) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc zero)) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc zero))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc zero)))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc zero))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc (suc zero)))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc (suc (suc zero))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) = refl
-reflection-involution (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) = refl
+reflection-involution i j =
+  trans (dot-collapse i j) (trans (idx-bridge i j) (sym (id-entry i j)))
+
 
 -- 反射矩阵与邻接矩阵的关系: P_ρ A P_ρ = A⁻¹
 -- 这是二面体群在矩阵层面的实现
@@ -702,10 +648,6 @@ step-bwd g p q e =
 -- 【结构化重证】adjacency-symmetric 原 144 case（12×12 乘积穷举）→ 群代数链。
 -- 数学内容: Cayley 邻接 = Σ_{g∈S} ind(g·p = q), S = {gen1,gen1⁻¹,gen2,gen2⁻¹} = S⁻¹；
 --   ind(g·p = q) = ind(g⁻¹·q = p)（逆反演）+ S 对逆封闭 ⇒ 逐项配对 + ℕ 加法交换。
-
-lookup-tab : ∀ {n} {A : Set} (f : Fin n → A) (i : Fin n) → lookup (tabulate f) i ≡ f i
-lookup-tab f zero = refl
-lookup-tab f (suc i) = lookup-tab (λ j → f (suc j)) i
 
 -- 逆反演指标恒等式（Bool 层）: ind(g·p = q) = ind(g⁻¹·q = p)
 flipE : ∀ g p q →
