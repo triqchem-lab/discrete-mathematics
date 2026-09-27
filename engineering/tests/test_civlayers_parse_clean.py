@@ -64,7 +64,7 @@ def main():
 
 
 def test_parse_clean():
-    """pytest 入口：三文件都必须解析干净。"""
+    """pytest 入口（文件名已按 test_*.py 收集规则命名）：三文件都必须解析干净。"""
     assert main() == 0
 
 
