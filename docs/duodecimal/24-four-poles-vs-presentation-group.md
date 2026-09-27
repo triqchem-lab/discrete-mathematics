@@ -83,6 +83,21 @@
 **逻辑强度必须逐极标明**（审阅 §4）：`additive-dim-passes` = **存在性的无损双射（同构）**；`no-injective-hom` = **否定性的「不存在单射同态」**——**两者强度不同**。每极的保真度命题都要写清属于哪一档：
 **「无损双射/同构」＞「单射同态」＞「无单射同态」**。
 
+**逐极档位标注（T7 落实）**：
+
+| 投影 | 档位 | 依据 |
+| --- | --- | --- |
+| `crt12` / `(π3,π4)` 加法侧 | **无损双射（同构）** | `crt12-roundtrip`（`Duodecimal.agda:438`）＋ `additive-dim-passes`（`ABCL1.agda:102-103`）；模板实例 `ProjectionFidelity.lossless-crt12` |
+| `toDuodec` | **无损双射（群同构）**——⚠ 有损**仅限展示层**（生成方式/相位因子/走钟过程） | `mixed-to-+12`（`DuodecClock.agda` 结构版）＋两个往返（`:285`/`:294`）；模板实例 `lossless-toDuodec`／`lossless-fromDuodec` |
+| `galoisNorm`（范数型读法） | **无单射同态**（不保相位） | `GeometricFidelity.norm-not-injective` + `t2-phase-collapse`（回执 `702c5fbc…`）|
+| `sign`（C₄→C₂） | **无单射同态**（非忠实商） | `SignProjection.sign-not-faithful` |
+| `A₄` 轨道商（集合商） | 非同态型 ⇒ 尺子不适用，各自判据 | 用户审阅收窄；集合商非同态 |
+| `∥_∥₂` 截断（h-level-2） | 非同态型 ⇒ 同上 | T2 判定（见证截断不保相位） |
+| `R₁₂` 乘法 | **非同态**（有反例） | `mixedOp ≠ *12` 反例；非同态型 |
+| **`6624` parity（拓扑极）** | **非同态型**（原子性不变量投影）——尺子不适用，各自判据 | **T7 待查判定**：`Winding.agda:4-6`「缠绕数是**不可拆分的拓扑不变量**，由实验锚定」＝常量/路径类型表示，**无映射级同态结构**；提取的是不变量值非同态像 |
+
+（本源侧各项——幅度极/相位极/共轭极/GF9 极——是**生成分量/结构**，不属投影判据层，不入档位表。）
+
 ## 4. 与望月「两个维度」的关系（**按其原话，不带立场**）
 
 `23-two-arithmetic-dimensions.md` 已核实（带页码）：[EssLog] §3.1 p.67「the two underlying combinatorial/arithmetic dimensions of a ring」；p.68「crush … (1-Dim) fixed relationship … immediately obtains a superficial contradiction」；p.146 `∨`/`∧` ↔ 加法/乘法；[Pan] p.37。
