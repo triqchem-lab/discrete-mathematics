@@ -66,4 +66,18 @@
 - 判型阈值 27 的判定按「单引理 refl 子句数」；判型保留类（≤27 表事实、已裁决的 GF81/243 assoc 表）不计入债。
 - postulate 的 bridge 分类以源码宪法登记为准；未逐名核的文件族标「待核查」不预判。
 
-## 七、修复优先级 → 见 QSUM.repair-roadmap（ROI 排序）
+## 七、修复路线图（ROI 排序，2026-09-27 定稿）
+
+| 层 | 原子 | ROI 理由 | 粒 |
+|---|---|---|---|
+| **T1 复用统一**（最高 ROI） | `QFIX.normdiscrete-galoisnorm`（先判重） | **一处复用清三处 81**（GaloisTheory 已证同型 ⇒ NormDiscrete/AlgebraChainDeep 改调用）| M |
+| **T2 S 级速清** | jac-gf3-pi2（37）｜cartan-a4instance（31）｜hott-iter-lemmas（30+30）｜applied-trit-total（91）｜bchgf9-finderror（64）｜struct-misc-tables（100+36） | 单件小改、独立可交付 | S-M |
+| **T3 M 级代数链** | jac-adjmul（81×2/48×2）｜gf4-laws（64×4）｜torusgeometry（48+36）｜physics-diffcomm（81+40）｜hott-equiv-gainloss（72×2 孪生）｜chainz3-char3-triple（84） | 代数链/分量分解套路已成熟（DivisorLattice 先例） | M |
+| **T4 L 级簇** | a4-rep-family（6×144-156，用 Maschke/特征标工具链）｜sl23-toMat-hom（576，生成元分解） | 簇级收益大 | L |
+| **T5 基石慎改** | trit-codetotrit（104） | ⚠ 300+ 下游 ⇒ 改后全链门禁回归（group_chain + 586 闸门） | M |
+| **T6 登记批** | rootmath-postulate-declare ｜ misc-postulate-declare ｜ Structology 7 + Coupling 5 + Geometry 3 桥族逐名核查 | bridge 口径（r12/83180431）登记即完成 | S 批 |
+| **T7 一致性批量** | D6 头注族 ~40 文件（旧名标注式，仿 RH/Langlands 良好实践）｜a4-order 提共享/a4-burnside 统一/a4-nontrivial 消歧 ｜ YMTransfer 判重 | 纯注释/小改 | S 批 |
+| **T8 真洞处置** | _rt 删/归档 ｜ Tryte 1 ｜ HighDimClosure 1 | 全库真洞清零 | S |
+| **T9 常态化** | 每批收口复核 persona-errata + 重构报告数（盘点纪律八变体清单同查） | 防漂移复发 | — |
+
+**执行约定**：每原子完成 = proof_compile 回执 + 节点升 proven；T5 须全链回归；T1 先判重后动手。
