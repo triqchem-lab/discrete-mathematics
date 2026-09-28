@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --cubical --rewriting --guardedness #-}
 
 -- | Sovereign.Coupling.Entanglement
 -- 耦合域：量子纠缠——共享主权 LCM 缠绕数的五行同步

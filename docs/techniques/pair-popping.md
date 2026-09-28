@@ -111,6 +111,21 @@ n 对相消 ⇒ 2n 项降到 0，或降到「真正的余项」。
 
 附带发现：`⊗-dist4 : (p⊕q)⊗(r⊕s) ≡ ((p⊗r)⊕(p⊗s)) ⊕ ((q⊗r)⊕(q⊗s))` **只需 2 步**（`⊗-distribʳ-⊕` + 两次 `⊗-distribˡ-⊕`），**不需要 `swap4` 重排**。
 
+### 4.5 NSE 相消/重排（第 5、6 战，2026-09-24；NSE 线首用）
+
+| 项 | 内容 |
+| --- | --- |
+| 原证明 | `NSEFluxTelescope.cancel3`（**27** 条 `refl`）与 `NSEConservationCore.sum3-shift-vals`（**27** 条 `refl`） |
+| **判型（先判型再动手）** | `cancel3`：六原子 b/−a/c/−b/a/−c 含 **3 对相反数** ⇒ **相消型**；`sum3-shift-vals`：同项异位、无符号变化 ⇒ **置换型**（`swap2`，非 `swap4`/`cancel-pair`） |
+| 结构 | `cancel3`：`flatten`（3 × `⊕-assoc` 展平到右缘字）→ 3 × `swap2`（−b 换到 b 旁）→ `pop-pair`/`pop-pair'` 三对弹出 ⇒ `T₀`；`sum3-shift-vals`：**2 步** `swap2` |
+| 工具 | 三件套**本地副本**（`swap2`/`cancel-pair`/`cancel-pair'`/`pop-pair`/`pop-pair'`）——与 4.2 的 Trit 版 `⊕-swap4` 同例：**各域自备、不跨域拉依赖**（NSE 不 import Lie） |
+| 结果 | 27 → **~15 步**（0 分情形）；27 → **2 步**（0 分情形）；**命题均一字不改** |
+| 对抗验证 | 按 §7④：删去的逐 case 证据以具体点 `refl` 补回（4 + 3 个独立三元组） |
+| ⚠ 判型反例（**不改**） | `rotate-4`（16 case）/`plus-negate-zero`（3 case）/`sign-hom`（16 case）等是**表事实**（运算由表子句给出）——按 §2 反例行「表 vs 公式 ⇒ 穷举就是内容」**保留穷举** |
+| 回执 | ⚠ 尚无（`proof_compile` 签发器损坏中）；验证为 bash 直跑 agda：**NSE 五模块全链 exit 0**（下游依赖未破坏） |
+
+---
+
 ## 5. 穷举 vs 结构：代价对照
 
 | 目标 | 穷举规模 | 结构证明 | 倍数 |

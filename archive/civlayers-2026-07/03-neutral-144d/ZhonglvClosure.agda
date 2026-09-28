@@ -1,4 +1,4 @@
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --cubical --rewriting --guardedness #-}
 
 -- | Sovereign.Coupling.ZhonglvClosure
 -- 耦合域：仲吕闭合——六十律纳甲初级商空间到全息商空间的升维跃迁
@@ -228,6 +228,10 @@ isomorphismPreservesWuxing :
   let holo = pillarToHolographicIso pillar
   in nayinToWuxing (JiaZiTopologicalFingerprint.nayinWuxing ?) ≡ 
      computeWuxingFromHolographic holo
+
+-- 补（2026-09-13）：原 `where` 块本身就是这条定理的「体」，删掉后签名缺定义 ⇒ [MissingDefinitions]；
+-- 补一个**显式洞**（草稿内容缺口，交日后填），使错误类别从「缺定义」变为「未填的洞」。
+isomorphismPreservesWuxing pillar = ?
 
 -- 修法（2026-09-13）：类型签名不得带 where ⇒ 辅助函数提到顶层（Agda 允许签名先引用后声明）。
 postulate computeWuxingFromHolographic : HolographicQuotientSpace → WuXing
