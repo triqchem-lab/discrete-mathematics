@@ -137,7 +137,9 @@ def check_file(abs_path, rel_path, strict_holes):
         if verdict:
             errors.append(("illegal-where", idx + 1, verdict))
 
-    holes = code.count("?")
+    # 洞判别（2026-09-27 修正）：只数真目标——`{! … !}` 与项位 `?`（= ? / ( ? ) 等）；
+    # 不数运算符里的 `?`（`<?`、`_≟_` 无 ? 但 `<?` 含 ? 字符，曾误报 Doz/Closure 洞）。
+    holes = code.count("{!") + len(re.findall(r"(?:^|[(,=])\s*\?\s*(?:$|[),])", code, re.M))
     if holes:
         entry = ("hole", 0, "%d 个 `?` 洞" % holes)
         (errors if strict_holes else warnings).append(entry)
