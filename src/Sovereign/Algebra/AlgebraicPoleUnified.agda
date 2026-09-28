@@ -54,6 +54,35 @@ module Sovereign.Algebra.AlgebraicPoleUnified where
 -- 0 postulate — 全部构造性证明
 --------------------------------------------------------------------------------
 
+-- ══════════════════════════════════════════════════════════════════════
+-- §0 代数极判据（升格版，2026-09-27 —— 落实 07-proof-status.md:145 自留待修订）
+--
+-- 旧判据「R₁₂ CRT 同余（polarCRT ∧ toroidalCRT）」**废弃**：不得笼统写
+-- 「代数极 = CRT 同余」（01-ontology.md:137/:158 宪法锁定——代数极挂 **DC**，
+-- R₁₂/C₁₂ 为投影）。升格判据 = **DC 结构 + 投影函子**（必须指名投影，三者
+-- 保真度不同——24 号 T1/T7 审阅意见）：
+--
+--   本源：DC 展示群（DuodecPoint = Trit × C₄；mixedOp；δ³=id / φ⁴=id / δφ=φδ）
+--
+--   投影①  crt12 / (π3,π4) —— **无损双射（环同构侧）**
+--          crt12-roundtrip（Duodecimal.agda:438）；ProjectionFidelity.lossless-crt12
+--          回执 43d3185e…（Duodecimal）/ 453224f4…（ProjectionFidelity）
+--
+--   投影②  toDuodec : DuodecPoint → Duodec —— **群同构**
+--          mixed-to-+12（结构版）+ 双往返（DuodecClock:285/:294）；
+--          ⚠ 有损**仅限展示层**（生成方式/相位因子/走钟过程），群层无损
+--          回执 3fbf51c0…（DuodecClock）
+--
+--   投影③  R₁₂ 乘法（*12）—— **非同态（有反例）**
+--          零因子 2×6≡0、3×4≡0（Duodecimal.agda:382-393）；与 mixedOp 乘法
+--          不符（Duodecimal:13「非 DuodecClock 乘法」）⇒ 尺子（Lossless）不适用
+--
+--   附：polarCRT / toroidalCRT（T6 的 144/46 投影）属**拓扑极侧**，
+--       不入代数极判据（24 号 :38「同名不同物」红线）。
+--
+--   保真度判据模板：Sovereign.Algebra.ProjectionFidelity（QUAD.T6，回执 453224f4…）。
+-- ══════════════════════════════════════════════════════════════════════
+
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero; suc)
