@@ -98,6 +98,20 @@
 
 （本源侧各项——幅度极/相位极/共轭极/GF9 极——是**生成分量/结构**，不属投影判据层，不入档位表。）
 
+### 任务收官状态（2026-09-27）
+
+| 任务 | 状态 | 证据锚点 |
+| --- | --- | --- |
+| T2 几何极保真度 | ✅ proven | `GeometricFidelity`（回执 702c5fbc）：`norm-not-injective` + `t2-phase-collapse` |
+| T3 T⁶ 本源位置 | ✅ 判定收口 | 强生成**基数排除**（729=3⁶ vs 12=2²·3）；弱生成建立（`T6Lattice = Vec GF3 6`）；桥 = SphericalVector（回执 61c57fb2） |
+| T4 6624 口径红线 | ✅ 改写 | 全仓 339 处审计 + 2 处修（提交 50d7b02） |
+| T5 GF9 极归位 | ✅ 收账 | 本表 :27/:29/:37 + 派生性标明（:109） |
+| T6 判据模板化 | ✅ proven | `ProjectionFidelity`（回执 453224f4）：`Lossless` + crt12/toDuodec 双实例 |
+| T7 尺子适用面 + toDuodec 更正 | ✅ 收账 | :58 收窄注 + :65/:73 更正 + §3 逐极档位表 |
+| T1 代数极升格 | ⏳ 待办（07:145 自留待修订的落实） | — |
+
+**要素边界决策**（2026-09-27）：八要素**不扩充**；壁垒内容三层收纳（判据层档位表 / 对象层 relations `guarded_by`·`arithmetic_half`·`bijection_half` / 本文件）——详见 `11-type-theory-presentation.md` 「要素边界与壁垒登记」。
+
 ## 4. 与望月「两个维度」的关系（**按其原话，不带立场**）
 
 `23-two-arithmetic-dimensions.md` 已核实（带页码）：[EssLog] §3.1 p.67「the two underlying combinatorial/arithmetic dimensions of a ring」；p.68「crush … (1-Dim) fixed relationship … immediately obtains a superficial contradiction」；p.146 `∨`/`∧` ↔ 加法/乘法；[Pan] p.37。
