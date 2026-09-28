@@ -1,0 +1,81 @@
+# M8 — check 判据语义手册（防「未读实现先猜」）
+
+> 2026-09-27 落地（用户授权「数学证明模式修补」③）。**每个判据：计什么 / 豁免什么 / 修什么**。
+> 本手册来自实测踩坑（见文末坑录），与 `impl/ruleset.mjs` + `plugins/proof-dag.mjs` 同源维护。
+
+## 1. 台账↔代码断链（drift）
+
+**计什么**（两个方向，`proof-dag.mjs:751-771`）：
+- **纸面依赖**（:760）：节点声明 dep（或 `extends:` 关系），其**模块**未被本节点模块直接/传递 import ⇒ 断链。
+- **真遗漏**（:767-768）：本节点模块 import 了 Y，且**存在某节点的 `module` 字段 == Y**，但 deps 里没有它 ⇒ 断链。
+- **豁免**（:770）：import 的目标**无任何节点**其 module == Y ⇒ 归「未登记模块依赖」单列，**不计断链**。
+- 同模块豁免（:751）：dep 的模块就是自己 ⇒ 不算。传递 import（有限深度）⇒ 归「传递依赖」不算。
+
+**怎么修**：补 deps 时登记 **「module == 该 import 的代表节点 id」**（object 优先、id 次小为确定规则）——**不是模块名**（模块名会触发悬空）。纸面依赖（声明了却不 import）→ 把引用迁 `source` 字段后从 deps 移除（`update deps` 整替；`import` 只增不减）。
+
+⚠ **坑**：错误消息「台账未登记该依赖」字面像要登记模块名——**不是**。模块名 = 悬空。
+
+## 2. 悬空依赖（dangling）
+
+**计什么**（:680-681）：`deps` 条目 ∉ 节点 id 表 ⇒ 悬空（整项 −15，不分条）。
+**怎么修**：deps 只写节点 id。模块路径写 `source` 或 relations（`documents_at:`）。
+
+## 3. 证据三档（evidence）
+
+- 工具回执（`proof_compile` 签发，源码哈希绑定）= 已验证；模型自报 = 未验证（−5）；无证据 = 无。
+- **回执失效**：源码改动即失效（注释改动也算）⇒ 重跑 `proof_compile` 刷新。
+- deps/陈述变更 ⇒ 自动退回 `needs_review`（改签名=改契约）；源码未变的账实对齐可凭原回执复位。
+
+## 4. postulate 分类（POSTULATE，`ruleset.mjs`）
+
+| kind | 语义 | 豁免裁决流水 | proven |
+|---|---|---|---|
+| `rewrite` | 项目已论证的 REWRITE 语义设计 | **要** | 可 |
+| `unreachable` | Agda 强制检查下已知无害项 | **要** | 可 |
+| `bridge` | 宪法②类桥接公理（Constitution/PhysicalAssumptions；实验/几何锚定） | **不要**（宪法已裁决） | 可 |
+| `gap` | 真缺口 | **不要**（无豁免可发） | **不可** |
+
+- 未声明 ⇒ 拒 proven + 计「未声明」；声明了模块里没有的名字 ⇒ 「记录不实」。
+- 豁免裁决流水 = `journal` decision（node 指向本节点）。
+- ⚠ **词表旧缺口坑**：bridge 类 2026-09-27 前不存在 ⇒ 曾把宪法②类公理误按 gap 登记并触发「豁免待裁决」（诚实声明被罚）——已裁决扩类修正。
+
+## 5. 编译预算闸门（compileBudget）
+
+**计什么**：同模块累计失败 ≥3 且**从无成功记录** ⇒ 🛑（走批量修复协议）。**有过成功 ⇒ stale 降 info 不拦**（2026-09-27 授权；历史累计计数不复位，故按「everGreen」判 stale）。
+
+## 6. 待人类裁决（openDecision）
+
+**计分**：`openDecision: 0`（2026-09-27 授权：如实上报的等待项不入扣分——「等待人类 ≠ 工作欠账」，防「少报早关」激励）。超期未决若要计分须另设时限判据（未实施）。
+
+## 7. abandonedWithoutReason
+
+**计什么**（:923）：`state === 'abandoned' && !reason && !diagnosis`。
+**怎么修**：`update` 写 `reason`（2026-09-27 补通道）或 `diagnosis`（statement_wrong / proof_too_hard，语义匹配才用）。⚠ **坑**：`reason` 通道此前不存在且**静默丢弃**未知字段——已于本次修补（schema + 持久化）；`import` 侧待重启实测。
+
+## 8. 对象信息完整度
+
+object 节点四件套缺一不可：`construction`（object 必填）/ `carrier` / `operations` / `relations`。relations 词表见工具 schema（`guarded_by`/`arithmetic_half`/`bijection_half` 供壁垒类登记）。
+
+## 9. 写通道语义速查
+
+| 通道 | deps | 字段覆盖 | 未知字段 |
+|---|---|---|---|
+| `update` | **整替**（CAS） | 逐字段显式 | 曾静默丢弃 ⇒ 本次起 schema 外的仍会拒/丢，**报错为准** |
+| `import` | **只增不减** | **整记录覆盖**（⚠ 发过事故：最小化记录冲掉 kind/deps）| 同上 |
+
+**铁律**：批量 `import` **必须带整记录**（存档重建，见流水 277 事故与修复）。
+
+## 10. 坑录（本手册的由来）
+
+1. deps 误判出「假矛盾」（未读实现先猜，字面消息指错方向）⇒ §1。
+2. postulate 计数口径是（节点×名字）对，不是名字级 ⇒ §4 实测为准。
+3. `import` 整记录覆盖丢字段（3 object 的 kind + 9 节点 deps 一度被冲）⇒ §9。
+4. `reason` 静默丢弃 ⇒ §7。
+5. 模块名当 dep 登记 ⇒ 悬空 261（70→55 回退）⇒ §1/§2。
+6. ce0cbc6 一行化反转依赖方向（通用定理从基例导出，非反之）——**判型/重构前先看依赖方向**。
+
+## 11. 已知工具限制（环境归因，不计能力）
+
+- ruleset/插件改动需**重启 dsh 进程**（静态 import 冷档）。
+- git 见证偶发节流/降级（不影响评分）。
+- `proof_oracle`/`proof_compile` 壳层兼容垫片：`result()` 是**方法**（dsh 源：ShellExecution 投影 ShellRunResult）——垫片三形通吃已修。
