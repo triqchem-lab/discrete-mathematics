@@ -341,3 +341,68 @@ injSurj-simple {suc k} ρ ρ-inj target = find target
       where
         find-fsuc : (t : Fin k) → Σ (Fin (suc k)) (λ j → ρ j ≡ fsuc t)
         find-fsuc t = {!!}
+
+--------------------------------------------------------------------------------
+-- §5. 鸽巢原理的构造性版本: Fin n 上的 单射 → 满射
+--
+-- 定理: 对任意 ρ : Fin n → Fin n, 若 ρ 是单射, 则 ρ 是满射。
+--
+-- 数学来源: Dedekind 有限性 (1888)
+-- 证明策略: 从 stdlib pigeonhole 推导
+--   pigeonhole : m < n → (f : Fin n → Fin m) → ∃₂ λ i j → i < j × f i ≡ f j
+--   逆否形式: Fin n → Fin n 单射 → 满射
+--------------------------------------------------------------------------------
+
+open import Data.Fin.Properties using (pigeonhole; <⇒notInjective)
+open import Data.Fin using (punchOut; punchOut-injective)
+
+Inj : ∀ {n} → (Fin n → Fin n) → Set
+Inj {n} ρ = ∀ a b → ρ a ≡ ρ b → a ≡ b
+
+Surj : ∀ {n} → (Fin n → Fin n) → Set
+Surj {n} ρ = ∀ i → Σ (Fin n) (λ j → ρ j ≡ i)
+
+-- 主定理: 单射 → 满射
+injSurj : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+
+-- 基础: n = 0
+injSurj {zero} ρ ρ-inj ()
+
+-- 归纳: n = suc k
+-- 用反证法 + pigeonhole
+injSurj {suc k} ρ ρ-inj target = byContradiction
+  where
+    -- 反证法: 假设 target 不在像中
+    byContradiction : Σ (Fin (suc k)) (λ j → ρ j ≡ target)
+    byContradiction with decide-hit
+    ... | yes result = result
+    ... | no not-hit = ⊥-elim (contradiction not-hit)
+      where
+        -- 决定性: 检查 target 是否在像中
+        decide-hit : Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ target))
+        decide-hit = search target fzero
+          where
+            search : (t : Fin (suc k)) (j : Fin (suc k)) → 
+                     Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+            search t j with ρ j ≟ t
+            ... | yes e = yes (j , e)
+            ... | no _ = next t j
+            
+            next : (t : Fin (suc k)) (j : Fin (suc k)) → 
+                   Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+            next t fzero = search t (fsuc fzero)
+            next t (fsuc j') = {!!}
+        
+        -- 矛盾: 构造 Fin (suc k) → Fin k 的单射，与 pigeonhole 矛盾
+        contradiction : (∀ j → ρ j ≢ target) → ⊥
+        contradiction not-hit = 
+          -- 构造约简映射 g : Fin (suc k) → Fin k
+          -- g j = punchOut (not-hit j)
+          let g = λ j → punchOut (not-hit j)
+              g-inj : Inj g
+              g-inj = λ a b eq → {!!}
+              -- g 是单射 Fin (suc k) → Fin k
+              -- 但 suc k > k，与 pigeonhole 矛盾
+              suc-k<k : suc k ℕ.< k
+              suc-k<k = {!!}
+          in <⇒notInjective suc-k<k g-inj
