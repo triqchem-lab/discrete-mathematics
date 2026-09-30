@@ -1002,3 +1002,39 @@ injSurj {suc k} ρ ρ-inj target with any? (λ j → ρ j ≟ target)
         
         g-inj : Inj g
         g-inj a b eq = ρ-inj a b (punchOut-injective (not-hit (a , refl)) (not-hit (b , refl)) eq)
+
+--------------------------------------------------------------------------------
+-- §5. 鸽巢原理的构造性版本: Fin n 上的 单射 → 满射
+--
+-- 定理: 对任意 ρ : Fin n → Fin n, 若 ρ 是单射, 则 ρ 是满射。
+--
+-- 证明策略: 调用 any? 做有限判定 + punchOut 构造跳过映射 + pigeonhole 得矛盾
+--------------------------------------------------------------------------------
+
+open import Data.Fin.Properties using (any?; punchOut; punchOut-injective; <⇒notInjective)
+open import Data.Fin using (punchOut)
+open import Data.Nat.Properties using (n<1+n)
+
+Inj : ∀ {n} → (Fin n → Fin n) → Set
+Inj {n} ρ = ∀ a b → ρ a ≡ ρ b → a ≡ b
+
+Surj : ∀ {n} → (Fin n → Fin n) → Set
+Surj {n} ρ = ∀ i → Σ (Fin n) (λ j → ρ j ≡ i)
+
+injSurj : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj {zero} ρ ρ-inj ()
+injSurj {suc k} ρ ρ-inj target with any? (λ j → ρ j ≟ target)
+... | yes (j , eq) = j , eq
+... | no not-hit = ⊥-elim (contradiction not-hit)
+  where
+    contradiction : ¬ (Σ (Fin (suc k)) (λ j → ρ j ≡ target)) → ⊥
+    contradiction not-hit = <⇒notInjective k<sk g-inj
+      where
+        k<sk : k ℕ.< suc k
+        k<sk = n<1+n k
+        
+        g : Fin (suc k) → Fin k
+        g j = punchOut (not-hit (j , refl))
+        
+        g-inj : Inj g
+        g-inj a b eq = ρ-inj a b (punchOut-injective (not-hit (a , refl)) (not-hit (b , refl)) eq)
