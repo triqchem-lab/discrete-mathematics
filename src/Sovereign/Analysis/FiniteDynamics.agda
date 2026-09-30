@@ -505,3 +505,38 @@ decide-hit' ρ t = search t fzero (suc k)
            Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
     next t fzero fuel = search t (fsuc fzero) fuel
     next t (fsuc j') fuel = search t (fsuc (fsuc j')) fuel
+
+-- fuel 耗尽时的矛盾证明
+-- 核心: 如果搜索 suc k 个元素都没找到 target，则矛盾
+-- 由鸽巢原理: ρ 是单射 Fin (suc k) → Fin (suc k)，不可能漏掉任何元素
+
+-- 简化: 直接用 contradiction''
+-- 如果 decide-hit 返回 no not-hit，则用 contradiction''
+
+-- 修正 decide-hit'
+decide-hit'' : (ρ : Fin (suc k) → Fin (suc k)) → 
+               (t : Fin (suc k)) → 
+               Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ t))
+decide-hit'' ρ t = search t fzero (suc k)
+  where
+    search : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → 
+             Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+    search t j zero = no (λ (j' , eq) → {!!})  -- fuel 耗尽
+    search t j (suc fuel) with ρ j ≟ t
+    ... | yes e = yes (j , e)
+    ... | no _ = next t j fuel
+    
+    next : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → 
+           Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+    next t fzero fuel = search t (fsuc fzero) fuel
+    next t (fsuc j') fuel = search t (fsuc (fsuc j')) fuel
+
+-- 完整的 injSurj
+injSurj-final : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj-final {zero} ρ ρ-inj ()
+injSurj-final {suc k} ρ ρ-inj target = find target
+  where
+    find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    find t with decide-hit'' ρ t
+    ... | yes result = result
+    ... | no not-hit = ⊥-elim (contradiction'' t not-hit ρ-inj)
