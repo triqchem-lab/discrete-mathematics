@@ -126,5 +126,6 @@ separation = a₀ , b₀ , c₀ , refl , λ { T₀ → λ () ; T₁ → λ () ; 
 -- L3 闭合: 6 个 refl + 3 个 λ() + separation 构造.
 -- 证明了 GF(3) 上存在 Eval/Invert 的代数分离.
 -- CRT 分解 (jac_CRTDet) 保证 N×N 高阶推广归约到 3×3+4×4.
+--   [2026-09 勘误] 「分解为 3x3/4x4 小分量」是误读: 分量矩阵仍 NxN, 3/4 是环元素数 (jac_CRTDet §3 措辞修正); 一般 N 同态已类型化 (pi3-det/pi4-det/det-crt12), 本行推广表述以 jac_CRTDet 为准.
 -- 0 postulate.
 -- ═══════════════════════════════════════════════════════════

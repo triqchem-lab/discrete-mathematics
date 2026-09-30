@@ -139,39 +139,33 @@ char3-triple T₂ = refl
 -- ((a ⊕ neg b) ⊕ (neg b ⊕ c)) ⊕ ((neg b ⊕ c) ⊕ (c ⊕ neg d)) ≡ a ⊕ neg d
 -- 中间项 neg b 出现 3 次, c 出现 3 次, 在 char 3 下消去
 -- 81 case 穷举 refl
+-- 【结构化重证】原 81-case 表事实 → 换位链（char-3 三重消去）
+idp : ∀ {A : Set} (x : A) → x ≡ x
+idp x = refl
+
 char3-Δ³ : ∀ a b c d →
   ((a ⊕ negate b) ⊕ (negate b ⊕ c)) ⊕ ((negate b ⊕ c) ⊕ (c ⊕ negate d))
   ≡ a ⊕ negate d
-char3-Δ³ T₀ T₀ T₀ T₀ = refl; char3-Δ³ T₀ T₀ T₀ T₁ = refl; char3-Δ³ T₀ T₀ T₀ T₂ = refl
-char3-Δ³ T₀ T₀ T₁ T₀ = refl; char3-Δ³ T₀ T₀ T₁ T₁ = refl; char3-Δ³ T₀ T₀ T₁ T₂ = refl
-char3-Δ³ T₀ T₀ T₂ T₀ = refl; char3-Δ³ T₀ T₀ T₂ T₁ = refl; char3-Δ³ T₀ T₀ T₂ T₂ = refl
-char3-Δ³ T₀ T₁ T₀ T₀ = refl; char3-Δ³ T₀ T₁ T₀ T₁ = refl; char3-Δ³ T₀ T₁ T₀ T₂ = refl
-char3-Δ³ T₀ T₁ T₁ T₀ = refl; char3-Δ³ T₀ T₁ T₁ T₁ = refl; char3-Δ³ T₀ T₁ T₁ T₂ = refl
-char3-Δ³ T₀ T₁ T₂ T₀ = refl; char3-Δ³ T₀ T₁ T₂ T₁ = refl; char3-Δ³ T₀ T₁ T₂ T₂ = refl
-char3-Δ³ T₀ T₂ T₀ T₀ = refl; char3-Δ³ T₀ T₂ T₀ T₁ = refl; char3-Δ³ T₀ T₂ T₀ T₂ = refl
-char3-Δ³ T₀ T₂ T₁ T₀ = refl; char3-Δ³ T₀ T₂ T₁ T₁ = refl; char3-Δ³ T₀ T₂ T₁ T₂ = refl
-char3-Δ³ T₀ T₂ T₂ T₀ = refl; char3-Δ³ T₀ T₂ T₂ T₁ = refl; char3-Δ³ T₀ T₂ T₂ T₂ = refl
-char3-Δ³ T₁ T₀ T₀ T₀ = refl; char3-Δ³ T₁ T₀ T₀ T₁ = refl; char3-Δ³ T₁ T₀ T₀ T₂ = refl
-char3-Δ³ T₁ T₀ T₁ T₀ = refl; char3-Δ³ T₁ T₀ T₁ T₁ = refl; char3-Δ³ T₁ T₀ T₁ T₂ = refl
-char3-Δ³ T₁ T₀ T₂ T₀ = refl; char3-Δ³ T₁ T₀ T₂ T₁ = refl; char3-Δ³ T₁ T₀ T₂ T₂ = refl
-char3-Δ³ T₁ T₁ T₀ T₀ = refl; char3-Δ³ T₁ T₁ T₀ T₁ = refl; char3-Δ³ T₁ T₁ T₀ T₂ = refl
-char3-Δ³ T₁ T₁ T₁ T₀ = refl; char3-Δ³ T₁ T₁ T₁ T₁ = refl; char3-Δ³ T₁ T₁ T₁ T₂ = refl
-char3-Δ³ T₁ T₁ T₂ T₀ = refl; char3-Δ³ T₁ T₁ T₂ T₁ = refl; char3-Δ³ T₁ T₁ T₂ T₂ = refl
-char3-Δ³ T₁ T₂ T₀ T₀ = refl; char3-Δ³ T₁ T₂ T₀ T₁ = refl; char3-Δ³ T₁ T₂ T₀ T₂ = refl
-char3-Δ³ T₁ T₂ T₁ T₀ = refl; char3-Δ³ T₁ T₂ T₁ T₁ = refl; char3-Δ³ T₁ T₂ T₁ T₂ = refl
-char3-Δ³ T₁ T₂ T₂ T₀ = refl; char3-Δ³ T₁ T₂ T₂ T₁ = refl; char3-Δ³ T₁ T₂ T₂ T₂ = refl
-char3-Δ³ T₂ T₀ T₀ T₀ = refl; char3-Δ³ T₂ T₀ T₀ T₁ = refl; char3-Δ³ T₂ T₀ T₀ T₂ = refl
-char3-Δ³ T₂ T₀ T₁ T₀ = refl; char3-Δ³ T₂ T₀ T₁ T₁ = refl; char3-Δ³ T₂ T₀ T₁ T₂ = refl
-char3-Δ³ T₂ T₀ T₂ T₀ = refl; char3-Δ³ T₂ T₀ T₂ T₁ = refl; char3-Δ³ T₂ T₀ T₂ T₂ = refl
-char3-Δ³ T₂ T₁ T₀ T₀ = refl; char3-Δ³ T₂ T₁ T₀ T₁ = refl; char3-Δ³ T₂ T₁ T₀ T₂ = refl
-char3-Δ³ T₂ T₁ T₁ T₀ = refl; char3-Δ³ T₂ T₁ T₁ T₁ = refl; char3-Δ³ T₂ T₁ T₁ T₂ = refl
-char3-Δ³ T₂ T₁ T₂ T₀ = refl; char3-Δ³ T₂ T₁ T₂ T₁ = refl; char3-Δ³ T₂ T₁ T₂ T₂ = refl
-char3-Δ³ T₂ T₂ T₀ T₀ = refl; char3-Δ³ T₂ T₂ T₀ T₁ = refl; char3-Δ³ T₂ T₂ T₀ T₂ = refl
-char3-Δ³ T₂ T₂ T₁ T₀ = refl; char3-Δ³ T₂ T₂ T₁ T₁ = refl; char3-Δ³ T₂ T₂ T₁ T₂ = refl
-char3-Δ³ T₂ T₂ T₂ T₀ = refl; char3-Δ³ T₂ T₂ T₂ T₁ = refl; char3-Δ³ T₂ T₂ T₂ T₂ = refl
-
--- 三步差分定理: Δ₁₂³ f(x) = f(x+3) ⊕ negate(f(x))
--- 证明: 展开三次 Δ₁₂ → negate-⊕ 分配 → negate² 化简 → char3-Δ³ 消去
+char3-Δ³ a b c d =
+  let nb = negate b ; nd = negate d in
+  let A = (nb ⊕ nb) ⊕ nb in
+  let inner : (nb ⊕ (nb ⊕ c)) ⊕ ((nb ⊕ c) ⊕ (c ⊕ nd)) ≡ A ⊕ (((c ⊕ c) ⊕ c) ⊕ nd)
+      inner =
+        trans (cong (λ z → z ⊕ ((nb ⊕ c) ⊕ (c ⊕ nd))) (sym (⊕-assoc nb nb c)))
+        (trans (swap-middle (nb ⊕ nb) c (nb ⊕ c) (c ⊕ nd))
+        (trans (cong (λ z → z ⊕ (c ⊕ (c ⊕ nd))) (sym (⊕-assoc (nb ⊕ nb) nb c)))
+        (trans (sym (⊕-assoc (A ⊕ c) c (c ⊕ nd)))
+        (trans (cong (λ z → z ⊕ (c ⊕ nd)) (⊕-assoc A c c))
+        (trans (⊕-assoc A (c ⊕ c) (c ⊕ nd))
+               (cong (λ z → A ⊕ z) (sym (⊕-assoc (c ⊕ c) c nd))))))))
+  in
+  trans (cong (λ z → z ⊕ ((nb ⊕ c) ⊕ (c ⊕ nd))) (⊕-assoc a nb (nb ⊕ c)))
+  (trans (⊕-assoc a (nb ⊕ (nb ⊕ c)) ((nb ⊕ c) ⊕ (c ⊕ nd)))
+  (trans (cong (λ z → a ⊕ z) inner)
+  (trans (cong (λ z → a ⊕ (z ⊕ (((c ⊕ c) ⊕ c) ⊕ nd))) (char3-triple nb))
+  (trans (cong (λ z → a ⊕ (T₀ ⊕ (z ⊕ nd))) (char3-triple c))
+  (trans (cong (λ z → a ⊕ (T₀ ⊕ z)) (⊕-identityˡ nd))
+         (cong (λ z → a ⊕ z) (⊕-identityˡ nd)))))))
 Δ₁₂³-is-3step : ∀ f x →
   Δ₁₂ (Δ₁₂ (Δ₁₂ f)) x ≡ f (+1 (+1 (+1 x))) ⊕ negate (f x)
 Δ₁₂³-is-3step f x = trans expand (char3-Δ³ a b c d)

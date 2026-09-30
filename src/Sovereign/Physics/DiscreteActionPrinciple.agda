@@ -157,63 +157,32 @@ g-norm-is-1 gα³  = trans (norm-mul (alpha *gf9 alpha) alpha)
 --   p=gα²:  1+4+4+4 = 13 cases × 16 组合
 --   p=gα³:  1+4+4+4 = 13 cases × 16 组合
 --   总计: 40 cases 覆盖 64 种组合, 全部 refl 验证
+-- 【结构化重证】C₄ 结合律（原 40-case 表 → embedG 嵌入 + GF(9) 结合律回拉）
+embedG-inj : ∀ p q → embedG p ≡ embedG q → p ≡ q
+embedG-inj e    e    _ = refl
+embedG-inj gα   gα   _ = refl
+embedG-inj gα²  gα²  _ = refl
+embedG-inj gα³  gα³  _ = refl
+embedG-inj e    gα   ()
+embedG-inj e    gα²  ()
+embedG-inj e    gα³  ()
+embedG-inj gα   e    ()
+embedG-inj gα   gα²  ()
+embedG-inj gα   gα³  ()
+embedG-inj gα²  e    ()
+embedG-inj gα²  gα   ()
+embedG-inj gα²  gα³  ()
+embedG-inj gα³  e    ()
+embedG-inj gα³  gα   ()
+embedG-inj gα³  gα²  ()
+
 g-assoc : ∀ p q r → (p *g q) *g r ≡ p *g (q *g r)
-g-assoc e    q    r    = refl  -- p=e: (e*q)*r = q*r = e*(q*r)
-g-assoc gα   e    r    = refl  -- p=gα, q=e: (gα*e)*r = gα*r = gα*(e*r)
-g-assoc gα²  e    r    = refl
-g-assoc gα³  e    r    = refl
-g-assoc gα   gα   e    = refl  -- p=gα, q=gα, r=e
-g-assoc gα   gα   gα   = refl  -- (α*α)*α = α²*α = α³; α*(α*α) = α*α² = α³
-g-assoc gα   gα   gα²  = refl  -- (α*α)*α² = α²*α² = α⁴ = e; α*(α*α²) = α*α³ = α⁴ = e
-g-assoc gα   gα   gα³  = refl  -- (α*α)*α³ = α²*α³ = α⁵ = α; α*(α*α³) = α*e = α
-g-assoc gα   gα²  e    = refl
-g-assoc gα   gα²  gα   = refl  -- (α*α²)*α = α³*α = α⁴ = e; α*(α²*α) = α*α³ = α⁴ = e
-g-assoc gα   gα²  gα²  = refl  -- (α*α²)*α² = α³*α² = α⁵ = α; α*(α²*α²) = α*e = α
-g-assoc gα   gα²  gα³  = refl  -- (α*α²)*α³ = α³*α³ = α⁶ = α²; α*(α²*α³) = α*α = α²
-g-assoc gα   gα³  e    = refl
-g-assoc gα   gα³  gα   = refl  -- (α*α³)*α = e*α = α; α*(α³*α) = α*e = α
-g-assoc gα   gα³  gα²  = refl  -- (α*α³)*α² = e*α² = α²; α*(α³*α²) = α*α = α²
-g-assoc gα   gα³  gα³  = refl  -- (α*α³)*α³ = e*α³ = α³; α*(α³*α³) = α*α² = α³
-g-assoc gα²  gα   e    = refl
-g-assoc gα²  gα   gα   = refl  -- (α²*α)*α = α³*α = α⁴ = e; α²*(α*α) = α²*α² = α⁴ = e
-g-assoc gα²  gα   gα²  = refl
-g-assoc gα²  gα   gα³  = refl
-g-assoc gα²  gα²  e    = refl
-g-assoc gα²  gα²  gα   = refl  -- (α²*α²)*α = e*α = α; α²*(α²*α) = α²*α³ = α⁵ = α
-g-assoc gα²  gα²  gα²  = refl  -- (α²*α²)*α² = e*α² = α²; α²*(α²*α²) = α²*e = α²
-g-assoc gα²  gα²  gα³  = refl  -- (α²*α²)*α³ = e*α³ = α³; α²*(α²*α³) = α²*α = α³
-g-assoc gα²  gα³  e    = refl
-g-assoc gα²  gα³  gα   = refl
-g-assoc gα²  gα³  gα²  = refl
-g-assoc gα²  gα³  gα³  = refl
-g-assoc gα³  gα   e    = refl
-g-assoc gα³  gα   gα   = refl  -- (α³*α)*α = e*α = α; α³*(α*α) = α³*α² = α⁵ = α
-g-assoc gα³  gα   gα²  = refl
-g-assoc gα³  gα   gα³  = refl
-g-assoc gα³  gα²  e    = refl
-g-assoc gα³  gα²  gα   = refl
-g-assoc gα³  gα²  gα²  = refl
-g-assoc gα³  gα²  gα³  = refl
-g-assoc gα³  gα³  e    = refl
-g-assoc gα³  gα³  gα   = refl  -- (α³*α³)*α = α²*α = α³; α³*(α³*α) = α³*e = α³
-g-assoc gα³  gα³  gα²  = refl  -- (α³*α³)*α² = α²*α² = e; α³*(α³*α²) = α³*α = e
-g-assoc gα³  gα³  gα³  = refl  -- (α³*α³)*α³ = α²*α³ = α; α³*(α³*α³) = α³*α² = α
-
---------------------------------------------------------------------------------
--- §2. 离散场强定义
---
--- 定义: F_{ij} = Δ_i A_j - Δ_j A_i
--- 已有: DiscreteEMField3D.curl A = (dy(Az)-dz(Ay), dz(Ax)-dx(Az), dx(Ay)-dy(Ax))
--- 这正是 F_{yz}, F_{zx}, F_{xy} 的三个独立分量。
---
--- curl ≡ F_{ij} 的严格等价性证明:
--- curl A 的 x 分量 = dy(Az) - dz(Ay) = F_{yz}
--- curl A 的 y 分量 = dz(Ax) - dx(Az) = F_{zx}
--- curl A 的 z 分量 = dx(Ay) - dy(Ax) = F_{xy}
--- 这是定义等式, refl 验证
---------------------------------------------------------------------------------
-
--- 场强张量分量 (GF(3) 加法形式)
+g-assoc p q r = embedG-inj ((p *g q) *g r) (p *g (q *g r))
+  (trans (embedG-hom (p *g q) r)
+  (trans (cong (_*gf9 embedG r) (embedG-hom p q))
+  (trans (Sovereign.Algebra.GF9.*gf9-assoc (embedG p) (embedG q) (embedG r))
+  (trans (cong (embedG p *gf9_) (sym (embedG-hom q r)))
+         (sym (embedG-hom p (q *g r)))))))
 Fyz : VectorField → Point3D → GF3
 Fyz A p = add3 (dy (vz A) p) (neg3 (dz (vy A) p))
 

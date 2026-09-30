@@ -86,133 +86,6 @@ gauge-transform-φ φ χ p = add3 (φ p) (neg3 (χ p))
 -- 两者相等: c - d - a + b = c - a - d + b (加法交换)
 
 -- 引理: (c - d) - (a - b) ≡ (c - a) - (d - b) (27 case 穷举)
-diff-comm : ∀ a b c d →
-  add3 (add3 c (neg3 d)) (neg3 (add3 a (neg3 b)))
-    ≡ add3 (add3 c (neg3 a)) (neg3 (add3 d (neg3 b)))
-diff-comm fz fz fz fz = refl
-diff-comm fz fz fz (fs fz) = refl
-diff-comm fz fz fz (fs (fs fz)) = refl
-diff-comm fz fz (fs fz) fz = refl
-diff-comm fz fz (fs fz) (fs fz) = refl
-diff-comm fz fz (fs fz) (fs (fs fz)) = refl
-diff-comm fz fz (fs (fs fz)) fz = refl
-diff-comm fz fz (fs (fs fz)) (fs fz) = refl
-diff-comm fz fz (fs (fs fz)) (fs (fs fz)) = refl
-diff-comm fz (fs fz) fz fz = refl
-diff-comm fz (fs fz) fz (fs fz) = refl
-diff-comm fz (fs fz) fz (fs (fs fz)) = refl
-diff-comm fz (fs fz) (fs fz) fz = refl
-diff-comm fz (fs fz) (fs fz) (fs fz) = refl
-diff-comm fz (fs fz) (fs fz) (fs (fs fz)) = refl
-diff-comm fz (fs fz) (fs (fs fz)) fz = refl
-diff-comm fz (fs fz) (fs (fs fz)) (fs fz) = refl
-diff-comm fz (fs fz) (fs (fs fz)) (fs (fs fz)) = refl
-diff-comm fz (fs (fs fz)) fz fz = refl
-diff-comm fz (fs (fs fz)) fz (fs fz) = refl
-diff-comm fz (fs (fs fz)) fz (fs (fs fz)) = refl
-diff-comm fz (fs (fs fz)) (fs fz) fz = refl
-diff-comm fz (fs (fs fz)) (fs fz) (fs fz) = refl
-diff-comm fz (fs (fs fz)) (fs fz) (fs (fs fz)) = refl
-diff-comm fz (fs (fs fz)) (fs (fs fz)) fz = refl
-diff-comm fz (fs (fs fz)) (fs (fs fz)) (fs fz) = refl
-diff-comm fz (fs (fs fz)) (fs (fs fz)) (fs (fs fz)) = refl
-diff-comm (fs fz) fz fz fz = refl
-diff-comm (fs fz) fz fz (fs fz) = refl
-diff-comm (fs fz) fz fz (fs (fs fz)) = refl
-diff-comm (fs fz) fz (fs fz) fz = refl
-diff-comm (fs fz) fz (fs fz) (fs fz) = refl
-diff-comm (fs fz) fz (fs fz) (fs (fs fz)) = refl
-diff-comm (fs fz) fz (fs (fs fz)) fz = refl
-diff-comm (fs fz) fz (fs (fs fz)) (fs fz) = refl
-diff-comm (fs fz) fz (fs (fs fz)) (fs (fs fz)) = refl
-diff-comm (fs fz) (fs fz) fz fz = refl
-diff-comm (fs fz) (fs fz) fz (fs fz) = refl
-diff-comm (fs fz) (fs fz) fz (fs (fs fz)) = refl
-diff-comm (fs fz) (fs fz) (fs fz) fz = refl
-diff-comm (fs fz) (fs fz) (fs fz) (fs fz) = refl
-diff-comm (fs fz) (fs fz) (fs fz) (fs (fs fz)) = refl
-diff-comm (fs fz) (fs fz) (fs (fs fz)) fz = refl
-diff-comm (fs fz) (fs fz) (fs (fs fz)) (fs fz) = refl
-diff-comm (fs fz) (fs fz) (fs (fs fz)) (fs (fs fz)) = refl
-diff-comm (fs fz) (fs (fs fz)) fz fz = refl
-diff-comm (fs fz) (fs (fs fz)) fz (fs fz) = refl
-diff-comm (fs fz) (fs (fs fz)) fz (fs (fs fz)) = refl
-diff-comm (fs fz) (fs (fs fz)) (fs fz) fz = refl
-diff-comm (fs fz) (fs (fs fz)) (fs fz) (fs fz) = refl
-diff-comm (fs fz) (fs (fs fz)) (fs fz) (fs (fs fz)) = refl
-diff-comm (fs fz) (fs (fs fz)) (fs (fs fz)) fz = refl
-diff-comm (fs fz) (fs (fs fz)) (fs (fs fz)) (fs fz) = refl
-diff-comm (fs fz) (fs (fs fz)) (fs (fs fz)) (fs (fs fz)) = refl
-diff-comm (fs (fs fz)) fz fz fz = refl
-diff-comm (fs (fs fz)) fz fz (fs fz) = refl
-diff-comm (fs (fs fz)) fz fz (fs (fs fz)) = refl
-diff-comm (fs (fs fz)) fz (fs fz) fz = refl
-diff-comm (fs (fs fz)) fz (fs fz) (fs fz) = refl
-diff-comm (fs (fs fz)) fz (fs fz) (fs (fs fz)) = refl
-diff-comm (fs (fs fz)) fz (fs (fs fz)) fz = refl
-diff-comm (fs (fs fz)) fz (fs (fs fz)) (fs fz) = refl
-diff-comm (fs (fs fz)) fz (fs (fs fz)) (fs (fs fz)) = refl
-diff-comm (fs (fs fz)) (fs fz) fz fz = refl
-diff-comm (fs (fs fz)) (fs fz) fz (fs fz) = refl
-diff-comm (fs (fs fz)) (fs fz) fz (fs (fs fz)) = refl
-diff-comm (fs (fs fz)) (fs fz) (fs fz) fz = refl
-diff-comm (fs (fs fz)) (fs fz) (fs fz) (fs fz) = refl
-diff-comm (fs (fs fz)) (fs fz) (fs fz) (fs (fs fz)) = refl
-diff-comm (fs (fs fz)) (fs fz) (fs (fs fz)) fz = refl
-diff-comm (fs (fs fz)) (fs fz) (fs (fs fz)) (fs fz) = refl
-diff-comm (fs (fs fz)) (fs fz) (fs (fs fz)) (fs (fs fz)) = refl
-diff-comm (fs (fs fz)) (fs (fs fz)) fz fz = refl
-diff-comm (fs (fs fz)) (fs (fs fz)) fz (fs fz) = refl
-diff-comm (fs (fs fz)) (fs (fs fz)) fz (fs (fs fz)) = refl
-diff-comm (fs (fs fz)) (fs (fs fz)) (fs fz) fz = refl
-diff-comm (fs (fs fz)) (fs (fs fz)) (fs fz) (fs fz) = refl
-diff-comm (fs (fs fz)) (fs (fs fz)) (fs fz) (fs (fs fz)) = refl
-diff-comm (fs (fs fz)) (fs (fs fz)) (fs (fs fz)) fz = refl
-diff-comm (fs (fs fz)) (fs (fs fz)) (fs (fs fz)) (fs fz) = refl
-diff-comm (fs (fs fz)) (fs (fs fz)) (fs (fs fz)) (fs (fs fz)) = refl
-
--- 结论: ∇(Δtχ) = Δt∇χ (差分算子交换, 81 case 穷举 refl)
--- 所以 E' = E + ∇(Δtχ) - Δt∇χ = E + 0 = E
--- 即电场在规范变换下不变
-
--- 结论: L = |E|² - |B|² 在规范变换下不变
--- 因为 E 和 B 都不变
-
---------------------------------------------------------------------------------
--- §3. 源项耦合: L_source = A·J - φρ
---------------------------------------------------------------------------------
-
--- 有源情况下的拉格朗日密度:
--- L_total = L_EM + L_source
--- 其中 L_EM = |E|² - |B|² (无源部分)
---       L_source = A·J - φρ (源项耦合)
-
--- 源项在规范变换下的变化:
--- ΔL = L_source(A+∇χ, φ-Δtχ) - L_source(A, φ)
---     = (A+∇χ)·J - (φ-Δtχ)ρ - (A·J - φρ)
---     = (∇χ)·J + Δtχ·ρ
-
--- 对 χ(p₀) 变分 (1D 版本, 已在 §8 证明):
--- δ(ΔL)/δχ(p₀) = -Jx(p₀) + Jx(p₀-êx) = -backward_dx(Jx)(p₀)
--- 具体证明: noether-1d-point0/1/2 (§8, 引用 neg-add-identity)
-
---------------------------------------------------------------------------------
--- §4. Noether 恒等式: δS/δχ = 0 → ∂ρ/∂t + ∇·J = 0
---------------------------------------------------------------------------------
-
--- Noether 定理的核心:
--- 如果 L 在规范变换 χ 下不变, 则存在守恒流
--- 对 χ 变分: δS/δχ(p₀) = 0 对所有 p₀
-
--- 展开:
--- δS/δχ(p₀) = ∂L_source/∂χ(p₀)
---            = ∂(A·J - φρ)/∂χ(p₀)
---            = (∇·J)(p₀) + (Δtρ)(p₀)
---            = div J(p₀) + Δt ρ(p₀)
-
--- Noether: δS/δχ = 0 → div J + Δt ρ = 0
-
--- 具体证明 (已证 §8):
 -- noether-1d-point0 : add3 (neg3 (Jx fz)) (Jx (fs (fs fz)))
 --                     ≡ neg3 (add3 (Jx fz) (neg3 (Jx (fs (fs fz)))))
 -- 这证明了 δ(ΔL)/δχ(0) = -backward_dx(Jx)(0)
@@ -403,6 +276,23 @@ neg-add-distrib (fs (fs fz)) (fs (fs fz)) = refl
 
 -- Noether 恒等式 (1D, 点 0):
 -- δ(ΔL)/δε₀ = neg3(backward_dx(Jx)(0))
+
+-- 【结构化重证】差重排（原 81-case 表 → abelian 交换链；(c-d)-(a-b) ≡ (c-a)-(d-b)）
+add3-swap : ∀ w x y z → add3 (add3 w x) (add3 y z) ≡ add3 (add3 w y) (add3 x z)
+add3-swap w x y z =
+  trans (sym (add3-assoc (add3 w x) y z))
+  (trans (cong (λ v → add3 v z) (add3-assoc w x y))
+  (trans (cong (λ v → add3 (add3 w v) z) (add3-comm x y))
+  (trans (cong (λ v → add3 v z) (sym (add3-assoc w y x)))
+         (add3-assoc (add3 w y) x z))))
+
+diff-comm : ∀ a b c d →
+  add3 (add3 c (neg3 d)) (neg3 (add3 a (neg3 b)))
+    ≡ add3 (add3 c (neg3 a)) (neg3 (add3 d (neg3 b)))
+diff-comm a b c d =
+  trans (cong (add3 (add3 c (neg3 d))) (neg-add-identity a b))
+  (trans (add3-swap c (neg3 d) (neg3 a) b)
+         (cong (add3 (add3 c (neg3 a))) (sym (neg-add-identity d b))))
 noether-1d-point0 : (Jx : Fin 3 → GF3) →
   add3 (neg3 (Jx fz)) (Jx (fs (fs fz)))
     ≡ neg3 (add3 (Jx fz) (neg3 (Jx (fs (fs fz)))))

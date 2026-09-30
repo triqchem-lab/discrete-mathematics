@@ -16,11 +16,12 @@
 
 module Sovereign.Quantum.Entanglement where
 
+open import Relation.Nullary using (¬_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans; subst)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
 open import Sovereign.Algebra.GF9 using (GF9; gf9-one; gf9-zero; alpha; alpha-squared; alpha-powers-4; _*gf9_; galoisConjugate; galoisConjugate²)
@@ -343,3 +344,46 @@ phase-full-turn = alpha-powers-4
 -- 纠缠对经相位旋转闭合: 本层纠缠载体 α 携带本源 90° 相位
 -- (对比 §1-§7 的 GF3 Bell 表 — 那里无 α 相位, 是 ⊗-语义错配源头)
 
+
+--------------------------------------------------------------------------------
+-- 纠缠判据（骨架深化方向③收官）：bell-gf3 不可分
+--------------------------------------------------------------------------------
+
+-- ⊗ 保 T₁ 的分量结构（9-case 表事实，≤27 保留）
+⊗-T₁-fst : ∀ x y → x ⊗ y ≡ T₁ → (x ≡ T₁ × y ≡ T₁) ⊎ (x ≡ T₂ × y ≡ T₂)
+⊗-T₁-fst T₀ y ()
+⊗-T₁-fst T₁ T₀ ()
+⊗-T₁-fst T₁ T₁ _ = inj₁ (refl , refl)
+⊗-T₁-fst T₁ T₂ ()
+⊗-T₁-fst T₂ T₀ ()
+⊗-T₁-fst T₂ T₁ ()
+⊗-T₁-fst T₂ T₂ _ = inj₂ (refl , refl)
+
+bell-entangled : ¬ Separable bell-gf3
+bell-entangled ((a₁ , a₂ , a₃) , (b₁ , b₂ , b₃) , eq) =
+  elim a₂ b₂ (cong comp₁ t) (cong comp₂ t) (cong comp₅ t)
+  where
+    t : tensor (a₁ , a₂ , a₃) (b₁ , b₂ , b₃) ≡ bell-gf3
+    t = sym eq
+    comp₁ : TwoQutrit → Trit
+    comp₁ (x , _ , _ , _ , _ , _ , _ , _ , _) = x
+    comp₂ : TwoQutrit → Trit
+    comp₂ (_ , x , _ , _ , _ , _ , _ , _ , _) = x
+    comp₅ : TwoQutrit → Trit
+    comp₅ (_ , _ , _ , _ , x , _ , _ , _ , _) = x
+    a2-cases0 : ∀ a₂ → (a₂ ⊗ T₀ ≡ T₁) → ⊥
+    a2-cases0 T₀ ()
+    a2-cases0 T₁ ()
+    a2-cases0 T₂ ()
+    contra-T1 : ∀ a₂ b₂ → (T₁ ⊗ b₂ ≡ T₀) → (a₂ ⊗ b₂ ≡ T₁) → ⊥
+    contra-T1 a₂ T₀ e2 e5 = a2-cases0 a₂ e5
+    contra-T1 a₂ T₁ e2 e5 = T₁≢T₀ e2
+    contra-T1 a₂ T₂ e2 e5 = T₂≢T₀ e2
+    contra-T2 : ∀ a₂ b₂ → (T₂ ⊗ b₂ ≡ T₀) → (a₂ ⊗ b₂ ≡ T₁) → ⊥
+    contra-T2 a₂ T₀ e2 e5 = a2-cases0 a₂ e5
+    contra-T2 a₂ T₁ e2 e5 = T₂≢T₀ e2
+    contra-T2 a₂ T₂ e2 e5 = T₁≢T₀ e2
+    elim : ∀ a₂ b₂ → (a₁ ⊗ b₁ ≡ T₁) → (a₁ ⊗ b₂ ≡ T₀) → (a₂ ⊗ b₂ ≡ T₁) → ⊥
+    elim a₂ b₂ e1 e2 e5 with ⊗-T₁-fst a₁ b₁ e1
+    ... | inj₁ (refl , refl) = contra-T1 a₂ b₂ e2 e5
+    ... | inj₂ (refl , refl) = contra-T2 a₂ b₂ e2 e5

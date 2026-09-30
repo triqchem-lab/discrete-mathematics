@@ -310,14 +310,13 @@ holographicPiRequirements =
 --------------------------------------------------------------------------------
 
 -- 定理：全息 π 是全息商空间的拓扑不变量
-holoPiIsTopologicalInvariant :
-  ∀ (holo : HolographicQuotientSpace) →
-  HolographicQuotientSpace.polarMod144 holo ≡ Fin.zero →
-  HolographicQuotientSpace.toroidalMod46 holo ≡ Fin.zero →
+-- 【②层修复】原陈述 ∀ holo → 条件(holo) → 常量事实(standardHoloPi)：结论不含被全称的 holo
+-- （哑变元包装），证明体 (refl,refl) 三参全弃。如实改为常量事实形；一般不变量
+-- （∀ holo 满模条件 ⟹ 其表示值）为后续工作，不入未证陈述。
+holoPiStandardValues :
   polarRepValue (HolographicPi.polar standardHoloPi) ≡ 144
   × toroidalRepValue (HolographicPi.toroidal standardHoloPi) ≡ 46
-holoPiIsTopologicalInvariant holo polarZero toroidalZero =
-  (refl , refl)
+holoPiStandardValues = (refl , refl)
 
 -- 全息 π 作为 T⁶ 环面的内禀离散曲率
 record IntrinsicDiscreteCurvature : Set where

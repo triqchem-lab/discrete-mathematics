@@ -12,7 +12,7 @@
 --      置换作用保持坐标和 (sumZero-invariant, 13 case 显式),
 --      特征标分解 χ_perm = χ₁ + χ₃ (perm-char-decomp)
 --   5. V₁, V₁′, V₁″ = 通过 Abel 化 A₄/V₄ ≅ C₃ 拉回的三个特征标,
---      全部为群同态 (multiplicative, abelianize-hom 144 case) 且两两相异
+--      全部为群同态 (multiplicative, abelianize-hom 生成元分解符号化) 且两两相异
 --   6. 三代费米子 = 三个一维特征标 (singlets) + 三维标准表示 (triplet)
 --
 -- 诚实边界:
@@ -484,154 +484,108 @@ c3Char-hom c3-a² c3-a² = refl
   charAt-abel C3 = refl
   charAt-abel C4 = refl
 
--- Abel 化是群同态 (12×12 = 144 case 显式 refl:
---   _⊗_ = fromPerm(perm∘perm) 对具体元素经 with 归约, 无 perm-hom/函数 λ 绑定 —
---   后者在 Agda 2.9.0 触发 Substitute.hs 内部错误, 已由探针隔离)
+-- Abel 化是群同态 — 生成元分解符号化 (路径 A):
+--   A₄ = ⟨gs, gt⟩; 生成元对引理 abel-step (2×12 = 24 案 refl, ≤27)
+--   + 词归纳传播 abel-word + dispatcher;
+--   原 12×12 = 144 案显式 refl 表已删除。
+--   (历史注记: 旧版曾由乘性表 144 例暴露共轭类分派错误;
+--    本证明不引入 perm-hom / 函数 λ 绑定 — cong 一律取具名映射,
+--    组合律经 A4GenWords.⊗-assocₚ 桥接到命题相等。)
+
+-- 生成元词表示 (A₄ = ⟨gs, gt⟩, 词归纳传播用)
+open import Sovereign.Structology.A4GenWords
+  using (Gen; gs; gt; gen; Word; ε; _▸_; ev; wordOf; ev-wordOf; ⊗-assocₚ; fromPerm-permₚ)
+
+-- ·₃ 结合律 (C₃ 单位元为 c3-1; 19 案 refl)
+·₃-assoc : ∀ (a b c : C3Group) → (a ·₃ b) ·₃ c ≡ a ·₃ (b ·₃ c)
+·₃-assoc c3-1 b c = refl
+·₃-assoc c3-a c3-1 c3-1 = refl
+·₃-assoc c3-a c3-1 c3-a = refl
+·₃-assoc c3-a c3-1 c3-a² = refl
+·₃-assoc c3-a c3-a c3-1 = refl
+·₃-assoc c3-a c3-a c3-a = refl
+·₃-assoc c3-a c3-a c3-a² = refl
+·₃-assoc c3-a c3-a² c3-1 = refl
+·₃-assoc c3-a c3-a² c3-a = refl
+·₃-assoc c3-a c3-a² c3-a² = refl
+·₃-assoc c3-a² c3-1 c3-1 = refl
+·₃-assoc c3-a² c3-1 c3-a = refl
+·₃-assoc c3-a² c3-1 c3-a² = refl
+·₃-assoc c3-a² c3-a c3-1 = refl
+·₃-assoc c3-a² c3-a c3-a = refl
+·₃-assoc c3-a² c3-a c3-a² = refl
+·₃-assoc c3-a² c3-a² c3-1 = refl
+·₃-assoc c3-a² c3-a² c3-a = refl
+·₃-assoc c3-a² c3-a² c3-a² = refl
+
+-- 具名映射 (避免 cong λ 的归约陷阱)
+mul3-left : C3Group → C3Group → C3Group
+mul3-left a z = a ·₃ z
+
+mul3-right : C3Group → C3Group → C3Group
+mul3-right c z = z ·₃ c
+
+abel-mul-h : A4 → A4 → C3Group
+abel-mul-h h x = abelianize (x ⊗ h)
+
+abel-right-h : A4 → A4 → C3Group
+abel-right-h h x = abelianize x ·₃ abelianize h
+
+-- 生成元对引理: 同态性在 2 个生成元 × 12 个元素上逐案验证 (24 案 refl)
+abel-step : ∀ (c : Gen) (h : A4) → abelianize (gen c ⊗ h) ≡ abelianize (gen c) ·₃ abelianize h
+abel-step gs Id = refl
+abel-step gs (Rot zero zero) = refl
+abel-step gs (Rot zero (suc zero)) = refl
+abel-step gs (Rot (suc zero) zero) = refl
+abel-step gs (Rot (suc zero) (suc zero)) = refl
+abel-step gs (Rot (suc (suc zero)) zero) = refl
+abel-step gs (Rot (suc (suc zero)) (suc zero)) = refl
+abel-step gs (Rot (suc (suc (suc zero))) zero) = refl
+abel-step gs (Rot (suc (suc (suc zero))) (suc zero)) = refl
+abel-step gs (Flip zero) = refl
+abel-step gs (Flip (suc zero)) = refl
+abel-step gs (Flip (suc (suc zero))) = refl
+abel-step gt Id = refl
+abel-step gt (Rot zero zero) = refl
+abel-step gt (Rot zero (suc zero)) = refl
+abel-step gt (Rot (suc zero) zero) = refl
+abel-step gt (Rot (suc zero) (suc zero)) = refl
+abel-step gt (Rot (suc (suc zero)) zero) = refl
+abel-step gt (Rot (suc (suc zero)) (suc zero)) = refl
+abel-step gt (Rot (suc (suc (suc zero))) zero) = refl
+abel-step gt (Rot (suc (suc (suc zero))) (suc zero)) = refl
+abel-step gt (Flip zero) = refl
+abel-step gt (Flip (suc zero)) = refl
+abel-step gt (Flip (suc (suc zero))) = refl
+
+-- 词归纳传播: 同态性沿词的复合逐层传播 (hom (word) = 链)
+abel-word : ∀ (w : Word) (h : A4) → abelianize (ev w ⊗ h) ≡ abelianize (ev w) ·₃ abelianize h
+abel-word ε h = cong abelianize (fromPerm-permₚ h)
+abel-word (c ▸ w) h = begin
+  abelianize ((gen c ⊗ ev w) ⊗ h)
+    ≡⟨ cong abelianize (⊗-assocₚ (gen c) (ev w) h) ⟩
+  abelianize (gen c ⊗ (ev w ⊗ h))
+    ≡⟨ abel-step c (ev w ⊗ h) ⟩
+  abelianize (gen c) ·₃ abelianize (ev w ⊗ h)
+    ≡⟨ cong (mul3-left (abelianize (gen c))) (abel-word w h) ⟩
+  abelianize (gen c) ·₃ (abelianize (ev w) ·₃ abelianize h)
+    ≡⟨ sym (·₃-assoc (abelianize (gen c)) (abelianize (ev w)) (abelianize h)) ⟩
+  (abelianize (gen c) ·₃ abelianize (ev w)) ·₃ abelianize h
+    ≡⟨ cong (mul3-right (abelianize h)) (sym (abel-step c (ev w))) ⟩
+  abelianize (gen c ⊗ ev w) ·₃ abelianize h
+  ∎
+
+-- 主定理 (dispatcher): 每个元素由规范词覆盖 (ev-wordOf, 12 案 refl)
 abelianize-hom : ∀ g h → abelianize (g ⊗ h) ≡ abelianize g ·₃ abelianize h
-abelianize-hom (Id) (Id) = refl
-abelianize-hom (Id) (Rot (zero) (zero)) = refl
-abelianize-hom (Id) (Rot (zero) (suc zero)) = refl
-abelianize-hom (Id) (Rot (suc zero) (zero)) = refl
-abelianize-hom (Id) (Rot (suc zero) (suc zero)) = refl
-abelianize-hom (Id) (Rot (suc (suc zero)) (zero)) = refl
-abelianize-hom (Id) (Rot (suc (suc zero)) (suc zero)) = refl
-abelianize-hom (Id) (Rot (suc (suc (suc zero))) (zero)) = refl
-abelianize-hom (Id) (Rot (suc (suc (suc zero))) (suc zero)) = refl
-abelianize-hom (Id) (Flip (zero)) = refl
-abelianize-hom (Id) (Flip (suc zero)) = refl
-abelianize-hom (Id) (Flip (suc (suc zero))) = refl
-abelianize-hom (Rot (zero) (zero)) (Id) = refl
-abelianize-hom (Rot (zero) (zero)) (Rot (zero) (zero)) = refl
-abelianize-hom (Rot (zero) (zero)) (Rot (zero) (suc zero)) = refl
-abelianize-hom (Rot (zero) (zero)) (Rot (suc zero) (zero)) = refl
-abelianize-hom (Rot (zero) (zero)) (Rot (suc zero) (suc zero)) = refl
-abelianize-hom (Rot (zero) (zero)) (Rot (suc (suc zero)) (zero)) = refl
-abelianize-hom (Rot (zero) (zero)) (Rot (suc (suc zero)) (suc zero)) = refl
-abelianize-hom (Rot (zero) (zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
-abelianize-hom (Rot (zero) (zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
-abelianize-hom (Rot (zero) (zero)) (Flip (zero)) = refl
-abelianize-hom (Rot (zero) (zero)) (Flip (suc zero)) = refl
-abelianize-hom (Rot (zero) (zero)) (Flip (suc (suc zero))) = refl
-abelianize-hom (Rot (zero) (suc zero)) (Id) = refl
-abelianize-hom (Rot (zero) (suc zero)) (Rot (zero) (zero)) = refl
-abelianize-hom (Rot (zero) (suc zero)) (Rot (zero) (suc zero)) = refl
-abelianize-hom (Rot (zero) (suc zero)) (Rot (suc zero) (zero)) = refl
-abelianize-hom (Rot (zero) (suc zero)) (Rot (suc zero) (suc zero)) = refl
-abelianize-hom (Rot (zero) (suc zero)) (Rot (suc (suc zero)) (zero)) = refl
-abelianize-hom (Rot (zero) (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
-abelianize-hom (Rot (zero) (suc zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
-abelianize-hom (Rot (zero) (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
-abelianize-hom (Rot (zero) (suc zero)) (Flip (zero)) = refl
-abelianize-hom (Rot (zero) (suc zero)) (Flip (suc zero)) = refl
-abelianize-hom (Rot (zero) (suc zero)) (Flip (suc (suc zero))) = refl
-abelianize-hom (Rot (suc zero) (zero)) (Id) = refl
-abelianize-hom (Rot (suc zero) (zero)) (Rot (zero) (zero)) = refl
-abelianize-hom (Rot (suc zero) (zero)) (Rot (zero) (suc zero)) = refl
-abelianize-hom (Rot (suc zero) (zero)) (Rot (suc zero) (zero)) = refl
-abelianize-hom (Rot (suc zero) (zero)) (Rot (suc zero) (suc zero)) = refl
-abelianize-hom (Rot (suc zero) (zero)) (Rot (suc (suc zero)) (zero)) = refl
-abelianize-hom (Rot (suc zero) (zero)) (Rot (suc (suc zero)) (suc zero)) = refl
-abelianize-hom (Rot (suc zero) (zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
-abelianize-hom (Rot (suc zero) (zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
-abelianize-hom (Rot (suc zero) (zero)) (Flip (zero)) = refl
-abelianize-hom (Rot (suc zero) (zero)) (Flip (suc zero)) = refl
-abelianize-hom (Rot (suc zero) (zero)) (Flip (suc (suc zero))) = refl
-abelianize-hom (Rot (suc zero) (suc zero)) (Id) = refl
-abelianize-hom (Rot (suc zero) (suc zero)) (Rot (zero) (zero)) = refl
-abelianize-hom (Rot (suc zero) (suc zero)) (Rot (zero) (suc zero)) = refl
-abelianize-hom (Rot (suc zero) (suc zero)) (Rot (suc zero) (zero)) = refl
-abelianize-hom (Rot (suc zero) (suc zero)) (Rot (suc zero) (suc zero)) = refl
-abelianize-hom (Rot (suc zero) (suc zero)) (Rot (suc (suc zero)) (zero)) = refl
-abelianize-hom (Rot (suc zero) (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
-abelianize-hom (Rot (suc zero) (suc zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
-abelianize-hom (Rot (suc zero) (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
-abelianize-hom (Rot (suc zero) (suc zero)) (Flip (zero)) = refl
-abelianize-hom (Rot (suc zero) (suc zero)) (Flip (suc zero)) = refl
-abelianize-hom (Rot (suc zero) (suc zero)) (Flip (suc (suc zero))) = refl
-abelianize-hom (Rot (suc (suc zero)) (zero)) (Id) = refl
-abelianize-hom (Rot (suc (suc zero)) (zero)) (Rot (zero) (zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (zero)) (Rot (zero) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (zero)) (Rot (suc zero) (zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (zero)) (Rot (suc zero) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (zero)) (Rot (suc (suc zero)) (zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (zero)) (Rot (suc (suc zero)) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (zero)) (Flip (zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (zero)) (Flip (suc zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (zero)) (Flip (suc (suc zero))) = refl
-abelianize-hom (Rot (suc (suc zero)) (suc zero)) (Id) = refl
-abelianize-hom (Rot (suc (suc zero)) (suc zero)) (Rot (zero) (zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (suc zero)) (Rot (zero) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (suc zero)) (Rot (suc zero) (zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (suc zero)) (Rot (suc zero) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (suc zero)) (Rot (suc (suc zero)) (zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (suc zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (suc zero)) (Flip (zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (suc zero)) (Flip (suc zero)) = refl
-abelianize-hom (Rot (suc (suc zero)) (suc zero)) (Flip (suc (suc zero))) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (zero)) (Id) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (zero)) (Rot (zero) (zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (zero)) (Rot (zero) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (zero)) (Rot (suc zero) (zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (zero)) (Rot (suc zero) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (zero)) (Rot (suc (suc zero)) (zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (zero)) (Rot (suc (suc zero)) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (zero)) (Flip (zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (zero)) (Flip (suc zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (zero)) (Flip (suc (suc zero))) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (suc zero)) (Id) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (zero) (zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (zero) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc zero) (zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc zero) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc (suc zero)) (zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (suc zero)) (Flip (zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (suc zero)) (Flip (suc zero)) = refl
-abelianize-hom (Rot (suc (suc (suc zero))) (suc zero)) (Flip (suc (suc zero))) = refl
-abelianize-hom (Flip (zero)) (Id) = refl
-abelianize-hom (Flip (zero)) (Rot (zero) (zero)) = refl
-abelianize-hom (Flip (zero)) (Rot (zero) (suc zero)) = refl
-abelianize-hom (Flip (zero)) (Rot (suc zero) (zero)) = refl
-abelianize-hom (Flip (zero)) (Rot (suc zero) (suc zero)) = refl
-abelianize-hom (Flip (zero)) (Rot (suc (suc zero)) (zero)) = refl
-abelianize-hom (Flip (zero)) (Rot (suc (suc zero)) (suc zero)) = refl
-abelianize-hom (Flip (zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
-abelianize-hom (Flip (zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
-abelianize-hom (Flip (zero)) (Flip (zero)) = refl
-abelianize-hom (Flip (zero)) (Flip (suc zero)) = refl
-abelianize-hom (Flip (zero)) (Flip (suc (suc zero))) = refl
-abelianize-hom (Flip (suc zero)) (Id) = refl
-abelianize-hom (Flip (suc zero)) (Rot (zero) (zero)) = refl
-abelianize-hom (Flip (suc zero)) (Rot (zero) (suc zero)) = refl
-abelianize-hom (Flip (suc zero)) (Rot (suc zero) (zero)) = refl
-abelianize-hom (Flip (suc zero)) (Rot (suc zero) (suc zero)) = refl
-abelianize-hom (Flip (suc zero)) (Rot (suc (suc zero)) (zero)) = refl
-abelianize-hom (Flip (suc zero)) (Rot (suc (suc zero)) (suc zero)) = refl
-abelianize-hom (Flip (suc zero)) (Rot (suc (suc (suc zero))) (zero)) = refl
-abelianize-hom (Flip (suc zero)) (Rot (suc (suc (suc zero))) (suc zero)) = refl
-abelianize-hom (Flip (suc zero)) (Flip (zero)) = refl
-abelianize-hom (Flip (suc zero)) (Flip (suc zero)) = refl
-abelianize-hom (Flip (suc zero)) (Flip (suc (suc zero))) = refl
-abelianize-hom (Flip (suc (suc zero))) (Id) = refl
-abelianize-hom (Flip (suc (suc zero))) (Rot (zero) (zero)) = refl
-abelianize-hom (Flip (suc (suc zero))) (Rot (zero) (suc zero)) = refl
-abelianize-hom (Flip (suc (suc zero))) (Rot (suc zero) (zero)) = refl
-abelianize-hom (Flip (suc (suc zero))) (Rot (suc zero) (suc zero)) = refl
-abelianize-hom (Flip (suc (suc zero))) (Rot (suc (suc zero)) (zero)) = refl
-abelianize-hom (Flip (suc (suc zero))) (Rot (suc (suc zero)) (suc zero)) = refl
-abelianize-hom (Flip (suc (suc zero))) (Rot (suc (suc (suc zero))) (zero)) = refl
-abelianize-hom (Flip (suc (suc zero))) (Rot (suc (suc (suc zero))) (suc zero)) = refl
-abelianize-hom (Flip (suc (suc zero))) (Flip (zero)) = refl
-abelianize-hom (Flip (suc (suc zero))) (Flip (suc zero)) = refl
-abelianize-hom (Flip (suc (suc zero))) (Flip (suc (suc zero))) = refl
+abelianize-hom g h = begin
+  abelianize (g ⊗ h)
+    ≡⟨ cong (abel-mul-h h) (sym (ev-wordOf g)) ⟩
+  abelianize (ev (wordOf g) ⊗ h)
+    ≡⟨ abel-word (wordOf g) h ⟩
+  abelianize (ev (wordOf g)) ·₃ abelianize h
+    ≡⟨ cong (abel-right-h h) (ev-wordOf g) ⟩
+  abelianize g ·₃ abelianize h
+  ∎
 
 --------------------------------------------------------------------------------
 -- 7.5 共轭类结构验证 + 分支规则 (三个槽位)

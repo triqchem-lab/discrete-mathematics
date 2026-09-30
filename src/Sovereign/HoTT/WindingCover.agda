@@ -75,11 +75,15 @@ transportToroidal refl n = n
 
 -- encode: 路径 → 绕数
 -- 沿路径传输 0，得到绕数（因为绕数 = 起始绕数 + 步数 mod 周期）
-encodePolar : {x : T6.T6Lattice} → (x ≡ x) → Fin 144
-encodePolar p = transportPolar p zero
+-- 【②层修复】原签名 ({x} → (x ≡ x) → Fin 144) 带恒真路径假设（UIP 下全为 refl），
+-- 且 PolarCover 为常族（_ = Fin 144）⇒ 路径传送恒平凡 ⇒ 编码器构造性为常函数。
+-- 如实改为常值形；真绕数语义在 polarCycleInvariant（holonomy 传送保持）与迭代不变量层。
+encodePolar : T6.T6Lattice → Fin 144
+encodePolar _ = zero
 
-encodeToroidal : {x : T6.T6Lattice} → (x ≡ x) → Fin 46
-encodeToroidal p = transportToroidal p zero
+-- 【②层修复】同 encodePolar：恒真路径假设 + 常族传送平凡 ⇒ 常值显形。
+encodeToroidal : T6.T6Lattice → Fin 46
+encodeToroidal _ = zero
 
 -- decode: 绕数 → 路径（通过重复步进构造）
 -- polarHolonomy 已证明：iterate 144 polarStep p ≡ p，取 sym 即得所需路径

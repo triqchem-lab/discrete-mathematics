@@ -202,50 +202,9 @@ generator-order3 (suc (suc zero)) = refl
 generator-order3 (suc (suc (suc zero))) = refl
 generator-order3 (suc (suc (suc (suc zero)))) = refl
 generator-order3 (suc (suc (suc (suc (suc zero))))) = refl
-
--- 生成元交换 (穷举 6×6=36 case)
+-- 【结构化重证】生成元交换（原 36-case 表 → 复用既有 t6Add-comm :143——盲写表实锤）
 generator-comm : ∀ (i j : Fin 6) → t6Add (genL i) (genL j) ≡ t6Add (genL j) (genL i)
-generator-comm zero zero = refl ; generator-comm zero (suc zero) = refl
-generator-comm zero (suc (suc zero)) = refl
-generator-comm zero (suc (suc (suc zero))) = refl
-generator-comm zero (suc (suc (suc (suc zero)))) = refl
-generator-comm zero (suc (suc (suc (suc (suc zero))))) = refl
-generator-comm (suc zero) zero = refl
-generator-comm (suc zero) (suc zero) = refl
-generator-comm (suc zero) (suc (suc zero)) = refl
-generator-comm (suc zero) (suc (suc (suc zero))) = refl
-generator-comm (suc zero) (suc (suc (suc (suc zero)))) = refl
-generator-comm (suc zero) (suc (suc (suc (suc (suc zero))))) = refl
-generator-comm (suc (suc zero)) zero = refl
-generator-comm (suc (suc zero)) (suc zero) = refl
-generator-comm (suc (suc zero)) (suc (suc zero)) = refl
-generator-comm (suc (suc zero)) (suc (suc (suc zero))) = refl
-generator-comm (suc (suc zero)) (suc (suc (suc (suc zero)))) = refl
-generator-comm (suc (suc zero)) (suc (suc (suc (suc (suc zero))))) = refl
-generator-comm (suc (suc (suc zero))) zero = refl
-generator-comm (suc (suc (suc zero))) (suc zero) = refl
-generator-comm (suc (suc (suc zero))) (suc (suc zero)) = refl
-generator-comm (suc (suc (suc zero))) (suc (suc (suc zero))) = refl
-generator-comm (suc (suc (suc zero))) (suc (suc (suc (suc zero)))) = refl
-generator-comm (suc (suc (suc zero))) (suc (suc (suc (suc (suc zero))))) = refl
-generator-comm (suc (suc (suc (suc zero)))) zero = refl
-generator-comm (suc (suc (suc (suc zero)))) (suc zero) = refl
-generator-comm (suc (suc (suc (suc zero)))) (suc (suc zero)) = refl
-generator-comm (suc (suc (suc (suc zero)))) (suc (suc (suc zero))) = refl
-generator-comm (suc (suc (suc (suc zero)))) (suc (suc (suc (suc zero)))) = refl
-generator-comm (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc zero))))) = refl
-generator-comm (suc (suc (suc (suc (suc zero))))) zero = refl
-generator-comm (suc (suc (suc (suc (suc zero))))) (suc zero) = refl
-generator-comm (suc (suc (suc (suc (suc zero))))) (suc (suc zero)) = refl
-generator-comm (suc (suc (suc (suc (suc zero))))) (suc (suc (suc zero))) = refl
-generator-comm (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc zero)))) = refl
-generator-comm (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc zero))))) = refl
-
---------------------------------------------------------------------------------
--- 3. 测地线: 沿指定方向平移
---------------------------------------------------------------------------------
-
--- 沿向量 v 的测地线: geodesic(v, n) = n·v (T⁶ 上加法 n 次)
+generator-comm i j = t6Add-comm (genL i) (genL j)
 t6Scale : ℕ → T6Lattice → T6Lattice
 t6Scale zero    v = t6Zero
 t6Scale (suc n) v = t6Add v (t6Scale n v)

@@ -18,9 +18,9 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)
+  using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; ⊕-comm; ⊕-assoc; ⊕-inverse; ⊕-identityˡ; ⊕-identityʳ; ⊗-assoc; ⊗-distribˡ-⊕; ⊗-distribʳ-⊕)
 
 --------------------------------------------------------------------------------
 -- §1. 离散指数映射: σ^t 替代 exp(tX)
@@ -134,7 +134,7 @@ record FiniteAutGroup : Set₁ where
 -- 0 postulate.
 
 open import Sovereign.Algebra.Jacobian.jac_Discrete using (Mat2)
-open import Sovereign.Algebra.Jacobian.jac_Matrix using (mat-mul; mat-add; mat-scale)
+open import Sovereign.Algebra.Jacobian.jac_Matrix using (mat-mul; mat-add; mat-scale; mat-mul-scale-l; mat-mul-scale-r; ⊕-swap4)
 open import Sovereign.Base.Trit using (Trit; _⊕_; _⊗_; negate)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
@@ -327,3 +327,214 @@ module LieDiscreteEvidence where
 --   3. Burnside 轨道计数公式的形式化证明 (~500行)
 --   4. 一般有限群维数平方和定理的推广 (~800行)
 --------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- §6. Mat2 环律层 + Jacobi 恒等式（结构化：环展开消去）
+--------------------------------------------------------------------------------
+
+zeroM : Mat2
+zeroM = (T₀ , T₀) , (T₀ , T₀)
+
+mat-add-comm : ∀ A B → mat-add A B ≡ mat-add B A
+mat-add-comm ((a , b) , (c , d)) ((ea , fa) , (ga , ha)) =
+  cong₂ _,_
+    (cong₂ _,_ (⊕-comm a ea) (⊕-comm b fa))
+    (cong₂ _,_ (⊕-comm c ga) (⊕-comm d ha))
+
+mat-add-assoc : ∀ A B C → mat-add (mat-add A B) C ≡ mat-add A (mat-add B C)
+mat-add-assoc ((a , b) , (c , d)) ((ea , fa) , (ga , ha)) ((m , n) , (p , q)) =
+  cong₂ _,_
+    (cong₂ _,_ (⊕-assoc a ea m) (⊕-assoc b fa n))
+    (cong₂ _,_ (⊕-assoc c ga p) (⊕-assoc d ha q))
+
+-- 结合律的 8 元重排（(ae⊕bg)m ⊕ (af⊕bh)p ≡ a(em⊕fp) ⊕ b(gm⊕hp)）
+mul-entry-assoc : ∀ (a b ea fa ga ha m p : Trit) →
+  (((a ⊗ ea) ⊕ (b ⊗ ga)) ⊗ m) ⊕ (((a ⊗ fa) ⊕ (b ⊗ ha)) ⊗ p)
+  ≡ (a ⊗ (((ea ⊗ m) ⊕ (fa ⊗ p)))) ⊕ (b ⊗ (((ga ⊗ m) ⊕ (ha ⊗ p))))
+mul-entry-assoc a b ea fa ga ha m p =
+  trans (cong₂ _⊕_
+    (trans (⊗-distribʳ-⊕ (a ⊗ ea) (b ⊗ ga) m)
+      (cong₂ _⊕_ (⊗-assoc a ea m) (⊗-assoc b ga m)))
+    (trans (⊗-distribʳ-⊕ (a ⊗ fa) (b ⊗ ha) p)
+      (cong₂ _⊕_ (⊗-assoc a fa p) (⊗-assoc b ha p))))
+  (trans (⊕-swap4 (a ⊗ (ea ⊗ m)) (b ⊗ (ga ⊗ m)) (a ⊗ (fa ⊗ p)) (b ⊗ (ha ⊗ p)))
+    (cong₂ _⊕_ (sym (⊗-distribˡ-⊕ a (ea ⊗ m) (fa ⊗ p)))
+               (sym (⊗-distribˡ-⊕ b (ga ⊗ m) (ha ⊗ p)))))
+
+-- 乘法结合律（4 入口 × mul-entry-assoc 一次换入）
+mat-mul-assoc : ∀ A B C → mat-mul (mat-mul A B) C ≡ mat-mul A (mat-mul B C)
+mat-mul-assoc ((a , b) , (c , d)) ((ea , fa) , (ga , ha)) ((m , n) , (p , q)) =
+  cong₂ _,_
+    (cong₂ _,_ (mul-entry-assoc a b ea fa ga ha m p) (mul-entry-assoc a b ea fa ga ha n q))
+    (cong₂ _,_ (mul-entry-assoc c d ea fa ga ha m p) (mul-entry-assoc c d ea fa ga ha n q))
+
+-- 入口双线性重排（a⊗(x⊕y)⊕b⊗(u⊕v) ≡ (a⊗x⊕b⊗u)⊕(a⊗y⊕b⊗v)）
+mul-entry-dist : ∀ a b x y u v →
+  (a ⊗ (x ⊕ y)) ⊕ (b ⊗ (u ⊕ v))
+  ≡ ((a ⊗ x) ⊕ (b ⊗ u)) ⊕ ((a ⊗ y) ⊕ (b ⊗ v))
+mul-entry-dist a b x y u v =
+  trans (cong₂ _⊕_ (⊗-distribˡ-⊕ a x y) (⊗-distribˡ-⊕ b u v))
+        (⊕-swap4 (a ⊗ x) (a ⊗ y) (b ⊗ u) (b ⊗ v))
+
+mat-mul-distribˡ : ∀ A B C → mat-mul A (mat-add B C) ≡ mat-add (mat-mul A B) (mat-mul A C)
+mat-mul-distribˡ ((a , b) , (c , d)) ((ea , fa) , (ga , ha)) ((ma , na) , (pa , qa)) =
+  cong₂ _,_
+    (cong₂ _,_ (mul-entry-dist a b ea ma ga pa) (mul-entry-dist a b fa na ha qa))
+    (cong₂ _,_ (mul-entry-dist c d ea ma ga pa) (mul-entry-dist c d fa na ha qa))
+
+mat-mul-distribʳ : ∀ A B C → mat-mul (mat-add A B) C ≡ mat-add (mat-mul A C) (mat-mul B C)
+mat-mul-distribʳ ((a , b) , (c , d)) ((ea , fa) , (ga , ha)) ((m , n) , (p , q)) =
+  cong₂ _,_
+    (cong₂ _,_ (entry2 a ea b fa m p) (entry2 a ea b fa n q))
+    (cong₂ _,_ (entry2 c ga d ha m p) (entry2 c ga d ha n q))
+  where
+    entry2 : ∀ x u y v s w →
+      ((x ⊕ u) ⊗ s) ⊕ ((y ⊕ v) ⊗ w)
+      ≡ ((x ⊗ s) ⊕ (y ⊗ w)) ⊕ ((u ⊗ s) ⊕ (v ⊗ w))
+    entry2 x u y v s w =
+      trans (cong₂ _⊕_ (⊗-distribʳ-⊕ x u s) (⊗-distribʳ-⊕ y v w))
+            (⊕-swap4 (x ⊗ s) (u ⊗ s) (y ⊗ w) (v ⊗ w))
+
+-- 符号件层（jacobi 装配前置）
+T2⊗≡neg : ∀ x → T₂ ⊗ x ≡ negate x
+T2⊗≡neg T₀ = refl
+T2⊗≡neg T₁ = refl
+T2⊗≡neg T₂ = refl
+
+T2∘T2 : ∀ x → T₂ ⊗ (T₂ ⊗ x) ≡ x
+T2∘T2 T₀ = refl
+T2∘T2 T₁ = refl
+T2∘T2 T₂ = refl
+
+mat-scale-add : ∀ k A B → mat-scale k (mat-add A B) ≡ mat-add (mat-scale k A) (mat-scale k B)
+mat-scale-add k ((a , b) , (c , d)) ((ea , fa) , (ga , ha)) =
+  cong₂ _,_
+    (cong₂ _,_ (⊗-distribˡ-⊕ k a ea) (⊗-distribˡ-⊕ k b fa))
+    (cong₂ _,_ (⊗-distribˡ-⊕ k c ga) (⊗-distribˡ-⊕ k d ha))
+
+mat-scale-neg-neg : ∀ X → mat-scale T₂ (mat-scale T₂ X) ≡ X
+mat-scale-neg-neg ((a , b) , (c , d)) =
+  cong₂ _,_
+    (cong₂ _,_ (T2∘T2 a) (T2∘T2 b))
+    (cong₂ _,_ (T2∘T2 c) (T2∘T2 d))
+
+mat-add-neg : ∀ X → mat-add X (mat-scale T₂ X) ≡ zeroM
+mat-add-neg ((a , b) , (c , d)) =
+  cong₂ _,_
+    (cong₂ _,_ (trans (cong (a ⊕_) (T2⊗≡neg a)) (⊕-inverse a))
+              (trans (cong (b ⊕_) (T2⊗≡neg b)) (⊕-inverse b)))
+    (cong₂ _,_ (trans (cong (c ⊕_) (T2⊗≡neg c)) (⊕-inverse c))
+              (trans (cong (d ⊕_) (T2⊗≡neg d)) (⊕-inverse d)))
+
+mat-add-zeroˡ : ∀ X → mat-add zeroM X ≡ X
+mat-add-zeroˡ ((a , b) , (c , d)) =
+  cong₂ _,_
+    (cong₂ _,_ (⊕-identityˡ a) (⊕-identityˡ b))
+    (cong₂ _,_ (⊕-identityˡ c) (⊕-identityˡ d))
+
+mat-add-zeroʳ : ∀ X → mat-add X zeroM ≡ X
+mat-add-zeroʳ ((a , b) , (c , d)) =
+  cong₂ _,_
+    (cong₂ _,_ (⊕-identityʳ a) (⊕-identityʳ b))
+    (cong₂ _,_ (⊕-identityʳ c) (⊕-identityʳ d))
+
+-- 矩阵 4 元换位（⊕-swap4 的矩阵版）
+rearr4 : ∀ W X Y Z → mat-add (mat-add W X) (mat-add Y Z) ≡ mat-add (mat-add W Y) (mat-add X Z)
+rearr4 W X Y Z =
+  trans (mat-add-assoc W X (mat-add Y Z))
+  (trans (cong (mat-add W) (trans (sym (mat-add-assoc X Y Z))
+    (trans (cong (λ u → mat-add u Z) (mat-add-comm X Y)) (mat-add-assoc Y X Z))))
+  (sym (mat-add-assoc W Y (mat-add X Z))))
+
+-- 三重对易展开：[X,[Y,Z]] = XYZ − XZY − YZX + ZYX（符号 = mat-scale T₂）
+neg1 : Mat2 → Mat2
+neg1 M = mat-scale T₂ M
+
+comm3-expand : ∀ X Y Z → commutator X (commutator Y Z) ≡
+  mat-add (mat-add (mat-mul X (mat-mul Y Z)) (neg1 (mat-mul X (mat-mul Z Y))))
+         (mat-add (neg1 (mat-mul (mat-mul Y Z) X)) (mat-mul (mat-mul Z Y) X))
+comm3-expand X Y Z =
+  let YZ = mat-mul Y Z ; ZY = mat-mul Z Y ; nZY = mat-scale T₂ ZY in
+  let p1 : mat-mul X (mat-add YZ nZY) ≡ mat-add (mat-mul X YZ) (neg1 (mat-mul X ZY))
+      p1 = trans (mat-mul-distribˡ X YZ nZY)
+                 (cong (mat-add (mat-mul X YZ)) (mat-mul-scale-r X T₂ ZY))
+      p2 : mat-scale T₂ (mat-mul (mat-add YZ nZY) X) ≡ mat-add (neg1 (mat-mul YZ X)) (mat-mul ZY X)
+      p2 = trans (cong (mat-scale T₂) (mat-mul-distribʳ YZ nZY X))
+           (trans (mat-scale-add T₂ (mat-mul YZ X) (mat-mul nZY X))
+                  (cong (mat-add (neg1 (mat-mul YZ X)))
+                        (trans (cong (mat-scale T₂) (mat-mul-scale-l T₂ ZY X))
+                               (mat-scale-neg-neg (mat-mul ZY X)))))
+  in cong₂ mat-add p1 p2
+
+-- 负收集：neg1 X ⊕ neg1 Y ≡ neg1 (X ⊕ Y)
+neg-collect : ∀ X Y → mat-add (neg1 X) (neg1 Y) ≡ neg1 (mat-add X Y)
+neg-collect X Y = sym (mat-scale-add T₂ X Y)
+
+-- 三重展开（左结合范式：经 mat-mul-assoc 归一）
+comm3-expand' : ∀ X Y Z → commutator X (commutator Y Z) ≡
+  mat-add (mat-add (mat-mul (mat-mul X Y) Z) (neg1 (mat-mul (mat-mul X Z) Y)))
+         (mat-add (neg1 (mat-mul (mat-mul Y Z) X)) (mat-mul (mat-mul Z Y) X))
+comm3-expand' X Y Z =
+  trans (comm3-expand X Y Z)
+  (cong₂ mat-add
+    (cong₂ mat-add (sym (mat-mul-assoc X Y Z)) (cong neg1 (sym (mat-mul-assoc X Z Y))))
+    refl)
+
+-- 三元轮换：(X⊕Y)⊕Z ≡ (Z⊕X)⊕Y
+rot3 : ∀ X Y Z → mat-add (mat-add X Y) Z ≡ mat-add (mat-add Z X) Y
+rot3 X Y Z =
+  trans (mat-add-assoc X Y Z)
+  (trans (cong (mat-add X) (mat-add-comm Y Z))
+  (trans (sym (mat-add-assoc X Z Y))
+         (cong (λ w → mat-add w Y) (mat-add-comm X Z))))
+
+-- jacobi 形态核心：E 形 12 项 → 正簇 ⊕ neg1(正簇) → zeroM
+jacobi-shape : ∀ a b c d ev fv →
+  mat-add (mat-add (mat-add (mat-add a (neg1 b)) (mat-add (neg1 c) d))
+                   (mat-add (mat-add c (neg1 ev)) (mat-add (neg1 fv) b)))
+         (mat-add (mat-add fv (neg1 d)) (mat-add (neg1 a) ev))
+  ≡ zeroM
+jacobi-shape a b c d ev fv =
+  let nb = neg1 b ; nc = neg1 c ; nd = neg1 d ; na = neg1 a ; nev = neg1 ev ; nfv = neg1 fv in
+  let Apos = mat-add (mat-add a c) fv
+      Aneg = mat-add (mat-add nb nev) nd
+      Bneg = mat-add (mat-add nc nfv) na
+      Bpos = mat-add (mat-add d b) ev
+      G    = mat-add Apos Bpos
+      eqA = trans (cong (λ w → mat-add w nfv) (sym (mat-scale-add T₂ a c)))
+                  (sym (mat-scale-add T₂ (mat-add a c) fv))
+      eqB = trans (cong (λ w → mat-add w nev) (sym (mat-scale-add T₂ d b)))
+                  (sym (mat-scale-add T₂ (mat-add d b) ev))
+      s1 = rearr4 (mat-add a nb) (mat-add nc d) (mat-add c nev) (mat-add nfv b)
+      s2 = rearr4 (mat-add (mat-add a nb) (mat-add c nev)) (mat-add (mat-add nc d) (mat-add nfv b))
+                  (mat-add fv nd) (mat-add na ev)
+      s3 = rearr4 a nb c nev
+      s4 = rearr4 (mat-add a c) (mat-add nb nev) fv nd
+      s5 = rearr4 nc d nfv b
+      s6 = rearr4 (mat-add nc nfv) (mat-add d b) na ev
+  in
+  trans (cong (λ w → mat-add w (mat-add (mat-add fv nd) (mat-add na ev))) s1)
+  (trans s2
+  (trans (cong₂ mat-add
+            (trans (cong (λ w → mat-add w (mat-add fv nd)) s3) s4)
+            (cong (λ w → mat-add w (mat-add na ev)) s5))
+  (trans (cong (mat-add (mat-add Apos Aneg)) s6)
+  (trans (cong (mat-add (mat-add Apos Aneg)) (mat-add-comm Bneg Bpos))
+  (trans (rearr4 Apos Aneg Bpos Bneg)
+  (trans (cong (mat-add G)
+            (trans (cong₂ mat-add (rot3 nb nev nd) (rot3 nc nfv na))
+            (trans (mat-add-comm (mat-add (mat-add nd nb) nev) (mat-add (mat-add na nc) nfv))
+                   (cong₂ mat-add eqA eqB))))
+  (trans (cong (mat-add G) (sym (mat-scale-add T₂ Apos Bpos)))
+         (mat-add-neg G))))))))
+
+jacobi : ∀ A B C →
+  mat-add (mat-add (commutator A (commutator B C)) (commutator B (commutator C A)))
+         (commutator C (commutator A B))
+  ≡ zeroM
+jacobi A B C =
+  trans (cong₂ mat-add (cong₂ mat-add (comm3-expand' A B C) (comm3-expand' B C A))
+                       (comm3-expand' C A B))
+        (jacobi-shape (mat-mul (mat-mul A B) C) (mat-mul (mat-mul A C) B)
+                      (mat-mul (mat-mul B C) A) (mat-mul (mat-mul C B) A)
+                      (mat-mul (mat-mul B A) C) (mat-mul (mat-mul C A) B))

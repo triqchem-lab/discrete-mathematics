@@ -1106,89 +1106,114 @@ findError (T₂ , T₂) (T₂ , T₁) = 2 , toGF9 s12α
 findError (T₂ , T₂) (T₂ , T₂) = 0 , toGF9 s22α
 
 -- 定位表反演: 对任意合法 (i, v): findError (v·βⁱ, v·β²ⁱ) = (i, v)
+-- 符号化改造 (折半枚举): 原 82 案单块超出「单引理 ≤27 案」上限, 按位置 i 拆成 8 个子引理,
+--   每个子引理只对 v 的 9 个构造子枚举 (8 非零 refl + v=0 的 ⊥), 9 案 ≤ 27 ✓;
+--   dispatcher findError-loc 只做 i 的分派 (8 个字面量 + i≥8 的 ⊥), 不含穷举。
+-- 为何不做 log-decode 重构 (β-对数公式): 查表恰是 β-对数公式的 81 条目展开
+--   (17 条 s₁=0 或 s₂=0 行 → (0,zero9); 其余 64 行恰是相容对 (v·βⁱ, v·β²ⁱ) 的 (i,v)),
+--   但换成公式后反演正确性需 GF(9)* ≅ C₈ 的离散对数同态引理 (inv9-*/log9-*),
+--   其自身是 64~81 案表 (GF9 的 _*s_/toGF9 均为构造子表) 或撞 %8 的 mod-helper 展开限制,
+--   案数不消失只是转移, 故取折半枚举 (低风险)。
+
+findError-loc-0 : ∀ v → v ≢ zero9 → findError (v *₉ βPowT 0) (v *₉ β2Pow 0) ≡ (0 , v)
+findError-loc-0 (T₀ , T₀) v≢0 = ⊥-elim (v≢0 refl)
+findError-loc-0 (T₀ , T₁) _ = refl
+findError-loc-0 (T₀ , T₂) _ = refl
+findError-loc-0 (T₁ , T₀) _ = refl
+findError-loc-0 (T₁ , T₁) _ = refl
+findError-loc-0 (T₁ , T₂) _ = refl
+findError-loc-0 (T₂ , T₀) _ = refl
+findError-loc-0 (T₂ , T₁) _ = refl
+findError-loc-0 (T₂ , T₂) _ = refl
+
+findError-loc-1 : ∀ v → v ≢ zero9 → findError (v *₉ βPowT 1) (v *₉ β2Pow 1) ≡ (1 , v)
+findError-loc-1 (T₀ , T₀) v≢0 = ⊥-elim (v≢0 refl)
+findError-loc-1 (T₀ , T₁) _ = refl
+findError-loc-1 (T₀ , T₂) _ = refl
+findError-loc-1 (T₁ , T₀) _ = refl
+findError-loc-1 (T₁ , T₁) _ = refl
+findError-loc-1 (T₁ , T₂) _ = refl
+findError-loc-1 (T₂ , T₀) _ = refl
+findError-loc-1 (T₂ , T₁) _ = refl
+findError-loc-1 (T₂ , T₂) _ = refl
+
+findError-loc-2 : ∀ v → v ≢ zero9 → findError (v *₉ βPowT 2) (v *₉ β2Pow 2) ≡ (2 , v)
+findError-loc-2 (T₀ , T₀) v≢0 = ⊥-elim (v≢0 refl)
+findError-loc-2 (T₀ , T₁) _ = refl
+findError-loc-2 (T₀ , T₂) _ = refl
+findError-loc-2 (T₁ , T₀) _ = refl
+findError-loc-2 (T₁ , T₁) _ = refl
+findError-loc-2 (T₁ , T₂) _ = refl
+findError-loc-2 (T₂ , T₀) _ = refl
+findError-loc-2 (T₂ , T₁) _ = refl
+findError-loc-2 (T₂ , T₂) _ = refl
+
+findError-loc-3 : ∀ v → v ≢ zero9 → findError (v *₉ βPowT 3) (v *₉ β2Pow 3) ≡ (3 , v)
+findError-loc-3 (T₀ , T₀) v≢0 = ⊥-elim (v≢0 refl)
+findError-loc-3 (T₀ , T₁) _ = refl
+findError-loc-3 (T₀ , T₂) _ = refl
+findError-loc-3 (T₁ , T₀) _ = refl
+findError-loc-3 (T₁ , T₁) _ = refl
+findError-loc-3 (T₁ , T₂) _ = refl
+findError-loc-3 (T₂ , T₀) _ = refl
+findError-loc-3 (T₂ , T₁) _ = refl
+findError-loc-3 (T₂ , T₂) _ = refl
+
+findError-loc-4 : ∀ v → v ≢ zero9 → findError (v *₉ βPowT 4) (v *₉ β2Pow 4) ≡ (4 , v)
+findError-loc-4 (T₀ , T₀) v≢0 = ⊥-elim (v≢0 refl)
+findError-loc-4 (T₀ , T₁) _ = refl
+findError-loc-4 (T₀ , T₂) _ = refl
+findError-loc-4 (T₁ , T₀) _ = refl
+findError-loc-4 (T₁ , T₁) _ = refl
+findError-loc-4 (T₁ , T₂) _ = refl
+findError-loc-4 (T₂ , T₀) _ = refl
+findError-loc-4 (T₂ , T₁) _ = refl
+findError-loc-4 (T₂ , T₂) _ = refl
+
+findError-loc-5 : ∀ v → v ≢ zero9 → findError (v *₉ βPowT 5) (v *₉ β2Pow 5) ≡ (5 , v)
+findError-loc-5 (T₀ , T₀) v≢0 = ⊥-elim (v≢0 refl)
+findError-loc-5 (T₀ , T₁) _ = refl
+findError-loc-5 (T₀ , T₂) _ = refl
+findError-loc-5 (T₁ , T₀) _ = refl
+findError-loc-5 (T₁ , T₁) _ = refl
+findError-loc-5 (T₁ , T₂) _ = refl
+findError-loc-5 (T₂ , T₀) _ = refl
+findError-loc-5 (T₂ , T₁) _ = refl
+findError-loc-5 (T₂ , T₂) _ = refl
+
+findError-loc-6 : ∀ v → v ≢ zero9 → findError (v *₉ βPowT 6) (v *₉ β2Pow 6) ≡ (6 , v)
+findError-loc-6 (T₀ , T₀) v≢0 = ⊥-elim (v≢0 refl)
+findError-loc-6 (T₀ , T₁) _ = refl
+findError-loc-6 (T₀ , T₂) _ = refl
+findError-loc-6 (T₁ , T₀) _ = refl
+findError-loc-6 (T₁ , T₁) _ = refl
+findError-loc-6 (T₁ , T₂) _ = refl
+findError-loc-6 (T₂ , T₀) _ = refl
+findError-loc-6 (T₂ , T₁) _ = refl
+findError-loc-6 (T₂ , T₂) _ = refl
+
+findError-loc-7 : ∀ v → v ≢ zero9 → findError (v *₉ βPowT 7) (v *₉ β2Pow 7) ≡ (7 , v)
+findError-loc-7 (T₀ , T₀) v≢0 = ⊥-elim (v≢0 refl)
+findError-loc-7 (T₀ , T₁) _ = refl
+findError-loc-7 (T₀ , T₂) _ = refl
+findError-loc-7 (T₁ , T₀) _ = refl
+findError-loc-7 (T₁ , T₁) _ = refl
+findError-loc-7 (T₁ , T₂) _ = refl
+findError-loc-7 (T₂ , T₀) _ = refl
+findError-loc-7 (T₂ , T₁) _ = refl
+findError-loc-7 (T₂ , T₂) _ = refl
+
 findError-loc : ∀ i v → i < 8 → v ≢ zero9 →
   findError (v *₉ βPowT i) (v *₉ β2Pow i) ≡ (i , v)
-findError-loc (zero) (T₀ , T₀) _ v≢0 = ⊥-elim (v≢0 refl)
-findError-loc (zero) (T₀ , T₁) _ _ = refl
-findError-loc (zero) (T₀ , T₂) _ _ = refl
-findError-loc (zero) (T₁ , T₀) _ _ = refl
-findError-loc (zero) (T₁ , T₁) _ _ = refl
-findError-loc (zero) (T₁ , T₂) _ _ = refl
-findError-loc (zero) (T₂ , T₀) _ _ = refl
-findError-loc (zero) (T₂ , T₁) _ _ = refl
-findError-loc (zero) (T₂ , T₂) _ _ = refl
-findError-loc (suc zero) (T₀ , T₀) _ v≢0 = ⊥-elim (v≢0 refl)
-findError-loc (suc zero) (T₀ , T₁) _ _ = refl
-findError-loc (suc zero) (T₀ , T₂) _ _ = refl
-findError-loc (suc zero) (T₁ , T₀) _ _ = refl
-findError-loc (suc zero) (T₁ , T₁) _ _ = refl
-findError-loc (suc zero) (T₁ , T₂) _ _ = refl
-findError-loc (suc zero) (T₂ , T₀) _ _ = refl
-findError-loc (suc zero) (T₂ , T₁) _ _ = refl
-findError-loc (suc zero) (T₂ , T₂) _ _ = refl
-findError-loc (suc (suc zero)) (T₀ , T₀) _ v≢0 = ⊥-elim (v≢0 refl)
-findError-loc (suc (suc zero)) (T₀ , T₁) _ _ = refl
-findError-loc (suc (suc zero)) (T₀ , T₂) _ _ = refl
-findError-loc (suc (suc zero)) (T₁ , T₀) _ _ = refl
-findError-loc (suc (suc zero)) (T₁ , T₁) _ _ = refl
-findError-loc (suc (suc zero)) (T₁ , T₂) _ _ = refl
-findError-loc (suc (suc zero)) (T₂ , T₀) _ _ = refl
-findError-loc (suc (suc zero)) (T₂ , T₁) _ _ = refl
-findError-loc (suc (suc zero)) (T₂ , T₂) _ _ = refl
-findError-loc (suc (suc (suc zero))) (T₀ , T₀) _ v≢0 = ⊥-elim (v≢0 refl)
-findError-loc (suc (suc (suc zero))) (T₀ , T₁) _ _ = refl
-findError-loc (suc (suc (suc zero))) (T₀ , T₂) _ _ = refl
-findError-loc (suc (suc (suc zero))) (T₁ , T₀) _ _ = refl
-findError-loc (suc (suc (suc zero))) (T₁ , T₁) _ _ = refl
-findError-loc (suc (suc (suc zero))) (T₁ , T₂) _ _ = refl
-findError-loc (suc (suc (suc zero))) (T₂ , T₀) _ _ = refl
-findError-loc (suc (suc (suc zero))) (T₂ , T₁) _ _ = refl
-findError-loc (suc (suc (suc zero))) (T₂ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc zero)))) (T₀ , T₀) _ v≢0 = ⊥-elim (v≢0 refl)
-findError-loc (suc (suc (suc (suc zero)))) (T₀ , T₁) _ _ = refl
-findError-loc (suc (suc (suc (suc zero)))) (T₀ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc zero)))) (T₁ , T₀) _ _ = refl
-findError-loc (suc (suc (suc (suc zero)))) (T₁ , T₁) _ _ = refl
-findError-loc (suc (suc (suc (suc zero)))) (T₁ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc zero)))) (T₂ , T₀) _ _ = refl
-findError-loc (suc (suc (suc (suc zero)))) (T₂ , T₁) _ _ = refl
-findError-loc (suc (suc (suc (suc zero)))) (T₂ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc zero))))) (T₀ , T₀) _ v≢0 = ⊥-elim (v≢0 refl)
-findError-loc (suc (suc (suc (suc (suc zero))))) (T₀ , T₁) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc zero))))) (T₀ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc zero))))) (T₁ , T₀) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc zero))))) (T₁ , T₁) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc zero))))) (T₁ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc zero))))) (T₂ , T₀) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc zero))))) (T₂ , T₁) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc zero))))) (T₂ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc zero)))))) (T₀ , T₀) _ v≢0 = ⊥-elim (v≢0 refl)
-findError-loc (suc (suc (suc (suc (suc (suc zero)))))) (T₀ , T₁) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc zero)))))) (T₀ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc zero)))))) (T₁ , T₀) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc zero)))))) (T₁ , T₁) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc zero)))))) (T₁ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc zero)))))) (T₂ , T₀) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc zero)))))) (T₂ , T₁) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc zero)))))) (T₂ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc (suc zero))))))) (T₀ , T₀) _ v≢0 = ⊥-elim (v≢0 refl)
-findError-loc (suc (suc (suc (suc (suc (suc (suc zero))))))) (T₀ , T₁) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc (suc zero))))))) (T₀ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc (suc zero))))))) (T₁ , T₀) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc (suc zero))))))) (T₁ , T₁) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc (suc zero))))))) (T₁ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc (suc zero))))))) (T₂ , T₀) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc (suc zero))))))) (T₂ , T₁) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc (suc zero))))))) (T₂ , T₂) _ _ = refl
-findError-loc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))) (T₀ , T₀) i<8 _ = ⊥-elim (suc⁸<n _ i<8)
-findError-loc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))) (T₀ , T₁) i<8 _ = ⊥-elim (suc⁸<n _ i<8)
-findError-loc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))) (T₀ , T₂) i<8 _ = ⊥-elim (suc⁸<n _ i<8)
-findError-loc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))) (T₁ , T₀) i<8 _ = ⊥-elim (suc⁸<n _ i<8)
-findError-loc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))) (T₁ , T₁) i<8 _ = ⊥-elim (suc⁸<n _ i<8)
-findError-loc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))) (T₁ , T₂) i<8 _ = ⊥-elim (suc⁸<n _ i<8)
-findError-loc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))) (T₂ , T₀) i<8 _ = ⊥-elim (suc⁸<n _ i<8)
-findError-loc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))) (T₂ , T₁) i<8 _ = ⊥-elim (suc⁸<n _ i<8)
-findError-loc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))) (T₂ , T₂) i<8 _ = ⊥-elim (suc⁸<n _ i<8)
+findError-loc (zero) v _ v≢0 = findError-loc-0 v v≢0
+findError-loc (suc (zero)) v _ v≢0 = findError-loc-1 v v≢0
+findError-loc (suc (suc (zero))) v _ v≢0 = findError-loc-2 v v≢0
+findError-loc (suc (suc (suc (zero)))) v _ v≢0 = findError-loc-3 v v≢0
+findError-loc (suc (suc (suc (suc (zero))))) v _ v≢0 = findError-loc-4 v v≢0
+findError-loc (suc (suc (suc (suc (suc (zero)))))) v _ v≢0 = findError-loc-5 v v≢0
+findError-loc (suc (suc (suc (suc (suc (suc (zero))))))) v _ v≢0 = findError-loc-6 v v≢0
+findError-loc (suc (suc (suc (suc (suc (suc (suc (zero)))))))) v _ v≢0 = findError-loc-7 v v≢0
+findError-loc (suc (suc (suc (suc (suc (suc (suc (suc m)))))))) v i<8 _ = ⊥-elim (suc⁸<n m i<8)
 
 -- 位调整: 位置 i 加 v
 adjust' : (k i : ℕ) → Dec (k ≡ i) → (ℕ → GF9) → GF9 → GF9

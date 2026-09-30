@@ -18,7 +18,7 @@ module Sovereign.HoTT.T6Homotopy where
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; _<_; s≤s)
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)
-open import Data.Fin.Properties using (toℕ<n)
+open import Data.Fin.Properties using (toℕ<n; toℕ-injective)
 open import Data.Vec using (Vec; []; _∷_)
 open import Data.Nat.Properties using (≤-refl; ≤-pred; +-mono-≤; *-mono-≤; m<1+n⇒m≤n)
 open import Data.Product using (_×_; _,_; Σ; Σ-syntax)
@@ -149,44 +149,40 @@ singleCoordPeriod3 (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (s
 
 -- 生成元互相对易: stepCoord i ∘ stepCoord j = stepCoord j ∘ stepCoord i
 -- 因为不同坐标独立操作
+-- 【结构化重证】原 30-case 表事实 → 通用分量更新 + 交换递归（updN-comm）
+updN : ∀ {n} {A : Set} → (A → A) → ℕ → Vec A n → Vec A n
+updN f zero    (v ∷ vs) = f v ∷ vs
+updN f zero    []       = []
+updN f (suc m) (v ∷ vs) = v ∷ updN f m vs
+updN f (suc m) []       = []
+
+updN-comm : ∀ {n} {A : Set} (f : A → A) (p : Vec A n) m k → m ≢ k →
+  updN f m (updN f k p) ≡ updN f k (updN f m p)
+updN-comm f (v ∷ vs) zero    (suc k) _   = refl
+updN-comm f (v ∷ vs) (suc m) zero    _   = refl
+updN-comm f (v ∷ vs) (suc m) (suc k) neq = cong (λ w → v ∷ w) (updN-comm f vs m k (λ eq → neq (cong suc eq)))
+updN-comm f (v ∷ vs) zero    zero    neq = ⊥-elim (neq refl)
+updN-comm f []       zero    (suc k) _   = refl
+updN-comm f []       (suc m) zero    _   = refl
+updN-comm f []       (suc m) (suc k) _   = refl
+updN-comm f []       zero    zero    neq = ⊥-elim (neq refl)
+
+stepCoord-updN : ∀ i p → stepCoord i p ≡ updN step1 (toℕ i) p
+stepCoord-updN zero (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+stepCoord-updN (suc zero) (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+stepCoord-updN (suc (suc zero)) (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+stepCoord-updN (suc (suc (suc zero))) (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+stepCoord-updN (suc (suc (suc (suc zero)))) (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+stepCoord-updN (suc (suc (suc (suc (suc zero))))) (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) = refl
+
 commute-coords : ∀ (p : T6Lattice) (i j : Fin 6) → i ≢ j
   → stepCoord i (stepCoord j p) ≡ stepCoord j (stepCoord i p)
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero zero i≢j = ⊥-elim (i≢j refl)
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero (suc zero) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero (suc (suc zero)) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero (suc (suc (suc zero))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero (suc (suc (suc (suc zero)))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) zero (suc (suc (suc (suc (suc zero))))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) zero i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) (suc zero) i≢j = ⊥-elim (i≢j refl)
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) (suc (suc zero)) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) (suc (suc (suc zero))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) (suc (suc (suc (suc zero)))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc zero) (suc (suc (suc (suc (suc zero))))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) zero i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) (suc zero) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) (suc (suc zero)) i≢j = ⊥-elim (i≢j refl)
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) (suc (suc (suc zero))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) (suc (suc (suc (suc zero)))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc zero)) (suc (suc (suc (suc (suc zero))))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) zero i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) (suc zero) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) (suc (suc zero)) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) (suc (suc (suc zero))) i≢j = ⊥-elim (i≢j refl)
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) (suc (suc (suc (suc zero)))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc zero))) (suc (suc (suc (suc (suc zero))))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) zero i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) (suc zero) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) (suc (suc zero)) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) (suc (suc (suc zero))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) (suc (suc (suc (suc zero)))) i≢j = ⊥-elim (i≢j refl)
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc zero))))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) zero i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) (suc zero) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) (suc (suc zero)) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) (suc (suc (suc zero))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc zero)))) i≢j = refl
-commute-coords (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ v₄ ∷ v₅ ∷ []) (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc zero))))) i≢j = ⊥-elim (i≢j refl)
+commute-coords p i j i≢j =
+  trans (cong (stepCoord i) (stepCoord-updN j p))
+  (trans (stepCoord-updN i (updN step1 (toℕ j) p))
+  (trans (updN-comm step1 p (toℕ i) (toℕ j) (λ eq → i≢j (toℕ-injective eq)))
+  (trans (sym (stepCoord-updN j (updN step1 (toℕ i) p)))
+         (cong (stepCoord j) (sym (stepCoord-updN i p))))))
 
 -- 定理: π₁(T⁶) ≅ T⁶Lattice (基本群同构于格点加法群)
 --   阶 = 3⁶ = 729

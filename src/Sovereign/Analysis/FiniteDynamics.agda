@@ -5,11 +5,13 @@ module Sovereign.Analysis.FiniteDynamics where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _<_; _≤_; s≤s; z≤n)
 open import Data.Nat.Properties using (+-comm; +-assoc; +-identityʳ; +-suc; <⇒≤; ≤-trans; ≤-pred; m+[n∸m]≡n; m∸n≤m; n<1+n; <-irrefl)
-open import Data.Fin using (Fin; toℕ; fromℕ)
+open import Data.Fin using (Fin; toℕ; punchOut)
   renaming (zero to fzero; suc to fsuc)
-open import Data.Fin.Properties using (pigeonhole; toℕ<n)
+
+open import Data.Fin.Properties using (pigeonhole; toℕ<n; any?; punchOut-injective; _≟_)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Data.Empty using (⊥; ⊥-elim)
+open import Relation.Nullary using (¬_; yes; no)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; cong; cong₂; sym; trans)
 
@@ -158,8 +160,8 @@ orbit-collision-pw f at x0 i j step-eq eq (suc k) rewrite +-suc i k | +-suc j k 
 -- 定理: 对任意 ρ : Fin n → Fin n, 若 ρ 是单射, 则 ρ 是满射。
 --
 -- 数学来源: Dedekind 有限性 (1888)
--- 证明策略: 构造性搜索 + 单射性
---   参考: jac_Pigeonhole.pigeonhole-2 的穷举风格
+-- 证明策略: 有限判定 (any?) + punchOut 穿孔 + pigeonhole 碰撞 + 单射性
+--   不是搜索式证明: any? 给 Dec 判定, 鸽巢碰撞给出矛盾, 无终止性问题
 --------------------------------------------------------------------------------
 
 
@@ -171,26 +173,27 @@ Surj : ∀ {n} → (Fin n → Fin n) → Set
 Surj {n} ρ = ∀ i → Σ (Fin n) (λ j → ρ j ≡ i)
 
 
-Inj : ∀ {n} → (Fin n → Fin n) → Set
-Inj {n} ρ = ∀ a b → ρ a ≡ ρ b → a ≡ b
-
-Surj : ∀ {n} → (Fin n → Fin n) → Set
-Surj {n} ρ = ∀ i → Σ (Fin n) (λ j → ρ j ≡ i)
 
 injSurj : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
 injSurj {zero} ρ ρ-inj ()
 injSurj {suc k} ρ ρ-inj target with any? (λ j → ρ j ≟ target)
-... | yes (j , eq) = j , eq
+... | yes (j , refl) = (j , refl)
 ... | no not-hit = ⊥-elim (contradiction not-hit)
   where
+    -- target 未被命中: 对每个 a, ρ a ≠ target
+    neq : (a : Fin (suc k)) → target ≢ ρ a
+    neq a eq = not-hit (a , sym eq)
+
+    -- 把 ρ 的像全体打掉 target, 得到 Fin (suc k) → Fin k
+    g : Fin (suc k) → Fin k
+    g a = punchOut {i = target} {j = ρ a} (neq a)
+
     contradiction : ¬ (Σ (Fin (suc k)) (λ j → ρ j ≡ target)) → ⊥
-    contradiction not-hit = <⇒notInjective k<sk g-inj
+    contradiction not-hit = go (pigeonhole (n<1+n k) g)
       where
-        k<sk : k ℕ.< suc k
-        k<sk = n<1+n k
-        
-        g : Fin (suc k) → Fin k
-        g j = punchOut (not-hit (j , refl))
-        
-        g-inj : Inj g
-        g-inj a b eq = ρ-inj a b (punchOut-injective (not-hit (a , refl)) (not-hit (b , refl)) eq)
+        -- 鸽巢原理: g 有碰撞 i j; 由 g 的构造与单射性得 i ≡ j, 与 i < j 矛盾
+        go : Σ (Fin (suc k)) (λ i → Σ (Fin (suc k)) (λ j → toℕ i < toℕ j × (g i ≡ g j))) → ⊥
+        go (i , j , i<j , gi≡gj) = <-irrefl (cong toℕ i≡j) i<j
+          where
+            i≡j : i ≡ j
+            i≡j = ρ-inj i j (punchOut-injective (neq i) (neq j) gi≡gj)

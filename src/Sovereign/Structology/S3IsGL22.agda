@@ -104,48 +104,62 @@ zero ⊗ (suc (suc (suc (suc (suc zero))))) = (suc (suc (suc zero)))
 (suc (suc (suc (suc (suc zero))))) ⊗ (suc (suc (suc (suc zero)))) = (suc (suc (suc zero)))
 (suc (suc (suc (suc (suc zero))))) ⊗ (suc (suc (suc (suc (suc zero))))) = (suc zero)
 
+mul-hom-0 : ∀ y → mulMat2 (mat zero) (mat y) ≡ mat (zero ⊗ y)
+mul-hom-0 zero = refl
+mul-hom-0 (suc zero) = refl
+mul-hom-0 (suc (suc zero)) = refl
+mul-hom-0 (suc (suc (suc zero))) = refl
+mul-hom-0 (suc (suc (suc (suc zero)))) = refl
+mul-hom-0 (suc (suc (suc (suc (suc zero))))) = refl
+
+mul-hom-1 : ∀ y → mulMat2 (mat (suc zero)) (mat y) ≡ mat ((suc zero) ⊗ y)
+mul-hom-1 zero = refl
+mul-hom-1 (suc zero) = refl
+mul-hom-1 (suc (suc zero)) = refl
+mul-hom-1 (suc (suc (suc zero))) = refl
+mul-hom-1 (suc (suc (suc (suc zero)))) = refl
+mul-hom-1 (suc (suc (suc (suc (suc zero))))) = refl
+
+mul-hom-2 : ∀ y → mulMat2 (mat (suc (suc zero))) (mat y) ≡ mat ((suc (suc zero)) ⊗ y)
+mul-hom-2 zero = refl
+mul-hom-2 (suc zero) = refl
+mul-hom-2 (suc (suc zero)) = refl
+mul-hom-2 (suc (suc (suc zero))) = refl
+mul-hom-2 (suc (suc (suc (suc zero)))) = refl
+mul-hom-2 (suc (suc (suc (suc (suc zero))))) = refl
+
+mul-hom-3 : ∀ y → mulMat2 (mat (suc (suc (suc zero)))) (mat y) ≡ mat ((suc (suc (suc zero))) ⊗ y)
+mul-hom-3 zero = refl
+mul-hom-3 (suc zero) = refl
+mul-hom-3 (suc (suc zero)) = refl
+mul-hom-3 (suc (suc (suc zero))) = refl
+mul-hom-3 (suc (suc (suc (suc zero)))) = refl
+mul-hom-3 (suc (suc (suc (suc (suc zero))))) = refl
+
+mul-hom-4 : ∀ y → mulMat2 (mat (suc (suc (suc (suc zero))))) (mat y) ≡ mat ((suc (suc (suc (suc zero)))) ⊗ y)
+mul-hom-4 zero = refl
+mul-hom-4 (suc zero) = refl
+mul-hom-4 (suc (suc zero)) = refl
+mul-hom-4 (suc (suc (suc zero))) = refl
+mul-hom-4 (suc (suc (suc (suc zero)))) = refl
+mul-hom-4 (suc (suc (suc (suc (suc zero))))) = refl
+
+mul-hom-5 : ∀ y → mulMat2 (mat (suc (suc (suc (suc (suc zero)))))) (mat y) ≡ mat ((suc (suc (suc (suc (suc zero))))) ⊗ y)
+mul-hom-5 zero = refl
+mul-hom-5 (suc zero) = refl
+mul-hom-5 (suc (suc zero)) = refl
+mul-hom-5 (suc (suc (suc zero))) = refl
+mul-hom-5 (suc (suc (suc (suc zero)))) = refl
+mul-hom-5 (suc (suc (suc (suc (suc zero))))) = refl
+
+-- 【结构化重证】mul-hom：37-case 表 → 6 行引理（各 6 案 ≤27）+ 调度器（查表命题的行分解，同 sl23 预案）
 mul-hom : ∀ (x y : Fin 6) → mulMat2 (mat x) (mat y) ≡ mat (x ⊗ y)
-mul-hom zero zero = refl
-mul-hom zero (suc zero) = refl
-mul-hom zero (suc (suc zero)) = refl
-mul-hom zero (suc (suc (suc zero))) = refl
-mul-hom zero (suc (suc (suc (suc zero)))) = refl
-mul-hom zero (suc (suc (suc (suc (suc zero))))) = refl
-mul-hom (suc zero) zero = refl
-mul-hom (suc zero) (suc zero) = refl
-mul-hom (suc zero) (suc (suc zero)) = refl
-mul-hom (suc zero) (suc (suc (suc zero))) = refl
-mul-hom (suc zero) (suc (suc (suc (suc zero)))) = refl
-mul-hom (suc zero) (suc (suc (suc (suc (suc zero))))) = refl
-mul-hom (suc (suc zero)) zero = refl
-mul-hom (suc (suc zero)) (suc zero) = refl
-mul-hom (suc (suc zero)) (suc (suc zero)) = refl
-mul-hom (suc (suc zero)) (suc (suc (suc zero))) = refl
-mul-hom (suc (suc zero)) (suc (suc (suc (suc zero)))) = refl
-mul-hom (suc (suc zero)) (suc (suc (suc (suc (suc zero))))) = refl
-mul-hom (suc (suc (suc zero))) zero = refl
-mul-hom (suc (suc (suc zero))) (suc zero) = refl
-mul-hom (suc (suc (suc zero))) (suc (suc zero)) = refl
-mul-hom (suc (suc (suc zero))) (suc (suc (suc zero))) = refl
-mul-hom (suc (suc (suc zero))) (suc (suc (suc (suc zero)))) = refl
-mul-hom (suc (suc (suc zero))) (suc (suc (suc (suc (suc zero))))) = refl
-mul-hom (suc (suc (suc (suc zero)))) zero = refl
-mul-hom (suc (suc (suc (suc zero)))) (suc zero) = refl
-mul-hom (suc (suc (suc (suc zero)))) (suc (suc zero)) = refl
-mul-hom (suc (suc (suc (suc zero)))) (suc (suc (suc zero))) = refl
-mul-hom (suc (suc (suc (suc zero)))) (suc (suc (suc (suc zero)))) = refl
-mul-hom (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc zero))))) = refl
-mul-hom (suc (suc (suc (suc (suc zero))))) zero = refl
-mul-hom (suc (suc (suc (suc (suc zero))))) (suc zero) = refl
-mul-hom (suc (suc (suc (suc (suc zero))))) (suc (suc zero)) = refl
-mul-hom (suc (suc (suc (suc (suc zero))))) (suc (suc (suc zero))) = refl
-mul-hom (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc zero)))) = refl
-mul-hom (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc zero))))) = refl
-
---------------------------------------------------------------------------------
--- §5. 阶分解 1 + 3×2 + 2×3 (与 S₃ 一致)
---------------------------------------------------------------------------------
-
+mul-hom zero = mul-hom-0
+mul-hom (suc zero) = mul-hom-1
+mul-hom (suc (suc zero)) = mul-hom-2
+mul-hom (suc (suc (suc zero))) = mul-hom-3
+mul-hom (suc (suc (suc (suc zero)))) = mul-hom-4
+mul-hom (suc (suc (suc (suc (suc zero))))) = mul-hom-5
 orderOf : Fin 6 → ℕ
 orderOf zero = 2
 orderOf (suc zero) = 3

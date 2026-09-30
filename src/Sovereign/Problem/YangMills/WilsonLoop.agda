@@ -81,6 +81,7 @@ joint-mass-gap = (λ ()) , (λ ())
 --   det(W) ≠ 0 ⟺ det(W₃) ≠ 0 ∧ det(W₄) ≠ 0.
 -- 其中 W₃, W₄ 是 ≤4×4 的 CRT 分量.
 -- 因此: N×N 质量间隙由 2×2/3×3/4×4 的 det≠0 判定.
+--   [2026-09 勘误] 「分解为 3x3/4x4 小分量」是误读: 分量矩阵仍 NxN, 3/4 是环元素数 (jac_CRTDet §3 措辞修正); 一般 N 同态已类型化 (pi3-det/pi4-det/det-crt12), 本行推广表述以 jac_CRTDet 为准.
 -- 不需要 N×N 行列式, 0 postulate.
 
 open import Sovereign.Algebra.Jacobian.jac_CRTDet

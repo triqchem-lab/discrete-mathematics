@@ -218,16 +218,18 @@ obs6 v i = comp (proj₁ i) v (proj₂ i)
 field-orbit-period : ∀ (v : Field) →
   Σ ℕ (λ s → Σ ℕ (λ p → ∀ n k x →
     comp k (orbit nsStep v (s + n + p)) x ≡ comp k (orbit nsStep v (s + n)) x))
+field-orbit-period-pack : ∀ (v : Field) →
+  Σ ℕ (λ s → Σ ℕ (λ p → ∀ n i →
+    obs6 (orbit nsStep v (s + n + p)) i ≡ obs6 (orbit nsStep v (s + n)) i))
+field-orbit-period-pack v = finite-orbit-obs N4374 fieldEnc obs6
+  (λ {s} {t} eq i → fieldEnc-inj eq (proj₁ i) (proj₂ i))
+  nsStep
+  (λ {s} {t} p i → nsStep-pw (λ k x → p (k , x)) (proj₁ i) (proj₂ i))
+  v
+
 field-orbit-period v =
-  proj₁ pack , proj₁ (proj₂ pack) , (λ n k x → proj₂ (proj₂ pack) n (k , x))
-  where
-    pack : Σ ℕ (λ s → Σ ℕ (λ p → ∀ n i →
-      obs6 (orbit nsStep v (s + n + p)) i ≡ obs6 (orbit nsStep v (s + n)) i))
-    pack = finite-orbit-obs N4374 fieldEnc obs6
-             (λ {s} {t} eq i → fieldEnc-inj eq (proj₁ i) (proj₂ i))
-             nsStep
-             (λ {s} {t} p i → nsStep-pw (λ k x → p (k , x)) (proj₁ i) (proj₂ i))
-             v
+  proj₁ (field-orbit-period-pack v) , proj₁ (proj₂ (field-orbit-period-pack v)) ,
+  (λ n k x → proj₂ (proj₂ (field-orbit-period-pack v)) n (k , x))
 
 -- **主定理**: supportCount 轨道无条件最终周期 ⇒ 无漂移型集中（无条件）
 supportCount-orbit-period : ∀ (v : Field) →

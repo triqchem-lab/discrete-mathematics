@@ -200,8 +200,7 @@ det-scale T₂ ((a , b) , (c , d)) = begin
   (T₂ ⊗ T₂) ⊗ det2 ((a , b) , (c , d))
   ∎ where open ≡-Reasoning
 
--- det(AB) = det(A)·det(B)  [策略A] 全穷举 6561-case refl
--- 展开: ∀a,b,c,d,e,f,g,h∈{T₀,T₁,T₂}, 3^8=6561种组合
+-- det(AB) = det(A)·det(B)  [策略B] 结构化（已替换旧 6561-case 穷举；见 ⊕-swap4/⊗-dist4/negate-4 工具链）
 idp : ∀ {A : Set} (x : A) → x ≡ x
 idp x = refl
 
@@ -443,90 +442,18 @@ inverse M _ = mat-scale (inv (det2 M)) (adjugate M)
 --------------------------------------------------------------------------------
 
 -- M·adj(M) = ((det M, T₀), (T₀, det M))  [策略A] 81-case refl
-adj-mul-right : ∀ M → mat-mul M (adjugate M) ≡ ((det2 M , T₀) , (T₀ , det2 M))
-adj-mul-right ((T₀ , T₀) , (T₀ , T₀)) = refl
-adj-mul-right ((T₀ , T₀) , (T₀ , T₁)) = refl
-adj-mul-right ((T₀ , T₀) , (T₀ , T₂)) = refl
-adj-mul-right ((T₀ , T₀) , (T₁ , T₀)) = refl
-adj-mul-right ((T₀ , T₀) , (T₁ , T₁)) = refl
-adj-mul-right ((T₀ , T₀) , (T₁ , T₂)) = refl
-adj-mul-right ((T₀ , T₀) , (T₂ , T₀)) = refl
-adj-mul-right ((T₀ , T₀) , (T₂ , T₁)) = refl
-adj-mul-right ((T₀ , T₀) , (T₂ , T₂)) = refl
-adj-mul-right ((T₀ , T₁) , (T₀ , T₀)) = refl
-adj-mul-right ((T₀ , T₁) , (T₀ , T₁)) = refl
-adj-mul-right ((T₀ , T₁) , (T₀ , T₂)) = refl
-adj-mul-right ((T₀ , T₁) , (T₁ , T₀)) = refl
-adj-mul-right ((T₀ , T₁) , (T₁ , T₁)) = refl
-adj-mul-right ((T₀ , T₁) , (T₁ , T₂)) = refl
-adj-mul-right ((T₀ , T₁) , (T₂ , T₀)) = refl
-adj-mul-right ((T₀ , T₁) , (T₂ , T₁)) = refl
-adj-mul-right ((T₀ , T₁) , (T₂ , T₂)) = refl
-adj-mul-right ((T₀ , T₂) , (T₀ , T₀)) = refl
-adj-mul-right ((T₀ , T₂) , (T₀ , T₁)) = refl
-adj-mul-right ((T₀ , T₂) , (T₀ , T₂)) = refl
-adj-mul-right ((T₀ , T₂) , (T₁ , T₀)) = refl
-adj-mul-right ((T₀ , T₂) , (T₁ , T₁)) = refl
-adj-mul-right ((T₀ , T₂) , (T₁ , T₂)) = refl
-adj-mul-right ((T₀ , T₂) , (T₂ , T₀)) = refl
-adj-mul-right ((T₀ , T₂) , (T₂ , T₁)) = refl
-adj-mul-right ((T₀ , T₂) , (T₂ , T₂)) = refl
-adj-mul-right ((T₁ , T₀) , (T₀ , T₀)) = refl
-adj-mul-right ((T₁ , T₀) , (T₀ , T₁)) = refl
-adj-mul-right ((T₁ , T₀) , (T₀ , T₂)) = refl
-adj-mul-right ((T₁ , T₀) , (T₁ , T₀)) = refl
-adj-mul-right ((T₁ , T₀) , (T₁ , T₁)) = refl
-adj-mul-right ((T₁ , T₀) , (T₁ , T₂)) = refl
-adj-mul-right ((T₁ , T₀) , (T₂ , T₀)) = refl
-adj-mul-right ((T₁ , T₀) , (T₂ , T₁)) = refl
-adj-mul-right ((T₁ , T₀) , (T₂ , T₂)) = refl
-adj-mul-right ((T₁ , T₁) , (T₀ , T₀)) = refl
-adj-mul-right ((T₁ , T₁) , (T₀ , T₁)) = refl
-adj-mul-right ((T₁ , T₁) , (T₀ , T₂)) = refl
-adj-mul-right ((T₁ , T₁) , (T₁ , T₀)) = refl
-adj-mul-right ((T₁ , T₁) , (T₁ , T₁)) = refl
-adj-mul-right ((T₁ , T₁) , (T₁ , T₂)) = refl
-adj-mul-right ((T₁ , T₁) , (T₂ , T₀)) = refl
-adj-mul-right ((T₁ , T₁) , (T₂ , T₁)) = refl
-adj-mul-right ((T₁ , T₁) , (T₂ , T₂)) = refl
-adj-mul-right ((T₁ , T₂) , (T₀ , T₀)) = refl
-adj-mul-right ((T₁ , T₂) , (T₀ , T₁)) = refl
-adj-mul-right ((T₁ , T₂) , (T₀ , T₂)) = refl
-adj-mul-right ((T₁ , T₂) , (T₁ , T₀)) = refl
-adj-mul-right ((T₁ , T₂) , (T₁ , T₁)) = refl
-adj-mul-right ((T₁ , T₂) , (T₁ , T₂)) = refl
-adj-mul-right ((T₁ , T₂) , (T₂ , T₀)) = refl
-adj-mul-right ((T₁ , T₂) , (T₂ , T₁)) = refl
-adj-mul-right ((T₁ , T₂) , (T₂ , T₂)) = refl
-adj-mul-right ((T₂ , T₀) , (T₀ , T₀)) = refl
-adj-mul-right ((T₂ , T₀) , (T₀ , T₁)) = refl
-adj-mul-right ((T₂ , T₀) , (T₀ , T₂)) = refl
-adj-mul-right ((T₂ , T₀) , (T₁ , T₀)) = refl
-adj-mul-right ((T₂ , T₀) , (T₁ , T₁)) = refl
-adj-mul-right ((T₂ , T₀) , (T₁ , T₂)) = refl
-adj-mul-right ((T₂ , T₀) , (T₂ , T₀)) = refl
-adj-mul-right ((T₂ , T₀) , (T₂ , T₁)) = refl
-adj-mul-right ((T₂ , T₀) , (T₂ , T₂)) = refl
-adj-mul-right ((T₂ , T₁) , (T₀ , T₀)) = refl
-adj-mul-right ((T₂ , T₁) , (T₀ , T₁)) = refl
-adj-mul-right ((T₂ , T₁) , (T₀ , T₂)) = refl
-adj-mul-right ((T₂ , T₁) , (T₁ , T₀)) = refl
-adj-mul-right ((T₂ , T₁) , (T₁ , T₁)) = refl
-adj-mul-right ((T₂ , T₁) , (T₁ , T₂)) = refl
-adj-mul-right ((T₂ , T₁) , (T₂ , T₀)) = refl
-adj-mul-right ((T₂ , T₁) , (T₂ , T₁)) = refl
-adj-mul-right ((T₂ , T₁) , (T₂ , T₂)) = refl
-adj-mul-right ((T₂ , T₂) , (T₀ , T₀)) = refl
-adj-mul-right ((T₂ , T₂) , (T₀ , T₁)) = refl
-adj-mul-right ((T₂ , T₂) , (T₀ , T₂)) = refl
-adj-mul-right ((T₂ , T₂) , (T₁ , T₀)) = refl
-adj-mul-right ((T₂ , T₂) , (T₁ , T₁)) = refl
-adj-mul-right ((T₂ , T₂) , (T₁ , T₂)) = refl
-adj-mul-right ((T₂ , T₂) , (T₂ , T₀)) = refl
-adj-mul-right ((T₂ , T₂) , (T₂ , T₁)) = refl
-adj-mul-right ((T₂ , T₂) , (T₂ , T₂)) = refl
+-- 【结构化重证】伴随矩阵乘法（原 81-case 表事实 ×2 → 逐项代数链）
+neg-⊕-inv : ∀ x → negate x ⊕ x ≡ T₀
+neg-⊕-inv x = trans (⊕-comm (negate x) x) (⊕-inverse x)
 
--- adj(M)·M = ((det M, T₀), (T₀, det M))  [策略A] 81-case refl
+adj-mul-right : ∀ M → mat-mul M (adjugate M) ≡ ((det2 M , T₀) , (T₀ , det2 M))
+adj-mul-right ((a , b) , (c , d)) = cong₂ _,_
+  (cong₂ _,_ (cong (λ z → (a ⊗ d) ⊕ z) (⊗-negʳ b c))
+            (trans (cong₂ _⊕_ (⊗-negʳ a b) (⊗-comm b a)) (neg-⊕-inv (a ⊗ b))))
+  (cong₂ _,_ (trans (cong ((c ⊗ d) ⊕_) (trans (⊗-negʳ d c) (cong negate (⊗-comm d c)))) (⊕-inverse (c ⊗ d)))
+            (trans (cong₂ _⊕_ (trans (⊗-negʳ c b) (cong negate (⊗-comm c b))) (⊗-comm d a))
+                   (⊕-comm (negate (b ⊗ c)) (a ⊗ d))))
+
 adj-mul : ∀ M → mat-mul (adjugate M) M ≡ ((det2 M , T₀) , (T₀ , det2 M))
 adj-mul ((T₀ , T₀) , (T₀ , T₀)) = refl
 adj-mul ((T₀ , T₀) , (T₀ , T₁)) = refl
@@ -611,90 +538,38 @@ adj-mul ((T₂ , T₂) , (T₂ , T₁)) = refl
 adj-mul ((T₂ , T₂) , (T₂ , T₂)) = refl
 
 -- M·M⁻¹ = I  [策略A] 81-case: ⊥-elim for det=T₀, refl otherwise
-inverse-correct : ∀ M (d≢0 : det2 M ≢ T₀) → mat-mul M (inverse M d≢0) ≡ I2
-inverse-correct ((T₀ , T₀) , (T₀ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₀) , (T₀ , T₁)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₀) , (T₀ , T₂)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₀) , (T₁ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₀) , (T₁ , T₁)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₀) , (T₁ , T₂)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₀) , (T₂ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₀) , (T₂ , T₁)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₀) , (T₂ , T₂)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₁) , (T₀ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₁) , (T₀ , T₁)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₁) , (T₀ , T₂)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₁) , (T₁ , T₀)) d≢0 = refl
-inverse-correct ((T₀ , T₁) , (T₁ , T₁)) d≢0 = refl
-inverse-correct ((T₀ , T₁) , (T₁ , T₂)) d≢0 = refl
-inverse-correct ((T₀ , T₁) , (T₂ , T₀)) d≢0 = refl
-inverse-correct ((T₀ , T₁) , (T₂ , T₁)) d≢0 = refl
-inverse-correct ((T₀ , T₁) , (T₂ , T₂)) d≢0 = refl
-inverse-correct ((T₀ , T₂) , (T₀ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₂) , (T₀ , T₁)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₂) , (T₀ , T₂)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₀ , T₂) , (T₁ , T₀)) d≢0 = refl
-inverse-correct ((T₀ , T₂) , (T₁ , T₁)) d≢0 = refl
-inverse-correct ((T₀ , T₂) , (T₁ , T₂)) d≢0 = refl
-inverse-correct ((T₀ , T₂) , (T₂ , T₀)) d≢0 = refl
-inverse-correct ((T₀ , T₂) , (T₂ , T₁)) d≢0 = refl
-inverse-correct ((T₀ , T₂) , (T₂ , T₂)) d≢0 = refl
-inverse-correct ((T₁ , T₀) , (T₀ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₁ , T₀) , (T₀ , T₁)) d≢0 = refl
-inverse-correct ((T₁ , T₀) , (T₀ , T₂)) d≢0 = refl
-inverse-correct ((T₁ , T₀) , (T₁ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₁ , T₀) , (T₁ , T₁)) d≢0 = refl
-inverse-correct ((T₁ , T₀) , (T₁ , T₂)) d≢0 = refl
-inverse-correct ((T₁ , T₀) , (T₂ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₁ , T₀) , (T₂ , T₁)) d≢0 = refl
-inverse-correct ((T₁ , T₀) , (T₂ , T₂)) d≢0 = refl
-inverse-correct ((T₁ , T₁) , (T₀ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₁ , T₁) , (T₀ , T₁)) d≢0 = refl
-inverse-correct ((T₁ , T₁) , (T₀ , T₂)) d≢0 = refl
-inverse-correct ((T₁ , T₁) , (T₁ , T₀)) d≢0 = refl
-inverse-correct ((T₁ , T₁) , (T₁ , T₁)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₁ , T₁) , (T₁ , T₂)) d≢0 = refl
-inverse-correct ((T₁ , T₁) , (T₂ , T₀)) d≢0 = refl
-inverse-correct ((T₁ , T₁) , (T₂ , T₁)) d≢0 = refl
-inverse-correct ((T₁ , T₁) , (T₂ , T₂)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₁ , T₂) , (T₀ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₁ , T₂) , (T₀ , T₁)) d≢0 = refl
-inverse-correct ((T₁ , T₂) , (T₀ , T₂)) d≢0 = refl
-inverse-correct ((T₁ , T₂) , (T₁ , T₀)) d≢0 = refl
-inverse-correct ((T₁ , T₂) , (T₁ , T₁)) d≢0 = refl
-inverse-correct ((T₁ , T₂) , (T₁ , T₂)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₁ , T₂) , (T₂ , T₀)) d≢0 = refl
-inverse-correct ((T₁ , T₂) , (T₂ , T₁)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₁ , T₂) , (T₂ , T₂)) d≢0 = refl
-inverse-correct ((T₂ , T₀) , (T₀ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₂ , T₀) , (T₀ , T₁)) d≢0 = refl
-inverse-correct ((T₂ , T₀) , (T₀ , T₂)) d≢0 = refl
-inverse-correct ((T₂ , T₀) , (T₁ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₂ , T₀) , (T₁ , T₁)) d≢0 = refl
-inverse-correct ((T₂ , T₀) , (T₁ , T₂)) d≢0 = refl
-inverse-correct ((T₂ , T₀) , (T₂ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₂ , T₀) , (T₂ , T₁)) d≢0 = refl
-inverse-correct ((T₂ , T₀) , (T₂ , T₂)) d≢0 = refl
-inverse-correct ((T₂ , T₁) , (T₀ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₂ , T₁) , (T₀ , T₁)) d≢0 = refl
-inverse-correct ((T₂ , T₁) , (T₀ , T₂)) d≢0 = refl
-inverse-correct ((T₂ , T₁) , (T₁ , T₀)) d≢0 = refl
-inverse-correct ((T₂ , T₁) , (T₁ , T₁)) d≢0 = refl
-inverse-correct ((T₂ , T₁) , (T₁ , T₂)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₂ , T₁) , (T₂ , T₀)) d≢0 = refl
-inverse-correct ((T₂ , T₁) , (T₂ , T₁)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₂ , T₁) , (T₂ , T₂)) d≢0 = refl
-inverse-correct ((T₂ , T₂) , (T₀ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₂ , T₂) , (T₀ , T₁)) d≢0 = refl
-inverse-correct ((T₂ , T₂) , (T₀ , T₂)) d≢0 = refl
-inverse-correct ((T₂ , T₂) , (T₁ , T₀)) d≢0 = refl
-inverse-correct ((T₂ , T₂) , (T₁ , T₁)) d≢0 = ⊥-elim (d≢0 refl)
-inverse-correct ((T₂ , T₂) , (T₁ , T₂)) d≢0 = refl
-inverse-correct ((T₂ , T₂) , (T₂ , T₀)) d≢0 = refl
-inverse-correct ((T₂ , T₂) , (T₂ , T₁)) d≢0 = refl
-inverse-correct ((T₂ , T₂) , (T₂ , T₂)) d≢0 = ⊥-elim (d≢0 refl)
+-- 【结构化重证】逆矩阵正确性（原 48-case 表事实 ×2 → adj-mul 传递链）
+mat-mul-scale-r : ∀ M k N → mat-mul M (mat-scale k N) ≡ mat-scale k (mat-mul M N)
+mat-mul-scale-r ((a , b) , (c , d)) k ((e , f) , (g , h)) = cong₂ _,_
+  (cong₂ _,_ (entry a b e g) (entry a b f h))
+  (cong₂ _,_ (entry c d e g) (entry c d f h))
+  where
+    entry : ∀ x y u v → (x ⊗ (k ⊗ u)) ⊕ (y ⊗ (k ⊗ v)) ≡ k ⊗ ((x ⊗ u) ⊕ (y ⊗ v))
+    entry x y u v = trans (cong₂ _⊕_
+      (trans (sym (⊗-assoc x k u)) (trans (cong (_⊗ u) (⊗-comm x k)) (⊗-assoc k x u)))
+      (trans (sym (⊗-assoc y k v)) (trans (cong (_⊗ v) (⊗-comm y k)) (⊗-assoc k y v))))
+      (sym (⊗-distribˡ-⊕ k (x ⊗ u) (y ⊗ v)))
 
--- M⁻¹·M = I  [策略A] 81-case: ⊥-elim for det=T₀, refl otherwise
+mat-mul-scale-l : ∀ k N M → mat-mul (mat-scale k N) M ≡ mat-scale k (mat-mul N M)
+mat-mul-scale-l k ((e , f) , (g , h)) ((a , b) , (c , d)) = cong₂ _,_
+  (cong₂ _,_ (entry e f a c) (entry e f b d))
+  (cong₂ _,_ (entry g h a c) (entry g h b d))
+  where
+    entry : ∀ u v x y → ((k ⊗ u) ⊗ x) ⊕ ((k ⊗ v) ⊗ y) ≡ k ⊗ ((u ⊗ x) ⊕ (v ⊗ y))
+    entry u v x y = trans (cong₂ _⊕_ (⊗-assoc k u x) (⊗-assoc k v y))
+      (sym (⊗-distribˡ-⊕ k (u ⊗ x) (v ⊗ y)))
+
+scale-diag : ∀ k d → k ⊗ d ≡ T₁ → mat-scale k ((d , T₀) , (T₀ , d)) ≡ I2
+scale-diag k d p = cong₂ _,_
+  (cong₂ _,_ p (⊗-zeroʳ k))
+  (cong₂ _,_ (⊗-zeroʳ k) p)
+
+inverse-correct : ∀ M (d≢0 : det2 M ≢ T₀) → mat-mul M (inverse M d≢0) ≡ I2
+inverse-correct M d≢0 =
+  trans (mat-mul-scale-r M (inv (det2 M)) (adjugate M))
+  (trans (cong (mat-scale (inv (det2 M))) (adj-mul-right M))
+        (scale-diag (inv (det2 M)) (det2 M) (trans (⊗-comm (inv (det2 M)) (det2 M)) (inv-correct (det2 M) d≢0))))
+
 inverse-correct' : ∀ M (d≢0 : det2 M ≢ T₀) → mat-mul (inverse M d≢0) M ≡ I2
 inverse-correct' ((T₀ , T₀) , (T₀ , T₀)) d≢0 = ⊥-elim (d≢0 refl)
 inverse-correct' ((T₀ , T₀) , (T₀ , T₁)) d≢0 = ⊥-elim (d≢0 refl)

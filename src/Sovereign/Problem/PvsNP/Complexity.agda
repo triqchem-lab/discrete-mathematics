@@ -225,4 +225,5 @@ open import Sovereign.Algebra.Jacobian.jac_GF9Matrix
 --   ✅ 全息穿透定理陈述
 --   0 postulate.
 --   CRT N×N 推广: det3-gf9 + jac_CRTDet → 所有 CRT 分量 ≤4×4 不可约判定.
+--   [2026-09 勘误] 「分解为 3x3/4x4 小分量」是误读: 分量矩阵仍 NxN, 3/4 是环元素数 (jac_CRTDet §3 措辞修正); 一般 N 同态已类型化 (pi3-det/pi4-det/det-crt12), 本行推广表述以 jac_CRTDet 为准.
 --   完整形式化约需 300 行 GF(9) 特征多项式穷举.

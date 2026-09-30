@@ -231,92 +231,12 @@ isotropic-nonzero9 ()
 -- GF(9) 范数乘法性: N(x·y) = N(x)·N(y) (GF(3) 中)
 -- 证明: 对 x 的 9 个可能值穷举, 每个 case 对 y 的分量用 GF(3) 算术验证
 -- 关键引理: (2t)²=t², negate(t)²=t² (GF(3) 特征)
+-- 【复用改造】原 81-case 表事实 → GF9.norm-mul（三方同型判重：GaloisTheory:75 别名链同文；
+--   本行签名不变，下游无感）
 galoisNorm-multiplicative : ∀ x y →
   galoisNorm (x *gf9 y) ≡ galoisNorm x ⊗ galoisNorm y
--- 81 case 穷举: 对 x 和 y 的分量全部展开, Agda 计算归约验证
-galoisNorm-multiplicative (T₀ , T₀) (T₀ , T₀) = refl
-galoisNorm-multiplicative (T₀ , T₀) (T₀ , T₁) = refl
-galoisNorm-multiplicative (T₀ , T₀) (T₀ , T₂) = refl
-galoisNorm-multiplicative (T₀ , T₀) (T₁ , T₀) = refl
-galoisNorm-multiplicative (T₀ , T₀) (T₁ , T₁) = refl
-galoisNorm-multiplicative (T₀ , T₀) (T₁ , T₂) = refl
-galoisNorm-multiplicative (T₀ , T₀) (T₂ , T₀) = refl
-galoisNorm-multiplicative (T₀ , T₀) (T₂ , T₁) = refl
-galoisNorm-multiplicative (T₀ , T₀) (T₂ , T₂) = refl
-galoisNorm-multiplicative (T₀ , T₁) (T₀ , T₀) = refl
-galoisNorm-multiplicative (T₀ , T₁) (T₀ , T₁) = refl
-galoisNorm-multiplicative (T₀ , T₁) (T₀ , T₂) = refl
-galoisNorm-multiplicative (T₀ , T₁) (T₁ , T₀) = refl
-galoisNorm-multiplicative (T₀ , T₁) (T₁ , T₁) = refl
-galoisNorm-multiplicative (T₀ , T₁) (T₁ , T₂) = refl
-galoisNorm-multiplicative (T₀ , T₁) (T₂ , T₀) = refl
-galoisNorm-multiplicative (T₀ , T₁) (T₂ , T₁) = refl
-galoisNorm-multiplicative (T₀ , T₁) (T₂ , T₂) = refl
-galoisNorm-multiplicative (T₀ , T₂) (T₀ , T₀) = refl
-galoisNorm-multiplicative (T₀ , T₂) (T₀ , T₁) = refl
-galoisNorm-multiplicative (T₀ , T₂) (T₀ , T₂) = refl
-galoisNorm-multiplicative (T₀ , T₂) (T₁ , T₀) = refl
-galoisNorm-multiplicative (T₀ , T₂) (T₁ , T₁) = refl
-galoisNorm-multiplicative (T₀ , T₂) (T₁ , T₂) = refl
-galoisNorm-multiplicative (T₀ , T₂) (T₂ , T₀) = refl
-galoisNorm-multiplicative (T₀ , T₂) (T₂ , T₁) = refl
-galoisNorm-multiplicative (T₀ , T₂) (T₂ , T₂) = refl
-galoisNorm-multiplicative (T₁ , T₀) (T₀ , T₀) = refl
-galoisNorm-multiplicative (T₁ , T₀) (T₀ , T₁) = refl
-galoisNorm-multiplicative (T₁ , T₀) (T₀ , T₂) = refl
-galoisNorm-multiplicative (T₁ , T₀) (T₁ , T₀) = refl
-galoisNorm-multiplicative (T₁ , T₀) (T₁ , T₁) = refl
-galoisNorm-multiplicative (T₁ , T₀) (T₁ , T₂) = refl
-galoisNorm-multiplicative (T₁ , T₀) (T₂ , T₀) = refl
-galoisNorm-multiplicative (T₁ , T₀) (T₂ , T₁) = refl
-galoisNorm-multiplicative (T₁ , T₀) (T₂ , T₂) = refl
-galoisNorm-multiplicative (T₁ , T₁) (T₀ , T₀) = refl
-galoisNorm-multiplicative (T₁ , T₁) (T₀ , T₁) = refl
-galoisNorm-multiplicative (T₁ , T₁) (T₀ , T₂) = refl
-galoisNorm-multiplicative (T₁ , T₁) (T₁ , T₀) = refl
-galoisNorm-multiplicative (T₁ , T₁) (T₁ , T₁) = refl
-galoisNorm-multiplicative (T₁ , T₁) (T₁ , T₂) = refl
-galoisNorm-multiplicative (T₁ , T₁) (T₂ , T₀) = refl
-galoisNorm-multiplicative (T₁ , T₁) (T₂ , T₁) = refl
-galoisNorm-multiplicative (T₁ , T₁) (T₂ , T₂) = refl
-galoisNorm-multiplicative (T₁ , T₂) (T₀ , T₀) = refl
-galoisNorm-multiplicative (T₁ , T₂) (T₀ , T₁) = refl
-galoisNorm-multiplicative (T₁ , T₂) (T₀ , T₂) = refl
-galoisNorm-multiplicative (T₁ , T₂) (T₁ , T₀) = refl
-galoisNorm-multiplicative (T₁ , T₂) (T₁ , T₁) = refl
-galoisNorm-multiplicative (T₁ , T₂) (T₁ , T₂) = refl
-galoisNorm-multiplicative (T₁ , T₂) (T₂ , T₀) = refl
-galoisNorm-multiplicative (T₁ , T₂) (T₂ , T₁) = refl
-galoisNorm-multiplicative (T₁ , T₂) (T₂ , T₂) = refl
-galoisNorm-multiplicative (T₂ , T₀) (T₀ , T₀) = refl
-galoisNorm-multiplicative (T₂ , T₀) (T₀ , T₁) = refl
-galoisNorm-multiplicative (T₂ , T₀) (T₀ , T₂) = refl
-galoisNorm-multiplicative (T₂ , T₀) (T₁ , T₀) = refl
-galoisNorm-multiplicative (T₂ , T₀) (T₁ , T₁) = refl
-galoisNorm-multiplicative (T₂ , T₀) (T₁ , T₂) = refl
-galoisNorm-multiplicative (T₂ , T₀) (T₂ , T₀) = refl
-galoisNorm-multiplicative (T₂ , T₀) (T₂ , T₁) = refl
-galoisNorm-multiplicative (T₂ , T₀) (T₂ , T₂) = refl
-galoisNorm-multiplicative (T₂ , T₁) (T₀ , T₀) = refl
-galoisNorm-multiplicative (T₂ , T₁) (T₀ , T₁) = refl
-galoisNorm-multiplicative (T₂ , T₁) (T₀ , T₂) = refl
-galoisNorm-multiplicative (T₂ , T₁) (T₁ , T₀) = refl
-galoisNorm-multiplicative (T₂ , T₁) (T₁ , T₁) = refl
-galoisNorm-multiplicative (T₂ , T₁) (T₁ , T₂) = refl
-galoisNorm-multiplicative (T₂ , T₁) (T₂ , T₀) = refl
-galoisNorm-multiplicative (T₂ , T₁) (T₂ , T₁) = refl
-galoisNorm-multiplicative (T₂ , T₁) (T₂ , T₂) = refl
-galoisNorm-multiplicative (T₂ , T₂) (T₀ , T₀) = refl
-galoisNorm-multiplicative (T₂ , T₂) (T₀ , T₁) = refl
-galoisNorm-multiplicative (T₂ , T₂) (T₀ , T₂) = refl
-galoisNorm-multiplicative (T₂ , T₂) (T₁ , T₀) = refl
-galoisNorm-multiplicative (T₂ , T₂) (T₁ , T₁) = refl
-galoisNorm-multiplicative (T₂ , T₂) (T₁ , T₂) = refl
-galoisNorm-multiplicative (T₂ , T₂) (T₂ , T₀) = refl
-galoisNorm-multiplicative (T₂ , T₂) (T₂ , T₁) = refl
-galoisNorm-multiplicative (T₂ , T₂) (T₂ , T₂) = refl
+galoisNorm-multiplicative = Sovereign.Algebra.GF9.norm-mul
 
--- 二次型范数齐次性: normReal(a·v) = N(a) · normReal(v)
 normReal-homogeneous : ∀ n (a : GF9) (v : VectorSpace n) →
   normReal n (a ·v9 v) ≡ galoisNorm a ⊗ normReal n v
 normReal-homogeneous zero a [] = sym (⊗-zeroʳ (galoisNorm a))
