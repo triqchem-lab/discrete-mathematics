@@ -271,3 +271,37 @@ contradiction t not-hit ρ-inj =
       suc-k<k : suc k ℕ.< k
       suc-k<k = {!!}
   in <⇒notInjective suc-k<k g-inj
+
+-- 补全 skipTarget 定义
+-- skipTarget : (t : Fin (suc k)) → Fin (suc k) → Fin k
+-- 目标: 跳过 t，将其他元素映射到 Fin k
+-- 
+-- 方法: 用 punchOut
+--   punchOut : ∀ {i j : Fin (suc n)} → i ≢ j → Fin n
+--   punchOut {_} {i} {j} i≢j 返回 Fin n，跳过 i
+
+skipTarget : (t : Fin (suc k)) → (j : Fin (suc k)) → j ≢ t → Fin k
+skipTarget t j j≢t = punchOut j≢t
+
+-- 修正 skipTarget-inj
+skipTarget-inj : (t : Fin (suc k)) → 
+                 (∀ j → ρ j ≢ t) → 
+                 Inj ρ → 
+                 Inj (λ j → punchOut (all-miss j))
+  where
+    all-miss : ∀ j → ρ j ≢ t
+    all-miss = {!!}
+
+-- 简化: 直接用 pigeonhole 的逆否形式
+-- 实际上，我们不需要构造 skipTarget
+-- 直接用: 如果 ρ 不满射，则存在 t 不在像中
+-- 构造 g : Fin (suc k) → Fin k，跳过 t
+-- g = punchOut (ρ j ≠ t)
+
+-- 更简洁的证明:
+injSurj' : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj' {zero} ρ ρ-inj ()
+injSurj' {suc k} ρ ρ-inj target = find target
+  where
+    find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    find t = {!!}
