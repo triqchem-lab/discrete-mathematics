@@ -186,8 +186,6 @@ open import Data.Fin.Properties using (any?; punchOut; punchOut-injective; <⇒n
 open import Data.Fin using (punchOut)
 open import Data.Nat.Properties using (n<1+n)
 
-Inj : ∀ {n} → (Fin n → Fin n) → Set
-Inj {n} ρ = ∀ a b → ρ a ≡ ρ b → a ≡ b
 
 Surj : ∀ {n} → (Fin n → Fin n) → Set
 Surj {n} ρ = ∀ i → Σ (Fin n) (λ j → ρ j ≡ i)
