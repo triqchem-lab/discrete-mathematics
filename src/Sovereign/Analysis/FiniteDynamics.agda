@@ -174,11 +174,6 @@ injSurj : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
 -- 基础: n = 0
 injSurj {zero} ρ ρ-inj ()
 
--- 归纳: n = suc k
--- 直接构造逆像
-injSurj {suc k} ρ ρ-inj target = find target
-  where
-
 --------------------------------------------------------------------------------
 -- §5. 鸽巢原理的构造性版本: Fin n 上的 单射 → 满射
 --
