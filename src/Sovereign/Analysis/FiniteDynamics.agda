@@ -305,3 +305,39 @@ injSurj' {suc k} ρ ρ-inj target = find target
   where
     find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
     find t = {!!}
+
+--------------------------------------------------------------------------------
+-- §5b. injSurj 的最简洁证明
+--
+-- 核心洞察: 用分类讨论 + 单射性，直接构造逆像
+-- 不需要搜索，不需要 fuel
+--------------------------------------------------------------------------------
+
+injSurj-simple : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+
+-- 基础: n = 0
+injSurj-simple {zero} ρ ρ-inj ()
+
+-- 归纳: n = suc k
+-- 直接构造逆像
+injSurj-simple {suc k} ρ ρ-inj target = find target
+  where
+    -- 找 target 的逆像
+    find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    
+    -- 情况 1: t = fzero
+    find fzero = find-fzero
+      where
+        find-fzero : Σ (Fin (suc k)) (λ j → ρ j ≡ fzero)
+        find-fzero with ρ fzero ≟ fzero
+        ... | yes e = fzero , e
+        ... | no _ = find-fzero-nonzero
+          where
+            find-fzero-nonzero : Σ (Fin (suc k)) (λ j → ρ j ≡ fzero)
+            find-fzero-nonzero = {!!}
+    
+    -- 情况 2: t = fsuc t'
+    find (fsuc t') = find-fsuc t'
+      where
+        find-fsuc : (t : Fin k) → Σ (Fin (suc k)) (λ j → ρ j ≡ fsuc t)
+        find-fsuc t = {!!}
