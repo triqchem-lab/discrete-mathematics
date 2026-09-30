@@ -162,10 +162,6 @@ orbit-collision-pw f at x0 i j step-eq eq (suc k) rewrite +-suc i k | +-suc j k 
 --   参考: jac_Pigeonhole.pigeonhole-2 的穷举风格
 --------------------------------------------------------------------------------
 
-Inj : ∀ {n} → (Fin n → Fin n) → Set
-Inj {n} ρ = ∀ a b → ρ a ≡ ρ b → a ≡ b
-
-Surj : ∀ {n} → (Fin n → Fin n) → Set
 Surj {n} ρ = ∀ i → Σ (Fin n) (λ j → ρ j ≡ i)
 
 -- 主定理: 单射 → 满射
