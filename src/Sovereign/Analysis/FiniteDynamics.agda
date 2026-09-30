@@ -859,3 +859,74 @@ injSurj-construct {suc k} ρ ρ-inj target = find target
         
         -- 根本问题: 需要证明搜索一定找到
         -- 用 pigeonhole: 如果找不到，则矛盾
+
+-- 用 pigeonhole 保证搜索一定找到
+-- 核心: 如果搜索找不到 target，则用 pigeonhole 构造矛盾
+
+injSurj-pigeonhole : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj-pigeonhole {zero} ρ ρ-inj ()
+injSurj-pigeonhole {suc k} ρ ρ-inj target = find target
+  where
+    find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    find t = search t fzero
+      where
+        search : (t : Fin (suc k)) (j : Fin (suc k)) → Σ (Fin (suc k)) (λ j' → ρ j' ≡ t)
+        search t j with ρ j ≟ t
+        ... | yes e = j , e
+        ... | no ρj≠t = next t j ρj≠t
+        
+        next : (t : Fin (suc k)) (j : Fin (suc k)) → ρ j ≢ t → 
+               Σ (Fin (suc k)) (λ j' → ρ j' ≡ t)
+        next t fzero ρj≠t = search t (fsuc fzero)
+        next t (fsuc j') ρj≠t = search t (fsuc (fsuc j'))
+        -- 但这样不终止...
+        
+        -- 根本问题: 需要证明搜索一定找到
+        -- 用 pigeonhole: 如果找不到，则矛盾
+        -- 但这里无法用 pigeonhole，因为搜索还在进行中
+
+--------------------------------------------------------------------------------
+-- §5. 鸽巢原理的构造性版本: Fin n 上的 单射 → 满射
+--
+-- 定理: 对任意 ρ : Fin n → Fin n, 若 ρ 是单射, 则 ρ 是满射。
+--
+-- 证明策略: 从 pigeonhole 出发，用反证法构造矛盾，从矛盾构造逆像
+--   不搜索，不判断，直接构造
+--------------------------------------------------------------------------------
+
+Inj : ∀ {n} → (Fin n → Fin n) → Set
+Inj {n} ρ = ∀ a b → ρ a ≡ ρ b → a ≡ b
+
+Surj : ∀ {n} → (Fin n → Fin n) → Set
+Surj {n} ρ = ∀ i → Σ (Fin n) (λ j → ρ j ≡ i)
+
+injSurj : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj {zero} ρ ρ-inj ()
+injSurj {suc k} ρ ρ-inj target = byContradiction
+  where
+    byContradiction : Σ (Fin (suc k)) (λ j → ρ j ≡ target)
+    byContradiction = {!!}  -- 从 pigeonhole 出发，不搜索
+
+-- 用反证法 + pigeonhole 构造矛盾
+    byContradiction : Σ (Fin (suc k)) (λ j → ρ j ≡ target)
+    byContradiction = 
+      let
+        -- 反证法: 假设 target 不在像中
+        not-hit : (j : Fin (suc k)) → ρ j ≢ target
+        not-hit = {!!}  -- 这是反证法的假设
+        
+        -- 构造约简映射 g = punchOut (not-hit j)
+        g : Fin (suc k) → Fin k
+        g j = punchOut (not-hit j)
+        
+        -- g 是单射
+        g-inj : Inj g
+        g-inj a b eq = punchOut-injective (not-hit a) (not-hit b) eq
+        
+        -- 矛盾: suc k > k，与 pigeonhole 矛盾
+        k<sk : k ℕ.< suc k
+        k<sk = n<1+n k
+        
+        contradiction : ⊥
+        contradiction = <⇒notInjective k<sk g-inj
+      in ⊥-elim contradiction  -- 从矛盾构造任意类型
