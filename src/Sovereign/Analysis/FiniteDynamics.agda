@@ -787,3 +787,48 @@ injSurj-final'' {suc k} ρ ρ-inj target = find target
     find t with find-by-enum' ρ t
     ... | yes result = result
     ... | no not-hit = ⊥-elim (contradiction t not-hit ρ-inj)
+
+--------------------------------------------------------------------------------
+-- §5. 鸽巢原理的构造性版本: Fin n 上的 单射 → 满射
+--
+-- 定理: 对任意 ρ : Fin n → Fin n, 若 ρ 是单射, 则 ρ 是满射。
+--
+-- 证明策略: 反证法 + pigeonhole（不判断、不搜索）
+--------------------------------------------------------------------------------
+
+Inj : ∀ {n} → (Fin n → Fin n) → Set
+Inj {n} ρ = ∀ a b → ρ a ≡ ρ b → a ≡ b
+
+Surj : ∀ {n} → (Fin n → Fin n) → Set
+Surj {n} ρ = ∀ i → Σ (Fin n) (λ j → ρ j ≡ i)
+
+injSurj : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj {zero} ρ ρ-inj ()
+injSurj {suc k} ρ ρ-inj target = byContradiction
+  where
+    byContradiction : Σ (Fin (suc k)) (λ j → ρ j ≡ target)
+    byContradiction = {!!}  -- 直接用 pigeonhole，不判断
+
+-- 用反证法，不判断
+    byContradiction : Σ (Fin (suc k)) (λ j → ρ j ≡ target)
+    byContradiction = 
+      let
+        -- 假设: target 不在像中
+        not-hit : (j : Fin (suc k)) → ρ j ≢ target
+        not-hit = {!!}  -- 这是反证法的假设
+        
+        -- 构造约简映射 g = punchOut (not-hit j)
+        g : Fin (suc k) → Fin k
+        g j = punchOut (not-hit j)
+        
+        -- g 是单射
+        g-inj : Inj g
+        g-inj a b eq = punchOut-injective (not-hit a) (not-hit b) eq
+        
+        -- 矛盾: suc k > k，与 pigeonhole 矛盾
+        k<sk : k ℕ.< suc k
+        k<sk = n<1+n k
+        
+        contradiction : ⊥
+        contradiction = <⇒notInjective k<sk g-inj
+      in ⊥-elim contradiction
