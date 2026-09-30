@@ -406,3 +406,28 @@ injSurj {suc k} ρ ρ-inj target = byContradiction
               suc-k<k : suc k ℕ.< k
               suc-k<k = {!!}
           in <⇒notInjective suc-k<k g-inj
+
+-- 补全: g-inj 的单射性证明
+-- g j = punchOut (not-hit j)
+-- 需要证明: g a ≡ g b → a ≡ b
+
+-- punchOut-injective : ∀ {i j k : Fin (suc n)} →
+--                     (i≢j : i ≢ j) (i≢k : i ≢ k) →
+--                     punchOut i≢j ≡ punchOut i≢k → j ≡ k
+
+-- 应用: g a = punchOut (not-hit a), g b = punchOut (not-hit b)
+-- 如果 g a ≡ g b, 则 punchOut (not-hit a) ≡ punchOut (not-hit b)
+-- 由 punchOut-injective, 得 a ≡ b
+
+-- 修正 contradiction
+contradiction' : (t : Fin (suc k)) → 
+                 (∀ j → ρ j ≢ t) → 
+                 Inj ρ → 
+                 ⊥
+contradiction' t not-hit ρ-inj = 
+  let g = λ j → punchOut (not-hit j)
+      g-inj : Inj g
+      g-inj a b eq = punchOut-injective (not-hit a) (not-hit b) eq
+      suc-k<k : suc k ℕ.< k
+      suc-k<k = {!!}
+  in <⇒notInjective suc-k<k g-inj
