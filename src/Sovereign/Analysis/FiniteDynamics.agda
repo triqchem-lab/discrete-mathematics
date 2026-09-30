@@ -732,3 +732,33 @@ injSurj {suc k} ρ ρ-inj target = byContradiction
                   k<sk : k ℕ.< suc k
                   k<sk = n<1+n k
               in <⇒notInjective k<sk g-inj
+
+-- 用有限展开代替搜索
+-- 核心: 不搜索，直接用 Fin 的归纳结构构造逆像
+
+-- 辅助: 枚举 Fin (suc k) 的所有元素
+allFin : (k : ℕ) → List (Fin (suc k))
+allFin zero = fzero ∷ []
+allFin (suc k) = fzero ∷ map fsuc (allFin k)
+
+-- 用枚举 + List.find 构造逆像
+find-by-enum : (ρ : Fin (suc k) → Fin (suc k)) → 
+               (t : Fin (suc k)) → 
+               Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ t))
+find-by-enum ρ t = find-in-list (allFin k)
+  where
+    find-in-list : List (Fin (suc k)) → Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ t))
+    find-in-list [] = no (λ _ → {!!})
+    find-in-list (j ∷ js) with ρ j ≟ t
+    ... | yes e = yes (j , e)
+    ... | no _ = find-in-list js
+
+-- 完整的 injSurj
+injSurj-complete : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj-complete {zero} ρ ρ-inj ()
+injSurj-complete {suc k} ρ ρ-inj target = find target
+  where
+    find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    find t with find-by-enum ρ t
+    ... | yes result = result
+    ... | no not-hit = ⊥-elim (contradiction t not-hit ρ-inj)
