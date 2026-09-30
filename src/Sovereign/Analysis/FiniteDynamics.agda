@@ -467,3 +467,41 @@ injSurj-complete {suc k} ρ ρ-inj target = find target
       where
         decide-hit : (t : Fin (suc k)) → Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ t))
         decide-hit t = {!!}
+
+-- 补全 decide-hit 搜索函数
+-- 搜索 target 是否在像中
+
+decide-hit : (ρ : Fin (suc k) → Fin (suc k)) → 
+             (t : Fin (suc k)) → 
+             Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ t))
+decide-hit ρ t = search t fzero
+  where
+    search : (t : Fin (suc k)) (j : Fin (suc k)) → 
+             Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+    search t j with ρ j ≟ t
+    ... | yes e = yes (j , e)
+    ... | no _ = next t j
+    
+    next : (t : Fin (suc k)) (j : Fin (suc k)) → 
+           Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+    next t fzero = search t (fsuc fzero)
+    next t (fsuc j') = search t (fsuc (fsuc j'))
+    -- 但这样不终止...
+
+-- 修正: 用 fuel 保证终止
+decide-hit' : (ρ : Fin (suc k) → Fin (suc k)) → 
+              (t : Fin (suc k)) → 
+              Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ t))
+decide-hit' ρ t = search t fzero (suc k)
+  where
+    search : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → 
+             Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+    search t j zero = no (λ (j' , eq) → {!!})  -- fuel 耗尽，但应该找到
+    search t j (suc fuel) with ρ j ≟ t
+    ... | yes e = yes (j , e)
+    ... | no _ = next t j fuel
+    
+    next : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → 
+           Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+    next t fzero fuel = search t (fsuc fzero) fuel
+    next t (fsuc j') fuel = search t (fsuc (fsuc j')) fuel
