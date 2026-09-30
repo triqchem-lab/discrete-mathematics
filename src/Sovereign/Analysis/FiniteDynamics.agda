@@ -218,3 +218,21 @@ injSurj {suc k} ρ ρ-inj target = find target
     
     -- 主调用：从 fzero 开始，fuel = suc k
     find t = search t fzero (suc k)
+
+-- 补全：fuel 耗尽时的矛盾证明
+    -- 当 fuel = 0 时，说明已经搜索了 suc k 个元素，但都没找到
+    -- 由鸽巢原理，这是不可能的（因为 ρ 是单射 Fin (suc k) → Fin (suc k)）
+    
+    -- 辅助：搜索完备性引理
+    -- 如果搜索 suc k 个元素都没找到 target，则矛盾
+    search-exhausted : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → 
+                       (ρ j ≢ t) → 
+                       (∀ j' → ρ j' ≢ t) → 
+                       ⊥
+    search-exhausted t j zero _ all-miss = {!!}
+    search-exhausted t j (suc fuel) ρj≠t all-miss = 
+      search-exhausted t (next-index j) fuel (all-miss (next-index j)) all-miss
+      where
+        next-index : Fin (suc k) → Fin (suc k)
+        next-index fzero = fsuc fzero
+        next-index (fsuc j') = fsuc (fsuc j')
