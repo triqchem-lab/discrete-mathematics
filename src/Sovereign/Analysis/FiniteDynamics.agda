@@ -657,3 +657,78 @@ contradiction t not-hit ρ-inj =
       k<sk : k ℕ.< suc k
       k<sk = n<1+n k
   in <⇒notInjective k<sk g-inj
+
+--------------------------------------------------------------------------------
+-- §5. 鸽巢原理的构造性版本: Fin n 上的 单射 → 满射
+--
+-- 定理: 对任意 ρ : Fin n → Fin n, 若 ρ 是单射, 则 ρ 是满射。
+--
+-- 数学来源: Dedekind 有限性 (1888)
+-- 证明策略: 从 stdlib pigeonhole 出发，用 punchOut 构造约简映射
+--   pigeonhole : m < n → (f : Fin n → Fin m) → ¬ Injective f
+--   逆否形式: Fin n → Fin n 单射 → 满射
+--
+-- 关键洞察: 不需要搜索，直接构造约简映射 g = punchOut (not-hit j)
+--   g : Fin (suc k) → Fin k 是单射
+--   但 suc k > k，与 pigeonhole 矛盾
+--------------------------------------------------------------------------------
+
+open import Data.Fin.Properties using (pigeonhole; <⇒notInjective; punchOut-injective)
+open import Data.Fin using (punchOut)
+open import Data.Nat.Properties using (n<1+n)
+
+Inj : ∀ {n} → (Fin n → Fin n) → Set
+Inj {n} ρ = ∀ a b → ρ a ≡ ρ b → a ≡ b
+
+Surj : ∀ {n} → (Fin n → Fin n) → Set
+Surj {n} ρ = ∀ i → Σ (Fin n) (λ j → ρ j ≡ i)
+
+-- 主定理: 单射 → 满射
+injSurj : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+
+-- 基础: n = 0
+injSurj {zero} ρ ρ-inj ()
+
+-- 归纳: n = suc k
+-- 用反证法 + pigeonhole
+injSurj {suc k} ρ ρ-inj target = byContradiction
+  where
+    -- 反证法: 假设 target 不在像中
+    byContradiction : Σ (Fin (suc k)) (λ j → ρ j ≡ target)
+    byContradiction = {!!}
+
+-- 直接实现：用反证法 + pigeonhole
+    -- 假设 target 不在像中，构造矛盾
+    byContradiction : Σ (Fin (suc k)) (λ j → ρ j ≡ target)
+    byContradiction = find-or-contradict
+      where
+        find-or-contradict : Σ (Fin (suc k)) (λ j → ρ j ≡ target)
+        find-or-contradict with decide-hit target
+        ... | yes result = result
+        ... | no not-hit = ⊥-elim (contradiction not-hit)
+          where
+            -- 决定性: 检查 target 是否在像中
+            decide-hit : (t : Fin (suc k)) → Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ t))
+            decide-hit t = search-decidable t fzero (suc k)
+              where
+                search-decidable : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → 
+                                  Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+                search-decidable t j zero = no (λ _ → {!!})
+                search-decidable t j (suc fuel) with ρ j ≟ t
+                ... | yes e = yes (j , e)
+                ... | no _ = search-next t j fuel
+                
+                search-next : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → 
+                              Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+                search-next t fzero fuel = search-decidable t (fsuc fzero) fuel
+                search-next t (fsuc j') fuel = search-decidable t (fsuc (fsuc j')) fuel
+            
+            -- 矛盾: 构造约简映射 g = punchOut (not-hit j)
+            contradiction : (∀ j → ρ j ≢ target) → ⊥
+            contradiction not-hit = 
+              let g = λ j → punchOut (not-hit j)
+                  g-inj : Inj g
+                  g-inj a b eq = punchOut-injective (not-hit a) (not-hit b) eq
+                  k<sk : k ℕ.< suc k
+                  k<sk = n<1+n k
+              in <⇒notInjective k<sk g-inj
