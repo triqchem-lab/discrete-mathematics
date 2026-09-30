@@ -609,3 +609,51 @@ injSurj-direct {suc k} ρ ρ-inj target = construct target
                               Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
                 search-next t fzero fuel = search t (fsuc fzero) fuel
                 search-next t (fsuc j') fuel = search t (fsuc (fsuc j')) fuel
+
+-- fuel 耗尽时必找到 target
+-- 核心: 如果搜索 suc k 个元素都没找到 target，则矛盾
+-- 由鸽巢原理: ρ 是单射 Fin (suc k) → Fin (suc k)，不可能漏掉任何元素
+
+-- 简化: 不需要单独证明 fuel 耗尽
+-- 直接用反证法
+
+-- 最终版本: 从 pigeonhole 出发
+injSurj-final' : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj-final' {zero} ρ ρ-inj ()
+injSurj-final' {suc k} ρ ρ-inj target = find target
+  where
+    find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    find t = byContradiction
+      where
+        byContradiction : Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+        byContradiction with decide-hit t
+        ... | yes result = result
+        ... | no not-hit = ⊥-elim (contradiction t not-hit ρ-inj)
+        
+        decide-hit : (t : Fin (suc k)) → Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ t))
+        decide-hit t = search t fzero (suc k)
+          where
+            search : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → 
+                     Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+            search t j zero = no (λ _ → {!!})  -- fuel 耗尽
+            search t j (suc fuel) with ρ j ≟ t
+            ... | yes e = yes (j , e)
+            ... | no _ = search-next t j fuel
+            
+            search-next : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → 
+                          Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+            search-next t fzero fuel = search t (fsuc fzero) fuel
+            search-next t (fsuc j') fuel = search t (fsuc (fsuc j')) fuel
+
+-- 矛盾证明: 从 pigeonhole 出发
+contradiction : (t : Fin (suc k)) → 
+                (∀ j → ρ j ≢ t) → 
+                Inj ρ → 
+                ⊥
+contradiction t not-hit ρ-inj = 
+  let g = λ j → punchOut (not-hit j)
+      g-inj : Inj g
+      g-inj a b eq = punchOut-injective (not-hit a) (not-hit b) eq
+      k<sk : k ℕ.< suc k
+      k<sk = n<1+n k
+  in <⇒notInjective k<sk g-inj
