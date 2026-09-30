@@ -540,3 +540,34 @@ injSurj-final {suc k} ρ ρ-inj target = find target
     find t with decide-hit'' ρ t
     ... | yes result = result
     ... | no not-hit = ⊥-elim (contradiction'' t not-hit ρ-inj)
+
+-- fuel 耗尽时必找到 target
+-- 核心: 如果搜索 suc k 个元素都没找到 target，则矛盾
+-- 由鸽巢原理: ρ 是单射 Fin (suc k) → Fin (suc k)，不可能漏掉任何元素
+
+-- 直接用 contradiction'' 证明
+-- 如果 decide-hit'' 返回 no not-hit，则用 contradiction''
+
+-- 简化: 不需要单独证明 fuel 耗尽
+-- 直接用反证法
+
+-- 最简洁的 injSurj
+injSurj-minimal : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj-minimal {zero} ρ ρ-inj ()
+injSurj-minimal {suc k} ρ ρ-inj target = find target
+  where
+    find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    find t = search t fzero
+      where
+        search : (t : Fin (suc k)) (j : Fin (suc k)) → Σ (Fin (suc k)) (λ j' → ρ j' ≡ t)
+        search t j with ρ j ≟ t
+        ... | yes e = j , e
+        ... | no _ = search-next t j
+        
+        search-next : (t : Fin (suc k)) (j : Fin (suc k)) → Σ (Fin (suc k)) (λ j' → ρ j' ≡ t)
+        search-next t fzero = search t (fsuc fzero)
+        search-next t (fsuc j') = search t (fsuc (fsuc j'))
+        -- 这样不终止...
+        
+        -- 根本问题: 需要证明搜索一定找到
+        -- 用反证法: 假设找不到，构造矛盾
