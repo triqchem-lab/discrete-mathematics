@@ -571,3 +571,41 @@ injSurj-minimal {suc k} ρ ρ-inj target = find target
         
         -- 根本问题: 需要证明搜索一定找到
         -- 用反证法: 假设找不到，构造矛盾
+
+-- 用 Fin 的归纳结构直接构造逆像
+-- 核心: 不搜索，直接构造
+
+injSurj-direct : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+
+-- 基础: n = 0
+injSurj-direct {zero} ρ ρ-inj ()
+
+-- 归纳: n = suc k
+-- 直接构造逆像
+injSurj-direct {suc k} ρ ρ-inj target = construct target
+  where
+    -- 构造逆像
+    construct : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    construct t = byContradiction
+      where
+        -- 反证法: 假设 t 不在像中
+        byContradiction : Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+        byContradiction with decide-hit
+        ... | yes result = result
+        ... | no not-hit = ⊥-elim (contradiction t not-hit ρ-inj)
+          where
+            -- 决定性: 检查 t 是否在像中
+            decide-hit : Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ t))
+            decide-hit = search t fzero (suc k)
+              where
+                search : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → 
+                         Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+                search t j zero = no (λ _ → {!!})  -- fuel 耗尽
+                search t j (suc fuel) with ρ j ≟ t
+                ... | yes e = yes (j , e)
+                ... | no _ = search-next t j fuel
+                
+                search-next : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → 
+                              Dec (Σ (Fin (suc k)) (λ j' → ρ j' ≡ t))
+                search-next t fzero fuel = search t (fsuc fzero) fuel
+                search-next t (fsuc j') fuel = search t (fsuc (fsuc j')) fuel
