@@ -203,3 +203,24 @@ injSurj {suc k} ρ ρ-inj target with any? (λ j → ρ j ≟ target)
         
         g-inj : Inj g
         g-inj a b eq = ρ-inj a b (punchOut-injective (not-hit (a , refl)) (not-hit (b , refl)) eq)
+
+Surj : ∀ {n} → (Fin n → Fin n) → Set
+Surj {n} ρ = ∀ i → Σ (Fin n) (λ j → ρ j ≡ i)
+
+injSurj : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj {zero} ρ ρ-inj ()
+injSurj {suc k} ρ ρ-inj target with any? (λ j → ρ j ≟ target)
+... | yes (j , eq) = j , eq
+... | no not-hit = ⊥-elim (contradiction not-hit)
+  where
+    contradiction : ¬ (Σ (Fin (suc k)) (λ j → ρ j ≡ target)) → ⊥
+    contradiction not-hit = <⇒notInjective k<sk g-inj
+      where
+        k<sk : k ℕ.< suc k
+        k<sk = n<1+n k
+        
+        g : Fin (suc k) → Fin k
+        g j = punchOut (not-hit (j , refl))
+        
+        g-inj : Inj g
+        g-inj a b eq = ρ-inj a b (punchOut-injective (not-hit (a , refl)) (not-hit (b , refl)) eq)
