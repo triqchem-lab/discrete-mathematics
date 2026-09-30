@@ -204,9 +204,6 @@ injSurj {suc k} ρ ρ-inj target with any? (λ j → ρ j ≟ target)
         g-inj : Inj g
         g-inj a b eq = ρ-inj a b (punchOut-injective (not-hit (a , refl)) (not-hit (b , refl)) eq)
 
-Surj : ∀ {n} → (Fin n → Fin n) → Set
-Surj {n} ρ = ∀ i → Σ (Fin n) (λ j → ρ j ≡ i)
-
 injSurj : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
 injSurj {zero} ρ ρ-inj ()
 injSurj {suc k} ρ ρ-inj target with any? (λ j → ρ j ≟ target)
