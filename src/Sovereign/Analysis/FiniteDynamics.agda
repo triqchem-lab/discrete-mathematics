@@ -236,3 +236,38 @@ injSurj {suc k} ρ ρ-inj target = find target
         next-index : Fin (suc k) → Fin (suc k)
         next-index fzero = fsuc fzero
         next-index (fsuc j') = fsuc (fsuc j')
+
+-- 关键：用 stdlib pigeonhole 证明矛盾
+-- pigeonhole : m < n → (f : Fin n → Fin m) → ¬ Injective f
+-- 逆否形式: Fin n → Fin n 单射 → 满射
+
+-- 辅助：构造约简映射，跳过 target
+-- 如果 target 不在像中，我们可以构造 g : Fin (suc k) → Fin k
+-- 使得 g ∘ ρ 仍然是单射，但这与 pigeonhole 矛盾
+
+-- 构造跳过 target 的映射
+skipTarget : (t : Fin (suc k)) → Fin (suc k) → Fin k
+skipTarget t j with j ≟ t
+... | yes _ = zero  -- 跳过 target
+... | no _ = {!!}   -- 其他元素映射到 Fin k
+
+-- 证明：如果 target 不在像中，则 skipTarget ∘ ρ 是单射
+skipTarget-inj : (t : Fin (suc k)) → 
+                 (∀ j → ρ j ≢ t) → 
+                 Inj ρ → 
+                 Inj (λ j → skipTarget t (ρ j))
+skipTarget-inj t not-hit ρ-inj = {!!}
+
+-- 矛盾：用 pigeonhole
+contradiction : (t : Fin (suc k)) → 
+                (∀ j → ρ j ≢ t) → 
+                Inj ρ → 
+                ⊥
+contradiction t not-hit ρ-inj = 
+  let g = λ j → skipTarget t (ρ j)
+      g-inj = skipTarget-inj t not-hit ρ-inj
+      -- g : Fin (suc k) → Fin k 是单射
+      -- 但 suc k > k，与 pigeonhole 矛盾
+      suc-k<k : suc k ℕ.< k
+      suc-k<k = {!!}
+  in <⇒notInjective suc-k<k g-inj
