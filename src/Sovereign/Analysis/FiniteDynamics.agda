@@ -431,3 +431,39 @@ contradiction' t not-hit ρ-inj =
       suc-k<k : suc k ℕ.< k
       suc-k<k = {!!}
   in <⇒notInjective suc-k<k g-inj
+
+-- 用反证法证明矛盾
+-- 核心: 如果 target 不在像中，则存在 g : Fin (suc k) → Fin k 是单射
+-- 但 suc k > k，这与 pigeonhole 矛盾
+
+-- 简化: 直接用 <⇒notInjective
+-- <⇒notInjective : n < m → ¬ (Injective f)
+-- 这里 n = k, m = suc k, 所以需要 k < suc k
+
+-- 修正: 用 n<1+n
+open import Data.Nat.Properties using (n<1+n)
+
+contradiction'' : (t : Fin (suc k)) → 
+                  (∀ j → ρ j ≢ t) → 
+                  Inj ρ → 
+                  ⊥
+contradiction'' t not-hit ρ-inj = 
+  let g = λ j → punchOut (not-hit j)
+      g-inj : Inj g
+      g-inj a b eq = punchOut-injective (not-hit a) (not-hit b) eq
+      k<sk : k ℕ.< suc k
+      k<sk = n<1+n k
+  in <⇒notInjective k<sk g-inj
+
+-- 完整的 injSurj
+injSurj-complete : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj-complete {zero} ρ ρ-inj ()
+injSurj-complete {suc k} ρ ρ-inj target = find target
+  where
+    find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    find t with decide-hit t
+    ... | yes result = result
+    ... | no not-hit = ⊥-elim (contradiction'' t not-hit ρ-inj)
+      where
+        decide-hit : (t : Fin (suc k)) → Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ t))
+        decide-hit t = {!!}
