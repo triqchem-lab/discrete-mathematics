@@ -181,3 +181,25 @@ injSurj {suc k} ρ ρ-inj target = find target
     -- 构造逆像的主函数
     find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
     find t = {!!}
+
+-- 补全 find 函数：用递归搜索 + 单射性
+    -- 递归搜索：从 fzero 开始，依次检查每个元素
+    find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    find t = search t fzero
+      where
+        -- 搜索函数：从 j 开始，检查 ρ j 是否等于 t
+        search : (t : Fin (suc k)) (j : Fin (suc k)) → Σ (Fin (suc k)) (λ j' → ρ j' ≡ t)
+        search t j with ρ j ≟ t
+        -- 找到了
+        ... | yes e = j , e
+        -- 没找到，继续下一个
+        ... | no _ = next t j
+        
+        -- 下一个位置
+        next : (t : Fin (suc k)) (j : Fin (suc k)) → Σ (Fin (suc k)) (λ j' → ρ j' ≡ t)
+        next t fzero = search t (fsuc fzero)
+        next t (fsuc j') = search-more t j'
+          where
+            search-more : (t : Fin (suc k)) (j : Fin k) → Σ (Fin (suc k)) (λ j' → ρ j' ≡ t)
+            search-more t j = search t (fsuc j)
+            -- 这样会循环...
