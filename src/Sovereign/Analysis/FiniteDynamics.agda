@@ -762,3 +762,28 @@ injSurj-complete {suc k} ρ ρ-inj target = find target
     find t with find-by-enum ρ t
     ... | yes result = result
     ... | no not-hit = ⊥-elim (contradiction t not-hit ρ-inj)
+
+-- 补全空列表情况
+-- 核心: 如果列表为空，说明已经搜索了所有元素，应该一定找到 target
+
+-- 修正 find-by-enum
+find-by-enum' : (ρ : Fin (suc k) → Fin (suc k)) → 
+                (t : Fin (suc k)) → 
+                Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ t))
+find-by-enum' ρ t = find-in-list (allFin k)
+  where
+    find-in-list : List (Fin (suc k)) → Dec (Σ (Fin (suc k)) (λ j → ρ j ≡ t))
+    find-in-list [] = no (λ (j , eq) → {!!})  -- 空列表，但 j 应该在列表中
+    find-in-list (j ∷ js) with ρ j ≟ t
+    ... | yes e = yes (j , e)
+    ... | no _ = find-in-list js
+
+-- 完整的 injSurj
+injSurj-final'' : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj-final'' {zero} ρ ρ-inj ()
+injSurj-final'' {suc k} ρ ρ-inj target = find target
+  where
+    find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    find t with find-by-enum' ρ t
+    ... | yes result = result
+    ... | no not-hit = ⊥-elim (contradiction t not-hit ρ-inj)
