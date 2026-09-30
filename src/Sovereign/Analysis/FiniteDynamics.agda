@@ -832,3 +832,30 @@ injSurj {suc k} ρ ρ-inj target = byContradiction
         contradiction : ⊥
         contradiction = <⇒notInjective k<sk g-inj
       in ⊥-elim contradiction
+
+-- 重新理解: injSurj 的目标是构造逆像，不是证明存在性
+-- 但 Agda 需要构造逆像，所以需要用搜索或构造
+
+-- 关键洞察: 用搜索，但从 pigeonhole 出发保证找到
+
+injSurj-construct : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+injSurj-construct {zero} ρ ρ-inj ()
+injSurj-construct {suc k} ρ ρ-inj target = find target
+  where
+    -- 找 target 的逆像
+    find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    find t = search t fzero
+      where
+        -- 搜索函数
+        search : (t : Fin (suc k)) (j : Fin (suc k)) → Σ (Fin (suc k)) (λ j' → ρ j' ≡ t)
+        search t j with ρ j ≟ t
+        ... | yes e = j , e
+        ... | no _ = next t j
+        
+        next : (t : Fin (suc k)) (j : Fin (suc k)) → Σ (Fin (suc k)) (λ j' → ρ j' ≡ t)
+        next t fzero = search t (fsuc fzero)
+        next t (fsuc j') = search t (fsuc (fsuc j'))
+        -- 但这样不终止...
+        
+        -- 根本问题: 需要证明搜索一定找到
+        -- 用 pigeonhole: 如果找不到，则矛盾
