@@ -151,3 +151,33 @@ orbit-collision-pw f at x0 i j step-eq eq zero rewrite +-identityʳ i | +-identi
 orbit-collision-pw f at x0 i j step-eq eq (suc k) rewrite +-suc i k | +-suc j k =
   step-eq (orbit f x0 (i + k)) (orbit f x0 (j + k))
           (orbit-collision-pw f at x0 i j step-eq eq k)
+
+--------------------------------------------------------------------------------
+-- §5. 鸽巢原理的构造性版本: Fin n 上的 单射 → 满射
+--
+-- 定理: 对任意 ρ : Fin n → Fin n, 若 ρ 是单射, 则 ρ 是满射。
+--
+-- 数学来源: Dedekind 有限性 (1888)
+-- 证明策略: 构造性搜索 + 单射性
+--   参考: jac_Pigeonhole.pigeonhole-2 的穷举风格
+--------------------------------------------------------------------------------
+
+Inj : ∀ {n} → (Fin n → Fin n) → Set
+Inj {n} ρ = ∀ a b → ρ a ≡ ρ b → a ≡ b
+
+Surj : ∀ {n} → (Fin n → Fin n) → Set
+Surj {n} ρ = ∀ i → Σ (Fin n) (λ j → ρ j ≡ i)
+
+-- 主定理: 单射 → 满射
+injSurj : ∀ {n} (ρ : Fin n → Fin n) → Inj ρ → Surj ρ
+
+-- 基础: n = 0
+injSurj {zero} ρ ρ-inj ()
+
+-- 归纳: n = suc k
+-- 直接构造逆像
+injSurj {suc k} ρ ρ-inj target = find target
+  where
+    -- 构造逆像的主函数
+    find : (t : Fin (suc k)) → Σ (Fin (suc k)) (λ j → ρ j ≡ t)
+    find t = {!!}
