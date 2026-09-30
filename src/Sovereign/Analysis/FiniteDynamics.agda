@@ -203,3 +203,18 @@ injSurj {suc k} ρ ρ-inj target = find target
             search-more : (t : Fin (suc k)) (j : Fin k) → Σ (Fin (suc k)) (λ j' → ρ j' ≡ t)
             search-more t j = search t (fsuc j)
             -- 这样会循环...
+
+-- 修正：用 fuel 保证搜索终止
+    -- 搜索函数（带 fuel）
+    search : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → Σ (Fin (suc k)) (λ j' → ρ j' ≡ t)
+    search t j zero = {!!}  -- fuel 耗尽，需要证明矛盾
+    search t j (suc fuel) with ρ j ≟ t
+    ... | yes e = j , e
+    ... | no _ = search-next t j fuel
+    
+    search-next : (t : Fin (suc k)) (j : Fin (suc k)) (fuel : ℕ) → Σ (Fin (suc k)) (λ j' → ρ j' ≡ t)
+    search-next t fzero fuel = search t (fsuc fzero) fuel
+    search-next t (fsuc j') fuel = search t (fsuc (fsuc j')) fuel
+    
+    -- 主调用：从 fzero 开始，fuel = suc k
+    find t = search t fzero (suc k)
