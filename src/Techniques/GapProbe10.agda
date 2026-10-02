@@ -1,6 +1,6 @@
 -- ⑩ 决定性：生成元是 **postulate（抽象，展示群形态）** 时，REWRITE 规则能否**生效**
 {-# OPTIONS --rewriting #-}
-module GapProbe10 where
+module Techniques.GapProbe10 where
 open import Agda.Builtin.Equality using (_≡_; refl)
 open import Agda.Builtin.Equality.Rewrite
 postulate

@@ -9,7 +9,7 @@
 -- 【裁决 2026-09-29（用户）】**工具类型**（PGM 内核判据探针），不构成公理、不升公理。
 --   判据依据：依赖类型论展示群八要素（载体/生成元/关系/相位/时钟/归零/刚性/核对）——本件八要素全缺，
 --   不满足公理候选的必要条件；REWRITE/postulate 的内核语义归 Agda 内核判定，本层不越权解释。
-module Pgm2 where
+module Techniques.Pgm2 where
 
 open import Agda.Builtin.Equality using (_≡_)
 open import Agda.Builtin.Equality.Rewrite

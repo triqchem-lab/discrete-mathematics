@@ -66,6 +66,13 @@ DC 链传递闭包（`Base/Trit`、`Algebra/{GF9,Duodecimal,DivisibilityChain,Un
 | `Pgm3` | `mixedOp (T₀ , a0) p ↝ p` | **rc=0，但这是假证据**：`mixedOp (T₀,a0) p` 本来就**定义归约**（a0 是单位元）⇒ `refl` 无需规则即过；规则本身仍带 `RewriteLHSReduces` 警告 |
 | `GapProbe10`（前轮，`docs/techniques/presentation-reduction-gap/`） | 生成元是 **postulate**（abstract，head 不可归约） | **rc=0，规则生效**（`λ x → refl` 证出普遍定律） |
 
+> **【复测 2026-10-02 + 迁移】** 探针已迁 `src/Techniques/`（docs 只放文档；见 presentation-reduction-gap/README 迁移注）。
+> 标准配置复测：`Pgm2` **rc=42 原样复现**（`l2-auto = refl` → `UnequalTerms`）；`Pgm1` **rc=0**——但
+> **规则拒绝消息原样在案**（`mixedOp-12-cycle is not a legal rewrite rule, since the left-hand side …`），
+> 仅级别为 **warning**（`-W[no]RewriteLHSReduces`），而 Pgm1 无下游使用 ⇒ 文件过、规则仍不生效。
+> 即：**Q2 的「LHS 可归约 ⇒ 规则不合法」结论不变**；9-14 记录的 rc=42 与今 rc=0 的 exit 码差异
+> （警告级别/会话环境所致）**原因未定，列为待测**，不得据此升级为「规则现在被接受」。
+
 **结论**：Agda 的规则要求 **LHS 不可归约**。在真实形式化里运算都是**已定义函数**（`mixedOp` / `step` / …），LHS 必然可归约 ⇒ **展示关系几乎声明不成 L2 规则**；只有「生成元是 postulate/builtin 原语（stuck 头部）」时才可行。
 这正是库内 `Structology/T6.agda` 的规则写在 **builtin `div-helper`/`mod-helper`** 上、而不是写在库自己的取模运算上的原因（`T6.agda:20` 注释原话：「因 REWRITE 需 LHS 不可归约」）。
 

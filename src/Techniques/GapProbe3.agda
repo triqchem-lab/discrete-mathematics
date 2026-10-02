@@ -1,5 +1,5 @@
 -- ③ **抽象实例**（生成元是 record 字段 = 展示群的抽象形态）：投影不归约 ⇒ REJECT
-module GapProbe3 where
+module Techniques.GapProbe3 where
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 record Pres : Set₁ where
   field

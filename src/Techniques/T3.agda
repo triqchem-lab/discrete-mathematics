@@ -1,4 +1,4 @@
-module T3 where
+module Techniques.T3 where
 data T3 : Set where t0 t1 t2 : T3
 step : T3 → T3
 step t0 = t1

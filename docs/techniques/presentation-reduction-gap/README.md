@@ -1,16 +1,23 @@
 # 展示群规约缺口：机器判定的边界（探针矩阵）
 
 **日期**: 2026-09-14　**状态**: 全部实测（Agda 2.9.0-nightly，本机 `/home/yanli/.local/bin/agda`）
+**复测**: 2026-10-02（`/opt/agda/2.9.0/bin/agda`，`/opt` 为默认环境基准）——全部探针矩阵与 09-14 基线一致，见下「迁移」注
 **主张**: 「Agda 的归一化器只有 β/δ/ι/η，没有展示群关系规约；δ³=id 等是命题相等，不是定义相等」
 
 本目录把**主张的量**测出来：把「归一化器到哪儿为止」「REWRITE 能不能救」变成一组可复跑的 exit 码。
 
-## 复跑命令（在仓库根）
+> **【2026-10-02 迁移】docs 只放文档（用户裁决）**：本目录的 11 个实验 `.agda` 已整体迁至
+> **`src/Techniques/`**（module 名对齐为 `Techniques.X`；探针互引 `T3` 同步改为
+> `Techniques.T3`）。本目录自此仅存 `.md`。探针仍是一文件一模块（独立单独编译、省内存）。
+> 迁移动机与背景：探针代码住在 docs 违反目录纪律，且裸调用/审计在 docs 起点会撞
+> 项目文件分叉（`ModuleNameDoesntMatchFileName` / `InfectiveImport --cubical`）——
+> 迁入 src 后走标准项目配置，一并消除。
+
+## 复跑命令（在仓库根，标准配置，无需 `-i`）
 
 ```
 for m in GapProbe1 GapProbe2b GapProbe3 GapProbe3b GapProbe7 GapProbe9 GapProbe10; do
-  agda --guardedness -i docs/techniques/presentation-reduction-gap \
-       docs/techniques/presentation-reduction-gap/$m.agda; echo "$m rc=$?"
+  agda --guardedness src/Techniques/$m.agda; echo "$m rc=$?"
 done
 ```
 
@@ -40,3 +47,9 @@ done
 
 - **合流性（confluence）**：本目录**没有**探针涉及两条规则冲突的情形 ⇒ 未验证。
 - **终止性**：`GapProbe6`（RHS 更大的规则）**没有**表现出死循环（该目标里规则未触发）⇒ 「Agda 不检查重写终止性」**未被本目录证实**，只是文献口径。
+
+## 文件对照注记（2026-10-02 核对）
+
+- 上表 `GapProbe4` 与提及的 `GapProbe6` **文件已不在库内**（9-14 实测后未留存/被删），
+  矩阵行为当时实测记录，不再可复跑；其余 7 个 GapProbe + Infect/T3/Pgm1/Pgm2 均在
+  `src/Techniques/`，10-02 复测与矩阵一致（唯一例外见 pgm-assessment 的 Pgm1 复测注）。
