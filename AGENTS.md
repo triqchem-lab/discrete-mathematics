@@ -4,8 +4,8 @@
 Agda 形式化证明 + Python 工程验证双轨制。
 
 ## Project
-- 技术栈: Agda 2.9.0 (自定义构建, `~/.local/bin/agda`), standard-library-2.4, cubical-0.9, agda-categories, agda-algebras
-- 库注册: `sovereign.agda-lib` (flags: `--guardedness -WnoUnsupportedIndexedMatch`, include: `src`)
+- 技术栈: Agda 2.9.0-nightly（默认环境 `/opt/agda/2.9.0`；`~/.local/bin/agda` 为 stack 构建副本、既有回执 `checkerBin` 口径，两者结果一致）, standard-library-2.4, cubical-0.9, agda-categories, agda-algebras
+- 库注册: `sovereign.agda-lib` (flags: `--guardedness --cubical -WnoUnsupportedIndexedMatch`, include: `src`) — **2026-10-02 收编**：`--cubical` 上收为全库默认（承重：44 个文件级 cubical 模块 + 73 个依赖者），原同名 `src/Sovereign.agda-lib` 已删；文件级 `--rewriting` 纪律不变（REWRITE 传染性照旧）
 - 入口: ~~`src/Sovereign/All.agda`~~ 已取消 (2026-09-07 去聚合化, 模块独立编译); 全库 512 个 `.agda` 文件
 - Python 轨道: `engineering/software/sovereign_core/` (零外部依赖)
 - Git: 单分支 `master` → github.com/triqchem-lab/discrete-mathematics
