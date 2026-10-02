@@ -19,6 +19,7 @@ import os
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
 
 LINT = os.path.join(os.path.dirname(__file__), "..", "lint_agda_structure.py")
 
@@ -52,11 +53,15 @@ CASES = [
 
 def run_case(name, files, expected):
     with tempfile.TemporaryDirectory() as tmp:
+        base = Path(tmp).resolve()
         for rel, content in files.items():
-            path = os.path.join(tmp, rel)
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            with open(path, "w", encoding="utf-8") as fh:
-                fh.write(content)
+            if ".." in rel or os.path.isabs(rel):
+                raise ValueError("非法用例路径（禁止 .. 与绝对路径）: %r" % (rel,))
+            path = (base / rel).resolve()
+            if not str(path).startswith(str(base) + os.sep):
+                raise ValueError("用例路径越界，限制在 %r 内" % (str(base),))
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
         proc = subprocess.run([sys.executable, LINT, "--root", tmp, "--json"],
                               capture_output=True, text=True)
         try:

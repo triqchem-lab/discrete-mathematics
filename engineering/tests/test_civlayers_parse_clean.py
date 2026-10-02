@@ -20,6 +20,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
 
 AGDA = os.environ.get("AGDA_BIN", "/home/yanli/.local/bin/agda")
 ROOT = os.path.join("archive", "civlayers-2026-07")
@@ -41,9 +42,14 @@ def main():
                 src = fh.read()
             src = re.sub(r"^module .* where$", "module Scratch.%s where" % name,
                          src, count=1, flags=re.M)
-            dst = os.path.join(scratch, name + ".agda")
-            with open(dst, "w", encoding="utf-8") as fh:
-                fh.write(src)
+            if ".." in name or os.path.isabs(name):
+                raise ValueError("非法文件名（禁止 .. 与绝对路径）: %r" % (name,))
+            dst_real = Path(scratch).resolve()
+            dst_path = (dst_real / (name + ".agda")).resolve()
+            if not str(dst_path).startswith(str(dst_real) + os.sep):
+                raise ValueError("scratch 写入越界: %r" % (name,))
+            dst_path.write_text(src, encoding="utf-8")
+            dst = str(dst_path)
             proc = subprocess.run([AGDA, "--cubical", "--guardedness",
                                    "-i", tmp, "-i", "src", dst],
                                   capture_output=True, text=True, timeout=900)

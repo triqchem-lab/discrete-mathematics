@@ -28,6 +28,7 @@ import os
 import re
 import subprocess
 import tempfile
+from pathlib import Path
 from shutil import which
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -70,10 +71,14 @@ def find_agda():
 
 
 def write_mod(tmp, name, body):
-    path = os.path.join(tmp, name + ".agda")
-    with open(path, "w", encoding="utf-8") as f:
-        f.write((HEADER % name) + body)
-    return path
+    if ".." in name or os.path.isabs(name):
+        raise ValueError("非法模块名（禁止 .. 与绝对路径）: %r" % (name,))
+    base = Path(tmp).resolve()
+    path = (base / (name + ".agda")).resolve()
+    if not str(path).startswith(str(base) + os.sep):
+        raise ValueError("路径越界，限制在 %r 内" % (str(base),))
+    path.write_text((HEADER % name) + body, encoding="utf-8")
+    return str(path)
 
 
 def compile_mod(binary, tmp, name, body):
