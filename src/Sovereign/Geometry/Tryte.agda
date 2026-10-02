@@ -1,4 +1,4 @@
-{-# OPTIONS --rewriting --guardedness --allow-unsolved-metas #-}
+{-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Geometry.Tryte
 -- 几何定义：Tryte 作为 T⁶ 环面的单点纤维截面
@@ -148,18 +148,12 @@ localChernNormalized = localChernContribution
 -- 公理：5 个五行的局部陈数之和等于全局陈数 C=2
 -- 这保证了纤维丛的拓扑一致性
 -- 证明：通过显式计算验证
-globalChernConservation :
-  ∀ (fiber : SovereignFiber) →
-  (localChernContribution (getWuXingTryte Fire fiber)) +
-  (localChernContribution (getWuXingTryte Earth fiber)) +
-  (localChernContribution (getWuXingTryte Metal fiber)) +
-  (localChernContribution (getWuXingTryte Water fiber)) +
-  (localChernContribution (getWuXingTryte Wood fiber))
-  ≡ 2
-globalChernConservation fiber = ?
--- 注意：这不一定对所有 fiber 都成立。
--- 我们定义一个"合法纤维"谓词来约束：
--- 只有满足守恒律的 fiber 才是合法的主权态。
+-- 【②层修复 2026-10-02（M9 T8 真洞处置）】原「无条件版」`globalChernConservation :
+--   ∀ fiber → … ≡ 2` 以 `?` 洞挂在 --allow-unsolved-metas 下，未证陈述不入类型层
+--   （作者原注：「这不一定对所有 fiber 都成立」）。真定理是下方 LegalFiber 版
+--   `globalChernConservationLegal`（已证 = 字段投影）。无条件版降为**缺口声明**：
+--   roadmap = 给出非合法纤维的显式反例（证否），或把不变量加强为可证形式——未证前不入类型层。
+-- 只有满足守恒律的 fiber 才是合法的主权态（LegalFiber 见下）。
 
 -- 合法纤维定义：满足陈数守恒
 record LegalFiber : Set where

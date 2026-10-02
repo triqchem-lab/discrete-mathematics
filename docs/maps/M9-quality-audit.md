@@ -81,3 +81,10 @@
 | **T9 常态化** | 每批收口复核 persona-errata + 重构报告数（盘点纪律八变体清单同查） | 防漂移复发 | — |
 
 **执行约定**：每原子完成 = proof_compile 回执 + 节点升 proven；T5 须全链回归；T1 先判重后动手。
+
+**T8 完成（2026-10-02）**：`src/_rt.agda` → `archive/_rt.agda`（本表「删/归档」裁决执行，git mv 保留历史）；
+`Tryte` 无条件版 `globalChernConservation`（`?` 洞挂 `--allow-unsolved-metas` 下）降档为缺口注记，
+真定理 `globalChernConservationLegal`（已证）保留，摘 flag，`Geometry/Tryte` + `Format/TQ10` 双 rc=0；
+`HighDimClosure` 原 `convergenceTheorem`（∀s∃n 全息）**证否**——奇偶配对不变量 `xor-inv` +
+反例 `mkState 1 0` 的 `convergenceRefuted`，条件版收敛列 roadmap，摘 flag，rc=0。
+验收：结构 lint **ERROR 0 / WARN 0 = 全库真洞清零达成**（三处 `?` 洞全消）。
