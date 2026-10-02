@@ -21,21 +21,21 @@
 |---|---|---|---|---|
 | 1-4 | `DivisorLattice` meet/join-comm/absorb | 36×4 | （DivisorLattice 系列） | ✅ **已修**（cong₂ 分量分解，回执 953561b5）|
 | 5-8 | `jac_Matrix` adj-mul/adj-mul-right/inverse-correct×2 | 81/81/48/48 | `QFIX.jac-adjmul-structuralize` | ⏳ |
-| 9 | `jac_GF3.pi2` | 37 | `QFIX.jac-gf3-pi2-structuralize` | ⏳ |
+| 9 | `jac_GF3.pi2` | 37 | `QFIX.jac-gf3-pi2-structuralize` | ✅ **复核合规·勘误**（2026-10-03：逐引理复测 max=9（四个 Δ-counter 各 9）≤27，「37」为原子和误当案数（同 g6/char3 勘误类）；回执 `c03cd6c7`）|
 | 10-11 | `HoTT/Equivalence` stepEqualsTransportWhenGain/Loss（孪生） | 72×2 | `QFIX.hott-equiv-gainloss` | ⏳ |
-| 12-13 | `Connection.map-iter` + `T6Homotopy.commute-coords` | 30+30 | `QFIX.hott-iter-lemmas` | ⏳ |
+| 12-13 | `Connection.map-iter` + `T6Homotopy.commute-coords` | 30+30 | `QFIX.hott-iter-lemmas` | ✅ **已闭**（台账 proven：map-iter 归纳 2 子句 + map-compose 辅助；commute-coords 单子句化）|
 | 14 | `ChainZ3toZ12.char3-triple` | 84 | `QFIX.chainz3-char3-triple` | ⏳ |
 | 15 | `NormDiscrete.galoisNorm-multiplicative` | 81 | `QFIX.normdiscrete-galoisnorm`（**先判重**：GaloisTheory 已证同型 + AlgebraChainDeep 81 三重复制 ⇒ 复用统一） | ⏳ |
 | 16-17 | `TorusGeometry` g6/generator-comm | 48/36 | `QFIX.torusgeometry-g6-comm` | ⏳ |
 | 18-19 | `DiscreteNoether.diff-comm` + `DiscreteActionPrinciple.g-assoc` | 81/40 | `QFIX.physics-diffcomm-gassoc` | ⏳ |
-| 20 | `DomainProofs.trit-total` | 91 | `QFIX.applied-trit-total` | ⏳ |
-| 21 | `BCHGF9.findError-loc` | 64 | `QFIX.bchgf9-finderror` | ⏳ |
+| 20 | `DomainProofs.trit-total` | 91 | `QFIX.applied-trit-total` | ✅ **复核合规·勘误**（2026-10-03：逐引理复测 max=27（`∨T-distrib-∧T`）≤27，「91」为 ≤T 整段原子和误当案数；回执 `fbfafe24`）|
+| 21 | `BCHGF9.findError-loc` | 64 | `QFIX.bchgf9-finderror` | ✅ **已闭**（台账 proven：拆子 `findError-loc-0..7` + 分派器，refl=0 + 回执）|
 | 22-27 | **Structology 簇**：A₄ 表示家族 6×（144-156） | 144-156×6 | `QFIX.a4-rep-family`（L） | ⏳ |
 | 28-31 | `GF4` 四律 | 64×4 | `QFIX.gf4-laws` | ⏳ |
 | 32 | `SL23Cayley.toMat-hom` | **576** | `QFIX.sl23-toMat-hom` | ⏳ |
-| 33-34 | `IhC60Vibration.verify-tensor` + `S3IsGL22.mul-hom` | 100/36 | `QFIX.struct-misc-tables` | ⏳ |
+| 33-34 | `IhC60Vibration.verify-tensor` + `S3IsGL22.mul-hom` | 100/36 | `QFIX.struct-misc-tables` | ✅ **已闭**（台账 proven：S3 mul-hom 拆子化 `mul-hom-0..5`；IhC60 verify-tensor 按原原子口径完成判型核验）|
 | 35 | `Base/Trit.codeToTrit` | **104**（⚠ 基石模块 300+ 下游，改后全链回归） | `QFIX.trit-codetotrit` | ⏳ |
-| 36 | `CartanTorsion.a4GroupInstance` | 31 | `QFIX.cartan-a4instance` | ⏳ |
+| 36 | `CartanTorsion.a4GroupInstance` | 31 | `QFIX.cartan-a4instance` | ✅ **复核合规·勘误**（2026-10-03：逐引理复测 max=27（assocProof）≤27，「31」为 record 原子和（orderIs12+identity+assoc）误当案数；回执 `6ce2ea89`）|
 
 （编号跨表：实为 21 个超阈块，其中 4 已修；表内含孪生/簇展开。）
 
@@ -88,3 +88,12 @@
 `HighDimClosure` 原 `convergenceTheorem`（∀s∃n 全息）**证否**——奇偶配对不变量 `xor-inv` +
 反例 `mkState 1 0` 的 `convergenceRefuted`，条件版收敛列 roadmap，摘 flag，rc=0。
 验收：结构 lint **ERROR 0 / WARN 0 = 全库真洞清零达成**（三处 `?` 洞全消）。
+
+**T2 完成（2026-10-03）**：六件中三件台账已 proven（`hott-iter-lemmas` / `bchgf9-finderror` /
+`struct-misc-tables`——判型债批量落地时已闭，本表状态列同步）；三件 `needs_review` 按官方判据
+「**逐引理 ≤27 或已符号化**」（`QFIX.divisor-total` 节点口径）复核闭环：`jac_GF3` max=9、
+`DomainProofs` max=27（`∨T-distrib-∧T`）、`CartanTorsion.a4GroupInstance` max=27（assocProof）
+**全部合规**——原 37/91/31 为**原子和误当案数**（与 g6「实 2 子句」/char3-triple「实 3-case」
+同款勘误类）。复核回执：`c03cd6c7`（jac_GF3）/ `fbfafe24`（DomainProofs）/ `6ce2ea89`
+（CartanTorsion），三文件 proof_compile exit 0。`.dsh` 台账对应三节点的
+`needs_review → proven` 翻转由 dsh 侧流程在下次审计时执行（跨店不可代写）。
