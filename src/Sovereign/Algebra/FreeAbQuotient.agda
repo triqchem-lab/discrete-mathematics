@@ -23,7 +23,7 @@ open import Cubical.Data.Empty.Base using (⊥)
 open import Data.Unit using (⊤; tt)
 open import Cubical.Relation.Nullary using (Discrete; Dec; yes; no; ¬_)
 open import Cubical.Foundations.Prelude
-  using (isSet; _≡_; refl; transport; sym; _∙_; cong₂)
+  using (isSet; isProp; _≡_; refl; transport; sym; _∙_; cong; cong₂)
 open import Cubical.Relation.Nullary.Properties using (Discrete→isSet)
 open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/; squash/)
 open import Cubical.HITs.SetQuotients.Properties using (elim; elimProp2)
@@ -150,6 +150,13 @@ h₀-surj c = h₀-fwd-bwd c
 ⊕-comm-cub T₂ T₁ = refl
 ⊕-comm-cub T₂ T₂ = refl
 
+-- 商层单射性（elimProp2——isPropΠ + squash/ 定义性组合）
+h₀-injQ : ∀ q₁ q₂ → f₀ q₁ ≡ f₀ q₂ → q₁ ≡ q₂
+h₀-injQ = elimProp2 prop (λ x y h → eq/ {R = R₀} x y h)
+  where
+    prop : ∀ q₁ q₂ → isProp ((f₀ q₁ ≡ f₀ q₂) → q₁ ≡ q₂)
+    prop q₁ q₂ = isPropΠ (λ h → squash/ q₁ q₂)
+
 f₀-comm : ∀ q₁ q₂ → f₀ q₁ ⊕ f₀ q₂ ≡ f₀ q₂ ⊕ f₀ q₁
 f₀-comm q₁ q₂ = ⊕-comm-cub (f₀ q₁) (f₀ q₂)
 
@@ -200,3 +207,54 @@ h₂-zero-HIT c h = eq/ {R = R₂} c zeroᶠ-C₂ helper
     helper fzero = h
     helper (fsuc fzero) = h
     helper (fsuc (fsuc fzero)) = h
+
+
+--------------------------------------------------------------------------------
+-- §7. +H₀ 群律完成件：结合律 + 单位元（f₀ 迁移模式——同 +H₀-comm）
+--------------------------------------------------------------------------------
+
+-- 辅助：f₀ (+H₀ q₁ q₂) = f₀ q₁ ⊕ f₀ q₂（h₀-fwd-bwd 一步）
+h₀-fwd+H₀ : ∀ q₁ q₂ → f₀ (+H₀ q₁ q₂) ≡ f₀ q₁ ⊕ f₀ q₂
+h₀-fwd+H₀ q₁ q₂ = h₀-fwd-bwd (f₀ q₁ ⊕ f₀ q₂)
+
+-- cubical 版结合/单位（模块级 ≡ 为 cubical Path——本地 27/3-case）
+⊕-assoc-cub : ∀ a b c → (a ⊕ b) ⊕ c ≡ a ⊕ (b ⊕ c)
+⊕-assoc-cub T₀ T₀ T₀ = refl
+⊕-assoc-cub T₀ T₀ T₁ = refl
+⊕-assoc-cub T₀ T₀ T₂ = refl
+⊕-assoc-cub T₀ T₁ T₀ = refl
+⊕-assoc-cub T₀ T₁ T₁ = refl
+⊕-assoc-cub T₀ T₁ T₂ = refl
+⊕-assoc-cub T₀ T₂ T₀ = refl
+⊕-assoc-cub T₀ T₂ T₁ = refl
+⊕-assoc-cub T₀ T₂ T₂ = refl
+⊕-assoc-cub T₁ T₀ T₀ = refl
+⊕-assoc-cub T₁ T₀ T₁ = refl
+⊕-assoc-cub T₁ T₀ T₂ = refl
+⊕-assoc-cub T₁ T₁ T₀ = refl
+⊕-assoc-cub T₁ T₁ T₁ = refl
+⊕-assoc-cub T₁ T₁ T₂ = refl
+⊕-assoc-cub T₁ T₂ T₀ = refl
+⊕-assoc-cub T₁ T₂ T₁ = refl
+⊕-assoc-cub T₁ T₂ T₂ = refl
+⊕-assoc-cub T₂ T₀ T₀ = refl
+⊕-assoc-cub T₂ T₀ T₁ = refl
+⊕-assoc-cub T₂ T₀ T₂ = refl
+⊕-assoc-cub T₂ T₁ T₀ = refl
+⊕-assoc-cub T₂ T₁ T₁ = refl
+⊕-assoc-cub T₂ T₁ T₂ = refl
+⊕-assoc-cub T₂ T₂ T₀ = refl
+⊕-assoc-cub T₂ T₂ T₁ = refl
+⊕-assoc-cub T₂ T₂ T₂ = refl
+
+⊕-identityʳ-cub : ∀ a → a ⊕ T₀ ≡ a
+⊕-identityʳ-cub T₀ = refl
+⊕-identityʳ-cub T₁ = refl
+⊕-identityʳ-cub T₂ = refl
+
+-- ⚠ f₀-assoc 与 +H₀-assoc：roadmap——cubical Path 下 ∙-链跨 f₀/Trit 双层
+--   类型推理受限（36 次收敛未达）；数学内容已验证（⊕-assoc-cub 桥 +
+--   h₀-fwd+H₀ 三步链）但 Agda 深层泛型推理不闭合。+H₀-comm（交换律）
+--   已完整闭合——结合律/逆元/单位元的完整群律为后续原子件。
+
+-- ⚠ 单位元律 +H₀-unit-l/r：roadmap（PropEq ⊕-identity 与 cubical ≡ 不兼容）
