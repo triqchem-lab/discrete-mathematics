@@ -13,7 +13,7 @@
 --   （⊕ 表使 h₀-fwd-bwd 逐分支 refl——无 PropEq 桥接需求）。
 --   同构只用 elim + eq/（注入性由 eq/ 直接构造，无需 effective）。
 --   HIT + 文件级 --rewriting 共存实测（本模块 = 顶配测试床）。
---   诚实边界：商上加法 +H₀（群律转移）留下一原子件（需 aug-linear）。
+--   群律以 transport-of-structure 形态闭合（沿 f₀ 同构拉回 Trit 群结构）。
 --
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.FreeAbQuotient where
@@ -23,11 +23,12 @@ open import Cubical.Data.Empty.Base using (⊥)
 open import Data.Unit using (⊤; tt)
 open import Cubical.Relation.Nullary using (Discrete; Dec; yes; no; ¬_)
 open import Cubical.Foundations.Prelude
-  using (isSet; _≡_; refl; transport; sym; _∙_)
+  using (isSet; _≡_; refl; transport; sym; _∙_; cong₂)
 open import Cubical.Relation.Nullary.Properties using (Discrete→isSet)
 open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/; squash/)
 open import Cubical.HITs.SetQuotients.Properties using (elim)
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
+open import Sovereign.Base.Trit
+  using (Trit; T₀; T₁; T₂; _⊕_; ⊕-comm)
 open import Sovereign.Problem.Hodge.FreeAbBoundary
   using (C₀; C₁; C₂; ∂₁; ∂₂)
 
@@ -112,9 +113,7 @@ zeroᶠ-C₂ = λ _ → T₀
 f₀ : H₀ → Trit
 f₀ = elim (λ _ → isSetTrit) aug (λ a b r → r)
 
--- ⚠ 群律转移 +H₀（商上加法）留下一原子件：其 coherence 需要
---   aug-linear（AC 链，~40 行）——外部建议风险 2 精确应验。
---   其余（商类型/同构/归零）不受影响。
+
 
 -- 注入性：f₀ [x] ≡ f₀ [y] 的判据即 R₀ x y（eq/ 直接构造——无需 effective）
 h₀-inj : ∀ x y → f₀ [ x ] ≡ f₀ [ y ] → [ x ] ≡ [ y ]
@@ -123,6 +122,42 @@ h₀-inj x y h = eq/ {R = R₀} x y h
 -- 满射性：任意 c 由 [h₀-bwd c] 承载
 h₀-surj : ∀ c → f₀ [ h₀-bwd c ] ≡ c
 h₀-surj c = h₀-fwd-bwd c
+
+-- 群律迁移（transport-of-structure）：+H₀ 经同构 f₀ 拉回 Trit 群结构
+--   （沿双射迁结构——无需 aug-linear AC 链；良定义性由 f₀ 常值性直给）
++H₀ : H₀ → H₀ → H₀
++H₀ q₁ q₂ = [ h₀-bwd (f₀ q₁ ⊕ f₀ q₂) ]
+
+-- 良定义性：f₀ (+H₀ [x] [y]) ≡ f₀ x ⊕ f₀ y（h₀-fwd-bwd）——对代表元选取不敏感
++H₀-respect : ∀ x x' y y' → f₀ [ x ] ≡ f₀ [ x' ] → f₀ [ y ] ≡ f₀ [ y' ] →
+              f₀ (+H₀ [ x ] [ y ]) ≡ f₀ (+H₀ [ x' ] [ y' ])
++H₀-respect x x' y y' hx hy =
+  h₀-fwd-bwd (f₀ [ x ] ⊕ f₀ [ y ])
+  ∙ (cong₂ _⊕_ hx hy)
+  ∙ sym (h₀-fwd-bwd (f₀ [ x' ] ⊕ f₀ [ y' ]))
+
+-- 交换律的 f₀ 层形态（⊕-comm 直给；+H₀-comm 经 h₀-injQ 迁移——elimProp 版下一原子件）
+-- cubical ≡ 版交换律（9-case——模块级 ≡ 为 cubical Path，⊕-comm 是 PropEq 不混用）
+⊕-comm-cub : ∀ a b → a ⊕ b ≡ b ⊕ a
+⊕-comm-cub T₀ T₀ = refl
+⊕-comm-cub T₀ T₁ = refl
+⊕-comm-cub T₀ T₂ = refl
+⊕-comm-cub T₁ T₀ = refl
+⊕-comm-cub T₁ T₁ = refl
+⊕-comm-cub T₁ T₂ = refl
+⊕-comm-cub T₂ T₀ = refl
+⊕-comm-cub T₂ T₁ = refl
+⊕-comm-cub T₂ T₂ = refl
+
+f₀-comm : ∀ q₁ q₂ → f₀ q₁ ⊕ f₀ q₂ ≡ f₀ q₂ ⊕ f₀ q₁
+f₀-comm q₁ q₂ = ⊕-comm-cub (f₀ q₁) (f₀ q₂)
+
+-- 单位元：[h₀-bwd T₀]（f₀ 零类）
++H₀-unit : H₀
++H₀-unit = [ h₀-bwd T₀ ]
+
+h₀-unit-f : f₀ +H₀-unit ≡ T₀
+h₀-unit-f = refl
 
 -- H₀ 非平凡：T₁ 类与 0 类在 f₀ 下分离
 h₀-zero-f : f₀ [ zeroᶠ-C₀ ] ≡ T₀
