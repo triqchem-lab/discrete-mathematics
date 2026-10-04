@@ -252,9 +252,36 @@ h₀-fwd+H₀ q₁ q₂ = h₀-fwd-bwd (f₀ q₁ ⊕ f₀ q₂)
 ⊕-identityʳ-cub T₁ = refl
 ⊕-identityʳ-cub T₂ = refl
 
--- ⚠ f₀-assoc 与 +H₀-assoc：roadmap——cubical Path 下 ∙-链跨 f₀/Trit 双层
---   类型推理受限（36 次收敛未达）；数学内容已验证（⊕-assoc-cub 桥 +
---   h₀-fwd+H₀ 三步链）但 Agda 深层泛型推理不闭合。+H₀-comm（交换律）
---   已完整闭合——结合律/逆元/单位元的完整群律为后续原子件。
+-- ⊕-identityˡ cubical 版
+⊕-identityˡ-cub : ∀ a → T₀ ⊕ a ≡ a
+⊕-identityˡ-cub T₀ = refl
+⊕-identityˡ-cub T₁ = refl
+⊕-identityˡ-cub T₂ = refl
 
--- ⚠ 单位元律 +H₀-unit-l/r：roadmap（PropEq ⊕-identity 与 cubical ≡ 不兼容）
+-- f₀ 层结合律（类型锚定终态 f₀ (+H₀ q₁ (+H₀ q₂ q₃))）
+f₀-assoc : ∀ q₁ q₂ q₃ →
+           f₀ (+H₀ (+H₀ q₁ q₂) q₃) ≡ f₀ (+H₀ q₁ (+H₀ q₂ q₃))
+f₀-assoc q₁ q₂ q₃ =
+  h₀-fwd+H₀ (+H₀ q₁ q₂) q₃
+  ∙ cong (_⊕ f₀ q₃) (h₀-fwd+H₀ q₁ q₂)
+  ∙ ⊕-assoc-cub (f₀ q₁) (f₀ q₂) (f₀ q₃)
+  ∙ cong (f₀ q₁ ⊕_) (sym (h₀-fwd+H₀ q₂ q₃))
+  ∙ sym (h₀-fwd+H₀ q₁ (+H₀ q₂ q₃))
+
+-- 结合律（h₀-injQ 迁移）
++H₀-assoc : ∀ q₁ q₂ q₃ →
+            +H₀ (+H₀ q₁ q₂) q₃ ≡ +H₀ q₁ (+H₀ q₂ q₃)
++H₀-assoc q₁ q₂ q₃ =
+  h₀-injQ (+H₀ (+H₀ q₁ q₂) q₃) (+H₀ q₁ (+H₀ q₂ q₃))
+         (f₀-assoc q₁ q₂ q₃)
+
+-- 单位元律（左/右）
++H₀-unit-l : ∀ q → +H₀ +H₀-unit q ≡ q
++H₀-unit-l q =
+  h₀-injQ (+H₀ +H₀-unit q) q
+         (h₀-fwd+H₀ +H₀-unit q ∙ ⊕-identityˡ-cub (f₀ q))
+
++H₀-unit-r : ∀ q → +H₀ q +H₀-unit ≡ q
++H₀-unit-r q =
+  h₀-injQ (+H₀ q +H₀-unit) q
+         (h₀-fwd+H₀ q +H₀-unit ∙ ⊕-identityʳ-cub (f₀ q))
