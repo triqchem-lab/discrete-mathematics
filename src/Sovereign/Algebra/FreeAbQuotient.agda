@@ -26,7 +26,8 @@ open import Cubical.Foundations.Prelude
   using (isSet; _≡_; refl; transport; sym; _∙_; cong₂)
 open import Cubical.Relation.Nullary.Properties using (Discrete→isSet)
 open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/; squash/)
-open import Cubical.HITs.SetQuotients.Properties using (elim)
+open import Cubical.HITs.SetQuotients.Properties using (elim; elimProp2)
+open import Cubical.Foundations.HLevels using (isPropΠ)
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; ⊕-comm)
 open import Sovereign.Problem.Hodge.FreeAbBoundary
