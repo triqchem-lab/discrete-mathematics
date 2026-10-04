@@ -10,7 +10,7 @@
 --   ⟹ T₁ ⊕ T₂ = T₀：直连与路由在 v₂ 上配对相消——∂₁ᶜ∘∂₂ᶜ = 0 ✓
 --
 --   机件修正：MorseCoeffRoute.CoefRoute 的 cr-via 含 Face τ e' 字段——
---   仅支持单跳（K₃ 恰单跳）；本模块定义修正版 **ChainRoute**（ch-via 去掉
+--   仅支持单跳（K₃ 恰单跳）；本模块定义修正版 **ChainRoute**（cr-via 去掉
 --   Face τ e'，续程证据由尾递归自带）——支持任意跳数；CoefRoute = 单跳特例。
 --
 -- 0 postulate / 0 hole。
@@ -24,9 +24,8 @@ open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_; _⊕_)
 open import Sovereign.Topology.DoubleTriangle
-  using (Sx2; v0; v1; v2; v3; e01; e02; e12; e13; e23; FL; FR;
-         V2; coeff2E; coeff2F)
-
+  using (Sx2; v0; v1; v2; v3; e01; e02; e12; e13; e23; FL; FR; V2)
+import Sovereign.Topology.MorseCoeffRoute
 --------------------------------------------------------------------------------
 -- §1. 统一系数表：coeff2 w σ = ∂σ 的 w 系数（16 实项 + 兜底）
 --------------------------------------------------------------------------------
@@ -76,22 +75,13 @@ data Face2 : Sx2 → Sx2 → Set where
   f2-e23-FR : Face2 e23 FR
 
 --------------------------------------------------------------------------------
--- §3. 链式路由关系 ChainRoute（修正版——支持任意跳数）
---   ch-via 不含 Face τ e'（K₃ 版 CoefRoute 的过度约束）；
---   续程证据由尾递归 CoefRoute e' τ ν 自带。
+-- §3. 路由关系：CoefRoute（修正版——任意跳数，统一机件）
 --------------------------------------------------------------------------------
 
-data ChainRoute (V : Sx2 → Maybe Sx2) (coeff : Sx2 → Sx2 → Trit) :
-  Sx2 → Sx2 → Trit → Set where
-  ch-direct : ∀ σ τ μ → Face2 τ σ → coeff τ σ ≡ μ → V τ ≡ nothing →
-              ChainRoute V coeff σ τ μ
-  ch-via    : ∀ σ w e' τ μ-in i ν →
-              Face2 w σ → V w ≡ just e' →
-              coeff w σ ≡ μ-in → coeff w e' ⊗ i ≡ T₁ →
-              ChainRoute V coeff e' τ ν →
-              ChainRoute V coeff σ τ ((μ-in ⊗ i) ⊗ (T₂ ⊗ ν))
+open module MCR = Sovereign.Topology.MorseCoeffRoute.CoeffRouteDef
+  Sx2 V2 Face2 coeff2
 
-CR = ChainRoute V2 coeff2
+CR = CoefRoute
 
 --------------------------------------------------------------------------------
 -- §4. 三条路由见证
@@ -99,25 +89,25 @@ CR = ChainRoute V2 coeff2
 
 -- ①∂₂ᶜ FL：直连 FL → e02（T₂；e01/e12 非临界且 V=nothing 无路由）
 r-FL-e02 : CR FL e02 T₂
-r-FL-e02 = ch-direct FL e02 T₂ f2-e02-FL refl refl
+r-FL-e02 = cr-direct FL e02 T₂ f2-e02-FL refl refl
 
 -- ②∂₁ᶜ e02 直连：e02 → v2（T₁）
 r-e02-v2-direct : CR e02 v2 T₁
-r-e02-v2-direct = ch-direct e02 v2 T₁ f2-v2-e02 refl refl
+r-e02-v2-direct = cr-direct e02 v2 T₁ f2-v2-e02 refl refl
 
 -- ③∂₁ᶜ e02 链式路由：e02→v₀→e₀₁→v₁→e₁₂→v₂，总系数 T₂
 --   内层：e₀₁ → v₁ → e₁₂ → v₂，总 = ((T₁⊗T₂)⊗(T₂⊗T₁)) = T₁
 inner-route : CR e01 v2 T₁
 inner-route =
-  ch-via e01 v1 e12 v2 T₁ T₂ T₁
+  cr-via e01 v1 e12 v2 T₁ T₂ T₁
     f2-v1-e01 refl
     refl refl
-    (ch-direct e12 v2 T₁ f2-v2-e12 refl refl)
+    (cr-direct e12 v2 T₁ f2-v2-e12 refl refl)
 
 --   外层：e₀₂ → v₀ → e₀₁ →（内层），总 = ((T₂⊗T₂)⊗(T₂⊗T₁)) = T₂
 outer-route : CR e02 v2 T₂
 outer-route =
-  ch-via e02 v0 e01 v2 T₂ T₂ T₁
+  cr-via e02 v0 e01 v2 T₂ T₂ T₁
     f2-v0-e02 refl
     refl refl
     inner-route

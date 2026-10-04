@@ -62,8 +62,10 @@ module CoeffRouteDef
                 CoefRoute σ τ μ
     -- 经配对路由：总系数 = μ_in ⊗ i ⊗ (T₂ ⊗ ν)
     --   （μ_in = 入段系数，i = 入口逆，T₂ = ε 一次 V-箭头，ν = 尾段总系数）
+    --   数学修正（M3 双三角暴露）：无 Face τ e' 过度约束——
+    --   续程证据由尾递归 CoefRoute e' τ ν 自带，支持任意跳数
     cr-via    : ∀ σ w e' τ μ-in i ν →
-                Face w σ → V w ≡ just e' → Face τ e' →
+                Face w σ → V w ≡ just e' →
                 coeff w σ ≡ μ-in → coeff w e' ⊗ i ≡ T₁ →
                 CoefRoute e' τ ν →
                 CoefRoute σ τ ((μ-in ⊗ i) ⊗ (T₂ ⊗ ν))
@@ -83,12 +85,10 @@ module CoeffDescent (K : Set) (dimK : K → ℕ)
   coeff-dim-descent σ τ μ (cr-direct .σ .τ .μ hface hcoef hcrit) =
     face-dim τ σ hface
   coeff-dim-descent σ τ μ
-    (cr-via .σ w e' .τ μ-in i ν hface hw hp hcoef hinv hroute) =
-      <-≤-trans τ<e' e'≤σ
+    (cr-via .σ w e' .τ μ-in i ν hface hw hcoef hinv hroute) =
+      <-≤-trans (coeff-dim-descent e' τ ν hroute) e'≤σ
     where
-      τ<e' : dimK τ < dimK e'
-      τ<e' = face-dim τ e' hp
-
+      -- 归纳假设作用于尾路由：dim τ < dim e'（对路由推导结构递归）
       e'≡suc-w : dimK e' ≡ suc (dimK w)
       e'≡suc-w = dim-law w e' hw
 
@@ -137,6 +137,6 @@ open CoeffRouteDef Sx triVFᶜ FaceRel coeffᵏ
 routing-k3 : CoefRoute e20 v1 T₁
 routing-k3 =
   cr-via e20 v0 e01 v1 T₁ T₂ T₁
-    f-v0-e20 refl f-v1-e01
+    f-v0-e20 refl
     refl refl
     (cr-direct e01 v1 T₁ f-v1-e01 refl refl)
