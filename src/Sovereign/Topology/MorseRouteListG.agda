@@ -17,7 +17,7 @@ module Sovereign.Topology.MorseRouteListG where
 open import Data.Nat using (ℕ; zero; suc; _<_; _≤_)
 open import Data.List using (List; _∷_; [])
 open import Data.Maybe using (Maybe; just; nothing)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; trans; sym)
 open import Data.Product using (Σ; _×_; _,_)
 
 --------------------------------------------------------------------------------
@@ -96,4 +96,80 @@ record RouteListG (K : Set) (Face : K → K → Set) (V : K → Maybe K) : Set�
 --
 --   M2 泛型化的核心贡献：接口规范（RouteListG record），
 --   让后续 M3（∂² 消元）可以依赖泛型接口而非具体实例。
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- §6. 里程碑 2：K 可枚举 + 求和域引理（M3 枚举基座）
+--------------------------------------------------------------------------------
+
+open import Data.List using (map)
+open import Data.Nat using (ℕ; zero; suc; _<_)
+open import Data.Product using (Σ; _×_; _,_) renaming (proj₁ to p₁; proj₂ to p₂)
+open import Sovereign.Base.Trit
+  using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-comm; ⊕-assoc)
+
+-- 6a. K 有限可枚举
+record FiniteK (K : Set) : Set where
+  field
+    nK    : ℕ          -- 胞腔总数
+    enumK : ℕ → K      -- 枚举函数
+
+-- 全胞腔列表：upTo nK 逐项过 enumK
+upTo : ℕ → List ℕ
+upTo zero    = []
+upTo (suc n) = upTo n ++ (n ∷ [])
+  where open import Data.List using (_++_)
+
+allCells : ∀ {K} → FiniteK K → List K
+allCells fk = map (FiniteK.enumK fk) (upTo (FiniteK.nK fk))
+
+-- 6b. 完备枚举：每个 k 都在 allCells 中（有见证下标）
+record EnumComplete (K : Set) : Set where
+  field
+    fk : FiniteK K
+    -- 满射：∀ k ∃ i < nK，enumK i ≡ k
+    enum-surj : ∀ (k : K) → Σ ℕ (λ i → i < FiniteK.nK fk × FiniteK.enumK fk i ≡ k)
+
+-- 6c. Trit 列表的 ⊕ 求和
+sum⊕ : List Trit → Trit
+sum⊕ []       = T₀
+sum⊕ (x ∷ xs) = x ⊕ sum⊕ xs
+
+-- 6d. 求和域引理——pair-popping 基础
+-- 引理 1：交换相邻两元素，求和不变
+sum⊕-swap : ∀ (x y : Trit) (xs : List Trit) →
+            sum⊕ (x ∷ y ∷ xs) ≡ sum⊕ (y ∷ x ∷ xs)
+sum⊕-swap x y xs =
+  trans (⊕-comm x (y ⊕ sum⊕ xs))
+  (trans (⊕-assoc y (sum⊕ xs) x)
+         (cong (λ w → y ⊕ w) (⊕-comm (sum⊕ xs) x)))
+  where
+    open import Sovereign.Base.Trit using (⊕-comm; ⊕-assoc)
+
+-- 引理 2：去掉 T₀ 不改变和（定义性：T₀ ⊕ z ≡ z）
+sum⊕-skip-T₀ : ∀ (xs : List Trit) → sum⊕ (T₀ ∷ xs) ≡ sum⊕ xs
+sum⊕-skip-T₀ xs = refl
+
+-- 6e. 求和域引理（核心）：两个列表的求和域相等
+--     形式化为：加一个公共项 f，两列表和相等 ⟺ 不加也相等
+--     这把「不同枚举顺序求和相同」归约到 sum⊕-swap 的传递闭包
+record SumDomainLemma : Set₁ where
+  field
+    -- 求和域等价：Σ{a} = Σ{b} 加公共项 f 后仍相等
+    sum-ext : ∀ (a b : List Trit) (f : Trit) →
+              sum⊕ (f ∷ a) ≡ sum⊕ (f ∷ b) →
+              sum⊕ a ≡ sum⊕ b
+
+--------------------------------------------------------------------------------
+-- §7. 里程碑 2 完成度
+--
+--   ✅ FiniteK record（K 有限可枚举：nK + enumK）
+--   ✅ allCells（upTo nK 全胞腔列表）
+--   ✅ EnumComplete record（满射见证）
+--   ✅ sum⊕（⊕ 折叠）
+--   ✅ sum⊕-swap（相邻交换引理——pair-popping 基础，refl 链）
+--   ✅ sum⊕-skip-T₀（T₀ 跳过引理，定义性）
+--   ✅ SumDomainLemma record（求和域等价）
+--
+--   K₃ 实例的 FiniteK/EnumComplete 实例化 + SumDomainLemma 的构造证明 → 里程碑 3。
 --------------------------------------------------------------------------------
