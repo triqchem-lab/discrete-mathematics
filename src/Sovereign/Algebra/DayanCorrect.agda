@@ -17,7 +17,8 @@ module Sovereign.Algebra.DayanCorrect where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _/_; _%_; _<_; NonZero)
 open import Data.Nat.Properties using (+-identityʳ)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans; module ≡-Reasoning)
+open ≡-Reasoning
 
 --------------------------------------------------------------------------------
 -- §1. DayanState 引入
