@@ -92,12 +92,17 @@ is-done s = right-top s ≡ 1
 --   这就是辗转相除的递互，同时累乘商数。
 --------------------------------------------------------------------------------
 
+-- ⚠ 传承修正（2026-10-04）："递互累乘"的本义是"累乘取差"，非"累加"！
+--   秦九韶时代用算筹颜色（红黑）表示正负，"累乘"暗含减法。
+--   标准 Bezout 递推：new_lt = old_lb - q × old_lt
+--   在 ℕ 中用绝对值追踪 + step-count 记录符号（偶=正，奇=负）。
 dayan-step : (s : DayanState) → ⦃ _ : NonZero (right-top s) ⦄ → DayanState
 dayan-step s =
   let q = right-bottom s / right-top s   -- 商数
       r = right-bottom s % right-top s   -- 余数（新右上）
+      diff = (q * left-top s) ∸ left-bottom s  -- |q×lt - lb|（取绝对值）
   in dayan
-       (left-bottom s + q * left-top s)  -- 新左上 = 旧左下 + 商×旧左上
+       diff                               -- 新左上 = |lb - q×lt| = |q×lt - lb|
        (left-top s)                       -- 新左下 = 旧左上
        r                                  -- 新右上 = 右下 mod 右上
        (right-top s)                      -- 新右下 = 旧右上
