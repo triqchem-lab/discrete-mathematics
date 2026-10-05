@@ -5,3 +5,4 @@
 - [T⁶ 离散 N-S 不变量战役](nse-invariant-campaign.md) — 总量守恒/不可压保持/n 步不变量/通量判据/不动点五模块定理清单 + O3 集中通道五条封堵状态 + 开放缺口（2026-09-24）
 - [T⁶ 离散 N-S 判定台账](nse-t6-discrete-findings.md) — 哪些命题已证否（含最小反例）；「Δ≡0」陷阱与 12 点反例（2026-09-09）
 - [证明技术：配对弹出](../docs/techniques/pair-popping.md) — **已迁至 docs/techniques/（正式技术文档）**；一句话：交换结合和式里的相反数对弹出相消，M9 Jacobi 729→1 行、det 乘法性 6561→1 行
+- [工具调用循环陷阱](tool-call-loop-trap.md) — 同一工具同参数反复查、结果无增量 = 打转；grep 本身不是坏工具（2026-10-01 实测，~40 次重复 grep 被人类拦下，改 read/ls 后一次完成）
