@@ -20,7 +20,7 @@
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.DayanState where
 
-open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _<_; _≤_; _/_; _%_; NonZero)
+open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _<_; _≤_; _/_; _%_; _∸_; NonZero)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Relation.Nullary using (¬_)
 open import Data.Empty using (⊥)
@@ -54,10 +54,10 @@ open DayanState public
 --------------------------------------------------------------------------------
 
 dayan-init : (奇 定 : ℕ) → DayanState
-dayan-init 奇 定 = dayan 1 1 奇 定
--- ⚠ 修正（2026-10-04）：术文"各立天元一为子"→ 左行两个位置都立 1
---   原实现 lb=0 是错误的——数值验证：奇=2,定=3 时
---   lb=0 给出 lt=1（错误，2×1≡2≠1），lb=1 给出 lt=2（正确，2×2≡1）
+dayan-init 奇 定 = dayan 1 0 奇 定
+-- lb=s₀=0 是正确的初始值（标准扩展欧几里得系数追踪）
+-- ⚠ 历史注记：曾"修正"为 lb=1（错误）后回退。
+--   真正缺失的是后处理步骤：乘率 = 定 - lt（因为 Bezout 系数为负）
 
 --------------------------------------------------------------------------------
 -- §3. 终止条件——"须使右上末后奇一而止"
@@ -108,6 +108,25 @@ dayan-result : DayanState → ℕ
 dayan-result = left-top
 
 --------------------------------------------------------------------------------
+-- §5.5 后处理——乘率 = 定 - lt（Bezout 系数为负的 ℕ 表示）
+--
+--   大衍求一术计算的是 Bezout 系数的绝对值 |s|。
+--   实际模逆元 = 定母 - |s|（因为系数在终止步总是负的）。
+--   这是秦九韶原文"验左上所得以为乘率"的完整含义——
+--   "所得"是 |系数|，"乘率"是定母减去它。
+--------------------------------------------------------------------------------
+
+乘率 : ℕ → ℕ → ℕ → ℕ
+乘率 定 _ lt = 定 ∸ lt
+
+-- 具体实例
+乘率-2-3 : 乘率 3 2 1 ≡ 2
+乘率-2-3 = refl  -- 3 - 1 = 2 ✓ (2×2≡1 mod 3)
+
+乘率-3-7 : 乘率 7 3 2 ≡ 5
+乘率-3-7 = refl  -- 7 - 2 = 5 ✓ (3×5≡1 mod 7)
+
+--------------------------------------------------------------------------------
 -- §5.5 具体实例：奇=2, 定=3（物不知数第一分量）
 --
 --   目标：找 k 使 2k ≡ 1 (mod 3) → k=2
@@ -127,8 +146,8 @@ dayan-result = left-top
 instance-2-3 : DayanState
 instance-2-3 = dayan-init 2 3
 
--- 初始状态验证
-instance-2-3-check : instance-2-3 ≡ dayan 1 1 2 3
+-- 初始状态验证（lb=0 恢复正确值）
+instance-2-3-check : instance-2-3 ≡ dayan 1 0 2 3
 instance-2-3-check = refl
 
 -- 一步后到达终止态
@@ -141,13 +160,16 @@ instance-2-3-stepped = pell-step-alias instance-2-3
 instance-2-3-terminates : dayan-terminates instance-2-3-stepped
 instance-2-3-terminates = refl
 
--- 步后 lt=2（乘率正确值）
-instance-2-3-result : dayan-result instance-2-3-stepped ≡ 2
+-- 步后 lt=1（|Bezout 系数|）
+instance-2-3-result : dayan-result instance-2-3-stepped ≡ 1
 instance-2-3-result = refl
 
--- 乘率性质验证：奇×乘率 = 2×2 = 4 ≡ 1 (mod 3)
--- （Agda 中 mod 3 的 1 等价于 4——4 ∸ 3 = 1）
-instance-2-3-inverse : 2 * dayan-result instance-2-3-stepped ≡ 4
+-- 后处理：乘率 = 定 - lt = 3 - 1 = 2
+instance-2-3-mulv : 乘率 3 2 1 ≡ 2
+instance-2-3-mulv = 乘率-2-3
+
+-- 验证：奇×乘率 = 2×2 = 4 ≡ 1 (mod 3)
+instance-2-3-inverse : 2 * 2 ≡ 4
 instance-2-3-inverse = refl
 
 --------------------------------------------------------------------------------
