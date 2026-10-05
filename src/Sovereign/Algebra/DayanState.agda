@@ -108,6 +108,54 @@ dayan-result : DayanState → ℕ
 dayan-result = left-top
 
 --------------------------------------------------------------------------------
+-- §5.5 具体实例：奇=2, 定=3（物不知数第一分量）
+--
+--   目标：找 k 使 2k ≡ 1 (mod 3) → k=2
+--   状态追踪（dayan-init 2 3 = dayan 1 1 2 3）：
+--
+--   初始: lt=1, lb=1, rt=2, rb=3
+--   步1: q = 3÷2 = 1, r = 3%2 = 1
+--        新lt = lb + q×lt = 1 + 1×1 = 2
+--        新lb = lt = 1
+--        新rt = 1, 新rb = 2
+--   rt=1 → 奇一而止
+--   结果: lt = 2
+--   验证: 2×2 = 4 ≡ 1 (mod 3) ✓
+--------------------------------------------------------------------------------
+
+-- 实例：奇=2, 定=3
+instance-2-3 : DayanState
+instance-2-3 = dayan-init 2 3
+
+-- 初始状态验证
+instance-2-3-check : instance-2-3 ≡ dayan 1 1 2 3
+instance-2-3-check = refl
+
+-- 一步后到达终止态
+instance-2-3-stepped : DayanState
+instance-2-3-stepped = pell-step-alias instance-2-3
+  where
+    pell-step-alias = dayan-step
+
+-- 步后 rt=1（终止条件满足）
+instance-2-3-terminates : dayan-terminates instance-2-3-stepped
+instance-2-3-terminates = refl
+
+-- 步后 lt=2（乘率正确值）
+instance-2-3-result : dayan-result instance-2-3-stepped ≡ 2
+instance-2-3-result = refl
+
+-- 乘率性质验证：奇×乘率 = 2×2 = 4 ≡ 1 (mod 3)
+-- （Agda 中 mod 3 的 1 等价于 4——4 ∸ 3 = 1）
+instance-2-3-inverse : 2 * dayan-result instance-2-3-stepped ≡ 4
+instance-2-3-inverse = refl
+
+--------------------------------------------------------------------------------
+-- §5.6 迭代函数——完整终止性为 S-D3 roadmap
+--   （dayan-iterate 需 NonZero (right-top s) 的归纳保持——即终止性证明）
+--   单步 dayan-step 已闭合 ✓，具体实例（奇=2,定=3→乘率=2）✓
+
+--------------------------------------------------------------------------------
 -- §6. 辅助——右上有意义（非零，可做除法）
 --------------------------------------------------------------------------------
 
