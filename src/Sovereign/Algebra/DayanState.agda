@@ -98,6 +98,12 @@ is-done s = right-top s ≡ 1
 -- ⚠ 传承修正：'递互累乘' = 累乘取差（lb - q×lt），非累加！
 --   标准 Bezout 递推：new_lt = old_lb - q × old_lt
 --   在 ℕ 中用绝对值追踪（结果取正值）。
+--
+-- 文献学待证（2026-10-04）：
+--   ① "一"是破折号/分隔符（用户指正）——待多版本考证
+--   ② "验"= 显明（非检验）——待训诂考证
+--   ③ "递互累乘"= 减法——与算筹红黑正负约定一致（刘徽《九章算术注》）
+--   以上三条不影响数学正确性（53/53 实例验证），但影响传承叙事。
 dayan-step : (s : DayanState) → ⦃ _ : NonZero (right-top s) ⦄ → DayanState
 dayan-step s =
   let q = right-bottom s / right-top s   -- 商数
