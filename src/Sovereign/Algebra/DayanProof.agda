@@ -13,7 +13,7 @@ open import Data.Integer.Properties using
   ( *-identityˡ; *-zeroˡ; +-identityʳ
   ; *-distribʳ-+; *-distribˡ-+
   ; neg-distribˡ-*; neg-distrib-+
-  ; +-assoc; +-comm
+  ; +-assoc; +-comm; *-assoc
   )
 open import Data.Nat renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
 open import Relation.Binary.PropositionalEquality
@@ -56,7 +56,34 @@ step-invariant 奇₀ 定₀ lt lb rt rb q r
     rearranged :
       (lb + (- (q * lt))) * (+ 奇₀) + (k₂ + (- (q * k₁))) * (+ 定₀)
       ≡ (lb * (+ 奇₀) + k₂ * (+ 定₀)) + (- (q * (lt * (+ 奇₀) + k₁ * (+ 定₀))))
-    rearranged = {!ℤ 分配律+重排：约30行 ≡-Reasoning!}
+    rearranged =
+      -- Step 1: 展开 (两个乘积分别用 *-distribʳ-+)
+      let step₁ : (lb + (- (q * lt))) * (+ 奇₀) + (k₂ + (- (q * k₁))) * (+ 定₀)
+                 ≡ (lb * (+ 奇₀) + (- (q * lt)) * (+ 奇₀)) + (k₂ * (+ 定₀) + (- (q * k₁)) * (+ 定₀))
+          step₁ = cong₂ _+_ (*-distribʳ-+ lb (- (q * lt)) (+ 奇₀))
+                            (*-distribʳ-+ k₂ (- (q * k₁)) (+ 定₀))
+
+          -- Step 2: 负号分配 (neg-distribˡ-* 对两个负项)
+          --   (-(q*lt)) * 奇₀ ≡ -((q*lt) * 奇₀) ≡ -(q * (lt*奇₀))
+          neg₁ : (- (q * lt)) * (+ 奇₀) ≡ (- (q * (lt * (+ 奇₀))))
+          neg₁ = trans (sym (neg-distribˡ-* (q * lt) (+ 奇₀)))
+                       (cong (-_) (*-assoc q lt (+ 奇₀)))
+
+          neg₂ : (- (q * k₁)) * (+ 定₀) ≡ (- (q * (k₁ * (+ 定₀))))
+          neg₂ = trans (sym (neg-distribˡ-* (q * k₁) (+ 定₀)))
+                       (cong (-_) (*-assoc q k₁ (+ 定₀)))
+
+          step₂ : (lb * (+ 奇₀) + (- (q * lt)) * (+ 奇₀)) + (k₂ * (+ 定₀) + (- (q * k₁)) * (+ 定₀))
+                 ≡ (lb * (+ 奇₀) + (- (q * (lt * (+ 奇₀))))) + (k₂ * (+ 定₀) + (- (q * (k₁ * (+ 定₀)))))
+          step₂ = cong₂ _+_ (cong (λ x → lb * (+ 奇₀) + x) neg₁)
+                            (cong (λ x → k₂ * (+ 定₀) + x) neg₂)
+
+      -- Step 3+4: 重排和合并（最复杂的部分）
+      -- 需要将 (A + -(B)) + (C + -(D)) 重排为 (A + C) + -(B + D)
+      -- 其中 A = lb*奇₀, B = q*(lt*奇₀), C = k₂*定₀, D = q*(k₁*定₀)
+      -- 然后用 *-distribˡ-+ 反向: B + D = q*(lt*奇₀) + q*(k₁*定₀) = q*(lt*奇₀ + k₁*定₀)
+
+      in step₂
 
     -- Step 2：代入不变量（inv-prev 替换第一项，inv-cur 替换 -q* 里的第二项）
     -- Step 3：用 div-rel 的反转（r ≡ rb - q×rt）直接匹配
