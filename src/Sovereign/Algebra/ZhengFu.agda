@@ -14,7 +14,8 @@
 module Sovereign.Algebra.ZhengFu where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Nat.Properties using (*-comm)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 --------------------------------------------------------------------------------
 -- §1. 正负数数据类型——正负术的本体论贡献
@@ -67,10 +68,17 @@ _乘_ : 正负 → 正负 → 正负
 零 乘 _   = 零
 _   乘 零 = 零
 
--- 乘法交换律：需要 *-comm（非定义性——ℕ 乘法交换是定理非 refl）
--- 乘-comm : ∀ (a b : 正负) → (a 乘 b) ≡ (b 乘 a)
--- 乘-comm (正 a) (正 b) = cong 正_ (*-comm a b)  -- 需 Data.Nat.Properties.*-comm
--- 其余 case 类似——roadmap
+-- 乘法交换律（*-comm 从 stdlib 引入）
+乘-comm : ∀ (a b : 正负) → (a 乘 b) ≡ (b 乘 a)
+乘-comm (正 a) (正 b) = cong 正 (*-comm a b)
+乘-comm (正 a) (负 b) = cong 负 (*-comm a b)
+乘-comm (负 a) (正 b) = cong 负 (*-comm a b)
+乘-comm (负 a) (负 b) = cong 正 (*-comm a b)
+乘-comm 零 (正 b) = refl
+乘-comm 零 (负 b) = refl
+乘-comm (正 a) 零 = refl
+乘-comm (负 a) 零 = refl
+乘-comm 零 零 = refl
 
 --------------------------------------------------------------------------------
 -- §4. 验证
@@ -106,6 +114,10 @@ test-sgn = refl
 
 test-sgn-neg : sgn (负 3) ≡ 2
 test-sgn-neg = refl
+
+-- 乘交换律
+test-mul-comm : ∀ (a b : 正负) → (a 乘 b) ≡ (b 乘 a)
+test-mul-comm = 乘-comm
 
 --------------------------------------------------------------------------------
 -- §5. 加减法则 roadmap
