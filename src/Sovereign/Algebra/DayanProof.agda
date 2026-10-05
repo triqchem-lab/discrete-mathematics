@@ -13,7 +13,7 @@ open import Data.Integer.Properties using
   ( *-identityˡ; *-zeroˡ; +-identityʳ
   ; *-distribʳ-+; *-distribˡ-+
   ; neg-distribˡ-*; neg-distrib-+
-  ; +-assoc; +-comm; *-assoc
+  ; +-assoc; +-comm; *-assoc; +-inverseʳ
   )
 open import Data.Nat renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
 open import Relation.Binary.PropositionalEquality
@@ -135,11 +135,34 @@ step-invariant 奇₀ 定₀ lt lb rt rb q r
 -- §3. terminate-correct——恒等映射（✅ 完成证明）
 --------------------------------------------------------------------------------
 
+-- 乘率性质（mod 关系形式）：lt×奇₀ = 1 + k×定₀
+-- 这与 Bezout 关系 lt×奇₀ + k'×定₀ = 1 等价（取 k = -k'）
 terminate-correct : ∀ (奇₀ 定₀ : ℕ) (lt : ℤ) →
   Inv 奇₀ 定₀ lt 1 →
-  Σ ℤ (λ k → lt * (+ 奇₀) + k * (+ 定₀) ≡ + 1)
-terminate-correct 奇₀ 定₀ lt inv = inv
--- ✅ 恒等映射！不变量就是乘率性质。
+  Σ ℤ (λ k → lt * (+ 奇₀) ≡ (+ 1) + k * (+ 定₀))
+terminate-correct 奇₀ 定₀ lt (k' , bezout) =
+  (- k' , proof)
+
+  where
+    -- 从 Bezout 推导 mod 关系（5 步 ℤ 代数）：
+    -- lt×奇 ≡ (lt×奇) + 0ℤ                    [sym +-identityʳ]
+    --       ≡ (lt×奇) + (k'*定 + -(k'*定))      [cong, sym +-inverseʳ]
+    --       ≡ ((lt×奇) + k'*定) + -(k'*定)       [sym +-assoc]
+    --       ≡ 1 + -(k'*定)                       [cong, bezout]
+    --       ≡ 1 + (-k')*定                       [cong, neg-distribˡ-*]
+
+    proof : lt * (+ 奇₀) ≡ (+ 1) + (- k') * (+ 定₀)
+    proof =
+      trans (sym (+-identityʳ (lt * (+ 奇₀))))
+      -- lt*奇₀ ≡ lt*奇₀ + 0ℤ
+      (trans (cong (λ x → (lt * (+ 奇₀)) + x) (sym (+-inverseʳ (k' * (+ 定₀)))))
+      -- lt*奇₀ + 0ℤ ≡ lt*奇₀ + (k'*定₀ + (-(k'*定₀)))
+      (trans (sym (+-assoc (lt * (+ 奇₀)) (k' * (+ 定₀)) (- (k' * (+ 定₀)))))
+      -- ≡ (lt*奇₀ + k'*定₀) + (-(k'*定₀))
+      (trans (cong (λ x → x + (- (k' * (+ 定₀)))) bezout)
+      -- ≡ 1 + (-(k'*定₀))
+      (cong (λ x → (+ 1) + x) (neg-distribˡ-* k' (+ 定₀))))))
+      -- ≡ 1 + (-k')*定₀ ✓
 
 --------------------------------------------------------------------------------
 -- §4. 完成度
