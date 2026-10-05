@@ -20,7 +20,8 @@
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.DayanState where
 
-open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _<_; _≤_; _/_; _%_; _∸_; NonZero)
+open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _<_; _≤_; _>_; _/_; _%_; _∸_; NonZero)
+open import Data.Nat.Properties using (≤⇒≤″)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Relation.Nullary using (¬_)
 open import Data.Empty using (⊥)
@@ -104,16 +105,20 @@ is-done s = right-top s ≡ 1
 --   ② "验"= 显明（非检验）——待训诂考证
 --   ③ "递互累乘"= 减法——与算筹红黑正负约定一致（刘徽《九章算术注》）
 --   以上三条不影响数学正确性（53/53 实例验证），但影响传承叙事。
-dayan-step : (s : DayanState) → ⦃ _ : NonZero (right-top s) ⦄ → DayanState
-dayan-step s =
-  let q = right-bottom s / right-top s   -- 商数
-      r = right-bottom s % right-top s   -- 余数（新右上）
-      diff = (q * left-top s) ∸ left-bottom s  -- |q×lt - lb|（取绝对值）
+-- 模式匹配版：处理 right-top=0 的情况
+dayan-step : DayanState → DayanState
+dayan-step s with right-top s
+... | zero = s  -- 终止（right-top=0）
+... | suc rt-1 =
+  let rt = suc rt-1
+      q = right-bottom s / rt
+      r = right-bottom s % rt
+      diff = (q * left-top s) ∸ left-bottom s
   in dayan
-       diff                               -- 新左上 = |lb - q×lt| = |q×lt - lb|
-       (left-top s)                       -- 新左下 = 旧左上
-       r                                  -- 新右上 = 右下 mod 右上
-       (right-top s)                      -- 新右下 = 旧右上
+       diff
+       (left-top s)
+       r
+       rt
 
 --------------------------------------------------------------------------------
 -- §5. 输出——"乃验左上所得，以为乘率"

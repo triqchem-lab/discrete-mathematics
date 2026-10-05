@@ -12,9 +12,10 @@
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.DayanTermination where
 
-open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _/_; _%_; _<_; _≤_; NonZero)
+open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _/_; _%_; _<_; _≤_; _>_; NonZero)
 open import Data.Nat.DivMod using (m%n<n)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Data.Product using (Σ; ∃; _,_)
 open import Relation.Nullary using (¬_)
 open import Data.Empty using (⊥)
 
@@ -40,11 +41,14 @@ termination-measure = right-top
 --   由 stdlib 的 m%n<n：当 right-top s > 0 时，new_rt < right-top s
 --------------------------------------------------------------------------------
 
-step-decreases : (s : DayanState) → ⦃ _ : NonZero (right-top s) ⦄ →
+-- 修正：只在未终止（right-top > 0）时证明递减
+step-decreases : (s : DayanState) → right-top s > 0 →
                  termination-measure (dayan-step s) < termination-measure s
-step-decreases s = m%n<n (right-bottom s) (right-top s)
--- dayan-step 的 new_rt = right-bottom s % right-top s
--- 由 m%n<n：< right-top s
+step-decreases s rt>0 with right-top s | rt>0
+... | zero | ()
+... | suc rt-1 | _ = m%n<n (right-bottom s) (suc rt-1)
+-- 当 right-top = suc rt-1 > 0 时，dayan-step 返回 new_rt = right-bottom s % suc rt-1
+-- 由 m%n<n：< suc rt-1
 
 --------------------------------------------------------------------------------
 -- §4. 终止性——ℕ 良基归纳
@@ -55,14 +59,17 @@ step-decreases s = m%n<n (right-bottom s) (right-top s)
 --   完整终止性证明需要良基递归（Acc）或 fuel 参数化——roadmap。
 --------------------------------------------------------------------------------
 
--- ⚠ fuel 参数化的迭代仍需要 NonZero 约束（dayan-step 的依赖）
---   这是 S-D3 的核心问题：dayan-step 的 NonZero 约束需要在递归中保持。
---   解决方案：用 Acc（良基递归）或重新设计 dayan-step 的类型。
---
--- termination-statement : ∀ (奇 定 : ℕ) →
---   ∃ ℕ (λ fuel → dayan-terminates (dayan-iterate-fuel fuel (dayan-init 奇 定)))
---   其中 dayan-iterate-fuel 需要在每步提供 NonZero 约束
---   roadmap（需良基递归 Acc 或重新设计 dayan-step 类型）
+-- fuel 参数化的迭代（dayan-step 已改用模式匹配，不需要 NonZero 约束）
+dayan-iterate-fuel : ℕ → DayanState → DayanState
+dayan-iterate-fuel zero s = s
+dayan-iterate-fuel (suc n) s = dayan-iterate-fuel n (dayan-step s)
+
+-- 终止性陈述（fuel 版）
+-- ∃ A P = Σ A P，其中 P : A → Set
+termination-statement : Set
+termination-statement =
+  ∀ (奇 定 : ℕ) →
+  Σ ℕ (λ fuel → dayan-terminates (dayan-iterate-fuel fuel (dayan-init 奇 定)))
 
 --------------------------------------------------------------------------------
 -- §5. S-D3 完成度
