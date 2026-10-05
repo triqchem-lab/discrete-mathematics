@@ -43,11 +43,10 @@ open import Data.Empty using (⊥)
 record DayanState : Set where
   constructor dayan
   field
-    left-top     : ℕ    -- 天元一（初始为 1，终止时为 |Bezout 系数|）
+    left-top     : ℕ    -- 天元（初始为 1，终止时为乘率）
     left-bottom  : ℕ    -- 递互累乘的结果
     right-top    : ℕ    -- 奇数（初始为奇，终止时为 1）
     right-bottom : ℕ    -- 定母
-    step-count   : ℕ    -- 步数计数器（追踪符号：偶=正，奇=负）
 
 open DayanState public
 
@@ -56,7 +55,7 @@ open DayanState public
 --------------------------------------------------------------------------------
 
 dayan-init : (奇 定 : ℕ) → DayanState
-dayan-init 奇 定 = dayan 1 0 奇 定 0
+dayan-init 奇 定 = dayan 1 0 奇 定
 -- lb=s₀=0 是正确的初始值（标准扩展欧几里得系数追踪）
 -- ⚠ 历史注记：曾"修正"为 lb=1（错误）后回退。
 --   真正缺失的是后处理步骤：乘率 = 定 - lt（因为 Bezout 系数为负）
@@ -70,7 +69,7 @@ dayan-terminates s = right-top s ≡ 1
 
 -- 已达终止的状态
 dayan-done : (lt lb 定 : ℕ) → DayanState
-dayan-done lt lb 定 = dayan lt lb 1 定 0
+dayan-done lt lb 定 = dayan lt lb 1 定
 
 -- 终止态判定
 is-done : DayanState → Set
@@ -96,6 +95,9 @@ is-done s = right-top s ≡ 1
 --   秦九韶时代用算筹颜色（红黑）表示正负，"累乘"暗含减法。
 --   标准 Bezout 递推：new_lt = old_lb - q × old_lt
 --   在 ℕ 中用绝对值追踪 + step-count 记录符号（偶=正，奇=负）。
+-- ⚠ 传承修正：'递互累乘' = 累乘取差（lb - q×lt），非累加！
+--   标准 Bezout 递推：new_lt = old_lb - q × old_lt
+--   在 ℕ 中用绝对值追踪（结果取正值）。
 dayan-step : (s : DayanState) → ⦃ _ : NonZero (right-top s) ⦄ → DayanState
 dayan-step s =
   let q = right-bottom s / right-top s   -- 商数
@@ -106,7 +108,6 @@ dayan-step s =
        (left-top s)                       -- 新左下 = 旧左上
        r                                  -- 新右上 = 右下 mod 右上
        (right-top s)                      -- 新右下 = 旧右上
-       (suc (step-count s))               -- 新步数 = 旧步数 + 1
 
 --------------------------------------------------------------------------------
 -- §5. 输出——"乃验左上所得，以为乘率"
@@ -170,7 +171,7 @@ instance-2-3 : DayanState
 instance-2-3 = dayan-init 2 3
 
 -- 初始状态验证（lb=0 恢复正确值）
-instance-2-3-check : instance-2-3 ≡ dayan 1 0 2 3 0
+instance-2-3-check : instance-2-3 ≡ dayan 1 0 2 3
 instance-2-3-check = refl
 
 -- 一步后到达终止态
