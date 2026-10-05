@@ -55,10 +55,14 @@ step-decreases s = m%n<n (right-bottom s) (right-top s)
 --   完整终止性证明需要良基递归（Acc）或 fuel 参数化——roadmap。
 --------------------------------------------------------------------------------
 
--- 终止性陈述（类型签名——roadmap）
+-- ⚠ fuel 参数化的迭代仍需要 NonZero 约束（dayan-step 的依赖）
+--   这是 S-D3 的核心问题：dayan-step 的 NonZero 约束需要在递归中保持。
+--   解决方案：用 Acc（良基递归）或重新设计 dayan-step 的类型。
+--
 -- termination-statement : ∀ (奇 定 : ℕ) →
---   ∃ ℕ (λ n → dayan-terminates (dayan-iterate n (dayan-init 奇 定)))
---   其中 dayan-iterate 需要 NonZero 约束（S-D3 核心问题）
+--   ∃ ℕ (λ fuel → dayan-terminates (dayan-iterate-fuel fuel (dayan-init 奇 定)))
+--   其中 dayan-iterate-fuel 需要在每步提供 NonZero 约束
+--   roadmap（需良基递归 Acc 或重新设计 dayan-step 类型）
 
 --------------------------------------------------------------------------------
 -- §5. S-D3 完成度
