@@ -78,7 +78,23 @@ dayan-result : DayanState → ℕ             -- 左上所得为乘率
 
 **回执**: `bab3a34d` exit 0 ✅
 
-### 3.2 三分损益术（SunyiBase）✅
+### 3.2 方程术（FangCheng）✅
+
+```agda
+record FangCheng2 : Set where
+  constructor fc2
+  field
+    a b e : ℕ    -- 行1
+    c d f : ℕ    -- 行2
+
+det : ℕ → ℕ → ℕ → ℕ → ℕ  -- 行列式 ad∸cb
+-- 消元：y = y-num/det, x = x-num/det
+-- 实例：2x+y=7, x+3y=11 → x=2, y=3 全 refl ✓
+```
+
+**回执**: `d79c914e` exit 0 ✅
+
+### 3.3 三分损益术（SunyiBase）✅
 
 ```agda
 -- 损益操作（非状态机——纯函数，因为损益无"盘面"）
@@ -277,10 +293,10 @@ _加_ : 正负 → 正负 → 正负
 | ~~2~~ | ~~SunyiBase~~ | ~~三分损益基元~~ | — | ✅ proven |
 | ~~3~~ | ~~FixedPointQ16~~ | ~~Q16 定点算术~~ | S1a | ✅ proven |
 | ~~4~~ | ~~ZhonglvClosure~~ | ~~仲吕闭合~~ | S1b+S2 | ✅ proven |
-| **5** | **KaiFang (开方术)** | Pell 递推→√3 精确分数 | 无 | ~60 |
-| **6** | **TianYuan (天元术)** | Σ-witness + ≡-Reasoning 规范文档 | 无 | ~40 文档 |
-| **7** | **ZhengFu (正负术)** | 有符号数 data + 加减法则 | 无 | ~40 |
-| **8** | **FangCheng (方程术)** | 矩阵消元状态机 | jac_Matrix | ~120 |
+| ~~5~~ | ~~KaiFang (开方术)~~ | ~~Pell 递推→√3 精确分数~~ | 无 | ✅ proven |
+| ~~6~~ | ~~TianYuan (天元术)~~ | ~~Σ-witness + ≡-Reasoning~~ | 无 | ✅ proven |
+| ~~7~~ | ~~ZhengFu (正负术)~~ | ~~有符号数 data + 乘法+交换律~~ | 无 | ✅ proven |
+| ~~8~~ | ~~FangCheng (方程术)~~ | ~~矩阵消元状态机~~ | ~~jac_Matrix~~ | ✅ proven |
 | **9** | **DayanStep 完整** | 递互除乘的完整转移规则+终止性 | S-D1 ✅ | ~60–100 |
 | **10** | **DayanCorrect** | 正确性证明（术文→乘率性质） | S-D2 | ~80–120 |
 
