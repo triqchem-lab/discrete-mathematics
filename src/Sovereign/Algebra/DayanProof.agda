@@ -72,10 +72,10 @@ step-invariant 奇₀ 定₀ lt lb rt rb q r
       -- Step 1: 展开
       let -- 显式类型注解帮助 Agda 推断
           dist₁ : (lb + (- (q * lt))) * (+ 奇₀) ≡ lb * (+ 奇₀) + (- (q * lt)) * (+ 奇₀)
-          dist₁ = *-distribʳ-+ lb (- (q * lt)) (+ 奇₀)
+          dist₁ = *-distribʳ-+ (+ 奇₀) lb (- (q * lt))
 
           dist₂ : (k₂ + (- (q * k₁))) * (+ 定₀) ≡ k₂ * (+ 定₀) + (- (q * k₁)) * (+ 定₀)
-          dist₂ = *-distribʳ-+ k₂ (- (q * k₁)) (+ 定₀)
+          dist₂ = *-distribʳ-+ (+ 定₀) k₂ (- (q * k₁))
 
           step₁ : (lb + (- (q * lt))) * (+ 奇₀) + (k₂ + (- (q * k₁))) * (+ 定₀)
                  ≡ (lb * (+ 奇₀) + (- (q * lt)) * (+ 奇₀)) + (k₂ * (+ 定₀) + (- (q * k₁)) * (+ 定₀))
@@ -106,7 +106,7 @@ step-invariant 奇₀ 定₀ lt lb rt rb q r
           -- Step 4a: 合并负项 (neg-distrib-+ 反向)
           -- -(B) + -(D) → -(B + D)
           step₄a : ((- (q * (lt * (+ 奇₀))))) + ((- (q * (k₁ * (+ 定₀)))))
-                  ≡ (- ((q * (lt * (+ 奇₀)))) + ((q * (k₁ * (+ 定₀)))))
+                  ≡ (- ((q * (lt * (+ 奇₀))) + (q * (k₁ * (+ 定₀)))))
           step₄a = sym (neg-distrib-+ (q * (lt * (+ 奇₀))) (q * (k₁ * (+ 定₀))))
 
           -- Step 4b: 提取公因子 q (*-distribˡ-+ 反向)
@@ -122,7 +122,7 @@ step-invariant 奇₀ 定₀ lt lb rt rb q r
                          (trans (cong (λ x → (lb * (+ 奇₀) + k₂ * (+ 定₀)) + x) step₄a)
                                 (cong (λ x → (lb * (+ 奇₀) + k₂ * (+ 定₀)) + (- x)) step₄b))
 
-      in trans step₂ step₃₄
+      in trans step₁ (trans step₂ step₃₄)
 
     -- Step 2：代入不变量（inv-prev 替换第一项，inv-cur 替换 -q* 里的第二项）
     -- Step 3：用 div-rel 的反转（r ≡ rb - q×rt）直接匹配
