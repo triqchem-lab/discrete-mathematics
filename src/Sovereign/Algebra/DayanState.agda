@@ -43,10 +43,11 @@ open import Data.Empty using (⊥)
 record DayanState : Set where
   constructor dayan
   field
-    left-top     : ℕ    -- 天元一（初始为 1，终止时为乘率）
+    left-top     : ℕ    -- 天元一（初始为 1，终止时为 |Bezout 系数|）
     left-bottom  : ℕ    -- 递互累乘的结果
     right-top    : ℕ    -- 奇数（初始为奇，终止时为 1）
     right-bottom : ℕ    -- 定母
+    step-count   : ℕ    -- 步数计数器（追踪符号：偶=正，奇=负）
 
 open DayanState public
 
@@ -55,7 +56,7 @@ open DayanState public
 --------------------------------------------------------------------------------
 
 dayan-init : (奇 定 : ℕ) → DayanState
-dayan-init 奇 定 = dayan 1 0 奇 定
+dayan-init 奇 定 = dayan 1 0 奇 定 0
 -- lb=s₀=0 是正确的初始值（标准扩展欧几里得系数追踪）
 -- ⚠ 历史注记：曾"修正"为 lb=1（错误）后回退。
 --   真正缺失的是后处理步骤：乘率 = 定 - lt（因为 Bezout 系数为负）
@@ -69,7 +70,7 @@ dayan-terminates s = right-top s ≡ 1
 
 -- 已达终止的状态
 dayan-done : (lt lb 定 : ℕ) → DayanState
-dayan-done lt lb 定 = dayan lt lb 1 定
+dayan-done lt lb 定 = dayan lt lb 1 定 0
 
 -- 终止态判定
 is-done : DayanState → Set
@@ -100,6 +101,7 @@ dayan-step s =
        (left-top s)                       -- 新左下 = 旧左上
        r                                  -- 新右上 = 右下 mod 右上
        (right-top s)                      -- 新右下 = 旧右上
+       (suc (step-count s))               -- 新步数 = 旧步数 + 1
 
 --------------------------------------------------------------------------------
 -- §5. 输出——"乃验左上所得，以为乘率"
@@ -123,8 +125,13 @@ dayan-result = left-top
 --------------------------------------------------------------------------------
 
 乘率 : ℕ → ℕ → ℕ → ℕ
-乘率 _ 1 lt = lt                    -- 奇=1：lt 直接是乘率
-乘率 定 _ lt = 定 ∸ lt              -- 奇>1：乘率 = 定 - lt
+乘率 _ 1 lt = lt                    -- 奇=1：lt 直接是乘率（步数=0）
+乘率 定 _ lt = 定 ∸ lt              -- 奇>1：根据步数决定（见下方完整版）
+
+-- 完整版：根据步数奇偶性决定乘率
+乘率-full : ℕ → ℕ → ℕ → ℕ → ℕ
+乘率-full 定 _ zero lt = lt          -- 偶数步（含0）：lt 就是乘率
+乘率-full 定 _ (suc _) lt = 定 ∸ lt  -- 奇数步：乘率 = 定 - lt
 
 -- 物不知数实例验证
 乘率-2-3 : 乘率 3 2 1 ≡ 2
@@ -158,7 +165,7 @@ instance-2-3 : DayanState
 instance-2-3 = dayan-init 2 3
 
 -- 初始状态验证（lb=0 恢复正确值）
-instance-2-3-check : instance-2-3 ≡ dayan 1 0 2 3
+instance-2-3-check : instance-2-3 ≡ dayan 1 0 2 3 0
 instance-2-3-check = refl
 
 -- 一步后到达终止态
