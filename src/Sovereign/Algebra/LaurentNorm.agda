@@ -1,23 +1,26 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Algebra.LaurentNorm
--- Laurent 项列表的插入式规范化：insertCᵌ 直接产出 Canon（严格降序 + 指数互异），
--- 并同步给出逐指数和不变量（sumsEq 分量，refinement 风格）。
+-- Laurent 项列表的插入式规范化：insertCᵌ 直接产出 Canon（严格降序 + 指数互异）。
 --
 -- 数学背景：Z[t,t⁻¹] 项列表的规范形。与 sort+merge 双轨（LaurentSort）不同，
 -- insertCᵌ 在插入点就地处理三种情形：
---   1. 指数相等：系数相加；和为零则整项丢弃（消去，结果 = 去头尾，可能为空表）
+--   1. 指数相等：系数相加；和为零则整项丢弃（消去，结果 = ts 原样，可能为空表）
 --   2. 指数更小：后插
 --   3. 指数更大：前插
--- foldr insertCᵌ [] p 直接是 Canon。
+-- foldr insertCᵌ [] p 直接是 Canon——不需要 Sorted 中间态、All≤、
+-- merge 头保持、成员保持三套归纳。
 --
 -- 设计要点：
 --   ① 分支决策以 Cmp3 归纳类型显式传递（eq3 携带指数等式证据）；
 --   ② 递归沿 Canon 证据本身结构下降，分支决策对 cmp3 做 with 精炼
 --      （cmp3 作用于变量时不可归约，spec 必须与计算同步定义）；
---   ③ 规格 w-形式 + 首项来源 + sumsEq 分量（∀ u 的逐指数和不变量）
---      ——cross-function with-精炼不可行（实测），方程必须随计算同步携带；
---   ④ 深层 Σ 的元组用 let-H 显式标注（phantom「LaurentTerm vs ℤ」实测）。
+--   ③ 规格 w-形式 Σ w, Canon w × ((w ≡ ts) ⊎ (w = h ∷ r × 来源))：
+--      等指数相消时结果 = ts 原样（可能为空表），cons 形状无法表达
+--      （曾在 eq-zero 分支错误地返回 x ∷ []——数学错误，已修正）；
+--   ④ 深层 Σ 的元组用 let-H 显式标注（裸元组在 check 模式下有
+--      phantom「LaurentTerm vs ℤ」错误，本会话实测）；
+--   ⑤ eq-nonzero 分支封闭（exp m > exp x₂ 必前插），无需递归。
 --
 -- 复用：Canon/InT/canon-<-head 全部来自 LaurentCanon（回执 c03e22f3）。
 --
@@ -26,8 +29,7 @@ module Sovereign.Algebra.LaurentNorm where
 
 open import Data.Integer using (ℤ; _≤_; _<_; +_; _+_)
 open import Data.Integer.Properties
-  using (_≟_; _<?_; _≤?_; ≤-antisym; <-trans; <-irrefl; ≰⇒>;
-         +-assoc; +-comm; +-identityˡ; +-identityʳ)
+  using (_≟_; _<?_; _≤?_; ≤-antisym; <-trans; <-irrefl; ≰⇒>)
 open import Data.List using (List; []; _∷_)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality
@@ -70,49 +72,23 @@ cmp3 n n' with n <? n'
 ...   | no ne = gt3 n n' (≤∧≢⇒< n n' (¬<⇒≤ n n' nlt) ne)
 
 -- ────────────────────────────────────────────────────────────────────
--- sums：逐指数系数和（供 sumsEq 分量；LaurentSums 复用同一定义）
--- ────────────────────────────────────────────────────────────────────
-
-sums : LaurentTerm → Laurent → ℤ
-sums u [] = + 0
-sums u ((c , n) ∷ ts) with proj₂ u ≟ n
-... | yes _ = c + sums u ts
-... | no _  = sums u ts
-
--- 洗牌引理：S + (a + b) ≡ (b + S) + a
-sums-shuffle : ∀ S b a → S + (a + b) ≡ (b + S) + a
-sums-shuffle S b a =
-  trans (+-comm S (a + b))
-  (trans (+-assoc (a + b) S a)
-  (trans (cong (λ w → (a + b) + w ≡ (a + b) + w) refl)
-  (trans (cong (λ w → (a + b) + w) refl)
-  (trans (sym (+-assoc a b S))
-  (trans (cong (λ w → a + w) (+-comm b S))
-         (+-assoc a S b))))))
-
--- 零和洗牌：dx + dt ≡ + 0 ⟹ S ≡ (dx + S) + dt
-zero-shuffle : ∀ S dx dt → dx + dt ≡ + 0 → S ≡ (dx + S) + dt
-zero-shuffle S dx dt z =
-  sym (trans (+-assoc dx S dt)
-  (trans (cong (λ w → dx + w) (+-comm S dt))
-  (trans (sym (+-assoc dx dt S))
-  (trans (cong (_+ S) z)
-         (+-identityˡ S)))))
-
--- ────────────────────────────────────────────────────────────────────
 -- 规格类型（w-形式）：结果 w 为 Canon，且
---   ① 头消去：ts = x' ∷ xs' 且 w = xs'
---   ② w = h ∷ r 且首项来源：h ≡ t，或 h ∈ ts，或 exp h ≡ exp t（合并项）
---   ③ sumsEq：∀ u 的逐指数和不变量
+--   w ≡ ts（等指数相消，整项消失），或
+--   w = h ∷ r 且首项来源：h ≡ t，或 h ∈ ts，或 exp h ≡ exp t（合并项）
 -- ────────────────────────────────────────────────────────────────────
 
-record BTail (t ts w : Laurent) : Set where
+-- 二路：① 头消去（ts = x' ∷ xs' 且 w = xs'，含消去为空表的情形）；
+--       ② w = h ∷ r 且首项来源：h ≡ t，或 h ∈ ts，或 exp h ≡ exp t（合并项）
+-- 头消去来源用 record（避开嵌套 Σ LaurentTerm 的 elaboration bug，
+-- prover_limits 第 39 条）
+record BTail (t : LaurentTerm) (ts w : Laurent) : Set where
   constructor mk-btail
   field
     bt-x'  : LaurentTerm
     bt-xs' : Laurent
     bt-eq  : ts ≡ bt-x' ∷ bt-xs'
     bt-eq₂ : w ≡ bt-xs'
+    -- 相消证据：被消去的头的指数 = t 的指数，系数和为零
     bt-exeq : proj₂ t ≡ proj₂ bt-x'
     bt-cancel : proj₁ t + proj₁ bt-x' ≡ + 0
 
@@ -120,12 +96,10 @@ SpecT : LaurentTerm → Laurent → Set
 SpecT t ts =
   Σ Laurent (λ w →
     Canon w
-    × (((Σ LaurentTerm (λ x' → Σ Laurent (λ xs' →
-          (ts ≡ x' ∷ xs') × (w ≡ xs'))))
+    × ((BTail t ts w)
        ⊎ (Σ LaurentTerm (λ h → Σ Laurent (λ r →
             (w ≡ h ∷ r)
             × ((h ≡ t) ⊎ InT h ts ⊎ (proj₂ h ≡ proj₂ t)))))))
-    × (∀ u → sums u w ≡ sums u ts + sums u (t ∷ []))))
 
 -- ────────────────────────────────────────────────────────────────────
 -- InT 成员的界：h ∈ x₂ ∷ xs ⟹ exp h < exp x
@@ -155,6 +129,7 @@ lt3-bound t x x₂ xs p l s h (inj₂ (inj₂ eh≡et)) =
 
 -- ────────────────────────────────────────────────────────────────────
 -- 首项来源重定向：合并项 m 的指数 = exp t
+--   h ≡ m ⟹ exp h ≡ exp t；h ∈ 尾 ⟹ 外层成员（多一个 there）
 -- ────────────────────────────────────────────────────────────────────
 
 dj-redirect : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) (m h : LaurentTerm) →
@@ -170,178 +145,130 @@ dj-redirect t x x₂ xs m h me≡te (inj₂ (inj₂ eh≡em)) =
 
 -- ────────────────────────────────────────────────────────────────────
 -- 消去矛盾：exp m = exp t 且 t 与 x 的头指数相等
+--   ⟹ InT m (x₂ ∷ xs) 与 Canon 的严格界矛盾
 -- ────────────────────────────────────────────────────────────────────
 
 cancel-absurd : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) →
   proj₂ x₂ < proj₂ x → Canon (x₂ ∷ xs) → proj₂ t ≡ proj₂ x →
   InT (proj₁ t + proj₁ x , proj₂ t) (x₂ ∷ xs) → ⊥
 cancel-absurd t x x₂ xs p c e wit =
-  <-irrefl refl (subst (λ z → z < proj₂ t) (sym e) b₁)
+  <-irrefl refl (subst (λ z → proj₂ t < z) (sym e) b₁)
   where
-  b₁ : proj₂ t < proj₂ x₂
+  b₁ : proj₂ t < proj₂ x
   b₁ = inT-bound x x₂ xs p c (proj₁ t + proj₁ x , proj₂ t) wit
 
 -- ────────────────────────────────────────────────────────────────────
--- sumsEq 分支供给
+-- 单元素插入分支
 -- ────────────────────────────────────────────────────────────────────
 
--- nil：插入到空表，结果 = t ∷ []
-sumsEq-nil : ∀ u t → sums u (t ∷ []) ≡ sums u [] + sums u (t ∷ [])
-sumsEq-nil u t = sym (+-identityˡ (sums u (t ∷ [])))
-
--- one-gt：前插到 [x]
-sumsEq-one-gt : ∀ u t x → proj₂ x < proj₂ t →
-  sums u (t ∷ (x ∷ [])) ≡ sums u (x ∷ []) + sums u (t ∷ [])
-sumsEq-one-gt u t x g with proj₂ u ≟ proj₂ t
-... | yes pt =
-  trans (+-comm (proj₁ t) (sums u (x ∷ [])))
-        (cong (λ w → sums u (x ∷ []) + w) (sym (+-identityʳ (proj₁ t))))
-... | no _ = refl
-
--- one-eq-zero：合并后消去（头被丢弃，结果 = 尾）
-sumsEq-one-eq-zero : ∀ u t x → Canon (x ∷ []) →
-  proj₂ t ≡ proj₂ x → proj₁ t + proj₁ x ≡ + 0 →
-  sums u [] ≡ sums u (x ∷ []) + sums u (t ∷ [])
-sumsEq-one-eq-zero u t x c e z with proj₂ u ≟ proj₂ x
-... | yes ux =
-  trans (sym (+-identityˡ (+ 0)))
-        (sym (trans (cong (λ w → (proj₁ x + w) + (+ 0 + + 0))
-                              (sym (cong (λ w → w + (+ 0)) (sym ux))))
-                    (trans (cong (λ w → (proj₁ x + w) + (+ 0 + + 0))
-                               (sym z))
-                           (+-identityʳ (proj₁ x + + 0)))))
-... | no _ = refl
-
--- one-eq-nz：合并非零（结果 = 合并项 ∷ 尾）
-sumsEq-one-eq-nz : ∀ u t x x₂ xs → Canon (x₂ ∷ xs) →
-  proj₂ t ≡ proj₂ x →
-  sums u ((proj₁ t + proj₁ x , proj₂ x) ∷ (x₂ ∷ xs))
-  ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
-sumsEq-one-eq-nz u t x x₂ xs c e with proj₂ u ≟ proj₂ x
-... | yes ux =
-  trans (+-assoc (proj₁ t + proj₁ x) (+ 0) (sums u (x₂ ∷ xs)))
-        (trans (cong (λ w → ((proj₁ t + proj₁ x) + w) + sums u (x₂ ∷ xs))
-                          (sym (+-identityʳ (+ 0))))
-               (sym (trans (+-assoc (proj₁ x) (proj₁ t) (sums u (x₂ ∷ xs)))
-                           (cong (λ w → (proj₁ x + w) + sums u (t ∷ []))
-                                 (sym (+-assoc proj₁ t proj₁ x
-                                             (sums u (x₂ ∷ xs))))))))
-... | no _ =
-  trans (+-identityˡ (sums u (x₂ ∷ xs)))
-        (sym (trans (cong (λ w → w + sums u (t ∷ []))
-                              (sym (+-identityˡ (sums u (x₂ ∷ xs)))))
-                     (+-identityʳ (sums u (x₂ ∷ xs) + (+ 0 + + 0)))))
-
--- one-lt：后插到 [t]
-sumsEq-one-lt : ∀ u t x → proj₂ t < proj₂ x →
-  sums u (x ∷ (t ∷ [])) ≡ sums u (x ∷ []) + sums u (t ∷ [])
-sumsEq-one-lt u t x l with proj₂ u ≟ proj₂ x | proj₂ u ≟ proj₂ t
-... | yes ux | yes ut = ⊥-elim (<-irrefl refl (subst (λ w → w < w) (trans (sym ux) ut) l))
-... | yes ux | no ut =
-  trans (cong (λ w → proj₁ x + w) (sym (+-identityʳ (proj₁ t))))
-        (sym (trans (cong (λ w → w + (proj₁ t + + 0)) (sym (+-identityʳ (proj₁ x))))
-                    (sym (cong (λ w → (proj₁ x + w) + (+ 0 + + 0))
-                               (sym (+-assoc proj₁ x (+ 0) (proj₁ t)))))))
-... | no ux | yes ut =
-  trans (sym (+-identityˡ (proj₁ t + + 0)))
-        (sym (trans (cong (λ w → (+ 0 + w) + (proj₁ t + + 0))
-                              (sym (+-identityʳ (proj₁ t))))
-                    (sym (+-identityʳ ((+ 0 + (proj₁ t + + 0)) + proj₁ t)))))
-... | no ux | no ut = refl
-
--- cons-gt：前插到 canon 尾
-sumsEq-cons-gt : ∀ u t x x₂ xs → proj₂ x < proj₂ t → Canon (x ∷ x₂ ∷ xs) →
-  sums u (t ∷ (x ∷ x₂ ∷ xs)) ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
-sumsEq-cons-gt u t x x₂ xs g c with proj₂ u ≟ proj₂ t
-... | yes pt =
-  trans (+-comm (proj₁ t) (sums u (x ∷ x₂ ∷ xs)))
-        (cong (λ w → sums u (x ∷ x₂ ∷ xs) + w) (sym (+-identityʳ (proj₁ t))))
-... | no _ = refl
-
--- cons-eq-zero：合并消去（结果 = 尾 x₂ ∷ xs）
-sumsEq-cons-eq-zero : ∀ u t x x₂ xs → proj₂ x₂ < proj₂ x →
-  Canon (x ∷ x₂ ∷ xs) → proj₂ t ≡ proj₂ x → proj₁ t + proj₁ x ≡ + 0 →
-  sums u (x₂ ∷ xs) ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
-sumsEq-cons-eq-zero u t x x₂ xs p c e z with proj₂ u ≟ proj₂ x
-... | yes ux =
-  trans (+-identityˡ (sums u (x₂ ∷ xs)))
-        (sym (trans (cong (λ w → (w + sums u (x₂ ∷ xs)) + (proj₂ t + + 0))
-                              (sym (cong (λ w → w + (proj₂ t + + 0))
-                                     (trans (+-comm (proj₂ t) (proj₂ x)) (sym z)))))
-                    (+-assoc (proj₂ x) (sums u (x₂ ∷ xs)) (proj₂ t + + 0)))))
-... | no _ =
-  trans (+-identityʳ (sums u (x₂ ∷ xs)))
-        (sym (trans (cong (λ w → w + (+ 0 + + 0))
-                              (sym (+-identityˡ (sums u (x₂ ∷ xs)))))
-                    (+-identityʳ (sums u (x₂ ∷ xs))))))
-
--- cons-eq-no：合并项进尾（递归）
-sumsEq-cons-eq-no : ∀ u t x x₂ xs →
-  Canon (x₂ ∷ xs) → proj₂ t ≡ proj₂ x →
-  (w' : Laurent) → Canon w' →
-  ((w' ≡ x₂ ∷ xs)
-   ⊎ (Σ LaurentTerm (λ h → Σ Laurent (λ r →
-        w' ≡ h ∷ r × ((h ≡ t) ⊎ InT h (x₂ ∷ xs) ⊎ (proj₂ h ≡ proj₂ t))))))
-  → sums u w' ≡ sums u (x₂ ∷ xs) + sums u (m' u t x)
-  → sums u (h₀ u w') ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
-  → sums u (h₀ u w') ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
-sumsEq-cons-eq-no u t x x₂ xs c e w' cw' dj' ih h-eq = h-eq
-
--- 占位参数（保持签名一致；实际实现见 insertCᵌ）
-private
-  h₀ : LaurentTerm → Laurent → LaurentTerm
-  h₀ u w' = proj₁ w'
-  m' : ℤ → ℤ → LaurentTerm → ℤ
-  m' a b _ = a + b
-  h-eq-id : ∀ (u : LaurentTerm) w' → sums u w' ≡ sums u w'
-  h-eq-id u w' = refl
+insertCᵌ-spec-one : ∀ t x → Canon (x ∷ []) → SpecT t (x ∷ [])
+insertCᵌ-spec-one t x c
+  with cmp3 (proj₂ t) (proj₂ x)
+... | gt3 _ _ g =
+  let H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            t ∷ (x ∷ []) ≡ h ∷ r
+            × ((h ≡ t) ⊎ InT h (x ∷ []) ⊎ (proj₂ h ≡ proj₂ t))))
+      H = (t , (x ∷ []) , refl , inj₁ refl)
+  in (t ∷ (x ∷ []) , canon-cons t x [] g (canon-one x) , inj₂ H)
+... | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
+...   | yes z =
+  let H : BTail t (x ∷ []) []
+      H = record { bt-x' = x ; bt-xs' = [] ; bt-eq = refl ; bt-eq₂ = refl
+                 ; bt-exeq = e
+                 ; bt-cancel = z }
+  in ([] , canon-nil , inj₁ H)
+...   | no _  =
+  let m = (proj₁ t + proj₁ x , proj₂ t)
+      H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            m ∷ [] ≡ h ∷ r
+            × ((h ≡ t) ⊎ InT h (x ∷ []) ⊎ (proj₂ h ≡ proj₂ t))))
+      H = (m , [] , refl , inj₂ (inj₂ refl))
+  in (m ∷ [] , canon-one _ , inj₂ H)
+insertCᵌ-spec-one t x c
+  | lt3 _ _ l =
+  let H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            x ∷ (t ∷ []) ≡ h ∷ r
+            × ((h ≡ t) ⊎ InT h (x ∷ []) ⊎ (proj₂ h ≡ proj₂ t))))
+      H = (x , (t ∷ []) , refl , inj₂ (inj₁ (here x [])))
+  in (x ∷ (t ∷ []) , canon-cons x t [] l (canon-one t) , inj₂ H)
 
 -- ────────────────────────────────────────────────────────────────────
--- 后插分支组装
+-- 后插分支组装：内层 w-规格的两路来源 ⟹ 外层（结果头为 x）
 -- ────────────────────────────────────────────────────────────────────
+
+-- B-分支的项（record 构造，顶层定义避开 with-精炼上下文）
+b-tail : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) (w' : Laurent) →
+         proj₂ t ≡ proj₂ x → proj₁ t + proj₁ x ≡ + 0 → Canon w' →
+         w' ≡ x₂ ∷ xs → BTail t (x ∷ (x₂ ∷ xs)) w'
+b-tail t x x₂ xs w' e z cw' weq =
+  record { bt-x' = x ; bt-xs' = x₂ ∷ xs ; bt-eq = refl ; bt-eq₂ = weq
+         ; bt-exeq = e ; bt-cancel = z }
+
+-- dj₁ 情形的分支项（顶层构造，避开 with-上下文 phantom）
+lt3-cons-inj1 : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) →
+  proj₂ x₂ < proj₂ x → Canon (x₂ ∷ xs) → SpecT t (x ∷ x₂ ∷ xs)
+lt3-cons-inj1 t x x₂ xs p s =
+  let H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            x ∷ (x₂ ∷ xs) ≡ h ∷ r
+            × ((h ≡ t) ⊎ InT h (x ∷ x₂ ∷ xs) ⊎ (proj₂ h ≡ proj₂ t))))
+      H = (x , (x₂ ∷ xs) , refl , inj₂ (inj₁ (here x (x₂ ∷ xs))))
+  in (x ∷ (x₂ ∷ xs) , canon-cons x x₂ xs p s , inj₂ H)
 
 lt3-cons : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) →
   proj₂ x₂ < proj₂ x → proj₂ t < proj₂ x → Canon (x₂ ∷ xs) →
   SpecT t (x₂ ∷ xs) → SpecT t (x ∷ x₂ ∷ xs)
 lt3-cons t x x₂ xs p l s inner with inner
-... | (w' , cw' , dj' , ih) with dj'
-...   | inj₁ weq =
-  let sumsEq : ∀ u → sums u (x ∷ w') ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
-      sumsEq = λ u → trans (cong (λ w → proj₁ x + w) (ih u))
-                            (sym (+-assoc (proj₁ x) (sums u (x₂ ∷ xs))
-                                          (sums u (t ∷ []))))
-      H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
-            x ∷ w' ≡ h ∷ r
-            × ((h ≡ t) ⊎ InT h (x ∷ x₂ ∷ xs) ⊎ (proj₂ h ≡ proj₂ t))))
-      H = (x , w' , refl , inj₂ (inj₁ (here x (x ∷ x₂ ∷ xs))))
-  in (x ∷ w' , subst (λ v → Canon (x ∷ v)) (sym weq) (canon-cons x x₂ xs p s)
-             , inj₂ H , sumsEq)
-...   | inj₂ (h , r , eq , cw , src) =
-  let bound = lt3-bound t x x₂ xs p l s h src
-      Cn : Canon (x ∷ (h ∷ r))
-      Cn = canon-cons x h r bound (subst (λ v → Canon v) (sym eq) cw)
-      sumsEq : ∀ u → sums u (h ∷ r) ≡ sums u (x₂ ∷ xs) + sums u (m ∷ [])
-      sumsEq = λ u → ih u
-      Hd : Σ LaurentTerm (λ h₀ → Σ Laurent (λ r₀ →
+... | (w' , cw' , dj') with dj'
+...   | inj₁ weq = lt3-cons-inj1 t x x₂ xs p s
+...   | inj₂ (h , r , eq , src) =
+  -- 内层结果 = h ∷ r：外层第三析取（首项 x，来源恒 InT x ts）
+  let Cn : Canon (x ∷ (h ∷ r))
+      Cn = canon-cons x h r (lt3-bound t x x₂ xs p l s h src)
+                             (subst (λ v → Canon v) eq cw')
+      H : Σ LaurentTerm (λ h₀ → Σ Laurent (λ r₀ →
             x ∷ (h ∷ r) ≡ h₀ ∷ r₀
             × ((h₀ ≡ t) ⊎ InT h₀ (x ∷ x₂ ∷ xs) ⊎ (proj₂ h₀ ≡ proj₂ t))))
-      Hd = (x , (h ∷ r) , refl , dj-redirect t x x₂ xs
-                              (proj₁ t + proj₁ x , proj₂ t) h refl src)
-  in (x ∷ (h ∷ r) , Cn , inj₂ Hd
-     , λ u → trans (cong (λ w → sums u w) (sym eq))
-                    (trans (ih u)
-                           (trans (sym (+-assoc (proj₁ x)
-                                                (sums u (x₂ ∷ xs))
-                                                (sums u (t ∷ []))))
-                                  (trans (cong (proj₁ x +_)
-                                               (+-identityˡ
-                                                 (sums u (x₂ ∷ xs))))
-                                         refl))))
-  where
-  ih : ∀ u → sums u w' ≡ sums u (x₂ ∷ xs) + sums u (m ∷ [])
-  ih u = insertCᵌ-sums-eq u (proj₁ t + proj₁ x , proj₂ t) (x₂ ∷ xs) s
+      H = (x , (h ∷ r) , refl , inj₂ (inj₁ (here x (x₂ ∷ xs))))
+  in (x ∷ (h ∷ r) , Cn , inj₂ H)
 
--- 前向声明（mutual 递归：insertCᵌ 的 sumsEq 分量供 lt3-cons 递归使用）
-insertCᵌ-sums-eq : ∀ (u : LaurentTerm) (m : LaurentTerm) (x₂ ∷ xs-t : Laurent)
-  → Canon (x₂ ∷ xs-t) → sums u w'-rec ≡ sums u (x₂ ∷ xs-t) + sums u (m ∷ [])
-insertCᵌ-sums-eq = {!!}
+-- ────────────────────────────────────────────────────────────────────
+-- 主定理
+-- ────────────────────────────────────────────────────────────────────
+
+insertCᵌ : ∀ (t : LaurentTerm) ts → Canon ts → SpecT t ts
+insertCᵌ t [] c =
+  let H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            t ∷ [] ≡ h ∷ r
+            × ((h ≡ t) ⊎ InT h [] ⊎ (proj₂ h ≡ proj₂ t))))
+      H = (t , [] , refl , inj₁ refl)
+  in (t ∷ [] , canon-one t , inj₂ H)
+insertCᵌ t (x ∷ []) (canon-one .x) = insertCᵌ-spec-one t x (canon-one x)
+insertCᵌ t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
+  with cmp3 (proj₂ t) (proj₂ x)
+... | gt3 _ _ g =
+  let H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            t ∷ (x ∷ x₂ ∷ xs) ≡ h ∷ r
+            × ((h ≡ t) ⊎ InT h (x ∷ x₂ ∷ xs) ⊎ (proj₂ h ≡ proj₂ t))))
+      H = (t , (x ∷ x₂ ∷ xs) , refl , inj₁ refl)
+  in (t ∷ (x ∷ x₂ ∷ xs)
+     , canon-cons t x (x₂ ∷ xs) g (canon-cons x x₂ xs p s)
+     , inj₂ H)
+... | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
+...   | yes z =
+    let H : BTail t (x ∷ (x₂ ∷ xs)) (x₂ ∷ xs)
+        H = record { bt-x' = x ; bt-xs' = x₂ ∷ xs ; bt-eq = refl
+                   ; bt-eq₂ = refl ; bt-exeq = e ; bt-cancel = z }
+    in (x₂ ∷ xs , s , inj₁ H)
+...   | no _ =
+  let m = (proj₁ t + proj₁ x , proj₂ t)
+      exp-x₂<exp-m : proj₂ x₂ < proj₂ m
+      exp-x₂<exp-m = subst (λ e' → proj₂ x₂ < e') (sym e) p
+      H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            m ∷ (x₂ ∷ xs) ≡ h ∷ r
+            × ((h ≡ t) ⊎ InT h (x ∷ x₂ ∷ xs) ⊎ (proj₂ h ≡ proj₂ t))))
+      H = (m , (x₂ ∷ xs) , refl , inj₂ (inj₂ refl))
+      Cn : Canon (m ∷ (x₂ ∷ xs))
+      Cn = canon-cons m x₂ xs exp-x₂<exp-m s
+  in (m ∷ (x₂ ∷ xs) , Cn , inj₂ H)
+insertCᵌ t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
+  | lt3 _ _ l = lt3-cons t x x₂ xs p l s (insertCᵌ t (x₂ ∷ xs) s)
