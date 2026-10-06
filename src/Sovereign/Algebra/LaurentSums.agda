@@ -17,10 +17,10 @@
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.LaurentSums where
 
-open import Data.Integer using (ℤ; _≤_; _<_; +_; _+_)
+open import Data.Integer using (ℤ; _≤_; _<_; +_; _+_; -_)
 open import Data.Integer.Properties
   using (_≟_; _<?_; _≤?_; ≤-antisym; <-trans; <-irrefl; ≰⇒>;
-         +-assoc; +-comm; +-identityˡ; +-identityʳ)
+         +-assoc; +-comm; +-identityˡ; +-identityʳ; +-inverseʳ)
 open import Data.Integer.Solver
 open Data.Integer.Solver.+-*-Solver
 open import Data.List using (List; []; _∷_; _++_)
@@ -29,6 +29,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; cong; cong₂; sym; trans; subst)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Unit using (⊤; tt)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Sovereign.Algebra.LaurentCanon
   using (LaurentTerm; Laurent; Canon; canon-nil; canon-one; canon-cons;
@@ -323,6 +324,6 @@ cmp3-gt3-lemma n n' p with cmp3 n n'
 ... | lt3 .n .n' q = ⊥-elim (<-irrefl refl (<-trans p q))
 ... | eq3 .n .n' e = ⊥-elim (<-irrefl refl (subst (λ z → z < n) (sym e) p))
 
--- normC-idem：Canon 上 normC 幂等（待下轮）
--- 需要 cmp3-gt3-lemma（已证）+ insertCᵌ 的 gt3 分支展开。
--- norm-idem / canon-sums-unique / norm-+ 依赖此引理。
+-- canon-sums-unique（sums 相等 → Canon 相等）待下轮实现。
+-- 需要 +-cancel（ℤ 消去律）+ NoZero + sums-bound-zero（已证）。
+-- norm-+ 依赖此引理 + norm-idem + insertCᵌ-sums（已证）。
