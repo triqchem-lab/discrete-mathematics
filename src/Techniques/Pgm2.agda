@@ -15,6 +15,7 @@ open import Agda.Builtin.Equality using (_≡_)
 open import Agda.Builtin.Equality.Rewrite
 open import Sovereign.Base.Trit using (T₁)
 open import Sovereign.Algebra.GroupTheory.DuodecClock using (DuodecPoint; mixedOp; a1)
+open import Data.Product using (_,_ )
 
 postulate
   nested-law : ∀ (p : DuodecPoint) →

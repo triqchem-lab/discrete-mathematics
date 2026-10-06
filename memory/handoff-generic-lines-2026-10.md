@@ -61,3 +61,17 @@ G5 GenericInst（SOVEREIGN_LCM=11609505792 两质幂对账）
 1. `proof_dag action:"brief"` 看台账全景
 2. 读 `memory/lessons-agda-traps-2026-10.md`（20 条编译陷阱）
 3. 关键链回归：本文件 §一 的模块清单批量 agda（~22 模块 5 分钟全绿）
+
+## 六、完备性层攻关结果（本会话后段）
+
+| 项 | 结果 | 证据 |
+|---|---|---|
+| C1 恰 2 存活 | ✅ | LiftCriterion.agda（回执 c893518d） |
+| C2 分类+互异 | ✅ | RootCountClassify.agda（回执 db1e2b2f） |
+| C4 核平凡 | ✅ 逐点版 | KerTrivial.agda（回执 1df71dfe） |
+| ③ 无第五根 | ⚠ roadmap | 需 2-adic k-归纳（~300行），HenselModPow2 实例已在案 |
+| ④ Σ PathP | ⚠ cubical 专向 roadmap | 偏离 PropEq 主体，CRT.agda 有 isProp→PathP 活案例 |
+
+**关键发现**：③④ 比预估低（仓库资产丰富）但本会话应先收口——
+- ③ 的泛型证明需 2-adic k-归纳，开新会话更高效
+- ④ 需 cubical ≡ + isProp→PathP，与 PropEq 主体有摩擦（interval 泄漏教训在案）

@@ -3,4 +3,4 @@ module Techniques.GapProbe7 where
 open import Agda.Builtin.Equality using (_≡_; refl)
 open import Techniques.T3 using (T3)
 idlaw : ∀ (x : T3) → x ≡ x
-idlaw = refl
+idlaw = λ x → refl

@@ -32,7 +32,7 @@ open import Sovereign.Algebra.HenselLiftUniqueness using (≤<-asym; 1+<-trans)
 289≤suc11 zero = ≤-trans (≤-refl {289}) (m≤m+n 289 8)
 289≤suc11 (suc q) =
   ≤-trans (289≤suc11 q)
-          (m≤n+m (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc q)))))))))))) * 27) 27)
+          (m≤n+m ((suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (q)))))))))))) * 27) 27)
 
 --------------------------------------------------------------------------------
 -- §2. 非根见证：¬(27 ∣ 288)
@@ -55,15 +55,15 @@ open import Sovereign.Algebra.HenselLiftUniqueness using (≤<-asym; 1+<-trans)
   ≤<-asym 288 108 (subst (λ w → 288 ≤ w) h (≤-refl)) (1+<-trans 179 108)
 ¬27∣288 (divides (suc (suc (suc (suc (suc zero))))) h) =
   ≤<-asym 288 135 (subst (λ w → 288 ≤ w) h (≤-refl)) (1+<-trans 152 135)
-¬27∣288 (divides (suc (suc (suc (suc (suc (suc zero))))))) h) =
+¬27∣288 (divides (suc (suc (suc (suc (suc (suc zero)))))) h) =
   ≤<-asym 288 162 (subst (λ w → 288 ≤ w) h (≤-refl)) (1+<-trans 125 162)
-¬27∣288 (divides (suc (suc (suc (suc (suc (suc (suc zero)))))))) h) =
+¬27∣288 (divides (suc (suc (suc (suc (suc (suc (suc zero))))))) h) =
   ≤<-asym 288 189 (subst (λ w → 288 ≤ w) h (≤-refl)) (1+<-trans 98 189)
-¬27∣288 (divides (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) h) =
+¬27∣288 (divides (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) h) =
   ≤<-asym 288 216 (subst (λ w → 288 ≤ w) h (≤-refl)) (1+<-trans 71 216)
-¬27∣288 (divides (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) h) =
+¬27∣288 (divides (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))) h) =
   ≤<-asym 288 243 (subst (λ w → 288 ≤ w) h (≤-refl)) (1+<-trans 44 243)
-¬27∣288 (divides (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))))) h) =
+¬27∣288 (divides (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))) h) =
   ≤<-asym 288 270 (subst (λ w → 288 ≤ w) h (≤-refl)) (1+<-trans 17 270)
 ¬27∣288 (divides (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (q)))))))))))) h) =
   ≤<-asym ((suc^11 q) * 27) 288
@@ -71,4 +71,4 @@ open import Sovereign.Algebra.HenselLiftUniqueness using (≤<-asym; 1+<-trans)
     (<-trans (1+<-trans 8 288) (289≤suc11 q))
   where
     suc^11 : ℕ → ℕ
-    suc^11 n = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc n)))))))))))
+    suc^11 n = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc n))))))))))
