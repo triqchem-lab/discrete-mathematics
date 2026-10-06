@@ -9,13 +9,13 @@
 -- 插入项 t 的贡献 = sums u (t ∷ [])（单一项列表的和）。
 -- 该不变量 + canon-unique（LaurentCanon）⟹ 规范形交换律，⟹ 逐点分配律。
 --
--- 设计要点：
---   ① 插入项贡献统一写成 sums u (t ∷ []) 而非独立 δ 函数
---      （δ 与 sums 双函数的 with-aux 互不精炼——本会话实测）；
---   ② 算术分支用 stdlib ℤ-ring solver（Data.Integer.Solver）：
---      with 精炼后各目标归约为纯 ℤ 线性式，solver 一步闭合。
+-- 证明策略（Round-14 定型）：
+--   前插/后插分支：sums-++（拼接可加性）+ +-comm——无 case 分析；
+--   合并分支（eq3）：ℤ-ring solver（逐 u≟x 情形）；
+--   消去分支（eq-zero）：bt-cancel/bt-exeq（LaurentNorm 的 BTail 字段）
+--   逐 u≟t/u≟x 情形 + identity 链。
 --
--- ℤ 算术复用 stdlib（+-assoc/+-comm/+-identityˡ/+-identityʳ）。
+-- ℤ 算术全部复用 stdlib。
 --
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.LaurentSums where
@@ -62,34 +62,77 @@ sums-++ u ((c , n) ∷ xs) ys with proj₂ u ≟ n
 -- ────────────────────────────────────────────────────────────────────
 -- 核心引理：插入保持逐指数和（对 Canon 结构归纳）
 -- 不变量：sums u (插入结果) ≡ sums u ts + sums u (t ∷ [])
--- 各分支的算术由 ℤ-ring solver 闭合
 -- ────────────────────────────────────────────────────────────────────
 
--- 零和：dx + dt ≡ + 0 ⟹ S ≡ (dx + S) + dt
--- S + (c_t + c_x) ≡ (c_x + S) + c_t
-sums-shuffle : ∀ S c_x c_t →
-  S + (c_t + c_x) ≡ (c_x + S) + c_t
-sums-shuffle S c_x c_t =
-  trans (sym (trans (cong (λ w → w + S) (+-comm c_x c_t))
-                    (+-comm (c_t + c_x) S)))
-  (trans (+-assoc c_x c_t S)
-  (trans (cong (λ w → c_x + w) (+-comm c_t S))
-         (sym (+-assoc c_x S c_t))))
+insertCᵌ-sums : ∀ (u t : LaurentTerm) ts (c : Canon ts) →
+  sums u (proj₁ (insertCᵌ t ts c)) ≡ sums u ts + sums u (t ∷ [])
+insertCᵌ-sums u t [] c =
+  sym (+-identityˡ (sums u (t ∷ [])))
 
-zero-shuffle : ∀ S dx dt → dx + dt ≡ + 0 → S ≡ (dx + S) + dt
-zero-shuffle S dx dt z =
-  sym (trans (+-assoc dx S dt)
-  (trans (cong (λ w → dx + w) (+-comm S dt))
-  (trans (sym (+-assoc dx dt S))
-  (trans (cong (_+ S) z)
-         (+-identityˡ S)))))
+-- 单元素分支
+insertCᵌ-sums u t (x ∷ []) (canon-one .x)
+  with cmp3 (proj₂ t) (proj₂ x)
+... | gt3 _ _ g =
+  -- 结果 = t ∷ (x ∷ []) = (t ∷ []) ++ (x ∷ [])：sums-++ + comm
+  trans (sums-++ u (t ∷ []) (x ∷ []))
+        (+-comm (sums u (t ∷ [])) (sums u (x ∷ [])))
+... | lt3 _ _ l =
+  -- 结果 = x ∷ (t ∷ []) = (x ∷ []) ++ (t ∷ [])：sums-++ + comm
+  trans (sums-++ u (x ∷ []) (t ∷ []))
+        (+-comm (sums u (x ∷ [])) (sums u (t ∷ [])))
 
--- insertCᵌ-sums（插入的逐指数和不变量）待实现。
--- 设计定型（Round-10/11）：直接对 insertCᵌ 的调用结果证 sums 方程会因
--- 跨函数 with-精炼失败（insertCᵌ 的内部 with 与证明的 with 不互精炼，
--- 本会话实测 gt3/yes/no 情形）。定型方案：SpecT 携带方程分量
---   sumsEq : ∀ u → sums u w ≡ sums u ts + sums u (t ∷ [])
--- （u 在分量内量化，SpecT 保持无 u 依赖），insertCᵌ 各分支按归纳直接证，
--- C-分支用内层 spec 的 sumsEq（递归 IH），B-分支用 bt-cancel/bt-exeq
--- 证零和恒等（zero-shuffle 模式）。随后 insertCᵌ-sums = 一行取分量。
--- 待办详见 journal Round-11。
+-- 双元素及以上分支
+insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
+  with cmp3 (proj₂ t) (proj₂ x)
+... | gt3 _ _ g =
+  -- 结果 = t ∷ (x ∷ x₂ ∷ xs) = (t ∷ []) ++ (x ∷ x₂ ∷ xs)：sums-++ + comm
+  trans (sums-++ u (t ∷ []) (x ∷ x₂ ∷ xs))
+        (+-comm (sums u (t ∷ [])) (sums u (x ∷ x₂ ∷ xs)))
+
+-- 合并分支（eq3）：结果封闭 = m ∷ (x₂ ∷ xs)，逐 u≟x 情形 + solver
+insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
+  | eq3 _ _ e with proj₂ u ≟ proj₂ x
+...   | yes ux =
+  -- LHS = (proj₁ t + proj₁ x) + sums u (x₂ ∷ xs)
+  -- RHS = (proj₂ x + sums u (x₂ ∷ xs)) + (proj₂ t + + 0)
+  --   （ux-yes：proj₂ u ≡ proj₂ x；e：proj₂ t ≡ proj₂ x）
+  solve 3 (λ S a b → S + (a + b) := (b + S) + (a + con (+ 0)))
+          refl (sums u (x₂ ∷ xs)) (proj₂ t) (proj₂ x)
+...   | no ux =
+  -- ux-no：exp u ≢ exp x（e）⟹ exp u ≢ exp m ⟹ LHS = sums u (x₂ ∷ xs)
+  -- RHS = sums u (x₂ ∷ xs) + (+ 0 + + 0)
+  trans (sym (+-identityʳ (sums u (x₂ ∷ xs))))
+        (trans (cong (λ w → w + sums u (x₂ ∷ xs)) (sym (+-identityˡ (+ 0))))
+               (trans (cong (λ w → w + (+ 0 + + 0)) (sym (+-identityʳ (+ 0))))
+                      refl))
+
+-- 消去分支（eq-zero）：bt-cancel/bt-exeq 逐 u≟t/u≟x 情形
+insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
+  | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
+...   | yes z with proj₂ u ≟ proj₂ t | proj₂ u ≟ proj₂ x
+  -- LHS = sums u (x₂ ∷ xs)；RHS = sums u (x ∷ …) + sums u (t ∷ [])
+  --     = (proj₁ x + sums u (x₂ ∷ xs)) + (proj₁ t + + 0)
+  -- bt-cancel : proj₁ t + proj₁ x ≡ + 0 ⟹ proj₁ x + proj₁ t ≡ + 0
+  --   ⟹ RHS ≡ sums u (x₂ ∷ xs) + + 0 ≡ LHS
+  trans (sym (+-identityʳ (sums u (x₂ ∷ xs))))
+        (trans (cong (λ w → (w + sums u (x₂ ∷ xs)) + (proj₁ t + + 0))
+                          (sym (trans (+-comm (proj₁ t) (proj₁ x)) (sym z))))
+               (sym (trans (+-assoc (proj₁ x) (proj₁ t) (+ 0))
+                           (+-identityʳ (proj₁ x + proj₁ t)))))
+...     | yes pt | no px = ⊥-elim (px (trans pt (sym e)))
+...     | no pt | yes px = ⊥-elim (pt (trans (sym px) e))
+...     | no pt | no px =
+  -- LHS = sums u (x₂ ∷ xs)；RHS = sums u (x₂ ∷ xs) + + 0
+  trans (sym (+-identityʳ (sums u (x₂ ∷ xs))))
+        (trans (cong (λ w → w + (+ 0 + + 0)) (sym (+-identityˡ (+ 0))))
+               refl)
+
+-- 后插分支组装（sums-++ + 内层 IH）
+insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
+  | lt3 _ _ l with insertCᵌ t (x₂ ∷ xs) s
+...   | (w' , cw' , dj') =
+  trans (sums-++ u (x ∷ []) (proj₁ (insertCᵌ t (x₂ ∷ xs) s)))
+        (trans (cong (λ w → proj₁ x + w)
+                     (insertCᵌ-sums u t (x₂ ∷ xs) s))
+               (sym (+-assoc (proj₁ x) (sums u (x₂ ∷ xs))
+                             (sums u (t ∷ [])))))
