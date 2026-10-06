@@ -7,15 +7,12 @@
 -- （ℤ 加法）。规范化插入 insertCᵌ（LaurentNorm）的核心不变量：
 --   sums u (insertCᵌ 结果) ≡ sums u ts + sums u (t ∷ [])
 -- 插入项 t 的贡献 = sums u (t ∷ [])（单一项列表的和）。
--- 该不变量 + canon-unique（LaurentCanon）⟹ 规范形交换律，⟹ 逐点分配律。
 --
--- 证明策略（Round-14 定型）：
---   前插/后插分支：sums-++（拼接可加性）+ +-comm——无 case 分析；
---   合并分支（eq3）：ℤ-ring solver（逐 u≟x 情形）；
---   消去分支（eq-zero）：bt-cancel/bt-exeq（LaurentNorm 的 BTail 字段）
---   逐 u≟t/u≟x 情形 + identity 链。
---
--- ℤ 算术全部复用 stdlib。
+-- 证明策略（Round-18 Dec-参数定型）：
+--   ① sums-cons-head / sums-cons-tail：一步展开引理（显式参数化）；
+--   ② 辅助函数用 Dec 参数做情形分析（模式匹配不抽象目标）；
+--   ③ 主定理：with cmp3 精炼 insertCᵌ（探针验证），辅助函数闭合算术；
+--   ④ 无嵌套 with、无 where、无 mutual。
 --
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.LaurentSums where
@@ -30,7 +27,7 @@ open import Data.List using (List; []; _∷_; _++_)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; cong; cong₂; sym; trans; subst)
-open import Relation.Nullary using (yes; no; ¬_)
+open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Sovereign.Algebra.LaurentCanon
@@ -49,7 +46,20 @@ sums u ((c , n) ∷ ts) with proj₂ u ≟ n
 ... | yes _ = c + sums u ts
 ... | no _  = sums u ts
 
--- 可加性：拼接的和 = 和的和
+-- 一步展开引理
+sums-cons-head : ∀ (u t : LaurentTerm) ts → proj₂ u ≡ proj₂ t →
+  sums u (t ∷ ts) ≡ proj₁ t + sums u ts
+sums-cons-head u t ts e with proj₂ u ≟ proj₂ t
+... | yes _ = refl
+... | no q  = ⊥-elim (q e)
+
+sums-cons-tail : ∀ (u t : LaurentTerm) ts → ¬ (proj₂ u ≡ proj₂ t) →
+  sums u (t ∷ ts) ≡ sums u ts
+sums-cons-tail u t ts h with proj₂ u ≟ proj₂ t
+... | yes e = ⊥-elim (h e)
+... | no _  = refl
+
+-- 可加性
 sums-++ : ∀ (u : LaurentTerm) xs ys →
   sums u (xs ++ ys) ≡ sums u xs + sums u ys
 sums-++ u [] ys = sym (+-identityˡ (sums u ys))
@@ -60,8 +70,191 @@ sums-++ u ((c , n) ∷ xs) ys with proj₂ u ≟ n
 ... | no _ = sums-++ u xs ys
 
 -- ────────────────────────────────────────────────────────────────────
+-- 辅助函数（Dec 参数做情形分析）
+-- ────────────────────────────────────────────────────────────────────
+
+-- 单元素 gt3：结果 = t ∷ (x ∷ [])
+one-gt-sums : ∀ u t x → proj₂ x < proj₂ t →
+  Dec (proj₂ u ≡ proj₂ t) → Dec (proj₂ u ≡ proj₂ x) →
+  sums u (t ∷ (x ∷ [])) ≡ sums u (x ∷ []) + sums u (t ∷ [])
+one-gt-sums u t x g (yes pt) (yes px) =
+  ⊥-elim (<-irrefl refl
+    (subst (λ z → z < proj₂ t) pt (subst (λ z → z < proj₂ t) (sym px) g)))
+one-gt-sums u t x g (yes pt) (no px) =
+  let lhs-eq = trans (sums-cons-head u t (x ∷ []) pt)
+                     (cong (λ w → proj₁ t + w) (sums-cons-tail u x [] px))
+      rhs-eq = cong₂ _+_ (sums-cons-tail u x [] px)
+                         (sums-cons-head u t [] pt)
+  in  trans lhs-eq
+      (trans (sym (+-identityˡ (proj₁ t + + 0))) (sym rhs-eq))
+one-gt-sums u t x g (no pt) (yes px) =
+  let lhs-eq = trans (sums-cons-tail u t (x ∷ []) pt)
+                     (sums-cons-head u x [] px)
+      rhs-eq = cong₂ _+_ (sums-cons-head u x [] px)
+                         (sums-cons-tail u t [] pt)
+  in  trans lhs-eq
+      (trans (sym (+-identityʳ (proj₁ x + + 0))) (sym rhs-eq))
+one-gt-sums u t x g (no pt) (no px) =
+  let lhs-eq = trans (sums-cons-tail u t (x ∷ []) pt)
+                     (sums-cons-tail u x [] px)
+      rhs-eq = cong₂ _+_ (sums-cons-tail u x [] px)
+                         (sums-cons-tail u t [] pt)
+  in  trans lhs-eq (trans (sym (+-identityˡ (+ 0))) (sym rhs-eq))
+
+-- 单元素 eq3-zero：结果 = []
+one-eq-zero-sums : ∀ u t x → proj₂ t ≡ proj₂ x → proj₁ t + proj₁ x ≡ + 0 →
+  Dec (proj₂ u ≡ proj₂ t) → Dec (proj₂ u ≡ proj₂ x) →
+  sums u [] ≡ sums u (x ∷ []) + sums u (t ∷ [])
+one-eq-zero-sums u t x e z (yes pt) (yes px) =
+  let rhs-eq = cong₂ _+_ (sums-cons-head u x [] px)
+                         (sums-cons-head u t [] pt)
+      collapse : (proj₁ x + + 0) + (proj₁ t + + 0) ≡ + 0
+      collapse = trans (cong₂ _+_ (+-identityʳ (proj₁ x))
+                                  (+-identityʳ (proj₁ t)))
+                       (trans (+-comm (proj₁ x) (proj₁ t)) z)
+  in  trans (sym collapse) (sym rhs-eq)
+one-eq-zero-sums u t x e z (yes pt) (no px) = ⊥-elim (px (trans pt e))
+one-eq-zero-sums u t x e z (no pt) (yes px) = ⊥-elim (pt (trans px (sym e)))
+one-eq-zero-sums u t x e z (no pt) (no px) =
+  let rhs-eq = cong₂ _+_ (sums-cons-tail u x [] px)
+                         (sums-cons-tail u t [] pt)
+  in  trans (sym (+-identityˡ (+ 0)))
+      (trans (sym (+-identityˡ (+ 0))) (sym rhs-eq))
+
+-- 单元素 eq3-nz：结果 = m ∷ []
+one-eq-nz-sums : ∀ u t x → proj₂ t ≡ proj₂ x → ¬ (proj₁ t + proj₁ x ≡ + 0) →
+  Dec (proj₂ u ≡ proj₂ t) → Dec (proj₂ u ≡ proj₂ x) →
+  sums u ((proj₁ t + proj₁ x , proj₂ t) ∷ []) ≡ sums u (x ∷ []) + sums u (t ∷ [])
+one-eq-nz-sums u t x e nz (yes pt) (yes px) =
+  let lhs-eq = sums-cons-head u (proj₁ t + proj₁ x , proj₂ t) [] pt
+      rhs-eq = cong₂ _+_ (sums-cons-head u x [] px)
+                         (sums-cons-head u t [] pt)
+  in  trans lhs-eq
+      (trans (trans (+-identityʳ (proj₁ t + proj₁ x))
+             (trans (+-comm (proj₁ t) (proj₁ x))
+                    (sym (cong₂ _+_ (+-identityʳ (proj₁ x))
+                                    (+-identityʳ (proj₁ t))))))
+             (sym rhs-eq))
+one-eq-nz-sums u t x e nz (yes pt) (no px) = ⊥-elim (px (trans pt e))
+one-eq-nz-sums u t x e nz (no pt) (yes px) = ⊥-elim (pt (trans px (sym e)))
+one-eq-nz-sums u t x e nz (no pt) (no px) =
+  let lhs-eq = sums-cons-tail u (proj₁ t + proj₁ x , proj₂ t) [] pt
+      rhs-eq = cong₂ _+_ (sums-cons-tail u x [] px)
+                         (sums-cons-tail u t [] pt)
+  in  trans lhs-eq
+      (trans (sym (+-identityˡ (+ 0))) (sym rhs-eq))
+
+-- 单元素 lt3：结果 = x ∷ (t ∷ [])
+one-lt-sums : ∀ u t x → proj₂ t < proj₂ x →
+  Dec (proj₂ u ≡ proj₂ t) → Dec (proj₂ u ≡ proj₂ x) →
+  sums u (x ∷ (t ∷ [])) ≡ sums u (x ∷ []) + sums u (t ∷ [])
+one-lt-sums u t x l (yes pt) (yes px) =
+  ⊥-elim (<-irrefl refl
+    (subst (λ z → proj₂ t < z) (trans (sym px) pt) l))
+one-lt-sums u t x l (yes pt) (no px) =
+  let lhs-eq = trans (sums-cons-tail u x (t ∷ []) px)
+                     (sums-cons-head u t [] pt)
+      rhs-eq = cong₂ _+_ (sums-cons-tail u x [] px)
+                         (sums-cons-head u t [] pt)
+  in  trans lhs-eq
+      (trans (sym (+-identityˡ (proj₁ t + + 0))) (sym rhs-eq))
+one-lt-sums u t x l (no pt) (yes px) =
+  let lhs-eq = trans (sums-cons-head u x (t ∷ []) px)
+                     (cong (λ w → proj₁ x + w) (sums-cons-tail u t [] pt))
+      rhs-eq = cong₂ _+_ (sums-cons-head u x [] px)
+                         (sums-cons-tail u t [] pt)
+  in  trans lhs-eq
+      (trans (sym (+-identityʳ (proj₁ x + + 0))) (sym rhs-eq))
+one-lt-sums u t x l (no pt) (no px) =
+  let lhs-eq = trans (sums-cons-tail u x (t ∷ []) px)
+                     (sums-cons-tail u t [] pt)
+      rhs-eq = cong₂ _+_ (sums-cons-tail u x [] px)
+                         (sums-cons-tail u t [] pt)
+  in  trans lhs-eq (trans (sym (+-identityˡ (+ 0))) (sym rhs-eq))
+
+-- 双元素 gt3：结果 = t ∷ (x ∷ x₂ ∷ xs)
+cons-gt-sums : ∀ u t x x₂ xs →
+  Dec (proj₂ u ≡ proj₂ t) →
+  sums u (t ∷ (x ∷ x₂ ∷ xs)) ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
+cons-gt-sums u t x x₂ xs (yes pt) =
+  trans (sums-cons-head u t (x ∷ x₂ ∷ xs) pt)
+  (trans (solve 2 (λ S a → a :+ S := S :+ (a :+ con (+ 0))) refl
+                 (sums u (x ∷ x₂ ∷ xs)) (proj₁ t))
+         (sym (cong (λ w → sums u (x ∷ x₂ ∷ xs) + w)
+                    (sums-cons-head u t [] pt))))
+cons-gt-sums u t x x₂ xs (no pt) =
+  trans (sums-cons-tail u t (x ∷ x₂ ∷ xs) pt)
+  (trans (sym (+-identityʳ (sums u (x ∷ x₂ ∷ xs))))
+         (sym (cong (λ w → sums u (x ∷ x₂ ∷ xs) + w)
+                    (sums-cons-tail u t [] pt))))
+
+-- 双元素 eq3-zero：结果 = x₂ ∷ xs（相消）
+cons-eq-zero-sums : ∀ u t x x₂ xs →
+  proj₂ t ≡ proj₂ x → proj₁ t + proj₁ x ≡ + 0 →
+  Dec (proj₂ u ≡ proj₂ t) → Dec (proj₂ u ≡ proj₂ x) →
+  sums u (x₂ ∷ xs) ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
+cons-eq-zero-sums u t x x₂ xs e z (yes pt) (yes px) =
+  let S = sums u (x₂ ∷ xs)
+      rhs-eq = cong₂ _+_ (sums-cons-head u x (x₂ ∷ xs) px)
+                         (sums-cons-head u t [] pt)
+      collapse : (proj₁ x + S) + (proj₁ t + + 0) ≡ S
+      collapse = trans (cong (λ w → (proj₁ x + S) + w) (+-identityʳ (proj₁ t)))
+                 (trans (sym (+-assoc (proj₁ x) S (proj₁ t)))
+                 (trans (cong (λ w → proj₁ x + w) (+-comm S (proj₁ t)))
+                 (trans (+-assoc (proj₁ x) (proj₁ t) S)
+                 (trans (cong (λ w → w + S) (+-comm (proj₁ x) (proj₁ t)))
+                 (trans (cong (λ w → w + S) z)
+                        (+-identityˡ S))))))
+  in  trans (sym collapse) (sym rhs-eq)
+cons-eq-zero-sums u t x x₂ xs e z (yes pt) (no px) = ⊥-elim (px (trans pt e))
+cons-eq-zero-sums u t x x₂ xs e z (no pt) (yes px) = ⊥-elim (pt (trans px (sym e)))
+cons-eq-zero-sums u t x x₂ xs e z (no pt) (no px) =
+  let rhs-eq = cong₂ _+_ (sums-cons-tail u x (x₂ ∷ xs) px)
+                         (sums-cons-tail u t [] pt)
+  in  trans refl
+      (trans (sym (+-identityʳ (sums u (x₂ ∷ xs)))) (sym rhs-eq))
+
+-- 双元素 eq3-nz：结果 = m ∷ (x₂ ∷ xs)（m = 合并项）
+cons-eq-nz-sums : ∀ u t x x₂ xs →
+  proj₂ t ≡ proj₂ x → ¬ (proj₁ t + proj₁ x ≡ + 0) →
+  Dec (proj₂ u ≡ proj₂ t) → Dec (proj₂ u ≡ proj₂ x) →
+  sums u ((proj₁ t + proj₁ x , proj₂ t) ∷ (x₂ ∷ xs))
+  ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
+cons-eq-nz-sums u t x x₂ xs e nz (yes pt) (yes px) =
+  trans (sums-cons-head u (proj₁ t + proj₁ x , proj₂ t) (x₂ ∷ xs) pt)
+  (trans (solve 2 (λ S a → (a :+ a) :+ S := (a :+ S) :+ (a :+ con (+ 0))) refl
+                 (sums u (x₂ ∷ xs)) (proj₂ t))
+         (sym (cong₂ _+_ (sums-cons-head u x (x₂ ∷ xs) px)
+                         (sums-cons-head u t [] pt))))
+cons-eq-nz-sums u t x x₂ xs e nz (yes pt) (no px) = ⊥-elim (px (trans pt e))
+cons-eq-nz-sums u t x x₂ xs e nz (no pt) (yes px) = ⊥-elim (pt (trans px (sym e)))
+cons-eq-nz-sums u t x x₂ xs e nz (no pt) (no px) =
+  trans (sums-cons-tail u (proj₁ t + proj₁ x , proj₂ t) (x₂ ∷ xs) pt)
+  (trans (sym (+-identityʳ (sums u (x₂ ∷ xs))))
+         (sym (cong₂ _+_ (sums-cons-tail u x (x₂ ∷ xs) px)
+                         (sums-cons-tail u t [] pt))))
+
+-- 双元素 lt3：结果 = x ∷ (insertCᵌ t (x₂ ∷ xs) s)（递归）
+cons-lt3-sums : ∀ u t x x₂ xs (w' : Laurent) →
+  proj₂ t < proj₂ x → Canon (x₂ ∷ xs) →
+  Dec (proj₂ u ≡ proj₂ x) →
+  sums u w' ≡ sums u (x₂ ∷ xs) + sums u (t ∷ []) →
+  sums u (x ∷ w') ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
+cons-lt3-sums u t x x₂ xs w' l s (yes px) ih =
+  trans (sums-cons-head u x w' px)
+  (trans (cong (λ w → proj₁ x + w) ih)
+         (sym (trans (cong (λ w → w + sums u (t ∷ []))
+                           (sums-cons-head u x (x₂ ∷ xs) px))
+                     (sym (+-assoc (proj₁ x) (sums u (x₂ ∷ xs))
+                                   (sums u (t ∷ [])))))))
+cons-lt3-sums u t x x₂ xs w' l s (no px) ih =
+  trans (sums-cons-tail u x w' px)
+  (trans ih
+         (sym (cong (λ w → w + sums u (t ∷ []))
+                    (sums-cons-tail u x (x₂ ∷ xs) px))))
+
+-- ────────────────────────────────────────────────────────────────────
 -- 核心引理：插入保持逐指数和（对 Canon 结构归纳）
--- 不变量：sums u (插入结果) ≡ sums u ts + sums u (t ∷ [])
 -- ────────────────────────────────────────────────────────────────────
 
 insertCᵌ-sums : ∀ (u t : LaurentTerm) ts (c : Canon ts) →
@@ -72,67 +265,25 @@ insertCᵌ-sums u t [] c =
 -- 单元素分支
 insertCᵌ-sums u t (x ∷ []) (canon-one .x)
   with cmp3 (proj₂ t) (proj₂ x)
-... | gt3 _ _ g =
-  -- 结果 = t ∷ (x ∷ []) = (t ∷ []) ++ (x ∷ [])：sums-++ + comm
-  trans (sums-++ u (t ∷ []) (x ∷ []))
-        (+-comm (sums u (t ∷ [])) (sums u (x ∷ [])))
-... | lt3 _ _ l =
-  -- 结果 = x ∷ (t ∷ []) = (x ∷ []) ++ (t ∷ [])：sums-++ + comm
-  trans (sums-++ u (x ∷ []) (t ∷ []))
-        (+-comm (sums u (x ∷ [])) (sums u (t ∷ [])))
+... | gt3 _ _ g = one-gt-sums u t x g (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
+... | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
+...   | yes z = one-eq-zero-sums u t x e z (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
+...   | no nz = one-eq-nz-sums u t x e nz (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
+insertCᵌ-sums u t (x ∷ []) (canon-one .x)
+  | lt3 _ _ l = one-lt-sums u t x l (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
 
--- 双元素及以上分支
+-- 双元素分支
 insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
   with cmp3 (proj₂ t) (proj₂ x)
-... | gt3 _ _ g =
-  -- 结果 = t ∷ (x ∷ x₂ ∷ xs) = (t ∷ []) ++ (x ∷ x₂ ∷ xs)：sums-++ + comm
-  trans (sums-++ u (t ∷ []) (x ∷ x₂ ∷ xs))
-        (+-comm (sums u (t ∷ [])) (sums u (x ∷ x₂ ∷ xs)))
-
--- 合并分支（eq3）：结果封闭 = m ∷ (x₂ ∷ xs)，逐 u≟x 情形 + solver
-insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
-  | eq3 _ _ e with proj₂ u ≟ proj₂ x
-...   | yes ux =
-  -- LHS = (proj₁ t + proj₁ x) + sums u (x₂ ∷ xs)
-  -- RHS = (proj₂ x + sums u (x₂ ∷ xs)) + (proj₂ t + + 0)
-  --   （ux-yes：proj₂ u ≡ proj₂ x；e：proj₂ t ≡ proj₂ x）
-  solve 3 (λ S a b → S + (a + b) := (b + S) + (a + con (+ 0)))
-          refl (sums u (x₂ ∷ xs)) (proj₂ t) (proj₂ x)
-...   | no ux =
-  -- ux-no：exp u ≢ exp x（e）⟹ exp u ≢ exp m ⟹ LHS = sums u (x₂ ∷ xs)
-  -- RHS = sums u (x₂ ∷ xs) + (+ 0 + + 0)
-  trans (sym (+-identityʳ (sums u (x₂ ∷ xs))))
-        (trans (cong (λ w → w + sums u (x₂ ∷ xs)) (sym (+-identityˡ (+ 0))))
-               (trans (cong (λ w → w + (+ 0 + + 0)) (sym (+-identityʳ (+ 0))))
-                      refl))
-
--- 消去分支（eq-zero）：bt-cancel/bt-exeq 逐 u≟t/u≟x 情形
+... | gt3 _ _ g = cons-gt-sums u t x x₂ xs (proj₂ u ≟ proj₂ t)
 insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
   | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
-...   | yes z with proj₂ u ≟ proj₂ t | proj₂ u ≟ proj₂ x
-  -- LHS = sums u (x₂ ∷ xs)；RHS = sums u (x ∷ …) + sums u (t ∷ [])
-  --     = (proj₁ x + sums u (x₂ ∷ xs)) + (proj₁ t + + 0)
-  -- bt-cancel : proj₁ t + proj₁ x ≡ + 0 ⟹ proj₁ x + proj₁ t ≡ + 0
-  --   ⟹ RHS ≡ sums u (x₂ ∷ xs) + + 0 ≡ LHS
-  trans (sym (+-identityʳ (sums u (x₂ ∷ xs))))
-        (trans (cong (λ w → (w + sums u (x₂ ∷ xs)) + (proj₁ t + + 0))
-                          (sym (trans (+-comm (proj₁ t) (proj₁ x)) (sym z))))
-               (sym (trans (+-assoc (proj₁ x) (proj₁ t) (+ 0))
-                           (+-identityʳ (proj₁ x + proj₁ t)))))
-...     | yes pt | no px = ⊥-elim (px (trans pt (sym e)))
-...     | no pt | yes px = ⊥-elim (pt (trans (sym px) e))
-...     | no pt | no px =
-  -- LHS = sums u (x₂ ∷ xs)；RHS = sums u (x₂ ∷ xs) + + 0
-  trans (sym (+-identityʳ (sums u (x₂ ∷ xs))))
-        (trans (cong (λ w → w + (+ 0 + + 0)) (sym (+-identityˡ (+ 0))))
-               refl)
-
--- 后插分支组装（sums-++ + 内层 IH）
+...   | yes z = cons-eq-zero-sums u t x x₂ xs e z
+                 (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
+...   | no nz = cons-eq-nz-sums u t x x₂ xs e nz
+                 (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
 insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
   | lt3 _ _ l with insertCᵌ t (x₂ ∷ xs) s
 ...   | (w' , cw' , dj') =
-  trans (sums-++ u (x ∷ []) (proj₁ (insertCᵌ t (x₂ ∷ xs) s)))
-        (trans (cong (λ w → proj₁ x + w)
-                     (insertCᵌ-sums u t (x₂ ∷ xs) s))
-               (sym (+-assoc (proj₁ x) (sums u (x₂ ∷ xs))
-                             (sums u (t ∷ [])))))
+  cons-lt3-sums u t x x₂ xs w' l s (proj₂ u ≟ proj₂ x)
+    (insertCᵌ-sums u t (x₂ ∷ xs) s)
