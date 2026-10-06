@@ -69,6 +69,15 @@ sums-++ u ((c , n) ∷ xs) ys with proj₂ u ≟ n
         (sym (+-assoc c (sums u xs) (sums u ys)))
 ... | no _ = sums-++ u xs ys
 
+-- 零和洗牌：dx + dt ≡ + 0 ⟹ S ≡ (dx + S) + dt
+zero-shuffle : ∀ S dx dt → dx + dt ≡ + 0 → S ≡ (dx + S) + dt
+zero-shuffle S dx dt z =
+  sym (trans (+-assoc dx S dt)
+  (trans (cong (λ w → dx + w) (+-comm S dt))
+  (trans (sym (+-assoc dx dt S))
+  (trans (cong (_+ S) z)
+         (+-identityˡ S)))))
+
 -- ────────────────────────────────────────────────────────────────────
 -- 辅助函数（Dec 参数做情形分析）
 -- ────────────────────────────────────────────────────────────────────
@@ -197,15 +206,10 @@ cons-eq-zero-sums u t x x₂ xs e z (yes pt) (yes px) =
   let S = sums u (x₂ ∷ xs)
       rhs-eq = cong₂ _+_ (sums-cons-head u x (x₂ ∷ xs) px)
                          (sums-cons-head u t [] pt)
-      collapse : (proj₁ x + S) + (proj₁ t + + 0) ≡ S
-      collapse = trans (cong (λ w → (proj₁ x + S) + w) (+-identityʳ (proj₁ t)))
-                 (trans (sym (+-assoc (proj₁ x) S (proj₁ t)))
-                 (trans (cong (λ w → proj₁ x + w) (+-comm S (proj₁ t)))
-                 (trans (+-assoc (proj₁ x) (proj₁ t) S)
-                 (trans (cong (λ w → w + S) (+-comm (proj₁ x) (proj₁ t)))
-                 (trans (cong (λ w → w + S) z)
-                        (+-identityˡ S))))))
-  in  trans (sym collapse) (sym rhs-eq)
+      z' : proj₁ x + (proj₁ t + + 0) ≡ + 0
+      z' = trans (cong (λ w → proj₁ x + w) (+-identityʳ (proj₁ t)))
+                 (trans (+-comm (proj₁ x) (proj₁ t)) z)
+  in  trans (zero-shuffle S (proj₁ x) (proj₁ t + + 0) z') (sym rhs-eq)
 cons-eq-zero-sums u t x x₂ xs e z (yes pt) (no px) = ⊥-elim (px (trans pt e))
 cons-eq-zero-sums u t x x₂ xs e z (no pt) (yes px) = ⊥-elim (pt (trans px (sym e)))
 cons-eq-zero-sums u t x x₂ xs e z (no pt) (no px) =
@@ -222,8 +226,8 @@ cons-eq-nz-sums : ∀ u t x x₂ xs →
   ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
 cons-eq-nz-sums u t x x₂ xs e nz (yes pt) (yes px) =
   trans (sums-cons-head u (proj₁ t + proj₁ x , proj₂ t) (x₂ ∷ xs) pt)
-  (trans (solve 2 (λ S a → (a :+ a) :+ S := (a :+ S) :+ (a :+ con (+ 0))) refl
-                 (sums u (x₂ ∷ xs)) (proj₂ t))
+  (trans (solve 3 (λ S a b → (a :+ b) :+ S := (b :+ S) :+ (a :+ con (+ 0))) refl
+                 (sums u (x₂ ∷ xs)) (proj₁ t) (proj₁ x))
          (sym (cong₂ _+_ (sums-cons-head u x (x₂ ∷ xs) px)
                          (sums-cons-head u t [] pt))))
 cons-eq-nz-sums u t x x₂ xs e nz (yes pt) (no px) = ⊥-elim (px (trans pt e))
@@ -243,10 +247,10 @@ cons-lt3-sums : ∀ u t x x₂ xs (w' : Laurent) →
 cons-lt3-sums u t x x₂ xs w' l s (yes px) ih =
   trans (sums-cons-head u x w' px)
   (trans (cong (λ w → proj₁ x + w) ih)
-         (sym (trans (cong (λ w → w + sums u (t ∷ []))
-                           (sums-cons-head u x (x₂ ∷ xs) px))
-                     (sym (+-assoc (proj₁ x) (sums u (x₂ ∷ xs))
-                                   (sums u (t ∷ [])))))))
+         (trans (solve 3 (λ S a b → b :+ (S :+ a) := (b :+ S) :+ a) refl
+                        (sums u (x₂ ∷ xs)) (sums u (t ∷ [])) (proj₁ x))
+                (cong (λ w → w + sums u (t ∷ []))
+                      (sym (sums-cons-head u x (x₂ ∷ xs) px)))))
 cons-lt3-sums u t x x₂ xs w' l s (no px) ih =
   trans (sums-cons-tail u x w' px)
   (trans ih
@@ -257,33 +261,37 @@ cons-lt3-sums u t x x₂ xs w' l s (no px) ih =
 -- 核心引理：插入保持逐指数和（对 Canon 结构归纳）
 -- ────────────────────────────────────────────────────────────────────
 
-insertCᵌ-sums : ∀ (u t : LaurentTerm) ts (c : Canon ts) →
-  sums u (proj₁ (insertCᵌ t ts c)) ≡ sums u ts + sums u (t ∷ [])
-insertCᵌ-sums u t [] c =
-  sym (+-identityˡ (sums u (t ∷ [])))
+mutual
 
--- 单元素分支
-insertCᵌ-sums u t (x ∷ []) (canon-one .x)
-  with cmp3 (proj₂ t) (proj₂ x)
-... | gt3 _ _ g = one-gt-sums u t x g (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
-... | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
-...   | yes z = one-eq-zero-sums u t x e z (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
-...   | no nz = one-eq-nz-sums u t x e nz (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
-insertCᵌ-sums u t (x ∷ []) (canon-one .x)
-  | lt3 _ _ l = one-lt-sums u t x l (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
+-- 双元素分支（mutual：cons-sums 与 insertCᵌ-sums 互递归）
+mutual
 
--- 双元素分支
-insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
-  with cmp3 (proj₂ t) (proj₂ x)
-... | gt3 _ _ g = cons-gt-sums u t x x₂ xs (proj₂ u ≟ proj₂ t)
-insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
-  | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
-...   | yes z = cons-eq-zero-sums u t x x₂ xs e z
-                 (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
-...   | no nz = cons-eq-nz-sums u t x x₂ xs e nz
-                 (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
-insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
-  | lt3 _ _ l with insertCᵌ t (x₂ ∷ xs) s
-...   | (w' , cw' , dj') =
-  cons-lt3-sums u t x x₂ xs w' l s (proj₂ u ≟ proj₂ x)
-    (insertCᵌ-sums u t (x₂ ∷ xs) s)
+  cons-sums : ∀ u t x x₂ xs (p : proj₂ x₂ < proj₂ x) (s : Canon (x₂ ∷ xs)) →
+    Cmp3 (proj₂ t) (proj₂ x) →
+    sums u (proj₁ (insertCᵌ t (x ∷ x₂ ∷ xs) (canon-cons x x₂ xs p s)))
+    ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
+  cons-sums u t x x₂ xs p s (gt3 _ _ g) =
+    cons-gt-sums u t x x₂ xs (proj₂ u ≟ proj₂ t)
+  cons-sums u t x x₂ xs p s (eq3 _ _ e) with (proj₁ t + proj₁ x) ≟ + 0
+  ... | yes z = cons-eq-zero-sums u t x x₂ xs e z
+                  (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
+  ... | no nz = cons-eq-nz-sums u t x x₂ xs e nz
+                  (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
+  cons-sums u t x x₂ xs p s (lt3 _ _ l) =
+    cons-lt3-sums u t x x₂ xs (proj₁ (insertCᵌ t (x₂ ∷ xs) s)) l s
+      (proj₂ u ≟ proj₂ x) (insertCᵌ-sums u t (x₂ ∷ xs) s)
+
+  insertCᵌ-sums : ∀ (u t : LaurentTerm) ts (c : Canon ts) →
+    sums u (proj₁ (insertCᵌ t ts c)) ≡ sums u ts + sums u (t ∷ [])
+  insertCᵌ-sums u t [] c =
+    sym (+-identityˡ (sums u (t ∷ [])))
+  insertCᵌ-sums u t (x ∷ []) (canon-one .x)
+    with cmp3 (proj₂ t) (proj₂ x)
+  ... | gt3 _ _ g = one-gt-sums u t x g (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
+  ... | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
+  ...   | yes z = one-eq-zero-sums u t x e z (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
+  ...   | no nz = one-eq-nz-sums u t x e nz (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
+  insertCᵌ-sums u t (x ∷ []) (canon-one .x)
+    | lt3 _ _ l = one-lt-sums u t x l (proj₂ u ≟ proj₂ t) (proj₂ u ≟ proj₂ x)
+  insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s) =
+    cons-sums u t x x₂ xs p s (cmp3 (proj₂ t) (proj₂ x))
