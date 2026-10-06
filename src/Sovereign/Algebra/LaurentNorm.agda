@@ -180,16 +180,13 @@ insertCᵌ-spec-one t x c
 
 lt3-cons : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) →
   proj₂ x₂ < proj₂ x → proj₂ t < proj₂ x → Canon (x₂ ∷ xs) →
-  (w' : Laurent) → Canon w' →
-  ((w' ≡ x₂ ∷ xs)
-   ⊎ (Σ LaurentTerm (λ h → Σ Laurent (λ r →
-        w' ≡ h ∷ r × ((h ≡ t) ⊎ InT h (x₂ ∷ xs) ⊎ (proj₂ h ≡ proj₂ t))))))
-  → SpecT t (x ∷ x₂ ∷ xs)
-lt3-cons t x x₂ xs p l s w' cw' dj' with dj'
-... | inj₁ weq =
+  SpecT t (x₂ ∷ xs) → SpecT t (x ∷ x₂ ∷ xs)
+lt3-cons t x x₂ xs p l s inner with inner
+... | (w' , cw' , dj') with dj'
+...   | inj₁ weq =
   -- 内层结果 = 尾：w = x ∷ w' = x ∷ x₂ ∷ xs = ts ⟹ 第一析取
   (x ∷ (x₂ ∷ xs) , canon-cons x x₂ xs p s , inj₁ (inj₁ refl))
-... | inj₂ (h , r , eq , src) =
+...   | inj₂ (h , r , eq , src) =
   -- 内层结果 = h ∷ r：外层第三析取（首项 x，来源恒 InT x ts）
   let Cn : Canon (x ∷ (h ∷ r))
       Cn = canon-cons x h r (lt3-bound t x x₂ xs p l s h src)
@@ -226,7 +223,7 @@ insertCᵌ t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
 ...   | yes _ =
     (x ∷ (x₂ ∷ xs)
     , canon-cons x x₂ xs p s
-    , inj₁ ((x , (x₂ ∷ xs)) , refl , refl))
+    , inj₁ (inj₁ refl))
 ...   | no _ =
   let m = (proj₁ t + proj₁ x , proj₂ t)
       exp-x₂<exp-m : proj₂ x₂ < proj₂ m
@@ -239,5 +236,4 @@ insertCᵌ t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
       Cn = canon-cons m x₂ xs exp-x₂<exp-m s
   in (m ∷ (x₂ ∷ xs) , Cn , inj₂ H)
 insertCᵌ t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
-  | lt3 _ _ l with insertCᵌ t (x₂ ∷ xs) s
-...   | (w' , cw' , dj') = lt3-cons t x x₂ xs p l s w' cw' dj'
+  | lt3 _ _ l = lt3-cons t x x₂ xs p l s (insertCᵌ t (x₂ ∷ xs) s)
