@@ -77,90 +77,109 @@ cmp3 n n' with n <? n'
 --   w = h ∷ r 且首项来源：h ≡ t，或 h ∈ ts，或 exp h ≡ exp t（合并项）
 -- ────────────────────────────────────────────────────────────────────
 
+-- 三路：① w = ts（无变化）；② ts = x' ∷ xs' 且 w = xs'（头被消去）；
+-- ③ w = h ∷ r 且首项来源：h ≡ t，或 h ∈ ts，或 exp h ≡ exp t（合并项）
 SpecT : LaurentTerm → Laurent → Set
-SpecT t ts = Σ Laurent (λ w →
-   Canon w
-   × ((w ≡ ts)
-      ⊎ (Σ LaurentTerm (λ h → Σ Laurent (λ r →
-           w ≡ h ∷ r
-           × ((h ≡ t) ⊎ InT h ts ⊎ (proj₂ h ≡ proj₂ t)))))))
+SpecT t ts =
+  Σ Laurent (λ w →
+    Canon w
+    × ((((w ≡ ts)
+         ⊎ (Σ LaurentTerm (λ x' → Σ Laurent (λ xs' →
+              (ts ≡ x' ∷ xs') × (w ≡ xs')))))
+        ⊎ (Σ LaurentTerm (λ h → Σ Laurent (λ r →
+             (w ≡ h ∷ r)
+             × ((h ≡ t) ⊎ InT h ts ⊎ (proj₂ h ≡ proj₂ t))))))))
 
 -- ────────────────────────────────────────────────────────────────────
+-- 首项来源重定向：合并项 m 的指数 = exp t
+--   h ≡ m ⟹ exp h ≡ exp t；h ∈ 尾 ⟹ 外层成员（多一个 there）
+dj-redirect : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) (m h : LaurentTerm) →
+  proj₂ m ≡ proj₂ t →
+  ((h ≡ m) ⊎ InT h (x₂ ∷ xs) ⊎ (proj₂ h ≡ proj₂ m))
+  → ((h ≡ t) ⊎ InT h (x ∷ x₂ ∷ xs) ⊎ (proj₂ h ≡ proj₂ t))
+dj-redirect t x x₂ xs m h me≡te (inj₁ h≡m) =
+  inj₂ (inj₂ (trans (cong proj₂ h≡m) me≡te))
+dj-redirect t x x₂ xs m h me≡te (inj₂ (inj₁ wit)) =
+  inj₂ (inj₁ (there h x (x₂ ∷ xs) wit))
+dj-redirect t x x₂ xs m h me≡te (inj₂ (inj₂ eh≡em)) =
+  inj₂ (inj₂ (trans eh≡em me≡te))
+
 -- 单元素插入分支（独立函数，避免嵌套 with 的解析/覆盖问题）
 -- ────────────────────────────────────────────────────────────────────
 
+one-eq-redirect : ∀ (t x m h : LaurentTerm) → proj₂ t ≡ proj₂ x →
+  proj₂ m ≡ proj₂ t →
+  ((h ≡ m) ⊎ InT h (x ∷ []) ⊎ (proj₂ h ≡ proj₂ m))
+  → ((h ≡ t) ⊎ InT h (x ∷ []) ⊎ (proj₂ h ≡ proj₂ t))
+one-eq-redirect t x m h e me≡te (inj₁ h≡m) =
+  inj₂ (inj₂ (trans (cong proj₂ h≡m) me≡te))
+one-eq-redirect t x m h e me≡te (inj₂ (inj₁ wit)) = inj₂ (inj₁ wit)
+one-eq-redirect t x m h e me≡te (inj₂ (inj₂ eh≡em)) =
+  inj₂ (inj₂ (trans eh≡em me≡te))
+
 insertCᵌ-spec-one : ∀ t x → Canon (x ∷ []) → SpecT t (x ∷ [])
-one-gt : ∀ (t x : LaurentTerm) → Canon (x ∷ []) → proj₂ x < proj₂ t →
-         SpecT t (x ∷ [])
-one-gt t x c g =
-  (t ∷ (x ∷ []) , canon-cons t x [] g (canon-one x)
-  , inj₂ ((t , (x ∷ []) , refl) , inj₁ refl))
-
-one-eq : ∀ (t x : LaurentTerm) → Canon (x ∷ []) → proj₂ t ≡ proj₂ x →
-         SpecT t (x ∷ [])
-one-eq t x c e with (proj₁ t + proj₁ x) ≟ + 0
-... | yes _ = ([] , canon-nil , inj₁ refl)
-... | no _  = ((proj₁ t + proj₁ x , proj₂ t) ∷ [] , canon-one _
-              , inj₂ (((proj₁ t + proj₁ x , proj₂ t) , []) , inj₂ (inj₂ refl)))
-
-one-lt : ∀ (t x : LaurentTerm) → Canon (x ∷ []) → proj₂ t < proj₂ x →
-         SpecT t (x ∷ [])
-one-lt t x c l =
-  (x ∷ (t ∷ []) , canon-cons x t [] l (canon-one t)
-  , inj₂ ((x , (t ∷ []) , refl) , inj₂ (inj₁ (here x []))))
-
 insertCᵌ-spec-one t x c
   with cmp3 (proj₂ t) (proj₂ x)
-... | gt3 _ _ g = one-gt t x c g
-... | eq3 _ _ e = one-eq t x c e
-... | lt3 _ _ l = one-lt t x c l
+... | gt3 _ _ g =
+  let H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            t ∷ (x ∷ []) ≡ h ∷ r
+            × ((h ≡ t) ⊎ InT h (x ∷ []) ⊎ (proj₂ h ≡ proj₂ t))))
+      H = (t , (x ∷ []) , refl , inj₁ refl)
+  in (t ∷ (x ∷ []) , canon-cons t x [] g (canon-one x) , inj₂ H)
+... | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
+...   | yes _ = ([] , canon-nil , inj₁ (inj₂ (x , [] , refl , refl)))
+...   | no _ =
+  let m = (proj₁ t + proj₁ x , proj₂ t)
+      H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            m ∷ [] ≡ h ∷ r
+            × ((h ≡ t) ⊎ InT h (x ∷ []) ⊎ (proj₂ h ≡ proj₂ t))))
+      H = (m , [] , refl , one-eq-redirect t x m m e refl (inj₁ refl))
+  in (m ∷ [] , canon-one _ , inj₂ H)
+insertCᵌ-spec-one t x c
+  | lt3 _ _ l =
+  let H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            x ∷ (t ∷ []) ≡ h ∷ r
+            × ((h ≡ t) ⊎ InT h (x ∷ []) ⊎ (proj₂ h ≡ proj₂ t))))
+      H = (x , (t ∷ []) , refl , inj₂ (inj₁ (here x [])))
+  in (x ∷ (t ∷ []) , canon-cons x t [] l (canon-one t) , inj₂ H)
 
 -- ────────────────────────────────────────────────────────────────────
 -- 主定理
 -- ────────────────────────────────────────────────────────────────────
 
-insertCᵌ : ∀ (t : LaurentTerm) ts → Canon ts → SpecT t ts
-insertCᵌ t [] c = (t ∷ [] , canon-one t , inj₂ ((t , ([] , (refl , inj₁ refl)))))
-insertCᵌ t (x ∷ []) (canon-one .x) = insertCᵌ-spec-one t x (canon-one x)
-insertCᵌ t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
-  with cmp3 (proj₂ t) (proj₂ x)
-... | gt3 _ _ g =
-  (t ∷ (x ∷ x₂ ∷ xs)
-  , canon-cons t x (x₂ ∷ xs) g (canon-cons x x₂ xs p s)
-  , inj₂ ((t , (x ∷ x₂ ∷ xs) , refl) , inj₁ refl))
-... | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
-...   | yes _ =
-    (x ∷ (x₂ ∷ xs)
-    , canon-cons x x₂ xs p s
-    , inj₂ ((x , (x₂ ∷ xs) , refl) , inj₂ (inj₁ (here x (x₂ ∷ xs)))))
-...   | no _ with insertCᵌ (proj₁ t + proj₁ x , proj₂ t) (x₂ ∷ xs) s
-...     | (h , r , cw , inj₁ h≡m) =
-      (h ∷ r , cw
-      , inj₂ ((h , r , refl) , inj₂ (inj₂ (trans (cong proj₂ h≡m) (sym e)))))
-...     | (h , r , cw , inj₂ (inj₁ wit)) =
-      (h ∷ r , cw
-      , inj₂ ((h , r , refl) , inj₂ (inj₁ (there h x (x₂ ∷ xs) wit))))
-...     | (h , r , cw , inj₂ (inj₂ eh≡em)) =
-      (h ∷ r , cw
-      , inj₂ ((h , r , refl) , inj₂ (inj₂ (trans eh≡em (sym e)))))
-insertCᵌ t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
-  | lt3 _ _ l with insertCᵌ t (x₂ ∷ xs) s
-...   | (h , r , cw , inj₁ h≡t) =
-    (x ∷ (h ∷ r)
-    , canon-cons x h r (subst (λ e → e < proj₂ x) (sym (cong proj₂ h≡t)) l) cw
-    , inj₂ ((x , (h ∷ r) , refl) , inj₂ (inj₁ (here x (x ∷ x₂ ∷ xs)))))
-...   | (h , r , cw , inj₂ (inj₁ wit)) =
-    (x ∷ (h ∷ r)
-    , canon-cons x h r bound cw
-    , inj₂ ((x , (h ∷ r) , refl) , inj₂ (inj₁ (here x (x ∷ x₂ ∷ xs)))))
-    where
-    bound-fun : ∀ (h : LaurentTerm) → InT h (x₂ ∷ xs) → proj₂ h < proj₂ x
-    bound-fun h wit' with wit'
-    ... | here .x₂ .xs = p
-    ... | there .h .x₂ .xs wit'' = <-trans (canon-<-head s h wit'') p
-    bound : proj₂ h < proj₂ x
-    bound = bound-fun h wit
-...   | (h , r , cw , inj₂ (inj₂ eh≡et)) =
-    (x ∷ (h ∷ r)
-    , canon-cons x h r (subst (λ e → e < proj₂ x) (sym eh≡et) l) cw
-    , inj₂ ((x , (h ∷ r) , refl) , inj₂ (inj₁ (here x (x ∷ x₂ ∷ xs)))))
+-- InT 成员的界：h ∈ x₂ ∷ xs ⟹ exp h < exp x
+--   （x₂ 的界由调用方以 p 提供：here 时 h = x₂）
+inT-bound : ∀ (x : LaurentTerm) (x₂ : LaurentTerm) (xs : Laurent) →
+  proj₂ x₂ < proj₂ x → Canon (x₂ ∷ xs) →
+  ∀ (h : LaurentTerm) → InT h (x₂ ∷ xs) → proj₂ h < proj₂ x
+inT-bound x x₂ xs p s h (here .x₂ .xs) = p
+inT-bound x x₂ xs p s h (there .h .x₂ .xs wit'') =
+  <-trans (canon-<-head s h wit'') p
+
+-- 后插分支组装：内层 w-规格的两路来源 ⟹ 外层（结果头为 x）
+lt3-cons : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) →
+  proj₂ x₂ < proj₂ x → proj₂ t < proj₂ x → Canon (x₂ ∷ xs) →
+  (w' : Laurent) → Canon w' →
+  ((w' ≡ x₂ ∷ xs)
+   ⊎ (Σ LaurentTerm (λ h → Σ Laurent (λ r →
+        w' ≡ h ∷ r × ((h ≡ t) ⊎ InT h (x₂ ∷ xs) ⊎ (proj₂ h ≡ proj₂ t))))))
+  → SpecT t (x ∷ x₂ ∷ xs)
+lt3-cons t x x₂ xs p l s w' cw' dj' with dj'
+... | inj₁ weq =
+  (x ∷ (x₂ ∷ xs) , canon-cons x x₂ xs p s
+  , inj₁ (inj₁ refl))
+... | inj₂ (h , r , eq , src) =
+  let Cn : Canon (x ∷ (h ∷ r))
+      Cn = canon-cons x h r (bound-fun h src) (subst (λ v → Canon v) eq cw')
+      H : Σ LaurentTerm (λ h₀ → Σ Laurent (λ r₀ →
+            x ∷ (h ∷ r) ≡ h₀ ∷ r₀
+            × ((h₀ ≡ t) ⊎ InT h₀ (x ∷ x₂ ∷ xs) ⊎ (proj₂ h₀ ≡ proj₂ t))))
+      H = (x , (h ∷ r) , refl , inj₂ (inj₁ (here x (x₂ ∷ xs))))
+  in (x ∷ (h ∷ r) , Cn , inj₂ H)
+  where
+  bound-fun : ∀ (h : LaurentTerm) →
+    ((h ≡ t) ⊎ InT h (x₂ ∷ xs) ⊎ (proj₂ h ≡ proj₂ t)) → proj₂ h < proj₂ x
+  bound-fun h (inj₁ h≡t) = subst (λ e → e < proj₂ x) (sym (cong proj₂ h≡t)) l
+  bound-fun h (inj₂ (inj₁ wit)) = inT-bound x x₂ xs p s h wit
+  bound-fun h (inj₂ (inj₂ eh≡et)) = subst (λ e → e < proj₂ x) (sym eh≡et) l
+
