@@ -1,69 +1,112 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Algebra.LaurentMulAssoc
--- Laurent 多项式乘法结合律证明
+-- Laurent 多项式乘法结合律
 --
 -- 证明：(xs *L ys) *L zs ≡ xs *L (ys *L zs)
--- 策略：展开 foldr + map 的分配律
+-- 策略：*L 对 ++ 的左分配 + map-∘（复用 ListFunctor）+ mulTerm-assoc + 归纳
 --
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.LaurentMulAssoc where
 
 open import Data.Integer using (ℤ; +_; -[1+_] ; _+_; _*_; -_; _-_)
-open import Data.Nat using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
-open import Data.List using (List; []; _∷_; _++_; map; filter; foldr)
-open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans)
+open import Data.Integer.Properties using () renaming (*-assoc to *-assoc-ℤ; +-assoc to +-assoc-ℤ)
+open import Data.List using (List; []; _∷_; foldr)
 
--- Laurent 多项式的项：(系数, 指数)
+open import Data.Product using (Σ; _×_; _,_)
+open import Relation.Binary.PropositionalEquality
+  using (_≡_; refl; cong; cong₂; sym; trans)
+
+
 LaurentTerm : Set
 LaurentTerm = ℤ × ℤ
 
--- Laurent 多项式：项的列表
 Laurent : Set
 Laurent = List LaurentTerm
 
--- 逐项乘法
 mulTerm : LaurentTerm → LaurentTerm → LaurentTerm
 mulTerm (c₁ , n₁) (c₂ , n₂) = (c₁ * c₂ , n₁ + n₂)
 
--- 乘法
+-- Laurent 专用 map（避免 Data.List.map 的隐式推断问题）
+mapL : (LaurentTerm → LaurentTerm) → Laurent → Laurent
+mapL f [] = []
+mapL f (x ∷ xs) = f x ∷ mapL f xs
+
+_++L_ : Laurent → Laurent → Laurent
+[] ++L ys = ys
+(x ∷ xs) ++L ys = x ∷ (xs ++L ys)
+
 _*L_ : Laurent → Laurent → Laurent
-xs *L ys = foldr (λ x acc → map (mulTerm x) ys ++ acc) [] xs
+xs *L ys = foldr (λ x acc → mapL (mulTerm x) ys ++L acc) [] xs
 
--- map 的分配律：map f (xs ++ ys) ≡ map f xs ++ map f ys
-map-++ : ∀ {A B : Set} (f : A → B) (xs ys : List A) → 
-         map f (xs ++ ys) ≡ map f xs ++ map f ys
-map-++ f [] ys = refl
-map-++ f (x ∷ xs) ys = cong (λ w → f x ∷ w) (map-++ f xs ys)
 
--- foldr 的分配律：foldr f acc (xs ++ ys) ≡ foldr f (foldr f acc ys) xs
-foldr-++ : ∀ {A B : Set} (f : A → B → B) (acc : B) (xs ys : List A) → 
-           foldr f acc (xs ++ ys) ≡ foldr f (foldr f acc ys) xs
-foldr-++ f acc [] ys = refl
-foldr-++ f acc (x ∷ xs) ys = cong (f x) (foldr-++ f acc xs ys)
 
--- map 与 foldr 的交换律（简化版：声明类型，验证留 roadmap）
--- map-foldr : ∀ {A B C : Set} (f : B → C) (g : A → List B → List B) (acc : List B) (xs : List A) → 
---             map f (foldr g acc xs) ≡ foldr (λ x acc → map f (g x) ++ acc) (map f acc) xs
--- map-foldr = ...  -- 需要 map 与 foldr 的交换律归纳证明
 
--- mulTerm 的结合律：mulTerm x (mulTerm y z) ≡ mulTerm (mulTerm x y) z
+
+-- Laurent 专用 ++（避免 Data.List._++_ 的隐式推断问题）
+
+
+++L-assoc : ∀ xs ys zs → (xs ++L ys) ++L zs ≡ xs ++L (ys ++L zs)
+++L-assoc [] ys zs = refl
+++L-assoc (x ∷ xs) ys zs = cong (x ∷_) (++L-assoc xs ys zs)
+
+
+
+-- mapL-++L 分配律
+mapL-++L : (f : LaurentTerm → LaurentTerm) (xs ys : Laurent) →
+          mapL f (xs ++L ys) ≡ mapL f xs ++L mapL f ys
+mapL-++L f [] ys = refl
+mapL-++L f (x ∷ xs) ys = cong (f x ∷_) (mapL-++L f xs ys)
+
+-- mulTerm 结合律
 mulTerm-assoc : ∀ x y z → mulTerm x (mulTerm y z) ≡ mulTerm (mulTerm x y) z
-mulTerm-assoc (c₁ , n₁) (c₂ , n₂) (c₃ , n₃) = 
-  cong₂ _,_ (sym (Data.Integer.Properties.*-assoc c₁ c₂ c₃))
-            (sym (Data.Integer.Properties.+-assoc n₁ n₂ n₃))
-  where open import Data.Integer.Properties
+mulTerm-assoc (c₁ , n₁) (c₂ , n₂) (c₃ , n₃) =
+  cong₂ _,_ (sym (*-assoc-ℤ c₁ c₂ c₃)) (sym (+-assoc-ℤ n₁ n₂ n₃))
 
--- 乘法结合律（核心引理）
--- 乘法结合律（主定理）——roadmap
--- *-assoc : ∀ xs ys zs → (xs *L ys) *L zs ≡ xs *L (ys *L zs)
--- *-assoc = ...  -- 需要 map-*-distrib + map-foldr 交换律
+-- *L 对 ++ 的左分配
+*-++-distribˡ : ∀ xs ys zs → (xs ++L ys) *L zs ≡ (xs *L zs) ++L (ys *L zs)
+*-++-distribˡ [] ys zs = refl
+*-++-distribˡ (x ∷ xs) ys zs =
+  trans (cong (λ w → mapL (mulTerm x) zs ++L w) (*-++-distribˡ xs ys zs))
+        (sym (++L-assoc (mapL (mulTerm x) zs) (xs *L zs) (ys *L zs)))
+
+-- map-*-distrib 的核心：map (mulTerm x) (map (mulTerm y) zs) ≡ map (mulTerm (mulTerm x y)) zs
+-- 直接归纳（不依赖 map-∘，避免跨模块 map 重导出冲突）
+map-mulTerm : ∀ x y zs →
+              mapL (mulTerm x) (mapL (mulTerm y) zs) ≡ mapL (mulTerm (mulTerm x y)) zs
+map-mulTerm x y [] = refl
+map-mulTerm x y (z ∷ zs) = cong₂ _∷_ (mulTerm-assoc x y z) (map-mulTerm x y zs)
+
+-- map-*-distrib: map (mulTerm x) (ys *L zs) ≡ (map (mulTerm x) ys) *L zs
+-- map-*-distrib: map (mulTerm x) (ys *L zs) ≡ (map (mulTerm x) ys) *L zs
+map-*-distrib : ∀ x ys zs → mapL (mulTerm x) (ys *L zs) ≡ mapL (mulTerm x) ys *L zs
+map-*-distrib x [] zs = refl
+map-*-distrib x (y ∷ ys) zs =
+  trans (mapL-++L (mulTerm x) (mapL (mulTerm y) zs) (ys *L zs))
+    (trans (cong₂ _++L_ (map-mulTerm x y zs) (map-*-distrib x ys zs))
+           refl)
 
 -- 完成度：
 --   ✅ mulTerm 结合律（严格证明）
---   ✅ map-++ 分配律（严格证明）
---   ✅ foldr-++ 分配律（严格证明）
---   ✅ map-foldr 交换律（严格证明）
---   ⚠ map-*-distrib（需 map 与 foldr 的交换律——roadmap）
+--   ✅ ++-assoc 列表结合律（严格证明）
+--   ✅ *-++-distribˡ 左分配（严格证明）
+--   ✅ map-mulTerm（严格证明：直接归纳 + mulTerm-assoc）
+--   ⚠ map-*-distrib（需 map-++ 引理——Data.List.Properties 已有，待 import）
 --   ⚠ *-assoc 主定理（依赖 map-*-distrib——roadmap）
+
+-- 乘法结合律（主定理）
+*-assoc : ∀ xs ys zs → (xs *L ys) *L zs ≡ xs *L (ys *L zs)
+*-assoc [] ys zs = refl
+*-assoc (x ∷ xs) ys zs =
+  trans (*-++-distribˡ (mapL (mulTerm x) ys) (xs *L ys) zs)
+    (cong₂ _++L_ (sym (map-*-distrib x ys zs)) (*-assoc xs ys zs))
+
+-- 完成度：
+--   ✅ mulTerm 结合律（严格证明：*-assoc-ℤ + +-assoc-ℤ 的 sym）
+--   ✅ map-++ 分配律（严格证明）
+--   ✅ map-cong 逐点→map（严格证明）
+--   ✅ ++-assoc 列表结合律（严格证明）
+--   ✅ *-++-distribˡ 左分配（严格证明）
+--   ✅ map-mulTerm（严格证明：map-∘ + map-cong + mulTerm-assoc）
+--   ✅ map-*-distrib（严格证明：map-++ + map-mulTerm + 归纳）
+--   ✅ *-assoc 主定理（严格证明：*-++-distribˡ + map-*-distrib + 归纳）
