@@ -81,19 +81,22 @@ cmp3 n n' with n <? n'
 --       ② w = h ∷ r 且首项来源：h ≡ t，或 h ∈ ts，或 exp h ≡ exp t（合并项）
 -- 头消去来源用 record（避开嵌套 Σ LaurentTerm 的 elaboration bug，
 -- prover_limits 第 39 条）
-record BTail (ts w : Laurent) : Set where
+record BTail (t : LaurentTerm) (ts w : Laurent) : Set where
   constructor mk-btail
   field
     bt-x'  : LaurentTerm
     bt-xs' : Laurent
-    bt-eq₁ : ts ≡ bt-x' ∷ bt-xs'
+    bt-eq  : ts ≡ bt-x' ∷ bt-xs'
     bt-eq₂ : w ≡ bt-xs'
+    -- 相消证据：被消去的头的指数 = t 的指数，系数和为零
+    bt-exeq : proj₂ t ≡ proj₂ bt-x'
+    bt-cancel : proj₁ t + proj₁ bt-x' ≡ + 0
 
 SpecT : LaurentTerm → Laurent → Set
 SpecT t ts =
   Σ Laurent (λ w →
     Canon w
-    × ((BTail ts w)
+    × ((BTail t ts w)
        ⊎ (Σ LaurentTerm (λ h → Σ Laurent (λ r →
             (w ≡ h ∷ r)
             × ((h ≡ t) ⊎ InT h ts ⊎ (proj₂ h ≡ proj₂ t)))))))
@@ -168,9 +171,11 @@ insertCᵌ-spec-one t x c
       H = (t , (x ∷ []) , refl , inj₁ refl)
   in (t ∷ (x ∷ []) , canon-cons t x [] g (canon-one x) , inj₂ H)
 ... | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
-...   | yes _ =
-  let H : BTail (x ∷ []) []
-      H = record { bt-x' = x ; bt-xs' = [] ; bt-eq₁ = refl ; bt-eq₂ = refl }
+...   | yes z =
+  let H : BTail t (x ∷ []) []
+      H = record { bt-x' = x ; bt-xs' = [] ; bt-eq = refl ; bt-eq₂ = refl
+                 ; bt-exeq = e
+                 ; bt-cancel = z }
   in ([] , canon-nil , inj₁ H)
 ...   | no _  =
   let m = (proj₁ t + proj₁ x , proj₂ t)
@@ -192,19 +197,22 @@ insertCᵌ-spec-one t x c
 -- ────────────────────────────────────────────────────────────────────
 
 -- B-分支的项（record 构造，顶层定义避开 with-精炼上下文）
-b-tail : ∀ (x x₂ : LaurentTerm) (xs : Laurent) (w' : Laurent) →
-         Canon w' →
-         w' ≡ x₂ ∷ xs → BTail (x ∷ (x₂ ∷ xs)) w'
-b-tail x x₂ xs w' cw' weq =
-  record { bt-x' = x ; bt-xs' = x₂ ∷ xs ; bt-eq₁ = refl ; bt-eq₂ = weq }
+b-tail : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) (w' : Laurent) →
+         proj₂ t ≡ proj₂ x → proj₁ t + proj₁ x ≡ + 0 → Canon w' →
+         w' ≡ x₂ ∷ xs → BTail t (x ∷ (x₂ ∷ xs)) w'
+b-tail t x x₂ xs w' e z cw' weq =
+  record { bt-x' = x ; bt-xs' = x₂ ∷ xs ; bt-eq = refl ; bt-eq₂ = weq
+         ; bt-exeq = e ; bt-cancel = z }
 
 -- dj₁ 情形的分支项（顶层构造，避开 with-上下文 phantom）
 lt3-cons-inj1 : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) →
   proj₂ x₂ < proj₂ x → Canon (x₂ ∷ xs) → SpecT t (x ∷ x₂ ∷ xs)
 lt3-cons-inj1 t x x₂ xs p s =
-  (x₂ ∷ xs , s
-  , inj₁ (record { bt-x' = x ; bt-xs' = x₂ ∷ xs
-                 ; bt-eq₁ = refl ; bt-eq₂ = refl }))
+  let H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            x ∷ (x₂ ∷ xs) ≡ h ∷ r
+            × ((h ≡ t) ⊎ InT h (x ∷ x₂ ∷ xs) ⊎ (proj₂ h ≡ proj₂ t))))
+      H = (x , (x₂ ∷ xs) , refl , inj₂ (inj₁ (here x (x₂ ∷ xs))))
+  in (x ∷ (x₂ ∷ xs) , canon-cons x x₂ xs p s , inj₂ H)
 
 lt3-cons : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) →
   proj₂ x₂ < proj₂ x → proj₂ t < proj₂ x → Canon (x₂ ∷ xs) →
@@ -246,11 +254,11 @@ insertCᵌ t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
      , canon-cons t x (x₂ ∷ xs) g (canon-cons x x₂ xs p s)
      , inj₂ H)
 ... | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
-...   | yes _ =
-    (x₂ ∷ xs
-    , s
-    , inj₁ (record { bt-x' = x ; bt-xs' = x₂ ∷ xs
-                   ; bt-eq₁ = refl ; bt-eq₂ = refl }))
+...   | yes z =
+    let H : BTail t (x ∷ (x₂ ∷ xs)) (x₂ ∷ xs)
+        H = record { bt-x' = x ; bt-xs' = x₂ ∷ xs ; bt-eq = refl
+                   ; bt-eq₂ = refl ; bt-exeq = e ; bt-cancel = z }
+    in (x₂ ∷ xs , s , inj₁ H)
 ...   | no _ =
   let m = (proj₁ t + proj₁ x , proj₂ t)
       exp-x₂<exp-m : proj₂ x₂ < proj₂ m
