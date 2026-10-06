@@ -6,3 +6,5 @@
 - [T⁶ 离散 N-S 判定台账](nse-t6-discrete-findings.md) — 哪些命题已证否（含最小反例）；「Δ≡0」陷阱与 12 点反例（2026-09-09）
 - [证明技术：配对弹出](../docs/techniques/pair-popping.md) — **已迁至 docs/techniques/（正式技术文档）**；一句话：交换结合和式里的相反数对弹出相消，M9 Jacobi 729→1 行、det 乘法性 6561→1 行
 - [工具调用循环陷阱](tool-call-loop-trap.md) — 同一工具同参数反复查、结果无增量 = 打转；grep 本身不是坏工具（2026-10-01 实测，~40 次重复 grep 被人类拦下，改 read/ls 后一次完成）
+- [Agda 证明工程陷阱清单 2026-10](lessons-agda-traps-2026-10.md) — 20 条实战陷阱：*-distribʳ-+ 乘数在前、section 禁用、where 不 convertible、cubical Path 同型、using 分号、⊗-zeroʳ 先全量 grep——2026-10 双泛型线 ~120 模块学费
+- [Handoff：Morse/数论双泛型线收官](handoff-generic-lines-2026-10.md) — M1-M7b + G1'-G5 完全收官快照；PairingLaw 显式前提/div-rel 反转/全 ℤ 域 CRT/线性同伦四决策；遗留 roadmap 与并行在飞文件清单（2026-10）
