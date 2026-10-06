@@ -316,8 +316,13 @@ normC (t ∷ ts) with normC ts
 norm : Laurent → Laurent
 norm ts = proj₁ (normC ts)
 
--- norm-idem：幂等性（norm (norm p) ≡ norm p）待下轮实现。
--- 需要前置引理 normC-canon-idem : ∀ w → Canon w → proj₁ (normC w) ≡ w
--- （Canon 上 normC 幂等——insertCᵌ 对 Canon 列表不改变）。
--- canon-sums-unique（sums 相等 → Canon 相等）也待下轮。
--- norm-+ 依赖 norm-idem + insertCᵌ-sums（已证）。
+-- cmp3-gt3-lemma：n' < n 时 cmp3 返回 gt3（对 cmp3 结果模式匹配）
+cmp3-gt3-lemma : ∀ n n' → (p : n' < n) → Σ (n' < n) (λ p' → cmp3 n n' ≡ gt3 n n' p')
+cmp3-gt3-lemma n n' p with cmp3 n n'
+... | gt3 .n .n' p' = (p' , refl)
+... | lt3 .n .n' q = ⊥-elim (<-irrefl refl (<-trans p q))
+... | eq3 .n .n' e = ⊥-elim (<-irrefl refl (subst (λ z → z < n) (sym e) p))
+
+-- normC-idem：Canon 上 normC 幂等（待下轮）
+-- 需要 cmp3-gt3-lemma（已证）+ insertCᵌ 的 gt3 分支展开。
+-- norm-idem / canon-sums-unique / norm-+ 依赖此引理。
