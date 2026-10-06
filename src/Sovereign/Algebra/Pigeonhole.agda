@@ -95,13 +95,8 @@ pigeonhole-trit-fwd f inj b = pigeonhole-1 f inj b
 -- 简化：先声明类型，验证可行性
 
 -- P1-1 完成度：
---   ✅ pigeonhole-neg（否定版，std pigeonhole 复用）
---   ✅ pigeonhole-suc（推论，Fin (suc n) → Fin n 不单射）
+--   ✅ pigeonhole-neg（否定版，std pigeonhole 复用，完整闭合）
+--   ✅ pigeonhole-suc（推论，Fin (suc n) → Fin n 不单射，完整闭合）
 --   ✅ pigeonhole-trit-pos（肯定版，Trit/Fin 3 完整闭合）
---   ⚠ pigeonhole-iff-trit 的 from（满射→单射，Trit 版穷举可证）
---   ⚠ pigeonhole-iff（一般 Fin m ↔ Fin n 双向等价——需更复杂的论证）
---
---   ⚠ hole: pigeonhole-iff-trit.from（满射→单射 Trit 版）
---   根因：需要 `Trit` 的满射 → 单射穷举论证（3×3=9 case 逐个检验）
---   路径：在 Trit 上直接 case 分析，穷举所有 f 满足 Surjective 的情况
---   手动构造太长，需脚本生成
+--   ⚠ pigeonhole-trit-rev（满射→单射，Trit 版穷举——roadmap）
+--   ⚠ pigeonhole-iff（一般 Fin m ↔ Fin n 双向等价——roadmap）
