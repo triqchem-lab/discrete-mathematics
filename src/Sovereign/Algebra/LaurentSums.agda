@@ -316,6 +316,8 @@ normC (t ∷ ts) with normC ts
 norm : Laurent → Laurent
 norm ts = proj₁ (normC ts)
 
--- canon-sums-unique（sums 相等 → Canon 相等）待下轮实现。
--- 需要 NoZero 谓词 + 对 Canon 归纳 + 逐指数比对系数。
--- norm-+ 依赖此引理 + insertCᵌ-sums（已证）。
+-- norm-idem：幂等性（norm (norm p) ≡ norm p）待下轮实现。
+-- 需要前置引理 normC-canon-idem : ∀ w → Canon w → proj₁ (normC w) ≡ w
+-- （Canon 上 normC 幂等——insertCᵌ 对 Canon 列表不改变）。
+-- canon-sums-unique（sums 相等 → Canon 相等）也待下轮。
+-- norm-+ 依赖 norm-idem + insertCᵌ-sums（已证）。

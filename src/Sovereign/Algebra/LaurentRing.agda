@@ -6,10 +6,8 @@
 -- 数学背景：Laurent 多项式环 Z[t,t⁻¹]，项表示 List (ℤ × ℤ)（系数, 指数），
 -- 基础运算复用 LaurentDistrib（*-assoc 逐点已证、distrib-perm 模置换已证）。
 --
--- 规范化 norm = dropZ ∘ merge ∘ sort：
---   sort   —— 按指数降序（LaurentSort，保持置换 + 结果有序已证）
---   merge  —— 合并相邻同指数项的系数
---   dropZ  —— 删除零系数项
+-- 规范化 norm（路线 B：foldr insertCᵌ）：
+--   insertCᵌ —— 插入式规范化（LaurentNorm），直接产出 Canon（严格降序+指数互异）
 -- 环公理的「逐点相等」陈述依赖排序唯一性 sort-unique（台账 pending，
 -- Laurent.sort-unique）；本模块先交付定义层 + t·t⁻¹≡1 单项式实例。
 --
@@ -35,7 +33,7 @@ open import Relation.Nullary.Decidable using (¬?)
 open import Sovereign.Algebra.LaurentDistrib
   using (LaurentTerm; Laurent; mulTerm; mapL; _++L_; _*L_;
          mapL-++L; ++L-assoc; distrib-perm)
-open import Sovereign.Algebra.LaurentSort using (sort)
+open import Sovereign.Algebra.LaurentSums using (norm; normC)
 
 -- ────────────────────────────────────────────────────────────────────
 -- 常数：0、1、t、t⁻¹
@@ -64,26 +62,9 @@ tmul-tinv = refl
 -- 前置条件：输入已按指数降序排序（norm 先过 sort 保证）
 -- ────────────────────────────────────────────────────────────────────
 
--- 合并：把 t 插入已合并的有序列表，同指数则系数相加后继续向后合并
-merge-step : LaurentTerm → Laurent → Laurent
-merge-step (c , n) [] = (c , n) ∷ []
-merge-step (c , n) ((c' , n') ∷ ts) with n ≟ n'
-... | yes _ = merge-step (c + c' , n) ts
-... | no  _ = (c , n) ∷ merge-step (c' , n') ts
-
-merge : Laurent → Laurent
-merge [] = []
-merge (t ∷ ts) = merge-step t (merge ts)
-
--- 去零系数项
-dropZ : Laurent → Laurent
-dropZ [] = []
-dropZ ((+ 0 , n) ∷ ts) = dropZ ts
-dropZ (t ∷ ts) = t ∷ dropZ ts
-
--- 规范化：排序 → 合并 → 去零
-norm : Laurent → Laurent
-norm p = dropZ (merge (sort p))
+-- 规范化：路线 B（insertCᵌ），从 LaurentSums 导入
+-- norm = proj₁ ∘ normC，其中 normC 递归 fold insertCᵌ 产出 Canon
+-- （旧路线 A 的 dropZ ∘ merge ∘ sort 已废弃——Sorted 中间态不兼容 Canon）
 
 -- 规范化实例：norm (t·t⁻¹) = norm [(+1,+0)] = [(+1,+0)] = R1
 norm-tmul-tinv : norm (tvar *L tinv) ≡ R1

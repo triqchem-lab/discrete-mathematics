@@ -30,11 +30,7 @@ open import Data.List.Relation.Binary.Permutation.Propositional
 open import Data.List.Relation.Binary.Permutation.Propositional.Properties
   using (++⁺ˡ; ++⁺ʳ; ++-assoc; ++-comm)
 
-LaurentTerm : Set
-LaurentTerm = ℤ × ℤ
-
-Laurent : Set
-Laurent = List LaurentTerm
+open import Sovereign.Algebra.LaurentBase using (LaurentTerm; Laurent) public
 
 mulTerm : LaurentTerm → LaurentTerm → LaurentTerm
 mulTerm (c₁ , n₁) (c₂ , n₂) = (c₁ * c₂ , n₁ + n₂)
