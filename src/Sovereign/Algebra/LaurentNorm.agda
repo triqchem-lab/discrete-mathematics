@@ -204,20 +204,39 @@ b-tail t x x₂ xs w' e z cw' weq =
   record { bt-x' = x ; bt-xs' = x₂ ∷ xs ; bt-eq = refl ; bt-eq₂ = weq
          ; bt-exeq = e ; bt-cancel = z }
 
--- dj₁ 情形的分支项（顶层构造，避开 with-上下文 phantom）
-lt3-cons-inj1 : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) →
-  proj₂ x₂ < proj₂ x → Canon (x₂ ∷ xs) → SpecT t (x ∷ x₂ ∷ xs)
-lt3-cons-inj1 t x x₂ xs p s =
-  let H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
-            x ∷ (x₂ ∷ xs) ≡ h ∷ r
+-- tailL：列表尾（用于从 BTail 推导 w' ≡ xs）
+tailL : Laurent → Laurent
+tailL [] = []
+tailL (_ ∷ xs) = xs
+
+-- canon-prepend：在 Canon 列表前加一项（需界引理）
+canon-prepend : ∀ (x : LaurentTerm) (w' : Laurent) → Canon w' →
+  (∀ y → InT y w' → proj₂ y < proj₂ x) → Canon (x ∷ w')
+canon-prepend x [] canon-nil bound = canon-one x
+canon-prepend x (y ∷ ys) cw' bound = canon-cons x y ys (bound y (here y ys)) cw'
+
+-- dj₁ 情形的分支项（修正：首分量 = x ∷ w'，非 x₂ ∷ xs）
+lt3-cons-inj1 : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) (w' : Laurent) →
+  proj₂ x₂ < proj₂ x → Canon (x₂ ∷ xs) → Canon w' →
+  (w' ≡ xs) → SpecT t (x ∷ x₂ ∷ xs)
+lt3-cons-inj1 t x x₂ xs w' p s cw' weq =
+  let bound : ∀ y → InT y w' → proj₂ y < proj₂ x
+      bound y iy = <-trans (canon-<-head s y
+        (subst (λ v → InT y v) weq iy)) p
+      Cn : Canon (x ∷ w')
+      Cn = canon-prepend x w' cw' bound
+      H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            x ∷ w' ≡ h ∷ r
             × ((h ≡ t) ⊎ InT h (x ∷ x₂ ∷ xs) ⊎ (proj₂ h ≡ proj₂ t))))
-      H = (x , (x₂ ∷ xs) , refl , inj₂ (inj₁ (here x (x₂ ∷ xs))))
-  in (x ∷ (x₂ ∷ xs) , canon-cons x x₂ xs p s , inj₂ H)
+      H = (x , w' , refl , inj₂ (inj₁ (here x (x₂ ∷ xs))))
+  in (x ∷ w' , Cn , inj₂ H)
 
 lt3-cons : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) →
   proj₂ x₂ < proj₂ x → proj₂ t < proj₂ x → Canon (x₂ ∷ xs) →
   SpecT t (x₂ ∷ xs) → SpecT t (x ∷ x₂ ∷ xs)
-lt3-cons t x x₂ xs p l s (w' , cw' , inj₁ btail) = lt3-cons-inj1 t x x₂ xs p s
+lt3-cons t x x₂ xs p l s (w' , cw' , inj₁ btail) =
+  lt3-cons-inj1 t x x₂ xs w' p s cw'
+    (trans (BTail.bt-eq₂ btail) (sym (cong tailL (BTail.bt-eq btail))))
 lt3-cons t x x₂ xs p l s (w' , cw' , inj₂ (h , r , eq , src)) =
   let Cn : Canon (x ∷ (h ∷ r))
       Cn = canon-cons x h r (lt3-bound t x x₂ xs p l s h src)

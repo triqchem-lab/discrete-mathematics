@@ -245,20 +245,26 @@ cons-lt3-sums : ∀ u t x x₂ xs (p : proj₂ x₂ < proj₂ x) (l : proj₂ t 
   (inner : SpecT t (x₂ ∷ xs)) →
   sums u (proj₁ inner) ≡ sums u (x₂ ∷ xs) + sums u (t ∷ []) →
   sums u (proj₁ (lt3-cons t x x₂ xs p l s inner)) ≡ sums u (x ∷ x₂ ∷ xs) + sums u (t ∷ [])
-cons-lt3-sums u t x x₂ xs p l s dec inner ih with inner
-... | (w' , cw' , inj₁ btail) =
-  -- lt3-cons-inj1 返回 (x₂ ∷ xs , s , inj₁ …)——已知 bug（首分量应为 x ∷ w'）
-  -- 此分支的数学正确性待修 lt3-cons-inj1 后补
-  {!!}
-... | (w' , cw' , inj₂ (h , r , eq , src)) with dec
-...   | yes px =
+cons-lt3-sums u t x x₂ xs p l s (yes px) (w' , cw' , inj₁ btail) ih =
+  trans (sums-cons-head u x w' px)
+  (trans (cong (λ w → proj₁ x + w) ih)
+         (trans (solve 3 (λ S a b → b :+ (S :+ a) := (b :+ S) :+ a) refl
+                        (sums u (x₂ ∷ xs)) (sums u (t ∷ [])) (proj₁ x))
+                (cong (λ w → w + sums u (t ∷ []))
+                      (sym (sums-cons-head u x (x₂ ∷ xs) px)))))
+cons-lt3-sums u t x x₂ xs p l s (yes px) (w' , cw' , inj₂ (h , r , eq , src)) ih =
   trans (sums-cons-head u x (h ∷ r) px)
   (trans (cong (λ w → proj₁ x + w) (trans (cong (λ v → sums u v) (sym eq)) ih))
          (trans (solve 3 (λ S a b → b :+ (S :+ a) := (b :+ S) :+ a) refl
                         (sums u (x₂ ∷ xs)) (sums u (t ∷ [])) (proj₁ x))
                 (cong (λ w → w + sums u (t ∷ []))
                       (sym (sums-cons-head u x (x₂ ∷ xs) px)))))
-...   | no px =
+cons-lt3-sums u t x x₂ xs p l s (no px) (w' , cw' , inj₁ btail) ih =
+  trans (sums-cons-tail u x w' px)
+  (trans ih
+         (sym (cong (λ w → w + sums u (t ∷ []))
+                    (sums-cons-tail u x (x₂ ∷ xs) px))))
+cons-lt3-sums u t x x₂ xs p l s (no px) (w' , cw' , inj₂ (h , r , eq , src)) ih =
   trans (sums-cons-tail u x (h ∷ r) px)
   (trans (trans (cong (λ v → sums u v) (sym eq)) ih)
          (sym (cong (λ w → w + sums u (t ∷ []))
