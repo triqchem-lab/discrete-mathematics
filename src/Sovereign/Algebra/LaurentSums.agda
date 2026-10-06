@@ -84,100 +84,12 @@ zero-shuffle S dx dt z =
   (trans (cong (_+ S) z)
          (+-identityˡ S)))))
 
-insertCᵌ-sums : ∀ (u t : LaurentTerm) ts (c : Canon ts) →
-  sums u (proj₁ (insertCᵌ t ts c)) ≡ sums u ts + sums u (t ∷ [])
-insertCᵌ-sums u t [] c =
-  sym (+-identityˡ (sums u (t ∷ [])))
-
-insertCᵌ-sums u t (x ∷ []) (canon-one .x)
-  with cmp3 (proj₂ t) (proj₂ x) | proj₂ u ≟ proj₂ t | proj₂ u ≟ proj₂ x
-... | gt3 _ _ g | yes pt | yes px =
-  ⊥-elim (<-irrefl refl
-    (subst (λ z → z < proj₂ t) pt
-      (subst (λ z → z < proj₂ t) (sym px) g)))
-... | gt3 _ _ g | yes pt | no px = refl
-... | gt3 _ _ g | no pt | yes px =
-  solve 1 (λ a → a :+ con (+ 0) := (a :+ con (+ 0)) + con (+ 0)) refl (proj₁ x)
-... | gt3 _ _ g | no pt | no px = refl
-insertCᵌ-sums u t (x ∷ []) (canon-one .x)
-  | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
-...   | yes z with proj₂ u ≟ proj₂ t | proj₂ u ≟ proj₂ x
-...     | yes pt | yes px =
-  trans (sym z)
-  (trans (+-comm (proj₁ t) (proj₁ x))
-         (sym (cong₂ _+_ (+-identityʳ (proj₁ x)) (+-identityʳ (proj₁ t)))))
-...     | yes pt | no px =
-  ⊥-elim (px (trans pt (sym e)))
-...     | no pt | yes px =
-  ⊥-elim (pt (trans (sym px) e))
-...     | no pt | no px =
-  sym (+-identityˡ (+ 0))
-insertCᵌ-sums u t (x ∷ []) (canon-one .x)
-  | eq3 _ _ e
-  | no _ with proj₂ u ≟ proj₂ t | proj₂ u ≟ proj₂ x
-...     | yes pt | no px = ⊥-elim (px (trans pt (sym e)))
-...     | no pt | yes px = ⊥-elim (pt (trans (sym px) e))
-...     | no pt | no px =
-  trans (cong (λ w → (proj₁ t + proj₁ x) + w) (+-identityˡ (sums u [])))
-        (sym (trans (+-assoc (proj₁ t) (proj₁ x) (sums u []))
-                    (cong (λ w → proj₁ t + w) (+-identityʳ (sums u [])))))
-insertCᵌ-sums u t (x ∷ []) (canon-one .x)
-  | lt3 _ _ l with proj₂ u ≟ proj₂ t | proj₂ u ≟ proj₂ x
-...     | yes pt | no px =
-  trans (+-assoc (proj₁ x) (sums u (t ∷ [])) (sums u (t ∷ [])))
-        (cong (λ w → (proj₁ x + w) + sums u (t ∷ []))
-              (sym (+-identityʳ (sums u (t ∷ [])))))
-...     | no pt | yes px =
-  trans (sym (+-identityˡ (sums u (t ∷ []))))
-        (sym (trans (+-assoc (+ 0) (sums u (t ∷ [])) (sums u (t ∷ [])))
-                    (cong (λ w → + 0 + w) (sym (+-identityʳ (sums u (t ∷ [])))))))
-...     | no pt | no px = refl
-insertCᵌ-sums u t (x ∷ []) (canon-one .x)
-  | lt3 _ _ l
-  | yes pt | yes px =
-  ⊥-elim (px (trans pt (sym l)))
-
--- cons 分支
-insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
-  with cmp3 (proj₂ t) (proj₂ x) | (proj₁ t + proj₁ x) ≟ + 0
-     | proj₂ u ≟ proj₂ x | proj₂ u ≟ proj₂ t
-... | gt3 _ _ g | _ | _ | yes pt =
-  solve 2 (λ S a → a + S := S + (a :+ con (+ 0))) refl
-         (sums u (x ∷ x₂ ∷ xs)) (proj₁ t)
-... | gt3 _ _ g | _ | _ | no pt =
-  solve 1 (λ S → S := S + con (+ 0)) refl (sums u (x ∷ x₂ ∷ xs))
-... | eq3 _ _ e | yes z | _ | _ =
-  refl
-... | eq3 _ _ e | no nz | yes ux | yes pt =
-  let z' : proj₂ x + (proj₂ t + + 0) ≡ + 0
-      z' = trans (+-assoc (proj₂ x) (proj₂ t) (+ 0))
-                 (trans (cong (λ w → (proj₂ x) + w) (+-comm (proj₂ t) (+ 0))) e-z)
-  in  trans (insertCᵌ-sums u m (x₂ ∷ xs) s)
-            (zero-shuffle (sums u (x₂ ∷ xs)) (proj₂ x) (proj₂ t + + 0) z')
-    where
-    m = (proj₁ t + proj₁ x , proj₂ t)
-    e-z : proj₂ t + proj₂ x ≡ + 0
-    e-z = trans (+-comm (proj₂ t) (proj₂ x)) e
-... | eq3 _ _ e | no nz | yes ux | no pt =
-  ⊥-elim (pt (trans (sym ux) e))
-... | eq3 _ _ e | no nz | no ux | yes pt =
-  ⊥-elim (ux (trans (sym pt) e))
-... | eq3 _ _ e | no nz | no ux | no pt with insertCᵌ (proj₁ t + proj₁ x , proj₂ t) (x₂ ∷ xs) s
-...     | (w' , cw' , inj₁ btail) with BTail.bt-eq₂ btail
-...       | beq₂ =
-    trans (cong (λ v → sums u v) beq₂)
-          (sym (+-identityʳ (sums u (x₂ ∷ xs))))
-...     | (w' , cw' , inj₂ (h , r , eq , src)) =
-    insertCᵌ-sums u (proj₁ t + proj₁ x , proj₂ t) (x₂ ∷ xs) s
-insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
-  | lt3 _ _ l | _ | yes ux | _ with insertCᵌ t (x₂ ∷ xs) s
-...   | (w' , cw' , dj') =
-  trans (cong (λ w → proj₁ x + w) (insertCᵌ-sums u t (x₂ ∷ xs) s))
-        (sym (+-assoc (proj₁ x) (sums u (x₂ ∷ xs)) (sums u (t ∷ []))))
-insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
-  | lt3 _ _ l | _ | no ux | _ with insertCᵌ t (x₂ ∷ xs) s
-...   | (w' , cw' , dj') =
-  trans (insertCᵌ-sums u t (x₂ ∷ xs) s)
-        (sym (trans (+-identityˡ (sums u (x₂ ∷ xs) + sums u (t ∷ [])))
-                    (cong (λ w → w + sums u (t ∷ []))
-                          (sym (+-identityˡ (sums u (x₂ ∷ xs)))))))
+-- insertCᵌ-sums（插入的逐指数和不变量）待实现。
+-- 设计定型（Round-10/11）：直接对 insertCᵌ 的调用结果证 sums 方程会因
+-- 跨函数 with-精炼失败（insertCᵌ 的内部 with 与证明的 with 不互精炼，
+-- 本会话实测 gt3/yes/no 情形）。定型方案：SpecT 携带方程分量
+--   sumsEq : ∀ u → sums u w ≡ sums u ts + sums u (t ∷ [])
+-- （u 在分量内量化，SpecT 保持无 u 依赖），insertCᵌ 各分支按归纳直接证，
+-- C-分支用内层 spec 的 sumsEq（递归 IH），B-分支用 bt-cancel/bt-exeq
+-- 证零和恒等（zero-shuffle 模式）。随后 insertCᵌ-sums = 一行取分量。
+-- 待办详见 journal Round-11。
