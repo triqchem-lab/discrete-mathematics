@@ -362,6 +362,12 @@ cmp3-gt3-lemma n n' p with cmp3 n n'
 -- canon-sums-unique：sums 相等 → Canon 相等（枢纽引理）
 -- ────────────────────────────────────────────────────────────────────
 
--- canon-sums-unique（sums 相等 → Canon 相等）待下轮实现。
--- 需要 sums-cons-head 展开 h 的两侧 + +-cancelˡ（已证）+ NoZero（已证）。
+-- ────────────────────────────────────────────────────────────────────
+-- canon-sums-unique：sums 相等 → Canon 相等（枢纽引理）
+-- ────────────────────────────────────────────────────────────────────
+
+-- canon-sums-unique 待下轮：sums-cons-head 归约为 refl 丢失等式信息。
+-- 根因：sums 的 with 定义与外部展开不互精炼（多轮实证）。
+-- 解法候选：① 用 with 在 hexp 内部 case-split n₁ ≟ n₁ / n₁ ≟ n₂；
+--           ② 或改 sums 为 let-free（附录 10 模式）让展开定义性成立。
 -- norm-+ 依赖此引理 + norm-idem + insertCᵌ-sums（已证）。
