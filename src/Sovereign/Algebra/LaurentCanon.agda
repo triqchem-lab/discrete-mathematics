@@ -25,18 +25,13 @@ open import Data.Integer using (ℤ; _<_)
 open import Data.Integer.Properties using (<-trans; <-irrefl)
 open import Data.List using (List; []; _∷_)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
+open import Sovereign.Algebra.LaurentBase using (LaurentTerm; Laurent) public
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; subst; sym; trans)
 open import Relation.Nullary using (¬_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List.Relation.Binary.Permutation.Propositional
   using (_↭_; refl; ↭-sym; prep; swap; trans)
-
-LaurentTerm : Set
-LaurentTerm = ℤ × ℤ
-
-Laurent : Set
-Laurent = List LaurentTerm
 
 -- ────────────────────────────────────────────────────────────────────
 -- 结构化成员谓词（构造子即字面相等）

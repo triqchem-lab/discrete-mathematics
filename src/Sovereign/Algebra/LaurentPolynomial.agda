@@ -1,7 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Algebra.LaurentPolynomial
--- Laurent 多项式环 Z[t,t⁻¹] 的形式化
+-- ⚠ DEPRECATED（Round-17 用户诊断）：本模块是数学错误的简化版——
+--   record {const, coeff} 只能表示 a + bt，不能表示 t² 或 t⁻¹
+--   （用 -t 代替 t⁻¹，t · t⁻¹ ≠ 1）。正确表示见 LaurentBase（项列表）。
+--   唯一消费者 BurauRep 待迁移到 LaurentBase 后删除本模块。
+--
+-- Laurent 多项式环 Z[t,t⁻¹] 的形式化（简化版，已废弃）
 --
 -- 载体：ℤ 上的 Laurent 多项式（t 的有限指数和）
 -- 简化版：用 (ℤ × ℤ) 表示 a + bt 形式（t 的一次项）
