@@ -77,16 +77,17 @@ cmp3 n n' with n <? n'
 --   w = h ∷ r 且首项来源：h ≡ t，或 h ∈ ts，或 exp h ≡ exp t（合并项）
 -- ────────────────────────────────────────────────────────────────────
 
+-- 二路：① 头消去（ts = x' ∷ xs' 且 w = xs'，含消去为空表的情形）；
+--       ② w = h ∷ r 且首项来源：h ≡ t，或 h ∈ ts，或 exp h ≡ exp t（合并项）
 SpecT : LaurentTerm → Laurent → Set
 SpecT t ts =
   Σ Laurent (λ w →
     Canon w
-    × ((((w ≡ ts)
-         ⊎ (Σ LaurentTerm (λ x' → Σ Laurent (λ xs' →
-              (ts ≡ x' ∷ xs') × (w ≡ xs')))))
-        ⊎ (Σ LaurentTerm (λ h → Σ Laurent (λ r →
-             (w ≡ h ∷ r)
-             × ((h ≡ t) ⊎ InT h ts ⊎ (proj₂ h ≡ proj₂ t))))))))
+    × ((Σ LaurentTerm (λ x' → Σ Laurent (λ xs' →
+          (ts ≡ x' ∷ xs') × (w ≡ xs'))))
+       ⊎ (Σ LaurentTerm (λ h → Σ Laurent (λ r →
+            (w ≡ h ∷ r)
+            × ((h ≡ t) ⊎ InT h ts ⊎ (proj₂ h ≡ proj₂ t)))))))
 
 -- ────────────────────────────────────────────────────────────────────
 -- InT 成员的界：h ∈ x₂ ∷ xs ⟹ exp h < exp x
@@ -158,7 +159,11 @@ insertCᵌ-spec-one t x c
       H = (t , (x ∷ []) , refl , inj₁ refl)
   in (t ∷ (x ∷ []) , canon-cons t x [] g (canon-one x) , inj₂ H)
 ... | eq3 _ _ e with (proj₁ t + proj₁ x) ≟ + 0
-...   | yes _ = ([] , canon-nil , inj₁ (inj₂ (x , [] , refl , refl)))
+...   | yes _ =
+  let H : Σ LaurentTerm (λ x' → Σ Laurent (λ xs' →
+            (x ∷ []) ≡ x' ∷ xs' × [] ≡ xs'))
+      H = (x , [] , refl , refl)
+  in ([] , canon-nil , inj₁ H)
 ...   | no _  =
   let m = (proj₁ t + proj₁ x , proj₂ t)
       H : Σ LaurentTerm (λ h → Σ Laurent (λ r →
@@ -178,14 +183,27 @@ insertCᵌ-spec-one t x c
 -- 后插分支组装：内层 w-规格的两路来源 ⟹ 外层（结果头为 x）
 -- ────────────────────────────────────────────────────────────────────
 
+-- B-分支的项（顶层定义，避开 with-精炼上下文中的深 Σ phantom）
+b-tail : ∀ (x x₂ : LaurentTerm) (xs : Laurent) (w' : Laurent) →
+         Canon w' →
+         w' ≡ x₂ ∷ xs →
+         Σ LaurentTerm (λ x' → Σ Laurent (λ xs' →
+            (x ∷ (x₂ ∷ xs)) ≡ x' ∷ xs' × (x ∷ (x₂ ∷ xs)) ≡ xs'))
+b-tail x x₂ xs w' cw' weq = ((x , (x₂ ∷ xs)) , refl , refl)
+
+-- dj₁ 情形的分支项（顶层构造，避开 with-上下文 phantom）
+lt3-cons-inj1 : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) →
+  proj₂ x₂ < proj₂ x → Canon (x₂ ∷ xs) → SpecT t (x ∷ x₂ ∷ xs)
+lt3-cons-inj1 t x x₂ xs p s =
+  (x ∷ (x₂ ∷ xs) , canon-cons x x₂ xs p s
+  , inj₁ (b-tail x x₂ xs (x₂ ∷ xs) refl refl))
+
 lt3-cons : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) →
   proj₂ x₂ < proj₂ x → proj₂ t < proj₂ x → Canon (x₂ ∷ xs) →
   SpecT t (x₂ ∷ xs) → SpecT t (x ∷ x₂ ∷ xs)
 lt3-cons t x x₂ xs p l s inner with inner
 ... | (w' , cw' , dj') with dj'
-...   | inj₁ weq =
-  -- 内层结果 = 尾：w = x ∷ w' = x ∷ x₂ ∷ xs = ts ⟹ 第一析取
-  (x ∷ (x₂ ∷ xs) , canon-cons x x₂ xs p s , inj₁ (inj₁ refl))
+...   | inj₁ weq = lt3-cons-inj1 t x x₂ xs p s
 ...   | inj₂ (h , r , eq , src) =
   -- 内层结果 = h ∷ r：外层第三析取（首项 x，来源恒 InT x ts）
   let Cn : Canon (x ∷ (h ∷ r))
