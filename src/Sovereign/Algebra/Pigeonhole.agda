@@ -23,7 +23,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans; subst)
 open import Relation.Nullary using (¬_; yes; no; Dec)
 open import Function using (_↔_)
-open import Data.Product using (Σ; _×_; _,_)
+open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
@@ -93,6 +93,13 @@ pigeonhole-trit-fwd f inj b = pigeonhole-1 f inj b
 -- 对 Trit：f a ≡ f b → 若 a ≠ b 则 f 的像只覆盖 2 个值 ≠ 3（满射矛盾）
 -- 标准路径：反证法 + 穷举
 -- 简化：先声明类型，验证可行性
+
+-- P1-1 完成度：
+--   ✅ pigeonhole-neg（否定版，std pigeonhole 复用，完整闭合）
+--   ✅ pigeonhole-suc（推论，Fin (suc n) → Fin n 不单射，完整闭合）
+--   ✅ pigeonhole-trit-pos（肯定版，Trit/Fin 3 完整闭合）
+--   ⚠ pigeonhole-trit-rev（满射→单射，Trit 版穷举——roadmap，Agda 自动统一问题）
+--   ⚠ pigeonhole-iff（一般 Fin m ↔ Fin n 双向等价——roadmap）
 
 -- P1-1 完成度：
 --   ✅ pigeonhole-neg（否定版，std pigeonhole 复用，完整闭合）
