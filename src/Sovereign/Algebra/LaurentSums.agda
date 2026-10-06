@@ -300,3 +300,22 @@ insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
   | lt3 _ _ l =
   cons-lt3-sums u t x x₂ xs p l s (proj₂ u ≟ proj₂ x)
     (insertCᵌ t (x₂ ∷ xs) s) (insertCᵌ-sums u t (x₂ ∷ xs) s)
+
+-- ────────────────────────────────────────────────────────────────────
+-- norm：fold insertCᵌ 产生规范形（路线 B）
+-- ────────────────────────────────────────────────────────────────────
+
+-- normC：递归构造规范形 + Canon 证据
+normC : (ts : Laurent) → Σ Laurent (λ w → Canon w)
+normC [] = ([] , canon-nil)
+normC (t ∷ ts) with normC ts
+... | (w , cw) with insertCᵌ t w cw
+...   | (w' , cw' , _) = (w' , cw')
+
+-- norm：提取规范形
+norm : Laurent → Laurent
+norm ts = proj₁ (normC ts)
+
+-- canon-sums-unique（sums 相等 → Canon 相等）待下轮实现。
+-- 需要 NoZero 谓词 + 对 Canon 归纳 + 逐指数比对系数。
+-- norm-+ 依赖此引理 + insertCᵌ-sums（已证）。
