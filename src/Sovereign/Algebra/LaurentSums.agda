@@ -20,7 +20,7 @@ module Sovereign.Algebra.LaurentSums where
 open import Data.Integer using (ℤ; _≤_; _<_; +_; _+_; -_)
 open import Data.Integer.Properties
   using (_≟_; _<?_; _≤?_; ≤-antisym; <-trans; <-irrefl; ≰⇒>;
-         +-assoc; +-comm; +-identityˡ; +-identityʳ; +-inverseʳ)
+         +-assoc; +-comm; +-identityˡ; +-identityʳ; +-inverseˡ; +-inverseʳ)
 open import Data.Integer.Solver
 open Data.Integer.Solver.+-*-Solver
 open import Data.List using (List; []; _∷_; _++_)
@@ -29,6 +29,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; cong; cong₂; sym; trans; subst)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Unit using (⊤; tt)
 open import Data.Unit using (⊤; tt)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Sovereign.Algebra.LaurentCanon
@@ -306,6 +307,24 @@ insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
 -- norm：fold insertCᵌ 产生规范形（路线 B）
 -- ────────────────────────────────────────────────────────────────────
 
+-- ────────────────────────────────────────────────────────────────────
+-- NoZero：无零系数谓词
+-- ────────────────────────────────────────────────────────────────────
+
+NoZero : Laurent → Set
+NoZero [] = ⊤
+NoZero ((c , n) ∷ ts) = (c ≢ + 0) × NoZero ts
+
+-- sums 在「所有项指数 < proj₂ u」的列表上为零
+sums-bound-zero : ∀ u xs → Canon xs →
+  (∀ y → InT y xs → proj₂ y < proj₂ u) → sums u xs ≡ + 0
+sums-bound-zero u [] _ _ = refl
+sums-bound-zero u ((c , n) ∷ ys) cy bound with proj₂ u ≟ n
+... | yes un = ⊥-elim (<-irrefl refl
+  (subst (λ z → z < proj₂ u) (sym un) (bound (c , n) (here (c , n) ys))))
+... | no _ = sums-bound-zero u ys (canon-tail cy)
+  (λ y iy → bound y (there y (c , n) ys iy))
+
 -- normC：递归构造规范形 + Canon 证据
 normC : (ts : Laurent) → Σ Laurent (λ w → Canon w)
 normC [] = ([] , canon-nil)
@@ -325,5 +344,24 @@ cmp3-gt3-lemma n n' p with cmp3 n n'
 ... | eq3 .n .n' e = ⊥-elim (<-irrefl refl (subst (λ z → z < n) (sym e) p))
 
 -- canon-sums-unique（sums 相等 → Canon 相等）待下轮实现。
--- 需要 +-cancel（ℤ 消去律）+ NoZero + sums-bound-zero（已证）。
+-- ────────────────────────────────────────────────────────────────────
+-- ℤ 消去律
+-- ────────────────────────────────────────────────────────────────────
+
++-cancelˡ : ∀ a b c → a + b ≡ a + c → b ≡ c
++-cancelˡ a b c eq =
+  trans (sym (+-identityˡ b))
+  (trans (cong (λ w → w + b) (sym (+-inverseˡ a)))
+  (trans (+-assoc (- a) a b)
+  (trans (cong (λ w → (- a) + w) eq)
+  (trans (sym (+-assoc (- a) a c))
+  (trans (cong (λ w → w + c) (+-inverseˡ a))
+         (+-identityˡ c))))))
+
+-- ────────────────────────────────────────────────────────────────────
+-- canon-sums-unique：sums 相等 → Canon 相等（枢纽引理）
+-- ────────────────────────────────────────────────────────────────────
+
+-- canon-sums-unique（sums 相等 → Canon 相等）待下轮实现。
+-- 需要 sums-cons-head 展开 h 的两侧 + +-cancelˡ（已证）+ NoZero（已证）。
 -- norm-+ 依赖此引理 + norm-idem + insertCᵌ-sums（已证）。
