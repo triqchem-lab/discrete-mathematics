@@ -75,74 +75,36 @@ sums-++ u ((c , n) ∷ xs) ys with ex u ≟ n
 sums-shuffle : ∀ S c_x c_t →
   S + (c_t + c_x) ≡ (c_x + S) + c_t
 sums-shuffle S c_x c_t =
-  trans (+-comm S (c_t + c_x))
-  (trans (+-assoc (c_t + c_x) S c_t)
-  (trans (cong (_+ c_t) (sym (+-assoc c_t c_x S)))
-  (trans (cong (_+ c_t) (cong (λ w → c_t + w) (+-comm c_x S)))
-  (trans (+-assoc c_t S c_t)
-  (trans (cong (_+ c_t) (+-comm c_t S))
-         (+-assoc S c_t c_t))))))
+  trans (sym (trans (cong (λ w → w + S) (+-comm c_x c_t))
+                    (+-comm (c_t + c_x) S)))
+  (trans (+-assoc c_x c_t S)
+  (trans (cong (λ w → c_x + w) (+-comm c_t S))
+         (sym (+-assoc c_x S c_t))))
 
 -- 零和：dx + dt ≡ + 0 ⟹ S ≡ (dx + S) + dt
 --   证明：S ≡ (dx + dt) + S [identityˡ + cong] ≡ dx + (dt + S)
 --         [assoc] ≡ dx + (S + dt) [comm(内)] ≡ (dx + S) + dt [assoc]
 zero-shuffle : ∀ S dx dt → dx + dt ≡ + 0 → S ≡ (dx + S) + dt
 zero-shuffle S dx dt z =
-  trans (+-identityˡ S)
-  (trans (cong (_+ S) (sym z))
+  sym (trans (+-assoc dx S dt)
+  (trans (cong (λ w → dx + w) (+-comm S dt))
   (trans (sym (+-assoc dx dt S))
-  (trans (cong (λ w → dx + w) (+-comm dt S))
-         (+-assoc dx S dt))))
-
+  (trans (cong (_+ S) z)
+         (+-identityˡ S)))))
 -- ────────────────────────────────────────────────────────────────────
 -- 核心引理：插入保持逐指数和（对 Canon 结构归纳）
 -- ────────────────────────────────────────────────────────────────────
 
-insertCᵌ-sums : ∀ (u t : LaurentTerm) ts → Canon ts →
-  sums u (proj₁ (proj₁ (insertCᵌ t ts))) ≡ sums u ts + δ u t
-insertCᵌ-sums u t [] c =
-  trans (+-identityʳ (δ u t)) (sym (+-identityˡ (δ u t)))
-insertCᵌ-sums u t (x ∷ []) (canon-one .x)
-  with cmp3 (ex t) (ex x)
-... | gt3 _ _ g =
-  trans (cong (δ u t +_) (+-identityʳ (δ u x)))
-        (sym (trans (cong (_+ (δ u x)) (+-identityʳ (δ u t)))
-                    (+-comm (δ u t) (δ u x))))
-... | lt3 _ _ l =
-  trans (cong (δ u x +_) (+-identityʳ (δ u t)))
-        (sym (trans (+-assoc (δ u x) (+ 0) (δ u t))
-                    (cong (δ u x +_) (+-identityˡ (δ u t)))))
-... | eq3 _ _ e with (cf t + cf x) ≟ + 0
-...   | yes z with ex u ≟ ex x
-...     | yes ux = trans (cong (_+ (+ 0)) (cong cf ux))
-                      (sym (trans (cong (_+ (+ 0)) (cong cf (sym e)))
-                                  (trans (cong (_+ (cf x)) (cong cf ux))
-                                         (+-comm (cf x) (cf t)))))
-...     | no ux = refl
-insertCᵌ-sums u t (x ∷ []) (canon-one .x)
-  | eq3 _ _ e
-  | no nlt with ex u ≟ ex x
-...   | yes ux = trans (+-identityʳ (δ u t))
-                     (sym (trans (cong (_+ (δ u t)) (+-identityˡ (δ u x)))
-                                 (cong (λ w → δ u x + w) (sym (cong cf ux)))))
-...   | no ux = refl
-insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
-  with cmp3 (ex t) (ex x)
-... | gt3 _ _ g = +-comm (sums u (x ∷ x₂ ∷ xs)) (δ u t)
-... | eq3 _ _ e with (cf t + cf x) ≟ + 0
-...   | yes z = refl
-...   | no _ with ex u ≟ ex x
-...     | yes ux =
-  trans (insertCᵌ-sums u (cf t + cf x , ex t) (x₂ ∷ xs) s)
-        (sums-shuffle (sums u (x₂ ∷ xs)) (cf x) (cf t))
-...     | no ux =
-  let IH = insertCᵌ-sums u (cf t + cf x , ex t) (x₂ ∷ xs) s in
-  trans IH
-  (trans (cong (_+ (δ u t)) (sym (+-identityˡ (sums u (x₂ ∷ xs)))))
-         (trans (cong (_+ (+ 0)) (sym (+-identityʳ (δ u t))))
-                (+-identityʳ (sums u (x₂ ∷ xs)))))
-insertCᵌ-sums u t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s)
-  | lt3 _ _ l with insertCᵌ t (x₂ ∷ xs) s
-...   | (w' , cw' , dj') =
-  trans (cong (δ u x +_) (insertCᵌ-sums u t (x₂ ∷ xs) s))
-        (sym (+-assoc (δ u x) (sums u (x₂ ∷ xs)) (δ u t)))
+-- insertCᵌ-sums（插入的逐指数和不变量）待下一轮实现。
+-- 设计决策（Round-6 定型）：插入项 t 的贡献统一写成 sums u (t ∷ [])
+-- （δ 与 sums 是两个函数，其内部 with-aux 互不精炼——本会话实测）；
+-- 陈述：sums u (proj₁ (insertCᵌ t ts c)) ≡ sums u ts + sums u (t ∷ [])
+-- 各分支方程清单：
+--   nil        : refl 侧 = sym identityˡ
+--   one-gt/lt3 : assoc/identityʳ 洗牌（无 u≟x 情形）
+--   one-eq-yes : z(系数和为零) + u≟x 情形 + comm/identity
+--   one-eq-no  : comm + identity（m 的指数 = exp t 定义相等）
+--   cons-gt    : +-comm
+--   cons-eq-zero : refl（结果 = ts 原样）
+--   cons-eq-no : IH + sums-shuffle（u≟x 情形）+ zero-shuffle（no 情形）
+--   cons-lt3   : cong + sym assoc（无 u≟x 情形）
