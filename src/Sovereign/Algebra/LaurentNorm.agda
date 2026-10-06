@@ -217,23 +217,16 @@ lt3-cons-inj1 t x x₂ xs p s =
 lt3-cons : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) →
   proj₂ x₂ < proj₂ x → proj₂ t < proj₂ x → Canon (x₂ ∷ xs) →
   SpecT t (x₂ ∷ xs) → SpecT t (x ∷ x₂ ∷ xs)
-lt3-cons t x x₂ xs p l s inner with inner
-... | (w' , cw' , dj') with dj'
-...   | inj₁ weq = lt3-cons-inj1 t x x₂ xs p s
-...   | inj₂ (h , r , eq , src) =
-  -- 内层结果 = h ∷ r：外层第三析取（首项 x，来源恒 InT x ts）
+lt3-cons t x x₂ xs p l s (w' , cw' , inj₁ btail) = lt3-cons-inj1 t x x₂ xs p s
+lt3-cons t x x₂ xs p l s (w' , cw' , inj₂ (h , r , eq , src)) =
   let Cn : Canon (x ∷ (h ∷ r))
       Cn = canon-cons x h r (lt3-bound t x x₂ xs p l s h src)
-                             (subst (λ v → Canon v) eq cw')
-      H : Σ LaurentTerm (λ h₀ → Σ Laurent (λ r₀ →
+                           (subst (λ v → Canon v) eq cw')
+      Hd : Σ LaurentTerm (λ h₀ → Σ Laurent (λ r₀ →
             x ∷ (h ∷ r) ≡ h₀ ∷ r₀
             × ((h₀ ≡ t) ⊎ InT h₀ (x ∷ x₂ ∷ xs) ⊎ (proj₂ h₀ ≡ proj₂ t))))
-      H = (x , (h ∷ r) , refl , inj₂ (inj₁ (here x (x₂ ∷ xs))))
-  in (x ∷ (h ∷ r) , Cn , inj₂ H)
-
--- ────────────────────────────────────────────────────────────────────
--- 主定理
--- ────────────────────────────────────────────────────────────────────
+      Hd = (x , (h ∷ r) , refl , inj₂ (inj₁ (here x (x₂ ∷ xs))))
+  in (x ∷ (h ∷ r) , Cn , inj₂ Hd)
 
 insertCᵌ : ∀ (t : LaurentTerm) ts → Canon ts → SpecT t ts
 insertCᵌ t [] c =
