@@ -20,13 +20,13 @@
 
 module Sovereign.Algebra.LaurentCubical where
 
-open import Sovereign.Algebra.ProbeArith using (probe; probe-dual)
+open import Sovereign.Algebra.ProbeArith using (probe; probe-dual; triℤ)
 
 open import Cubical.Foundations.Prelude using
   (_≡_; refl; sym; _∙_; cong; cong₂; funExt; subst; Σ; Σ-syntax; _,_; fst; snd)
 open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc; _+pos_; sucℤ)
-open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤)
-open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL)
+open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤; Trichotomy; lt; eq; gt)
+open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL; sucℤ+pos)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_; pred) renaming (_+_ to _+ℕ_)
 open import Cubical.Data.Nat.Properties using (min; max; minSuc; maxSuc; minComm; maxComm; +∸; ∸+; +-comm; +-zero; +-suc)
 open import Cubical.Data.Nat.Order using ()
@@ -245,6 +245,16 @@ sum-ℤ-zero : (f : ℤ → ℤ) → (L : ℤ) → (n : ℕ) → (∀ k → f k 
 sum-ℤ-zero f L zero h = h L
 sum-ℤ-zero f L (suc n) h = cong₂ _+_ (sum-ℤ-zero f L n h) (h (L + pos (suc n)))
 
+-- 带下界版：回调可见 k ≥ L（卷积 termzero 分路用）
+sum-ℤ-zero-ranged : (f : ℤ → ℤ) → (L : ℤ) → (n : ℕ) → (∀ k → L ≤ k → f k ≡ pos 0) → sum-ℤ f L n ≡ pos 0
+sum-ℤ-zero-ranged f L zero h = h L (zero , refl)
+sum-ℤ-zero-ranged f L (suc n) h =
+  cong₂ _+_ (sum-ℤ-zero-ranged f L n h) (h (L + pos (suc n)) (suc n , refl))
+
+-- lt 弱化到 ≤（witness suc j + sucℤ+pos 桥）
+lt≤ : ∀ k Uf → k < Uf → k ≤ Uf
+lt≤ k Uf (j , p) = suc j , sucℤ+pos j k ∙ p
+
 -- ────────────────────────────────────────────────────────────────────
 -- 卷积乘法（参考 agda-unimath 的 convolution-sequences）
 -- ────────────────────────────────────────────────────────────────────
@@ -257,23 +267,20 @@ _*L_ : Laurent → Laurent → Laurent
   conv-sum f g n = sum-ℤ (λ k → f k · g (n - k)) Lf (abs (Uf - Lf))
   
   bound : ∀ n → (n < Lf + Lg) ⊎ (Uf + Ug < n) → conv-sum f g n ≡ pos 0
-  bound n h = sum-ℤ-zero (λ k → f k · g (n - k)) Lf (abs (Uf - Lf)) (λ k → term-zero k h)
+  bound n h = sum-ℤ-zero-ranged (λ k → f k · g (n - k)) Lf (abs (Uf - Lf)) (λ k kge → termzero k kge h)
     where
-    term-zero : ∀ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → f k · g (n - k) ≡ pos 0
-    term-zero k h = cong (f k ·_) (g-zero k h) ∙ ·AnnihilR (f k)
+    g路 : ∀ k → Lf ≤ k → k ≤ Uf → (n < Lf + Lg) ⊎ (Uf + Ug < n) → f k · g (n - k) ≡ pos 0
+    g路 k h1 h2 hh = cong (f k ·_) (bg (n - k) (bound-n-k k h1 h2 hh)) ∙ ·AnnihilR (f k)
       where
-      g-zero : ∀ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → g (n - k) ≡ pos 0
-      g-zero k h = bg (n - k) (bound-n-k k h1 h2 h)
-        where
-        -- PENDING: h1 : Lf ≤ k / h2 : k ≤ Uf 需 sum-ℤ-zero 暴露 k 的范围位置。
-        -- Uf ≥ Lf 时范围 [Lf,Uf] 两界成立；Uf < Lf 时 k 可超 Uf，
-        -- 该子范围需走 f 支路（f k ≡ 0，由 f 的 FinSupp 给出）。
-        -- 修法：sum-ℤ-zero 回调加索引参数，或 FinSupp 界规范化 L ≤ U。
-        h1 = {!Lf ≤ k: 需 sum-ℤ 范围信息!}
-        h2 = {!k ≤ Uf: Uf ≥ Lf 情形成立!}
-        bound-n-k : ∀ k → (Lf ≤ k) → (k ≤ Uf) → (n < Lf + Lg) ⊎ (Uf + Ug < n) → (n - k < Lg) ⊎ (Ug < n - k)
-        bound-n-k k h1 h2 (inl x) = inl (probe n Lf Lg k x h1)
-        bound-n-k k h1 h2 (inr x) = inr (probe-dual n Uf Ug k x h2)
+      bound-n-k : ∀ k → (Lf ≤ k) → (k ≤ Uf) → (n < Lf + Lg) ⊎ (Uf + Ug < n) → (n - k < Lg) ⊎ (Ug < n - k)
+      bound-n-k k h1 h2 (inl x) = inl (probe n Lf Lg k x h1)
+      bound-n-k k h1 h2 (inr x) = inr (probe-dual n Uf Ug k x h2)
+    -- k ≥ Lf 已由回调可见；triℤ k Uf 分路：k ≤ Uf 走 g 路 / Uf < k 走 f 路
+    termzero : ∀ k → Lf ≤ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → f k · g (n - k) ≡ pos 0
+    termzero k kge h with triℤ k Uf
+    ... | lt x = g路 k kge (lt≤ k Uf x) h
+    ... | eq x = g路 k kge (subst (λ z → k ≤ z) x (zero , refl)) h
+    ... | gt x = cong (_· g (n - k)) (bf k (inr x)) ∙ ·AnnihilL (g (n - k))
 
 -- ────────────────────────────────────────────────────────────────────
 -- 加法性质（从 ℤ 的算术直接推出）
