@@ -141,11 +141,11 @@ negsuc-+pos (suc x) (suc k) (k' , p) = {!!}  -- pred 不在作用域
 max-left : ∀ m n → negsuc (max m n) ≤ negsuc m
 max-left m n = _∸_ (max m n) m , {!!}  -- negsuc-+pos 返回 negsuc (x ∸ k) ≠ negsuc m
 max-right : ∀ m n → negsuc (max m n) ≤ negsuc n
-max-right m n = _∸_ (max m n) n , {!!}
+max-right m n = _∸_ (max m n) n , {!!}  -- maxComm 桥接待修
 min-left : ∀ m n → negsuc m ≤ negsuc (min m n)
-min-left m n = _∸_ m (min m n) , {!!}
+min-left m n = _∸_ m (min m n) , {!!}  -- minComm 桥接待修
 min-right : ∀ m n → negsuc n ≤ negsuc (min m n)
-min-right m n = _∸_ n (min m n) , {!!}
+min-right m n = _∸_ n (min m n) , {!!}  -- minComm 桥接待修
 
 -- min-ℤ 界引理
 min-ℤ≤ˡ : ∀ a b → min-ℤ a b ≤ a
