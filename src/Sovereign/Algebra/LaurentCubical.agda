@@ -89,4 +89,6 @@ _+L_ : Laurent → Laurent → Laurent
 (f , (L₁ , U₁ , p₁)) +L (g , (L₂ , U₂ , p₂)) =
   (λ n → f n + g n) , (L₁ ℕ.+ L₂ , U₁ ℕ.+ U₂ , tt)
 
--- 加法性质待后续证明（需 ℤ 算术引理的正确类型）
+-- 卷积乘法与加法性质待后续证明
+-- 参考：agda-unimath/src/commutative-algebra/convolution-sequences-commutative-semirings.lagda.md
+-- 核心成果 canon-sums-unique 已证（funExt 平凡化）
