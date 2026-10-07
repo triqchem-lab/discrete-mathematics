@@ -46,4 +46,4 @@ probe n Lf Lg k (a , p₁) (b , p₂) = (a +ℕ b) , lem
     lem' = subst (λ x → sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ x - Lf) p₁ lem'' ∙ cong (_- Lf) (+Comm Lf Lg) ∙ plusMinus Lf Lg
       where
       lem'' : sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ (sucℤ n +pos a) - Lf
-      lem'' = {!!}  -- PENDING: 7 步引理组合（sucℤ-minus ∙ minus-assoc ∙ minus-shift ∙ pos-+pos ∙ minusPlus）
+      lem'' = {!!}  -- PENDING: 用 addPos 避开 +pos 解析冲突
