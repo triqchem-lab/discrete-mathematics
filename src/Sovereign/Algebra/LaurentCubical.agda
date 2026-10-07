@@ -99,6 +99,17 @@ R0 = (λ _ → pos 0) , (pos 0 , pos 0 , λ n _ → refl)
 -- 有限支撑下只需对 f 的支撑求和
 -- 参考：agda-unimath/src/commutative-algebra/convolution-sequences-commutative-semirings.lagda.md
 
+-- ────────────────────────────────────────────────────────────────────
+-- 卷积乘法（参考 agda-unimath 的 convolution-sequences）
+-- ────────────────────────────────────────────────────────────────────
+
+-- 有限求和：∑_{i=0}^{n} f(i)（对 ℕ 归纳）
+sum-ℕ : (ℕ → ℤ) → ℕ → ℤ
+sum-ℕ f zero = f zero
+sum-ℕ f (suc n) = sum-ℕ f n + f (suc n)
+
+-- 卷积乘法：(f * g)(n) = Σ_k f(k) * g(n - k)
+-- 有限支撑下只需对 f 的支撑求和
 -- _*L_ : Laurent → Laurent → Laurent
 -- 需要有限求和 over ℤ（conv-sum）+ FinSupp 保持证明
 -- 参考：agda-unimath/src/commutative-algebra/convolution-sequences-commutative-semirings.lagda.md
