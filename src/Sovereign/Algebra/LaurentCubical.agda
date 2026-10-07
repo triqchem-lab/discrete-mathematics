@@ -22,7 +22,7 @@ module Sovereign.Algebra.LaurentCubical where
 
 open import Cubical.Foundations.Prelude using
   (_≡_; refl; sym; _∙_; cong; cong₂; funExt; subst; Σ; Σ-syntax; _,_; fst; snd)
-open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc; _+pos_)
+open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc; _+pos_; sucℤ)
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤)
 open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
@@ -109,7 +109,8 @@ m∸n+n≡m m n (k , p) =
 
 -- pos-+pos : pos a +pos k ≡ pos (a +ℕ k)（桥接引理）
 pos-+pos : ∀ a k → pos a +pos k ≡ pos (a +ℕ k)
-pos-+pos a k = {!!}  -- 待证：+pos 归约
+pos-+pos a zero = {!!}  -- +pos 归约
+pos-+pos a (suc k) = {!!}  -- +pos 归约
 
 -- min≤ : min m n ≤ m（独立归纳，不依赖 m∸n+n≡m）
 min≤ : ∀ m n → Σ ℕ (λ k → k +ℕ min m n ≡ m)
