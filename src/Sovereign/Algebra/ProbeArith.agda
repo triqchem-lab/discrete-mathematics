@@ -78,3 +78,57 @@ probe n Lf Lg k (a , p₁) (b , p₂) = (a +ℕ b) , lem
         ∙ sym (+Assoc (sucℤ n) (Cubical.Data.Int.-_ (Lf +pos b)) (pos (a +ℕ b)))
         ∙ cong (sucℤ n +_) inner
         ∙ +Assoc (sucℤ n) (pos a) (Cubical.Data.Int.-_ Lf)
+
+
+-- ────────────────────────────────────────────────────────────────────
+-- 上界对偶：Uf + Ug < n → k ≤ Uf → Ug < n - k
+-- 见证 e := c +ℕ d；核心：sucℤ k - k ≡ pos 1（k + pos 1 ≡ sucℤ k 定义性）
+-- ────────────────────────────────────────────────────────────────────
+
+probe-dual : (n Uf Ug k : ℤ) → Uf + Ug < n → k ≤ Uf → Ug < n - k
+probe-dual n Uf Ug k (c , q₁) (d , q₂) = (c +ℕ d) , lem
+  where
+  -- pos 1 + x ≡ sucℤ x（x + pos 1 ≡ sucℤ x 定义性 + +Comm）
+  pos1+sucℤ : ∀ x → pos 1 + x ≡ sucℤ x
+  pos1+sucℤ x = sym (+Comm x (pos 1))
+
+  -- minus-shift 内联：(x - y) + z ≡ (x + z) - y
+  mshift : ∀ x y z → (x - y) + z ≡ (x + z) - y
+  mshift x y z = sym (+Assoc x (Cubical.Data.Int.-_ y) z)
+                 ∙ cong (x +_) (+Comm (Cubical.Data.Int.-_ y) z)
+                 ∙ +Assoc x z (Cubical.Data.Int.-_ y)
+
+  -- sucℤ k - k ≡ pos 1
+  sucℤk-k : sucℤ k - k ≡ pos 1
+  sucℤk-k =
+    cong (λ z → z + (Cubical.Data.Int.-_ k)) (+Comm k (pos 1))
+    ∙ sym (+Assoc (pos 1) k (Cubical.Data.Int.-_ k))
+    ∙ cong (pos 1 +_) (-Cancel k)
+
+  LHS-chain' : sucℤ Ug +pos (c +ℕ d) ≡ (sucℤ Ug + pos c) + pos d
+  LHS-chain' =
+    cong (sucℤ Ug +_) (sym (pos-+pos c d))
+    ∙ +Assoc (sucℤ Ug) (pos c) (pos d)
+
+  RHS-chain : (sucℤ ((k +pos d) + Ug) +pos c) - k ≡ (sucℤ Ug + pos c) + pos d
+  RHS-chain =
+    cong (λ z → (z + pos c) - k)
+      (sucPush (k +pos d) Ug ∙ cong (_+ Ug) (sucPush k (pos d)))
+    ∙ cong (λ z → z - k) (sym (+Assoc ((sucℤ k + pos d)) Ug (pos c)))
+    ∙ sym (mshift (sucℤ k + pos d) k (Ug + pos c))
+    ∙ cong (_+ (Ug + pos c)) (sym (mshift (sucℤ k) k (pos d)))
+    ∙ cong (λ z → (z + pos d) + (Ug + pos c)) sucℤk-k
+    ∙ sym (+Assoc (pos 1) (pos d) (Ug + pos c))
+    ∙ cong (pos 1 +_) (+Comm (pos d) (Ug + pos c))
+    ∙ +Assoc (pos 1) (Ug + pos c) (pos d)
+    ∙ cong (_+ pos d) (+Assoc (pos 1) Ug (pos c))
+    ∙ cong (λ z → (z + pos c) + pos d) (pos1+sucℤ Ug)
+
+  lem : sucℤ Ug +pos (c +ℕ d) ≡ n - k
+  lem = subst (λ x → sucℤ Ug +pos (c +ℕ d) ≡ x - k) q₁ lem'
+    where
+    lem' : sucℤ Ug +pos (c +ℕ d) ≡ (sucℤ (Uf + Ug) +pos c) - k
+    lem' = subst (λ x → sucℤ Ug +pos (c +ℕ d) ≡ (sucℤ (x + Ug) +pos c) - k) q₂ lem''
+      where
+      lem'' : sucℤ Ug +pos (c +ℕ d) ≡ (sucℤ ((k +pos d) + Ug) +pos c) - k
+      lem'' = LHS-chain' ∙ sym RHS-chain
