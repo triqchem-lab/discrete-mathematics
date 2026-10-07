@@ -42,7 +42,7 @@ pos-+pos a (suc b) = cong sucℤ (pos-+pos a b) ∙ cong pos (sym (+-suc a b))
 -- ────────────────────────────────────────────────────────────────────
 
 negDistrib : ∀ x y → Cubical.Data.Int.-_ (x + y) ≡ Cubical.Data.Int.-_ x + Cubical.Data.Int.-_ y
-negDistrib x y = {!!}  -- PENDING: -pos 桥接 + neg+ 组合
+negDistrib x y = {!!}  -- PENDING: 需 -pos 桥接 neg+ 到 ℤ 级（4 case）
 
 -- ────────────────────────────────────────────────────────────────────
 -- sucℤ-minus : sucℤ (x - y) ≡ sucℤ x - y（sucℤ 对减法的分配）
