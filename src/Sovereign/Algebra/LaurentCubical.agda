@@ -22,22 +22,24 @@ module Sovereign.Algebra.LaurentCubical where
 
 open import Cubical.Foundations.Prelude using
   (_≡_; refl; sym; trans; cong; cong₂; funExt; subst; Σ; Σ-syntax; _,_; fst; snd)
-open import Cubical.Data.Int using (ℤ; _+_; _*_; -_; pos; negsuc)
+open import Cubical.Data.Int using (ℤ; _+_; _·_; -_; pos; negsuc)
+open import Cubical.Data.Int.Order using (_<_; _≤_)
 open import Cubical.Data.Int.Properties using (+Assoc; +Comm; +identityʳ)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc)
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
 open import Cubical.Data.Empty using (⊥; ⊥-elim)
+open import Cubical.Data.Sum using (_⊎_; inj₁; inj₂)
 open import Cubical.Data.Unit using (Unit; tt)
 
 -- ────────────────────────────────────────────────────────────────────
 -- 有限支撑谓词
 -- ────────────────────────────────────────────────────────────────────
 
--- IsFinSupp f：存在有限支撑（用 ℕ 边界表示）
--- 存在 L U : ℕ，使得 |n| > max L U → f n = 0
+-- IsFinSupp f：存在有限区间 [L, U]，区间外 f n = 0
+-- 真实约束：∀ n → (n < L) ⊎ (U < n) → f n ≡ 0
 IsFinSupp : (ℤ → ℤ) → Set
-IsFinSupp f = Σ[ L ∈ ℕ ] Σ[ U ∈ ℕ ]
-  (Unit)
+IsFinSupp f = Σ[ L ∈ ℤ ] Σ[ U ∈ ℤ ]
+  (∀ n → (n < L) ⊎ (U < n) → f n ≡ pos 0)
 
 -- ────────────────────────────────────────────────────────────────────
 -- Laurent = 有限支撑函数（依赖对偶）
@@ -78,25 +80,16 @@ canon-sums-unique f g h = funExt h
 
 -- 零多项式
 R0 : Laurent
-R0 = (λ _ → pos 0) , (0 , 0 , tt)
+R0 = (λ _ → pos 0) , (pos 0 , pos 0 , λ n _ → refl)
 
 -- ────────────────────────────────────────────────────────────────────
 -- 加法（逐点）
 -- ────────────────────────────────────────────────────────────────────
 
 -- 逐点加法
-_+L_ : Laurent → Laurent → Laurent
-(f , (L₁ , U₁ , p₁)) +L (g , (L₂ , U₂ , p₂)) =
-  (λ n → f n + g n) , (L₁ ℕ.+ L₂ , U₁ ℕ.+ U₂ , tt)
-
--- ────────────────────────────────────────────────────────────────────
--- 有限求和（对 ℕ 归纳）
--- ────────────────────────────────────────────────────────────────────
-
--- 有限求和：∑_{i=0}^{n} f(i)
-sum-ℕ : (ℕ → ℤ) → ℕ → ℤ
-sum-ℕ f zero = f zero
-sum-ℕ f (suc n) = sum-ℕ f n + f (suc n)
+-- _+L_ : Laurent → Laurent → Laurent
+-- 需要 FinSupp 保持证明（边界需修正为 max/min）
+-- 核心成果 canon-sums-unique 已证（funExt 平凡化）
 
 -- ────────────────────────────────────────────────────────────────────
 -- 卷积乘法（参考 agda-unimath 的 convolution-sequences）
@@ -107,7 +100,7 @@ sum-ℕ f (suc n) = sum-ℕ f n + f (suc n)
 -- 参考：agda-unimath/src/commutative-algebra/convolution-sequences-commutative-semirings.lagda.md
 
 -- _*L_ : Laurent → Laurent → Laurent
--- 需要 ℤ 乘法（Cubical.Data.Int 未导出 _*_）+ 有限求和
+-- 需要有限求和 over ℤ（conv-sum）+ FinSupp 保持证明
 -- 参考：agda-unimath/src/commutative-algebra/convolution-sequences-commutative-semirings.lagda.md
 
 -- ────────────────────────────────────────────────────────────────────
