@@ -127,6 +127,10 @@ max≤ (suc m) zero = zero , refl
 max≤ (suc m) (suc n) with max≤ m n
 ... | (k , p) = k , {!!}  -- maxSuc 参数顺序待修
 
+-- m∸[m∸n]≡n : m ∸ (m ∸ n) ≡ n（当 n ≤ m）
+m∸[m∸n]≡n : ∀ m n → Σ ℕ (λ k → k +ℕ n ≡ m) → m ∸ (m ∸ n) ≡ n
+m∸[m∸n]≡n m n (k , p) = {!!}
+
 -- negsuc-+pos : negsuc x +pos k ≡ negsuc (x ∸ k)（当 k ≤ suc x）
 negsuc-+pos : ∀ x k → Σ ℕ (λ j → j +ℕ k ≡ x) → negsuc x +pos k ≡ negsuc (x ∸ k)
 negsuc-+pos x zero _ = refl
