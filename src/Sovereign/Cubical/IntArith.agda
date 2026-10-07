@@ -15,7 +15,7 @@ module Sovereign.Cubical.IntArith where
 open import Cubical.Data.Nat using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
 open import Cubical.Data.Nat.Properties using (+-zero; +-suc)
 open import Cubical.Data.Int using (ℤ; _+_; _-_; pos; negsuc; sucℤ; _+pos_)
-open import Cubical.Data.Int.Properties using (+Comm; +Assoc; minusPlus; plusMinus; -Cancel; -Cancel'; neg+)
+open import Cubical.Data.Int.Properties using (+Comm; +Assoc; minusPlus; plusMinus; -Cancel; -Cancel'; neg+; -pos; -neg)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; _∙_; Σ; _,_; fst; snd)
 
 -- ────────────────────────────────────────────────────────────────────
@@ -42,7 +42,10 @@ pos-+pos a (suc b) = cong sucℤ (pos-+pos a b) ∙ cong pos (sym (+-suc a b))
 -- ────────────────────────────────────────────────────────────────────
 
 negDistrib : ∀ x y → Cubical.Data.Int.-_ (x + y) ≡ Cubical.Data.Int.-_ x + Cubical.Data.Int.-_ y
-negDistrib x y = {!!}  -- PENDING: 需 -pos 桥接 neg+ 到 ℤ 级（4 case）
+negDistrib (pos a) (pos b) = cong Cubical.Data.Int.-_ (pos-+pos a b) ∙ -pos (a +ℕ b) ∙ neg+ a b ∙ cong₂ _+_ (sym (-pos a)) (sym (-pos b))
+negDistrib (pos a) (negsuc b) = {!!}
+negDistrib (negsuc a) (pos b) = {!!}
+negDistrib (negsuc a) (negsuc b) = {!!}
 
 -- ────────────────────────────────────────────────────────────────────
 -- sucℤ-minus : sucℤ (x - y) ≡ sucℤ x - y（sucℤ 对减法的分配）
