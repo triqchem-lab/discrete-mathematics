@@ -15,7 +15,7 @@ module Sovereign.Cubical.IntArith where
 open import Cubical.Data.Nat using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
 open import Cubical.Data.Nat.Properties using (+-zero; +-suc)
 open import Cubical.Data.Int using (ℤ; _+_; _-_; pos; negsuc; sucℤ; _+pos_)
-open import Cubical.Data.Int.Properties using (+Comm; +Assoc; minusPlus; plusMinus; -Cancel; -Cancel')
+open import Cubical.Data.Int.Properties using (+Comm; +Assoc; minusPlus; plusMinus; -Cancel; -Cancel'; neg+)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; _∙_; Σ; _,_; fst; snd)
 
 -- ────────────────────────────────────────────────────────────────────
@@ -38,6 +38,13 @@ pos-+pos a zero = cong pos (sym (+-zero a))
 pos-+pos a (suc b) = cong sucℤ (pos-+pos a b) ∙ cong pos (sym (+-suc a b))
 
 -- ────────────────────────────────────────────────────────────────────
+-- negDistrib : -(x + y) ≡ -x + -y（用 neg+ 组合）
+-- ────────────────────────────────────────────────────────────────────
+
+negDistrib : ∀ x y → Cubical.Data.Int.-_ (x + y) ≡ Cubical.Data.Int.-_ x + Cubical.Data.Int.-_ y
+negDistrib x y = {!!}  -- PENDING: 需 neg+ + +Assoc 组合
+
+-- ────────────────────────────────────────────────────────────────────
 -- sucℤ-minus : sucℤ (x - y) ≡ sucℤ x - y（sucℤ 对减法的分配）
 -- ────────────────────────────────────────────────────────────────────
 
@@ -49,11 +56,11 @@ sucℤ-minus x y = sucPush x (Cubical.Data.Int.-_ y)
 -- ────────────────────────────────────────────────────────────────────
 
 minus-assoc : ∀ x y z → x - (y + z) ≡ (x - y) - z
-minus-assoc x y z = {!!}  -- PENDING: negDistrib 需自建
+minus-assoc x y z = cong (x +_) (negDistrib y z) ∙ +Assoc x (Cubical.Data.Int.-_ y) (Cubical.Data.Int.-_ z)
 
 -- ────────────────────────────────────────────────────────────────────
 -- minus-shift : (x - y) + z ≡ (x + z) - y（减法与加法交换）
 -- ────────────────────────────────────────────────────────────────────
 
 minus-shift : ∀ x y z → (x - y) + z ≡ (x + z) - y
-minus-shift x y z = {!!}  -- PENDING: 需 +Comm + +Assoc 组合
+minus-shift x y z = sym (+Assoc x (Cubical.Data.Int.-_ y) z) ∙ cong (x +_) (+Comm (Cubical.Data.Int.-_ y) z) ∙ +Assoc x z (Cubical.Data.Int.-_ y)
