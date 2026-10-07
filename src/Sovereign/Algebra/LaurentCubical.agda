@@ -28,7 +28,7 @@ open import Cubical.Data.Int.Properties using (+Assoc; +Comm; +identityʳ; ·Ann
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc)
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
 open import Cubical.Data.Empty using (⊥; ⊥-elim)
-open import Cubical.Data.Sum using (_⊎_; inj₁; inj₂)
+open import Cubical.Data.Sum using (_⊎_; inl; inr)
 open import Cubical.Data.Unit using (Unit; tt)
 
 -- ────────────────────────────────────────────────────────────────────
@@ -128,6 +128,13 @@ sum-ℤ f L U = sum-ℕ (λ i → f (L + pos i)) (abs (U - L))
 -- ────────────────────────────────────────────────────────────────────
 -- 卷积乘法（参考 agda-unimath 的 convolution-sequences）
 -- ────────────────────────────────────────────────────────────────────
+-- case_of_ 辅助
+-- ────────────────────────────────────────────────────────────────────
+
+case_of_ : ∀ {a b} {A : Set a} {B : Set b} → A → (A → B) → B
+case x of f = f x
+
+-- ────────────────────────────────────────────────────────────────────
 -- 零求和引理
 -- ────────────────────────────────────────────────────────────────────
 
@@ -159,7 +166,14 @@ _*L_ : Laurent → Laurent → Laurent
       g-zero k h = bg (n - k) (bound-n-k k h)
         where
         bound-n-k : ∀ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → (n - k < Lg) ⊎ (Ug < n - k)
-        bound-n-k k h = {!!}
+        bound-n-k k (inl n<min) = inl (n-k-<Lg k n<min)
+          where
+          n-k-<Lg : ∀ k → n < Lf + Lg → n - k < Lg
+          n-k-<Lg k h = {!!}
+        bound-n-k k (inr max<n) = inr (Ug-<n-k k max<n)
+          where
+          Ug-<n-k : ∀ k → Uf + Ug < n → Ug < n - k
+          Ug-<n-k k h = {!!}
 
 -- ────────────────────────────────────────────────────────────────────
 -- 加法性质（从 ℤ 的算术直接推出）
