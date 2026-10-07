@@ -22,7 +22,7 @@ module Sovereign.Algebra.LaurentCubical where
 
 open import Cubical.Foundations.Prelude using
   (_≡_; refl; sym; trans; cong; cong₂; funExt; subst; Σ; Σ-syntax; _,_; fst; snd)
-open import Cubical.Data.Int using (ℤ; _+_; _·_; -_; pos; negsuc)
+open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc)
 open import Cubical.Data.Int.Order using (_<_; _≤_)
 open import Cubical.Data.Int.Properties using (+Assoc; +Comm; +identityʳ)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc)
@@ -110,8 +110,24 @@ sum-ℕ f (suc n) = sum-ℕ f n + f (suc n)
 
 -- 卷积乘法：(f * g)(n) = Σ_k f(k) * g(n - k)
 -- 有限支撑下只需对 f 的支撑求和
+-- ────────────────────────────────────────────────────────────────────
+-- 卷积乘法（参考 agda-unimath 的 convolution-sequences）
+-- ────────────────────────────────────────────────────────────────────
+
+-- ℤ → ℕ 转换（绝对值）
+abs : ℤ → ℕ
+abs (pos n) = n
+abs (negsuc n) = n
+
+-- 有限求和 over ℤ：∑_{k=L}^{U} f(k)
+-- 用 sum-ℕ 实现：将 [L, U] 映射到 [0, U-L]
+sum-ℤ : (ℤ → ℤ) → ℤ → ℤ → ℤ
+sum-ℤ f L U = sum-ℕ (λ i → f (L + pos i)) (abs (U - L))
+
+-- 卷积乘法：(f * g)(n) = Σ_k f(k) * g(n - k)
 -- _*L_ : Laurent → Laurent → Laurent
--- 需要有限求和 over ℤ（conv-sum）+ FinSupp 保持证明
+-- 需要 FinSupp 保持证明（卷积的支撑是 Minkowski 和）
+-- conv-sum f g n = sum-ℤ (λ k → f k · g (n - k)) Lf Uf
 -- 参考：agda-unimath/src/commutative-algebra/convolution-sequences-commutative-semirings.lagda.md
 
 -- ────────────────────────────────────────────────────────────────────
