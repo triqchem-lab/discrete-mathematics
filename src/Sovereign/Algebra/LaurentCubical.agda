@@ -25,8 +25,10 @@ open import Cubical.Foundations.Prelude using
 open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc)
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤)
 open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL)
-open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc)
-open import Cubical.Data.Nat.Properties using (min; max)
+open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
+open import Cubical.Data.Nat.Properties using (min; max; +∸; +-comm)
+open import Cubical.Data.Nat.Order using ()
+open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
 open import Cubical.Data.Empty using (⊥; ⊥-elim)
 open import Cubical.Data.Sum using (_⊎_; inl; inr)
@@ -100,38 +102,43 @@ max-ℤ (pos m) (negsuc n) = pos m
 max-ℤ (negsuc m) (pos n) = pos n
 max-ℤ (negsuc m) (negsuc n) = negsuc (min m n)
 
+-- ℕ 算术辅助引理：m ∸ n + n ≡ m（当 n ≤ m，即 Σ[ k ] k + n ≡ m）
+m∸n+n≡m : ∀ m n → Σ ℕ (λ k → k +ℕ n ≡ m) → (m ∸ n) +ℕ n ≡ m
+m∸n+n≡m m n (k , p) =
+  +-comm (m ∸ n) n ∙ cong (n +ℕ_) (cong (_∸ n) (sym p) ∙ +∸ k n) ∙ +-comm n k ∙ p
+
 -- ℕ min/max 界引理（negsuc 反转序）
 max-left : ∀ m n → negsuc (max m n) ≤ negsuc m
-max-left m n = ℕ._∸_ (max m n) m , {!!}
+max-left m n = _∸_ (max m n) m , {!!}
 max-right : ∀ m n → negsuc (max m n) ≤ negsuc n
-max-right m n = ℕ._∸_ (max m n) n , {!!}
+max-right m n = _∸_ (max m n) n , {!!}
 min-left : ∀ m n → negsuc m ≤ negsuc (min m n)
-min-left m n = ℕ._∸_ m (min m n) , {!!}
+min-left m n = _∸_ m (min m n) , {!!}
 min-right : ∀ m n → negsuc n ≤ negsuc (min m n)
-min-right m n = ℕ._∸_ n (min m n) , {!!}
+min-right m n = _∸_ n (min m n) , {!!}
 
 -- min-ℤ 界引理
 min-ℤ≤ˡ : ∀ a b → min-ℤ a b ≤ a
-min-ℤ≤ˡ (pos m) (pos n) = ℕ._∸_ m (min m n) , {!!}
+min-ℤ≤ˡ (pos m) (pos n) = _∸_ m (min m n) , {!!}
 min-ℤ≤ˡ (pos m) (negsuc n) = {!!}  -- negsuc n ≤ pos m
 min-ℤ≤ˡ (negsuc m) (pos n) = ℕ.zero , refl
 min-ℤ≤ˡ (negsuc m) (negsuc n) = max-left m n
 
 min-ℤ≤ʳ : ∀ a b → min-ℤ a b ≤ b
-min-ℤ≤ʳ (pos m) (pos n) = ℕ._∸_ n (min m n) , {!!}
+min-ℤ≤ʳ (pos m) (pos n) = _∸_ n (min m n) , {!!}
 min-ℤ≤ʳ (pos m) (negsuc n) = ℕ.zero , refl
-min-ℤ≤ʳ (negsuc m) (pos n) = suc (m ℕ.+ n) , {!!}
+min-ℤ≤ʳ (negsuc m) (pos n) = suc (m +ℕ n) , {!!}
 min-ℤ≤ʳ (negsuc m) (negsuc n) = max-right m n
 
 max-ℤ≤ˡ : ∀ a b → a ≤ max-ℤ a b
-max-ℤ≤ˡ (pos m) (pos n) = ℕ._∸_ (max m n) m , {!!}
+max-ℤ≤ˡ (pos m) (pos n) = _∸_ (max m n) m , {!!}
 max-ℤ≤ˡ (pos m) (negsuc n) = ℕ.zero , refl  -- max-ℤ (pos m) (negsuc n) = pos m ≤ pos m
-max-ℤ≤ˡ (negsuc m) (pos n) = suc (m ℕ.+ n) , {!!}
+max-ℤ≤ˡ (negsuc m) (pos n) = suc (m +ℕ n) , {!!}
 max-ℤ≤ˡ (negsuc m) (negsuc n) = min-left m n
 
 max-ℤ≤ʳ : ∀ a b → b ≤ max-ℤ a b
-max-ℤ≤ʳ (pos m) (pos n) = ℕ._∸_ (max m n) n , {!!}
-max-ℤ≤ʳ (pos m) (negsuc n) = suc (m ℕ.+ n) , {!!}
+max-ℤ≤ʳ (pos m) (pos n) = _∸_ (max m n) n , {!!}
+max-ℤ≤ʳ (pos m) (negsuc n) = suc (m +ℕ n) , {!!}
 max-ℤ≤ʳ (negsuc m) (pos n) = ℕ.zero , refl  -- max-ℤ (negsuc m) (pos n) = pos n ≤ pos n
 max-ℤ≤ʳ (negsuc m) (negsuc n) = min-right m n
 
