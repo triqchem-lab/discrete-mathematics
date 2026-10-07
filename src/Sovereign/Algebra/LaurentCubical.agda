@@ -22,7 +22,7 @@ module Sovereign.Algebra.LaurentCubical where
 
 open import Cubical.Foundations.Prelude using
   (_≡_; refl; sym; _∙_; cong; cong₂; funExt; subst; Σ; Σ-syntax; _,_; fst; snd)
-open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc)
+open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc; _+pos_)
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤)
 open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
