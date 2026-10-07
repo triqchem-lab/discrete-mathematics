@@ -414,7 +414,14 @@ hexp-lemma u c₁ n₁ c₂ n₂ xs ys e ue h hxs =
 -- 用 subst 沿 sums-cons-head 重写（case_of_ 化后展开定义性成立）
 -- ────────────────────────────────────────────────────────────────────
 
--- canon-sums-unique 待下轮：case_of_ 与 with 不互精炼（多轮实证）。
--- 解法候选：① sums 改回 with 定义 + 证明内 with 共精炼；
---           ② 或用 subst 沿 sums-cons-head 重写（需 sums-cons-head 不归约）。
+-- ────────────────────────────────────────────────────────────────────
+-- canon-sums-unique：sums 相等 → Canon 相等（枢纽引理）
+-- 用 subst 沿 sums-cons-head 重写（case_of_ 化后展开定义性成立）
+-- ────────────────────────────────────────────────────────────────────
+
+-- canon-sums-unique 待下轮：Agda 语义限制——函数参数类型不受 with 精炼。
+-- 根因：h (c₁ , n₁) 的类型 sums (c₁ , n₁) ((c₁ , n₁) ∷ xs) ≡ ... 不被 with 精炼
+-- （h 是函数参数），而 sums-cons-head 归约为 refl 后等式信息丢失。
+-- 唯一出路：不用 h (c₁ , n₁)，直接用 sums-bound-zero 构造系数等式
+-- （避开 sums 展开，直接从 Canon 界 + NoZero 推出 c₁ ≡ c₂）。
 -- norm-+ 依赖此引理 + norm-idem + insertCᵌ-sums（已证）。
