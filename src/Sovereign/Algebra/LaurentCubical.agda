@@ -156,7 +156,10 @@ _*L_ : Laurent → Laurent → Laurent
     term-zero k h = cong (f k ·_) (g-zero k h) ∙ ·AnnihilR (f k)
       where
       g-zero : ∀ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → g (n - k) ≡ pos 0
-      g-zero k h = {!!}
+      g-zero k h = bg (n - k) (bound-n-k k h)
+        where
+        bound-n-k : ∀ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → (n - k < Lg) ⊎ (Ug < n - k)
+        bound-n-k k h = {!!}
 
 -- ────────────────────────────────────────────────────────────────────
 -- 加法性质（从 ℤ 的算术直接推出）
