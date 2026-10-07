@@ -21,10 +21,10 @@
 module Sovereign.Algebra.LaurentCubical where
 
 open import Cubical.Foundations.Prelude using
-  (_≡_; refl; sym; trans; cong; cong₂; funExt; subst; Σ; Σ-syntax; _,_; fst; snd)
+  (_≡_; refl; sym; _∙_; cong; cong₂; funExt; subst; Σ; Σ-syntax; _,_; fst; snd)
 open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc)
 open import Cubical.Data.Int.Order using (_<_; _≤_)
-open import Cubical.Data.Int.Properties using (+Assoc; +Comm; +identityʳ)
+open import Cubical.Data.Int.Properties using (+Assoc; +Comm; +identityʳ; ·AnnihilR; ·AnnihilL)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc)
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
 open import Cubical.Data.Empty using (⊥; ⊥-elim)
@@ -128,17 +128,35 @@ sum-ℤ f L U = sum-ℕ (λ i → f (L + pos i)) (abs (U - L))
 -- ────────────────────────────────────────────────────────────────────
 -- 卷积乘法（参考 agda-unimath 的 convolution-sequences）
 -- ────────────────────────────────────────────────────────────────────
+-- 零求和引理
+-- ────────────────────────────────────────────────────────────────────
 
--- 卷积乘法：(f * g)(n) = Σ_k f(k) * g(n - k)
+sum-ℕ-zero : (n : ℕ) → sum-ℕ (λ _ → pos 0) n ≡ pos 0
+sum-ℕ-zero zero = refl
+sum-ℕ-zero (suc n) = cong (_+ pos 0) (sum-ℕ-zero n)
+
+sum-ℤ-zero : (f : ℤ → ℤ) → (L U : ℤ) → (∀ k → f k ≡ pos 0) → sum-ℤ f L U ≡ pos 0
+sum-ℤ-zero f L U h = cong (λ g → sum-ℕ g (abs (U - L))) (funExt (λ i → h (L + pos i))) ∙ sum-ℕ-zero (abs (U - L))
+
 -- ────────────────────────────────────────────────────────────────────
 -- 卷积乘法（参考 agda-unimath 的 convolution-sequences）
 -- ────────────────────────────────────────────────────────────────────
 
--- 卷积乘法：(f * g)(n) = Σ_k f(k) * g(n - k)
--- _*L_ : Laurent → Laurent → Laurent
--- 需要 Minkowski 和界证明（卷积的支撑是 supp f + supp g）
--- conv-sum f g n = sum-ℤ (λ k → f k · g (n - k)) Lf Uf
--- 参考：agda-unimath/src/commutative-algebra/convolution-sequences-commutative-semirings.lagda.md
+_*L_ : Laurent → Laurent → Laurent
+(f , (Lf , Uf , bf)) *L (g , (Lg , Ug , bg)) =
+  (λ n → conv-sum f g n) , (Lf + Lg , Uf + Ug , bound)
+  where
+  conv-sum : (ℤ → ℤ) → (ℤ → ℤ) → ℤ → ℤ
+  conv-sum f g n = sum-ℤ (λ k → f k · g (n - k)) Lf Uf
+  
+  bound : ∀ n → (n < Lf + Lg) ⊎ (Uf + Ug < n) → conv-sum f g n ≡ pos 0
+  bound n h = sum-ℤ-zero (λ k → f k · g (n - k)) Lf Uf (λ k → term-zero k h)
+    where
+    term-zero : ∀ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → f k · g (n - k) ≡ pos 0
+    term-zero k h = cong (f k ·_) (g-zero k h) ∙ ·AnnihilR (f k)
+      where
+      g-zero : ∀ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → g (n - k) ≡ pos 0
+      g-zero k h = {!!}
 
 -- ────────────────────────────────────────────────────────────────────
 -- 加法性质（从 ℤ 的算术直接推出）
