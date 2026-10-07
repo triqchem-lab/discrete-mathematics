@@ -24,7 +24,7 @@ open import Cubical.Foundations.Prelude using
   (_≡_; refl; sym; _∙_; cong; cong₂; funExt; subst; Σ; Σ-syntax; _,_; fst; snd)
 open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc)
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤)
-open import Cubical.Data.Int.Properties using (+Assoc; +Comm; +identityʳ; ·AnnihilR; ·AnnihilL)
+open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc)
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
 open import Cubical.Data.Empty using (⊥; ⊥-elim)
@@ -117,12 +117,13 @@ sum-ℕ f (suc n) = sum-ℕ f n + f (suc n)
 -- ℤ → ℕ 转换（绝对值）
 abs : ℤ → ℕ
 abs (pos n) = n
-abs (negsuc n) = n
+abs (negsuc n) = suc n
 
 -- 有限求和 over ℤ：∑_{k=L}^{U} f(k)
 -- 用 sum-ℕ 实现：将 [L, U] 映射到 [0, U-L]
-sum-ℤ : (ℤ → ℤ) → ℤ → ℤ → ℤ
-sum-ℤ f L U = sum-ℕ (λ i → f (L + pos i)) (abs (U - L))
+sum-ℤ : (ℤ → ℤ) → ℤ → ℕ → ℤ
+sum-ℤ f L zero = f L
+sum-ℤ f L (suc n) = sum-ℤ f L n + f (L + pos (suc n))
 
 -- 卷积乘法：(f * g)(n) = Σ_k f(k) * g(n - k)
 -- ────────────────────────────────────────────────────────────────────
@@ -140,10 +141,10 @@ case x of f = f x
 
 sum-ℕ-zero : (n : ℕ) → sum-ℕ (λ _ → pos 0) n ≡ pos 0
 sum-ℕ-zero zero = refl
-sum-ℕ-zero (suc n) = cong (_+ pos 0) (sum-ℕ-zero n)
+sum-ℕ-zero (suc n) = cong (_+ pos 0) (sum-ℕ-zero n) ∙ pos0+ (pos 0)
 
-sum-ℤ-zero : (f : ℤ → ℤ) → (L U : ℤ) → (∀ k → f k ≡ pos 0) → sum-ℤ f L U ≡ pos 0
-sum-ℤ-zero f L U h = cong (λ g → sum-ℕ g (abs (U - L))) (funExt (λ i → h (L + pos i))) ∙ sum-ℕ-zero (abs (U - L))
+sum-ℤ-zero : (f : ℤ → ℤ) → (L : ℤ) → (n : ℕ) → (∀ k → f k ≡ pos 0) → sum-ℤ f L n ≡ pos 0
+sum-ℤ-zero f L n h = {! !}  -- 待证：归纳 + h
 
 -- ────────────────────────────────────────────────────────────────────
 -- 卷积乘法（参考 agda-unimath 的 convolution-sequences）
@@ -154,10 +155,10 @@ _*L_ : Laurent → Laurent → Laurent
   (λ n → conv-sum f g n) , (Lf + Lg , Uf + Ug , bound)
   where
   conv-sum : (ℤ → ℤ) → (ℤ → ℤ) → ℤ → ℤ
-  conv-sum f g n = sum-ℤ (λ k → f k · g (n - k)) Lf Uf
+  conv-sum f g n = sum-ℤ (λ k → f k · g (n - k)) Lf (abs (Uf - Lf))
   
   bound : ∀ n → (n < Lf + Lg) ⊎ (Uf + Ug < n) → conv-sum f g n ≡ pos 0
-  bound n h = sum-ℤ-zero (λ k → f k · g (n - k)) Lf Uf (λ k → term-zero k h)
+  bound n h = sum-ℤ-zero (λ k → f k · g (n - k)) Lf (abs (Uf - Lf)) (λ k → term-zero k h)
     where
     term-zero : ∀ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → f k · g (n - k) ≡ pos 0
     term-zero k h = cong (f k ·_) (g-zero k h) ∙ ·AnnihilR (f k)
@@ -166,14 +167,7 @@ _*L_ : Laurent → Laurent → Laurent
       g-zero k h = bg (n - k) (bound-n-k k h)
         where
         bound-n-k : ∀ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → (n - k < Lg) ⊎ (Ug < n - k)
-        bound-n-k k (inl n<min) = inl (n-k-<Lg k n<min)
-          where
-          n-k-<Lg : ∀ k → n < Lf + Lg → n - k < Lg
-          n-k-<Lg k h = {!!}
-        bound-n-k k (inr max<n) = inr (Ug-<n-k k max<n)
-          where
-          Ug-<n-k : ∀ k → Uf + Ug < n → Ug < n - k
-          Ug-<n-k k h = {!!}
+        bound-n-k k h = {!!}  -- 待证：需 sum-ℤ 重写暴露 k ∈ [Lf, Uf] 界
 
 -- ────────────────────────────────────────────────────────────────────
 -- 加法性质（从 ℤ 的算术直接推出）
