@@ -144,7 +144,8 @@ sum-ℕ-zero zero = refl
 sum-ℕ-zero (suc n) = cong (_+ pos 0) (sum-ℕ-zero n) ∙ pos0+ (pos 0)
 
 sum-ℤ-zero : (f : ℤ → ℤ) → (L : ℤ) → (n : ℕ) → (∀ k → f k ≡ pos 0) → sum-ℤ f L n ≡ pos 0
-sum-ℤ-zero f L n h = {! !}  -- 待证：归纳 + h
+sum-ℤ-zero f L zero h = h L
+sum-ℤ-zero f L (suc n) h = cong₂ _+_ (sum-ℤ-zero f L n h) (h (L + pos (suc n)))
 
 -- ────────────────────────────────────────────────────────────────────
 -- 卷积乘法（参考 agda-unimath 的 convolution-sequences）
