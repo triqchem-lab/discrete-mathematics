@@ -46,7 +46,7 @@ negDistrib (pos a) (pos b) = cong Cubical.Data.Int.-_ (pos-+pos a b) ∙ -pos (a
 negDistrib (pos a) (negsuc b) = {!!}  -- PENDING: pos+negsuc 展开
 negDistrib (negsuc a) (pos b) = {!!}
 negDistrib (negsuc a) (negsuc zero) = refl
-negDistrib (negsuc a) (negsuc (suc b')) = {!!}  -- PENDING: predℤ 归约桥接
+negDistrib (negsuc a) (negsuc (suc b')) = -predℤ (Cubical.Data.Int._+negsuc_ (negsuc a) b') ∙ cong sucℤ (negDistrib (negsuc a) (negsuc b'))
 
 -- ────────────────────────────────────────────────────────────────────
 -- sucℤ-minus : sucℤ (x - y) ≡ sucℤ x - y（sucℤ 对减法的分配）
