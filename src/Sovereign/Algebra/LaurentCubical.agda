@@ -26,7 +26,7 @@ open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc; _+pos_
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤)
 open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_; pred) renaming (_+_ to _+ℕ_)
-open import Cubical.Data.Nat.Properties using (min; max; minSuc; maxSuc; minComm; maxComm; +∸; +-comm; +-zero; +-suc)
+open import Cubical.Data.Nat.Properties using (min; max; minSuc; maxSuc; minComm; maxComm; +∸; ∸+; +-comm; +-zero; +-suc)
 open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
@@ -129,7 +129,7 @@ max≤ (suc m) (suc n) with max≤ m n
 
 -- m∸[m∸n]≡n : m ∸ (m ∸ n) ≡ n（当 n ≤ m）
 m∸[m∸n]≡n : ∀ m n → Σ ℕ (λ k → k +ℕ n ≡ m) → m ∸ (m ∸ n) ≡ n
-m∸[m∸n]≡n m n (k , p) = {!!}
+m∸[m∸n]≡n m n (k , p) = {!!}  -- +∸/∸+ 参数顺序待修
 
 -- negsuc-+pos : negsuc x +pos k ≡ negsuc (x ∸ k)（当 k ≤ suc x）
 negsuc-+pos : ∀ x k → Σ ℕ (λ j → j +ℕ k ≡ x) → negsuc x +pos k ≡ negsuc (x ∸ k)
