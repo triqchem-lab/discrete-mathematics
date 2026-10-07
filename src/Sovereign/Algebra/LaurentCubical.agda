@@ -109,8 +109,8 @@ m∸n+n≡m m n (k , p) =
 
 -- pos-+pos : pos a +pos k ≡ pos (a +ℕ k)（桥接引理）
 pos-+pos : ∀ a k → pos a +pos k ≡ pos (a +ℕ k)
-pos-+pos a zero = {!!}  -- +pos 归约
-pos-+pos a (suc k) = {!!}  -- +pos 归约
+pos-+pos a zero = sym (cong pos (+-zero a))
+pos-+pos a (suc k) = cong sucℤ (pos-+pos a k) ∙ cong pos (sym (+-suc a k))
 
 -- min≤ : min m n ≤ m（独立归纳，不依赖 m∸n+n≡m）
 min≤ : ∀ m n → Σ ℕ (λ k → k +ℕ min m n ≡ m)
