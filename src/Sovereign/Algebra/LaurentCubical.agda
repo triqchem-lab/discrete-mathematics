@@ -100,30 +100,40 @@ max-ℤ (pos m) (negsuc n) = pos m
 max-ℤ (negsuc m) (pos n) = pos n
 max-ℤ (negsuc m) (negsuc n) = negsuc (min m n)
 
+-- ℕ min/max 界引理（negsuc 反转序）
+max-left : ∀ m n → negsuc (max m n) ≤ negsuc m
+max-left m n = {!!}
+max-right : ∀ m n → negsuc (max m n) ≤ negsuc n
+max-right m n = {!!}
+min-left : ∀ m n → negsuc m ≤ negsuc (min m n)
+min-left m n = {!!}
+min-right : ∀ m n → negsuc n ≤ negsuc (min m n)
+min-right m n = {!!}
+
 -- min-ℤ 界引理
 min-ℤ≤ˡ : ∀ a b → min-ℤ a b ≤ a
 min-ℤ≤ˡ (pos m) (pos n) = {!!}  -- pos (min m n) ≤ pos m
 min-ℤ≤ˡ (pos m) (negsuc n) = {!!}  -- negsuc n ≤ pos m
-min-ℤ≤ˡ (negsuc m) (pos n) = {!!}  -- negsuc m ≤ negsuc m
-min-ℤ≤ˡ (negsuc m) (negsuc n) = {!!}  -- negsuc (max m n) ≤ negsuc m
+min-ℤ≤ˡ (negsuc m) (pos n) = ℕ.zero , refl
+min-ℤ≤ˡ (negsuc m) (negsuc n) = max-left m n
 
 min-ℤ≤ʳ : ∀ a b → min-ℤ a b ≤ b
 min-ℤ≤ʳ (pos m) (pos n) = {!!}
-min-ℤ≤ʳ (pos m) (negsuc n) = {!!}
-min-ℤ≤ʳ (negsuc m) (pos n) = {!!}
-min-ℤ≤ʳ (negsuc m) (negsuc n) = {!!}
+min-ℤ≤ʳ (pos m) (negsuc n) = ℕ.zero , refl
+min-ℤ≤ʳ (negsuc m) (pos n) = {!!}  -- negsuc m ≤ pos n 需正见证
+min-ℤ≤ʳ (negsuc m) (negsuc n) = max-right m n
 
 max-ℤ≤ˡ : ∀ a b → a ≤ max-ℤ a b
 max-ℤ≤ˡ (pos m) (pos n) = {!!}
-max-ℤ≤ˡ (pos m) (negsuc n) = {!!}
-max-ℤ≤ˡ (negsuc m) (pos n) = {!!}
-max-ℤ≤ˡ (negsuc m) (negsuc n) = {!!}
+max-ℤ≤ˡ (pos m) (negsuc n) = ℕ.zero , refl  -- max-ℤ (pos m) (negsuc n) = pos m ≤ pos m
+max-ℤ≤ˡ (negsuc m) (pos n) = {!!}  -- negsuc m ≤ pos n 需正见证
+max-ℤ≤ˡ (negsuc m) (negsuc n) = min-left m n
 
 max-ℤ≤ʳ : ∀ a b → b ≤ max-ℤ a b
 max-ℤ≤ʳ (pos m) (pos n) = {!!}
-max-ℤ≤ʳ (pos m) (negsuc n) = {!!}
-max-ℤ≤ʳ (negsuc m) (pos n) = {!!}
-max-ℤ≤ʳ (negsuc m) (negsuc n) = {!!}
+max-ℤ≤ʳ (pos m) (negsuc n) = {!!}  -- negsuc n ≤ pos m 需正见证
+max-ℤ≤ʳ (negsuc m) (pos n) = ℕ.zero , refl  -- max-ℤ (negsuc m) (pos n) = pos n ≤ pos n
+max-ℤ≤ʳ (negsuc m) (negsuc n) = min-right m n
 
 -- 逐点加法
 _+L_ : Laurent → Laurent → Laurent
