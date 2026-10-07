@@ -49,7 +49,7 @@ sucℤ-minus x y = sucPush x (Cubical.Data.Int.-_ y)
 -- ────────────────────────────────────────────────────────────────────
 
 minus-assoc : ∀ x y z → x - (y + z) ≡ (x - y) - z
-minus-assoc x y z = {!!}  -- PENDING: - 解析冲突
+minus-assoc x y z = {!!}  -- PENDING: negDistrib 需自建
 
 -- ────────────────────────────────────────────────────────────────────
 -- minus-shift : (x - y) + z ≡ (x + z) - y（减法与加法交换）
