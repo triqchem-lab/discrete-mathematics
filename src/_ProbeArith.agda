@@ -1,7 +1,8 @@
 {-# OPTIONS --cubical --guardedness #-}
 module _ProbeArith where
 
-open import Cubical.Data.Nat using (ℕ; zero; suc) renaming (_+_ to _+ℕ_)
+open import Cubical.Data.Nat using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
+open import Cubical.Data.Nat.Properties using (+-zero; +-suc)
 open import Cubical.Data.Int using (ℤ; _+_; _-_; pos; negsuc; sucℤ; _+pos_; _*_; neg)
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; isTrans≤; isRefl≤)
 open import Cubical.Data.Int.Properties using (+Comm; +Assoc; +sucℤ; minusPlus; plusMinus; -Cancel) renaming (sucℤ+ to sucInt)
@@ -31,8 +32,9 @@ open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; 
 sucPush : ∀ x y → sucℤ (x + y) ≡ sucℤ x + y
 sucPush x y = sucInt x y
 
-pos-+pos : ∀ a b → pos a +pos b ≡ pos (a +ℕ b)
-pos-+pos a b = {!!}  -- PENDING: 需 sucPush 同款归纳
+pos-+pos : ∀ (a b : ℕ) → _+pos_ (pos a) b ≡ pos (a +ℕ b)
+pos-+pos a zero = cong pos (sym (+-zero a))
+pos-+pos a (suc b) = cong sucℤ (pos-+pos a b) ∙ cong pos (sym (+-suc a b))
 
 probe : (n Lf Lg k : ℤ) → n < Lf + Lg → Lf ≤ k → n - k < Lg
 probe n Lf Lg k (a , p₁) (b , p₂) = (a +ℕ b) , lem
