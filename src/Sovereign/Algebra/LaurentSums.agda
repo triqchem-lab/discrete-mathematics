@@ -39,14 +39,18 @@ open import Sovereign.Algebra.LaurentNorm
   using (insertCᵌ; Cmp3; cmp3; lt3; eq3; gt3; BTail; SpecT; lt3-cons)
 
 -- ────────────────────────────────────────────────────────────────────
--- sums：逐指数系数和
+-- sums：逐指数系数和（let-free，case_of_ 替代 with）
 -- ────────────────────────────────────────────────────────────────────
+
+case_of_ : ∀ {a b} {A : Set a} {B : Set b} → A → (A → B) → B
+case x of f = f x
 
 sums : LaurentTerm → Laurent → ℤ
 sums u [] = + 0
-sums u ((c , n) ∷ ts) with proj₂ u ≟ n
-... | yes _ = c + sums u ts
-... | no _  = sums u ts
+sums u ((c , n) ∷ ts) = case proj₂ u ≟ n of λ
+  { (yes _) → c + sums u ts
+  ; (no _)  → sums u ts
+  }
 
 -- 一步展开引理
 sums-cons-head : ∀ (u t : LaurentTerm) ts → proj₂ u ≡ proj₂ t →
@@ -358,16 +362,6 @@ cmp3-gt3-lemma n n' p with cmp3 n n'
   (trans (cong (λ w → w + c) (+-inverseˡ a))
          (+-identityˡ c))))))
 
--- ────────────────────────────────────────────────────────────────────
--- canon-sums-unique：sums 相等 → Canon 相等（枢纽引理）
--- ────────────────────────────────────────────────────────────────────
-
--- ────────────────────────────────────────────────────────────────────
--- canon-sums-unique：sums 相等 → Canon 相等（枢纽引理）
--- ────────────────────────────────────────────────────────────────────
-
--- canon-sums-unique 待下轮：sums-cons-head 归约为 refl 丢失等式信息。
--- 根因：sums 的 with 定义与外部展开不互精炼（多轮实证）。
--- 解法候选：① 用 with 在 hexp 内部 case-split n₁ ≟ n₁ / n₁ ≟ n₂；
---           ② 或改 sums 为 let-free（附录 10 模式）让展开定义性成立。
+-- canon-sums-unique 待下轮：hexp-lemma 需要 sums-cons-head 展开 + +-cancelˡ。
+-- sums 已改 case_of_（let-free），展开定义性成立。
 -- norm-+ 依赖此引理 + norm-idem + insertCᵌ-sums（已证）。
