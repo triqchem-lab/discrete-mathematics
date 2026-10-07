@@ -23,8 +23,8 @@ sum9-swap : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
       (A1 + (A2 + A3)) + ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))
   ≡   (A1 + (B1 + C1)) + ((A2 + (B2 + C2)) + (A3 + (B3 + C3)))
 sum9-swap A1 A2 A3 B1 B2 B3 C1 C2 C3 =
-      sym (assocP A1 (A2 + A3) ((B1 + (B2 + B3)) + (C1 + (C2 + C3))))
-  ∙ cong (A1 +_) (sym (assocP A2 A3 ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))))
+      assocP A1 (A2 + A3) ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))
+  ∙ cong (A1 +_) (assocP A2 A3 ((B1 + (B2 + B3)) + (C1 + (C2 + C3))))
   ∙ cong (A1 +_) (cong (A2 +_) (sym (assocP A3 (B1 + (B2 + B3)) (C1 + (C2 + C3)))))
   ∙ cong (A1 +_) (cong (A2 +_) (cong (A3 +_) (sym (assocP B1 (B2 + B3) (C1 + (C2 + C3))))))
   ∙ cong (A1 +_) (cong (A2 +_) (cong (A3 +_) (cong (B1 +_) (sym (assocP B2 B3 (C1 + (C2 + C3)))))))
@@ -35,13 +35,12 @@ sum9-swap A1 A2 A3 B1 B2 B3 C1 C2 C3 =
   ∙ cong (A1 +_) (cong (B1 +_) (cong (C1 +_) (cong (A2 +_) (+Comm A3 B2))))
   ∙ cong (A1 +_) (cong (B1 +_) (cong (C1 +_) (cong (A2 +_) (cong (B2 +_) (cong (A3 +_) (+Comm B3 C2))))))
   ∙ cong (A1 +_) (cong (B1 +_) (cong (C1 +_) (cong (A2 +_) (cong (B2 +_) (+Comm A3 C2)))))
-  ∙ +Assoc A1 B1 (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3))))))
-  ∙ +Assoc (A1 + B1) C1 (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))
-      ∙ cong (λ w → ((A1 + B1) + C1) + w) (assocP A2 B2 (C2 + (A3 + (B3 + C3))))
-      ∙ cong (λ w → ((A1 + B1) + C1) + w) (+Assoc (A2 + B2) C2 (A3 + (B3 + C3)))
-      ∙ cong (λ w1 → ((A1 + B1) + C1) + w1) (sym (assocP A2 B2 (C2 + (A3 + (B3 + C3)))))
-      ∙ cong (λ w1 → ((A1 + B1) + C1) + w1) (cong (A2 +_) (assocP B2 C2 (A3 + (B3 + C3))))
-      ∙ cong (λ w1 → ((A1 + B1) + C1) + w1) (assocP A2 (B2 + C2) (A3 + (B3 + C3)))
+  ∙ assocP A1 B1 (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3))))))
+  ∙ assocP (A1 + B1) C1 (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))
+  ∙ cong (λ w → ((A1 + B1) + C1) + w) (assocP A2 B2 (C2 + (A3 + (B3 + C3))))
+  ∙ cong (λ w1 → ((A1 + B1) + C1) + w1) (+Assoc (A2 + B2) C2 (A3 + (B3 + C3)))
+  ∙ cong (λ w2 → ((A1 + B1) + C1) + (w2 + (A3 + (B3 + C3)))) (sym (assocP A2 B2 C2))
+
 sum3-comm : ∀ (f : Fin 3 → Fin 3 → ℤ) →
   sum3 (λ k → sum3 (λ l → f k l)) ≡ sum3 (λ l → sum3 (λ k → f k l))
 sum3-comm f =
