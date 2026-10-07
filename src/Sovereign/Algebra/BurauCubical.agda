@@ -83,3 +83,57 @@ burau-s2 : Mat3
 burau-s2 = mat3 cfo cft cf0
                 cf1 cf0 cf0
                 cf0 cf0 cf1
+
+
+-- ────────────────────────────────────────────────────────────────────
+-- braid 关系：σ₁σ₂σ₁ = σ₂σ₁σ₂（逐 entry funExt，4-case refl）
+-- oracle 预核：engineering/burau_oracle.py（t∈[-6,6]）
+-- ────────────────────────────────────────────────────────────────────
+
+private
+  e11 : Mat3.a11 ((burau-s1 *3 burau-s2) *3 burau-s1) ≡ Mat3.a11 ((burau-s2 *3 burau-s1) *3 burau-s2)
+  e11 = funExt λ { (pos zero) → refl ; (pos (suc zero)) → refl ; (pos (suc (suc n))) → refl ; (negsuc n) → refl }
+
+  e12 : Mat3.a12 ((burau-s1 *3 burau-s2) *3 burau-s1) ≡ Mat3.a12 ((burau-s2 *3 burau-s1) *3 burau-s2)
+  e12 = funExt λ { (pos zero) → refl ; (pos (suc zero)) → refl ; (pos (suc (suc n))) → refl ; (negsuc n) → refl }
+
+  e13 : Mat3.a13 ((burau-s1 *3 burau-s2) *3 burau-s1) ≡ Mat3.a13 ((burau-s2 *3 burau-s1) *3 burau-s2)
+  e13 = funExt λ { (pos zero) → refl ; (pos (suc zero)) → refl ; (pos (suc (suc n))) → refl ; (negsuc n) → refl }
+
+  e21 : Mat3.a21 ((burau-s1 *3 burau-s2) *3 burau-s1) ≡ Mat3.a21 ((burau-s2 *3 burau-s1) *3 burau-s2)
+  e21 = funExt λ { (pos zero) → refl ; (pos (suc zero)) → refl ; (pos (suc (suc n))) → refl ; (negsuc n) → refl }
+
+  e22 : Mat3.a22 ((burau-s1 *3 burau-s2) *3 burau-s1) ≡ Mat3.a22 ((burau-s2 *3 burau-s1) *3 burau-s2)
+  e22 = funExt λ { (pos zero) → refl ; (pos (suc zero)) → refl ; (pos (suc (suc n))) → refl ; (negsuc n) → refl }
+
+  e23 : Mat3.a23 ((burau-s1 *3 burau-s2) *3 burau-s1) ≡ Mat3.a23 ((burau-s2 *3 burau-s1) *3 burau-s2)
+  e23 = funExt λ { (pos zero) → refl ; (pos (suc zero)) → refl ; (pos (suc (suc n))) → refl ; (negsuc n) → refl }
+
+  e31 : Mat3.a31 ((burau-s1 *3 burau-s2) *3 burau-s1) ≡ Mat3.a31 ((burau-s2 *3 burau-s1) *3 burau-s2)
+  e31 = funExt λ { (pos zero) → refl ; (pos (suc zero)) → refl ; (pos (suc (suc n))) → refl ; (negsuc n) → refl }
+
+  e32 : Mat3.a32 ((burau-s1 *3 burau-s2) *3 burau-s1) ≡ Mat3.a32 ((burau-s2 *3 burau-s1) *3 burau-s2)
+  e32 = funExt λ { (pos zero) → refl ; (pos (suc zero)) → refl ; (pos (suc (suc n))) → refl ; (negsuc n) → refl }
+
+  e33 : Mat3.a33 ((burau-s1 *3 burau-s2) *3 burau-s1) ≡ Mat3.a33 ((burau-s2 *3 burau-s1) *3 burau-s2)
+  e33 = funExt λ { (pos zero) → refl ; (pos (suc zero)) → refl ; (pos (suc (suc n))) → refl ; (negsuc n) → refl }
+
+-- record 构造子级 9 field 相等组合（9 段单参 cong 链）
+mat3-cong : ∀ {a11 a12 a13 a21 a22 a23 a31 a32 a33 b11 b12 b13 b21 b22 b23 b31 b32 b33}
+  → a11 ≡ b11 → a12 ≡ b12 → a13 ≡ b13
+  → a21 ≡ b21 → a22 ≡ b22 → a23 ≡ b23
+  → a31 ≡ b31 → a32 ≡ b32 → a33 ≡ b33
+  → mat3 a11 a12 a13 a21 a22 a23 a31 a32 a33 ≡ mat3 b11 b12 b13 b21 b22 b23 b31 b32 b33
+mat3-cong {a11} {a12} {a13} {a21} {a22} {a23} {a31} {a32} {a33} {b11} {b12} {b13} {b21} {b22} {b23} {b31} {b32} {b33} p1 p2 p3 p4 p5 p6 p7 p8 p9 =
+      cong (λ z → mat3 z a12 a13 a21 a22 a23 a31 a32 a33) p1
+  ∙ cong (λ z → mat3 b11 z a13 a21 a22 a23 a31 a32 a33) p2
+  ∙ cong (λ z → mat3 b11 b12 z a21 a22 a23 a31 a32 a33) p3
+  ∙ cong (λ z → mat3 b11 b12 b13 z a22 a23 a31 a32 a33) p4
+  ∙ cong (λ z → mat3 b11 b12 b13 b21 z a23 a31 a32 a33) p5
+  ∙ cong (λ z → mat3 b11 b12 b13 b21 b22 z a31 a32 a33) p6
+  ∙ cong (λ z → mat3 b11 b12 b13 b21 b22 b23 z a32 a33) p7
+  ∙ cong (λ z → mat3 b11 b12 b13 b21 b22 b23 b31 z a33) p8
+  ∙ cong (λ z → mat3 b11 b12 b13 b21 b22 b23 b31 b32 z) p9
+
+braid-rel : (burau-s1 *3 burau-s2) *3 burau-s1 ≡ (burau-s2 *3 burau-s1) *3 burau-s2
+braid-rel = mat3-cong e11 e12 e13 e21 e22 e23 e31 e32 e33
