@@ -25,7 +25,7 @@ open import Cubical.Foundations.Prelude using
 open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc; _+pos_; sucℤ)
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤)
 open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL)
-open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
+open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_; pred) renaming (_+_ to _+ℕ_)
 open import Cubical.Data.Nat.Properties using (min; max; minSuc; maxSuc; minComm; maxComm; +∸; +-comm; +-zero; +-suc)
 open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.Nat.Order using ()
@@ -127,10 +127,10 @@ max≤ (suc m) (suc n) with max≤ m n
 ... | (k , p) = k , {!!}  -- maxSuc 参数顺序待修
 
 -- negsuc-+pos : negsuc x +pos k ≡ negsuc (x ∸ k)（当 k ≤ suc x）
-negsuc-+pos : ∀ x k → negsuc x +pos k ≡ negsuc (x ∸ k)
-negsuc-+pos x zero = refl
-negsuc-+pos zero (suc k) = {!!}  -- sucℤ (negsuc 0) = pos 0 ≠ negsuc (0 ∸ suc k)
-negsuc-+pos (suc x) (suc k) = {!!}  -- sucℤ (negsuc _) 归约需 k ≤ x 前提
+negsuc-+pos : ∀ x k → Σ ℕ (λ j → j +ℕ k ≡ x) → negsuc x +pos k ≡ negsuc (x ∸ k)
+negsuc-+pos x zero _ = refl
+negsuc-+pos zero (suc k) _ = {!!}  -- sucℤ (negsuc 0) = pos 0
+negsuc-+pos (suc x) (suc k) (k' , p) = {!!}  -- pred 不在作用域
 
 -- ℕ min/max 界引理（negsuc 反转序）
 max-left : ∀ m n → negsuc (max m n) ≤ negsuc m
