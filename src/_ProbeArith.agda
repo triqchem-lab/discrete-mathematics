@@ -4,7 +4,7 @@ module _ProbeArith where
 open import Cubical.Data.Nat using (ℕ; zero; suc) renaming (_+_ to _+ℕ_)
 open import Cubical.Data.Int using (ℤ; _+_; _-_; pos; negsuc; sucℤ; _+pos_; _*_)
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; isTrans≤; isRefl≤)
-open import Cubical.Data.Int.Properties using (+Comm; +Assoc; sucℤ+; +sucℤ; minusPlus; plusMinus; -Cancel)
+open import Cubical.Data.Int.Properties using (+Comm; +Assoc; +sucℤ; minusPlus; plusMinus; -Cancel) renaming (sucℤ+ to sucIntPlus)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; subst; Σ; _,_; fst; snd; _∙_; funExt)
 
 -- 核心消去引理（参照 mathlib4 le.elim）：
@@ -37,4 +37,4 @@ probe n Lf Lg k (a , p₁) (b , p₂) = (a +ℕ b) , lem
     lem' = subst (λ x → sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ x - Lf) p₁ lem'' ∙ cong (_- Lf) (+Comm Lf Lg) ∙ plusMinus Lf Lg
       where
       lem'' : sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ (sucℤ n +pos a) - Lf
-      lem'' = {!!}  -- 纯算术：sucℤ+pos 解析冲突，需换写法
+      lem'' = {!!}  -- PENDING: sucℤ+ 解析冲突（+pos 与 _+_ 混淆），需换写法
