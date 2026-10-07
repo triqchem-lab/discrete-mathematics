@@ -261,10 +261,10 @@ _*L_ : Laurent → Laurent → Laurent
     term-zero k h = cong (f k ·_) (g-zero k h) ∙ ·AnnihilR (f k)
       where
       g-zero : ∀ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → g (n - k) ≡ pos 0
-      g-zero k h = bg (n - k) (bound-n-k k h)
+      g-zero k h = bg (n - k) (bound-n-k k {!!} {!!} h)
         where
-        bound-n-k : ∀ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → (n - k < Lg) ⊎ (Ug < n - k)
-        bound-n-k k h = {!!}  -- 待证：需 sum-ℤ 重写暴露 k ∈ [Lf, Uf] 界
+        bound-n-k : ∀ k → (Lf ≤ k) → (k ≤ Uf) → (n < Lf + Lg) ⊎ (Uf + Ug < n) → (n - k < Lg) ⊎ (Ug < n - k)
+        bound-n-k k h1 h2 d = {!!}  -- 待证：n<Lf+Lg ∧ k≥Lf → n-k<Lg；Uf+Ug<n ∧ k≤Uf → Ug<n-k
 
 -- ────────────────────────────────────────────────────────────────────
 -- 加法性质（从 ℤ 的算术直接推出）
