@@ -20,20 +20,20 @@
 
 module Sovereign.Algebra.LaurentCubical where
 
-open import Sovereign.Algebra.ProbeArith using (probe; probe-dual; triℤ)
+open import Sovereign.Algebra.ProbeArith using (probe; probe-dual; triℤ; negsuc<pos)
 
 open import Cubical.Foundations.Prelude using
   (_≡_; refl; sym; _∙_; cong; cong₂; funExt; subst; Σ; Σ-syntax; _,_; fst; snd)
-open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc; _+pos_; sucℤ)
-open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤; Trichotomy; lt; eq; gt)
-open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL; sucℤ+pos)
-open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_; pred) renaming (_+_ to _+ℕ_)
-open import Cubical.Data.Nat.Properties using (min; max; minSuc; maxSuc; minComm; maxComm; +∸; ∸+; +-comm; +-zero; +-suc)
+open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc; _+pos_; sucℤ; predℤ)
+open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; isTrans<; Trichotomy; lt; eq; gt)
+open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL; sucℤ+pos; sucPred; predℤ+pos)
+open import Cubical.Data.Nat.Order as ℕO using (zero-<suc; <→≢)
+open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_; predℕ) renaming (_+_ to _+ℕ_)
+open import Cubical.Data.Nat.Properties using (injSuc; min; max; minSuc; maxSuc; minComm; maxComm; +∸; ∸+; +-comm; +-zero; +-suc)
 open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
-open import Cubical.Data.Empty using (⊥; ⊥-elim)
-open import Cubical.Foundations.Prelude using (¬_)
+open import Cubical.Data.Empty using (⊥; rec)
 open import Cubical.Data.Sum using (_⊎_; inl; inr)
 open import Cubical.Data.Unit using (Unit; tt)
 
@@ -127,7 +127,7 @@ max≤ : ∀ m n → Σ ℕ (λ k → k +ℕ m ≡ max m n)
 max≤ zero n = n , +-zero n
 max≤ (suc m) zero = zero , refl
 max≤ (suc m) (suc n) with max≤ m n
-... | (k , p) = k , {!!}  -- maxSuc 参数顺序待修
+... | (k , p) = k , +-suc k m ∙ cong suc p ∙ sym maxSuc
 
 -- m∸[m∸n]≡n : m ∸ (m ∸ n) ≡ n（当 n ≤ m）
 m∸[m∸n]≡n : ∀ m n → Σ ℕ (λ k → k +ℕ n ≡ m) → m ∸ (m ∸ n) ≡ n
@@ -136,41 +136,57 @@ m∸[m∸n]≡n m n (k , p) = cong (m ∸_) (cong (_∸ n) (sym p) ∙ +∸ k n)
 -- negsuc-+pos : negsuc x +pos k ≡ negsuc (x ∸ k)（当 k ≤ suc x）
 negsuc-+pos : ∀ x k → Σ ℕ (λ j → j +ℕ k ≡ x) → negsuc x +pos k ≡ negsuc (x ∸ k)
 negsuc-+pos x zero _ = refl
-negsuc-+pos zero (suc k) (j , p) = {!!}  -- 不可能 case
-negsuc-+pos (suc x) (suc k) (k' , p) = {!!}  -- pred 不在作用域
+negsuc-+pos zero (suc k) (j , p) =
+      rec {A = negsuc zero +pos suc k ≡ negsuc (zero ∸ suc k)} ((<→≢ {n = ℕ.zero} {m = j +ℕ suc k}
+        (subst (λ z → ℕ.zero ℕO.< z) (sym (+-suc j k)) (zero-<suc {n = j +ℕ k}))) (sym p))
+negsuc-+pos (suc x) (suc k) (k' , p) =
+      cong sucℤ (cong (_+pos k) (negSuc-suc x) ∙ sym (predℤ+pos k (negsuc x)))
+      ∙ sucPred (negsuc x +pos k)
+      ∙ negsuc-+pos x k (k' , kp)
+      where
+      -- negsuc (suc x) ≡ predℤ (negsuc x)（构造子定义性，refl 即证）
+      negSuc-suc : ∀ x → negsuc (suc x) ≡ predℤ (negsuc x)
+      negSuc-suc x = refl
+      kp : k' +ℕ k ≡ x
+      kp = injSuc (sym (+-suc k' k) ∙ p)
 
 -- ℕ min/max 界引理（negsuc 反转序）
 max-left : ∀ m n → negsuc (max m n) ≤ negsuc m
-max-left m n = _∸_ (max m n) m , {!!}  -- negsuc-+pos 返回 negsuc (x ∸ k) ≠ negsuc m
+max-left m n = _∸_ (max m n) m ,
+        negsuc-+pos (max m n) (max m n ∸ m)
+          (m , +-comm m (max m n ∸ m) ∙ m∸n+n≡m (max m n) m (max≤ m n))
+        ∙ cong negsuc (m∸[m∸n]≡n (max m n) m (max≤ m n))
 max-right : ∀ m n → negsuc (max m n) ≤ negsuc n
-max-right m n = _∸_ (max m n) n , {!!}  -- maxComm 桥接待修
+max-right m n = subst (λ z → negsuc z ≤ negsuc n) (sym (maxComm m n)) (max-left n m)
 min-left : ∀ m n → negsuc m ≤ negsuc (min m n)
-min-left m n = _∸_ m (min m n) , {!!}  -- minComm 桥接待修
+min-left m n = _∸_ m (min m n) ,
+        negsuc-+pos m (m ∸ min m n) (min m n , +-comm (min m n) (m ∸ min m n) ∙ m∸n+n≡m m (min m n) (min≤ m n))
+        ∙ cong negsuc (m∸[m∸n]≡n m (min m n) (min≤ m n))
 min-right : ∀ m n → negsuc n ≤ negsuc (min m n)
-min-right m n = _∸_ n (min m n) , {!!}  -- minComm 桥接待修
+min-right m n = subst (λ z → negsuc n ≤ negsuc z) (sym (minComm m n)) (min-left n m)
 
 -- min-ℤ 界引理
 min-ℤ≤ˡ : ∀ a b → min-ℤ a b ≤ a
-min-ℤ≤ˡ (pos m) (pos n) = _∸_ m (min m n) , {!!}
-min-ℤ≤ˡ (pos m) (negsuc n) = {!!}  -- negsuc n ≤ pos m
+min-ℤ≤ˡ (pos m) (pos n) = _∸_ m (min m n) , pos-+pos (min m n) (m ∸ min m n) ∙ cong pos (+-comm (min m n) (m ∸ min m n)) ∙ cong pos (m∸n+n≡m m (min m n) (min≤ m n))
+min-ℤ≤ˡ (pos m) (negsuc n) = <-weaken (negsuc<pos n m)
 min-ℤ≤ˡ (negsuc m) (pos n) = ℕ.zero , refl
 min-ℤ≤ˡ (negsuc m) (negsuc n) = max-left m n
 
 min-ℤ≤ʳ : ∀ a b → min-ℤ a b ≤ b
 min-ℤ≤ʳ (pos m) (pos n) = _∸_ n (min m n) , pos-+pos (min m n) (n ∸ min m n) ∙ cong pos (+-comm (min m n) (n ∸ min m n)) ∙ cong pos (m∸n+n≡m n (min m n) (subst (λ z → Σ ℕ (λ k → k +ℕ z ≡ n)) (minComm n m) (min≤ n m)))
 min-ℤ≤ʳ (pos m) (negsuc n) = ℕ.zero , refl
-min-ℤ≤ʳ (negsuc m) (pos n) = suc (m +ℕ n) , {!!}
+min-ℤ≤ʳ (negsuc m) (pos n) = <-weaken (negsuc<pos m n)
 min-ℤ≤ʳ (negsuc m) (negsuc n) = max-right m n
 
 max-ℤ≤ˡ : ∀ a b → a ≤ max-ℤ a b
 max-ℤ≤ˡ (pos m) (pos n) = _∸_ (max m n) m , pos-+pos m (max m n ∸ m) ∙ cong pos (+-comm m (max m n ∸ m)) ∙ cong pos (m∸n+n≡m (max m n) m (max≤ m n))
 max-ℤ≤ˡ (pos m) (negsuc n) = ℕ.zero , refl  -- max-ℤ (pos m) (negsuc n) = pos m ≤ pos m
-max-ℤ≤ˡ (negsuc m) (pos n) = suc (m +ℕ n) , {!!}
+max-ℤ≤ˡ (negsuc m) (pos n) = <-weaken (negsuc<pos m n)
 max-ℤ≤ˡ (negsuc m) (negsuc n) = min-left m n
 
 max-ℤ≤ʳ : ∀ a b → b ≤ max-ℤ a b
 max-ℤ≤ʳ (pos m) (pos n) = _∸_ (max m n) n , pos-+pos n (max m n ∸ n) ∙ cong pos (+-comm n (max m n ∸ n)) ∙ cong pos (m∸n+n≡m (max m n) n (subst (λ z → Σ ℕ (λ k → k +ℕ n ≡ z)) (maxComm n m) (max≤ n m)))
-max-ℤ≤ʳ (pos m) (negsuc n) = suc (m +ℕ n) , {!!}
+max-ℤ≤ʳ (pos m) (negsuc n) = <-weaken (negsuc<pos n m)
 max-ℤ≤ʳ (negsuc m) (pos n) = ℕ.zero , refl  -- max-ℤ (negsuc m) (pos n) = pos n ≤ pos n
 max-ℤ≤ʳ (negsuc m) (negsuc n) = min-right m n
 
@@ -183,11 +199,11 @@ _+L_ : Laurent → Laurent → Laurent
   bound n h = cong₂ _+_ (bf n (left h)) (bg n (right h))
     where
     left : (n < min-ℤ Lf Lg) ⊎ (max-ℤ Uf Ug < n) → (n < Lf) ⊎ (Uf < n)
-    left (inl x) = inl {!!}  -- min-ℤ Lf Lg ≤ Lf
-    left (inr x) = inr {!!}  -- Uf ≤ max-ℤ Uf Ug
+    left (inl x) = inl (isTrans≤ x (min-ℤ≤ˡ Lf Lg))
+    left (inr x) = inr (≤<-trans (max-ℤ≤ˡ Uf Ug) x)
     right : (n < min-ℤ Lf Lg) ⊎ (max-ℤ Uf Ug < n) → (n < Lg) ⊎ (Ug < n)
-    right (inl x) = inl {!!}  -- min-ℤ Lf Lg ≤ Lg
-    right (inr x) = inr {!!}  -- Ug ≤ max-ℤ Uf Ug
+    right (inl x) = inl (isTrans≤ x (min-ℤ≤ʳ Lf Lg))
+    right (inr x) = inr (≤<-trans (max-ℤ≤ʳ Uf Ug) x)
 
 -- ────────────────────────────────────────────────────────────────────
 -- 卷积乘法（参考 agda-unimath 的 convolution-sequences）
