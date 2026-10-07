@@ -107,6 +107,10 @@ m∸n+n≡m : ∀ m n → Σ ℕ (λ k → k +ℕ n ≡ m) → (m ∸ n) +ℕ n 
 m∸n+n≡m m n (k , p) =
   +-comm (m ∸ n) n ∙ cong (n +ℕ_) (cong (_∸ n) (sym p) ∙ +∸ k n) ∙ +-comm n k ∙ p
 
+-- pos-+pos : pos a +pos k ≡ pos (a +ℕ k)（桥接引理）
+pos-+pos : ∀ a k → pos a +pos k ≡ pos (a +ℕ k)
+pos-+pos a k = {!!}  -- 待证：+pos 归约
+
 -- min≤ : min m n ≤ m（独立归纳，不依赖 m∸n+n≡m）
 min≤ : ∀ m n → Σ ℕ (λ k → k +ℕ min m n ≡ m)
 min≤ zero n = zero , refl
