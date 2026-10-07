@@ -37,4 +37,4 @@ probe n Lf Lg k (a , p₁) (b , p₂) = (a +ℕ b) , lem
     lem' = subst (λ x → sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ x - Lf) p₁ lem'' ∙ cong (_- Lf) (+Comm Lf Lg) ∙ plusMinus Lf Lg
       where
       lem'' : sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ (sucℤ n +pos a) - Lf
-      lem'' = {!!}  -- PENDING: sucℤ+ 解析冲突（+pos 与 _+_ 混淆），需换写法
+      lem'' = {!!}  -- PENDING: sucℤ+/+pos 解析冲突，需完全换写法
