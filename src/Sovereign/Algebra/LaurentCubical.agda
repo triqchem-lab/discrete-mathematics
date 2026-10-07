@@ -26,6 +26,7 @@ open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc)
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤)
 open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc)
+open import Cubical.Data.Nat.Properties using (min; max)
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
 open import Cubical.Data.Empty using (⊥; ⊥-elim)
 open import Cubical.Data.Sum using (_⊎_; inl; inr)
@@ -86,10 +87,33 @@ R0 = (λ _ → pos 0) , (pos 0 , pos 0 , λ n _ → refl)
 -- 加法（逐点）
 -- ────────────────────────────────────────────────────────────────────
 
+-- ℤ 上的 min/max（Cubical 无内置）
+min-ℤ : ℤ → ℤ → ℤ
+min-ℤ (pos m) (pos n) = pos (min m n)
+min-ℤ (pos m) (negsuc n) = negsuc n
+min-ℤ (negsuc m) (pos n) = negsuc m
+min-ℤ (negsuc m) (negsuc n) = negsuc (max m n)
+
+max-ℤ : ℤ → ℤ → ℤ
+max-ℤ (pos m) (pos n) = pos (max m n)
+max-ℤ (pos m) (negsuc n) = pos m
+max-ℤ (negsuc m) (pos n) = pos n
+max-ℤ (negsuc m) (negsuc n) = negsuc (min m n)
+
 -- 逐点加法
--- _+L_ : Laurent → Laurent → Laurent
--- 需要 FinSupp 保持证明（边界需修正为 max/min）
--- 核心成果 canon-sums-unique 已证（funExt 平凡化）
+_+L_ : Laurent → Laurent → Laurent
+(f , (Lf , Uf , bf)) +L (g , (Lg , Ug , bg)) =
+  (λ n → f n + g n) , (min-ℤ Lf Lg , max-ℤ Uf Ug , bound)
+  where
+  bound : ∀ n → (n < min-ℤ Lf Lg) ⊎ (max-ℤ Uf Ug < n) → f n + g n ≡ pos 0
+  bound n h = cong₂ _+_ (bf n (left h)) (bg n (right h))
+    where
+    left : (n < min-ℤ Lf Lg) ⊎ (max-ℤ Uf Ug < n) → (n < Lf) ⊎ (Uf < n)
+    left (inl x) = inl {!!}  -- min-ℤ Lf Lg ≤ Lf
+    left (inr x) = inr {!!}  -- Uf ≤ max-ℤ Uf Ug
+    right : (n < min-ℤ Lf Lg) ⊎ (max-ℤ Uf Ug < n) → (n < Lg) ⊎ (Ug < n)
+    right (inl x) = inl {!!}  -- min-ℤ Lf Lg ≤ Lg
+    right (inr x) = inr {!!}  -- Ug ≤ max-ℤ Uf Ug
 
 -- ────────────────────────────────────────────────────────────────────
 -- 卷积乘法（参考 agda-unimath 的 convolution-sequences）
