@@ -26,7 +26,7 @@ open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc; _+pos_
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤)
 open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
-open import Cubical.Data.Nat.Properties using (min; max; minSuc; maxSuc; +∸; +-comm; +-zero; +-suc)
+open import Cubical.Data.Nat.Properties using (min; max; minSuc; maxSuc; minComm; maxComm; +∸; +-comm; +-zero; +-suc)
 open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
@@ -144,7 +144,7 @@ min-ℤ≤ˡ (negsuc m) (pos n) = ℕ.zero , refl
 min-ℤ≤ˡ (negsuc m) (negsuc n) = max-left m n
 
 min-ℤ≤ʳ : ∀ a b → min-ℤ a b ≤ b
-min-ℤ≤ʳ (pos m) (pos n) = _∸_ n (min m n) , {!!}  -- minComm 参数顺序待修
+min-ℤ≤ʳ (pos m) (pos n) = _∸_ n (min m n) , {!!}  -- minComm subst 谓词待修
 min-ℤ≤ʳ (pos m) (negsuc n) = ℕ.zero , refl
 min-ℤ≤ʳ (negsuc m) (pos n) = suc (m +ℕ n) , {!!}
 min-ℤ≤ʳ (negsuc m) (negsuc n) = max-right m n
