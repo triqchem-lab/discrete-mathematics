@@ -137,3 +137,19 @@ mat3-cong {a11} {a12} {a13} {a21} {a22} {a23} {a31} {a32} {a33} {b11} {b12} {b13
 
 braid-rel : (burau-s1 *3 burau-s2) *3 burau-s1 ≡ (burau-s2 *3 burau-s1) *3 burau-s2
 braid-rel = mat3-cong e11 e12 e13 e21 e22 e23 e31 e32 e33
+
+-- ────────────────────────────────────────────────────────────────────
+-- 通用 entry 结合引理（矩阵乘法结合律的纯 Int 内核，9 项重排）
+-- LHS：(g1·c1 + g2·c2) + g3·c3，g_i = (a₁·b_1i + a₂·b_2i) + a₃·b_3i
+-- RHS：(a₁·Q1 + a₂·Q2) + a₃·Q3，Q_i = (b_1i·c1 + b_2i·c2) + b_3i·c3
+-- ────────────────────────────────────────────────────────────────────
+
+assoc-entry : ∀ a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n →
+      ((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n
+    + (((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n)
+    + (((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n
+    ≡
+      ((a₁ n · ((b11 n · c1 n) + (b12 n · c2 n) + (b13 n · c3 n)))
+    + (a₂ n · ((b21 n · c1 n) + (b22 n · c2 n) + (b23 n · c3 n))))
+    + (a₃ n · ((b31 n · c1 n) + (b32 n · c2 n) + (b33 n · c3 n)))
+assoc-entry a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n = {!assoc-chain!}
