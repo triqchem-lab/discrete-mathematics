@@ -19,15 +19,31 @@ open import Cubical.Data.Int.Properties using (+Comm; +Assoc; minusPlus; plusMin
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; _∙_; Σ; _,_; fst; snd)
 
 -- ────────────────────────────────────────────────────────────────────
--- sucPush : sucℤ (x + y) ≡ sucℤ x + y（sucℤ 对加法的分配）
--- 用 sucInt renaming 避开 sucℤ+ 解析冲突
+-- sucInt : sucℤ (x + y) ≡ sucℤ x + y
 -- ────────────────────────────────────────────────────────────────────
 
 sucInt : ∀ x y → sucℤ (x + y) ≡ sucℤ x + y
 sucInt x y = {!!}  -- PENDING: 需 sucℤ+ 但有解析冲突
 
+-- ────────────────────────────────────────────────────────────────────
+-- addPos : ℤ → ℕ → ℤ（纯字母名避开 +pos 解析冲突）
+-- ────────────────────────────────────────────────────────────────────
+
+addPos : ℤ → ℕ → ℤ
+addPos x zero = x
+addPos x (suc k) = sucℤ (addPos x k)
+
+addPos-def : ∀ x k → addPos x k ≡ x + pos k
+addPos-def x zero = refl
+addPos-def x (suc k) = cong sucℤ (addPos-def x k)
+
+-- ────────────────────────────────────────────────────────────────────
+-- sucPush : sucℤ (x + y) ≡ sucℤ x + y（sucℤ 对加法的分配）
+-- 用 sucInt renaming 避开 sucℤ+ 解析冲突
+-- ────────────────────────────────────────────────────────────────────
+
 sucPush : ∀ x y → sucℤ (x + y) ≡ sucℤ x + y
-sucPush x y = sucInt x y
+sucPush x y = {!!}  -- PENDING: 需 sucℤ+ 但有解析冲突
 
 -- ────────────────────────────────────────────────────────────────────
 -- pos-+pos : pos a +pos b ≡ pos (a +ℕ b)
