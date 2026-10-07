@@ -15,7 +15,7 @@ module Sovereign.Cubical.IntArith where
 open import Cubical.Data.Nat using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
 open import Cubical.Data.Nat.Properties using (+-zero; +-suc)
 open import Cubical.Data.Int using (ℤ; _+_; _-_; pos; negsuc; _+negsuc_; sucℤ; predℤ; _+pos_)
-open import Cubical.Data.Int.Properties using (+Comm; +Assoc; minusPlus; plusMinus; -Cancel; -Cancel'; neg+; -pos; -neg; predℤ+negsuc; predℤ+pos; -predℤ; -sucℤ; predSuc; sucPred; +negsuc)
+open import Cubical.Data.Int.Properties using (+Comm; +Assoc; minusPlus; plusMinus; -Cancel; -Cancel'; neg+; -pos; -neg; predℤ+negsuc; predℤ+pos; -predℤ; -sucℤ; predSuc; sucPred)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; _∙_; Σ; _,_; fst; snd)
 
 -- ────────────────────────────────────────────────────────────────────
