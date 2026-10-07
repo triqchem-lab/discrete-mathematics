@@ -43,9 +43,9 @@ pos-+pos a (suc b) = cong sucℤ (pos-+pos a b) ∙ cong pos (sym (+-suc a b))
 
 negDistrib : ∀ x y → Cubical.Data.Int.-_ (x + y) ≡ Cubical.Data.Int.-_ x + Cubical.Data.Int.-_ y
 negDistrib (pos a) (pos b) = cong Cubical.Data.Int.-_ (pos-+pos a b) ∙ -pos (a +ℕ b) ∙ neg+ a b ∙ cong₂ _+_ (sym (-pos a)) (sym (-pos b))
-negDistrib (pos a) (negsuc zero) = {!!}  -- PENDING: -predℤ 桥接
+negDistrib (pos a) (negsuc zero) = -predℤ (pos a)
 negDistrib (pos a) (negsuc (suc b')) = -predℤ (Cubical.Data.Int._+negsuc_ (pos a) b') ∙ cong sucℤ (negDistrib (pos a) (negsuc b'))
-negDistrib (negsuc a) (pos b) = {!!}
+negDistrib (negsuc a) (pos b) = {!!}  -- PENDING: 需对 b 归纳
 negDistrib (negsuc a) (negsuc zero) = refl
 negDistrib (negsuc a) (negsuc (suc b')) = -predℤ (Cubical.Data.Int._+negsuc_ (negsuc a) b') ∙ cong sucℤ (negDistrib (negsuc a) (negsuc b'))
 
