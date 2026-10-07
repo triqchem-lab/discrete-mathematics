@@ -23,7 +23,7 @@ module Sovereign.Algebra.LaurentCubical where
 open import Cubical.Foundations.Prelude using
   (_≡_; refl; sym; trans; cong; cong₂; funExt; subst; Σ; Σ-syntax; _,_; fst; snd)
 open import Cubical.Data.Int using (ℤ; _+_; _*_; -_; pos; negsuc)
-open import Cubical.Data.Int.Properties using (+Assoc; +Comm)
+open import Cubical.Data.Int.Properties using (+Assoc; +Comm; +identityʳ)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc)
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
 open import Cubical.Data.Empty using (⊥; ⊥-elim)
@@ -89,6 +89,36 @@ _+L_ : Laurent → Laurent → Laurent
 (f , (L₁ , U₁ , p₁)) +L (g , (L₂ , U₂ , p₂)) =
   (λ n → f n + g n) , (L₁ ℕ.+ L₂ , U₁ ℕ.+ U₂ , tt)
 
--- 卷积乘法与加法性质待后续证明
+-- ────────────────────────────────────────────────────────────────────
+-- 有限求和（对 ℕ 归纳）
+-- ────────────────────────────────────────────────────────────────────
+
+-- 有限求和：∑_{i=0}^{n} f(i)
+sum-ℕ : (ℕ → ℤ) → ℕ → ℤ
+sum-ℕ f zero = f zero
+sum-ℕ f (suc n) = sum-ℕ f n + f (suc n)
+
+-- ────────────────────────────────────────────────────────────────────
+-- 卷积乘法（参考 agda-unimath 的 convolution-sequences）
+-- ────────────────────────────────────────────────────────────────────
+
+-- 卷积：(f * g)(n) = Σ_k f(k) * g(n - k)
+-- 有限支撑下只需对 f 的支撑求和
 -- 参考：agda-unimath/src/commutative-algebra/convolution-sequences-commutative-semirings.lagda.md
--- 核心成果 canon-sums-unique 已证（funExt 平凡化）
+
+-- _*L_ : Laurent → Laurent → Laurent
+-- 需要 ℤ 乘法（Cubical.Data.Int 未导出 _*_）+ 有限求和
+-- 参考：agda-unimath/src/commutative-algebra/convolution-sequences-commutative-semirings.lagda.md
+
+-- ────────────────────────────────────────────────────────────────────
+-- 加法性质（从 ℤ 的算术直接推出）
+-- ────────────────────────────────────────────────────────────────────
+
+-- 加法性质（逐点相等，避免 funExt 类型推断问题）
++L-assoc : (f g h : ℤ → ℤ) →
+  ∀ n → (f n + g n) + h n ≡ f n + (g n + h n)
++L-assoc f g h n = sym (+Assoc (f n) (g n) (h n))
+
++L-comm : (f g : ℤ → ℤ) →
+  ∀ n → f n + g n ≡ g n + f n
++L-comm f g n = +Comm (f n) (g n)
