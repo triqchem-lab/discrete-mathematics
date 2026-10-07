@@ -2,7 +2,7 @@
 module _ProbeArith where
 
 open import Cubical.Data.Nat using (ℕ; zero; suc) renaming (_+_ to _+ℕ_)
-open import Cubical.Data.Int using (ℤ; _+_; _-_; pos; negsuc; sucℤ; _+pos_; _*_)
+open import Cubical.Data.Int using (ℤ; _+_; _-_; pos; negsuc; sucℤ; _+pos_; _*_; neg)
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; isTrans≤; isRefl≤)
 open import Cubical.Data.Int.Properties using (+Comm; +Assoc; +sucℤ; minusPlus; plusMinus; -Cancel) renaming (sucℤ+ to sucInt)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; subst; Σ; _,_; fst; snd; _∙_; funExt)
@@ -31,6 +31,9 @@ open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; 
 sucPush : ∀ x y → sucℤ (x + y) ≡ sucℤ x + y
 sucPush x y = sucInt x y
 
+pos-+pos : ∀ a b → pos a +pos b ≡ pos (a +ℕ b)
+pos-+pos a b = {!!}  -- PENDING: 需 sucPush 同款归纳
+
 probe : (n Lf Lg k : ℤ) → n < Lf + Lg → Lf ≤ k → n - k < Lg
 probe n Lf Lg k (a , p₁) (b , p₂) = (a +ℕ b) , lem
   where
@@ -41,4 +44,4 @@ probe n Lf Lg k (a , p₁) (b , p₂) = (a +ℕ b) , lem
     lem' = subst (λ x → sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ x - Lf) p₁ lem'' ∙ cong (_- Lf) (+Comm Lf Lg) ∙ plusMinus Lf Lg
       where
       lem'' : sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ (sucℤ n +pos a) - Lf
-      lem'' = {!!}  -- PENDING: +pos 解析冲突需完全分离写法
+      lem'' = {!!}  -- PENDING: 全限定 -_ 冗长 + pos-+pos 类型
