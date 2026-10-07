@@ -419,9 +419,16 @@ hexp-lemma u c₁ n₁ c₂ n₂ xs ys e ue h hxs =
 -- 用 subst 沿 sums-cons-head 重写（case_of_ 化后展开定义性成立）
 -- ────────────────────────────────────────────────────────────────────
 
--- canon-sums-unique 待下轮：Agda 语义限制——函数参数类型不受 with 精炼。
--- 根因：h (c₁ , n₁) 的类型 sums (c₁ , n₁) ((c₁ , n₁) ∷ xs) ≡ ... 不被 with 精炼
--- （h 是函数参数），而 sums-cons-head 归约为 refl 后等式信息丢失。
--- 唯一出路：不用 h (c₁ , n₁)，直接用 sums-bound-zero 构造系数等式
--- （避开 sums 展开，直接从 Canon 界 + NoZero 推出 c₁ ≡ c₂）。
+-- ────────────────────────────────────────────────────────────────────
+-- canon-sums-unique：sums 相等 → Canon 相等（枢纽引理）
+-- 用 case_of_ 分支 + sums-bound-zero 直推（避开 h 展开）
+-- ────────────────────────────────────────────────────────────────────
+
+-- canon-sums-unique 待下轮：h (c₁ , n₁) 的 LHS 在此 Agda 版本不归约
+-- （n₁ ≟ n₁ 对变量不归约为 yes refl），导致 sums-cons-head 展开后
+-- trans refl (h ...) = h ... 的类型 sums (c₁ , n₁) ((c₁ , n₁) ∷ xs) ≡ ...
+-- 与期望 c₁ + sums (c₁ , n₁) xs ≡ ... 不对齐。
+-- h'（case_of_ + sums-bound-zero）只能证 sums xs ≡ sums ys（两者都为 0），
+-- 无法推出 c₁ ≡ c₂——必须用 h (c₁ , n₁) + sums-cons-head 展开 main。
+-- 这是 Agda 语义的根本限制（函数参数类型不受 with 精炼 + n₁ ≟ n₁ 不归约）。
 -- norm-+ 依赖此引理 + norm-idem + insertCᵌ-sums（已证）。
