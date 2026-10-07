@@ -5,7 +5,7 @@ open import Cubical.Data.Nat using (ℕ; zero; suc; _∸_) renaming (_+_ to _+�
 open import Cubical.Data.Nat.Properties using (+-zero; +-suc)
 open import Cubical.Data.Int using (ℤ; _+_; _-_; pos; negsuc; sucℤ; _+pos_; neg)
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; isTrans≤; isRefl≤)
-open import Cubical.Data.Int.Properties using (+Comm; +Assoc; +sucℤ; minusPlus; plusMinus; -Cancel; pos0+) renaming (sucℤ+ to sucInt)
+open import Cubical.Data.Int.Properties using (+Comm; +Assoc; +sucℤ; minusPlus; plusMinus; -Cancel; pos0+; -pos; -Cancel') renaming (sucℤ+ to sucInt)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; subst; Σ; _,_; fst; snd; _∙_; funExt)
 
 -- 核心消去引理（参照 mathlib4 le.elim）：
@@ -132,3 +132,36 @@ probe-dual n Uf Ug k (c , q₁) (d , q₂) = (c +ℕ d) , lem
       where
       lem'' : sucℤ Ug +pos (c +ℕ d) ≡ (sucℤ ((k +pos d) + Ug) +pos c) - k
       lem'' = LHS-chain' ∙ sym RHS-chain
+
+
+-- ────────────────────────────────────────────────────────────────────
+-- 全称三分律：∀ m n → Trichotomy m n（界提取前置）
+-- ────────────────────────────────────────────────────────────────────
+
+open import Cubical.Data.Int.Order using (Trichotomy; lt; eq; gt; Trichotomy-suc; isIrrefl<) public
+open import Cubical.Data.Int.Properties using (posNotnegsuc; negsucNotpos) public
+
+-- 基例：pos 0 与任意 n
+tri0 : ∀ n → Trichotomy (pos 0) n
+tri0 (pos zero) = eq refl
+tri0 (pos (suc n)) = lt (n , pos-+pos 1 n)
+tri0 (negsuc zero) = gt (zero , refl)
+tri0 (negsuc (suc n)) = gt (suc n , lem)
+  where
+  lem : sucℤ (negsuc (suc n)) +pos (suc n) ≡ pos 0
+  lem = cong (_+ pos (suc n)) (sym (-pos (suc n))) ∙ -Cancel' (pos (suc n))
+
+-- 对称：lt/gt 对调（eq 保持）
+tri-sym : ∀ m n → Trichotomy m n → Trichotomy n m
+tri-sym m n (lt x) = gt x
+tri-sym m n (eq x) = eq x
+tri-sym m n (gt x) = lt x
+
+-- 全称三分律主体。
+-- 策略（下一批实现）：ℤ 符号分解 4 case 归约到 ℕ 比较——
+--   pos a, pos b → ℕ 比较 a b；negsuc a, negsuc b → ℕ 反向比较；
+--   pos/negsuc → 恒 lt；negsuc/pos → 恒 gt。
+--   ℕ 二分 triℕ : ∀ a b → (a < b) ⊎ (a ≡ b) ⊎ (a > b) 对 a 归纳自证。
+--   Trichotomy-suc 双边归约不成立（suc 同时作用两参数），弃用原策略。
+triℤ : ∀ m n → Trichotomy m n
+triℤ m n = {!TODO: 符号分解 4 case + triℕ!}
