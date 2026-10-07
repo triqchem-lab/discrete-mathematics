@@ -362,6 +362,32 @@ cmp3-gt3-lemma n n' p with cmp3 n n'
   (trans (cong (λ w → w + c) (+-inverseˡ a))
          (+-identityˡ c))))))
 
--- canon-sums-unique 待下轮：hexp-lemma 需要 sums-cons-head 展开 + +-cancelˡ。
--- sums 已改 case_of_（let-free），展开定义性成立。
+-- ────────────────────────────────────────────────────────────────────
+-- ℤ 右消去律
+-- ────────────────────────────────────────────────────────────────────
+
++-cancelʳ : ∀ a b c → b + a ≡ c + a → b ≡ c
++-cancelʳ a b c eq = +-cancelˡ a b c (trans (sym (+-comm b a)) (trans eq (+-comm c a)))
+
+-- ────────────────────────────────────────────────────────────────────
+-- hexp-lemma：从 sums 等式推出系数等式
+-- ────────────────────────────────────────────────────────────────────
+
+hexp-lemma : ∀ (u : LaurentTerm) (c₁ n₁ c₂ n₂ : ℤ) (xs ys : Laurent) →
+  n₁ ≡ n₂ →
+  proj₂ u ≡ n₁ →
+  sums u ((c₁ , n₁) ∷ xs) ≡ sums u ((c₂ , n₂) ∷ ys) →
+  (∀ v → sums v xs ≡ sums v ys) →
+  c₁ + sums u xs ≡ c₂ + sums u ys
+hexp-lemma u c₁ n₁ c₂ n₂ xs ys e ue h hxs =
+  trans (sym (sums-cons-head u (c₁ , n₁) xs ue))
+  (trans h
+         (sums-cons-head u (c₂ , n₂) ys (trans ue e)))
+
+-- ────────────────────────────────────────────────────────────────────
+-- canon-sums-unique：sums 相等 → Canon 相等（枢纽引理）
+-- ────────────────────────────────────────────────────────────────────
+
+-- canon-sums-unique 待下轮：hexp-lemma 已证（sums-cons-head 展开），
+-- 但 canon-sums-unique 的 h 调用仍需 sums 展开共精炼。
 -- norm-+ 依赖此引理 + norm-idem + insertCᵌ-sums（已证）。
