@@ -14,8 +14,8 @@ module Sovereign.Cubical.IntArith where
 
 open import Cubical.Data.Nat using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
 open import Cubical.Data.Nat.Properties using (+-zero; +-suc)
-open import Cubical.Data.Int using (ℤ; _+_; _-_; pos; negsuc; sucℤ; predℤ; _+pos_)
-open import Cubical.Data.Int.Properties using (+Comm; +Assoc; minusPlus; plusMinus; -Cancel; -Cancel'; neg+; -pos; -neg; predℤ+negsuc; predℤ+pos; -predℤ; -sucℤ; predSuc)
+open import Cubical.Data.Int using (ℤ; _+_; _-_; pos; negsuc; _+negsuc_; sucℤ; predℤ; _+pos_)
+open import Cubical.Data.Int.Properties using (+Comm; +Assoc; minusPlus; plusMinus; -Cancel; -Cancel'; neg+; -pos; -neg; predℤ+negsuc; predℤ+pos; -predℤ; -sucℤ; predSuc; sucPred; +negsuc)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; _∙_; Σ; _,_; fst; snd)
 
 -- ────────────────────────────────────────────────────────────────────
@@ -23,7 +23,16 @@ open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; 
 -- ────────────────────────────────────────────────────────────────────
 
 sucInt : ∀ x y → sucℤ (x + y) ≡ sucℤ x + y
-sucInt x y = {!!}  -- PENDING: 需 sucℤ+ 但有解析冲突
+sucInt x (pos zero) = refl
+sucInt x (pos (suc n)) = cong sucℤ (sucInt x (pos n))
+sucInt x (negsuc n) =
+      cong sucℤ (plusnegsuc-predL x n)
+      ∙ sucPred (sucℤ x +negsuc n)
+      where
+      -- 强化引理：x +negsuc n ≡ predℤ (sucℤ x +negsuc n)（对 n 归纳）
+      plusnegsuc-predL : ∀ z n → z +negsuc n ≡ predℤ (sucℤ z +negsuc n)
+      plusnegsuc-predL z zero = sym (cong predℤ (predSuc z))
+      plusnegsuc-predL z (suc n) = cong predℤ (plusnegsuc-predL z n)
 
 -- ────────────────────────────────────────────────────────────────────
 -- addPos : ℤ → ℕ → ℤ（纯字母名避开 +pos 解析冲突）
@@ -43,7 +52,7 @@ addPos-def x (suc k) = cong sucℤ (addPos-def x k)
 -- ────────────────────────────────────────────────────────────────────
 
 sucPush : ∀ x y → sucℤ (x + y) ≡ sucℤ x + y
-sucPush x y = {!!}  -- PENDING: 需 sucℤ+ 但有解析冲突
+sucPush x y = sucInt x y
 
 -- ────────────────────────────────────────────────────────────────────
 -- pos-+pos : pos a +pos b ≡ pos (a +ℕ b)
@@ -57,12 +66,20 @@ pos-+pos a (suc b) = cong sucℤ (pos-+pos a b) ∙ cong pos (sym (+-suc a b))
 -- negDistrib : -(x + y) ≡ -x + -y（用 neg+ 组合）
 -- ────────────────────────────────────────────────────────────────────
 
+-- pos/negsuc 情形提取为独立引理（供 negsuc/pos 对称情形跨函数调用，避开终止检查字典序）
+negDistrib-pos-negsuc : ∀ a b → Cubical.Data.Int.-_ (pos a + negsuc b) ≡ Cubical.Data.Int.-_ (pos a) + Cubical.Data.Int.-_ (negsuc b)
+negDistrib-pos-negsuc a zero = -predℤ (pos a)
+negDistrib-pos-negsuc a (suc b) = -predℤ (pos a +negsuc b) ∙ cong sucℤ (negDistrib-pos-negsuc a b)
+
 negDistrib : ∀ x y → Cubical.Data.Int.-_ (x + y) ≡ Cubical.Data.Int.-_ x + Cubical.Data.Int.-_ y
 negDistrib (pos a) (pos b) = cong Cubical.Data.Int.-_ (pos-+pos a b) ∙ -pos (a +ℕ b) ∙ neg+ a b ∙ cong₂ _+_ (sym (-pos a)) (sym (-pos b))
-negDistrib (pos a) (negsuc zero) = -predℤ (pos a)
+negDistrib (pos a) (negsuc zero) = negDistrib-pos-negsuc a zero
 negDistrib (pos a) (negsuc (suc b')) = -predℤ (Cubical.Data.Int._+negsuc_ (pos a) b') ∙ cong sucℤ (negDistrib (pos a) (negsuc b'))
 negDistrib (negsuc a) (pos zero) = refl
-negDistrib (negsuc a) (pos (suc b')) = cong Cubical.Data.Int.-_ (refl {x = sucℤ (negsuc a +pos b')}) ∙ {!!}  -- PENDING: +negsuc 定义桥接
+negDistrib (negsuc a) (pos (suc b')) =
+      cong Cubical.Data.Int.-_ (+Comm (negsuc a) (pos (suc b')))
+      ∙ negDistrib-pos-negsuc (suc b') a
+      ∙ +Comm (Cubical.Data.Int.-_ (pos (suc b'))) (Cubical.Data.Int.-_ (negsuc a))
 negDistrib (negsuc a) (negsuc zero) = refl
 negDistrib (negsuc a) (negsuc (suc b')) = -predℤ (Cubical.Data.Int._+negsuc_ (negsuc a) b') ∙ cong sucℤ (negDistrib (negsuc a) (negsuc b'))
 
