@@ -2,10 +2,12 @@
 module Sovereign.Algebra.ProbeArith where
 
 open import Cubical.Data.Nat using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
-open import Cubical.Data.Nat.Properties using (+-zero; +-suc)
+open import Cubical.Data.Nat using (predℕ)
+open import Cubical.Data.Empty using (⊥; rec)
+open import Cubical.Data.Nat.Properties using (+-zero; +-suc) renaming (+-comm to +ℕ-comm)
 open import Cubical.Data.Int using (ℤ; _+_; _-_; pos; negsuc; sucℤ; _+pos_; neg)
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; isTrans≤; isRefl≤)
-open import Cubical.Data.Int.Properties using (+Comm; +Assoc; +sucℤ; minusPlus; plusMinus; -Cancel; pos0+; -pos; -Cancel') renaming (sucℤ+ to sucInt)
+open import Cubical.Data.Int.Properties using (+Comm; +Assoc; +sucℤ; minusPlus; plusMinus; -Cancel; pos0+; -pos; -Cancel'; sucℤ+pos; negsuc+) renaming (sucℤ+ to sucInt)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; subst; Σ; _,_; fst; snd; _∙_; funExt)
 
 -- 核心消去引理（参照 mathlib4 le.elim）：
@@ -139,6 +141,7 @@ probe-dual n Uf Ug k (c , q₁) (d , q₂) = (c +ℕ d) , lem
 -- ────────────────────────────────────────────────────────────────────
 
 open import Cubical.Data.Int.Order using (Trichotomy; lt; eq; gt; Trichotomy-suc; isIrrefl<) public
+open import Cubical.Data.Nat.Order using () renaming (_<_ to _<'_; Trichotomy to Trichotomyℕ; lt to ltℕ; eq to eqℕ; gt to gtℕ; _≟'_ to _≟ℕ_)
 open import Cubical.Data.Int.Properties using (posNotnegsuc; negsucNotpos) public
 
 -- 基例：pos 0 与任意 n
@@ -154,7 +157,7 @@ tri0 (negsuc (suc n)) = gt (suc n , lem)
 -- 对称：lt/gt 对调（eq 保持）
 tri-sym : ∀ m n → Trichotomy m n → Trichotomy n m
 tri-sym m n (lt x) = gt x
-tri-sym m n (eq x) = eq x
+tri-sym m n (eq x) = eq (sym x)
 tri-sym m n (gt x) = lt x
 
 -- 全称三分律主体。
@@ -163,5 +166,52 @@ tri-sym m n (gt x) = lt x
 --   pos/negsuc → 恒 lt；negsuc/pos → 恒 gt。
 --   ℕ 二分 triℕ : ∀ a b → (a < b) ⊎ (a ≡ b) ⊎ (a > b) 对 a 归纳自证。
 --   Trichotomy-suc 双边归约不成立（suc 同时作用两参数），弃用原策略。
+-- ℕ < 见证转 pos < pos 见证（ℕ witness 前置 k+suc a≡b / ℤ 后置）
+pos<pos : ∀ a b → a <' b → pos a < pos b
+pos<pos a b (k , p) =
+  k , pos-+pos (suc a) k ∙ cong pos (+ℕ-comm (suc a) k ∙ p)
+
+-- z +pos (k +ℕ a) ≡ (z +pos k) +pos a（对 k 归纳，全定义性）
+pos-split : ∀ z k a → z +pos (k +ℕ a) ≡ (z +pos k) +pos a
+pos-split z zero a = refl
+pos-split z (suc k) a = cong sucℤ (pos-split z k a) ∙ sucℤ+pos a (z +pos k)
+
+-- x < pos 0 → x < pos a（witness 平移）
+<-pos0→posa : ∀ x a → x < pos 0 → x < pos a
+<-pos0→posa x a (k , p) =
+  (k +ℕ a) , pos-split (sucℤ x) k a ∙ cong (_+pos a) p ∙ pos-+pos zero a
+
+-- -(n+1) + (n+1) ≡ 0（-pos 桥 + -Cancel'）
+negsucS+ : ∀ n → sucℤ (negsuc (suc n)) +pos (suc n) ≡ pos 0
+negsucS+ n = -Cancel' (pos (suc n))
+
+-- negsuc b < pos a 恒真（经 < pos 0 平移）
+negsuc<pos : ∀ b a → negsuc b < pos a
+negsuc<pos zero a = <-pos0→posa (negsuc zero) a (zero , refl)
+negsuc<pos (suc b) a = <-pos0→posa (negsuc (suc b)) a (suc b , negsucS+ b)
+
+-- ℕ 反序提升：p <' q ⇒ negsuc q < negsuc p（更负更小）
+negsuc-anti : ∀ p q → p <' q → negsuc q < negsuc p
+negsuc-anti p q (k , pk) =
+  subst (λ z → negsuc z < negsuc p) (sym (+-suc k p) ∙ pk) core
+  where
+  -- 核：negsuc (suc (k+ℕ p)) < negsuc p（minusPlus 链）
+  core : negsuc (suc (k +ℕ p)) < negsuc p
+  core = k ,
+    cong (λ z → negsuc z +pos k) (+ℕ-comm k p)
+    ∙ cong (_+pos k) (negsuc+ p k)
+    ∙ minusPlus (pos k) (negsuc p)
+
+-- 全称三分律（符号分解 4 case + ℕ ≟）
 triℤ : ∀ m n → Trichotomy m n
-triℤ m n = {!TODO: 符号分解 4 case + triℕ!}
+triℤ (pos a) (pos b) with a ≟ℕ b
+... | ltℕ x = lt (pos<pos a b x)
+... | eqℕ x = eq (cong pos x)
+... | gtℕ x = gt (pos<pos b a x)
+triℤ (pos a) (negsuc b) = gt (negsuc<pos b a)
+triℤ (negsuc a) (pos b) = lt (negsuc<pos a b)
+triℤ (negsuc a) (negsuc b) with a ≟ℕ b
+... | ltℕ x = gt (negsuc-anti a b x)
+... | eqℕ x = eq (cong negsuc x)
+... | gtℕ x = lt (negsuc-anti b a x)
+
