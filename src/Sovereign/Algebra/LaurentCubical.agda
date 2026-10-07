@@ -31,6 +31,7 @@ open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
 open import Cubical.Data.Empty using (⊥; ⊥-elim)
+open import Cubical.Foundations.Prelude using (¬_)
 open import Cubical.Data.Sum using (_⊎_; inl; inr)
 open import Cubical.Data.Unit using (Unit; tt)
 
@@ -129,7 +130,7 @@ max≤ (suc m) (suc n) with max≤ m n
 -- negsuc-+pos : negsuc x +pos k ≡ negsuc (x ∸ k)（当 k ≤ suc x）
 negsuc-+pos : ∀ x k → Σ ℕ (λ j → j +ℕ k ≡ x) → negsuc x +pos k ≡ negsuc (x ∸ k)
 negsuc-+pos x zero _ = refl
-negsuc-+pos zero (suc k) _ = {!!}  -- sucℤ (negsuc 0) = pos 0
+negsuc-+pos zero (suc k) (j , p) = {!!}  -- 不可能 case
 negsuc-+pos (suc x) (suc k) (k' , p) = {!!}  -- pred 不在作用域
 
 -- ℕ min/max 界引理（negsuc 反转序）
