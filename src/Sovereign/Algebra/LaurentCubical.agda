@@ -129,7 +129,7 @@ max≤ (suc m) (suc n) with max≤ m n
 
 -- m∸[m∸n]≡n : m ∸ (m ∸ n) ≡ n（当 n ≤ m）
 m∸[m∸n]≡n : ∀ m n → Σ ℕ (λ k → k +ℕ n ≡ m) → m ∸ (m ∸ n) ≡ n
-m∸[m∸n]≡n m n (k , p) = {!!}  -- +∸/∸+ 参数顺序待修
+m∸[m∸n]≡n m n (k , p) = cong (m ∸_) (cong (_∸ n) (sym p) ∙ +∸ k n) ∙ cong (_∸ k) (sym p) ∙ ∸+ n k
 
 -- negsuc-+pos : negsuc x +pos k ≡ negsuc (x ∸ k)（当 k ≤ suc x）
 negsuc-+pos : ∀ x k → Σ ℕ (λ j → j +ℕ k ≡ x) → negsuc x +pos k ≡ negsuc (x ∸ k)
