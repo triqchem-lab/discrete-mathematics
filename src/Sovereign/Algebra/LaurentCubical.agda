@@ -135,7 +135,7 @@ negsuc-+pos (suc x) (suc k) (k' , p) = {!!}  -- pred 不在作用域
 
 -- ℕ min/max 界引理（negsuc 反转序）
 max-left : ∀ m n → negsuc (max m n) ≤ negsuc m
-max-left m n = _∸_ (max m n) m , {!!}
+max-left m n = _∸_ (max m n) m , {!!}  -- negsuc-+pos 返回 negsuc (x ∸ k) ≠ negsuc m
 max-right : ∀ m n → negsuc (max m n) ≤ negsuc n
 max-right m n = _∸_ (max m n) n , {!!}
 min-left : ∀ m n → negsuc m ≤ negsuc (min m n)
