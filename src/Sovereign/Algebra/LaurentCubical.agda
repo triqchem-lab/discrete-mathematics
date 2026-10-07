@@ -26,7 +26,7 @@ open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc)
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤)
 open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
-open import Cubical.Data.Nat.Properties using (min; max; +∸; +-comm)
+open import Cubical.Data.Nat.Properties using (min; max; minSuc; +∸; +-comm; +-zero; +-suc)
 open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
@@ -106,6 +106,13 @@ max-ℤ (negsuc m) (negsuc n) = negsuc (min m n)
 m∸n+n≡m : ∀ m n → Σ ℕ (λ k → k +ℕ n ≡ m) → (m ∸ n) +ℕ n ≡ m
 m∸n+n≡m m n (k , p) =
   +-comm (m ∸ n) n ∙ cong (n +ℕ_) (cong (_∸ n) (sym p) ∙ +∸ k n) ∙ +-comm n k ∙ p
+
+-- min≤ : min m n ≤ m（独立归纳，不依赖 m∸n+n≡m）
+min≤ : ∀ m n → Σ ℕ (λ k → k +ℕ min m n ≡ m)
+min≤ zero n = zero , refl
+min≤ (suc m) zero = suc m , cong suc (+-zero m)
+min≤ (suc m) (suc n) with min≤ m n
+... | (k , p) = k , subst (λ x → k +ℕ x ≡ suc m) (sym minSuc) (+-suc k (min m n) ∙ cong suc p)
 
 -- ℕ min/max 界引理（negsuc 反转序）
 max-left : ∀ m n → negsuc (max m n) ≤ negsuc m
