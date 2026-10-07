@@ -26,7 +26,7 @@ open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc; _+pos_
 open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; <isTrans≤)
 open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
-open import Cubical.Data.Nat.Properties using (min; max; minSuc; +∸; +-comm; +-zero; +-suc)
+open import Cubical.Data.Nat.Properties using (min; max; minSuc; maxSuc; +∸; +-comm; +-zero; +-suc)
 open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.List using (List; []; _∷_; _++_; map; foldr; length)
@@ -119,6 +119,13 @@ min≤ (suc m) zero = suc m , cong suc (+-zero m)
 min≤ (suc m) (suc n) with min≤ m n
 ... | (k , p) = k , subst (λ x → k +ℕ x ≡ suc m) (sym minSuc) (+-suc k (min m n) ∙ cong suc p)
 
+-- max≤ : m ≤ max m n（独立归纳）
+max≤ : ∀ m n → Σ ℕ (λ k → k +ℕ m ≡ max m n)
+max≤ zero n = n , +-zero n
+max≤ (suc m) zero = zero , refl
+max≤ (suc m) (suc n) with max≤ m n
+... | (k , p) = k , {!!}  -- maxSuc 参数顺序待修
+
 -- ℕ min/max 界引理（negsuc 反转序）
 max-left : ∀ m n → negsuc (max m n) ≤ negsuc m
 max-left m n = _∸_ (max m n) m , {!!}
@@ -137,19 +144,19 @@ min-ℤ≤ˡ (negsuc m) (pos n) = ℕ.zero , refl
 min-ℤ≤ˡ (negsuc m) (negsuc n) = max-left m n
 
 min-ℤ≤ʳ : ∀ a b → min-ℤ a b ≤ b
-min-ℤ≤ʳ (pos m) (pos n) = _∸_ n (min m n) , {!!}
+min-ℤ≤ʳ (pos m) (pos n) = _∸_ n (min m n) , {!!}  -- minComm 参数顺序待修
 min-ℤ≤ʳ (pos m) (negsuc n) = ℕ.zero , refl
 min-ℤ≤ʳ (negsuc m) (pos n) = suc (m +ℕ n) , {!!}
 min-ℤ≤ʳ (negsuc m) (negsuc n) = max-right m n
 
 max-ℤ≤ˡ : ∀ a b → a ≤ max-ℤ a b
-max-ℤ≤ˡ (pos m) (pos n) = _∸_ (max m n) m , {!!}
+max-ℤ≤ˡ (pos m) (pos n) = _∸_ (max m n) m , {!!}  -- m∸n+n≡m 参数顺序待修
 max-ℤ≤ˡ (pos m) (negsuc n) = ℕ.zero , refl  -- max-ℤ (pos m) (negsuc n) = pos m ≤ pos m
 max-ℤ≤ˡ (negsuc m) (pos n) = suc (m +ℕ n) , {!!}
 max-ℤ≤ˡ (negsuc m) (negsuc n) = min-left m n
 
 max-ℤ≤ʳ : ∀ a b → b ≤ max-ℤ a b
-max-ℤ≤ʳ (pos m) (pos n) = _∸_ (max m n) n , {!!}
+max-ℤ≤ʳ (pos m) (pos n) = _∸_ (max m n) n , {!!}  -- m∸n+n≡m 参数顺序待修
 max-ℤ≤ʳ (pos m) (negsuc n) = suc (m +ℕ n) , {!!}
 max-ℤ≤ʳ (negsuc m) (pos n) = ℕ.zero , refl  -- max-ℤ (negsuc m) (pos n) = pos n ≤ pos n
 max-ℤ≤ʳ (negsuc m) (negsuc n) = min-right m n
