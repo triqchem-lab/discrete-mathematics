@@ -150,13 +150,13 @@ min-ℤ≤ʳ (negsuc m) (pos n) = suc (m +ℕ n) , {!!}
 min-ℤ≤ʳ (negsuc m) (negsuc n) = max-right m n
 
 max-ℤ≤ˡ : ∀ a b → a ≤ max-ℤ a b
-max-ℤ≤ˡ (pos m) (pos n) = _∸_ (max m n) m , {!!}  -- m∸n+n≡m 参数顺序待修
+max-ℤ≤ˡ (pos m) (pos n) = _∸_ (max m n) m , pos-+pos m (max m n ∸ m) ∙ cong pos (+-comm m (max m n ∸ m)) ∙ cong pos (m∸n+n≡m (max m n) m (max≤ m n))
 max-ℤ≤ˡ (pos m) (negsuc n) = ℕ.zero , refl  -- max-ℤ (pos m) (negsuc n) = pos m ≤ pos m
 max-ℤ≤ˡ (negsuc m) (pos n) = suc (m +ℕ n) , {!!}
 max-ℤ≤ˡ (negsuc m) (negsuc n) = min-left m n
 
 max-ℤ≤ʳ : ∀ a b → b ≤ max-ℤ a b
-max-ℤ≤ʳ (pos m) (pos n) = _∸_ (max m n) n , {!!}  -- m∸n+n≡m 参数顺序待修
+max-ℤ≤ʳ (pos m) (pos n) = _∸_ (max m n) n , pos-+pos n (max m n ∸ n) ∙ cong pos (+-comm n (max m n ∸ n)) ∙ cong pos (m∸n+n≡m (max m n) n (subst (λ z → Σ ℕ (λ k → k +ℕ n ≡ z)) (maxComm n m) (max≤ n m)))
 max-ℤ≤ʳ (pos m) (negsuc n) = suc (m +ℕ n) , {!!}
 max-ℤ≤ʳ (negsuc m) (pos n) = ℕ.zero , refl  -- max-ℤ (negsuc m) (pos n) = pos n ≤ pos n
 max-ℤ≤ʳ (negsuc m) (negsuc n) = min-right m n
