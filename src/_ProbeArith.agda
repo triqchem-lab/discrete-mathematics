@@ -34,4 +34,7 @@ probe n Lf Lg k (a , p₁) (b , p₂) = (a +ℕ b) , lem
   lem = subst (λ x → sucℤ (n - x) +pos (a +ℕ b) ≡ Lg) p₂ lem'
     where
     lem' : sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ Lg
-    lem' = subst (λ x → sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ x - Lf) (sym p₁) refl
+    lem' = subst (λ x → sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ x) (sym p₁) lem''
+      where
+      lem'' : sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ Lf + Lg
+      lem'' = {!!}
