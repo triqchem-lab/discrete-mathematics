@@ -15,6 +15,7 @@ module Sovereign.Algebra.BurauCubical where
 --   2×2 变体经 oracle 裁定不满足 braid，弃用（台账 Burau.B3GL2.Mat2 形式化修正记录）
 
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
+open import Cubical.Data.Int.Properties using (+Assoc; +Comm; ·DistR+; ·DistL+; ·Assoc; ·Comm)
 open import Cubical.Data.Int using (ℤ; _+_; _-_; _·_; pos; negsuc; sucℤ; predℤ; _+pos_; _+negsuc_)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; _∙_; funExt)
 
@@ -152,4 +153,37 @@ assoc-entry : ∀ a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n 
       ((a₁ n · ((b11 n · c1 n) + (b12 n · c2 n) + (b13 n · c3 n)))
     + (a₂ n · ((b21 n · c1 n) + (b22 n · c2 n) + (b23 n · c3 n))))
     + (a₃ n · ((b31 n · c1 n) + (b32 n · c2 n) + (b33 n · c3 n)))
-assoc-entry a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n = {!assoc-chain!}
+assoc-entry a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n =
+  {!main-chain!}
+  where
+  -- 9 项纯重排：列分组 → 行分组（三明治交换法，21 步）
+  -- 三明治：p+(q+r) ≡ q+(p+r)
+  swap3 : ∀ p q r → p + (q + r) ≡ q + (p + r)
+  swap3 p q r = +Assoc p q r ∙ cong (_+ r) (+Comm p q) ∙ sym (+Assoc q p r)
+
+  row-col : ∀ v1 v2 v3 v4 v5 v6 v7 v8 v9 →
+        (((v1 + v2) + v3) + ((v4 + v5) + v6)) + ((v7 + v8) + v9)
+    ≡   (((v1 + v4) + v7) + ((v2 + v5) + v8)) + ((v3 + v6) + v9)
+  row-col v1 v2 v3 v4 v5 v6 v7 v8 v9 =
+        sym (+Assoc ((v1 + v2) + v3) ((v4 + v5) + v6) ((v7 + v8) + v9))
+    ∙ sym (+Assoc (v1 + v2) v3 (((v4 + v5) + v6) + ((v7 + v8) + v9)))
+    ∙ sym (+Assoc v1 v2 (v3 + (((v4 + v5) + v6) + ((v7 + v8) + v9))))
+    ∙ cong (v1 +_) (cong (v2 +_) (cong (v3 +_) (sym (+Assoc (v4 + v5) v6 ((v7 + v8) + v9)))))
+    ∙ cong (v1 +_) (cong (v2 +_) (cong (v3 +_) (cong (v4 +_) (sym (+Assoc v4 v5 (v6 + ((v7 + v8) + v9)))))))
+    ∙ cong (v1 +_) (cong (v2 +_) (cong (v3 +_) (cong (v4 +_) (cong (v5 +_) (cong (v6 +_) (sym (+Assoc v7 v8 v9)))))))
+    -- 全右结合：v1+(v2+(v3+(v4+(v5+(v6+(v7+(v8+v9)))))))
+    -- 9 步三明治（Python 冒泡序列）：
+    ∙ cong (v1 +_) (cong (v2 +_) (swap3 v3 v4 (v5 + (v6 + (v7 + (v8 + v9))))))
+    ∙ cong (v1 +_) (swap3 v2 v4 (v3 + (v5 + (v6 + (v7 + (v8 + v9))))))
+    ∙ cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v3 +_) (swap3 v5 v6 (v7 + (v8 + v9))))))
+    ∙ cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v3 +_) (swap3 v5 v7 (v6 + (v8 + v9))))))
+    ∙ cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (swap3 v3 v7 (v5 + (v6 + (v8 + v9))))))
+    ∙ cong (v1 +_) (cong (v4 +_) (swap3 v2 v7 (v3 + (v5 + (v6 + (v8 + v9))))))
+    ∙ cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (swap3 v2 v3 (v5 + (v6 + (v8 + v9))))))
+    ∙ cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (swap3 v3 v6 (v8 + v9))))))
+    ∙ cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (cong (v8 +_) (swap3 v3 v8 v6))))))
+    -- 收拢到目标括号形（cong 包装深度递进 + assoc）
+    ∙ +Assoc v1 v4 (v7 + (v2 + (v5 + (v8 + ((v3 + v6) + v9)))))
+    ∙ +Assoc (v1 + v4) v7 (v2 + (v5 + (v8 + ((v3 + v6) + v9))))
+    ∙ cong (λ w1 → ((v1 + v4) + v7) + w1) (+Assoc v2 v5 (v8 + ((v3 + v6) + v9)))
+    ∙ cong (λ w1 → ((v1 + v4) + v7) + w1) (+Assoc (v2 + v5) v8 ((v3 + v6) + v9))
