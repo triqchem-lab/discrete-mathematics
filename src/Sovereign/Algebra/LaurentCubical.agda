@@ -264,7 +264,7 @@ _*L_ : Laurent → Laurent → Laurent
       g-zero k h = bg (n - k) (bound-n-k k {!!} {!!} h)
         where
         bound-n-k : ∀ k → (Lf ≤ k) → (k ≤ Uf) → (n < Lf + Lg) ⊎ (Uf + Ug < n) → (n - k < Lg) ⊎ (Ug < n - k)
-        bound-n-k k h1 h2 d = {!!}  -- 待证：需序关系减法引理
+        bound-n-k k h1 h2 d = {!!}  -- 待证：n<Lf+Lg ∧ k≥Lf → n-k<Lg；Uf+Ug<n ∧ k≤Uf → Ug<n-k（用 <-+-≤/≤-+-< + <-o+-cancel）
 
 -- ────────────────────────────────────────────────────────────────────
 -- 加法性质（从 ℤ 的算术直接推出）
