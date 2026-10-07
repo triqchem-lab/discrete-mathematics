@@ -20,6 +20,8 @@
 
 module Sovereign.Algebra.LaurentCubical where
 
+open import Sovereign.Algebra.ProbeArith using (probe; probe-dual)
+
 open import Cubical.Foundations.Prelude using
   (_≡_; refl; sym; _∙_; cong; cong₂; funExt; subst; Σ; Σ-syntax; _,_; fst; snd)
 open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc; _+pos_; sucℤ)
@@ -261,10 +263,17 @@ _*L_ : Laurent → Laurent → Laurent
     term-zero k h = cong (f k ·_) (g-zero k h) ∙ ·AnnihilR (f k)
       where
       g-zero : ∀ k → (n < Lf + Lg) ⊎ (Uf + Ug < n) → g (n - k) ≡ pos 0
-      g-zero k h = bg (n - k) (bound-n-k k {!!} {!!} h)
+      g-zero k h = bg (n - k) (bound-n-k k h1 h2 h)
         where
+        -- PENDING: h1 : Lf ≤ k / h2 : k ≤ Uf 需 sum-ℤ-zero 暴露 k 的范围位置。
+        -- Uf ≥ Lf 时范围 [Lf,Uf] 两界成立；Uf < Lf 时 k 可超 Uf，
+        -- 该子范围需走 f 支路（f k ≡ 0，由 f 的 FinSupp 给出）。
+        -- 修法：sum-ℤ-zero 回调加索引参数，或 FinSupp 界规范化 L ≤ U。
+        h1 = {!Lf ≤ k: 需 sum-ℤ 范围信息!}
+        h2 = {!k ≤ Uf: Uf ≥ Lf 情形成立!}
         bound-n-k : ∀ k → (Lf ≤ k) → (k ≤ Uf) → (n < Lf + Lg) ⊎ (Uf + Ug < n) → (n - k < Lg) ⊎ (Ug < n - k)
-        bound-n-k k h1 h2 d = {!!}  -- 待证：用 <-+-≤/≤-+-< + <-o+-cancel
+        bound-n-k k h1 h2 (inl x) = inl (probe n Lf Lg k x h1)
+        bound-n-k k h1 h2 (inr x) = inr (probe-dual n Uf Ug k x h2)
 
 -- ────────────────────────────────────────────────────────────────────
 -- 加法性质（从 ℤ 的算术直接推出）
