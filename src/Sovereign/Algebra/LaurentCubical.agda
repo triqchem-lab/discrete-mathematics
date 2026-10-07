@@ -144,7 +144,7 @@ min-ℤ≤ˡ (negsuc m) (pos n) = ℕ.zero , refl
 min-ℤ≤ˡ (negsuc m) (negsuc n) = max-left m n
 
 min-ℤ≤ʳ : ∀ a b → min-ℤ a b ≤ b
-min-ℤ≤ʳ (pos m) (pos n) = _∸_ n (min m n) , {!!}  -- minComm subst 谓词待修
+min-ℤ≤ʳ (pos m) (pos n) = _∸_ n (min m n) , pos-+pos (min m n) (n ∸ min m n) ∙ cong pos (+-comm (min m n) (n ∸ min m n)) ∙ cong pos (m∸n+n≡m n (min m n) (subst (λ z → Σ ℕ (λ k → k +ℕ z ≡ n)) (minComm n m) (min≤ n m)))
 min-ℤ≤ʳ (pos m) (negsuc n) = ℕ.zero , refl
 min-ℤ≤ʳ (negsuc m) (pos n) = suc (m +ℕ n) , {!!}
 min-ℤ≤ʳ (negsuc m) (negsuc n) = max-right m n
