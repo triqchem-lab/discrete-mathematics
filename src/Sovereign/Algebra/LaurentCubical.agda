@@ -100,6 +100,31 @@ max-ℤ (pos m) (negsuc n) = pos m
 max-ℤ (negsuc m) (pos n) = pos n
 max-ℤ (negsuc m) (negsuc n) = negsuc (min m n)
 
+-- min-ℤ 界引理
+min-ℤ≤ˡ : ∀ a b → min-ℤ a b ≤ a
+min-ℤ≤ˡ (pos m) (pos n) = {!!}  -- pos (min m n) ≤ pos m
+min-ℤ≤ˡ (pos m) (negsuc n) = {!!}  -- negsuc n ≤ pos m
+min-ℤ≤ˡ (negsuc m) (pos n) = {!!}  -- negsuc m ≤ negsuc m
+min-ℤ≤ˡ (negsuc m) (negsuc n) = {!!}  -- negsuc (max m n) ≤ negsuc m
+
+min-ℤ≤ʳ : ∀ a b → min-ℤ a b ≤ b
+min-ℤ≤ʳ (pos m) (pos n) = {!!}
+min-ℤ≤ʳ (pos m) (negsuc n) = {!!}
+min-ℤ≤ʳ (negsuc m) (pos n) = {!!}
+min-ℤ≤ʳ (negsuc m) (negsuc n) = {!!}
+
+max-ℤ≤ˡ : ∀ a b → a ≤ max-ℤ a b
+max-ℤ≤ˡ (pos m) (pos n) = {!!}
+max-ℤ≤ˡ (pos m) (negsuc n) = {!!}
+max-ℤ≤ˡ (negsuc m) (pos n) = {!!}
+max-ℤ≤ˡ (negsuc m) (negsuc n) = {!!}
+
+max-ℤ≤ʳ : ∀ a b → b ≤ max-ℤ a b
+max-ℤ≤ʳ (pos m) (pos n) = {!!}
+max-ℤ≤ʳ (pos m) (negsuc n) = {!!}
+max-ℤ≤ʳ (negsuc m) (pos n) = {!!}
+max-ℤ≤ʳ (negsuc m) (negsuc n) = {!!}
+
 -- 逐点加法
 _+L_ : Laurent → Laurent → Laurent
 (f , (Lf , Uf , bf)) +L (g , (Lg , Ug , bg)) =
