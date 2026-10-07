@@ -409,6 +409,11 @@ hexp-lemma u c₁ n₁ c₂ n₂ xs ys e ue h hxs =
 -- 直接用 sums-cons-head 展开 + +-cancelʳ 消去，不走 hexp-lemma
 -- ────────────────────────────────────────────────────────────────────
 
+-- ────────────────────────────────────────────────────────────────────
+-- canon-sums-unique：sums 相等 → Canon 相等（枢纽引理）
+-- 用 subst 沿 sums-cons-head 重写（case_of_ 化后展开定义性成立）
+-- ────────────────────────────────────────────────────────────────────
+
 -- canon-sums-unique 待下轮：case_of_ 与 with 不互精炼（多轮实证）。
 -- 解法候选：① sums 改回 with 定义 + 证明内 with 共精炼；
 --           ② 或用 subst 沿 sums-cons-head 重写（需 sums-cons-head 不归约）。
