@@ -404,6 +404,12 @@ hexp-lemma u c₁ n₁ c₂ n₂ xs ys e ue h hxs =
 -- canon-sums-unique：sums 相等 → Canon 相等（枢纽引理）
 -- ────────────────────────────────────────────────────────────────────
 
--- canon-sums-unique 待下轮：hexp-lemma 已证（sums-cons-head 展开），
--- 但 h 调用处的 sums 展开仍需共精炼。
+-- ────────────────────────────────────────────────────────────────────
+-- canon-sums-unique：sums 相等 → Canon 相等（枢纽引理）
+-- 直接用 sums-cons-head 展开 + +-cancelʳ 消去，不走 hexp-lemma
+-- ────────────────────────────────────────────────────────────────────
+
+-- canon-sums-unique 待下轮：case_of_ 与 with 不互精炼（多轮实证）。
+-- 解法候选：① sums 改回 with 定义 + 证明内 with 共精炼；
+--           ② 或用 subst 沿 sums-cons-head 重写（需 sums-cons-head 不归约）。
 -- norm-+ 依赖此引理 + norm-idem + insertCᵌ-sums（已证）。
