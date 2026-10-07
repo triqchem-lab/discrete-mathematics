@@ -27,6 +27,10 @@ open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; 
 
 -- 关键引理：n < Lf + Lg → Lf ≤ k → n - k < Lg
 -- 用 ≤-eq 消去为算术等式后用 cong/transport 组合
+-- sucIntPlus: sucℤ (x + y) ≡ sucℤ x + y（纯字母名避开解析冲突）
+sucPush : ∀ x y → sucℤ (x + y) ≡ sucℤ x + y
+sucPush x y = {!!}  -- PENDING: 需 sucℤ+ 但有解析冲突
+
 probe : (n Lf Lg k : ℤ) → n < Lf + Lg → Lf ≤ k → n - k < Lg
 probe n Lf Lg k (a , p₁) (b , p₂) = (a +ℕ b) , lem
   where
