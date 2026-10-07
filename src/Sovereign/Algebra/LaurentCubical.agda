@@ -126,6 +126,12 @@ max≤ (suc m) zero = zero , refl
 max≤ (suc m) (suc n) with max≤ m n
 ... | (k , p) = k , {!!}  -- maxSuc 参数顺序待修
 
+-- negsuc-+pos : negsuc x +pos k ≡ negsuc (x ∸ k)（当 k ≤ suc x）
+negsuc-+pos : ∀ x k → negsuc x +pos k ≡ negsuc (x ∸ k)
+negsuc-+pos x zero = refl
+negsuc-+pos zero (suc k) = {!!}  -- sucℤ (negsuc 0) = pos 0 ≠ negsuc (0 ∸ suc k)
+negsuc-+pos (suc x) (suc k) = {!!}  -- sucℤ (negsuc _) 归约需 k ≤ x 前提
+
 -- ℕ min/max 界引理（negsuc 反转序）
 max-left : ∀ m n → negsuc (max m n) ≤ negsuc m
 max-left m n = _∸_ (max m n) m , {!!}
