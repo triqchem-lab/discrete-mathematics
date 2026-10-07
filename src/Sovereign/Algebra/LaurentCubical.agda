@@ -102,13 +102,13 @@ max-ℤ (negsuc m) (negsuc n) = negsuc (min m n)
 
 -- ℕ min/max 界引理（negsuc 反转序）
 max-left : ∀ m n → negsuc (max m n) ≤ negsuc m
-max-left m n = {!!}
+max-left m n = ℕ._∸_ (max m n) m , {!!}
 max-right : ∀ m n → negsuc (max m n) ≤ negsuc n
-max-right m n = {!!}
+max-right m n = ℕ._∸_ (max m n) n , {!!}
 min-left : ∀ m n → negsuc m ≤ negsuc (min m n)
-min-left m n = {!!}
+min-left m n = ℕ._∸_ m (min m n) , {!!}
 min-right : ∀ m n → negsuc n ≤ negsuc (min m n)
-min-right m n = {!!}
+min-right m n = ℕ._∸_ n (min m n) , {!!}
 
 -- min-ℤ 界引理
 min-ℤ≤ˡ : ∀ a b → min-ℤ a b ≤ a
