@@ -168,25 +168,14 @@ assoc-entry a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n =
         sym (+Assoc ((v1 + v2) + v3) ((v4 + v5) + v6) ((v7 + v8) + v9))
     ∙ sym (+Assoc (v1 + v2) v3 (((v4 + v5) + v6) + ((v7 + v8) + v9)))
     ∙ sym (+Assoc v1 v2 (v3 + (((v4 + v5) + v6) + ((v7 + v8) + v9))))
-    ∙ cong (v1 +_) (cong (v2 +_) (cong (v3 +_) (sym (+Assoc (v4 + v5) v6 ((v7 + v8) + v9)))))
-    ∙ cong (v1 +_) (cong (v2 +_) (cong (v3 +_) (cong (v4 +_) (sym (+Assoc v4 v5 (v6 + ((v7 + v8) + v9)))))))
-    ∙ cong (v1 +_) (cong (v2 +_) (cong (v3 +_) (cong (v4 +_) (cong (v5 +_) (cong (v6 +_) (sym (+Assoc v7 v8 v9)))))))
-    -- 全右结合：v1+(v2+(v3+(v4+(v5+(v6+(v7+(v8+v9)))))))
-    -- 9 步三明治（Python 冒泡序列）：
-    ∙ cong (v1 +_) (cong (v2 +_) (+Comm v3 v4))
-    ∙ cong (v1 +_) (+Comm v2 v4)
-    ∙ cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v3 +_) (cong (v5 +_) (+Comm v6 v7)))))
-    ∙ cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v3 +_) (+Comm v5 v7))))
-    ∙ cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (+Comm v3 v7)))
-    ∙ cong (v1 +_) (cong (v4 +_) (+Comm v2 v7))
-    ∙ cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (+Comm v3 v5))))
-    -- S8PENDING: ∙ cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (cong (v3 +_) (+Comm v6 v8)))))))
-    -- S9PENDING: ∙ cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (+Comm v3 v8))))))
-    -- s7: v3 v5 交换（提出 v3 于 v7 后）
-    ∙ cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v7 +_) (swap3 v3 v5 (v6 + (v8 + v9))))))
-    -- s8: v6 v8 交换
-    ∙ cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v7 +_) (cong (v5 +_) (cong (v3 +_) (swap3 v6 v8 v9))))))
-    -- s9: v3 v8 交换
-    ∙ cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v7 +_) (cong (v5 +_) (+Comm v3 v8)))))
-    -- 收尾段待 let 注解版（Probe8/9 已验证 7 步：+Assoc v1v4Y / sym Assoc v2v7Z / swap3 v2v7Z / +Assoc v1v4 v7 v2Z / +Assoc v2v5Z / 组内 Assoc v3v6v9 / 组间 Assoc）
-    {!收尾段: v 序右结合 → 三组行序形, Probe8/9 let 注解版已验证!}
+    ∙ (cong (v1 +_) (cong (v2 +_) (swap3 v3 v4 (v5 + (v6 + (v7 + (v8 + v9)))))))
+    ∙ (cong (v1 +_) (swap3 v2 v4 (v3 + (v5 + (v6 + (v7 + (v8 + v9)))))))
+    ∙ (cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v3 +_) (cong (v5 +_) (swap3 v6 v7 (v8 + v9)))))))
+    ∙ (cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v3 +_) (swap3 v5 v7 (v6 + (v8 + v9)))))))
+    ∙ (cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (swap3 v3 v7 (v5 + (v6 + (v8 + v9)))))))
+    ∙ (cong (v1 +_) (cong (v4 +_) (swap3 v2 v7 (v3 + (v5 + (v6 + (v8 + v9)))))))
+    ∙ (cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (swap3 v3 v5 (v6 + (v8 + v9)))))))
+    ∙ (cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (cong (v3 +_) (swap3 v6 v8 v9)))))))
+    ∙ (cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (swap3 v3 v8 (v6 + v9)))))))
+    -- 收拢步（右结合 v 序 → 三组行形）——待下一步精确推导
+    -- 收拢步（右结合 v 序 → 三组行形）——待下一步精确推导
