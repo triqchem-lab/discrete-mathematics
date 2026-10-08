@@ -3,16 +3,56 @@ module Sovereign.Algebra._ProbeAssoc where
 
 open import Cubical.Data.Int using (ℤ; _+_; _·_)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; _∙_)
-open import Cubical.Data.Int.Properties using (+Assoc; +Comm; ·DistR+; ·DistL+; ·Assoc)
+open import Cubical.Data.Int.Properties using (+Assoc; +Comm; ·DistR+; ·DistL+)
 
--- gather：提取公因子 a
+swap3 : ∀ p q r → p + (q + r) ≡ q + (p + r)
+swap3 p q r = +Assoc p q r ∙ cong (_+ r) (+Comm p q) ∙ sym (+Assoc q p r)
+
+bubble1 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v2 + (v3 + (v4 + (v5 + (v6 + (v7 + (v8 + (v9)))))))) ≡ v1 + (v2 + (v4 + (v3 + (v5 + (v6 + (v7 + (v8 + (v9))))))))
+bubble1 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v2 +_) (swap3 v3 v4 (v5 + (v6 + (v7 + (v8 + (v9)))))))
+
+bubble2 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v2 + (v4 + (v3 + (v5 + (v6 + (v7 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v2 + (v3 + (v5 + (v6 + (v7 + (v8 + (v9))))))))
+bubble2 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (swap3 v2 v4 (v3 + (v5 + (v6 + (v7 + (v8 + (v9)))))))
+
+bubble3 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v2 + (v3 + (v5 + (v6 + (v7 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v2 + (v3 + (v5 + (v7 + (v6 + (v8 + (v9))))))))
+bubble3 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v3 +_) (cong (v5 +_) (swap3 v6 v7 (v8 + (v9)))))))
+
+bubble4 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v2 + (v3 + (v5 + (v7 + (v6 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v2 + (v3 + (v7 + (v5 + (v6 + (v8 + (v9))))))))
+bubble4 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v3 +_) (swap3 v5 v7 (v6 + (v8 + (v9)))))))
+
+bubble5 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v2 + (v3 + (v7 + (v5 + (v6 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v2 + (v7 + (v3 + (v5 + (v6 + (v8 + (v9))))))))
+bubble5 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (swap3 v3 v7 (v5 + (v6 + (v8 + (v9)))))))
+
+bubble6 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v2 + (v7 + (v3 + (v5 + (v6 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v7 + (v2 + (v3 + (v5 + (v6 + (v8 + (v9))))))))
+bubble6 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (swap3 v2 v7 (v3 + (v5 + (v6 + (v8 + (v9)))))))
+
+bubble7 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v7 + (v2 + (v3 + (v5 + (v6 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v6 + (v8 + (v9))))))))
+bubble7 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (swap3 v3 v5 (v6 + (v8 + (v9)))))))
+
+bubble8 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v6 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v8 + (v6 + (v9))))))))
+bubble8 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (cong (v3 +_) (swap3 v6 v8 (v9)))))))
+
+bubble9 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v8 + (v6 + (v9)))))))) ≡ v1 + (v4 + (v7 + (v2 + (v5 + (v8 + (v3 + (v6 + (v9))))))))
+bubble9 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (swap3 v3 v8 (v6 + (v9)))))))
+
+
+-- gather 2 步版（已验证绿）
 gather : ∀ a x y z → ((a · x) + (a · y)) + (a · z) ≡ a · ((x + y) + z)
-gather a x y z = sym (cong (a ·_) (+Assoc x y z)) ∙ symInner
-  where
-    symInner : ((a · x) + (a · y)) + (a · z) ≡ (a · (x + y)) + (a · z)
 gather a x y z =
-      sym (+Assoc (a · x) (a · y) (a · z))
-  ∙ cong (λ w → (a · x) + w) (sym (·DistR+ a y z))
-target : ∀ (a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 : ℤ) →
-  ((((a₁ · (b11 · c1)) + (a₂ · (b21 · c1))) + (a₃ · (b31 · c1))) + (((a₁ · (b12 · c2)) + (a₂ · (b22 · c2))) + (a₃ · (b32 · c2)))) + (((a₁ · (b13 · c3)) + (a₂ · (b23 · c3))) + (a₃ · (b33 · c3))) ≡ ((a₁ · (((b11 · c1) + (b12 · c2)) + (b13 · c3))) + (a₂ · (((b21 · c1) + (b22 · c2)) + (b23 · c3)))) + (a₃ · (((b31 · c1) + (b32 · c2)) + (b33 · c3)))))
-target a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 = ?
+      cong (_+ (a · z)) (sym (·DistR+ a x y))
+  ∙ sym (·DistR+ a (x + y) z)
+
+-- rearrange9
+rearrange9 : ∀ (a₁ a₂ a₃ q1 q2 q3 q4 q5 q6 q7 q8 q9 : ℤ) →
+  ((((a₁ · q1) + (a₂ · q2)) + (a₃ · q3)) + (((a₁ · q4) + (a₂ · q5)) + (a₃ · q6))) + (((a₁ · q7) + (a₂ · q8)) + (a₃ · q9))
+  ≡ ((a₁ · ((q1 + q4) + q7)) + (a₂ · ((q2 + q5) + q8))) + (a₃ · ((q3 + q6) + q9))
+rearrange9 a₁ a₂ a₃ q1 q2 q3 q4 q5 q6 q7 q8 q9 = ?
