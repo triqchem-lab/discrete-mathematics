@@ -7,7 +7,7 @@
 -- 2. +interchange 是 3×3 求和转置的关键引理（5 步 ✓）
 -- 3. sum3-distribˡ 已绿（·DistR+ 两步链）
 --
--- 包含：sum3、sum3-ext、sum3-distribˡ（绿）、+interchange（绿）、sum3-comm（WIP）
+-- 包含：sum3、sum3-ext、sum3-distribˡ（绿）、+interchange（绿）、sum3-comm（完整 17+ 步链已绿）
 
 
 module Sovereign.Cubical.Fin3 where
@@ -41,7 +41,7 @@ sum3-distribˡ a f =
   ∙ cong (a +_) (sym (+Assoc c b d))
   ∙ +Assoc a c (b + d)
 
--- ── sum3-comm WIP ──
+-- ── sum3-comm（已完整：f1-f4 展平 + bubble 重排 + rg1-4 收拢 + in 链）──
 
 swap3 : ∀ p q r → p + (q + r) ≡ q + (p + r)
 swap3 p q r = +Assoc p q r ∙ cong (_+ r) (+Comm p q) ∙ sym (+Assoc q p r)
