@@ -34,6 +34,14 @@ assocP x y (negsuc z) = +Assoc x y (negsuc z)
 swap3 : ∀ p q r → p + (q + r) ≡ q + (p + r)
 swap3 p q r = +Assoc p q r ∙ cong (_+ r) (+Comm p q) ∙ sym (+Assoc q p r)
 
+interchange : ∀ (a b c d : ℤ) → (a + b) + (c + d) ≡ (a + c) + (b + d)
+interchange a b c d =
+      +Assoc (a + b) c d
+  ∙ cong (λ w → w + d) (sym (+Assoc a b c))
+  ∙ cong (λ w → w + d) (+Comm b c)
+  ∙ cong (λ w → a + w) (sym (+Assoc c b d))
+  ∙ +Assoc a c (b + d)
+
 
 c5-lem : ∀ (v1 v4 v7 v2 v5 v8 v3 v6 v9 : ℤ) →
   ((v1 + v4) + v7) + ((v2 + v5) + (v8 + (v3 + (v6 + v9)))) ≡ ((v1 + v4) + v7) + ((v2 + v5) + ((v8 + ((v3 + v6)) + v9)))
@@ -50,7 +58,7 @@ c5-lem v1 v4 v7 v2 v5 v8 v3 v6 v9 =
   in q1 ∙ q2
 
 c6-lem : ∀ (v1 v4 v7 v2 v5 v8 v3 v6 v9 : ℤ) →
-  ((v1 + v4) + v7) + ((v2 + v5) + (v8 + ((v3 + v6) + v9))) ≡ ((((v1 + v4) + v7) + ((v2 + v5) + (v8 + ((v3 + v6))))) + v9)
+  ((v1 + v4) + v7) + ((v2 + v5) + (v8 + ((v3 + v6) + v9))) ≡ (((v1 + v4) + v7) + (((v2 + v5) + ((v8 + ((v3 + v6)) + v9)))))
 c6-lem v1 v4 v7 v2 v5 v8 v3 v6 v9 =
   let m1 : v8 + ((v3 + v6) + v9) ≡ (v8 + (v3 + v6)) + v9
       m1 = assocP v8 (v3 + v6) v9
@@ -59,7 +67,19 @@ c6-lem v1 v4 v7 v2 v5 v8 v3 v6 v9 =
       X2 = S + ((v8 + ((v3 + v6)) + v9))
       p1 : X1 ≡ X2
       p1 = cong (λ w → S + w) m1
-  in p1
+      m2c : (v2 + v5) + (v8 + ((v3 + v6) + v9)) ≡ ((v2 + v5) + v8) + ((v3 + v6) + v9)
+      m2c = +Assoc (v2 + v5) v8 ((v3 + v6) + v9)
+      X3 = S + (((v2 + v5) + v8) + ((v3 + v6) + v9))
+      p2 : X2 ≡ X3
+      p2 = cong (λ w → S + w) m2c
+      p3 : X3 ≡ (((v1 + v4) + v7) + (((v2 + v5) + v8) + (((v3 + v6)) + v9)))
+      p3 = cong (λ w → ((v1 + v4) + v7) + w) (+Assoc (v2 + v5) v8 ((v3 + v6) + v9))
+      m2c : (v2 + v5) + (v8 + ((v3 + v6) + v9)) ≡ ((v2 + v5) + v8) + ((v3 + v6) + v9)
+      m2c = +Assoc (v2 + v5) v8 ((v3 + v6) + v9)
+      X3 = ((v1 + v4) + v7) + ((((v2 + v5) + v8)) + (((v3 + v6)) + v9))
+      p3 : X3 ≡ (((v1 + v4) + v7) + (((v2 + v5) + v8) + (((v3 + v6)) + v9)))
+      p3 = cong (λ w → ((v1 + v4) + v7) + w) m2c
+  in p1 ∙ p2 ∙ p3
 -- ────────────────────────────────────────────────────────────────────
 -- 系数函数常量：0、1、t、1-t（按 ℤ 构造子分派）
 -- ────────────────────────────────────────────────────────────────────
