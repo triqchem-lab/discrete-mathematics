@@ -81,5 +81,17 @@ rearrange9 a₁ a₂ a₃ q1 q2 q3 q4 q5 q6 q7 q8 q9 =
     s6 = cong (λ w → p1 + (p2 + (p3 + w))) (sym (+Assoc p4 (p5 + p6) (p7 + (p8 + p9))))
     s7 : (p1 + (p2 + (p3 + (p4 + ((p5 + p6) + (p7 + (p8 + p9))))))) ≡ (p1 + (p2 + (p3 + (p4 + (p5 + (p6 + (p7 + (p8 + p9))))))))
     s7 = cong (λ w → p1 + (p2 + (p3 + (p4 + w)))) (sym (+Assoc p5 p6 (p7 + (p8 + p9))))
+    -- r 系列：行分组（从全右到左结合三元组）
+    r1 = +Assoc p1 p4 (p7 + (p2 + (p5 + (p8 + (p3 + (p6 + p9))))))
+    r2 = +Assoc (p1 + p4) p7 (p2 + (p5 + (p8 + (p3 + (p6 + p9)))))
 
-  in s1 ∙ s2 ∙ s3 ∙ s4 ∙ s5 ∙ s6 ∙ s7 ∙ bubble1 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble2 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble3 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble4 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble5 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble6 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble7 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble8 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble9 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ {!!regroup-gather!}
+    r3 = cong (((p1 + p4) + p7) +_) (+Assoc p2 p5 (p8 + (p3 + (p6 + p9))))
+    r4 = cong (((p1 + p4) + p7) +_) (+Assoc (p2 + p5) p8 (p3 + (p6 + p9)))
+    r5 = cong (λ w → ((p1 + p4) + p7) + (((p2 + p5) + p8) + w)) (+Assoc p3 p6 p9)
+    g1 = cong (λ w → w + (((p2 + p5) + p8) + ((p3 + p6) + p9))) (gather a₁ q1 q4 q7)
+    g2 = cong (λ w → (a₁ · ((q1 + q4) + q7)) + w) (cong (_+ ((p3 + p6) + p9)) (gather a₂ q2 q5 q8))
+    rehas = +Assoc (a₁ · ((q1 + q4) + q7)) (a₂ · ((q2 + q5) + q8)) (((p3 + p6) + p9))
+    g3 = cong (λ w → ((a₁ · ((q1 + q4) + q7)) + (a₂ · ((q2 + q5) + q8))) + w) (gather a₃ q3 q6 q9)
+
+
+  in s1 ∙ s2 ∙ s3 ∙ s4 ∙ s5 ∙ s6 ∙ s7 ∙ bubble1 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble2 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble3 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble4 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble5 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble6 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble7 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble8 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble9 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ r1 ∙ r2 ∙ r3 ∙ r4 ∙ r5 ∙ g1 ∙ g2 ∙ rehas ∙ g3
