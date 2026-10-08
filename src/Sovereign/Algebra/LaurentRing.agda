@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- ⚠️ [HISTORICAL 2026-10-10 人类裁决] List 表示路线已冻结：唯一主路线 = 函数表示 LaurentCubical（funExt 直接得函数相等）。本模块不再投入新工作；下游请迁移到 LaurentCubical。
 -- | Sovereign.Algebra.LaurentRing
 -- P3.4 T1a：Z[t,t⁻¹] 环——定义层 + 规范化 + t·t⁻¹≡1 实例。
 --
