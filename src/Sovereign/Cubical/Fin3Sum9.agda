@@ -42,3 +42,33 @@ uflat9-s5 A1 B1 C1 A2 B2 C2 A3 B3 C3 =
       cong (λ w2 → ((A1 + B1) + C1) + ((w2 + (A3 + (B3 + C3))))) (sym (assocP A2 B2 C2))
 
 -- ─── unflat9 五步独立引理（每步签名显式，探针 Probe3 test-s1..s5 验证绿）───
+
+-- ─── unflat9：五引理组装（右结合 row 序 → 目标三组）───
+
+unflat9 : ∀ (A1 A2 A3 B1 B2 B3 C1 C2 C3 : ℤ) →
+  A1 + (B1 + (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
+  ≡ (((A1 + B1) + C1) + (((A2 + (B2 + C2))) + ((A3 + (B3 + C3)))))
+unflat9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
+  let X1 = A1 + (B1 + (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
+      p1 : X1 ≡ ((A1 + B1) + ((C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3))))))))
+      p1 = uflat9-s1 A1 B1 C1 A2 B2 C2 A3 B3 C3
+      X2 = ((A1 + B1) + ((C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3))))))))
+      p2 : X2 ≡ (((A1 + B1) + C1) + ((A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
+      p2 = uflat9-s2 A1 B1 C1 A2 B2 C2 A3 B3 C3
+      X3 = (((A1 + B1) + C1) + ((A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
+      p3 : X3 ≡ (((A1 + B1) + C1) + (((A2 + B2)) + ((C2 + (A3 + (B3 + C3))))))
+      p3 = uflat9-s3 A1 B1 C1 A2 B2 C2 A3 B3 C3
+      X4 = (((A1 + B1) + C1) + (((A2 + B2)) + ((C2 + (A3 + (B3 + C3))))))
+      p4 : X4 ≡ (((A1 + B1) + C1) + ((((A2 + B2)) + C2) + ((A3 + (B3 + C3)))))
+      p4 = uflat9-s4 A1 B1 C1 A2 B2 C2 A3 B3 C3
+      X5 = (((A1 + B1) + C1) + ((((A2 + B2)) + C2) + ((A3 + (B3 + C3)))))
+      p5 : X5 ≡ (((A1 + B1) + C1) + (((A2 + (B2 + C2))) + ((A3 + (B3 + C3)))))
+      p5 = uflat9-s5 A1 B1 C1 A2 B2 C2 A3 B3 C3
+  in p1 ∙ p2 ∙ p3 ∙ p4 ∙ p5
+
+-- ─── sum9-swap：col 序 → row 序 → 三组（flat9 ∙ unflat9 组合的核心交换）───
+
+sum9-swap : ∀ (A1 A2 A3 B1 B2 B3 C1 C2 C3 : ℤ) →
+  A1 + (B1 + (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
+  ≡ (((A1 + B1) + C1) + (((A2 + (B2 + C2))) + ((A3 + (B3 + C3)))))
+sum9-swap = unflat9
