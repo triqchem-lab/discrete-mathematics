@@ -97,8 +97,6 @@ sum3-comm f =
     p8 = f (fsuc (fsuc fzero)) (fsuc fzero)
     p9 = f (fsuc (fsuc fzero)) (fsuc (fsuc fzero))
     -- 展平 6 步（从 ((C1+C2)+C3) 到全右）
-    t1 : (((p1 + (p2 + p3)) + ((p4 + (p5 + p6)) + (p7 + (p8 + p9))))) ≡ ((p1 + (p2 + p3)) + ((p4 + (p5 + p6)) + (p7 + (p8 + p9))))
-    t1 = refl
     -- 展平步1: 解开 X=(p1+(p2+p3)) 内层
     f1 = sym (+Assoc p1 (p2 + p3) ((p4 + (p5 + p6)) + (p7 + (p8 + p9))))
     -- 展平步2: 解开 (p2+p3)
