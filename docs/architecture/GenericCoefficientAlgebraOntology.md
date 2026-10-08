@@ -1,6 +1,9 @@
 # 泛型系数代数框架——本体论修正版（补分层/本源/投影判断 + 展示群要求）
 
 > 版本：2.0（本体论修正版——依据 docs/duodecimal 01/08/11/20/24 五份权威文档）
+> ⚠️ 【地位声明 2026-10-10 人类裁决】本文档为**参考文档**，不是强制接口——接受 v2.0 本源/投影分层原则作为设计原则，但不强制把所有线归入五层全景；具体模块（IntArith/Fin3/LaurentCubical/BurauCubical）各自独立成立。
+
+
 > 裁定依据：01-ontology.md（宪法级）+ 08-terminology.md（术语红线）+ 11-type-theory-presentation.md（展示群）+ 20-dc-type-theory-positioning.md（元理论）+ 24-four-poles-vs-presentation-group.md（审计）
 > 上一版错误：v1.0 将所有模块等齐放在同一本体论层——违背本源/投影严格界线
 
