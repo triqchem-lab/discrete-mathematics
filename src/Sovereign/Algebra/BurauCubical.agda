@@ -247,14 +247,19 @@ row-col v1 v2 v3 v4 v5 v6 v7 v8 v9 =
   let Y = (v4 + (v5 + v6))
       Z = (v7 + (v8 + v9))
       -- 展开 4 步（三组列 → 右结合 col 序）
-      e1 : ((v1 + (v2 + v3)) + (Y + Z)) ≡ (v1 + ((v2 + v3) + (Y + Z)))
-      e1 = sym (+Assoc v1 (v2 + v3) (Y + Z))
-      e2 : (v1 + ((v2 + v3) + (Y + Z))) ≡ (v1 + (v2 + (v3 + (Y + Z))))
-      e2 = cong (v1 +_) (sym (+Assoc v2 v3 (Y + Z)))
-      e3 : (v1 + (v2 + (v3 + (Y + Z)))) ≡ (v1 + (v2 + (v3 + (v4 + ((v5 + v6) + Z)))))
-      e3 = cong (λ w → v1 + (v2 + (v3 + w))) (sym (+Assoc v4 (v5 + v6) Z))
-      e4 : (v1 + (v2 + (v3 + (v4 + ((v5 + v6) + Z))))) ≡ (v1 + (v2 + (v3 + (v4 + (v5 + (v6 + Z))))))
-      e4 = cong (λ w → v1 + (v2 + (v3 + (v4 + w)))) (sym (+Assoc v5 v6 Z))
+      -- 展开 6 步（col 三组 → col 右结合——cong 嵌套/裸 Assoc 全 1 层）
+      x1 : (((v1 + v2) + v3) + ((v4 + v5) + v6)) + ((v7 + v8) + v9) ≡ (((v1 + v2) + v3) + ((v4 + v5) + v6)) + (v7 + (v8 + v9))
+      x1 = cong (λ w → (((v1 + v2) + v3) + ((v4 + v5) + v6)) + w) (sym (+Assoc v7 v8 v9))
+      x2 : (((v1 + v2) + v3) + ((v4 + v5) + v6)) + (v7 + (v8 + v9)) ≡ ((v1 + v2) + v3) + (((v4 + v5) + v6) + (v7 + (v8 + v9)))
+      x2 = sym (+Assoc ((v1 + v2) + v3) ((v4 + v5) + v6) (v7 + (v8 + v9)))
+      x3 : ((v1 + v2) + v3) + (((v4 + v5) + v6) + (v7 + (v8 + v9))) ≡ ((v1 + v2) + v3) + ((v4 + v5) + (v6 + (v7 + (v8 + v9))))
+      x3 = cong ((v1 + v2) + v3 +_) (sym (+Assoc (v4 + v5) v6 (v7 + (v8 + v9))))
+      x3b : ((v1 + v2) + v3) + ((v4 + v5) + (v6 + (v7 + (v8 + v9)))) ≡ ((v1 + v2) + v3) + (v4 + (v5 + (v6 + (v7 + (v8 + v9)))))
+      x3b = cong ((v1 + v2) + v3 +_) (sym (+Assoc v4 v5 (v6 + (v7 + (v8 + v9)))))
+      x5 : ((v1 + v2) + v3) + (v4 + (v5 + (v6 + (v7 + (v8 + v9))))) ≡ (v1 + v2) + (v3 + (v4 + (v5 + (v6 + (v7 + (v8 + v9))))))
+      x5 = sym (+Assoc (v1 + v2) v3 (v4 + (v5 + (v6 + (v7 + (v8 + v9))))))
+      x6 : (v1 + v2) + (v3 + (v4 + (v5 + (v6 + (v7 + (v8 + v9)))))) ≡ v1 + (v2 + (v3 + (v4 + (v5 + (v6 + (v7 + (v8 + v9)))))))
+      x6 = sym (+Assoc v1 v2 (v3 + (v4 + (v5 + (v6 + (v7 + (v8 + v9)))))))
       -- 冒泡 9 步（独立引理链——BubbleLemmas 模式）
       b1 : (v1 + (v2 + (v3 + (v4 + (v5 + (v6 + (v7 + (v8 + v9)))))))) ≡ (v1 + (v2 + (v4 + (v3 + (v5 + (v6 + (v7 + (v8 + v9))))))))
       b1 = bubble1 v1 v2 v3 v4 v5 v6 v7 v8 v9
@@ -277,4 +282,4 @@ row-col v1 v2 v3 v4 v5 v6 v7 v8 v9 =
       -- 收拢 = unflat9（row 序 → 三组行形——sum9-swap 复用）
       c1 : (v1 + (v4 + (v7 + (v2 + (v5 + (v8 + (v3 + (v6 + v9)))))))) ≡ (((v1 + v4) + v7) + (((v2 + (v5 + v8))) + ((v3 + (v6 + v9)))))
       c1 = unflat9 v1 v2 v3 v4 v5 v6 v7 v8 v9
-  in e1 ∙ e2 ∙ e3 ∙ e4 ∙ b1 ∙ b2 ∙ b3 ∙ b4 ∙ b5 ∙ b6 ∙ b7 ∙ b8 ∙ b9 ∙ c1
+  in x1 ∙ x2 ∙ x3 ∙ x3b ∙ x5 ∙ x6 ∙ b1 ∙ b2 ∙ b3 ∙ b4 ∙ b5 ∙ b6 ∙ b7 ∙ b8 ∙ b9 ∙ c1
