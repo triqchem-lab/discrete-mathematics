@@ -19,9 +19,8 @@ sum3-cong : ∀ (f g : Fin 3 → ℤ) →
   sum3 f ≡ sum3 g
 sum3-cong f g p₀ p₁ p₂ = cong₂ _+_ p₀ (cong₂ _+_ p₁ p₂)
 
--- ────────────────────────────────────────────────────────────────────
--- 分段签名引理（test5 模式：每段独立正向类型检查，绕开 ∙ 链中段 stuck 统一）
--- ────────────────────────────────────────────────────────────────────
+-- ─── unflat9：右结合 row 序 → 目标三组（test5 已验证 5 步）───
+
 unflat9 : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
       A1 + (B1 + (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
   ≡   (A1 + (B1 + C1)) + ((A2 + (B2 + C2)) + (A3 + (B3 + C3)))
@@ -31,26 +30,27 @@ unflat9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
   ∙ cong (λ w1 → ((A1 + B1) + C1) + w1) (assocP A2 B2 (C2 + (A3 + (B3 + C3))))
   ∙ cong (λ w1 → ((A1 + B1) + C1) + w1) (assocP (A2 + B2) C2 (A3 + (B3 + C3)))
   ∙ cong (λ w2 → ((A1 + B1) + C1) + ((w2 + (A3 + (B3 + C3))))) (sym (assocP A2 B2 C2))
+  ∙ cong (λ w → w + ((A2 + (B2 + C2)) + (A3 + (B3 + C3)))) (sym (assocP A1 B1 C1))
+
+-- ─── flat9：组形 → col 序右结合（sym assocP 3 步拆组）───
+
 flat9 : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
       (A1 + (A2 + A3)) + ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))
-  ≡   A1 + (A2 + (((A3 + (B1 + (B2 + B3))) + (C1 + (C2 + C3)))))
-      assocP A1 (A2 + A3) ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))
-  ∙ cong (A1 +_) (assocP A2 A3 ((B1 + (B2 + B3)) + (C1 + (C2 + C3))))
-  ∙ cong (A1 +_) (cong (A2 +_) (assocP A3 (B1 + (B2 + B3)) (C1 + (C2 + C3))))
+  ≡   A1 + (A2 + (A3 + ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))))
+flat9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
+      sym (assocP A1 (A2 + A3) ((B1 + (B2 + B3)) + (C1 + (C2 + C3))))
+  ∙ cong (A1 +_) (sym (assocP A2 A3 ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))))
+  ∙ cong (A1 +_) (cong (A2 +_) (sym (assocP A3 (B1 + (B2 + B3)) (C1 + (C2 + C3)))))
+  ∙ cong (λ w1 → w1 + ((A2 + (B2 + C2)) + (A3 + (B3 + C3)))) (sym (assocP A1 B1 C1))
+-- ─── swap9：col 序 → row 序（comm 9 步，洞）───
 
 swap9 : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
-      A1 + (A2 + (((A3 + (B1 + (B2 + B3))) + (C1 + (C2 + C3)))))
+      A1 + (A2 + (A3 + (B1 + (B2 + (B3 + (C1 + (C2 + C3)))))))
   ≡   A1 + (B1 + (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
-swap9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
-      cong (λ w → A1 + (A2 + w)) (sym (assocP A3 (B1 + (B2 + B3)) (C1 + (C2 + C3))))
-  ∙ cong (λ w → A1 + (A2 + w)) (+Assoc A3 (B1 + (B2 + B3)) (C1 + (C2 + C3)))
-  ∙ +Assoc A2 A3 (B1 + (B2 + B3))
-  ∙ +Assoc A1 (A2 + A3) (B1 + (B2 + B3))
-  ∙ cong (λ w → w + (C1 + (C2 + C3))) (+Assoc A1 (A2 + A3) (B1 + (B2 + B3)))
-  ∙ +Assoc (A1 + (A2 + A3)) B1 (B2 + B3)
-  ∙ +Assoc (A1 + (A2 + A3)) (B1 + (B2 + B3)) C1
-  ∙ +Assoc A1 (A2 + A3) (B1 + (B2 + B3) + C1)
-  ∙ +Assoc A1 (A2 + A3) (B1 + (B2 + B3) + (C1 + (C2 + C3)))
+swap9 A1 A2 A3 B1 B2 B3 C1 C2 C3 = {!!}
+
+-- ─── sum9-swap：三引理组装 ───
+
 sum9-swap : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
       (A1 + (A2 + A3)) + ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))
   ≡   (A1 + (B1 + C1)) + ((A2 + (B2 + C2)) + (A3 + (B3 + C3)))
@@ -59,6 +59,7 @@ sum9-swap A1 A2 A3 B1 B2 B3 C1 C2 C3 =
   ∙ swap9 A1 A2 A3 B1 B2 B3 C1 C2 C3
   ∙ unflat9 A1 A2 A3 B1 B2 B3 C1 C2 C3
 
+-- ─── sum3 交换与分配 ───
 
 sum3-comm : ∀ (f : Fin 3 → Fin 3 → ℤ) →
   sum3 (λ k → sum3 (λ l → f k l)) ≡ sum3 (λ l → sum3 (λ k → f k l))
