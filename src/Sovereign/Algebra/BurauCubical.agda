@@ -1,6 +1,7 @@
 {-# OPTIONS --cubical --guardedness #-}
 module Sovereign.Algebra.BurauCubical where
 
+
 -- | Sovereign.Algebra.BurauCubical
 --
 -- Burau 表示 B₃ → Mat3(ℤ[t,t⁻¹]) 的函数表示（裸系数函数版，沿 LaurentCubical
@@ -39,7 +40,7 @@ interchange : ∀ (a b c d : ℤ) → (a + b) + (c + d) ≡ (a + c) + (b + d)
 interchange a b c d =
   let s1 : (a + b) + (c + d) ≡ ((a + b) + c) + d
       s1 = +Assoc (a + b) c d
-      s2 : ((a + b) + c) + d ≡ (a + (b + c)) + d
+      s2 : ((((a + b) + c)) + d) ≡ (((a + ((b + c))) + d))
       s2 = cong (λ w → w + d) (sym (+Assoc a b c))
       s3a : (a + (b + c)) + d ≡ a + ((b + c) + d)
       s3a = sym (+Assoc a (b + c) d)
@@ -198,6 +199,21 @@ cell p q r s =
       ·DistL+ (p + q) r s
   ∙ cong (λ w → w + (r · s)) (·DistL+ p q s)
 
+-- cong₃：三参数 cong（两段式——cong₂ + cong）
+cong₃ : ∀ (f : ℤ → ℤ → ℤ → ℤ) {x1 x2 y1 y2 z1 z2 : ℤ} →
+  x1 ≡ x2 → y1 ≡ y2 → z1 ≡ z2 → f x1 y1 z1 ≡ f x2 y2 z2
+cong₃ f px py pz =
+      cong₂ (λ u v → f u v _) px py
+  ∙ cong (λ w → f _ _ w) pz
+
+-- cellU：分配 + 9 项重排一步到位（cong₃ 解决深 3——位置独立变化）
+cellU : ∀ a b c d e f g → (((a · b) + (c · d)) + (e · f)) · g ≡ ((a · (b · g)) + (c · (d · g))) + (e · (f · g))
+cellU a b c d e f g =
+      ·DistL+ ((a · b) + (c · d)) (e · f) g
+  ∙ cong (λ w → w + ((e · f) · g)) (·DistL+ (a · b) (c · d) g)
+  ∙ cong₃ (λ u v w → (u + v) + w)
+      (sym (·Assoc a b g)) (sym (·Assoc c d g)) (sym (·Assoc e f g))
+
 -- gather：((a·x)+(a·y))+(a·z) ≡ a·((x+y)+z)（sym ·DistR+ × 2）
 gather : ∀ a x y z → ((a · x) + (a · y)) + (a · z) ≡ a · ((x + y) + z)
 gather a x y z =
@@ -252,29 +268,33 @@ assoc-entry a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n =
       g1 = (((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n))
       g2 = (((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n))
       g3 = (((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n))
-      d1 : (((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n ≡ (((a₁ n · b11 n) · c1 n) + ((a₂ n · b21 n) · c1 n)) + ((a₃ n · b31 n) · c1 n)
-      d1 = cell (a₁ n · b11 n) (a₂ n · b21 n) (a₃ n · b31 n) (c1 n)
-      d2 : (((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n ≡ (((a₁ n · b12 n) · c2 n) + ((a₂ n · b22 n) · c2 n)) + ((a₃ n · b32 n) · c2 n)
-      d2 = cell (a₁ n · b12 n) (a₂ n · b22 n) (a₃ n · b32 n) (c2 n)
-      d3 : (((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n ≡ (((a₁ n · b13 n) · c3 n) + ((a₂ n · b23 n) · c3 n)) + ((a₃ n · b33 n) · c3 n)
-      d3 = cell (a₁ n · b13 n) (a₂ n · b23 n) (a₃ n · b33 n) (c3 n)
-      c1p : ((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n) + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n) ≡ (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n))) + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n)
-      c1p = cong (λ w → w + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n)) d1
-      c2p : ((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n) + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n) ≡ (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n))) + (((a₁ n · (b12 n · c2 n)) + (a₁ n · (b22 n · c2 n))) + (a₁ n · (b32 n · c2 n)))
-      c2p = cong (λ w → (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n))) + w) d2
-      c3p : ((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n) + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n) ≡ (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n))) + ((((a₁ n · (b12 n · c2 n)) + (a₁ n · (b22 n · c2 n))) + (a₁ n · (b32 n · c2 n))) + ((((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n))
-      c3p = cong (λ w → w + ((((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n)) c2p
-      c4p : ((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n) + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n) ≡ (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n))) + ((((a₁ n · (b12 n · c2 n)) + (a₁ n · (b22 n · c2 n))) + (a₁ n · (b32 n · c2 n))) + (((a₁ n · (b13 n · c3 n)) + (a₁ n · (b23 n · c3 n))) + (a₁ n · (b33 n · c3 n))))
-      c4p = cong (λ w → (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n))) + ((((a₁ n · (b12 n · c2 n)) + (a₁ n · (b22 n · c2 n))) + (a₁ n · (b32 n · c2 n))) + w)) d3
-      C1 = ((a₁ n · (b11 n · c1 n)) + ((a₂ n · (b21 n · c1 n)) + (a₃ n · (b31 n · c1 n))))
-      C2 = ((a₁ n · (b12 n · c2 n)) + ((a₂ n · (b22 n · c2 n)) + (a₃ n · (b32 n · c2 n))))
-      C3 = ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n))))
+      d1 : (((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n ≡ (((a₁ n · (b11 n · c1 n)) + (a₂ n · (b21 n · c1 n))) + (a₃ n · (b31 n · c1 n)))
+      d1 = cellU (a₁ n) (b11 n) (a₂ n) (b21 n) (a₃ n) (b31 n) (c1 n)
+      d2 : (((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n ≡ (((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) + (a₃ n · (b32 n · c2 n)))
+      d2 = cellU (a₁ n) (b12 n) (a₂ n) (b22 n) (a₃ n) (b32 n) (c2 n)
+      d3 : (((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n ≡ (((a₁ n · (b13 n · c3 n)) + (a₂ n · (b23 n · c3 n))) + (a₃ n · (b33 n · c3 n)))
+      d3 = cellU (a₁ n) (b13 n) (a₂ n) (b23 n) (a₃ n) (b33 n) (c3 n)
+      C1 = (((a₁ n · (b11 n · c1 n)) + (a₂ n · (b21 n · c1 n))) + (a₃ n · (b31 n · c1 n)))
+      C2 = (((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) + (a₃ n · (b32 n · c2 n)))
+      C3 = (((a₁ n · (b13 n · c3 n)) + (a₂ n · (b23 n · c3 n))) + (a₃ n · (b33 n · c3 n)))
+      s1 : (((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n) + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n)) + ((((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n) ≡ ((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n) + (((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n) + ((((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n))
+      s1 = sym (+Assoc ((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n) ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n) ((((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n))
+      s5 : (((a₁ n · (b11 n · c1 n)) + (a₂ n · (b21 n · c1 n))) + (a₃ n · (b31 n · c1 n))) + ((((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) + (a₃ n · (b32 n · c2 n))) + (((a₁ n · (b13 n · c3 n)) + (a₂ n · (b23 n · c3 n))) + (a₃ n · (b33 n · c3 n)))) ≡ ((((a₁ n · (b11 n · c1 n)) + (a₂ n · (b21 n · c1 n))) + (a₃ n · (b31 n · c1 n))) + (((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) + (a₃ n · (b32 n · c2 n)))) + (((a₁ n · (b13 n · c3 n)) + (a₂ n · (b23 n · c3 n))) + (a₃ n · (b33 n · c3 n)))
+      s5 = +Assoc C1 C2 C3
+      s2 : (((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n + (((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n) ≡ (((a₁ n · (b11 n · c1 n)) + (a₂ n · (b21 n · c1 n))) + (a₃ n · (b31 n · c1 n))) + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n + (((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n)
+      s2 = cong (λ w → w + (((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n) + ((((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n))) d1
+      s3 : (((a₁ n · (b11 n · c1 n)) + (a₂ n · (b21 n · c1 n))) + (a₃ n · (b31 n · c1 n))) + (((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n) + ((((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n)) ≡ (((a₁ n · (b11 n · c1 n)) + (a₂ n · (b21 n · c1 n))) + (a₃ n · (b31 n · c1 n))) + ((((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) + (a₃ n · (b32 n · c2 n))) + ((((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n))
+      s3 = cong (C1 +_) (cong (λ w → w + (g3 · c3 n)) d2)
+      s4 : (((a₁ n · (b11 n · c1 n)) + (a₂ n · (b21 n · c1 n))) + (a₃ n · (b31 n · c1 n))) + ((((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) + (a₃ n · (b32 n · c2 n))) + ((((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n)) ≡ (((a₁ n · (b11 n · c1 n)) + (a₂ n · (b21 n · c1 n))) + (a₃ n · (b31 n · c1 n))) + ((((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) + (a₃ n · (b32 n · c2 n))) + (((a₁ n · (b13 n · c3 n)) + (a₂ n · (b23 n · c3 n))) + (a₃ n · (b33 n · c3 n))))
+      s4 = cong (C1 +_) (cong (C2 +_) d3)
       w1 : (C1 + C2) + C3 ≡ (C1 + C2) + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n))))
       w1 = cong (λ w → (C1 + C2) + w) (sym (+Assoc (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n))))
       w2 : (C1 + C2) + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n)))) ≡ C1 + (C2 + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n)))))
       w2 = sym (+Assoc C1 C2 ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n)))))
-      w3 : C1 + (C2 + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n))))) ≡ C1 + ((a₁ n · (b12 n · c2 n)) + ((a₂ n · (b22 n · c2 n)) + ((a₃ n · (b32 n · c2 n)) + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n)))))))
-      w3 = cong (C1 +_) (sym (+Assoc (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) ((a₃ n · (b32 n · c2 n)) + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n)))))))
+      w3a : C1 + (((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) + (a₃ n · (b32 n · c2 n))) + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n)))) ≡ C1 + (((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) + ((a₃ n · (b32 n · c2 n)) + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n))))))
+      w3a = cong (C1 +_) (sym (+Assoc ((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) (a₃ n · (b32 n · c2 n)) ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n))))))
+      w3b : C1 + (((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) + ((a₃ n · (b32 n · c2 n)) + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n)))))) ≡ C1 + ((a₁ n · (b12 n · c2 n)) + ((a₂ n · (b22 n · c2 n)) + ((a₃ n · (b32 n · c2 n)) + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n)))))))
+      w3b = cong (C1 +_) (cong (((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) +_) (sym (+Assoc (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) ((a₃ n · (b32 n · c2 n)) + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n))))))))
       w5 : C1 + ((a₁ n · (b12 n · c2 n)) + ((a₂ n · (b22 n · c2 n)) + ((a₃ n · (b32 n · c2 n)) + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n))))))) ≡ (a₁ n · (b11 n · c1 n)) + ((a₂ n · (b21 n · c1 n)) + ((a₃ n · (b31 n · c1 n)) + ((a₁ n · (b12 n · c2 n)) + ((a₂ n · (b22 n · c2 n)) + ((a₃ n · (b32 n · c2 n)) + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + ((a₃ n · (b33 n · c3 n))))))))))
       w5 = sym (+Assoc (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) ((a₃ n · (b31 n · c1 n)) + ((a₁ n · (b12 n · c2 n)) + ((a₂ n · (b22 n · c2 n)) + ((a₃ n · (b32 n · c2 n)) + ((a₁ n · (b13 n · c3 n)) + ((a₂ n · (b23 n · c3 n)) + (a₃ n · (b33 n · c3 n)))))))))
       z1 : ((((a₁ n · (b11 n · c1 n)) + (a₁ n · (b12 n · c2 n))) + (a₁ n · (b13 n · c3 n))) + ((a₂ n · (b21 n · c1 n)) + ((a₂ n · (b22 n · c2 n)) + (a₂ n · (b23 n · c3 n))))) + ((a₃ n · (b31 n · c1 n)) + ((a₃ n · (b32 n · c2 n)) + (a₃ n · (b33 n · c3 n)))) ≡ ((((a₁ n · (b11 n · c1 n)) + (a₁ n · (b12 n · c2 n))) + (a₁ n · (b13 n · c3 n))) + (((a₂ n · (b21 n · c1 n)) + ((a₂ n · (b22 n · c2 n)) + (a₂ n · (b23 n · c3 n)))) + ((a₃ n · (b31 n · c1 n)) + ((a₃ n · (b32 n · c2 n)) + (a₃ n · (b33 n · c3 n))))))
@@ -291,7 +311,7 @@ assoc-entry a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n =
       z6 = cong (λ w → ((((a₁ n · (b11 n · c1 n)) + (a₁ n · (b12 n · c2 n))) + (a₁ n · (b13 n · c3 n))) + w) + (((a₃ n · (b31 n · c1 n)) + (a₃ n · (b32 n · c2 n))) + (a₃ n · (b33 n · c3 n)))) (gather (a₂ n) (b21 n · c1 n) (b22 n · c2 n) (b23 n · c3 n))
       z7 : ((((a₁ n · (b11 n · c1 n)) + (a₁ n · (b12 n · c2 n))) + (a₁ n · (b13 n · c3 n))) + ((a₂ n · ((b21 n · c1 n) + ((b22 n · c2 n) + (b23 n · c3 n)))) + (((a₃ n · (b31 n · c1 n)) + (a₃ n · (b32 n · c2 n))) + (a₃ n · (b33 n · c3 n))))) ≡ ((((a₁ n · (b11 n · c1 n)) + (a₁ n · (b12 n · c2 n))) + (a₁ n · (b13 n · c3 n))) + ((a₂ n · ((b21 n · c1 n) + ((b22 n · c2 n) + (b23 n · c3 n)))) + (a₃ n · ((b31 n · c1 n) + ((b32 n · c2 n) + (b33 n · c3 n))))))
       z7 = cong (λ w → ((((a₁ n · (b11 n · c1 n)) + (a₁ n · (b12 n · c2 n))) + (a₁ n · (b13 n · c3 n))) + ((a₂ n · ((b21 n · c1 n) + ((b22 n · c2 n) + (b23 n · c3 n)))) + w))) (gather (a₃ n) (b31 n · c1 n) (b32 n · c2 n) (b33 n · c3 n))
-  in d1 ∙ d2 ∙ d3 ∙ c1p ∙ c2p ∙ c3p ∙ c4p ∙ w1 ∙ w2 ∙ w3 ∙ w5 ∙ bubble1 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble2 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble3 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble4 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble5 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble6 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble7 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble8 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble9 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ unflat9 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ z1 
+  in d1 ∙ d2 ∙ d3 ∙ s1 ∙ s2 ∙ s3 ∙ s4 ∙ s5 ∙ w1 ∙ w2 ∙ w3a ∙ w3b ∙ w5 ∙ bubble1 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble2 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble3 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble4 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble5 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble6 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble7 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble8 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ bubble9 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ unflat9 (a₁ n · (b11 n · c1 n)) (a₂ n · (b21 n · c1 n)) (a₃ n · (b31 n · c1 n)) (a₁ n · (b12 n · c2 n)) (a₂ n · (b22 n · c2 n)) (a₃ n · (b32 n · c2 n)) (a₁ n · (b13 n · c3 n)) (a₂ n · (b23 n · c3 n)) (a₃ n · (b33 n · c3 n)) ∙ z1 
 bubble8 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (cong (v3 +_) (swap3 v6 v8 (v9)))))))
 
 
