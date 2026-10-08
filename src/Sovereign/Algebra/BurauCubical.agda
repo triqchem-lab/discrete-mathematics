@@ -25,6 +25,7 @@ open import Cubical.Data.Int using (ℤ; _+_; _-_; _·_; pos; negsuc; sucℤ; pr
 
 
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; _∙_; funExt)
+open import Sovereign.Cubical.Fin3Sum9 using (unflat9)
 assocP : ∀ x y z → x + (y + z) ≡ (x + y) + z
 assocP x y (pos z) = +Assoc x y (pos z)
 assocP x y (negsuc z) = +Assoc x y (negsuc z)
@@ -68,22 +69,14 @@ c5-lem v1 v4 v7 v2 v5 v8 v3 v6 v9 =
 c6-lem : ∀ (v1 v4 v7 v2 v5 v8 v3 v6 v9 : ℤ) →
   ((v1 + v4) + v7) + ((v2 + v5) + (v8 + ((v3 + v6) + v9))) ≡ (((v1 + v4) + v7) + (((v2 + v5) + v8) + (((v3 + v6)) + v9)))
 c6-lem v1 v4 v7 v2 v5 v8 v3 v6 v9 =
-  let m2a : v3 + (v6 + v9) ≡ (v3 + v6) + v9
-      m2a = assocP v3 v6 v9
-      p2a : ((v1 + v4) + v7) + ((v2 + v5) + (v8 + (v3 + (v6 + v9)))) ≡ ((v1 + v4) + v7) + ((v2 + v5) + (v8 + (((v3 + v6)) + v9)))
-      p2a = cong (λ w → ((v1 + v4) + v7) + ((v2 + v5) + (v8 + w))) m2a
-      m2b : (v2 + v5) + (v8 + ((v3 + v6) + v9)) ≡ ((v2 + v5) + v8) + ((v3 + v6) + v9)
-      m2b = +Assoc (v2 + v5) v8 ((v3 + v6) + v9)
-      p2b : ((v1 + v4) + v7) + ((v2 + v5) + (v8 + ((v3 + v6) + v9))) ≡ ((v1 + v4) + v7) + ((((v2 + v5) + v8)) + ((v3 + v6) + v9))
-      p2b = cong (λ w → ((v1 + v4) + v7) + w) m2b
-  in p2a ∙ p2b
-cf0 : ℤ → ℤ
-cf0 _ = pos zero
-
+  cong (λ w → ((v1 + v4) + v7) + w) (+Assoc (v2 + v5) v8 ((v3 + v6) + v9))
 cf1 : ℤ → ℤ
 cf1 (pos zero) = pos (suc zero)
 cf1 (pos (suc n)) = pos zero
 cf1 (negsuc n) = pos zero
+cf0 : ℤ → ℤ
+cf0 _ = pos zero
+
 
 cft : ℤ → ℤ
 cft (pos (suc zero)) = pos (suc zero)
@@ -247,6 +240,19 @@ bubble9 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
 bubble9 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (swap3 v3 v8 (v6 + (v9)))))))
 
 
+row-col : ∀ v1 v2 v3 v4 v5 v6 v7 v8 v9 →
+      (((v1 + v2) + v3) + ((v4 + v5) + v6)) + ((v7 + v8) + v9)
+ ≡ (((v1 + v4) + v7) + (((v2 + (v5 + v8))) + ((v3 + (v6 + v9)))))
+row-col v1 v2 v3 v4 v5 v6 v7 v8 v9 =
+  let Y = (v4 + (v5 + v6))
+      Z = (v7 + (v8 + v9))
+      -- 展开 4 步（三组列 → 右结合 col 序）
+      e1 : ((v1 + (v2 + v3)) + (Y + Z)) ≡ (v1 + ((v2 + v3) + (Y + Z)))
+      e1 = sym (+Assoc v1 (v2 + v3) (Y + Z))
+      e2 : (v1 + ((v2 + v3) + (Y + Z))) ≡ (v1 + (v2 + (v3 + (Y + Z))))
+      e2 = cong (v1 +_) (sym (+Assoc v2 v3 (Y + Z)))
+      e3 : (v1 + (v2 + (v3 + (Y + Z)))) ≡ (v1 + (v2 + (v3 + (v4 + ((v5 + v6) + Z)))))
+      e3 = cong (λ w → v1 + (v2 + (v3 + w))) (sym (+Assoc v4 (v5 + v6) Z))
       e4 : (v1 + (v2 + (v3 + (v4 + ((v5 + v6) + Z))))) ≡ (v1 + (v2 + (v3 + (v4 + (v5 + (v6 + Z))))))
       e4 = cong (λ w → v1 + (v2 + (v3 + (v4 + w)))) (sym (+Assoc v5 v6 Z))
       -- 冒泡 9 步（独立引理链——BubbleLemmas 模式）
@@ -264,7 +270,11 @@ bubble9 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (c
       b6 = bubble6 v1 v2 v3 v4 v5 v6 v7 v8 v9
       b7 : (v1 + (v4 + (v7 + (v2 + (v3 + (v5 + (v6 + (v8 + v9)))))))) ≡ (v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v6 + (v8 + v9))))))))
       b7 = bubble7 v1 v2 v3 v4 v5 v6 v7 v8 v9
-      -- 收拢 = unflat9（row 序 → 三组行形——sum9-swap 已验证）
-      c1 : (v1 + (v4 + (v7 + (v2 + (v5 + (v8 + (v3 + (v6 + v9)))))))) ≡ (((v1 + v4) + v7) + (((v2 + v5) + v8) + ((v3 + v6) + v9)))
-      c1 = unflat9 v1 v4 v7 v2 v5 v8 v3 v6 v9
-  in e1 ∙ e2 ∙ e3 ∙ e4 ∙ b1 ∙ b2 ∙ b3 ∙ b4 ∙ b5 ∙ b6 ∙ b7 ∙ c1
+      b8 : (v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v6 + (v8 + v9)))))))) ≡ (v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v8 + (v6 + v9))))))))
+      b8 = bubble8 v1 v2 v3 v4 v5 v6 v7 v8 v9
+      b9 : (v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v8 + (v6 + v9)))))))) ≡ (v1 + (v4 + (v7 + (v2 + (v5 + (v8 + (v3 + (v6 + v9))))))))
+      b9 = bubble9 v1 v2 v3 v4 v5 v6 v7 v8 v9
+      -- 收拢 = unflat9（row 序 → 三组行形——sum9-swap 复用）
+      c1 : (v1 + (v4 + (v7 + (v2 + (v5 + (v8 + (v3 + (v6 + v9)))))))) ≡ (((v1 + v4) + v7) + (((v2 + (v5 + v8))) + ((v3 + (v6 + v9)))))
+      c1 = unflat9 v1 v2 v3 v4 v5 v6 v7 v8 v9
+  in e1 ∙ e2 ∙ e3 ∙ e4 ∙ b1 ∙ b2 ∙ b3 ∙ b4 ∙ b5 ∙ b6 ∙ b7 ∙ b8 ∙ b9 ∙ c1
