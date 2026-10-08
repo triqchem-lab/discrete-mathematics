@@ -34,3 +34,35 @@ flat9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
   ∙ cong (λ w → w + (C1 + (C2 + C3))) (sym (assocP A1 (A2 + A3) (B1 + (B2 + B3))))
   ∙ cong (λ w → (A1 + w) + (C1 + (C2 + C3))) (sym (assocP A2 A3 (B1 + (B2 + B3))))
   ∙ cong (λ w → (A1 + (A2 + w)) + (C1 + (C2 + C3))) (assocP A3 B1 (B2 + B3))
+
+
+-- ─── swap9：col 序 → row 序（comm 9 步，洞）───
+
+swap9 : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
+      A1 + (A2 + (A3 + (B1 + (B2 + (B3 + (C1 + (C2 + C3)))))))
+  ≡   A1 + (B1 + (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
+swap9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
+      assocP A1 B1 (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3))))))
+
+-- ─── unflat9：右结合 row 序 → 目标三组（test5 已验证 5 步）───
+
+unflat9 : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
+      A1 + (B1 + (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
+  ≡   (A1 + (B1 + C1)) + ((A2 + (B2 + C2)) + (A3 + (B3 + C3)))
+unflat9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
+      assocP A1 B1 (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3))))))
+  ∙ assocP (A1 + B1) C1 (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))
+  ∙ cong (λ w1 → ((A1 + B1) + C1) + w1) (assocP A2 B2 (C2 + (A3 + (B3 + C3))))
+  ∙ cong (λ w1 → ((A1 + B1) + C1) + w1) (assocP (A2 + B2) C2 (A3 + (B3 + C3)))
+  ∙ cong (λ w2 → ((A1 + B1) + C1) + ((w2 + (A3 + (B3 + C3))))) (sym (assocP A2 B2 C2))
+  ∙ cong (λ w → w + ((A2 + (B2 + C2)) + (A3 + (B3 + C3)))) (sym (assocP A1 B1 C1))
+
+-- ─── sum9-swap：flat9 ∙ swap9 ∙ unflat9 ───
+
+sum9-swap : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
+      (A1 + (A2 + A3)) + ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))
+  ≡   (A1 + (B1 + C1)) + ((A2 + (B2 + C2)) + (A3 + (B3 + C3)))
+sum9-swap A1 A2 A3 B1 B2 B3 C1 C2 C3 =
+  flat9 A1 A2 A3 B1 B2 B3 C1 C2 C3
+  ∙ swap9 A1 A2 A3 B1 B2 B3 C1 C2 C3
+  ∙ unflat9 A1 A2 A3 B1 B2 B3 C1 C2 C3
