@@ -192,6 +192,18 @@ braid-rel = mat3-cong e11 e12 e13 e21 e22 e23 e31 e32 e33
 -- RHS：(a₁·Q1 + a₂·Q2) + a₃·Q3，Q_i = (b_1i·c1 + b_2i·c2) + b_3i·c3
 -- ────────────────────────────────────────────────────────────────────
 
+-- cell：((p+q)+r)·s ≡ ((p·s)+(q·s))+(r·s)（2 步 ·DistL+ 链——项树模拟已验证）
+cell : ∀ p q r s → ((p + q) + r) · s ≡ ((p · s) + (q · s)) + (r · s)
+cell p q r s =
+      ·DistL+ (p + q) r s
+  ∙ cong (λ w → w + (r · s)) (·DistL+ p q s)
+
+-- gather：((a·x)+(a·y))+(a·z) ≡ a·((x+y)+z)（sym ·DistR+ × 2）
+gather : ∀ a x y z → ((a · x) + (a · y)) + (a · z) ≡ a · ((x + y) + z)
+gather a x y z =
+      cong (λ w → w + (a · z)) (sym (·DistR+ a x y))
+  ∙ sym (·DistR+ a (x + y) z)
+
 assoc-entry : ∀ a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n →
     ((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n
     + (((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n)
@@ -201,8 +213,25 @@ assoc-entry : ∀ a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n 
     + (a₂ n · ((b21 n · c1 n) + (b22 n · c2 n) + (b23 n · c3 n))))
     + (a₃ n · ((b31 n · c1 n) + (b32 n · c2 n) + (b33 n · c3 n)))
 assoc-entry a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n =
-  {!main-chain!}
-
+  let
+      g1 = (((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n))
+      g2 = (((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n))
+      g3 = (((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n))
+      d1 : (((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n ≡ (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n)))
+      d1 = cell (a₁ n · b11 n) (a₂ n · b21 n) (a₃ n · b31 n) (c1 n)
+      d2 : (((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n ≡ (((a₁ n · (b12 n · c2 n)) + (a₁ n · (b22 n · c2 n))) + (a₁ n · (b32 n · c2 n)))
+      d2 = cell (a₁ n · b12 n) (a₂ n · b22 n) (a₃ n · b32 n) (c2 n)
+      d3 : (((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n ≡ (((a₁ n · (b13 n · c3 n)) + (a₁ n · (b23 n · c3 n))) + (a₁ n · (b33 n · c3 n)))
+      d3 = cell (a₁ n · b13 n) (a₂ n · b23 n) (a₃ n · b33 n) (c3 n)
+      c1p : ((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n) + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n) ≡ (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n))) + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n)
+      c1p = cong (λ w → w + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n)) d1
+      c2p : ((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n) + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n) ≡ (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n))) + (((a₁ n · (b12 n · c2 n)) + (a₁ n · (b22 n · c2 n))) + (a₁ n · (b32 n · c2 n)))
+      c2p = cong (λ w → (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n))) + w) d2
+      c3p : ((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n) + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n) ≡ (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n))) + ((((a₁ n · (b12 n · c2 n)) + (a₁ n · (b22 n · c2 n))) + (a₁ n · (b32 n · c2 n))) + ((((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n))
+      c3p = cong (λ w → w + ((((a₁ n · b13 n) + (a₂ n · b23 n)) + (a₃ n · b33 n)) · c3 n)) c2p
+      c4p : ((((a₁ n · b11 n) + (a₂ n · b21 n)) + (a₃ n · b31 n)) · c1 n) + ((((a₁ n · b12 n) + (a₂ n · b22 n)) + (a₃ n · b32 n)) · c2 n) ≡ (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n))) + ((((a₁ n · (b12 n · c2 n)) + (a₁ n · (b22 n · c2 n))) + (a₁ n · (b32 n · c2 n))) + (((a₁ n · (b13 n · c3 n)) + (a₁ n · (b23 n · c3 n))) + (a₁ n · (b33 n · c3 n))))
+      c4p = cong (λ w → (((a₁ n · (b11 n · c1 n)) + (a₁ n · (b21 n · c1 n))) + (a₁ n · (b31 n · c1 n))) + ((((a₁ n · (b12 n · c2 n)) + (a₁ n · (b22 n · c2 n))) + (a₁ n · (b32 n · c2 n))) + w)) d3
+  in d1 ∙ d2 ∙ d3 ∙ c1p ∙ c2p ∙ c3p ∙ c4p ∙ {!!rest!}
 bubble1 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
   v1 + (v2 + (v3 + (v4 + (v5 + (v6 + (v7 + (v8 + (v9)))))))) ≡ v1 + (v2 + (v4 + (v3 + (v5 + (v6 + (v7 + (v8 + (v9))))))))
 bubble1 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v2 +_) (swap3 v3 v4 (v5 + (v6 + (v7 + (v8 + (v9)))))))
