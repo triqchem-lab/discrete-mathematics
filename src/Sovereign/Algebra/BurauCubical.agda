@@ -75,7 +75,7 @@ c6-lem v1 v4 v7 v2 v5 v8 v3 v6 v9 =
       m2b : (v2 + v5) + (v8 + ((v3 + v6) + v9)) ≡ ((v2 + v5) + v8) + ((v3 + v6) + v9)
       m2b = +Assoc (v2 + v5) v8 ((v3 + v6) + v9)
       p2b : ((v1 + v4) + v7) + ((v2 + v5) + (v8 + ((v3 + v6) + v9))) ≡ ((v1 + v4) + v7) + ((((v2 + v5) + v8)) + ((v3 + v6) + v9))
-      p2b = m2b
+      p2b = cong (λ w → ((v1 + v4) + v7) + w) m2b
   in p2a ∙ p2b
 cf0 : ℤ → ℤ
 cf0 _ = pos zero
@@ -210,53 +210,81 @@ assoc-entry : ∀ a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n 
 assoc-entry a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n =
   {!main-chain!}
 
+bubble1 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v2 + (v3 + (v4 + (v5 + (v6 + (v7 + (v8 + (v9)))))))) ≡ v1 + (v2 + (v4 + (v3 + (v5 + (v6 + (v7 + (v8 + (v9))))))))
+bubble1 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v2 +_) (swap3 v3 v4 (v5 + (v6 + (v7 + (v8 + (v9)))))))
+
+bubble2 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v2 + (v4 + (v3 + (v5 + (v6 + (v7 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v2 + (v3 + (v5 + (v6 + (v7 + (v8 + (v9))))))))
+bubble2 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (swap3 v2 v4 (v3 + (v5 + (v6 + (v7 + (v8 + (v9)))))))
+
+bubble3 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v2 + (v3 + (v5 + (v6 + (v7 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v2 + (v3 + (v5 + (v7 + (v6 + (v8 + (v9))))))))
+bubble3 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v3 +_) (cong (v5 +_) (swap3 v6 v7 (v8 + (v9)))))))
+
+bubble4 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v2 + (v3 + (v5 + (v7 + (v6 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v2 + (v3 + (v7 + (v5 + (v6 + (v8 + (v9))))))))
+bubble4 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v3 +_) (swap3 v5 v7 (v6 + (v8 + (v9)))))))
+
+bubble5 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v2 + (v3 + (v7 + (v5 + (v6 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v2 + (v7 + (v3 + (v5 + (v6 + (v8 + (v9))))))))
+bubble5 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (swap3 v3 v7 (v5 + (v6 + (v8 + (v9)))))))
+
+bubble6 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v2 + (v7 + (v3 + (v5 + (v6 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v7 + (v2 + (v3 + (v5 + (v6 + (v8 + (v9))))))))
+bubble6 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (swap3 v2 v7 (v3 + (v5 + (v6 + (v8 + (v9)))))))
+
+bubble7 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v7 + (v2 + (v3 + (v5 + (v6 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v6 + (v8 + (v9))))))))
+bubble7 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (swap3 v3 v5 (v6 + (v8 + (v9)))))))
+
+bubble8 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v6 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v8 + (v6 + (v9))))))))
+bubble8 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (cong (v3 +_) (swap3 v6 v8 (v9)))))))
+
+bubble9 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
+  v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v8 + (v6 + (v9)))))))) ≡ v1 + (v4 + (v7 + (v2 + (v5 + (v8 + (v3 + (v6 + (v9))))))))
+bubble9 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (swap3 v3 v8 (v6 + (v9)))))))
+
+
 row-col : ∀ v1 v2 v3 v4 v5 v6 v7 v8 v9 →
       (((v1 + v2) + v3) + ((v4 + v5) + v6)) + ((v7 + v8) + v9)
-  ≡   (((v1 + v4) + v7) + ((v2 + v5) + v8)) + ((v3 + v6) + v9)
+ ≡ (((v1 + v4) + v7) + ((v2 + v5) + v8)) + ((v3 + v6) + v9)
 row-col v1 v2 v3 v4 v5 v6 v7 v8 v9 =
-      let Y = (v4 + (v5 + v6))
-          Z = (v7 + (v8 + v9))
-          U = ((v1 + v4) + v7) + ((v2 + v5))
-          -- 展开 4 步（三组列 → 右结合 col 序）
-          e1 : ((v1 + (v2 + v3)) + (Y + Z)) ≡ (v1 + ((v2 + v3) + (Y + Z)))
-          e1 = sym (+Assoc v1 (v2 + v3) (Y + Z))
-          e2 : (v1 + ((v2 + v3) + (Y + Z))) ≡ (v1 + (v2 + (v3 + (Y + Z))))
-          e2 = cong (v1 +_) (sym (+Assoc v2 v3 (Y + Z)))
-          e3 : (v1 + (v2 + (v3 + (Y + Z)))) ≡ (v1 + (v2 + (v3 + (v4 + ((v5 + v6) + Z)))))
-          e3 = cong (λ w → v1 + (v2 + (v3 + w))) (sym (+Assoc v4 (v5 + v6) Z))
-          e4 : (v1 + (v2 + (v3 + (v4 + ((v5 + v6) + Z))))) ≡ (v1 + (v2 + (v3 + (v4 + (v5 + (v6 + Z))))))
-          e4 = cong (λ w → v1 + (v2 + (v3 + (v4 + w)))) (sym (+Assoc v5 v6 Z))
-          b1 : (v1 + (v2 + (v3 + (v4 + (v5 + (v6 + (v7 + (v8 + v9)))))))) ≡ (v1 + (v2 + (v4 + (v3 + (v5 + (v6 + (v7 + (v8 + v9))))))))
-          b1 = cong (λ w → v1 + (v2 + w)) (swap3 v3 v4 (v5 + (v6 + (v7 + (v8 + v9)))))
-          b2 : (v1 + (v2 + (v4 + (v3 + (v5 + (v6 + (v7 + (v8 + v9)))))))) ≡ (v1 + (v2 + (v4 + (v5 + (v3 + (v6 + (v7 + (v8 + v9))))))))
-          b2 = cong (λ w → v1 + (v2 + (v4 + w))) (swap3 v3 v5 (v6 + (v7 + (v8 + v9))))
-          b3 : (v1 + (v2 + (v4 + (v5 + (v3 + (v6 + (v7 + (v8 + v9)))))))) ≡ (v1 + (v4 + (v2 + (v5 + (v3 + (v6 + (v7 + (v8 + v9))))))))
-          b3 = cong (v1 +_) (swap3 v2 v4 (v5 + (v3 + (v6 + (v7 + (v8 + v9))))))
-          b4 : (v1 + (v4 + (v2 + (v5 + (v3 + (v6 + (v7 + (v8 + v9)))))))) ≡ (v1 + (v4 + (v2 + (v5 + (v3 + (v7 + (v6 + (v8 + v9))))))))
-          b4 = cong (λ w → v1 + (v4 + (v2 + (v5 + (v3 + w))))) (swap3 v6 v7 (v8 + v9))
-          b5 : (v1 + (v4 + (v2 + (v5 + (v3 + (v7 + (v6 + v9))))))) ≡ (v1 + (v4 + (v2 + (v5 + (v7 + (v3 + (v6 + v9)))))))
-          b5 = cong (λ w → v1 + (v4 + (v2 + (v5 + w)))) (swap3 v3 v7 (v6 + v9))
-          b6 : (v1 + (v4 + (v2 + (v5 + (v7 + (v3 + (v6 + v9))))))) ≡ (v1 + (v4 + (v2 + (v7 + (v5 + (v3 + (v6 + v9)))))))
-          b6 = cong (λ w → v1 + (v4 + (v2 + w))) (swap3 v5 v7 (v3 + (v6 + v9)))
-          b7 : (v1 + (v4 + (v2 + (v7 + (v5 + (v3 + (v6 + (v8 + v9)))))))) ≡ (v1 + (v4 + (v2 + (v7 + (v5 + (v3 + (v8 + (v6 + v9))))))))
-          b7 = cong (λ w → v1 + (v4 + (v2 + (v7 + (v5 + (v3 + w)))))) (swap3 v6 v8 v9)
-          b8 : (v1 + (v4 + (v2 + (v7 + (v5 + (v3 + (v8 + (v6 + v9)))))))) ≡ (v1 + (v4 + (v2 + (v7 + (v5 + (v8 + (v3 + (v6 + v9))))))))
-          b8 = cong (λ w → v1 + (v4 + (v2 + (v7 + (v5 + w))))) (swap3 v3 v8 (v6 + v9))
-          c1 : (v1 + (v4 + (v2 + (v7 + (v5 + (v3 + (v8 + (v6 + v9)))))))) ≡ ((v1 + v4) + (v2 + (v7 + (v5 + (v3 + (v8 + (v6 + v9)))))))
-          c1 = +Assoc v1 v4 (v2 + (v7 + (v5 + (v3 + (v8 + (v6 + v9))))))
-          c2 : ((v1 + v4) + (v2 + (v7 + (v5 + (v3 + (v8 + (v6 + v9))))))) ≡ ((v1 + v4) + (v7 + ((v2 + v5) + (v3 + (v8 + (v6 + v9))))))
-          c2 = cong (λ w → (v1 + v4) + w) (swap3 v2 v7 (v5 + (v3 + (v8 + (v6 + v9)))) ∙ cong (λ w2 → v7 + w2) (+Assoc v2 v5 (v3 + (v8 + (v6 + v9)))))
-          c3 : ((v1 + v4) + (v7 + ((v2 + v5) + (v3 + (v8 + (v6 + v9)))))) ≡  (((v1 + v4) + v7) + ((v2 + v5) + (v3 + (v8 + (v6 + v9)))))
-          c3 = +Assoc (v1 + v4) v7 ((v2 + v5) + (v3 + (v8 + (v6 + v9))))
-          c4 : (((v1 + v4) + v7) + ((v2 + v5) + (v3 + (v8 + (v6 + v9))))) ≡ (((v1 + v4) + v7) + ((v2 + v5) + ((v8 + (v3 + (v6 + v9))))))
-          c4 = cong (λ w → U + w) (swap3 v3 v8 (v6 + v9))
-          c5 : (((v1 + v4) + v7) + ((v2 + v5) + ((v8 + (v3 + (v6 + v9)))))) ≡ (((v1 + v4) + v7) + ((v2 + v5) + ((v8 + ((v3 + v6)) + v9))))
-          c5 = c5-lem v1 v4 v7 v2 v5 v8 v3 v6 v9
-          c6 : (((v1 + v4) + v7) + ((v2 + v5) + ((v8 + ((v3 + v6)) + v9)))) ≡ (((v1 + v4) + v7) + ((((v2 + v5) + v8)) + ((v3 + v6) + v9)))
-          c6 = c6-lem v1 v4 v7 v2 v5 v8 v3 v6 v9
-          c7 = c6
-      in e1 ∙ e2 ∙ e3 ∙ e4 ∙ b1 ∙ b2 ∙ b3 ∙ b4 ∙ b5 ∙ b6 ∙ b7 ∙ c1 ∙ c2 ∙ c3 ∙ c4 ∙ c5 ∙ c6
-
-
-
-
+  let Y = (v4 + (v5 + v6))
+      Z = (v7 + (v8 + v9))
+      -- 展开 4 步（三组列 → 右结合 col 序）
+      e1 : ((v1 + (v2 + v3)) + (Y + Z)) ≡ (v1 + ((v2 + v3) + (Y + Z)))
+      e1 = sym (+Assoc (v1 + (v2 + v3)) (v2 + v3) (Y + Z))
+      e2 : (v1 + ((v2 + v3) + (Y + Z))) ≡ (v1 + (v2 + (v3 + (Y + Z))))
+      e2 = cong (v1 +_) (sym (+Assoc v2 v3 (Y + Z)))
+      e3 : (v1 + (v2 + (v3 + (Y + Z)))) ≡ (v1 + (v2 + (v3 + (v4 + ((v5 + v6) + Z)))))
+      e3 = cong (λ w → v1 + (v2 + (v3 + w))) (sym (+Assoc v4 (v5 + v6) Z))
+      e4 : (v1 + (v2 + (v3 + (v4 + ((v5 + v6) + Z))))) ≡ (v1 + (v2 + (v3 + (v4 + (v5 + (v6 + Z))))))
+      e4 = cong (λ w → v1 + (v2 + (v3 + (v4 + w)))) (sym (+Assoc v5 v6 Z))
+      -- 冒泡 9 步（独立引理链——BubbleLemmas 模式）
+      b1 : (v1 + (v2 + (v3 + (v4 + (v5 + (v6 + (v7 + (v8 + v9)))))))) ≡ (v1 + (v2 + (v4 + (v3 + (v5 + (v6 + (v7 + (v8 + v9))))))))
+      b1 = bubble1 v1 v2 v3 v4 v5 v6 v7 v8 v9
+      b2 : (v1 + (v2 + (v4 + (v3 + (v5 + (v6 + (v7 + (v8 + v9)))))))) ≡ (v1 + (v4 + (v2 + (v3 + (v5 + (v6 + (v7 + (v8 + v9))))))))
+      b2 = bubble2 v1 v2 v3 v4 v5 v6 v7 v8 v9
+      -- b3-b9 独立引理同理
+      b3 : (v1 + (v4 + (v2 + (v3 + (v5 + (v6 + (v7 + (v8 + v9)))))))) ≡ (v1 + (v4 + (v2 + (v3 + (v5 + (v7 + (v6 + (v8 + v9))))))))
+      b3 = bubble3 v1 v2 v3 v4 v5 v6 v7 v8 v9
+      b4 : (v1 + (v4 + (v2 + (v3 + (v5 + (v7 + (v6 + (v8 + v9)))))))) ≡ (v1 + (v4 + (v2 + (v3 + (v7 + (v5 + (v6 + (v8 + v9))))))))
+      b4 = bubble4 v1 v2 v3 v4 v5 v6 v7 v8 v9
+      b5 : (v1 + (v4 + (v2 + (v3 + (v7 + (v5 + (v6 + (v8 + v9)))))))) ≡ (v1 + (v4 + (v2 + (v7 + (v3 + (v5 + (v6 + (v8 + v9))))))))
+      b5 = bubble5 v1 v2 v3 v4 v5 v6 v7 v8 v9
+      b6 : (v1 + (v4 + (v2 + (v7 + (v3 + (v5 + (v6 + (v8 + v9)))))))) ≡ (v1 + (v4 + (v7 + (v2 + (v3 + (v5 + (v6 + (v8 + v9))))))))
+      b6 = bubble6 v1 v2 v3 v4 v5 v6 v7 v8 v9
+      b7 : (v1 + (v4 + (v7 + (v2 + (v3 + (v5 + (v6 + (v8 + v9)))))))) ≡ (v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v6 + (v8 + v9))))))))
+      b7 = bubble7 v1 v2 v3 v4 v5 v6 v7 v8 v9
+      -- 收拢 4 步（右结合 row 序 → 三组行形）
+      c1 : (v1 + (v4 + (v7 + (v2 + (v5 + (v8 + (v3 + (v6 + v9)))))))) ≡ ((v1 + v4) + (v7 + ((v2 + v5) + (v8 + ((v3 + v6) + v9)))))
+      c1 = +Assoc v1 v4 (v7 + ((v2 + v5) + (v8 + ((v3 + v6) + v9))))
+      c2 : ((v1 + v4) + (v7 + ((v2 + v5) + (v8 + ((v3 + v6) + v9))))) ≡ (((v1 + v4) + v7) + ((v2 + v5) + (v8 + ((v3 + v6) + v9))))
+      c2 = +Assoc (v1 + v4) v7 ((v2 + v5) + (v8 + ((v3 + v6) + v9)))
+      c3 : (((v1 + v4) + v7) + ((v2 + v5) + (v8 + ((v3 + v6) + v9)))) ≡ (((v1 + v4) + v7) + (((v2 + v5) + v8) + ((v3 + v6) + v9)))
+      c3 = +Assoc (v2 + v5) v8 ((v3 + v6) + v9)
+      p2 : (((v1 + v4) + v7) + (((v2 + v5) + v8) + ((v3 + v6) + v9))) ≡ (((v1 + v4) + v7) + (((v2 + v5) + v8) + (((v3 + v6)) + v9)))
+      p2 = cong (λ w → ((v1 + v4) + v7) + (((v2 + v5) + v8) + w)) (assocP v3 v6 v9)
+  in e1 ∙ e2 ∙ e3 ∙ e4 ∙ b1 ∙ b2 ∙ b3 ∙ b4 ∙ b5 ∙ b6 ∙ b7 ∙ c1 ∙ c2 ∙ c3 ∙ p2
