@@ -28,8 +28,8 @@ test3 = sym (assocP A2 B2 (C2 + Z))
 -- flat9：组形 → B组+C组并层形（sym assocP 拆 A 组 2 步 + B 组 Assoc 拆 1 步）
 flat9 : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
       (A1 + (A2 + A3)) + ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))
-  ≡   A1 + (A2 + (A3 + (((B1 + (B2 + B3)) + (C1 + (C2 + C3))))))
+  ≡   A1 + (A2 + (((A3 + (B1 + (B2 + B3))) + (C1 + (C2 + C3)))))
 flat9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
-      sym (assocP A1 (A2 + A3) ((B1 + (B2 + B3)) + (C1 + (C2 + C3))))
-  ∙ cong (A1 +_) (sym (assocP A2 A3 ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))))
-  ∙ cong (λ w → A1 + (A2 + (A3 + ((B1 + (B2 + B3)) + w)))) (sym (assocP B1 (B2 + B3) (C1 + (C2 + C3))))
+      assocP A1 (A2 + A3) ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))
+  ∙ cong (A1 +_) (assocP A2 A3 ((B1 + (B2 + B3)) + (C1 + (C2 + C3))))
+  ∙ cong (A1 +_) (cong (A2 +_) (assocP A3 (B1 + (B2 + B3)) (C1 + (C2 + C3))))
