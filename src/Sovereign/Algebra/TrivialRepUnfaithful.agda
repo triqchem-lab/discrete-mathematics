@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.KacMoodyFaithful
+-- | Sovereign.Algebra.TrivialRepUnfaithful
 -- P3.5：Kac-Moody 代数不忠实表示——平凡表示论证（构造性，0 postulate）
 --
 -- 数学背景：
@@ -19,7 +19,7 @@
 -- 依赖：CartanMatrix.KMElement（生成元类型——仅用其非平凡性）
 -- 0 postulate / 0 hole。
 
-module Sovereign.Algebra.KacMoodyFaithful where
+module Sovereign.Algebra.TrivialRepUnfaithful where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Integer using (ℤ; 0ℤ)

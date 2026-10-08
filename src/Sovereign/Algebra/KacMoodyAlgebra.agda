@@ -6,7 +6,7 @@
 -- 数学背景（Kac 1990, Infinite Dimensional Lie Algebras）：
 --   广义 Cartan 矩阵（GCM）：A_{ii}=2, A_{ij}≤0 (i≠j), A_{ij}=0 ⟺ A_{ji}=0
 --   Kac-Moody 代数 g(A)：由 e_i/f_i/h_i 生成，Chevalley 关系
---   任务书 7.2 对应层；不忠实表示的实质证明见 KacMoodyFaithful（平凡表示论证）
+--   任务书 7.2 对应层；不忠实表示的实质证明见 TrivialRepUnfaithful（平凡表示论证——原 KacMoodyFaithful 重命名，避免与任务书 7.2 K(E10) 特定主张混淆）
 --
 -- 0 postulate / 0 hole。定理层（Chevalley 关系推导/PBW/分类）roadmap。
 module Sovereign.Algebra.KacMoodyAlgebra where
@@ -79,4 +79,4 @@ data KMGen : Set where
 
 -- Chevalley 关系（陈述层——推导需李代数基础设施，roadmap）：
 --   [h_i, h_j] = 0；[e_i, f_j] = δᵢⱼ h_i；[h_i, e_j] = A_{ij} e_j
--- 实质不忠实表示证明（平凡表示论证）已在 KacMoodyFaithful 闭合。
+-- 实质不忠实表示证明（平凡表示论证）已在 TrivialRepUnfaithful 闭合。
