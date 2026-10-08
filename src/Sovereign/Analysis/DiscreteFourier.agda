@@ -10,9 +10,11 @@ open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; ⊗-zeroˡ)
+open import Data.Fin using (Fin; zero; suc)
+open import Relation.Binary.PropositionalEquality using (cong; trans)
 
-open import Sovereign.Algebra.Jacobian.jac_Topology using (GF3Vec)
+open import Sovereign.Algebra.Jacobian.jac_Topology using (GF3Vec; 0v)
 
 -- §1. 3点 DFT 矩阵 (GF(3) 版) --------------------------------------
 -- 经典 DFT₃ = [[1,1,1],[1,ω,ω²],[1,ω²,ω]], ω = e^{2πi/3}.
@@ -50,3 +52,22 @@ dft-e0-2 : dft-apply e0 (suc (suc zero)) ≡ T₁; dft-e0-2 = refl
 -- 在 GF(3) 3 点上穷举验证.
 
 -- 0 postulate.
+
+-- 一般 ∀ 定理：零向量的 DFT 为零（⊗-zeroˡ 三连 + T₀⊕T₀≡T₀）
+dft-zero : ∀ (i : Fin 3) → dft-apply 0v i ≡ T₀
+dft-zero zero =
+  trans (cong (λ w → (w ⊕ (T₀ ⊗ f01)) ⊕ (T₀ ⊗ f02)) (⊗-zeroˡ f00))
+  (trans (cong (λ w → (T₀ ⊕ w) ⊕ (T₀ ⊗ f02)) (⊗-zeroˡ f01))
+  (trans (cong (λ w → (T₀ ⊕ T₀) ⊕ w) (⊗-zeroˡ f02))
+         refl))
+dft-zero (suc zero) =
+  trans (cong (λ w → (w ⊕ (T₀ ⊗ f11)) ⊕ (T₀ ⊗ f12)) (⊗-zeroˡ f10))
+  (trans (cong (λ w → (T₀ ⊕ w) ⊕ (T₀ ⊗ f12)) (⊗-zeroˡ f11))
+  (trans (cong (λ w → (T₀ ⊕ T₀) ⊕ w) (⊗-zeroˡ f12))
+         refl))
+dft-zero (suc (suc zero)) =
+  trans (cong (λ w → (w ⊕ (T₀ ⊗ f21)) ⊕ (T₀ ⊗ f22)) (⊗-zeroˡ f20))
+  (trans (cong (λ w → (T₀ ⊕ w) ⊕ (T₀ ⊗ f22)) (⊗-zeroˡ f21))
+  (trans (cong (λ w → (T₀ ⊕ T₀) ⊕ w) (⊗-zeroˡ f22))
+         refl))
+dft-zero (suc (suc (suc ())))
