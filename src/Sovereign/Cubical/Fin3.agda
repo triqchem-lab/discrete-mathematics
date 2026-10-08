@@ -35,5 +35,5 @@ sum3-comm f =
 sum3-distribˡ : ∀ (a : ℤ) (f : Fin 3 → ℤ) →
   a · sum3 f ≡ sum3 (λ k → a · f k)
 sum3-distribˡ a f =
-      cong₂ _+_ (·DistR+ a (f fzero) (f (fsuc fzero) + f (fsuc (fsuc fzero)))) refl
-  ∙ cong (λ w → (a · f fzero) + w) (cong₂ _+_ (·DistR+ a (f (fsuc fzero)) (f (fsuc (fsuc fzero)))) refl)
+      ·DistR+ a (f fzero) ((f (fsuc fzero)) + (f (fsuc (fsuc fzero))))
+  ∙ cong ((a · f fzero) +_) (·DistR+ a (f (fsuc fzero)) (f (fsuc (fsuc fzero))))
