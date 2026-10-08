@@ -8,7 +8,8 @@ module Sovereign.Analysis.DiscretePotential where
 
 open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; ⊕-assoc; ⊕-comm)
+open import Relation.Binary.PropositionalEquality using (cong; trans; sym; module ≡-Reasoning)
 
 -- §1. 三点离散 Laplacian ------------------------------------------
 -- Δu(i) = u(i-1) + u(i+1) - 2u(i) → 在 GF(3): -2u = T₁·u.
@@ -34,3 +35,18 @@ harmonic-const = refl
 -- 经典位势依赖 ℂ 的 Poisson 核和 Green 函数.
 -- 离散替代: GF(3) 上有限差分算子穷举求解.
 -- 0 postulate.
+
+-- 一般 ∀ 定理：laplace3 的循环不变性（⊕ AC 性——5 步代数链）
+laplace3-cyclic : ∀ a b c → laplace3 a b c ≡ laplace3 b c a
+laplace3-cyclic a b c = begin
+  (a ⊕ c) ⊕ b
+    ≡⟨ ⊕-assoc a c b ⟩
+  a ⊕ (c ⊕ b)
+    ≡⟨ cong (a ⊕_) (⊕-comm c b) ⟩
+  a ⊕ (b ⊕ c)
+    ≡⟨ sym (⊕-assoc a b c) ⟩
+  (a ⊕ b) ⊕ c
+    ≡⟨ cong (_⊕ c) (⊕-comm a b) ⟩
+  (b ⊕ a) ⊕ c
+  ∎
+  where open ≡-Reasoning

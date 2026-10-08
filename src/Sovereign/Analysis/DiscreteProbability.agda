@@ -8,7 +8,9 @@ module Sovereign.Analysis.DiscreteProbability where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Nat using (_+_; _*_)
+open import Data.Nat.Properties using (*-identityʳ)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; trans; sym)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
 
 -- §1. 有限概率空间 -----------------------------------------------
@@ -53,3 +55,11 @@ marginal-indep = refl
 -- 经典概率依赖 σ-代数和 Lebesgue 积分.
 -- 离散替代: GF(3)ⁿ 上的穷举求和, 所有分布完全可计算.
 -- 0 postulate.
+
+-- 一般 ∀ 定理：均匀分布下期望 = 求和（uniform t = 1 ⟹ X t * 1 ≡ X t）
+expectation-uniform-sum : ∀ (X : Trit → ℕ) →
+  expectation X uniform ≡ (X T₀ + X T₁) + X T₂
+expectation-uniform-sum X =
+  trans (cong (λ w → (w + (X T₁ * 1)) + (X T₂ * 1)) (*-identityʳ (X T₀)))
+  (trans (cong (λ w → (X T₀ + w) + (X T₂ * 1)) (*-identityʳ (X T₁)))
+         (cong ((X T₀ + X T₁) +_) (*-identityʳ (X T₂))))
