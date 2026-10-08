@@ -247,6 +247,7 @@ bubble7 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (c
 bubble8 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
   v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v6 + (v8 + (v9)))))))) ≡ v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v8 + (v6 + (v9))))))))
 
+bubble8 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (cong (v3 +_) (swap3 v6 v8 (v9)))))))
 bubble9 : ∀ (v1 v2 v3 v4 v5 v6 v7 v8 v9 : ℤ) →
   v1 + (v4 + (v7 + (v2 + (v5 + (v3 + (v8 + (v6 + (v9)))))))) ≡ v1 + (v4 + (v7 + (v2 + (v5 + (v8 + (v3 + (v6 + (v9))))))))
 bubble9 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (swap3 v3 v8 (v6 + (v9)))))))
@@ -323,11 +324,8 @@ assoc-entry a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n =
       C1 = (((a₁ n · (b11 n · c1 n)) + (a₂ n · (b21 n · c1 n))) + (a₃ n · (b31 n · c1 n)))
       C2 = (((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) + (a₃ n · (b32 n · c2 n)))
       C1 = (((a₁ n · (b11 n · c1 n)) + (a₂ n · (b21 n · c1 n))) + (a₃ n · (b31 n · c1 n)))
-      C2 = (((a₁ n · (b12 n · c2 n)) + (a₂ n · (b22 n · c2 n))) + (a₃ n · (b32 n · c2 n)))
-      C3 = (((a₁ n · (b13 n · c3 n)) + (a₂ n · (b23 n · c3 n))) + (a₃ n · (b33 n · c3 n)))
       expand = cong (λ w → w + (g3 · c3 n)) (cong₂ _+_ d1 d2) ∙ cong (λ w → (C1 + C2) + w) d3
   in expand ∙ rearrange9 (a₁ n) (a₂ n) (a₃ n) (b11 n · c1 n) (b21 n · c1 n) (b31 n · c1 n) (b12 n · c2 n) (b22 n · c2 n) (b32 n · c2 n) (b13 n · c3 n) (b23 n · c3 n) (b33 n · c3 n)
-bubble8 v1 v2 v3 v4 v5 v6 v7 v8 v9 = cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (cong (v3 +_) (swap3 v6 v8 (v9)))))))
 
 
 
