@@ -22,7 +22,6 @@ sum3 f = f fzero + (f (fsuc fzero) + f (fsuc (fsuc fzero)))
 
 sum3-ext : ∀ (f g : Fin 3 → ℤ) → (∀ x → f x ≡ g x) → sum3 f ≡ sum3 g
 sum3-ext f g h = cong₂ _+_ (h fzero) (cong₂ _+_ (h (fsuc fzero)) (h (fsuc (fsuc fzero))))
-  where open import Cubical.Foundations.Prelude using () renaming (cong₂ to cong₂₂)
 
 -- ─── sum3-distribˡ ✓ 绿 ───
 
