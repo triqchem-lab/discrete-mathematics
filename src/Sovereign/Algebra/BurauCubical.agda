@@ -165,17 +165,20 @@ assoc-entry a₁ a₂ a₃ b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c2 c3 n =
         (((v1 + v2) + v3) + ((v4 + v5) + v6)) + ((v7 + v8) + v9)
     ≡   (((v1 + v4) + v7) + ((v2 + v5) + v8)) + ((v3 + v6) + v9)
   row-col v1 v2 v3 v4 v5 v6 v7 v8 v9 =
-        sym (+Assoc ((v1 + v2) + v3) ((v4 + v5) + v6) ((v7 + v8) + v9))
-    ∙ sym (+Assoc (v1 + v2) v3 (((v4 + v5) + v6) + ((v7 + v8) + v9)))
-    ∙ sym (+Assoc v1 v2 (v3 + (((v4 + v5) + v6) + ((v7 + v8) + v9))))
-    ∙ (cong (v1 +_) (cong (v2 +_) (swap3 v3 v4 (v5 + (v6 + (v7 + (v8 + v9)))))))
-    ∙ (cong (v1 +_) (swap3 v2 v4 (v3 + (v5 + (v6 + (v7 + (v8 + v9)))))))
-    ∙ (cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v3 +_) (cong (v5 +_) (swap3 v6 v7 (v8 + v9)))))))
-    ∙ (cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (cong (v3 +_) (swap3 v5 v7 (v6 + (v8 + v9)))))))
-    ∙ (cong (v1 +_) (cong (v4 +_) (cong (v2 +_) (swap3 v3 v7 (v5 + (v6 + (v8 + v9)))))))
-    ∙ (cong (v1 +_) (cong (v4 +_) (swap3 v2 v7 (v3 + (v5 + (v6 + (v8 + v9)))))))
-    ∙ (cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (swap3 v3 v5 (v6 + (v8 + v9)))))))
-    ∙ (cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (cong (v3 +_) (swap3 v6 v8 v9)))))))
-    ∙ (cong (v1 +_) (cong (v4 +_) (cong (v7 +_) (cong (v2 +_) (cong (v5 +_) (swap3 v3 v8 (v6 + v9)))))))
-    -- 收拢步（右结合 v 序 → 三组行形）——待下一步精确推导
+        let Y = (v4 + (v5 + v6))
+            Z = (v7 + (v8 + v9))
+            -- 展开 4 步（三组列 → 右结合 col 序）
+            e1 : ((v1 + (v2 + v3)) + (Y + Z)) ≡ (v1 + ((v2 + v3) + (Y + Z)))
+            e1 = sym (+Assoc v1 (v2 + v3) (Y + Z))
+            e2 : (v1 + ((v2 + v3) + (Y + Z))) ≡ (v1 + (v2 + (v3 + (Y + Z))))
+            e2 = cong (v1 +_) (sym (+Assoc v2 v3 (Y + Z)))
+            e3 : (v1 + (v2 + (v3 + (Y + Z)))) ≡ (v1 + (v2 + (v3 + (v4 + ((v5 + v6) + Z)))))
+            e3 = cong (λ w → v1 + (v2 + (v3 + w))) (sym (+Assoc v4 (v5 + v6) Z))
+            e4 : (v1 + (v2 + (v3 + (v4 + ((v5 + v6) + Z))))) ≡ (v1 + (v2 + (v3 + (v4 + (v5 + (v6 + Z))))))
+            e4 = cong (λ w → v1 + (v2 + (v3 + (v4 + w)))) (sym (+Assoc v5 v6 Z))
+            b1 : (v1 + (v2 + (v3 + (v4 + (v5 + (v6 + (v7 + (v8 + v9)))))))) ≡ (v1 + (v2 + (v4 + (v3 + (v5 + (v6 + (v7 + (v8 + v9))))))))
+            b1 = cong (λ w → v1 + (v2 + w)) (swap3 v3 v4 (v5 + (v6 + (v7 + (v8 + v9)))))
+            b2 : (v1 + (v2 + (v4 + (v3 + (v5 + (v6 + (v7 + (v8 + v9)))))))) ≡ (v1 + (v2 + (v4 + (v5 + (v3 + (v6 + (v7 + (v8 + v9))))))))
+            b2 = cong (λ w → v1 + (v2 + (v4 + w))) (swap3 v3 v5 (v6 + (v7 + (v8 + v9))))
+        in e1 ∙ e2 ∙ e3 ∙ e4 ∙ b1 ∙ b2
     -- 收拢步（右结合 v 序 → 三组行形）——待下一步精确推导
