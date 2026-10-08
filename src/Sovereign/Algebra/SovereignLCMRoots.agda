@@ -17,9 +17,10 @@
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.SovereignLCMRoots where
 
-open import Data.Nat using (ℕ; _*_; _+_; _<_; _≤_)
+open import Data.Nat using (ℕ; _*_; _+_; _<_; _≤_; _∸_)
 open import Data.Product using (_×_; _,_)
 open import Data.Nat.Divisibility using (_∣_; n∣m*n)
+open import Data.Nat.Divisibility.Core using (divides)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 --------------------------------------------------------------------------------
@@ -89,3 +90,21 @@ root₈ = 11609505791
 -- mod 3¹¹ 两根 {1, 177146}: HenselMod177147 ✓（proven）
 -- mod 2¹⁶ 四根 {1, 32767, 32769, 65535}: HenselModPow2 ✓（proven）
 -- CRT 合成双射: 需泛型 CRT 定理（roadmap）
+
+-- ── G4 数值层：8 根整除定理（每根 r²−1 = q·SOVEREIGN_LCM，商见证闭式）──
+root₁-is-root : SOVEREIGN_LCM ∣ (root₁ * root₁ ∸ 1)
+root₁-is-root = divides 0 refl
+root₂-is-root : SOVEREIGN_LCM ∣ (root₂ * root₂ ∸ 1)
+root₂-is-root = divides 689733359 refl
+root₃-is-root : SOVEREIGN_LCM ∣ (root₃ * root₃ ∸ 1)
+root₃-is-root = divides 762363630 refl
+root₄-is-root : SOVEREIGN_LCM ∣ (root₄ * root₄ ∸ 1)
+root₄-is-root = divides 2902376447 refl
+root₅-is-root : SOVEREIGN_LCM ∣ (root₅ * root₅ ∸ 1)
+root₅-is-root = divides 2902376449 refl
+root₆-is-root : SOVEREIGN_LCM ∣ (root₆ * root₆ ∸ 1)
+root₆-is-root = divides 6421855984 refl
+root₇-is-root : SOVEREIGN_LCM ∣ (root₇ * root₇ ∸ 1)
+root₇-is-root = divides 6639746797 refl
+root₈-is-root : SOVEREIGN_LCM ∣ (root₈ * root₈ ∸ 1)
+root₈-is-root = divides 11609505790 refl
