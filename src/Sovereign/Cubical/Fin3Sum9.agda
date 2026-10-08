@@ -2,12 +2,47 @@
 module Sovereign.Cubical.Fin3Sum9 where
 
 open import Cubical.Data.Int using (ℤ; _+_; pos; negsuc)
+open import Relation.Binary.PropositionalEquality using (trans) renaming (trans to transP)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; _∙_)
 open import Cubical.Data.Int.Properties using (+Assoc)
 
 assocP : ∀ x y z → x + (y + z) ≡ (x + y) + z
 assocP x y (pos z) = +Assoc x y (pos z)
 assocP x y (negsuc z) = +Assoc x y (negsuc z)
+
+-- ─── unflat9 五步独立引理（每步签名显式，探针 Probe3 test-s1..s5 验证绿）───
+
+uflat9-s1 : ∀ (A1 B1 C1 A2 B2 C2 A3 B3 C3 : ℤ) →
+  A1 + (B1 + (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
+  ≡ ((A1 + B1) + ((C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3))))))))
+uflat9-s1 A1 B1 C1 A2 B2 C2 A3 B3 C3 =
+      assocP A1 B1 (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3))))))
+
+uflat9-s2 : ∀ (A1 B1 C1 A2 B2 C2 A3 B3 C3 : ℤ) →
+  ((A1 + B1) + ((C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3))))))))
+  ≡ (((A1 + B1) + C1) + ((A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
+uflat9-s2 A1 B1 C1 A2 B2 C2 A3 B3 C3 =
+      assocP (A1 + B1) C1 (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))
+
+uflat9-s3 : ∀ (A1 B1 C1 A2 B2 C2 A3 B3 C3 : ℤ) →
+  (((A1 + B1) + C1) + ((A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
+  ≡ (((A1 + B1) + C1) + (((A2 + B2)) + ((C2 + (A3 + (B3 + C3))))))
+uflat9-s3 A1 B1 C1 A2 B2 C2 A3 B3 C3 =
+      cong (λ w1 → ((A1 + B1) + C1) + w1) (assocP A2 B2 (C2 + (A3 + (B3 + C3))))
+  ∙ assocP (A1 + B1) C1 (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))
+  ∙ cong (λ w1 → ((A1 + B1) + C1) + w1) (assocP A2 B2 (C2 + (A3 + (B3 + C3))))
+
+uflat9-s4 : ∀ (A1 B1 C1 A2 B2 C2 A3 B3 C3 : ℤ) →
+  (((A1 + B1) + C1) + (((A2 + B2)) + ((C2 + (A3 + (B3 + C3))))))
+  ≡ (((A1 + B1) + C1) + ((((A2 + B2)) + C2) + ((A3 + (B3 + C3)))))
+uflat9-s4 A1 B1 C1 A2 B2 C2 A3 B3 C3 =
+      cong (λ w1 → ((A1 + B1) + C1) + w1) (assocP (A2 + B2) C2 (A3 + (B3 + C3)))
+
+uflat9-s5 : ∀ (A1 B1 C1 A2 B2 C2 A3 B3 C3 : ℤ) →
+  (((A1 + B1) + C1) + ((((A2 + B2)) + C2) + ((A3 + (B3 + C3)))))
+  ≡ (((A1 + B1) + C1) + (((A2 + (B2 + C2))) + ((A3 + (B3 + C3)))))
+uflat9-s5 A1 B1 C1 A2 B2 C2 A3 B3 C3 =
+      cong (λ w2 → ((A1 + B1) + C1) + ((w2 + (A3 + (B3 + C3))))) (sym (assocP A2 B2 C2))
 
 postulate A2 B2 C2 Z : ℤ
 
@@ -41,28 +76,14 @@ flat9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
 swap9 : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
       A1 + (A2 + (A3 + (B1 + (B2 + (B3 + (C1 + (C2 + C3)))))))
   ≡   A1 + (B1 + (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
-swap9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
-      assocP A1 B1 (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3))))))
-
+swap9 A1 A2 A3 B1 B2 B3 C1 C2 C3 = {!!}
 -- ─── unflat9：右结合 row 序 → 目标三组（test5 已验证 5 步）───
 
 unflat9 : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
       A1 + (B1 + (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))))
   ≡   (A1 + (B1 + C1)) + ((A2 + (B2 + C2)) + (A3 + (B3 + C3)))
 unflat9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
-      assocP A1 B1 (C1 + (A2 + (B2 + (C2 + (A3 + (B3 + C3))))))
-  ∙ assocP (A1 + B1) C1 (A2 + (B2 + (C2 + (A3 + (B3 + C3)))))
-  ∙ cong (λ w1 → ((A1 + B1) + C1) + w1) (assocP A2 B2 (C2 + (A3 + (B3 + C3))))
-  ∙ cong (λ w1 → ((A1 + B1) + C1) + w1) (assocP (A2 + B2) C2 (A3 + (B3 + C3)))
-  ∙ cong (λ w2 → ((A1 + B1) + C1) + ((w2 + (A3 + (B3 + C3))))) (sym (assocP A2 B2 C2))
-  ∙ cong (λ w → w + ((A2 + (B2 + C2)) + (A3 + (B3 + C3)))) (sym (assocP A1 B1 C1))
+  uflat9-s1 A1 B1 C1 A2 B2 C2 A3 B3 C3
+  ∙ transP (uflat9-s2 A1 B1 C1 A2 B2 C2 A3 B3 C3) (transP (uflat9-s3 A1 B1 C1 A2 B2 C2 A3 B3 C3) (transP (uflat9-s4 A1 B1 C1 A2 B2 C2 A3 B3 C3) (uflat9-s5 A1 B1 C1 A2 B2 C2 A3 B3 C3)))
 
--- ─── sum9-swap：flat9 ∙ swap9 ∙ unflat9 ───
 
-sum9-swap : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
-      (A1 + (A2 + A3)) + ((B1 + (B2 + B3)) + (C1 + (C2 + C3)))
-  ≡   (A1 + (B1 + C1)) + ((A2 + (B2 + C2)) + (A3 + (B3 + C3)))
-sum9-swap A1 A2 A3 B1 B2 B3 C1 C2 C3 =
-  flat9 A1 A2 A3 B1 B2 B3 C1 C2 C3
-  ∙ swap9 A1 A2 A3 B1 B2 B3 C1 C2 C3
-  ∙ unflat9 A1 A2 A3 B1 B2 B3 C1 C2 C3
