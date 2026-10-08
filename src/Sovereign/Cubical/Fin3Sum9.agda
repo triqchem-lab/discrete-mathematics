@@ -2,7 +2,6 @@
 module Sovereign.Cubical.Fin3Sum9 where
 
 open import Cubical.Data.Int using (ℤ; _+_; pos; negsuc)
-open import Relation.Binary.PropositionalEquality using (trans) renaming (trans to transP)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; _∙_)
 open import Cubical.Data.Int.Properties using (+Assoc)
 
@@ -84,6 +83,9 @@ unflat9 : ∀ A1 A2 A3 B1 B2 B3 C1 C2 C3 →
   ≡   (A1 + (B1 + C1)) + ((A2 + (B2 + C2)) + (A3 + (B3 + C3)))
 unflat9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
   uflat9-s1 A1 B1 C1 A2 B2 C2 A3 B3 C3
-  ∙ transP (uflat9-s2 A1 B1 C1 A2 B2 C2 A3 B3 C3) (transP (uflat9-s3 A1 B1 C1 A2 B2 C2 A3 B3 C3) (transP (uflat9-s4 A1 B1 C1 A2 B2 C2 A3 B3 C3) (uflat9-s5 A1 B1 C1 A2 B2 C2 A3 B3 C3)))
+  ∙ uflat9-s2 A1 B1 C1 A2 B2 C2 A3 B3 C3
+  ∙ uflat9-s3 A1 B1 C1 A2 B2 C2 A3 B3 C3
+  ∙ uflat9-s4 A1 B1 C1 A2 B2 C2 A3 B3 C3
+  ∙ uflat9-s5 A1 B1 C1 A2 B2 C2 A3 B3 C3
 
 
