@@ -45,16 +45,18 @@ sum3-distribˡ a f =
 
 sum3-comm : ∀ (f : Fin 3 → Fin 3 → ℤ) →
   sum3 (λ k → sum3 (λ l → f k l)) ≡ sum3 (λ l → sum3 (λ k → f k l))
-sum3-comm f = cong (f fzero fzero +_) inner
-  where
-    inner : (f fzero (fsuc fzero) + f fzero (fsuc (fsuc fzero)))
-          + (((f (fsuc fzero) fzero) + ((f (fsuc fzero) (fsuc fzero)) + (f (fsuc fzero) (fsuc (fsuc fzero)))))
-          + (((f (fsuc (fsuc fzero)) fzero) + ((f (fsuc (fsuc fzero)) (fsuc fzero)) + (f (fsuc (fsuc fzero)) (fsuc (fsuc fzero)))))))
-          ≡ (f (fsuc fzero) fzero + (f (fsuc (fsuc fzero)) fzero))
-          + (((f fzero (fsuc fzero)) + ((f (fsuc fzero) (fsuc fzero)) + (f (fsuc (fsuc fzero)) (fsuc fzero))))
-          + ((f fzero (fsuc (fsuc fzero))) + ((f (fsuc fzero) (fsuc (fsuc fzero))) + (f (fsuc (fsuc fzero)) (fsuc (fsuc fzero))))))
-    inner = +interchange
-          ((f fzero (fsuc fzero)) + (f fzero (fsuc (fsuc fzero))))
-          ((f (fsuc fzero) fzero) + ((f (fsuc fzero) (fsuc fzero)) + (f (fsuc fzero) (fsuc (fsuc fzero)))))
-          ((f (fsuc (fsuc fzero)) fzero) + ((f (fsuc (fsuc fzero)) (fsuc fzero)) + (f (fsuc (fsuc fzero)) (fsuc (fsuc fzero)))))
-          {!!}
+sum3-comm f =
+  let
+    p1 = f fzero fzero
+    p2 = f fzero (fsuc fzero)
+    p3 = f fzero (fsuc (fsuc fzero))
+    p4 = f (fsuc fzero) fzero
+    p5 = f (fsuc fzero) (fsuc fzero)
+    p6 = f (fsuc fzero) (fsuc (fsuc fzero))
+    p7 = f (fsuc (fsuc fzero)) fzero
+    p8 = f (fsuc (fsuc fzero)) (fsuc fzero)
+    p9 = f (fsuc (fsuc fzero)) (fsuc (fsuc fzero))
+    -- 展平 6 步（从 ((C1+C2)+C3) 到全右）
+    t1 : (((p1 + (p2 + p3)) + ((p4 + (p5 + p6)) + (p7 + (p8 + p9))))) ≡ ((p1 + (p2 + p3)) + ((p4 + (p5 + p6)) + (p7 + (p8 + p9)))))
+    t1 = refl
+  in t1 ∙ {!!rest!}
