@@ -55,4 +55,26 @@ gather a x y z =
 rearrange9 : ∀ (a₁ a₂ a₃ q1 q2 q3 q4 q5 q6 q7 q8 q9 : ℤ) →
   ((((a₁ · q1) + (a₂ · q2)) + (a₃ · q3)) + (((a₁ · q4) + (a₂ · q5)) + (a₃ · q6))) + (((a₁ · q7) + (a₂ · q8)) + (a₃ · q9))
   ≡ ((a₁ · ((q1 + q4) + q7)) + (a₂ · ((q2 + q5) + q8))) + (a₃ · ((q3 + q6) + q9))
-rearrange9 a₁ a₂ a₃ q1 q2 q3 q4 q5 q6 q7 q8 q9 = ?
+rearrange9 a₁ a₂ a₃ q1 q2 q3 q4 q5 q6 q7 q8 q9 =
+  let
+    p1 = a₁ · q1
+    p2 = a₂ · q2
+    p3 = a₃ · q3
+    p4 = a₁ · q4
+    p5 = a₂ · q5
+    p6 = a₃ · q6
+    p7 = a₁ · q7
+    p8 = a₂ · q8
+    p9 = a₃ · q9
+    s1 : ((((p1 + p2) + p3) + ((p4 + p5) + p6)) + ((p7 + p8) + p9)) ≡ ((((p1 + p2) + p3) + (p4 + (p5 + p6))) + ((p7 + p8) + p9))
+    s1 = cong (λ w → (((p1 + p2) + p3) + w) + ((p7 + p8) + p9)) (sym (+Assoc p4 p5 p6))
+    s2 : ((((p1 + p2) + p3) + (p4 + (p5 + p6))) + ((p7 + p8) + p9)) ≡ ((((p1 + p2) + p3) + (p4 + (p5 + p6))) + (p7 + (p8 + p9)))
+    s2 = cong (λ w → (((p1 + p2) + p3) + (p4 + (p5 + p6))) + w) (sym (+Assoc p7 p8 p9))
+    s3 : ((((p1 + p2) + p3) + (p4 + (p5 + p6))) + (p7 + (p8 + p9))) ≡ (((p1 + p2) + p3) + ((p4 + (p5 + p6)) + (p7 + (p8 + p9))))
+    s3 = sym (+Assoc ((p1 + p2) + p3) (p4 + (p5 + p6)) (p7 + (p8 + p9)))
+    s4 : (((p1 + p2) + p3) + ((p4 + (p5 + p6)) + (p7 + (p8 + p9)))) ≡ ((p1 + p2) + (p3 + ((p4 + (p5 + p6)) + (p7 + (p8 + p9)))))
+    s4 = sym (+Assoc (p1 + p2) p3 ((p4 + (p5 + p6)) + (p7 + (p8 + p9))))
+    s5 : ((p1 + p2) + (p3 + ((p4 + (p5 + p6)) + (p7 + (p8 + p9))))) ≡ (p1 + (p2 + (p3 + (p4 + (p5 + p6) + (p7 + (p8 + p9))))))
+    s5 = sym (+Assoc p1 p2 (p3 + ((p4 + (p5 + p6)) + (p7 + (p8 + p9)))))
+
+  in s1 ∙ s2 ∙ s3 ∙ s4 ∙ s5 ∙ {!!bubble-and-beyond!}
