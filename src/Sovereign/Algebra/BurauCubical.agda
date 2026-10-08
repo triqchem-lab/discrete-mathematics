@@ -36,13 +36,21 @@ swap3 p q r = +Assoc p q r ∙ cong (_+ r) (+Comm p q) ∙ sym (+Assoc q p r)
 
 interchange : ∀ (a b c d : ℤ) → (a + b) + (c + d) ≡ (a + c) + (b + d)
 interchange a b c d =
-      +Assoc (a + b) c d
-  ∙ cong (λ w → w + d) (sym (+Assoc a b c))
-  ∙ cong (λ w → w + d) (+Comm b c)
-  ∙ cong (λ w → a + w) (sym (+Assoc c b d))
-  ∙ +Assoc a c (b + d)
-
-
+  let s1 : (a + b) + (c + d) ≡ ((a + b) + c) + d
+      s1 = +Assoc (a + b) c d
+      s2 : ((a + b) + c) + d ≡ (a + (b + c)) + d
+      s2 = cong (λ w → w + d) (sym (+Assoc a b c))
+      s3a : (a + (b + c)) + d ≡ a + ((b + c) + d)
+      s3a = sym (+Assoc a (b + c) d)
+      s3b : a + ((b + c) + d) ≡ a + ((c + b) + d)
+      s3b = cong (λ w → a + (w + d)) (+Comm b c)
+      s4a : a + ((c + b) + d) ≡ (a + (c + b)) + d
+      s4a = +Assoc a (c + b) d
+      s4b : (a + (c + b)) + d ≡ ((a + c) + b) + d
+      s4b = cong (λ w → w + d) (assocP a c b)
+      s4c : (((a + c) + b)) + d ≡ (a + c) + (b + d)
+      s4c = sym (+Assoc (a + c) b d)
+  in s1 ∙ s2 ∙ s3a ∙ s3b ∙ s4a ∙ s4b ∙ s4c
 c5-lem : ∀ (v1 v4 v7 v2 v5 v8 v3 v6 v9 : ℤ) →
   ((v1 + v4) + v7) + ((v2 + v5) + (v8 + (v3 + (v6 + v9)))) ≡ ((v1 + v4) + v7) + ((v2 + v5) + ((v8 + ((v3 + v6)) + v9)))
 c5-lem v1 v4 v7 v2 v5 v8 v3 v6 v9 =
