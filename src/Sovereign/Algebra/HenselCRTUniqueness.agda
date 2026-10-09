@@ -121,3 +121,42 @@ unique-root₈ x x<N h3 h2 = go (divides-below-≤ (suc x) (lcm-coprime (suc x) 
         suc-zero-clash : ∀ {y} → suc y ≡ 0 → ⊥
         suc-zero-clash ()
     go (inj₂ sucx≡N) = suc-injective sucx≡N
+
+--------------------------------------------------------------------------------
+-- §4. 同侧 case 唯一性（DC/UD）——【WIP：陈述入账，体洞化】
+--   慢点坐标（二分实证 R3/R5/R6）：root₅ 的 go 调用 + t-go zero/suc-zero 区
+--   即使 t≥2 洞化仍 101s——疑 divides record 字面量积除数位或 1*X 桥的归一化
+--   下批小探针逐项定位（divides X 形 / *-identityˡ X 应用 / refl literal 桥）
+--------------------------------------------------------------------------------
+
+lcm-coprime-gen : ∀ p q n → Coprime p q → p ∣ n → q ∣ n → (p * q) ∣ n
+lcm-coprime-gen p q n cp (divides a eqa) hq =
+  go (coprime-divisor (coprime-swap cp)
+        (subst (q ∣_) (*-comm a p) (subst (q ∣_) eqa hq)))
+  where
+    go : q ∣ a → (p * q) ∣ n
+    go (divides c a≡c*q) = divides c n≡c*pq
+      where
+        n≡c*pq : n ≡ c * (p * q)
+        n≡c*pq = trans eqa
+          (trans (cong (_* p) a≡c*q)
+          (trans (*-assoc c q p)
+          (cong (c *_) (*-comm q p))))
+
+suc-suc-≰ : ∀ k → suc (suc k) ≤ k → ⊥
+suc-suc-≰ k p = n≮n (suc (suc k)) (≤-<-trans p (<-trans (n<1+n k) (n<1+n (suc k))))
+
+two-X≡N : 2 * (pow3 11 * pow2 15) ≡ SOVEREIGN_LCM
+two-X≡N = refl
+
+unique-root₅ : ∀ x → 0 < x → x < SOVEREIGN_LCM
+             → pow3 11 ∣ x ∸ 1 → pow2 15 ∣ x ∸ 1
+             → ¬ (pow2 16 ∣ x ∸ 1) → x ≡ root₅
+unique-root₅ (suc m) (s≤s z≤n) x<N h3 h15 n16 = {!!}
+  -- WIP 慢点坐标：go(lcm-coprime-gen 调用) + t-go 三分支（t=0/1/≥2）归一化爆点待探针定位
+
+unique-root₄ : ∀ x → x < SOVEREIGN_LCM
+             → pow3 11 ∣ suc x → pow2 15 ∣ suc x
+             → ¬ (pow2 16 ∣ suc x) → x ≡ root₄
+unique-root₄ x x<N h3 h15 n16 = {!!}
+  -- WIP 同上（对称形）
