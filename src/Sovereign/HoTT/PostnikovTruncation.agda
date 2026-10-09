@@ -97,3 +97,15 @@ AH-resp W {u} {v} {w1} {w2} harm (gen (expand {u = u'} {x = x} {y = y} {z = z} {
   expand-preserves-disp W p b e1 e2 e3 (harm x y z e1 e2 e3)
 
 -- 诚实边界：Postnikov n≥2 截断（高阶同伦）留后续层；本层为 1-截断（净位移）的离散对应
+
+-- ────────────────────────────────────────────────────────────────────
+-- §5. Postnikov 2-截断（离散对应——walk 的二阶位移/相邻步对守恒）
+--   2-截断 = 「步对」的位移累积（相邻两步的权重和序列）——slide 守恒的二阶形式
+-- ────────────────────────────────────────────────────────────────────
+
+-- 步对位移（相邻两步的权重和——2-截断的信息层）
+disp2 : (W : WeightedDiGraph) → ∀ {u v} → Walk (G W) u v → A W
+disp2 W (nil v) = zeroA W
+disp2 W (cons {u} {v} {w} e p) = {!!}
+  -- WIP：二阶累积（相邻步对的权重和——slide 守恒的二阶形式）
+  -- 数学：disp2 (cons e (cons e' p)) = wt u v +A (wt v w +A disp2 p)??——二阶信息设计中
