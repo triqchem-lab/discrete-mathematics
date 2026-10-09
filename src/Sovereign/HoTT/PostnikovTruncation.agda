@@ -142,4 +142,6 @@ lastW W (cons e (cons e' p)) = lastW W (cons e' p)
   (cong (λ w → WeightedDiGraph._*A_ W (WeightedDiGraph.oneA W) w)
         (sym (WeightedDiGraph.*A-idˡ W (disp2 W q))))
 ++w-disp2 W (cons e (nil w)) q = {!!}
+  -- WIP：单步 + q（边界步对——disp2 (cons e q) 的递归形）
 ++w-disp2 W (cons e (cons e' p)) q = {!!}
+  -- WIP：步对 + 递归（边界步对 + assoc 桥）
