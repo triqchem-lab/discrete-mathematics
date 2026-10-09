@@ -19,7 +19,7 @@ module Sovereign.Algebra.ModExtract where
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _≤_; _<_; z≤n; s≤s)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
-open import Data.Nat.Properties using (m≤m+n; m≤n+m; ≤-trans; ≤-<-trans; n≮n; +-comm; +-assoc; +-identityʳ)
+open import Data.Nat.Properties using (m≤m+n; m≤n+m; ≤-trans; ≤-<-trans; n≮n; +-comm; +-assoc; +-identityʳ; +-suc)
 
 -- q 形提取：x ≡ r + q·N → x < N → x ≡ r（对 q 归纳——符号安全）
 mod-extract : ∀ (N r : ℕ) → ∀ x q → x ≡ r + q * N → x < N → x ≡ r
@@ -34,3 +34,23 @@ mod-extract N r x (suc q) eq x<N = ⊥-elim (n≮n N (≤-<-trans N≤x x<N))
         suc-q-form q = refl
     N≤x : N ≤ x
     N≤x = subst (N ≤_) (sym eq) (≤-trans N≤sucqN (m≤n+m (suc q * N) r))
+
+-- ────────────────────────────────────────────────────────────────────
+-- §2. plus-cancel：加法消去的符号归纳版（对 C 归纳——经验 44 条正形）
+--   a + C ≡ (D + C) + q·N → a ≡ D + q·N（消 C 不消 q·N——免 literal 归纳）
+-- ────────────────────────────────────────────────────────────────────
+
+plus-cancel : ∀ (a D C q N : ℕ) → a + C ≡ (D + C) + q * N → a ≡ D + q * N
+plus-cancel a D zero q N eq =
+  trans (sym (+-identityʳ a))
+  (trans eq (cong (_+ q * N) (+-identityʳ D)))
+plus-cancel a D (suc C) q N eq =
+  plus-cancel a D C q N (suc-injective-f (trans (sym (+-suc a C))
+    (trans eq (cong (_+ q * N) (+-suc D C)))))
+  where
+    suc-injective-f : ∀ {x y} → suc x ≡ suc y → x ≡ y
+    suc-injective-f refl = refl
+
+-- DB case 应用形（唯一性 mod 形改造）：a + C ≡ suc q·2¹⁶（defeq 同 (D + C) + q·2¹⁶ 形）
+db-mod-extract : ∀ a q → a + 2 * 24371 ≡ suc q * 65536 → a < 65536 → a ≡ 16794 + q * 65536
+db-mod-extract a q eq a< = plus-cancel a 16794 (2 * 24371) q 65536 eq
