@@ -15,7 +15,8 @@ open import Function using (_∘_)
 open import Relation.Nullary using (¬_; Dec)
 open import Data.Product using (Σ; _×_; _,_)
 open import Data.Fin using (Fin)
-open import Data.Nat using (ℕ; zero)
+open import Data.Nat using (ℕ; zero; suc)
+open import Data.Empty using (⊥; ⊥-elim)
 
 open import Sovereign.Base.Trit using (Trit)
 
@@ -126,3 +127,27 @@ surj-compose {A} {n} fin f surj b =
 -- Fin 0 版（vacuously true）
 dedekind-fin0 : DedekindFinite (Fin 0)
 dedekind-fin0 f inj ()
+
+
+--------------------------------------------------------------------------------
+-- §5. Fin n 单射→满射 + Dedekind 有限推广（P0 缺口闭合）
+--------------------------------------------------------------------------------
+
+open import Relation.Nullary using (Dec; yes; no)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Relation.Binary.PropositionalEquality using (cong; _≢_)
+open import Data.Fin using (_≟_) renaming (zero to fzero; suc to fsuc)
+
+-- compress：Fin (suc m) 避开 v 压到 Fin m——【WIP】
+--   (fsuc v, fzero) 分支在 m=0 无 Fin 0 输出（部分性本质）——需索引强制或 ≢-arg 再设计
+compress : ∀ {m} (v x : Fin (suc m)) → x ≢ v → Fin m
+compress = {!!}
+
+-- Fin n 单射→满射（suc m 分支 = compress 限制 + IH 组装——待 compress 修复）
+fin-inj-surj : ∀ {n} (g : Fin n → Fin n) → Injective g → Surjective g
+fin-inj-surj {zero} g inj ()
+fin-inj-surj {suc m} g inj b = {!!}
+
+-- Dedekind 有限推广（P0 缺口）：Finite A → DedekindFinite A
+dedekind-finite-A : ∀ {A : Set} (fin : Finite A) → DedekindFinite A
+dedekind-finite-A fin f inj = surj-compose fin f (fin-inj-surj (to fin ∘ f ∘ from fin) (inj-compose-real fin f inj))
