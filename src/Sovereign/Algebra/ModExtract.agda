@@ -18,7 +18,7 @@ module Sovereign.Algebra.ModExtract where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _≤_; _<_; z≤n; s≤s)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Data.Nat.Properties using (m≤m+n; m≤n+m; ≤-trans; ≤-<-trans; n≮n; +-comm; +-assoc; +-identityʳ; +-suc)
 
 -- q 形提取：x ≡ r + q·N → x < N → x ≡ r（对 q 归纳——符号安全）
@@ -54,3 +54,15 @@ plus-cancel a D (suc C) q N eq =
 -- DB case 应用形（唯一性 mod 形改造）：a + C ≡ suc q·2¹⁶（defeq 同 (D + C) + q·2¹⁶ 形）
 db-mod-extract : ∀ a q → a + 2 * 24371 ≡ suc q * 65536 → a < 65536 → a ≡ 16794 + q * 65536
 db-mod-extract a q eq a< = plus-cancel a 16794 (2 * 24371) q 65536 eq
+
+-- ────────────────────────────────────────────────────────────────────
+-- §3. ∣-diff：整除差引理（d∣m → d∣n → d∣m∸n——∸-distrib 形）
+-- ────────────────────────────────────────────────────────────────────
+
+open import Data.Nat using (_∸_)
+open import Data.Nat.Divisibility using (_∣_; divides)
+open import Data.Nat.Properties using (*-distribʳ-∸)
+
+∣-diff : ∀ {d m n} → d ∣ m → d ∣ n → d ∣ (m ∸ n)
+∣-diff {d} {m} {n} (divides k1 e1) (divides k2 e2) =
+  divides (k1 ∸ k2) (trans (cong₂ _∸_ e1 e2) (sym (*-distribʳ-∸ d k1 k2)))
