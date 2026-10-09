@@ -19,7 +19,7 @@ module Sovereign.Algebra.HenselCRTUniqueness where
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _<_; z≤n; s≤s)
 open import Data.Nat.Divisibility using (_∣_; divides; ∣-trans; ∣-refl; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; ∣m+n∣m⇒∣n)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor)
-open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; <-trans; *-monoˡ-≤; m≤n+m; *-distribʳ-+; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
+open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; m∸n≡0⇒m≤n; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; <-trans; *-monoˡ-≤; m≤n+m; *-distribʳ-+; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -296,6 +296,25 @@ crt-converse x h3 h16 x<N = finish (div2-side x h16) (div3-side x h3)
       where
         align : (x ∸ 1) ∸ (root₃ ∸ 1) ≡ x ∸ root₃
         align = trans (∸∸-align-suc x (root₃ ∸ 1)) (cong (x ∸_) refl)
+    div2-gen : ∀ y b' → suc y ≡ b' * pow2 16 → pow2 16 ∣ root₃ ∸ y
+    div2-gen y b' eqy = subst (pow2 16 ∣_) (∸+-cancel root₃ y 1) (∣-diff side-r side-y)
+      where
+        side-r : pow2 16 ∣ root₃ + 1
+        side-r = divides 45395 root₃+1-anchor
+        side-y : pow2 16 ∣ y + 1
+        side-y = divides b' (trans (n+1≡suc-f y) eqy)
     finish : pow2 16 ∣ x ∸ root₃ → pow3 11 ∣ x ∸ root₃ → x ≡ root₃
-    finish h2 h3′ = {!!}
-      -- WIP 终段：lcm-coprime 串联（N ∣ x∸root₃）+ t 分裂（zero → ≤-antisym / suc → x ≥ N 矛盾）
+    finish h2 h3′ = t-split (lcm-coprime (x ∸ root₃) h3′ h2) (lcm-coprime (root₃ ∸ x) h3r′ h2r)
+      where
+        h2r : pow2 16 ∣ root₃ ∸ x
+        h2r = go-h16 h16
+          where
+            go-h16 : pow2 16 ∣ suc x → pow2 16 ∣ root₃ ∸ x
+            go-h16 (divides b eq) = div2-gen x b eq
+        h3r′ : pow3 11 ∣ root₃ ∸ x
+        h3r′ = {!!}
+        t-split : SOVEREIGN_LCM ∣ x ∸ root₃ → SOVEREIGN_LCM ∣ root₃ ∸ x → x ≡ root₃
+        t-split (divides zero et) (divides zero et′) =
+          ≤-antisym (m∸n≡0⇒m≤n et) (m∸n≡0⇒m≤n et′)
+        t-split (divides zero et) (divides (suc t′) et′) = {!!} -- root₃ ≥ N 矛盾
+        t-split (divides (suc t) et) _ = {!!} -- x ≥ N 矛盾
