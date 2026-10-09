@@ -376,5 +376,14 @@ unique-root₃-same x' 1<x x<N (divides q eq) = q-split q x-form
             suc0≤0-f : suc 0 ≤ 0 → ⊥
             suc0≤0-f ()
     q-split (suc zero) eq1 = eq1
-    q-split (suc (suc q)) eq2 = {!!}
-      -- 【WIP 坐标 QS1/B1】q≥2 链爆点（N≤x 符号化链——m≤m+n (2·M) (q·M) 形仍爆）
+    q-split (suc (suc q)) eq2 = ⊥-elim (n≮n SOVEREIGN_LCM (≤-<-trans N≤x x<N))
+      where
+        N≡MM : SOVEREIGN_LCM ≡ M + M
+        N≡MM = refl
+        chain : M + M ≤ 1 + (M + (M + q * M))
+        chain = {!!}
+          -- 【WIP 坐标 MM3】chain 形（M + M ≤ …）——m≤m+n-f M (q·M) 形错位
+          -- 绕法：m≤m+n-f M M + mono 桥（M + M ≤ M + (M + q·M)）
+        N≤x : SOVEREIGN_LCM ≤ suc x'
+        N≤x = subst (SOVEREIGN_LCM ≤_) (sym eq2)
+          (subst (SOVEREIGN_LCM ≤_) (sym N≡MM) chain)
