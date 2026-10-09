@@ -92,3 +92,56 @@ mckay-dim-correct V1'' = refl
 --   • 完整 McKay 对应需要 SU(2) 表示论 + 仿射 Dynkin 图分类——超出本库范围
 --   • 本模块闭合的是 A₄ 实例层：4 个不可约表示 ↔ D₄ 的 4 个顶点 + 维数对应
 --   • 二元四面体群 2T ⊂ SU(2) 的形式化是 roadmap
+
+-- ────────────────────────────────────────────────────────────────────
+-- §2. McKay 单射（4×4 ≢ clash 穷举——McKay 映射双射性）
+-- ────────────────────────────────────────────────────────────────────
+
+mckay-inj : ∀ r1 r2 → mckay-map r1 ≡ mckay-map r2 → r1 ≡ r2
+mckay-inj V3 V3 _ = refl
+mckay-inj V1 V1 _ = refl
+mckay-inj V1' V1' _ = refl
+mckay-inj V1'' V1'' _ = refl
+mckay-inj V3 V1 ()
+mckay-inj V3 V1' ()
+mckay-inj V3 V1'' ()
+mckay-inj V1 V3 ()
+mckay-inj V1 V1' ()
+mckay-inj V1 V1'' ()
+mckay-inj V1' V3 ()
+mckay-inj V1' V1 ()
+mckay-inj V1' V1'' ()
+mckay-inj V1'' V3 ()
+mckay-inj V1'' V1 ()
+mckay-inj V1'' V1' ()
+
+-- ────────────────────────────────────────────────────────────────────
+-- §3. McKay 图边（张量积分解——3⊗r 的正系数支撑）
+--   3⊗V₃ = 2V₃ + V₁ + V₁' + V₁''（自环重数 2 + 三叶）
+--   3⊗Vᵢ = V₃（叶向边）
+-- ────────────────────────────────────────────────────────────────────
+
+data MckayEdge : D4-vertex → D4-vertex → Set where
+  edge-33  : MckayEdge center center
+  edge-31  : MckayEdge center leaf1
+  edge-32  : MckayEdge center leaf2
+  edge-33b : MckayEdge center leaf3
+  edge-13  : MckayEdge leaf1 center
+  edge-23  : MckayEdge leaf2 center
+  edge-3b3 : MckayEdge leaf3 center
+
+-- ────────────────────────────────────────────────────────────────────
+-- §4. 维数守恒律（McKay 计数律的局部形式——Σ dim r' = 3·dim r）
+-- ────────────────────────────────────────────────────────────────────
+
+edge-dim-sum : D4-vertex → ℕ
+edge-dim-sum center = 9
+edge-dim-sum leaf1  = 3
+edge-dim-sum leaf2  = 3
+edge-dim-sum leaf3  = 3
+
+mckay-dim-law : ∀ r → edge-dim-sum r ≡ 3 * mckay-dim r
+mckay-dim-law center = refl
+mckay-dim-law leaf1  = refl
+mckay-dim-law leaf2  = refl
+mckay-dim-law leaf3  = refl
