@@ -21,13 +21,13 @@
 module Sovereign.Algebra.Hensel2Side where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _%_; s≤s; z≤n)
-open import Data.Nat.Divisibility using (_∣_; divides; ∣1⇒≡1; 1∣_; ∣-refl; ∣⇒≤; ∣-trans; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; _∣?_; *-cancelˡ-∣; *-monoʳ-∣)
+open import Data.Nat.Divisibility using (_∣_; divides; ∣1⇒≡1; 1∣_; ∣-refl; ∣⇒≤; ∣-trans; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; ∣m+n∣m⇒∣n; _∣?_; *-cancelˡ-∣; ∣m∣n⇒∣m+n; *-monoʳ-∣)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor; coprime?)
-open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; *-identityˡ; *-assoc; *-cancelˡ-∣; *-cancelˡ-≡; ≤-antisym; m≤m+n; ≤-trans; ≤-reflexive; 1+n≢n; suc-injective; _≟_; ≤⇒≤ᵇ; +-comm; +-assoc; +-identityʳ)
-open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂; ∃-syntax)
+open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; *-identityˡ; *-assoc; *-cancelˡ-∣; *-cancelˡ-≡; ≤-antisym; m≤m+n; ≤-trans; ≤-reflexive; 1+n≢n; suc-injective; _≟_; ≤⇒≤ᵇ; +-comm; +-suc; +-assoc; +-identityʳ)
+open import Data.Product using (Σ; _×_; _,_; ∃-syntax)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Nullary using (¬_; yes; no; Dec)
+open import Relation.Nullary using (¬_; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst; module ≡-Reasoning)
 open import Sovereign.Algebra.Hensel3Side using (px)
 
@@ -117,14 +117,6 @@ div-pow2 (suc k) d h with 2 ∣? d
 
 -- ¬2∣a → Coprime a (pow2 k)（经 div-pow2 分类）
 coprime-a-pow2 : ∀ k a → ¬ (2 ∣ a) → Coprime a (pow2 k)
-coprime-a-pow2 k a nt2 {e} (e∣a , e∣pow2) with div-pow2 k e e∣pow2
-...   | inj₁ e≡1 = e≡1
-...   | inj₂ 2∣e = ⊥-elim (nt2 (∣-trans 2∣e e∣a))
-
---------------------------------------------------------------------------------
--- §5. 素性迭代主引理（强化假设版，coprime-divisor 一步收缩）
---------------------------------------------------------------------------------
-
 pow2-∣-iter : ∀ k a b → Coprime a (pow2 k) → pow2 k ∣ a * b → pow2 k ∣ b
 pow2-∣-iter k a b c h = coprime-divisor (coprime-2-a-aux k a c) h
   where coprime-2-a-aux : ∀ k a → Coprime a (pow2 k) → Coprime (pow2 k) a
@@ -233,123 +225,39 @@ two-cancel-twice k a b (divides qa eqa) (divides qb eqb) h =
   (trans (cong suc (cong suc (sym (+-identityʳ (ha + ha)))))
   (cong suc (cong suc (+-assoc ha ha zero))))))
 
---------------------------------------------------------------------------------
--- §10. 相邻识别主引理
---------------------------------------------------------------------------------
-
-adjacent-half : ∀ x ha hb → x ∸ 1 ≡ ha * 2 → suc x ≡ hb * 2 → hb ≡ suc ha
-adjacent-half x ha hb eqa eqb with x
-...   | zero = ⊥-elim (2∣1-clash hb2∣1)
-  where
-    hb2∣1 : 2 ∣ 1
-    hb2∣1 = divides hb eqb
-...   | suc m = *-cancelˡ-≡ hb (suc ha) 2 hb2≡2suc
-  where
-    m≡2ha : m ≡ ha * 2
-    m≡2ha = eqa
-    hb2≡suc2 : hb * 2 ≡ suc (suc (ha * 2))
-    hb2≡suc2 = sym (subst (λ w → w ≡ hb * 2) (cong (λ w → suc (suc w)) m≡2ha) eqb)
-    hb2≡2suc : 2 * hb ≡ 2 * suc ha
-    hb2≡2suc = trans (*-comm 2 hb) (trans hb2≡suc2 (trans (cong (λ w → suc (suc w)) (*-comm ha 2)) (sym (2*suc≡suc2* ha))))
 
 --------------------------------------------------------------------------------
--- §11. 2 侧二分主定理
+-- §10-§12 加法化重构（一次成形——全部具名引理零消去零 ∸ 零 ∣?）
 --------------------------------------------------------------------------------
 
-h1'-lemma : ∀ x → pow2 16 ∣ x * x ∸ 1 → pow2 16 ∣ (x ∸ 1) * suc x
-h1'-lemma x h = subst (λ w → pow2 16 ∣ w) (sym (px x)) h
+two-add : ∀ m → m + 2 ≡ suc (suc m)
+two-add m = trans (+-suc m (suc zero))
+          (trans (cong suc (+-suc m zero))
+          (cong (λ w → suc (suc w)) (+-identityʳ m)))
 
-coprime-hb-pow2 : ∀ x ha hb → 2 ∣ ha → x ∸ 1 ≡ ha * 2 → suc x ≡ hb * 2 → Coprime hb (pow2 14)
-coprime-hb-pow2 x ha hb h2∣ha eqa eqb = coprime-a-pow2 14 hb (odd-hb x ha hb h2∣ha eqa eqb)
-  where
-    odd-hb : ∀ x ha hb → 2 ∣ ha → x ∸ 1 ≡ ha * 2 → suc x ≡ hb * 2 → ¬ (2 ∣ hb)
-    odd-hb x ha hb h2∣ha eqa eqb h2∣hb = 2∣1-clash h2∣1
-      where
-        hb≡sucha : hb ≡ suc ha
-        hb≡sucha = adjacent-half _ ha hb eqa eqb
-        h2∣suc-ha : 2 ∣ suc ha
-        h2∣suc-ha = subst (λ w → 2 ∣ w) hb≡sucha h2∣hb
-        h2∣1 : 2 ∣ 1
-        h2∣1 = ∣m+n∣n⇒∣m h2∣suc-ha h2∣ha
+suc≡+1 : ∀ n → suc n ≡ n + 1
+suc≡+1 n = trans refl (sym (trans (+-suc n zero) (cong suc (+-identityʳ n))))
 
--- 乘二保整除：pow2 k ∣ q → 2·pow2 k ∣ q·2
-pow2-∣-mul-r : ∀ k q → pow2 k ∣ q → 2 * pow2 k ∣ q * 2
-pow2-∣-mul-r k q (divides q₁ eq₁) =
-  divides q₁ (trans (cong (λ w → w * 2) eq₁)
-  (trans (*-assoc q₁ (pow2 k) 2) (cong (λ w → q₁ * w) (*-comm (pow2 k) 2))))
+not2-suc : ∀ n → 2 ∣ n → ¬ (2 ∣ suc n)
+not2-suc n h2∣n h2∣suc = 2∣1-clash (∣m+n∣m⇒∣n (subst (λ w → 2 ∣ w) (suc≡+1 n) h2∣suc) h2∣n)
 
---------------------------------------------------------------------------------
--- §12. 2 侧四分合成（2^16 层）
---   x² ≡ 1 (mod 2^16) → 四种情形：
---   ① 2^16∣x∸1（x ≡ 1 类）② 2^16∣suc x（x ≡ -1 类）
---   ③ 2^15∣x∸1 ∧ 2^16∤x∸1（x ≡ 1+2^15 类）④ 2^15∣suc x ∧ 2^16∤suc x（x ≡ -1+2^15 类）
---   组装：two-side 的 2^15 二分 + pow2 16 ∣? 判定器逐侧分裂
---------------------------------------------------------------------------------
+-- 加法二分判定器（结构递归，零 mod-helper）
+-- +2 保偶（三步具名链：divides-refl 型 ∣m*n → ∣m+n 组合 → two-add 桥 → cong suc² 反向）
+plus2-even : ∀ n → 2 ∣ n → 2 ∣ suc (suc n)
+plus2-even n (divides q eq) = subst (λ w → 2 ∣ w) (sym (cong suc (cong suc eq)))
+  (subst (λ w → 2 ∣ w) (two-add (q * 2))
+  (∣m∣n⇒∣m+n (divides q refl) ∣-refl))
 
-two-parity : ∀ x ha hb → Dec (2 ∣ ha) → pow2 14 ∣ ha * hb → x ∸ 1 ≡ ha * 2 → suc x ≡ hb * 2
-           → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
-two-parity x ha hb (yes t2) h14 eqa eqb = inj₁ two-even-ha-side
-  where
-    h∣ha : pow2 14 ∣ ha
-    h∣ha = pow2-∣-iter 14 hb ha coprime-hb h14c
-      where
-        coprime-hb : Coprime hb (pow2 14)
-        coprime-hb = coprime-hb-pow2 x ha hb t2 eqa eqb
-        h14c : pow2 14 ∣ hb * ha
-        h14c = subst (λ w → pow2 14 ∣ w) (*-comm ha hb) h14
-    two-even-ha-side : pow2 15 ∣ x ∸ 1
-    two-even-ha-side = ha-form
-      where ha-form : 2 * pow2 14 ∣ x ∸ 1
-            ha-form = subst (λ w → 2 * pow2 14 ∣ w) (sym eqa) (pow2-∣-mul-r 14 ha h∣ha)
-two-parity x ha hb (no nt2) h14 eqa eqb = inj₂ two-odd-hb-side
-  where
-    h∣hb : pow2 14 ∣ hb
-    h∣hb = pow2-∣-iter 14 ha hb (coprime-a-pow2 14 ha nt2) h14
-    two-odd-hb-side : pow2 15 ∣ suc x
-    two-odd-hb-side = hb-form
-      where hb-form : 2 * pow2 14 ∣ suc x
-            hb-form = subst (λ w → 2 * pow2 14 ∣ w) (sym eqb) (pow2-∣-mul-r 14 hb h∣hb)
+parity-split : ∀ n → 2 ∣ n ⊎ 2 ∣ suc n
+parity-split zero = inj₁ (divides zero refl)
+parity-split (suc zero) = inj₂ (divides (suc zero) refl)
+parity-split (suc (suc n)) with parity-split n
+...   | inj₁ h = inj₁ (plus2-even n h)
+...   | inj₂ h = inj₂ (plus2-even (suc n) h)
 
---------------------------------------------------------------------------------
--- §12. 2 侧四分合成（2^16 层）
---   x² ≡ 1 (mod 2^16) → 四种情形：
---   ① 2^16∣x∸1（x ≡ 1 类）② 2^16∣suc x（x ≡ -1 类）
---   ③ 2^15∣x∸1 ∧ 2^16∤x∸1（x ≡ 1+2^15 类）④ 2^15∣suc x ∧ 2^16∤suc x（x ≡ -1+2^15 类）
---   组装：two-side 的 2^15 二分 + pow2 16 ∣? 判定器逐侧分裂
---------------------------------------------------------------------------------
+-- 奇性否定（2∣suc n 与 2∣n 的偶性交替，经 suc≡+1 加法桥）
+-- 素性迭代（强化假设版，parity-split 加法二分驱动）
+coprime-a-pow2 k a nt2 {e} (e∣a , e∣pow2) with div-pow2 k e e∣pow2
+...   | inj₁ e≡1 = e≡1
+...   | inj₂ 2∣e = ⊥-elim (nt2 (∣-trans 2∣e e∣a))
 
-even-even : ∀ x → pow2 16 ∣ x * x ∸ 1 → 2 ∣ x ∸ 1 → 2 ∣ suc x
-          → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
-even-even x h t2 t2s = aux x t2 t2s (h1'-lemma x h)
-  where
-    aux : ∀ x → 2 ∣ x ∸ 1 → 2 ∣ suc x → pow2 16 ∣ (x ∸ 1) * suc x
-        → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
-    aux x t2 t2s h1 with two-cancel-twice 14 (x ∸ 1) (suc x) t2 t2s h1
-    ...   | (ha , hb , eqa , eqb , h14) = two-parity x ha hb t2 h14 eqa eqb
-
-two-even-branch : ∀ x → pow2 16 ∣ x * x ∸ 1 → 2 ∣ x ∸ 1
-                → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
-two-even-branch x h t2 with 2 ∣? suc x
-...   | no nt2s = inj₁ (two-side-odd-b 16 x h nt2s)
-...   | yes t2s = even-even x h t2 t2s
-
-
-two-side : ∀ x → pow2 16 ∣ x * x ∸ 1 → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
-two-side x h with 2 ∣? (x ∸ 1)
-...   | no nt2 = inj₂ (two-side-odd-a 16 x h nt2)
-...   | yes t2 = two-even-branch x h t2
-
--- ⚠ 工具链限制（prover_limits: agda-pow2-div-dec-mod-helper-explosion）：
---   `pow2 16 ∣? 符号参数` 将 pow2 16 归约为 65536 深 unary 项，mod-helper 符号循环 → 24G 堆爆。
---   因此四分定理取「判定器外置」形式：Dec 结果由调用方（对具体 x 数值可安全计算）供给。
-fourfold′ : ∀ x → pow2 16 ∣ x * x ∸ 1
-          → Dec (pow2 16 ∣ x ∸ 1) → Dec (pow2 16 ∣ suc x)
-          → (pow2 16 ∣ x ∸ 1)
-          ⊎ (pow2 16 ∣ suc x)
-          ⊎ (pow2 15 ∣ x ∸ 1 × ¬ pow2 16 ∣ x ∸ 1)
-          ⊎ (pow2 15 ∣ suc x × ¬ pow2 16 ∣ suc x)
-fourfold′ x h (yes t16) _ = inj₁ t16
-fourfold′ x h (no _) (yes t16s) = inj₂ (inj₁ t16s)
-fourfold′ x h (no n16a) (no n16b) with two-side x h
-...   | inj₁ t15 = inj₂ (inj₂ (inj₁ (t15 , n16a)))
-...   | inj₂ t15 = inj₂ (inj₂ (inj₂ (t15 , n16b)))

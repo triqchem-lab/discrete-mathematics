@@ -1,4 +1,4 @@
-{-# OPTIONS --rewriting --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 -- | Sovereign.Algebra.Hensel3Side
 -- 3 侧分类：x² ≡ 1 (mod 177147 = 3¹¹) ⟹ 177147 ∣ x∸1 或 177147 ∣ suc x
