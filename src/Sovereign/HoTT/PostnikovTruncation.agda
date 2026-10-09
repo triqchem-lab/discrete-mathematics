@@ -138,7 +138,8 @@ lastW W (cons e (cons e' p)) = lastW W (cons e' p)
 
 ++w-disp2 : (W : WeightedDiGraph) → ∀ {u v w} (p : Walk (G W) u v) (q : Walk (G W) v w)
   → disp2 W (p ++w q) ≡ _*A_ W (disp2 W p) (_*A_ W (lastW W p) (disp2 W q))
-++w-disp2 W (nil v) q = {!!}
-  -- WIP：nil 形守恒（*A-idˡ ×2 桥——section meta 形坐标）
+++w-disp2 W (nil v) q = trans (sym (WeightedDiGraph.*A-idˡ W (disp2 W q)))
+  (cong (λ w → WeightedDiGraph._*A_ W (WeightedDiGraph.oneA W) w)
+        (sym (WeightedDiGraph.*A-idˡ W (disp2 W q))))
 ++w-disp2 W (cons e (nil w)) q = {!!}
 ++w-disp2 W (cons e (cons e' p)) q = {!!}
