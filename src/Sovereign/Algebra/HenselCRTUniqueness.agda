@@ -259,3 +259,26 @@ unique-root₃ (suc m) (s≤s z≤n) x<N (divides a eqa) (divides b eqb) = go (d
       -- 【数学终判（三次独立分析）】a + C ≡ D + C → a ≡ D 的 C 消去（literal C）本质 literal 归纳：
       --   plus-cancel 对 C 归纳（C literal→爆）；stdlib +-cancel（被消者 literal→爆）；∸ 引理（n 归纳→爆）
       --   唯一剩余：q := b∸1 形绕（用 b 分裂改变 eq 形）或 mod 形整体构造（q 形 + mod-extract 免消去）
+
+--------------------------------------------------------------------------------
+-- §7. CRT 逆向（mod 形整体构造——路径❷）
+--   x+1 = b·2¹⁶ 与 root₃+1 = b₀·2¹⁶ → 2¹⁶ ∣ x ∸ root₃（∸ 形——符号引用）
+--   3¹¹ 侧：x∸1 = a·3¹¹ 与 root₃∸1 = a₀·3¹¹ → 3¹¹ ∣ x ∸ root₃
+--   → SOVEREIGN_LCM ∣ x ∸ root₃ [lcm-coprime] → x ≡ root₃ + t·N → mod-extract → x ≡ root₃
+--------------------------------------------------------------------------------
+
+-- 数值锚（refl 级——oracle 7ddc67c0 已验）：root₃ + 1 = 45395·2¹⁶、root₃ ∸ 1 = 16794·3¹¹
+root₃+1-anchor : root₃ + 1 ≡ 45395 * pow2 16
+root₃+1-anchor = refl
+
+root₃∸1-anchor : root₃ ∸ 1 ≡ 16794 * pow3 11
+root₃∸1-anchor = refl
+
+-- CRT 逆向骨架（WIP——∸ 形引理链设计中）：
+--   crt-converse : ∀ x → 3¹¹ ∣ x ∸ 1 → 2¹⁶ ∣ suc x → x < N → x ≡ root₃
+--   依赖：∸-+-cancel（stdlib）+ 2¹⁶ ∣ x ∸ root₃ 构造 + 3¹¹ ∣ x ∸ root₃ 构造
+--     + lcm-coprime（已证）+ mod-extract（已证 85880747/1eb06959）
+crt-converse : ∀ x → pow3 11 ∣ x ∸ 1 → pow2 16 ∣ suc x → x < SOVEREIGN_LCM → x ≡ root₃
+crt-converse x h3 h16 x<N = {!!}
+  -- WIP：∸ 形构造 2¹⁶ ∣ x ∸ root₃ 与 3¹¹ ∣ x ∸ root₃（∸-+-cancel + b/b₀ 差分析）
+  --   → lcm-coprime → N ∣ x ∸ root₃ → Σ t 形 → mod-extract → x ≡ root₃
