@@ -92,3 +92,18 @@ suc∸suc a (suc b) = trans (sym (pred[m∸n]≡m∸[1+n] (suc a) (suc b)))
 ∸∸-align-suc : ∀ m n' → (m ∸ 1) ∸ n' ≡ m ∸ suc n'
 ∸∸-align-suc zero n' = trans (0∸n≡0 n') (sym (0∸n≡0 (suc n')))
 ∸∸-align-suc (suc m') n' = sym (suc∸suc m' n')
+
+-- ────────────────────────────────────────────────────────────────────
+-- §6. suc∸1-form（x 形分裂）+ ∸-to-+（∸ 到加法反演——对 n 归纳）
+-- ────────────────────────────────────────────────────────────────────
+
+open import Data.Sum using (_⊎_; inj₁; inj₂)
+
+suc∸1-form : ∀ x → suc (x ∸ 1) ≡ x ⊎ x ≡ 0
+suc∸1-form zero = inj₂ refl
+suc∸1-form (suc x') = inj₁ refl
+
+∸-to-+ : ∀ m n o → m ∸ n ≡ o → n ≤ m → m ≡ n + o
+∸-to-+ m zero o eq _ = trans eq refl
+∸-to-+ (suc m') (suc n') o eq (s≤s n'≤m') =
+  cong suc (∸-to-+ m' n' o (trans (sym (suc∸suc m' n')) eq) n'≤m')

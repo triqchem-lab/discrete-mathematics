@@ -19,7 +19,7 @@ module Sovereign.Algebra.HenselCRTUniqueness where
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _<_; z≤n; s≤s)
 open import Data.Nat.Divisibility using (_∣_; divides; ∣-trans; ∣-refl; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; ∣m+n∣m⇒∣n)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor)
-open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; m∸n≡0⇒m≤n; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; <-trans; *-monoˡ-≤; m≤n+m; *-distribʳ-+; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
+open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; m∸n≡0⇒m≤n; m≤n*m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; <-trans; *-monoˡ-≤; m≤n+m; *-distribʳ-+; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -234,7 +234,8 @@ lin-solve-db a b eq a< = {!!}
 -- §6. DB case 装配（unique-root₃——破局引理串联）
 --------------------------------------------------------------------------------
 
-open import Sovereign.Algebra.ModExtract using (mod-extract; plus-cancel; db-mod-extract; ∣-diff; ∸+-cancel; ∸∸-align-suc)
+open import Sovereign.Algebra.ModExtract using (mod-extract; plus-cancel; db-mod-extract; ∣-diff; ∸+-cancel; ∸∸-align-suc; suc∸1-form; ∸-to-+)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Nat.Properties using (+-suc)
 n+1≡suc-f : ∀ n → n + 1 ≡ suc n
 n+1≡suc-f n = trans (+-suc n zero) (cong suc (+-identityʳ n))
@@ -282,7 +283,14 @@ root₃∸1-anchor = refl
 --   依赖：∸-+-cancel（stdlib）+ 2¹⁶ ∣ x ∸ root₃ 构造 + 3¹¹ ∣ x ∸ root₃ 构造
 --     + lcm-coprime（已证）+ mod-extract（已证 85880747/1eb06959）
 crt-converse : ∀ x → pow3 11 ∣ x ∸ 1 → pow2 16 ∣ suc x → x < SOVEREIGN_LCM → x ≡ root₃
-crt-converse x h3 h16 x<N = finish (div2-side x h16) (div3-side x h3)
+crt-converse zero h3 (divides b eq) x<N = ⊥-elim (one≢b·2¹⁶ b eq)
+  where
+    one≢b·2¹⁶ : ∀ b → suc zero ≡ b * pow2 16 → ⊥
+    one≢b·2¹⁶ zero ()
+    one≢b·2¹⁶ (suc b) eq = {!!}
+      -- 【爆点坐标 FB4】suc b·65536 的 def-form = 65536 + b·65536（+ literal 第一参展开 65536 层）
+      -- 绕法待研：❶ m≤n*m 的 NonZero 实例（CannotApply 已撞）❷ 自制 n*m≥m（m 参数换符号形）❸ x=0 换 h3 分析
+crt-converse (suc x') h3 h16 x<N = finish (div2-side (suc x') h16) (div3-side (suc x') h3)
   where
     div2-side : ∀ x → pow2 16 ∣ suc x → pow2 16 ∣ x ∸ root₃
     div2-side x (divides b eq) = subst (pow2 16 ∣_) (∸+-cancel x root₃ 1) (∣-diff side-x side-r)
@@ -303,18 +311,21 @@ crt-converse x h3 h16 x<N = finish (div2-side x h16) (div3-side x h3)
         side-r = divides 45395 root₃+1-anchor
         side-y : pow2 16 ∣ y + 1
         side-y = divides b' (trans (n+1≡suc-f y) eqy)
-    finish : pow2 16 ∣ x ∸ root₃ → pow3 11 ∣ x ∸ root₃ → x ≡ root₃
-    finish h2 h3′ = t-split (lcm-coprime (x ∸ root₃) h3′ h2) (lcm-coprime (root₃ ∸ x) h3r′ h2r)
+    finish : pow2 16 ∣ suc x' ∸ root₃ → pow3 11 ∣ suc x' ∸ root₃ → suc x' ≡ root₃
+    finish h2 h3′ = t-split (lcm-coprime _ h3′ h2) (lcm-coprime _ h3r′ h2r)
       where
-        h2r : pow2 16 ∣ root₃ ∸ x
+        h2r : pow2 16 ∣ root₃ ∸ suc x'
         h2r = go-h16 h16
           where
-            go-h16 : pow2 16 ∣ suc x → pow2 16 ∣ root₃ ∸ x
-            go-h16 (divides b eq) = div2-gen x b eq
-        h3r′ : pow3 11 ∣ root₃ ∸ x
-        h3r′ = {!!}
-        t-split : SOVEREIGN_LCM ∣ x ∸ root₃ → SOVEREIGN_LCM ∣ root₃ ∸ x → x ≡ root₃
+            go-h16 : pow2 16 ∣ suc (suc x') → pow2 16 ∣ root₃ ∸ suc x'
+            go-h16 (divides b eq) = div2-gen (suc x') b eq
+        h3r′ : pow3 11 ∣ root₃ ∸ suc x'
+        h3r′ = subst (pow3 11 ∣_) align-r (∣-diff (divides 16794 root₃∸1-anchor) h3)
+          where
+            align-r : (root₃ ∸ 1) ∸ (suc x' ∸ 1) ≡ root₃ ∸ suc x'
+            align-r = trans (∸∸-align-suc root₃ (suc x' ∸ 1)) (cong (root₃ ∸_) refl)
+        t-split : SOVEREIGN_LCM ∣ suc x' ∸ root₃ → SOVEREIGN_LCM ∣ root₃ ∸ suc x' → suc x' ≡ root₃
         t-split (divides zero et) (divides zero et′) =
           ≤-antisym (m∸n≡0⇒m≤n et) (m∸n≡0⇒m≤n et′)
-        t-split (divides zero et) (divides (suc t′) et′) = {!!} -- root₃ ≥ N 矛盾
-        t-split (divides (suc t) et) _ = {!!} -- x ≥ N 矛盾
+        t-split (divides zero et) (divides (suc t′) et′) = {!!}
+        t-split (divides (suc t) et) _ = {!!}
