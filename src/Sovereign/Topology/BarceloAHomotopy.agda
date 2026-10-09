@@ -39,6 +39,7 @@ data Walk (G : DiGraph) : V G → V G → Set where
 -- §2. walk 连接 + elementary A-homotopy（三角形边替换生成元）
 -- ────────────────────────────────────────────────────────────────────
 
+infixr 5 _++w_
 _++w_ : ∀ {G : DiGraph} {u v w} → Walk G u v → Walk G v w → Walk G u w
 nil v ++w q = q
 cons e p ++w q = cons e (p ++w q)
