@@ -234,7 +234,7 @@ lin-solve-db a b eq a< = {!!}
 -- §6. DB case 装配（unique-root₃——破局引理串联）
 --------------------------------------------------------------------------------
 
-open import Sovereign.Algebra.ModExtract using (mod-extract; plus-cancel; db-mod-extract; ∣-diff; ∸+-cancel)
+open import Sovereign.Algebra.ModExtract using (mod-extract; plus-cancel; db-mod-extract; ∣-diff; ∸+-cancel; ∸∸-align-suc)
 open import Data.Nat.Properties using (+-suc)
 n+1≡suc-f : ∀ n → n + 1 ≡ suc n
 n+1≡suc-f n = trans (+-suc n zero) (cong suc (+-identityʳ n))
@@ -282,7 +282,7 @@ root₃∸1-anchor = refl
 --   依赖：∸-+-cancel（stdlib）+ 2¹⁶ ∣ x ∸ root₃ 构造 + 3¹¹ ∣ x ∸ root₃ 构造
 --     + lcm-coprime（已证）+ mod-extract（已证 85880747/1eb06959）
 crt-converse : ∀ x → pow3 11 ∣ x ∸ 1 → pow2 16 ∣ suc x → x < SOVEREIGN_LCM → x ≡ root₃
-crt-converse x h3 h16 x<N = go (div2-side x h16)
+crt-converse x h3 h16 x<N = finish (div2-side x h16) (div3-side x h3)
   where
     div2-side : ∀ x → pow2 16 ∣ suc x → pow2 16 ∣ x ∸ root₃
     div2-side x (divides b eq) = subst (pow2 16 ∣_) (∸+-cancel x root₃ 1) (∣-diff side-x side-r)
@@ -291,6 +291,11 @@ crt-converse x h3 h16 x<N = go (div2-side x h16)
         side-x = divides b (trans (n+1≡suc-f x) eq)
         side-r : pow2 16 ∣ root₃ + 1
         side-r = divides 45395 root₃+1-anchor
-    go : pow2 16 ∣ x ∸ root₃ → x ≡ root₃
-    go h = {!!}
-      -- WIP：3¹¹ ∣ x ∸ root₃（∸∸ 形/q 形）→ lcm-coprime → N ∣ x∸root₃ → mod-extract
+    div3-side : ∀ x → pow3 11 ∣ x ∸ 1 → pow3 11 ∣ x ∸ root₃
+    div3-side x h3 = subst (pow3 11 ∣_) align (∣-diff h3 (divides 16794 root₃∸1-anchor))
+      where
+        align : (x ∸ 1) ∸ (root₃ ∸ 1) ≡ x ∸ root₃
+        align = trans (∸∸-align-suc x (root₃ ∸ 1)) (cong (x ∸_) refl)
+    finish : pow2 16 ∣ x ∸ root₃ → pow3 11 ∣ x ∸ root₃ → x ≡ root₃
+    finish h2 h3′ = {!!}
+      -- WIP 终段：lcm-coprime 串联（N ∣ x∸root₃）+ t 分裂（zero → ≤-antisym / suc → x ≥ N 矛盾）

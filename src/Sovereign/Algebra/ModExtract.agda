@@ -71,7 +71,7 @@ open import Data.Nat.Properties using (*-distribʳ-∸)
 -- §4. ∸+-cancel（自证——对 o 符号归纳）+ div2-side（2¹⁶ 侧闭合）
 -- ────────────────────────────────────────────────────────────────────
 
-open import Data.Nat.Properties using (n+1≡suc; pred[m∸n]≡m∸[1+n])
+open import Data.Nat.Properties using (n+1≡suc; pred[m∸n]≡m∸[1+n]; 0∸n≡0)
 
 suc∸suc : ∀ a b → suc a ∸ suc b ≡ a ∸ b
 suc∸suc a zero = refl
@@ -84,3 +84,11 @@ suc∸suc a (suc b) = trans (sym (pred[m∸n]≡m∸[1+n] (suc a) (suc b)))
   trans (cong₂ _∸_ (+-suc m o) (+-suc n o))
   (trans (suc∸suc (m + o) (n + o)) (∸+-cancel m n o))
 
+
+-- ────────────────────────────────────────────────────────────────────
+-- §5. ∸∸-align（条件形——n = suc n' 时免归纳：case 分裂 + suc∸suc）
+-- ────────────────────────────────────────────────────────────────────
+
+∸∸-align-suc : ∀ m n' → (m ∸ 1) ∸ n' ≡ m ∸ suc n'
+∸∸-align-suc zero n' = trans (0∸n≡0 n') (sym (0∸n≡0 (suc n')))
+∸∸-align-suc (suc m') n' = sym (suc∸suc m' n')
