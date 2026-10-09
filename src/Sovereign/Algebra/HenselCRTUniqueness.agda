@@ -287,9 +287,18 @@ crt-converse zero h3 (divides b eq) x<N = ⊥-elim (one≢b·2¹⁶ b eq)
   where
     one≢b·2¹⁶ : ∀ b → suc zero ≡ b * pow2 16 → ⊥
     one≢b·2¹⁶ zero ()
-    one≢b·2¹⁶ (suc b) eq = {!!}
-      -- 【爆点坐标 FB4】suc b·65536 的 def-form = 65536 + b·65536（+ literal 第一参展开 65536 层）
-      -- 绕法待研：❶ m≤n*m 的 NonZero 实例（CannotApply 已撞）❷ 自制 n*m≥m（m 参数换符号形）❸ x=0 换 h3 分析
+    one≢b·2¹⁶ (suc b) eq = n≮n (pow2 16) (≤-<-trans big≤1 one<big)
+      where
+        -- m≤sucn*m（自制——+ 第一参全符号形：suc b·m stuck-safe）
+        m≤sucn*m : ∀ b m → m ≤ suc b * m
+        m≤sucn*m zero m = ≤-reflexive (sym (+-identityʳ m))
+        m≤sucn*m (suc b) m = {!!}
+          -- 【WIP 坐标】suc 分支：≤-trans IH (suc b·m ≤ m + suc b·m)——m≤n+m 调用序歧义
+          -- 目标形 suc b·m ≤ m + suc b·m = suc (suc b)·m [defeq]——绕法：≤-reflexive (+-comm 形)
+        big≤1 : pow2 16 ≤ suc zero
+        big≤1 = subst (pow2 16 ≤_) (sym eq) (m≤sucn*m b (pow2 16))
+        one<big : suc zero < pow2 16
+        one<big = s≤s (s≤s z≤n)
 crt-converse (suc x') h3 h16 x<N = finish (div2-side (suc x') h16) (div3-side (suc x') h3)
   where
     div2-side : ∀ x → pow2 16 ∣ suc x → pow2 16 ∣ x ∸ root₃
