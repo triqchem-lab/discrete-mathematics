@@ -104,8 +104,17 @@ AH-resp W {u} {v} {w1} {w2} harm (gen (expand {u = u'} {x = x} {y = y} {z = z} {
 -- ────────────────────────────────────────────────────────────────────
 
 -- 步对位移（相邻两步的权重和——2-截断的信息层）
+-- 二阶位移（相邻步对的权重和累积——2-截断信息层）
 disp2 : (W : WeightedDiGraph) → ∀ {u v} → Walk (G W) u v → A W
 disp2 W (nil v) = zeroA W
-disp2 W (cons {u} {v} {w} e p) = {!!}
-  -- WIP：二阶累积（相邻步对的权重和——slide 守恒的二阶形式）
-  -- 数学：disp2 (cons e (cons e' p)) = wt u v +A (wt v w +A disp2 p)??——二阶信息设计中
+disp2 W (cons e (nil w)) = zeroA W
+disp2 W (cons {u = u} {v = v} e (cons {v = w} e' p)) = _+A_ W (wt W u v) (_+A_ W (wt W v w) (disp2 W p))
+
+-- 2-截断守恒骨架（slide 的二阶形式——步对权重和守恒）
+disp2-slide : (W : WeightedDiGraph) → ∀ {u x y z v}
+  (p : Walk (G W) u x) (b : Walk (G W) z v)
+  (e1 : edge (G W) x y) (e2 : edge (G W) y z) (e3 : edge (G W) x z)
+  → _+A_ W (wt W x y) (wt W y z) ≡ wt W x z
+  → disp2 W (p ++w (cons e1 (cons e2 b))) ≡ disp2 W (p ++w (cons e3 b))
+disp2-slide W p b e1 e2 e3 harm = {!!}
+  -- WIP：二阶守恒（步对和 + disp2 尾部 + harm 条件）
