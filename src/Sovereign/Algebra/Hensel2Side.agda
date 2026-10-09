@@ -21,13 +21,13 @@
 module Sovereign.Algebra.Hensel2Side where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _%_; s≤s; z≤n)
-open import Data.Nat.Divisibility using (_∣_; divides; ∣1⇒≡1; 1∣_; ∣-refl; ∣⇒≤; ∣-trans; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; _∣?_; *-cancelˡ-∣)
+open import Data.Nat.Divisibility using (_∣_; divides; ∣1⇒≡1; 1∣_; ∣-refl; ∣⇒≤; ∣-trans; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; _∣?_; *-cancelˡ-∣; *-monoʳ-∣)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor; coprime?)
 open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; *-identityˡ; *-assoc; *-cancelˡ-∣; *-cancelˡ-≡; ≤-antisym; m≤m+n; ≤-trans; ≤-reflexive; 1+n≢n; suc-injective; _≟_; ≤⇒≤ᵇ; +-comm; +-assoc; +-identityʳ)
-open import Data.Product using (Σ; _×_; _,_; ∃-syntax)
+open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂; ∃-syntax)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Nullary using (¬_; yes; no)
+open import Relation.Nullary using (¬_; yes; no; Dec)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst; module ≡-Reasoning)
 open import Sovereign.Algebra.Hensel3Side using (px)
 
@@ -232,3 +232,72 @@ two-cancel-twice k a b (divides qa eqa) (divides qb eqb) h =
   (trans (cong suc (+-comm ha (suc ha)))
   (trans (cong suc (cong suc (sym (+-identityʳ (ha + ha)))))
   (cong suc (cong suc (+-assoc ha ha zero))))))
+
+--------------------------------------------------------------------------------
+-- §10. 相邻识别主引理
+--------------------------------------------------------------------------------
+
+adjacent-half : ∀ x ha hb → x ∸ 1 ≡ ha * 2 → suc x ≡ hb * 2 → hb ≡ suc ha
+adjacent-half x ha hb eqa eqb with x
+...   | zero = ⊥-elim (2∣1-clash hb2∣1)
+  where
+    hb2∣1 : 2 ∣ 1
+    hb2∣1 = divides hb eqb
+...   | suc m = *-cancelˡ-≡ hb (suc ha) 2 hb2≡2suc
+  where
+    m≡2ha : m ≡ ha * 2
+    m≡2ha = eqa
+    hb2≡suc2 : hb * 2 ≡ suc (suc (ha * 2))
+    hb2≡suc2 = sym (subst (λ w → w ≡ hb * 2) (cong (λ w → suc (suc w)) m≡2ha) eqb)
+    hb2≡2suc : 2 * hb ≡ 2 * suc ha
+    hb2≡2suc = trans (*-comm 2 hb) (trans hb2≡suc2 (trans (cong (λ w → suc (suc w)) (*-comm ha 2)) (sym (2*suc≡suc2* ha))))
+
+--------------------------------------------------------------------------------
+-- §11. 2 侧二分主定理
+--------------------------------------------------------------------------------
+
+h1'-lemma : ∀ x → pow2 16 ∣ x * x ∸ 1 → pow2 16 ∣ (x ∸ 1) * suc x
+h1'-lemma x h = subst (λ w → pow2 16 ∣ w) (sym (px x)) h
+
+coprime-hb-pow2 : ∀ x ha hb → 2 ∣ ha → x ∸ 1 ≡ ha * 2 → suc x ≡ hb * 2 → Coprime hb (pow2 14)
+coprime-hb-pow2 x ha hb h2∣ha eqa eqb = coprime-a-pow2 14 hb (odd-hb x ha hb h2∣ha eqa eqb)
+  where
+    odd-hb : ∀ x ha hb → 2 ∣ ha → x ∸ 1 ≡ ha * 2 → suc x ≡ hb * 2 → ¬ (2 ∣ hb)
+    odd-hb x ha hb h2∣ha eqa eqb h2∣hb = 2∣1-clash h2∣1
+      where
+        hb≡sucha : hb ≡ suc ha
+        hb≡sucha = adjacent-half _ ha hb eqa eqb
+        h2∣suc-ha : 2 ∣ suc ha
+        h2∣suc-ha = subst (λ w → 2 ∣ w) hb≡sucha h2∣hb
+        h2∣1 : 2 ∣ 1
+        h2∣1 = ∣m+n∣n⇒∣m h2∣suc-ha h2∣ha
+
+-- 乘二保整除：pow2 k ∣ q → 2·pow2 k ∣ q·2
+pow2-∣-mul-r : ∀ k q → pow2 k ∣ q → 2 * pow2 k ∣ q * 2
+pow2-∣-mul-r k q (divides q₁ eq₁) =
+  divides q₁ (trans (cong (λ w → w * 2) eq₁)
+  (trans (*-assoc q₁ (pow2 k) 2) (cong (λ w → q₁ * w) (*-comm (pow2 k) 2))))
+
+two-parity : ∀ x ha hb → Dec (2 ∣ ha) → pow2 14 ∣ ha * hb → x ∸ 1 ≡ ha * 2 → suc x ≡ hb * 2
+           → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
+two-parity x ha hb (yes t2) h14 eqa eqb = inj₁ two-even-ha-side
+  where
+    h∣ha : pow2 14 ∣ ha
+    h∣ha = pow2-∣-iter 14 hb ha coprime-hb h14c
+      where
+        coprime-hb : Coprime hb (pow2 14)
+        coprime-hb = coprime-hb-pow2 x ha hb t2 eqa eqb
+        h14c : pow2 14 ∣ hb * ha
+        h14c = subst (λ w → pow2 14 ∣ w) (*-comm ha hb) h14
+    two-even-ha-side : pow2 15 ∣ x ∸ 1
+    two-even-ha-side = ha-form
+      where ha-form : 2 * pow2 14 ∣ x ∸ 1
+            ha-form = subst (λ w → 2 * pow2 14 ∣ w) (sym eqa) (pow2-∣-mul-r 14 ha h∣ha)
+two-parity x ha hb (no nt2) h14 eqa eqb = inj₂ two-odd-hb-side
+  where
+    h∣hb : pow2 14 ∣ hb
+    h∣hb = pow2-∣-iter 14 ha hb (coprime-a-pow2 14 ha nt2) h14
+    two-odd-hb-side : pow2 15 ∣ suc x
+    two-odd-hb-side = hb-form
+      where hb-form : 2 * pow2 14 ∣ suc x
+            hb-form = subst (λ w → 2 * pow2 14 ∣ w) (sym eqb) (pow2-∣-mul-r 14 hb h∣hb)
