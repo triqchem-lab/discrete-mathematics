@@ -278,6 +278,14 @@ pow2-∣-mul-r k q (divides q₁ eq₁) =
   divides q₁ (trans (cong (λ w → w * 2) eq₁)
   (trans (*-assoc q₁ (pow2 k) 2) (cong (λ w → q₁ * w) (*-comm (pow2 k) 2))))
 
+--------------------------------------------------------------------------------
+-- §12. 2 侧四分合成（2^16 层）
+--   x² ≡ 1 (mod 2^16) → 四种情形：
+--   ① 2^16∣x∸1（x ≡ 1 类）② 2^16∣suc x（x ≡ -1 类）
+--   ③ 2^15∣x∸1 ∧ 2^16∤x∸1（x ≡ 1+2^15 类）④ 2^15∣suc x ∧ 2^16∤suc x（x ≡ -1+2^15 类）
+--   组装：two-side 的 2^15 二分 + pow2 16 ∣? 判定器逐侧分裂
+--------------------------------------------------------------------------------
+
 two-parity : ∀ x ha hb → Dec (2 ∣ ha) → pow2 14 ∣ ha * hb → x ∸ 1 ≡ ha * 2 → suc x ≡ hb * 2
            → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
 two-parity x ha hb (yes t2) h14 eqa eqb = inj₁ two-even-ha-side
@@ -301,3 +309,55 @@ two-parity x ha hb (no nt2) h14 eqa eqb = inj₂ two-odd-hb-side
     two-odd-hb-side = hb-form
       where hb-form : 2 * pow2 14 ∣ suc x
             hb-form = subst (λ w → 2 * pow2 14 ∣ w) (sym eqb) (pow2-∣-mul-r 14 hb h∣hb)
+
+--------------------------------------------------------------------------------
+-- §12. 2 侧四分合成（2^16 层）
+--   x² ≡ 1 (mod 2^16) → 四种情形：
+--   ① 2^16∣x∸1（x ≡ 1 类）② 2^16∣suc x（x ≡ -1 类）
+--   ③ 2^15∣x∸1 ∧ 2^16∤x∸1（x ≡ 1+2^15 类）④ 2^15∣suc x ∧ 2^16∤suc x（x ≡ -1+2^15 类）
+--   组装：two-side 的 2^15 二分 + pow2 16 ∣? 判定器逐侧分裂
+--------------------------------------------------------------------------------
+
+even-even : ∀ x → pow2 16 ∣ x * x ∸ 1 → 2 ∣ x ∸ 1 → 2 ∣ suc x
+          → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
+even-even x h t2 t2s = two-parity-aux x t2 t2s (h1'-lemma x h)
+  where two-parity-aux : ∀ x → 2 ∣ x ∸ 1 → 2 ∣ suc x → pow2 16 ∣ (x ∸ 1) * suc x
+          → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
+        two-parity-aux x t2 t2s h1 = aux-inside x t2 t2s h1
+          where aux-inside : ∀ x → 2 ∣ x ∸ 1 → 2 ∣ suc x → pow2 16 ∣ (x ∸ 1) * suc x
+                  → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
+                aux-inside x t2 t2s h1 = {!下批: 2∣? 判定 + two-cancel-twice Σ 组装!}
+  where
+    h1 : pow2 16 ∣ (x ∸ 1) * suc x
+    h1 = h1'-lemma x h
+    h14 : pow2 14 ∣ ha * hb
+    h14 = proj₂ (proj₂ (proj₂ (two-cancel-twice 14 (x ∸ 1) (suc x)
+             (divides ha eqa) (divides hb eqb) h1)))
+
+two-even-branch : ∀ x → pow2 16 ∣ x * x ∸ 1 → 2 ∣ x ∸ 1
+                → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
+two-even-branch x h t2 with 2 ∣? suc x
+...   | no nt2s = inj₁ (two-side-odd-b 16 x h nt2s)
+...   | yes t2s = even-even x h t2 t2s
+
+
+two-side : ∀ x → pow2 16 ∣ x * x ∸ 1 → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
+two-side x h with 2 ∣? (x ∸ 1)
+...   | no nt2 = inj₂ (two-side-odd-a 16 x h nt2)
+...   | yes t2 = two-even-branch x h t2
+
+
+fourfold : ∀ x → pow2 16 ∣ x * x ∸ 1
+          → (pow2 16 ∣ x ∸ 1)
+          ⊎ (pow2 16 ∣ suc x)
+          ⊎ (pow2 15 ∣ x ∸ 1 × ¬ pow2 16 ∣ x ∸ 1)
+          ⊎ (pow2 15 ∣ suc x × ¬ pow2 16 ∣ suc x)
+fourfold x h with 2 ∣? (x ∸ 1)
+...   | no nt2 = inj₂ (inj₁ (two-side-odd-a 16 x h nt2))
+...   | yes t2 with two-side x h
+...     | inj₁ t15 with pow2 16 ∣? (x ∸ 1)
+...       | yes t16 = inj₁ t16
+...       | no n16 = inj₂ (inj₁ (t15 , n16))
+...     | inj₂ t15 with pow2 16 ∣? suc x
+...       | yes t16 = inj₂ (inj₂ (inj₁ t16))
+...       | no n16 = inj₂ (inj₂ (inj₂ (t15 , n16)))
