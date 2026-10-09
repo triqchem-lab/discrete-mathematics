@@ -23,7 +23,7 @@ module Sovereign.Algebra.Hensel2Side where
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _%_; s≤s; z≤n)
 open import Data.Nat.Divisibility using (_∣_; divides; ∣1⇒≡1; 1∣_; ∣-refl; ∣⇒≤; ∣-trans; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; _∣?_; *-cancelˡ-∣)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor; coprime?)
-open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; *-assoc; ≤-antisym; m≤m+n; ≤-trans; ≤-reflexive; 1+n≢n; suc-injective; _≟_; ≤⇒≤ᵇ; *-cancelˡ-∣)
+open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; *-identityˡ; *-assoc; *-cancelˡ-∣; *-cancelˡ-≡; ≤-antisym; m≤m+n; ≤-trans; ≤-reflexive; 1+n≢n; suc-injective; _≟_; ≤⇒≤ᵇ; +-comm; +-assoc; +-identityʳ)
 open import Data.Product using (Σ; _×_; _,_; ∃-syntax)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -219,3 +219,16 @@ two-cancel-twice k a b (divides qa eqa) (divides qb eqb) h =
     -- 重排 + 双消二：pow2 (suc(suc k)) ≡ 2·pow2 (suc k) 定义性，h2 经 rearr 后逐层消
     h3 : pow2 (suc (suc k)) ∣ 2 * (2 * (qa * qb))
     h3 = subst (λ w → pow2 (suc (suc k)) ∣ w) (rearr qa qb) h2
+
+--------------------------------------------------------------------------------
+-- §9. 相邻识别：x∸1 ≡ ha·2 ∧ suc x ≡ hb·2 → hb ≡ suc ha
+--   x 分裂（zero 不可达 / suc m 半值替换）+ 2·suc ha ≡ suc (suc (2·ha)) 算术链
+--------------------------------------------------------------------------------
+
+2*suc≡suc2* : ∀ ha → 2 * suc ha ≡ suc (suc (2 * ha))
+2*suc≡suc2* ha =
+  trans refl
+  (trans (cong (λ w → suc ha + w) (*-identityˡ (suc ha)))
+  (trans (cong suc (+-comm ha (suc ha)))
+  (trans (cong suc (cong suc (sym (+-identityʳ (ha + ha)))))
+  (cong suc (cong suc (+-assoc ha ha zero))))))
