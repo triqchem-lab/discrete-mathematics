@@ -128,3 +128,29 @@ pow2-∣-iter : ∀ k a b → Coprime a (pow2 k) → pow2 k ∣ a * b → pow2 k
 pow2-∣-iter k a b c h = coprime-divisor (coprime-2-a-aux k a c) h
   where coprime-2-a-aux : ∀ k a → Coprime a (pow2 k) → Coprime (pow2 k) a
         coprime-2-a-aux k a c (d∣pow2 , d∣a) = c (d∣a , d∣pow2)
+
+--------------------------------------------------------------------------------
+-- §6. 奇偶两侧收缩（四分的数学核心）
+--   奇 a：pow2 k ∣ a·suc(a) → pow2 k ∣ suc(a)（a 与 pow2 k 互素，iter 直接收缩）
+--   偶 a：pow2 k ∣ a·suc(a) → pow2 k ∣ a（suc(a) 奇，与 pow2 k 互素，同上）
+--   ——两引理合取即「赋值落到相邻 pair 的某一侧」，是 mod-4 赋值分析的代数核心
+--------------------------------------------------------------------------------
+
+2∣1-clash : 2 ∣ 1 → ⊥
+2∣1-clash (divides zero ())            -- 1 ≡ 0 封闭 clash
+2∣1-clash (divides (suc zero) ())      -- 1 ≡ 2 封闭 clash
+2∣1-clash (divides (suc (suc q)) ())   -- 1 ≡ (2+q)·2 深度 clash
+
+two-odd-b : ∀ k a → ¬ (2 ∣ a) → pow2 k ∣ a * suc a → pow2 k ∣ suc a
+two-odd-b k a nt2 h = pow2-∣-iter k a (suc a) (coprime-a-pow2 k a nt2) h
+
+two-even-a : ∀ k a → 2 ∣ a → pow2 k ∣ a * suc a → pow2 k ∣ a
+two-even-a k a h2∣a h = pow2-∣-iter k (suc a) a (coprime-suc-pow2 h2∣a) (subst (λ w → pow2 k ∣ w) (*-comm a (suc a)) h)
+  where
+    -- suc a 奇（a 偶）→ Coprime (suc a) (pow2 k)：需 ¬2∣suc a
+    -- a 偶 → suc a 奇：2∣suc a ∧ 2∣a → 2∣suc a ∸ a = 1 → 1 ≡ 2 clash
+    coprime-suc-pow2 : 2 ∣ a → Coprime (suc a) (pow2 k)
+    coprime-suc-pow2 h2∣a = coprime-a-pow2 k (suc a) (suc-a-odd h2∣a)
+      where
+        suc-a-odd : 2 ∣ a → ¬ (2 ∣ suc a)
+        suc-a-odd h2∣a (divides q eq) = 2∣1-clash (∣m+n∣n⇒∣m (divides q eq) h2∣a)
