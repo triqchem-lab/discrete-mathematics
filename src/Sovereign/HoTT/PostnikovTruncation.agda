@@ -37,6 +37,8 @@ record WeightedDiGraph : Set₁ where
     +A-assoc  : ∀ x y z → (x +A y) +A z ≡ x +A (y +A z)
     +A-comm   : ∀ x y → x +A y ≡ y +A x
     +A-idˡ    : ∀ x → zeroA +A x ≡ x
+    *A-assoc  : ∀ x y z → (x *A y) *A z ≡ x *A (y *A z)
+    *A-idʳ    : ∀ x → x *A oneA ≡ x
 
 open WeightedDiGraph
 
@@ -117,8 +119,9 @@ disp2 W (cons {u = u} {v = v} e (cons {v = w} e' p)) = _*A_ W (_*A_ W (wt W u v)
 disp2-slide : (W : WeightedDiGraph) → ∀ {u x y z v}
   (p : Walk (G W) u x) (b : Walk (G W) z v)
   (e1 : edge (G W) x y) (e2 : edge (G W) y z) (e3 : edge (G W) x z)
-  → _+A_ W (wt W x y) (wt W y z) ≡ wt W x z
+  → _*A_ W (wt W x y) (wt W y z) ≡ wt W x z
   → disp2 W (p ++w (cons e1 (cons e2 b))) ≡ disp2 W (p ++w (cons e3 b))
-disp2-slide W {u} {x} {y} {z} {v} (nil x) (nil z) e1 e2 e3 harm = {!!}
+disp2-slide W {u} {x} {y} {z} {v} (nil x) (nil z) e1 e2 e3 harm =
+  trans (cong (λ w → _*A_ W w (oneA W)) harm) (*A-idʳ W (wt W x z))
 disp2-slide W p b e1 e2 e3 harm = {!!}
   -- WIP：二阶守恒（++w-disp2 引理 + 边界步对 + harm 条件）
