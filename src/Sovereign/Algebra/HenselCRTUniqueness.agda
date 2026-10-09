@@ -375,6 +375,6 @@ unique-root₃-same x' 1<x x<N (divides q eq) = q-split q x-form
           where
             suc0≤0-f : suc 0 ≤ 0 → ⊥
             suc0≤0-f ()
-    q-split (suc zero) eq1 = {!!}
-      -- 【WIP 坐标 GT8】q=1 分支 literal motive 爆点（refl {x = root₅} 的 literal unify）
+    q-split (suc zero) eq1 = eq1
     q-split (suc (suc q)) eq2 = {!!}
+      -- 【WIP 坐标 QS1/B1】q≥2 链爆点（N≤x 符号化链——m≤m+n (2·M) (q·M) 形仍爆）
