@@ -374,3 +374,22 @@ row-col v1 v2 v3 v4 v5 v6 v7 v8 v9 =
       c1 : (v1 + (v4 + (v7 + (v2 + (v5 + (v8 + (v3 + (v6 + v9)))))))) ≡ (((v1 + v4) + v7) + (((v2 + (v5 + v8))) + ((v3 + (v6 + v9)))))
       c1 = unflat9 v1 v2 v3 v4 v5 v6 v7 v8 v9
   in x1 ∙ x2 ∙ x3 ∙ x3b ∙ x5 ∙ x6 ∙ b1 ∙ b2 ∙ b3 ∙ b4 ∙ b5 ∙ b6 ∙ b7 ∙ b8 ∙ b9 ∙ c1
+
+-- ────────────────────────────────────────────────────────────────────
+-- mul-assoc：矩阵乘法结合律（(A *3 B) *3 C ≡ A *3 (B *3 C)）
+--   9 entry × assoc-entry（已证逐点）× funExt × mat3-cong——仿 braid-rel 范式
+-- ────────────────────────────────────────────────────────────────────
+
+mul-assoc : ∀ A B C → (A *3 B) *3 C ≡ A *3 (B *3 C)
+mul-assoc (mat3 a11 a12 a13 a21 a22 a23 a31 a32 a33)
+          (mat3 b11 b12 b13 b21 b22 b23 b31 b32 b33)
+          (mat3 c1 c2 c3 c4 c5 c6 c7 c8 c9) =
+  mat3-cong (funExt λ n → assoc-entry a11 a12 a13 b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c4 c7 n)
+            (funExt λ n → assoc-entry a11 a12 a13 b11 b12 b13 b21 b22 b23 b31 b32 b33 c2 c5 c8 n)
+            (funExt λ n → assoc-entry a11 a12 a13 b11 b12 b13 b21 b22 b23 b31 b32 b33 c3 c6 c9 n)
+            (funExt λ n → assoc-entry a21 a22 a23 b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c4 c7 n)
+            (funExt λ n → assoc-entry a21 a22 a23 b11 b12 b13 b21 b22 b23 b31 b32 b33 c2 c5 c8 n)
+            (funExt λ n → assoc-entry a21 a22 a23 b11 b12 b13 b21 b22 b23 b31 b32 b33 c3 c6 c9 n)
+            (funExt λ n → assoc-entry a31 a32 a33 b11 b12 b13 b21 b22 b23 b31 b32 b33 c1 c4 c7 n)
+            (funExt λ n → assoc-entry a31 a32 a33 b11 b12 b13 b21 b22 b23 b31 b32 b33 c2 c5 c8 n)
+            (funExt λ n → assoc-entry a31 a32 a33 b11 b12 b13 b21 b22 b23 b31 b32 b33 c3 c6 c9 n)
