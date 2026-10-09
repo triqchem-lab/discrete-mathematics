@@ -131,13 +131,17 @@ disp2-slide W p b e1 e2 e3 harm = {!!}
 -- §6. ++w-disp2（边界步对分解——general 形基础）
 -- ────────────────────────────────────────────────────────────────────
 
+firstW : (W : WeightedDiGraph) → ∀ {u v} → Walk (G W) u v → A W
+firstW W (nil v) = oneA W
+firstW W (cons {u = u} {v = v} e p) = wt W u v
+
 lastW : (W : WeightedDiGraph) → ∀ {u v} → Walk (G W) u v → A W
 lastW W (nil v) = oneA W
 lastW W (cons {u = u} {v = v} e (nil w)) = wt W u v
 lastW W (cons e (cons e' p)) = lastW W (cons e' p)
 
 ++w-disp2 : (W : WeightedDiGraph) → ∀ {u v w} (p : Walk (G W) u v) (q : Walk (G W) v w)
-  → disp2 W (p ++w q) ≡ _*A_ W (disp2 W p) (_*A_ W (lastW W p) (disp2 W q))
+  → disp2 W (p ++w q) ≡ _*A_ W (disp2 W p) (_*A_ W (_*A_ W (lastW W p) (firstW W q)) (disp2 W q))
 ++w-disp2 W (nil v) q = trans (sym (WeightedDiGraph.*A-idˡ W (disp2 W q)))
   (cong (λ w → WeightedDiGraph._*A_ W (WeightedDiGraph.oneA W) w)
         (sym (WeightedDiGraph.*A-idˡ W (disp2 W q))))
