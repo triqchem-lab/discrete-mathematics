@@ -19,7 +19,7 @@ module Sovereign.Algebra.HenselCRTUniqueness where
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _<_; z≤n; s≤s)
 open import Data.Nat.Divisibility using (_∣_; divides; ∣-trans; ∣-refl; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; ∣m+n∣m⇒∣n)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor)
-open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; m∸n≡0⇒m≤n; m≤n*m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; <-trans; *-monoˡ-≤; m≤n+m; *-distribʳ-+; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
+open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; m∸n≡0⇒m≤n; m≤n*m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; ≤-step; <-trans; *-monoˡ-≤; m≤n+m; *-distribʳ-+; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -282,6 +282,10 @@ root₃∸1-anchor = refl
 --   crt-converse : ∀ x → 3¹¹ ∣ x ∸ 1 → 2¹⁶ ∣ suc x → x < N → x ≡ root₃
 --   依赖：∸-+-cancel（stdlib）+ 2¹⁶ ∣ x ∸ root₃ 构造 + 3¹¹ ∣ x ∸ root₃ 构造
 --     + lcm-coprime（已证）+ mod-extract（已证 85880747/1eb06959）
+m≤m+n-f : ∀ a b → a ≤ a + b
+m≤m+n-f a zero = ≤-reflexive (sym (+-identityʳ a))
+m≤m+n-f a (suc b) = subst (a ≤_) (sym (+-suc a b)) (≤-step (m≤m+n-f a b))
+
 crt-converse : ∀ x → pow3 11 ∣ x ∸ 1 → pow2 16 ∣ suc x → x < SOVEREIGN_LCM → x ≡ root₃
 crt-converse zero h3 (divides b eq) x<N = ⊥-elim (one≢b·2¹⁶ b eq)
   where
@@ -290,11 +294,12 @@ crt-converse zero h3 (divides b eq) x<N = ⊥-elim (one≢b·2¹⁶ b eq)
     one≢b·2¹⁶ (suc b) eq = n≮n (pow2 16) (≤-<-trans big≤1 one<big)
       where
         -- m≤sucn*m（自制——+ 第一参全符号形：suc b·m stuck-safe）
+        m≤n+m-f : ∀ a b → b ≤ a + b
+        m≤n+m-f zero b = ≤-reflexive refl
+        m≤n+m-f (suc a) b = ≤-step (m≤n+m-f a b)
         m≤sucn*m : ∀ b m → m ≤ suc b * m
         m≤sucn*m zero m = ≤-reflexive (sym (+-identityʳ m))
-        m≤sucn*m (suc b) m = {!!}
-          -- 【WIP 坐标】suc 分支：≤-trans IH (suc b·m ≤ m + suc b·m)——m≤n+m 调用序歧义
-          -- 目标形 suc b·m ≤ m + suc b·m = suc (suc b)·m [defeq]——绕法：≤-reflexive (+-comm 形)
+        m≤sucn*m (suc b) m = ≤-trans (m≤sucn*m b m) (m≤n+m-f m (suc b * m))
         big≤1 : pow2 16 ≤ suc zero
         big≤1 = subst (pow2 16 ≤_) (sym eq) (m≤sucn*m b (pow2 16))
         one<big : suc zero < pow2 16
@@ -337,4 +342,5 @@ crt-converse (suc x') h3 h16 x<N = finish (div2-side (suc x') h16) (div3-side (s
         t-split (divides zero et) (divides zero et′) =
           ≤-antisym (m∸n≡0⇒m≤n et) (m∸n≡0⇒m≤n et′)
         t-split (divides zero et) (divides (suc t′) et′) = {!!}
-        t-split (divides (suc t) et) _ = {!!}
+          -- 【爆点坐标 RV3】t-split 矛盾分支（m≤m+n-f SOVEREIGN_LCM … 的 literal 参数形）
+          -- 绕法：m≤m+n-f 的 a 参数换符号形（SOVEREIGN_LCM literal 爆）或≤ 形重设        t-split (divides (suc t) et) _ = {!!}
