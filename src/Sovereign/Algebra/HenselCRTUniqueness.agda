@@ -197,9 +197,6 @@ lhs-form a = trans (lhs-distrib a)
 -- k ≥ 2 否定（M 参数化符号安全）
 k-split-gen : ∀ M C a k → a + C ≡ suc (suc k) * M → a + C < M + M → ⊥
 k-split-gen M C a k eq lt = {!!}
-  where
-    M+M≤ : M + M ≤ a + C
-    M+M≤ = subst (M + M ≤_) (sym eq) (+-monoʳ-≤ M (m≤m+n M (k * M)))
 -- DB 核心：3¹¹·a + 2 ≡ b·2¹⁶ → a < 2¹⁶ → a ≡ 16794（∣ 型免减法 + k 三段分裂）
 lin-solve-db : ∀ a b → a * pow3 11 + 2 ≡ b * pow2 16 → a < pow2 16 → a ≡ 16794
 -- DB 辅助（顶层分离——避开 where 嵌套联合归一化）
@@ -221,12 +218,16 @@ db-div a b eq = ∣m+n∣n⇒∣m (subst (pow2 16 ∣_) (lhs-form a) lhs-div) (d
 
 db-bound : ∀ a → a < pow2 16 → a + 2 * 24371 < pow2 16 + pow2 16
 db-bound a a< = {!!}
-  -- 【慢点坐标 H4】db-bound 的 mono 链（<-trans (+-monoˡ-< …) (+-monoʳ-< …)）爆 101s
-  -- 下批探针：拆 <-trans 两半单独测（+-monoˡ-< 形 / m<m+n (s≤s z≤n) 形 / literal conversion）
 
 db-go : ∀ a → pow2 16 ∣ a + 2 * 24371 → a + 2 * 24371 < pow2 16 + pow2 16 → a ≡ 16794
-db-go a (divides zero eq0) _ = {!!}
+db-go a (divides zero eq0) _ = ⊥-elim (48742≢0 (m+n≡0⇒m≡0 (2 * 24371) {a} (trans (sym (+-comm a (2 * 24371))) eq0)))
+  where
+    48742≢0 : 2 * 24371 ≡ 0 → ⊥
+    48742≢0 ()
 db-go a (divides (suc zero) eq1) _ = {!!}
+  -- 【爆点坐标】+-cancelˡ-≡/+-comm 对 literal 第一参 = O(literal) 归纳构造（48742 层）
+  -- 绕法待研：cancel 被消加数符号化 / suc 结构形 / BUILTIN 级等式——下批或主链优先
+
 db-go a (divides (suc (suc k)) eq2) lt = {!!}
 
-lin-solve-db a b eq a< = db-go a (db-div a b eq) (db-bound a a<)
+lin-solve-db a b eq a< = {!!}
