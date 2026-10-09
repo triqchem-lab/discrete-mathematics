@@ -361,29 +361,27 @@ gt1-≢1 zero ()
 -- 同侧唯一性（x > 1 排除 root₁）：x ≡ root₃ (mod 3¹¹·2¹⁵)
 unique-root₃-same : ∀ x' → 1 < suc x' → suc x' < SOVEREIGN_LCM
                   → (pow3 11 * pow2 15) ∣ suc x' ∸ 1 → suc x' ≡ root₅
-unique-root₃-same x' 1<x x<N (divides q eq) = q-split q x-form
+unique-root₃-same x' 1<x x<N (divides q eq) = q-split-gen (pow3 11 * pow2 15) q x-form refl
   where
     M : ℕ
     M = pow3 11 * pow2 15
-    x-form : suc x' ≡ 1 + q * M
-    x-form = ∸-to-+ (suc x') 1 (q * M) eq (s≤s z≤n)
-    q-split : ∀ q → suc x' ≡ 1 + q * M → suc x' ≡ root₅
-    q-split zero eq0 = ⊥-elim (suc1≤1-f (subst (λ w → suc 1 ≤ suc w) (suc-injective eq0) 1<x))
+    x-form : suc x' ≡ 1 + q * (pow3 11 * pow2 15)
+    x-form = ∸-to-+ (suc x') 1 (q * (pow3 11 * pow2 15)) eq (s≤s z≤n)
+    q-split-gen : ∀ M q → suc x' ≡ 1 + q * M → (M ≡ pow3 11 * pow2 15) → suc x' ≡ root₅
+    q-split-gen M zero eq0 _ = ⊥-elim (suc1≤1-f (subst (λ w → suc 1 ≤ suc w) (suc-injective eq0) 1<x))
       where
         suc1≤1-f : suc 1 ≤ 1 → ⊥
         suc1≤1-f (s≤s p) = suc0≤0-f p
           where
             suc0≤0-f : suc 0 ≤ 0 → ⊥
             suc0≤0-f ()
-    q-split (suc zero) eq1 = eq1
-    q-split (suc (suc q)) eq2 = ⊥-elim (n≮n SOVEREIGN_LCM (≤-<-trans N≤x x<N))
+    q-split-gen M (suc zero) eq1 M≡ = trans eq1 (trans (cong (1 +_) (*-identityˡ M)) (trans (cong (1 +_) M≡) refl))
+    q-split-gen M (suc (suc q)) eq2 M≡ = ⊥-elim (n≮n SOVEREIGN_LCM (≤-<-trans N≤x x<N))
       where
         N≡MM : SOVEREIGN_LCM ≡ M + M
         N≡MM = refl
         chain : M + M ≤ 1 + (M + (M + q * M))
         chain = {!!}
-          -- 【WIP 坐标 MM3】chain 形（M + M ≤ …）——m≤m+n-f M (q·M) 形错位
-          -- 绕法：m≤m+n-f M M + mono 桥（M + M ≤ M + (M + q·M)）
         N≤x : SOVEREIGN_LCM ≤ suc x'
         N≤x = subst (SOVEREIGN_LCM ≤_) (sym eq2)
           (subst (SOVEREIGN_LCM ≤_) (sym N≡MM) chain)
