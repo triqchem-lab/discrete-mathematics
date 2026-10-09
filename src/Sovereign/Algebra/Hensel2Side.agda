@@ -29,6 +29,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Nullary using (¬_; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
+open import Sovereign.Algebra.Hensel3Side using (px)
 
 --------------------------------------------------------------------------------
 -- §1. 2 的幂
@@ -154,3 +155,24 @@ two-even-a k a h2∣a h = pow2-∣-iter k (suc a) a (coprime-suc-pow2 h2∣a) (s
       where
         suc-a-odd : 2 ∣ a → ¬ (2 ∣ suc a)
         suc-a-odd h2∣a (divides q eq) = 2∣1-clash (∣m+n∣n⇒∣m (divides q eq) h2∣a)
+
+--------------------------------------------------------------------------------
+-- §7. 2 侧主定理分裂件（全幂保持，无半幂弱化）
+--   x∸1 奇 → x∸1 与 pow2 k 互素 → pow2 k∣(x∸1)·suc x 全部落 suc x 侧
+--   suc x 奇 → 同理全落 x∸1 侧
+--------------------------------------------------------------------------------
+
+two-side-odd-a : ∀ k x → pow2 k ∣ x * x ∸ 1 → ¬ (2 ∣ x ∸ 1) → pow2 k ∣ suc x
+two-side-odd-a k x h nt2 =
+  pow2-∣-iter k (x ∸ 1) (suc x) (coprime-a-pow2 k (x ∸ 1) nt2) h1
+  where h1 : pow2 k ∣ (x ∸ 1) * suc x
+        h1 = subst (λ w → pow2 k ∣ w) (sym (px x)) h
+
+two-side-odd-b : ∀ k x → pow2 k ∣ x * x ∸ 1 → ¬ (2 ∣ suc x) → pow2 k ∣ x ∸ 1
+two-side-odd-b k x h nt2 =
+  pow2-∣-iter k (suc x) (x ∸ 1) (coprime-a-pow2 k (suc x) nt2) h2
+  where
+    h1 : pow2 k ∣ (x ∸ 1) * suc x
+    h1 = subst (λ w → pow2 k ∣ w) (sym (px x)) h
+    h2 : pow2 k ∣ suc x * (x ∸ 1)
+    h2 = subst (λ w → pow2 k ∣ w) (*-comm (x ∸ 1) (suc x)) h1
