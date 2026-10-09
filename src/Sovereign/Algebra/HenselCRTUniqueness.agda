@@ -346,3 +346,31 @@ crt-converse (suc x') h3 h16 x<N = finish (div2-side (suc x') h16) (div3-side (s
         side-y = divides b' (trans (n+1≡suc-f y) eqy)
     finish : pow2 16 ∣ suc x' ∸ root₃ → pow3 11 ∣ suc x' ∸ root₃ → suc x' ≡ root₃
     finish h2 h3' = {!!}
+
+--------------------------------------------------------------------------------
+-- §8. DC 同侧 case（unique-root₃-同侧——mod 形范式复制）
+--   root₃∸1 = 3¹¹·2¹⁵（同侧整除）——x∸1 被 3¹¹·2¹⁵ 整除 → x ≡ 1 + q·3¹¹·2¹⁵
+--   q=0 → x=1（root₁）/ q=1 → x=root₃ / q≥2 → x ≥ N 矛盾（mod-extract 范式）
+--------------------------------------------------------------------------------
+
+-- 同侧唯一性（x > 1 排除 root₁）：x ≡ root₃ (mod 3¹¹·2¹⁵)
+unique-root₃-same : ∀ x → 1 < x → x < SOVEREIGN_LCM
+                  → (pow3 11 * pow2 15) ∣ x ∸ 1 → x ≡ root₃
+unique-root₃-same x 1<x x<N (divides q eq) = q-split q x-form
+  where
+    M : ℕ
+    M = pow3 11 * pow2 15
+    x-form : x ≡ 1 + q * M
+    x-form = ∸-to-+ x 1 (q * M) eq (s≤s z≤n)
+    q-split : ∀ q → x ≡ 1 + q * M → x ≡ root₃
+    q-split zero eq0 = {!!}
+      -- 【WIP 坐标 SS5】q=0 矛盾构造（x ≡ 1 与 1 < x）——subst motive unify 卡（x stuck vs suc 形）
+      -- 绕法：x 形分裂（suc x' 形 absurd）或 gt1-≢1 自证（对 x 分裂）
+    q-split (suc zero) eq1 = trans eq1 (refl {x = root₃})
+    q-split (suc (suc q)) eq2 = ⊥-elim (n≮n SOVEREIGN_LCM (≤-<-trans N≤x x<N))
+      where
+        N≡2M : SOVEREIGN_LCM ≡ 2 * M
+        N≡2M = refl
+        N≤x : SOVEREIGN_LCM ≤ x
+        N≤x = subst (SOVEREIGN_LCM ≤_) (sym eq2)
+          (subst (SOVEREIGN_LCM ≤_) (sym N≡2M) (m≤m+n SOVEREIGN_LCM (q * M)))
