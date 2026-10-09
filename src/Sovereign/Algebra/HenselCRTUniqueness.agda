@@ -239,7 +239,8 @@ open import Data.Nat.Properties using (*-distribʳ-∸; *-comm)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Nat.Properties using (+-suc)
 n+1≡suc-f : ∀ n → n + 1 ≡ suc n
-n+1≡suc-f n = trans (+-suc n zero) (cong suc (+-identityʳ n))
+n+1≡suc-f zero = refl
+n+1≡suc-f (suc n) = cong suc (n+1≡suc-f n)
 
 -- q 分裂 + DB case 装配：a ≡ 16794 + q·65536 → x < N → x ≡ root₃
 unique-root₃ : ∀ x → 0 < x → x < SOVEREIGN_LCM
@@ -288,7 +289,7 @@ m≤m+n-f a zero = ≤-reflexive (sym (+-identityʳ a))
 m≤m+n-f a (suc b) = subst (a ≤_) (sym (+-suc a b)) (≤-step (m≤m+n-f a b))
 
 h3r-gen : ∀ r → r ≡ root₃ → ∀ x' k → x' ≡ k * pow3 11 → pow3 11 ∣ r ∸ suc x'
-h3r-gen r r-def x' k eq = subst (pow3 11 ∣_) (cong (_∸ suc x') r-def) (divides (16794 ∸ k) eq-form)
+h3r-gen r r-def x' k eq = subst (pow3 11 ∣_) (sym (cong (r ∸_) suc-x′-form)) (divides (16794 ∸ k) eq-form)
   where
     suc-x′-form : suc x' ≡ pow3 11 * k + 1
     suc-x′-form = trans (cong suc eq) (trans (sym (n+1≡suc-f (k * pow3 11))) (cong (_+ 1) (*-comm k (pow3 11))))
@@ -296,10 +297,9 @@ h3r-gen r r-def x' k eq = subst (pow3 11 ∣_) (cong (_∸ suc x') r-def) (divid
     bridge-gen A B = trans (∸+-cancel (pow3 11 * A) (pow3 11 * B) 1)
       (trans (cong (_∸ (pow3 11 * B)) (*-comm (pow3 11) A))
       (cong (A * pow3 11 ∸_) (*-comm (pow3 11) B)))
-    eq-form : r ∸ suc x' ≡ (16794 ∸ k) * pow3 11
-    eq-form = trans (cong (r ∸_) suc-x′-form)
-      (trans (cong (_∸ (pow3 11 * k + 1)) r-def)
-      (trans (bridge-gen 16794 k) (sym (*-distribʳ-∸ (pow3 11) 16794 k))))
+    eq-form : r ∸ (pow3 11 * k + 1) ≡ (16794 ∸ k) * pow3 11
+    eq-form = trans (cong (_∸ (pow3 11 * k + 1)) r-def)
+      (trans (bridge-gen 16794 k) (sym (*-distribʳ-∸ (pow3 11) 16794 k)))
 
 crt-converse : ∀ x → pow3 11 ∣ x ∸ 1 → pow2 16 ∣ suc x → x < SOVEREIGN_LCM → x ≡ root₃
 crt-converse zero h3 (divides b eq) x<N = ⊥-elim (one≢b·2¹⁶ b eq)
@@ -341,21 +341,4 @@ crt-converse (suc x') h3 h16 x<N = finish (div2-side (suc x') h16) (div3-side (s
         side-y : pow2 16 ∣ y + 1
         side-y = divides b' (trans (n+1≡suc-f y) eqy)
     finish : pow2 16 ∣ suc x' ∸ root₃ → pow3 11 ∣ suc x' ∸ root₃ → suc x' ≡ root₃
-    finish h2 h3′ = t-split (lcm-coprime _ h3′ h2) (lcm-coprime _ h3r′ h2r)
-      where
-        h2r : pow2 16 ∣ root₃ ∸ suc x'
-        h2r = go-h16 h16
-          where
-            go-h16 : pow2 16 ∣ suc (suc x') → pow2 16 ∣ root₃ ∸ suc x'
-            go-h16 (divides b eq) = div2-gen (suc x') b eq
-        h3r′ : pow3 11 ∣ root₃ ∸ suc x'
-        h3r′ = go-h3 h3
-          where
-            go-h3 : pow3 11 ∣ suc x' ∸ 1 → pow3 11 ∣ root₃ ∸ suc x'
-            go-h3 (divides k eq) = h3r-gen root₃ refl x' k eq
-        t-split : SOVEREIGN_LCM ∣ suc x' ∸ root₃ → SOVEREIGN_LCM ∣ root₃ ∸ suc x' → suc x' ≡ root₃
-        t-split (divides zero et) (divides zero et′) =
-          ≤-antisym (m∸n≡0⇒m≤n et) (m∸n≡0⇒m≤n et′)
-        t-split (divides zero et) (divides (suc t′) et′) = {!!}
-          -- 【爆点坐标 RV3】t-split 矛盾分支（m≤m+n-f SOVEREIGN_LCM … 的 literal 参数形）
-          -- 绕法：m≤m+n-f 的 a 参数换符号形（SOVEREIGN_LCM literal 爆）或≤ 形重设        t-split (divides (suc t) et) _ = {!!}
+    finish h2 h3' = {!!}
