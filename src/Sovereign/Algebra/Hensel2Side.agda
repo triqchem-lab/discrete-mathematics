@@ -21,9 +21,9 @@
 module Sovereign.Algebra.Hensel2Side where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _%_; s≤s; z≤n)
-open import Data.Nat.Divisibility using (_∣_; divides; ∣1⇒≡1; 1∣_; ∣-refl; ∣⇒≤; ∣-trans; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m)
-open import Data.Nat.Coprimality using (Coprime; coprime-divisor)
-open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; *-assoc; ≤-antisym; m≤m+n; ≤-trans; ≤-reflexive; 1+n≢n; suc-injective)
+open import Data.Nat.Divisibility using (_∣_; divides; ∣1⇒≡1; 1∣_; ∣-refl; ∣⇒≤; ∣-trans; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; _∣?_)
+open import Data.Nat.Coprimality using (Coprime; coprime-divisor; coprime?)
+open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; *-assoc; ≤-antisym; m≤m+n; ≤-trans; ≤-reflexive; 1+n≢n; suc-injective; _≟_; ≤⇒≤ᵇ)
 open import Data.Product using (_×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -64,16 +64,67 @@ coprime-2-a a c (d∣2 , d∣a) = c (d∣a , d∣2)
 pow2-half : ∀ k a b → 2 * pow2 k ∣ a * b → pow2 k ∣ a * b
 pow2-half k a b (divides q eq) = divides (q * 2) (trans eq (sym (*-assoc q 2 (pow2 k))))
 
-pow2-∣-iter : ∀ k a b → pow2 k ∣ a * b → Coprime a 2 → pow2 k ∣ b
-pow2-∣-iter zero a b h c = 1∣ b
-pow2-∣-iter (suc k) a b h c =
-  IH
-  where
-    -- 剥一个 2：2 ∣ a·b 且 Coprime 2 a → 2 ∣ b
-    step2 : 2 ∣ b
-    step2 = coprime-divisor (coprime-2-a a c) (∣-trans (2∣pow2-suc k) h)
-    -- 剩余幂次：pow2 k ∣ a·b（由 2·pow2 k ∣ a·b 经 *-assoc 重排）
-    rest : pow2 k ∣ a * b
-    rest = pow2-half k a b h
-    IH : pow2 k ∣ b
-    IH = {!强化假设待下批：需 Coprime a (pow2 k) 或经 coprime-* 组合!}
+--------------------------------------------------------------------------------
+-- §3. irred2：2 的整除分类（与 irred3 同构的四值判定器）
+--   d ∣ 2 → d ≡ 1 ⊎ d ≡ 2（d=0 封闭 clash / d≥3 经 ∣⇒≤ 与 ≤⇒≤ᵇ）
+--------------------------------------------------------------------------------
+
+zero-2 : zero ∣ 2 → zero ≡ 2
+zero-2 (divides q eq) = sym (trans eq (*-zeroʳ q))
+
+zero-2-clash : 2 ≡ zero → ⊥
+zero-2-clash ()
+
+irred2 : ∀ d → d ∣ 2 → d ≡ 1 ⊎ d ≡ 2
+irred2 d h with ∣⇒≤ h
+... | dle with d ≟ zero
+...   | yes d0 = ⊥-elim (zero-2-clash (sym (zero-2 (subst (λ w → w ∣ 2) d0 h))))
+...   | no nd0 with d ≟ 1
+...     | yes d1 = inj₁ d1
+...     | no nd1 with d ≟ 2
+...       | yes d2 = inj₂ d2
+...       | no nd2 with d
+...         | zero = ⊥-elim (nd0 refl)
+...         | suc zero = ⊥-elim (nd1 refl)
+...         | suc (suc zero) = ⊥-elim (nd2 refl)
+...         | suc (suc (suc m)) = ⊥-elim (≤⇒≤ᵇ (≤-trans (s≤s (s≤s (s≤s z≤n))) dle))
+
+--------------------------------------------------------------------------------
+-- §4. 奇性传递链：¬2∣a → Coprime d 2 → div-pow2 → Coprime a (pow2 k)
+--------------------------------------------------------------------------------
+
+-- ¬2∣d → Coprime d 2（irred2 分类：d∣2 → d≡1 ✓ / d≡2 → 2∣d 矛盾）
+coprime-d-2 : ∀ d → ¬ (2 ∣ d) → Coprime d 2
+coprime-d-2 d nt2 {e} (e∣d , e∣2) with irred2 e e∣2
+...   | inj₁ e≡1 = e≡1
+...   | inj₂ e≡2 = ⊥-elim (nt2 (subst (λ w → w ∣ d) e≡2 e∣d))
+
+-- d ∣ 2^k → d ≡ 1 ⊎ 2 ∣ d（对 k 归纳；suc 层经 coprime-divisor 剥一个 2）
+div-pow2 : ∀ k d → d ∣ pow2 k → d ≡ 1 ⊎ 2 ∣ d
+div-pow2 zero d h = inj₁ (∣1⇒≡1 h)
+div-pow2 (suc k) d h with 2 ∣? d
+...   | yes t = inj₂ t
+...   | no nt2 = inj₁-sum
+      where
+        rec = div-pow2 k d (coprime-divisor (coprime-d-2 d nt2) h)
+        inj₁-sum : d ≡ 1 ⊎ 2 ∣ d
+        inj₁-sum with rec
+        ...   | inj₁ e = inj₁ e
+        ...   | inj₂ t2 = ⊥-elim (nt2 t2)
+
+
+
+-- ¬2∣a → Coprime a (pow2 k)（经 div-pow2 分类）
+coprime-a-pow2 : ∀ k a → ¬ (2 ∣ a) → Coprime a (pow2 k)
+coprime-a-pow2 k a nt2 {e} (e∣a , e∣pow2) with div-pow2 k e e∣pow2
+...   | inj₁ e≡1 = e≡1
+...   | inj₂ 2∣e = ⊥-elim (nt2 (∣-trans 2∣e e∣a))
+
+--------------------------------------------------------------------------------
+-- §5. 素性迭代主引理（强化假设版，coprime-divisor 一步收缩）
+--------------------------------------------------------------------------------
+
+pow2-∣-iter : ∀ k a b → Coprime a (pow2 k) → pow2 k ∣ a * b → pow2 k ∣ b
+pow2-∣-iter k a b c h = coprime-divisor (coprime-2-a-aux k a c) h
+  where coprime-2-a-aux : ∀ k a → Coprime a (pow2 k) → Coprime (pow2 k) a
+        coprime-2-a-aux k a c (d∣pow2 , d∣a) = c (d∣a , d∣pow2)
