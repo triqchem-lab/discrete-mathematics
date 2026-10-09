@@ -21,14 +21,14 @@
 module Sovereign.Algebra.Hensel2Side where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _%_; s≤s; z≤n)
-open import Data.Nat.Divisibility using (_∣_; divides; ∣1⇒≡1; 1∣_; ∣-refl; ∣⇒≤; ∣-trans; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; _∣?_)
+open import Data.Nat.Divisibility using (_∣_; divides; ∣1⇒≡1; 1∣_; ∣-refl; ∣⇒≤; ∣-trans; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; _∣?_; *-cancelˡ-∣)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor; coprime?)
-open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; *-assoc; ≤-antisym; m≤m+n; ≤-trans; ≤-reflexive; 1+n≢n; suc-injective; _≟_; ≤⇒≤ᵇ)
-open import Data.Product using (_×_; _,_)
+open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; *-assoc; ≤-antisym; m≤m+n; ≤-trans; ≤-reflexive; 1+n≢n; suc-injective; _≟_; ≤⇒≤ᵇ; *-cancelˡ-∣)
+open import Data.Product using (Σ; _×_; _,_; ∃-syntax)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Nullary using (¬_; yes; no)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst; module ≡-Reasoning)
 open import Sovereign.Algebra.Hensel3Side using (px)
 
 --------------------------------------------------------------------------------
@@ -176,3 +176,46 @@ two-side-odd-b k x h nt2 =
     h1 = subst (λ w → pow2 k ∣ w) (sym (px x)) h
     h2 : pow2 k ∣ suc x * (x ∸ 1)
     h2 = subst (λ w → pow2 k ∣ w) (*-comm (x ∸ 1) (suc x)) h1
+
+--------------------------------------------------------------------------------
+-- §8. 双重消二（偶-偶分支核心）
+--   2∣a → 2∣b → pow2 (suc (suc k)) ∣ a·b
+--   → Σ ha , Σ hb , (a ≡ 2·ha × b ≡ 2·hb × pow2 k ∣ ha·hb)
+--   证明：两 divides 字段取半值，subst 进 h 后 *-cancelˡ-∣ 两次
+--------------------------------------------------------------------------------
+
+-- 半值对重排：(qa·2)·(qb·2) ≡ 2·(2·(qa·qb))
+rearr : ∀ qa qb → (qa * 2) * (qb * 2) ≡ 2 * (2 * (qa * qb))
+rearr qa qb =
+  (qa * 2) * (qb * 2)
+    ≡⟨ cong (λ w → w * (qb * 2)) (*-comm qa 2) ⟩
+  (2 * qa) * (qb * 2)
+    ≡⟨ *-assoc 2 qa (qb * 2) ⟩
+  2 * (qa * (qb * 2))
+    ≡⟨ cong (λ w → 2 * (qa * w)) (*-comm qb 2) ⟩
+  2 * (qa * (2 * qb))
+    ≡⟨ cong (λ w → 2 * w) (sym (*-assoc qa 2 qb)) ⟩
+  2 * ((qa * 2) * qb)
+    ≡⟨ cong (λ w → 2 * (w * qb)) (*-comm qa 2) ⟩
+  2 * ((2 * qa) * qb)
+    ≡⟨ cong (λ w → 2 * w) (*-assoc 2 qa qb) ⟩
+  2 * (2 * (qa * qb))
+  ∎
+  where open ≡-Reasoning
+
+two-cancel-twice : ∀ k a b → 2 ∣ a → 2 ∣ b → pow2 (suc (suc k)) ∣ a * b
+                 → Σ ℕ (λ ha → Σ ℕ (λ hb → (a ≡ ha * 2) × (b ≡ hb * 2) × pow2 k ∣ ha * hb))
+two-cancel-twice k a b (divides qa eqa) (divides qb eqb) h =
+  qa , qb , eqa , eqb , *-cancelˡ-∣ 2 (*-cancelˡ-∣ 2 h3)
+  where
+    open ≡-Reasoning
+    -- 半值替换：a ≡ 2·qa → pow2 (suc (suc k)) ∣ (2·qa) * b
+    h1 : pow2 (suc (suc k)) ∣ (qa * 2) * b
+    h1 = subst (λ w → pow2 (suc (suc k)) ∣ w * b) eqa h
+    -- b 半值替换：→ pow2 (suc (suc k)) ∣ (2·qa) * (2·qb)
+    h2 : pow2 (suc (suc k)) ∣ (qa * 2) * (qb * 2)
+    h2 = subst (λ w → pow2 (suc (suc k)) ∣ (qa * 2) * w) eqb h1
+    -- 重排成 2·(2·(...)) 形以消二：*(2·qa)*(2·qb) = 2·(2·(qa·qb)) 的链
+    -- 重排 + 双消二：pow2 (suc(suc k)) ≡ 2·pow2 (suc k) 定义性，h2 经 rearr 后逐层消
+    h3 : pow2 (suc (suc k)) ∣ 2 * (2 * (qa * qb))
+    h3 = subst (λ w → pow2 (suc (suc k)) ∣ w) (rearr qa qb) h2
