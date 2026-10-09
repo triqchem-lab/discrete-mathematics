@@ -335,10 +335,21 @@ crt-converse (suc x') h3 h16 x<N = finish (div2-side (suc x') h16) (div3-side (s
             go-h16 : pow2 16 ∣ suc (suc x') → pow2 16 ∣ root₃ ∸ suc x'
             go-h16 (divides b eq) = div2-gen (suc x') b eq
         h3r′ : pow3 11 ∣ root₃ ∸ suc x'
-        h3r′ = {!!}
-          -- 【爆点坐标 HF5】bridge-gen 的 comm 尾（两步单 motive 也爆——motive `A * pow3 11 ∸_` 或 ∸+-cancel 实例化）
-          -- 已绿：step1-impl（探针）+ bridge-gen 主体（∸+-cancel 符号化 ✓）+ q-form
-          -- 下批：爆点拆件（∸+-cancel 实例化 vs comm motive）+ eq-form 尾链        t-split : SOVEREIGN_LCM ∣ suc x' ∸ root₃ → SOVEREIGN_LCM ∣ root₃ ∸ suc x' → suc x' ≡ root₃
+        h3r′ = go-h3 h3
+          where
+            go-h3 : pow3 11 ∣ suc x' ∸ 1 → pow3 11 ∣ root₃ ∸ suc x'
+            go-h3 (divides k eq) = divides (16794 ∸ k) eq-form
+              where
+                suc-x′-form : suc x' ≡ pow3 11 * k + 1
+                suc-x′-form = trans (cong suc eq) (trans (sym (n+1≡suc-f (k * pow3 11))) (cong (_+ 1) (*-comm k (pow3 11))))
+                bridge-gen : ∀ A B → (pow3 11 * A + 1) ∸ (pow3 11 * B + 1) ≡ (A * pow3 11) ∸ (B * pow3 11)
+                bridge-gen A B = trans (∸+-cancel (pow3 11 * A) (pow3 11 * B) 1)
+                  (trans (cong (_∸ (pow3 11 * B)) (*-comm (pow3 11) A))
+                  (cong (A * pow3 11 ∸_) (*-comm (pow3 11) B)))
+                eq-form : root₃ ∸ suc x' ≡ (16794 ∸ k) * pow3 11
+                eq-form = trans (cong ((pow3 11 * 16794 + 1) ∸_) suc-x′-form)
+                  (trans (bridge-gen 16794 k) (sym (*-distribʳ-∸ (pow3 11) 16794 k)))
+        t-split : SOVEREIGN_LCM ∣ suc x' ∸ root₃ → SOVEREIGN_LCM ∣ root₃ ∸ suc x' → suc x' ≡ root₃
         t-split (divides zero et) (divides zero et′) =
           ≤-antisym (m∸n≡0⇒m≤n et) (m∸n≡0⇒m≤n et′)
         t-split (divides zero et) (divides (suc t′) et′) = {!!}
