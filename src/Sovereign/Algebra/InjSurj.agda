@@ -138,16 +138,43 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (cong; _≢_)
 open import Data.Fin using (_≟_) renaming (zero to fzero; suc to fsuc)
 
--- compress：Fin (suc m) 避开 v 压到 Fin m——【WIP】
---   (fsuc v, fzero) 分支在 m=0 无 Fin 0 输出（部分性本质）——需索引强制或 ≢-arg 再设计
-compress : ∀ {m} (v x : Fin (suc m)) → x ≢ v → Fin m
-compress = {!!}
+-- Fin n 单射→满射（stdlib punchOut 复用——「先查 stdlib」纪律直接回报）
+open import Data.Fin using (punchOut)
+open import Data.Fin.Properties using (punchOut-injective)
 
--- Fin n 单射→满射（suc m 分支 = compress 限制 + IH 组装——待 compress 修复）
 fin-inj-surj : ∀ {n} (g : Fin n → Fin n) → Injective g → Surjective g
 fin-inj-surj {zero} g inj ()
-fin-inj-surj {suc m} g inj b = {!!}
+fin-inj-surj {suc m} g inj b with _≟_ (g fzero) b
+...   | yes p = fzero , p
+...   | no np = go-ih
+  where
+    v≢ : ∀ i → g fzero ≢ g (fsuc i)
+    v≢ i eq = fzero≢fsuc-i (inj eq)
+      where
+        fzero≢fsuc-i : ∀ {a} → fzero ≡ fsuc a → ⊥
+        fzero≢fsuc-i ()
+    g' : Fin m → Fin m
+    g' i = punchOut (v≢ i)
+    inj' : Injective g'
+    inj' {x} {y} eq = fsuc-injective-f (inj (punchOut-injective (v≢ x) (v≢ y) eq))
+      where
+        fsuc-injective-f : ∀ {a b} → fsuc a ≡ fsuc b → a ≡ b
+        fsuc-injective-f refl = refl
+    go-ih : Σ (Fin (suc m)) (λ a → g a ≡ b)
+    go-ih with fin-inj-surj g' inj' (punchOut np)
+    ...   | a' , eq = fsuc a' , punchOut-injective (v≢ a') np eq
 
 -- Dedekind 有限推广（P0 缺口）：Finite A → DedekindFinite A
+g-tmp : ∀ {A : Set} (fin : Finite A) (f : A → A) → Fin (n fin) → Fin (n fin)
+g-tmp fin f x = to fin (f (from fin x))
+
+g-tmp-inj-lemma : ∀ {A : Set} (fin : Finite A) (f : A → A)
+                → Injective f → Injective (g-tmp fin f)
+g-tmp-inj-lemma fin f inj = inj-compose-real {n = n fin} fin f inj
+
+g-tmp-surj-lemma : ∀ {A : Set} (fin : Finite A) (f : A → A)
+                 → Injective f → Surjective (g-tmp fin f)
+g-tmp-surj-lemma fin f inj = fin-inj-surj (g-tmp fin f) (g-tmp-inj-lemma fin f inj)
+
 dedekind-finite-A : ∀ {A : Set} (fin : Finite A) → DedekindFinite A
-dedekind-finite-A fin f inj = surj-compose fin f (fin-inj-surj (to fin ∘ f ∘ from fin) (inj-compose-real fin f inj))
+dedekind-finite-A fin f inj = surj-compose {n = n fin} fin f (g-tmp-surj-lemma fin f inj)
