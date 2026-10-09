@@ -19,11 +19,11 @@ module Sovereign.Algebra.HenselCRTUniqueness where
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _<_; z≤n; s≤s)
 open import Data.Nat.Divisibility using (_∣_; divides; ∣-trans; ∣-refl; m∣m*n; n∣m*n)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor)
-open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; n≤1+n)
+open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong; subst)
 open import Relation.Nullary using (¬_)
 open import Sovereign.Algebra.Hensel3Side using (pow3; core; parity23)
 open import Sovereign.Algebra.Hensel2Side using (pow2; div-pow2)
@@ -84,14 +84,18 @@ divides-below : ∀ m → SOVEREIGN_LCM ∣ m → m < SOVEREIGN_LCM → m ≡ 0
 divides-below = divides-below-gen SOVEREIGN_LCM
 
 -- 边界 ≤ 版（参数化）
-divides-below-≤-gen : ∀ N m → N ∣ m → m ≤ N → m ≡ 0 ⊎ m ≡ N
-divides-below-≤-gen N m (divides zero eq) m≤N = inj₁ eq
-divides-below-≤-gen N m (divides (suc zero) eq) m≤N = inj₂ (trans eq (+-identityʳ N))
-divides-below-≤-gen N m (divides (suc (suc d)) eq) m≤N = {!!}
-  -- 续批：suc(suc d) 分支矛盾构造涉巨大字面量 ≤ 结构（11.6 亿层归纳风险）——需 d-归纳符号化
+divides-below-≤-gen : ∀ N m → N ≢ 0 → N ∣ m → m ≤ N → m ≡ 0 ⊎ m ≡ N
+divides-below-≤-gen N m N≢0 (divides zero eq) m≤N = inj₁ eq
+divides-below-≤-gen N m N≢0 (divides (suc zero) eq) m≤N = inj₂ (trans eq (+-identityʳ N))
+divides-below-≤-gen N m N≢0 (divides (suc (suc d)) eq) m≤N =
+  ⊥-elim (N≢0 (m+n≡0⇒m≡0 N {d * N}
+    (+-cancelˡ-≡ N (suc d * N) 0 (trans m≡N+ (sym (+-identityʳ N))))))
+  where
+    m≡N+ : N + suc d * N ≡ N
+    m≡N+ = ≤-antisym (subst (_≤ N) eq m≤N) (m≤m+n N (suc d * N))
 
 divides-below-≤ : ∀ m → SOVEREIGN_LCM ∣ m → m ≤ SOVEREIGN_LCM → m ≡ 0 ⊎ m ≡ SOVEREIGN_LCM
-divides-below-≤ = divides-below-≤-gen SOVEREIGN_LCM
+divides-below-≤ m = divides-below-≤-gen SOVEREIGN_LCM m (λ ())
 
 --------------------------------------------------------------------------------
 -- §3. 纯 case 唯一性
