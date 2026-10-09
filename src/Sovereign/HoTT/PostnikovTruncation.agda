@@ -110,8 +110,8 @@ AH-resp W {u} {v} {w1} {w2} harm (gen (expand {u = u'} {x = x} {y = y} {z = z} {
 -- 二阶信息（步对积的累积——乘法形 harm 条件）
 disp2 : (W : WeightedDiGraph) → ∀ {u v} → Walk (G W) u v → A W
 disp2 W (nil v) = oneA W
-disp2 W (cons e (nil w)) = oneA W
-disp2 W (cons {u = u} {v = v} e (cons {v = w} e' p)) = _*A_ W (wt W u v) (_*A_ W (wt W v w) (disp2 W p))
+disp2 W (cons {u = u} {v = v} e (nil w)) = wt W u v
+disp2 W (cons {u = u} {v = v} e (cons {v = w} e' p)) = _*A_ W (_*A_ W (wt W u v) (wt W v w)) (disp2 W p)
 
 -- 2-截断守恒骨架（slide 的二阶形式——步对权重和守恒）
 disp2-slide : (W : WeightedDiGraph) → ∀ {u x y z v}
