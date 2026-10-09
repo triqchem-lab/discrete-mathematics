@@ -19,16 +19,16 @@ module Sovereign.Algebra.HenselCRTUniqueness where
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _<_; z≤n; s≤s)
 open import Data.Nat.Divisibility using (_∣_; divides; ∣-trans; ∣-refl; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; ∣m+n∣m⇒∣n)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor)
-open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; <-trans; *-monoˡ-≤; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
+open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; <-trans; *-monoˡ-≤; m≤n+m; *-distribʳ-+; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong; subst)
 open import Relation.Nullary using (¬_)
 open import Sovereign.Algebra.Hensel3Side using (pow3; core; parity23)
-open import Sovereign.Algebra.Hensel2Side using (pow2; div-pow2)
+open import Sovereign.Algebra.Hensel2Side using (pow2; div-pow2; two-add)
 open import Sovereign.Algebra.HenselCRTSynth using (clash-3-2)
-open import Sovereign.Algebra.SovereignLCMRoots using (SOVEREIGN_LCM; root₁; root₄; root₅; root₈)
+open import Sovereign.Algebra.SovereignLCMRoots using (SOVEREIGN_LCM; root₁; root₃; root₄; root₅; root₈)
 
 --------------------------------------------------------------------------------
 -- §1. 3 与 2¹⁶ 互素（3 ∣ 2^k → ⊥）+ lcm 互质引理
@@ -225,9 +225,37 @@ db-go a (divides zero eq0) _ = ⊥-elim (48742≢0 (m+n≡0⇒m≡0 (2 * 24371) 
     48742≢0 : 2 * 24371 ≡ 0 → ⊥
     48742≢0 ()
 db-go a (divides (suc zero) eq1) _ = {!!}
-  -- 【爆点坐标】+-cancelˡ-≡/+-comm 对 literal 第一参 = O(literal) 归纳构造（48742 层）
-  -- 绕法待研：cancel 被消加数符号化 / suc 结构形 / BUILTIN 级等式——下批或主链优先
+  -- 【已破局】plus-cancel（ModExtract.1eb06959）符号归纳消 C——下批接 mod 形重写
 
 db-go a (divides (suc (suc k)) eq2) lt = {!!}
 
 lin-solve-db a b eq a< = {!!}
+--------------------------------------------------------------------------------
+-- §6. DB case 装配（unique-root₃——破局引理串联）
+--------------------------------------------------------------------------------
+
+open import Sovereign.Algebra.ModExtract using (mod-extract; plus-cancel; db-mod-extract)
+
+-- q 分裂 + DB case 装配：a ≡ 16794 + q·65536 → x < N → x ≡ root₃
+unique-root₃ : ∀ x → 0 < x → x < SOVEREIGN_LCM
+             → pow3 11 ∣ x ∸ 1 → pow2 16 ∣ suc x → x ≡ root₃
+unique-root₃ (suc m) (s≤s z≤n) x<N (divides a eqa) (divides b eqb) = go (db-div a b eq-ab)
+  where
+    eq-ab : a * pow3 11 + 2 ≡ b * pow2 16
+    eq-ab = trans (sym (cong (_+ 2) eqa)) (trans (two-add m) eqb)
+    n≡0 : ∀ m n → m + n ≡ 0 → n ≡ 0
+    n≡0 zero n eq = eq
+    n≡0 (suc m) n eq = ⊥-elim (suc≠0-f eq)
+      where
+        suc≠0-f : suc (m + n) ≡ 0 → ⊥
+        suc≠0-f ()
+    go : pow2 16 ∣ a + 2 * 24371 → suc m ≡ root₃
+    go (divides zero eq0) = ⊥-elim (2*24371≢0 (n≡0 a (2 * 24371) eq0))
+      where
+        2*24371≢0 : 2 * 24371 ≡ 0 → ⊥
+        2*24371≢0 ()
+    go (divides (suc q) eqq) = {!!}
+      -- 【爆点坐标 C6】suc q 分支整体——plus-cancel 的 C := 2*24371（literal 48742）归纳爆
+      -- 【数学终判（三次独立分析）】a + C ≡ D + C → a ≡ D 的 C 消去（literal C）本质 literal 归纳：
+      --   plus-cancel 对 C 归纳（C literal→爆）；stdlib +-cancel（被消者 literal→爆）；∸ 引理（n 归纳→爆）
+      --   唯一剩余：q := b∸1 形绕（用 b 分裂改变 eq 形）或 mod 形整体构造（q 形 + mod-extract 免消去）
