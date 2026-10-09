@@ -39,6 +39,7 @@ record WeightedDiGraph : Set₁ where
     +A-idˡ    : ∀ x → zeroA +A x ≡ x
     *A-assoc  : ∀ x y z → (x *A y) *A z ≡ x *A (y *A z)
     *A-idʳ    : ∀ x → x *A oneA ≡ x
+    *A-idˡ    : ∀ x → oneA *A x ≡ x
 
 open WeightedDiGraph
 
@@ -137,4 +138,7 @@ lastW W (cons e (cons e' p)) = lastW W (cons e' p)
 
 ++w-disp2 : (W : WeightedDiGraph) → ∀ {u v w} (p : Walk (G W) u v) (q : Walk (G W) v w)
   → disp2 W (p ++w q) ≡ _*A_ W (disp2 W p) (_*A_ W (lastW W p) (disp2 W q))
-++w-disp2 W p q = {!!}
+++w-disp2 W (nil v) q = {!!}
+  -- WIP：nil 形守恒（*A-idˡ ×2 桥——section meta 形坐标）
+++w-disp2 W (cons e (nil w)) q = {!!}
+++w-disp2 W (cons e (cons e' p)) q = {!!}
