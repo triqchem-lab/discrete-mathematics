@@ -107,3 +107,14 @@ suc∸1-form (suc x') = inj₁ refl
 ∸-to-+ m zero o eq _ = trans eq refl
 ∸-to-+ (suc m') (suc n') o eq (s≤s n'≤m') =
   cong suc (∸-to-+ m' n' o (trans (sym (suc∸suc m' n')) eq) n'≤m')
+
+-- ────────────────────────────────────────────────────────────────────
+-- §7. m∸n∸o（∸-∸ 形自证——对 o 归纳，m/n 参数 safe）
+-- ────────────────────────────────────────────────────────────────────
+
+m∸n∸o : ∀ m n o → m ∸ n ∸ o ≡ m ∸ (n + o)
+m∸n∸o m n zero = sym (cong (m ∸_) (+-identityʳ n))
+m∸n∸o m n (suc o) = {!!}
+  -- 【WIP 坐标】_∸_ = BUILTIN minus（非递归——stdlib Data.Nat.Base:175 renaming _-_ to _∸_）
+  -- m ∸ suc q ≡ pred (m ∸ q) 是命题等式（非 defeq）——需自证或 BUILTIN 形桥
+  -- 绕法：m∸n∸o 改证（对 o 归纳 + pred 形自证）或 bridge 形换（免 m∸n∸o）
