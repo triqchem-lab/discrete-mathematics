@@ -381,10 +381,12 @@ unique-root₃-same x' 1<x x<N (divides q eq) = q-split-gen (pow3 11 * pow2 15) 
         N≡MM : SOVEREIGN_LCM ≡ M + M
         N≡MM = ≤-antisym-f N≤MM MM≤N
           where
+            bridge : M + M ≡ 2 * M
+            bridge = trans (cong (M +_) (sym (*-identityʳ M))) (refl {x = 2 * M})
             N≤MM : SOVEREIGN_LCM ≤ M + M
-            N≤MM = {!!}
+            N≤MM = subst (SOVEREIGN_LCM ≤_) bridge (≤-reflexive refl)
             MM≤N : M + M ≤ SOVEREIGN_LCM
-            MM≤N = {!!}
+            MM≤N = subst (M + M ≤_) (sym bridge) (≤-reflexive refl)
             ≤-antisym-f : ∀ {a b} → a ≤ b → b ≤ a → a ≡ b
             ≤-antisym-f = ≤-antisym
         chain : M + M ≤ 1 + (M + (M + q * M))
