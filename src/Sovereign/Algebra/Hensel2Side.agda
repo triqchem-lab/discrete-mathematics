@@ -320,19 +320,12 @@ two-parity x ha hb (no nt2) h14 eqa eqb = inj₂ two-odd-hb-side
 
 even-even : ∀ x → pow2 16 ∣ x * x ∸ 1 → 2 ∣ x ∸ 1 → 2 ∣ suc x
           → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
-even-even x h t2 t2s = two-parity-aux x t2 t2s (h1'-lemma x h)
-  where two-parity-aux : ∀ x → 2 ∣ x ∸ 1 → 2 ∣ suc x → pow2 16 ∣ (x ∸ 1) * suc x
-          → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
-        two-parity-aux x t2 t2s h1 = aux-inside x t2 t2s h1
-          where aux-inside : ∀ x → 2 ∣ x ∸ 1 → 2 ∣ suc x → pow2 16 ∣ (x ∸ 1) * suc x
-                  → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
-                aux-inside x t2 t2s h1 = {!下批: 2∣? 判定 + two-cancel-twice Σ 组装!}
+even-even x h t2 t2s = aux x t2 t2s (h1'-lemma x h)
   where
-    h1 : pow2 16 ∣ (x ∸ 1) * suc x
-    h1 = h1'-lemma x h
-    h14 : pow2 14 ∣ ha * hb
-    h14 = proj₂ (proj₂ (proj₂ (two-cancel-twice 14 (x ∸ 1) (suc x)
-             (divides ha eqa) (divides hb eqb) h1)))
+    aux : ∀ x → 2 ∣ x ∸ 1 → 2 ∣ suc x → pow2 16 ∣ (x ∸ 1) * suc x
+        → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
+    aux x t2 t2s h1 with two-cancel-twice 14 (x ∸ 1) (suc x) t2 t2s h1
+    ...   | (ha , hb , eqa , eqb , h14) = two-parity x ha hb t2 h14 eqa eqb
 
 two-even-branch : ∀ x → pow2 16 ∣ x * x ∸ 1 → 2 ∣ x ∸ 1
                 → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
@@ -346,18 +339,17 @@ two-side x h with 2 ∣? (x ∸ 1)
 ...   | no nt2 = inj₂ (two-side-odd-a 16 x h nt2)
 ...   | yes t2 = two-even-branch x h t2
 
-
-fourfold : ∀ x → pow2 16 ∣ x * x ∸ 1
+-- ⚠ 工具链限制（prover_limits: agda-pow2-div-dec-mod-helper-explosion）：
+--   `pow2 16 ∣? 符号参数` 将 pow2 16 归约为 65536 深 unary 项，mod-helper 符号循环 → 24G 堆爆。
+--   因此四分定理取「判定器外置」形式：Dec 结果由调用方（对具体 x 数值可安全计算）供给。
+fourfold′ : ∀ x → pow2 16 ∣ x * x ∸ 1
+          → Dec (pow2 16 ∣ x ∸ 1) → Dec (pow2 16 ∣ suc x)
           → (pow2 16 ∣ x ∸ 1)
           ⊎ (pow2 16 ∣ suc x)
           ⊎ (pow2 15 ∣ x ∸ 1 × ¬ pow2 16 ∣ x ∸ 1)
           ⊎ (pow2 15 ∣ suc x × ¬ pow2 16 ∣ suc x)
-fourfold x h with 2 ∣? (x ∸ 1)
-...   | no nt2 = inj₂ (inj₁ (two-side-odd-a 16 x h nt2))
-...   | yes t2 with two-side x h
-...     | inj₁ t15 with pow2 16 ∣? (x ∸ 1)
-...       | yes t16 = inj₁ t16
-...       | no n16 = inj₂ (inj₁ (t15 , n16))
-...     | inj₂ t15 with pow2 16 ∣? suc x
-...       | yes t16 = inj₂ (inj₂ (inj₁ t16))
-...       | no n16 = inj₂ (inj₂ (inj₂ (t15 , n16)))
+fourfold′ x h (yes t16) _ = inj₁ t16
+fourfold′ x h (no _) (yes t16s) = inj₂ (inj₁ t16s)
+fourfold′ x h (no n16a) (no n16b) with two-side x h
+...   | inj₁ t15 = inj₂ (inj₂ (inj₁ (t15 , n16a)))
+...   | inj₂ t15 = inj₂ (inj₂ (inj₂ (t15 , n16b)))
