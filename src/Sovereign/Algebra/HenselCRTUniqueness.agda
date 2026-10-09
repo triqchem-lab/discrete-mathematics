@@ -379,7 +379,14 @@ unique-root₃-same x' 1<x x<N (divides q eq) = q-split-gen (pow3 11 * pow2 15) 
     q-split-gen M (suc (suc q)) eq2 M≡ = ⊥-elim (n≮n SOVEREIGN_LCM (≤-<-trans N≤x x<N))
       where
         N≡MM : SOVEREIGN_LCM ≡ M + M
-        N≡MM = refl
+        N≡MM = ≤-antisym-f N≤MM MM≤N
+          where
+            N≤MM : SOVEREIGN_LCM ≤ M + M
+            N≤MM = {!!}
+            MM≤N : M + M ≤ SOVEREIGN_LCM
+            MM≤N = {!!}
+            ≤-antisym-f : ∀ {a b} → a ≤ b → b ≤ a → a ≡ b
+            ≤-antisym-f = ≤-antisym
         chain : M + M ≤ 1 + (M + (M + q * M))
         chain = {!!}
         N≤x : SOVEREIGN_LCM ≤ suc x'
