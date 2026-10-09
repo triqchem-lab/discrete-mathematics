@@ -16,10 +16,10 @@ module Sovereign.Algebra.Hensel3Side where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; s≤s; z≤n; ≤-antisym)
 open import Data.Nat.Divisibility
-  using (_∣_; divides; ∣1⇒≡1; ∣-refl; ∣⇒≤; ∣m+n∣n⇒∣m)
+  using (_∣_; divides; ∣1⇒≡1; ∣-refl; ∣⇒≤; ∣m+n∣n⇒∣m; ∣-trans; n∣m*n; m∣m*n)
 open import Data.Nat.Divisibility using (_∣?_)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor; coprime?)
-open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; +-identityʳ; 1+n≢n; suc-injective; ≤-antisym; m≤m+n; ≤-trans; +-cancelˡ-≤)
+open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; +-identityʳ; 1+n≢n; suc-injective; ≤-antisym; m≤m+n; ≤-trans; m≤n⇒m≤1+n; ≤⇒≤ᵇ; ≤-reflexive; +-cancelˡ-≤)
 open import Data.Nat.Solver using (module +-*-Solver)
 open +-*-Solver using (solve; _:=_)
 open import Data.Nat.Properties using (≤-reflexive)
@@ -64,25 +64,20 @@ four-∣3 (divides (suc zero) ())
 four-∣3 (divides (suc (suc q)) ())
 
 parity23 : ¬ (2 ∣ 3)
-parity23 (divides zero ())
-parity23 (divides (suc zero) ())
-parity23 (divides (suc (suc n)) eq) = ⊥-elim (1+n≢n (suc-injective (suc-injective (suc-injective (≤-antisym four≤ le≤3)))))
-  where
-    four-form : suc (suc n) * 2 ≡ 4 + n * 2
-    four-form = solve 1 (λ n → suc (suc n) * 2 := 4 + n * 2) refl n
-    four≤ : 4 ≤ suc (suc n) * 2
-    four≤ = ≤-trans (≤-reflexive (sym four-form)) (m≤m+n 4 (n * 2))
-    le≤3 : suc (suc n) * 2 ≤ 3
-    le≤3 = ≤-reflexive (sym eq)
+parity23 (divides zero ())                    -- 3 ≡ 0 · 2 封闭 clash
+parity23 (divides (suc zero) ())              -- 3 ≡ 1 · 2 = 2 封闭 clash
+parity23 (divides (suc (suc zero)) ())        -- 3 ≡ 2 · 2 = 4 封闭 clash（four-form 的 ≤ 链由此消解）
+parity23 (divides (suc (suc (suc q))) ())     -- 3 ≡ (3+q) · 2 归约 ≥ 6 深度 clash
+
 
 irred3 : ∀ d → d ∣ 3 → d ≡ 1 ⊎ d ≡ 3
 irred3 d h with ∣⇒≤ h
 ... | dle with d ≟ zero
-...   | yes d0 = ⊥-elim (zero-3-clash (sym (trans (sym d0) (trans h (*-zeroʳ d)))))
+...   | yes d0 = ⊥-elim (zero-3-clash (sym (zero-3 (subst (λ w → w ∣ 3) d0 h))))
 ...   | no nd0 with d ≟ 1
 ...     | yes d1 = inj₁ d1
 ...     | no nd1 with d ≟ 2
-...       | yes d2 = ⊥-elim (two-3-clash (sym (trans (sym d2) (trans h (*-identityʳ 2)))))
+...       | yes d2 = ⊥-elim (parity23 (subst (λ w → w ∣ 3) d2 h))
 ...       | no nd2 with d ≟ 3
 ...         | yes d3 = inj₂ d3
 ...         | no nd3 with d
@@ -90,7 +85,8 @@ irred3 d h with ∣⇒≤ h
 ...           | suc zero = ⊥-elim (nd1 refl)
 ...           | suc (suc zero) = ⊥-elim (nd2 refl)
 ...           | suc (suc (suc zero)) = ⊥-elim (nd3 refl)
-...           | suc (suc (suc (suc k))) = ⊥-elim (four-∣3 (subst (λ w → w ∣ 3) (sym (≤-antisym (m≤m+n 4 k) (≤-trans (∣⇒≤ h) (m≤m+n 3 1)))) h))
+...           | suc (suc (suc (suc m))) = ⊥-elim (≤⇒≤ᵇ (≤-trans (s≤s (s≤s (s≤s (s≤s z≤n)))) dle))
+
 
 --------------------------------------------------------------------------------
 -- §3. 核心引理：d ∣ 3^k → d ≡ 1 ⊎ 3 ∣ d
@@ -101,12 +97,19 @@ core : ∀ k d → d ∣ pow3 k → d ≡ 1 ⊎ 3 ∣ d
 core zero d h = inj₁ (∣1⇒≡1 h)
 core (suc k) d h with 3 ∣? d
 ...   | yes t = inj₂ t
-...   | no nt3 = inj₁ (core k d (coprime-divisor copr h))
+...   | no nt3 = inj₁-sum
       where
+        h2 : d ∣ 3 * pow3 k
+        h2 = h
         copr : Coprime d 3
         copr {e} (e∣d , e∣3) with irred3 e e∣3
         ...   | inj₁ e≡1 = e≡1
-        ...   | inj₂ e≡3 = ⊥-elim (nt3 (subst (λ w → w ∣ d) (sym e≡3) e∣d))
+        ...   | inj₂ e≡3 = ⊥-elim (nt3 (subst (λ w → w ∣ d) e≡3 e∣d))
+        inner = core k d (coprime-divisor copr h2)
+        inj₁-sum : d ≡ 1 ⊎ 3 ∣ d
+        inj₁-sum with inner
+        ...   | inj₁ e = inj₁ e
+        ...   | inj₂ t3 = ⊥-elim (nt3 t3)
 
 --------------------------------------------------------------------------------
 -- §4. 乘积桥：(x ∸ 1) * suc x ≡ x * x ∸ 1
@@ -115,10 +118,6 @@ core (suc k) d h with 3 ∣? d
 px : ∀ x → (x ∸ 1) * suc x ≡ x * x ∸ 1
 px zero = refl
 px (suc x') =
-  trans (sym (*-suc x' (suc (suc x'))))
-  (trans (cong (λ w → x' + w) (sym (*-suc x' x')))
-  (trans (cong (λ w → suc (x' + w) ∸ 1) (cong (λ w → x' + w) (sym (*-suc x' x'))))
-  (trans (cong (λ w → suc (x' + (x' + w)) ∸ 1) (*-comm (suc x') x'))
-  (trans (*-suc (suc x') x')
-  (trans (cong (λ w → (suc x' + w) ∸ 1) (*-suc x' x'))
-  refl)))))
+  trans (*-comm x' (suc (suc x')))
+  (trans refl
+  (cong (λ w → x' + w) (sym (*-suc x' x'))))
