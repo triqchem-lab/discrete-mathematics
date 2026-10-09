@@ -116,5 +116,6 @@ disp2-slide : (W : WeightedDiGraph) → ∀ {u x y z v}
   (e1 : edge (G W) x y) (e2 : edge (G W) y z) (e3 : edge (G W) x z)
   → _+A_ W (wt W x y) (wt W y z) ≡ wt W x z
   → disp2 W (p ++w (cons e1 (cons e2 b))) ≡ disp2 W (p ++w (cons e3 b))
+disp2-slide W {u} {x} {y} {z} {v} (nil x) (nil z) e1 e2 e3 harm = {!!}
 disp2-slide W p b e1 e2 e3 harm = {!!}
-  -- WIP：二阶守恒（步对和 + disp2 尾部 + harm 条件）
+  -- WIP：二阶守恒（++w-disp2 引理 + 边界步对 + harm 条件）
