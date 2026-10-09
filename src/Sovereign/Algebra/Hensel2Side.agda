@@ -24,10 +24,10 @@ open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _%_; s≤s; 
 open import Data.Nat.Divisibility using (_∣_; divides; ∣1⇒≡1; 1∣_; ∣-refl; ∣⇒≤; ∣-trans; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; ∣m+n∣m⇒∣n; _∣?_; *-cancelˡ-∣; ∣m∣n⇒∣m+n; *-monoʳ-∣)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor; coprime?)
 open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; *-identityˡ; *-assoc; *-cancelˡ-∣; *-cancelˡ-≡; ≤-antisym; m≤m+n; ≤-trans; ≤-reflexive; 1+n≢n; suc-injective; _≟_; ≤⇒≤ᵇ; +-comm; +-suc; +-assoc; +-identityʳ)
-open import Data.Product using (Σ; _×_; _,_; ∃-syntax)
+open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂; ∃-syntax)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Nullary using (¬_; yes; no)
+open import Relation.Nullary using (¬_; yes; no; Dec)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst; module ≡-Reasoning)
 open import Sovereign.Algebra.Hensel3Side using (px)
 
@@ -101,22 +101,58 @@ coprime-d-2 d nt2 {e} (e∣d , e∣2) with irred2 e e∣2
 ...   | inj₂ e≡2 = ⊥-elim (nt2 (subst (λ w → w ∣ d) e≡2 e∣d))
 
 -- d ∣ 2^k → d ≡ 1 ⊎ 2 ∣ d（对 k 归纳；suc 层经 coprime-divisor 剥一个 2）
+two-add : ∀ m → m + 2 ≡ suc (suc m)
+two-add m = trans (+-suc m (suc zero))
+          (trans (cong suc (+-suc m zero))
+          (cong (λ w → suc (suc w)) (+-identityʳ m)))
+
+suc≡+1 : ∀ n → suc n ≡ n + 1
+suc≡+1 n = trans refl (sym (trans (+-suc n zero) (cong suc (+-identityʳ n))))
+
+2∣1-clash : 2 ∣ 1 → ⊥
+
+not2-suc : ∀ n → 2 ∣ n → ¬ (2 ∣ suc n)
+not2-suc n h2∣n h2∣suc = 2∣1-clash (∣m+n∣m⇒∣n (subst (λ w → 2 ∣ w) (suc≡+1 n) h2∣suc) h2∣n)
+
+-- 加法二分判定器（结构递归，零 mod-helper）
+-- +2 保偶（三步具名链：divides-refl 型 ∣m*n → ∣m+n 组合 → two-add 桥 → cong suc² 反向）
+plus2-even : ∀ n → 2 ∣ n → 2 ∣ suc (suc n)
+plus2-even n (divides q eq) = subst (λ w → 2 ∣ w) (sym (cong suc (cong suc eq)))
+  (subst (λ w → 2 ∣ w) (two-add (q * 2))
+  (∣m∣n⇒∣m+n (divides q refl) ∣-refl))
+
+parity-split : ∀ n → 2 ∣ n ⊎ 2 ∣ suc n
+parity-split zero = inj₁ (divides zero refl)
+parity-split (suc zero) = inj₂ (divides (suc zero) refl)
+parity-split (suc (suc n)) with parity-split n
+...   | inj₁ h = inj₁ (plus2-even n h)
+...   | inj₂ h = inj₂ (plus2-even (suc n) h)
+
+-- 奇性否定（2∣suc n 与 2∣n 的偶性交替，经 suc≡+1 加法桥）
+-- 素性迭代（强化假设版，parity-split 加法二分驱动）
+
 div-pow2 : ∀ k d → d ∣ pow2 k → d ≡ 1 ⊎ 2 ∣ d
 div-pow2 zero d h = inj₁ (∣1⇒≡1 h)
-div-pow2 (suc k) d h with 2 ∣? d
-...   | yes t = inj₂ t
-...   | no nt2 = inj₁-sum
-      where
-        rec = div-pow2 k d (coprime-divisor (coprime-d-2 d nt2) h)
-        inj₁-sum : d ≡ 1 ⊎ 2 ∣ d
-        inj₁-sum with rec
-        ...   | inj₁ e = inj₁ e
-        ...   | inj₂ t2 = ⊥-elim (nt2 t2)
+div-pow2 (suc k) d h with parity-split d
+...   | inj₁ h2∣d = inj₂ h2∣d
+...   | inj₂ h2∣sucd = inj₁-sum
+  where
+    nt2 : ¬ (2 ∣ d)
+    nt2 hd = 2∣1-clash (∣m+n∣m⇒∣n (subst (λ w → 2 ∣ w) (suc≡+1 d) h2∣sucd) hd)
+    rec = div-pow2 k d (coprime-divisor (coprime-d-2 d nt2) h)
+    inj₁-sum : d ≡ 1 ⊎ 2 ∣ d
+    inj₁-sum with rec
+    ...   | inj₁ e = inj₁ e
+    ...   | inj₂ t2 = ⊥-elim (nt2 t2)
 
 
 
 -- ¬2∣a → Coprime a (pow2 k)（经 div-pow2 分类）
 coprime-a-pow2 : ∀ k a → ¬ (2 ∣ a) → Coprime a (pow2 k)
+coprime-a-pow2 k a nt2 {e} (e∣a , e∣pow2) with div-pow2 k e e∣pow2
+...   | inj₁ e≡1 = e≡1
+...   | inj₂ 2∣e = ⊥-elim (nt2 (∣-trans 2∣e e∣a))
+
 pow2-∣-iter : ∀ k a b → Coprime a (pow2 k) → pow2 k ∣ a * b → pow2 k ∣ b
 pow2-∣-iter k a b c h = coprime-divisor (coprime-2-a-aux k a c) h
   where coprime-2-a-aux : ∀ k a → Coprime a (pow2 k) → Coprime (pow2 k) a
@@ -129,7 +165,6 @@ pow2-∣-iter k a b c h = coprime-divisor (coprime-2-a-aux k a c) h
 --   ——两引理合取即「赋值落到相邻 pair 的某一侧」，是 mod-4 赋值分析的代数核心
 --------------------------------------------------------------------------------
 
-2∣1-clash : 2 ∣ 1 → ⊥
 2∣1-clash (divides zero ())            -- 1 ≡ 0 封闭 clash
 2∣1-clash (divides (suc zero) ())      -- 1 ≡ 2 封闭 clash
 2∣1-clash (divides (suc (suc q)) ())   -- 1 ≡ (2+q)·2 深度 clash
@@ -217,47 +252,116 @@ two-cancel-twice k a b (divides qa eqa) (divides qb eqb) h =
 --   x 分裂（zero 不可达 / suc m 半值替换）+ 2·suc ha ≡ suc (suc (2·ha)) 算术链
 --------------------------------------------------------------------------------
 
-2*suc≡suc2* : ∀ ha → 2 * suc ha ≡ suc (suc (2 * ha))
-2*suc≡suc2* ha =
-  trans refl
-  (trans (cong (λ w → suc ha + w) (*-identityˡ (suc ha)))
-  (trans (cong suc (+-comm ha (suc ha)))
-  (trans (cong suc (cong suc (sym (+-identityʳ (ha + ha)))))
-  (cong suc (cong suc (+-assoc ha ha zero))))))
 
 
 --------------------------------------------------------------------------------
 -- §10-§12 加法化重构（一次成形——全部具名引理零消去零 ∸ 零 ∣?）
 --------------------------------------------------------------------------------
 
-two-add : ∀ m → m + 2 ≡ suc (suc m)
-two-add m = trans (+-suc m (suc zero))
-          (trans (cong suc (+-suc m zero))
-          (cong (λ w → suc (suc w)) (+-identityʳ m)))
 
-suc≡+1 : ∀ n → suc n ≡ n + 1
-suc≡+1 n = trans refl (sym (trans (+-suc n zero) (cong suc (+-identityʳ n))))
 
-not2-suc : ∀ n → 2 ∣ n → ¬ (2 ∣ suc n)
-not2-suc n h2∣n h2∣suc = 2∣1-clash (∣m+n∣m⇒∣n (subst (λ w → 2 ∣ w) (suc≡+1 n) h2∣suc) h2∣n)
 
--- 加法二分判定器（结构递归，零 mod-helper）
--- +2 保偶（三步具名链：divides-refl 型 ∣m*n → ∣m+n 组合 → two-add 桥 → cong suc² 反向）
-plus2-even : ∀ n → 2 ∣ n → 2 ∣ suc (suc n)
-plus2-even n (divides q eq) = subst (λ w → 2 ∣ w) (sym (cong suc (cong suc eq)))
-  (subst (λ w → 2 ∣ w) (two-add (q * 2))
-  (∣m∣n⇒∣m+n (divides q refl) ∣-refl))
+--------------------------------------------------------------------------------
+-- §10. 乘二保整除 + 奇性否定 + Coprime 构造（组装层依赖件）
+--------------------------------------------------------------------------------
 
-parity-split : ∀ n → 2 ∣ n ⊎ 2 ∣ suc n
-parity-split zero = inj₁ (divides zero refl)
-parity-split (suc zero) = inj₂ (divides (suc zero) refl)
-parity-split (suc (suc n)) with parity-split n
-...   | inj₁ h = inj₁ (plus2-even n h)
-...   | inj₂ h = inj₂ (plus2-even (suc n) h)
+pow2-∣-mul-r : ∀ k q → pow2 k ∣ q → 2 * pow2 k ∣ q * 2
+pow2-∣-mul-r k q (divides q₁ eq₁) =
+  divides q₁ (trans (cong (λ w → w * 2) eq₁)
+  (trans (*-assoc q₁ (pow2 k) 2) (cong (λ w → q₁ * w) (*-comm (pow2 k) 2))))
 
--- 奇性否定（2∣suc n 与 2∣n 的偶性交替，经 suc≡+1 加法桥）
--- 素性迭代（强化假设版，parity-split 加法二分驱动）
-coprime-a-pow2 k a nt2 {e} (e∣a , e∣pow2) with div-pow2 k e e∣pow2
-...   | inj₁ e≡1 = e≡1
-...   | inj₂ 2∣e = ⊥-elim (nt2 (∣-trans 2∣e e∣a))
+-- 奇性否定（quotient 分解 + 4∣2 封闭 clash）：
+--   ha = qa·2、hb = qb·2 → ha·2 = qa·4、hb·2 = qb·4 [*-assoc 桥]
+--   → 4∣ha·2、4∣ha·2+2 → 4∣2 [∣m+n∣m⇒∣n] → closed () clash
+four-clash : 4 ∣ 2 → ⊥
+four-clash (divides zero ())          -- 2 ≡ 0·4 = 0 封闭 clash
+four-clash (divides (suc zero) ())    -- 2 ≡ 4 封闭 clash
+four-clash (divides (suc (suc q)) ()) -- 2 ≡ (2+q)·4 ≥ 8 深度 clash
 
+odd-hb : ∀ ha hb → 2 ∣ ha → ha * 2 + 2 ≡ hb * 2 → ¬ (2 ∣ hb)
+odd-hb ha hb (divides qa eqa) hplus (divides qb eqb) = four-clash (∣m+n∣m⇒∣n four∣half+2 four∣half)
+  where
+    ha2≡qa4 : ha * 2 ≡ qa * 4
+    ha2≡qa4 = trans (cong (_* 2) eqa) (*-assoc qa 2 2)
+    hb2≡qb4 : hb * 2 ≡ qb * 4
+    hb2≡qb4 = trans (cong (_* 2) eqb) (*-assoc qb 2 2)
+    four∣half : 4 ∣ ha * 2
+    four∣half = subst (λ w → 4 ∣ w) (sym ha2≡qa4) (divides qa refl)
+    four∣half+2 : 4 ∣ ha * 2 + 2
+    four∣half+2 = subst (λ w → 4 ∣ w) (sym hplus)
+                  (subst (λ w → 4 ∣ w) (sym hb2≡qb4) (divides qb refl))
+
+-- Coprime hb (pow2 14)：hb 奇（ha 偶经 ha·2+2 ≡ hb·2 加法形）
+coprime-hb-pow2 : ∀ ha hb → 2 ∣ ha → ha * 2 + 2 ≡ hb * 2 → Coprime hb (pow2 14)
+coprime-hb-pow2 ha hb h2∣ha hplus =
+  coprime-a-pow2 14 hb (odd-hb ha hb h2∣ha hplus)
+
+--------------------------------------------------------------------------------
+-- §11. two-parity（奇偶二分主引理，Dec 模式匹配避开 with 泛化重排）
+--------------------------------------------------------------------------------
+
+two-parity : ∀ m ha hb → 2 ∣ ha ⊎ 2 ∣ suc ha → pow2 14 ∣ ha * hb
+           → m ≡ ha * 2 → suc (suc m) ≡ hb * 2
+           → pow2 15 ∣ m ⊎ pow2 15 ∣ suc (suc m)
+two-parity m ha hb (inj₁ t2) h14 eqa eqb = inj₁ two-even-ha-side
+  where
+    hplus : ha * 2 + 2 ≡ hb * 2
+    hplus = trans (two-add (ha * 2)) (trans (cong (λ w → suc (suc w)) (sym eqa)) eqb)
+    h14c : pow2 14 ∣ hb * ha
+    h14c = subst (λ w → pow2 14 ∣ w) (*-comm ha hb) h14
+    h∣ha : pow2 14 ∣ ha
+    h∣ha = pow2-∣-iter 14 hb ha (coprime-hb-pow2 ha hb t2 hplus) h14c
+    two-even-ha-side : pow2 15 ∣ m
+    two-even-ha-side = subst (λ w → 2 * pow2 14 ∣ w) (sym eqa) (pow2-∣-mul-r 14 ha h∣ha)
+two-parity m ha hb (inj₂ h2∣suc-ha) h14 eqa eqb = inj₂ two-odd-hb-side
+  where
+    nt2 : ¬ (2 ∣ ha)
+    nt2 hd = not2-suc ha hd h2∣suc-ha
+    h∣hb : pow2 14 ∣ hb
+    h∣hb = pow2-∣-iter 14 ha hb (coprime-a-pow2 14 ha nt2) h14
+    two-odd-hb-side : pow2 15 ∣ suc (suc m)
+    two-odd-hb-side = subst (λ w → 2 * pow2 14 ∣ w) (sym eqb) (pow2-∣-mul-r 14 hb h∣hb)
+
+--------------------------------------------------------------------------------
+-- §12. even-even/two-even-branch/two-side/fourfold′（2 侧二分主定理）
+--------------------------------------------------------------------------------
+
+-- 幂弱化：pow2 (suc k) ∣ n → pow2 k ∣ n（商重排，零 ∸ 零消去）
+pow2-weaken : ∀ k n → pow2 (suc k) ∣ n → pow2 k ∣ n
+pow2-weaken k n (divides q eq) = divides (q * 2) (trans eq (sym (*-assoc q 2 (pow2 k))))
+
+-- 偶偶分支（m 形）：t2 : 2∣m、t2s : 2∣suc(suc m) → 命名投影取 Σ 分量 → two-parity
+even-even-m : ∀ m → pow2 16 ∣ suc m * suc m ∸ 1 → 2 ∣ m → 2 ∣ suc (suc m)
+            → pow2 15 ∣ m ⊎ pow2 15 ∣ suc (suc m)
+even-even-m m h t2 t2s = two-parity m ha hb (parity-split ha) h14 eqa eqb
+  where
+    h1 : pow2 16 ∣ m * suc (suc m)
+    h1 = subst (λ w → pow2 16 ∣ w) (sym (px (suc m))) h
+    decomp = two-cancel-twice 14 m (suc (suc m)) t2 t2s h1
+    ha = proj₁ decomp
+    hb = proj₁ (proj₂ decomp)
+    eqa = proj₁ (proj₂ (proj₂ decomp))
+    eqb = proj₁ (proj₂ (proj₂ (proj₂ decomp)))
+    h14 = proj₂ (proj₂ (proj₂ (proj₂ decomp)))
+
+-- 2 侧二分主定理：x 分裂 + parity-split（全加法判定，零 ∣? 零 mod-helper）
+two-side : ∀ x → pow2 16 ∣ x * x ∸ 1 → pow2 15 ∣ x ∸ 1 ⊎ pow2 15 ∣ suc x
+two-side x h with x
+...   | zero = inj₁ (divides zero refl)
+...   | suc m with parity-split m
+...     | inj₁ t2 = even-even-m m h t2 (plus2-even m t2)
+...     | inj₂ h2∣sm = inj₂ (pow2-weaken 15 (suc (suc m))
+                             (two-side-odd-a 16 (suc m) h (λ hd → not2-suc m hd h2∣sm)))
+
+-- 四分合成（2^16 层，Dec 参数外置）
+fourfold′ : ∀ x → pow2 16 ∣ x * x ∸ 1
+          → Dec (pow2 16 ∣ x ∸ 1) → Dec (pow2 16 ∣ suc x)
+          → (pow2 16 ∣ x ∸ 1)
+          ⊎ (pow2 16 ∣ suc x)
+          ⊎ (pow2 15 ∣ x ∸ 1 × ¬ pow2 16 ∣ x ∸ 1)
+          ⊎ (pow2 15 ∣ suc x × ¬ pow2 16 ∣ suc x)
+fourfold′ x h (yes t16) _ = inj₁ t16
+fourfold′ x h (no _) (yes t16s) = inj₂ (inj₁ t16s)
+fourfold′ x h (no n16a) (no n16b) with two-side x h
+...   | inj₁ t15 = inj₂ (inj₂ (inj₁ (t15 , n16a)))
+...   | inj₂ t15 = inj₂ (inj₂ (inj₂ (t15 , n16b)))
