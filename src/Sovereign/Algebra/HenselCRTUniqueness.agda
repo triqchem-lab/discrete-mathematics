@@ -123,10 +123,13 @@ unique-root₈ x x<N h3 h2 = go (divides-below-≤ (suc x) (lcm-coprime (suc x) 
     go (inj₂ sucx≡N) = suc-injective sucx≡N
 
 --------------------------------------------------------------------------------
--- §4. 同侧 case 唯一性（DC/UD）——【WIP：陈述入账，体洞化】
---   慢点坐标（二分实证 R3/R5/R6）：root₅ 的 go 调用 + t-go zero/suc-zero 区
---   即使 t≥2 洞化仍 101s——疑 divides record 字面量积除数位或 1*X 桥的归一化
---   下批小探针逐项定位（divides X 形 / *-identityˡ X 应用 / refl literal 桥）
+-- §4. 同侧 case 唯一性（DC/UD）——【WIP 二段：陈述入账】
+--   【慢点终局坐标（W2/H5/H6 二分实证）】t-go₅ 的签名级即爆（无体 101s）：
+--   疑 `m ≡ t * (pow3 11 * pow2 15)` 类型 × t 模式签名的联合归一化
+--   （构件探针 t1/t2/t3 全绿 3.9s——divides 字面量积位/*-identityˡ/refl 桥均快）
+--   下批处方：❶ t 分解拆 data 包装（避免 t * (big product) 的签名级积展开）
+--            ❷ 或 X 定义进 record 参数（Σ 形分解 ∃ t, m ≡ t * X）
+--            ❸ 或先做交叉 case 的 Bézout（DB/DD/UA/UC）绕开此形
 --------------------------------------------------------------------------------
 
 lcm-coprime-gen : ∀ p q n → Coprime p q → p ∣ n → q ∣ n → (p * q) ∣ n
@@ -153,10 +156,8 @@ unique-root₅ : ∀ x → 0 < x → x < SOVEREIGN_LCM
              → pow3 11 ∣ x ∸ 1 → pow2 15 ∣ x ∸ 1
              → ¬ (pow2 16 ∣ x ∸ 1) → x ≡ root₅
 unique-root₅ (suc m) (s≤s z≤n) x<N h3 h15 n16 = {!!}
-  -- WIP 慢点坐标：go(lcm-coprime-gen 调用) + t-go 三分支（t=0/1/≥2）归一化爆点待探针定位
 
 unique-root₄ : ∀ x → x < SOVEREIGN_LCM
              → pow3 11 ∣ suc x → pow2 15 ∣ suc x
              → ¬ (pow2 16 ∣ suc x) → x ≡ root₄
 unique-root₄ x x<N h3 h15 n16 = {!!}
-  -- WIP 同上（对称形）
