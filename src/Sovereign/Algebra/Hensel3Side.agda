@@ -14,12 +14,14 @@
 
 module Sovereign.Algebra.Hensel3Side where
 
-open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_)
+open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; s≤s; z≤n; ≤-antisym)
 open import Data.Nat.Divisibility
   using (_∣_; divides; ∣1⇒≡1; ∣-refl; ∣⇒≤; ∣m+n∣n⇒∣m)
 open import Data.Nat.Divisibility using (_∣?_)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor; coprime?)
-open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; +-identityʳ; 1+n≢n; suc-injective; ≤-antisym; m≤m+n; ≤-trans; +-cancelˡ-≤; s≤s; z≤n)
+open import Data.Nat.Properties using (*-suc; *-comm; *-zeroʳ; *-identityʳ; +-identityʳ; 1+n≢n; suc-injective; ≤-antisym; m≤m+n; ≤-trans; +-cancelˡ-≤)
+open import Data.Nat.Solver using (module +-*-Solver)
+open +-*-Solver using (solve; _:=_)
 open import Data.Nat.Properties using (≤-reflexive)
 open import Data.Product using (_×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
@@ -45,46 +47,50 @@ pow3 (suc k) = 3 * pow3 k
 --      3 由 3∣?3 判定器——零 ≤ 模式，绕开 primHComp 陷阱）
 --------------------------------------------------------------------------------
 
+zero-3 : zero ∣ 3 → zero ≡ 3
+zero-3 (divides q eq) = sym (trans eq (*-zeroʳ q))
+
+-- 闭式 clash 辅助件（模式位 () 对封闭数等式有效）
+zero-3-clash : 3 ≡ zero → ⊥
+zero-3-clash ()
+two-3-clash : 2 ≡ 3 → ⊥
+two-3-clash ()
+three-4-clash : 4 ≡ 3 → ⊥
+three-4-clash ()
+
+four-∣3 : 4 ∣ 3 → ⊥
+four-∣3 (divides zero ())
+four-∣3 (divides (suc zero) ())
+four-∣3 (divides (suc (suc q)) ())
+
+parity23 : ¬ (2 ∣ 3)
+parity23 (divides zero ())
+parity23 (divides (suc zero) ())
+parity23 (divides (suc (suc n)) eq) = ⊥-elim (1+n≢n (suc-injective (suc-injective (suc-injective (≤-antisym four≤ le≤3)))))
+  where
+    four-form : suc (suc n) * 2 ≡ 4 + n * 2
+    four-form = solve 1 (λ n → suc (suc n) * 2 := 4 + n * 2) refl n
+    four≤ : 4 ≤ suc (suc n) * 2
+    four≤ = ≤-trans (≤-reflexive (sym four-form)) (m≤m+n 4 (n * 2))
+    le≤3 : suc (suc n) * 2 ≤ 3
+    le≤3 = ≤-reflexive (sym eq)
+
 irred3 : ∀ d → d ∣ 3 → d ≡ 1 ⊎ d ≡ 3
-irred3 d h with d ≟ zero | d ≟ 1 | d ≟ 2 | d ≟ 3
-... | yes dz  | _       | _       | _       = ⊥-elim (zeros d dz h)
-  where
-    zeros : ∀ d → d ≡ zero → d ∣ 3 → ⊥
-    zeros .zero refl (divides q eq) = cases (trans eq (*-zeroʳ q))
-      where cases : 3 ≡ zero → ⊥
-            cases ()
-... | no _    | no _    | yes d2  | _       = ⊥-elim (2-case d2 h)
-  where
-    2-case : d ≡ 2 → d ∣ 3 → ⊥
-    2-case refl h' with h'
-    ...   | divides zero eq0 = ⊥-elim (check eq0)
-      where check : 3 ≡ zero * 2 → ⊥
-            check ()
-    ...   | divides (suc q') eq1 = absurd2 (trans (suc-injective (suc-injective eq1')) (≤-antisym q2≤1 2≤q2))
-      where
-        absurd2 : suc zero ≡ suc (suc zero) → ⊥
-        absurd2 eqs = ⊥-elim (1+n≢n (sym (suc-injective eqs)))
-        eq1' : 3 ≡ 2 + (q' * 2)
-        eq1' = trans eq1 (trans (*-suc (suc q') (suc zero))
-                (trans (cong (λ w → suc q' + w) (*-suc (suc q') zero))
-                (trans (cong (λ w → suc q' + (suc q' + w)) (*-zeroʳ (suc q')))
-                (trans (cong (λ w → suc (suc q' + w)) (+-identityʳ (suc q')))
-                (cong suc (+-identityʳ (suc q')))))))
-        upper : 2 + (q' * 2) ≤ 3
-        upper = ≤-reflexive (sym eq1')
-        q2≤1 : q' * 2 ≤ 1
-        q2≤1 = +-cancelˡ-≤ upper
-        even0 : 2 ∣ q' * 2
-        even0 = ∣m+n∣n⇒∣m {2} {2} {q' * 2} step0 ∣-refl
-        two≡q2 : 2 ≡ q' * 2
-        two≡q2 = ≤-antisym (s≤s (s≤s z≤n') q2≤1) (⌊ 2 ∣? q' * 2 ⌋') 
-        -- ↑ 若 z≤n'/⌊⌋ 形状不匹配，改用 ∣⇒≤ even0 : 2 ≤ q'*2 与 ≤-antisym q2≤1 even0
-        final-clash : ⊥
-        final-clash = cases (subst (λ w → 3 ≡ w) (sym two≡q2) eq1')
-          where cases : 3 ≡ 2 + 2 → ⊥
-                cases ()
-... | no _    | no _    | no _    | yes d3  = inj₂ d3
-... | no _    | no _    | no _    | no n3    = ⊥-elim (n3 h)
+irred3 d h with ∣⇒≤ h
+... | dle with d ≟ zero
+...   | yes d0 = ⊥-elim (zero-3-clash (sym (trans (sym d0) (trans h (*-zeroʳ d)))))
+...   | no nd0 with d ≟ 1
+...     | yes d1 = inj₁ d1
+...     | no nd1 with d ≟ 2
+...       | yes d2 = ⊥-elim (two-3-clash (sym (trans (sym d2) (trans h (*-identityʳ 2)))))
+...       | no nd2 with d ≟ 3
+...         | yes d3 = inj₂ d3
+...         | no nd3 with d
+...           | zero = ⊥-elim (nd0 refl)
+...           | suc zero = ⊥-elim (nd1 refl)
+...           | suc (suc zero) = ⊥-elim (nd2 refl)
+...           | suc (suc (suc zero)) = ⊥-elim (nd3 refl)
+...           | suc (suc (suc (suc k))) = ⊥-elim (four-∣3 (subst (λ w → w ∣ 3) (sym (≤-antisym (m≤m+n 4 k) (≤-trans (∣⇒≤ h) (m≤m+n 3 1)))) h))
 
 --------------------------------------------------------------------------------
 -- §3. 核心引理：d ∣ 3^k → d ≡ 1 ⊎ 3 ∣ d
