@@ -125,3 +125,16 @@ disp2-slide W {u} {x} {y} {z} {v} (nil x) (nil z) e1 e2 e3 harm =
   trans (cong (λ w → _*A_ W w (oneA W)) harm) (*A-idʳ W (wt W x z))
 disp2-slide W p b e1 e2 e3 harm = {!!}
   -- WIP：二阶守恒（++w-disp2 引理 + 边界步对 + harm 条件）
+
+-- ────────────────────────────────────────────────────────────────────
+-- §6. ++w-disp2（边界步对分解——general 形基础）
+-- ────────────────────────────────────────────────────────────────────
+
+lastW : (W : WeightedDiGraph) → ∀ {u v} → Walk (G W) u v → A W
+lastW W (nil v) = oneA W
+lastW W (cons {u = u} {v = v} e (nil w)) = wt W u v
+lastW W (cons e (cons e' p)) = lastW W (cons e' p)
+
+++w-disp2 : (W : WeightedDiGraph) → ∀ {u v w} (p : Walk (G W) u v) (q : Walk (G W) v w)
+  → disp2 W (p ++w q) ≡ _*A_ W (disp2 W p) (_*A_ W (lastW W p) (disp2 W q))
+++w-disp2 W p q = {!!}
