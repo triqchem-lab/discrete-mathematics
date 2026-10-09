@@ -19,7 +19,7 @@ module Sovereign.Algebra.HenselCRTUniqueness where
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _<_; z≤n; s≤s)
 open import Data.Nat.Divisibility using (_∣_; divides; ∣-trans; ∣-refl; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; ∣m+n∣m⇒∣n)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor)
-open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; m∸n≡0⇒m≤n; m≤n*m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; ≤-step; <-trans; *-monoˡ-≤; m≤n+m; *-distribʳ-+; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
+open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; m∸n≡0⇒m≤n; m≤n*m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; ≤-step; +-suc; <-trans; *-monoˡ-≤; m≤n+m; *-distribʳ-+; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -231,6 +231,10 @@ db-go a (divides (suc (suc k)) eq2) lt = {!!}
 
 lin-solve-db a b eq a< = {!!}
 --------------------------------------------------------------------------------
+m≤m+n-f : ∀ a b → a ≤ a + b
+m≤m+n-f a zero = ≤-reflexive (sym (+-identityʳ a))
+m≤m+n-f a (suc b) = subst (a ≤_) (sym (+-suc a b)) (≤-step (m≤m+n-f a b))
+
 -- §6. DB case 装配（unique-root₃——破局引理串联）
 --------------------------------------------------------------------------------
 
@@ -261,8 +265,12 @@ unique-root₃ (suc m) (s≤s z≤n) x<N (divides a eqa) (divides b eqb) = go (d
         2*24371≢0 : 2 * 24371 ≡ 0 → ⊥
         2*24371≢0 ()
     go (divides (suc q) eqq) = {!!}
-      -- 【爆点坐标 C6】suc q 分支整体——plus-cancel 的 C := 2*24371（literal 48742）归纳爆
-      -- 【数学终判（三次独立分析）】a + C ≡ D + C → a ≡ D 的 C 消去（literal C）本质 literal 归纳：
+      where
+        q-split : ∀ q → a ≡ 16794 + q * 65536 → suc m ≡ root₃
+        q-split zero eq = {!!}
+        q-split (suc q) eq = {!!}
+          -- 【爆点坐标 SQ5】N≤x 链的 literal 形（m≤m+n literal + symbolic——第三条判据）
+          -- 绕法：q 形直接构造（x = 3¹¹·a + 1 ≥ N + 3¹¹·16794 + 1 的 mono 链——符号化参数）      -- 【数学终判（三次独立分析）】a + C ≡ D + C → a ≡ D 的 C 消去（literal C）本质 literal 归纳：
       --   plus-cancel 对 C 归纳（C literal→爆）；stdlib +-cancel（被消者 literal→爆）；∸ 引理（n 归纳→爆）
       --   唯一剩余：q := b∸1 形绕（用 b 分裂改变 eq 形）或 mod 形整体构造（q 形 + mod-extract 免消去）
 
@@ -284,10 +292,6 @@ root₃∸1-anchor = refl
 --   crt-converse : ∀ x → 3¹¹ ∣ x ∸ 1 → 2¹⁶ ∣ suc x → x < N → x ≡ root₃
 --   依赖：∸-+-cancel（stdlib）+ 2¹⁶ ∣ x ∸ root₃ 构造 + 3¹¹ ∣ x ∸ root₃ 构造
 --     + lcm-coprime（已证）+ mod-extract（已证 85880747/1eb06959）
-m≤m+n-f : ∀ a b → a ≤ a + b
-m≤m+n-f a zero = ≤-reflexive (sym (+-identityʳ a))
-m≤m+n-f a (suc b) = subst (a ≤_) (sym (+-suc a b)) (≤-step (m≤m+n-f a b))
-
 h3r-gen : ∀ r → r ≡ root₃ → ∀ x' k → x' ≡ k * pow3 11 → pow3 11 ∣ r ∸ suc x'
 h3r-gen r r-def x' k eq = subst (pow3 11 ∣_) (sym (cong (r ∸_) suc-x′-form)) (divides (16794 ∸ k) eq-form)
   where
