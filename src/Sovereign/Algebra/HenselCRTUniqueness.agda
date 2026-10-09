@@ -19,7 +19,7 @@ module Sovereign.Algebra.HenselCRTUniqueness where
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _<_; z≤n; s≤s)
 open import Data.Nat.Divisibility using (_∣_; divides; ∣-trans; ∣-refl; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; ∣m+n∣m⇒∣n)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor)
-open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; <-trans; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
+open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; <-trans; *-monoˡ-≤; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -166,43 +166,38 @@ unique-root₄ x x<N h3 h15 n16 = {!!}
 -- §5. 交叉 case（DB）——Bézout 逆元见证 + ∣ 型免减法链
 --------------------------------------------------------------------------------
 
--- 逆元见证（refl 级）：24371·3¹¹ ≡ 1 + 65876·2¹⁶（扩展 Euclid，ℕ 形免负数）
-inv-witness : 24371 * pow3 11 ≡ 1 + 65876 * pow2 16
+-- 逆元见证换序形（literal·literal——BUILTIN 快）：3¹¹·24371 ≡ 1 + 2¹⁶·65876
+inv-witness : pow3 11 * 24371 ≡ 1 + pow2 16 * 65876
 inv-witness = refl
 
--- DB 核心辅助（每引理 ≤3 trans——rearrange 纪律）
-lhs-distrib : ∀ a → 24371 * (pow3 11 * a + 2) ≡ 24371 * (pow3 11 * a) + 24371 * 2
-lhs-distrib a = *-distribˡ-+ 24371 (pow3 11 * a) 2
+-- ── §5 交叉 case（DB）── 全链 symbolic-first（经验 43 条：literal·symbolic 乘法爆）
+lhs-distrib : ∀ a → (a * pow3 11 + 2) * 24371 ≡ (a * pow3 11) * 24371 + 2 * 24371
+lhs-distrib a = *-distribʳ-+ 24371 (a * pow3 11) 2
 
-lhs-inner-a : ∀ a → 24371 * (pow3 11 * a) ≡ (1 + 65876 * pow2 16) * a
-lhs-inner-a a = trans (sym (*-assoc 24371 (pow3 11) a)) (cong (_* a) inv-witness)
+lhs-inner-a : ∀ a → (a * pow3 11) * 24371 ≡ a * (pow3 11 * 24371)
+lhs-inner-a a = *-assoc a (pow3 11) 24371
 
-lhs-inner-b : ∀ a → (1 + 65876 * pow2 16) * a ≡ a + 65876 * (pow2 16 * a)
-lhs-inner-b a = trans (*-distribˡ-+ 1 (65876 * pow2 16) a)
-  (trans (cong (_+ (65876 * pow2 16) * a) (*-identityˡ a))
-  (cong (a +_) (*-assoc 65876 (pow2 16) a)))
+lhs-inner-b : ∀ a → a * (pow3 11 * 24371) ≡ a + a * (pow2 16 * 65876)
+lhs-inner-b a = trans (cong (a *_) inv-witness)
+  (trans (*-distribˡ-+ a 1 (pow2 16 * 65876))
+  (cong (_+ a * (pow2 16 * 65876)) (*-identityʳ a)))
 
-lhs-inner : ∀ a → 24371 * (pow3 11 * a) ≡ a + 65876 * (pow2 16 * a)
+lhs-inner : ∀ a → (a * pow3 11) * 24371 ≡ a + a * (pow2 16 * 65876)
 lhs-inner a = trans (lhs-inner-a a) (lhs-inner-b a)
 
-lhs-outer : ∀ a → (a + 65876 * (pow2 16 * a)) + 24371 * 2 ≡ (a + 24371 * 2) + 65876 * (pow2 16 * a)
-lhs-outer a = trans (+-assoc a (65876 * (pow2 16 * a)) (24371 * 2))
-  (trans (cong (a +_) (+-comm (65876 * (pow2 16 * a)) (24371 * 2)))
-  (sym (+-assoc a (24371 * 2) (65876 * (pow2 16 * a)))))
+lhs-outer : ∀ a → (a + a * (pow2 16 * 65876)) + 2 * 24371 ≡ (a + 2 * 24371) + a * (pow2 16 * 65876)
+lhs-outer a = trans (+-assoc a (a * (pow2 16 * 65876)) (2 * 24371))
+  (trans (cong (a +_) (+-comm (a * (pow2 16 * 65876)) (2 * 24371)))
+  (sym (+-assoc a (2 * 24371) (a * (pow2 16 * 65876)))))
 
-lhs-form : ∀ a → 24371 * (pow3 11 * a + 2) ≡ (a + 24371 * 2) + 65876 * (pow2 16 * a)
+lhs-form : ∀ a → (a * pow3 11 + 2) * 24371 ≡ (a + 2 * 24371) + a * (pow2 16 * 65876)
 lhs-form a = trans (lhs-distrib a)
-  (trans (cong (_+ 24371 * 2) (lhs-inner a)) (lhs-outer a))
+  (trans (cong (_+ 2 * 24371) (lhs-inner a)) (lhs-outer a))
 
--- k ≥ 2 否定（M 参数化符号安全）：M*2 ≤ M*suc(suc k) [mono] 与 a+C < M*2 矛盾
-k-split-gen : ∀ M C a k → a + C ≡ M * suc (suc k) → a + C < M * 2 → ⊥
-k-split-gen M C a k eq lt = n≮n (a + C) (≤-<-trans M*2≤ lt)
-  where
-    M*2≤ : M * 2 ≤ a + C
-    M*2≤ = subst (M * 2 ≤_) eq (*-monoʳ-≤ M (s≤s (s≤s z≤n)))
-
--- DB 核心：3¹¹·a + 2 ≡ 2¹⁶·b → a < 2¹⁶ → a ≡ 16794（∣ 型免减法 + k 三段分裂）
-lin-solve-db : ∀ a b → pow3 11 * a + 2 ≡ pow2 16 * b → a < pow2 16 → a ≡ 16794
+-- k ≥ 2 否定（M 参数化符号安全）
+k-split-gen : ∀ M C a k → a + C ≡ suc (suc k) * M → a + C < M * 2 → ⊥
+k-split-gen M C a k eq lt = {!!}
+  -- WIP：M*2≤ 的 subst 链 meta 未解（mono 形 (sym (*-comm M 2)) 桥）——下批 3 行
+-- DB 核心：3¹¹·a + 2 ≡ b·2¹⁶ → a < 2¹⁶ → a ≡ 16794（∣ 型免减法 + k 三段分裂）
+lin-solve-db : ∀ a b → a * pow3 11 + 2 ≡ b * pow2 16 → a < pow2 16 → a ≡ 16794
 lin-solve-db a b eq a< = {!!}
-  -- 【慢点坐标 S11】lin-solve-db 体（go/a+48742< 组合）归一化爆点 101s
-  -- lhs 系引理（lhs-distrib/inner-a/inner-b/outer/form）独立待验——下批二分
