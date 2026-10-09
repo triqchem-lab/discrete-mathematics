@@ -121,3 +121,23 @@ px (suc x') =
   trans (*-comm x' (suc (suc x')))
   (trans refl
   (cong (λ w → x' + w) (sym (*-suc x' x'))))
+
+--------------------------------------------------------------------------------
+-- §5. 三分判定与 3 侧二分定理
+--     3 ∣ a·b → 3∣a ⊎ 3∣b（3 的素性经 irred3）；
+--     3∣x²∸1 → 3∣(x∸1) ⊎ 3∣suc(x)（经 px 乘积桥）
+--------------------------------------------------------------------------------
+
+-- Coprime 3 a 由 ¬(3∣a) 构造：e∣3 → e≡1（inj₁）或 e≡3 → 3∣a 与 nt3 矛盾
+coprime-3 : ∀ a → ¬ (3 ∣ a) → Coprime 3 a
+coprime-3 a nt3 {e} (e∣3 , e∣a) with irred3 e e∣3
+...   | inj₁ e≡1 = e≡1
+...   | inj₂ e≡3 = ⊥-elim (nt3 (subst (λ w → w ∣ a) e≡3 e∣a))
+
+three-dichotomy : ∀ a b → 3 ∣ a * b → 3 ∣ a ⊎ 3 ∣ b
+three-dichotomy a b h with 3 ∣? a
+...   | yes t = inj₁ t
+...   | no nt3 = inj₂ (coprime-divisor (coprime-3 a nt3) h)
+
+three-side : ∀ x → 3 ∣ x * x ∸ 1 → 3 ∣ x ∸ 1 ⊎ 3 ∣ suc x
+three-side x h = three-dichotomy (x ∸ 1) (suc x) (subst (λ w → 3 ∣ w) (sym (px x)) h)
