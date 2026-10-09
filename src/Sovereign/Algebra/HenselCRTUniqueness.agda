@@ -17,9 +17,9 @@
 module Sovereign.Algebra.HenselCRTUniqueness where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _<_; z≤n; s≤s)
-open import Data.Nat.Divisibility using (_∣_; divides; ∣-trans; ∣-refl; m∣m*n; n∣m*n)
+open import Data.Nat.Divisibility using (_∣_; divides; ∣-trans; ∣-refl; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; ∣m+n∣m⇒∣n)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor)
-open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡)
+open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; <-trans; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -28,7 +28,7 @@ open import Relation.Nullary using (¬_)
 open import Sovereign.Algebra.Hensel3Side using (pow3; core; parity23)
 open import Sovereign.Algebra.Hensel2Side using (pow2; div-pow2)
 open import Sovereign.Algebra.HenselCRTSynth using (clash-3-2)
-open import Sovereign.Algebra.SovereignLCMRoots using (SOVEREIGN_LCM; root₁; root₈)
+open import Sovereign.Algebra.SovereignLCMRoots using (SOVEREIGN_LCM; root₁; root₄; root₅; root₈)
 
 --------------------------------------------------------------------------------
 -- §1. 3 与 2¹⁶ 互素（3 ∣ 2^k → ⊥）+ lcm 互质引理
@@ -161,3 +161,48 @@ unique-root₄ : ∀ x → x < SOVEREIGN_LCM
              → pow3 11 ∣ suc x → pow2 15 ∣ suc x
              → ¬ (pow2 16 ∣ suc x) → x ≡ root₄
 unique-root₄ x x<N h3 h15 n16 = {!!}
+
+--------------------------------------------------------------------------------
+-- §5. 交叉 case（DB）——Bézout 逆元见证 + ∣ 型免减法链
+--------------------------------------------------------------------------------
+
+-- 逆元见证（refl 级）：24371·3¹¹ ≡ 1 + 65876·2¹⁶（扩展 Euclid，ℕ 形免负数）
+inv-witness : 24371 * pow3 11 ≡ 1 + 65876 * pow2 16
+inv-witness = refl
+
+-- DB 核心辅助（每引理 ≤3 trans——rearrange 纪律）
+lhs-distrib : ∀ a → 24371 * (pow3 11 * a + 2) ≡ 24371 * (pow3 11 * a) + 24371 * 2
+lhs-distrib a = *-distribˡ-+ 24371 (pow3 11 * a) 2
+
+lhs-inner-a : ∀ a → 24371 * (pow3 11 * a) ≡ (1 + 65876 * pow2 16) * a
+lhs-inner-a a = trans (sym (*-assoc 24371 (pow3 11) a)) (cong (_* a) inv-witness)
+
+lhs-inner-b : ∀ a → (1 + 65876 * pow2 16) * a ≡ a + 65876 * (pow2 16 * a)
+lhs-inner-b a = trans (*-distribˡ-+ 1 (65876 * pow2 16) a)
+  (trans (cong (_+ (65876 * pow2 16) * a) (*-identityˡ a))
+  (cong (a +_) (*-assoc 65876 (pow2 16) a)))
+
+lhs-inner : ∀ a → 24371 * (pow3 11 * a) ≡ a + 65876 * (pow2 16 * a)
+lhs-inner a = trans (lhs-inner-a a) (lhs-inner-b a)
+
+lhs-outer : ∀ a → (a + 65876 * (pow2 16 * a)) + 24371 * 2 ≡ (a + 24371 * 2) + 65876 * (pow2 16 * a)
+lhs-outer a = trans (+-assoc a (65876 * (pow2 16 * a)) (24371 * 2))
+  (trans (cong (a +_) (+-comm (65876 * (pow2 16 * a)) (24371 * 2)))
+  (sym (+-assoc a (24371 * 2) (65876 * (pow2 16 * a)))))
+
+lhs-form : ∀ a → 24371 * (pow3 11 * a + 2) ≡ (a + 24371 * 2) + 65876 * (pow2 16 * a)
+lhs-form a = trans (lhs-distrib a)
+  (trans (cong (_+ 24371 * 2) (lhs-inner a)) (lhs-outer a))
+
+-- k ≥ 2 否定（M 参数化符号安全）：M*2 ≤ M*suc(suc k) [mono] 与 a+C < M*2 矛盾
+k-split-gen : ∀ M C a k → a + C ≡ M * suc (suc k) → a + C < M * 2 → ⊥
+k-split-gen M C a k eq lt = n≮n (a + C) (≤-<-trans M*2≤ lt)
+  where
+    M*2≤ : M * 2 ≤ a + C
+    M*2≤ = subst (M * 2 ≤_) eq (*-monoʳ-≤ M (s≤s (s≤s z≤n)))
+
+-- DB 核心：3¹¹·a + 2 ≡ 2¹⁶·b → a < 2¹⁶ → a ≡ 16794（∣ 型免减法 + k 三段分裂）
+lin-solve-db : ∀ a b → pow3 11 * a + 2 ≡ pow2 16 * b → a < pow2 16 → a ≡ 16794
+lin-solve-db a b eq a< = {!!}
+  -- 【慢点坐标 S11】lin-solve-db 体（go/a+48742< 组合）归一化爆点 101s
+  -- lhs 系引理（lhs-distrib/inner-a/inner-b/outer/form）独立待验——下批二分
