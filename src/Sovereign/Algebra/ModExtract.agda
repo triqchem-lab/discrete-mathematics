@@ -16,7 +16,7 @@
 
 module Sovereign.Algebra.ModExtract where
 
-open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _≤_; _<_; z≤n; s≤s)
+open import Data.Nat using (ℕ; zero; suc; pred; _*_; _+_; _≤_; _<_; z≤n; s≤s)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Data.Nat.Properties using (m≤m+n; m≤n+m; ≤-trans; ≤-<-trans; n≮n; +-comm; +-assoc; +-identityʳ; +-suc)
@@ -66,3 +66,21 @@ open import Data.Nat.Properties using (*-distribʳ-∸)
 ∣-diff : ∀ {d m n} → d ∣ m → d ∣ n → d ∣ (m ∸ n)
 ∣-diff {d} {m} {n} (divides k1 e1) (divides k2 e2) =
   divides (k1 ∸ k2) (trans (cong₂ _∸_ e1 e2) (sym (*-distribʳ-∸ d k1 k2)))
+
+-- ────────────────────────────────────────────────────────────────────
+-- §4. ∸+-cancel（自证——对 o 符号归纳）+ div2-side（2¹⁶ 侧闭合）
+-- ────────────────────────────────────────────────────────────────────
+
+open import Data.Nat.Properties using (n+1≡suc; pred[m∸n]≡m∸[1+n])
+
+suc∸suc : ∀ a b → suc a ∸ suc b ≡ a ∸ b
+suc∸suc a zero = refl
+suc∸suc a (suc b) = trans (sym (pred[m∸n]≡m∸[1+n] (suc a) (suc b)))
+  (trans (cong pred (suc∸suc a b)) (pred[m∸n]≡m∸[1+n] a b))
+
+∸+-cancel : ∀ m n o → (m + o) ∸ (n + o) ≡ m ∸ n
+∸+-cancel m n zero = cong₂ _∸_ (+-identityʳ m) (+-identityʳ n)
+∸+-cancel m n (suc o) =
+  trans (cong₂ _∸_ (+-suc m o) (+-suc n o))
+  (trans (suc∸suc (m + o) (n + o)) (∸+-cancel m n o))
+
