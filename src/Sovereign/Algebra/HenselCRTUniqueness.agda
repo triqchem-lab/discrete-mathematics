@@ -23,7 +23,7 @@ open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl;
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong; subst; cong₂)
 open import Relation.Nullary using (¬_)
 open import Sovereign.Algebra.Hensel3Side using (pow3; core; parity23)
 open import Sovereign.Algebra.Hensel2Side using (pow2; div-pow2; two-add)
@@ -235,6 +235,7 @@ lin-solve-db a b eq a< = {!!}
 --------------------------------------------------------------------------------
 
 open import Sovereign.Algebra.ModExtract using (mod-extract; plus-cancel; db-mod-extract; ∣-diff; ∸+-cancel; ∸∸-align-suc; suc∸1-form; ∸-to-+)
+open import Data.Nat.Properties using (*-distribʳ-∸)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Nat.Properties using (+-suc)
 n+1≡suc-f : ∀ n → n + 1 ≡ suc n
@@ -335,8 +336,8 @@ crt-converse (suc x') h3 h16 x<N = finish (div2-side (suc x') h16) (div3-side (s
             go-h16 (divides b eq) = div2-gen (suc x') b eq
         h3r′ : pow3 11 ∣ root₃ ∸ suc x'
         h3r′ = {!!}
-          -- 【爆点坐标 H3R3】subst motive 组合（align-r 探针 2.4s 快但模块内 101s——root₃ 定义 unfold × motive 归约）
-          -- 绕法待研：div3-gen 加法形（免 align/subst）或 root₃ 参数化（符号形）        t-split : SOVEREIGN_LCM ∣ suc x' ∸ root₃ → SOVEREIGN_LCM ∣ root₃ ∸ suc x' → suc x' ≡ root₃
+          -- 【爆点坐标 HC4】∸+-cancel 的 zero 分支 +-identityʳ m（m := 16794·3¹¹ = 29 亿 literal——归纳爆）
+          -- 经验 44 同族（归纳引理 × literal）——绕法：∸+-cancel 的 m 参数符号化（divides 形 k·3¹¹）或改证（对 m 归纳免 identity）        t-split : SOVEREIGN_LCM ∣ suc x' ∸ root₃ → SOVEREIGN_LCM ∣ root₃ ∸ suc x' → suc x' ≡ root₃
         t-split (divides zero et) (divides zero et′) =
           ≤-antisym (m∸n≡0⇒m≤n et) (m∸n≡0⇒m≤n et′)
         t-split (divides zero et) (divides (suc t′) et′) = {!!}
