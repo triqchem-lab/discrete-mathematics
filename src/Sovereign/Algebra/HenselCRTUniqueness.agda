@@ -235,7 +235,7 @@ lin-solve-db a b eq a< = {!!}
 --------------------------------------------------------------------------------
 
 open import Sovereign.Algebra.ModExtract using (mod-extract; plus-cancel; db-mod-extract; ∣-diff; ∸+-cancel; ∸∸-align-suc; suc∸1-form; ∸-to-+)
-open import Data.Nat.Properties using (*-distribʳ-∸)
+open import Data.Nat.Properties using (*-distribʳ-∸; *-comm)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Nat.Properties using (+-suc)
 n+1≡suc-f : ∀ n → n + 1 ≡ suc n
@@ -336,8 +336,9 @@ crt-converse (suc x') h3 h16 x<N = finish (div2-side (suc x') h16) (div3-side (s
             go-h16 (divides b eq) = div2-gen (suc x') b eq
         h3r′ : pow3 11 ∣ root₃ ∸ suc x'
         h3r′ = {!!}
-          -- 【爆点坐标 HC4】∸+-cancel 的 zero 分支 +-identityʳ m（m := 16794·3¹¹ = 29 亿 literal——归纳爆）
-          -- 经验 44 同族（归纳引理 × literal）——绕法：∸+-cancel 的 m 参数符号化（divides 形 k·3¹¹）或改证（对 m 归纳免 identity）        t-split : SOVEREIGN_LCM ∣ suc x' ∸ root₃ → SOVEREIGN_LCM ∣ root₃ ∸ suc x' → suc x' ≡ root₃
+          -- 【爆点坐标 HF5】bridge-gen 的 comm 尾（两步单 motive 也爆——motive `A * pow3 11 ∸_` 或 ∸+-cancel 实例化）
+          -- 已绿：step1-impl（探针）+ bridge-gen 主体（∸+-cancel 符号化 ✓）+ q-form
+          -- 下批：爆点拆件（∸+-cancel 实例化 vs comm motive）+ eq-form 尾链        t-split : SOVEREIGN_LCM ∣ suc x' ∸ root₃ → SOVEREIGN_LCM ∣ root₃ ∸ suc x' → suc x' ≡ root₃
         t-split (divides zero et) (divides zero et′) =
           ≤-antisym (m∸n≡0⇒m≤n et) (m∸n≡0⇒m≤n et′)
         t-split (divides zero et) (divides (suc t′) et′) = {!!}
