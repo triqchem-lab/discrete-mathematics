@@ -19,7 +19,7 @@ module Sovereign.Algebra.HenselCRTUniqueness where
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _<_; z≤n; s≤s)
 open import Data.Nat.Divisibility using (_∣_; divides; ∣-trans; ∣-refl; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; ∣m+n∣m⇒∣n)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor)
-open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; <-trans; *-monoˡ-≤; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
+open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; <-trans; *-monoˡ-≤; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -195,9 +195,38 @@ lhs-form a = trans (lhs-distrib a)
   (trans (cong (_+ 2 * 24371) (lhs-inner a)) (lhs-outer a))
 
 -- k ≥ 2 否定（M 参数化符号安全）
-k-split-gen : ∀ M C a k → a + C ≡ suc (suc k) * M → a + C < M * 2 → ⊥
+k-split-gen : ∀ M C a k → a + C ≡ suc (suc k) * M → a + C < M + M → ⊥
 k-split-gen M C a k eq lt = {!!}
-  -- WIP：M*2≤ 的 subst 链 meta 未解（mono 形 (sym (*-comm M 2)) 桥）——下批 3 行
+  where
+    M+M≤ : M + M ≤ a + C
+    M+M≤ = subst (M + M ≤_) (sym eq) (+-monoʳ-≤ M (m≤m+n M (k * M)))
 -- DB 核心：3¹¹·a + 2 ≡ b·2¹⁶ → a < 2¹⁶ → a ≡ 16794（∣ 型免减法 + k 三段分裂）
 lin-solve-db : ∀ a b → a * pow3 11 + 2 ≡ b * pow2 16 → a < pow2 16 → a ≡ 16794
-lin-solve-db a b eq a< = {!!}
+-- DB 辅助（顶层分离——避开 where 嵌套联合归一化）
+db-rhs-div : ∀ a b → pow2 16 ∣ (b * pow2 16) * 24371
+db-rhs-div a b = divides (b * 24371)
+  (trans (*-assoc b (pow2 16) 24371)
+  (trans (cong (b *_) (*-comm (pow2 16) 24371))
+  (sym (*-assoc b 24371 (pow2 16)))))
+
+db-tail-div : ∀ a → pow2 16 ∣ a * (pow2 16 * 65876)
+db-tail-div a = divides (a * 65876)
+  (trans (cong (a *_) (*-comm (pow2 16) 65876)) (sym (*-assoc a 65876 (pow2 16))))
+
+db-div : ∀ a b → a * pow3 11 + 2 ≡ b * pow2 16 → pow2 16 ∣ a + 2 * 24371
+db-div a b eq = ∣m+n∣n⇒∣m (subst (pow2 16 ∣_) (lhs-form a) lhs-div) (db-tail-div a)
+  where
+    lhs-div : pow2 16 ∣ (a * pow3 11 + 2) * 24371
+    lhs-div = subst (pow2 16 ∣_) (sym (cong (_* 24371) eq)) (db-rhs-div a b)
+
+db-bound : ∀ a → a < pow2 16 → a + 2 * 24371 < pow2 16 + pow2 16
+db-bound a a< = {!!}
+  -- 【慢点坐标 H4】db-bound 的 mono 链（<-trans (+-monoˡ-< …) (+-monoʳ-< …)）爆 101s
+  -- 下批探针：拆 <-trans 两半单独测（+-monoˡ-< 形 / m<m+n (s≤s z≤n) 形 / literal conversion）
+
+db-go : ∀ a → pow2 16 ∣ a + 2 * 24371 → a + 2 * 24371 < pow2 16 + pow2 16 → a ≡ 16794
+db-go a (divides zero eq0) _ = {!!}
+db-go a (divides (suc zero) eq1) _ = {!!}
+db-go a (divides (suc (suc k)) eq2) lt = {!!}
+
+lin-solve-db a b eq a< = db-go a (db-div a b eq) (db-bound a a<)
