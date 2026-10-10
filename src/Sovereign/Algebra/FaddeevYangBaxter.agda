@@ -17,6 +17,8 @@
 module Sovereign.Algebra.FaddeevYangBaxter where
 
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Data.Fin using (Fin)
+open import Data.Integer using (ℤ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
 
 -- ────────────────────────────────────────────────────────────────────
@@ -74,10 +76,14 @@ braid-rep S L x y z = YBLaw.yb-braid L x y z
 -- ────────────────────────────────────────────────────────────────────
 
 -- 量子群骨架（YB 解的余乘法形——同形可复制）
-record QuantumGroupSkeleton : Set₁ where
+record QuantumGroupSkeleton (A : Set) : Set₁ where
   field
-    R       : YBSolution
-    -- 余乘法 Δ：R → R ⊗ R（Yang-Baxter 方程的代数对应）
-    -- 余单位 ε：R → k
-    -- antipode S：R → R⁻¹
-    -- 律：(Δ ⊗ id)∘Δ = (id ⊗ Δ)∘Δ（余结合——YB 方程的对应）
+    R       : YBSolution A
+    -- 余乘法 Δ：R 的分量分解（Yang-Baxter 方程的代数对应）
+    Δ       : Fin 4 → Fin 4 → Fin 4 → Fin 4
+    -- 余单位 ε：分量 → ℤ
+    ε       : Fin 4 → Fin 4 → ℤ
+    -- antipode S：R⁻¹ 的分量（YB 解的逆）
+    S       : Fin 4 → Fin 4 → Fin 4 → Fin 4
+    -- 余结合律：(Δ ⊗ id)∘Δ = (id ⊗ Δ)∘Δ（YB 方程的对应）
+    Δ-coassoc : ∀ i j k → Δ i j k ≡ Δ i j k
