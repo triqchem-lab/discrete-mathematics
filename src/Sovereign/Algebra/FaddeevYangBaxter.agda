@@ -80,6 +80,7 @@ record QuantumGroupSkeleton (A : Set) : Set₁ where
   field
     R       : YBSolution A
     -- 余乘法 Δ：R 的分量分解（Yang-Baxter 方程的代数对应）——let-free
+    -- 实现级：分量分解（R 的三元组形——附录 10 let-free）
     Δ       : Fin 4 → Fin 4 → Fin 4 → Fin 4
     -- 余单位 ε：分量 → ℤ——let-free
     ε       : Fin 4 → Fin 4 → ℤ
