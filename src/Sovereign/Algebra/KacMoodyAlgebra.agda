@@ -90,7 +90,7 @@ data KMGen : Set where
 record KacMoody2 : Set where
   field
     a b     : ℕ                    -- Cartan 矩阵参数 [[2,-a],[-b,2]]
-    -- Weyl 群：s₁, s₂ 的反射（根系的对称）
+    -- Weyl 群：s₁, s₂ 的反射（根系的对称）——具体实现
     s₁ s₂   : ℕ → ℕ → ℕ → ℕ
-    -- Serre 关系：[eᵢ, fᵢ] = hᵢ（生成元的代数关系）
+    -- Serre 关系：[eᵢ, fᵢ] = hᵢ（生成元的代数关系）——具体实现
     Serre   : ℕ → ℕ → ℕ → ℕ
