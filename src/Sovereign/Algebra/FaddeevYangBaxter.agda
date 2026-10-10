@@ -79,11 +79,11 @@ braid-rep S L x y z = YBLaw.yb-braid L x y z
 record QuantumGroupSkeleton (A : Set) : Set₁ where
   field
     R       : YBSolution A
-    -- 余乘法 Δ：R 的分量分解（Yang-Baxter 方程的代数对应）
+    -- 余乘法 Δ：R 的分量分解（Yang-Baxter 方程的代数对应）——let-free
     Δ       : Fin 4 → Fin 4 → Fin 4 → Fin 4
-    -- 余单位 ε：分量 → ℤ
+    -- 余单位 ε：分量 → ℤ——let-free
     ε       : Fin 4 → Fin 4 → ℤ
-    -- antipode S：R⁻¹ 的分量（YB 解的逆）
+    -- antipode S：R⁻¹ 的分量（YB 解的逆）——let-free
     S       : Fin 4 → Fin 4 → Fin 4 → Fin 4
     -- 余结合律：(Δ ⊗ id)∘Δ = (id ⊗ Δ)∘Δ（YB 方程的对应）
     Δ-coassoc : ∀ i j k → Δ i j k ≡ Δ i j k
