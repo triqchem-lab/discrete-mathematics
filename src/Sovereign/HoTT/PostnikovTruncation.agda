@@ -122,6 +122,17 @@ disp2-slide : (W : WeightedDiGraph) → ∀ {u x y z v}
   (e1 : edge (G W) x y) (e2 : edge (G W) y z) (e3 : edge (G W) x z)
   → _*A_ W (wt W x y) (wt W y z) ≡ wt W x z
   → disp2 W (p ++w (cons e1 (cons e2 b))) ≡ disp2 W (p ++w (cons e3 b))
+
+-- 泛化 harm（递归调用需要）
+disp2-slide-gen : (W : WeightedDiGraph) → ∀ {u x y z v}
+  (p : Walk (G W) u x) (b : Walk (G W) z v)
+  (e1 : edge (G W) x y) (e2 : edge (G W) y z) (e3 : edge (G W) x z)
+  → (∀ a b c → _*A_ W (wt W a b) (wt W b c) ≡ wt W a c)
+  → disp2 W (p ++w (cons e1 (cons e2 b))) ≡ disp2 W (p ++w (cons e3 b))
+disp2-slide-gen W {u} {x} {y} {z} {v} (nil x) (nil z) e1 e2 e3 harm-gen =
+  trans (cong (λ v → _*A_ W v (oneA W)) (harm-gen x y z)) (*A-idʳ W (wt W x z))
+disp2-slide-gen W {u} {x} {y} {z} {v} (nil x) (cons e' b) e1 e2 e3 harm-gen = {!!}
+disp2-slide-gen W {u} {x} {y} {z} {v} (cons e p) b e1 e2 e3 harm-gen = {!!}
 disp2-slide W {u} {x} {y} {z} {v} (nil x) (nil z) e1 e2 e3 harm =
   trans (cong (λ w → _*A_ W w (oneA W)) harm) (*A-idʳ W (wt W x z))
 disp2-slide W p b e1 e2 e3 harm = {!!}
