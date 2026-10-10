@@ -18,7 +18,7 @@
 module Sovereign.HoTT.PostnikovTruncation where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
-open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; Walk; nil; cons; _++w_; AStep; slide; expand; AHomotopy; refl'; symm; trans'; gen)
+open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; V; Walk; nil; cons; _++w_; AStep; slide; expand; AHomotopy; refl'; symm; trans'; gen)
 open DiGraph using (V; edge)
 
 -- ────────────────────────────────────────────────────────────────────
@@ -131,7 +131,7 @@ disp2-slide W p b e1 e2 e3 harm = {!!}
 -- §6. ++w-disp2（边界步对分解——general 形基础）
 -- ────────────────────────────────────────────────────────────────────
 
-tailW : (W : WeightedDiGraph) → ∀ {u v} → Walk (G W) u v → Σ (V (G W)) (λ w → Walk (G W) u w)
+tailW : (W : WeightedDiGraph) → ∀ {u v} → Walk (G W) u v → Σ (DiGraph.V (G W)) (λ w → Walk (G W) u w)
 tailW W (nil v) = (v , nil v)
 tailW W (cons e p) = (_ , p)
 
