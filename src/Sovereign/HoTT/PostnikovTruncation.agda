@@ -135,6 +135,13 @@ v-test : DiGraph → Set
 v-test G = V G
 
 tailW : (W : WeightedDiGraph) → ∀ {u v} → Walk (G W) u v → Σ (V (G W)) (λ w → Walk (G W) u w)
+tailW W = go
+  where
+    G' : DiGraph
+    G' = G W
+    go : ∀ {u v} → Walk G' u v → Σ (V G') (λ w → Walk G' u w)
+    go (nil v) = (v , nil v)
+    go (cons e p) = (_ , p)
 tailW W (nil v) = (v , nil v)
 tailW W (cons e p) = (_ , p)
 
