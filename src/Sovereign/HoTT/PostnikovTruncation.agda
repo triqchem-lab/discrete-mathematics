@@ -131,10 +131,6 @@ disp2-slide W p b e1 e2 e3 harm = {!!}
 -- §6. ++w-disp2（边界步对分解——general 形基础）
 -- ────────────────────────────────────────────────────────────────────
 
-v-test : DiGraph → Set
-v-test G = V G
-
-tailW : (W : WeightedDiGraph) → ∀ {u v} → Walk (G W) u v → Σ (V (G W)) (λ w → Walk (G W) u w)
 tailW W = go
   where
     G' : DiGraph
