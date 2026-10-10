@@ -132,6 +132,8 @@ disp2-slide-gen : (W : WeightedDiGraph) → ∀ {u x y z v}
 disp2-slide-gen W {u} {x} {y} {z} {v} (nil x) (nil z) e1 e2 e3 harm-gen =
   trans (cong (λ v → _*A_ W v (oneA W)) (harm-gen x y z)) (*A-idʳ W (wt W x z))
 disp2-slide-gen W {u} {x} {y} {z} {v} (nil x) (cons e' b) e1 e2 e3 harm-gen = {!!}
+  -- 数学推导：LHS = (wt x y *A wt y z) *A disp2 ((z→w)·b')；RHS = (wt x z *A wt z w) *A disp2 b'
+  -- harm-gen 代入（wt x y *A wt y z ≡ wt x z）+ 递归调用（disp2-slide-gen 在 (z→w) 处）
 disp2-slide-gen W {u} {x} {y} {z} {v} (cons e p) b e1 e2 e3 harm-gen = {!!}
 disp2-slide W {u} {x} {y} {z} {v} (nil x) (nil z) e1 e2 e3 harm =
   trans (cong (λ w → _*A_ W w (oneA W)) harm) (*A-idʳ W (wt W x z))
