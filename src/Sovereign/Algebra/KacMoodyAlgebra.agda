@@ -80,3 +80,16 @@ data KMGen : Set where
 -- Chevalley 关系（陈述层——推导需李代数基础设施，roadmap）：
 --   [h_i, h_j] = 0；[e_i, f_j] = δᵢⱼ h_i；[h_i, e_j] = A_{ij} e_j
 -- 实质不忠实表示证明（平凡表示论证）已在 TrivialRepUnfaithful 闭合。
+
+-- ────────────────────────────────────────────────────────────────────
+-- §5. Kac-Moody n≥2 深化（高阶根系骨架）
+--   n=2 的 Kac-Moody 代数：Cartan 矩阵 A = [[2,-a],[-b,2]] → 根系 Φ
+-- ────────────────────────────────────────────────────────────────────
+
+-- n=2 Kac-Moody 骨架（Cartan 矩阵 → 根系）
+record KacMoody2 : Set where
+  field
+    a b     : ℕ                    -- Cartan 矩阵参数 [[2,-a],[-b,2]]
+    -- 根系 Φ：正根/负根/简单根
+    -- Weyl 群：s₁, s₂ 的反射
+    -- Serre 关系：[eᵢ, fᵢ] = hᵢ 等
