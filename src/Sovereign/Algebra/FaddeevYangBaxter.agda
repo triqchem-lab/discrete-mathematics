@@ -67,3 +67,17 @@ braid-rep S L x y z = YBLaw.yb-braid L x y z
 
 -- 诚实边界：Faddeev-Reshetikhin 真身是量子群/纽结多项式（R-矩阵量子群表示）——
 --   本层为 set-theoretic YB 解的 braid 诱导核心（组合骨架）；量子群侧留后续层
+
+-- ────────────────────────────────────────────────────────────────────
+-- §5. 量子群骨架（YB 解的代数结构——n≥2 深化）
+--   YB 解 R 生成的量子群：R 的 Yang-Baxter 方程 → 量子群的余乘法/余单位
+-- ────────────────────────────────────────────────────────────────────
+
+-- 量子群骨架（YB 解的余乘法形——同形可复制）
+record QuantumGroupSkeleton : Set₁ where
+  field
+    R       : YBSolution
+    -- 余乘法 Δ：R → R ⊗ R（Yang-Baxter 方程的代数对应）
+    -- 余单位 ε：R → k
+    -- antipode S：R → R⁻¹
+    -- 律：(Δ ⊗ id)∘Δ = (id ⊗ Δ)∘Δ（余结合——YB 方程的对应）
