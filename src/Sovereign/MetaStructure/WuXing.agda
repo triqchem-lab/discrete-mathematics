@@ -3,36 +3,16 @@
 -- | Sovereign.MetaStructure.WuXing
 -- 元结构层：五行模数区定义与动力学关系
 --
--- 核心概念：
--- 五行（火土木水金）不是物质元素，而是主权状态机在环向缠绕中的
--- **共振模数区** (Resonance Modulus Zones)。
--- 它们定义了系统演化的拓扑约束和手性倾向。
+-- 数学背景：五行（木火土金水）+ 手性（Chirality）的生成结构——
+--   「结构 = 生成方式」第一原理：五行由 generate/overcome 两关系生成，不由元素个数决定。
 --
--- 【基数推导档案 — v5.3 (2026-07-03)】
--- 五行基数 (2,5,4,6,8) 非任意赋值, 有三条独立推导链:
+-- 核心原则：
+--   1. 生成方式即结构（generate/overcome 是关系字段级定义）；
+--   2. 枚举与索引双向（wuXingToIndex 单射性核对 wuXingBasesCorrect）；
+--   3. 模数区静态（十二律长度表类约束）。
 --
--- 来源一: 群论 — 五种正多面体对称群 (KNOWLEDGE-DISTILLATION §1.3)
---   火=2 → 正四面体 A₄ (order 12, C₃轨道最小模数)
---   土=5 → 正六面体 Oₕ (order 48, 立方体对角周期)
---   金=4 → 正十二面体 Iₕ (order 120, 五重对称基数)
---   水=6 → 正二十面体 I (order 60, 三角面模数)
---   木=8 → 正八面体 O (order 24, 对偶极点周期)
---
--- 来源二: 光谱数据锚定 (Physics/DataAnchors.agda)
---   Anchor_WuXing_TrapPist1: 木/土 = 8/5 ≡ TRAPPIST-1 行星轨道共振 (refl)
---   CH₄@C₆₀ 量子化能级 = 5K → 土基数 5
---   C₆₀ 基频模数 = 46 → 环向缠绕锚定 (refl)
---
--- 来源三: 手性-五行封闭 (KNOWLEDGE-MINDMAP 七大公理)
---   "手性与基数 (2,5,4,6,8) 封闭"
---   generate/overcome 构成 C₅ 循环群, 在环向缠绕 Z_46 上定义模数区边界。
---   五个基数在 LCM 环上两两不可约, 确保 5 个相变区独立。
---
--- 推导链:
---   正多面体对称群 (A₄,Oₕ,Iₕ,I,O)
---     → 群阶数 → 模数基数 (2,5,4,6,8)
---     → TRAPPIST-1 8:5 共振 (天文) + CH₄@C₆₀ 5K (化学)
---     → generate/overcome C₅ 循环 (T⁶ 环面手性动力学)
+-- 包含：WuXing/Chirality（五行与手性 data）· wuXingBase/wuXingToIndex（基数与索引）·
+--   generate/overcome（生成/克服）· getCurrentWuXing（动力学）· wuXingBasesCorrect（核对）
 
 module Sovereign.MetaStructure.WuXing where
 

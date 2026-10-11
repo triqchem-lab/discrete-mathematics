@@ -3,26 +3,16 @@
 -- | Sovereign.HoTT.PhaseAlignment6624
 -- T⁶ 环面的 6624 相位对齐定理 (v1.0)
 --
--- 核心数学结构：
---   144 = 极向缠绕数 (空间剖分步数)
---   46  = 环向缠绕数 (时间频率步数)
---   6624 = 144 × 46 = FULL_TOUR (完整环面巡游步数)
+-- 数学背景：POLAR=144 × TORUS=46 = FULL_TOUR=6624——双振子拍频谐振对齐的数学面；
+--   本框架的 CRT 是物理波系统（驻波/谐波对齐），不是模运算定理（红线）。
 --
--- 物理意义：
---   144/46 = Π_H (全息比)，空间剖分密度与时间频率的比值
---   6624 不是"拓扑闭包"——它是"相位对齐点"。
---   系统在完成 FULL_TOUR 步后，极向和环向同时归零，
---   回到起点相位，但底层拓扑可能因缠绕数差异而产生非平凡变换。
+-- 核心原则：
+--   1. 6624 = 144·46 全息禁止约分（宪法约束）；
+--   2. 对齐恒等式 alignmentIdentity 是全环闭合的核对件；
+--   3. 双零位（polarZero/toroidalZero）= 归零机制的落点核对。
 --
--- 对应 Agda #3733：
---   L1: makeTau 的 nTarget = nOld + nctel - 1 (Δ 参照系)
---   L2: 6624 对齐点 → Kan 纤维化的自动边界闭合
---   L3: 相位重同步 → 索引族的单值语义 (canonicity) 基础
---
--- 几何基底：
---   T⁶ 离散环面 = (GF(3))⁶ = 729 格点
---   每个格点经历 FULL_TOUR = 6624 步后回到初始相位
---   但环面拓扑可能因缠绕数 144≠46 而产生全局扭转
+-- 包含：POLAR/TORUS/FULL_TOUR（三常量）· Π-H（谱投影）·
+--   alignmentIdentity/fullTourValue（对齐恒等式与全环值）· polarZero/toroidalZero（双零位）
 
 module Sovereign.HoTT.PhaseAlignment6624 where
 

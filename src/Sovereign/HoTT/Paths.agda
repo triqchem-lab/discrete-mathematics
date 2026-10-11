@@ -3,9 +3,16 @@
 -- | Sovereign.HoTT.Paths
 -- 高维拓扑：路径与环路 (Paths and Loops) in T⁶
 --
--- 几何背景：复三维/实六维离散商空间
--- 核心循环：极向 144 步，环向 46 步
--- 全息 π = 144/46 决定频率比
+-- 数学背景：T⁶ 离散商空间上的两族路径——极向 (Polar) 与环向 (Toroidal)，
+--   走钟迭代过程（mixedOp^12 走一圈）的路径语言形态；过程即结构（展示群「时钟」要素）。
+--
+-- 核心原则：
+--   1. 路径由 data 承载（生成方式 = 结构）；
+--   2. 极/环两向正交，不混写；
+--   3. 迭代步（nextP/nextT）是过程件，不约化为静态标签。
+--
+-- 包含：nextP/nextT（迭代）· PolarPath/ToroidalPath（路径 data）·
+--   PolarLoop/ToroidalLoop/fullPolarLoop（环路族）· iterToroidal-step（环向步）
 
 module Sovereign.HoTT.Paths where
 

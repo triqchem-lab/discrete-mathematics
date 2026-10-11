@@ -1,7 +1,18 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_BSD_General — BSD Weil 迹递推 · 三条独立定理
--- 0 postulate
+-- | Sovereign.Problem.BSD.BSD_General
+-- BSD Weil 迹递推 · 三条独立定理（0 postulate）
+--
+-- 数学背景：Weil 迹公式在 BSD 线的离散面——q³ 递推下迹的三态
+--   （迹 0 / 迹 −3 / 迹 +3）；三条定理**独立成立**（不互推，不合成一条）。
+--   ⚠ 命名勘误：旧头注写 jac_BSD_General（命名漂移），实名 BSD_General，已正名。
+--
+-- 核心原则：
+--   1. 三定理独立（每条单独签名单独证）；
+--   2. 有限递推 case 穷举核对；
+--   3. 0 postulate / 0 hole。
+--
+-- 包含：q3（递推件）· trace0/trace-3/trace+3（迹三定理）
 
 module Sovereign.Problem.BSD.BSD_General where
 

@@ -3,14 +3,15 @@
 -- | Sovereign.Physics.DiscreteEMField
 -- 78 电磁学 — 3×3 周期环面上的离散场论第一基石 (0 postulate)
 --
--- 对骨架的核心修正: "curl(grad φ) 对任意 φ 自动归约"不成立 —
--- add3/neg3 的表定义只在构造子上触发, 变量参数不归约; 9 格点模式
--- 只固定 p, φ 仍自由。正确路线 = 符号证明:
---   §1 GF(3) 域引理 (add3/neg3 全律穷举)
---   §2 差分算子 dx/dy (前向差分, 环面 next)
---   §3 混合偏导交换 dy∘dx ≡ dx∘dy (符号 ≡-链)
---   §4 grad/curl 与主定理 grad-curl-zero (梯度的旋度恒零)
---   §5 规范不变性: curl(A + grad φ) ≡ curl A (curl 线性 + 主定理)
+-- 数学背景：3×3 周期环面（周期边界格点场论）上的离散电磁场——
+--   场值逐点取 GF(3)；第一基石（2D）→ 第二基石（3D，见 DiscreteEMField3D）。
+--
+-- 核心原则：
+--   1. 场 = 逐点 GF(3) 加法结构（有限 case 穷举）；
+--   2. 周期边界 = 环面识别（Wilson 场论侧的离散基座）；
+--   3. 0 postulate / 全 refl 级核对。
+--
+-- 包含：GF3（基域件）· Point2D（场点）· add3/neg3（运算）· add3 四律 · 场结构件族
 
 module Sovereign.Physics.DiscreteEMField where
 

@@ -3,19 +3,16 @@
 -- | Sovereign.HoTT.PhaseTransitionPaths
 -- 高维拓扑：五行相变路径与同伦类型
 --
--- 核心进展：
--- 我们将具体的物理相变（火→土→金→水→木）建模为 T⁶ 环面纤维丛上的路径 (Paths)。
--- 每一个相变步骤（如 10 火生土）都是一条连接两种几何态（SymmetryGroup）的同伦路径。
--- 这证明了相变不是随机的，而是高维拓扑空间中受约束的必然轨迹。
+-- 数学背景：元结构层的五行状态空间与相变类型学——五态（火土金水木）间相变的路径形态；
+--   与 MetaStructure.WuXing 的生成/克服机制配套（生成=相变正向，克服=相变逆向）。
 --
--- 实现策略：
--- 在 Cubical Agda 中，离散类型（如 ℕ、枚举）上两点间的路径仅当两点相等时存在。
--- 因此我们不能直接构造 Path StateSpace StateFire StateEarth（因为它们是不同的状态）。
+-- 核心原则：
+--   1. 状态由 record 承载（StateSpace：载态 + 相位分量）；
+--   2. 相变类型 data 穷举（有限论域 case 证明）；
+--   3. 与 WuXing 生成机制一致——不另立第二套五行语义。
 --
--- 解决方案：
--- 1. 将"相变路径"建模为独立的归纳数据类型 PhaseTransitionType
--- 2. 每个构造子对应一个具体的相变过程，携带类型级证据确保合法性
--- 3. 陈数守恒通过类型类 ChernInvariant 显式证明
+-- 包含：SymmetryLabel（对称标签）· StateSpace（状态空间 record）·
+--   StateFire/Earth/Metal/Water/Wood（五态）· PhaseTransitionType（相变类型）
 
 module Sovereign.HoTT.PhaseTransitionPaths where
 

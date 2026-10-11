@@ -3,14 +3,16 @@
 -- | Sovereign.Physics.DiscreteEMField3D
 -- 78 电磁学 — 3D 环面 (Fin 3)³ 的离散场论第二基石 (0 postulate)
 --
--- 对 3D 骨架的两处修正 (与 2D 同款, 已落 2D 模块注释):
---   1) "展开后自动归约 refl"不成立 — add3/neg3 表定义只在构造子触发,
---      变量参数不归约; 恒等式必须符号证明 (混合偏导交换 + 域引理)。
---   2) div (A_x , A_y , A_z) 类型错误 — VectorField 是函数 (Point3D →
---      三元组), 模式不能匹配三元组; 用分量投影 proj₁/proj₂。
--- 核心恒等式 (符号证明):
---   curl (grad φ) ≡ 0 (梯度的旋度为零 — 三对混合偏导交换)
---   div (curl A) ≡ 0 (旋度的散度为零 — 六项两两抵消 + 可加性/负号引理)
+-- 数学背景：3D 离散环面 (Fin 3)³ 上的电磁场——场值逐点取 GF(3)，
+--   加法群结构（comm/assoc/identity/inverse）逐点继承；与 2D 版（DiscreteEMField）构成递进两基石。
+--
+-- 核心原则：
+--   1. 场 = 逐点 GF(3) 加法结构（有限论域 case 穷举 refl）；
+--   2. 3D 是 2D 的正交扩展（第三维独立分量）；
+--   3. 0 postulate / 具体值全 refl 级核对。
+--
+-- 包含：GF3（基域件）· Point3D（场点）· add3/neg3（运算）·
+--   add3-comm/assoc/identity/inverse（加法四律）· 场结构件族
 
 module Sovereign.Physics.DiscreteEMField3D where
 

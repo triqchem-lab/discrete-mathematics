@@ -1,23 +1,17 @@
 {-# OPTIONS --rewriting --guardedness #-}
 -- | Sovereign.Problem.ABC.L1Rad
+-- ABC 问题 L1 断层线：rad(n) 无平方因子根的实现与实例核对
 --
--- 完整范数核 rad（无平方因子核）：rad(n) = n 的互异质因子之积（rad 1 = 1）。
--- 最小质因子递归实现；终止以 fuel 递减保证（fuel 初值 n+1，实际步数 O(√n)）。
---
--- 数学背景：ABC 质量 q = c / rad(abc)；rad 是 L1 断层定理（L1Disjunction）
--- 的范数核观测，本模块把它从「参数 + 两值事实」升级为**可计算定义**。
+-- 数学背景：rad(n) = n 的无平方因子根（全部素因子之积）——abc 不等式的核心算术函数；
+--   L1 断层定理（ABC.L1-disjunction）的 rad 面实例（(3,5,8)/(3,125,128) 见证对族）。
 --
 -- 核心原则：
---   1. 三分支递归：n ≡ 1 → 1；k·k ≤ n 时试除 k（整除则取 k 一次并剥尽 k 的幂，
---      否则 k 递增）；1 < n < k·k 时余数 n 为质数，直接取 n。
---   2. 「剥尽 k 的幂」是无平方因子的关键：rad 4 ≡ 2（不是 4）、rad 480000 ≡ 30
---      （480000 = 2⁸·3·5⁴，幂次不进积）。
---   3. 模除走内置实现（BUILTIN NATDIVSUCAUX / NATMODSUCAUX，字面量除数一步
---      归约），避开朴素递归 mod 的 O(n) 展开；除数固定取 suc k 形态，
---      NonZero 实例由 nonZero 自动给出（附录 12 §3 的字面量除数纪律）。
---   4. 一切计算事实 refl 可核：rad 是**可计算**定义，由 Agda 内核求值裁决。
+--   1. rad 由递归定义给出（stripGo 素因子剥离 + radGo 累乘）；
+--   2. 大数因子分解走精确整数（480000 = 2⁷·3·5⁴ 逐项核对）；
+--   3. 实例件（rad-1/120/480000/4）是核对层，不冒充泛化定理。
 --
--- 包含：stripGo / radGo / rad / rad-1 / rad-120 / rad-480000 / 480000-factors
+-- 包含：stripGo/radGo（递归件）· rad（主定义）·
+--   rad-1/rad-120/rad-480000/rad-4（四实例）· 480000-factors（因子表）
 module Sovereign.Problem.ABC.L1Rad where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _≡ᵇ_; _≤ᵇ_)

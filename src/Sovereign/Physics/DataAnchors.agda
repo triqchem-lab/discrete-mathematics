@@ -3,9 +3,17 @@
 -- | Sovereign.Physics.DataAnchors
 -- 数据实证：理论模型与物理实验数据的锚定
 --
--- 目标：
--- 证明律算系统的核心不变量（缠绕数 46, 能隙 √3）与真实世界观测数据（C60, H2O@C60）同构。
--- 这是律算合一从“数学真理”走向“物理现实”的关键一步。
+-- 数学背景：唯象数据锚——理论量（能隙/环面缠绕/五行比率）与实验观测
+--   （C60/H2O 振动谱、TRAPPIST-1）的对表。⚠ 数据锚是桥接级声明，**不作定理**。
+--
+-- 核心原则：
+--   1. 数据锚逐条注来源（实验值 vs 理论值分列）；
+--   2. 定点整数比表达（禁浮点）；
+--   3. 锚定≠证明——Anchor_* 件是「对表记录」，不进证明引用链。
+--
+-- 包含：H2O_C60_SPLITTING/C60_FUNDAMENTAL_MODES（振动谱）·
+--   THEORETICAL_GAP_ENERGY/TOROIDAL_WINDING（理论量）·
+--   Anchor_ToroidalWinding_C60/Anchor_WuXing_TrapPist1（两锚件）· TRAPPIST_RATIO/WUXING_RATIO（比率）
 
 module Sovereign.Physics.DataAnchors where
 
