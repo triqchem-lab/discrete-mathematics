@@ -19,7 +19,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 import Sovereign.Infrastructure.StateMachine as SM
 import Sovereign.Synthesis.LCM as LCM
 import Sovereign.Base.Invariants as Inv
-import Sovereign.Coding.Trit as T
+import Sovereign.Base.Coding.Trit as T
 
 open SM using (SovereignState; mkState; evolve)
 

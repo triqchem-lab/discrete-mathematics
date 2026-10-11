@@ -24,7 +24,7 @@ open import Data.Product using (_×_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 open import Data.Bool using (Bool; true; false; if_then_else_)
 
-import Sovereign.HoTT.Geometry as Geom
+import Sovereign.Synthesis.Geometry as Geom
 
 --------------------------------------------------------------------------------
 -- 1. 离散曲率 (Discrete Curvature)

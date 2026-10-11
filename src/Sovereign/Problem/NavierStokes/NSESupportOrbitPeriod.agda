@@ -31,7 +31,7 @@ open import Relation.Binary.PropositionalEquality using
 
 open import Sovereign.Problem.NavierStokes.NSEOnT6 using
   (Field; nsStep; iterate; iterate-+; EventuallyPeriodic)
-open import Sovereign.Problem.NavierStokes.NSEFixedPointStrict using (supportCount)
+open import Sovereign.Application.NSEFixedPointStrict using (supportCount)
 
 module EP = EventuallyPeriodic
 

@@ -32,7 +32,7 @@ open import Data.Nat.Properties using (≤-trans; ≤-reflexive; +-mono-≤)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Problem.NavierStokes.NSEOnT6 using
   (C3; Torus6; ScalarField; Field; v1; v2; v3; v4; v5; v6)
-open import Sovereign.Problem.NavierStokes.NSEFixedPointStrict using
+open import Sovereign.Application.NSEFixedPointStrict using
   (isNonZero; fold1N; countOver; supportCount)
 
 --------------------------------------------------------------------------------

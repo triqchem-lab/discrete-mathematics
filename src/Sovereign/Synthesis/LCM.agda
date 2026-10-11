@@ -10,7 +10,7 @@ open import Data.Integer using (ℤ; +_; -[1+_])
 open import Data.Unit using (⊤; tt)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; cong₂; trans; subst)
 open import Relation.Nullary.Decidable.Core using (toWitness; True)
-import Sovereign.Coding.Trit as T; open T using (Trit)
+import Sovereign.Base.Coding.Trit as T; open T using (Trit)
 import Sovereign.Base.Invariants as Inv
 
 SOVEREIGN_LCM : ℕ ; SOVEREIGN_LCM = 11609505792

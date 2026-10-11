@@ -21,8 +21,8 @@ open import Data.Fin using (Fin)
 open import Data.Product using (_×_)
 
 -- 引入律算基础（使用 Coding.Trit = Fin 3，宪法类型）
-import Sovereign.Coding.Trit as Trit
-import Sovereign.HoTT.Geometry as Geo
+import Sovereign.Base.Coding.Trit as Trit
+import Sovereign.Synthesis.Geometry as Geo
 
 --------------------------------------------------------------------------------
 -- 1. 底流形与纤维 (Base and Fiber)

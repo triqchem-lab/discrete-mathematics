@@ -22,7 +22,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Sovereign.Physics.DiscreteEMField3D
   using (GF3; ScalarField; VectorField; grad; curl; div; curl-grad-zero)
-open import Sovereign.Physics.DiscreteEMCore using (div-curl-zero)
+open import Sovereign.Application.DiscreteEMCore using (div-curl-zero)
 
 ---------------------------------------------------------------------------------
 -- §1. de Rham 形（自 Topology/DeRhamComplex 迁入——波 2-C）

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coding.Trit
+-- | Sovereign.Base.Coding.Trit
 -- 编码代数：三进制基底 Fin 3
 --
 -- 宪法定义：
@@ -14,7 +14,7 @@
 --   3. 编码转换（toℕ/fromℕ/toCode）只走构造子，不做模算术回流。
 -- 包含：Trit 类型、T₀/T₁/T₂ 构造子、toℕ/fromℕ/toCode 编码族。
 
-module Sovereign.Coding.Trit where
+module Sovereign.Base.Coding.Trit where
 
 open import Data.Fin public using (Fin; zero; suc; toℕ; fromℕ; _≟_)
 open import Data.Nat using (ℕ; _+_; _*_; _≤_; s≤s; z≤n)

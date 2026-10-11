@@ -35,7 +35,7 @@ open import Sovereign.Problem.NavierStokes.NSEOnT6 using
   (C3; Torus6; ScalarField; Field; v1; v2; v3; v4; v5; v6; nsStep; iterate; Incompressible)
 open import Sovereign.Application.NSEFixedPoint using
   (comp; nsStep-fixed; iterate-fixed)
-open import Sovereign.Problem.NavierStokes.NSEFixedPointStrict using
+open import Sovereign.Application.NSEFixedPointStrict using
   (isNonZero; fold1N; countOver; supportCount; slopeField; slope-is-fixed)
 open import Sovereign.Problem.NavierStokes.NSESupportZero using (fold1N-cong; plus6-cong)
 

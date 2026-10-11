@@ -24,7 +24,7 @@ open import Data.Integer using (ℤ; +_) renaming (_+_ to _+ℤ_; _-_ to _-ℤ_;
 open import Data.Product using (_×_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 
-import Sovereign.HoTT.Geometry as Geom
+import Sovereign.Synthesis.Geometry as Geom
 
 --------------------------------------------------------------------------------
 -- 1. 离散路径 (Discrete Paths)

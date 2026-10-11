@@ -40,7 +40,7 @@ open import Sovereign.Physics.DiscreteEMField3D
          add3; neg3)
 
 -- 核心定理层
-open import Sovereign.Physics.DiscreteEMCore
+open import Sovereign.Application.DiscreteEMCore
   using (div-curl-zero; gauge-invariance)
 
 -- 差分算子

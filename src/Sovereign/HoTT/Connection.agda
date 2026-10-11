@@ -4,7 +4,7 @@
 -- 高维拓扑：纤维丛上的离散联络与和乐 (Connection and Holonomy)
 --
 -- 核心修正：
--- 联络不再是 `postulate`。我们利用 Sovereign.Coding.Trit 中的 GF(3) 结构
+-- 联络不再是 `postulate`。我们利用 Sovereign.Base.Coding.Trit 中的 GF(3) 结构
 -- 显式定义离散平行移动 (Parallel Transport)。
 -- 这使得高维几何与底层代码实现了代数上的统一。
 
@@ -24,8 +24,8 @@ open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)
 open import Data.Vec using (Vec; []; _∷_; map)
 
 import Sovereign.HoTT.Bundle as Bun
-import Sovereign.HoTT.Geometry as Geo
-import Sovereign.Coding.Trit as T
+import Sovereign.Synthesis.Geometry as Geo
+import Sovereign.Base.Coding.Trit as T
 open T using (Trit; T₀; T₁; T₂)
 
 -- 通用迭代（供 map-iter 等使用）

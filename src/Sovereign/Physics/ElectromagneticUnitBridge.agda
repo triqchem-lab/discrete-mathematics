@@ -48,7 +48,7 @@ open import Sovereign.Physics.DiscreteEMField3D
          dx; dy; dz; grad; curl; div)
 
 -- 核心定理层: div∘curl=0, 规范不变性
-open import Sovereign.Physics.DiscreteEMCore
+open import Sovereign.Application.DiscreteEMCore
   using (div-curl-zero; gauge-invariance; zero-flux)
 
 -- 时间演化层: 四律 + 电荷守恒

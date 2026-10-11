@@ -30,7 +30,7 @@ open import Data.Product using (_×_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 open import Data.Bool using (Bool; true; false; if_then_else_)
 
-import Sovereign.HoTT.Geometry as Geom
+import Sovereign.Synthesis.Geometry as Geom
 
 --------------------------------------------------------------------------------
 -- 1. 底流形 (Base Manifold)

@@ -28,7 +28,7 @@ open import Function using (case_of_)
 open import Relation.Nullary using (¬_; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong)
 
-import Sovereign.Coding.Trit as T
+import Sovereign.Base.Coding.Trit as T
 
 --------------------------------------------------------------------------------
 -- 1. 二进制类型定义 (Bit)

@@ -36,7 +36,7 @@ open ≡-Reasoning
 -- 第二基石: GF3 域律 + 差分 + div/curl + dx/dy/dz-add/neg + 交换性
 open import Sovereign.Physics.DiscreteEMField3D
 -- 核心定理层: addVec3(+零元) + shuffle22 + div-curl-zero 全形式
-open import Sovereign.Physics.DiscreteEMCore
+open import Sovereign.Application.DiscreteEMCore
 
 ------------------------------------------------------------------------------
 -- §1. 向量代数 (三元组, 分量投影实现 — 不模式匹配, 保证对变量归约)

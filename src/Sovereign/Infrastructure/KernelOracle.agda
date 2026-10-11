@@ -7,7 +7,7 @@
 -- 再交给内核树的 C 检查器逐例比对。
 --
 -- 覆盖与**缺口**（诚实清单）：
---   ✅ GF(3) 加/乘/范数      ← Sovereign.Coding.Trit（_⊕_/_⊗_；环公理在 Sovereign.Base.Trit 里穷举 refl）
+--   ✅ GF(3) 加/乘/范数      ← Sovereign.Base.Coding.Trit（_⊕_/_⊗_；环公理在 Sovereign.Base.Trit 里穷举 refl）
 --   ✅ 宪法常数              ← Sovereign.Base.Invariants
 --   ✅ 5-trit 打包 / 解包     ← Sovereign.Synthesis.LCM（pack5 / unpack5）
 --   ✅ LCM 桥 (acc*3¹¹)/2¹⁶  ← 与 Sovereign.Synthesis.Zhonglv 的同式定义
@@ -34,7 +34,7 @@ open import Data.String using (String; _++_)
 open import Data.Vec using (Vec; _∷_; [])
 open import Data.List using (List; _∷_; [])
 
-import Sovereign.Coding.Trit as C
+import Sovereign.Base.Coding.Trit as C
 open C using (Trit; T₀; T₁; T₂; toℕ)
 import Sovereign.Synthesis.LCM as LCM
 import Sovereign.Base.Invariants as Inv

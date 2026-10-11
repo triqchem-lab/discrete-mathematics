@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.HoTT.Geometry
+-- | Sovereign.Synthesis.Geometry
 -- 高维几何：复三维/实六维环面及其拓扑不变量
 --
 -- 核心定义：
@@ -17,7 +17,7 @@
 --
 -- 包含（分层）：基础件层：PolarCoord/ToroidalCoord/Torus6D｜主引理层：stepPolar/stepToroidal｜组合层：回路组装｜核对层：reflPolarLoop
 --
-module Sovereign.HoTT.Geometry where
+module Sovereign.Synthesis.Geometry where
 
 open import Cubical.Core.Primitives renaming (_≡_ to _≡ᶜ_)
 open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _%_)

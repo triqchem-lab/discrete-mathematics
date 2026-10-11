@@ -36,7 +36,7 @@ open ≡-Reasoning
 -- 第二基石: GF3 域律 + dx/dy/dz + div/curl + vx/vy/vz
 open import Sovereign.Physics.DiscreteEMField3D
 -- 核心定理层: addVec3 + div-curl-zero (磁场无源性消去项)
-open import Sovereign.Physics.DiscreteEMCore
+open import Sovereign.Application.DiscreteEMCore
 -- 时间演化层: Time/ΔtV/ΔtS/四律谓词/div-linear/div-neg/divE-step 等
 open import Sovereign.Application.DiscreteMaxwellTime
 

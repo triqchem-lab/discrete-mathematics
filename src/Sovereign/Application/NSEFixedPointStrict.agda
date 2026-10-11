@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEFixedPointStrict
+-- | Sovereign.Application.NSEFixedPointStrict
 -- 不动点集 **严格大于** 不可压子空间 + 支撑集可观察量的定义交付
 --
 -- 两件交付（判型先行, 均过可陈述性筛）:
@@ -29,7 +29,7 @@
 --
 -- 依赖: NSEOnT6 / NSEFixedPoint（comp/axisOf）/ NSEConservation（sum6-cong）/ Base.Trit
 
-module Sovereign.Problem.NavierStokes.NSEFixedPointStrict where
+module Sovereign.Application.NSEFixedPointStrict where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

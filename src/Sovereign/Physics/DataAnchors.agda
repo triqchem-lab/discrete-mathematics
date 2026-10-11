@@ -24,7 +24,7 @@ open import Data.Rational using (ℚ; _+_; _*_; _/_; _<_; 1ℚ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Rational.Base using (*<*)
 
-import Sovereign.HoTT.Geometry as Geo
+import Sovereign.Synthesis.Geometry as Geo
 import Sovereign.Physics.Scaling as Scale
 import Sovereign.Base.Invariants as Inv
 

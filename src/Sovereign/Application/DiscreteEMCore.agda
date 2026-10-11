@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteEMCore
+-- | Sovereign.Application.DiscreteEMCore
 -- 78 电磁学 — 离散 Maxwell 核心定理层 (0 postulate, 无洞)
 --
 -- 定位: 建立在 DiscreteEMField (3×3 环面, 第一基石) 与 DiscreteEMField3D
@@ -28,7 +28,7 @@
 -- (∂ρ/∂t + div J = 0 相容性), 依赖本模块的 div-curl-zero 作为
 -- Maxwell 方程组的可积性条件。
 
-module Sovereign.Physics.DiscreteEMCore where
+module Sovereign.Application.DiscreteEMCore where
 
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
