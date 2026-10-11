@@ -1,4 +1,4 @@
-{-# OPTIONS --rewriting --allow-unsolved-metas #-}
+{-# OPTIONS --rewriting #-}
 
 -- | Sovereign.Coupling.Dynamics
 -- 耦合域动力学：高 4 位/低 5 位双通道状态更新（十二律相位与幅度分量）
@@ -6,7 +6,9 @@
 -- 核心原则：
 --   1. 状态分高低两通道独立更新（updateHigh4/updateLow5），步进由 step 组合；
 --   2. evolveN 为 n 步迭代——轨道演化的过程件（对应时钟要素）；
---   3. ⚠ 本模块现状携带 --allow-unsolved-metas（历史遗留旗标，见报告事故栏）。
+--   3. 审计结论（2026-10-11）：--allow-unsolved-metas 历史旗标已移——移旗编译 EXIT=0、
+--      unsolved meta 清单为空（旗标系纯历史货物）；`mod` 返回 Fin n（本 stdlib 语义），
+--      toℕ/(if 分支)/(返回型) 各面全部自洽。
 -- 包含：updateHigh4/updateLow5（通道更新）、step（单步）、evolveN（n 步迭代）。
 
 module Sovereign.Coupling.Dynamics where
