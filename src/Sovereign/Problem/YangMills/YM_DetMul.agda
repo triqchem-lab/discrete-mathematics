@@ -16,7 +16,7 @@
 -- 包含：（重导/声明件——正文即清单）
 module Sovereign.Problem.YangMills.YM_DetMul where
 
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_)
 
@@ -26,7 +26,8 @@ open import Sovereign.Algebra.Jacobian.jac_Matrix
   using (mat-mul; det-mul)
 
 open import Sovereign.Algebra.Jacobian.jac_GF9Matrix
-  using (GF9; 0gf9; 1gf9; det2-gf9; det3-gf9; det4-gf9; I3-gf9; I4-gf9)
+  using (GF9; 0gf9; 1gf9; det2-gf9; det3-gf9; det4-gf9; I3-gf9; I4-gf9;
+         det2-gf9-I; det3-gf9-I; det4-gf9-I)
 
 --------------------------------------------------------------------------------
 -- §0. GF(3) det-mul 引用 (来自 jac_Matrix, 6561-case 穷举, 0 postulate)
@@ -54,7 +55,11 @@ det-mul-GF3 = det-mul
 I2-det : det2-gf9 1gf9 0gf9 0gf9 1gf9 ≡ 1gf9; I2-det = refl
 
 -- 非零: GF(9) 的特征 ≠ 2 → det≠0 ↔ 可逆
-I2-nonzero : det2-gf9 1gf9 0gf9 0gf9 1gf9 ≢ 0gf9; I2-nonzero = λ ()
+1≢0 : 1gf9 ≢ 0gf9
+1≢0 = λ ()
+
+I2-nonzero : det2-gf9 1gf9 0gf9 0gf9 1gf9 ≢ 0gf9
+I2-nonzero p = 1≢0 (trans (sym det2-gf9-I) p)   -- det(I₂)=1gf9 导出 [批2 ②]
 
 --------------------------------------------------------------------------------
 -- §2. SU(2) 推论
@@ -66,12 +71,15 @@ I2-nonzero : det2-gf9 1gf9 0gf9 0gf9 1gf9 ≢ 0gf9; I2-nonzero = λ ()
 --------------------------------------------------------------------------------
 
 -- 规范不变量的质量间隙: ∀g∈G, det(g)≠0gf9
--- 此即 YM 离散对应: λ_min(mass operator) > 0
+-- 此即 YM 离散对应: det≠0 ⇒ 可逆/无零特征值（离散口径；原「λ_min(mass operator)>0」已撤——GF(9) 无序）
 -- 全规模 → 0 postulate 闭合.
 
 -- 3×3/4×4 实例验证
-I3-nonzero : det3-gf9 I3-gf9 ≢ 0gf9; I3-nonzero = λ ()
-I4-nonzero : det4-gf9 I4-gf9 ≢ 0gf9; I4-nonzero = λ ()
+I3-nonzero : det3-gf9 I3-gf9 ≢ 0gf9
+I3-nonzero p = 1≢0 (trans (sym det3-gf9-I) p)   -- det(I₃)=1gf9 导出
+
+I4-nonzero : det4-gf9 I4-gf9 ≢ 0gf9
+I4-nonzero p = 1≢0 (trans (sym det4-gf9-I) p)   -- det(I₄)=1gf9 导出
 
 --------------------------------------------------------------------------------
 -- §3. SU(2) 质量间隙 (GF(3) 上形式化)
@@ -88,7 +96,10 @@ I2mul-det : det2 (mat-mul I2 I2) ≡ T₁
 I2mul-det = det-mul-GF3 I2 I2
 
 -- 质量间隙: det(I₂·I₂) ≠ T₀
+T₁≢T₀ : T₁ ≢ T₀
+T₁≢T₀ = λ ()
+
 mass-gap : det2 (mat-mul I2 I2) ≢ T₀
-mass-gap = λ ()
+mass-gap p = T₁≢T₀ (trans (sym I2mul-det) p)   -- det(I₂·I₂)=T₁ 导出 [批2 ②]
 
 -- YM L3 ✅: det-mul (6561 refl) + SU(2) det=1 + 质量间隙 det≠0.
