@@ -281,14 +281,48 @@ block-swap bf ce =
 
 
 -- 零律
+-- 零和坍缩件（zeros 族上提共享——2026-10-11 拆链收尾：原在 *27-identityˡ where 块，
+-- 上提后 *27-zeroˡ 三参直接复用；语句逐字保持，端点类型零变）
+zeros3 : ∀ p q r → (T₀ ⊗ p) ⊕ ((T₀ ⊗ q) ⊕ (T₀ ⊗ r)) ≡ T₀
+zeros3 p q r = begin
+  (T₀ ⊗ p) ⊕ ((T₀ ⊗ q) ⊕ (T₀ ⊗ r))
+    ≡⟨ cong₂ _+₃_ (⊗-zeroˡ p) (cong₂ _+₃_ (⊗-zeroˡ q) (⊗-zeroˡ r)) ⟩
+  T₀ ⊕ (T₀ ⊕ T₀)
+    ≡⟨ ⊕-identityʳ (T₀ ⊕ T₀) ⟩
+  T₀ ⊕ T₀
+    ≡⟨ ⊕-identityʳ T₀ ⟩
+  T₀
+  ∎
+zeros4 : ∀ p q r → (T₀ ⊗ p) ⊕ ((T₀ ⊗ q) ⊕ ((T₀ ⊗ r) ⊕ (T₀ ⊗ r))) ≡ T₀
+zeros4 p q r = begin
+  (T₀ ⊗ p) ⊕ ((T₀ ⊗ q) ⊕ ((T₀ ⊗ r) ⊕ (T₀ ⊗ r)))
+    ≡⟨ cong₂ _+₃_ (⊗-zeroˡ p) (cong₂ _+₃_ (⊗-zeroˡ q) (cong₂ _+₃_ (⊗-zeroˡ r) (⊗-zeroˡ r))) ⟩
+  T₀ ⊕ (T₀ ⊕ (T₀ ⊕ T₀))
+    ≡⟨ ⊕-identityʳ (T₀ ⊕ (T₀ ⊕ T₀)) ⟩
+  T₀ ⊕ (T₀ ⊕ T₀)
+    ≡⟨ ⊕-identityʳ (T₀ ⊕ T₀) ⟩
+  T₀ ⊕ T₀
+    ≡⟨ ⊕-identityʳ T₀ ⟩
+  T₀
+  ∎
+zeros5 : ∀ p q r s → (T₀ ⊗ p) ⊕ ((T₀ ⊗ q) ⊕ ((T₀ ⊗ r) ⊕ ((T₀ ⊗ s) ⊕ (T₀ ⊗ s)))) ≡ T₀
+zeros5 p q r s = begin
+  (T₀ ⊗ p) ⊕ ((T₀ ⊗ q) ⊕ ((T₀ ⊗ r) ⊕ ((T₀ ⊗ s) ⊕ (T₀ ⊗ s))))
+    ≡⟨ cong₂ _+₃_ (⊗-zeroˡ p) (cong₂ _+₃_ (⊗-zeroˡ q) (cong₂ _+₃_ (⊗-zeroˡ r) (cong₂ _+₃_ (⊗-zeroˡ s) (⊗-zeroˡ s)))) ⟩
+  T₀ ⊕ (T₀ ⊕ (T₀ ⊕ (T₀ ⊕ T₀)))
+    ≡⟨ ⊕-identityʳ (T₀ ⊕ (T₀ ⊕ (T₀ ⊕ T₀))) ⟩
+  T₀ ⊕ (T₀ ⊕ (T₀ ⊕ T₀))
+    ≡⟨ ⊕-identityʳ (T₀ ⊕ (T₀ ⊕ T₀)) ⟩
+  T₀ ⊕ (T₀ ⊕ T₀)
+    ≡⟨ ⊕-identityʳ (T₀ ⊕ T₀) ⟩
+  T₀ ⊕ T₀
+    ≡⟨ ⊕-identityʳ T₀ ⟩
+  T₀
+  ∎
+
 *27-zeroˡ : ∀ x → zero27 *₉ x ≡ zero27
 *27-zeroˡ (a , b , c) = cong₃ (λ p q r → p , q , r)
-  (trans (cong₂ _+₃_ (⊗-zeroˡ a) (trans (cong₂ _+₃_ (⊗-zeroˡ c) (⊗-zeroˡ c)) (trans (⊕-identityʳ T₀) (⊕-identityʳ T₀))))
-         (⊕-identityʳ T₀))
-  (trans (cong₂ _+₃_ (⊗-zeroˡ a) (trans (cong₂ _+₃_ (⊗-zeroˡ b) (trans (cong₂ _+₃_ (⊗-zeroˡ c) (trans (cong₂ _+₃_ (⊗-zeroˡ c) (⊗-zeroˡ c)) (⊕-identityʳ T₀))) (⊕-identityʳ T₀))) (⊕-identityʳ T₀)))
-         (⊕-identityʳ T₀))
-  (trans (cong₂ _+₃_ (⊗-zeroˡ c) (trans (cong₂ _+₃_ (⊗-zeroˡ b) (trans (cong₂ _+₃_ (⊗-zeroˡ a) (trans (cong₂ _+₃_ (⊗-zeroˡ c) (⊗-zeroˡ c)) (⊕-identityʳ T₀))) (⊕-identityʳ T₀))) (⊕-identityʳ T₀)))
-         (⊕-identityʳ T₀))
+  (zeros3 a c c) (zeros5 a b c c) (zeros5 c b a c)
 
 *27-zeroʳ : ∀ x → x *₉ zero27 ≡ zero27
 *27-zeroʳ x = trans (*27-comm x zero27) (*27-zeroˡ x)
@@ -299,43 +333,6 @@ block-swap bf ce =
   (trans (cong₂ _+₃_ (⊗-identityˡ a) (zeros4 c c b)) (⊕-identityʳ a))
   (trans (cong₂ _+₃_ (⊗-identityˡ b) (zeros5 a c b c)) (⊕-identityʳ b))
   (trans (cong₂ _+₃_ (⊗-identityˡ c) (zeros3 b a c)) (⊕-identityʳ c))
-  where
-    zeros4 : ∀ p q r → (T₀ ⊗ p) ⊕ ((T₀ ⊗ q) ⊕ ((T₀ ⊗ r) ⊕ (T₀ ⊗ r))) ≡ T₀
-    zeros4 p q r = begin
-      (T₀ ⊗ p) ⊕ ((T₀ ⊗ q) ⊕ ((T₀ ⊗ r) ⊕ (T₀ ⊗ r)))
-        ≡⟨ cong₂ _+₃_ (⊗-zeroˡ p) (cong₂ _+₃_ (⊗-zeroˡ q) (cong₂ _+₃_ (⊗-zeroˡ r) (⊗-zeroˡ r))) ⟩
-      T₀ ⊕ (T₀ ⊕ (T₀ ⊕ T₀))
-        ≡⟨ ⊕-identityʳ (T₀ ⊕ (T₀ ⊕ T₀)) ⟩
-      T₀ ⊕ (T₀ ⊕ T₀)
-        ≡⟨ ⊕-identityʳ (T₀ ⊕ T₀) ⟩
-      T₀ ⊕ T₀
-        ≡⟨ ⊕-identityʳ T₀ ⟩
-      T₀
-      ∎
-    zeros5 : ∀ p q r s → (T₀ ⊗ p) ⊕ ((T₀ ⊗ q) ⊕ ((T₀ ⊗ r) ⊕ ((T₀ ⊗ s) ⊕ (T₀ ⊗ s)))) ≡ T₀
-    zeros5 p q r s = begin
-      (T₀ ⊗ p) ⊕ ((T₀ ⊗ q) ⊕ ((T₀ ⊗ r) ⊕ ((T₀ ⊗ s) ⊕ (T₀ ⊗ s))))
-        ≡⟨ cong₂ _+₃_ (⊗-zeroˡ p) (cong₂ _+₃_ (⊗-zeroˡ q) (cong₂ _+₃_ (⊗-zeroˡ r) (cong₂ _+₃_ (⊗-zeroˡ s) (⊗-zeroˡ s)))) ⟩
-      T₀ ⊕ (T₀ ⊕ (T₀ ⊕ (T₀ ⊕ T₀)))
-        ≡⟨ ⊕-identityʳ (T₀ ⊕ (T₀ ⊕ (T₀ ⊕ T₀))) ⟩
-      T₀ ⊕ (T₀ ⊕ (T₀ ⊕ T₀))
-        ≡⟨ ⊕-identityʳ (T₀ ⊕ (T₀ ⊕ T₀)) ⟩
-      T₀ ⊕ (T₀ ⊕ T₀)
-        ≡⟨ ⊕-identityʳ (T₀ ⊕ T₀) ⟩
-      T₀ ⊕ T₀
-        ≡⟨ ⊕-identityʳ T₀ ⟩
-      T₀
-      ∎
-    zeros3 : ∀ p q r → (T₀ ⊗ p) ⊕ ((T₀ ⊗ q) ⊕ (T₀ ⊗ r)) ≡ T₀
-    zeros3 p q r = begin
-      (T₀ ⊗ p) ⊕ ((T₀ ⊗ q) ⊕ (T₀ ⊗ r))
-        ≡⟨ cong₂ _+₃_ (⊗-zeroˡ p) (cong₂ _+₃_ (⊗-zeroˡ q) (⊗-zeroˡ r)) ⟩
-      T₀ ⊕ (T₀ ⊕ T₀)
-        ≡⟨ ⊕-identityʳ (T₀ ⊕ T₀) ⟩
-      T₀ ⊕ T₀
-        ≡⟨ ⊕-identityʳ T₀ ⟩
-      T₀
-      ∎
 
 *27-identityʳ : ∀ x → x *₉ one27 ≡ x
 *27-identityʳ (a , b , c) = cong₃ (λ p q r → p , q , r)
