@@ -17,9 +17,10 @@ module Sovereign.Algebra.HenselLiftMod27Part2 where
 open import Data.Nat
   using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; _<_; z≤n; s≤s)
 open import Data.Empty using (⊥)
+open import Relation.Nullary using (¬_)
 open import Data.Nat.Divisibility using (_∣_; divides)
 open import Data.Nat.Properties
-  using (≤-refl; ≤-trans; m≤m+n; m≤n+m; <-trans)
+  using (≤-refl; ≤-trans; m≤m+n; m≤n+m; <-trans; <-≤-trans)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; subst)
 open import Sovereign.Algebra.HenselLiftUniqueness using (≤<-asym; 1+<-trans)
@@ -68,7 +69,7 @@ open import Sovereign.Algebra.HenselLiftUniqueness using (≤<-asym; 1+<-trans)
 ¬27∣288 (divides (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (q)))))))))))) h) =
   ≤<-asym ((suc^11 q) * 27) 288
     (subst (λ w → w ≤ 288) h (≤-refl))
-    (<-trans (1+<-trans 8 288) (289≤suc11 q))
+    (<-≤-trans ≤-refl (289≤suc11 q))
   where
     suc^11 : ℕ → ℕ
     suc^11 n = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc n))))))))))
