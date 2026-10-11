@@ -34,7 +34,7 @@ open import Data.Nat.Properties using (*-comm; +-cancelˡ-≡; *-cancelʳ-≡; +
   ≤-reflexive; ≤-trans; +-comm; +-assoc; *-suc)
 open import Data.Nat.DivMod using ([m+kn]%n≡m%n; m<n⇒m%n≡m)
 open import Function.Base using (_∘_)
-open import Sovereign.Structology.T6Rewrite
+open import Sovereign.Synthesis.T6Rewrite
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; trans; sym; subst; module ≡-Reasoning)
 
 enc : ∀ k → (Fin k → Fin 19) → ℕ

@@ -13,7 +13,7 @@ module Sovereign.HoTT.Bundle where
 
 -- ⚠️ ISOLATION (Phase 1): Imported via DiscreteCubical Proxy.
 -- 原引用: Cubical.Foundations.Prelude, Cubical.Core.Everything
-open import Sovereign.HoTT.DiscreteCubical
+open import Sovereign.Synthesis.DiscreteCubical
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Vec using (Vec)

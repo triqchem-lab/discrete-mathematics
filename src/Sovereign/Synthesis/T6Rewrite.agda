@@ -22,7 +22,7 @@
 -- 包含：div3k, mod3k（+ {-# REWRITE #-} 注册）
 
 
-module Sovereign.Structology.T6Rewrite where
+module Sovereign.Synthesis.T6Rewrite where
 
 -- ② 导入区
 open import Agda.Builtin.Equality using (_≡_; refl)

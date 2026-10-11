@@ -45,7 +45,7 @@ open import Sovereign.Base.Trit using
   (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; fin3ToTrit; tritToFin3;
    ⊕-identityˡ; ⊕-identityʳ; ⊕-comm; ⊕-assoc; ⊕-inverse; negate²)
 -- ⚠ 故意不加 using: REWRITE 规则必须**整模块导入**才生效 (div3k/mod3k)
-open import Sovereign.Structology.T6Rewrite
+open import Sovereign.Synthesis.T6Rewrite
 open import Data.Nat.Properties using (+-identityʳ; +-identityˡ; *-comm; +-comm; +-cancelˡ-≡; *-cancelʳ-≡; *-zeroʳ; +-mono-<; *-monoʳ-<)
 open import Data.Nat.DivMod using (+-distrib-/-∣ˡ; m*n/n≡m; [m+kn]%n≡m%n; m%n<n; m<n⇒m%n≡m; m≡m%n+[m/n]*n; m<n*o⇒m/o<n; m<n⇒m/n≡0)
 open import Data.Nat.Divisibility using (divides-refl)

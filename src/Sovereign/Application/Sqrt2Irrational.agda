@@ -24,7 +24,7 @@
 --
 -- 包含：奇偶引理族, square-dub/even, 递降步 descent, Strong 强化归纳, √2 无理主定理
 
-module Sovereign.Problem.Sqrt2.Sqrt2Irrational where
+module Sovereign.Application.Sqrt2Irrational where
 
 -- ② 导入区
 open import Agda.Builtin.Nat using (Nat; zero; suc; _+_; _*_)

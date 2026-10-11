@@ -12,7 +12,7 @@
 
 -- ③ 基础件层（sucPush/pos-+pos 等桥件）→ ④ 主引理层（negDistrib 族）→ ⑥ 核对层（补件区 refl 交叉）
 
-module Sovereign.Cubical.IntArith where
+module Sovereign.Base.IntArith where
 
 -- ② 导入区
 open import Cubical.Data.Nat using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)

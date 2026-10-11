@@ -17,7 +17,7 @@ open import Data.Product using (_×_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- ⚠️ ISOLATION (Phase 1): Imported via DiscreteCubical Proxy.
-open import Sovereign.HoTT.DiscreteCubical hiding (_≡_; refl)
+open import Sovereign.Synthesis.DiscreteCubical hiding (_≡_; refl)
 
 --------------------------------------------------------------------------------
 -- 1. C3 群生成元与复振幅 (C3 Generator & Amplitudes)

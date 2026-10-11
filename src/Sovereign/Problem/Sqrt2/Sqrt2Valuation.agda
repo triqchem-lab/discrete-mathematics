@@ -20,7 +20,7 @@ module Sovereign.Problem.Sqrt2.Sqrt2Valuation where
 
 open import Agda.Builtin.Nat using (Nat; zero; suc; _+_; _*_)
 open import Agda.Builtin.Equality using (_≡_; refl)
-open import Sovereign.Problem.Sqrt2.Sqrt2Irrational
+open import Sovereign.Application.Sqrt2Irrational
 
 ------------------------------------------------------------------------
 -- 2 的幂（dub 迭代）：two^ k u 读作 2^k·u

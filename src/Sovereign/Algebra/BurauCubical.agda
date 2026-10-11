@@ -26,7 +26,7 @@ open import Cubical.Data.Int using (ℤ; _+_; _-_; _·_; pos; negsuc; sucℤ; pr
 
 
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; _∙_; funExt)
-open import Sovereign.Cubical.Fin3Sum9 using (unflat9)
+open import Sovereign.Base.Fin3Sum9 using (unflat9)
 assocP : ∀ x y z → x + (y + z) ≡ (x + y) + z
 assocP x y (pos z) = +Assoc x y (pos z)
 assocP x y (negsuc z) = +Assoc x y (negsuc z)

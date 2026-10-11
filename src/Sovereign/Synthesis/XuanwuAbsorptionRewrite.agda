@@ -15,7 +15,7 @@
 -- 包含：mod46k, div46k, mod-a+598（+ REWRITE 注册）
 
 
-module Sovereign.Structology.XuanwuAbsorptionRewrite where
+module Sovereign.Synthesis.XuanwuAbsorptionRewrite where
 
 -- ② 导入区
 open import Agda.Builtin.Equality using (_≡_; refl)

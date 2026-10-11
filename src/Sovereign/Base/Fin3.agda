@@ -10,7 +10,7 @@
 -- 包含：sum3、sum3-ext、sum3-distribˡ（绿）、+interchange（绿）、sum3-comm（完整 17+ 步链已绿）
 
 
-module Sovereign.Cubical.Fin3 where
+module Sovereign.Base.Fin3 where
 open import Cubical.Data.Fin using (Fin; fzero; fsuc)
 open import Cubical.Data.Nat using (ℕ; zero; suc)
 open import Cubical.Data.Int using (ℤ; _+_; _·_; pos; negsuc)

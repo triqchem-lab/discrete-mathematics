@@ -26,7 +26,7 @@
 
 -- ③ 基础件层（夹具定义，无④⑤⑥——机制最小模型）
 
-module Sovereign.Trust.TwoViewRewritten where
+module Sovereign.Base.TwoViewRewritten where
 
 -- ② 导入区
 open import Agda.Builtin.Equality using (_≡_; refl)

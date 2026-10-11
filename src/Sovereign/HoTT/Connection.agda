@@ -12,7 +12,7 @@ module Sovereign.HoTT.Connection where
 
 -- ⚠️ ISOLATION (Phase 1): Imported via DiscreteCubical Proxy.
 -- 原引用: Cubical.Foundations.Prelude
-open import Sovereign.HoTT.DiscreteCubical
+open import Sovereign.Synthesis.DiscreteCubical
 
 -- Cubical Prelude 不导出 trans，定义别名
 private

@@ -15,7 +15,7 @@
 -- 包含：Prelude / Equiv / Function / Core.Primitives 四路重导出
 
 
-module Sovereign.HoTT.DiscreteCubical where
+module Sovereign.Synthesis.DiscreteCubical where
 
 -- ② 导入区（重导出，分组按信任面标注）
 

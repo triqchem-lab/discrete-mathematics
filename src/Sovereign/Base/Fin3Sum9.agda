@@ -10,7 +10,7 @@
 --
 -- 包含：assocP, uflat9-s1..s5, unflat9, sum9-swap
 
-module Sovereign.Cubical.Fin3Sum9 where
+module Sovereign.Base.Fin3Sum9 where
 
 -- ② 导入区
 
