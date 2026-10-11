@@ -8,7 +8,7 @@
 -- 分类：有限型（Dynkin 图）、仿射型（扩展 Dynkin 图）、不定型
 --
 -- 定义层闭合；证明层（PBW 定理、分类定理、不忠实表示）标记 pending。
--- 0 postulate / 0 hole。
+-- 0 postulate / 0 hole（2026-10-11 关系入定义批：hh-rel/ef-rel postulate → record presentation 字段）。
 --
 -- 核心原则：
 --   1. 数学内容优先（背景→定义→引理→定理），证明每步可读；
@@ -73,14 +73,29 @@ data KMElement : Set where
   _+_ : KMElement → KMElement → KMElement  -- 加法
   _·_ : KMElement → KMElement → KMElement  -- 李括号
 
--- Kac-Moody 代数关系（声明——证明体留 roadmap）
--- [h_i, h_j] = 0
-postulate
-  hh-rel : ∀ i j → (h i) · (h j) ≡ zero
+-- ────────────────────────────────────────────────────────────────────
+-- Kac-Moody presentation（关系入定义——B3 先例：豁免精化判据正解②）
+-- ⚠ **截断形 presentation**（如实标注，防误引为标准 Kac-Moody）：
+--   标准关系族另含 [hᵢ,eⱼ]=aᵢⱼeⱼ、[hᵢ,fⱼ]=-aᵢⱼfⱼ、Serre 关系——本 record 未列；
+--   ef-rel 为**零化截断**（标准 [eᵢ,fⱼ]=δᵢⱼhᵢ 的 i=j 案被压成 zero——原注释
+--   自认「简化 δ_{ij}」）。引用时不得当作标准 Kac-Moody presentation。
+-- ────────────────────────────────────────────────────────────────────
+record KacMoodyPresentation : Set₁ where
+  field
+    Carrier : Set
+    e'      : ℕ → Carrier
+    f'      : ℕ → Carrier
+    h'      : ℕ → Carrier
+    zero'   : Carrier
+    _+'     : Carrier → Carrier → Carrier
+    _·'_    : Carrier → Carrier → Carrier
 
--- [e_i, f_j] = δ_{ij} h_i
-postulate
-  ef-rel : ∀ i j → (e i) · (f j) ≡ zero  -- 简化：δ_{ij} 的情况
+    -- presentation 关系（截断形——本 record 的关系字段 = 且仅 = 下列二条）
+    hh-rel : ∀ i j → (h' i) ·' (h' j) ≡ zero'    -- [hᵢ,hⱼ] = 0
+    ef-rel : ∀ i j → (e' i) ·' (f' j) ≡ zero'    -- ⚠ 零化截断（标准为 δᵢⱼhᵢ）
+
+-- 注：data KMElement 是自由项代数（语言层）——hh-rel/ef-rel 的等式在自由项上不成立，
+-- 故关系必须作为 presentation record 的字段（假设可见形态），不能作自由代数的定理。
 
 -- 定义层完成度：
 --   ✅ 广义 Cartan 矩阵 A₂ 定义
@@ -88,7 +103,7 @@ postulate
 --   ✅ 三分类定义（finite/affine/indefinite）
 --   ✅ 具体 GCM 分类验证（A₂ = finite）
 --   ✅ Kac-Moody 代数生成元定义
---   ✅ Kac-Moody 代数关系声明
+--   ✅ Kac-Moody presentation record（关系入定义·截断形）
 --   ⚠ 分类定理证明（论文级——roadmap）
 --   ⚠ PBW 定理（论文级——roadmap）
 --   ⚠ 不忠实表示证明（论文级——roadmap）
