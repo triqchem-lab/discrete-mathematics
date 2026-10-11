@@ -496,7 +496,7 @@ index-of-m1 = refl
 -- 离散模型: Fin 4 循环群; 与 Z[i] 单位群 C₄ (Gaussian §2) 同构 —
 -- 毕达哥拉斯复数线的勾股线链接 (Milnor/Voevodsky: Witt 分级 ↔ Milnor K)。
 
-import Sovereign.RootMath.Gaussian as G
+import Sovereign.Foundation.Gaussian as G
 
 Witt4 : Set
 Witt4 = Fin 4

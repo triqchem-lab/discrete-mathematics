@@ -5,12 +5,12 @@
 --
 -- 宪法更新：
 -- - 移除 Data.Complex (违反纯代数宪法)。
--- - 使用 Sovereign.RootMath.AlgebraicComplex 替代。
+-- - 使用 Sovereign.Foundation.AlgebraicComplex 替代。
 
 module Sovereign.Structology.DiscreteCalculus where
 
 -- ⚠️ 宪法合规：使用代数复数替代连续统复数
-open import Sovereign.RootMath.AlgebraicComplex using (Sqrt3; _+s3_; _+ˢ_; _-ˢ_; _*ˢ_; sqrt3)
+open import Sovereign.Foundation.AlgebraicComplex using (Sqrt3; _+s3_; _+ˢ_; _-ˢ_; _*ˢ_; sqrt3)
 open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_; 1ℚ; 0ℚ; neg)
 open import Data.Integer using (ℤ; +_; -_)
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)

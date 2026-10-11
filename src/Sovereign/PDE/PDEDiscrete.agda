@@ -73,7 +73,7 @@ open import Sovereign.Algebra.ProjectionDifferential using (
   GF3Func; shift; Δ; sum3; const-func; Δ³≡0; Δ-const-zero; sum3-Δ≡0)
 
 -- P0 完备性框架
-open import Sovereign.Completeness.Layer
+open import Sovereign.Foundation.Layer
   using (ContinuousConcept; ODEPDE; Layer; Ontology; Projection;
          _≤layer_; conceptLayer; ≤layer-min)
 

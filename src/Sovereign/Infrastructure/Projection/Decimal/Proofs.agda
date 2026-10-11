@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.Projection.Decimal.Proofs
+-- | Sovereign.Infrastructure.Projection.Decimal.Proofs
 -- 十进制数字根正确性的构造性证明
 --
 -- ⚠️ 宪法声明：
@@ -16,7 +16,7 @@
 --   sumDigits 同改; 正确性由 m≡m%n+[m/n]*n + m%n<n + m/n<m 直证,
 --   终止性/稳定性由 <-wellFounded 良基归纳证明, 全程无 with。
 
-module Sovereign.Projection.Decimal.Proofs where
+module Sovereign.Infrastructure.Projection.Decimal.Proofs where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _≤_; _≥_; _>_; _<_; s≤s; z≤n)
 open import Data.Nat.Properties using (*-suc; +-comm; +-assoc; m<m+n; ≤-trans; ≤-refl; ≤-reflexive; m≤m+n; +-monoˡ-<; +-monoˡ-≤; +-monoʳ-≤; +-identityʳ; m≤n⇒m<n∨m≡n; ≤-pred; <⇒≤; 1+n≰n; ≤-<-trans)
@@ -34,7 +34,7 @@ open import Induction.WellFounded using (Acc; acc)
 ¬suc≤zero : ∀ {n} → suc n ≤ zero → ⊥
 ¬suc≤zero ()
 
-open import Sovereign.Projection.Decimal.Axioms
+open import Sovereign.Infrastructure.Projection.Decimal.Axioms
 
 true≢false : true ≡ false → ⊥
 true≢false ()

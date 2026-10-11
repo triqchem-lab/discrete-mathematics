@@ -75,7 +75,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
 
 -- P0 完备性框架
-open import Sovereign.Completeness.Layer
+open import Sovereign.Foundation.Layer
   using (ContinuousConcept; FunctionalAnalysis; Layer; Ontology; Projection;
          _≤layer_; conceptLayer)
 

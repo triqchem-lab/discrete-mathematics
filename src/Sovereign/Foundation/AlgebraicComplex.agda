@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.RootMath.AlgebraicComplex
+-- | Sovereign.Foundation.AlgebraicComplex
 -- 代数复数：避免连续统的复数表示
 --
 -- 宪法原则：
@@ -16,7 +16,7 @@
 --   1. 代数复数（Gaussian/Sqrt3）以整数分量 record 表示——禁 Data.Complex（宪法）；
 --   2. 范数/共轭为代数运算非连续统模长。
 -- 包含：record Gaussian、i、_+ᵍ_、_-ᵍ_、_*ᵍ_、conjᵍ、normSqᵍ、record Sqrt3
-module Sovereign.RootMath.AlgebraicComplex where
+module Sovereign.Foundation.AlgebraicComplex where
 
 open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_)
 open import Data.Integer using (ℤ; +_; -[1+_])

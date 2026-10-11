@@ -487,7 +487,7 @@ rho-mixedOp (x , a) (y , b) =
 -- 使用 Sqrt3 作为特征值类型
 open import Data.Rational using (ℚ; _/_)
 open import Data.Integer using (+_; -[1+_])
-open import Sovereign.RootMath.AlgebraicComplex using (Sqrt3; _+s3_; _*ˢ_; _-ˢ_; conjˢ; normˢ; sqrt3)
+open import Sovereign.Foundation.AlgebraicComplex using (Sqrt3; _+s3_; _*ˢ_; _-ˢ_; conjˢ; normˢ; sqrt3)
 
 -- 特征值: 12 次单位根的实部组合
 -- 对于循环图 C₁₂，特征值是 cos(2πk/12) 的线性组合

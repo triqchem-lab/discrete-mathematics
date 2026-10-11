@@ -1,7 +1,7 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 {-# OPTIONS --termination-depth=2 #-}
 
--- | Sovereign.Projection.Decimal.Axioms
+-- | Sovereign.Infrastructure.Projection.Decimal.Axioms
 -- 十进制数字根计算与判定
 --
 -- ⚠️ 宪法声明：
@@ -11,7 +11,7 @@
 
 -- 核心原则：十进制数字根在电性文明范畴内自洽，与 GF(3) 数字根分属不同范畴（投影层，不回流本源）
 -- 包含：十进制数字根计算 / 判定（外部数据校验 + 投影自洽证明用）
-module Sovereign.Projection.Decimal.Axioms where
+module Sovereign.Infrastructure.Projection.Decimal.Axioms where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _/_; _%_)
 open import Data.Bool using (Bool; true; false)

@@ -23,7 +23,7 @@ open Data.Rational.ℚ using (numerator; denominatorℕ)
 open import Data.Product using (_×_; _,_)
 open import Data.Bool using (Bool; true; false; not)
 
-open import Sovereign.RootMath.AlgebraicComplex
+open import Sovereign.Foundation.AlgebraicComplex
   using (Sqrt3; _+s3_; sqrt3; _+ˢ_; _-ˢ_; _*ˢ_; normˢ; EnergyGap)
 
 --------------------------------------------------------------------------------

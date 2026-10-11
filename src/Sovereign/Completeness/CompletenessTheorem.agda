@@ -29,7 +29,7 @@ open import Data.Fin using (Fin) renaming (zero to fzero)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 
 -- 项目模块: 框架
-open import Sovereign.Completeness.Layer
+open import Sovereign.Foundation.Layer
 
 -- 项目模块: GF(3) 本体
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)

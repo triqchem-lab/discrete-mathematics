@@ -27,7 +27,7 @@ open import Cubical.WildCat.Base using (WildCat; _[_,_])
 open import Cubical.WildCat.Functor using (WildFunctor)
 open import Data.Unit using (⊤; tt)
 
-open import Sovereign.Completeness.Layer
+open import Sovereign.Foundation.Layer
 
 --------------------------------------------------------------------------------
 -- §1. 连续概念范畴

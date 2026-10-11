@@ -25,7 +25,7 @@ open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _*_)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-import Sovereign.RootMath.Gaussian as G
+import Sovereign.Foundation.Gaussian as G
 import Sovereign.RootMath.Eisenstein as Eis
 
 --------------------------------------------------------------------------------

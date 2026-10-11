@@ -28,7 +28,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
 open import Sovereign.Foundation.EnergyGap using (C3Element; c3-id; c3-omega; c3-omega2;
   phaseGenerate; phaseOvercome; ℤabs; energyGapJump; energyGapNorm)
-open import Sovereign.RootMath.AlgebraicComplex using (Sqrt3; sqrt3)
+open import Sovereign.Foundation.AlgebraicComplex using (Sqrt3; sqrt3)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.T6 using (T6Lattice; GF3)
 open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi; applyLossGain)

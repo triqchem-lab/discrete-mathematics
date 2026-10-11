@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.RootMath.Gaussian
+-- | Sovereign.Foundation.Gaussian
 -- 高斯整数 Z[i] — 毕达哥拉斯复数线的判别式 −4 分支 (0 postulate)
 --
 -- 数学背景:
@@ -33,7 +33,7 @@
 --
 -- 包含: z0、z1、data、_、_、conjᵢ、normᵢ、iᵤ、i-square、i-fourth、unit1、uniti、unitm1、unitmi
 
-module Sovereign.RootMath.Gaussian where
+module Sovereign.Foundation.Gaussian where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)
 open import Data.Nat using (ℕ; _%_)

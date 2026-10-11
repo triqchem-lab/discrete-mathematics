@@ -22,7 +22,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Lü using (LüName; HuangZhong; LinZhong; TaiCu; NanLu; GuXian; YingZhong; RuiBin; DaLu; YiZe; JiaZhong; WuShe; ZhongLu)
 import Sovereign.Base.Invariants as Inv
 import Sovereign.Base.Axioms as Ax
-import Sovereign.Projection.Decimal.Axioms as DecimalAx
+import Sovereign.Infrastructure.Projection.Decimal.Axioms as DecimalAx
 
 --------------------------------------------------------------------------------
 -- 1. 律管记录 (Lü Record)

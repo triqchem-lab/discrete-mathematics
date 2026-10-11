@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Projection.Decimal
+-- | Sovereign.Infrastructure.Projection.Decimal
 -- 电性文明十进制投影层
 --
 -- ⚠️ 宪法声明（2026-04-24）：
@@ -14,7 +14,7 @@
 --
 -- 范畴分离原则：
 -- - Sovereign.Base.Axioms      → GF(3) 根数学公理（律算真本）
--- - Sovereign.Projection.Decimal → 十进制算术投影（电性文明）
+-- - Sovereign.Infrastructure.Projection.Decimal → 十进制算术投影（电性文明）
 -- - 两者不可混淆，不可互相替代
 
 --
@@ -23,7 +23,7 @@
 --   2. 投影相同 ≠ 相等（逃逸见证条款）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Projection.Decimal where
+module Sovereign.Infrastructure.Projection.Decimal where
 
-open import Sovereign.Projection.Decimal.Axioms
-open import Sovereign.Projection.Decimal.Proofs
+open import Sovereign.Infrastructure.Projection.Decimal.Axioms
+open import Sovereign.Infrastructure.Projection.Decimal.Proofs
