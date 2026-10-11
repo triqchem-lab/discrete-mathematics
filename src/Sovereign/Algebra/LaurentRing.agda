@@ -78,3 +78,23 @@ norm-tmul-tinv = refl
 --   3. sort-unique（Laurent.sort-unique 台账节点）→ 一般环公理
 --   4. norm-+comm : norm (a ++L b) ≡ norm (b ++L a)
 -- ────────────────────────────────────────────────────────────────────
+
+-- ────────────────────────────────────────────────────────────────────
+-- ── 2026-10-11 补件（T1a-3 一般环公理，norm 等价下；sort-unique 前置已解）──
+--   每律一顶一签名。易律从 List 层同余直接提升（cong norm）；
+--   难律（+-comm / distrib / *-assoc）走「sums 逐点相等 → 唯一性提升」，
+--   唯一性件在 LaurentSums 补件段（canon-sums-unique 系）。
+--   ⚠ 零系边界（2026-10-11 发现）：insertCᵌ 保留孤零项（insert (0,n) [] = [(0,n)]），
+--   sums-唯一性对含零系数项的输入不成立——难律若需 NoZero 前提将另行注明。
+-- ────────────────────────────────────────────────────────────────────
+
+open import Data.List.Properties using (++-identityʳ)
+open import Relation.Binary.PropositionalEquality using (cong)
+
+-- 加法结合（norm 等价下）：List 层即结合，norm 同余直接得
++-assoc-norm : ∀ a b c → norm ((a ++L b) ++L c) ≡ norm (a ++L (b ++L c))
++-assoc-norm a b c = cong norm (++L-assoc a b c)
+
+-- 加法单位（norm 等价下）：R0 = []，List 层右单位即得
++-identity-norm : ∀ a → norm (a ++L R0) ≡ norm a
++-identity-norm a = cong norm (++-identityʳ a)

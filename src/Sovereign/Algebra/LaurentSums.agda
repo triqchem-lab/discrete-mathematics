@@ -438,3 +438,45 @@ hexp-lemma u c₁ n₁ c₂ n₂ xs ys e ue h hxs =
 -- 唯一出路：改 sums 定义（用 with 而非 case_of_），让 sums-cons-head
 -- 的 with 与 sums 的 with 共精炼——但这会破坏 sums 的定义性展开。
 -- norm-+ 依赖此引理 + norm-idem + insertCᵌ-sums（已证）。
+
+-- ────────────────────────────────────────────────────────────────────
+-- ── 2026-10-11 补件（Laurent.norm-plus / ring-axioms 前置件）──
+--   路线：norm 保 sums（不保置换——insertCᵌ 会合并同指数项），
+--   故一切等式走「sums 逐点相等 → canon 唯一性提升」。
+--   零系事实：insertCᵌ 的 cancel 分支移除零系对（BTail.bt-eq₂ : w ≡ bt-xs'），
+--   合并分支只存非零和 ⇒ NoZero 输入经 norm 保持（norm-nozero 见后续）。
+-- ────────────────────────────────────────────────────────────────────
+
+open import Data.Integer.Properties using (+-identityʳ; +-comm)
+open import Relation.Binary.PropositionalEquality using (trans; cong; sym)
+
+-- 尾展开：t∷ts 的 sums = 单点 ts 与余尾之和
+sums-uncons : ∀ (u t : LaurentTerm) ts →
+  sums u (t ∷ ts) ≡ sums u (t ∷ []) + sums u ts
+sums-uncons u (c , n) ts with proj₂ u ≟ n
+... | yes _ = cong (_+ sums u ts) (sym (+-identityʳ c))
+... | no  _ = sym (+-identityˡ (sums u ts))
+
+-- normC 保 sums（工作马）：对 ts 归纳，插入件 insertCᵌ-sums 收口
+normC-s : ∀ (u : LaurentTerm) (ts : Laurent) →
+  sums u (proj₁ (normC ts)) ≡ sums u ts
+normC-s u [] = refl
+normC-s u (t ∷ ts) with normC ts in eq
+... | (w , cw) with insertCᵌ t w cw in eq2
+... | (w' , _ , _) = trans (sym (cong (λ z → sums u (proj₁ z)) eq2)) (trans head-step tail-step)
+  where
+    -- IH 沿 with 等式搬运：proj₁ (normC ts) ≡ w
+    subst-w : normC ts ≡ (w , cw) → sums u w ≡ sums u ts
+    subst-w e = trans (sym (cong (λ z → sums u (proj₁ z)) e)) (normC-s u ts)
+    -- 插入件收口：[插入结果] = 旧 sums + 单点 t
+    head-step : sums u (proj₁ (insertCᵌ t w cw)) ≡ sums u ts + sums u (t ∷ [])
+    head-step = trans (insertCᵌ-sums u t w cw) (cong (_+ sums u (t ∷ [])) (subst-w eq))
+    -- 和序换位 + 尾展开对齐
+    tail-step : sums u ts + sums u (t ∷ []) ≡ sums u (t ∷ ts)
+    tail-step = trans (+-comm (sums u ts) (sums u (t ∷ []))) (sym (sums-uncons u t ts))
+
+-- 规范形保 sums（对外）
+norm-sums : ∀ (u : LaurentTerm) (xs : Laurent) →
+  sums u (norm xs) ≡ sums u xs
+norm-sums = normC-s
+
