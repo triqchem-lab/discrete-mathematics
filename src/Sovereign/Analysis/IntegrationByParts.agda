@@ -39,15 +39,6 @@ open import Data.Integer.Properties using
    neg-distribˡ-*; neg-distribʳ-*)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
-open import Sovereign.Physics.DiscreteEMField3D
-  using (Point3D; GF3; ScalarField; VectorField; next;
-         dx; dy; dz; grad; curl; div; vx; vy; vz;
-         add3; neg3; add3-comm; add3-assoc; add3-identity; add3-inverse;
-         neg3-involutive; neg3-add)
-open import Sovereign.Physics.DiscreteDiffOps
-  using (prev; mul3-comm; add3-cyclic; add-neg-zero;
-         sum-forward; sum-backward; diff-sum;
-         integration-by-parts-1d; integration-by-parts-zero)
 
 open ≡-Reasoning
 
@@ -58,17 +49,12 @@ open ≡-Reasoning
 -- 离散分部积分: Σ φ·Δψ = -Σ ∇φ·∇ψ
 -- 已有: integration-by-parts-1d : ∀ φ ψ → sum-forward φ ψ ≡ sum-backward φ ψ
 
--- 分部积分定理 (L2 全称)
-integration-by-parts-theorem : ∀ φ ψ →
-  sum-forward φ ψ ≡ sum-backward φ ψ
-integration-by-parts-theorem = integration-by-parts-1d
+-- [波 2-C 检查件外移] integration-by-parts-theorem 委托对已迁 Sovereign.Physics.DiscreteDiffOpsChecks
 
 -- 推论: 差分求和为零
 -- 已有: integration-by-parts-zero : ∀ φ ψ → diff-sum φ ψ ≡ fz
 
--- 差分求和为零定理 (L2 全称)
-diff-sum-zero : ∀ φ ψ → diff-sum φ ψ ≡ fz
-diff-sum-zero = integration-by-parts-zero
+-- [波 2-C 检查件外移] diff-sum-zero 委托对已迁 Sovereign.Physics.DiscreteDiffOpsChecks
 
 --------------------------------------------------------------------------------
 -- §2. 分部积分推论
