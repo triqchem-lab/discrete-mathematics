@@ -116,6 +116,33 @@ disp2 W (nil v) = oneA W
 disp2 W (cons {u = u} {v = v} e (nil w)) = wt W u v
 disp2 W (cons {u = u} {v = v} e (cons {v = w} e' p)) = _*A_ W (_*A_ W (wt W u v) (wt W v w)) (disp2 W p)
 
+-- ────────────────────────────────────────────────────────────────────
+-- disp2 不变量三件套（2026-10-10 清洞批）：disp2 = 全权积（up to *A-assoc）
+--   prodW = 逐步乘积；prod-++w = 乘法分配（++w-disp 的 *A 对应）；disp2-prod = 两形等价
+-- ────────────────────────────────────────────────────────────────────
+
+prodW : (W : WeightedDiGraph) → ∀ {u v} → Walk (G W) u v → A W
+prodW W (nil v) = oneA W
+prodW W (cons {u = u} {v = v} e p) = _*A_ W (wt W u v) (prodW W p)
+
+prod-++w : (W : WeightedDiGraph) → ∀ {u v w} (p : Walk (G W) u v) (q : Walk (G W) v w)
+         → prodW W (p ++w q) ≡ _*A_ W (prodW W p) (prodW W q)
+prod-++w W = go
+  where
+    go : ∀ {u v w} (p : Walk (G W) u v) (q : Walk (G W) v w)
+       → prodW W (p ++w q) ≡ _*A_ W (prodW W p) (prodW W q)
+    go (nil v) q = sym (*A-idˡ W (prodW W q))
+    go (cons {u = u} {v = v} e p) q =
+      trans (cong (_*A_ W (wt W u v)) (go p q))
+            (sym (*A-assoc W (wt W u v) (prodW W p) (prodW W q)))
+
+disp2-prod : (W : WeightedDiGraph) → ∀ {u v} (p : Walk (G W) u v) → disp2 W p ≡ prodW W p
+disp2-prod W (nil v) = refl
+disp2-prod W (cons {u = u} {v = v} e (nil w)) = sym (*A-idʳ W (wt W u v))
+disp2-prod W (cons {u = u} {v = v} e (cons {v = w} e' p)) =
+  trans (cong (_*A_ W (_*A_ W (wt W u v) (wt W v w))) (disp2-prod W p))
+        (*A-assoc W (wt W u v) (wt W v w) (prodW W p))
+
 -- 2-截断守恒骨架（slide 的二阶形式——步对权重和守恒）
 disp2-slide : (W : WeightedDiGraph) → ∀ {u x y z v}
   (p : Walk (G W) u x) (b : Walk (G W) z v)
@@ -129,14 +156,28 @@ disp2-slide-gen : (W : WeightedDiGraph) → ∀ {u x y z v}
   (e1 : edge (G W) x y) (e2 : edge (G W) y z) (e3 : edge (G W) x z)
   → (∀ a b c → _*A_ W (wt W a b) (wt W b c) ≡ wt W a c)
   → disp2 W (p ++w (cons e1 (cons e2 b))) ≡ disp2 W (p ++w (cons e3 b))
-disp2-slide-gen W {u} {x} {y} {z} {v} (nil x) (nil z) e1 e2 e3 harm-gen =
-  trans (cong (λ v → _*A_ W v (oneA W)) (harm-gen x y z)) (*A-idʳ W (wt W x z))
-disp2-slide-gen W {u} {x} {y} {z} {v} (nil x) (cons e' b) e1 e2 e3 harm-gen = {!!}
-disp2-slide-gen W {u} {x} {y} {z} {v} (cons e p) b e1 e2 e3 harm-gen = {!!}
-disp2-slide-gen W {u} {x} {y} {z} {v} (cons e p) b e1 e2 e3 harm-gen = {!!}
-disp2-slide W {u} {x} {y} {z} {v} (nil x) (nil z) e1 e2 e3 harm =
-  trans (cong (λ w → _*A_ W w (oneA W)) harm) (*A-idʳ W (wt W x z))
-disp2-slide W p b e1 e2 e3 harm = {!!}
-  -- WIP：二阶守恒（++w-disp2 引理 + 边界步对 + harm 条件）
+disp2-slide-gen W {u} {x} {y} {z} {v} p b e1 e2 e3 harm-gen = trans left-half right-half
+  where
+    left-half : disp2 W (p ++w (cons e1 (cons e2 b)))
+              ≡ _*A_ W (prodW W p) (_*A_ W (wt W x z) (prodW W b))
+    left-half = trans (disp2-prod W (p ++w (cons e1 (cons e2 b))))
+      (trans (prod-++w W p (cons e1 (cons e2 b)))
+      (trans (cong (_*A_ W (prodW W p)) (sym (*A-assoc W (wt W x y) (wt W y z) (prodW W b))))
+      (cong (λ w → _*A_ W (prodW W p) (_*A_ W w (prodW W b))) (harm-gen x y z))))
+    right-half : _*A_ W (prodW W p) (_*A_ W (wt W x z) (prodW W b))
+               ≡ disp2 W (p ++w (cons e3 b))
+    right-half = sym (trans (disp2-prod W (p ++w (cons e3 b))) (prod-++w W p (cons e3 b)))
+
+disp2-slide W {u} {x} {y} {z} {v} p b e1 e2 e3 harm = trans left-half right-half
+  where
+    left-half : disp2 W (p ++w (cons e1 (cons e2 b)))
+              ≡ _*A_ W (prodW W p) (_*A_ W (wt W x z) (prodW W b))
+    left-half = trans (disp2-prod W (p ++w (cons e1 (cons e2 b))))
+      (trans (prod-++w W p (cons e1 (cons e2 b)))
+      (trans (cong (_*A_ W (prodW W p)) (sym (*A-assoc W (wt W x y) (wt W y z) (prodW W b))))
+      (cong (λ w → _*A_ W (prodW W p) (_*A_ W w (prodW W b))) harm)))
+    right-half : _*A_ W (prodW W p) (_*A_ W (wt W x z) (prodW W b))
+               ≡ disp2 W (p ++w (cons e3 b))
+    right-half = sym (trans (disp2-prod W (p ++w (cons e3 b))) (prod-++w W p (cons e3 b)))
 
 -- ────────────────────────────────────────────────────────────────────

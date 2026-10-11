@@ -1,0 +1,15 @@
+id: P3.2-hensel-uniqueness-pure
+module: Sovereign.Algebra.HenselCRTUniqueness
+statement: Hensel 2侧/3侧唯一性——纯 case（unique-root₁/₈）+ 混合 case（unique-root₅/₄）+ crt-converse 全闭合
+level: A
+evidence:
+  compile_receipt: 7bad59bea62ef3aef1bd257d3b8db0b07b6802c3b89d9afe15420fc3d2d84b2a
+  oracle: oracle_hcu_qge2.py(84cb2580) · oracle_lin_solve_db.py(b5bdad33, 65536/65536)
+  cross_check: 具体点 refl 交叉 + 卡死约束 :372 同步修复 + unique-root₅ 复用 unique-root₃-same
+dependencies: [ModExtract.plus-cancel, db-go, db-bound, lcm-coprime-gen, unique-root₃-same, t3-kill]
+proof_strategy: 代数链 + 双向截断差 + ≤-antisym + 四段分裂 + M 抽象化（t3-kill）
+human_notes: |
+  清账批 A 全清（3 洞 + 1 卡死约束）。机理沉淀：「字面头+stuck 尾」项连 refl 都爆
+  （字面剥 suc 链）→ 解法 = 抽象字面为变量 + 调用点一次性字面实例化（t3-kill，附录 15 B1）。
+git_witness: efc5efdd(探针回执) → 7bad59be(模块回执, 2026-10-10)
+updated: 2026-10-11

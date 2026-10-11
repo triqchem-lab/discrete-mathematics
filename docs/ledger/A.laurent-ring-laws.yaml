@@ -1,0 +1,17 @@
+id: A.laurent-ring-laws
+module: Sovereign.Algebra.LaurentRingLaws
+statement: 函数表示卷积环公理——t·t⁻¹≡1（双向）+ *L 结合律（*assoc）+ 左右分配律（dist-l/dist-r）+ mono-conv 卷积引理
+level: A
+evidence:
+  compile_receipt: 5fefb4ccad1b72ae4ea917b4afdfc636da04adeb4c3da9046d5276ff2a838b4f
+  oracle: engineering/oracle_laurent_ring.py（d2242ab6，1,641,603 断言，domain=points 全穷举）
+  cross_check: check-mono/check-degen/check-in/check-out 独立 refl 交叉 + tneg-goal-false 反证件
+dependencies: [sum-ℤ-split, sum-ℤ-swap, inner-eq, sum-ℤ-window-eq, conv-zeroˡʳ, mono-conv, t3-kill 族]
+proof_strategy: 不变量三件套 + sum-ℤ interchange + 未来态 7 步装配（收 2 ∙ 链）+ tri 分派 + M/字面抽象化
+human_notes: |
+  ⑦A 四路并行 + 六原子分解批全程收口（2026-10-10~11）。两代探针合并出过一次切割事故
+  （正则锚点误匹配截掉一代内容）——经 _PA_assoc 报文回放 + _PA_regen 全量重建恢复，签名零漂移。
+  机理沉淀：①「字面+stuck 尾」连 refl 都爆 → 抽象化（t3-kill）；②空格算符陷阱：`x + pos n`
+  解析为 `x +pos n`，真二元加必须写 `+ (pos n)` 括号形（旧桥多为自反空件，真桥 = zero-r+/pos-sp/pos-eq/+pos-to-+）。
+git_witness: 74a14550(v1 分册) → 5fefb4cc(总装, 2026-10-11)
+updated: 2026-10-11

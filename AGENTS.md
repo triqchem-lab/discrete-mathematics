@@ -42,6 +42,7 @@ Agda 形式化证明 + Python 工程验证双轨制。
 - 注释一律中文；模块头部注释先说明数学背景（如 GF9 = GF(3)[x]/(x²+1)）
 - Unicode 标识符: `T₀ T₁ T₂`、`⊕ ⊗`、`≡ ≅`、`⊎`
 - 证明风格: 有限类型逐 case 的 refl 证明；目标零 postulate（README 的 85 文件/72 零 postulate 数字已过时）
+- **非必要不用 REWRITE**（2026-10-10 人类裁决入册）: REWRITE 是**传染性强的元层工具**（全库 537 个模块声明 `--rewriting`，仅 8 个真含规则，其余为传染强制）；新增 REWRITE 须同时满足 ① 链式修复（命名引理 + let 类型注解）已验证无效 ② 属 mod-helper 类内核资源爆炸 ③ 逐条人类授权。「不违反 0-postulate」≠「应该用」；refl 层问题（如 `+Assoc`/`assocP`）一律先修链式
 - `--rewriting` 是全库标准 (335/342 模块)，承载自定义 REWRITE 规则——**语义完备性设计**，不是补丁:
   - `T6.agda`: `div3k`/`mod3k`/`gf3Toℕ-A4-inv` (4320D 归约, 替代 mod-helper 展开, 避免类型检查 OOM)
   - `XuanwuAbsorption.agda`: `mod46k`/`div46k`/`mod-a+598`; `jac_Pigeonhole.agda`: `decode9-encode9`

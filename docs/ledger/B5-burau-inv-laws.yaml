@@ -1,0 +1,17 @@
+id: B5-inv-laws-comb
+module: Sovereign.Algebra.BurauInverse
+statement: σᵢ·σᵢ⁻¹ = σᵢ⁻¹·σᵢ = I（i=1,2，卷积语义 _*3cv_/_*3c_ 下四律全形）+ 逐点语义不可能性反证件（s1-no-right-inv / no-right-inv / no-left-inv）
+level: A
+evidence:
+  compile_receipt: 2890985229ca12e73602376ef646d2e27a8377163981d2078b5978fa3c86af9c
+  oracle: 数值双面交叉（块逆 t∈{-2,-1,1,2} 双侧=I；逐点形反例全网格 [-2,2]^9 19683 点无解）
+  cross_check: 9 entry × 5/6-case funExt refl（braid-rel 模板）+ mat3-cong 装配
+dependencies: [A.laurent-ring-laws, B1-s1-inv, B2-s1-inv-r, B3-s1-inv-l, B4-s2-inv-laws]
+proof_strategy: statement_wrong→改形式化（双轨）+ 否定（不可能性证书）+ 未来态模板
+human_notes: |
+  ⑦B′ 双 fork 独立互证同一语义真相：BurauCubical._*3_ 是逐点乘非卷积——原任务书陈述
+  （burau-si *3 si-inv ≡ id3）为假（n=0 块退化），已按纪律改形式化：卷积形证正律 + 逐点形留反证。
+  ⚠ 待人类裁决（journal 1f5b9fb1）：*3 迁移卷积形 / 双轨永久 / 其他——影响 BurauCubical 既有
+  braid-rel 等 5 个 proven 节点的措辞限定。
+git_witness: 28909852(2026-10-11)
+updated: 2026-10-11

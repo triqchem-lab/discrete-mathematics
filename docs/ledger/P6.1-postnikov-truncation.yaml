@@ -1,0 +1,15 @@
+id: P6.1-postnikov-truncation
+module: Sovereign.HoTT.PostnikovTruncation
+statement: Postnikov 2-截断守恒——disp2-slide/disp2-slide-gen（slide 的二阶形式）全闭合
+level: A
+evidence:
+  compile_receipt: 854df5b897b2565ecd2b9c478ab75c2ddda8bc81d39ef376d373955a2ef95414
+  oracle: —（幺半代数恒等式，经具体点 refl 交叉）
+  cross_check: nil-nil/cons-nil 点位交叉 + disp2=全权积不变量（prodW/prod-++w/disp2-prod）
+dependencies: [*A-assoc, *A-idˡ, *A-idʳ, prodW, prod-++w, disp2-prod]
+proof_strategy: 不变量三件套（disp2=全权积）+ 幺半代数链
+human_notes: |
+  历史多批 case 分裂 WIP 一役收口——换视角：disp2 实为全边权积，缺的只是分配律
+  disp2 (p++q) ≡ disp2 p * disp2 q。教训：归纳前先找不变量，case 分裂是最后手段。
+git_witness: 854df5b8(2026-10-10)
+updated: 2026-10-11

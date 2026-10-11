@@ -1,0 +1,1035 @@
+# 拓扑序（叶子 → 根），共 1034 节点；循环/未决 0
+Agda.Builtin.Equality
+Agda.Builtin.Equality.Rewrite
+Agda.Builtin.List
+Agda.Builtin.Nat
+Agda.Builtin.Reflection
+Agda.Builtin.String
+Agda.Builtin.Unit
+Codata.Guarded.Stream
+Cubical.Core.Primitives
+Cubical.Data.Empty
+Cubical.Data.Empty.Base
+Cubical.Data.Equality.Conversion
+Cubical.Data.Fin
+Cubical.Data.Fin.Base
+Cubical.Data.Int
+Cubical.Data.Int.Order
+Cubical.Data.Int.Properties
+Cubical.Data.List
+Cubical.Data.Nat
+Cubical.Data.Nat.Order
+Cubical.Data.Nat.Properties
+Cubical.Data.Sigma
+Cubical.Data.Sigma.Properties
+Cubical.Data.Sum
+Cubical.Data.Unit
+Cubical.Foundations.Equiv
+Cubical.Foundations.Function
+Cubical.Foundations.HLevels
+Cubical.Foundations.Isomorphism
+Cubical.Foundations.Prelude
+Cubical.Functions.Surjection
+Cubical.HITs.PropositionalTruncation
+Cubical.HITs.SetQuotients
+Cubical.HITs.SetQuotients.Properties
+Cubical.HITs.SetTruncation
+Cubical.HITs.SetTruncation.Properties
+Cubical.Relation.Nullary
+Cubical.Relation.Nullary.Properties
+Cubical.WildCat.Base
+Cubical.WildCat.Functor
+Data.Bool
+Data.Bool.Base
+Data.Bool.Properties
+Data.Empty
+Data.Fin
+Data.Fin.Base
+Data.Fin.Properties
+Data.Integer
+Data.Integer.Base
+Data.Integer.Properties
+Data.Integer.Solver
+Data.Integer.Tactic.RingSolver
+Data.List
+Data.List.Base
+Data.List.Membership.Propositional
+Data.List.Relation.Binary.Permutation.Propositional
+Data.List.Relation.Binary.Permutation.Propositional.Properties
+Data.Maybe
+Data.Maybe.Base
+Data.Maybe.Properties
+Data.Nat
+Data.Nat.Base
+Data.Nat.Coprimality
+Data.Nat.DivMod
+Data.Nat.Divisibility
+Data.Nat.Divisibility.Core
+Data.Nat.GCD
+Data.Nat.Induction
+Data.Nat.LCM
+Data.Nat.Properties
+Data.Nat.Show
+Data.Nat.Solver
+Data.Nat.Tactic.RingSolver
+Data.Product
+Data.Product.Base
+Data.Rational
+Data.Rational.Base
+Data.Rational.Properties
+Data.Rational.Solver
+Data.String
+Data.Sum
+Data.Sum.Base
+Data.Unit
+Data.Unit.Base
+Data.Vec
+Data.Vec.Base
+Data.Vec.Properties
+Data.Word64.Base
+Data.Word8.Base
+Function
+Function.Base
+Function.Bundles
+Function.Definitions
+Induction.WellFounded
+Level
+Relation.Binary.PropositionalEquality
+Relation.Binary.PropositionalEquality.Properties
+Relation.Nullary
+Relation.Nullary.Decidable
+Relation.Nullary.Decidable.Core
+Relation.Nullary.Negation
+Relation.Nullary.Negation.Core
+Sovereign.Structology.MatrixZ
+Sovereign.Structology.Z
+Tactic.RingSolver.Core.AlmostCommutativeRing
+import Cubical.Foundations.Prelude as C
+import Data.Fin
+import Data.Fin as F
+import Data.Fin as Fin
+import Data.Fin.Properties as FinP
+import Data.List.Properties
+import Data.List.Relation.Unary.All as All
+import Data.Nat
+import Data.Nat.Properties as NP
+import Data.Vec as Vec
+import Relation.Binary.PropositionalEquality as PropEq
+import Sovereign.Algebra.Duodecimal as D
+import Sovereign.Algebra.Duodecimal as Duo
+import Sovereign.Algebra.FunctionalDiscrete as GF3FuncAnalysis
+import Sovereign.Algebra.GroupTheory.DuodecClock as DC
+import Sovereign.Algebra.GroupTheory.OrbitStabilizer as OSA
+import Sovereign.Algebra.HenselLiftMinimal as HLM
+import Sovereign.Algebra.HenselLiftTower as Tower
+import Sovereign.Algebra.Holographic.InfoClosure     -- 信息论
+import Sovereign.Algebra.Holographic.InfoClosure  -- 4320D 信息容量
+import Sovereign.Algebra.Holographic.PhysicalOntology
+import Sovereign.Algebra.Jacobian.jac_AutT6           -- 群论
+import Sovereign.Algebra.Jacobian.jac_AutT6       -- Aut(T⁶/GF(9))
+import Sovereign.Algebra.Jacobian.jac_CRTDet
+import Sovereign.Algebra.Jacobian.jac_CRTDet       -- CRT 拱顶石
+import Sovereign.Algebra.Jacobian.jac_GF9Matrix    -- det2/3/4-gf9
+import Sovereign.Algebra.Jacobian.jac_LieGroup     -- expD (σ 替代 exp)
+import Sovereign.Algebra.Jacobian.jac_NMatrix       -- M_F 全息编码
+import Sovereign.Algebra.Jacobian.jac_Pigeonhole     -- 组合
+import Sovereign.Algebra.Jacobian.jac_Topology     -- 边界算子 ∂
+import Sovereign.Algebra.SpiralCycle               -- ⟨2⟩ 六环定理
+import Sovereign.Algebra.VortexTower as VT
+import Sovereign.Analysis.FiniteProbability  -- GF(3)ⁿ 均匀链 + 有理期望 + Burnside (A₄ 自然/正则作用)
+import Sovereign.Base.Axioms as Ax
+import Sovereign.Base.Invariants as Inv
+import Sovereign.Base.Trit as T
+import Sovereign.Base.Trit as Trit
+import Sovereign.Base.TritOps as TritOps
+import Sovereign.Coding.BCHGF9       -- 最小距离界 + 系统编码 + 单错纠错 (0 postulate)
+import Sovereign.Coding.CyclicGF27   -- γ 根结构 → 长度 26 循环码 + freshman's dream (0 postulate)
+import Sovereign.Coding.HammingMetric
+import Sovereign.Coding.Trit as C
+import Sovereign.Coding.Trit as T
+import Sovereign.Coding.Trit as T; open T using (Trit)
+import Sovereign.Coding.Trit as Trit
+import Sovereign.Coupling.LCM as LCM
+import Sovereign.Coupling.LossGain as LG
+import Sovereign.Engine.StateMachine as SM
+import Sovereign.Format.Doz as Doz
+import Sovereign.Format.Positional as P
+import Sovereign.Format.TQ10 as TQ10
+import Sovereign.Geometry.Tryte as TryteGeom -- Import geometric definition
+import Sovereign.HoTT.Bundle as Bun
+import Sovereign.HoTT.Bundle as Bundle
+import Sovereign.HoTT.ChernClass as CC
+import Sovereign.HoTT.Connection as Conn
+import Sovereign.HoTT.Geometry as Geo
+import Sovereign.HoTT.Geometry as Geom
+import Sovereign.Physics.Scaling as Scale
+import Sovereign.Problem.BSD.BSD
+import Sovereign.Problem.BSD.BSD_GF27
+import Sovereign.Problem.BSD.BSD_General
+import Sovereign.Problem.BSD.BSD_L3               -- t-rec 递归 + 正确性
+import Sovereign.Problem.BSD.ZetaDiscrete
+import Sovereign.Problem.Hodge.ChainComplex       -- hodge-decomp: nullity∂ ≡ rank∂∘suc + dimℋ
+import Sovereign.Problem.Hodge.ChainComplex -- 泛链复形
+import Sovereign.Problem.Hodge.ChainComplex as CC
+import Sovereign.Problem.Hodge.DeligneHodge    -- Deligne 独立形式化
+import Sovereign.Problem.Hodge.EulerChar
+import Sovereign.Problem.Hodge.EulerChar     -- ℤ 欧拉全部闭合
+import Sovereign.Problem.Hodge.EulerChar    -- ℤ 欧拉 (全局拓扑)
+import Sovereign.Problem.Hodge.Hodge
+import Sovereign.Problem.Hodge.Hodge         -- 三角: (1
+import Sovereign.Problem.Hodge.Hodge         -- 调和形式 ℋ
+import Sovereign.Problem.Hodge.HodgeTetra
+import Sovereign.Problem.Hodge.HodgeTetra    -- S² 驻波
+import Sovereign.Problem.Hodge.HodgeTetra    -- S²: (1
+import Sovereign.Problem.Hodge.KleinHodge
+import Sovereign.Problem.Hodge.KleinHodge    -- Klein 驻波
+import Sovereign.Problem.Hodge.KleinHodge    -- Klein: (1
+import Sovereign.Problem.Hodge.TorusHodge
+import Sovereign.Problem.Hodge.TorusHodge    -- T² 驻波
+import Sovereign.Problem.Hodge.TorusHodge    -- T²: (1
+import Sovereign.Problem.Kakeya.KakeyaGF3
+import Sovereign.Problem.Kakeya.KakeyaGF9
+import Sovereign.Problem.Kakeya.KakeyaMF
+import Sovereign.Problem.Kakeya.KakeyaPathology
+import Sovereign.Problem.Langlands.DeligneLusztig  -- DL 独立形式化
+import Sovereign.Problem.Langlands.DeligneLusztig  -- 外部形式化
+import Sovereign.Problem.Langlands.GL2TestVectors
+import Sovereign.Problem.Langlands.Langlands
+import Sovereign.Problem.Langlands.S4Burnside
+import Sovereign.Problem.NavierStokes.NSE          -- 12 定理
+import Sovereign.Problem.NavierStokes.NSRegularity -- §5 动力学: step³-id/单射/能量守恒/周期
+import Sovereign.Problem.NavierStokes.NSVortex
+import Sovereign.Problem.PvsNP.Complexity
+import Sovereign.Problem.PvsNP.Complexity     -- 2×2 has-root
+import Sovereign.Problem.PvsNP.DetMul
+import Sovereign.Problem.PvsNP.GF27Separation
+import Sovereign.Problem.PvsNP.PvsNP_Conjecture
+import Sovereign.Problem.PvsNP.PvsNP_Conjecture -- 形式猜想
+import Sovereign.Problem.PvsNP.PvsNP_Separation
+import Sovereign.Problem.Riemann.Galois
+import Sovereign.Problem.Riemann.Galois      -- σ²=id (心跳)
+import Sovereign.Problem.Riemann.RH
+import Sovereign.Problem.Riemann.WeilRH
+import Sovereign.Problem.Riemann.WeilRH          -- Weil 独立形式化
+import Sovereign.Problem.Riemann.WeilRH       -- GF(3)↔GF(9) 对偶
+import Sovereign.Problem.Riemann.WeilRigidity     -- t²+3s²=4q
+import Sovereign.Problem.Riemann.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
+import Sovereign.Problem.YangMills.SU2_Embedding
+import Sovereign.Problem.YangMills.WilsonPlaquette
+import Sovereign.Problem.YangMills.WilsonPlaquette -- 单plaquette
+import Sovereign.Problem.YangMills.YM_DetMul
+import Sovereign.Problem.YangMills.YM_Full
+import Sovereign.Problem.YangMills.YM_L3          -- 平凡构型 gap
+import Sovereign.Problem.YangMills.YM_L3         -- 2/3/4×4 λ()
+import Sovereign.Problem.YangMills.YM_SpectralGap -- 精确谱 λ₀=4/λ₁=1
+import Sovereign.Projection.Decimal.Axioms as DecimalAx
+import Sovereign.RootMath.DigitalRoot as DR
+import Sovereign.RootMath.Eisenstein  -- *ᵉ-assoc/comm + conjᵉ-mul + norm-mul + unitGen C₆ 循环
+import Sovereign.RootMath.Eisenstein as Eis
+import Sovereign.RootMath.Gaussian as G
+import Sovereign.Structology.A4Group as A4
+import Sovereign.Structology.A4Group as A4G
+import Sovereign.Structology.HoloInformation as HI
+import Sovereign.Structology.HolographicPi         -- 原子化: 0 postulate
+import Sovereign.Structology.IhC60Vibration        -- I_h → 46: 174 维振动表示 → 46 独立基频
+import Sovereign.Structology.LuCellGrid as LuGrid
+import Sovereign.Structology.T6 as T6
+import Sovereign.Structology.Winding as W
+import Sovereign.Topology.MorseCoeffRoute
+import Sovereign.Trust.TwoViewPlain as Plain
+import Sovereign.Trust.TwoViewRewritten as Rew
+import Tactic.RingSolver as Solver using (solve-macro; solve-∀-macro)
+import Tactic.RingSolver.Core.AlmostCommutativeRing as ACR
+import Tactic.RingSolver.NonReflective as NR
+Sovereign.Trust.TwoViewRewritten
+Sovereign.Problem.Sqrt2.Sqrt2Irrational
+Sovereign.Structology.T6Rewrite
+Sovereign.Structology.XuanwuAbsorptionRewrite
+Sovereign.Algebra.ProbeArith
+Sovereign.Algebra._ProbeAssoc
+BubbleLemmas
+Sovereign.Cubical.IntArith
+Sovereign.Cubical.Fin3
+Probe9
+ProbeA
+ProbeAssoc
+ProbeB
+ProbeC
+ProbeD
+ProbeF
+ProbeG
+ProbeJ
+Sovereign.Cubical.Fin3Sum9
+Sovereign.HoTT.DiscreteCubical
+Sovereign.Topology.BarceloAHomotopy
+Sovereign.Base.Lü
+Sovereign.Algebra.BurauFaithful
+Sovereign.Algebra.Matrix2
+Sovereign.Base.Invariants
+Sovereign.Arithmetic.Untrusted
+Sovereign.Algebra.LaurentBase
+Sovereign.Projection.Decimal.Axioms
+Sovereign.Physics.Scaling
+Sovereign.Completeness.Layer
+Sovereign.HoTT.ZeroHomologyEquivalence
+Sovereign.Structology.A4Group
+Sovereign.Trust.External
+Sovereign.Algebra.BraidGroup
+Sovereign.Algebra.C3Orbit
+Sovereign.Algebra.CartanMatrix
+Sovereign.Algebra.DayanCompose
+Sovereign.Algebra.DayanCorrectZ
+Sovereign.Algebra.DayanCRT
+Sovereign.Algebra.DayanInvariant
+Sovereign.Algebra.DayanProof
+Sovereign.Algebra.DescendingChain
+Sovereign.Algebra.DigitalRootCycle
+Sovereign.Algebra.DivisibilityChain
+Sovereign.Algebra.DivisorLattice
+Sovereign.Algebra.FaddeevYangBaxter
+Sovereign.Algebra.FangCheng
+Sovereign.Algebra.HenselLiftMinimal
+Sovereign.Algebra.HenselLiftTower
+Sovereign.Algebra.Hyperoperation
+Sovereign.Algebra.KaiFang
+Sovereign.Algebra.LaurentMulAssoc
+Sovereign.Algebra.LaurentPolynomial
+Sovereign.Algebra.ModExtract
+Sovereign.Algebra.NumberTheoryAnchors
+Sovereign.Algebra.ProbabilityAddition
+Sovereign.Algebra.Representation.Maschke
+Sovereign.Algebra.SovereignLCMRoots
+Sovereign.Algebra.Tetration
+Sovereign.AlgebraWrapper
+Sovereign.Algebra.ZhengFu
+Sovereign.Analysis.ApproxBounds
+Sovereign.Analysis.DiscreteSpecialFunctions
+Sovereign.Analysis.DiscreteVariational
+Sovereign.Analysis.PairEnc
+Sovereign.Analysis.RandomMatrixMoments
+Sovereign.Analysis.SpecialValues
+Sovereign.Applied.AcousticsDiscrete
+Sovereign.Applied.PacketShiftArithmetic
+Sovereign.Applied.ThermoExtended
+ProbeH
+Sovereign.Arithmetic.MobiusPhi
+Sovereign.Base.FunctionTheory
+Sovereign.Base.Trit
+Sovereign.Coding.HammingMetric
+Sovereign.Coding.PigeonholeStandard
+Sovereign.Coding.Trit
+Sovereign.Coupling.TrainingSoftConstraint
+Sovereign.Format.DigitField
+Sovereign.Foundation.Axioms
+Sovereign.Geometry.ConformalInvariants
+Sovereign.Geometry.ProjectiveTransformHFM
+Sovereign.HoTT.CRTHarmonics
+Sovereign.HoTT.DiscreteCCHM
+Sovereign.HoTT.DiscreteCubical.Path
+Sovereign.HoTT.Geometry
+Sovereign.HoTT.M4CRTBridge
+Sovereign.HoTT.PhaseAlignment6624
+Sovereign.HoTT.PhaseTransitionPaths
+Sovereign.MetaStructure.WuXing
+Sovereign.Physics.AlphaRelation
+Sovereign.Physics.DiscreteEMField3D
+Sovereign.Physics.DiscreteEMField
+Sovereign.Physics.ObservabilityAngle
+Sovereign.Problem.ABC.L1Rad
+Sovereign.Problem.BSD.BSD_General
+Sovereign.Problem.BSD.BSD_GF243
+Sovereign.Problem.BSD.BSD_GF27
+Sovereign.Problem.BSD.BSD_GF81
+Sovereign.Problem.BSD.BSD_L3
+Sovereign.Problem.BSD.BSDTrace
+Sovereign.Problem.Hodge.ChainComplex
+Sovereign.Problem.Hodge.EulerChar
+Sovereign.Problem.Hodge.Hodge_L3
+Sovereign.Problem.Hodge.HodgeTetra
+Sovereign.Problem.Hodge.KirchhoffZ
+Sovereign.Problem.Hodge.KleinHodge
+Sovereign.Problem.Hodge.TorusHodge
+Sovereign.Problem.Langlands.GL2_Rep
+Sovereign.Problem.Langlands.GL2TestVectors
+Sovereign.Problem.Langlands.Langlands
+Sovereign.Problem.Langlands.Langlands_L15
+Sovereign.Problem.Langlands.S4Burnside
+Sovereign.Problem.PvsNP.PvsNP_Conjecture
+Sovereign.Problem.Riemann.WeilRH
+Sovereign.Projection
+Sovereign.RootMath.AlgebraicComplex
+Sovereign.RootMath.Arithmetic
+Sovereign.RootMath.Base
+Sovereign.RootMath.Eisenstein
+Sovereign.RootMath.Gaussian
+Sovereign.Structology.A4Orbits3
+Sovereign.Structology.A4Representation
+Sovereign.Structology.BinaryTetrahedral
+Sovereign.Structology.BinaryTetrahedralHFM
+Sovereign.Structology.DefectSum
+Sovereign.Structology.IhGroup
+Sovereign.Structology.MagicSquareHFM
+Sovereign.Structology.PickTheorem
+Sovereign.Structology.ProjPlane
+Sovereign.Structology.T6A4Burnside
+Sovereign.Structology.TorusClosure
+Sovereign.Structology.WuXingEulerHFM
+Sovereign.Structology.Zωi
+Sovereign.Topology.FormanChiInvariant
+Sovereign.Trust.KernelWitness
+Sovereign.Trust.PatchedTypeChecker
+Sovereign.Trust.ReductionGapObservation
+Sovereign.Trust.ReductionGapWitness
+Sovereign.Trust.TwoViewPlain
+Sovereign.Algebra.DayanState
+Sovereign.Algebra.FieldExtensionTower
+Sovereign.Algebra.KacMoodyAlgebra
+Sovereign.Algebra.LaurentFn
+Sovereign.Algebra.LaurentPolynomialFull
+Sovereign.Algebra.LaurentSort
+Sovereign.Algebra.RootCount
+Sovereign.Algebra.SpiralCycle
+Sovereign.Algebra.SunyiBase
+Sovereign.Analysis.FiniteDynamics
+Sovereign.Analysis.Finiteness.Pigeonhole
+Sovereign.Analysis.GoodnessOfFitGF3
+Sovereign.RootMath.DigitalRoot
+Sovereign.Structology.IhC60Vibration
+Sovereign.Structology.Winding
+Sovereign.Topology.AlexandroffFinite
+Sovereign.Topology.AtkinQ1
+Sovereign.Topology.AtkinQAnalysis
+Sovereign.Topology.MorseRoute
+Sovereign.Trust.PresentationGapBoundary
+Sovereign.Algebra.Hensel3Side
+Sovereign.Physics.EntropySpin
+Sovereign.Structology.OrthogonalLatinSquare
+Sovereign.Structology.GF4
+Sovereign.Structology.SP2Ternary
+Sovereign.Format.Positional (base : ℕ) (base>1 : 1 < base)
+Sovereign.Algebra.HenselLiftUniqueness
+Sovereign.Base.Axioms
+Sovereign.Base.ZeroGeometry
+Sovereign.Structology.Closure
+Sovereign.Topology.HighDimClosure
+Sovereign.Format.DigitRealization
+Sovereign.Projection.Binary
+Sovereign.Coupling.LCM
+Sovereign.Engine.StateMachine
+Sovereign.Verify.KernelOracle
+Sovereign.Examples
+Sovereign.Verify.DuodecOracle
+Sovereign.Format.Doz
+Sovereign.Coupling.Dynamics
+Sovereign.Engine.QsUpdate
+Sovereign.Format.TQ10
+Sovereign.HoTT.ChernConservation
+Sovereign.HoTT.Equivalence
+Sovereign.HoTT.ChernClass
+Sovereign.HoTT.Fibration
+Sovereign.HoTT.Paths
+Sovereign.Physics.DataAnchors
+Sovereign.Algebra.Holographic.PhysicalOntology
+Sovereign.Algebra.Holographic.Master
+Sovereign.HoTT.ChernEulerLadder
+Sovereign.Algebra.CommAlgBridge
+Sovereign.Algebra.DiscreteKTheory
+Sovereign.Structology.LuCellGrid
+Sovereign.Structology.T6
+Sovereign.Algebra.Holographic.FinalAudit
+Sovereign.Structology.ElectricalTopology
+Sovereign.Structology.TopologyLevels
+Sovereign.HoTT.HopfConstruction
+Sovereign.HoTT.WindingCover
+Sovereign.Algebra.IntRingSolver
+ProbeI
+Sovereign.Problem.Sqrt2.Sqrt2Valuation
+Sovereign.Analysis.FinMixedRadix
+Sovereign.Algebra.LaurentCubical
+Sovereign.Algebra.BurauCubical
+Sovereign.HoTT.Bundle
+Sovereign.HoTT.Connection
+Sovereign.HoTT.EnergyGap
+Sovereign.HoTT.PostnikovTruncation
+Sovereign.Structology.Lattice
+Sovereign.Structology.S3IsGL22
+Sovereign.Applied.CelestialExtended
+Sovereign.Physics.SoftModeCriticality
+Sovereign.Algebra.LaurentCanon
+Sovereign.Algebra.LaurentDistrib
+Sovereign.Projection.Decimal.Proofs
+Sovereign.Physics.FineStructureMapping
+Sovereign.Completeness.FunctorProof
+Sovereign.Applied.CondensedMatter
+Sovereign.Structology.A4GenWords
+Sovereign.Structology.A4StdlibBridge
+Sovereign.Structology.TetrahedralA4
+Sovereign.Algebra.TrivialRepUnfaithful
+Sovereign.Algebra.DayanCRTGeneric
+Sovereign.Algebra.HenselReduction
+Sovereign.Algebra.KaiFangSqrt3
+Sovereign.Algebra.VortexTower
+Sovereign.Arithmetic.CRTLemmas
+Sovereign.Algebra.ChainComplex
+Sovereign.Algebra.DiscretePolynomial
+Sovereign.Algebra.DiscreteSeveralComplex
+Sovereign.Algebra.Duodecimal
+Sovereign.Algebra.ExactSequence
+Sovereign.Algebra.FreeAb
+Sovereign.Algebra.FunctionalDiscrete
+Sovereign.Algebra.GF243
+Sovereign.Algebra.GF27
+Sovereign.Algebra.GF2Degeneration
+Sovereign.Algebra.GF9
+Sovereign.Algebra.Holographic.LatticeField
+Sovereign.Algebra.Holographic.Theorem
+Sovereign.Algebra.HomologicalBridge
+Sovereign.Algebra.HomologyLES
+Sovereign.Algebra.Jacobian
+Sovereign.Algebra.Jacobian.jac_Discrete
+Sovereign.Algebra.Jacobian.jac_GF3
+Sovereign.Algebra.Jacobian.jac_LinearAlgebra
+Sovereign.Algebra.Jacobian.jac_Pigeonhole
+Sovereign.Algebra.ListFunctor
+Sovereign.Algebra.ListLaws
+Sovereign.Algebra.NoCloning
+Sovereign.Algebra.VortexConnections
+Sovereign.Analysis.DifferenceEq
+Sovereign.Analysis.DiscreteApprox
+Sovereign.Analysis.DiscreteCR
+Sovereign.Analysis.DiscreteIntegralEq
+Sovereign.Analysis.DiscreteMorseTheory
+Sovereign.Analysis.DiscretePotential
+Sovereign.Analysis.DiscreteProbability
+Sovereign.Analysis.DiscreteSeveralComplex
+Sovereign.Analysis.DiscreteVariation
+Sovereign.Analysis.FiniteProbability
+Sovereign.Analysis.UniformProb
+Sovereign.Applied.BiologyDiscrete
+Sovereign.Applied.DomainProofs
+Sovereign.Applied.FluidDiscrete
+Sovereign.Applied.GeneticsExtended
+Sovereign.Applied.OpticsDiscrete
+Sovereign.Applied.OptimizationDiscrete
+Sovereign.Applied.ProbThermo
+Sovereign.Base.TritOps
+Sovereign.Coding.FFIProtocol
+Sovereign.Coding.NumericalSpec
+Sovereign.Geometry.DiscreteManifold
+Sovereign.Geometry.Tryte
+Sovereign.Physics.DiscreteLightcone
+Sovereign.Physics.DiscreteStatMech
+Sovereign.Physics.ElasticityDiscrete
+Sovereign.Physics.IsingTriangle
+Sovereign.Problem.BSD.BSD
+Sovereign.Problem.BSD.EllipticComplex
+Sovereign.Problem.Fermat.FermatL0
+Sovereign.Problem.Hodge.EckmannGF3
+Sovereign.Problem.Kakeya.KakeyaGF3
+Sovereign.Problem.NavierStokes.NSE
+Sovereign.Problem.NavierStokes.NSEOnT6
+Sovereign.Problem.NavierStokes.NSVortex
+Sovereign.Problem.PvsNP.Algorithm
+Sovereign.Problem.PvsNP.Complexity3
+Sovereign.Problem.PvsNP.CubicRoot
+Sovereign.Problem.PvsNP.CubicRootTest
+Sovereign.Problem.PvsNP.GF27Separation
+Sovereign.Problem.PvsNP.PvsNP_Separation
+Sovereign.Problem.Riemann.AlgGeom
+Sovereign.Problem.Riemann.FrobeniusBlind
+Sovereign.Problem.YangMills.SU2_Embedding
+Sovereign.Structology.DynamicMagicSquare
+Sovereign.Structology.FiniteTopology
+Sovereign.Structology.OrderLattice
+Sovereign.Structology.VectorDirection
+Sovereign.Topology.DoubleTriangle
+Sovereign.Topology.MorseCoeffLaws
+Sovereign.Topology.MorsePartialG
+Sovereign.Topology.MorseRouteListG
+Sovereign.Topology.MorseSqZeroG
+Sovereign.Topology.MorseSqZeroK3
+Sovereign.HoTT.CanonicityAlignment
+Sovereign.HoTT.KanComposition
+Sovereign.Coupling.ParityViolation
+Sovereign.Physics.DiscreteDiffOps
+Sovereign.Physics.DiscreteEMCore
+Sovereign.Physics.EntropySpinLaw
+Sovereign.Problem.ABC.L1Disjunction
+Sovereign.Problem.Hodge.EulerPoincareInstance
+Sovereign.Problem.Hodge.FormanMorseInequality
+Sovereign.RootMath.EnergyGap
+Sovereign.Structology.DiscreteCalculus
+Sovereign.Coupling.LossGain
+Sovereign.Problem.Riemann.WeilRigidity
+Sovereign.Algebra.Zomega
+Sovereign.Structology.BinaryTetrahedralRepresentation
+Sovereign.Structology.MatrixZω
+Sovereign.Structology.IhDecomposition
+Sovereign.Trust.TwoViews
+Sovereign.Algebra.DayanCorrect
+Sovereign.Algebra.DayanTermination
+Sovereign.Algebra.RootCount4
+Sovereign.Algebra.RootCountClassify
+Sovereign.Algebra.FixedPointQ16
+Sovereign.Algebra.SunyiChain
+Sovereign.Algebra.TianYuan
+Sovereign.Analysis.FiniteOrbitObs
+Sovereign.Analysis.GaoYangRigidLock
+Sovereign.Applied.ControlTheory
+Sovereign.Applied.EconomicsDiscrete
+Sovereign.Applied.GameTheory
+Sovereign.Applied.NeuroscienceDiscrete
+Sovereign.MetaStructure.Nayin
+Sovereign.Applied.MolecularSymmetry
+Sovereign.Physics.H2OC60
+Sovereign.Topology.QAnalysisRecord
+Sovereign.Topology.FormanMinimal
+Sovereign.Topology.McCordCore
+Sovereign.Trust.GuardedVsPresentation
+Sovereign.Algebra.Hensel2Side
+Sovereign.Structology.GF4AffineMagicSquare
+Sovereign.Structology.OrthogonalLatinSquareGF4
+Sovereign.Structology.FrequencySpaceUnity
+Sovereign.Algebra.HenselLiftMod27
+Sovereign.Algebra.HenselLiftMod27Part1
+Sovereign.Algebra.HenselLiftMod27Part2
+Sovereign.Algebra.HenselLiftRoot1
+Sovereign.Algebra.HenselMod129140163
+Sovereign.Algebra.HenselMod14348907
+Sovereign.Algebra.HenselMod1594323
+Sovereign.Algebra.HenselMod177147
+Sovereign.Algebra.HenselMod19683
+Sovereign.Algebra.HenselMod2187
+Sovereign.Algebra.HenselMod243
+Sovereign.Algebra.HenselMod43046721
+Sovereign.Algebra.HenselMod4782969
+Sovereign.Algebra.HenselMod531441
+Sovereign.Algebra.HenselMod59049
+Sovereign.Algebra.HenselMod6561
+Sovereign.Algebra.HenselMod729
+Sovereign.Algebra.HenselMod81
+Sovereign.Algebra.HenselModPow2
+Sovereign.Algebra.HenselReductionTower
+Sovereign.Algebra.ModularRoots
+Sovereign.Structology.WuXingTransition
+Sovereign.Topology.CharacteristicClasses
+Sovereign.Algebra.EqualityTruncation
+Sovereign.Algebra.ProjectionDiffGeo
+Sovereign.Geometry.ConformalCore
+Sovereign.Geometry.ProjectiveCore
+Sovereign.Geometry.TorusAlgebra
+Sovereign.Geometry.TorusGeometry
+Sovereign.HoTT.T6Homotopy
+Sovereign.Structology.T6FiveDimensionalProjection
+Sovereign.Algebra.BurauRep
+Sovereign.Algebra.LaurentRingLaws
+Sovereign.Algebra.LaurentNorm
+Sovereign.Projection.Decimal
+Sovereign.Structology.A4OneDimHom
+Sovereign.Structology.A4Representations
+Sovereign.Structology.A4ThreeDimRep
+Sovereign.Format.CRT
+Sovereign.HoTT.CRTFiberWinding
+Sovereign.Algebra.Base10Degeneration
+Sovereign.Algebra.ChainZ3toZ12
+Sovereign.Algebra.CRTZeroCriterion
+Sovereign.Algebra.GroupTheory.Lagrange
+Sovereign.Algebra.Holographic.4320D
+Sovereign.Algebra.Jacobian.jac_CRTDet
+Sovereign.Algebra.LCMVortexConnection
+Sovereign.Algebra.VortexDifferential
+Sovereign.Algebra.VortexRoot
+Sovereign.Structology.A4GroupAction
+Sovereign.Trust.KernelSpec
+Sovereign.Problem.Hodge.FreeAbBoundary
+Sovereign.Analysis.CauchySchwarz
+Sovereign.Analysis.FunctionalAnalysisDiscrete
+Sovereign.Analysis.L2Bridge
+Sovereign.Analysis.NormEquivalence
+Sovereign.Analysis.SpectralTheorem
+Sovereign.Analysis.TestRiesz
+Sovereign.Algebra.Lie.LieAlgebra
+Sovereign.Algebra.AdjacencyMatrix
+Sovereign.Algebra.AlgGeomBridge
+Sovereign.Algebra.CharacteristicTower
+Sovereign.Algebra.DegenerationTaxonomy
+Sovereign.Algebra.DiscreteFibonacci
+Sovereign.Algebra.ExponentDimension
+Sovereign.Algebra.FrobeniusOrbit
+Sovereign.Algebra.GaloisBridge
+Sovereign.Algebra.GF729Field
+Sovereign.Algebra.GF81
+Sovereign.Algebra.GF9AlgebraicChain
+Sovereign.Algebra.GroupTheory.DuodecClock
+Sovereign.Algebra.GroupTheory.GaloisTheory
+Sovereign.Algebra.GroupTheory.NormExactSequence
+Sovereign.Algebra.GroupTheory.NormHomomorphism
+Sovereign.Algebra.IterationTheory
+Sovereign.Algebra.Jacobian.jac_GF9Matrix
+Sovereign.Algebra.Lie.LieGroup
+Sovereign.Algebra.NormCollapse
+Sovereign.Algebra.SpectralFunctionTheory
+Sovereign.Algebra.TriadicHarmonic
+Sovereign.Algebra.TriCycGraph
+Sovereign.Algebra.UniversalAlgebra
+Sovereign.Algebra.ZeroCrossing
+Sovereign.Analysis.FiniteInnerProduct
+Sovereign.Analysis.LinearFunctionalDiscrete
+Sovereign.Applied.AlgebraChainDeep
+Sovereign.Applied.LeibnizGF9
+Sovereign.Coding.BCHGF9
+Sovereign.Coding.ExpSquaring
+Sovereign.Constitution.DecisionSoundness
+Sovereign.Physics.ChiralInterference
+Sovereign.Physics.DiscreteMaxwellGF9
+Sovereign.Physics.DNAEncoding
+Sovereign.Physics.HoneycombMagneticField
+Sovereign.Physics.InvisibleOrbitCount
+Sovereign.Physics.LightRotationFrequency
+Sovereign.Physics.LightRotationTernary
+Sovereign.Physics.OpticalSampling
+Sovereign.Physics.PhaseTransition
+Sovereign.Physics.RightHandedNeutrinoTheorem
+Sovereign.Physics.RootTwoGF9
+Sovereign.Physics.TorusChain
+Sovereign.Physics.WaterAnchors
+Sovereign.Physics.WaterCriticalDerivation
+Sovereign.Physics.WaterStates
+Sovereign.Problem.Fermat.FermatL3
+Sovereign.Problem.Kakeya.KakeyaGF9
+Sovereign.Problem.Riemann.Galois
+Sovereign.Problem.Riemann.Variety
+Sovereign.Problem.Sqrt2.GF9Sqrt2
+Sovereign.Problem.YangMills.YM_SpectralGap
+Sovereign.Quantum.Entanglement
+Sovereign.Structology.ArthurMagicSquare
+Sovereign.Structology.GF9AffineMagicSquare
+Sovereign.Structology.GF9MagicSquare
+Sovereign.Algebra.Jacobian.jac_Matrix
+Sovereign.Algebra.BCWDegeneracy
+Sovereign.Algebra.Holographic.Conjecture
+Sovereign.Algebra.InjSurj
+Sovereign.Algebra.Jacobian.jac_Injectivity
+Sovereign.Algebra.Pigeonhole
+Sovereign.Algebra.ChainHom
+Sovereign.Topology.Chain2
+Sovereign.Topology.MorseHomologyIso
+Sovereign.Algebra.DiscreteComplexAnalysis
+Sovereign.Applied.CircuitExtended
+Sovereign.Problem.BSD.BSD9
+Sovereign.Problem.BSD.SelmerDiscrete
+Sovereign.Problem.BSD.ZetaDiscrete
+Sovereign.Problem.Riemann.RH
+Sovereign.Problem.Fermat.FermatL1
+Sovereign.Problem.Hodge.BoundaryGF3
+Sovereign.Problem.Kakeya.KakeyaPathology
+Sovereign.Problem.NavierStokes.NSEFluxTelescope
+Sovereign.Problem.NavierStokes.NSRegularity
+Sovereign.Coding.CyclicGF27
+Sovereign.Topology.MorseBoundaryDT
+Sovereign.Topology.MorsePairingLaw
+Sovereign.Analysis.IntegrationByParts
+Sovereign.Physics.DiscreteLagrangian
+Sovereign.Physics.DiscreteActionPrinciple
+Sovereign.Physics.DiscreteMaxwellTime
+Sovereign.Topology.DeRhamComplex
+Sovereign.Topology.HomologicalAlgebra
+Sovereign.Physics.EntropySpinVerification
+Sovereign.Constitution.Boundaries
+Sovereign.Coupling.TQ10
+Sovereign.Coupling.Zhonglv
+Sovereign.RootMath.LengthLattice
+Sovereign.Structology.Aether
+Sovereign.Problem.Riemann.ZetaFunctional
+Sovereign.Structology.BinaryTetrahedralDefiningRep
+Sovereign.Structology.BinaryTetrahedralIrreducibility
+Sovereign.Structology.BinaryTetrahedralTwoDimTensors
+Sovereign.Structology.MagicSquare144Partition
+Sovereign.Algebra.ZhonglvClosure
+Sovereign.Coupling.ZhonglvPhaseSync
+Sovereign.Physics.QuartzPhonon
+Sovereign.Topology.QAnalysisFacesInstance
+Sovereign.Topology.QAnalysisTwoTriangles
+Sovereign.Topology.QPathMonotone
+Sovereign.Topology.FormanPerfectField
+Sovereign.Topology.MorseAcyclic
+Sovereign.Topology.OrderComplex
+Sovereign.Topology.StongCore
+Sovereign.Algebra.HenselCRTSynth
+Sovereign.Algebra.HenselLiftSchedule
+Sovereign.Algebra.HenselMigration129140163
+Sovereign.Algebra.HenselMigration14348907
+Sovereign.Algebra.HenselMigration1594323
+Sovereign.Algebra.HenselMigration177147
+Sovereign.Algebra.HenselMigration243
+Sovereign.Algebra.HenselMigration43046721
+Sovereign.Algebra.HenselMigration4782969
+Sovereign.Algebra.HenselMigration531441
+Sovereign.Algebra.HenselMigration59049
+Sovereign.Algebra.HenselMigration6561
+Sovereign.Algebra.HenselMigration729
+Sovereign.Algebra.HenselMigration81
+Sovereign.Algebra.HenselMigration
+Sovereign.HoTT.HomotopyPi1
+Sovereign.Physics.AtomicStandingWave
+Sovereign.Physics.ClimateDynamics
+Sovereign.Physics.HydrogenBondCoherence
+Sovereign.Physics.ProteinFolding
+Sovereign.Physics.QuantumChemistry
+Sovereign.Physics.QuantumErrorCorrection
+Sovereign.Physics.WaterQuantumIntegration
+Sovereign.Quantum.ZeroPowerQuantum
+Sovereign.Algebra.LaurentSums
+Sovereign.Algebra.BranchingRules
+Sovereign.Algebra.DiscreteRepresentation
+Sovereign.Algebra.Holographic.Representation
+Sovereign.Analysis.SymmetricGroupCharStats
+Sovereign.Applied.ParticlePhysics
+Sovereign.Problem.Langlands.DeligneLusztig
+Sovereign.Structology.McKayA4
+Sovereign.Applied.PleiadianCosmology
+Sovereign.Applied.SignalProcessing
+Sovereign.Structology.MagicSquare144
+Sovereign.Algebra.GroupTheory.OrbitStabilizer
+Sovereign.Algebra.Holographic.InfoClosure
+Sovereign.Algebra.Jacobian.jac_CRTDet4
+Sovereign.Problem.Hodge.KirchhoffCRT
+Sovereign.Problem.Kakeya.KakeyaMF
+Sovereign.Algebra.FrequencyDoubling
+Sovereign.Algebra.FreeAbGroupLaws
+Sovereign.Algebra.FreeAbQuotient
+Sovereign.Problem.Hodge.FreeAbH0
+Sovereign.Problem.Hodge.FreeAbHomology
+Sovereign.Problem.Hodge.FreeAbImSubsetPlane
+Sovereign.Problem.Hodge.FreeAbInnerProduct
+Sovereign.Problem.Hodge.FreeAbPlaneSurjective
+Sovereign.Algebra.ConsciousnessLayer
+Sovereign.Algebra.ComplexProjection
+Sovereign.Algebra.ProjectionAnalysis
+Sovereign.Algebra.ProjectionDifferential
+Sovereign.Algebra.SectionRisk
+Sovereign.Constitution.GroupTheoryRedLight
+Sovereign.Algebra.AlgebraicPoleUnified
+Sovereign.Algebra.Character.DCCharacter
+Sovereign.Algebra.Dihedral.DCTopos
+Sovereign.Algebra.Dihedral.DihedralD12
+Sovereign.Algebra.Dihedral.DiscreteMetric
+Sovereign.Algebra.Dihedral.ElectronCloud
+Sovereign.Algebra.GF729
+Sovereign.Algebra.GroupTheory.CyclicGroupStructure
+Sovereign.Algebra.GroupTheory.DayanCore
+Sovereign.Algebra.GroupTheory.DCInvolution
+Sovereign.Algebra.GroupTheory.DuodecClockProperties
+Sovereign.Algebra.GroupTheory.SignProjection
+Sovereign.Algebra.ProjectionFidelity
+Sovereign.Algebra.QuantumCorrespondence
+Sovereign.Geometry.GeometricFidelity
+Sovereign.Physics.HamiltonianDiscrete
+Sovereign.Physics.LatticeMembrane
+Sovereign.Problem.ABC.ABCL1
+Sovereign.Problem.NavierStokes.NSEBlowupBound
+Sovereign.Problem.NavierStokes.NSEPhaseField
+Sovereign.Problem.NavierStokes.NSEPresentation
+Sovereign.Structology.SphericalVector
+Sovereign.Problem.PvsNP.Complexity
+Sovereign.Problem.PvsNP.DetMul
+Sovereign.Problem.Riemann.Sheaf
+Sovereign.Problem.YangMills.SUn_GF9
+Sovereign.Problem.YangMills.WilsonLoop
+Sovereign.Problem.YangMills.WilsonPlaquette
+Sovereign.Problem.YangMills.YM_Action
+Sovereign.Problem.YangMills.YM_Full
+Sovereign.Problem.YangMills.YM_L3
+Sovereign.Problem.YangMills.YM_Transfer
+Sovereign.Problem.YangMills.YMTransfer
+Sovereign.Algebra.InformationStructure
+Sovereign.Physics.SpaceTimeMapping
+Sovereign.Algebra.GF9Semiring
+Sovereign.Algebra.PontryaginC3
+Sovereign.Analysis.VertexAlgebraDiscrete
+Sovereign.Analysis.NormDiscrete
+Sovereign.Physics.EntropySpinBalance
+Sovereign.Physics.OpticalWindow
+Sovereign.Quantum.Measurement
+Sovereign.Quantum.NoCloning
+Sovereign.Structology.MotorStableStates
+Sovereign.Algebra.Jacobian.jac_CRTSpectrum
+Sovereign.Algebra.Jacobian.jac_Topology
+Sovereign.Problem.YangMills.YM_DetMul
+Sovereign.TestMemory
+Sovereign.Algebra.FiniteDefinitions
+Sovereign.Algebra.Holographic.4320DClosure
+Sovereign.Algebra.Jacobian.jac_DiscreteJC
+Sovereign.Algebra.Jacobian.jac_FunctionTable
+Sovereign.Algebra.Jacobian.jac_NMatrix
+Sovereign.Algebra.ChainHomo
+Sovereign.Applied.LogicCompleteness2Var
+Sovereign.Problem.Fermat.FermatL2
+Sovereign.Problem.Fermat.FermatL4_NatLift
+Sovereign.Problem.NavierStokes.NSEConservationCore
+Sovereign.Topology.MorseRouteListDT
+Sovereign.Topology.MorseSqZeroFull
+Sovereign.Analysis.CalculusOfVariations
+Sovereign.Physics.DiscreteLagrangian3D
+Sovereign.Algebra.GroupTheory.FiniteGroupAxioms
+Sovereign.Physics.DiscreteMaxwellConservation
+Sovereign.Physics.DiscreteNoether
+Sovereign.Physics.MaxwellFromLagrangian
+Sovereign.Physics.EntropySpinMicro
+Sovereign.Coupling.CartanTorsion
+Sovereign.Coupling.Entanglement
+Sovereign.Density.SevenStages
+Sovereign.Constitution.WindingAsymmetry
+Sovereign.Structology.BinaryTetrahedralSpectrum
+Sovereign.Structology.SL23Cayley
+Sovereign.Structology.HolographicPi
+Sovereign.Topology.QAnalysisStar
+Sovereign.Topology.Collapse
+Sovereign.Topology.CollapseToMorse
+Sovereign.Topology.DiscreteMorseGeneral
+Sovereign.Topology.MorseCoeffRoute
+Sovereign.Topology.MorseChiBoth
+Sovereign.Topology.OrderComplexFaces
+Sovereign.Algebra.HenselCRTUniqueness
+Sovereign.Algebra.GenericInst
+Sovereign.Physics.Superconductivity
+Sovereign.Physics.WaterStructure
+Sovereign.Algebra.LaurentRing
+Sovereign.Algebra.RepresentationBridge
+Sovereign.Format.CRTMeasurement
+Sovereign.Geometry.ProjectiveInvariants
+Sovereign.Geometry.TorusFourier
+Sovereign.Geometry.TorusGeodesic
+Sovereign.Structology.BurnsideT6
+Sovereign.Structology.MagicSquareM4
+Sovereign.Structology.XuanwuAbsorption
+Sovereign.Algebra.CRTDetGeneral
+Sovereign.Problem.Hodge.FreeAbImEquiv
+Sovereign.Topology.ChainQuotIso
+Sovereign.Problem.Hodge.FreeAbHomologyGroup
+Sovereign.Problem.Hodge.FreeAbHodgeVerdict
+Sovereign.Problem.Hodge.FreeAbNonDegenerate
+Sovereign.Algebra.DegenerationRisk
+Sovereign.Algebra.DiscreteAnalysis
+Sovereign.Algebra.DiscreteDE
+Sovereign.Algebra.DiscreteLimit
+Sovereign.Applied.EMDiscrete
+Sovereign.Applied.GRDiscrete
+Sovereign.Applied.ImageProcessing
+Sovereign.Applied.LinguisticsDiscrete
+Sovereign.Algebra.Character.FrequencyMode
+Sovereign.Algebra.TowerConnection
+Sovereign.Algebra.GroupTheory.ClockIteration
+Sovereign.Algebra.Pi4Homomorphism
+Sovereign.Problem.Fermat.FermatL4_Mod12Cycle
+Sovereign.Algebra.Dihedral.CayleyMetric
+Sovereign.Algebra.GroupTheory.DCGroup
+Sovereign.Algebra.GroupTheory.PhaseSubgroup
+Sovereign.Problem.NavierStokes.NSEMadelungConstrained
+Sovereign.Problem.NavierStokes.NSEMadelungNonTrivial
+Sovereign.Problem.NavierStokes.NSEPhasePeriod
+Sovereign.Problem.NavierStokes.NSEFinalClosure
+Sovereign.Problem.PvsNP.CharPoly3
+Sovereign.Problem.PvsNP.PvsNP_L15
+Sovereign.Analysis.HilbertDiscrete
+Sovereign.Applied.DeepAlgebraProofs
+Sovereign.Physics.QuantumFieldAstrophysics
+Sovereign.Physics.QuantumMotor
+Sovereign.Analysis.DiscreteFourier
+Sovereign.Problem.Hodge.EckmannNonSplitting
+Sovereign.Problem.Hodge.GraphMorseInstance
+Sovereign.Problem.Hodge.Hodge
+Sovereign.Problem.Hodge.HodgeK3Panorama
+Sovereign.Problem.Hodge.PerfectMorseInequality
+Sovereign.Problem.Hodge.PerfectMorseInstance
+Sovereign.Topology.MorseCriticalHomology
+Sovereign.Topology.MorseStrongCritical
+Sovereign.Algebra.GroupTheory.CosetConstruction
+Sovereign.Algebra.DiscreteJacobi
+Sovereign.Algebra.Holographic.EscapeAnalysis
+Sovereign.Algebra.Jacobian.jac_PermDet
+Sovereign.Algebra.LiftCriterion
+Sovereign.Problem.NavierStokes.NSEConservation
+Sovereign.Physics.ElectromagneticUnitBridge
+Sovereign.Analysis.NoetherTheorem
+Sovereign.Physics.EntropySpinQuantize
+Sovereign.Coupling.SpinTwistor
+Sovereign.Density.Resonance
+Sovereign.Structology.SL23Trace
+Sovereign.Diagnosis.ElectricCivilization
+Sovereign.Structology.PlatonicTorusProjection
+Sovereign.Topology.MorseExistence
+Sovereign.Algebra.LieDiscrete
+Sovereign.Algebra.MyopiaRisk
+Sovereign.Applied.CelestialGeneticsControl
+Sovereign.Geometry.ProjectiveTransform
+Sovereign.Applied.BlackHoleWhiteHole
+Sovereign.Applied.CommunicationDiscrete
+Sovereign.Applied.CosmologyDiscrete
+Sovereign.Applied.InformationFrame
+Sovereign.Geometry.ProjectiveOrbit
+Sovereign.Physics.LightCone
+Sovereign.Structology.HolographicSpace
+Sovereign.Format.ModulusGeneration
+Sovereign.Structology.Platonics
+Sovereign.Algebra.HomologyExact
+Sovereign.Applied.CrossDomainTheorems
+Sovereign.Applied.HomologyHarmonic
+Sovereign.Applied.LeibnizT6
+Sovereign.Applied.NumberOptComp
+Sovereign.PDE.ConvergenceAlignment
+Sovereign.PDE.HeatEquationDiscrete
+Sovereign.PDE.PDEDiscrete
+Sovereign.PDE.WaveEquationDiscrete
+Sovereign.Structology.StandingWave
+Sovereign.Algebra.Spectral.DCCayleyGraph
+Sovereign.Algebra.GroupTheory.DCSigmaAut
+Sovereign.Problem.NavierStokes.NSEMadelungRefuted
+Sovereign.Problem.Hodge.DeligneHodge
+Sovereign.Topology.KerImQuot
+Sovereign.Topology.MorseBoundaryK3
+Sovereign.Topology.MorseChain
+Sovereign.Topology.MorseRoutingK3
+Sovereign.Topology.CollapseHomologyStages
+Sovereign.Algebra.GroupTheory.CosetAuto
+Sovereign.Analysis.Finiteness.Tarski
+Sovereign.Algebra.Holographic.ClassicAnalysis
+Sovereign.Topology.KerTrivial
+Sovereign.Problem.NavierStokes.NSEIncompressible
+Sovereign.Physics.VectorFieldGeometricPhase
+Sovereign.Algebra.GroupTheory.RepresentationTheory
+Sovereign.AI.Constitution
+Sovereign.Analysis.Finiteness.Foundations
+Sovereign.Algebra.Jacobian.jac_AutT6
+Sovereign.Algebra.Jacobian.jac_LieGroup
+Sovereign.Completeness.CompletenessTheorem
+Sovereign.Physics.LightConeMatrix
+Sovereign.Structology.HoloInformation
+Sovereign.Quantum.Foundation
+Sovereign.Structology.QuantumBridge
+Sovereign.Algebra.PlancherelTheorem
+Sovereign.Algebra.GroupTheory.Burnside
+Sovereign.Algebra.GroupTheory.OrbitStabilizerAuto
+Sovereign.Topology.KerTrivialFull
+Sovereign.Problem.NavierStokes.NSEFixedPoint
+Sovereign.Problem.NavierStokes.NSEIterate
+Sovereign.Analysis.Finiteness.Dedekind
+Sovereign.Applied.MetaTheorems
+Sovereign.Applied.DeepStructureProofs
+Sovereign.Applied.MachineLearning
+Sovereign.Algebra.GroupTheory.BurnsideFiber
+Sovereign.Problem.NavierStokes.NSEFixedPointStrict
+Sovereign.Analysis.FinitenessZoo
+Sovereign.Algebra.GroupTheory.OrbitPartition
+Sovereign.Problem.NavierStokes.NSESupportBound
+Sovereign.Problem.NavierStokes.NSESupportNonMonotone
+Sovereign.Problem.NavierStokes.NSESupportOrbitPeriod
+Sovereign.Problem.NavierStokes.NSESupportZero
+Sovereign.Algebra.GroupTheory.BurnsideMain
+Sovereign.Problem.NavierStokes.NSESupportFixedInv
+Sovereign.Algebra.GroupTheory.ActionIsomorphism
+Sovereign.Algebra.GroupTheory.BurnsideCriterion
+Sovereign.Algebra.GroupTheory.BurnsideNecklace
+Sovereign.Problem.NavierStokes.NSEFieldOrbitPeriod
+Sovereign.Algebra.GroupTheory.BurnsideInstance
+Sovereign.Algebra.GroupTheory.NecklaceInvariance

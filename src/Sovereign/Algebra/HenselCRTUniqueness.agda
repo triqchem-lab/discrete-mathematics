@@ -19,7 +19,7 @@ module Sovereign.Algebra.HenselCRTUniqueness where
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _≤_; _<_; z≤n; s≤s)
 open import Data.Nat.Divisibility using (_∣_; divides; ∣-trans; ∣-refl; m∣m*n; n∣m*n; ∣m+n∣n⇒∣m; ∣m+n∣m⇒∣n)
 open import Data.Nat.Coprimality using (Coprime; coprime-divisor)
-open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-irrefl; m∸n≤m; m∸n≡0⇒m≤n; m≤n*m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≤-trans; ≤-step; +-suc; <-trans; *-monoˡ-≤; m≤n+m; *-distribʳ-+; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
+open import Data.Nat.Properties using (*-zeroʳ; *-assoc; ≤-<-trans; <-≤-trans; <-irrefl; m∸n≤m; m∸n≡0⇒m≤n; m≤n*m; ≤-refl; ≤-antisym; 1+n≢n; suc-injective; m≤m+n; *-comm; n≮n; +-identityʳ; ≰⇒>; ≤-trans; ≤-step; +-suc; <-trans; *-monoˡ-≤; m≤n+m; *-distribʳ-+; *-zeroʳ; *-identityʳ; *-monoʳ-≤; +-assoc; +-swap; +-comm; n≤1+n; m+n≡0⇒m≡0; +-cancelˡ-≡; *-distribʳ-+; *-distribˡ-+; m<m+n; +-monoˡ-<; +-mono-<; +-monoʳ-<; n<1+n; *-identityˡ; ≤-reflexive; +-monoʳ-≤; +-cancelʳ-≡)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -152,15 +152,7 @@ suc-suc-≰ k p = n≮n (suc (suc k)) (≤-<-trans p (<-trans (n<1+n k) (n<1+n (
 two-X≡N : 2 * (pow3 11 * pow2 15) ≡ SOVEREIGN_LCM
 two-X≡N = refl
 
-unique-root₅ : ∀ x → 0 < x → x < SOVEREIGN_LCM
-             → pow3 11 ∣ x ∸ 1 → pow2 15 ∣ x ∸ 1
-             → ¬ (pow2 16 ∣ x ∸ 1) → x ≡ root₅
-unique-root₅ (suc m) (s≤s z≤n) x<N h3 h15 n16 = {!!}
-
-unique-root₄ : ∀ x → x < SOVEREIGN_LCM
-             → pow3 11 ∣ suc x → pow2 15 ∣ suc x
-             → ¬ (pow2 16 ∣ suc x) → x ≡ root₄
-unique-root₄ x x<N h3 h15 n16 = {!!}
+-- （unique-root₅ / unique-root₄ 的定义移至 §8 unique-root₃-same 之后——需前向引用 unique-root₃-same）
 
 --------------------------------------------------------------------------------
 -- §5. 交叉 case（DB）——Bézout 逆元见证 + ∣ 型免减法链
@@ -196,7 +188,10 @@ lhs-form a = trans (lhs-distrib a)
 
 -- k ≥ 2 否定（M 参数化符号安全）
 k-split-gen : ∀ M C a k → a + C ≡ suc (suc k) * M → a + C < M + M → ⊥
-k-split-gen M C a k eq lt = {!!}
+k-split-gen M C a k eq lt = n≮n (M + M) (≤-<-trans M+M≤a+C lt)
+  where
+    M+M≤a+C : M + M ≤ a + C
+    M+M≤a+C = subst (M + M ≤_) (sym eq) (+-monoʳ-≤ M (m≤m+n M (k * M)))
 -- DB 核心：3¹¹·a + 2 ≡ b·2¹⁶ → a < 2¹⁶ → a ≡ 16794（∣ 型免减法 + k 三段分裂）
 lin-solve-db : ∀ a b → a * pow3 11 + 2 ≡ b * pow2 16 → a < pow2 16 → a ≡ 16794
 -- DB 辅助（顶层分离——避开 where 嵌套联合归一化）
@@ -216,20 +211,61 @@ db-div a b eq = ∣m+n∣n⇒∣m (subst (pow2 16 ∣_) (lhs-form a) lhs-div) (d
     lhs-div : pow2 16 ∣ (a * pow3 11 + 2) * 24371
     lhs-div = subst (pow2 16 ∣_) (sym (cong (_* 24371) eq)) (db-rhs-div a b)
 
+-- 字面桥（oracle b5bdad33 已验）：2·24371 + 16794 = 2¹⁶ → 2·24371 < 2¹⁶
+lit-C+16794 : 2 * 24371 + 16794 ≡ pow2 16
+lit-C+16794 = refl
+
+-- 显式 n 包装（避开 m<m+n 隐式 n 的字面合一爆：48742 + ?n ≡?= 65536 逐层剥 suc 二次复杂度）
+m<m+n-e : ∀ m n → 0 < n → m < m + n
+m<m+n-e m n = m<m+n m {n}
+
+-- 两段拆分（钉死隐式 n，零复合精化）：
+lit-C<C+16794 : 2 * 24371 < 2 * 24371 + 16794
+lit-C<C+16794 = m<m+n-e (2 * 24371) 16794 (s≤s z≤n)
+
+lit-C<pow2 : 2 * 24371 < pow2 16
+lit-C<pow2 = subst (2 * 24371 <_) lit-C+16794 lit-C<C+16794
+
 db-bound : ∀ a → a < pow2 16 → a + 2 * 24371 < pow2 16 + pow2 16
-db-bound a a< = {!!}
+db-bound a a< = +-mono-< a< lit-C<pow2
 
 db-go : ∀ a → pow2 16 ∣ a + 2 * 24371 → a + 2 * 24371 < pow2 16 + pow2 16 → a ≡ 16794
 db-go a (divides zero eq0) _ = ⊥-elim (48742≢0 (m+n≡0⇒m≡0 (2 * 24371) {a} (trans (sym (+-comm a (2 * 24371))) eq0)))
   where
     48742≢0 : 2 * 24371 ≡ 0 → ⊥
     48742≢0 ()
-db-go a (divides (suc zero) eq1) _ = {!!}
-  -- 【已破局】plus-cancel（ModExtract.1eb06959）符号归纳消 C——下批接 mod 形重写
+db-go a (divides (suc zero) eq1) _ = +-cancelʳ-≡ (2 * 24371) a 16794 (trans eq1 lit-1≡16794+C)
+  where
+    -- 1·2¹⁶ = 65536 = 16794 + 48742（refl 级）
+    lit-1≡16794+C : suc zero * pow2 16 ≡ 16794 + 2 * 24371
+    lit-1≡16794+C = refl
 
-db-go a (divides (suc (suc k)) eq2) lt = {!!}
+db-go a (divides (suc (suc k)) eq2) lt = ⊥-elim (k-split-gen (pow2 16) (2 * 24371) a k eq2 lt)
 
-lin-solve-db a b eq a< = {!!}
+lin-solve-db a b eq a< = db-go a (db-div a b eq) (db-bound a a<)
+
+-- 线2 尾（mod 形整体构造路线——go 直接吃 db-go，q 形提取整套消去）：
+-- 字面桥（refl 级，安全类：字面等式搬运）
+lit-N-form : SOVEREIGN_LCM ≡ pow2 16 * pow3 11
+lit-N-form = refl
+
+-- t ≥ 3 否定（M **抽象**——内部零字面爆点；调用点一次性字面实例化 = GMP 级安全）
+t3-kill : ∀ M b x → 0 < M → suc x ≡ suc (suc (suc b)) * M → suc x ≤ M + M → ⊥
+t3-kill M b x M>0 eq le = n≮n (suc x) (subst (suc x <_) (sym eq) (≤-<-trans le (<-≤-trans lt0 big)))
+  where
+    lt0 : M + M < (M + M) + M
+    lt0 = m<m+n-e (M + M) M M>0
+    big : (M + M) + M ≤ suc (suc (suc b)) * M
+    big = ≤-trans (≤-reflexive (+-assoc M M M))
+      (+-monoʳ-≤ M (+-monoʳ-≤ M (m≤m+n M (b * M))))
+
+-- 线2 尾：a < 2¹⁶ 界（顶层拆分——命名引理击败嵌套精化，见 m<m+n-e 教训）
+a<-contra : ∀ a → pow2 16 ≤ a → a * pow3 11 < pow2 16 * pow3 11 → ⊥
+a<-contra a pow2≤a a3< = n≮n (pow2 16 * pow3 11)
+  (≤-<-trans (*-monoˡ-≤ (pow3 11) pow2≤a) a3<)
+
+a<-from : ∀ a → (pow2 16 ≤ a → ⊥) → a < pow2 16
+a<-from a f = ≰⇒> f
 --------------------------------------------------------------------------------
 m≤m+n-f : ∀ a b → a ≤ a + b
 m≤m+n-f a zero = ≤-reflexive (sym (+-identityʳ a))
@@ -259,20 +295,19 @@ unique-root₃ (suc m) (s≤s z≤n) x<N (divides a eqa) (divides b eqb) = go (d
       where
         suc≠0-f : suc (m + n) ≡ 0 → ⊥
         suc≠0-f ()
+    -- mod 形整体构造（2026-10-10 换轨）：go 直接吃 db-go（其内部 k-split-gen 已排除 q≥2），
+    -- 本层只需 a < 2¹⁶ 界 + ∸-to-+ 收口；q-split / q 形提取整套消去
+    suc-m-form : suc m ≡ 1 + a * pow3 11
+    suc-m-form = ∸-to-+ (suc m) 1 (a * pow3 11) eqa (s≤s z≤n)
+    a3< : a * pow3 11 < pow2 16 * pow3 11
+    a3< = <-trans (subst (_< suc m) eqa (n<1+n m)) (subst (suc m <_) lit-N-form x<N)
+    a< : a < pow2 16
+    a< = a<-from a (λ pow2≤a → a<-contra a pow2≤a a3<)
     go : pow2 16 ∣ a + 2 * 24371 → suc m ≡ root₃
-    go (divides zero eq0) = ⊥-elim (2*24371≢0 (n≡0 a (2 * 24371) eq0))
+    go h = trans (subst (λ w → suc m ≡ 1 + w * pow3 11) (db-go a h (db-bound a a<)) suc-m-form) lit-root3
       where
-        2*24371≢0 : 2 * 24371 ≡ 0 → ⊥
-        2*24371≢0 ()
-    go (divides (suc q) eqq) = {!!}
-      where
-        q-split : ∀ q → a ≡ 16794 + q * 65536 → suc m ≡ root₃
-        q-split zero eq = {!!}
-        q-split (suc q) eq = {!!}
-          -- 【爆点坐标 SQ5】N≤x 链的 literal 形（m≤m+n literal + symbolic——第三条判据）
-          -- 绕法：q 形直接构造（x = 3¹¹·a + 1 ≥ N + 3¹¹·16794 + 1 的 mono 链——符号化参数）      -- 【数学终判（三次独立分析）】a + C ≡ D + C → a ≡ D 的 C 消去（literal C）本质 literal 归纳：
-      --   plus-cancel 对 C 归纳（C literal→爆）；stdlib +-cancel（被消者 literal→爆）；∸ 引理（n 归纳→爆）
-      --   唯一剩余：q := b∸1 形绕（用 b 分裂改变 eq 形）或 mod 形整体构造（q 形 + mod-extract 免消去）
+        lit-root3 : 1 + 16794 * pow3 11 ≡ root₃
+        lit-root3 = refl
 
 --------------------------------------------------------------------------------
 -- §7. CRT 逆向（mod 形整体构造——路径❷）
@@ -287,6 +322,22 @@ root₃+1-anchor = refl
 
 root₃∸1-anchor : root₃ ∸ 1 ≡ 16794 * pow3 11
 root₃∸1-anchor = refl
+
+-- 命名字面引理（钉死隐式元——cong (x ∸_) refl 的元炸弹，命名拆分纪律）
+suc-root3∸1 : suc (root₃ ∸ 1) ≡ root₃
+suc-root3∸1 = refl
+
+suc-x∸1 : ∀ x → suc (suc x ∸ 1) ≡ suc x
+suc-x∸1 x = refl
+
+lit-N-form2 : SOVEREIGN_LCM ≡ pow3 11 * pow2 16
+lit-N-form2 = refl
+
+lit-root3-sum : root₃ + 8634499073 ≡ SOVEREIGN_LCM
+lit-root3-sum = refl
+
+root3<N : root₃ < SOVEREIGN_LCM
+root3<N = subst (root₃ <_) lit-root3-sum (m<m+n-e root₃ 8634499073 (s≤s z≤n))
 
 -- CRT 逆向骨架（WIP——∸ 形引理链设计中）：
 --   crt-converse : ∀ x → 3¹¹ ∣ x ∸ 1 → 2¹⁶ ∣ suc x → x < N → x ≡ root₃
@@ -336,7 +387,7 @@ crt-converse (suc x') h3 h16 x<N = finish (div2-side (suc x') h16) (div3-side (s
     div3-side x h3 = subst (pow3 11 ∣_) align (∣-diff h3 (divides 16794 root₃∸1-anchor))
       where
         align : (x ∸ 1) ∸ (root₃ ∸ 1) ≡ x ∸ root₃
-        align = trans (∸∸-align-suc x (root₃ ∸ 1)) (cong (x ∸_) refl)
+        align = trans (∸∸-align-suc x (root₃ ∸ 1)) (cong (x ∸_) suc-root3∸1)
     div2-gen : ∀ y b' → suc y ≡ b' * pow2 16 → pow2 16 ∣ root₃ ∸ y
     div2-gen y b' eqy = subst (pow2 16 ∣_) (∸+-cancel root₃ y 1) (∣-diff side-r side-y)
       where
@@ -344,8 +395,32 @@ crt-converse (suc x') h3 h16 x<N = finish (div2-side (suc x') h16) (div3-side (s
         side-r = divides 45395 root₃+1-anchor
         side-y : pow2 16 ∣ y + 1
         side-y = divides b' (trans (n+1≡suc-f y) eqy)
+    -- 反向 3¹¹ 侧（双向截断差路线）
+    div3-gen : pow3 11 ∣ root₃ ∸ suc x'
+    div3-gen = subst (pow3 11 ∣_) align-r (∣-diff (divides 16794 root₃∸1-anchor) h3)
+      where
+        align-r : (root₃ ∸ 1) ∸ (suc x' ∸ 1) ≡ root₃ ∸ suc x'
+        align-r = trans (∸∸-align-suc root₃ (suc x' ∸ 1)) (cong (root₃ ∸_) (suc-x∸1 x'))
+    div2r : pow2 16 ∣ root₃ ∸ suc x'
+    div2r = go h16
+      where
+        go : pow2 16 ∣ suc (suc x') → pow2 16 ∣ root₃ ∸ suc x'
+        go (divides b eq) = div2-gen (suc x') b eq
     finish : pow2 16 ∣ suc x' ∸ root₃ → pow3 11 ∣ suc x' ∸ root₃ → suc x' ≡ root₃
-    finish h2 h3' = {!!}
+    finish h2 h3' = ≤-antisym (m∸n≡0⇒m≤n d1≡0) (m∸n≡0⇒m≤n d2≡0)
+      where
+        N∣d1 : SOVEREIGN_LCM ∣ suc x' ∸ root₃
+        N∣d1 = lcm-coprime (suc x' ∸ root₃) h3' h2
+        N∣d2 : SOVEREIGN_LCM ∣ root₃ ∸ suc x'
+        N∣d2 = lcm-coprime (root₃ ∸ suc x') div3-gen div2r
+        d1< : suc x' ∸ root₃ < SOVEREIGN_LCM
+        d1< = ≤-<-trans (m∸n≤m (suc x') root₃) x<N
+        d2< : root₃ ∸ suc x' < SOVEREIGN_LCM
+        d2< = ≤-<-trans (m∸n≤m root₃ (suc x')) root3<N
+        d1≡0 : suc x' ∸ root₃ ≡ 0
+        d1≡0 = divides-below (suc x' ∸ root₃) N∣d1 d1<
+        d2≡0 : root₃ ∸ suc x' ≡ 0
+        d2≡0 = divides-below (root₃ ∸ suc x') N∣d2 d2<
 
 --------------------------------------------------------------------------------
 gt1-≢1 : ∀ x → suc 1 ≤ x → x ≡ 1 → ⊥
@@ -378,19 +453,56 @@ unique-root₃-same x' 1<x x<N (divides q eq) = q-split-gen (pow3 11 * pow2 15) 
     q-split-gen M (suc zero) eq1 M≡ = trans eq1 (trans (cong (1 +_) (*-identityˡ M)) (trans (cong (1 +_) M≡) refl))
     q-split-gen M (suc (suc q)) eq2 M≡ = ⊥-elim (n≮n SOVEREIGN_LCM (≤-<-trans N≤x x<N))
       where
+        -- N≡MM（未来态锁定）：M ≡ 3¹¹·2¹⁵（M≡）→ M + M ≡ 3¹¹·2¹⁵ + 3¹¹·2¹⁵
+        --   → 字面归约 = 177147·65536 = SOVEREIGN_LCM（refl 级——全字面量）
         N≡MM : SOVEREIGN_LCM ≡ M + M
-        N≡MM = ≤-antisym-f N≤MM MM≤N
+        N≡MM = sym (trans M+M≡A+A A+A≡N)
           where
-            bridge : M + M ≡ 2 * M
-            bridge = trans (cong (M +_) (sym (*-identityʳ M))) (refl {x = 2 * M})
-            N≤MM : SOVEREIGN_LCM ≤ M + M
-            N≤MM = subst (SOVEREIGN_LCM ≤_) bridge (≤-reflexive refl)
-            MM≤N : M + M ≤ SOVEREIGN_LCM
-            MM≤N = subst (M + M ≤_) (sym bridge) (≤-reflexive refl)
-            ≤-antisym-f : ∀ {a b} → a ≤ b → b ≤ a → a ≡ b
-            ≤-antisym-f = ≤-antisym
+            A : ℕ
+            A = pow3 11 * pow2 15
+            M+M≡A+A : M + M ≡ A + A
+            M+M≡A+A = subst (λ w → M + M ≡ w + w) M≡ refl
+            A+A≡N : A + A ≡ SOVEREIGN_LCM
+            A+A≡N = refl
+        -- chain：M + M ≤ M + M + q·M（m≤m+n-f）≤ 1 + (M + (M + q·M))
         chain : M + M ≤ 1 + (M + (M + q * M))
-        chain = {!!}
+        chain = ≤-step (subst ((M + M) ≤_) (+-assoc M M (q * M)) (m≤m+n-f (M + M) (q * M)))
         N≤x : SOVEREIGN_LCM ≤ suc x'
-        N≤x = subst (SOVEREIGN_LCM ≤_) (sym eq2)
-          (subst (SOVEREIGN_LCM ≤_) (sym N≡MM) chain)
+        N≤x = ≤-trans (≤-reflexive N≡MM) (subst ((M + M) ≤_) (sym eq2) chain)
+
+--------------------------------------------------------------------------------
+-- §9. 混合 case（unique-root₅ / unique-root₄）——复用 unique-root₃-same + 四段分裂
+--------------------------------------------------------------------------------
+
+unique-root₅ : ∀ x → 0 < x → x < SOVEREIGN_LCM
+             → pow3 11 ∣ x ∸ 1 → pow2 15 ∣ x ∸ 1
+             → ¬ (pow2 16 ∣ x ∸ 1) → x ≡ root₅
+unique-root₅ (suc zero) (s≤s z≤n) x<N h3 h15 n16 = ⊥-elim (n16 (divides 0 refl))
+unique-root₅ (suc (suc x'')) (s≤s z≤n) x<N h3 h15 n16 =
+  unique-root₃-same (suc x'') (s≤s (s≤s z≤n)) x<N
+    (lcm-coprime-gen (pow3 11) (pow2 15) (suc (suc x'') ∸ 1) (coprime-pow3-pow2 11 15) h3 h15)
+
+unique-root₄ : ∀ x → x < SOVEREIGN_LCM
+             → pow3 11 ∣ suc x → pow2 15 ∣ suc x
+             → ¬ (pow2 16 ∣ suc x) → x ≡ root₄
+unique-root₄ x x<N h3 h15 n16 = go (lcm-coprime-gen (pow3 11) (pow2 15) (suc x) (coprime-pow3-pow2 11 15) h3 h15)
+  where
+    M : ℕ
+    M = pow3 11 * pow2 15
+    M>0 : 0 < M
+    M>0 = s≤s z≤n
+    suc≠0-f : ∀ {n} → suc n ≡ 0 → ⊥
+    suc≠0-f ()
+    split : ∀ t → suc x ≡ t * (pow3 11 * pow2 15) → x ≡ root₄
+    split zero eq = ⊥-elim (suc≠0-f eq)
+    split (suc zero) eq = suc-injective (trans eq lit-M≡suc-root4)
+      where
+        lit-M≡suc-root4 : pow3 11 * pow2 15 ≡ suc root₄
+        lit-M≡suc-root4 = refl
+    split (suc (suc zero)) eq = ⊥-elim (n16 (subst (pow2 16 ∣_) (sym eq) div16∣2M))
+      where
+        div16∣2M : pow2 16 ∣ 2 * (pow3 11 * pow2 15)
+        div16∣2M = subst (pow2 16 ∣_) (sym two-X≡N) (divides (pow3 11) lit-N-form2)
+    split (suc (suc (suc t''))) eq = ⊥-elim (t3-kill (pow3 11 * pow2 15) t'' x M>0 eq x<N)
+    go : (pow3 11 * pow2 15) ∣ suc x → x ≡ root₄
+    go (divides t eq) = split t eq

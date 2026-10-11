@@ -25,7 +25,7 @@ open import Sovereign.Algebra.ProbeArith using (probe; probe-dual; triℤ; negsu
 open import Cubical.Foundations.Prelude using
   (_≡_; refl; sym; _∙_; cong; cong₂; funExt; subst; Σ; Σ-syntax; _,_; fst; snd)
 open import Cubical.Data.Int using (ℤ; _+_; _·_; _-_; -_; pos; negsuc; _+pos_; sucℤ; predℤ)
-open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; isTrans<; Trichotomy; lt; eq; gt)
+open import Cubical.Data.Int.Order using (_<_; _≤_; ≤-+o; ≤-o+; ≤-+o-cancel; ≤-o+-cancel; isTrans≤; isRefl≤; <-weaken; ≤<-trans; isTrans<; isIrrefl<; Trichotomy; lt; eq; gt)
 open import Cubical.Data.Int.Properties using (+Assoc; +Comm; pos0+; ·AnnihilR; ·AnnihilL; sucℤ+pos; sucPred; predℤ+pos)
 open import Cubical.Data.Nat.Order as ℕO using (zero-<suc; <→≢)
 open import Cubical.Data.Nat as ℕ using (ℕ; zero; suc; _∸_; predℕ) renaming (_+_ to _+ℕ_)
@@ -310,3 +310,41 @@ _*L_ : Laurent → Laurent → Laurent
 +L-comm : (f g : ℤ → ℤ) →
   ∀ n → f n + g n ≡ g n + f n
 +L-comm f g n = +Comm (f n) (g n)
+
+-- ────────────────────────────────────────────────────────────────────
+-- 单项式层（2026-10-10 裁决 ⑤：函数表示主路线的常量构造）
+--   mono c n = c·t^n；R1 = 1·t⁰；tvar = 1·t¹；tneg = (-1)·t¹
+--   系数函数按 triℤ m n 三路分派；FinSupp 界取 (n, n)
+-- ────────────────────────────────────────────────────────────────────
+
+-- 系数函数：指数恰为 n 处取 c，其余取 0
+mono-coeff : ℤ → Exponent → ℤ → ℤ
+mono-coeff c n m with triℤ m n
+... | lt _ = pos 0
+... | eq _ = c
+... | gt _ = pos 0
+
+-- 区间外系数为零（界 (n, n)）：m < n 或 n < m 时 mono-coeff ≡ 0
+mono-out : ∀ c n m → (m < n) ⊎ (n < m) → mono-coeff c n m ≡ pos 0
+mono-out c n m (inl mn) with triℤ m n
+... | lt _ = refl
+... | eq e = rec (isIrrefl< (subst (_< n) e mn))
+... | gt x = rec (isIrrefl< (isTrans< mn x))
+mono-out c n m (inr nm) with triℤ m n
+... | lt x = rec (isIrrefl< (isTrans< x nm))
+... | eq e = rec (isIrrefl< (subst (n <_) e nm))
+... | gt _ = refl
+
+-- 单项式 c·t^n（有限支撑：支撑集 ⊆ [n, n]）
+mono : ℤ → Exponent → Laurent
+mono c n = (mono-coeff c n) , (n , n , mono-out c n)
+
+-- 常量层：1 = 1·t⁰，t = 1·t¹，-t = (-1)·t¹
+R1 : Laurent
+R1 = mono (pos 1) (pos 0)
+
+tvar : Laurent
+tvar = mono (pos 1) (pos 1)
+
+tneg : Laurent
+tneg = mono (negsuc 0) (pos 1)
