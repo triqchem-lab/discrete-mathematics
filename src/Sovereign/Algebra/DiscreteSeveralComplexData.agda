@@ -4,7 +4,7 @@
 -- GF(3)² 上的双变量多项式零点穷举.
 -- 0 postulate.
 
-module Sovereign.Algebra.DiscreteSeveralComplex where
+module Sovereign.Algebra.DiscreteSeveralComplexData where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
