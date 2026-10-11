@@ -12,7 +12,7 @@
 --
 -- 包含：f00、dft-apply、const-vec、dft-const、e0、dft-e0-0、dft-e0-1、dft-e0-2、dft-zero
 
-module Sovereign.Analysis.DiscreteFourier where
+module Sovereign.Application.DiscreteFourier where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Fin using (Fin; zero; suc)

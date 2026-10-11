@@ -19,7 +19,7 @@
 --
 -- 包含：loshu-row-1、loshu-row-2、loshu-row-3、loshu-col-1、loshu-col-2、loshu-col-3、loshu-diag-1、loshu-diag-2、dev、chi2-num、magic-square-chi2-zero、loshu-chi2-zero、nonmagic-chi2-positive-num、nonmagic-detected
 
-module Sovereign.Analysis.GoodnessOfFitGF3 where
+module Sovereign.Application.GoodnessOfFitGF3 where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

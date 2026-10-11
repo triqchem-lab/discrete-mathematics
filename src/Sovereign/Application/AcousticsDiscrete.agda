@@ -15,7 +15,7 @@
 --
 -- 包含：twelve-lu-count/twelve-lu-as-a4（十二律=A₄ 阶）· san-shiyi/er-shiliu（频率比两幂）· zhonglv-product（仲吕闭合积=主权 LCM）· huangzhong-length（黄钟 81=3⁴）
 
-module Sovereign.Applied.AcousticsDiscrete where
+module Sovereign.Application.AcousticsDiscrete where
 
 open import Data.Nat using (ℕ; _+_; _*_; _^_; _%_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

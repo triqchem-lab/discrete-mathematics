@@ -28,7 +28,7 @@
 --
 -- 包含：finite-orbit-obs
 
-module Sovereign.Analysis.FiniteOrbitObs where
+module Sovereign.Application.FiniteOrbitObs where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _<_)
 open import Data.Nat.Properties using (<⇒≤; +-identityʳ; +-suc)

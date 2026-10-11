@@ -12,7 +12,7 @@
 --
 -- 包含：laplace3、laplace-const、laplace-linear、laplace-quadratic、harmonic-const、laplace3-cyclic
 
-module Sovereign.Analysis.DiscretePotential where
+module Sovereign.Application.DiscretePotential where
 
 open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

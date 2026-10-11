@@ -13,7 +13,7 @@
 --
 -- 包含：k11、neg、solve-diag、v-solve、det-IλK₁、det-IλK₂
 
-module Sovereign.Analysis.DiscreteIntegralEq where
+module Sovereign.Application.DiscreteIntegralEq where
 
 open import Data.Nat using (ℕ)
 open import Data.Product using (_×_; _,_)

@@ -17,7 +17,7 @@
 --
 -- 包含：_⊞_/_⊠_（局部 ℤ 算子）· tr1..tr4（迹矩）· row-*（配置系综矩表）· §4 诚实结论（Catalan 判定落库）
 
-module Sovereign.Analysis.RandomMatrixMoments where
+module Sovereign.Application.RandomMatrixMoments where
 
 open import Data.Nat using (ℕ; _*_; _+_; _∸_)
 open import Data.Integer using (ℤ; +_; -[1+_])

@@ -20,7 +20,7 @@
 -- 包含：count/countP 计数核、normalization/additivity/independence 三符号定理、
 --       if-or/if-dist/count-∧-const/+4swap 计数代数辅件、GF(3)² 核对层（原七点 + 三符号对账）
 
-module Sovereign.Analysis.UniformProb where
+module Sovereign.Application.UniformProb where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_)
 open import Data.Nat.Properties using (+-assoc; +-comm)

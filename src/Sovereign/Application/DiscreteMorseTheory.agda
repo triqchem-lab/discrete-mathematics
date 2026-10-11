@@ -24,7 +24,7 @@
 --       （Morse 不等式实例）｜chi-law（χ 双侧闭合）｜old-chi-false（旧实例反证件）｜
 --       grad01 / grad21（核对层，逐字保留）
 
-module Sovereign.Analysis.DiscreteMorseTheory where
+module Sovereign.Application.DiscreteMorseTheory where
 
 -- §0 导入区（显式 using）--------------------------------------------------------
 

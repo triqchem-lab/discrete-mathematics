@@ -11,7 +11,7 @@
 --
 -- 0 postulate — 全部构造性证明, 穷举法优先
 
-module Sovereign.Applied.AlgebraChainDeep where
+module Sovereign.Application.AlgebraChainDeep where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)

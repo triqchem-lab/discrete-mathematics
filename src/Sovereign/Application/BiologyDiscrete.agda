@@ -3,7 +3,7 @@
 -- 连续统 TypeError: ContinuousPopulationWithoutFiniteFitness
 -- 离散替代: Trit 基因型 + 离散复制动力学
 
-module Sovereign.Applied.BiologyDiscrete where
+module Sovereign.Application.BiologyDiscrete where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)

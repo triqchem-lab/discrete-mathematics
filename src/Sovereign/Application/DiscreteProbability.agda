@@ -12,7 +12,7 @@
 --
 -- 包含：uniform、uniform-norm、twoPoint、twoPoint-norm、expectation、id-expect-uniform、marginal、indep-prod、marginal-indep、expectation-uniform-sum
 
-module Sovereign.Analysis.DiscreteProbability where
+module Sovereign.Application.DiscreteProbability where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Product using (_×_; _,_)
