@@ -293,6 +293,8 @@ open import Sovereign.Algebra.LieDiscrete
   using (LieGroupEvidence; lieGroupEvidence)
 
 -- 定理 (a): Burnside dim²和 = 12 = |A₄|
+-- 【判重组2 注记 2026-10-11】a4-burnside 双体判重：共享内核 = theorem-dimension-sum-of-squares（已共享）；
+-- 本体与 Holographic/Representation:60 为**异上下文实例**（各自的 V3/V1 表示）——合法异类，非重复
 a4-burnside : dim V3 * dim V3 + dim V1 * dim V1 + dim V1' * dim V1' + dim V1'' * dim V1'' ≡ 12
 a4-burnside = theorem-dimension-sum-of-squares
 

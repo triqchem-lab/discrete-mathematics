@@ -59,6 +59,7 @@ open import Sovereign.Structology.A4Representations
 -- Burnside for A₄
 -- a4-order 提共享（2026-10-11 判重批组1）：canonical = MyopiaRisk §8a
 -- 本地副本已删
+-- 【判重组2 注记 2026-10-11】a4-burnside 双体判重：本体与 jac_LieGroup:296 为异上下文实例（共享内核同源）——合法异类
 a4-burnside : dim V3 * dim V3 + dim V1 * dim V1 + dim V1' * dim V1' + dim V1'' * dim V1'' ≡ a4-order
 a4-burnside = theorem-dimension-sum-of-squares
 
