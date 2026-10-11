@@ -98,11 +98,11 @@ record QuotientSet (A : Set) : Set₁ where
 data Two : Set where
   a₀ a₁ : Two
 
+data ⊤ : Set where
+  tt : ⊤
+
 Total : Rel Two
 Total _ _ = ⊤
-  where
-  data ⊤ : Set where
-    tt : ⊤
 
 -- 全关系的等价性（三律全 tt 形）
 total-eqv : IsEquivalence Total
@@ -111,15 +111,18 @@ total-eqv = record
   ; symE   = λ _ _ _ → tt
   ; transE = λ _ _ _ _ _ → tt
   }
-  where
-  data ⊤ : Set where
-    tt : ⊤
 
 check-cls-char : ∀ y → (cls Total a₀ y → cls Total a₁ y) × (cls Total a₁ y → cls Total a₀ y)
-check-cls-char = cls-char total-eqv tt
+w₀₁ : Total a₀ a₁
+w₀₁ = tt
 
-check-resp : Respects (λ x → x) Total Total
-check-resp = resp-id Total
+w₁₀ : Total a₁ a₀
+w₁₀ = tt
+
+check-cls-char = cls-char {A = Two} {R = Total} total-eqv {x = a₀} {x′ = a₁} w₀₁
+
+check-resp : Respects (λ (x : Two) → x) Total Total
+check-resp = λ r → r
 
 -- 桥注记（不在本文件 import——层内自含纪律）：
 -- Cubical.HITs.SetQuotients 对应：cls R x ≡ 「[ x ] 的成员形」；
