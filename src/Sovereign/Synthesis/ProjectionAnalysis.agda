@@ -18,7 +18,7 @@ module Sovereign.Synthesis.ProjectionAnalysis where
 --   信息丢失: 原子性 (每点测度 1 → 0), 有限性 (729 → 不可数)
 --
 -- 依赖:
---   Sovereign.Structology.T6 — T6Lattice, t6Cardinality, toℕ-sum
+--   Sovereign.Synthesis.T6 — T6Lattice, t6Cardinality, toℕ-sum
 --   Sovereign.Algebra.DegenerationTaxonomy — Degeneration record
 --
 -- 0 postulate — 全部构造性证明
@@ -33,7 +33,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; cong; sym; trans)
 
-open import Sovereign.Structology.T6
+open import Sovereign.Synthesis.T6
   using (T6Lattice; GF3; t6Cardinality; toℕ-sum)
 open import Sovereign.Algebra.DegenerationTaxonomy
   using (Degeneration; not-injective; mk-degeneration)

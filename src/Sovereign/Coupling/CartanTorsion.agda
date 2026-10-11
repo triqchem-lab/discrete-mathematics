@@ -30,9 +30,9 @@ open import Sovereign.Foundation.EnergyGap using (C3Element; c3-id; c3-omega; c3
   phaseGenerate; phaseOvercome; ℤabs; energyGapJump; energyGapNorm)
 open import Sovereign.Foundation.AlgebraicComplex using (Sqrt3; sqrt3)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
-open import Sovereign.Structology.T6 using (T6Lattice; GF3)
+open import Sovereign.Synthesis.T6 using (T6Lattice; GF3)
 open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi; applyLossGain)
-open import Sovereign.Coupling.Zhonglv using (SovereignState; chernConservation)
+open import Sovereign.Synthesis.Zhonglv using (SovereignState; chernConservation)
 open import Sovereign.MetaStructure.WuXing using (WuXing; Chirality; LeftHanded; RightHanded)
 
 -- 离散复数: a + bi, i² = -1 (本质 = GF(9) = GF(3)[i]/(i²+1))

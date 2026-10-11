@@ -25,7 +25,7 @@ open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip)
 -- 凝聚态: 晶格是周期性结构的数学描述
 -- T⁶ 离散环面: 6 维 GF(3) 格点, 每维 3 个态
 -- 总格点数 = 3⁶ = 729
--- (完整形式化见 Sovereign.Structology.T6: T6Lattice ≃ Fin 729)
+-- (完整形式化见 Sovereign.Synthesis.T6: T6Lattice ≃ Fin 729)
 --------------------------------------------------------------------------------
 
 lattice-dim : ℕ

@@ -27,7 +27,7 @@ open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
-open import Sovereign.Topology.AtkinQAnalysis using (Graph; Path; nil; cons)
+open import Sovereign.Synthesis.AtkinQAnalysis using (Graph; Path; nil; cons)
 
 --------------------------------------------------------------------------------
 -- §1. 比较图：可比性作边（x ⊑ y 或 y ⊑ x），⊎ 形式天然对称

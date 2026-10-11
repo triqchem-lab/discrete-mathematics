@@ -77,7 +77,7 @@ import Sovereign.Problem.Hodge.ChainComplex -- 泛链复形
 -- crt12-roundtrip: 3-分量与4-分量是同构的 — 深水连接瞬时不需"传"
 
 import Sovereign.Problem.Riemann.WeilRH       -- GF(3)↔GF(9) 对偶
-import Sovereign.Problem.Hodge.EulerChar    -- ℤ 欧拉 (全局拓扑)
+import Sovereign.Application.EulerChar    -- ℤ 欧拉 (全局拓扑)
 
 -- ═══════════════════════════════════════════════════════════
 -- 第六本体: 意识 = 高阶自指涡旋
@@ -87,9 +87,9 @@ import Sovereign.Problem.Hodge.EulerChar    -- ℤ 欧拉 (全局拓扑)
 -- 意识 = 5D 以太密度达到极高阶自指闭环时的必然涌现
 
 import Sovereign.Problem.Hodge.Hodge         -- 调和形式 ℋ
-import Sovereign.Problem.Hodge.HodgeTetra    -- S² 驻波
-import Sovereign.Problem.Hodge.TorusHodge    -- T² 驻波
-import Sovereign.Problem.Hodge.KleinHodge    -- Klein 驻波
+import Sovereign.Application.HodgeTetra    -- S² 驻波
+import Sovereign.Application.TorusHodge    -- T² 驻波
+import Sovereign.Application.KleinHodge    -- Klein 驻波
 import Sovereign.Algebra.Jacobian.jac_NMatrix       -- M_F 全息编码
 
 -- ═══════════════════════════════════════════════════════════

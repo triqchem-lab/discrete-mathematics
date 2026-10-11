@@ -38,7 +38,7 @@ open import Sovereign.Physics.DiscreteEMField3D
 -- 核心定理层: addVec3 + div-curl-zero (磁场无源性消去项)
 open import Sovereign.Physics.DiscreteEMCore
 -- 时间演化层: Time/ΔtV/ΔtS/四律谓词/div-linear/div-neg/divE-step 等
-open import Sovereign.Physics.DiscreteMaxwellTime
+open import Sovereign.Application.DiscreteMaxwellTime
 
 ------------------------------------------------------------------------------
 -- §1. div ∘ Δt ≡ Δt ∘ div (散度与时间差分交换, 3 步符号链)

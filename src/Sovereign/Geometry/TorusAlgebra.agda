@@ -7,7 +7,7 @@ open import Data.Vec using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
-open import Sovereign.Structology.T6 using (T6Lattice; GF3)
+open import Sovereign.Synthesis.T6 using (T6Lattice; GF3)
 
 -- Fin 3 上的运算
 tritOf : GF3 → Trit

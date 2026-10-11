@@ -36,13 +36,13 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; negate)
 open import Sovereign.Algebra.GF9 using (GF9; alpha; galoisConjugate; galoisConjugate²)
 open import Sovereign.Coupling.CartanTorsion
   using (DiscreteComplex; _+ᵢ_; _+ᶜ_; conjugate)
-open import Sovereign.Coupling.Zhonglv using (SovereignState)
+open import Sovereign.Synthesis.Zhonglv using (SovereignState)
 open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi)
 open import Sovereign.Coupling.ParityViolation
   using (ToroidalPower; mkPower; ChiralSymmetry; SingleChiral; PairedConserved;
          BreakingStarted; BreakingObvious; BreakingComplete; parityStatus)
 open import Sovereign.MetaStructure.WuXing using (Chirality)
-open import Sovereign.Structology.T6 using (T6Lattice)
+open import Sovereign.Synthesis.T6 using (T6Lattice)
 
 --------------------------------------------------------------------------------
 -- 1. 自旋 = 手性分离程度的投影 (0 postulate)

@@ -17,7 +17,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans
 
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; negate)
-open import Sovereign.Structology.T6
+open import Sovereign.Synthesis.T6
   using (T6Lattice; GF3; finToT6; t6ToFin)
 
 --------------------------------------------------------------------------------

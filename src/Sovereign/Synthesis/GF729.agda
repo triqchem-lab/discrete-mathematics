@@ -37,7 +37,7 @@ open import Sovereign.Base.Trit
          ⊗-identityʳ; ⊗-zeroʳ;
          negate; negate²)
 
-open import Sovereign.Structology.T6
+open import Sovereign.Synthesis.T6
   using (T6Lattice; GF3; t6Cardinality; toℕ-sum)
 
 -- 展示群相位源: GF(9) = GF(3)[α]/(α²+1) 与 90° 旋转群 ⟨α⟩ ≅ C₄

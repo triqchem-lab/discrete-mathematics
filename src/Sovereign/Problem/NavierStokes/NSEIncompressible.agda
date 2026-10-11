@@ -36,7 +36,7 @@ open import Sovereign.Problem.NavierStokes.NSEOnT6 using
   (C3; Torus6; ScalarField; Field; v1; v2; v3; v4; v5; v6; zeroField;
    sum6; shiftAt; shiftF; diffF; _+S_; _+F_; div; grad; nsStep; Incompressible;
    diffF-+S; sum6-+)
-open import Sovereign.Problem.NavierStokes.NSEConservation using (sum6-cong)
+open import Sovereign.Application.NSEConservation using (sum6-cong)
 
 --------------------------------------------------------------------------------
 -- §1. GF(3) 逆元律

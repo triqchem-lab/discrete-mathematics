@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.Structology.LuCellGrid
+-- | Sovereign.Synthesis.LuCellGrid
 -- 结构学：律胞腔网格（十二律相位的二维静态展开）
 --
 -- 此模块定义十二律胞腔在二维网格上的静态排列。
@@ -21,7 +21,7 @@
 --
 -- 包含: LuGridPoint、gridRow、gridRow-toℕ、gridColBound、gridCol、gridCol-toℕ、mkGridPointBound、mkGridPoint、mkGridPoint-toℕ、grid-roundtrip、shiftPolar、shiftToroidal、shiftDiagonal、actionOnGrid
 
-module Sovereign.Structology.LuCellGrid where
+module Sovereign.Synthesis.LuCellGrid where
 
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; fromℕ<; _≟_)
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _%_; _/_; _<_ ; _≤_; s≤s)

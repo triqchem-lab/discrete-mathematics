@@ -105,7 +105,7 @@ fold1-shift g = sum3-shift-vals (g fzero) (g (fsuc fzero)) (g (fsuc (fsuc fzero)
 -- 初版 §2 判定「本库无 funext ⇒ `cong fold1` 穿不透 λ, 6 层装配卡住」——**判错了**。
 -- 有限折叠的「逐点 → 整体」**不需要 funext**: 对 fold1 的三个求和位各 `cong` 一次即可。
 -- 配 `fold1-+`（`sum3-+` 的函数式）, 6 层嵌套装配是「逐层 (fold1-cong ∘ 逐点引理)
--- + fold1-+」的机械重复。装配模块: `Sovereign.Problem.NavierStokes.NSEConservation`。
+-- + fold1-+」的机械重复。装配模块: `Sovereign.Application.NSEConservation`。
 --------------------------------------------------------------------------------
 
 fold1-cong : ∀ {u v : C3 → Trit} → (∀ y → u y ≡ v y) → fold1 u ≡ fold1 v

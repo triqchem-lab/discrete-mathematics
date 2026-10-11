@@ -28,7 +28,7 @@ module Sovereign.Topology.QAnalysisStar where
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Topology.QAnalysisRecord
+open import Sovereign.Synthesis.QAnalysisRecord
   using (QAnalysis; QPathR; qreflR; share→path; qtransR; qsymR; qstep; qnil)
 open import Sovereign.Topology.AlexandroffFinite
   using (FinitePoset; chain2; chain2-⊑)

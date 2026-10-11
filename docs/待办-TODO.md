@@ -64,7 +64,7 @@
 **描述**: 生成数对偶的公理化描述已经存在，但到 T⁶ 同调的映射零形式化。
 
 **需要完成**：
-1. 导入 `Sovereign.Structology.T6` → `homologyT6`
+1. 导入 `Sovereign.Synthesis.T6` → `homologyT6`
 2. 定义零同调类类型：`ZeroHomology = Σ λ h → h.rank ≡ 0`
 3. 定义维数映射：`φ: {2,6,10} → Fin 7`（对应 H_d 的 degree）
 4. 构造等价链：`H₆-zero ↔ H₁-zero ↔ H₅-zero ↔ H₂-zero`

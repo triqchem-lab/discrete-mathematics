@@ -52,7 +52,7 @@ open import Sovereign.Physics.DiscreteEMCore
   using (div-curl-zero; gauge-invariance; zero-flux)
 
 -- 时间演化层: 四律 + 电荷守恒
-open import Sovereign.Physics.DiscreteMaxwellTime
+open import Sovereign.Application.DiscreteMaxwellTime
   using (Time; VecFieldTime; ScalFieldTime; ΔtV; ΔtS;
          FaradayHolds; AmpereHolds; GaussHolds;
          FaradayStep; AmpereStep;

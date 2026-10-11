@@ -71,7 +71,7 @@ open import Data.Fin using (Fin; zero; suc)
 open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip; _⊗_)
 
 -- 生成元词表示 (A₄ = ⟨gs, gt⟩, 词归纳传播用)
-open import Sovereign.Structology.A4GenWords
+open import Sovereign.Synthesis.A4GenWords
   using (Gen; gs; gt; gen; Word; ε; _▸_; ev; wordOf; ev-wordOf; ⊗-assocₚ; fromPerm-permₚ)
 
 -- abelianization: A₄ → C₃ = Fin 3 (核为 V₄ = {Id, Flip 0,1,2})

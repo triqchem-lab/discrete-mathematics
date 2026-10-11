@@ -45,7 +45,7 @@ open import Sovereign.Problem.NavierStokes.NSEOnT6 using
    sum6; shiftAt; diffF; _+S_; _+F_; div; grad; nsStep)
 open import Sovereign.Problem.NavierStokes.NSEFixedPoint using (comp; axisOf)
 open import Sovereign.Problem.NavierStokes.NSEFixedPointStrict using (supportCount)
-open import Sovereign.Problem.NavierStokes.NSEConservation using (sum6-cong)
+open import Sovereign.Application.NSEConservation using (sum6-cong)
 open import Sovereign.Problem.NavierStokes.NSESupportFixedInv using (supportCount-ext)
 
 --------------------------------------------------------------------------------

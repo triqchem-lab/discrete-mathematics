@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coupling.Zhonglv
+-- | Sovereign.Synthesis.Zhonglv
 -- 耦合域：仲吕闭合与陈数守恒
 --
 -- 仲吕闭合是主权状态机的"呼吸"操作：
@@ -8,7 +8,7 @@
 -- - acc ↦ (acc * 177147) >> 16 = (acc * 3¹¹) / 2¹⁶
 -- - 虚实比归零，升维至 144/46 全息闭合
 
-module Sovereign.Coupling.Zhonglv where
+module Sovereign.Synthesis.Zhonglv where
 
 open import Data.Empty using (⊥)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _%_; _/_; _≡ᵇ_)

@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
-module Sovereign.Coupling.LCM where
+module Sovereign.Synthesis.LCM where
 open import Data.Fin using (Fin; toℕ; fromℕ; zero; suc)
 open import Data.Fin.Properties using (toℕ<n; toℕ-fromℕ<; toℕ-injective)
 open import Data.Vec using (Vec; map; _∷_; []; replicate)

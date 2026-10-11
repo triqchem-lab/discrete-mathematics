@@ -722,7 +722,7 @@ Sovereign.Structology.SP2Ternary,src/Sovereign/Structology/SP2Ternary.agda,87,B,
 Sovereign.Structology.SphericalVector,src/Sovereign/Structology/SphericalVector.agda,85,B,,,,,,
 Sovereign.Structology.StandingWave,src/Sovereign/Structology/StandingWave.agda,99,B,,,,,,
 Sovereign.Structology.T6A4Burnside,src/Sovereign/Structology/T6A4Burnside.agda,294,B,,,y,,,
-Sovereign.Structology.T6,src/Sovereign/Structology/T6.agda,1499,B,,,y,y,y,y
+Sovereign.Synthesis.T6,src/Sovereign/Structology/T6.agda,1499,B,,,y,y,y,y
 Sovereign.Structology.T6FiveDimensionalProjection,src/Sovereign/Structology/T6FiveDimensionalProjection.agda,149,B,,,y,,,
 Sovereign.Synthesis.T6Rewrite,src/Sovereign/Synthesis/T6Rewrite.agda,29,C,,y,y,,,
 Sovereign.Structology.TetrahedralA4,src/Sovereign/Structology/TetrahedralA4.agda,67,B,,,,,,

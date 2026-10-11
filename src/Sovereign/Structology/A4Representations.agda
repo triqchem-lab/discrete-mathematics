@@ -493,7 +493,7 @@ c3Char-hom c3-a² c3-a² = refl
 --    组合律经 A4GenWords.⊗-assocₚ 桥接到命题相等。)
 
 -- 生成元词表示 (A₄ = ⟨gs, gt⟩, 词归纳传播用)
-open import Sovereign.Structology.A4GenWords
+open import Sovereign.Synthesis.A4GenWords
   using (Gen; gs; gt; gen; Word; ε; _▸_; ev; wordOf; ev-wordOf; ⊗-assocₚ; fromPerm-permₚ)
 
 -- ·₃ 结合律 (C₃ 单位元为 c3-1; 19 案 refl)

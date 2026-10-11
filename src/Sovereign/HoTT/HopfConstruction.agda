@@ -41,7 +41,7 @@ open import Cubical.HITs.PropositionalTruncation
   using (∥_∥₁; ∣_∣₁; squash₁)
 open import Cubical.Functions.Surjection using (isSurjection)
 
-import Sovereign.Structology.T6 as T6
+import Sovereign.Synthesis.T6 as T6
 import Sovereign.Structology.A4Group as A4
 
 --------------------------------------------------------------------------------

@@ -23,7 +23,7 @@ open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Vec using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Structology.T6 using (T6Lattice; GF3; finToT6)
+open import Sovereign.Synthesis.T6 using (T6Lattice; GF3; finToT6)
 
 --------------------------------------------------------------------------------
 -- §1. 维度类型 (3 空间 + 2 手征 + 1 相位 = 6)

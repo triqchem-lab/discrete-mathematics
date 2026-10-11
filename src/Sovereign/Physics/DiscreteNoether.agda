@@ -29,7 +29,7 @@ open import Sovereign.Physics.DiscreteEMField3D
          neg3-involutive; neg3-add)
 open import Sovereign.Physics.DiscreteEMCore
   using (div-curl-zero; gauge-invariance)
-open import Sovereign.Physics.DiscreteMaxwellTime
+open import Sovereign.Application.DiscreteMaxwellTime
   using (Time; VecFieldTime; ScalFieldTime; ΔtV; ΔtS;
          FaradayHolds; AmpereHolds; GaussHolds;
          FaradayStep; AmpereStep;

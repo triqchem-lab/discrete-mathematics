@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.EulerChar
+-- | Sovereign.Application.EulerChar
 -- 欧拉示性数 · ℤ 算术通用公式
 --
 -- 数学背景：χ = Σ(−1)ᵏ dimCₖ = Σ(−1)ᵏ dimHₖ 的 ℤ 交替和核——四链复形（S² 等）全验证；ℤ 替代 ℕ monus（支持负中间值，ℕ 下 0≠2 的退化在 ℤ 消失）。
@@ -14,7 +14,7 @@
 --   （命名正名：旧头注 `jac_EulerChar` ≠ 模块名，2026-10-11 勘误）
 
 --
-module Sovereign.Problem.Hodge.EulerChar where
+module Sovereign.Application.EulerChar where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Nat using (ℕ)

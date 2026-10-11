@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.TorusHodge
+-- | Sovereign.Application.TorusHodge
 -- 环面 T² △-复形 Hodge 分解
 --
 -- 数学背景：T² 三角复形（1 顶点 3 边 2 面）的 Hodge 分解核：χ=0、dimℋ=2——环面实例（与 T⁶ 线的升维背景呼应，本件只做 T²）。
@@ -14,7 +14,7 @@
 --   （命名正名：旧头注 `jac_TorusHodge` ≠ 模块名，2026-10-11 勘误）
 
 --
-module Sovereign.Problem.Hodge.TorusHodge where
+module Sovereign.Application.TorusHodge where
 
 open import Data.Nat using (ℕ; _∸_)
 open import Data.Product using (_×_; _,_)

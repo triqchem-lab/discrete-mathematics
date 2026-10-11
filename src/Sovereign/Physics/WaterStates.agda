@@ -32,7 +32,7 @@ open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
 open import Sovereign.Algebra.GF9
   using (GF9; gf9-one; gf9-zero; alpha; _*gf9_; _+gf9_; galoisConjugate)
-open import Sovereign.Structology.T6 using (T6Lattice; GF3)
+open import Sovereign.Synthesis.T6 using (T6Lattice; GF3)
 
 --------------------------------------------------------------------------------
 -- §1. 水的 8 种状态 (T⁶ 编码)

@@ -18,7 +18,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans
 
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
-open import Sovereign.Structology.T6 using (T6Lattice)
+open import Sovereign.Synthesis.T6 using (T6Lattice)
 
 --------------------------------------------------------------------------------
 -- 1. GF(3) 缩放与平移 (C₃ × C₂)

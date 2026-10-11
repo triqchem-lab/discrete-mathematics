@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteMaxwellTime
+-- | Sovereign.Application.DiscreteMaxwellTime
 -- 78 电磁学 — 离散 Maxwell 时间演化层 (0 postulate, 无洞)
 --
 -- 先符号设计, 再落链。离散全息框架中时间是格点步进 t : ℕ, 时间差分
@@ -24,7 +24,7 @@
 --      0-postulate 取得), 故步进定律以"场级等式"表述 (构造性动力学),
 --      再证明其差分形式逐点成立 (cancel-right 向量代数), 闭环。
 
-module Sovereign.Physics.DiscreteMaxwellTime where
+module Sovereign.Application.DiscreteMaxwellTime where
 
 open import Data.Nat using (ℕ; suc)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

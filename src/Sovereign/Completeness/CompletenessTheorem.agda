@@ -36,7 +36,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 
 -- 项目模块: 离散载体 (6 个已完成)
 open import Sovereign.Algebra.ProjectionDifferential using (GF3Func; Δ; Δ³≡0)
-open import Sovereign.Structology.T6 using (T6Lattice; finToT6)
+open import Sovereign.Synthesis.T6 using (T6Lattice; finToT6)
 open import Sovereign.Structology.A4Group using (A4; Id)
 open import Sovereign.Algebra.GF9 using (GF9)
 open import Sovereign.Algebra.Holographic.4320D using (dim-4320)

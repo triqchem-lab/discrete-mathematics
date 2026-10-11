@@ -1,10 +1,10 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.QAnalysisRecord
+-- | Sovereign.Synthesis.QAnalysisRecord
 -- 任务书第二层·2.3 泛型化：Atkin Q-analysis 展示群风格泛型化
 -- 展示群要求：生成元用 data，关系用 record 字段，核对 refl，0 postulate
 -- 复用：AtkinQ1.Edge/share-sym（Topology/ 目录 Q-analysis 分类）
-module Sovereign.Topology.QAnalysisRecord where
+module Sovereign.Synthesis.QAnalysisRecord where
 
 open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s)
 open import Data.Empty using (⊥; ⊥-elim)

@@ -115,7 +115,7 @@ superposition-table-verified = refl , refl
 --
 -- 形式化连接:
 --   Sovereign.Base.Trit._⊕_ = GF(3) 加法群 = Z/3Z 的平移
---   Sovereign.Structology.T6 = (Z/3Z)⁶ = 6 维环面
+--   Sovereign.Synthesis.T6 = (Z/3Z)⁶ = 6 维环面
 --   叠加态 = 环面上的平移轨道 (加法群作用)
 --   T₁⊕T₂=T₀ = 平移的逆元 (仲吕闭合的代数本质)
 

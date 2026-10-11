@@ -8,7 +8,7 @@ open import Data.Nat using (ℕ; _+_; _*_; _%_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Data.Product using (_×_; _,_)
-open import Sovereign.Structology.T6 using (T6Lattice; GF3; toℕ-sum)
+open import Sovereign.Synthesis.T6 using (T6Lattice; GF3; toℕ-sum)
 open import Sovereign.Format.CRT using (crtProject; crtReconstruct; M)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR)

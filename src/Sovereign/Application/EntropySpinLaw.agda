@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.EntropySpinLaw
+-- | Sovereign.Application.EntropySpinLaw
 -- 渠玉芝熵旋定律的形式化核心 (0 postulate, 无洞)
 --
 -- 定律原文 (项目公理文档 ESB-MASS-EMERGENCE-20260306,
@@ -32,7 +32,7 @@
 --   5) 与简化模型 ρ_S(a,C) = C·0.0268/(a+1) (EntropySpin.agda) 的
 --      约化关系在公理文档中是"简化模型"断言, 无推导 — 未形式化。
 
-module Sovereign.Physics.EntropySpinLaw where
+module Sovereign.Application.EntropySpinLaw where
 
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Integer using (ℤ; +_)

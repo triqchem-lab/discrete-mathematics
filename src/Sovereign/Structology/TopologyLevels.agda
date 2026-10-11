@@ -21,7 +21,7 @@ open import Data.Integer using (ℤ; +_; -_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- 引入律胞腔网格（作为空间底座）
-import Sovereign.Structology.LuCellGrid as LuGrid
+import Sovereign.Synthesis.LuCellGrid as LuGrid
 open LuGrid using (LuGridPoint; mkGridPoint; gridRow; gridCol)
 
 --------------------------------------------------------------------------------

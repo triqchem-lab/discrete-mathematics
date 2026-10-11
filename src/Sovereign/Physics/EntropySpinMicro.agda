@@ -31,7 +31,7 @@ open import Data.Rational.Properties
   using (+-assoc; +-comm; +-identityˡ; +-identityʳ; +-inverseʳ;
          neg-distrib-+; *-zeroʳ)
 open import Sovereign.Physics.DiscreteEMField3D using (Point3D; next)
-open import Sovereign.Physics.EntropySpinLaw
+open import Sovereign.Application.EntropySpinLaw
 open import Sovereign.Physics.EntropySpinVerification
 
 --------------------------------------------------------------------------------

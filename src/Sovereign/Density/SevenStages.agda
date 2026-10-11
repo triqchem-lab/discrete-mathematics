@@ -33,7 +33,7 @@ open import Data.Rational using (ℚ; _/_) renaming (_+_ to _+ℚ_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Bool using (Bool; true; false)
 open import Relation.Nullary.Decidable.Core using (does)
-open import Sovereign.Coupling.Zhonglv using (SovereignState; chernConservation)
+open import Sovereign.Synthesis.Zhonglv using (SovereignState; chernConservation)
 
 --------------------------------------------------------------------------------
 -- 1. 七阶段枚举

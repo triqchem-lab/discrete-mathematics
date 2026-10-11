@@ -17,7 +17,7 @@ open import Data.Fin using (Fin; toℕ; zero; suc)
 open import Data.Vec using (Vec; map; []; _∷_; replicate)
 open import Data.Bool using (Bool; true; false; if_then_else_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-import Sovereign.Coupling.LCM as LCM
+import Sovereign.Synthesis.LCM as LCM
 import Sovereign.Coding.Trit as T
 import Sovereign.Base.Axioms as Ax
 import Sovereign.Base.Invariants as Inv

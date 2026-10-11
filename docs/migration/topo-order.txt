@@ -233,7 +233,7 @@ import Sovereign.Structology.HoloInformation as HI
 import Sovereign.Structology.HolographicPi         -- 原子化: 0 postulate
 import Sovereign.Structology.IhC60Vibration        -- I_h → 46: 174 维振动表示 → 46 独立基频
 import Sovereign.Structology.LuCellGrid as LuGrid
-import Sovereign.Structology.T6 as T6
+import Sovereign.Synthesis.T6 as T6
 import Sovereign.Structology.Winding as W
 import Sovereign.Topology.MorseCoeffRoute
 import Sovereign.Infrastructure.TwoViewPlain as Plain
@@ -435,7 +435,7 @@ Sovereign.HoTT.ChernEulerLadder
 Sovereign.Algebra.CommAlgBridge
 Sovereign.Algebra.DiscreteKTheory
 Sovereign.Structology.LuCellGrid
-Sovereign.Structology.T6
+Sovereign.Synthesis.T6
 Sovereign.Algebra.Holographic.FinalAudit
 Sovereign.Structology.ElectricalTopology
 Sovereign.Structology.TopologyLevels

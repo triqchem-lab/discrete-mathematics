@@ -24,7 +24,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Relation.Nullary using (¬_)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding;
                                                   polarWindingValue; toroidalWindingValue)
-open import Sovereign.Structology.T6 using (T6Lattice)
+open import Sovereign.Synthesis.T6 using (T6Lattice)
 open import Sovereign.Format.CRT using (crtProject; T1; T2; T1-proj1; T2-proj2)
 open import Sovereign.Arithmetic.CRTLemmas using (M)
 open import Sovereign.Base.Invariants using (POW2₁₆; POW3₁₁)

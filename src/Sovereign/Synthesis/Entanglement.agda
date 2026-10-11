@@ -29,7 +29,7 @@ open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding;
 open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶;
                                                 LossGain; Sun; Yi; applyLossGain;
                                                 zhonglvClosure; lcmRemainder)
-open import Sovereign.Coupling.Zhonglv using (SovereignState; evolveStep;
+open import Sovereign.Synthesis.Zhonglv using (SovereignState; evolveStep;
                                                 chernConservation; zhonglvVerification)
 open import Sovereign.MetaStructure.WuXing using (WuXing; wuXingBase)
 

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEConservation
+-- | Sovereign.Application.NSEConservation
 -- 总量守恒主定理: 全环面对差分的求和恒为 T₀ ⇒ `nsStep` 保总量
 --
 -- 目标（台账 `NSE.conservation.torus-total`）:
@@ -24,7 +24,7 @@
 --
 -- 0 postulate / 0 hole
 
-module Sovereign.Problem.NavierStokes.NSEConservation where
+module Sovereign.Application.NSEConservation where
 
 open import Data.Fin using (zero; suc)
 open import Data.Product using (_,_)

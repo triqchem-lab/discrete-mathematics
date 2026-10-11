@@ -358,7 +358,7 @@ Sovereign.Algebra.EqualityTruncation,Data.Nat
 Sovereign.Algebra.EqualityTruncation,Data.Product
 Sovereign.Algebra.EqualityTruncation,Relation.Binary.PropositionalEquality
 Sovereign.Algebra.EqualityTruncation,Sovereign.Base.Trit
-Sovereign.Algebra.EqualityTruncation,Sovereign.Structology.T6
+Sovereign.Algebra.EqualityTruncation,Sovereign.Synthesis.T6
 Sovereign.Algebra.ExactSequence,Data.Empty
 Sovereign.Algebra.ExactSequence,Data.Nat
 Sovereign.Algebra.ExactSequence,Data.Product
@@ -478,7 +478,7 @@ Sovereign.Algebra.GF729,Relation.Nullary.Negation
 Sovereign.Algebra.GF729,Sovereign.Algebra.GF9
 Sovereign.Algebra.GF729,Sovereign.Algebra.GroupTheory.DuodecClock
 Sovereign.Algebra.GF729,Sovereign.Base.Trit
-Sovereign.Algebra.GF729,Sovereign.Structology.T6
+Sovereign.Algebra.GF729,Sovereign.Synthesis.T6
 Sovereign.Algebra.GF729Field,Data.Nat
 Sovereign.Algebra.GF729Field,Data.Product
 Sovereign.Algebra.GF729Field,Data.Sum
@@ -1069,7 +1069,7 @@ Sovereign.Algebra.Holographic.4320DClosure,Sovereign.Algebra.Jacobian.jac_Inject
 Sovereign.Algebra.Holographic.4320DClosure,Sovereign.Algebra.Jacobian.jac_Pigeonhole
 Sovereign.Algebra.Holographic.4320DClosure,Sovereign.Base.Trit
 Sovereign.Algebra.Holographic.4320DClosure,Sovereign.Problem.Riemann.FrobeniusBlind
-Sovereign.Algebra.Holographic.4320DClosure,Sovereign.Structology.T6
+Sovereign.Algebra.Holographic.4320DClosure,Sovereign.Synthesis.T6
 Sovereign.Algebra.Holographic.ClassicAnalysis,Data.Empty
 Sovereign.Algebra.Holographic.ClassicAnalysis,Data.Nat
 Sovereign.Algebra.Holographic.ClassicAnalysis,Data.Product
@@ -1648,7 +1648,7 @@ Sovereign.Algebra.ProjectionAnalysis,Data.Product
 Sovereign.Algebra.ProjectionAnalysis,Data.Vec
 Sovereign.Algebra.ProjectionAnalysis,Relation.Binary.PropositionalEquality
 Sovereign.Algebra.ProjectionAnalysis,Sovereign.Algebra.DegenerationTaxonomy
-Sovereign.Algebra.ProjectionAnalysis,Sovereign.Structology.T6
+Sovereign.Algebra.ProjectionAnalysis,Sovereign.Synthesis.T6
 Sovereign.Algebra.ProjectionDifferential,Data.Empty
 Sovereign.Algebra.ProjectionDifferential,Data.Nat
 Sovereign.Algebra.ProjectionDifferential,Data.Product
@@ -1661,7 +1661,7 @@ Sovereign.Algebra.ProjectionDiffGeo,Data.Empty
 Sovereign.Algebra.ProjectionDiffGeo,Data.Nat
 Sovereign.Algebra.ProjectionDiffGeo,Data.Nat.Properties
 Sovereign.Algebra.ProjectionDiffGeo,Relation.Binary.PropositionalEquality
-Sovereign.Algebra.ProjectionDiffGeo,Sovereign.Structology.T6
+Sovereign.Algebra.ProjectionDiffGeo,Sovereign.Synthesis.T6
 Sovereign.Algebra.ProjectionFidelity,Data.Fin
 Sovereign.Algebra.ProjectionFidelity,Data.Product
 Sovereign.Algebra.ProjectionFidelity,Relation.Binary.PropositionalEquality
@@ -2502,7 +2502,7 @@ Sovereign.Completeness.CompletenessTheorem,Sovereign.Algebra.ProjectionDifferent
 Sovereign.Completeness.CompletenessTheorem,Sovereign.Base.Trit
 Sovereign.Completeness.CompletenessTheorem,Sovereign.Foundation.Layer
 Sovereign.Completeness.CompletenessTheorem,Sovereign.Structology.A4Group
-Sovereign.Completeness.CompletenessTheorem,Sovereign.Structology.T6
+Sovereign.Completeness.CompletenessTheorem,Sovereign.Synthesis.T6
 Sovereign.Foundation.FunctorProof,Cubical.Foundations.Prelude
 Sovereign.Foundation.FunctorProof,Cubical.WildCat.Base
 Sovereign.Foundation.FunctorProof,Cubical.WildCat.Functor
@@ -2579,7 +2579,7 @@ Sovereign.Coupling.CartanTorsion,Sovereign.Coupling.Zhonglv
 Sovereign.Coupling.CartanTorsion,Sovereign.MetaStructure.WuXing
 Sovereign.Coupling.CartanTorsion,Sovereign.Foundation.AlgebraicComplex
 Sovereign.Coupling.CartanTorsion,Sovereign.Foundation.EnergyGap
-Sovereign.Coupling.CartanTorsion,Sovereign.Structology.T6
+Sovereign.Coupling.CartanTorsion,Sovereign.Synthesis.T6
 Sovereign.Coupling.CartanTorsion,Sovereign.Structology.Winding
 Sovereign.Coupling.Dynamics,Data.Bool
 Sovereign.Coupling.Dynamics,Data.Fin
@@ -2649,7 +2649,7 @@ Sovereign.Coupling.SpinTwistor,Sovereign.Coupling.LossGain
 Sovereign.Coupling.SpinTwistor,Sovereign.Coupling.ParityViolation
 Sovereign.Coupling.SpinTwistor,Sovereign.Coupling.Zhonglv
 Sovereign.Coupling.SpinTwistor,Sovereign.MetaStructure.WuXing
-Sovereign.Coupling.SpinTwistor,Sovereign.Structology.T6
+Sovereign.Coupling.SpinTwistor,Sovereign.Synthesis.T6
 Sovereign.Coupling.TQ10,Data.Bool
 Sovereign.Coupling.TQ10,Data.Fin
 Sovereign.Coupling.TQ10,Data.Integer
@@ -2859,7 +2859,7 @@ Sovereign.Geometry.ConformalCore,Data.Product
 Sovereign.Geometry.ConformalCore,Data.Vec
 Sovereign.Geometry.ConformalCore,Relation.Binary.PropositionalEquality
 Sovereign.Geometry.ConformalCore,Sovereign.Base.Trit
-Sovereign.Geometry.ConformalCore,Sovereign.Structology.T6
+Sovereign.Geometry.ConformalCore,Sovereign.Synthesis.T6
 Sovereign.Geometry.ConformalInvariants,Data.Nat
 Sovereign.Geometry.ConformalInvariants,Data.Nat.DivMod
 Sovereign.Geometry.ConformalInvariants,Relation.Binary.PropositionalEquality
@@ -2878,7 +2878,7 @@ Sovereign.Geometry.ProjectiveCore,Data.Product
 Sovereign.Geometry.ProjectiveCore,Data.Vec
 Sovereign.Geometry.ProjectiveCore,Relation.Binary.PropositionalEquality
 Sovereign.Geometry.ProjectiveCore,Sovereign.Base.Trit
-Sovereign.Geometry.ProjectiveCore,Sovereign.Structology.T6
+Sovereign.Geometry.ProjectiveCore,Sovereign.Synthesis.T6
 Sovereign.Geometry.ProjectiveInvariants,Data.Nat
 Sovereign.Geometry.ProjectiveInvariants,Relation.Binary.PropositionalEquality
 Sovereign.Geometry.ProjectiveInvariants,Sovereign.Geometry.ProjectiveCore
@@ -2891,7 +2891,7 @@ Sovereign.Geometry.ProjectiveOrbit,Data.Vec
 Sovereign.Geometry.ProjectiveOrbit,Relation.Binary.PropositionalEquality
 Sovereign.Geometry.ProjectiveOrbit,Sovereign.Geometry.ProjectiveCore
 Sovereign.Geometry.ProjectiveOrbit,Sovereign.Structology.BurnsideT6
-Sovereign.Geometry.ProjectiveOrbit,Sovereign.Structology.T6
+Sovereign.Geometry.ProjectiveOrbit,Sovereign.Synthesis.T6
 Sovereign.Geometry.ProjectiveTransform,Data.Fin
 Sovereign.Geometry.ProjectiveTransform,Data.Nat
 Sovereign.Geometry.ProjectiveTransform,Data.Product
@@ -2900,14 +2900,14 @@ Sovereign.Geometry.ProjectiveTransform,Relation.Binary.PropositionalEquality
 Sovereign.Geometry.ProjectiveTransform,Sovereign.Geometry.ProjectiveCore
 Sovereign.Geometry.ProjectiveTransform,Sovereign.Geometry.ProjectiveInvariants
 Sovereign.Geometry.ProjectiveTransform,Sovereign.Structology.A4Group
-Sovereign.Geometry.ProjectiveTransform,Sovereign.Structology.T6
+Sovereign.Geometry.ProjectiveTransform,Sovereign.Synthesis.T6
 Sovereign.Geometry.ProjectiveTransformHFM,Data.Nat
 Sovereign.Geometry.ProjectiveTransformHFM,Relation.Binary.PropositionalEquality
 Sovereign.Geometry.TorusAlgebra,Data.Fin
 Sovereign.Geometry.TorusAlgebra,Data.Vec
 Sovereign.Geometry.TorusAlgebra,Relation.Binary.PropositionalEquality
 Sovereign.Geometry.TorusAlgebra,Sovereign.Base.Trit
-Sovereign.Geometry.TorusAlgebra,Sovereign.Structology.T6
+Sovereign.Geometry.TorusAlgebra,Sovereign.Synthesis.T6
 Sovereign.Geometry.TorusFourier,Data.Fin
 Sovereign.Geometry.TorusFourier,Data.Nat
 Sovereign.Geometry.TorusFourier,Data.Product
@@ -2915,7 +2915,7 @@ Sovereign.Geometry.TorusFourier,Data.Vec
 Sovereign.Geometry.TorusFourier,Relation.Binary.PropositionalEquality
 Sovereign.Geometry.TorusFourier,Sovereign.Format.CRT
 Sovereign.Geometry.TorusFourier,Sovereign.Structology.MagicSquare144
-Sovereign.Geometry.TorusFourier,Sovereign.Structology.T6
+Sovereign.Geometry.TorusFourier,Sovereign.Synthesis.T6
 Sovereign.Geometry.TorusFourier,Sovereign.Structology.Winding
 Sovereign.Geometry.TorusGeodesic,Data.Fin
 Sovereign.Geometry.TorusGeodesic,Data.Nat
@@ -2923,7 +2923,7 @@ Sovereign.Geometry.TorusGeodesic,Data.Vec
 Sovereign.Geometry.TorusGeodesic,Relation.Binary.PropositionalEquality
 Sovereign.Geometry.TorusGeodesic,Sovereign.Geometry.TorusGeometry
 Sovereign.Geometry.TorusGeodesic,Sovereign.Structology.MagicSquare144
-Sovereign.Geometry.TorusGeodesic,Sovereign.Structology.T6
+Sovereign.Geometry.TorusGeodesic,Sovereign.Synthesis.T6
 Sovereign.Geometry.TorusGeodesic,Sovereign.Structology.Winding
 Sovereign.Geometry.TorusGeometry,Data.Fin
 Sovereign.Geometry.TorusGeometry,Data.Nat
@@ -2931,7 +2931,7 @@ Sovereign.Geometry.TorusGeometry,Data.Product
 Sovereign.Geometry.TorusGeometry,Data.Vec
 Sovereign.Geometry.TorusGeometry,Relation.Binary.PropositionalEquality
 Sovereign.Geometry.TorusGeometry,Sovereign.Base.Trit
-Sovereign.Geometry.TorusGeometry,Sovereign.Structology.T6
+Sovereign.Geometry.TorusGeometry,Sovereign.Synthesis.T6
 Sovereign.Geometry.Tryte,Data.Fin
 Sovereign.Geometry.Tryte,Data.Nat
 Sovereign.Geometry.Tryte,Data.Vec
@@ -3052,7 +3052,7 @@ Sovereign.HoTT.HomotopyPi1,Data.Vec
 Sovereign.HoTT.HomotopyPi1,Relation.Binary.PropositionalEquality
 Sovereign.HoTT.HomotopyPi1,Sovereign.Base.Trit
 Sovereign.HoTT.HomotopyPi1,Sovereign.Geometry.TorusGeometry
-Sovereign.HoTT.HomotopyPi1,Sovereign.Structology.T6
+Sovereign.HoTT.HomotopyPi1,Sovereign.Synthesis.T6
 Sovereign.HoTT.HopfConstruction,Cubical.Data.Sigma
 Sovereign.HoTT.HopfConstruction,Cubical.Data.Sigma.Properties
 Sovereign.HoTT.HopfConstruction,Cubical.Foundations.Equiv
@@ -3067,7 +3067,7 @@ Sovereign.HoTT.HopfConstruction,Data.Nat
 Sovereign.HoTT.HopfConstruction,Data.Product
 Sovereign.HoTT.HopfConstruction,Data.Vec
 Sovereign.HoTT.HopfConstruction,import Sovereign.Structology.A4Group as A4
-Sovereign.HoTT.HopfConstruction,import Sovereign.Structology.T6 as T6
+Sovereign.HoTT.HopfConstruction,import Sovereign.Synthesis.T6 as T6
 Sovereign.HoTT.HopfConstruction,Relation.Binary.PropositionalEquality
 Sovereign.HoTT.KanComposition,Data.Nat
 Sovereign.HoTT.KanComposition,Data.Nat.DivMod
@@ -3108,13 +3108,13 @@ Sovereign.HoTT.T6Homotopy,Data.Nat.Properties
 Sovereign.HoTT.T6Homotopy,Data.Product
 Sovereign.HoTT.T6Homotopy,Data.Vec
 Sovereign.HoTT.T6Homotopy,Relation.Binary.PropositionalEquality
-Sovereign.HoTT.T6Homotopy,Sovereign.Structology.T6
+Sovereign.HoTT.T6Homotopy,Sovereign.Synthesis.T6
 Sovereign.HoTT.WindingCover,Data.Fin
 Sovereign.HoTT.WindingCover,Data.Fin.Properties
 Sovereign.HoTT.WindingCover,Data.Integer
 Sovereign.HoTT.WindingCover,Data.Nat
 Sovereign.HoTT.WindingCover,Data.Product
-Sovereign.HoTT.WindingCover,import Sovereign.Structology.T6 as T6
+Sovereign.HoTT.WindingCover,import Sovereign.Synthesis.T6 as T6
 Sovereign.HoTT.WindingCover,Relation.Binary.PropositionalEquality
 Sovereign.HoTT.WindingCover,Relation.Nullary
 Sovereign.HoTT.ZeroHomologyEquivalence,Data.Product
@@ -3173,7 +3173,7 @@ Sovereign.Physics.AtomicStandingWave,Relation.Binary.PropositionalEquality
 Sovereign.Physics.AtomicStandingWave,Sovereign.Algebra.GF9
 Sovereign.Physics.AtomicStandingWave,Sovereign.Base.Trit
 Sovereign.Physics.AtomicStandingWave,Sovereign.Geometry.TorusGeometry
-Sovereign.Physics.AtomicStandingWave,Sovereign.Structology.T6
+Sovereign.Physics.AtomicStandingWave,Sovereign.Synthesis.T6
 Sovereign.Physics.ChiralInterference,Data.Product
 Sovereign.Physics.ChiralInterference,Relation.Binary.PropositionalEquality
 Sovereign.Physics.ChiralInterference,Sovereign.Algebra.GF9
@@ -3185,7 +3185,7 @@ Sovereign.Physics.ClimateDynamics,Relation.Binary.PropositionalEquality
 Sovereign.Physics.ClimateDynamics,Sovereign.Algebra.GF9
 Sovereign.Physics.ClimateDynamics,Sovereign.Base.Trit
 Sovereign.Physics.ClimateDynamics,Sovereign.Geometry.TorusGeometry
-Sovereign.Physics.ClimateDynamics,Sovereign.Structology.T6
+Sovereign.Physics.ClimateDynamics,Sovereign.Synthesis.T6
 Sovereign.Physics.DataAnchors,Data.Integer
 Sovereign.Physics.DataAnchors,Data.Nat
 Sovereign.Physics.DataAnchors,Data.Nat.Properties
@@ -3374,7 +3374,7 @@ Sovereign.Physics.HydrogenBondCoherence,Sovereign.Algebra.GF9
 Sovereign.Physics.HydrogenBondCoherence,Sovereign.Base.Invariants
 Sovereign.Physics.HydrogenBondCoherence,Sovereign.Base.Trit
 Sovereign.Physics.HydrogenBondCoherence,Sovereign.Geometry.TorusGeometry
-Sovereign.Physics.HydrogenBondCoherence,Sovereign.Structology.T6
+Sovereign.Physics.HydrogenBondCoherence,Sovereign.Synthesis.T6
 Sovereign.Physics.InvisibleOrbitCount,Data.Empty
 Sovereign.Physics.InvisibleOrbitCount,Data.Nat
 Sovereign.Physics.InvisibleOrbitCount,Data.Product
@@ -3458,7 +3458,7 @@ Sovereign.Physics.ProteinFolding,Relation.Binary.PropositionalEquality
 Sovereign.Physics.ProteinFolding,Sovereign.Algebra.GF9
 Sovereign.Physics.ProteinFolding,Sovereign.Base.Trit
 Sovereign.Physics.ProteinFolding,Sovereign.Geometry.TorusGeometry
-Sovereign.Physics.ProteinFolding,Sovereign.Structology.T6
+Sovereign.Physics.ProteinFolding,Sovereign.Synthesis.T6
 Sovereign.Physics.QuantumChemistry,Data.Fin
 Sovereign.Physics.QuantumChemistry,Data.Nat
 Sovereign.Physics.QuantumChemistry,Data.Product
@@ -3466,14 +3466,14 @@ Sovereign.Physics.QuantumChemistry,Relation.Binary.PropositionalEquality
 Sovereign.Physics.QuantumChemistry,Sovereign.Algebra.GF9
 Sovereign.Physics.QuantumChemistry,Sovereign.Base.Trit
 Sovereign.Physics.QuantumChemistry,Sovereign.Geometry.TorusGeometry
-Sovereign.Physics.QuantumChemistry,Sovereign.Structology.T6
+Sovereign.Physics.QuantumChemistry,Sovereign.Synthesis.T6
 Sovereign.Physics.QuantumErrorCorrection,Data.Nat
 Sovereign.Physics.QuantumErrorCorrection,Data.Product
 Sovereign.Physics.QuantumErrorCorrection,Relation.Binary.PropositionalEquality
 Sovereign.Physics.QuantumErrorCorrection,Sovereign.Algebra.GF9
 Sovereign.Physics.QuantumErrorCorrection,Sovereign.Base.Trit
 Sovereign.Physics.QuantumErrorCorrection,Sovereign.Geometry.TorusGeometry
-Sovereign.Physics.QuantumErrorCorrection,Sovereign.Structology.T6
+Sovereign.Physics.QuantumErrorCorrection,Sovereign.Synthesis.T6
 Sovereign.Physics.QuantumFieldAstrophysics,Data.Nat
 Sovereign.Physics.QuantumFieldAstrophysics,Data.Product
 Sovereign.Physics.QuantumFieldAstrophysics,Relation.Binary.PropositionalEquality
@@ -3527,7 +3527,7 @@ Sovereign.Physics.Superconductivity,Sovereign.Algebra.GF9
 Sovereign.Physics.Superconductivity,Sovereign.Base.Trit
 Sovereign.Physics.Superconductivity,Sovereign.Geometry.TorusGeometry
 Sovereign.Physics.Superconductivity,Sovereign.Quantum.ZeroPowerQuantum
-Sovereign.Physics.Superconductivity,Sovereign.Structology.T6
+Sovereign.Physics.Superconductivity,Sovereign.Synthesis.T6
 Sovereign.Physics.TorusChain,Data.Nat
 Sovereign.Physics.TorusChain,Data.Product
 Sovereign.Physics.TorusChain,Relation.Binary.PropositionalEquality
@@ -3554,7 +3554,7 @@ Sovereign.Physics.WaterCriticalDerivation,Relation.Binary.PropositionalEquality
 Sovereign.Physics.WaterCriticalDerivation,Sovereign.Algebra.GF9
 Sovereign.Physics.WaterCriticalDerivation,Sovereign.Base.Invariants
 Sovereign.Physics.WaterCriticalDerivation,Sovereign.Base.Trit
-Sovereign.Physics.WaterCriticalDerivation,Sovereign.Structology.T6
+Sovereign.Physics.WaterCriticalDerivation,Sovereign.Synthesis.T6
 Sovereign.Physics.WaterQuantumIntegration,Data.Nat
 Sovereign.Physics.WaterQuantumIntegration,Data.Product
 Sovereign.Physics.WaterQuantumIntegration,Relation.Binary.PropositionalEquality
@@ -3562,14 +3562,14 @@ Sovereign.Physics.WaterQuantumIntegration,Sovereign.Algebra.GF9
 Sovereign.Physics.WaterQuantumIntegration,Sovereign.Base.Invariants
 Sovereign.Physics.WaterQuantumIntegration,Sovereign.Base.Trit
 Sovereign.Physics.WaterQuantumIntegration,Sovereign.Geometry.TorusGeometry
-Sovereign.Physics.WaterQuantumIntegration,Sovereign.Structology.T6
+Sovereign.Physics.WaterQuantumIntegration,Sovereign.Synthesis.T6
 Sovereign.Physics.WaterStates,Data.Fin
 Sovereign.Physics.WaterStates,Data.Nat
 Sovereign.Physics.WaterStates,Data.Product
 Sovereign.Physics.WaterStates,Relation.Binary.PropositionalEquality
 Sovereign.Physics.WaterStates,Sovereign.Algebra.GF9
 Sovereign.Physics.WaterStates,Sovereign.Base.Trit
-Sovereign.Physics.WaterStates,Sovereign.Structology.T6
+Sovereign.Physics.WaterStates,Sovereign.Synthesis.T6
 Sovereign.Physics.WaterStructure,Data.Nat
 Sovereign.Physics.WaterStructure,Data.Product
 Sovereign.Physics.WaterStructure,Relation.Binary.PropositionalEquality
@@ -3577,7 +3577,7 @@ Sovereign.Physics.WaterStructure,Sovereign.Algebra.GF9
 Sovereign.Physics.WaterStructure,Sovereign.Base.Trit
 Sovereign.Physics.WaterStructure,Sovereign.Geometry.TorusGeometry
 Sovereign.Physics.WaterStructure,Sovereign.Quantum.ZeroPowerQuantum
-Sovereign.Physics.WaterStructure,Sovereign.Structology.T6
+Sovereign.Physics.WaterStructure,Sovereign.Synthesis.T6
 Sovereign.Problem.ABC.ABCL1,Data.Product
 Sovereign.Problem.ABC.ABCL1,Relation.Binary.PropositionalEquality
 Sovereign.Problem.ABC.ABCL1,Relation.Nullary
@@ -4248,7 +4248,7 @@ Sovereign.Quantum.ZeroPowerQuantum,Relation.Binary.PropositionalEquality
 Sovereign.Quantum.ZeroPowerQuantum,Sovereign.Algebra.GF9
 Sovereign.Quantum.ZeroPowerQuantum,Sovereign.Base.Trit
 Sovereign.Quantum.ZeroPowerQuantum,Sovereign.Geometry.TorusGeometry
-Sovereign.Quantum.ZeroPowerQuantum,Sovereign.Structology.T6
+Sovereign.Quantum.ZeroPowerQuantum,Sovereign.Synthesis.T6
 Sovereign.Foundation.AlgebraicComplex,Data.Integer
 Sovereign.Foundation.AlgebraicComplex,Data.Rational
 Sovereign.Foundation.AlgebraicComplex,Relation.Binary.PropositionalEquality
@@ -4372,7 +4372,7 @@ Sovereign.Structology.Aether,Relation.Binary.PropositionalEquality
 Sovereign.Structology.Aether,Relation.Binary.PropositionalEquality.Properties
 Sovereign.Structology.Aether,Relation.Nullary
 Sovereign.Structology.Aether,Sovereign.Coupling.LossGain
-Sovereign.Structology.Aether,Sovereign.Structology.T6
+Sovereign.Structology.Aether,Sovereign.Synthesis.T6
 Sovereign.Structology.Aether,Sovereign.Structology.Winding
 Sovereign.Structology.ArthurMagicSquare,Data.Fin
 Sovereign.Structology.ArthurMagicSquare,Data.Product
@@ -4570,7 +4570,7 @@ Sovereign.Structology.MagicSquare144,Relation.Nullary
 Sovereign.Structology.MagicSquare144,Sovereign.Arithmetic.CRTLemmas
 Sovereign.Structology.MagicSquare144,Sovereign.Base.Invariants
 Sovereign.Structology.MagicSquare144,Sovereign.Format.CRT
-Sovereign.Structology.MagicSquare144,Sovereign.Structology.T6
+Sovereign.Structology.MagicSquare144,Sovereign.Synthesis.T6
 Sovereign.Structology.MagicSquare144,Sovereign.Structology.Winding
 Sovereign.Structology.MagicSquare144Partition,Data.Nat
 Sovereign.Structology.MagicSquare144Partition,Data.Product
@@ -4638,7 +4638,7 @@ Sovereign.Structology.Platonics,Relation.Nullary.Decidable
 Sovereign.Structology.Platonics,Sovereign.Base.ZeroGeometry
 Sovereign.Structology.Platonics,Sovereign.Structology.A4Group
 Sovereign.Structology.Platonics,Sovereign.Structology.MagicSquareM4
-Sovereign.Structology.Platonics,Sovereign.Structology.T6
+Sovereign.Structology.Platonics,Sovereign.Synthesis.T6
 Sovereign.Structology.Platonics,Sovereign.Structology.Winding
 Sovereign.Structology.PlatonicTorusProjection,Data.Empty
 Sovereign.Structology.PlatonicTorusProjection,Data.Fin
@@ -4677,7 +4677,7 @@ Sovereign.Structology.QuantumBridge,Sovereign.Structology.A4Group
 Sovereign.Structology.QuantumBridge,Sovereign.Structology.MagicSquare144
 Sovereign.Structology.QuantumBridge,Sovereign.Structology.MagicSquareM4
 Sovereign.Structology.QuantumBridge,Sovereign.Structology.Platonics
-Sovereign.Structology.QuantumBridge,Sovereign.Structology.T6
+Sovereign.Structology.QuantumBridge,Sovereign.Synthesis.T6
 Sovereign.Structology.QuantumBridge,Sovereign.Structology.Winding
 Sovereign.Structology.S3IsGL22,Data.Bool
 Sovereign.Structology.S3IsGL22,Data.Fin
@@ -4707,7 +4707,7 @@ Sovereign.Structology.SphericalVector,Relation.Binary.PropositionalEquality
 Sovereign.Structology.SphericalVector,Sovereign.Algebra.GroupTheory.DuodecClock
 Sovereign.Structology.SphericalVector,Sovereign.Base.Trit
 Sovereign.Structology.SphericalVector,Sovereign.Structology.A4Representations
-Sovereign.Structology.SphericalVector,Sovereign.Structology.T6
+Sovereign.Structology.SphericalVector,Sovereign.Synthesis.T6
 Sovereign.Structology.StandingWave,Data.Product
 Sovereign.Structology.StandingWave,Relation.Binary.PropositionalEquality
 Sovereign.Structology.StandingWave,Sovereign.Algebra.Character.FrequencyMode
@@ -4716,40 +4716,40 @@ Sovereign.Structology.StandingWave,Sovereign.Base.Trit
 Sovereign.Structology.StandingWave,Sovereign.Structology.A4Representation
 Sovereign.Structology.T6A4Burnside,Data.Nat
 Sovereign.Structology.T6A4Burnside,Relation.Binary.PropositionalEquality
-Sovereign.Structology.T6,Agda.Builtin.Equality
-Sovereign.Structology.T6,Agda.Builtin.Equality.Rewrite
-Sovereign.Structology.T6,Agda.Builtin.Nat
-Sovereign.Structology.T6,Cubical.Data.Equality.Conversion
-Sovereign.Structology.T6,Cubical.Foundations.Equiv
-Sovereign.Structology.T6,Cubical.Foundations.Isomorphism
-Sovereign.Structology.T6,Cubical.Foundations.Prelude
-Sovereign.Structology.T6,Cubical.HITs.SetQuotients
-Sovereign.Structology.T6,Cubical.HITs.SetTruncation
-Sovereign.Structology.T6,Cubical.HITs.SetTruncation.Properties
-Sovereign.Structology.T6,Cubical.Relation.Nullary
-Sovereign.Structology.T6,Cubical.Relation.Nullary.Properties
-Sovereign.Structology.T6,Data.Empty
-Sovereign.Structology.T6,Data.Fin
-Sovereign.Structology.T6,Data.Fin.Properties
-Sovereign.Structology.T6,Data.Integer
-Sovereign.Structology.T6,Data.Nat
-Sovereign.Structology.T6,Data.Nat.Divisibility
-Sovereign.Structology.T6,Data.Nat.DivMod
-Sovereign.Structology.T6,Data.Nat.Properties
-Sovereign.Structology.T6,Data.Product
-Sovereign.Structology.T6,Data.Vec
-Sovereign.Structology.T6,Data.Vec.Properties
-Sovereign.Structology.T6,import Data.Fin as Fin
-Sovereign.Structology.T6,import Data.Fin.Properties as FinP
-Sovereign.Structology.T6,import Relation.Binary.PropositionalEquality as PropEq
-Sovereign.Structology.T6,import Sovereign.Structology.A4Group as A4
-Sovereign.Structology.T6,Relation.Binary.PropositionalEquality
-Sovereign.Structology.T6,Relation.Nullary
+Sovereign.Synthesis.T6,Agda.Builtin.Equality
+Sovereign.Synthesis.T6,Agda.Builtin.Equality.Rewrite
+Sovereign.Synthesis.T6,Agda.Builtin.Nat
+Sovereign.Synthesis.T6,Cubical.Data.Equality.Conversion
+Sovereign.Synthesis.T6,Cubical.Foundations.Equiv
+Sovereign.Synthesis.T6,Cubical.Foundations.Isomorphism
+Sovereign.Synthesis.T6,Cubical.Foundations.Prelude
+Sovereign.Synthesis.T6,Cubical.HITs.SetQuotients
+Sovereign.Synthesis.T6,Cubical.HITs.SetTruncation
+Sovereign.Synthesis.T6,Cubical.HITs.SetTruncation.Properties
+Sovereign.Synthesis.T6,Cubical.Relation.Nullary
+Sovereign.Synthesis.T6,Cubical.Relation.Nullary.Properties
+Sovereign.Synthesis.T6,Data.Empty
+Sovereign.Synthesis.T6,Data.Fin
+Sovereign.Synthesis.T6,Data.Fin.Properties
+Sovereign.Synthesis.T6,Data.Integer
+Sovereign.Synthesis.T6,Data.Nat
+Sovereign.Synthesis.T6,Data.Nat.Divisibility
+Sovereign.Synthesis.T6,Data.Nat.DivMod
+Sovereign.Synthesis.T6,Data.Nat.Properties
+Sovereign.Synthesis.T6,Data.Product
+Sovereign.Synthesis.T6,Data.Vec
+Sovereign.Synthesis.T6,Data.Vec.Properties
+Sovereign.Synthesis.T6,import Data.Fin as Fin
+Sovereign.Synthesis.T6,import Data.Fin.Properties as FinP
+Sovereign.Synthesis.T6,import Relation.Binary.PropositionalEquality as PropEq
+Sovereign.Synthesis.T6,import Sovereign.Structology.A4Group as A4
+Sovereign.Synthesis.T6,Relation.Binary.PropositionalEquality
+Sovereign.Synthesis.T6,Relation.Nullary
 Sovereign.Structology.T6FiveDimensionalProjection,Data.Fin
 Sovereign.Structology.T6FiveDimensionalProjection,Data.Product
 Sovereign.Structology.T6FiveDimensionalProjection,Data.Vec
 Sovereign.Structology.T6FiveDimensionalProjection,Relation.Binary.PropositionalEquality
-Sovereign.Structology.T6FiveDimensionalProjection,Sovereign.Structology.T6
+Sovereign.Structology.T6FiveDimensionalProjection,Sovereign.Synthesis.T6
 Sovereign.Synthesis.T6Rewrite,Agda.Builtin.Equality
 Sovereign.Synthesis.T6Rewrite,Agda.Builtin.Equality.Rewrite
 Sovereign.Synthesis.T6Rewrite,Agda.Builtin.Nat
@@ -4817,7 +4817,7 @@ Sovereign.Infrastructure.TestMemory,Sovereign.Algebra.Jacobian.jac_Matrix
 Sovereign.Infrastructure.TestMemory,Sovereign.Base.Invariants
 Sovereign.Infrastructure.TestMemory,Sovereign.Base.Trit
 Sovereign.Infrastructure.TestMemory,Sovereign.Structology.A4Group
-Sovereign.Infrastructure.TestMemory,Sovereign.Structology.T6
+Sovereign.Infrastructure.TestMemory,Sovereign.Synthesis.T6
 Sovereign.Topology.AlexandroffFinite,Data.Empty
 Sovereign.Topology.AlexandroffFinite,Data.Fin
 Sovereign.Topology.AlexandroffFinite,Data.Fin.Properties

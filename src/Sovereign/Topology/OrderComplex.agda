@@ -138,7 +138,7 @@ lin3-chain2-01 = (z≤n , λ ())
 -- 「图连通层（AtkinQAnalysis.Path）」「0 层核（McCordCore）」焊成一体。
 --------------------------------------------------------------------------------
 
-open import Sovereign.Topology.AtkinQAnalysis using (Path; cons; nil)
+open import Sovereign.Synthesis.AtkinQAnalysis using (Path; cons; nil)
 
 -- 三元链 → 比较图上 x → z 的显式路径（经 y 两跳）
 chain3-path : ∀ {n} (P : FinitePoset n) {x y z : Fin n} →

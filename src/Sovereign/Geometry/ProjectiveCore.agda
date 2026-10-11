@@ -16,7 +16,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans
 
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_)
-open import Sovereign.Structology.T6 using (T6Lattice)
+open import Sovereign.Synthesis.T6 using (T6Lattice)
 
 --------------------------------------------------------------------------------
 -- 1. Fin 3 上的 C₃ 与 C₂ 作用

@@ -23,7 +23,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym
 open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; wuXingBase)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR; fullTourCorrect)
-open import Sovereign.Structology.MagicSquareM4 using (magicConstant)
+open import Sovereign.Synthesis.MagicSquareM4 using (magicConstant)
 open import Sovereign.Arithmetic.CRTLemmas using (POW2; POW3; M)
 open import Sovereign.Foundation.DigitalRoot using (digitalRoot; StableRoot; root0; root3; root6; isStableRoot)
 open import Data.List using (List; _∷_; [])
@@ -166,8 +166,8 @@ alignment-vs-tour = refl
 -- 位权: 1, 3, 9, 27, 81, ..., 3^29
 -- 3^29 = 68630377364883 > LCM, 3^30 > LCM (LCM模块已证)
 
-open import Sovereign.Coupling.LCM using (SOVEREIGN_LCM; powersOf3)
-open Sovereign.Coupling.LCM using (sectionToCoordinate; coordinateToSection)
+open import Sovereign.Synthesis.LCM using (SOVEREIGN_LCM; powersOf3)
+open Sovereign.Synthesis.LCM using (sectionToCoordinate; coordinateToSection)
 
 -- |截断性质: SOVEREIGN_LCM < 3^30 (LCM模块已证)
 -- 这意味着 30 个 Trit 足以唯一编码整个 LCM 环上的任意元素
@@ -351,7 +351,7 @@ wuxing-dual-structure = refl , refl , refl
 -- |T⁶ 格点: 3⁶ = 729, 由 GF(3) 在每个 S¹ 因子上生成
 -- T6Lattice = Vec GF3 6 (from Structology/T6)
 -- 这是"量子化晶格" — 离散第一性的直接体現
-open import Sovereign.Structology.T6 using (T6Lattice; A4Element)
+open import Sovereign.Synthesis.T6 using (T6Lattice; A4Element)
 
 -- |环面缠绕: 144×46 = 6624
 -- 144 = A₄ 对称剖分 (空间)
@@ -594,7 +594,7 @@ open import Sovereign.Format.CRT using (crtTheorem)
 -- crtTheorem x: crtReconstruct(crtProject x) ≡ x % M
 
 -- |已验证: M4 正交 (MagicSquareM4)
-open import Sovereign.Structology.MagicSquareM4
+open import Sovereign.Synthesis.MagicSquareM4
   using (orth-v34-v0; eigenEq34; eigenEq0)
 -- orth-v34-v0:     v34·v0 = 0 ✅
 -- eigenEq34:       M4·v34 = 34·v34 ✅
@@ -1018,7 +1018,7 @@ GF9-ConjugatePair x = Σ GF9 (λ y → (y ≡ x) ⊎ (y ≡ galoisConjugate x))
 --------------------------------------------------------------------------------
 
 open import Sovereign.Structology.A4Group as A4 using (A4; perm)
-open import Sovereign.Structology.T6 using (allA4)
+open import Sovereign.Synthesis.T6 using (allA4)
 
 -- A4 置换在 GF9⁶ 上的实现 (同 applyPerm 但作用于 GF9 类型)
 applyPermGF9 : (Fin 4 → Fin 4) → GF9⁶ → GF9⁶
@@ -1082,7 +1082,7 @@ GF9⁶-ConjugateOrbit x = Σ GF9⁶ (λ y → (y ≡ x) ⊎ (y ≡ galoisConjuga
 -- 总 CRT 像为 4D: (polar_re, toroidal_re, polar_im, toroidal_im)
 --------------------------------------------------------------------------------
 
-open import Sovereign.Structology.T6 as T6
+open import Sovereign.Synthesis.T6 as T6
   using (T6Lattice; polarCRT; toroidalCRT; gf3Toℕ; applyPerm; gf3Toℕ-A4-inv)
 open import Sovereign.Base.Trit as Trit using (Trit; T₀; T₁; T₂; tritToFin3)
 

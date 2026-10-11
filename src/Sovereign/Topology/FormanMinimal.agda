@@ -33,7 +33,7 @@ open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; trans)
 open import Sovereign.Base.Trit using (Trit)
-open import Sovereign.Topology.AtkinQAnalysis
+open import Sovereign.Synthesis.AtkinQAnalysis
   using (Graph; Path; cons; nil)
 
 --------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ conservation = refl
 -- m₀ = 2 与 β₀ = 1 相容（m₀ ≥ β₀ 的实例面；完整不等式接同调，见诚实边界 1）。
 --------------------------------------------------------------------------------
 
-open import Sovereign.Topology.AtkinQAnalysis
+open import Sovereign.Synthesis.AtkinQAnalysis
   using (Path; cons; nil; Graph; tri)
 
 v1-v2 : Graph.Edge tri (fsuc fzero) (fsuc (fsuc fzero))

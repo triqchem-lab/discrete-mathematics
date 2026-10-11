@@ -31,7 +31,7 @@ open import Sovereign.Algebra.GF9
         ; galoisNorm; gf9-pow; zero-power-gf9
         ; alpha-squared; alpha-powers-4
         )
-open import Sovereign.Structology.T6 using (T6Lattice)
+open import Sovereign.Synthesis.T6 using (T6Lattice)
 
 --------------------------------------------------------------------------------
 -- §1. 框架推导: 六重对称性

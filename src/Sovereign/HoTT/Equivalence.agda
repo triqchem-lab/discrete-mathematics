@@ -38,7 +38,7 @@ open import Data.Nat.Base using (_≡ᵇ_; _%_)
 open import Data.Nat.DivMod using (_mod_; m%n<n)
 open import Data.Fin.Properties using (toℕ-fromℕ<)
 import Sovereign.Infrastructure.StateMachine as SM
-import Sovereign.Coupling.LCM as LCM
+import Sovereign.Synthesis.LCM as LCM
 import Sovereign.Coding.Trit as T
 
 -- 导入高维几何模型 (Geometry)

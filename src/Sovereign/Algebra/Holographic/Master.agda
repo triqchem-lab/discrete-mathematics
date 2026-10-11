@@ -46,10 +46,10 @@ import Sovereign.Algebra.Jacobian.jac_CRTDet       -- CRT 拱顶石
 
 -- (III) 同调消失 (四种链复形)
 import Sovereign.Problem.Hodge.Hodge         -- 三角: (1,1)
-import Sovereign.Problem.Hodge.HodgeTetra    -- S²: (1,0,1)
-import Sovereign.Problem.Hodge.TorusHodge    -- T²: (1,2,1)
-import Sovereign.Problem.Hodge.KleinHodge    -- Klein: (1,1,0)
-import Sovereign.Problem.Hodge.EulerChar     -- ℤ 欧拉全部闭合
+import Sovereign.Application.HodgeTetra    -- S²: (1,0,1)
+import Sovereign.Application.TorusHodge    -- T²: (1,2,1)
+import Sovereign.Application.KleinHodge    -- Klein: (1,1,0)
+import Sovereign.Application.EulerChar     -- ℤ 欧拉全部闭合
 
 -- (IV) 质量间隙
 import Sovereign.Problem.YangMills.YM_L3         -- 2/3/4×4 λ()

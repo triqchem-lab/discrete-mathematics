@@ -24,7 +24,7 @@ open import Data.Nat.Properties using (≤-refl; ≤-pred; +-mono-≤; *-mono-�
 open import Data.Product using (_×_; _,_; Σ; Σ-syntax)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans)
 
-open import Sovereign.Structology.T6
+open import Sovereign.Synthesis.T6
   using (T6Lattice; GF3; polarStep; toroidalStep; iterate; step1; step1-cubed-id)
 
 --------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ data PathT6 : T6Lattice → T6Lattice → Set where
 -- [待核对·草稿矛盾] -- 极向环路 (3 步, 周期 3)
 -- [待核对·草稿矛盾] polarLoop : ∀ p → LoopT6 p
 -- [待核对·草稿矛盾] polarLoop p = Polar⁺ ∷ Polar⁺ ∷ Polar⁺ ∷ [] , polarHolonomy p
--- [待核对·草稿矛盾]   where open Sovereign.Structology.T6 using (polarHolonomy)
+-- [待核对·草稿矛盾]   where open Sovereign.Synthesis.T6 using (polarHolonomy)
 --
 -- [待核对·草稿矛盾] -- 环向... 需要 toroidalHolonomy (postulate)
 -- [待核对·草稿矛盾] -- toroidalLoop p = Toroidal⁺ ∷ Toroidal⁺ ∷ ... ∷ [] , toroidalHolonomy p
@@ -94,7 +94,7 @@ data PathT6 : T6Lattice → T6Lattice → Set where
 -- [待核对·草稿矛盾]     replicate : ℕ → StepDir → Vec StepDir 144
 -- [待核对·草稿矛盾]     replicate zero    d = []
 -- [待核对·草稿矛盾]     replicate (suc n) d = d ∷ replicate n d
--- [待核对·草稿矛盾]     open Sovereign.Structology.T6 using (polarHolonomy)
+-- [待核对·草稿矛盾]     open Sovereign.Synthesis.T6 using (polarHolonomy)
 
 --------------------------------------------------------------------------------
 -- 4. 环路空间结构

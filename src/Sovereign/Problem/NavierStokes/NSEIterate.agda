@@ -31,7 +31,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans)
 
 open import Sovereign.Problem.NavierStokes.NSEOnT6 using
   (Field; Incompressible; nsStep; iterate)
-open import Sovereign.Problem.NavierStokes.NSEConservation using (totalF; total-nsStep)
+open import Sovereign.Application.NSEConservation using (totalF; total-nsStep)
 open import Sovereign.Problem.NavierStokes.NSEIncompressible using (nsStep-incompressible)
 
 --------------------------------------------------------------------------------

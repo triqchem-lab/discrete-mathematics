@@ -26,7 +26,7 @@ open import Data.Fin using (Fin; zero; suc; toℕ)
 open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_; 0ℚ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-import Sovereign.Structology.LuCellGrid as LuGrid
+import Sovereign.Synthesis.LuCellGrid as LuGrid
 open LuGrid using (LuGridPoint)
 
 --------------------------------------------------------------------------------

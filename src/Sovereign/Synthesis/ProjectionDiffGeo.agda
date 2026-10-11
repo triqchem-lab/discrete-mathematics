@@ -27,7 +27,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; _<_; z≤n; s≤s)
 open import Data.Nat.Properties using (+-mono-≤; *-mono-≤; ≤-refl)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Structology.T6 using (T6Lattice; t6Cardinality)
+open import Sovereign.Synthesis.T6 using (T6Lattice; t6Cardinality)
 
 --------------------------------------------------------------------------------
 -- §1. T⁶ 离散环面基本常数

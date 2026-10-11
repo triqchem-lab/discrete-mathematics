@@ -1,7 +1,7 @@
 {-# OPTIONS --rewriting --guardedness --cubical #-}
 -- --cubical：项目库默认旗标；FreeAbQuotient 的 Path ≡ 需要
 
--- | Sovereign.Topology.ChainQuotIso
+-- | Sovereign.Synthesis.ChainQuotIso
 -- M7 收官补全：高阶同调群同构机制——ker/im 泛型化
 --
 -- 数学内容：
@@ -17,7 +17,7 @@
 --   本模块闭合「同构机制的接口层 + 零商实例 + 三级对账」。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.ChainQuotIso where
+module Sovereign.Synthesis.ChainQuotIso where
 
 open import Data.Nat using (ℕ; zero)
 open import Cubical.Foundations.Prelude

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.A4GenWords
+-- | Sovereign.Synthesis.A4GenWords
 -- A₄ 的生成元词表示 + 离散路径桥 — 把 12×12 同态穷举符号化为
 --   生成元对引理 (≤27 案) + 词归纳传播
 --
@@ -18,7 +18,7 @@
 -- 包含: Gen/gen, Word/ev/wordOf/ev-wordOf, pathToEqFin1..4, pathToEqA4,
 --       ⊗-assocₚ, fromPerm-permₚ
 
-module Sovereign.Structology.A4GenWords where
+module Sovereign.Synthesis.A4GenWords where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Fin using (Fin; zero; suc)

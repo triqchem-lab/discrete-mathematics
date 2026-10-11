@@ -334,7 +334,7 @@ chi3-values = refl , refl , refl , refl
 
 open import Data.Product using (proj₁)
 open import Relation.Binary.PropositionalEquality using (sym; cong; trans)
-open import Sovereign.Structology.A4GenWords
+open import Sovereign.Synthesis.A4GenWords
   using (Word; ε; _▸_; gen; ev; ⊗-assocₚ; pathToEqA4)
 open import Sovereign.Structology.A4Group using (identity)
 

@@ -1,6 +1,6 @@
 {-# OPTIONS --cubical --guardedness --rewriting #-}
 
--- | Sovereign.Structology.T6
+-- | Sovereign.Synthesis.T6
 -- T⁶ 离散商空间：复三维/实六维环面的内禀定义
 --
 -- 一句话定位: T⁶ = (GF(3))⁶ = 729 点有限离散空间, 4320D 基 3 归约引擎。
@@ -10,7 +10,7 @@
 --   ③ REWRITE 规则 — div3k/mod3k/gf3Toℕ-A4-inv 替代 mod-helper 表达式展开
 -- 主定理: T6Lattice ≃ Fin 729 (t6ToFin/finToT6 双射, 左逆 toℕ-sum-injective 4320D 剥离链, 右逆 DivMod 代数)
 
-module Sovereign.Structology.T6 where
+module Sovereign.Synthesis.T6 where
 
 open import Agda.Builtin.Equality using (_≡_; refl)
 open import Agda.Builtin.Nat using (div-helper; mod-helper; Nat; _*_)

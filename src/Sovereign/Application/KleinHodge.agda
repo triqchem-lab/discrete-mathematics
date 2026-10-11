@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.KleinHodge
+-- | Sovereign.Application.KleinHodge
 -- Klein 瓶 Hodge 分解（第四种同调型）
 --
 -- 数学背景：Klein 瓶 CW 复形 C₀=1, C₁=2, C₂=1：面边界 aba⁻¹b = 2b → im(∂₂)=span(b)、rank=1——非可定向曲面的 Hodge 分解实例（第四种同调型对照）。
@@ -14,7 +14,7 @@
 --   （命名正名：旧头注 `jac_KleinHodge` ≠ 模块名，2026-10-11 勘误）
 
 --
-module Sovereign.Problem.Hodge.KleinHodge where
+module Sovereign.Application.KleinHodge where
 
 open import Data.Nat using (ℕ; _∸_)
 open import Data.Product using (_×_; _,_)

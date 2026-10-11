@@ -28,7 +28,7 @@ open import Sovereign.Algebra.GF9
         ; galoisNorm; gf9-pow; zero-power-gf9
         ; alpha-squared; alpha-powers-4
         )
-open import Sovereign.Structology.T6 using (T6Lattice)
+open import Sovereign.Synthesis.T6 using (T6Lattice)
 open import Sovereign.Geometry.TorusGeometry
   using ( t6Add; t6Zero; t6Neg
         ; t6Add-identityˡ

@@ -6,4 +6,4 @@
 -- 期望（P2 生效后）：rc=0
 module Techniques.Infect where
 
-open import Sovereign.Structology.T6 using (div3k)
+open import Sovereign.Synthesis.T6 using (div3k)

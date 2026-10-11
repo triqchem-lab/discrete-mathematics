@@ -30,7 +30,7 @@ open import Data.Rational.Properties
   using (+-assoc; +-comm; +-identityˡ; +-identityʳ; +-inverseʳ;
          neg-distrib-+; *-zeroʳ)
 open import Sovereign.Physics.DiscreteEMField3D using (Point3D; next)
-open import Sovereign.Physics.EntropySpinLaw
+open import Sovereign.Application.EntropySpinLaw
 
 -- ℚ 双负 (stdlib 2.4 未导出; mkℚ 三情形 refl)
 negneg : ∀ p → - (- p) ≡ p

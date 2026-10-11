@@ -19,7 +19,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- 引入律胞腔网格（作为空间底座）
 -- 注意：不再重复定义 Cell144，而是使用 LuCellGrid 模块
-import Sovereign.Structology.LuCellGrid as LuGrid
+import Sovereign.Synthesis.LuCellGrid as LuGrid
 open LuGrid using (LuGridPoint; mkGridPoint; gridRow; gridCol; shiftPolar; shiftToroidal)
 
 --------------------------------------------------------------------------------

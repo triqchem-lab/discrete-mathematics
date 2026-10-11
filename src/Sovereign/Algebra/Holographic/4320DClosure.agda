@@ -42,7 +42,7 @@ open import Relation.Nullary using (Dec; yes; no)
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; tritToFin3; fin3ToTrit)
 
-open import Sovereign.Structology.T6
+open import Sovereign.Synthesis.T6
   using (T6Lattice; GF3; t6ToFin; finToT6; t6Cardinality;
          toℕ-sum; toℕ-sum<729; toℕ-sum-injective; rightInv; leftInv)
 

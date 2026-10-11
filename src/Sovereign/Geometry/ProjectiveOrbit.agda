@@ -16,7 +16,7 @@ open import Data.Vec using (Vec; []; _∷_)
 open import Data.Product using (_×_; _,_; Σ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
 
-open import Sovereign.Structology.T6 using (T6Lattice; toℕ-sum)
+open import Sovereign.Synthesis.T6 using (T6Lattice; toℕ-sum)
 open import Sovereign.Structology.BurnsideT6 using ()
 open import Sovereign.Geometry.ProjectiveCore
   using (GElement; g-action-full; GOrbitRel; g-id)

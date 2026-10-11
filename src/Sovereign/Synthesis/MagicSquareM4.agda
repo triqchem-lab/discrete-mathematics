@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.Structology.MagicSquareM4
+-- | Sovereign.Synthesis.MagicSquareM4
 -- 瑟尔四阶幻方 M₄ 及其 CRT 谱投影
 --
 -- 【CRT 谱投影定理】
@@ -45,7 +45,7 @@
 -- 非卢先生「矢量方向/变量计数」幻方（阶数 = 同时在变的矢量方向个数）。
 -- 辨析与知识库依据见 docs/cross-level/magic-square-terminology.md
 
-module Sovereign.Structology.MagicSquareM4 where
+module Sovereign.Synthesis.MagicSquareM4 where
 
 open import Data.Nat using (ℕ; _*_; NonZero)
 open import Data.Nat.DivMod using (_%_)

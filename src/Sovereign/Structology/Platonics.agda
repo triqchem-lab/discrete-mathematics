@@ -55,7 +55,7 @@ open import Sovereign.Base.ZeroGeometry using (PlatonicSolid; Tetrahedron; Hexah
   c5AxisCount; c5NonTrivialRotations; numPlatonicSolids)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding;
   polarWindingValue; toroidalWindingValue)
-open import Sovereign.Structology.MagicSquareM4 using (M4; magicConstant)
+open import Sovereign.Synthesis.MagicSquareM4 using (M4; magicConstant)
 
 --------------------------------------------------------------------------------
 -- 1. 正多面体对称群定义与阶数
@@ -405,7 +405,7 @@ octahedronGroup = record
 --------------------------------------------------------------------------------
 
 open import Data.Nat using (_%_; _+_; _*_; ℕ)
-open import Sovereign.Structology.T6 using (T6Lattice)
+open import Sovereign.Synthesis.T6 using (T6Lattice)
 open import Data.Nat.Properties using (+-comm; *-comm)
 
 -- 分量圆: 环面结构子流形

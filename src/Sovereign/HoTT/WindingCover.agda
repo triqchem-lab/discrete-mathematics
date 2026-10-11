@@ -19,7 +19,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; con
 open import Relation.Nullary using (Dec; yes; no)
 open import Data.Product using (_×_; _,_)
 
-import Sovereign.Structology.T6 as T6
+import Sovereign.Synthesis.T6 as T6
 open import Data.Fin.Properties using (_≟_; toℕ-injective; toℕ-fromℕ)
 open import Data.Fin using (fromℕ; lower₁)
 

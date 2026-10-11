@@ -22,13 +22,13 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product using (_×_; _,_; Σ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
-open import Sovereign.Structology.T6 using (T6Lattice; t6Cardinality)
+open import Sovereign.Synthesis.T6 using (T6Lattice; t6Cardinality)
 
 --------------------------------------------------------------------------------
 -- §1. 维度常数
 --------------------------------------------------------------------------------
 
--- T⁶ 环面维度 (引用 Sovereign.Structology.T6: T6Lattice = Vec (Fin 3) 6)
+-- T⁶ 环面维度 (引用 Sovereign.Synthesis.T6: T6Lattice = Vec (Fin 3) 6)
 T6Dimension : ℕ
 T6Dimension = 6
 

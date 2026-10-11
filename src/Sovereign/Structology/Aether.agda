@@ -26,7 +26,7 @@ open import Data.Empty using (⊥)
 open import Relation.Nullary using (¬_)
 
 -- 导入核心模块
-open import Sovereign.Structology.T6 using (T6Lattice; GF3; Cell; CellDimension; polarStep; toroidalStep; finToT6; t6ToFin; leftInv)
+open import Sovereign.Synthesis.T6 using (T6Lattice; GF3; Cell; CellDimension; polarStep; toroidalStep; finToT6; t6ToFin; leftInv)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; LossGain)

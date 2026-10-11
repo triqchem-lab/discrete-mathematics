@@ -73,7 +73,7 @@ H-carrier-pt-trivial (x , kx) i = H₁-pt-trivial x kx i
 -- §4. 零商对账——系数级（与 KerImQuot/ChainQuotIso 对账）
 --------------------------------------------------------------------------------
 
-open import Sovereign.Topology.ChainQuotIso using (Zero; zero-pt)
+open import Sovereign.Synthesis.ChainQuotIso using (Zero; zero-pt)
 
 H₁→Zero : H-carrier → Zero
 H₁→Zero p = zero-pt

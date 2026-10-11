@@ -36,10 +36,10 @@ import Sovereign.Problem.YangMills.WilsonPlaquette
 -- Hodge L3 ✅
 import Sovereign.Problem.Hodge.ChainComplex       -- hodge-decomp: nullity∂ ≡ rank∂∘suc + dimℋ
 import Sovereign.Problem.Hodge.Hodge
-import Sovereign.Problem.Hodge.HodgeTetra
-import Sovereign.Problem.Hodge.TorusHodge
-import Sovereign.Problem.Hodge.KleinHodge
-import Sovereign.Problem.Hodge.EulerChar
+import Sovereign.Application.HodgeTetra
+import Sovereign.Application.TorusHodge
+import Sovereign.Application.KleinHodge
+import Sovereign.Application.EulerChar
 
 -- BSD L3 ✅（自 L3* 升级: BSD 恒等式与 Hasse 界已由 WeilRigidity 闭合）
 import Sovereign.Problem.BSD.BSD

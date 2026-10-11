@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.AtkinQAnalysis
+-- | Sovereign.Synthesis.AtkinQAnalysis
 -- 任务书第二层·2.3：Atkin Q-analysis 与离散同伦（1970s）的构造性核
 --
 -- 数学背景：Atkin, "From cohomology in physics to q-connectivity in social
@@ -21,7 +21,7 @@
 --      bottom-connects 等消费）——互补不重复：代数律挂 PathAlg，可达性判定挂本层。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.AtkinQAnalysis where
+module Sovereign.Synthesis.AtkinQAnalysis where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

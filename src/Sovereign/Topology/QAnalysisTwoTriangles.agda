@@ -26,7 +26,7 @@ open import Data.Product using (_×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Topology.QAnalysisRecord
+open import Sovereign.Synthesis.QAnalysisRecord
   using (QAnalysis; QPathR; qreflR; share→path; qtransR; qsymR)
 
 --------------------------------------------------------------------------------

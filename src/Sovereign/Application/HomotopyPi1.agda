@@ -28,7 +28,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Vec using (Vec; []; _∷_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
-open import Sovereign.Structology.T6 using (T6Lattice; GF3)
+open import Sovereign.Synthesis.T6 using (T6Lattice; GF3)
 open import Sovereign.Geometry.TorusGeometry using (_+₃_; neg3; t6Add; t6Zero; t6Neg; g1; g2; g3; g4; g5; g6; tritOf; finOf)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-comm; ⊕-inverse; ⊕-assoc; ⊕-identityˡ; ⊕-identityʳ)
 

@@ -79,7 +79,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B015
     layer: 30-synthesis
-    modules: [Sovereign.Foundation.FiniteDynamics, Sovereign.Foundation.Finiteness.Pigeonhole, Sovereign.Application.GoodnessOfFitGF3, Sovereign.Format.Doz, Sovereign.HoTT.WindingCover, Sovereign.Infrastructure.Projection.Binary, Sovereign.Foundation.DigitalRoot, Sovereign.Structology.Closure, Sovereign.Structology.IhC60Vibration, Sovereign.Structology.T6, Sovereign.Structology.Winding, Sovereign.Topology.AlexandroffFinite]
+    modules: [Sovereign.Foundation.FiniteDynamics, Sovereign.Foundation.Finiteness.Pigeonhole, Sovereign.Application.GoodnessOfFitGF3, Sovereign.Format.Doz, Sovereign.HoTT.WindingCover, Sovereign.Infrastructure.Projection.Binary, Sovereign.Foundation.DigitalRoot, Sovereign.Structology.Closure, Sovereign.Structology.IhC60Vibration, Sovereign.Synthesis.T6, Sovereign.Structology.Winding, Sovereign.Topology.AlexandroffFinite]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B016
