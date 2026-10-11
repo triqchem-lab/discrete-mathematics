@@ -1,3 +1,5 @@
+# ⚠ 命名裁决点（2026-10-11）：本文件 layer 字段的 00-foundation/10-base 等名**不能作 Agda 模块分量**（数字开头+连字符非法）——
+# 目标层名待人类裁决（纯名形 Foundation/Base/… 推荐 vs 缩写形 F00/B10/…）；裁决前移动批不动。就地面六段式已完结（见排期修订节）。
 # schedule.yaml —— 迁移批次排期（拓扑序叶子→根；scripts/ 三件套实跑生成）
 total_modules: 781
 total_batches: 66
