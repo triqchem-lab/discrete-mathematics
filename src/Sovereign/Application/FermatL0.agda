@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Fermat.FermatL0
+-- | Sovereign.Application.FermatL0
 -- 费马大定理的离散基座 — L0 定义层
 --
 -- 数学背景:
@@ -19,7 +19,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Problem.Fermat.FermatL0 where
+module Sovereign.Application.FermatL0 where
 
 open import Data.Nat using (ℕ; zero; suc; _*_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)

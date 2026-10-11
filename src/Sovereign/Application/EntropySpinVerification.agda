@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.EntropySpinVerification
+-- | Sovereign.Application.EntropySpinVerification
 -- 渠玉芝量子熵理论的库内验证 (0 postulate, 无洞)
 --
 -- 依据已完成的库, 对熵旋定律的结构断言逐条验证:
@@ -16,7 +16,7 @@
 -- 验证方式: (Fin 3)³ 环面 + ℚ 系数, 全部符号证明; 无 funext
 -- (构造子实例化 + 环律链, 与 EntropySpinLaw 同法)。
 
-module Sovereign.Physics.EntropySpinVerification where
+module Sovereign.Application.EntropySpinVerification where
 
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Integer using (ℤ; +_; -[1+_]; +0; +[1+_])

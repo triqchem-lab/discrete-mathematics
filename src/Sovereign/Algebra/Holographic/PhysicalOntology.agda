@@ -36,7 +36,7 @@ import Sovereign.Algebra.Holographic.InfoClosure  -- 4320D 信息容量
 -- 涡旋中心 = 高 σ-迭代密度区
 -- 质量 = 涡旋中心的 5D 以太密度 = |M_F| 的特征值大小
 
-import Sovereign.Problem.Riemann.Galois      -- σ²=id (心跳)
+import Sovereign.Application.Galois      -- σ²=id (心跳)
 import Sovereign.Algebra.Jacobian.jac_GF9Matrix    -- det2/3/4-gf9
 
 -- ═══════════════════════════════════════════════════════════
@@ -76,7 +76,7 @@ import Sovereign.Problem.Hodge.ChainComplex -- 泛链复形
 -- 在深水 5D 密度轴上由同一条 CRT 螺旋测地线连接
 -- crt12-roundtrip: 3-分量与4-分量是同构的 — 深水连接瞬时不需"传"
 
-import Sovereign.Problem.Riemann.WeilRH       -- GF(3)↔GF(9) 对偶
+import Sovereign.Application.WeilRH       -- GF(3)↔GF(9) 对偶
 import Sovereign.Application.EulerChar    -- ℤ 欧拉 (全局拓扑)
 
 -- ═══════════════════════════════════════════════════════════

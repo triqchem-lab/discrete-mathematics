@@ -11,7 +11,7 @@
 --   2. 外部九圈类计算不改变本框架判定（投影层）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Problem.YangMills.YM_L3 where
+module Sovereign.Application.YM_L3 where
 
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans)

@@ -187,31 +187,31 @@ import Sovereign.Problem.Hodge.KleinHodge    -- Klein: (1
 import Sovereign.Problem.Hodge.TorusHodge
 import Sovereign.Problem.Hodge.TorusHodge    -- T² 驻波
 import Sovereign.Problem.Hodge.TorusHodge    -- T²: (1
-import Sovereign.Problem.Kakeya.KakeyaGF3
+import Sovereign.Application.KakeyaGF3
 import Sovereign.Problem.Kakeya.KakeyaGF9
 import Sovereign.Problem.Kakeya.KakeyaMF
 import Sovereign.Problem.Kakeya.KakeyaPathology
-import Sovereign.Problem.Langlands.DeligneLusztig  -- DL 独立形式化
-import Sovereign.Problem.Langlands.DeligneLusztig  -- 外部形式化
+import Sovereign.Application.DeligneLusztig  -- DL 独立形式化
+import Sovereign.Application.DeligneLusztig  -- 外部形式化
 import Sovereign.Problem.Langlands.GL2TestVectors
 import Sovereign.Problem.Langlands.Langlands
 import Sovereign.Problem.Langlands.S4Burnside
 import Sovereign.Problem.NavierStokes.NSE          -- 12 定理
 import Sovereign.Problem.NavierStokes.NSRegularity -- §5 动力学: step³-id/单射/能量守恒/周期
-import Sovereign.Problem.NavierStokes.NSVortex
+import Sovereign.Application.NSVortex
 import Sovereign.Problem.PvsNP.Complexity
 import Sovereign.Problem.PvsNP.Complexity     -- 2×2 has-root
 import Sovereign.Problem.PvsNP.DetMul
 import Sovereign.Problem.PvsNP.GF27Separation
-import Sovereign.Problem.PvsNP.PvsNP_Conjecture
-import Sovereign.Problem.PvsNP.PvsNP_Conjecture -- 形式猜想
+import Sovereign.Application.PvsNP_Conjecture
+import Sovereign.Application.PvsNP_Conjecture -- 形式猜想
 import Sovereign.Problem.PvsNP.PvsNP_Separation
-import Sovereign.Problem.Riemann.Galois
-import Sovereign.Problem.Riemann.Galois      -- σ²=id (心跳)
+import Sovereign.Application.Galois
+import Sovereign.Application.Galois      -- σ²=id (心跳)
 import Sovereign.Problem.Riemann.RH
-import Sovereign.Problem.Riemann.WeilRH
-import Sovereign.Problem.Riemann.WeilRH          -- Weil 独立形式化
-import Sovereign.Problem.Riemann.WeilRH       -- GF(3)↔GF(9) 对偶
+import Sovereign.Application.WeilRH
+import Sovereign.Application.WeilRH          -- Weil 独立形式化
+import Sovereign.Application.WeilRH       -- GF(3)↔GF(9) 对偶
 import Sovereign.Problem.Riemann.WeilRigidity     -- t²+3s²=4q
 import Sovereign.Problem.Riemann.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
 import Sovereign.Problem.YangMills.SU2_Embedding
@@ -219,8 +219,8 @@ import Sovereign.Problem.YangMills.WilsonPlaquette
 import Sovereign.Problem.YangMills.WilsonPlaquette -- 单plaquette
 import Sovereign.Problem.YangMills.YM_DetMul
 import Sovereign.Problem.YangMills.YM_Full
-import Sovereign.Problem.YangMills.YM_L3          -- 平凡构型 gap
-import Sovereign.Problem.YangMills.YM_L3         -- 2/3/4×4 λ()
+import Sovereign.Application.YM_L3          -- 平凡构型 gap
+import Sovereign.Application.YM_L3         -- 2/3/4×4 λ()
 import Sovereign.Problem.YangMills.YM_SpectralGap -- 精确谱 λ₀=4/λ₁=1
 import Sovereign.Projection.Decimal.Axioms as DecimalAx
 import Sovereign.RootMath.DigitalRoot as DR
@@ -331,7 +331,7 @@ Sovereign.HoTT.M4CRTBridge
 Sovereign.HoTT.PhaseAlignment6624
 Sovereign.HoTT.PhaseTransitionPaths
 Sovereign.MetaStructure.WuXing
-Sovereign.Physics.AlphaRelation
+Sovereign.Application.AlphaRelation
 Sovereign.Physics.DiscreteEMField3D
 Sovereign.Physics.DiscreteEMField
 Sovereign.Physics.ObservabilityAngle
@@ -354,8 +354,8 @@ Sovereign.Problem.Langlands.GL2TestVectors
 Sovereign.Problem.Langlands.Langlands
 Sovereign.Problem.Langlands.Langlands_L15
 Sovereign.Problem.Langlands.S4Burnside
-Sovereign.Problem.PvsNP.PvsNP_Conjecture
-Sovereign.Problem.Riemann.WeilRH
+Sovereign.Application.PvsNP_Conjecture
+Sovereign.Application.WeilRH
 Sovereign.Projection
 Sovereign.RootMath.AlgebraicComplex
 Sovereign.Foundation.Arithmetic
@@ -523,12 +523,12 @@ Sovereign.Physics.ElasticityDiscrete
 Sovereign.Physics.IsingTriangle
 Sovereign.Problem.BSD.BSD
 Sovereign.Problem.BSD.EllipticComplex
-Sovereign.Problem.Fermat.FermatL0
+Sovereign.Application.FermatL0
 Sovereign.Problem.Hodge.EckmannGF3
-Sovereign.Problem.Kakeya.KakeyaGF3
+Sovereign.Application.KakeyaGF3
 Sovereign.Problem.NavierStokes.NSE
 Sovereign.Problem.NavierStokes.NSEOnT6
-Sovereign.Problem.NavierStokes.NSVortex
+Sovereign.Application.NSVortex
 Sovereign.Problem.PvsNP.Algorithm
 Sovereign.Problem.PvsNP.Complexity3
 Sovereign.Problem.PvsNP.CubicRoot
@@ -551,7 +551,7 @@ Sovereign.Topology.MorseSqZeroK3
 Sovereign.HoTT.CanonicityAlignment
 Sovereign.HoTT.KanComposition
 Sovereign.Coupling.ParityViolation
-Sovereign.Physics.DiscreteDiffOps
+Sovereign.Application.DiscreteDiffOps
 Sovereign.Physics.DiscreteEMCore
 Sovereign.Physics.EntropySpinLaw
 Sovereign.Problem.ABC.L1Disjunction
@@ -697,7 +697,7 @@ Sovereign.Physics.WaterCriticalDerivation
 Sovereign.Physics.WaterStates
 Sovereign.Problem.Fermat.FermatL3
 Sovereign.Problem.Kakeya.KakeyaGF9
-Sovereign.Problem.Riemann.Galois
+Sovereign.Application.Galois
 Sovereign.Problem.Riemann.Variety
 Sovereign.Problem.Sqrt2.GF9Sqrt2
 Sovereign.Problem.YangMills.YM_SpectralGap
@@ -729,12 +729,12 @@ Sovereign.Coding.CyclicGF27
 Sovereign.Topology.MorseBoundaryDT
 Sovereign.Topology.MorsePairingLaw
 Sovereign.Analysis.IntegrationByParts
-Sovereign.Physics.DiscreteLagrangian
+Sovereign.Application.DiscreteLagrangian
 Sovereign.Physics.DiscreteActionPrinciple
 Sovereign.Physics.DiscreteMaxwellTime
 Sovereign.Topology.DeRhamComplex
 Sovereign.Topology.HomologicalAlgebra
-Sovereign.Physics.EntropySpinVerification
+Sovereign.Application.EntropySpinVerification
 Sovereign.Constitution.Boundaries
 Sovereign.Coupling.TQ10
 Sovereign.Coupling.Zhonglv
@@ -771,7 +771,7 @@ Sovereign.Algebra.HenselMigration729
 Sovereign.Algebra.HenselMigration81
 Sovereign.Algebra.HenselMigration
 Sovereign.HoTT.HomotopyPi1
-Sovereign.Physics.AtomicStandingWave
+Sovereign.Application.AtomicStandingWave
 Sovereign.Physics.ClimateDynamics
 Sovereign.Physics.HydrogenBondCoherence
 Sovereign.Physics.ProteinFolding
@@ -785,7 +785,7 @@ Sovereign.Algebra.DiscreteRepresentation
 Sovereign.Algebra.Holographic.Representation
 Sovereign.Analysis.SymmetricGroupCharStats
 Sovereign.Applied.ParticlePhysics
-Sovereign.Problem.Langlands.DeligneLusztig
+Sovereign.Application.DeligneLusztig
 Sovereign.Structology.McKayA4
 Sovereign.Applied.PleiadianCosmology
 Sovereign.Applied.SignalProcessing
@@ -839,7 +839,7 @@ Sovereign.Problem.YangMills.WilsonLoop
 Sovereign.Problem.YangMills.WilsonPlaquette
 Sovereign.Problem.YangMills.YM_Action
 Sovereign.Problem.YangMills.YM_Full
-Sovereign.Problem.YangMills.YM_L3
+Sovereign.Application.YM_L3
 Sovereign.Problem.YangMills.YM_Transfer
 Sovereign.Problem.YangMills.YMTransfer
 Sovereign.Algebra.InformationStructure

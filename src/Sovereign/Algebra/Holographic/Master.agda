@@ -52,12 +52,12 @@ import Sovereign.Application.KleinHodge    -- Klein: (1,1,0)
 import Sovereign.Application.EulerChar     -- ℤ 欧拉全部闭合
 
 -- (IV) 质量间隙
-import Sovereign.Problem.YangMills.YM_L3         -- 2/3/4×4 λ()
+import Sovereign.Application.YM_L3         -- 2/3/4×4 λ()
 import Sovereign.Application.WilsonPlaquette -- 单plaquette
 
 -- (V) 全息穿透
 import Sovereign.Application.Complexity     -- 2×2 has-root
-import Sovereign.Problem.PvsNP.PvsNP_Conjecture -- 形式猜想
+import Sovereign.Application.PvsNP_Conjecture -- 形式猜想
 
 -- ═══════════════════════════════════════════════════════════
 -- 三大闭包 + 外部定理
@@ -65,9 +65,9 @@ import Sovereign.Problem.PvsNP.PvsNP_Conjecture -- 形式猜想
 import Sovereign.Algebra.Jacobian.jac_Pigeonhole     -- 组合
 import Sovereign.Application.jac_AutT6           -- 群论
 import Sovereign.Algebra.Holographic.InfoClosure     -- 信息论
-import Sovereign.Problem.Riemann.WeilRH          -- Weil 独立形式化
+import Sovereign.Application.WeilRH          -- Weil 独立形式化
 import Sovereign.Problem.Hodge.DeligneHodge    -- Deligne 独立形式化
-import Sovereign.Problem.Langlands.DeligneLusztig  -- DL 独立形式化
+import Sovereign.Application.DeligneLusztig  -- DL 独立形式化
 
 -- ═══════════════════════════════════════════════════════════
 -- 59 模块, 0 postulate. 统一定理: 五等价 + CRT 推广.

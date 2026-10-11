@@ -14,7 +14,7 @@
 -- 复用: Sovereign.Base.Trit (GF(3) 运算)
 -- 0 postulate.
 
-module Sovereign.Problem.NavierStokes.NSVortex where
+module Sovereign.Application.NSVortex where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

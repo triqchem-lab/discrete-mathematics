@@ -22,7 +22,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
-open import Sovereign.Problem.NavierStokes.NSVortex using (
+open import Sovereign.Application.NSVortex using (
   Point3; Vec3; VelocityField; Vorticity;
   zero-field; uniform-flow; gf3-diff; vorticity-bounded)
 

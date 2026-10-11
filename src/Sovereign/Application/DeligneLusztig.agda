@@ -9,7 +9,7 @@
 --   2. 表示/特征标计算为离散实例核，不断言一般自守形式
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Problem.Langlands.DeligneLusztig where
+module Sovereign.Application.DeligneLusztig where
 
 open import Data.Nat using (ℕ; _*_; _+_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

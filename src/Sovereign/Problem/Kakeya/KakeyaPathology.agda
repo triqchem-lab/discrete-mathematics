@@ -40,7 +40,7 @@ open import Sovereign.Algebra.GF9 using (
   galoisFixedPoint;
   conjugatePair-size-1; conjugatePair-size-2)
 
-open import Sovereign.Problem.Kakeya.KakeyaGF3 using (
+open import Sovereign.Application.KakeyaGF3 using (
   GF3Vec; GF3¹; GF3²; GF3³;
   card-GF3¹; card-GF3²; card-GF3³;
   Dir2; d-horiz; d-vert; d-diag1; d-diag2;

@@ -28,7 +28,7 @@ open import Sovereign.Physics.DiscreteEMField3D
          neg3-involutive; neg3-add)
 
 -- 1D 变分结果
-open import Sovereign.Physics.DiscreteLagrangian
+open import Sovereign.Application.DiscreteLagrangian
   using (δS-equals-Δ²; satisfies-EL; is-critical;
          variational-equals-laplacian; critical-to-el; el-to-critical)
 

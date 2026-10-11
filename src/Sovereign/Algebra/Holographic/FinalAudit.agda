@@ -23,10 +23,10 @@ module Sovereign.Algebra.Holographic.FinalAudit where
 -- Navier-Stokes L3 ✅
 import Sovereign.Problem.NavierStokes.NSE          -- 12 定理, 0 postulate
 import Sovereign.Problem.NavierStokes.NSRegularity -- §5 动力学: step³-id/单射/能量守恒/周期
-import Sovereign.Problem.NavierStokes.NSVortex
+import Sovereign.Application.NSVortex
 
 -- Yang-Mills L3 ✅
-import Sovereign.Problem.YangMills.YM_L3          -- 平凡构型 gap, 0 postulate
+import Sovereign.Application.YM_L3          -- 平凡构型 gap, 0 postulate
 import Sovereign.Problem.YangMills.YM_SpectralGap -- 精确谱 λ₀=4/λ₁=1, Δ=3>0, tr/det 一致性
 import Sovereign.Problem.YangMills.YM_Full
 import Sovereign.Problem.YangMills.YM_DetMul
@@ -48,24 +48,24 @@ import Sovereign.Problem.BSD.BSD_GF27
 import Sovereign.Problem.BSD.BSD_General
 
 -- RH L3 ✅（自 L0+ 升级: 有限域 Weil 定理的整数形式 + Eisenstein 共轭对刚性）
-import Sovereign.Problem.Riemann.WeilRH
+import Sovereign.Application.WeilRH
 import Sovereign.Application.WeilRigidity     -- t²+3s²=4q, L(E,1)=#E, α+conj(α)=t, αβ=q
 import Sovereign.Problem.Riemann.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
 import Sovereign.Problem.Riemann.RH
-import Sovereign.Problem.Riemann.Galois
+import Sovereign.Application.Galois
 import Sovereign.Problem.BSD.ZetaDiscrete
 
 -- Langlands L3 ✅（自 L1.5 升级: Steinberg 正交性为真证明, 类结构 8·1+28·90+36·72+8·80=5760）
 import Sovereign.Problem.Langlands.GL2TestVectors
 import Sovereign.Problem.Langlands.Langlands
 import Sovereign.Problem.Langlands.S4Burnside
-import Sovereign.Problem.Langlands.DeligneLusztig  -- 外部形式化
+import Sovereign.Application.DeligneLusztig  -- 外部形式化
 
 -- PvsNP L3 ✅（separation: ∃f, EvalAlways f ∧ ∀r f(r)≢0 — 不可约三次见证, 0 postulate）
 --           + GF27Separation: 根集 = Frobenius 共轭三元组 {γ,γ³,γ⁹}, 27 元素穷举恰好 3 根
 import Sovereign.Application.Complexity
 import Sovereign.Problem.PvsNP.DetMul
-import Sovereign.Problem.PvsNP.PvsNP_Conjecture
+import Sovereign.Application.PvsNP_Conjecture
 import Sovereign.Problem.PvsNP.PvsNP_Separation
 import Sovereign.Application.GF27Separation
 
@@ -81,7 +81,7 @@ import Sovereign.Analysis.FiniteProbability  -- GF(3)ⁿ 均匀链 + 有理期�
 import Sovereign.Foundation.Eisenstein  -- *ᵉ-assoc/comm + conjᵉ-mul + norm-mul + unitGen C₆ 循环
 
 -- Kakeya L3 ✅
-import Sovereign.Problem.Kakeya.KakeyaGF3
+import Sovereign.Application.KakeyaGF3
 import Sovereign.Problem.Kakeya.KakeyaGF9
 import Sovereign.Problem.Kakeya.KakeyaMF
 import Sovereign.Problem.Kakeya.KakeyaPathology

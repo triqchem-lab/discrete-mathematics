@@ -16,7 +16,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Problem.Kakeya.KakeyaGF3 where
+module Sovereign.Application.KakeyaGF3 where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; _<_; s≤s; z≤n)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)

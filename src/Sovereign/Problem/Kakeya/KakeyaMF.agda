@@ -46,7 +46,7 @@ open import Sovereign.Algebra.Jacobian.jac_Pigeonhole using (
 open import Sovereign.Algebra.Jacobian.jac_CRTDet using (
   det2-gf3; crt-det-I₂; crt-det-nonzero)
 
-open import Sovereign.Problem.Kakeya.KakeyaGF3 using (
+open import Sovereign.Application.KakeyaGF3 using (
   Dir2; d-horiz; d-vert; d-diag1; d-diag2;
   dir2-card; Point2; line-point; line-size)
 

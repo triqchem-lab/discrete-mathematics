@@ -33,7 +33,7 @@ open import Data.Rational.Properties
          neg-distrib-+; *-zeroʳ; *-zeroˡ; *-identityˡ; *-distribʳ-+)
 open import Sovereign.Physics.DiscreteEMField3D using (Point3D; next)
 open import Sovereign.Application.EntropySpinLaw
-open import Sovereign.Physics.EntropySpinVerification using (S-field)
+open import Sovereign.Application.EntropySpinVerification using (S-field)
 open import Sovereign.Application.EntropySpinMicro using (zeroΨ; planeSum; plane-distrib2; zero-minus-zero-plus)
 
 2ℚ : ℚ

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteLagrangian
+-- | Sovereign.Application.DiscreteLagrangian
 -- 离散拉格朗日密度 — 真实 GF(3) 计算 + 变分推导 (0 postulate)
 --
 -- 深度证明 (全部 27 case 穷举 refl):
@@ -11,7 +11,7 @@
 --
 -- 全部 0 postulate。
 
-module Sovereign.Physics.DiscreteLagrangian where
+module Sovereign.Application.DiscreteLagrangian where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
@@ -23,7 +23,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; neg
 open import Sovereign.Physics.DiscreteEMField3D
   using (Point3D; GF3; next; add3; neg3;
          add3-comm; add3-assoc; add3-identity; add3-inverse)
-open import Sovereign.Physics.DiscreteDiffOps using (prev)
+open import Sovereign.Application.DiscreteDiffOps using (prev)
 
 --------------------------------------------------------------------------------
 -- 1D 三点环面

@@ -25,7 +25,15 @@ FERMAT_DIR="src/Sovereign/Problem/Fermat"
 CHAIN="FermatL0 FermatL1 FermatL2 FermatL3 FermatL4_NatLift FermatL4_Mod12Cycle"
 # 词法 (非注释) 扫描对象: 真正的 postulate/hole 声明
 declare -a FILES
-for m in $CHAIN; do FILES+=("$FERMAT_DIR/$m.agda"); done
+# [波5 修复 2026-10-11] 迁移容忍形：链成员按 find 全库解析（波4 移 FermatL1 致硬编码路径断链——
+#   定稿映射表迁移中，成员实际位置以 find 为准；FERMAT_DIR 保留为首选探测目录）
+for m in $CHAIN; do
+  f=""
+  if [ -f "$FERMAT_DIR/$m.agda" ]; then f="$FERMAT_DIR/$m.agda"
+  else f=$(find src/Sovereign -name "$m.agda" -not -path "*/archive/*" | head -1); fi
+  if [ -z "$f" ]; then echo "FAIL: 链成员 $m 未找到（断链）"; exit 42; fi
+  FILES+=("$f")
+done
 
 fail_compile=0
 fail_post=0
@@ -43,7 +51,11 @@ echo "agda: $AGDA"
 echo ""
 
 for m in $CHAIN; do
-  f="$FERMAT_DIR/$m.agda"
+  # [波5 修复] 迁移容忍形（同 FILES 构造段——波4 断链根因：此行重推旧路径）
+  f=""
+  if [ -f "$FERMAT_DIR/$m.agda" ]; then f="$FERMAT_DIR/$m.agda"
+  else f=$(find src/Sovereign -name "$m.agda" -not -path "*/archive/*" | head -1); fi
+  if [ -z "$f" ]; then echo "❌ $m: 链成员未找到（断链）"; fail_compile=1; continue; fi
   # 1) 编译
   if $AGDA "$f" >/tmp/fermat_chain_$$.log 2>&1; then
     echo "✅ $m: exit=0"

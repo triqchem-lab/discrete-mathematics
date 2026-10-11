@@ -44,7 +44,7 @@ open import Sovereign.Application.DiscreteEMCore
   using (div-curl-zero; gauge-invariance)
 
 -- 差分算子
-open import Sovereign.Physics.DiscreteDiffOps
+open import Sovereign.Application.DiscreteDiffOps
   using (prev; backwardDx; backwardDy; backwardDz)
 
 --------------------------------------------------------------------------------

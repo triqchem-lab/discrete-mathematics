@@ -17,7 +17,7 @@ module Sovereign.Physics.DiscreteLagrangianChecks where
 
 open import Data.Fin using (Fin) renaming (zero to fz)
 open import Data.Product using (_×_; _,_)
-open import Sovereign.Physics.DiscreteLagrangian
+open import Sovereign.Application.DiscreteLagrangian
   using (satisfies-EL; is-critical; critical-to-el; el-to-critical; el-const)
 
 ---------------------------------------------------------------------------------

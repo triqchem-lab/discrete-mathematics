@@ -35,7 +35,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_
   ; ⊕-identityˡ; ⊕-identityʳ; ⊕-comm; ⊕-assoc; ⊗-identityˡ; ⊗-identityʳ; ⊗-comm; ⊗-assoc
   ; ⊗-distribˡ-⊕)
-open import Sovereign.Problem.Fermat.FermatL0 using (pow3; pow3-expand)
+open import Sovereign.Application.FermatL0 using (pow3; pow3-expand)
 open import Sovereign.Application.FermatL1 using (pow3-even)
 
 --------------------------------------------------------------------------------

@@ -34,7 +34,7 @@ open import Sovereign.Application.DiscreteMaxwellTime
          FaradayHolds; AmpereHolds; GaussHolds;
          FaradayStep; AmpereStep;
          charge-conservation)
-open import Sovereign.Physics.DiscreteLagrangian
+open import Sovereign.Application.DiscreteLagrangian
   using (δS-equals-Δ²; variational-equals-laplacian; satisfies-EL)
 
 --------------------------------------------------------------------------------

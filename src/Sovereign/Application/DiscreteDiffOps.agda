@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteDiffOps
+-- | Sovereign.Application.DiscreteDiffOps
 -- 离散差分算子 — 前向/后向差分 + 分部求和 (0 postulate)
 --
 -- §1 后向差分 ∇_μ (prev = next∘next)
 -- §2 分部求和 (1D 三点, 穷举 refl)
 -- §3 差分交换 (引用 DiscreteEMField3D)
 
-module Sovereign.Physics.DiscreteDiffOps where
+module Sovereign.Application.DiscreteDiffOps where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

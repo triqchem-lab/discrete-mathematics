@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Riemann.Galois
+-- | Sovereign.Application.Galois
 -- 离散 Galois 理论 — 有限域扩张的 Galois 群与基本定理
 --
 -- 核心定理:
@@ -11,7 +11,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Problem.Riemann.Galois where
+module Sovereign.Application.Galois where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (_×_; _,_)

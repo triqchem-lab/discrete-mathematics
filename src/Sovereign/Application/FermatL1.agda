@@ -31,7 +31,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_; _⊕_; ⊗-identityˡ; ⊗-identityʳ; ⊗-assoc)
 
-open import Sovereign.Problem.Fermat.FermatL0 using (pow3; _≢₃_; pow3-zero-odd)
+open import Sovereign.Application.FermatL0 using (pow3; _≢₃_; pow3-zero-odd)
 
 --------------------------------------------------------------------------------
 -- §1. 平方坍缩: 非零元的平方 = 1 (特征 3 的第一原理)

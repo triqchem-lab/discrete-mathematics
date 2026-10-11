@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.AtomicStandingWave
+-- | Sovereign.Application.AtomicStandingWave
 -- 原子驻波与量子场势垒 — T⁶ 环面上的波动模式
 --
 -- 核心洞察:
@@ -18,7 +18,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.AtomicStandingWave where
+module Sovereign.Application.AtomicStandingWave where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_; _∸_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

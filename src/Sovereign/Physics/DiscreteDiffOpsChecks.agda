@@ -18,7 +18,7 @@ module Sovereign.Physics.DiscreteDiffOpsChecks where
 
 open import Data.Fin using (Fin) renaming (zero to fz)
 open import Relation.Binary.PropositionalEquality using (_≡_)
-open import Sovereign.Physics.DiscreteDiffOps
+open import Sovereign.Application.DiscreteDiffOps
   using (sum-forward; sum-backward; diff-sum;
          integration-by-parts-1d; integration-by-parts-zero)
 

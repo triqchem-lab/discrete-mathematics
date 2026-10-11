@@ -32,7 +32,7 @@ open import Data.Rational.Properties
          neg-distrib-+; *-zeroʳ)
 open import Sovereign.Physics.DiscreteEMField3D using (Point3D; next)
 open import Sovereign.Application.EntropySpinLaw
-open import Sovereign.Physics.EntropySpinVerification
+open import Sovereign.Application.EntropySpinVerification
 
 --------------------------------------------------------------------------------
 -- §0. 平面求和与零差引理

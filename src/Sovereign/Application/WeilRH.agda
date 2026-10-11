@@ -7,7 +7,7 @@
 --   1. Weil 有限域 RH 的 GF(3)/GF(9) 双实例独立形式化（点计数 e/t 对照）；
 --   2. 诚实边界：实例核对非 RH 全定理（连续统 RH 不在本框架射程）。
 -- 包含：e13、e13ok、t11、t21、e19、e23、e23ok、t12
-module Sovereign.Problem.Riemann.WeilRH where
+module Sovereign.Application.WeilRH where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Nat using (ℕ)

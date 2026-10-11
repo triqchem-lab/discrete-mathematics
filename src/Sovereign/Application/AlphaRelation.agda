@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.AlphaRelation
+-- | Sovereign.Application.AlphaRelation
 -- 候选常数关系: α_wuxing ≡ 2³ · α_em（偏差 0.135%，待独立验证）
 --
 -- 数学背景：五行精细结构候选常数关系——α_wuxing 与 α_em 的 8 倍比值关系。
@@ -13,7 +13,7 @@
 --
 -- 包含：two-cubed（2³ 件）· Candidate（候选关系模块：比值/偏差声明）
 
-module Sovereign.Physics.AlphaRelation where
+module Sovereign.Application.AlphaRelation where
 
 open import Data.Rational using (ℚ; _*_; _+_; 1ℚ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
