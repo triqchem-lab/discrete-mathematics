@@ -24,11 +24,11 @@
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.LaurentRing where
 
-open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _*_)
+open import Data.Integer using (ℤ; +_; -[1+_]; +0; +[1+_]; _+_; _*_)
 open import Data.Integer.Properties using (_≟_)
 open import Data.List using (List; []; _∷_)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; _≢_)
 open import Relation.Nullary using (yes; no)
 open import Relation.Nullary.Decidable using (¬?)
 open import Sovereign.Algebra.LaurentDistrib
@@ -98,3 +98,93 @@ open import Relation.Binary.PropositionalEquality using (cong)
 -- 加法单位（norm 等价下）：R0 = []，List 层右单位即得
 +-identity-norm : ∀ a → norm (a ++L R0) ≡ norm a
 +-identity-norm a = cong norm (++-identityʳ a)
+
+-- ────────────────────────────────────────────────────────────────────
+-- ── 2026-10-11 Stage3 ── 四难律收口（NoZero 前提版）
+--   路线：sums 逐点相等 → canon-sums-unique-nz 提升。
+--   原签名 norm (a ++L b) ≡ norm a ++L norm b **为假**（同指数反例
+--   a=[(1,0)] b=[(2,0)：LHS [(3,0)]、RHS [(1,0),(2,0)]）——正解为
+--   norm-复合形（右端再 norm）；+-comm-norm 形本就成立。
+-- ────────────────────────────────────────────────────────────────────
+
+open import Data.Integer.Properties using (+-comm)
+open import Data.Unit using (tt)
+open import Sovereign.Algebra.LaurentMulAssoc using (*-assoc; *-++-distribˡ)
+open import Relation.Binary.PropositionalEquality using (trans; cong; sym)
+open import Relation.Nullary using (¬_)
+open import Sovereign.Algebra.LaurentSums
+  using (NoZero; norm-nozero; ++L-nozero; sums; sums-++L; norm-sums;
+         canon-sums-unique-nz; sums-resp-↭)
+
+-- ℤ 无零因子：非零积非零
+*-nz : ∀ (c d : ℤ) → c ≢ + 0 → d ≢ + 0 → (c * d) ≢ + 0
+*-nz +0 d hc _ = λ _ → hc refl
+*-nz c +0 _ hd = λ _ → hd refl
+*-nz +[1+ m ] +[1+ n ] _ _ = λ ()
+*-nz +[1+ m ] (-[1+ n ]) _ _ = λ ()
+*-nz (-[1+ m ]) +[1+ n ] _ _ = λ ()
+*-nz (-[1+ m ]) (-[1+ n ]) _ _ = λ ()
+
+-- mapL/mulTerm 保 NoZero（逐项非零积）
+mapL-noz : ∀ (x : LaurentTerm) ys → proj₁ x ≢ + 0 → NoZero ys →
+           NoZero (mapL (mulTerm x) ys)
+mapL-noz x [] _ _ = tt
+mapL-noz x ((c , n) ∷ ys) hx (hc , nys) = *-nz (proj₁ x) c hx hc , mapL-noz x ys hx nys
+
+-- *L 保 NoZero（foldr 拼接逐段保持）
+*L-nozero : ∀ xs ys → NoZero xs → NoZero ys → NoZero (xs *L ys)
+*L-nozero [] ys _ _ = tt
+*L-nozero ((c , n) ∷ xs) ys (hc , nxs) nys =
+  ++L-nozero (mapL (mulTerm (c , n)) ys) (xs *L ys)
+    (mapL-noz (c , n) ys hc nys) (*L-nozero xs ys nxs nys)
+
+-- 提升件（sums 逐点链 → canon-sums-unique-nz；两端 norm 输出自动 Canon）
+lift-norm : ∀ (xs ys : Laurent) (nx : NoZero xs) (ny : NoZero ys) →
+            (∀ u → sums u xs ≡ sums u ys) → norm xs ≡ norm ys
+lift-norm xs ys nx ny eqs =
+  canon-sums-unique-nz (norm xs) (norm ys)
+    (proj₂ (normC xs)) (proj₂ (normC ys))
+    (norm-nozero xs nx) (norm-nozero ys ny)
+    (λ u → trans (norm-sums u xs) (trans (eqs u) (sym (norm-sums u ys))))
+
+-- 律 1：+-comm-norm（norm 交换）
++-comm-norm : ∀ a b → NoZero a → NoZero b → norm (a ++L b) ≡ norm (b ++L a)
++-comm-norm a b na nb =
+  lift-norm (a ++L b) (b ++L a) (++L-nozero a b na nb) (++L-nozero b a nb na)
+    (λ u → trans (sums-++L u a b) (trans (+-comm (sums u a) (sums u b)) (sym (sums-++L u b a))))
+
+-- 律 2：norm-+（正解 = norm 复合形；原「≡ norm a ++L norm b」形为假见段注）
+--   逐点中段具名拆分 norm-+-pw（外链 3 + 内链 2，各 ≤3）
+norm-+-pw : ∀ u xs ys → NoZero xs → NoZero ys →
+            sums u xs + sums u ys ≡ sums u (norm xs) + sums u (norm ys)
+norm-+-pw u xs ys nx ny =
+  trans (cong (λ z → z + sums u ys) (sym (norm-sums u xs)))
+    (cong (λ z → sums u (norm xs) + z) (sym (norm-sums u ys)))
+
+norm-+ : ∀ xs ys → NoZero xs → NoZero ys →
+         norm (xs ++L ys) ≡ norm (norm xs ++L norm ys)
+norm-+ xs ys nx ny =
+  lift-norm (xs ++L ys) (norm xs ++L norm ys)
+    (++L-nozero xs ys nx ny)
+    (++L-nozero (norm xs) (norm ys) (norm-nozero xs nx) (norm-nozero ys ny))
+    (λ u → trans (sums-++L u xs ys)
+            (trans (norm-+-pw u xs ys nx ny)
+                   (sym (sums-++L u (norm xs) (norm ys)))))
+
+-- 律 3：distrib-norm（分配律——distrib-perm 置换捷径）
+distrib-norm : ∀ a b c → NoZero a → NoZero b → NoZero c →
+               norm (a *L (b ++L c)) ≡ norm ((a *L b) ++L (a *L c))
+distrib-norm a b c na nb nc =
+  lift-norm (a *L (b ++L c)) ((a *L b) ++L (a *L c))
+    (*L-nozero a (b ++L c) na (++L-nozero b c nb nc))
+    (++L-nozero (a *L b) (a *L c) (*L-nozero a b na nb) (*L-nozero a c na nc))
+    (λ u → sums-resp-↭ u (distrib-perm a b c))
+
+-- 律 4：*-assoc-norm（乘法结合 norm 等价）——LaurentMulAssoc.*-assoc 为全列表相等
+--   ⇒ cong norm 直得，**免 NoZero 前提**（比四难律原计划更强）
+*-assoc-norm : ∀ a b c → norm ((a *L b) *L c) ≡ norm (a *L (b *L c))
+*-assoc-norm a b c = cong norm (*-assoc a b c)
+
+-- 右分配（bonus）：*-++-distribˡ 为全列表相等 ⇒ 同样免前提
+distrib-norm-r : ∀ a b c → norm ((a ++L b) *L c) ≡ norm ((a *L c) ++L (b *L c))
+distrib-norm-r a b c = cong norm (*-++-distribˡ a b c)

@@ -480,3 +480,275 @@ norm-sums : ∀ (u : LaurentTerm) (xs : Laurent) →
   sums u (norm xs) ≡ sums u xs
 norm-sums = normC-s
 
+
+
+-- ────────────────────────────────────────────────────────────────────
+-- ── 2026-10-11 Stage3 ──
+-- 四难律收口·核心件：NoZero 保持 / canon-sums-unique-nz / sums 拆合
+--   路线：sums 逐点相等 → canon-sums-unique-nz 提升（NoZero 前提）。
+--   为何要 NoZero：insertCᵌ 保留孤零项（insert (0,n) [] = [(0,n)]），
+--   含零项的 Canon 之间 sums 相等推不出列表相等（反例 [(0,n)] vs []）。
+-- ────────────────────────────────────────────────────────────────────
+
+open import Data.Integer.Properties using (+-assoc; +-identityˡ)
+open import Sovereign.Algebra.LaurentCanon using (canon-unique; ∈[]-absurd)
+open import Sovereign.Algebra.LaurentBase using (_++L_)
+
+-- NoZero 结构件
+noz-head : ∀ (c : ℤ) n ts → NoZero ((c , n) ∷ ts) → c ≢ + 0
+noz-head c n ts nz = proj₁ nz
+
+noz-tail : ∀ (c : ℤ) n ts → NoZero ((c , n) ∷ ts) → NoZero ts
+noz-tail c n ts nz = proj₂ nz
+
+-- InT 成员的系数非零（成员构造子即字面相等）
+inT-noz : ∀ (t : LaurentTerm) ts → NoZero ts → InT t ts → proj₁ t ≢ + 0
+inT-noz (c , n) ((.c , .n) ∷ ts) (hn , _) (here _ _) = hn
+inT-noz (c , n) (u ∷ ts) (_ , nt) (there _ _ _ w) = inT-noz (c , n) ts nt w
+
+-- ++L 保 NoZero（拼接不造零系数项）
+++L-nozero : ∀ xs ys → NoZero xs → NoZero ys → NoZero (xs ++L ys)
+++L-nozero [] ys _ ny = ny
+++L-nozero ((c , n) ∷ xs) ys (hc , nx) ny = hc , ++L-nozero xs ys nx ny
+
+-- 严格序即相异
+<-≢ : ∀ {a b : ℤ} → a < b → a ≢ b
+<-≢ lt refl = <-irrefl refl lt
+
+-- sums 只依赖 u 的指数
+sums-idx : ∀ u v ts → proj₂ u ≡ proj₂ v → sums u ts ≡ sums v ts
+sums-idx u v [] _ = refl
+sums-idx u v ((c , n) ∷ ts) e with proj₂ u ≟ n | proj₂ v ≟ n
+... | yes _ | yes _ = cong (λ z → c + z) (sums-idx u v ts e)
+... | yes p | no q = ⊥-elim (q (trans (sym e) p))
+... | no p | yes q = ⊥-elim (p (trans e q))
+... | no _ | no _ = sums-idx u v ts e
+
+-- 头指数相异 ⇒ sums 跳过头
+sums-skip-≠ : ∀ u (x : LaurentTerm) xs → proj₂ u ≢ proj₂ x → sums u (x ∷ xs) ≡ sums u xs
+sums-skip-≠ u (c , n) xs ne with proj₂ u ≟ n
+... | yes p = ⊥-elim (ne p)
+... | no _ = refl
+
+-- 全员指数 ≠ proj₂ u ⇒ sums 为零
+sums-absent : ∀ u xs → Canon xs → (∀ y → InT y xs → proj₂ y ≢ proj₂ u) → sums u xs ≡ + 0
+sums-absent u [] _ _ = refl
+sums-absent u ((c , n) ∷ ys) cy ne with proj₂ u ≟ n
+... | yes p = ⊥-elim (ne (c , n) (here (c , n) ys) (sym p))
+... | no _ = sums-absent u ys (canon-tail cy) (λ y iy → ne y (there y (c , n) ys iy))
+
+-- Canon 成员提取：sums t xs = proj₁ t（同指数唯一）
+sums-member : ∀ t xs → Canon xs → InT t xs → sums t xs ≡ proj₁ t
+sums-member (c , n) ((.c , .n) ∷ []) (canon-one _) (here _ _) with n ≟ n
+... | yes _ = +-identityʳ c
+... | no q = ⊥-elim (q refl)
+sums-member (c , n) ((.c , .n) ∷ (y ∷ ys)) (canon-cons _ y ys p s) (here _ _) with n ≟ n
+... | yes _ = trans (cong (λ z → c + z) (sums-absent (c , n) (y ∷ ys) s below)) (+-identityʳ c)
+  where
+  below : ∀ h → InT h (y ∷ ys) → proj₂ h ≢ proj₂ (c , n)
+  below .y (here .y .ys) = <-≢ p
+  below h (there .h .y .ys iy) = <-≢ (<-trans (canon-<-head s h iy) p)
+... | no q = ⊥-elim (q refl)
+sums-member (c , n) ((c' , n') ∷ ts) cx (there _ _ _ w) =
+  trans (sums-skip-≠ (c , n) (c' , n') ts (<-≢ (canon-<-head cx (c , n) w)))
+        (sums-member (c , n) ts (canon-tail cx) w)
+
+-- 指数分裂：ys 中存在同指数项，或全员指数相异（Canon 下 decidable）
+exp-split : ∀ (t : LaurentTerm) (xs : Laurent) → Canon xs →
+  (Σ LaurentTerm (λ y → InT y xs × (proj₂ y ≡ proj₂ t)))
+  ⊎ (∀ y → InT y xs → proj₂ y ≢ proj₂ t)
+exp-split t [] _ = inj₂ (λ y iy → ⊥-elim (∈[]-absurd iy))
+exp-split t (x ∷ xs) cx with proj₂ t ≟ proj₂ x
+... | yes e = inj₁ (x , here x xs , sym e)
+... | no ne with exp-split t xs (canon-tail cx)
+...   | inj₁ (y , iy , ey) = inj₁ (y , there y x xs iy , ey)
+...   | inj₂ f = inj₂ (g ne f)
+  where
+  g : proj₂ t ≢ proj₂ x → (∀ y → InT y xs → proj₂ y ≢ proj₂ t) →
+      ∀ y → InT y (x ∷ xs) → proj₂ y ≢ proj₂ t
+  g ne f .x (here .x .xs) = λ e → ne (sym e)
+  g ne f y (there .y .x .xs iy) = f y iy
+
+-- 成员沿 sums 相等迁移（NoZero 下）
+inT-resp-sums : ∀ xs ys → Canon xs → Canon ys → NoZero xs → NoZero ys →
+  (∀ u → sums u xs ≡ sums u ys) → ∀ t → InT t xs → InT t ys
+inT-resp-sums xs ys cx cy nx ny eqs t itx with exp-split t ys cy
+... | inj₂ absent = ⊥-elim (ct≢0 ct≡0)
+  where
+  ct≢0 : proj₁ t ≢ + 0
+  ct≢0 = inT-noz t xs nx itx
+  ct≡0 : proj₁ t ≡ + 0
+  ct≡0 = trans (sym (sums-member t xs cx itx)) (trans (eqs t) (sums-absent t ys cy absent))
+... | inj₁ (y , iy , ey) = subst (λ z → InT z ys) y≡t iy
+  where
+  coef-≡ : proj₁ y ≡ proj₁ t
+  coef-≡ = trans (sym (sums-member y ys cy iy))
+                (trans (sums-idx y t ys ey) (trans (sym (eqs t)) (sums-member t xs cx itx)))
+  y≡t : y ≡ t
+  y≡t = cong₂ _,_ coef-≡ ey
+
+-- 枢纽：Canon + NoZero 下 sums 逐点相等 ⇒ 列表相等
+canon-sums-unique-nz : ∀ xs ys → Canon xs → Canon ys → NoZero xs → NoZero ys →
+  (∀ u → sums u xs ≡ sums u ys) → xs ≡ ys
+canon-sums-unique-nz xs ys cx cy nx ny eqs =
+  canon-unique xs ys cx cy
+    (inT-resp-sums xs ys cx cy nx ny eqs)
+    (inT-resp-sums ys xs cy cx ny nx (λ u → sym (eqs u)))
+
+-- sums 拆合律
+sums-++L : ∀ u xs ys → sums u (xs ++L ys) ≡ sums u xs + sums u ys
+sums-++L u [] ys = sym (+-identityˡ (sums u ys))
+sums-++L u ((c , n) ∷ xs) ys with proj₂ u ≟ n
+... | yes _ = trans (cong (λ z → c + z) (sums-++L u xs ys)) (sym (+-assoc c (sums u xs) (sums u ys)))
+... | no _ = sums-++L u xs ys
+
+
+-- insertCᵌ 保 NoZero（镜像 insertCᵌ 分支；合并项存非零和、消去项整项移除）
+--   lt3 递归分支按 insertCᵌ-sums 的「spec 作参数」习语（cons-lt3-noz），无 with-in 运输
+one-eqz-noz : ∀ (t x : LaurentTerm) → NoZero [] 
+one-eqz-noz t x = tt
+
+one-eqnz-noz : ∀ (t x : LaurentTerm) → ((proj₁ t + proj₁ x) ≢ + 0) → NoZero (((proj₁ t + proj₁ x) , proj₂ t) ∷ [])
+one-eqnz-noz t x z = z , tt
+
+cons-eqz-noz : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) → NoZero (x₂ ∷ xs) → NoZero (x₂ ∷ xs)
+cons-eqz-noz t x x₂ xs nz = nz
+
+cons-eqnz-noz : ∀ (t x x₂ : LaurentTerm) (xs : Laurent) → ((proj₁ t + proj₁ x) ≢ + 0) →
+  NoZero (x₂ ∷ xs) → NoZero (((proj₁ t + proj₁ x) , proj₂ t) ∷ (x₂ ∷ xs))
+cons-eqnz-noz t x x₂ xs z nz = z , nz
+
+cons-lt3-noz : ∀ (t x x₂ : LaurentTerm) (xs : Laurent)
+               (p : proj₂ x₂ < proj₂ x) (l : proj₂ t < proj₂ x) (s : Canon (x₂ ∷ xs))
+               (sp : SpecT t (x₂ ∷ xs)) → NoZero (proj₁ sp) → (proj₁ x ≢ + 0) →
+               NoZero (proj₁ (lt3-cons t x x₂ xs p l s sp))
+cons-lt3-noz t x x₂ xs p l s (w' , _ , inj₁ _) nzw hx = hx , nzw
+cons-lt3-noz t x x₂ xs p l s (w' , _ , inj₂ (h , r , eq , _)) nzw hx =
+  hx , subst NoZero eq nzw
+
+insertCᵌ-nozero : ∀ (t : LaurentTerm) ts (c : Canon ts) →
+  NoZero (t ∷ ts) → NoZero (proj₁ (insertCᵌ t ts c))
+insertCᵌ-nozero t [] c nt = nt
+insertCᵌ-nozero t (x ∷ []) (canon-one .x) (nt , nx) with cmp3 (proj₂ t) (proj₂ x)
+... | gt3 _ _ _ = nt , nx
+... | eq3 _ _ _ with (proj₁ t + proj₁ x) ≟ + 0
+...   | yes _ = one-eqz-noz t x
+...   | no z = one-eqnz-noz t x z
+insertCᵌ-nozero t (x ∷ []) (canon-one .x) (nt , nx) | lt3 _ _ _ = proj₁ nx , nt , tt
+insertCᵌ-nozero t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s) (nt , hx , hrest)
+  with cmp3 (proj₂ t) (proj₂ x)
+... | gt3 _ _ _ = nt , hx , hrest
+... | eq3 _ _ _ with (proj₁ t + proj₁ x) ≟ + 0
+...   | yes _ = cons-eqz-noz t x x₂ xs hrest
+...   | no z = cons-eqnz-noz t x x₂ xs z hrest
+insertCᵌ-nozero t (x ∷ x₂ ∷ xs) (canon-cons .x .x₂ .xs p s) (nt , hx , hrest)
+  | lt3 _ _ l =
+  cons-lt3-noz t x x₂ xs p l s (insertCᵌ t (x₂ ∷ xs) s)
+    (insertCᵌ-nozero t (x₂ ∷ xs) s (nt , hrest)) hx
+
+-- norm 保 NoZero（对 ts 归纳：插入件 insertCᵌ-nozero 收口）
+norm-nozero : ∀ ts → NoZero ts → NoZero (norm ts)
+norm-nozero [] _ = tt
+norm-nozero (t ∷ ts) nt with normC ts in eq
+... | (w , cw) with insertCᵌ t w cw in eq2
+... | (w' , _ , _) = subst NoZero (cong proj₁ eq2)
+    (insertCᵌ-nozero t w cw
+      (proj₁ nt , subst NoZero (cong proj₁ eq) (norm-nozero ts (proj₂ nt))))
+
+-- ────────────────────────────────────────────────────────────────────
+-- ── 2026-10-11 Stage3（续）── sums 与置换/cons 相容
+open import Data.List.Relation.Binary.Permutation.Propositional
+  using (_↭_; prep; swap) renaming (refl to ↭-refl; trans to ↭-trans)
+-- ────────────────────────────────────────────────────────────────────
+
+-- cons 同步（头决策同一，尾 IH）
+sums-cons-cong : ∀ u (x : LaurentTerm) {xs ys} → sums u xs ≡ sums u ys →
+                 sums u (x ∷ xs) ≡ sums u (x ∷ ys)
+sums-cons-cong u (c , n) {xs} {ys} ih with proj₂ u ≟ n
+... | yes _ = cong (λ z → c + z) ih
+... | no _ = ih
+
+
+-- 单层剥离（证据版——每引理自带一层决策，goal 零抽象）
+sums-head-yes : ∀ u (x : LaurentTerm) xs → proj₂ u ≡ proj₂ x → sums u (x ∷ xs) ≡ proj₁ x + sums u xs
+sums-head-yes u (c , n) xs p with proj₂ u ≟ n
+... | yes _ = refl
+... | no q = ⊥-elim (q p)
+
+sums-head-no : ∀ u (x : LaurentTerm) xs → proj₂ u ≢ proj₂ x → sums u (x ∷ xs) ≡ sums u xs
+sums-head-no u (c , n) xs q with proj₂ u ≟ n
+... | yes p = ⊥-elim (q p)
+... | no _ = refl
+
+-- 双头交换（dispatch 按 Dec 参数模式匹配——goal 零归约零抽象；
+--   四案具名拆分：各案 = 前剥 sums-head-* 等式拼接 → ℤ 交换代数，每链 ≤3）
+sums-swap2-yy : ∀ u (c₁ : ℤ) n₁ c₂ n₂ xs →
+  proj₂ u ≡ n₁ → proj₂ u ≡ n₂ →
+  sums u ((c₁ , n₁) ∷ (c₂ , n₂) ∷ xs) ≡ sums u ((c₂ , n₂) ∷ (c₁ , n₁) ∷ xs)
+sums-swap2-yy u c₁ n₁ c₂ n₂ xs p₁ p₂ = trans yy-1 (trans yy-2 yy-3)
+  where
+  yy-1 : sums u ((c₁ , n₁) ∷ (c₂ , n₂) ∷ xs) ≡ (c₁ + c₂) + sums u xs
+  yy-1 = trans (sums-head-yes u (c₁ , n₁) ((c₂ , n₂) ∷ xs) p₁)
+           (trans (cong (λ z → c₁ + z) (sums-head-yes u (c₂ , n₂) xs p₂))
+                  (sym (+-assoc c₁ c₂ (sums u xs))))
+  yy-2 : (c₁ + c₂) + sums u xs ≡ c₂ + sums u ((c₁ , n₁) ∷ xs)
+  yy-2 = trans (cong (λ z → z + sums u xs) (+-comm c₁ c₂))
+           (trans (+-assoc c₂ c₁ (sums u xs))
+                  (cong (λ z → c₂ + z) (sym (sums-head-yes u (c₁ , n₁) xs p₁))))
+  yy-3 : c₂ + sums u ((c₁ , n₁) ∷ xs) ≡ sums u ((c₂ , n₂) ∷ (c₁ , n₁) ∷ xs)
+  yy-3 = sym (sums-head-yes u (c₂ , n₂) ((c₁ , n₁) ∷ xs) p₂)
+
+sums-swap2-yn : ∀ u (c₁ : ℤ) n₁ c₂ n₂ xs →
+  proj₂ u ≡ n₁ → proj₂ u ≢ n₂ →
+  sums u ((c₁ , n₁) ∷ (c₂ , n₂) ∷ xs) ≡ sums u ((c₂ , n₂) ∷ (c₁ , n₁) ∷ xs)
+sums-swap2-yn u c₁ n₁ c₂ n₂ xs p₁ q₂ = trans yn-1 yn-2
+  where
+  yn-1 : sums u ((c₁ , n₁) ∷ (c₂ , n₂) ∷ xs) ≡ c₁ + sums u xs
+  yn-1 = trans (sums-head-yes u (c₁ , n₁) ((c₂ , n₂) ∷ xs) p₁)
+           (cong (λ z → c₁ + z) (sums-head-no u (c₂ , n₂) xs q₂))
+  yn-2 : c₁ + sums u xs ≡ sums u ((c₂ , n₂) ∷ (c₁ , n₁) ∷ xs)
+  yn-2 = trans (sym (sums-head-yes u (c₁ , n₁) xs p₁))
+           (sym (sums-head-no u (c₂ , n₂) ((c₁ , n₁) ∷ xs) q₂))
+
+sums-swap2-ny : ∀ u (c₁ : ℤ) n₁ c₂ n₂ xs →
+  proj₂ u ≢ n₁ → proj₂ u ≡ n₂ →
+  sums u ((c₁ , n₁) ∷ (c₂ , n₂) ∷ xs) ≡ sums u ((c₂ , n₂) ∷ (c₁ , n₁) ∷ xs)
+sums-swap2-ny u c₁ n₁ c₂ n₂ xs q₁ p₂ = trans ny-1 ny-2
+  where
+  ny-1 : sums u ((c₁ , n₁) ∷ (c₂ , n₂) ∷ xs) ≡ c₂ + sums u xs
+  ny-1 = trans (sums-head-no u (c₁ , n₁) ((c₂ , n₂) ∷ xs) q₁)
+           (sums-head-yes u (c₂ , n₂) xs p₂)
+  ny-2 : c₂ + sums u xs ≡ sums u ((c₂ , n₂) ∷ (c₁ , n₁) ∷ xs)
+  ny-2 = sym (trans (sums-head-yes u (c₂ , n₂) ((c₁ , n₁) ∷ xs) p₂)
+               (cong (λ z → c₂ + z) (sums-head-no u (c₁ , n₁) xs q₁)))
+
+sums-swap2-nn : ∀ u (c₁ : ℤ) n₁ c₂ n₂ xs →
+  proj₂ u ≢ n₁ → proj₂ u ≢ n₂ →
+  sums u ((c₁ , n₁) ∷ (c₂ , n₂) ∷ xs) ≡ sums u ((c₂ , n₂) ∷ (c₁ , n₁) ∷ xs)
+sums-swap2-nn u c₁ n₁ c₂ n₂ xs q₁ q₂ = trans nn-1 nn-2
+  where
+  nn-1 : sums u ((c₁ , n₁) ∷ (c₂ , n₂) ∷ xs) ≡ sums u xs
+  nn-1 = trans (sums-head-no u (c₁ , n₁) ((c₂ , n₂) ∷ xs) q₁)
+           (sums-head-no u (c₂ , n₂) xs q₂)
+  nn-2 : sums u xs ≡ sums u ((c₂ , n₂) ∷ (c₁ , n₁) ∷ xs)
+  nn-2 = sym (trans (sums-head-no u (c₂ , n₂) ((c₁ , n₁) ∷ xs) q₂)
+               (sums-head-no u (c₁ , n₁) xs q₁))
+
+sums-swap2 : ∀ u (x y : LaurentTerm) xs → sums u (x ∷ y ∷ xs) ≡ sums u (y ∷ x ∷ xs)
+sums-swap2 u (c₁ , n₁) (c₂ , n₂) xs = dispatch (proj₂ u ≟ n₁) (proj₂ u ≟ n₂)
+  where
+  dispatch : (d₁ : Dec (proj₂ u ≡ n₁)) (d₂ : Dec (proj₂ u ≡ n₂)) →
+             sums u ((c₁ , n₁) ∷ (c₂ , n₂) ∷ xs) ≡ sums u ((c₂ , n₂) ∷ (c₁ , n₁) ∷ xs)
+  dispatch (yes p₁) (yes p₂) = sums-swap2-yy u c₁ n₁ c₂ n₂ xs p₁ p₂
+  dispatch (yes p₁) (no q₂) = sums-swap2-yn u c₁ n₁ c₂ n₂ xs p₁ q₂
+  dispatch (no q₁) (yes p₂) = sums-swap2-ny u c₁ n₁ c₂ n₂ xs q₁ p₂
+  dispatch (no q₁) (no q₂) = sums-swap2-nn u c₁ n₁ c₂ n₂ xs q₁ q₂
+
+-- sums 对置换不变（refl/prep/swap/trans 四构造子）
+sums-resp-↭ : ∀ u {xs ys} → xs ↭ ys → sums u xs ≡ sums u ys
+sums-resp-↭ u ↭-refl = refl
+sums-resp-↭ u (prep x p) = sums-cons-cong u x (sums-resp-↭ u p)
+sums-resp-↭ u (swap x y p) =
+  trans (sums-swap2 u x y _)
+    (sums-cons-cong u y (sums-cons-cong u x (sums-resp-↭ u p)))
+sums-resp-↭ u (↭-trans p q) = trans (sums-resp-↭ u p) (sums-resp-↭ u q)

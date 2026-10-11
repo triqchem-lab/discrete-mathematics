@@ -25,19 +25,12 @@ open import Relation.Binary.PropositionalEquality
 
 
 -- ── 2026-10-11 base-unify：类型身份归一（LaurentTerm/Laurent/mulTerm 改用 LaurentBase，消除重复定义）──
-open import Sovereign.Algebra.LaurentBase using (LaurentTerm; Laurent; mulTerm)
+-- 运算身份归一（2026-10-11 续）：mapL/_++L_/_*L_ 改挂 LaurentDistrib（消除递归副本——
+--   自带 _++L_ 与 Distrib 的 _++L_=Data.List._++_ 在中性项上不互化，是 type-identity 断点）
+open import Sovereign.Algebra.LaurentDistrib
+  using (LaurentTerm; Laurent; mulTerm; mapL; _++L_; _*L_)
 
--- Laurent 专用 map（避免 Data.List.map 的隐式推断问题）
-mapL : (LaurentTerm → LaurentTerm) → Laurent → Laurent
-mapL f [] = []
-mapL f (x ∷ xs) = f x ∷ mapL f xs
-
-_++L_ : Laurent → Laurent → Laurent
-[] ++L ys = ys
-(x ∷ xs) ++L ys = x ∷ (xs ++L ys)
-
-_*L_ : Laurent → Laurent → Laurent
-xs *L ys = foldr (λ x acc → mapL (mulTerm x) ys ++L acc) [] xs
+-- （mapL/_++L_/_*L_ 本地副本已删——改用 LaurentDistrib 统一运算）
 
 
 
