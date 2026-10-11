@@ -12,6 +12,11 @@
 --          代数污染禁令（禁 Float/Double/超越函数）
 --
 -- 包含：∂̄f、not-hol-xy、hol-const
+--
+-- 【2026-10-11 内容分级注记】§1 的 not-hol-xy / hol-const 为**点核对件**（refl 数值点，非定理——
+--   勿挂定理名）；⚠ **statement_wrong 疑点待裁决**：hol-const 注释称「常函数是全纯的」而其证明值
+--   ∂̄f(常值)=T₂≢0——张力根源疑为 ∂̄f 定义非差分算子（f(x⊕1)y ⊕ f x(y⊕1) 无相减项）；
+--   数学面不动，待裁决后修（本注记仅如实标注）。本模块零代码消费者（grep 实证 2026-10-11）。
 
 module Sovereign.Analysis.DiscreteSeveralComplex where
 
