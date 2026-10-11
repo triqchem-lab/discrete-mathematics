@@ -7,6 +7,14 @@
 -- GF(9)ⁿ 上的逐点乘法构成交换代数, 给出有限维顶点代数。
 --
 -- 0 postulate — 全部构造性证明
+-- | 离散顶点代数实例核
+--
+-- 核心原则：离散顶点代数实例核——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：*V-comm、*V-assoc、unitVec、*V-identityˡ、*V-identityʳ、*V-zeroˡ、*V-zeroʳ、VertexOp、Y、Y-pointwise、vacuum、vacuum-creation、vacuum-zero-op、Y-unit-id
+
 module Sovereign.Analysis.VertexAlgebraDiscrete where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)

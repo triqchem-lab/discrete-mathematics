@@ -6,6 +6,14 @@
 -- Ω = Trit × Trit (9 点, 均匀测度): P(A) = |A|/9 — 计数承载的
 -- 公理与独立性以 ℕ 计数 + 交叉相乘 refl 呈现 (无分数浮点)
 
+-- | 均匀分布离散形
+--
+-- 核心原则：均匀分布离散形——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：omega-size、event-a-size、event-b-size、total-prob、additivity、independence、uniformity
+
 module Sovereign.Analysis.UniformProb where
 
 open import Data.Nat using (ℕ; _*_; _+_)

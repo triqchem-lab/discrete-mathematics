@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+-- | Riesz 表示定理测试件/实例核
+--
+-- 核心原则：测试性实例核（含具体数值核对）
+--          数值核对 ≠ 证明——仅作对抗验证面
+--          模块性质如实：Test 件不计入定理账
+--
+-- 包含：coord0、coord1、sum-func、coord0-linear、coord1-linear、sum-func-linear、test-riesz-coord0、test-riesz-sum、test-riesz-coord1、test-coord0-repr、test-sum-repr、test-coord1-repr、test-inner-e0-e0、test-inner-e1-e1
+
 module Sovereign.Analysis.TestRiesz where
 
 --------------------------------------------------------------------------------

@@ -1,6 +1,14 @@
 {-# OPTIONS --rewriting --guardedness #-}
 -- | Sovereign.Analysis.FiniteDynamics
 -- 有限动力系统：轨道、周期性、鸽巢原理、GF(9) Frobenius 动力学
+-- | 有限动力学（轨道最终周期）
+--
+-- 核心原则：有限动力学（轨道最终周期）——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：orbit、orbit-step、orbit-cong、record、pigeonhole-fin、pigeonhole-collision、orbit-collision-propagates、arith-rearrange、orbit-eventually-periodic、orbit-period-bound、orbit-collision-pw、Inj、Surj、injSurj
+
 module Sovereign.Analysis.FiniteDynamics where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _<_; _≤_; s≤s; z≤n)

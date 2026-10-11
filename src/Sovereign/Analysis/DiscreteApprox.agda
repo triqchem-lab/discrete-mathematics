@@ -4,6 +4,14 @@
 -- GF(3) 上的 L¹/L∞ 最佳逼近.
 -- 0 postulate.
 
+-- | 离散逼近论
+--
+-- 核心原则：离散逼近论——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：l1-dist、approx-err、l∞-dist、cheb-err、sq-err、id-err
+
 module Sovereign.Analysis.DiscreteApprox where
 
 open import Data.Nat using (ℕ; _+_; _*_)

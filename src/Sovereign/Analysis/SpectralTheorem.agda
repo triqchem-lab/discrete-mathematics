@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+-- | 离散谱定理实例核
+--
+-- 核心原则：有限矩阵谱分解的离散基座实例核
+--          特征数据走 GF(9)/Trit 编码
+--          非一般谱定理——诚实边界随引用
+--
+-- 包含：is-self-adjoint、IsEigenpair、⊗-eq、inner-scalarˡ、inner-scalarʳ、eigenvector-orthogonal、linear-op-zero-1、spectral-1-go、spectral-1、inner-2、proj-op、proj-self-adjoint、proj-eigen-1、proj-eigen-0
+
 module Sovereign.Analysis.SpectralTheorem where
 
 --------------------------------------------------------------------------------

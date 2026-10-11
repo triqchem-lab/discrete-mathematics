@@ -14,6 +14,14 @@
 --
 -- 全部 0 postulate, GF(3) 穷举 refl + 符号推理。
 
+-- | 离散分部积分实例核
+--
+-- 核心原则：离散分部积分实例核——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：integration-by-parts-theorem、diff-sum-zero
+
 module Sovereign.Analysis.IntegrationByParts where
 
 open import Data.Nat using (ℕ)

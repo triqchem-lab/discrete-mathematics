@@ -3,6 +3,14 @@
 -- | jac_SelmerDiscrete — 离散 Selmer 群: C₂ cocycle 穷举 + H¹ 计算
 -- 0 postulate
 
+-- | Selmer 群离散对照
+--
+-- 核心原则：Selmer 群离散对照——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：c2-cocycle-count、c2-total-cases、c2-valid-check、c2-H1-dim、c2-H1-ok、v4-cocycle-count、v4-H1-dim、v4-H1-ok、selmer-e1
+
 module Sovereign.Problem.BSD.SelmerDiscrete where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)

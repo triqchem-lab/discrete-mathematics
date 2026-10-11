@@ -5,6 +5,14 @@
 -- 替代连续泛函的 Gateaux 导数和 δ-变分.
 -- 0 postulate.
 
+-- | 离散变分实例核
+--
+-- 核心原则：离散变分实例核——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：action2、freeL、δ-action、δ-free、stationary-const、nonstationary
+
 module Sovereign.Analysis.DiscreteVariation where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_)

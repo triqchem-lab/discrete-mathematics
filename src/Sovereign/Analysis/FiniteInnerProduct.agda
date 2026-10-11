@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
+-- | GF9 向量空间上的有限内积空间
+--
+-- 核心原则：VectorSpace n（GF9 分量）+ 内积结构实例核
+--          零向量/加法单位件（gf9-zero/zeroVec）为构造层
+--          有限维实例核——不外推无限维结论
+--
+-- 包含：VectorSpace、gf9-zero、zeroVec、*gf9-zeroˡ、*gf9-zeroʳ、+gf9-swap-middle、negate-⊕-self、negate-⊗-negate-self、sumGF9、sumGF9-cong、sumGF9-const-zero、sumGF9-additive、sumGF9-scalar、conj-additive
+
 module Sovereign.Analysis.FiniteInnerProduct where
 
 --------------------------------------------------------------------------------

@@ -15,6 +15,14 @@
 --   fromℕ<-toℕ（第一参 i : Fin n 把界钉死在 n）。
 --
 -- 0 postulate / 0 hole。
+-- | Tarski 不动点离散形
+--
+-- 核心原则：Tarski 不动点离散形——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：tarski-min
+
 module Sovereign.Analysis.Finiteness.Tarski where
 
 open import Data.Nat using (ℕ; _<_; _≤_)

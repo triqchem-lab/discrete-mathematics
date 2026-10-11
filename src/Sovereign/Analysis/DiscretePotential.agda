@@ -4,6 +4,14 @@
 -- GF(3) 格点上的 Laplace 方程 Δu = f.
 -- 0 postulate.
 
+-- | 离散位势论实例核
+--
+-- 核心原则：离散位势论实例核——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：laplace3、laplace-const、laplace-linear、laplace-quadratic、harmonic-const、laplace3-cyclic
+
 module Sovereign.Analysis.DiscretePotential where
 
 open import Data.Nat using (ℕ)

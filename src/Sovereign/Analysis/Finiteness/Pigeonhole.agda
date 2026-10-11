@@ -16,6 +16,14 @@
 --   不外推任何「完备」结论（M8 判据 5：检查结论过三问）。
 --
 -- 0 postulate / 0 hole。
+-- | 鸽巢原理离散形
+--
+-- 核心原则：鸽巢原理离散形——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：pigeonhole、pigeonhole←、pigeonhole-iff
+
 module Sovereign.Analysis.Finiteness.Pigeonhole where
 
 open import Data.Nat using (ℕ; _<_; _≤_)

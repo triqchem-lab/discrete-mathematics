@@ -3,6 +3,14 @@
 -- | jac_ZetaDiscrete — GF(q) 有限域 zeta + Weil 定理 (未来态)
 -- 0 postulate
 
+-- | 离散 zeta 对照
+--
+-- 核心原则：离散 zeta 对照——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：e1-gf3、e1-ok、e1-gf9
+
 module Sovereign.Problem.BSD.ZetaDiscrete where
 
 open import Data.Nat using (ℕ; _∸_)

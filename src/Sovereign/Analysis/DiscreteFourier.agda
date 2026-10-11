@@ -4,6 +4,14 @@
 -- T⁶ 上的有限 Fourier 变换: GF(3)ⁿ → GF(3)ⁿ 酉矩阵.
 -- 0 postulate.
 
+-- | 离散 Fourier 实例核
+--
+-- 核心原则：离散 Fourier 实例核——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：f00、dft-apply、const-vec、dft-const、e0、dft-e0-0、dft-e0-1、dft-e0-2、dft-zero
+
 module Sovereign.Analysis.DiscreteFourier where
 
 open import Data.Nat using (ℕ; _+_; _*_)

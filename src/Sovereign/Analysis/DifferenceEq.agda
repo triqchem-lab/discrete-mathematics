@@ -5,6 +5,14 @@
 --
 -- y(n+2) = y(n+1) + y(n) (mod 3): 0,1,1,2,0,2,2,1,0,1,... — 周期 8
 
+-- | 离散差分方程
+--
+-- 核心原则：离散差分方程——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：step、fib-1、fib-2、fib-3、fib-4、fib-5、fib-6、fib-7、fib-period-8
+
 module Sovereign.Analysis.DifferenceEq where
 
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

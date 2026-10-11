@@ -20,6 +20,14 @@
 -- 复用件（全部已证）: `FiniteDynamics.{orbit, arith-rearrange, pigeonhole-fin}`。
 -- 0 postulate / 0 hole。
 
+-- | 有限轨道观察量
+--
+-- 核心原则：有限轨道观察量——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：finite-orbit-obs
+
 module Sovereign.Analysis.FiniteOrbitObs where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _<_)

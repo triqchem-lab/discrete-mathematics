@@ -11,6 +11,14 @@
 --   §3 非幻方正检验: 单线偏离 14 → chi2-num ≡ 1 ≢ 0
 --   §4 小规模精确分布与 4×4/12×12 对接: 注释级 (数据提取留待, 不占位)
 
+-- | GF(3) 拟合优度
+--
+-- 核心原则：GF(3) 拟合优度——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：loshu-row-1、loshu-row-2、loshu-row-3、loshu-col-1、loshu-col-2、loshu-col-3、loshu-diag-1、loshu-diag-2、dev、chi2-num、magic-square-chi2-zero、loshu-chi2-zero、nonmagic-chi2-positive-num、nonmagic-detected
+
 module Sovereign.Analysis.GoodnessOfFitGF3 where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_)

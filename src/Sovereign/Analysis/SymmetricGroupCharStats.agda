@@ -10,6 +10,14 @@
 -- 行正交 (第二正交关系实例): Σ_C |C|·χ(C)·conj(χ(C)) = |G| (每不可约)
 -- 载体 = A₄ (类 1/4/4/3, 特征标值 ∈ Z[ω] — 1+ω+ω²=0 承载列正交)
 
+-- | 对称群特征标统计
+--
+-- 核心原则：对称群特征标统计——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：w1、plancherel-normalized、col-C1、col-C2、col-C3、col-C4、row-V1、row-V3、row-V1'、row-V1''
+
 module Sovereign.Analysis.SymmetricGroupCharStats where
 
 open import Data.Product using (_×_; _,_)

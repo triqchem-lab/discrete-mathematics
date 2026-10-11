@@ -1,8 +1,17 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_BSD9 — GF(9) 椭圆曲线点计数 · 未来态锁定法
+-- | BSD9 — GF(9) 椭圆曲线点计数 · 未来态锁定法
+-- 【正名 2026-10-11】旧头写 jac_BSD9（命名漂移）——实名 BSD9；勘误留痕
 -- 目标: #E(GF(9)) = 16 (Hasse紧界), 由迹递推一步到位
 -- 不使用暴力枚举. 0 postulate.
+
+-- | BSD GF(9) 面
+--
+-- 核心原则：BSD GF(9) 面——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：t₁、q、#E-gf9、target-anchored
 
 module Sovereign.Problem.BSD.BSD9 where
 

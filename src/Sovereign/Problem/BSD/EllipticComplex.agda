@@ -3,6 +3,14 @@
 -- | jac_EllipticComplex — dim ℋ = dim H (Hodge 定理, rank-nullity 链)
 -- 0 postulate
 
+-- | 椭圆复形离散对照
+--
+-- 核心原则：椭圆复形离散对照——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：dimC₀、dimC₁、rank∂₁、dimH₀、dimH₁、dimℋ₀、dimℋ₁、hodge-iso₀、hodge-iso₁、χ-complex、χ-homology、euler-identity
+
 module Sovereign.Problem.BSD.EllipticComplex where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)

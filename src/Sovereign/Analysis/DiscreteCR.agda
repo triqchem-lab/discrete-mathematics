@@ -9,6 +9,14 @@
 --   (2 阶差分, 系数 1 求和 — GF(3) 中 1+1+1+1+... 精确)
 -- 非调和见证: N(z) = z·σ(z) = x²+y² 不调和 (1 项反证)
 
+-- | 离散 Cauchy-Riemann 形
+--
+-- 核心原则：离散 Cauchy-Riemann 形——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：u、v、Δ、harmonic-u、harmonic-v、n、not-harmonic-n
+
 module Sovereign.Analysis.DiscreteCR where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

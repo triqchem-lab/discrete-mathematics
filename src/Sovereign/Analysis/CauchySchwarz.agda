@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+-- | Trit 序上的 Cauchy-Schwarz 实例核
+--
+-- 核心原则：离散基座实例核非一般定理（Trit 格序 _≤T_ 上的内积不等式形）
+--          序件（≤T-refl/≤T-max）与不等式链分层，∸ 消解走具名件
+--          穷举边界遵守：Trit 有限域 case ≤27
+--
+-- 包含：data、≤T-refl、≤T-max、≤T-trans、norm-sq、norm-sq-T₀、norm-sq-T₁、norm-sq-T₂、norm-sq-≤₁、norm-sq-eq-T₀、norm-sq-is-abs、cauchy-schwarz-1、cauchy-schwarz-1-equality、no-isotropic-2
+
 module Sovereign.Analysis.CauchySchwarz where
 
 --------------------------------------------------------------------------------

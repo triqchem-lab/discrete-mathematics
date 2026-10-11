@@ -31,6 +31,14 @@
 --   **不给出证明**，只标注为经典等价。反证法只在 ¬ 前提内消去，不外推完备性。
 --
 -- 0 postulate / 0 hole。
+-- | 有限性判据动物园（索引件）
+--
+-- 核心原则：有限性判据动物园（索引件）——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：
+
 module Sovereign.Analysis.FinitenessZoo where
 
 open import Sovereign.Analysis.Finiteness.Foundations

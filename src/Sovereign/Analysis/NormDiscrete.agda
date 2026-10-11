@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+-- | 离散范数理论（Trit 值范数）
+--
+-- 核心原则：normReal/normSup/maxT——Trit 值范数实例核
+--          范数取值在 Trit 格非 ℝ——禁连续统外推
+--          maxT 幂等/单调件穷举 ≤9 case
+--
+-- 包含：normReal、maxT、normSup、data、≤t-refl、≤t-trans、≤t-antisym、≤t-total、maxT-ubˡ、maxT-ubʳ、galoisNorm-zero、galoisNorm-of-zero、maxT-zero、normSup-zero
+
 module Sovereign.Analysis.NormDiscrete where
 
 --------------------------------------------------------------------------------

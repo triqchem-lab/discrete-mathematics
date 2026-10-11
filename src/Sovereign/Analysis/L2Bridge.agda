@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+-- | L² 空间离散桥（mod3/norm-factor 编码）
+--
+-- 核心原则：n-mod3/gf3-inv/norm-factor 为 GF(3) 编码桥件
+--          桥接件只作不变量——投影不回流本源
+--          字面归约面单列，防 B1 爆点
+--
+-- 包含：n-mod3、gf3-inv、norm-factor、gf3-inv-T₁、gf3-inv-T₂、norm-factor-0、norm-factor-1、norm-factor-2、norm-factor-3、norm-factor-period3、normalized-inner、normalized-inner-sym、normalized-inner-linearˡ、l2-norm-sq
+
 module Sovereign.Analysis.L2Bridge where
 
 --------------------------------------------------------------------------------

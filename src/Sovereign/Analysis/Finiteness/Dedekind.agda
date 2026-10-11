@@ -13,6 +13,14 @@
 --   InjA/SurjA 与 FiniteDynamics.Inj/Surj 在 Fin n 上定义同形 ⇒ injSurj 直接消费。
 --
 -- 0 postulate / 0 hole。
+-- | Dedekind 分割离散对照
+--
+-- 核心原则：Dedekind 分割离散对照——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：finite
+
 module Sovereign.Analysis.Finiteness.Dedekind where
 
 open import Data.Fin using (Fin)

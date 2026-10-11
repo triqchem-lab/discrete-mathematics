@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+-- | GF9 向量空间上的线性泛函
+--
+-- 核心原则：VectorSpace n + _+v9_ 加法结构
+--          线性泛函实例核（有限维）
+--          GF(9) 分量运算走 GF9 件不重证
+--
+-- 包含：gf9-zero、VectorSpace、0⃗₉、basis9、*gf9-zeroˡ、*gf9-zeroʳ、scalar9-zero、+v9-identityˡ、+v9-identityʳ、+gf9-shuffle、inner9、inner9-zeroˡ、inner9-additiveˡ、inner9-homogeneousˡ
+
 module Sovereign.Analysis.LinearFunctionalDiscrete where
 
 --------------------------------------------------------------------------------

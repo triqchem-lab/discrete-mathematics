@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+-- | 离散泛函分析框架（record 形）
+--
+-- 核心原则：FunctionalAnalysisDiscreteFramework n = 框架记录（载体+运算+定律字段）
+--          fa-framework-2/fa-framework 为具体实例核
+--          框架是定义层对象非定理——声明与证明分账
+--
+-- 包含：record、fa-framework-2、fa-framework、FADiscreteCarrier、fa-witness、fa-completeness-bridge、riesz-2、nondeg-2、norm-2-two-valued、hb-collapse-2
+
 module Sovereign.Analysis.FunctionalAnalysisDiscrete where
 
 --------------------------------------------------------------------------------

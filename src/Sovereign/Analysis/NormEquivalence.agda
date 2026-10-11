@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+-- | 离散范数等价定理（≤₃ 序形）
+--
+-- 核心原则：≤₃ 序三律（refl/trans）具名分层
+--          范数等价实例核——有限维离散形非一般定理
+--          序件与等式件分账，trans 链 ≤3
+--
+-- 包含：data、≤₃-refl、≤₃-trans、≤₃-antisym、≤₃-total、NormEquivalent、T₁≢T₀、T₂≢T₀、abs-gf3-multiplicative、abs-gf3-two-valued、sq-eq-abs、sq-negate、scalar-T₀-zero、Q-negate-invariant
+
 module Sovereign.Analysis.NormEquivalence where
 
 --------------------------------------------------------------------------------

@@ -4,6 +4,14 @@
 -- GF(3) 上的有限概率空间: 6 个事件的离散分布.
 -- 0 postulate.
 
+-- | 离散概率实例核
+--
+-- 核心原则：离散概率实例核——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：uniform、uniform-norm、twoPoint、twoPoint-norm、expectation、id-expect-uniform、marginal、indep-prod、marginal-indep、expectation-uniform-sum
+
 module Sovereign.Analysis.DiscreteProbability where
 
 open import Data.Nat using (ℕ; _+_; _*_)
