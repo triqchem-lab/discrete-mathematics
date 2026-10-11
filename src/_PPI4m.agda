@@ -14,6 +14,7 @@
 
 module _PPI4m where
 
+import _PPI4l as L
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Unit using (⊤; tt)
@@ -84,35 +85,8 @@ module FirstRet {G : DiGraph} (eqV : (a b : DG.V G) → Dec (a ≡ᴱ b)) where
 
   -- §2 首回返引理（构造携带形）
 
-  cutZAcc-exc : ∀ {a u' b} (acc : Walk G a u') (p : Walk G u' a)
-              → (nxp : NoX a p) (t : Walk G u' b)
-              → (ne : u' ≡ᴱ a → ⊥) (nacc : NoX a acc)
-              → proj₁ (cutZAcc acc (p ++w t) ne nacc) ≡ (acc ++w p) ∷ proj₁ (cutZ t)
-
-  cutZAcc-exc acc (nil v) nxp t ne nacc = ⊥-elim (ne reflᴱ)
-
-  cutZAcc-exc {a} acc (cons {v = u''} z s') nxp t ne nacc with eqV u'' a
-  ... | yes reflᴱ with nil-or-ne s'
-  ...   | inj₁ eq with eq
-  ...     | reflᴱ = refl
-  ...   | inj₂ npe = ⊥-elim (noX-junction′ (cons z (nil a)) tt s' npe nxp)
-  cutZAcc-exc {a} acc (cons {v = u''} z s') nxp t ne nacc
-    | no q' =
-    cong (λ k → k ∷ proj₁ (cutZ t)) (++w-assocᴱ acc (cons z (nil u'')) s') ∙
-    cutZAcc-exc (acc ++w cons z (nil u'')) s' (noX-tail z s' nxp) t q'
-                (NoX-ext acc nacc (λ r → ne (symᴱ r)) z)
-
-  cutZ-exc-head : ∀ {a b} (e : Walk G a a) (ie : IsExc a e)
-                → (t : Walk G a b)
-                → proj₁ (cutZ (e ++w t)) ≡ e ∷ proj₁ (cutZ t)
-  cutZ-exc-head {a} e (nxe , ne) t with cons-view e ne
-  ... | u' , x , p , reflᴱ with eqV u' a
-  ...   | no q =
-    cutZAcc-exc (cons x (nil u')) p (noX-tail x p nxe) t q tt
-  ...   | yes reflᴱ with nil-or-ne p
-  ...     | inj₁ eq with eq
-  ...       | reflᴱ = refl
-  ...     | inj₂ npe = ⊥-elim (noX-junction′ (cons x (nil a)) tt p npe nxe)
+  -- 【立界】泛形首回返/cutZ-exc-head：nil-塌缩分支撞同索引 K 墙（#56）——
+  --   具象 two-chain 面已由 §4 直证绕行（cutZ-loopK 头装配 defeq）；一般形留构造携带形后批。
 
   -- §3 规范形 + decomp-unique 一般形收口
 
@@ -120,17 +94,7 @@ module FirstRet {G : DiGraph} (eqV : (a b : DG.V G) → Dec (a ≡ᴱ b)) where
   AllExc [] = ⊤
   AllExc (e ∷ es) = IsExc _ e × AllExc es
 
-  canonical : ∀ {a} (es : List (Walk G a a)) → AllExc es
-            → proj₁ (cutZ (concatL es)) ≡ es
-  canonical [] _ = refl
-  canonical (e ∷ es) (ie , ies) =
-    cutZ-exc-head e ie (concatL es) ∙ cong (e ∷_) (canonical es ies)
-
-  decomp-unique : ∀ {a} (es es' : List (Walk G a a))
-                → AllExc es → AllExc es'
-                → concatL es ≡ concatL es' → es ≡ es'
-  decomp-unique es es' a₁ a₂ eq =
-    sym (canonical es a₁) ∙ cong (λ w → proj₁ (cutZ w)) eq ∙ canonical es' a₂
+  -- 【立界】canonical/decomp-unique（依赖泛形 exc-head——two-chain 唯一性由 _PPI4l uniq-w2/uniq-w2w2 已证承担）
 
 -- §4 MonoidIso 第二独立证（two-chain ≅ (ℕ,+)——excursion 计数路线）
 
@@ -147,9 +111,7 @@ to-w w = length (proj₁ (TC.cutZ w))
 
 cutZ-loopK : (k : ℕ) → proj₁ (TC.cutZ (loopK k)) ≡ replicate k w2
 cutZ-loopK zero = refl
-cutZ-loopK (suc k) =
-  FR.cutZ-exc-head w2 (check-exc-w2a , check-exc-w2b) (loopK k)
-  ∙ cong (w2 ∷_) (cutZ-loopK k)
+cutZ-loopK (suc k) = cong (w2 ∷_) (cutZ-loopK k)
 
 to-w≡rounds : (w : Loop (Gskel two-chain) fzero) → to-w w ≡ rounds w
 to-w≡rounds w =
@@ -197,9 +159,5 @@ check-agree-w2w2 : MonoidIso.to gskel-classify-2 [ w2 ++w w2 ]
                  ≡ MonoidIso.to gskel-classify [ w2 ++w w2 ]
 check-agree-w2w2 = refl
 
-check-uniq-agree : (es : List (Loop (Gskel two-chain) fzero))
-                 → FR.AllExc es → concatL es ≡ w2 ++w w2
-                 → es ≡ (w2 ∷ w2 ∷ [])
-check-uniq-agree es ae eq =
-  FR.decomp-unique es (w2 ∷ w2 ∷ []) ae
-    ((check-exc-w2a , check-exc-w2b) , ((check-exc-w2a , check-exc-w2b) , tt)) eq
+-- 【指针】唯一性对账件移 _PPI4l.check-uniq-w2w2-type（同内容已在彼处——本文件不再重复；
+--   泛形 decomp-unique 立界注记见 §3）。
