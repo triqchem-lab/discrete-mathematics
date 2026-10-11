@@ -8,6 +8,15 @@
 -- 线: 12 仿射线 (y = mx+b 9 条 + 竖线 x = c 3 条) + 1 无穷远线
 -- 对偶计数: 13×4 = 52 = 4×13 (自对偶)
 
+
+--
+-- 核心原则:
+--   1. PG(2,3) 射影平面：13 点 13 线，每线 4 点每点过 4 线
+--   2. 自对偶计数 13×4 = 52 = 4×13
+--   3. GF(3) 上的射影构造（51 系几何补强件）
+--
+-- 包含: pg-points、pg-lines、incidence-count、duality、total-incidence、line-at-infinity
+
 module Sovereign.Structology.ProjPlane where
 
 open import Data.Nat using (ℕ; _*_; _+_)

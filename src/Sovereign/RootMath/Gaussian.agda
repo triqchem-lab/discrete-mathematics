@@ -23,6 +23,16 @@
 -- 结构路线 (norm-form/conj-mul/assoc 链) 镜像 Eisenstein.agda norm-mul,
 -- 留待深化 (见 docs/毕达哥拉斯复数线-高维几何代数拓扑.md §4)。
 
+
+--
+-- 核心原则:
+--   1. Z[i] 判别式 −4 线（90° 格）——与 Z[ω] 判别式 −3（60° 格）对称对应
+--   2. 范数 N = a²+b² 为毕达哥拉斯二次型（勾股数 = 范数平方和表示）
+--   3. 单位群 {±1,±i} ≅ C₄（生成元 i，四阶刚性）
+--   4. 共轭 conj(a,b)=(a,−b) 为 Gal 作用（本源侧非装饰操作）
+--
+-- 包含: z0、z1、data、_、_、conjᵢ、normᵢ、iᵤ、i-square、i-fourth、unit1、uniti、unitm1、unitmi
+
 module Sovereign.RootMath.Gaussian where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)

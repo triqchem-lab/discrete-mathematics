@@ -12,6 +12,15 @@
 -- 禁止对 Fin 144 进行 Fin 12 × Fin 12 的模式匹配或代数分解。
 -- 本模块属于结构学静态容器，禁止暴露给耦合域的状态机演化模块。
 
+
+--
+-- 核心原则:
+--   1. ⚠ 宪法宣誓：Fin 144 = 静态网格格点索引 ≠ PolarWinding（禁止视为同一类型）
+--   2. 十二律相位的二维静态展开（网格总数 144 = 全息同构签名）
+--   3. 禁止 Fin 12 × Fin 12 模式匹配/代数分解；禁止暴露给耦合域状态机演化
+--
+-- 包含: LuGridPoint、gridRow、gridRow-toℕ、gridColBound、gridCol、gridCol-toℕ、mkGridPointBound、mkGridPoint、mkGridPoint-toℕ、grid-roundtrip、shiftPolar、shiftToroidal、shiftDiagonal、actionOnGrid
+
 module Sovereign.Structology.LuCellGrid where
 
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; fromℕ<; _≟_)

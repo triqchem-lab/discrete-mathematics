@@ -10,6 +10,15 @@
 --
 -- 替代方案：参见 Sovereign.Structology.DiscreteCalculus (代数复数版本)
 
+
+--
+-- 核心原则:
+--   1. ⚠ 废弃件：Data.Complex 违反纯代数宪法（ADR-004 外部连续统信用 0）
+--   2. 仅作历史对照组存在——禁止用于任何宪法级证明
+--   3. 替代方案：Sovereign.Structology.DiscreteCalculus（代数复数版本）
+--
+-- 包含: Phase_Cont、Connection、computeCurvature、computeChernNumber
+
 module Sovereign.Structology.ElectricalTopology where
 
 -- ⚠️ UNTRUSTED: 连续统复数，仅用于对照

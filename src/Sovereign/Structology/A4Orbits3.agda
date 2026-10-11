@@ -35,6 +35,15 @@
 --   A₄ 在 GF(3)³ 上的 5 个轨道 × 27 (v₄,v₅ 的自由度)
 --   = 135 = A₄ 在 T⁶ 上的总轨道数
 
+
+--
+-- 核心原则:
+--   1. HFM 交叉验证向量——不替代主证明（主证明见 A4Representations/BurnsideT6）
+--   2. A₄ 在 GF(3)³（27 点）上 Burnside 和 = 60 → 轨道数 5
+--   3. 不动点三类：恒等 27 / 双对换 3 / 3-循环 3（计数自洽核对）
+--
+-- 包含: fix-identity、fix-double-transposition、fix-3cycle、burnside-sum、burnside-sum-correct、orbit-count、orbit-count-correct、orbit-count-factor-check、small-orbit-size、small-orbit-count、large-orbit-size、large-orbit-count、orbit-decomposition-sum、total-points-verified
+
 module Sovereign.Structology.A4Orbits3 where
 
 open import Data.Nat using (ℕ; _+_; _*_)

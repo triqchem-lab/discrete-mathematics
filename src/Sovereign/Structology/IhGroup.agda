@@ -21,6 +21,15 @@
 --   具体枚举和 Cayley 表为 roadmap（需要辅助模块）。
 --
 -- 0 postulate / 0 hole。
+
+--
+-- 核心原则:
+--   1. I_h 正二十面体完整对称群展示群形式化（阶 120）
+--   2. 三常量 144/46/√3 为实验物理锚定（wiki 08:125 红线）——非 I_h 代数推导产物
+--   3. 展示群八要素口径（生成方式定结构）
+--
+-- 包含: F3、F5、F2、data、data、record、det-mul、IhOrder、MerkabaOrder、PolarWinding、polar-winding-check
+
 module Sovereign.Structology.IhGroup where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)

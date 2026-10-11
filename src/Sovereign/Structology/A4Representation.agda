@@ -13,6 +13,15 @@
 --     Z[ω]  负责 A₄ 的 3 阶对称 (三代费米子)
 --   两者不可互相替代。
 
+
+--
+-- 核心原则:
+--   1. A₄ 不可约表示 {1, 1′, 1″, 3} + 特征标正交性（全 refl 穷举）
+--   2. 三代 = Z₃ 子群分支 1⊕1′⊕1″ 的刚性预测（非可调参数）
+--   3. 诚实边界：Z[ω]（特征 0，3 阶对称）与 GF(9)（Frobenius 4 阶）不可互相替代
+--
+-- 包含: record、zeroZω、oneZω、ω、ω²、addZω、negZω、subZω、mulZω、conjZω、omega-sum-zero、omega-cubed、omega-squared-form、ConjClass
+
 module Sovereign.Structology.A4Representation where
 
 open import Data.Nat using (ℕ; zero; suc) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)

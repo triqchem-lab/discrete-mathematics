@@ -9,6 +9,15 @@
 -- 边界计数: 三边各 gcd(4,0)+1 = 5 / gcd(4,4)+1 = 5 / gcd(0,4)+1 = 5
 --   (顶点计 2 次, 5+5+5−3 = 12)
 
+
+--
+-- 核心原则:
+--   1. Pick 定理格三角形见证：A = I + B/2 − 1（实例 A=8, I=3, B=12 ✓）
+--   2. 边界格点计数 gcd 形（顶点计 2 次校正 −3）
+--   3. 离散几何补强件（52 系）
+--
+-- 包含: boundary-points、interior-points、triangle-area、pick-identity
+
 module Sovereign.Structology.PickTheorem where
 
 open import Data.Nat using (ℕ; _+_; _∸_; _*_)

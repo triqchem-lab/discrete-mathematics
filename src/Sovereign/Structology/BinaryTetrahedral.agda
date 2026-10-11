@@ -28,6 +28,15 @@
 -- 依赖:
 --   A4Group — A₄ 群 (12 元素, 商映射目标)
 
+
+--
+-- 核心原则:
+--   1. 2A₄ ≅ Q₈ ⋊ C₃（半直积，非直积 A₄×Z₂）
+--   2. 非平凡中心扩张 1 → Z₂ → 2A₄ → A₄ → 1
+--   3. 本体衔接（兼容非同一）：Z₂ ≅ Gal(GF(9)/GF(3)) 共轭读法——群论层与本源层两种读法共存
+--
+-- 包含: data、negQ、negQ-involutive、_、q8-i²、q8-j²、q8-k²、q8-ij、q8-jk、q8-ki、q8-ji、q8-kj、q8-ik、q8-neg1-central
+
 module Sovereign.Structology.BinaryTetrahedral where
 
 open import Data.Nat using (ℕ; zero; suc)

@@ -8,6 +8,15 @@
 --   离散 Gauss-Bonnet: Σ 亏角 = 2π·χ(S²) → 4 = 2·2 ✓
 -- 与 12 胞腔 S² 陈数协议的关系 (ChernEulerLadder/DiscreteKTheory §6) 注释。
 
+
+--
+-- 核心原则:
+--   1. 离散 Gauss-Bonnet：Σ 顶角亏 = 2π·χ(S²)（正四面体 4×1 = 2·2 ✓）
+--   2. 亏角以 π 为单位归一（每顶点亏 1，总和 4）
+--   3. 与 12 胞腔 S² 陈数协议的对应关系注释（ChernEulerLadder/DiscreteKTheory §6）
+--
+-- 包含: tet-vertices、tet-faces、tet-edges、vertex-defect、total-defect、gauss-bonnet、tet-euler
+
 module Sovereign.Structology.DefectSum where
 
 open import Data.Nat using (ℕ; _*_; _∸_)

@@ -27,6 +27,15 @@
 --     2A₄:    Σdim² = 1²+1²+1²+2²+2²+2²+3² = 24 = |2A₄|
 --     2A₄ 比 A₄ 多出 3 个 2 维旋量表示 (SU(2)→SO(3) 双重覆盖)
 
+
+--
+-- 核心原则:
+--   1. HFM 交叉验证向量——主证明见 BinaryTetrahedral.agda
+--   2. Q₈ 经左正则表示嵌入 S₈（|Q₈|=8, |Z(Q₈)|=2）
+--   3. dp Q₈ C₃ 生成 24 元素（阶核对，与半直积同阶）
+--
+-- 包含: sizeQ8、sizeC3、sizeA4、size2A4、sizeCenter、irrepCount、sizeQ8-ok、size2A4-ok、sizeCenter-ok、sumDimSq2A4、sumDimSq2A4-ok、sumDimSqA4、sumDimSqA4-ok
+
 module Sovereign.Structology.BinaryTetrahedralHFM where
 
 open import Data.Nat using (ℕ; _+_; _*_)
