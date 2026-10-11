@@ -1,5 +1,18 @@
 {-# OPTIONS --cubical --guardedness #-}
+
+-- | Sovereign.Cubical.Fin3Sum9
+-- Fin 3 上 9 项求和的展平/交换引理族——服务 Laurent → Burau → Braid 链的 sum9 转置
+--
+-- 核心原则：
+--   1. 9 项求和拆五步独立引理（uflat9-s1..s5），每步单一括号重组
+--   2. 组合链用命名半链（p12/p34）——保持 ∙ 嵌套 ≤3
+--   3. 纯 ℤ 字面情形（pos/negsuc）逐案转发 +Assoc，不引入 subst
+--
+-- 包含：assocP, uflat9-s1..s5, unflat9, sum9-swap
+
 module Sovereign.Cubical.Fin3Sum9 where
+
+-- ② 导入区
 
 open import Cubical.Data.Int using (ℤ; _+_; pos; negsuc)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; _∙_)
@@ -64,7 +77,9 @@ unflat9 A1 A2 A3 B1 B2 B3 C1 C2 C3 =
       X5 = (((A1 + B1) + C1) + ((((A2 + B2)) + C2) + ((A3 + (B3 + C3)))))
       p5 : X5 ≡ (((A1 + B1) + C1) + (((A2 + (B2 + C2))) + ((A3 + (B3 + C3)))))
       p5 = uflat9-s5 A1 B1 C1 A2 B2 C2 A3 B3 C3
-  in p1 ∙ p2 ∙ p3 ∙ p4 ∙ p5
+      p12 = p1 ∙ p2
+      p34 = p3 ∙ p4
+  in p12 ∙ p34 ∙ p5
 
 -- ─── sum9-swap：col 序 → row 序 → 三组（flat9 ∙ unflat9 组合的核心交换）───
 

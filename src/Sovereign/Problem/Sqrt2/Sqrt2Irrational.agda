@@ -17,8 +17,16 @@
 -- 零 postulate、零 hole。
 ------------------------------------------------------------------------
 
+-- 核心原则：
+--   1. 无穷递降良基化为 Strong n 结构递归（无需 Acc）
+--   2. 奇偶性走完全平方引理（square-dub→even），零 postulate
+--   3. 命名引理链（∙/trans 嵌套 ≤3）+ 具名步骤注释
+--
+-- 包含：奇偶引理族, square-dub/even, 递降步 descent, Strong 强化归纳, √2 无理主定理
+
 module Sovereign.Problem.Sqrt2.Sqrt2Irrational where
 
+-- ② 导入区
 open import Agda.Builtin.Nat using (Nat; zero; suc; _+_; _*_)
 open import Agda.Builtin.Equality using (_≡_; refl)
 

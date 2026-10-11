@@ -7,8 +7,17 @@
 -- 1. Cubical.Foundations.Prelude 假设连续同伦类型论，初始信任度 0。
 -- 2. 禁止 HoTT 模块直接引用外部 Cubical 库。
 -- 3. 必须通过此隔离层访问，以便在阶段 2 替换为离散版本。
+--
+-- 核心原则：
+--   1. 隔离层只做重导出（public import），零定义零证明
+--   2. 每个重导出带 UNTRUSTED 标注与离散化待办
+--
+-- 包含：Prelude / Equiv / Function / Core.Primitives 四路重导出
+
 
 module Sovereign.HoTT.DiscreteCubical where
+
+-- ② 导入区（重导出，分组按信任面标注）
 
 -- ⚠️ UNTRUSTED: 连续 Path 类型，可能与 T6 离散环面冲突
 open import Cubical.Foundations.Prelude public
@@ -26,6 +35,8 @@ open import Cubical.Foundations.Function public
 -- ⚠️ UNTRUSTED: 核心 Cubical 库
 -- NOTE: Cubical.Core.Everything not available, importing what we need directly
 open import Cubical.Core.Primitives public
+
+-- ③-⑥ N/A（隔离层：零定义/零引理/零组合/零核对——本模块即「导入区」本身）
 
 -- 备注：
 -- 阶段 2 计划：

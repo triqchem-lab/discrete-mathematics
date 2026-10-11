@@ -10,8 +10,11 @@
 --
 -- 包含：sucPush, pos-+pos, sucℤ-minus, minus-assoc, minus-shift
 
+-- ③ 基础件层（sucPush/pos-+pos 等桥件）→ ④ 主引理层（negDistrib 族）→ ⑥ 核对层（补件区 refl 交叉）
+
 module Sovereign.Cubical.IntArith where
 
+-- ② 导入区
 open import Cubical.Data.Nat using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
 open import Cubical.Data.Nat.Properties using (+-zero; +-suc)
 open import Cubical.Data.Int using (ℤ; _+_; _-_; pos; negsuc; _+negsuc_; sucℤ; predℤ; _+pos_)

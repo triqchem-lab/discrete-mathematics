@@ -110,4 +110,20 @@ sum3-comm f =
     rg3 = cong (λ w → (p1 + (p4 + p7)) + w) (cong (p2 +_) (+Assoc p5 p8 (p3 + (p6 + p9))))
     rg4 = cong (λ w → (p1 + (p4 + p7)) + w) (+Assoc p2 (p5 + p8) (p3 + (p6 + p9)))
 
-  in f1 ∙ f2 ∙ f3 ∙ f4 ∙ bubble1 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble2 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble3 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble4 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble5 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble6 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble7 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble8 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ bubble9 p1 p2 p3 p4 p5 p6 p7 p8 p9 ∙ rg1 ∙ rg2 ∙ rg3 ∙ rg4
+    b1 = bubble1 p1 p2 p3 p4 p5 p6 p7 p8 p9
+    b2 = bubble2 p1 p2 p3 p4 p5 p6 p7 p8 p9
+    b3 = bubble3 p1 p2 p3 p4 p5 p6 p7 p8 p9
+    b4 = bubble4 p1 p2 p3 p4 p5 p6 p7 p8 p9
+    b5 = bubble5 p1 p2 p3 p4 p5 p6 p7 p8 p9
+    b6 = bubble6 p1 p2 p3 p4 p5 p6 p7 p8 p9
+    b7 = bubble7 p1 p2 p3 p4 p5 p6 p7 p8 p9
+    b8 = bubble8 p1 p2 p3 p4 p5 p6 p7 p8 p9
+    b9 = bubble9 p1 p2 p3 p4 p5 p6 p7 p8 p9
+    bub-a = b1 ∙ b2 ∙ b3
+    bub-b = b4 ∙ b5 ∙ b6
+    bub-c = b7 ∙ b8 ∙ b9
+    flat = f1 ∙ f2 ∙ f3 ∙ f4
+    rgs = rg1 ∙ rg2 ∙ rg3 ∙ rg4
+  -- 命名引理化：17 链单行 → 分段组合（每段 ∙ 嵌套 ≤3）
+  --   flat = 展平(f1..f4)｜bub-* = 气泡三段(b1..b9)｜rgs = 重分组(rg1..rg4)
+  in flat ∙ (bub-a ∙ bub-b ∙ bub-c) ∙ rgs

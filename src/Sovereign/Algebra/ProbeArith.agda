@@ -1,5 +1,18 @@
 {-# OPTIONS --cubical --guardedness #-}
+
+-- | Sovereign.Algebra.ProbeArith
+-- Cubical ℤ/Nat 算术辅助件库（≤ 消去 / pos 桥 / 折叠三相变）——服务 Laurent 归一与判别式链
+--
+-- 核心原则：
+--   1. ≤ 消去为「存在 ℕ 见证」形（≤-witness 双向）——参照 mathlib4 le.elim
+--   2. +pos 空格算符陷阱：真二元 + 写 `+ (pos n)` 括号形；`z +pos k` 是一元后缀
+--   3. 逐 entry 具名子句防推断塌陷；纯字母名避开解析冲突
+--
+-- 包含：≤-witness 家族, pos-split, triℤ, probe 件（fold3 三相变）, lem-dpp 族（2026-10-11 补件）
+
 module Sovereign.Algebra.ProbeArith where
+
+-- ② 导入区
 
 open import Cubical.Data.Nat using (ℕ; zero; suc; _∸_) renaming (_+_ to _+ℕ_)
 open import Cubical.Data.Nat using (predℕ)

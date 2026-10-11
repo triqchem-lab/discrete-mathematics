@@ -17,8 +17,18 @@
 -- ⚠ **postulate 性质声明**：此处的 `Carrier`/`δ` 是**抽象展示群的签名**、`δ³-law` 是其**关系**
 --   （即条件命题的**前件**），**不是"未证的引理"**。它们不冒充定理。
 
+-- 核心原则：
+--   1. 生成元必须 stuck 头暴露（postulate 夹具）——Agda 拒收 LHS 归约的规则
+--   2. Carrier/δ/δ³-law = kind:rewrite 类豁免（人类裁决 2026-09-13 A 案）：最小合法单元
+--   3. 不构成定理缺口、不被下游定理引用（裁决三合取条件）
+--
+-- 包含：TwoViewRewritten 视图 record（Carrier/δ/δ³-law 三件 + REWRITE 注册）
+
+-- ③ 基础件层（夹具定义，无④⑤⑥——机制最小模型）
+
 module Sovereign.Trust.TwoViewRewritten where
 
+-- ② 导入区
 open import Agda.Builtin.Equality using (_≡_; refl)
 open import Agda.Builtin.Equality.Rewrite
 
