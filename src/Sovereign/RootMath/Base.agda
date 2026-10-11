@@ -110,8 +110,24 @@ isStableRoot _ = false
 IsStable : ℕ → Bool
 IsStable n = isStableRoot n
 
--- [分类: 待证引理] [状态: 低优先级，需 Fin 10 或 bound 证明]
+-- [分类: 已证引理] [状态: 核心四极框架]
 -- 核心引理：数字根 ∈ {3,6,9} 时, 构造 StableDigitalRoot 证明。
--- 保持 postulate 的原因是 isStableRoot 的 wildcard 模式对变量不规约,
--- 导致 Agda 覆盖检查无法完成。不影响核心四极框架。
-postulate stableRootConstraint : ∀ {n} → T (IsStable (digitalRoot n)) → StableDigitalRoot (digitalRoot n)
+-- 【构造化 2026-10-11】原 postulate 病因 = 对 stuck 项 digitalRoot n 直接匹配（wildcard 不规约）；
+--   正解 = 辅助件泛化到任意 m + 具体值分支（豁免精化判据「符号/具体值拆分」正解①）。
+--   ⚠ 尾部必须 suc¹¹ 起（suc⁴ 尾会盖住 6/9——m=2/5 时 suc⁴m=6/9，case tree 拒归约是对的）。
+stableRootAux : (m : ℕ) → T (isStableRoot m) → StableDigitalRoot m
+stableRootAux zero ()
+stableRootAux 1 ()
+stableRootAux 2 ()
+stableRootAux 3 _ = root3
+stableRootAux 4 ()
+stableRootAux 5 ()
+stableRootAux 6 _ = root6
+stableRootAux 7 ()
+stableRootAux 8 ()
+stableRootAux 9 _ = root9
+stableRootAux 10 ()
+stableRootAux (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc m))))))))))) ()
+
+stableRootConstraint : ∀ {n} → T (IsStable (digitalRoot n)) → StableDigitalRoot (digitalRoot n)
+stableRootConstraint {n} w = stableRootAux (digitalRoot n) w

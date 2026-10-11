@@ -8,7 +8,7 @@
 -- 注意：非连续统能量差、声学阻抗或量子涨落
 --
 -- 宪法合规：
--- - 零 postulate
+-- - 零 postulate（2026-10-11 构造化达成：8 postulate 全消——3 消解/2 关系入定义/2 值修正/1 实现）
 -- - 能隙 Δ=√3 使用 Sovereign.RootMath.AlgebraicComplex.Sqrt3 代数定义
 -- - 所有物理相关参数标记为 EXPERIMENTAL_PARAMETER 记录（非 postulate）
 
@@ -16,9 +16,10 @@ module Sovereign.RootMath.EnergyGap where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Empty using (⊥)
-open import Data.Nat using (ℕ; suc; _≤_)
+open import Data.Nat using (ℕ; suc; _≤_; _<ᵇ_) renaming (_*_ to _*ℕ_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _>_)
 open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_; -_)
+open Data.Rational.ℚ using (numerator; denominatorℕ)
 open import Data.Product using (_×_; _,_)
 open import Data.Bool using (Bool; true; false; not)
 
@@ -66,8 +67,8 @@ omegaCubedIsId = refl
 --   丢弃 i 因子——作为代数表示合法，但不可声称是域同态。
 c3ToSqrt3 : C3Element → Sqrt3
 c3ToSqrt3 c3-id     = (+ 1 / 1) +s3 (+ 0 / 1)
-c3ToSqrt3 c3-omega  = (-[1+ 1 ] / 2) +s3 (+ 1 / 2)
-c3ToSqrt3 c3-omega2 = (-[1+ 1 ] / 2) +s3 (-[1+ 1 ] / 2)
+c3ToSqrt3 c3-omega  = (-[1+ 0 ] / 2) +s3 (+ 1 / 2)   -- 【勘正 2026-10-11】原稿 -[1+ 1]/2 = -1 ≠ 文档意图 -1/2
+c3ToSqrt3 c3-omega2 = (-[1+ 0 ] / 2) +s3 (-[1+ 0 ] / 2)   -- 【勘正 2026-10-11】同上
 
 --------------------------------------------------------------------------------
 -- 3. 相生与相克的复振幅
@@ -99,21 +100,23 @@ algebraicEnergyGap : Sqrt3
 algebraicEnergyGap = sqrt3
 
 -- 定理：代数能隙的平方 = 3
-postulate
--- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
---   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
-  energyGapSquared : normˢ (algebraicEnergyGap *ˢ algebraicEnergyGap) ≡ + 3 / 1
+-- 【勘正 2026-10-11】原陈述把「值 Δ²=3」误写为「范数 = 3」（norm(3+0√3)=9 非 3——statement_wrong
+--   定谳）；真陈述为值形式，与本节标题一致。构造化消 postulate。
+energyGapSquared : algebraicEnergyGap *ˢ algebraicEnergyGap ≡ (+ 3 / 1) +s3 (+ 0 / 1)
+energyGapSquared = refl
 
 -- 半能隙 Δ/2 = (1/2)√3
 halfEnergyGap : Sqrt3
 halfEnergyGap = (+ 0 / 1) +s3 (+ 1 / 2)
 
--- 定理：(Δ/2)² 的 Sqrt3 范数 = -3/4
---   证明：(0 + 1/2√3)² 的范数 = 0² - 3*(1/2)² = -3/4
-postulate
--- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
---   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
-  halfEnergyGapSquared : normˢ (halfEnergyGap *ˢ halfEnergyGap) ≡ -[1+ 0 ] / 4
+-- 【勘正 2026-10-11】原稿混淆 norm(Δ/2) 与 norm((Δ/2)²)（statement_wrong 定谳）：
+--   注释计算 0²-3(1/2)² = -3/4 是 **norm(Δ/2)**；且原 RHS -1/4 与注释 -3/4 亦不符。真陈述二件：
+-- 定理：半能隙的范数 = -3/4（相位类范数）
+halfEnergyGapNorm : normˢ halfEnergyGap ≡ -[1+ 2 ] / 4
+halfEnergyGapNorm = refl
+-- 定理：(Δ/2)² 的范数 = 9/16（(3/4+0√3) 的范数 = (3/4)²）
+halfEnergyGapSquared : normˢ (halfEnergyGap *ˢ halfEnergyGap) ≡ + 9 / 16
+halfEnergyGapSquared = refl
 
 -- 正半能隙模平方 = 3/4
 halfEnergyGapModSq : ℚ
@@ -133,14 +136,14 @@ record ChordLength : Set where
     from  : C3Element  -- 相生格点
     to    : C3Element  -- 相克格点
     sqLen : ℕ          -- 弦长平方
+    sqLenIs3 : sqLen ≡ 3   -- 【关系入定义 2026-10-11】内建约束入 record（B3 先例）
 
 open ChordLength public
 
 -- 内建约束：弦长平方必须为 3
-postulate
--- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
---   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
-  sqLenIs3 : (c : ChordLength) → ChordLength.sqLen c ≡ 3
+-- 【构造化 2026-10-11】原 postulate ∀c 形降为 record 字段（构造时必须提供；
+--   open ChordLength public 投影即原签名）——豁免精化判据正解②关系入定义。
+--   注：原 standardChord 字面的 sqLenIs3 = refl 曾被 TooManyFields 警告静默忽略（死行），今激活。
 
 standardChord : ChordLength
 standardChord = record
@@ -198,7 +201,7 @@ timeSpaceUnification :
   ∀ (step : ℕ) →
   let chordLen : Sqrt3
       chordLen = algebraicEnergyGap
-  in normˢ (chordLen *ˢ chordLen) ≡ + 3 / 1
+  in chordLen *ˢ chordLen ≡ (+ 3 / 1) +s3 (+ 0 / 1)   -- 【勘正 2026-10-11】同 energyGapSquared：值形式非范数形
 timeSpaceUnification _ = energyGapSquared
 
 -- Hermite 度量下的复位移平方（使用 Sqrt3 范数）
@@ -208,10 +211,10 @@ hermiteMetric z1 z2 = normˢ (z2 -ˢ z1)
 -- 定理：相生到相克的 Hermite 度量
 --   phaseOvercome - phaseGenerate = -3/2 + 1/2√3
 --   norm = (-3/2)² - 3*(1/2)² = 9/4 - 3/4 = 6/4 = 3/2
-postulate
--- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
---   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
-  hermiteGenerateToOvercome : hermiteMetric phaseGenerate phaseOvercome ≡ + 3 / 2
+-- 【构造化 2026-10-11】c3ToSqrt3 值 bug 修复后（ω = -1/2 + 1/2√3）本定理 refl 即闭——
+--   原「物理锚定 bridge」实为「暂 postulate + 注释版证明」（缺桥类，豁免精化判据先怀疑缺桥）。
+hermiteGenerateToOvercome : hermiteMetric phaseGenerate phaseOvercome ≡ + 3 / 2
+hermiteGenerateToOvercome = refl
 
 --------------------------------------------------------------------------------
 -- 8. 工程对应
@@ -224,10 +227,14 @@ yaoTrapThreshold = 253
 -- 半能隙 Δ/2 的有理数近似
 -- 根据《律算合一知识图谱》：能隙 Δ = √3，定点整数 Q16.16 中表现为 56632/65536
 -- 此处的 56632/65536 是 Δ/2 的近似值
-postulate
--- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
---   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
+-- 【构造化 2026-10-11】Q16.16 定点近似值 Δ/2 ≈ 56632/65536（原注「56536」系 65536 笔误；
+--   命名 legacy：近似值非精确数）：
+-- 【爆点避让 2026-10-11】abstract 封装（附录 15 范式）：透明大字面量经 positivity/unfolding 旋涡
+--   死循环（实测 >280s；56632/65536 与约分形 7079/8192 均中招）；封装后块内 refl 等式桥可换算。
+--   值语义 = Δ/2 ≈ 56632/65536（Q16.16 定点近似，原注「56536」系 65536 笔误；命名 legacy）。
+abstract
   halfGapExact : ℚ
+  halfGapExact = + 7079 / 8192
 
 -- halfGapExact 的平方
 halfGapExactSquared : ℚ
@@ -245,14 +252,12 @@ record ZhonglvPrepTrigger : Set where
   field
     threshold     : ℚ    -- 触发阈值 = Δ/2
     shouldTrigger : ℤ → Bool  -- 判定函数
+    thresholdIsHalfGap : threshold ≡ halfGapExact   -- 【关系入定义 2026-10-11】内建约束入 record
 
 open ZhonglvPrepTrigger public
 
 -- 内建约束：阈值必须为半能隙
-postulate
--- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
---   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
-  thresholdIsHalfGap : (t : ZhonglvPrepTrigger) → ZhonglvPrepTrigger.threshold t ≡ halfGapExact
+-- 【构造化 2026-10-11】同 sqLenIs3——postulate ∀t 形降为 record 字段（投影即原签名）。
 
 -- 整数绝对值与有理数的交叉乘法比较
 --   |z| > q  等价于  |z| * denominator(q) > numerator(q)
@@ -260,8 +265,9 @@ postulate
 ℤabs (+ a) = a
 ℤabs (-[1+ a ]) = suc a
 
-postulate
-  crossMulCompare : ℤ → ℚ → Bool
+-- 【构造化 2026-10-11】按上注公式实现（|z| > q ⟺ |z|·den(q) > num(q)，q ≥ 0 域）：
+crossMulCompare : ℤ → ℚ → Bool
+crossMulCompare z q = ℤabs (numerator q) <ᵇ (ℤabs z *ℕ denominatorℕ q)
 
 zhonglvPrepInstance : ZhonglvPrepTrigger
 zhonglvPrepInstance = record
