@@ -181,3 +181,36 @@ disp2-slide W {u} {x} {y} {z} {v} p b e1 e2 e3 harm = trans left-half right-half
     right-half = sym (trans (disp2-prod W (p ++w (cons e3 b))) (prod-++w W p (cons e3 b)))
 
 -- ────────────────────────────────────────────────────────────────────
+
+-- ────────────────────────────────────────────────────────────────────
+-- ──── 线3 disp2-respects ────
+-- Postnikov 2-截断：disp2 的 A-homotopy 不变量提升
+-- 设计：主件 AHomotopy 归纳四案（refl/symm/trans'/gen）+ 辅件 AStep 二案
+--       （slide = disp2-slide-gen 直调 / expand = sym 同件）。
+-- 关键约束：harm 参数取**全局 gen 形**（∀ a b c → wt a b *A wt b c ≡ wt a c）
+--          ——IH 间传递需要（symm/trans' 案的 IH 复用必须有全域 harm）。
+-- ────────────────────────────────────────────────────────────────────
+
+-- 辅件：步级不变量（AStep 二案）
+--   slide  案 = disp2-slide-gen 直调（p·(x→y)(y→z)·b ⟶ p·(x→z)·b，harm x y z 代入）
+--   expand 案 = 同件的 sym（反向步）
+step-respects : (W : WeightedDiGraph) → ∀ {u v} {w1 w2 : Walk (G W) u v}
+  (s : AStep (G W) w1 w2)
+  (harm : ∀ a b c → _*A_ W (wt W a b) (wt W b c) ≡ wt W a c)
+  → disp2 W w1 ≡ disp2 W w2
+step-respects W (slide p b e1 e2 e3) harm = disp2-slide-gen W p b e1 e2 e3 harm
+step-respects W (expand p b e1 e2 e3) harm = sym (disp2-slide-gen W p b e1 e2 e3 harm)
+
+-- 主件：AHomotopy 归纳四案
+--   refl'  案 = refl（defeq：disp2 W w ≡ disp2 W w）
+--   symm   案 = sym ∘ IH（反向同伦 ⇒ 反向等式）
+--   trans' 案 = trans ∘ IH 两连（同伦复合 ⇒ 等式传递）
+--   gen    案 = 归约步级 step-respects
+disp2-respects : (W : WeightedDiGraph) → ∀ {u v} {w1 w2 : Walk (G W) u v}
+  (h : AHomotopy (G W) w1 w2)
+  (harm : ∀ a b c → _*A_ W (wt W a b) (wt W b c) ≡ wt W a c)
+  → disp2 W w1 ≡ disp2 W w2
+disp2-respects W (refl' w) harm = refl
+disp2-respects W (symm h) harm = sym (disp2-respects W h harm)
+disp2-respects W (trans' h1 h2) harm = trans (disp2-respects W h1 harm) (disp2-respects W h2 harm)
+disp2-respects W (gen s) harm = step-respects W s harm
