@@ -1,6 +1,8 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | jac_YM_Transfer — YM 转移矩阵 · 多链接格点一般构造
+-- 【判重组4 注记 2026-10-11】与 YMTransfer.agda 近名对判重：异物互补（本件=一般构造，彼件=CRT 质量间隙闭合）
+-- ——非重复；近名易混，模块改名会破迁移清单故保留原名（交叉注记消歧）
 -- 0 postulate
 
 module Sovereign.Problem.YangMills.YM_Transfer where

@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | jac_YMTransfer — YM 转移矩阵 + CRT 质量间隙 (闭合)
+-- 【判重组4 注记 2026-10-11】与 YM_Transfer.agda 近名对判重：异物互补（本件=CRT 闭合，彼件=一般构造）——非重复
 -- det≠0 ⇒ λ_min>0. 实证: 2×2/3×3/4×4. CRT: N×N.
 -- 0 postulate
 
