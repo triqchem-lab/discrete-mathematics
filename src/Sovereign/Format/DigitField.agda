@@ -1,5 +1,11 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- 核心原则：
+--   1. 位域 = 纯容量算术（乘/幂/比较），不含记数法语义（范畴红线见上）；
+--   2. 字段划分由容量乘法分解表达（FieldCapacity），「12 进制 = 3×2×2」是跨范畴误写；
+--   3. 与进制的桥不在本模块（见 DigitRealization）。
+-- 包含：FieldCapacity（容量类型）、capacity（容量运算族：乘/幂/比较）。
+
 module Sovereign.Format.DigitField where
 
 -- | Sovereign.Format.DigitField —— **位域层**

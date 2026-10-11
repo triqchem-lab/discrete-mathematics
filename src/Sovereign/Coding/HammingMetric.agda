@@ -19,6 +19,12 @@
 --
 -- 0 postulate.
 
+-- 核心原则：
+--   1. Hamming 距离 = 逐位相异计数（card of pointwise 异或面）；
+--   2. Word 承载固定长度编码，distance 对置换对称、三角不等式由 card 单调给出；
+--   3. 布尔面 bool 为逐位比较的底层，pointwise 提升为向量级。
+-- 包含：bool/Word 载体、card（相异计数）、pointwise（逐位提升）、hamming（距离主件）。
+
 module Sovereign.Coding.HammingMetric where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)

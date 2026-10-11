@@ -21,6 +21,12 @@
 --
 -- 0 postulate.
 
+-- 核心原则：
+--   1. 幂是递归函数（power base (suc n) = base * power base n），先于任何具体代数结构；
+--   2. 零幂族：0^n = 0（n ≥ 1）——零吸收一切幂次，是跨维度的唯一元素；
+--   3. 幂等元：idempotent x = (x * x ≡ x)，与幂族并列的第二族构造。
+-- 包含：power（递归幂）、idempotent（幂等检测）、zero 族（零幂/零吸收律）。
+
 module Sovereign.Base.FunctionTheory where
 
 open import Data.Nat using (ℕ; zero; suc)

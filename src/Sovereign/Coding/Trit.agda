@@ -8,6 +8,12 @@
 -- 这从类型论层面杜绝了将其误用为 {-1, 0, 1} 或 {-2, ...} 的可能性。
 -- 符号对应：T₀(0) 吸收, T₁(1) 平衡, T₂(2) 表达。
 
+-- 核心原则：
+--   1. Trit = Fin 3 独立类型，不是整数子集（杜绝 {-1,0,1} 误用）；
+--   2. 三值语义：T₀(0) 吸收 / T₁(1) 平衡 / T₂(2) 表达；
+--   3. 编码转换（toℕ/fromℕ/toCode）只走构造子，不做模算术回流。
+-- 包含：Trit 类型、T₀/T₁/T₂ 构造子、toℕ/fromℕ/toCode 编码族。
+
 module Sovereign.Coding.Trit where
 
 open import Data.Fin public using (Fin; zero; suc; toℕ; fromℕ; _≟_)

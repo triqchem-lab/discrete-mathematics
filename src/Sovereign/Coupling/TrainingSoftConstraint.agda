@@ -8,6 +8,14 @@
 -- 2. 阈值定义：当偏离超过 Δ/2 (≈0.866) 时，触发高额能量惩罚。
 -- 3. 目的：引导训练向黄金平衡 (虚实比=1.0, 陈数=2) 收敛，而非强制截断。
 
+-- 核心原则（宪法约束三条 + 正确性两条）：
+--   1. 能隙 Δ 双锚定：推理硬边界（≥243 归零）/ 训练软约束（本模块）；
+--   2. 阈值 Δ/2（定点 56632/65536）——超阈触发能量惩罚而非截断；
+--   3. 引导收敛至黄金平衡（虚实比 1.0、陈数 2），不强制截断；
+--   4. 正确性具名律：带隙内软约束惰性 / 隙外能量单调抬升。
+-- 包含：DELTA_HALF_SCALED/PENALTY_MULTIPLIER（定点常量）、computeDeviation/applySoftConstraint、
+--       softConstraintInactiveWithinGap/softConstraintIncreasesEnergyOutsideGap。
+
 module Sovereign.Coupling.TrainingSoftConstraint where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _≤_; _<_; _≥_; _>_)

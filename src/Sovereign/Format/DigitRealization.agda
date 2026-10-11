@@ -1,5 +1,11 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- 核心原则：
+--   1. 桥的两句话都是**双射或不等式，不是相等**（承载走 crt12/π3/π4 往返，容量⇒位数走对数界）；
+--   2. 只搬运不重证：CRT 双射引 Duodecimal 既有件，本模块零新数学；
+--   3. 12 态位域 ⇄ 三态域 + 2 二态域的显式拆合（bitsToFin4/fin4ToBits）。
+-- 包含：bitsToFin4/fin4ToBits（显式双射）、fin4 位值族、容量⇒位数不等式件。
+
 module Sovereign.Format.DigitRealization where
 
 -- | Sovereign.Format.DigitRealization —— **桥：位域 ↔ 进制**

@@ -16,6 +16,12 @@
 --
 -- 全部 0 postulate.
 
+-- 核心原则：
+--   1. Fin N → Fin N 内射 ⟺ 满射（构造性右逆，无 Choice）；
+--   2. 鸽巢原理泛函化：内射性与行列式代数特征的无缝映射；
+--   3. 0-postulate 模板——高维状态机的判定爆炸在此归一。
+-- 包含：Inj（内射谓词）、Surj（满射谓词）、内射⟹满射桥、行列式特征映射件。
+
 module Sovereign.Coding.PigeonholeStandard where
 
 open import Data.Nat using (ℕ; suc)

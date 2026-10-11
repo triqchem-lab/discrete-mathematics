@@ -1,4 +1,14 @@
 {-# OPTIONS --rewriting --guardedness #-}
+-- | Sovereign.Engine.StateMachine
+-- 主权状态机：十二律相位驱动的状态演化与 TQ10 编码桥
+--
+-- 核心原则：
+--   1. 状态演化由相位/断面双步进驱动（stepPhase/stepSection），12 步闭合走钟一圈；
+--   2. 状态 ⇄ TQ10 格式互转（stateToTQ10/tq10ToState）——编码层不动语义；
+--   3. 正确性以具名律表达：12 步仲吕触发、非法输入抬升能隙奇性、演化保 LCM 不变量。
+-- 包含：stepPhase/stepSection/evolve、stateToTQ10/tq10ToState、zhonglvTriggeredAfter12、
+--       gapSingularityIncreasesOnInvalidInput、evolvePreservesLCM。
+
 module Sovereign.Engine.StateMachine where
 open import Data.Nat using (ℕ; suc; _+_; _*_; _<_; _≤_)
 open import Data.Nat.Base using (_≡ᵇ_; _%_)
