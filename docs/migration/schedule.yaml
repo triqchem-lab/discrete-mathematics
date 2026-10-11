@@ -337,3 +337,9 @@ batches:
     modules: [Sovereign.Algebra.GroupTheory.NecklaceInvariance]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
+
+# ===== 附录（2026-10-11 修订追加——后续迁移任务书）=====
+# 移动面执行序重组：涟漪升序波次表（波 3-N）替代原目录序批次——见 docs/migration/后续迁移任务-2026-10-11.md
+# 剩余 783 件（803 - 波 1 实迁 20）分 15-18 波次批；每批护栏 = 原子 commit + 全限定替换 + 停下三判据 + 时间 ≤2h/批
+# 特殊面：DiscreteCubical/Path 遗留随 Synthesis 批 / Fin3 全限定纪律 / ProbeArith 保位 / archive 不迁 / Trit(360)/GF9(115)/Jacobian(62) 巨锚不迁
+# 校准点：波 6 S3 重件批（Structology.T6 43 行级）为关键校准——重件面工时实测后修正全量外推（26-32h）
