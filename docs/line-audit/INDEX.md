@@ -81,8 +81,8 @@
 - `src/Sovereign/Format/CRT.agda` → 1 postulate
 - `src/Sovereign/HoTT/DiscreteCCHM.agda` → 2 postulate
 - `src/Sovereign/Physics/QuartzPhonon.agda` → 3 postulate
-- `src/Sovereign/RootMath/Base.agda` → 1 postulate
-- `src/Sovereign/RootMath/EnergyGap.agda` → 7 postulate
+- `src/Sovereign/Foundation/Base.agda` → 1 postulate
+- `src/Sovereign/Foundation/EnergyGap.agda` → 7 postulate
 - `src/Sovereign/Structology/Aether.agda` → 2 postulate
 - `src/Sovereign/Structology/MagicSquareM4.agda` → 1 postulate
 - `src/Sovereign/Structology/Platonics.agda` → 3 postulate

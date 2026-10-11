@@ -13,7 +13,7 @@
   - 耦合域：嘉当挠场量子物理学的离散复位
   - 本质：主权状态机在 T⁶ 离散环面上平行移动与和乐效应的连续统投影
   - 离散本源：联络 = 五行干涉，曲率 = 局部陈数贡献，挠率 = 仲吕不交
-- **导入 (22)**: `Data.Nat`, `Data.Integer`, `Data.Rational`, `Data.Bool`, `Data.Fin`, `Data.Vec`, `Data.List`, `Data.Maybe`, `Function`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Data.Product`, `Data.Empty`, `Data.Empty`, `Sovereign.Base.Trit`, `Sovereign.RootMath.EnergyGap`, `Sovereign.RootMath.AlgebraicComplex`, `Sovereign.Structology.Winding`, `Sovereign.Structology.T6`, `Sovereign.Coupling.LossGain`, `Sovereign.Coupling.Zhonglv`, `Sovereign.MetaStructure.WuXing`
+- **导入 (22)**: `Data.Nat`, `Data.Integer`, `Data.Rational`, `Data.Bool`, `Data.Fin`, `Data.Vec`, `Data.List`, `Data.Maybe`, `Function`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Data.Product`, `Data.Empty`, `Data.Empty`, `Sovereign.Base.Trit`, `Sovereign.Foundation.EnergyGap`, `Sovereign.Foundation.AlgebraicComplex`, `Sovereign.Structology.Winding`, `Sovereign.Structology.T6`, `Sovereign.Coupling.LossGain`, `Sovereign.Coupling.Zhonglv`, `Sovereign.MetaStructure.WuXing`
 - **data 类型**: `WuXingAmplitude`
 - **record 类型**: `DiscreteComplex`, `BaseManifold`, `A4StructureGroup`, `DiscreteFiberBundle`, `DiscreteConnection`, `DiscreteCurvature`, `DiscreteTorsion`, `ClosedTorsion`, `ParallelTransport`, `HolonomyGroup`, `GaugePotential`, `FieldStrength`, `MatterField`, `GaugeTransformation`, `CartanFirstEquation`, `CartanSecondEquation`
 - **顶层签名 (15)**: `conjugate`, `phaseOvercome2`, `baseManifoldS2OverA4`, `a4GroupInstance`, `standardFiberBundle`, `connectionToComplex`, `composeConnections`, `computeCurvature`, `zhonglvTorsion`, `closeTorsion`, `torsionClosedAfterZhonglv`, `transportDiffEq`, `holonomyIdentityAt3312`, `gaugePotentialInstance`, `fieldStrengthInstance`
@@ -65,7 +65,7 @@
   - 损益操作是长度比例演化的唯一合法方式：
   - 损：长度 × 2/3（a+1, b-1）
   - 益：长度 × 4/3（a+2, b-1）
-- **导入 (7)**: `Agda.Builtin.List`, `Data.Bool`, `Data.Nat`, `Data.Integer`, `Relation.Binary.PropositionalEquality`, `Sovereign.RootMath.Base`, `Data.Vec`
+- **导入 (7)**: `Agda.Builtin.List`, `Data.Bool`, `Data.Nat`, `Data.Integer`, `Relation.Binary.PropositionalEquality`, `Sovereign.Foundation.Base`, `Data.Vec`
 - **data 类型**: `LossGain`, `LengthSequence`
 - **record 类型**: `Signature`, `Structure`
 - **顶层签名 (19)**: `sunOp`, `yiOp`, `applyLossGain`, `huangzhong`, `applyChain`, `standardChain`, `twelveLüSequence`, `SOVEREIGN_LCM`, `POW3¹¹`, `POW2¹⁶`, `lcmRemainder`, `zhonglvAlign`, `zhonglvAlignMod`, `huangzhongLCMRemainder`, `zhonglvCorrectness`, `zhonglvClosure`, `zhonglvClosureMod`, `LossGainSig`, `LossGainStructure`

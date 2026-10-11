@@ -13,7 +13,7 @@
   - 密度：量子共振——纳音驻波主峰的谐波筛选
   - 本质：纳音驻波主峰在地气声子谱（基频 144Hz）中的谐波筛选与拓扑相变
   - 工程锚定：候气管有效长度统一调谐至 19.271cm
-- **导入 (13)**: `Cubical.Foundations.Prelude`, `Data.Nat`, `Data.Integer`, `Data.Rational`, `Data.Bool`, `Data.Unit`, `Data.Vec`, `Relation.Binary.PropositionalEquality`, `Data.Product`, `Sovereign.MetaStructure.Nayin`, `Sovereign.Density.SevenStages`, `Sovereign.RootMath.EnergyGap`, `Sovereign.Coupling.Zhonglv`
+- **导入 (13)**: `Cubical.Foundations.Prelude`, `Data.Nat`, `Data.Integer`, `Data.Rational`, `Data.Bool`, `Data.Unit`, `Data.Vec`, `Relation.Binary.PropositionalEquality`, `Data.Product`, `Sovereign.MetaStructure.Nayin`, `Sovereign.Density.SevenStages`, `Sovereign.Foundation.EnergyGap`, `Sovereign.Coupling.Zhonglv`
 - **data 类型**: `ResonanceTriggered`, `Resonance`, `EnergyLevelTransition`, `EnergyTransfer`, `ResonanceDefinition`, `NayinStandingWaveHarmonicFiltering`
 - **record 类型**: `HouQiTube`, `NayinHarmonicIsomorphism`, `ResonanceEffect`, `H2O`, `C60`, `ZengHouYiNanLu`
 - **顶层签名 (19)**: `DIQI_PHONON_BASE`, `diqiPhononSpectrum`, `diqiPhononHarmonics`, `standardHouQiTube`, `tubeMatches3rdHarmonic`, `wuxingFromHarmonic`, `NanLuNayin`, `nanluIso`, `resonanceTriggersAsh`, `alpha`, `resonanceWidth`, `widthProportionalToBase`, `decoherenceTime`, `zhonglvCausesDecoherence`, `h2oC60Instance`, `c60Instance`, `zengHouYiInstance`, `noEnergyLevelTransition`, `noEnergyTransfer`

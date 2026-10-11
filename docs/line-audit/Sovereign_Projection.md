@@ -3,13 +3,13 @@
 共 2 个模块。
 
 
-## `src/Sovereign/Projection/Binary.agda`
+## `src/Sovereign/Infrastructure/Projection/Binary.agda`
 
-- **module**: `Sovereign.Projection.Binary`
+- **module**: `Sovereign.Infrastructure.Projection.Binary`
 - **行数**: 174（代码 90 / 注释 56）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Projection.Binary
+  - | Sovereign.Infrastructure.Projection.Binary
   - 投影链：二进制与三进制的有损降维与上下文拾起
   - 宪法定义：
   - 1. projectTritToBit 是有损投影 (Lossy Projection)，仅用于外部 I/O 输出。
@@ -22,13 +22,13 @@
 - **顶层签名 (10)**: `Bit`, `B₀`, `B₁`, `projectTritToBit`, `t0≢t2`, `projectionIsLossy`, `restoreTritWithContext`, `restoreT1Perfect`, `restoreT0CorrectInNonEarthRegions`, `restoreT2CorrectInEarthRegion`
 - **质量**: `refl`×12；无 postulate / 无 hole
 
-## `src/Sovereign/Projection/Decimal.agda`
+## `src/Sovereign/Infrastructure/Projection/Decimal.agda`
 
-- **module**: `Sovereign.Projection.Decimal`
+- **module**: `Sovereign.Infrastructure.Projection.Decimal`
 - **行数**: 24（代码 4 / 注释 16）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Projection.Decimal
+  - | Sovereign.Infrastructure.Projection.Decimal
   - 电性文明十进制投影层
   - ⚠️ 宪法声明（2026-04-24）：
   - 本模块实现**十进制算术**的构造性证明，非律算根数学公理
@@ -40,7 +40,7 @@
   - 3. 教育对照（展示电性文明如何误解数字根）
   - 范畴分离原则：
   - Sovereign.Base.Axioms      → GF(3) 根数学公理（律算真本）
-  - Sovereign.Projection.Decimal → 十进制算术投影（电性文明）
+  - Sovereign.Infrastructure.Projection.Decimal → 十进制算术投影（电性文明）
   - 两者不可混淆，不可互相替代
 - **导入 (2)**: `Sovereign.Projection.Decimal.Axioms`, `Sovereign.Projection.Decimal.Proofs`
 - **质量**: `refl`×0；无 postulate / 无 hole

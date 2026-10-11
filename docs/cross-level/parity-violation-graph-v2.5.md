@@ -81,7 +81,7 @@ module Sovereign.Coupling.ParityViolation where
 
 open import Data.Nat using (ℕ; _+_; _*_; _^_; _%_)
 open import Data.Integer using (ℤ; +_; -[1+_])
-open import Sovereign.RootMath.Base using (Trit; T₀; T₁; T₂)
+open import Sovereign.Foundation.Base using (Trit; T₀; T₁; T₂)
 open import Sovereign.MetaStructure.WuXing using (WuXing; Chirality; LeftHanded; RightHanded)
 open import Sovereign.Structology.Winding using (ToroidalWinding; toroidalWindingValue)
 

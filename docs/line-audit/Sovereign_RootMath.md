@@ -3,13 +3,13 @@
 共 8 个模块。
 
 
-## `src/Sovereign/RootMath/AlgebraicComplex.agda`
+## `src/Sovereign/Foundation/AlgebraicComplex.agda`
 
-- **module**: `Sovereign.RootMath.AlgebraicComplex`
+- **module**: `Sovereign.Foundation.AlgebraicComplex`
 - **行数**: 205（代码 81 / 注释 82）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.RootMath.AlgebraicComplex
+  - | Sovereign.Foundation.AlgebraicComplex
   - 代数复数：避免连续统的复数表示
   - 宪法原则：
   - 1. 禁止使用 Data.Complex (连续统复数)。
@@ -40,9 +40,9 @@
 - **顶层签名 (7)**: `+-mod-verified`, `+-mod-trusted`, `div-mod-theorem`, `div-mod-uniqueness`, `gf3-periodicity`, `144-mod-3≡0`, `arithmetic_lemmas_status`
 - **质量**: `refl`×4；无 postulate / 无 hole
 
-## `src/Sovereign/RootMath/Base.agda`
+## `src/Sovereign/Foundation/Base.agda`
 
-- **module**: `Sovereign.RootMath.Base`
+- **module**: `Sovereign.Foundation.Base`
 - **行数**: 111（代码 83 / 注释 6）
 - **OPTIONS**: `--rewriting --guardedness`
 - **导入 (10)**: `Data.Nat`, `Data.Nat.DivMod`, `Data.Nat.Properties`, `Data.Bool`, `Data.Integer`, `Data.Fin`, `Data.Vec`, `Data.Sum.Base`, `Data.Empty`, `Relation.Binary.PropositionalEquality`
@@ -50,13 +50,13 @@
 - **顶层签名 (15)**: `tritToℕ`, `tritEncode`, `tritDecode`, `encodeDecodeInverse`, `tritEq`, `gf3Zero`, `gf3Neg`, `gf3NegCancel`, `Tryte`, `tryteToℕ⁶`, `zeroTryte`, `digitalRoot`, `digitalRoot≤9`, `isStableRoot`, `IsStable`
 - **质量**: `refl`×7；⚠️ 1 postulate
 
-## `src/Sovereign/RootMath/DigitalRoot.agda`
+## `src/Sovereign/Foundation/DigitalRoot.agda`
 
-- **module**: `Sovereign.RootMath.DigitalRoot`
+- **module**: `Sovereign.Foundation.DigitalRoot`
 - **行数**: 222（代码 117 / 注释 68）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.RootMath.DigitalRoot
+  - | Sovereign.Foundation.DigitalRoot
   - 根数学：数字根公理与稳定驻波判定
   - 公理：稳定驻波对应的长度比例数字根必须 ∈ {0, 3, 6}（模 9 意义下）
   - 0 代表传统数字根定义中的 9（9 ≡ 0 mod 9）。
@@ -67,13 +67,13 @@
 - **顶层签名 (20)**: `digitalRoot`, `digitalRootMod9`, `isStableRoot`, `mkStableRatio`, `tryStableRatio`, `twelvePitches`, `pitchDigitalRoots`, `stablePitches`, `digitalRootAdd`, `digitalRootMul`, `stableRootAddClosed`, `axiomDigitalRoot`, `unstableResonanceElim`, `christosSequence`, `christosStep`, `iterateChristos`, `christosClosure`, `phaseToValue`, `nextPhase`, `christosPeriod6`
 - **质量**: `refl`×10；无 postulate / 无 hole
 
-## `src/Sovereign/RootMath/Eisenstein.agda`
+## `src/Sovereign/Foundation/Eisenstein.agda`
 
-- **module**: `Sovereign.RootMath.Eisenstein`
+- **module**: `Sovereign.Foundation.Eisenstein`
 - **行数**: 968（代码 810 / 注释 82）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.RootMath.Eisenstein
+  - | Sovereign.Foundation.Eisenstein
   - Eisenstein 整数环 Z[ω]:  a + b·ω, 其中 ω² + ω + 1 = 0, ω³ = 1
   - 宪法原则:
   - 1. 禁止使用浮点复数 (Data.Complex). 这是离散数学, 不能有连续统.
@@ -90,13 +90,13 @@
 - **顶层签名 (59)**: `0ᵉ`, `1ᵉ`, `ωᵉ`, `ω²ᵉ`, `-1ᵉ`, `3ᵉ`, `conjᵉ`, `ω³≡1`, `conj-ω≡ω²`, `conj-ω²≡ω`, `χ₃-1`, `χ₃-3cycle`, `χ₃-2trans`, `χ₁-val`, `0ℤ`, `-ᵉ_`, `+ᵉ-comm`, `+ᵉ-assoc`, `+ᵉ-identityˡ`, `+ᵉ-identityʳ`, `+ᵉ-inverseˡ`, `+ᵉ-inverseʳ`, `*ᵉ-comm`, `*ᵉ-assoc`, `*ᵉ-identityˡ`, `*ᵉ-identityʳ`, `*ᵉ-distribˡ`, `*ᵉ-distribʳ`, `normᵉ`, `norm-form`, `conjᵉ-mul`, `mul-real`, `norm-mul`, `unit1`, `unitm1`, `unitω`, `unitω2`, `unitmω`, `unitmω2`, `unit-inv-1`, `unit-inv-m1`, `unit-inv-ω`, `unit-inv-ω2`, `unit-inv-mω`, `unit-inv-mω2`, `unit-norm-1`, `unit-norm-m1`, `unit-norm-ω`, `unit-norm-ω2`, `unit-norm-mω`, `unit-norm-mω2`, `unitGen`, `unitGen-pow-0`, `unitGen-pow-1`, `unitGen-pow-2`, `unitGen-pow-3`, `unitGen-pow-4`, `unitGen-pow-5`, `unitGen-pow-6`
 - **质量**: `refl`×28；无 postulate / 无 hole
 
-## `src/Sovereign/RootMath/EnergyGap.agda`
+## `src/Sovereign/Foundation/EnergyGap.agda`
 
-- **module**: `Sovereign.RootMath.EnergyGap`
+- **module**: `Sovereign.Foundation.EnergyGap`
 - **行数**: 305（代码 146 / 注释 101）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.RootMath.EnergyGap
+  - | Sovereign.Foundation.EnergyGap
   - 根数学：能隙 Δ=√3 与弦长 √3 的起源
   - 本质：T⁶ 复三维离散环面上 C3 循环群生成元作用下的复振幅跃迁
   - 相生 (+1) 与相克 (ω) 格点间的最小不可分间距
@@ -105,19 +105,19 @@
   - 零 postulate
   - 能隙 Δ=√3 使用 Sovereign.RootMath.AlgebraicComplex.Sqrt3 代数定义
   - 所有物理相关参数标记为 EXPERIMENTAL_PARAMETER 记录（非 postulate）
-- **导入 (8)**: `Relation.Binary.PropositionalEquality`, `Data.Empty`, `Data.Nat`, `Data.Integer`, `Data.Rational`, `Data.Product`, `Data.Bool`, `Sovereign.RootMath.AlgebraicComplex`
+- **导入 (8)**: `Relation.Binary.PropositionalEquality`, `Data.Empty`, `Data.Nat`, `Data.Integer`, `Data.Rational`, `Data.Product`, `Data.Bool`, `Sovereign.Foundation.AlgebraicComplex`
 - **data 类型**: `C3Element`, `ContinuousEnergyDiff`, `AcousticImpedance`, `QuantumFluctuation`
 - **record 类型**: `ChordLength`, `HomomorphismChain`, `ZhonglvPrepTrigger`, `ShouldTriggerZhonglvPrep`
 - **顶层签名 (27)**: `_⊙_`, `omegaCubedIsId`, `c3ToSqrt3`, `phaseGenerate`, `phaseOvercome`, `energyGapJump`, `energyGapNorm`, `algebraicEnergyGap`, `halfEnergyGap`, `halfEnergyGapModSq`, `chordLengthSquared`, `standardChord`, `standardChordCorrect`, `homomorphismInstance`, `timeSpaceUnification`, `hermiteMetric`, `yaoTrapThreshold`, `halfGapExactSquared`, `ℤabs`, `zhonglvPrepInstance`, `shouldTriggerZhonglvPrep`, `EnergyGapDefinition`, `C3GeneratorComplexAmplitudeJump`, `notEnergyDifference`, `notAcousticImpedance`, `notQuantumFluctuation`, `energyGapLegal`
 - **质量**: `refl`×10；⚠️ 7 postulate
 
-## `src/Sovereign/RootMath/Gaussian.agda`
+## `src/Sovereign/Foundation/Gaussian.agda`
 
-- **module**: `Sovereign.RootMath.Gaussian`
+- **module**: `Sovereign.Foundation.Gaussian`
 - **行数**: 189（代码 90 / 注释 56）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.RootMath.Gaussian
+  - | Sovereign.Foundation.Gaussian
   - 高斯整数 Z[i] — 毕达哥拉斯复数线的判别式 −4 分支 (0 postulate)
   - 数学背景:
   - i² = −1, 元素 (a,b) = a+bi, a,b ∈ ℤ — 方格点阵 (90°)

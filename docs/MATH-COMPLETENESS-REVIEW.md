@@ -126,7 +126,7 @@ postulate
   energyGapIsSqrt3 : energyGap ^ 2 ≡ + 3     -- ❌ 未证明
 
 -- 应该补充：
-open import Sovereign.RootMath.AlgebraicComplex using (ω)
+open import Sovereign.Foundation.AlgebraicComplex using (ω)
 energyGapAsDistance : (1 - ω) * (1 - conj ω) ≡ + 3
 energyGapAsDistance = ?  -- ✅ 可在 ℤ[ω] 中构造性证明
 ```

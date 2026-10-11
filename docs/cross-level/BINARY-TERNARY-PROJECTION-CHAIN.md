@@ -32,7 +32,7 @@
 *   实现 `GF(3)` 加群 (`⊕`) 与环 (`⊗`)。
 *   **证明**：`cancel` (逆元对消律) 确保曲率计算闭合。
 
-### 2. 投影层 (`Sovereign.Projection.Binary`)
+### 2. 投影层 (`Sovereign.Infrastructure.Projection.Binary`)
 *   **有损投影 (Lossy Projection)**:
     ```agda
     projectTritToBit : Trit → Bit

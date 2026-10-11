@@ -23,9 +23,9 @@
 - **顶层签名 (3)**: `updateByte`, `updateQs`, `qsCycleProperty`
 - **质量**: `refl`×9；⚠️ 1 postulate
 
-## `src/Sovereign/Engine/StateMachine.agda`
+## `src/Sovereign/Infrastructure/StateMachine.agda`
 
-- **module**: `Sovereign.Engine.StateMachine`
+- **module**: `Sovereign.Infrastructure.StateMachine`
 - **行数**: 54（代码 42 / 注释 3）
 - **OPTIONS**: `--rewriting --guardedness`
 - **导入 (11)**: `Data.Nat`, `Data.Nat.Base`, `Data.Nat.DivMod`, `Data.Fin`, `Data.Vec`, `Data.Bool`, `Relation.Binary.PropositionalEquality`, `Sovereign.Coupling.LCM`, `Sovereign.Coding.Trit`, `Sovereign.Base.Axioms`, `Sovereign.Base.Invariants`

@@ -46,7 +46,7 @@
   - 幻方正交拓扑：CRT 模数生成协议
   - 给定环面测地线步数 k，用 M₄ 本征谱 + 克里斯托螺旋
   - 生成 CRT 模数 m_i(k)。正交判据 Orth 取代传统 gcd 互质。
-- **导入 (9)**: `Data.Nat`, `Data.Integer`, `Data.Vec`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Invariants`, `Sovereign.RootMath.DigitalRoot`, `Sovereign.Structology.MagicSquareM4`
+- **导入 (9)**: `Data.Nat`, `Data.Integer`, `Data.Vec`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Invariants`, `Sovereign.Foundation.DigitalRoot`, `Sovereign.Structology.MagicSquareM4`
 - **顶层签名 (15)**: `SOVEREIGN_M`, `Q`, `Φ`, `modulusGen`, `m₁`, `m₂`, `m₃`, `m₄`, `modulusSequence`, `coPhase`, `verify1to8`, `verify2to7`, `verify4to5`, `orthModulusPair`, `orthModulusTheMain`
 - **质量**: `refl`×4；无 postulate / 无 hole
 

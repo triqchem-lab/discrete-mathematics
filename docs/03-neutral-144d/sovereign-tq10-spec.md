@@ -99,7 +99,7 @@ open import Data.Nat using (ℕ; _+_; _*_; _%_; _/_)
 open import Data.Fin using (Fin)
 open import Data.Vec using (Vec)
 open import Data.Word using (Word8; Word64)
-open import Sovereign.RootMath.Base using (Trit; Tryte)
+open import Sovereign.Foundation.Base using (Trit; Tryte)
 
 -- 主权 LCM 模数
 SOVEREIGN_LCM : ℕ

@@ -135,7 +135,7 @@
   - 本模块证明（0 postulate，全部 refl）:
   - §1 BSD 恒等式:  L(E,1) = #E(GF(q))  与  L(E,1) = #E(GF(q²))（精确）
   - §2 Weil 范数恒等式:  t² + 3s² = 4q  （Hasse 界的整数形式）
-- **导入 (5)**: `Data.Integer`, `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.RootMath.Eisenstein`
+- **导入 (5)**: `Data.Integer`, `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Foundation.Eisenstein`
 - **顶层签名 (48)**: `q3`, `t1-E1`, `t1-E2`, `t1-E6`, `t2-E1`, `t2-E2`, `t2-E6`, `bsd-identity-E1`, `bsd-identity-E2`, `bsd-identity-E6`, `bsd-identity-E1-9`, `bsd-identity-E2-9`, `bsd-identity-E6-9`, `weil-norm-E1`, `weil-norm-E2`, `weil-norm-E6`, `weil-norm-E1-9`, `weil-norm-E2-9`, `weil-norm-E6-9`, `hasse-bound-E1`, `hasse-bound-E2`, `hasse-bound-E6`, `alpha-E1`, `alpha-E2`, `alpha-E6`, `alpha-E1-9`, `alpha-E2-9`, `alpha-E6-9`, `trace-sum-E1`, `trace-sum-E2`, `trace-sum-E6`, `trace-sum-E2-9`, `norm-product-E1`, `norm-product-E2`, `norm-product-E6`, `norm-product-E2-9`, `eigen-E1`, `eigen-E2`, `eigen-E6`, `conjugate-pair-E1`, `conjugate-pair-E2`, `conjugate-pair-E6`, `conjugate-pair-E2-9`, `real-split-E1-9`, `bsd-summary-gf3`, `weil-norm-summary-gf3`, `bsd-summary-gf9`, `weil-norm-summary-gf9`
 - **质量**: `refl`×26；无 postulate / 无 hole
 
@@ -162,7 +162,7 @@
   - 三条曲线逐条 refl 验证 (与 WeilRigidity 同款实例)。
   - 本模块证明 (0 postulate, 全 refl/cong):
   - §0 多项式与分数类型 (Quad/Quart/ZetaFraction, 通分 recipClear, 求值 evalE)
-- **导入 (5)**: `Data.Integer`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.RootMath.Eisenstein`, `Sovereign.Problem.Riemann.WeilRigidity`
+- **导入 (5)**: `Data.Integer`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Foundation.Eisenstein`, `Sovereign.Problem.Riemann.WeilRigidity`
 - **record 类型**: `Quad`, `QuadE`, `Quart`, `ZetaFraction`
 - **顶层签名 (46)**: `recipClear`, `mulLin`, `embed`, `negᵉ`, `evalE`, `Zpoly`, `denPoly`, `Z`, `numEis`, `reversePoly`, `num-factor-E1`, `num-factor-E2`, `num-factor-E6`, `den-factor-direct`, `den-factor-swapped`, `clear-num-E1`, `clear-num-E2`, `clear-num-E6`, `clear-den-E1`, `fe-cross-E1`, `fe-cross-E2`, `fe-cross-E6`, `zeta-recip-E1`, `zeta-recip-E2`, `zeta-recip-E6`, `fe-cross-E1-9`, `fe-cross-E2-9`, `zeta-recip-E1-9`, `zeta-recip-E2-9`, `zero-alpha-E1`, `zero-beta-E1`, `zero-alpha-E2`, `zero-beta-E2`, `zero-alpha-E6`, `zero-beta-E6`, `zero-alpha-E1-9`, `zero-alpha-E2-9`, `zero-beta-E2-9`, `recip-num-E1`, `recip-num-E2`, `recip-num-E6`, `disc-E1`, `disc-E2`, `disc-E6`, `disc-E1-9`, `disc-E2-9`
 - **质量**: `refl`×33；无 postulate / 无 hole

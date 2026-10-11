@@ -150,7 +150,7 @@
   - ∞ 维:  陈特征 ch: K(X)→H^{2*}(X;ℚ) (K 理论); 离散世界的"无限维"
   - = 有限格点上的无限时间演化 → 周期轨道定理 (384k 步无漂移)
   - 本模块全部 0 postulate, ℤ/ℕ 算术 refl。
-- **导入 (7)**: `Data.Integer`, `Data.Nat`, `Data.Fin`, `Relation.Binary.PropositionalEquality`, `Sovereign.HoTT.ChernClass`, `Sovereign.Base.Trit`, `Sovereign.RootMath.Eisenstein`
+- **导入 (7)**: `Data.Integer`, `Data.Nat`, `Data.Fin`, `Relation.Binary.PropositionalEquality`, `Sovereign.HoTT.ChernClass`, `Sovereign.Base.Trit`, `Sovereign.Foundation.Eisenstein`
 - **顶层签名 (25)**: `s2-12cell-vertices`, `s2-12cell-edges`, `s2-12cell-faces`, `s2-12cell-euler`, `chern-equals-euler-2d`, `s3-euler`, `c3-closed-cw-winding`, `c3-closed-ccw-winding`, `chern-simons-discrete`, `t6-euler`, `t6-flat-curvature`, `unit-cycle-6`, `zhonglv-cycle-12`, `grand-pump`, `s2-signature`, `t6-betti-middle`, `t6-signature`, `s2-euler-structural`, `chern-euler-2d-structural`, `s3-euler-structural`, `t6-euler-structural`, `t6-flat-structural`, `zhonglv-cycle-structural`, `grand-pump-structural`, `t6-signature-structural`
 - **质量**: `refl`×16；无 postulate / 无 hole
 
@@ -235,7 +235,7 @@
   - 2. 展开 transportPolar 定义：fiber 更新为 map (t ⊕ T.₁)。
   - 3. 利用 stepSection 的性质：当 phase 为偶数时，delta = T.₁ (益一)。
   - 4. 证明两者在操作上是恒等的。
-- **导入 (12)**: `Cubical.Foundations.Prelude`, `Cubical.Foundations.Equiv`, `Cubical.Data.Nat`, `Data.Nat`, `Data.Fin`, `Data.Vec`, `Relation.Binary.PropositionalEquality`, `Sovereign.Engine.StateMachine`, `Sovereign.Coupling.LCM`, `Sovereign.Coding.Trit`, `Sovereign.HoTT.Bundle`, `Sovereign.HoTT.Connection`
+- **导入 (12)**: `Cubical.Foundations.Prelude`, `Cubical.Foundations.Equiv`, `Cubical.Data.Nat`, `Data.Nat`, `Data.Fin`, `Data.Vec`, `Relation.Binary.PropositionalEquality`, `Sovereign.Infrastructure.StateMachine`, `Sovereign.Coupling.LCM`, `Sovereign.Coding.Trit`, `Sovereign.HoTT.Bundle`, `Sovereign.HoTT.Connection`
 - **顶层签名 (3)**: `stepSectionIsTransportWhenGain`, `stepEqualsTransportWhenGain`, `stepEqualsTransportWhenLoss`
 - **质量**: `refl`×9；无 postulate / 无 hole
 

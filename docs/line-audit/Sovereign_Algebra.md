@@ -70,7 +70,7 @@
 - **module**: `Sovereign.Algebra.Base10Degeneration`
 - **行数**: 435（代码 178 / 注释 188）
 - **OPTIONS**: `--rewriting --guardedness`
-- **导入 (12)**: `Data.Nat`, `Data.Nat.Base`, `Data.Nat.Divisibility.Core`, `Data.Nat.DivMod`, `Data.Nat.Properties`, `Data.Empty`, `Data.Product`, `Data.Unit`, `Relation.Nullary`, `Relation.Binary.PropositionalEquality`, `Sovereign.Algebra.Duodecimal`, `Sovereign.RootMath.DigitalRoot`
+- **导入 (12)**: `Data.Nat`, `Data.Nat.Base`, `Data.Nat.Divisibility.Core`, `Data.Nat.DivMod`, `Data.Nat.Properties`, `Data.Empty`, `Data.Product`, `Data.Unit`, `Relation.Nullary`, `Relation.Binary.PropositionalEquality`, `Sovereign.Algebra.Duodecimal`, `Sovereign.Foundation.DigitalRoot`
 - **record 类型**: `Base10Degeneration`
 - **顶层签名 (32)**: `2∣12`, `3∣12`, `4∣12`, `6∣12`, `12-divisors`, `verify-half₁₂`, `verify-third₁₂`, `verify-quarter₁₂`, `verify-sixth₁₂`, `base12-all-terminating`, `3∤10`, `dr12`, `dr39`, `vortex-closure`, `vortex-3-12-3`, `3∣12-vortex`, `dr10`, `dr10-not-stable`, `2∣10`, `5∣10`, `4∤10`, `6∤10`, `separation-witness`, `separation-witness-6`, `base12-terminating-count`, `base10-one-digit-count`, `base12-richer`, `mod3-info-preserved-base12`, `mod3-info-lost-base10`, `base12-stable-root`, `base10-unstable-root`, `base10-is-degenerate`
 - **质量**: `refl`×30；无 postulate / 无 hole
@@ -97,7 +97,7 @@
   - 0 postulate
   - 禁止浮点数, 特征标值 ∈ Z[ω] (Eisenstein 整数)
   - 所有验证通过穷举 refl
-- **导入 (6)**: `Data.Nat`, `Data.Integer`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.RootMath.Eisenstein`, `Sovereign.Structology.A4Representations`
+- **导入 (6)**: `Data.Nat`, `Data.Integer`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Foundation.Eisenstein`, `Sovereign.Structology.A4Representations`
 - **顶层签名 (46)**: `2ᵉ`, `5ᵉ`, `7ᵉ`, `9ᵉ`, `11ᵉ`, `12ᵉ`, `so3χ-C1`, `so3χ-C23`, `so3χ-C4`, `so3χ`, `so3χ-C1-0`, `so3χ-C1-2`, `so3χ-C1-5`, `so3χ-C23-period`, `so3χ-C4-period`, `a4χ`, `branchMult`, `dimSum`, `dimSum≡1`, `dimSum≡3`, `dimSum≡5`, `dimSum≡7`, `dimSum≡9`, `dimSum≡11`, `dimSum≡13`, `l2-V1≡0`, `l2-V3≡1`, `innerNum`, `inner-l2-V1`, `inner-l2-V3`, `inner-l0-V1`, `inner-l1-V3`, `decomp-l0`, `decomp-l1`, `decomp-l2`, `decomp-l3`, `decomp-l4`, `decomp-l5`, `pairing-0`, `pairing-1`, `pairing-2`, `pairing-3`, `pairing-4`, `pairing-5`, `pairing-general`, `V3-mult-formula`
 - **质量**: `refl`×71；无 postulate / 无 hole
 
@@ -179,7 +179,7 @@
   - 素数分类 (注释): Z[i]: p ≡ 1 mod 4 分裂 / p ≡ 3 mod 4 惰性 / 2 分歧;
   - Z[ω]: p ≡ 1 mod 3 分裂 / p ≡ 2 mod 3 惰性 / 3 分歧。
   - 结构路线 (Euclidean 算法全称版 / 主理想分解) 留待深化 — 未以 postulate 驻留。
-- **导入 (5)**: `Data.Integer`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.RootMath.Gaussian`, `Sovereign.RootMath.Eisenstein`
+- **导入 (5)**: `Data.Integer`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Foundation.Gaussian`, `Sovereign.Foundation.Eisenstein`
 - **顶层签名 (18)**: `gauss-2-ramifies`, `gauss-2-norm`, `gauss-5-splits`, `gauss-5-norm`, `eis-3-ramifies`, `eis-3-norm`, `eis-7-splits`, `eis-7-norm`, `gauss-euclid-witness`, `gauss-euclid-remainder-norm`, `gauss-euclid-divisor-norm`, `quot-product`, `quot-residue-zero`, `quot-hom-sample`, `gauss-ramification-summary`, `gauss-splitting-summary`, `eis-ramification-summary`, `eis-splitting-summary`
 - **质量**: `refl`×16；无 postulate / 无 hole
 
@@ -222,7 +222,7 @@
 - **module**: `Sovereign.Algebra.DegenerationRisk`
 - **行数**: 637（代码 296 / 注释 216）
 - **OPTIONS**: `--cubical --rewriting`
-- **导入 (16)**: `Data.Nat`, `Data.Nat.Divisibility.Core`, `Data.Empty`, `Data.Product`, `Data.String`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.Algebra.DegenerationTaxonomy`, `Sovereign.Algebra.GF2Degeneration`, `Sovereign.Algebra.Base10Degeneration`, `Sovereign.Algebra.ComplexProjection`, `Sovereign.Algebra.EqualityTruncation`, `Sovereign.Algebra.Duodecimal`, `Sovereign.RootMath.DigitalRoot`
+- **导入 (16)**: `Data.Nat`, `Data.Nat.Divisibility.Core`, `Data.Empty`, `Data.Product`, `Data.String`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.Algebra.DegenerationTaxonomy`, `Sovereign.Algebra.GF2Degeneration`, `Sovereign.Algebra.Base10Degeneration`, `Sovereign.Algebra.ComplexProjection`, `Sovereign.Algebra.EqualityTruncation`, `Sovereign.Algebra.Duodecimal`, `Sovereign.Foundation.DigitalRoot`
 - **record 类型**: `DegenerationRisk`, `NotFaithful`
 - **顶层签名 (72)**: `gf2-risk-negate`, `gf2-risk-chirality-collapse`, `gf2-risk-c3`, `c3-orbit-3-elements`, `gf3-triple-zero`, `gf2-triple-id`, `gf2-risk-frobenius`, `gf3-symmetry-count`, `gf2-symmetry-count`, `gf2-symmetry-loss`, `gf2-risk-not-homomorphism`, `gf2-deg`, `gf2-degeneration-risk`, `base10-risk-div3`, `base10-risk-separation`, `base10-risk-div6`, `base10-risk-vortex`, `base10-risk-root-unstable`, `base10-risk-vortex-closure`, `base10-risk-factors`, `base12-factor-count`, `base10-factor-count`, `base10-factor-loss`, `base10-risk-terminating`, `base10-degeneration-risk`, `complex-risk-torsion-gf9`, `complex-risk-torsion-ℕ`, `complex-risk-char`, `complex-risk-finite`, `complex-risk-exhaustive`, `complex-risk-torsion-finiteness`, `complex-risk-σ-nontrivial`, `complex-risk-σ²-id`, `galois-group-order`, `complex-degeneration-risk`, `eq-risk-dim-loss`, `eq-risk-dim-values`, `eq-risk-dim-positive`, `eq-risk-card`, `eq-risk-ratio`, `eq-risk-uip`, `eq-risk-refl-only`, `eq-risk-summary`, `eq-degeneration-risk`, `π1-risk-s2-analog`, `π1-risk-dim-loss`, `π1-risk-info-loss`, `π1-risk-1-point`, `π1-risk-not-1-point`, `π1-risk-truncation`, `π1-degeneration-risk`, `all-risks-nontrivial`, `all-risks-have-lost-ops`, `total-lost-operations`, `total-lost-operations-correct`, `degeneration-risk-complete`, `¬-gf2-faithful`, `¬-base10-preserves-div3`, `¬-base10-preserves-div3-pow`, `¬-char0-preserves-torsion`
   - … 其余 12 项
@@ -383,7 +383,7 @@
   - §5 K₁(GF(3)) 认证 — K₁ = F₃^× = {±1} = C₂ (与 negate 翻转同构)
   - + Milnor K₂^M(F₃) = 0 (Steinberg 关系截断) — 闭合
   - SectionRisk.agda:771 审计 (K₀+K₁ 最小不变集)
-- **导入 (12)**: `Data.Nat`, `Data.Nat.Properties`, `Data.Product`, `Data.Integer`, `Data.Fin`, `Data.Unit`, `Data.Empty`, `Relation.Nullary`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.RootMath.Eisenstein`, `Sovereign.RootMath.Gaussian`
+- **导入 (12)**: `Data.Nat`, `Data.Nat.Properties`, `Data.Product`, `Data.Integer`, `Data.Fin`, `Data.Unit`, `Data.Empty`, `Relation.Nullary`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Foundation.Eisenstein`, `Sovereign.Foundation.Gaussian`
 - **顶层签名 (85)**: `VBundle`, `_⊕K_`, `~-refl`, `~-sym`, `~-trans`, `k0-inverse`, `k0-zero`, `k0-cancel`, `k0-embed-decompose`, `dim`, `dim-add-sample`, `negate-hom`, `pic-inverse`, `c1-winding-period-3`, `Ch`, `eps`, `eps-square-zero`, `chern-bundle`, `ch-multiplicative`, `ch-additive`, `chern-bundle-ccw`, `bott-period-2`, `bott-unit-c6`, `isUnit`, `U3`, `mul-unit`, `u3-mul`, `K₁GF3`, `neg₂`, `_⊕₁_`, `k1-self-inverse`, `k1-comm`, `k1-repr`, `u3-repr`, `k1-roundtrip`, `u3-roundtrip`, `k1-hom`, `k1-flip`, `one-minus-mone`, `k2m-symbol`, `k2m-trivial`, `link-sign`, `edgeW-P0P1`, `edgeW-P0P1-ok`, `edgeW-P1P2`, `edgeW-P1P2-ok`, `edgeW-P2P0`, `edgeW-P2P0-ok`, `edge-holonomy-P0P1`, `cellW-injected`, `edgeW-trivial`, `cellW-trivial`, `monopole-total`, `chern-cross`, `antimonopole-cross`, `trivial-total`, `trivial-chern`, `monopole-ch`, `monopole-ch-is-ccw`, `c1-flip`
   - … 其余 25 项
 - **质量**: `refl`×96；无 postulate / 无 hole
@@ -447,7 +447,7 @@
   - 0 postulate
   - 禁止浮点数, 特征标值 ∈ Z[ω] (Eisenstein 整数)
   - 所有验证通过穷举 refl
-- **导入 (10)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Data.Integer`, `Relation.Binary.PropositionalEquality`, `Sovereign.Structology.A4Group`, `Sovereign.Structology.A4Representations`, `Sovereign.RootMath.Eisenstein`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`
+- **导入 (10)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Data.Integer`, `Relation.Binary.PropositionalEquality`, `Sovereign.Structology.A4Group`, `Sovereign.Structology.A4Representations`, `Sovereign.Foundation.Eisenstein`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`
 - **data 类型**: `SO3Level`
 - **record 类型**: `DiscretizationInvariant`
 - **顶层签名 (79)**: `reprC1`, `reprC2`, `reprC3`, `reprC4`, `reprC1-class`, `reprC2-class`, `reprC3-class`, `reprC4-class`, `class-size-total`, `irrep-count`, `theorem-dim-sq-sum`, `abelianization-order`, `χ-table-V1-C1`, `χ-table-V1-C2`, `χ-table-V1-C3`, `χ-table-V1-C4`, `χ-table-V3-C1`, `χ-table-V3-C2`, `χ-table-V3-C3`, `χ-table-V3-C4`, `χ₀-trivial`, `permCharGF3`, `stdCharGF3`, `permChar-id`, `permChar-3cycle`, `permChar-flip`, `stdChar-id`, `stdChar-3cycle`, `stdChar-flip`, `natToEis`, `scaleEis`, `12ᵉ`, `natToEis-12`, `charInnerProduct`, `ortho-V1-self`, `ortho-V3-self`, `ortho-V1-V3`, `ortho-V3-V1`, `so3Dim`, `so3DimFormula`, `so3Dim-matches`, `branch`, `branch-dim-L0`, `branch-dim-L1`, `branch-dim-L2`, `branch-dim-L3`, `branch-dim-L4`, `so3-3d-restricts-to-a4-3d`, `so3-3d-no-singlet`, `gf9Char`, `χ₀-gen`, `χ₁-gen`, `χ₂-gen`, `χ₃-gen`, `χ₄-gen`, `χ₅-gen`, `χ₆-gen`, `χ₇-gen`, `χ₀-trivial-gf9`, `χ₁-identity-gf9`
@@ -596,7 +596,7 @@
   - 每个倍频映射是单射（信息保持）
   - 每个倍频映射不是满射（奇数元素不在像中）
   - 量子纠缠:
-- **导入 (8)**: `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.RootMath.DigitalRoot`, `Sovereign.Algebra.Duodecimal`, `Sovereign.Base.Trit`, `Sovereign.Algebra.VortexRoot`
+- **导入 (8)**: `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Foundation.DigitalRoot`, `Sovereign.Algebra.Duodecimal`, `Sovereign.Base.Trit`, `Sovereign.Algebra.VortexRoot`
 - **data 类型**: `Mod6`, `Mod24`
 - **顶层签名 (39)**: `_≢_`, `toℕ₆`, `+1₆`, `+6-order`, `toℕ₂₄`, `+1₂₄`, `+24-order`, `double-3-6`, `double-6-12`, `double-12-24`, `dr-24`, `dr-3`, `dr-6`, `dr-12`, `dr-24≡dr-6`, `dr-period-2`, `entangle-3-6`, `entangle-6-12`, `entangle-12-24`, `vortex-ring-3`, `vortex-ring-6`, `vortex-ring-12`, `merkaba-order`, `double-3-6-homo`, `double-6-12-homo`, `double-12-24-homo`, `halve-6-3`, `halve-6-3-double`, `double-3-6-inj`, `halve-12-6`, `halve-12-6-double`, `double-6-12-inj`, `halve-24-12`, `halve-24-12-double`, `double-12-24-inj`, `s1-not-in-image`, `d1-not-in-image`, `t1-not-in-image`, `image-even-closed-3-6`
 - **质量**: `refl`×302；无 postulate / 无 hole
@@ -881,8 +881,8 @@
   - 依赖:
   - Sovereign.Base.Trit — GF(3) 三进制本体
   - Sovereign.Algebra.GF9 — GF(9) 域运算
-  - Sovereign.Analysis.FiniteDynamics — 轨道、鸽巢、周期性
-- **导入 (12)**: `Data.Nat`, `Data.Nat.Properties`, `Data.Fin`, `Data.Product`, `Data.Sum`, `Data.Empty`, `Data.Unit`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.Analysis.FiniteDynamics`
+  - Sovereign.Foundation.FiniteDynamics — 轨道、鸽巢、周期性
+- **导入 (12)**: `Data.Nat`, `Data.Nat.Properties`, `Data.Fin`, `Data.Product`, `Data.Sum`, `Data.Empty`, `Data.Unit`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.Foundation.FiniteDynamics`
 - **data 类型**: `OrbitType`
 - **顶层签名 (27)**: `orbit-zero`, `orbit-suc`, `orbit-add`, `orbit-mul-2-2`, `orbit-compose`, `IsFixedPoint`, `isFixed-gf9`, `id-gf9`, `id-all-fixed`, `frobenius-fixed-gf3`, `zero-map`, `zero-map-fixed`, `fixed-iterates`, `fixed-orbit-constant`, `IsPeriodic`, `IsMinimalPeriod`, `fixed-is-period-1`, `frobenius-period-2`, `period-multiple`, `InAttractor`, `gf9-in-attractor-type`, `AreConjugate`, `conjugate-orbit`, `self-conjugate`, `frobenius-self-conjugate`, `frobenius-fixed-list`, `frobenius-cover`
 - **质量**: `refl`×22；无 postulate / 无 hole
@@ -960,7 +960,7 @@
 - **module**: `Sovereign.Algebra.MyopiaRisk`
 - **行数**: 591（代码 253 / 注释 234）
 - **OPTIONS**: `--rewriting`
-- **导入 (14)**: `Data.Nat`, `Data.Fin`, `Data.Fin`, `Data.Empty`, `Data.Product`, `Data.String`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Base.Trit`, `Sovereign.Algebra.DegenerationTaxonomy`, `Sovereign.Algebra.ProjectionDifferential`, `Sovereign.Format.CRTMeasurement`, `Sovereign.Algebra.Duodecimal`, `Sovereign.RootMath.DigitalRoot`
+- **导入 (14)**: `Data.Nat`, `Data.Fin`, `Data.Fin`, `Data.Empty`, `Data.Product`, `Data.String`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Base.Trit`, `Sovereign.Algebra.DegenerationTaxonomy`, `Sovereign.Algebra.ProjectionDifferential`, `Sovereign.Format.CRTMeasurement`, `Sovereign.Algebra.Duodecimal`, `Sovereign.Foundation.DigitalRoot`
 - **data 类型**: `MyopiaDimension`
 - **record 类型**: `MyopiaRisk`
 - **顶层签名 (73)**: `dimToℕ`, `dim-0≢dim-1`, `dim-0≢dim-∞`, `dim-1≢dim-∞`, `euclidean-sees`, `euclidean-sees-correct`, `t6-lattice-size`, `euclidean-myopia`, `¬-euclidean-global`, `euclidean-info-loss`, `euclidean-dim`, `euclidean-risk`, `calculus-nilpotent`, `calculus-periodic`, `calculus-telescope`, `¬-calculus-equals-difference`, `calculus-nilpotent-universal`, `calculus-difference-structure`, `calculus-dim`, `crt-equation-solvable`, `crt-projection-π3`, `crt-section-map`, `crt-section-valid`, `crt-sec-neq`, `crt-myopia`, `gcd-144-46-value`, `gcd-divides`, `gcd-euclidean`, `¬-gcd-is-one`, `crt-measurement-works`, `crt-beat-structure`, `crt-dim`, `crt-risk`, `prime-factorization-12`, `prime-factorization-12-full`, `vortex-closure-12`, `dr-12`, `dr-12-vortex`, `dr-factorization`, `¬-factorization-is-vortex`, `dr-factor-4`, `dr-factor-3`, `prime-dim`, `discrete-spectrum-size`, `discrete-spectrum-factors`, `spectrum-is-finite`, `¬-spectrum-continuous`, `spectrum-nonzero`, `fourier-dim`, `a4-order`, `a4-order-correct`, `z12z-order`, `z12z-order≡a4`, `z12z-order-from-duodec`, `¬-a4-is-approximation`, `a4-nontrivial`, `a4-multiplication-table`, `lie-dim`, `myopia-dimensions`, `dim-0-count`
@@ -1053,7 +1053,7 @@
   - Σ_ρ χ_ρ(C_i) · conj(χ_ρ(C_j)) = (|G|/|C_i|) · δ_{ij}
   - 这是行正交性 (§1) 的对偶版本.
   - 设计原则:
-- **导入 (8)**: `Data.Nat`, `Data.Integer`, `Data.Product`, `Data.Unit`, `Relation.Binary.PropositionalEquality`, `Sovereign.RootMath.Eisenstein`, `Sovereign.Structology.A4Representations`, `Sovereign.Applied.HomologyHarmonic`
+- **导入 (8)**: `Data.Nat`, `Data.Integer`, `Data.Product`, `Data.Unit`, `Relation.Binary.PropositionalEquality`, `Sovereign.Foundation.Eisenstein`, `Sovereign.Structology.A4Representations`, `Sovereign.Applied.HomologyHarmonic`
 - **顶层签名 (15)**: `colInner`, `col-diag-C1`, `col-diag-C2`, `col-diag-C3`, `col-diag-C4`, `col-off-C1-C2`, `col-off-C1-C3`, `col-off-C1-C4`, `col-off-C2-C3`, `col-off-C2-C4`, `col-off-C3-C4`, `num-frequencies`, `dim-class-functions`, `fourier-basis-complete`, `weightedColInner`
 - **质量**: `refl`×21；无 postulate / 无 hole
 
@@ -1157,7 +1157,7 @@
 - **module**: `Sovereign.Algebra.SectionRisk`
 - **行数**: 1017（代码 549 / 注释 300）
 - **OPTIONS**: `--rewriting`
-- **导入 (14)**: `Data.Nat`, `Data.Fin`, `Data.Fin`, `Data.Empty`, `Data.Product`, `Data.String`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.Algebra.Duodecimal`, `Sovereign.RootMath.DigitalRoot`, `Sovereign.Algebra.DegenerationTaxonomy`, `Sovereign.Algebra.DigitalRootCycle`
+- **导入 (14)**: `Data.Nat`, `Data.Fin`, `Data.Fin`, `Data.Empty`, `Data.Product`, `Data.String`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.Algebra.Duodecimal`, `Sovereign.Foundation.DigitalRoot`, `Sovereign.Algebra.DegenerationTaxonomy`, `Sovereign.Algebra.DigitalRootCycle`
 - **record 类型**: `SectionPair`, `SectionRisk`, `UnifiedProjection`
 - **顶层签名 (138)**: `complex-proj`, `complex-sec₁`, `complex-sec₂`, `complex-sec₁-valid`, `complex-sec₂-valid`, `complex-secs-differ`, `complex-section`, `complex-pair`, `complex-frobenius-involutive`, `complex-frobenius-multiplicative`, `complex-fiber-size`, `complex-section-picks`, `¬-complex-complete`, `complex-gauge-info`, `complex-risk`, `diffgeo-proj`, `diffgeo-sec₁`, `diffgeo-sec₂`, `diffgeo-sec₁-valid`, `diffgeo-sec₂-valid`, `diffgeo-secs-differ`, `diffgeo-section`, `diffgeo-pair`, `diffgeo-tangent-dim`, `diffgeo-tangent-correct`, `diffgeo-lattice-size`, `diffgeo-lattice-correct`, `¬-tangent-sees-global`, `diffgeo-info-loss`, `diffgeo-full-tour`, `diffgeo-full-tour-value`, `¬-tangent-euclidean`, `diffgeo-gauge-info`, `diffgeo-risk`, `harmonic-sec₁`, `harmonic-sec₂`, `harmonic-sec₁-valid`, `harmonic-sec₂-valid`, `harmonic-secs-differ`, `harmonic-section`, `harmonic-pair`, `harmonic-total-freq`, `harmonic-base-freq`, `harmonic-fiber-per-base`, `harmonic-factorization`, `harmonic-crt-roundtrip`, `¬-spectrum-continuous`, `harmonic-polar`, `harmonic-torus`, `harmonic-gauge-info`, `harmonic-risk`, `linalg-proj`, `linalg-sec₁`, `linalg-sec₂`, `linalg-sec₁-valid`, `linalg-sec₂-valid`, `linalg-secs-differ`, `linalg-section`, `linalg-pair`, `linalg-gf3-mult`
   - … 其余 78 项
@@ -1356,7 +1356,7 @@
   - §4 本体论地位注释 (诚实): "12 是独立根 '123', 非 3×4 分解" 为
   - 命名学立场; 代数上 L0C 的 CRT 同构 Z/12Z ≅ Z/3Z × Z/4Z
   - 与之并存 — 本体根在命名上独立, 在代数上可分解。
-- **导入 (4)**: `Data.Nat`, `Relation.Binary.PropositionalEquality`, `Sovereign.RootMath.DigitalRoot`, `Sovereign.Algebra.Duodecimal`
+- **导入 (4)**: `Data.Nat`, `Relation.Binary.PropositionalEquality`, `Sovereign.Foundation.DigitalRoot`, `Sovereign.Algebra.Duodecimal`
 - **data 类型**: `VortexRoot`
 - **顶层签名 (16)**: `root-123-digital-root`, `doubling-3-6`, `doubling-6-12`, `fourth-harmonic`, `doubling-chain`, `merkaba-double`, `merkaba-digital-root`, `water-state`, `vortexValue`, `next`, `vortex-value-3`, `vortex-value-6`, `vortex-value-12`, `vortex-next-3-6`, `vortex-next-6-12`, `vortex-next-12-6`
 - **质量**: `refl`×15；无 postulate / 无 hole
@@ -1383,7 +1383,7 @@
   - n=2: Z/144Z  ≅ Z/9Z  × Z/16Z  (本模块)
   - n=3: Z/1728Z ≅ Z/27Z × Z/64Z  (本模块)
   - 0 postulate — 全部构造性证明
-- **导入 (16)**: `Data.Nat`, `Data.Nat.DivMod`, `Data.Nat.Properties`, `Data.Nat.GCD`, `Data.Nat.Coprimality`, `Data.Nat.Divisibility.Core`, `Data.Nat.Divisibility`, `Data.Fin`, `Data.Fin.Properties`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Data.Empty`, `Relation.Nullary`, `Sovereign.AlgebraWrapper`, `Sovereign.Structology.Winding`, `Sovereign.Algebra.Duodecimal`
+- **导入 (16)**: `Data.Nat`, `Data.Nat.DivMod`, `Data.Nat.Properties`, `Data.Nat.GCD`, `Data.Nat.Coprimality`, `Data.Nat.Divisibility.Core`, `Data.Nat.Divisibility`, `Data.Fin`, `Data.Fin.Properties`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Data.Empty`, `Relation.Nullary`, `Sovereign.Infrastructure.AlgebraWrapper`, `Sovereign.Structology.Winding`, `Sovereign.Algebra.Duodecimal`
 - **data 类型**: `TowerLevel`
 - **顶层签名 (59)**: `Z144`, `0₁₄₄`, `1₁₄₄`, `toℕ-0₁₄₄`, `toℕ-1₁₄₄`, `mod-absorbˡ`, `mod-absorbʳ`, `+₁₄₄-assoc`, `+₁₄₄-comm`, `+₁₄₄-identityˡ`, `+₁₄₄-identityʳ`, `*₁₄₄-comm`, `*₁₄₄-identityˡ`, `*₁₄₄-identityʳ`, `*₁₄₄-zeroˡ`, `π9`, `π16`, `toℕ-π9`, `toℕ-π16`, `crt144`, `crt-e₁-mod9`, `crt-e₁-mod16`, `crt-e₂-mod9`, `crt-e₂-mod16`, `coprime-9-16`, `crt-merge-9-16`, `arith-mod9`, `arith-mod16`, `crt144-mod9`, `crt144-mod16`, `crt144-roundtrip`, `crt144-inv-π9`, `crt144-inv-π16`, `tower-n1-product`, `tower-n1-gcd`, `tower-n1-roundtrip`, `tower-n2-product`, `tower-n2-gcd`, `tower-n2-roundtrip`, `tower-n3-product`, `tower-n3-gcd`, `π27`, `π64`, `crt1728`, `crt1728-e₁-mod27`, `crt1728-e₁-mod64`, `crt1728-e₂-mod27`, `crt1728-e₂-mod64`, `polar-is-12-sq`, `polar-decomposition`, `cube-12`, `polar-winding-value`, `crt144-product`, `crt1728-product`, `towerModulus`, `towerMod3`, `towerMod2`, `tower-product`, `tower-gcd`
 - **质量**: `refl`×31；无 postulate / 无 hole

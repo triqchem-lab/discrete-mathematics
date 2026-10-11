@@ -215,13 +215,13 @@
 - **顶层签名 (8)**: `E`, `energy-0`, `energy-1`, `energy-2`, `minimal-0`, `minimal-2`, `harmonic-mid`, `euler-lagrange-discrete`
 - **质量**: `refl`×8；无 postulate / 无 hole
 
-## `src/Sovereign/Analysis/FiniteDynamics.agda`
+## `src/Sovereign/Foundation/FiniteDynamics.agda`
 
-- **module**: `Sovereign.Analysis.FiniteDynamics`
+- **module**: `Sovereign.Foundation.FiniteDynamics`
 - **行数**: 265（代码 169 / 注释 66）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Analysis.FiniteDynamics
+  - | Sovereign.Foundation.FiniteDynamics
   - 有限动力系统：轨道、周期性、鸽巢原理、GF(9) Frobenius 动力学
 - **导入 (9)**: `Data.Nat`, `Data.Nat.Properties`, `Data.Fin`, `Data.Fin.Properties`, `Data.Product`, `Data.Empty`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`
 - **record 类型**: `EventuallyPeriodic`
@@ -269,7 +269,7 @@
 - **module**: `Sovereign.Analysis.FunctionalAnalysisDiscrete`
 - **行数**: 223（代码 101 / 注释 96）
 - **OPTIONS**: `--rewriting`
-- **导入 (9)**: `Sovereign.Algebra.FunctionalDiscrete`, `Data.Nat`, `Data.Vec`, `Data.Product`, `Data.Unit`, `Data.Sum`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Completeness.Layer`
+- **导入 (9)**: `Sovereign.Algebra.FunctionalDiscrete`, `Data.Nat`, `Data.Vec`, `Data.Product`, `Data.Unit`, `Data.Sum`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Foundation.Layer`
 - **record 类型**: `FunctionalAnalysisDiscreteFramework`, `FACompletenessBridge`
 - **顶层签名 (9)**: `fa-framework-2`, `fa-framework`, `FADiscreteCarrier`, `fa-witness`, `fa-completeness-bridge`, `riesz-2`, `nondeg-2`, `norm-2-two-valued`, `hb-collapse-2`
 - **质量**: `refl`×1；无 postulate / 无 hole
@@ -308,7 +308,7 @@
   - 完备性: 有限集合上轨道最终周期 (来自 FiniteDynamics)
   - 顶点代数嵌入: Y(a)|0⟩ = a (创生公理)
   - 0 postulate — 全部构造性证明
-- **导入 (10)**: `Data.Nat`, `Data.Fin`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.Analysis.FiniteInnerProduct`, `Sovereign.Analysis.FiniteDynamics`, `Sovereign.Analysis.VertexAlgebraDiscrete`
+- **导入 (10)**: `Data.Nat`, `Data.Fin`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.Analysis.FiniteInnerProduct`, `Sovereign.Foundation.FiniteDynamics`, `Sovereign.Analysis.VertexAlgebraDiscrete`
 - **顶层签名 (14)**: `DiscreteHilbert`, `positive-definite`, `zero-norm`, `zero-orth`, `conj-symmetric`, `hilbert-complete-fin`, `frobenius-hilbert-cycle`, `embed-vertex`, `embed-vacuum-zero`, `basis`, `basis-self`, `hilbert-discrete-summary`, `basis-orth-2`, `embed-1`
 - **质量**: `refl`×2；无 postulate / 无 hole
 
@@ -448,7 +448,7 @@
   - (整数形式: Σ dim·χ(g) = |G| 于 e, = 0 于其余类)
   - 行正交 (第二正交关系实例): Σ_C |C|·χ(C)·conj(χ(C)) = |G| (每不可约)
   - 载体 = A₄ (类 1/4/4/3, 特征标值 ∈ Z[ω] — 1+ω+ω²=0 承载列正交)
-- **导入 (7)**: `Data.Product`, `Data.Integer`, `Data.Fin`, `Relation.Binary.PropositionalEquality`, `Sovereign.Structology.A4Group`, `Sovereign.Structology.A4Representations`, `Sovereign.RootMath.Eisenstein`
+- **导入 (7)**: `Data.Product`, `Data.Integer`, `Data.Fin`, `Relation.Binary.PropositionalEquality`, `Sovereign.Structology.A4Group`, `Sovereign.Structology.A4Representations`, `Sovereign.Foundation.Eisenstein`
 - **顶层签名 (9)**: `_⊞_`, `_⊠_`, `plancherel-normalized`, `col-C1`, `col-C2`, `col-C3`, `col-C4`, `row-V1`, `row-V3`
 - **质量**: `refl`×10；无 postulate / 无 hole
 

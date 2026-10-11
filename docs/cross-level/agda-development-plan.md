@@ -136,8 +136,8 @@ postulate
 
 - [ ] `Sovereign.RootMath` - Trit, Tryte, 数字根
 - [ ] `Sovereign.RootMath.LengthLattice` - 长度格点序列
-- [ ] `Sovereign.RootMath.DigitalRoot` - 数字根判定算法
-- [ ] `Sovereign.RootMath.EnergyGap` - 能隙 Δ=√3 定义
+- [ ] `Sovereign.Foundation.DigitalRoot` - 数字根判定算法
+- [ ] `Sovereign.Foundation.EnergyGap` - 能隙 Δ=√3 定义
 
 ### Phase 2: 结构 (Weeks 3-4)
 
@@ -267,15 +267,15 @@ src/
 
 ```bash
 # 类型检查单个文件
-agda src/Sovereign/RootMath/Base.agda
+agda src/Sovereign/Foundation/Base.agda
 
 # 类型检查整个库
 agda --no-default-libraries -i. -i/opt/agda2.9/lib/agda/agda-stdlib \
     -i/opt/agda2.9/lib/agda/cubical \
-    src/Sovereign/RootMath/Base.agda
+    src/Sovereign/Foundation/Base.agda
 
 # 生成 HTML 文档
-agda --html --html-dir=docs/ src/Sovereign/RootMath/Base.agda
+agda --html --html-dir=docs/ src/Sovereign/Foundation/Base.agda
 ```
 
 ---
@@ -284,7 +284,7 @@ agda --html --html-dir=docs/ src/Sovereign/RootMath/Base.agda
 
 1. 在 `.` 创建项目结构
 2. 创建 `.agda-lib` 配置文件
-3. 编写 `Sovereign.RootMath.Base` 模块
+3. 编写 `Sovereign.Foundation.Base` 模块
 4. 逐步实现其余模块
 
 

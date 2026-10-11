@@ -96,7 +96,7 @@
   - 浅层应用定理：天体力学 (Christoffel 螺旋/轨道共振)、
   - 遗传学扩展 (密码子手征)、控制论 (状态转移周期/可控性)
   - 全部构造性证明，0 postulate，穷举法优先。
-- **导入 (8)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.RootMath.DigitalRoot`, `Sovereign.Format.CRTMeasurement`, `Sovereign.Analysis.FiniteDynamics`
+- **导入 (8)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Foundation.DigitalRoot`, `Sovereign.Format.CRTMeasurement`, `Sovereign.Foundation.FiniteDynamics`
 - **顶层签名 (26)**: `spiral-elements`, `spiral-closure`, `spiral-phase-period6`, `christoffel-period-is-6`, `resonance-6-4`, `resonance-verify`, `resonance-div6`, `resonance-div4`, `resonance-minimal-evidence`, `resonance-is-12-lu`, `zero-codon-fixed`, `nonzero-codon-moves`, `nonzero-codon-moves-2`, `chiral-annihilation`, `codon-char3`, `codon-space-27`, `state-3-periodic`, `state-3-id-periodic`, `cyclic3`, `cyclic3-period3`, `a4-order`, `a4-order-12`, `a4-order-decomposition`, `a4-order-christoffel`, `a4-order-resonance`, `a4-covers-electric`
 - **质量**: `refl`×39；无 postulate / 无 hole
 
@@ -171,7 +171,7 @@
   - 1. 稳定性: 有限状态机轨道最终周期 (引用 orbit-eventually-periodic)
   - 2. 周期上界: 轨道周期 ≤ N (引用 orbit-period-bound)
   - 0 postulate, 穷举法优先
-- **导入 (5)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Analysis.FiniteDynamics`
+- **导入 (5)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Foundation.FiniteDynamics`
 - **顶层签名 (15)**: `control-stability`, `control-3-state-stable`, `control-9-state-stable`, `control-period-bound`, `control-3-bound`, `control-9-bound`, `control-discrete-topological`, `cycle3`, `identity-period-1`, `cycle-3-step-1`, `cycle-3-step-2`, `cycle-3-period`, `cycle-3-period-6`, `const-3-converges-1`, `const-3-converges-2`
 - **质量**: `refl`×9；无 postulate / 无 hole
 
@@ -212,7 +212,7 @@
   - D68: 4320 ↔ 信息论       D78: 轨道 ↔ 神经
   - D69: 6624 ↔ 宇宙学       D79: 对称 ↔ 美学
   - D70: CRT ↔ 密码学        D80: 格点 ↔ 建筑
-- **导入 (15)**: `Data.Nat`, `Data.Product`, `Data.Fin`, `Relation.Binary.PropositionalEquality`, `Sovereign.Format.CRT`, `Sovereign.Structology.BurnsideT6`, `Sovereign.Algebra.DiscreteDE`, `Sovereign.Algebra.ProjectionDifferential`, `Sovereign.Analysis.FiniteDynamics`, `Sovereign.Structology.A4Representations`, `Sovereign.RootMath.DigitalRoot`, `Sovereign.Algebra.GF9`, `Sovereign.Structology.Winding`, `Sovereign.MetaStructure.WuXing`, `Sovereign.Base.Trit`
+- **导入 (15)**: `Data.Nat`, `Data.Product`, `Data.Fin`, `Relation.Binary.PropositionalEquality`, `Sovereign.Format.CRT`, `Sovereign.Structology.BurnsideT6`, `Sovereign.Algebra.DiscreteDE`, `Sovereign.Algebra.ProjectionDifferential`, `Sovereign.Foundation.FiniteDynamics`, `Sovereign.Structology.A4Representations`, `Sovereign.Foundation.DigitalRoot`, `Sovereign.Algebra.GF9`, `Sovereign.Structology.Winding`, `Sovereign.MetaStructure.WuXing`, `Sovereign.Base.Trit`
 - **顶层签名 (26)**: `d61-crt-signal-processing`, `d62-burnside-thermodynamics`, `d63-pde-truncation`, `d64-pigeonhole-computability`, `d65-a4-particle-physics`, `d66-christoffel-celestial`, `d67-gf3-genetics`, `d67-codon-space`, `d68-4320-information`, `d69-6624-cosmology`, `d69-winding-values`, `d70-crt-cryptography`, `d71-sigma-quantum`, `d72-orbits-database`, `d72-normal-forms`, `d73-generate5-id`, `d73-jiazi-60`, `d74-twelve-pitches`, `d74-pythagorean-ratio`, `d75-ih-materials`, `d76-t6-brane`, `d77-fixedpoint-economics`, `d78-orbit-neuroscience`, `d79-symmetry-aesthetics`, `d80-lattice-architecture`, `cross-domain-theorems-complete`
 - **质量**: `refl`×20；无 postulate / 无 hole
 
@@ -261,7 +261,7 @@
   - B32: 6624 = 144×46              ← 本地 refl (多源交叉验证)
   - B33: LCM(2¹⁶,3¹¹) = 11609505792 ← Base.Invariants.SOVEREIGN_LCM
   - B34: 五行 C₅ generate⁵=id       ← 本地穷举 (新增)
-- **导入 (14)**: `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Format.CRT`, `Sovereign.Structology.BurnsideT6`, `Sovereign.Structology.BurnsideT6`, `Sovereign.Structology.HoloInformation`, `Sovereign.Structology.A4Representations`, `Sovereign.Algebra.BranchingRules`, `Sovereign.Algebra.BranchingRules`, `Sovereign.Algebra.FieldExtensionTower`, `Sovereign.RootMath.DigitalRoot`, `Sovereign.Base.Invariants`, `Sovereign.MetaStructure.WuXing`
+- **导入 (14)**: `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Format.CRT`, `Sovereign.Structology.BurnsideT6`, `Sovereign.Structology.BurnsideT6`, `Sovereign.Structology.HoloInformation`, `Sovereign.Structology.A4Representations`, `Sovereign.Algebra.BranchingRules`, `Sovereign.Algebra.BranchingRules`, `Sovereign.Algebra.FieldExtensionTower`, `Sovereign.Foundation.DigitalRoot`, `Sovereign.Base.Invariants`, `Sovereign.MetaStructure.WuXing`
 - **顶层签名 (14)**: `b23-crt-modulus-value`, `b32-full-tour`, `b32-holo-pi-num`, `b32-holo-pi-den`, `b33-lcm-value`, `b33-lcm-factors`, `generate⁵`, `b34-generate5-id`, `b34-generate1-not-id`, `b34-generate-images`, `b35-nayin-60`, `b35-jiazi-lcm`, `b35-60-decompositions`, `deep-structure-proofs-complete`
 - **质量**: `refl`×41；无 postulate / 无 hole
 
@@ -307,7 +307,7 @@
   - 1. 均衡存在: 729 格点上的确定性资源分配 → 轨道最终周期 (鸽巢原理)
   - 2. 分配归零: GF(3) 特征 3 → 三重分配回归均衡
   - 0 postulate, 穷举法优先
-- **导入 (6)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Analysis.FiniteDynamics`
+- **导入 (6)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Foundation.FiniteDynamics`
 - **顶层签名 (4)**: `equilibrium-729`, `allocation-pigeonhole`, `triple-allocation-zero`, `supply-demand-cancel`
 - **质量**: `refl`×5；无 postulate / 无 hole
 
@@ -343,7 +343,7 @@
   - 1. Christoffel 联络周期 6: 引用 christosPeriod6
   - 2. 曲率截断: Δ³≡0 (三阶幂零 → 离散曲率自动截断)
   - 0 postulate, 全部构造性证明, 穷举法优先
-- **导入 (6)**: `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.RootMath.DigitalRoot`, `Sovereign.Algebra.ProjectionDifferential`
+- **导入 (6)**: `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Foundation.DigitalRoot`, `Sovereign.Algebra.ProjectionDifferential`
 - **顶层签名 (4)**: `christoffel-period6`, `christoffel-closure-value`, `curvature-truncation`, `flat-connection`
 - **质量**: `refl`×3；无 postulate / 无 hole
 
@@ -365,7 +365,7 @@
   - 经典 Nash 存在性定理需要混合策略 (概率分布) + Brouwer 不动点定理。
   - 离散博弈论的正确替代: 所有有限博弈都有周期轨道 (鸽巢原理, 构造性)。
   - 0 postulate, 穷举法优先
-- **导入 (6)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Analysis.FiniteDynamics`
+- **导入 (6)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Foundation.FiniteDynamics`
 - **顶层签名 (18)**: `orbit-periodic-exists`, `orbit-periodic-3-strategy`, `orbit-pigeonhole`, `nash-identity`, `nash-constant`, `nash-constant-general`, `Strategy`, `strategy-annihilation`, `strategy-sum-coop-coop`, `strategy-sum-coop-neut`, `strategy-sum-coop-agg`, `strategy-sum-neut-coop`, `strategy-sum-neut-neut`, `strategy-sum-neut-agg`, `strategy-sum-agg-coop`, `strategy-sum-agg-neut`, `strategy-sum-agg-agg`, `strategy-char3`
 - **质量**: `refl`×18；无 postulate / 无 hole
 
@@ -407,7 +407,7 @@
   - A4Representations: A4Irrep, ConjugacyClass, dim
   - Eisenstein: Z[ω] 算术
   - 0 postulate — 全部构造性证明, 穷举法优先
-- **导入 (10)**: `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Algebra.ProjectionDifferential`, `Sovereign.Algebra.DiscreteDE`, `Sovereign.Structology.A4Representations`, `Sovereign.RootMath.Eisenstein`, `Data.Integer`, `Sovereign.Geometry.ProjectiveCore`
+- **导入 (10)**: `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Algebra.ProjectionDifferential`, `Sovereign.Algebra.DiscreteDE`, `Sovereign.Structology.A4Representations`, `Sovereign.Foundation.Eisenstein`, `Data.Integer`, `Sovereign.Geometry.ProjectiveCore`
 - **顶层签名 (59)**: `homology-vanishes-3`, `homology-vanishes-higher`, `homology-vanishes-4`, `image-Δ³-trivial`, `ker-Δ-constants`, `chain-complex-d₀∘d₁`, `const-in-kernel`, `β₀`, `β₁`, `β₂`, `β₃`, `β₄`, `β₅`, `β₆`, `euler-even-sum`, `euler-odd-sum`, `euler-characteristic`, `binom-6-2`, `binom-6-3`, `betti-total`, `dim-sq-sum`, `charVal`, `classSizeE`, `12ᵉ`, `charInner`, `plancherel-V3`, `plancherel-V1`, `plancherel-V3-V1`, `plancherel-dim-formula`, `class-size-sum`, `_⊕f_`, `_⊗f_`, `conv`, `δ`, `zero-func`, `triple-≡`, `⊕-interchange`, `sum3-⊕f`, `sum3-⊗f`, `sum3-shift`, `sum3-shift²`, `conv-δ-left`, `conv-zero-left`, `conv-decomp`, `augment-conv`, `augment-δ`, `augment-zero`, `⊕-rotate₃`, `⊕-swap-inner`, `negate-≡-⊗₂`, `negate-⊗-scalar`, `Δ-linear`, `Δ-scalar-comm`, `Δ-shift-comm`, `shift-conv-left`, `conv-comm`, `Δ-conv-leibniz`, `Δ²-conv-leibniz`, `Δ³-conv-zero`
 - **质量**: `refl`×33；无 postulate / 无 hole
 
@@ -548,7 +548,7 @@
   - 1. 三值网络收敛: 有限状态 → 轨道最终周期 (鸽巢原理)
   - 2. 4320 容量上限: 独立信息维度 = 729×6 - 54 = 4320
   - 0 postulate, 穷举法优先
-- **导入 (7)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Analysis.FiniteDynamics`, `Sovereign.Structology.HoloInformation`
+- **导入 (7)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Foundation.FiniteDynamics`, `Sovereign.Structology.HoloInformation`
 - **顶层签名 (14)**: `network-converges`, `network-729-converges`, `capacity-4320`, `total-yao-space`, `gauge-order`, `gf3-successor`, `const-network-converges`, `const-network-from-1`, `const-network-from-2`, `identity-network-period`, `gf3-network-step-1`, `gf3-network-step-2`, `gf3-network-period-3`, `gf3-network-period-6`
 - **质量**: `refl`×11；无 postulate / 无 hole
 
@@ -591,7 +591,7 @@
   - 1. 轨道=记忆: 有限神经网络的轨道最终周期 → 记忆是吸引子
   - 2. 三值神经元: GF(3) 状态 (抑制/静息/激发)
   - 0 postulate, 穷举法优先
-- **导入 (6)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Analysis.FiniteDynamics`
+- **导入 (6)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Foundation.FiniteDynamics`
 - **顶层签名 (16)**: `memory-is-attractor`, `memory-3-neuron`, `memory-9-neuron`, `NeuronState`, `synapse-inhibit-excite`, `synapse-rest-excite-cancel`, `synapse-excite-excite`, `neuron-char3`, `neuron-conjugate`, `fixed-point-memory`, `fixed-point-period-1`, `orbit-collapse-3`, `neuron-char3-T₁-chain`, `neuron-char3-T₂-chain`, `synapse-full-chain`, `neuron-inverse-involution-chain`
 - **质量**: `refl`×10；无 postulate / 无 hole
 
@@ -607,7 +607,7 @@
   - 组合优化: 穷举搜索终止 (鸽巢原理)、Burnside 轨道压缩
   - 可计算性: 有限即停机 (周期上界)、Δ³≡0 递归截断
   - 全部构造性证明，0 postulate，穷举法优先。
-- **导入 (10)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Base.Trit`, `Sovereign.Algebra.DigitalRootCycle`, `Sovereign.Analysis.FiniteDynamics`, `Sovereign.Algebra.DiscreteDE`, `Sovereign.Algebra.ProjectionDifferential`
+- **导入 (10)**: `Data.Nat`, `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Base.Trit`, `Sovereign.Algebra.DigitalRootCycle`, `Sovereign.Foundation.FiniteDynamics`, `Sovereign.Algebra.DiscreteDE`, `Sovereign.Algebra.ProjectionDifferential`
 - **顶层签名 (8)**: `pow2-cycle`, `pow2-cycle-closes`, `coprime-2-3`, `pow2-16≢pow3-11`, `search-terminates`, `burnside-compression`, `halt-bound`, `recursion-truncated`
 - **质量**: `refl`×8；无 postulate / 无 hole
 

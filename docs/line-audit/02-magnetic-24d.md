@@ -14,7 +14,7 @@
   - 本质：主权状态机在环向缠绕模46深化过程中，
   - 五行相克（ω, ω²）导致手性对偶虚实比偏离黄金平衡
   - 所属宇宙力：第三力——弱核力
-- **导入 (11)**: `Cubical.Foundations.Prelude`, `Data.Nat`, `Data.Integer`, `Data.Bool`, `Relation.Binary.PropositionalEquality`, `Data.Product`, `Data.Empty`, `Sovereign.RootMath.Base`, `Sovereign.MetaStructure.WuXing`, `Sovereign.Structology.Winding`, `Sovereign.Coupling.LossGain`
+- **导入 (11)**: `Cubical.Foundations.Prelude`, `Data.Nat`, `Data.Integer`, `Data.Bool`, `Relation.Binary.PropositionalEquality`, `Data.Product`, `Data.Empty`, `Sovereign.Foundation.Base`, `Sovereign.MetaStructure.WuXing`, `Sovereign.Structology.Winding`, `Sovereign.Coupling.LossGain`
 - **data 类型**: `WuXingAmplitude`, `ChiralSymmetry`, `TritFlip`
 - **record 类型**: `ToroidalPower`, `RightHandedNeutrino`, `WeakNuclearForce`
 - **顶层签名 (14)**: `isAmplitudeSymmetric`, `toroidalFactor2`, `parityStatus`, `parityViolationTheorem`, `chiralAmplitudeAsymmetric`, `neutrinoLeftHandedOnly`, `tritFlipChiralBias`, `betaDecayAsymmetry`, `chiralPhaseTransition`, `phaseTransitionPoint`, `postPhaseTransitionBreaking`, `weakForce`, `weakForceIsomorphism`, `parityViolationLegal`
@@ -31,7 +31,7 @@
   - 自旋本源：主权状态机手性分离程度的动态投影（仅存在于耦合域）
   - 扭量本源：T⁶ 复三维环面格点坐标的连续统投影
   - 宪法条款：静态结构学容器无自旋、无手性、无动力学演化
-- **导入 (18)**: `Cubical.Foundations.Prelude`, `Data.Nat`, `Data.Integer`, `Data.Rational`, `Data.Bool`, `Data.Fin`, `Data.Vec`, `Relation.Binary.PropositionalEquality`, `Data.Product`, `Data.Sum`, `Sovereign.RootMath.Base`, `Sovereign.RootMath.EnergyGap`, `Sovereign.Structology.Winding`, `Sovereign.Structology.T6`, `Sovereign.Structology.MagicSquare144`, `Sovereign.Coupling.LossGain`, `Sovereign.Coupling.ParityViolation`, `Sovereign.MetaStructure.WuXing`
+- **导入 (18)**: `Cubical.Foundations.Prelude`, `Data.Nat`, `Data.Integer`, `Data.Rational`, `Data.Bool`, `Data.Fin`, `Data.Vec`, `Relation.Binary.PropositionalEquality`, `Data.Product`, `Data.Sum`, `Sovereign.Foundation.Base`, `Sovereign.Foundation.EnergyGap`, `Sovereign.Structology.Winding`, `Sovereign.Structology.T6`, `Sovereign.Structology.MagicSquare144`, `Sovereign.Coupling.LossGain`, `Sovereign.Coupling.ParityViolation`, `Sovereign.MetaStructure.WuXing`
 - **data 类型**: `SpinLabel`
 - **record 类型**: `ChiralBeta`, `StaticContainer`, `TwistorPoint`, `TwistorTransformation`, `NullGeodesic`, `DiscreteHolomorphicCondition`, `DiscreteTwistorBundle`, `SpinTwistorUnification`
 - **顶层签名 (9)**: `computeSpinProjection`, `staticContainerNoSpin`, `staticContainerNoChirality`, `spinStatisticsReset`, `twistorConjugate`, `conjugateIsChiralFlip`, `zhonglvPathIsZeroGeodesic`, `spinLegal`, `twistorLegal`

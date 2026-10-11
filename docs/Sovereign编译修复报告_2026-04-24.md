@@ -157,7 +157,7 @@ IsStableDecimal n = ?  -- 需要实现十进制数字根
 - [ZeroGeometry.agda](file://./src/Sovereign/Base/ZeroGeometry.agda) ✅
 - [Lattice.agda](file://./src/Sovereign/Structology/Lattice.agda) ⚠️
 - [Axioms.agda](file://./src/Sovereign/Base/Axioms.agda) ✅
-- [Decimal/Axioms.agda](file://./src/Sovereign/Projection/Decimal/Axioms.agda) ✅
+- [Decimal/Axioms.agda](file://./src/Sovereign/Infrastructure/Projection/Decimal/Axioms.agda) ✅
 
 ---
 

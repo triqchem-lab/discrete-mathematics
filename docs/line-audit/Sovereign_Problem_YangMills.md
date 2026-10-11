@@ -140,7 +140,7 @@
   - §4 谱一致性（迹 = 特征值之和；det = 特征值之积）
   - §5 2×2 Wilson 圈完整谱（全部 4 类构型）: Klein 四元群 V₄ = {I, σₓ, σ_z, σₓσ_z}，
   - 类4 谱 {α,−α} ⊂ GF(9)（Frobenius 共轭对, 无 GF(3) 特征值 — 刚性）
-- **导入 (8)**: `Data.Integer`, `Data.Integer.Properties`, `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.RootMath.Eisenstein`
+- **导入 (8)**: `Data.Integer`, `Data.Integer.Properties`, `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.Foundation.Eisenstein`
 - **顶层签名 (70)**: `Vec3`, `T`, `R`, `R²`, `vacuum`, `vacuum-eigen`, `mode1`, `mode2`, `mode1-eigen`, `mode2-eigen`, `mode1≢mode2`, `mode1-not-R-fixed`, `mode1-not-R²-fixed`, `R-mode1-cycles`, `gap-formula`, `gap-positive`, `trace-consistency`, `det-T-formula`, `det-nonzero`, `Mat2`, `0₉`, `2₉`, `neg9`, `_-₉_`, `apply2`, `scalar2`, `tr2`, `det2`, `charpoly2`, `class1`, `class2`, `class3`, `class4`, `class1-eigen-e1`, `class1-eigen-e2`, `class1-tr`, `class1-det`, `class1-gap`, `class2-eigen-1`, `class2-eigen-2`, `class2-tr`, `class2-det`, `class2-charpoly-1`, `class2-charpoly-2`, `class2-gap`, `class2-gap-nontrivial`, `class3-eigen-1`, `class3-eigen-2`, `class3-tr`, `class3-det`, `class3-gap`, `class4-eigen-alpha`, `class4-eigen-negalpha`, `class4-tr`, `class4-det`, `class4-charpoly-alpha`, `class4-charpoly-negalpha`, `class4-gap`, `class4-gap-nontrivial`, `class4-spectrum-conjugate`
   - … 其余 10 项
 - **质量**: `refl`×35；无 postulate / 无 hole

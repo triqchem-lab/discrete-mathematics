@@ -8,7 +8,7 @@
 - **module**: `Sovereign.Arithmetic.CRTLemmas`
 - **行数**: 126（代码 102 / 注释 10）
 - **OPTIONS**: `--rewriting --guardedness`
-- **导入 (12)**: `Data.Nat`, `Data.Nat.GCD`, `Data.Nat.Base`, `Data.Nat.Coprimality`, `Data.Nat.Divisibility.Core`, `Data.Nat.Divisibility`, `Sovereign.AlgebraWrapper`, `Data.Nat.Properties`, `Data.Nat.DivMod`, `Relation.Binary.PropositionalEquality`, `Data.Empty`, `Relation.Nullary`
+- **导入 (12)**: `Data.Nat`, `Data.Nat.GCD`, `Data.Nat.Base`, `Data.Nat.Coprimality`, `Data.Nat.Divisibility.Core`, `Data.Nat.Divisibility`, `Sovereign.Infrastructure.AlgebraWrapper`, `Data.Nat.Properties`, `Data.Nat.DivMod`, `Relation.Binary.PropositionalEquality`, `Data.Empty`, `Relation.Nullary`
 - **顶层签名 (6)**: `POW2`, `POW3`, `M`, `coprime-POW2-POW3`, `lemma-mod-sum`, `crt-merge`
 - **质量**: `refl`×2；无 postulate / 无 hole
 

@@ -39,7 +39,7 @@
   - 未完成 — 尖点不可约在 4 类代表上的取值是单位根组合 (非整数, 脚本证实),
   - 不进 ℤ-标度正交层; AutomorphicRep ≃ GaloisRep 全函子对应 = 开放命题,
   - 本模块仅承载数据级对应 (Langlands 双表), 不以断言代替证明。
-- **导入 (9)**: `Data.Nat`, `Data.Product`, `Data.Integer`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Data.Empty`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.Analysis.FiniteDynamics`
+- **导入 (9)**: `Data.Nat`, `Data.Product`, `Data.Integer`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Data.Empty`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.Foundation.FiniteDynamics`
 - **顶层签名 (24)**: `a4-order`, `binTet-order`, `ih-order`, `d4-order`, `gl2-order`, `finite-carriers`, `neg-gf9`, `sigma-alpha`, `sigma-not-id`, `sigma-order-2`, `frobenius-multiplicative`, `conjugation-involutive`, `_⊞_`, `_⊠_`, `orth-1-1`, `orth-1-st`, `orth-st-st`, `ps-values`, `orth-ps-ps`, `reducibility-witness`, `frobenius-period`, `frobenius-lock`, `class-structure`, `burnside-total`
 - **质量**: `refl`×15；无 postulate / 无 hole
 

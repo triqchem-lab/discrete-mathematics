@@ -142,7 +142,7 @@
   - 特征标理论的引用结果, 不在本库内落链; 本模块验证的是该判据的
   - 计算侧: 全部四个 ⟨χᵢ,χᵢ⟩ ≡ 12 (irrep-norm-criterion)。
   - (b) "三代费米子是必然的"的物理对应 (A₄ 味对称 ↔ Altarelli-Feruglio)
-- **导入 (9)**: `Data.Nat`, `Data.Integer`, `Data.Integer.Properties`, `Data.Fin`, `Data.Vec`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Structology.A4Group`, `Sovereign.RootMath.Eisenstein`
+- **导入 (9)**: `Data.Nat`, `Data.Integer`, `Data.Integer.Properties`, `Data.Fin`, `Data.Vec`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Structology.A4Group`, `Sovereign.Foundation.Eisenstein`
 - **data 类型**: `ConjugacyClass`, `A4Irrep`, `C3Group`
 - **record 类型**: `FermionGenerations`
 - **顶层签名 (59)**: `encodeA4`, `classSize`, `classSizeSum`, `lookup-class`, `classify`, `dim`, `dimSqSum`, `charAt`, `character`, `eis12`, `classSizeᵉ`, `inner`, `kronecker12`, `char-orthogonality`, `irrep-norm-criterion`, `χ₃-values`, `χ₁-values`, `character-at-identity`, `chars-distinct`, `V3basis1`, `V3basis2`, `V3basis3`, `sumVec4`, `basisSumZero`, `act`, `swap34`, `swap01`, `rot3cw`, `rot3ccw`, `fix0-cw`, `fix0-ccw`, `fix1-cw`, `fix1-ccw`, `fix2-cw`, `fix2-ccw`, `fix3-cw`, `fix3-ccw`, `flip01`, `flip02`, `flip03`, `sumZero-invariant`, `act-preserves-L`, `fixCountC`, `fixChar`, `perm-char-decomp-c`, `perm-char-decomp`, `lookup-abel`, `abelianize`, `c3Char`, `c3Char-hom`, `abelianize-hom`, `a4inv`, `classify-conjugation-invariant`, `branching3`, `χ₁-multiplicative`, `theorem-dimension-sum-of-squares`, `theorem-class-count`, `theorem-dim-sum-eq-class-sum`, `standardFermionAssignment`
@@ -414,8 +414,8 @@
   - 结构学：代数复数场与离散微分算子
   - 宪法更新：
   - 移除 Data.Complex (违反纯代数宪法)。
-  - 使用 Sovereign.RootMath.AlgebraicComplex 替代。
-- **导入 (7)**: `Sovereign.RootMath.AlgebraicComplex`, `Data.Rational`, `Data.Integer`, `Data.Fin`, `Data.Nat`, `Relation.Binary.PropositionalEquality`, `Sovereign.Structology.LuCellGrid`
+  - 使用 Sovereign.Foundation.AlgebraicComplex 替代。
+- **导入 (7)**: `Sovereign.Foundation.AlgebraicComplex`, `Data.Rational`, `Data.Integer`, `Data.Fin`, `Data.Nat`, `Relation.Binary.PropositionalEquality`, `Sovereign.Structology.LuCellGrid`
 - **顶层签名 (10)**: `StandingWaveField`, `zeroField`, `constantField`, `partialPolar`, `partialToroidal`, `mixedPartial`, `shiftPolarNeg`, `shiftToroidalNeg`, `DiscreteLaplacian`, `CurvatureTest`
 - **质量**: `refl`×1；无 postulate / 无 hole
 
@@ -967,7 +967,7 @@
   - 量子数学桥：CRT域 ←→ 幻方正交 ←→ T⁶环面
   - 将已有证明串联为统一框架, 不引入新 postulate。
   - 全部使用 refl 验证代数关系。
-- **导入 (33)**: `Data.Fin`, `Data.Nat`, `Data.Nat.Properties`, `Data.Sum`, `Data.Product`, `Relation.Nullary`, `Relation.Nullary.Decidable.Core`, `Data.Unit`, `Function`, `Relation.Binary.PropositionalEquality`, `Sovereign.MetaStructure.WuXing`, `Sovereign.Structology.Winding`, `Sovereign.Structology.MagicSquare144`, `Sovereign.Structology.MagicSquareM4`, `Sovereign.Arithmetic.CRTLemmas`, `Sovereign.RootMath.DigitalRoot`, `Data.List`, `Data.Bool`, `Data.Integer`, `Sovereign.Coupling.LCM`, `Sovereign.Format.CRT`, `Sovereign.Structology.T6`, `Sovereign.Structology.Platonics`, `Sovereign.Format.CRT`, `Sovereign.Structology.MagicSquareM4`, `Sovereign.Base.Trit`, `Data.Vec`, `Sovereign.Format.CRT`, `Sovereign.Algebra.GF9`, `Sovereign.Structology.A4Group`, `Sovereign.Structology.T6`, `Sovereign.Structology.T6`, `Sovereign.Base.Trit`
+- **导入 (33)**: `Data.Fin`, `Data.Nat`, `Data.Nat.Properties`, `Data.Sum`, `Data.Product`, `Relation.Nullary`, `Relation.Nullary.Decidable.Core`, `Data.Unit`, `Function`, `Relation.Binary.PropositionalEquality`, `Sovereign.MetaStructure.WuXing`, `Sovereign.Structology.Winding`, `Sovereign.Structology.MagicSquare144`, `Sovereign.Structology.MagicSquareM4`, `Sovereign.Arithmetic.CRTLemmas`, `Sovereign.Foundation.DigitalRoot`, `Data.List`, `Data.Bool`, `Data.Integer`, `Sovereign.Coupling.LCM`, `Sovereign.Format.CRT`, `Sovereign.Structology.T6`, `Sovereign.Structology.Platonics`, `Sovereign.Format.CRT`, `Sovereign.Structology.MagicSquareM4`, `Sovereign.Base.Trit`, `Data.Vec`, `Sovereign.Format.CRT`, `Sovereign.Algebra.GF9`, `Sovereign.Structology.A4Group`, `Sovereign.Structology.T6`, `Sovereign.Structology.T6`, `Sovereign.Base.Trit`
 - **record 类型**: `Telescope`, `TorusLatticePoint`
 - **顶层签名 (91)**: `wuXing-sum`, `wuXing-sum-25`, `magic-34-minus-wuxing-25`, `full-tour-6624`, `polar-is-A4-squared`, `toroidal-digital-root`, `toroidal-root-1`, `wuxing-times-12`, `m-mod-fulltour`, `tours-per-M`, `chiral-symmetry`, `toroidal-46-minus-16`, `chiral-16-mod3`, `chiral-neg16-mod3`, `piH-irreducible`, `alignment-vs-tour`, `spiral-period-6`, `spiral-steps`, `spirals-per-polar-winding`, `spirals-per-toroidal`, `truncation-ratio`, `truncation-remainder`, `tours-till-carry`, `polar-digital-root`, `toroidal-digital-root-1`, `one-not-stable`, `three-is-stable`, `seven-not-stable`, `wuxing-digital-roots`, `wuxing-roots`, `wuxing-dual-structure`, `T6-points`, `torus-points`, `zhonglv-crt`, `pow3-exponent-is-11`, `twelve-is-3-times-4`, `c3-order-3`, `chiral-conjugate-gf3`, `self-conjugate-gf3`, `chiral-square-is-identity`, `GF3⁶`, `c3-rotate`, `c3-rotate3-id`, `c3-conjugate`, `c3-conjugate3-id`, `rotate-T1-is-T2`, `conjugate-T2-is-T1`, `c3-table-00`, `c3-table-01`, `c3-table-02`, `c3-table-10`, `c3-table-11`, `c3-table-12`, `c3-table-20`, `c3-table-21`, `c3-table-22`, `c3-inverse`, `inverse-law-0`, `inverse-law-1`, `inverse-law-2`
   - … 其余 31 项
@@ -1259,7 +1259,7 @@
   - → 模3投影 [1,2,1,2,1,2] = 损益交替 (1=Sun损一, 2=Yi益一)
   - → scanl 累加 [0,1,3,4,6] = a序列
   - → a奇偶性 → Z₂因子 (奇=含反射, 偶=纯旋转)
-- **导入 (11)**: `Data.Nat`, `Data.Bool`, `Data.Vec`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Data.List`, `Sovereign.RootMath.DigitalRoot`, `Data.Vec`, `Sovereign.Structology.A4Group`, `Data.Fin`, `Sovereign.Base.ZeroGeometry`
+- **导入 (11)**: `Data.Nat`, `Data.Bool`, `Data.Vec`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Data.List`, `Sovereign.Foundation.DigitalRoot`, `Data.Vec`, `Sovereign.Structology.A4Group`, `Data.Fin`, `Sovereign.Base.ZeroGeometry`
 - **data 类型**: `ClutchState`, `WuXingPhase`, `Z2Factor`, `SymmetryGroup`, `LossGain`, `Z2`, `FacePolygon`, `VertexDegree`
 - **record 类型**: `HasZ2Factor`
 - **顶层签名 (90)**: `allPhases`, `numPhases`, `aValue`, `chiralCopies`, `groupOrder`, `symmetryGroup`, `z2Presence`, `clutchState`, `transition`, `spiralMod3`, `spiralMod3-sequence`, `mod3ToLossGain`, `lossGainPattern`, `lossGainPattern-sequence`, `lossGainStep`, `derivedASequence`, `derivedA-sequence`, `derivedA-matches-defined`, `deriveZ2`, `derivedZ2-matches-defined`, `christos-guarantees-closure`, `christoffel-derives-all`, `transition-cycle`, `a-sequence`, `chiralCopies-sequence`, `groupOrder-sequence`, `z2-lifecycle`, `clutch-a-correspondence`, `z2-a-parity`, `a-accumulation`, `groupGrowth-sequence`, `expansion-phase`, `contraction-phase`, `z2Order`, `ohZ2`, `ihZ2`, `noZ2Factor`, `oh-has-Z2`, `ih-has-Z2`, `noZ2-in-pure-rotations`, `z2-acquisition`, `z2-loss`, `z2-acquired-at-Earth`, `z2-maintained-at-Metal`, `z2-lost-at-Water`, `a1-implies-Z2`, `a3-implies-Z2`, `a0-no-Z2`, `a4-no-Z2`, `a6-no-Z2`, `theorem-z2-lifecycle-via-group-theory`, `allA4Elements`, `a4Cardinality`, `a4-matches-fire`, `a4-pure-rotation`, `a4-vertex-count`, `a4-cardinality-correct`, `a4-to-o-ratio`, `a4-to-i-ratio`, `group-chain-from-a4`

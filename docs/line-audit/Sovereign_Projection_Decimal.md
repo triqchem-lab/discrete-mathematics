@@ -3,7 +3,7 @@
 共 2 个模块。
 
 
-## `src/Sovereign/Projection/Decimal/Axioms.agda`
+## `src/Sovereign/Infrastructure/Projection/Decimal/Axioms.agda`
 
 - **module**: `Sovereign.Projection.Decimal.Axioms`
 - **行数**: 91（代码 51 / 注释 26）
@@ -19,7 +19,7 @@
 - **顶层签名 (7)**: `divMod10`, `sumDigits`, `digitalRoot`, `IsStable`, `POW3₁₁`, `POW2₁₆`, `zhonglvAlign`
 - **质量**: `refl`×0；无 postulate / 无 hole
 
-## `src/Sovereign/Projection/Decimal/Proofs.agda`
+## `src/Sovereign/Infrastructure/Projection/Decimal/Proofs.agda`
 
 - **module**: `Sovereign.Projection.Decimal.Proofs`
 - **行数**: 177（代码 124 / 注释 31）

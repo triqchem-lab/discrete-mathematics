@@ -14,7 +14,7 @@
   - 本质：主权状态机在 T⁶ 离散环面上平行移动与和乐效应的连续统投影
   - 离散本源：联络 = 五行干涉，曲率 = 局部陈数贡献，挠率 = 仲吕不交
   - 注意：嘉当理论仅为历史投影中的合法参照，非本源
-- **导入 (18)**: `Cubical.Foundations.Prelude`, `Data.Nat`, `Data.Integer`, `Data.Rational`, `Data.Bool`, `Data.Fin`, `Data.Vec`, `Data.List`, `Relation.Nullary`, `Data.Product`, `Data.Empty`, `Sovereign.RootMath.Base`, `Sovereign.RootMath.EnergyGap`, `Sovereign.Structology.Winding`, `Sovereign.Structology.T6`, `Sovereign.Coupling.LossGain`, `Sovereign.Coupling.Zhonglv`, `Sovereign.MetaStructure.WuXing`
+- **导入 (18)**: `Cubical.Foundations.Prelude`, `Data.Nat`, `Data.Integer`, `Data.Rational`, `Data.Bool`, `Data.Fin`, `Data.Vec`, `Data.List`, `Relation.Nullary`, `Data.Product`, `Data.Empty`, `Sovereign.Foundation.Base`, `Sovereign.Foundation.EnergyGap`, `Sovereign.Structology.Winding`, `Sovereign.Structology.T6`, `Sovereign.Coupling.LossGain`, `Sovereign.Coupling.Zhonglv`, `Sovereign.MetaStructure.WuXing`
 - **data 类型**: `WuXingAmplitude`
 - **record 类型**: `BaseManifold`, `A4StructureGroup`, `DiscreteFiberBundle`, `DiscreteConnection`, `DiscreteCurvature`, `DiscreteTorsion`, `ParallelTransport`, `HolonomyGroup`, `GaugePotential`, `FieldStrength`, `MatterField`, `GaugeTransformation`, `CartanFirstEquation`, `CartanSecondEquation`
 - **顶层签名 (15)**: `_≢_`, `baseManifoldS2OverA4`, `a4GroupInstance`, `standardFiberBundle`, `connectionToComplex`, `composeConnections`, `computeCurvature`, `sumChernContribs`, `zhonglvTorsion`, `closeTorsion`, `torsionClosedAfterZhonglv`, `transportDiffEq`, `holonomyIdentityAt3312`, `gaugePotentialInstance`, `fieldStrengthInstance`
@@ -48,7 +48,7 @@
   - 损益操作是长度比例演化的唯一合法方式：
   - 损：长度 × 2/3（a+1, b-1）
   - 益：长度 × 4/3（a+2, b-1）
-- **导入 (5)**: `Cubical.Foundations.Prelude`, `Data.Nat`, `Data.Integer`, `Relation.Binary.PropositionalEquality`, `Sovereign.RootMath.Base`
+- **导入 (5)**: `Cubical.Foundations.Prelude`, `Data.Nat`, `Data.Integer`, `Relation.Binary.PropositionalEquality`, `Sovereign.Foundation.Base`
 - **data 类型**: `LossGain`, `LengthSequence`
 - **顶层签名 (14)**: `sunOp`, `yiOp`, `applyLossGain`, `huangzhong`, `applyChain`, `standardChain`, `twelveLüSequence`, `SOVEREIGN_LCM`, `POW3¹¹`, `POW2¹⁶`, `lcmRemainder`, `zhonglvClosure`, `zhonglvClosureMod`, `huangzhongLCMRemainder`
 - **质量**: `refl`×1；⚠️ 2 postulate
@@ -64,7 +64,7 @@
   - 本质：主权状态机在 T⁶ 离散环面主权 LCM 商空间中的格点快照
   - 长度：16 字节（128 位），对齐于 16 字节边界
   - 基底：纯整数域，主权 LCM 模运算或 GF(3) 格点算术
-- **导入 (11)**: `Cubical.Foundations.Prelude`, `Data.Nat`, `Data.Integer`, `Data.Fin`, `Data.Vec`, `Data.Word`, `Data.Bool`, `Relation.Binary.PropositionalEquality`, `Sovereign.RootMath.Base`, `Sovereign.Structology.Winding`, `Sovereign.Coupling.LossGain`
+- **导入 (11)**: `Cubical.Foundations.Prelude`, `Data.Nat`, `Data.Integer`, `Data.Fin`, `Data.Vec`, `Data.Word`, `Data.Bool`, `Relation.Binary.PropositionalEquality`, `Sovereign.Foundation.Base`, `Sovereign.Structology.Winding`, `Sovereign.Coupling.LossGain`
 - **data 类型**: `SovSequence`
 - **record 类型**: `ChecksumLayer`, `SovereignBlock`
 - **顶层签名 (15)**: `QsContainer`, `ReservedLayer`, `blockSize`, `extractCellIndex`, `extractC3Phase`, `extractSevenStage`, `extractBerryCurvature`, `extractHarmonicDir`, `extractA4Generator`, `shouldZhonglvClosure`, `sumBerryCurvature`, `evolveBlock`, `parseSovBlock`, `serializeSovBlock`, `sequenceSizeValid`

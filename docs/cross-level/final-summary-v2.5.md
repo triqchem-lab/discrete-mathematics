@@ -120,7 +120,7 @@ typedef struct __attribute__((packed, aligned(16))) {
 | `Sovereign.Coupling` | 损益操作、仲吕闭合、主权LCM模运算、状态机 |
 | `Sovereign.MetaStructure` | 五行基数、手性、六十甲子纳音 |
 | `Sovereign.Density` | 七阶段周期、地气声子谱基频144Hz（历史投影） |
-| `Sovereign.Projection` | 电性复位类型类 `IsElectricProjection` 与投影链条 |
+| `Sovereign.Infrastructure.Projection` | 电性复位类型类 `IsElectricProjection` 与投影链条 |
 
 
 ## 十、意识边界法则

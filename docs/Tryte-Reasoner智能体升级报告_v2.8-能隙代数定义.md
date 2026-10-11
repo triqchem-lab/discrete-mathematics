@@ -174,8 +174,8 @@ C3 循环群生成元 ω = e^{2πi/3} 与相生振幅 1 之间的跃迁矢量
 ## 📚 **相关文档**
 
 1. [智能体配置文件](file:///home/yanli/.lingma/agents/tryte-reasoner.md)
-2. [能隙定义实现](file://./src/Sovereign/RootMath/EnergyGap.agda)
-3. [代数复数定义](file://./src/Sovereign/RootMath/AlgebraicComplex.agda)
+2. [能隙定义实现](file://./src/Sovereign/Foundation/EnergyGap.agda)
+3. [代数复数定义](file://./src/Sovereign/Foundation/AlgebraicComplex.agda)
 4. [范畴分离违例检查报告](file://./docs/范畴分离违例检查报告_2026-04-24.md)
 
 ---

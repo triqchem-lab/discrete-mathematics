@@ -98,7 +98,7 @@ galoisNorm (a , b) = (a ⊗ a) ⊕ (b ⊗ b)
 ### 3.1 定义
 
 ```agda
--- Sovereign.RootMath.Gaussian
+-- Sovereign.Foundation.Gaussian
 record Gaussian : Set where
   constructor gi
   field
@@ -158,7 +158,7 @@ unit-pow-4 : unit-pow 4 ≡ unit1
 ### 4.1 定义
 
 ```agda
--- Sovereign.RootMath.Eisenstein
+-- Sovereign.Foundation.Eisenstein
 record Eisenstein : Set where
   constructor eis
   field
@@ -215,7 +215,7 @@ conj-ω²≡ω : conjᵉ ω²ᵉ ≡ ωᵉ
 ### 5.1 定义
 
 ```agda
--- Sovereign.RootMath.AlgebraicComplex
+-- Sovereign.Foundation.AlgebraicComplex
 record Sqrt3 : Set where
   constructor _+s3_
   field
@@ -271,7 +271,7 @@ sqrt3SqProof = refl
 ### 6.1 定义
 
 ```agda
--- Sovereign.RootMath.AlgebraicComplex
+-- Sovereign.Foundation.AlgebraicComplex
 record Sqrt2 : Set where
   constructor _+s2_
   field
@@ -347,7 +347,7 @@ sqrt2SqProof = refl
 ### 8.1 C3 到 Sqrt3 的桥接
 
 ```agda
--- Sovereign.RootMath.EnergyGap
+-- Sovereign.Foundation.EnergyGap
 -- C3 元素到 Sqrt3 代数复振幅的映射
 --   1   → 1 + 0√3
 --   ω   → -1/2 + (1/2)√3   （代数精确表示）

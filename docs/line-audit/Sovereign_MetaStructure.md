@@ -13,7 +13,7 @@
   - 元结构层：六十甲子纳音拓扑指纹
   - 纳音是主权状态机在特定天干地支下的驻波谐波主峰拓扑指纹
   - 禁止将纳音解释为五行比喻或音律象征
-- **导入 (8)**: `Data.Nat`, `Data.Fin`, `Data.Fin.Properties`, `Data.Vec`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.MetaStructure.WuXing`, `Sovereign.RootMath.DigitalRoot`
+- **导入 (8)**: `Data.Nat`, `Data.Fin`, `Data.Fin.Properties`, `Data.Vec`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.MetaStructure.WuXing`, `Sovereign.Foundation.DigitalRoot`
 - **data 类型**: `HeavenlyStem`, `EarthlyBranch`, `NayinSound`
 - **record 类型**: `JiaZi`, `NayinFingerprint`, `IsMetaphor`
 - **顶层签名 (10)**: `stemToIndex`, `branchToIndex`, `allJiaZi`, `nayinToWuxing`, `mkNayinFingerprint`, `nayinPreferredHarmonic`, `DIQI_BASE`, `nayinResonanceFreq`, `stableProofIrrelevant`, `nayinFingerprintUnique`

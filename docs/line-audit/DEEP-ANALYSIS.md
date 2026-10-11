@@ -25,8 +25,8 @@
 ### `01-electric-12d/`（2 模块，272 行）
 | 文件 | module 声明 | 正式模块 | 状态 |
 |------|------------|----------|------|
-| `Base.agda` | `Sovereign.RootMath.Base` | `src/Sovereign/RootMath/Base.agda` | **重复** |
-| `DigitalRoot.agda` | `Sovereign.RootMath.DigitalRoot` | `src/Sovereign/RootMath/DigitalRoot.agda` | **重复** |
+| `Base.agda` | `Sovereign.Foundation.Base` | `src/Sovereign/Foundation/Base.agda` | **重复** |
+| `DigitalRoot.agda` | `Sovereign.Foundation.DigitalRoot` | `src/Sovereign/Foundation/DigitalRoot.agda` | **重复** |
 
 差异：旧版 `OPTIONS` 仅 `--guardedness`，新版为 `--rewriting --guardedness`。
 

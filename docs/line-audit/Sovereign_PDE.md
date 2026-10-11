@@ -28,7 +28,7 @@
 - **module**: `Sovereign.PDE.PDEDiscrete`
 - **行数**: 240（代码 102 / 注释 110）
 - **OPTIONS**: `--rewriting`
-- **导入 (8)**: `Sovereign.Algebra.DiscreteDE`, `Data.Nat`, `Data.Product`, `Data.Unit`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Algebra.ProjectionDifferential`, `Sovereign.Completeness.Layer`
+- **导入 (8)**: `Sovereign.Algebra.DiscreteDE`, `Data.Nat`, `Data.Product`, `Data.Unit`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Algebra.ProjectionDifferential`, `Sovereign.Foundation.Layer`
 - **record 类型**: `PDEDiscreteFramework`, `ODEPDECompletenessBridge`
 - **顶层签名 (10)**: `pde-framework`, `ODEPDEDiscreteCarrier`, `odepde-witness`, `odepde-completeness-bridge`, `pde-fredholm`, `pde-ode-exists`, `pde-const-harmonic`, `pde-nilpotent`, `pde-Δ₁³`, `pde-Δ₂³`
 - **质量**: `refl`×3；无 postulate / 无 hole

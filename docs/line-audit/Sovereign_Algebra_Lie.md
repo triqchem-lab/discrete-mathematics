@@ -42,7 +42,7 @@
   - 对应关系 (离散李群-李代数):
   - 连续: exp: g → G, 单参子群 exp((t+s)X) = exp(tX)exp(sX)
   - 离散: exp_C4/exp_C6 为有限周期单参子群 (C₄/C₆), 同态律逐项 refl
-- **导入 (7)**: `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.RootMath.Gaussian`, `Sovereign.RootMath.Eisenstein`
+- **导入 (7)**: `Data.Fin`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Algebra.GF9`, `Sovereign.Foundation.Gaussian`, `Sovereign.Foundation.Eisenstein`
 - **顶层签名 (87)**: `next4g`, `expC4`, `expC4-hom`, `next6g`, `expC6`, `expC6-hom`, `Mat2G`, `gf9z`, `gf9one`, `neg-gf9`, `m2mul`, `sigm2`, `SDElem`, `neg2g`, `gen-a-square`, `gen-a-order4`, `gen-b-order2`, `twist-order2`, `d4-conjugation`, `sdE-cl-sdE`, `sdE-cl-sdS`, `sdE-cl-sdM`, `sdE-cl-sdMS`, `sdE-cl-sdA`, `sdE-cl-sdAS`, `sdE-cl-sdMA`, `sdE-cl-sdMAS`, `sdS-cl-sdE`, `sdS-cl-sdS`, `sdS-cl-sdM`, `sdS-cl-sdMS`, `sdS-cl-sdA`, `sdS-cl-sdAS`, `sdS-cl-sdMA`, `sdS-cl-sdMAS`, `sdM-cl-sdE`, `sdM-cl-sdS`, `sdM-cl-sdM`, `sdM-cl-sdMS`, `sdM-cl-sdA`, `sdM-cl-sdAS`, `sdM-cl-sdMA`, `sdM-cl-sdMAS`, `sdMS-cl-sdE`, `sdMS-cl-sdS`, `sdMS-cl-sdM`, `sdMS-cl-sdMS`, `sdMS-cl-sdA`, `sdMS-cl-sdAS`, `sdMS-cl-sdMA`, `sdMS-cl-sdMAS`, `sdA-cl-sdE`, `sdA-cl-sdS`, `sdA-cl-sdM`, `sdA-cl-sdMS`, `sdA-cl-sdA`, `sdA-cl-sdAS`, `sdA-cl-sdMA`, `sdA-cl-sdMAS`, `sdAS-cl-sdE`
   - … 其余 27 项
 - **质量**: `refl`×126；无 postulate / 无 hole

@@ -46,7 +46,7 @@
   - 4. 截断商空间 — 运算在 Z/M 中进行 (M = 3¹¹×2¹⁶)
   - 5. 原生测地线 — Christoffel 螺旋 = ⊕+⊗ 在环面上的移宫转调
   - 1.1 CRT谱投影外积 — 互质周期通过投影算子裂变为高维状态空间矩阵
-- **导入 (10)**: `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Base.Trit`, `Sovereign.Format.CRT`, `Sovereign.Structology.Winding`, `Sovereign.Structology.MagicSquare144`, `Sovereign.RootMath.DigitalRoot`, `Sovereign.Format.ModulusGeneration`
+- **导入 (10)**: `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Relation.Nullary`, `Sovereign.Base.Trit`, `Sovereign.Format.CRT`, `Sovereign.Structology.Winding`, `Sovereign.Structology.MagicSquare144`, `Sovereign.Foundation.DigitalRoot`, `Sovereign.Format.ModulusGeneration`
 - **record 类型**: `Phonon`
 - **顶层签名 (47)**: `outer-product-CRT`, `outer-product-FULL-TOUR`, `superposition-table-verified`, `entanglement-is-from-base`, `lcm-modulus`, `crt-decomposition`, `spiral-trit-value`, `spiral-1-trit-val`, `spiral-2-trit-val`, `spiral-4-trit-val`, `spiral-8-trit-val`, `spiral-7-trit-val`, `spiral-5-trit-val`, `spiral-7-interference`, `spiral-5-stable`, `additive-12`, `multiplicative-12`, `collapse-12-to-3`, `oscillation-3-6-12`, `path-39-first`, `path-39-second`, `path-29-first`, `path-29-second`, `superposition-zhonglv`, `entanglement-sync`, `critical-7`, `stable-5-dr`, `modulus-count`, `46-spiral-eigen-1`, `46-spiral-eigen-2`, `46-spiral-eigen-4`, `46-spiral-eigen-8`, `46-spiral-eigen-7`, `46-spiral-eigen-5`, `46-never-touches-stable`, `c3-soliton-mod46`, `c3-soliton-mod144`, `perfect-28`, `perfect-496`, `dr-496-is-1`, `lidari-144`, `lidari-times-144`, `lidari-times-46`, `phonon-propagate`, `phonon-interference`, `phonon-standing-wave`, `phonon-collapse`
 - **质量**: `refl`×46；无 postulate / 无 hole
@@ -94,7 +94,7 @@
   - §1 GF(3) qutrit 版: C : Qutrit → Qutrit⊗Qutrit (9 分量)
   - §2 GF(9) 版 + 共轭结构: 驻波 (共轭不动点) / 谐波 (共轭对)
   - §3 Z[ω] 电路版: 线性 + 酉性 (保范) + 克隆协议
-- **导入 (8)**: `Data.Product`, `Data.Empty`, `Relation.Nullary`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Quantum.Entanglement`, `Sovereign.Algebra.GF9`, `Sovereign.RootMath.Eisenstein`
+- **导入 (8)**: `Data.Product`, `Data.Empty`, `Relation.Nullary`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Quantum.Entanglement`, `Sovereign.Algebra.GF9`, `Sovereign.Foundation.Eisenstein`
 - **顶层签名 (46)**: `Qutrit9`, `_⊕Q_`, `_⊕Q9_`, `_⊗Q_`, `slot01`, `psi3`, `IsLinear3`, `Clones3`, `t0≢t1`, `linear-branch-gf3`, `clone-branch-gf3`, `no-cloning-gf3`, `gf9z`, `Q2`, `Q4G`, `ket0g`, `ket1g`, `psiG`, `_⊗G_`, `slot01G`, `conjugate-state`, `conj-state-involutive`, `IsStandingWave`, `IsHarmonicPair`, `harmonic-pair-involutive`, `IsLinearG`, `ClonesG`, `gf9-0≢1`, `linear-branch-gf9`, `clone-branch-gf9`, `no-cloning-gf9`, `QE2`, `QE4`, `ket0E`, `ket1E`, `psiE`, `_⊗E_`, `comp2`, `IsLinear4`, `norm4`, `IsUnitary4`, `CloningCircuit`, `eis-0≢1`, `linear-branch`, `clone-branch`, `no-cloning-circuit`
 - **质量**: `refl`×8；无 postulate / 无 hole
 

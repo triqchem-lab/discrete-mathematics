@@ -5,7 +5,7 @@
 
 ## `src/01-electric-12d/Base.agda`
 
-- **module**: `Sovereign.RootMath.Base`
+- **module**: `Sovereign.Foundation.Base`
 - **行数**: 110（代码 84 / 注释 4）
 - **OPTIONS**: `--guardedness`
 - **导入 (10)**: `Data.Nat`, `Data.Nat.DivMod`, `Data.Nat.Properties`, `Data.Bool`, `Data.Integer`, `Data.Fin`, `Data.Vec`, `Data.Sum.Base`, `Data.Empty`, `Relation.Binary.PropositionalEquality`
@@ -15,11 +15,11 @@
 
 ## `src/01-electric-12d/DigitalRoot.agda`
 
-- **module**: `Sovereign.RootMath.DigitalRoot`
+- **module**: `Sovereign.Foundation.DigitalRoot`
 - **行数**: 162（代码 85 / 注释 48）
 - **OPTIONS**: `--guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.RootMath.DigitalRoot
+  - | Sovereign.Foundation.DigitalRoot
   - 根数学：数字根公理与稳定驻波判定
   - 公理：稳定驻波对应的长度比例数字根必须 ∈ {3, 6, 9}
   - 其余因干涉相消无法在 T⁶ 环面驻留
