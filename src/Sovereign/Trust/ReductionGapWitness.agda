@@ -27,6 +27,12 @@
 --   配对弹出（docs/techniques/pair-popping.md）是「不商化」路径下的手工补偿：
 --   把逐 case 穷举换成代数律重排 + 归一化器收口（本库 12/729/6561 三处已改造）。
 
+--
+-- 核心原则：
+--   1. 判定层纪律：投影只作不变量、不作相等判定
+--   2. 工具链见证件非数学定理（版本戳必随回执）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Trust.ReductionGapWitness where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

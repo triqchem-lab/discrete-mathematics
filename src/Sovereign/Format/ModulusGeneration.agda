@@ -6,6 +6,12 @@
 -- 给定环面测地线步数 k，用 M₄ 本征谱 + 克里斯托螺旋
 -- 生成 CRT 模数 m_i(k)。正交判据 Orth 取代传统 gcd 互质。
 
+--
+-- 核心原则：
+--   1. 投影/记数法层——不作代数本源（R₁₂ 环非域；Doz 为记数法）
+--   2. CRT=物理波系统/谱投影，非模运算定理（红线）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Format.ModulusGeneration where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _/_; _%_)

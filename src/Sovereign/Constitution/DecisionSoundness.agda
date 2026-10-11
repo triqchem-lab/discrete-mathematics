@@ -24,6 +24,12 @@
 --
 -- 0 postulate / 0 hole。本文件只做**判定层**的宪法性陈述，不重复域公理。
 
+--
+-- 核心原则：
+--   1. 宪法文本型声明层（合规非空壳债）
+--   2. 禁浮点/禁代数污染；0 postulate 目标
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Constitution.DecisionSoundness where
 
 open import Data.Bool using (Bool; true; false)

@@ -25,6 +25,12 @@
 -- 依赖只用**原语** `Agda.Builtin.Reflection`（不引 stdlib 的 `Reflection`：后者会拖进
 -- Text.Printf 等一大坨，编译从 1s 变 60s）。
 
+--
+-- 核心原则：
+--   1. 判定层纪律：投影只作不变量、不作相等判定
+--   2. 工具链见证件非数学定理（版本戳必随回执）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Trust.ReductionGapObservation where
 
 open import Agda.Builtin.Unit using (⊤)

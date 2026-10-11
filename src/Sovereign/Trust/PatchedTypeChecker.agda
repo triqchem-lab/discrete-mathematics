@@ -64,6 +64,12 @@
 -- ⚠ 若换回上游 Agda（或只带 PR #8611 分支、不带 eb1251683f 的 Agda），
 --   本模块**应当编译失败**（`Is empty: R1 ≡ R2 (stuck)`）——那正是它的判据价值：
 --   它区分「有 eb1251683f」与「没有」。分支自己的 `test/Fail/Issue292.err` 记的就是这个 stuck。
+--
+-- 核心原则：
+--   1. 判定层纪律：投影只作不变量、不作相等判定
+--   2. 工具链见证件非数学定理（版本戳必随回执）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Trust.PatchedTypeChecker where
 
 open import Data.Nat using (ℕ)

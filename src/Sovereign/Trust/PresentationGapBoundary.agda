@@ -29,6 +29,12 @@
 --          `docs/techniques/presentation-reduction-gap/README.md`）
 --      两者都不是内部定理，登记时必须标明层级。
 
+--
+-- 核心原则：
+--   1. 判定层纪律：投影只作不变量、不作相等判定
+--   2. 工具链见证件非数学定理（版本戳必随回执）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Trust.PresentationGapBoundary where
 
 open import Data.Empty using (⊥)

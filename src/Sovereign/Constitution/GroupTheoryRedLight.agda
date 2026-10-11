@@ -12,6 +12,12 @@
 --   不进 ℤ-标度正交层; AutomorphicRep ≃ GaloisRep 全函子对应 = 开放命题,
 --   本模块仅承载数据级对应 (Langlands 双表), 不以断言代替证明。
 
+--
+-- 核心原则：
+--   1. 宪法文本型声明层（合规非空壳债）
+--   2. 禁浮点/禁代数污染；0 postulate 目标
+--
+-- 包含：a4-order、ih-order、d4-order、gl2-order
 module Sovereign.Constitution.GroupTheoryRedLight where
 
 open import Data.Nat using (ℕ; _*_; _+_)

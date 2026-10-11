@@ -34,6 +34,12 @@
 -- 本模块 **不** 声称：把 Haskell `failure` 分支形式化为 Agda 定理（那要把 tcm 状态机
 -- 搬进 Agda，不划算，见 `KernelSpec` §5 边界）。
 
+--
+-- 核心原则：
+--   1. 判定层纪律：投影只作不变量、不作相等判定
+--   2. 工具链见证件非数学定理（版本戳必随回执）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Trust.KernelWitness where
 
 open import Data.Empty using (⊥)

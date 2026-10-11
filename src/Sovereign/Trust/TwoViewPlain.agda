@@ -13,6 +13,12 @@
 --   ⇒ 这里的少量重复是**为对照实验服务的有意重复**，不是第二事实源（定理本体仍在
 --   `PresentationGapBoundary`/`DuodecClock`；本模块只承载 P1 的对照臂）。
 
+--
+-- 核心原则：
+--   1. 判定层纪律：投影只作不变量、不作相等判定
+--   2. 工具链见证件非数学定理（版本戳必随回执）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Trust.TwoViewPlain where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

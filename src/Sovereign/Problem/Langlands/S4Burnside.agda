@@ -17,7 +17,10 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 -- Σdim² = 1²+1²+2²+3²+3² = 1+1+4+9+9 = 24 ✓
 -- ═══════════════════════════════════════════════════════════
 
+-- 声明层升级（2026-10-11）：阶 = 4! 公式化 + 核对
+s4-order-formula : ℕ; s4-order-formula = 4 * 3 * 2 * 1
 s4-order : ℕ; s4-order = 24
+s4-order-check : s4-order-formula ≡ s4-order; s4-order-check = refl
 s4-burnside : 1 * 1 + 1 * 1 + 2 * 2 + 3 * 3 + 3 * 3 ≡ 24
 s4-burnside = refl
 

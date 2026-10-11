@@ -9,6 +9,12 @@
 -- - 泛音列公理：损益操作方向性不可逆
 -- - 对称性讨论脱离缠绕数与泛音列均属违宪
 
+--
+-- 核心原则：
+--   1. 宪法文本型声明层（合规非空壳债）
+--   2. 禁浮点/禁代数污染；0 postulate 目标
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Constitution.WindingAsymmetry where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _/_; _≤_; _≥_; _∸_; NonZero; ≢-nonZero; nonZero; s≤s; z≤n)

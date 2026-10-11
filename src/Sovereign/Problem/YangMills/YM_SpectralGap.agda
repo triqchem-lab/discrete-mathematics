@@ -22,6 +22,12 @@
 --      类4 谱 {α,−α} ⊂ GF(9)（Frobenius 共轭对, 无 GF(3) 特征值 — 刚性）
 --   §6 一般 A,B 参数的符号证明: λ₀=A+2B, λ₁=A−B, Δ=3B, tr=3A（ℤ 符号链）
 
+--
+-- 核心原则：
+--   1. 格点/离散 YM 实例核——非连续 YM 全定理（质量间隙/连续极限未形式化，诚实边界）
+--   2. 外部九圈类计算不改变本框架判定（投影层）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Problem.YangMills.YM_SpectralGap where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)

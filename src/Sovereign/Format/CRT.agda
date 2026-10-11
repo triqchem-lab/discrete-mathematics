@@ -1,5 +1,12 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
+--
+-- 核心原则：
+--   0. 中国剩余投影（物理波系统/谱投影，非模运算定理）
+--   1. 投影/记数法层——不作代数本源（R₁₂ 环非域；Doz 为记数法）
+--   2. CRT=物理波系统/谱投影，非模运算定理（红线）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Format.CRT where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_; _∸_)

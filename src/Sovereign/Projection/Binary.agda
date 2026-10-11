@@ -10,6 +10,12 @@
 --    **更新**：使用“五行掩码 (WuXing Mask)”替代“相位奇偶性”进行启发式恢复。
 --    这符合宪法中关于五行模数区决定能量态/手性倾向的定义。
 
+--
+-- 核心原则：
+--   1. 投影层红线：禁回流本源（信息只许单向丢失）
+--   2. 投影相同 ≠ 相等（逃逸见证条款）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Projection.Binary where
 
 open import Data.Fin using (Fin; toℕ; fromℕ; zero; suc)

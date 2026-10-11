@@ -11,6 +11,12 @@
 -- 5. 律管与编钟隔离
 -- 6. 纳音为驻波拓扑指纹
 
+--
+-- 核心原则：
+--   1. 宪法文本型声明层（合规非空壳债）
+--   2. 禁浮点/禁代数污染；0 postulate 目标
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Constitution.Boundaries where
 
 open import Data.Empty using (⊥)

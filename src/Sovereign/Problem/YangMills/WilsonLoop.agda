@@ -1,8 +1,15 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_WilsonLoop — 3×3 Wilson 圈 + 格点质量间隙定理
+-- | WilsonLoop — 3×3 Wilson 圈 + 格点质量间隙定理
+-- （正名勘误 2026-10-11：原头注写 jac_WilsonLoop ≠ 模块名，已正名）
 -- 0 postulate
 
+--
+-- 核心原则：
+--   1. 格点/离散 YM 实例核——非连续 YM 全定理（质量间隙/连续极限未形式化，诚实边界）
+--   2. 外部九圈类计算不改变本框架判定（投影层）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Problem.YangMills.WilsonLoop where
 
 open import Data.Nat using (ℕ)

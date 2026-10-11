@@ -5,7 +5,7 @@
 --
 -- 数学背景：Dedekind (1888) Definition 64。在构造性类型论中「有限」被重新定义为
 --   型有限，Dedekind 定义变成一条**需要证明的定理**（本模块）。
---   反向（Dedekind ⟹ 型有限）在构造性逻辑下不成立 —— 缺口声明在 FinitenessZoo §5。
+--   反向（Dedekind ⟹ 型有限）在构造性逻辑下不成立 —— 缺口声明在 docs/finiteness-zoo-盘点.md §5（模块已归档 2026-10-11）。
 --
 -- 证明路线（0 postulate）：把 f 沿 ≃ 搬运到 Fin n（f' = to ∘ f ∘ from），
 --   用 FiniteDynamics.injSurj（Fin n 上单射→满射，Dedekind 有限性的构造性实例）

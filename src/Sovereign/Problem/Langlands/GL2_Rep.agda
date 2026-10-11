@@ -9,7 +9,7 @@
 -- 包含：order、center
 module Sovereign.Problem.Langlands.GL2_Rep where
 
-open import Data.Nat using (ℕ; _*_)
+open import Data.Nat using (ℕ; _*_; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- §1. GL₂(GF(9)) 基本数据 -----------------------------------------
@@ -17,8 +17,13 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 -- 中心: Z ≅ GF(9)ˣ, |Z| = 8
 -- 共轭类: 由有理标准形和 Jordan 块分类
 
+-- 声明层升级（2026-10-11）：裸常数 → 公式定义 + 核对件
+order-formula : ℕ; order-formula = (9 * 9 ∸ 1) * (9 * 9 ∸ 9)   -- (q²-1)(q²-9), q=9
 order : ℕ; order = 5760
+order-check : order-formula ≡ order; order-check = refl
+center-formula : ℕ; center-formula = 9 ∸ 1                      -- |GF(9)ˣ| = q-1
 center : ℕ; center = 8
+center-check : center-formula ≡ center; center-check = refl
 
 -- §2. Burnside Σdim² = |G| -----------------------------------------
 -- 对任何有限群, Σdim(ρ)² = |G|.

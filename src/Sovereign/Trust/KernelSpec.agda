@@ -30,6 +30,12 @@
 --   望远镜层 Sovereign.Structology.QuantumBridge:395 起「构造子注入性的 CRT 正交分解」
 --            （:604 module TelescopeVerification；:640/:661/:668/:702/:712 为名字级对应）
 
+--
+-- 核心原则：
+--   1. 判定层纪律：投影只作不变量、不作相等判定
+--   2. 工具链见证件非数学定理（版本戳必随回执）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Trust.KernelSpec where
 
 open import Data.Product using (_×_; _,_; proj₁)

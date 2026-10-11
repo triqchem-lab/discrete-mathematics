@@ -8,6 +8,12 @@
 --          → SU(2) 的 det=1 约束下: det(UV)=1≠0 → 质量间隙
 -- 0 postulate.
 
+--
+-- 核心原则：
+--   1. 格点/离散 YM 实例核——非连续 YM 全定理（质量间隙/连续极限未形式化，诚实边界）
+--   2. 外部九圈类计算不改变本框架判定（投影层）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Problem.YangMills.YM_DetMul where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)

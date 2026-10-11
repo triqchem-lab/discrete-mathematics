@@ -17,6 +17,12 @@
 -- - Sovereign.Projection.Decimal → 十进制算术投影（电性文明）
 -- - 两者不可混淆，不可互相替代
 
+--
+-- 核心原则：
+--   1. 投影层红线：禁回流本源（信息只许单向丢失）
+--   2. 投影相同 ≠ 相等（逃逸见证条款）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Projection.Decimal where
 
 open import Sovereign.Projection.Decimal.Axioms

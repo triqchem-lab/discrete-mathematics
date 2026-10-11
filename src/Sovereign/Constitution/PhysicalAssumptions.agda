@@ -15,6 +15,12 @@
 -- 本模块不 import 任何物理模块（避免耦合与编译链膨胀）,
 -- 仅作 grep-able 的集中登记。每个站点都必须能回答: 属于哪类? 依据是什么?
 
+--
+-- 核心原则：
+--   1. 宪法文本型声明层（合规非空壳债）
+--   2. 禁浮点/禁代数污染；0 postulate 目标
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Constitution.PhysicalAssumptions where
 
 -- 三分类类型（文档化用, 不参与数学）

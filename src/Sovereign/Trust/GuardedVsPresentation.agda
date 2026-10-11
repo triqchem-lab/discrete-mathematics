@@ -23,6 +23,12 @@
 --    ⇒ 即使把时钟写成余归纳流，`混合时钟走一圈` 这类**有限展示关系**仍不会自动成立：
 --      守卫类型论补的是「无限结构的产出性」，不是「有限展示的商」。
 
+--
+-- 核心原则：
+--   1. 判定层纪律：投影只作不变量、不作相等判定
+--   2. 工具链见证件非数学定理（版本戳必随回执）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Trust.GuardedVsPresentation where
 
 open import Codata.Guarded.Stream using (Stream; head; tail; repeat; _[_])

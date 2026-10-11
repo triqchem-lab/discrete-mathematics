@@ -18,6 +18,12 @@
 --
 -- ⚠ 本模块是**机制对照**，不是关于 DC 真实 δ 的定理：两侧的 `Three`/`step` 都是最小模型，
 --   规则式一侧的生成元以 postulate 给出（stuck 头才能承载合法 REWRITE 规则）。
+--
+-- 核心原则：
+--   1. 判定层纪律：投影只作不变量、不作相等判定
+--   2. 工具链见证件非数学定理（版本戳必随回执）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Trust.TwoViews where
 
 open import Agda.Builtin.Equality using (_≡_; refl)

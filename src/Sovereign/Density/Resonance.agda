@@ -6,6 +6,12 @@
 -- 本质：纳音驻波主峰在地气声子谱（基频 144Hz）中的谐波筛选与拓扑相变
 -- 工程锚定：候气管有效长度统一调谐至 19.271cm
 
+--
+-- 核心原则：
+--   1. 物理锚定桥接件（bridge 类声明——实验/唯象锚定）
+--   2. 唯象锚定非定理；引用必带实验来源
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Density.Resonance where
 
 open import Cubical.Foundations.Prelude hiding (_≡_; refl)

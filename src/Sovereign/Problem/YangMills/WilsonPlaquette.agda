@@ -3,6 +3,12 @@
 -- | jac_WilsonPlaquette — YM 单 plaquette Wilson 圈 · 独立形式化
 -- 0 postulate
 
+--
+-- 核心原则：
+--   1. 格点/离散 YM 实例核——非连续 YM 全定理（质量间隙/连续极限未形式化，诚实边界）
+--   2. 外部九圈类计算不改变本框架判定（投影层）
+--
+-- 包含：（重导/声明件——正文即清单）
 module Sovereign.Problem.YangMills.WilsonPlaquette where
 
 open import Data.Product using (_×_; _,_)
