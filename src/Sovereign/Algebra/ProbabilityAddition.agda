@@ -25,6 +25,13 @@
 --
 -- 0 postulate.
 
+-- 核心原则:
+--   1. 一般概率加法公式 |A∪B| + |A∩B| = |A| + |B|（Fin N → Bool 子集表示，card = Σ 指示函数）；
+--   2. inclusion-exclusion 主定理 + T⁶ 格点实例；实例件 -ex 后缀；
+--   3. 零 postulate；构造性逐点证明。
+--
+-- 包含: Subset/card/complement/universe · inclusion-exclusion · T⁶-size · A-ex/B-ex 等三例核对
+
 module Sovereign.Algebra.ProbabilityAddition where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; z≤n; s≤s)

@@ -11,6 +11,13 @@
 --   加减法则的 Agda 实现属于工程债线（ℤ 已有）。
 --
 -- 0 postulate / 0 hole。
+-- 核心原则:
+--   1. 正负术筹算第四实例（《九章算术》方程章——「同名相除，异名相益」）；
+--   2. 加减法则完整实现委托 stdlib Data.Integer ℤ（诚实边界：本模块做符号层）；
+--   3. test-* 核对件族只作对账；零 postulate。
+--
+-- 包含: absⁿ/sgn（符号层）· test-same/mul/abs/sgn 核对件族
+
 module Sovereign.Algebra.ZhengFu where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)

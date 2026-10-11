@@ -15,6 +15,13 @@
 --     逐根正 witness（n∣m*n 形态）待二进制 ℕ 或 REWRITE 归约 roadmap。
 --
 -- 0 postulate / 0 hole。
+-- 核心原则:
+--   1. 结构层 CRT 分解：SOVEREIGN_LCM = 3¹¹×2¹⁶ 的 x²≡1 根 = 2×4 组合全景；
+--   2. 各素幂根的逐条证明由 Hensel 模块承担（HenselMod177147/HenselModPow2）——本模块做结构声明与核对；
+--   3. 零 postulate；oracle 层核对不代替证明（证明在 Hensel 系）。
+--
+-- 包含: SOVEREIGN_LCM · root₁..₈-is-root（8 根全景）
+
 module Sovereign.Algebra.SovereignLCMRoots where
 
 open import Data.Nat using (ℕ; _*_; _+_; _<_; _≤_; _∸_)

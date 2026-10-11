@@ -7,6 +7,12 @@
 -- 策略：*L 对 ++ 的左分配 + map-∘（复用 ListFunctor）+ mulTerm-assoc + 归纳
 --
 -- 0 postulate / 0 hole。
+-- 核心原则:
+--   1. *L 结合律经「++L 左分配 + map-∘ + mulTerm-assoc」分解（复用 ListFunctor）；
+--   2. 归纳收口，∙ 链 ≤3；零 postulate 零 hole。
+--
+-- 包含: mapL · mulTerm-assoc · map-mulTerm · 主定理（xs *L ys) *L zs ≡ xs *L (ys *L zs)
+
 module Sovereign.Algebra.LaurentMulAssoc where
 
 open import Data.Integer using (ℤ; +_; -[1+_] ; _+_; _*_; -_; _-_)

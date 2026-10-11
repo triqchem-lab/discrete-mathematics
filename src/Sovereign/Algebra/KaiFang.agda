@@ -16,6 +16,13 @@
 -- 应用：生成 √3 的精确有理近似序列（宪法合规：禁浮点，整数递推）
 --
 -- 0 postulate / 0 hole。
+-- 核心原则:
+--   1. 筹算 Agda 化（开方术 = 术，非「Pell 方程实现」——本体论声明在头部）；
+--   2. Pell 递推是开方术的递推形表述；核对件一律 -check 后缀；
+--   3. 零 postulate；数值核对 refl 层。
+--
+-- 包含: pell-init/pell-step/pell-iterate/pell-val · SQRT3_PELL_Q16 · pell-nth/pell-1/pell-2 · 核对件族
+
 module Sovereign.Algebra.KaiFang where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _<_; _≤_)

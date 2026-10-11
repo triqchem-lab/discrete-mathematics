@@ -11,6 +11,12 @@
 --
 -- 0 postulate.
 
+-- 核心原则:
+--   1. 语料锚点 → 形式化事实，每条带语料出处（word_98/ppt_13 等）；
+--   2. 只存代数事实不外推；数值事实为 refl 层核对（不冒充定理）；零 postulate。
+--
+-- 包含: §1 零幂指数分类 · §2 8=2³ 与 GF(9)* 阶 · §3 阶数兼容链 3→12→144→144000 · DR 核对件族
+
 module Sovereign.Algebra.NumberTheoryAnchors where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_; _∸_)

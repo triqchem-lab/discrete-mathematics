@@ -13,6 +13,13 @@
 -- 完整版需要：多项式系数列表 + 乘法卷积
 --
 -- 0 postulate / 0 hole。
+-- 核心原则:
+--   1. ⚠ DEPRECATED 留档件：简化截断表示是**反面教材**（不能表 t²/t⁻¹，t·t⁻¹≠1）；
+--   2. 正确表示 = LaurentBase（项列表）；唯一消费者 BurauRep 迁移后删本模块；
+--   3. 不新增内容、不作引用源（引用一律指向 LaurentBase）。
+--
+-- 包含: L1/Lt/L-t（残件留档，供迁移核对）
+
 module Sovereign.Algebra.LaurentPolynomial where
 
 open import Data.Integer using (ℤ; +_; -[1+_] ; _+_; _*_; -_)

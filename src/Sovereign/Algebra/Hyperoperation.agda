@@ -28,6 +28,13 @@
 --
 -- 0 postulate — 全部构造性证明
 
+-- 核心原则:
+--   1. 超运算统一递归 H₀..H₄（后继→加→乘→幂→tetration）；
+--   2. 与 Tetration 模块分工：本模块层级与数值性质，彼模块塔数据形；
+--   3. 数值点核对只作对账（refl 自洽），不冒充泛化定理；零 postulate。
+--
+-- 包含: hyper（统一递归）· hyper1/2/3-x-y 数值核对族 · 层级性质引理
+
 module Sovereign.Algebra.Hyperoperation where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_)

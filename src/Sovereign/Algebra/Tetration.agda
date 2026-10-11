@@ -13,6 +13,13 @@
 --
 -- 0 postulate.
 
+-- 核心原则:
+--   1. 超运算层级 H₁..H₄ 的递归数据形（塔 ↑↑n / pentation）；
+--   2. 语料锚定「12^12^12^12」四层塔；数值核对件 t-* 后缀；
+--   3. 零 postulate；refl 层核对。
+--
+-- 包含: hyper1/hyper2/hyper3 · tetration/pentation · t-2-1..t-3-3 核对族
+
 module Sovereign.Algebra.Tetration where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_)

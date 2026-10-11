@@ -1,5 +1,15 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.AlgebraWrapper
+-- 代数件薄封装层
+--
+-- 核心原则:
+--   1. 封装层不新增数学内容（cancel/distrib-lemma 为既有件的薄包装）；
+--   2. 零 postulate；引用请直达源件。
+--
+-- 包含: cancel · distrib-lemma
+
+
 module Sovereign.AlgebraWrapper where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
