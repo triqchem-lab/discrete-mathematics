@@ -21,6 +21,15 @@
 --   x ≡ 144 (mod 65536) 且 x ≡ 46 (mod 177147)
 --   → 两个振子相位同时锁定 → 干涉加强 → 驻波形成
 
+-- 数学背景：CRT 理论的谐波与驻波解释 (v5.19)
+--
+-- 核心原则：
+--   1. CRT 域 = 双周期系统（T1=2¹⁶=65536、T2=3¹¹=177147）的拍频谐波谱。
+--   2. 锁相是构造性的：lock-gen 泛型引理（[m+kn]%n≡m%n）+ 具体值探针实测（免 REWRITE）。
+--   3. X0 三模态（极 144/环 46/量子 6624）= 三宇宙同一横波拍频通道。
+--
+-- 包含（分层）：基础件层：T1/T2/M/POLAR/TORUS 字面桥+abstract-X0｜主引理层：lock-gen 泛型｜组合层：phase-lock-T1/T2｜核对层：canon 具体值核对
+--
 module Sovereign.HoTT.CRTHarmonics where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _^_; _∸_; NonZero)

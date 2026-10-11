@@ -20,6 +20,15 @@
 --   这里的 record 是"结构规范，由实现满足"。
 --
 -- 0 postulate / 0 hole。
+-- 数学背景：道体——L0 五公理的显式陈述
+--
+-- 核心原则：
+--   1. 公理是**陈述**不是实现：本模块只承认、不构造（形而上谓之道）。
+--   2. 五公理各自独立 record：定律以字段承载（字段即证明项），不以 postulate 断言。
+--   3. 零 postulate 纪律：公理内容以 record 定义进类型论。
+--
+-- 包含（分层）：基础件层：五公理 record 族（道体五公理声明）｜主引理层：各公理定律字段｜核对层：字段自洽核对
+--
 module Sovereign.Foundation.Axioms where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_)

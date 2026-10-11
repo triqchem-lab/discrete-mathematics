@@ -13,6 +13,15 @@
 -- 3. 利用 stepSection 的性质：当 phase 为偶数时，delta = T.₁ (益一)。
 -- 4. 证明两者在操作上是恒等的。
 
+-- 数学背景：代码与几何的同伦等价证明
+--
+-- 核心原则：
+--   1. 核心目标：StateMachine.evolve（代码）严格等价 Connection.transportPolar（几何）——「代码即几何」。
+--   2. gain/loss 双轨步（stepEqualsTransportWhenGain/Loss）逐条件对齐。
+--   3. 消除 postulate：等价以构造性 section + mod2 引理闭合。
+--
+-- 包含（分层）：基础件层：toℕ-mod2/isEven-*｜主引理层：stepSection-δ｜组合层：stepEqualsTransportWhenGain/Loss｜核对层：演化-输运逐点核对
+--
 module Sovereign.HoTT.Equivalence where
 
 open import Cubical.Foundations.Prelude hiding (_≡_; refl; cong)

@@ -8,6 +8,15 @@
 -- 2. 极向缠绕: 144。环向缠绕: 46
 -- 3. 不变量：陈数 C=2, 能隙Δ²=3, 弦长L²=3, π=144/46
 
+-- 数学背景：高维几何：复三维/实六维环面及其拓扑不变量
+--
+-- 核心原则：
+--   1. 空间结构 = 离散商空间 T⁶ ≅ (S¹)⁶；极向缠绕 144、环向缠绕 46。
+--   2. Polar/Toroidal 双坐标系各自步进（stepPolar/stepToroidal）。
+--   3. 闭路核对 reflPolarLoop：绕行回原点是定义性闭合。
+--
+-- 包含（分层）：基础件层：PolarCoord/ToroidalCoord/Torus6D｜主引理层：stepPolar/stepToroidal｜组合层：回路组装｜核对层：reflPolarLoop
+--
 module Sovereign.HoTT.Geometry where
 
 open import Cubical.Core.Primitives renaming (_≡_ to _≡ᶜ_)

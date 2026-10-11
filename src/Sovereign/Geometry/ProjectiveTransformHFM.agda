@@ -23,6 +23,15 @@
 --   直积是半直积的特例: A₄ × C₃ ≤ A₄ ⋊ C₃
 --   两者阶相同 (36), 但代数结构不同 (直积交换, 半直积非交换)
 
+-- 数学背景：A₄×C₃ 直积的 HFM 交叉验证
+--
+-- 核心原则：
+--   1. **交叉验证件，不替代原形式化证明**（主证明在 ProjectiveTransform.agda）。
+--   2. A₄×C₃ 直积阶数与共轭类：数据面核对。
+--   3. 测试向量定位如实——名字的「定理感」不作数。
+--
+-- 包含（分层）：基础件层：orderA4/orderC3/orderProduct｜主引理层：*-ok 核对件｜核对层：conjClassesA4 数据面
+--
 module Sovereign.Geometry.ProjectiveTransformHFM where
 
 open import Data.Nat using (ℕ; _+_; _*_)

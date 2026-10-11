@@ -11,6 +11,15 @@
 -- 类比：S¹ → S³ → S²（经典 Hopf）
 -- 离散版：A₄ 轨道 → T6Lattice → T6╱A4
 
+-- 数学背景：离散 Hopf 纤维化：T⁶/A₄
+--
+-- 核心原则：
+--   1. 全空间 = T6Lattice（GF(3)⁶，729 格点）；底空间 = T6╱A₄（A₄ 轨道商）。
+--   2. 纤维 = A₄ 轨道 A₄/Stab(x)——轨道-稳定子的商形。
+--   3. totalProj 是满射（totalProjSurj）；a4Action-Id/invA4 给作用公理。
+--
+-- 包含（分层）：基础件层：TotalSpace/Base/OrbitFiber｜主引理层：totalProj/invA4｜组合层：totalProjSurj｜核对层：轨道商核对
+--
 module Sovereign.HoTT.HopfConstruction where
 
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)

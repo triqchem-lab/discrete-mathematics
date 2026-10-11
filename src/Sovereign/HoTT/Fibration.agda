@@ -8,6 +8,15 @@
 -- 主权状态机 = 定义在 T⁶ 上的纤维丛
 -- 底流形 = 144 × 46, 纤维 = 30 Trit, 陈数 C=2
 
+-- 数学背景：纤维丛与和乐 (Fiber Bundles and Holonomy)
+--
+-- 核心原则：
+--   1. 几何基底 = 复三维/实六维环面 T⁶（极向周期 144、环向周期 46）。
+--   2. 主权状态机 = 定义在 T⁶ 上的纤维丛；transportPolar/transportToroidal 是双联络。
+--   3. 和乐 = 环路输运的返回差（holonomy 语义）。
+--
+-- 包含（分层）：基础件层：BaseSpace/BasePoint/双 Transport record｜主引理层：transportPolar/transportToroidal 定义｜组合层：iterSB-zero｜核对层：和乐核对
+--
 module Sovereign.HoTT.Fibration where
 
 open import Cubical.Core.Primitives renaming (_≡_ to _≡ᶜ_)

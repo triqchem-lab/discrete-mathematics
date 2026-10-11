@@ -6,6 +6,15 @@
 -- 陈数是描述纤维丛整体扭曲程度的全局拓扑不变量
 -- 在律算合一中严格等于 2
 
+-- 数学背景：陈数 C=2 的定义与拓扑守恒
+--
+-- 核心原则：
+--   1. 陈数 = 纤维丛整体扭曲的全局拓扑不变量，在律算基座上严格等于 2。
+--   2. TransportPolar/TransportToroidal 双轨联络，曲率由其对易缺陷给出。
+--   3. Cubical 语义：相等即路径，守恒即路径常驻。
+--
+-- 包含（分层）：基础件层：Fiber/Transport*/Curvature｜主引理层：ChernNumber 定义｜组合层：ChernNumberIsTwo｜核对层：数值核对
+--
 module Sovereign.HoTT.ChernClass where
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_)

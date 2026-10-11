@@ -8,6 +8,15 @@
 -- 2. 离散同伦等价基于 GF(3) 模算术
 -- 3. 零 postulate：所有定义通过构造完成
 
+-- 数学背景：离散路径类型：T⁶ 环面上的离散连接
+--
+-- 核心原则：
+--   1. 宪法原则：离散路径 = 格点步进序列；离散同伦等价基于 GF(3) 模算术。
+--   2. 路径复合是幺半群（reflPath 单位、+-assoc 结合）。
+--   3. Cubical 语义封装：相等即路径，trivialHomotopy 为常驻同伦。
+--
+-- 包含（分层）：基础件层：reflPath/composeDiscretePaths｜主引理层：+-assoc｜组合层：trivialHomotopy/zeroFin144｜核对层：路径复合核对
+--
 module Sovereign.HoTT.DiscreteCubical.Path where
 
 open import Data.Nat.Base using (ℕ; zero; suc; _+_; _*_; _%_)

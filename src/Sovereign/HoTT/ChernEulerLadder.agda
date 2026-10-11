@@ -16,6 +16,15 @@
 --
 -- 本模块全部 0 postulate, ℤ/ℕ 算术 refl。
 
+-- 数学背景：陈数 × 欧拉示性数——代数拓扑维度阶梯
+--
+-- 核心原则：
+--   1. 离散 CW 复形计数（12-cell）给出欧拉示性数，与陈数在 2D 面对齐。
+--   2. 维度阶梯 = 逐维特征数对照（S²/S³/C³）。
+--   3. c3 闭链缠绕是阶梯顶层的拓扑落点。
+--
+-- 包含（分层）：基础件层：s2-12cell-vertices/edges/faces｜主引理层：s2-12cell-euler、s3-euler｜组合层：chern-equals-euler-2d｜核对层：c3-closed-cw-winding
+--
 module Sovereign.HoTT.ChernEulerLadder where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)

@@ -5,6 +5,15 @@
 --   shift-FULL_TOUR-id = g^FULL_TOUR = id (4320D 规约)
 -- 2 postulate (占位接口, v6.0 HoTT 连续化闭合) + shift-additive 已证 (2026-08 由 postulate 升级)
 
+-- 数学背景：CCHM 核心机制的 GF(3) 离散化桥接
+--
+-- 核心原则：
+--   1. shift = CRT 环面上的 C3 Burnside 群作用（**非**递归 ℕ 迭代）。
+--   2. shift-additive = g^(m+n) = g^m ∘ g^n（群指数基本性质，已由 postulate 升级为证明）。
+--   3. shift-FULL_TOUR-id = 4320D 规约闭合；2 postulate 为占位接口（v6.0 HoTT 连续化闭合）。
+--
+-- 包含（分层）：基础件层：CRTPhase/DiscretePhase/norm｜主引理层：shift-additive｜组合层：shift-FULL_TOUR-id｜核对层：iterTransp 核对
+--
 module Sovereign.HoTT.DiscreteCCHM where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; NonZero)
