@@ -965,16 +965,9 @@ T6╱A4 = T6Lattice / A4OrbitEquiv
 
 -- A4/Stab：轨道在商编码下的群论表示（已在上方与 Orbit 并行定义）
 
--- φ：A4Element → 几何 Orbit（将群元映射到其作用的格点）
-φ : ∀ (x : T6Lattice) → A4Element → Orbit x
-φ x g = (a4Action g x) , ∣ (g , reflᶜ) ∣₂
-
--- φ 保持商等价（Orbit-Stabilizer 核心断言，需群作用忠实性）
--- 在 ∥_∥₂ 下不可构造性证明：不同群元 g, h 产生不同的截断见证
--- 即使 a4Action g x ≡ᶜ a4Action h x，∣(g,·)∣₂ 和 ∣(h,·)∣₂ 仍是不同的 0-胞腔
--- 这是定理的核心公理级别断言，非缺失证明
-postulate
-  φ-respects : ∀ (x : T6Lattice) (g h : A4Element) → CosetEquiv x g h → φ x g ≡ᶜ φ x h
+-- 【已归档 2026-10-11】φ + φ-respects（postulate）族归档至 archive/t6-phi-respects-2026-10/
+-- 理由：Orbit 第二分量用 ∥_∥₂（set 截断保留 0-胞腔身份）而 φ-respects 断言的商下降
+-- 只在命题截断下成立——截断层语义错配（定义没写好，非内核限制），人类裁决「归档」。
 
 -- 辅助: T6Lattice = Vec (Fin 3) 6 是离散有限格点 (3⁶=729 个点)
 -- Fin 3 有可判定等式 → Vec 也有 → isSet 构造性成立
@@ -1031,44 +1024,14 @@ isSetA4/Stab x = λ a b p q → squash/ a b p q
 --   6624 = 144×46 → A4 群作用的全息闭合周期 (谐波谐振)
 --------------------------------------------------------------------------------
 
--- ← 方向：A4/Stab → Orbit（rec 商消除）
-orbitStabilizer← : ∀ (x : T6Lattice) → A4/Stab x → Orbit x
-orbitStabilizer← x = rec (isSetOrbit x) (φ x) (φ-respects x)
-  where open import Cubical.HITs.SetQuotients.Properties using (rec)
-
+-- 【已归档 2026-10-11】orbitStabilizer←（依赖 φ-respects）归档；→ 方向构造性保留如下
 -- → 方向：Orbit → A4/Stab（STrec 截断消除）
 orbitStabilizer→ : ∀ (x : T6Lattice) → Orbit x → A4/Stab x
 orbitStabilizer→ x (y , w) = STrec (isSetA4/Stab x) (λ (g , _) → [ g ]) w
 
--- sec/ret：往返恒等 — 商消除 + 截断消除补全
-module _ where
-  open import Cubical.HITs.SetQuotients.Properties using (elimProp)
-  open import Cubical.HITs.SetTruncation.Properties using () renaming (elim to STelim)
-
-  sec' : ∀ (x : T6Lattice) (b : A4/Stab x) → orbitStabilizer→ x (orbitStabilizer← x b) ≡ᶜ b
-  sec' x = elimProp (λ b → squash/ (orbitStabilizer→ x (orbitStabilizer← x b)) b)
-    λ g → reflᶜ
-
-  ret' : ∀ (x : T6Lattice) (a : Orbit x) → orbitStabilizer← x (orbitStabilizer→ x a) ≡ᶜ a
-  ret' x (y , w) = STelim {B = λ w' → orbitStabilizer← x (orbitStabilizer→ x (y , w')) ≡ᶜ (y , w')}
-    (λ w' → isOfHLevelPath 2 (isSetOrbit x) _ _)
-    (λ (g , eq) → λ i → (eq i , ∣ (g , λ j → eq (i ∧ j)) ∣₂))
-    w
-    where open import Cubical.Foundations.HLevels using (isOfHLevelPath)
-
--- 往返恒等 → Iso 构造性闭合
-open import Cubical.Foundations.Isomorphism using (Iso; iso; isoToPath)
-
-orbitIso : ∀ (x : T6Lattice) → Iso (Orbit x) (A4/Stab x)
-orbitIso x = iso (orbitStabilizer→ x) (orbitStabilizer← x) (sec' x) (ret' x)
-
-orbitStabilizer-path : ∀ (x : T6Lattice) → Orbit x Cubical.Foundations.Prelude.≡ A4/Stab x
-orbitStabilizer-path x = isoToPath (orbitIso x)
-
-orbitStabilizer : ∀ (x : T6Lattice) → Orbit x ≃ A4/Stab x
-orbitStabilizer x = pathToEquiv (orbitStabilizer-path x)
-  where open import Cubical.Foundations.Univalence using (pathToEquiv)
-
+-- 【已归档 2026-10-11】sec'/ret'/orbitIso/orbitStabilizer-path/orbitStabilizer（iso 全链依赖
+-- φ-respects postulate）——见 archive/t6-phi-respects-2026-10/。谱投影口径：Orbit↔A4/Stab
+-- 为谱投影非等式，单向 map（orbitStabilizer→）保留为构造性内容。
 -- 推论：零向量轨道大小 = 1（稳定子 = A₄ 全群 → 纯驻波节点）
 private zero-vec : T6Lattice ; zero-vec = zero ∷ zero ∷ zero ∷ zero ∷ zero ∷ zero ∷ []
 

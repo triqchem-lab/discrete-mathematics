@@ -1,0 +1,50 @@
+-- 2026-10-11 归档（人类裁决「归档」）：φ-respects 依赖族原文
+-- 归档理由见同目录 README.md
+
+-- φ：A4Element → 几何 Orbit（将群元映射到其作用的格点）
+φ : ∀ (x : T6Lattice) → A4Element → Orbit x
+φ x g = (a4Action g x) , ∣ (g , reflᶜ) ∣₂
+
+-- φ 保持商等价（Orbit-Stabilizer 核心断言，需群作用忠实性）
+-- 在 ∥_∥₂ 下不可构造性证明：不同群元 g, h 产生不同的截断见证
+-- 即使 a4Action g x ≡ᶜ a4Action h x，∣(g,·)∣₂ 和 ∣(h,·)∣₂ 仍是不同的 0-胞腔
+-- 这是定理的核心公理级别断言，非缺失证明
+postulate
+  φ-respects : ∀ (x : T6Lattice) (g h : A4Element) → CosetEquiv x g h → φ x g ≡ᶜ φ x h
+
+-- ← 方向：A4/Stab → Orbit（rec 商消除）
+orbitStabilizer← : ∀ (x : T6Lattice) → A4/Stab x → Orbit x
+orbitStabilizer← x = rec (isSetOrbit x) (φ x) (φ-respects x)
+  where open import Cubical.HITs.SetQuotients.Properties using (rec)
+
+
+
+-- sec/ret：往返恒等 — 商消除 + 截断消除补全
+module _ where
+  open import Cubical.HITs.SetQuotients.Properties using (elimProp)
+  open import Cubical.HITs.SetTruncation.Properties using () renaming (elim to STelim)
+
+  sec' : ∀ (x : T6Lattice) (b : A4/Stab x) → orbitStabilizer→ x (orbitStabilizer← x b) ≡ᶜ b
+  sec' x = elimProp (λ b → squash/ (orbitStabilizer→ x (orbitStabilizer← x b)) b)
+    λ g → reflᶜ
+
+  ret' : ∀ (x : T6Lattice) (a : Orbit x) → orbitStabilizer← x (orbitStabilizer→ x a) ≡ᶜ a
+  ret' x (y , w) = STelim {B = λ w' → orbitStabilizer← x (orbitStabilizer→ x (y , w')) ≡ᶜ (y , w')}
+    (λ w' → isOfHLevelPath 2 (isSetOrbit x) _ _)
+    (λ (g , eq) → λ i → (eq i , ∣ (g , λ j → eq (i ∧ j)) ∣₂))
+    w
+    where open import Cubical.Foundations.HLevels using (isOfHLevelPath)
+
+-- 往返恒等 → Iso 构造性闭合
+open import Cubical.Foundations.Isomorphism using (Iso; iso; isoToPath)
+
+orbitIso : ∀ (x : T6Lattice) → Iso (Orbit x) (A4/Stab x)
+orbitIso x = iso (orbitStabilizer→ x) (orbitStabilizer← x) (sec' x) (ret' x)
+
+orbitStabilizer-path : ∀ (x : T6Lattice) → Orbit x Cubical.Foundations.Prelude.≡ A4/Stab x
+orbitStabilizer-path x = isoToPath (orbitIso x)
+
+orbitStabilizer : ∀ (x : T6Lattice) → Orbit x ≃ A4/Stab x
+orbitStabilizer x = pathToEquiv (orbitStabilizer-path x)
+  where open import Cubical.Foundations.Univalence using (pathToEquiv)
+
