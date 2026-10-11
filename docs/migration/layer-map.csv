@@ -802,3 +802,7 @@ src/Sovereign/_archive/probes-tmp/bubble_lemmas.agda,Infrastructure,目录默认
 src/Sovereign/_archive/probes-tmp/comm_lines.agda,Infrastructure,目录默认(_archive)
 src/Sovereign/_archive/probes-tmp/f3_base.agda,Infrastructure,目录默认(_archive)
 src/Sovereign/_archive/probes-tmp/fin3_final.agda,Infrastructure,目录默认(_archive)
+
+# 波 3-U 执行注（2026-10-11）：Synthesis×8（A4GenWords/LuCellGrid/MagicSquareM4/ChainQuotIso/Zhonglv/AtkinQAnalysis/QAnalysisRecord/LCM）+ Application×7（HodgeTetra/KleinHodge/TorusHodge/EulerChar/DiscreteMaxwellTime/EntropySpinLaw/NSEConservation）——15 件中件移动（涟漪带 3-5），55 消费者文件全限定替换（负向前瞻防子串假阳：ZhonglvPhaseSync/NSEConservationCore 等异名件零误伤）；HoTT.Geometry 因撞注记批 WIP 排除本批留后续。四判据：断链=0（头注修正后）/V1 7/7 GREEN/台账 patch/时间 ~50min。
+
+# 归属注（2026-10-11）：波 3-U 的 15 件移动（Synthesis×8+Application×7）+ 55 消费者同步系本批工作，被并发 T6 重件批提交 4b2afd9 收口扫入（Langlands 先例同款——无丢失，代码面已在 4b2afd9 树内）；本注记 + docs 进度由本批补交。
