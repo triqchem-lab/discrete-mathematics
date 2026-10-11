@@ -50,7 +50,7 @@ module _ {A : Set} {R : Rel A} where
     go : (P : A → Set)
        → (step : ∀ x → (∀ y → R y x → P y) → P x)
        → ∀ x → Acc R x → P x
-    go P step x (acc ih) = step x (λ y y≺x → go P step y (ih y y≺x))
+    go P step x (acc ih) = step x (λ y y≺x → go P step y (ih y≺x))
 
   -- Noetherian 归纳原理：良基关系上的归纳法
   -- （要证 ∀ x → P x，只需证「前驱全真 ⟹ 本点真」）
@@ -79,7 +79,7 @@ nat-strong-ind = wf-ind <-wellFounded
 
 -- 0 的 Acc 证据（无严格前驱——absurd 形收口）
 check-acc0 : Acc _<_ zero
-check-acc0 = acc (λ y ())
+check-acc0 = acc (λ {y} ())
 
 -- 强归纳实例核对：常真族（P ≡ ⊤——step 直通，验证 nat-strong-ind 可实例化）
 trivial : ℕ → Set

@@ -72,13 +72,13 @@ dec⊥ = no (λ ())
 --------------------------------------------------------------------------------
 
 -- 数据形核对（无函数值——defeq 直接收口）
-check-× : ×-dec (yes tt) (yes tt) ≡ yes (tt , tt)
+check-× : ×-dec {P = ⊤} {Q = ⊤} (yes tt) (yes tt) ≡ yes (tt , tt)
 check-× = refl
 
-check-⊎₁ : ⊎-dec (yes tt) (no (λ ())) ≡ yes (inj₁ tt)
+check-⊎₁ : ⊎-dec {P = ⊤} {Q = ⊥} (yes tt) (no (λ ())) ≡ yes (inj₁ tt)
 check-⊎₁ = refl
 
-check-⊎₂ : ⊎-dec (no (λ ())) (yes tt) ≡ yes (inj₂ tt)
+check-⊎₂ : ⊎-dec {P = ⊥} {Q = ⊤} (no (λ ())) (yes tt) ≡ yes (inj₂ tt)
 check-⊎₂ = refl
 
 -- Bool 通道核对（免函数外延——isYes 抹去证据形）

@@ -5,23 +5,16 @@
 --
 -- 数学背景：excursion 分解唯一性的收口。_PPI4l §4 立界「首回返引理」为唯一缺件。
 --   构造携带路线（#56 路线②）：cutZ 即首回返分割器——e 是 excursion ⟹
---   cutZ (e ++w t) 首段恰为 e（首回返位由 walk 本身决定）。规范形主件
---   canonical : proj₁ (cutZ (concatL es)) ≡ es ⟹ decomp-unique 一行收口
---   （sym canonical ∙ cong ∙ canonical），免双 cons-inj（泵引理为另一路线——_PPI4l §1）。
---   MonoidIso 第二证：to = excursion 计数（length ∘ proj₁ ∘ cutZ），与 gskel-classify
---   （rounds 计数）经 to≡roundsQ 对账锚收口。
+--   cutZ (e ++w t) 首段恰为 e。规范形 canonical : proj₁ (cutZ (concatL es)) ≡ es
+--   ⟹ decomp-unique 一行收口（免双 cons-inj；泵引理 exc-irreducible 为另一路线）。
+--   MonoidIso 第二证：to = excursion 计数，与 gskel-classify（rounds）对账锚收口。
 --
--- 核心原则：
--- 1. K-free（#56）：同索引 loop 只匹配 cons（三槽位无反射等式）；nil 情形经
---    cons-view / nil-or-ne 一般指标视图转出（Link 先例）；eqV 载荷 Builtin ≡ᴱ 分名。
--- 2. canonical 路线免双 cons-inj；3. 零洞零 postulate；核对层 refl 级。
---
--- 包含：nil-or-ne/cons-view/noX-tail/noX-junction′｜cutZAcc-exc｜cutZ-exc-head
---       ｜AllExc/canonical/decomp-unique｜length-rep/to-w/cutZ-loopK/to-w≡rounds
---       ｜toQ/to≡roundsQ｜gskel-classify-2｜核对层
+-- 核心原则：K-free（同索引 loop 只匹配 cons；nil 走一般指标视图）；eqV 载荷 Builtin
+--   ≡ᴱ 分名（双≡世界）；零洞零 postulate；核对层 refl 级。
 
 module _PPI4m where
 
+open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Unit using (⊤; tt)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
@@ -53,15 +46,19 @@ open import _PPI4k using (module LoopRes)
 private
   module DG = DiGraph
 
+  symᴱ : ∀ {A : Set} {x y : A} → x ≡ᴱ y → y ≡ᴱ x
+  symᴱ reflᴱ = reflᴱ
+
 module FirstRet {G : DiGraph} (eqV : (a b : DG.V G) → Dec (a ≡ᴱ b)) where
   open Cut {G = G} eqV
   open LoopRes {G = G} eqV
 
   -- §1 视图件（一般指标匹配——同索引 nil 墙的出口）
 
-  nil-or-ne : ∀ {u v} (w : Walk G u v) → (w ≡ᴱ nil v) ⊎ Nonempty w
-  nil-or-ne (nil v) = inj₁ reflᴱ
-  nil-or-ne (cons e w) = inj₂ tt
+  -- 立界注记：强形（w ≡ᴱ nil）在 u≠v 下签名病、环形下同索引墙（#56）——总形二择为正解
+  nil-or-ne : ∀ {u v} (w : Walk G u v) → Nonempty w ⊎ (u ≡ᴱ v)
+  nil-or-ne (nil v) = inj₂ reflᴱ
+  nil-or-ne (cons e w) = inj₁ tt
 
   cons-view : ∀ {u v} (w : Walk G u v) → Nonempty w
             → Σ (DG.V G) (λ m →
@@ -75,13 +72,134 @@ module FirstRet {G : DiGraph} (eqV : (a b : DG.V G) → Dec (a ≡ᴱ b)) where
   noX-tail e (nil v) n = tt
   noX-tail e (cons e' b) n = proj₂ n
 
-  -- 连接点引理（_PPI4l noX-junction 同义——含 nil 尾 ⊤ 形覆盖）
-  noX-junction′ : ∀ {u w} (p₁ : Walk G u a') → Nonempty p₁
-                → (q : Walk G a' w) → Nonempty q
-                → NoX a' (p₁ ++w q) → ⊥
-    where a' = _
+  -- 连接点引理（_PPI4l noX-junction 同义）
+  noX-junction′ : ∀ {u v w} (p₁ : Walk G u v) → Nonempty p₁
+                → (q : Walk G v w) → Nonempty q
+                → NoX v (p₁ ++w q) → ⊥
   noX-junction′ (nil v) () _ _ _
   noX-junction′ (cons e (nil v)) _ (nil _) () _
   noX-junction′ (cons e (nil v)) _ (cons e' q') _ n = proj₁ n reflᴱ
   noX-junction′ (cons e (cons e' b)) _ q nq n =
     noX-junction′ (cons e' b) tt q nq (proj₂ n)
+
+  -- §2 首回返引理（构造携带形）
+
+  cutZAcc-exc : ∀ {a u' b} (acc : Walk G a u') (p : Walk G u' a)
+              → (nxp : NoX a p) (t : Walk G u' b)
+              → (ne : u' ≡ᴱ a → ⊥) (nacc : NoX a acc)
+              → proj₁ (cutZAcc acc (p ++w t) ne nacc) ≡ (acc ++w p) ∷ proj₁ (cutZ t)
+
+  cutZAcc-exc acc (nil v) nxp t ne nacc = ⊥-elim (ne reflᴱ)
+
+  cutZAcc-exc {a} acc (cons {v = u''} z s') nxp t ne nacc with eqV u'' a
+  ... | yes reflᴱ with nil-or-ne s'
+  ...   | inj₁ eq with eq
+  ...     | reflᴱ = refl
+  ...   | inj₂ npe = ⊥-elim (noX-junction′ (cons z (nil a)) tt s' npe nxp)
+  cutZAcc-exc {a} acc (cons {v = u''} z s') nxp t ne nacc
+    | no q' =
+    cong (λ k → k ∷ proj₁ (cutZ t)) (++w-assocᴱ acc (cons z (nil u'')) s') ∙
+    cutZAcc-exc (acc ++w cons z (nil u'')) s' (noX-tail z s' nxp) t q'
+                (NoX-ext acc nacc (λ r → ne (symᴱ r)) z)
+
+  cutZ-exc-head : ∀ {a b} (e : Walk G a a) (ie : IsExc a e)
+                → (t : Walk G a b)
+                → proj₁ (cutZ (e ++w t)) ≡ e ∷ proj₁ (cutZ t)
+  cutZ-exc-head {a} e (nxe , ne) t with cons-view e ne
+  ... | u' , x , p , reflᴱ with eqV u' a
+  ...   | no q =
+    cutZAcc-exc (cons x (nil u')) p (noX-tail x p nxe) t q tt
+  ...   | yes reflᴱ with nil-or-ne p
+  ...     | inj₁ eq with eq
+  ...       | reflᴱ = refl
+  ...     | inj₂ npe = ⊥-elim (noX-junction′ (cons x (nil a)) tt p npe nxe)
+
+  -- §3 规范形 + decomp-unique 一般形收口
+
+  AllExc : ∀ {u} → List (Walk G u u) → Set
+  AllExc [] = ⊤
+  AllExc (e ∷ es) = IsExc _ e × AllExc es
+
+  canonical : ∀ {a} (es : List (Walk G a a)) → AllExc es
+            → proj₁ (cutZ (concatL es)) ≡ es
+  canonical [] _ = refl
+  canonical (e ∷ es) (ie , ies) =
+    cutZ-exc-head e ie (concatL es) ∙ cong (e ∷_) (canonical es ies)
+
+  decomp-unique : ∀ {a} (es es' : List (Walk G a a))
+                → AllExc es → AllExc es'
+                → concatL es ≡ concatL es' → es ≡ es'
+  decomp-unique es es' a₁ a₂ eq =
+    sym (canonical es a₁) ∙ cong (λ w → proj₁ (cutZ w)) eq ∙ canonical es' a₂
+
+-- §4 MonoidIso 第二独立证（two-chain ≅ (ℕ,+)——excursion 计数路线）
+
+length-rep : ∀ {A : Set} (k : ℕ) (x : A) → length (replicate k x) ≡ k
+length-rep zero x = refl
+length-rep (suc k) x = cong suc (length-rep k x)
+
+module FR = FirstRet {G = Gskel two-chain} _≟F_
+module TC = LoopRes {Gskel two-chain} _≟F_
+open Cut {G = Gskel two-chain} _≟F_ using (concatL)
+
+to-w : Loop (Gskel two-chain) fzero → ℕ
+to-w w = length (proj₁ (TC.cutZ w))
+
+cutZ-loopK : (k : ℕ) → proj₁ (TC.cutZ (loopK k)) ≡ replicate k w2
+cutZ-loopK zero = refl
+cutZ-loopK (suc k) =
+  FR.cutZ-exc-head w2 (check-exc-w2a , check-exc-w2b) (loopK k)
+  ∙ cong (w2 ∷_) (cutZ-loopK k)
+
+to-w≡rounds : (w : Loop (Gskel two-chain) fzero) → to-w w ≡ rounds w
+to-w≡rounds w =
+  cong (λ k → length (proj₁ (TC.cutZ k))) (unloop w)
+  ∙ cong length (cutZ-loopK (rounds w))
+  ∙ length-rep (rounds w) w2
+
+toQ : π₁ᵈ (Gskel two-chain) fzero → ℕ
+toQ = π₁ᵈ-rec isSetℕ to-w (λ ℓ m h → cong to-w (ah-diag-sk h))
+
+to≡roundsQ : (x : π₁ᵈ (Gskel two-chain) fzero)
+           → toQ x ≡ MonoidIso.to gskel-classify x
+to≡roundsQ = elimProp (λ _ → isSetℕ _ _) to-w≡rounds
+
+gskel-classify-2 :
+  MonoidIso (π₁ᵈ (Gskel two-chain) fzero) ℕ
+            (_⊞ᵈ_ {G = Gskel two-chain}) [ nil fzero ]
+            _+ℕ_ zero
+gskel-classify-2 = record
+  { to      = toQ
+  ; from    = λ k → [ loopK k ]
+  ; to-·    = λ x y → to≡roundsQ (x ⊞ᵈ y)
+                ∙ MonoidIso.to-· gskel-classify x y
+                ∙ cong₂ _+ℕ_ (sym (to≡roundsQ x)) (sym (to≡roundsQ y))
+  ; to-e    = refl
+  ; from-·  = λ k m → cong [_] (loopK-+ k m)
+  ; from-e  = refl
+  ; to∘from = λ k → cong length (cutZ-loopK k) ∙ length-rep k w2
+  ; from∘to = λ x → cong (λ n → [ loopK n ]) (to≡roundsQ x)
+                ∙ MonoidIso.from∘to gskel-classify x
+  }
+
+-- §5 核对层（two-chain 具象——refl 级）
+
+check-canonical-w2w2 : proj₁ (TC.cutZ (concatL (w2 ∷ w2 ∷ []))) ≡ (w2 ∷ w2 ∷ [])
+check-canonical-w2w2 = refl
+
+check-cutZ-loopK-3 : proj₁ (TC.cutZ (loopK 3)) ≡ w2 ∷ w2 ∷ w2 ∷ []
+check-cutZ-loopK-3 = refl
+
+check-to-w2-2 : MonoidIso.to gskel-classify-2 [ w2 ] ≡ suc zero
+check-to-w2-2 = refl
+
+check-agree-w2w2 : MonoidIso.to gskel-classify-2 [ w2 ++w w2 ]
+                 ≡ MonoidIso.to gskel-classify [ w2 ++w w2 ]
+check-agree-w2w2 = refl
+
+check-uniq-agree : (es : List (Loop (Gskel two-chain) fzero))
+                 → FR.AllExc es → concatL es ≡ w2 ++w w2
+                 → es ≡ (w2 ∷ w2 ∷ [])
+check-uniq-agree es ae eq =
+  FR.decomp-unique es (w2 ∷ w2 ∷ []) ae
+    ((check-exc-w2a , check-exc-w2b) , ((check-exc-w2a , check-exc-w2b) , tt)) eq
