@@ -1,11 +1,18 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Analysis.DiscreteVariational
--- 49 变分法补强 — 离散能量极小与调和中点 (0 postulate)
+-- 49 变分法补强 — 离散能量极小与调和中点
 --
--- 端点固定的三点路径 (y₀=0, y₂=2), 中间值 y₁ ∈ {0,1,2}:
---   能量 E(y) = y² + (2−y)² (ℤ 算术)
---   E(0) = 4, E(1) = 2, E(2) = 4 — 极小化元 y = 1 = 调和中点 (0+2)/2
+-- 数学背景：端点固定的三点路径 (y₀=0, y₂=2)，中间值 y₁ ∈ {0,1,2}：
+--   能量 E(y) = y² + (2−y)²（ℤ 算术）；E(0)=4, E(1)=2, E(2)=4 —
+--   极小化元 y=1 = 调和中点 (0+2)/2。
+--
+-- 核心原则：
+--   1. 极小性以饱和减法（=0 ⟺ ≤）呈现；
+--   2. 离散 Euler-Lagrange 对应：极小点 = 调和点（Δy = 0 的解）；
+--   3. 0 postulate，全构造性。
+--
+-- 包含：E（能量函数）· energy-0/1/2（能量表）· minimal-0/2（极小性）· harmonic-mid（调和中点）· euler-lagrange-discrete
 
 module Sovereign.Analysis.DiscreteVariational where
 

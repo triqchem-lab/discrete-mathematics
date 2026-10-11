@@ -1,7 +1,17 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Analysis.SpecialValues
--- 33 特殊函数补强 — 阶乘/二项系数/Pascal 恒等式 (0 postulate)
+-- 33 特殊函数补强 — 阶乘/二项系数/Pascal 恒等式
+--
+-- 数学背景：阶乘表 0!..6! 与 Pascal 三角 C(n,k)（n≤6，21 项）的
+--   有限枚举核对；12 律链接：C(4,2)=6（二次谐波），行和 2⁴=16、2⁶=64。
+--
+-- 核心原则：
+--   1. 有限枚举以 refl 核对（构造子穷尽）；
+--   2. Pascal 递推 C(n,k)=C(n−1,k−1)+C(n−1,k) 取样本 10 项核对；
+--   3. 0 postulate，全构造性。
+--
+-- 包含：fact-0..fact-6（阶乘表）· fact-recurrence-6 · C0-0..C6-6（Pascal 21 项）· pascal-*（递推样本）· row-sum-4
 
 module Sovereign.Analysis.SpecialValues where
 

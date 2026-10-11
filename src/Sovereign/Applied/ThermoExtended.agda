@@ -1,16 +1,19 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Applied.ThermoExtended
--- 应用层：扩展热力学 (配分函数与轨道分解)
+-- 应用层：扩展热力学 — 配分函数与轨道分解
 --
--- 层级: 应用数学 (磁性文明投影)
--- GF(3) 合法身份: 模 3 整数算术 + 轨道计数
+-- 数学背景：Burnside 引理：GF(9)³ 在 (C₃×C₂) 作用下轨道数
+--   Z = (1/|G|) Σ_g |Fix(g)| = 14（14 个独立热力学态——配分函数的离散版本）；
+--   轨道分解 729 = 1×27 + 13×54（1 个不动点轨道 + 13 个自由轨道）。层级：
+--   应用数学（磁性文明投影）；GF(3) 合法身份：模 3 整数算术 + 轨道计数。
 --
--- 定理清单:
---   1. 配分函数 = 14: Burnside 轨道数
---   2. 轨道分解: 1×27 + 13×54 ≡ 729
+-- 核心原则：
+--   1. Burnside 显式验证以 refl 核对；
+--   2. 729 = 3⁶ 格点总数与轨道分解互核；
+--   3. 0 postulate，穷举法优先。
 --
--- 0 postulate, 全部构造性证明, 穷举法优先
+-- 包含：partition-function-14/partition-decomposition（配分函数）· orbit-decomposition-729/lattice-total/free-orbit-size（轨道分解核对）
 
 module Sovereign.Applied.ThermoExtended where
 

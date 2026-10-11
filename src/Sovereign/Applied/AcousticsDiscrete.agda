@@ -1,16 +1,19 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Applied.AcousticsDiscrete
--- 应用层：离散声学 (十二律与频率比)
+-- 应用层：离散声学 — 十二律与频率比
 --
--- 层级: 应用数学 (电性文明投影)
--- GF(3) 合法身份: 模 3 整数算术
+-- 数学背景：中国古代律学 12 音律 ↔ A₄ 群阶 12（深层几何身份）；
+--   三分损益法每次乘 3/2 或 2/3，12 次后精确闭合 3¹¹=177147 / 2¹⁶=65536
+--   （仲吕闭合常数 ≈ 2.702）。层级：应用数学（电性文明投影）；
+--   GF(3) 合法身份：模 3 整数算术。
 --
--- 定理清单:
---   1. 十二律: 12 个音律
---   2. 频率比 3¹¹/2¹⁶: 数值验证 (仲吕闭合)
+-- 核心原则：
+--   1. 十二律长度表静态（宪法）；
+--   2. 数值验证以 refl 核对；
+--   3. 0 postulate，穷举法优先。
 --
--- 0 postulate, 全部构造性证明, 穷举法优先
+-- 包含：twelve-lu-count/twelve-lu-as-a4（十二律=A₄ 阶）· san-shiyi/er-shiliu（频率比两幂）· zhonglv-product（仲吕闭合积=主权 LCM）· huangzhong-length（黄钟 81=3⁴）
 
 module Sovereign.Applied.AcousticsDiscrete where
 

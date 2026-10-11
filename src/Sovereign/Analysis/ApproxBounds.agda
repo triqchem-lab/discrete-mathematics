@@ -1,12 +1,18 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Analysis.ApproxBounds
--- 41 逼近论补强 — Q16 常数的误差界 (0 postulate)
+-- 41 逼近论补强 — Q16 定点常数的误差界
 --
--- 律算 Q16 投影层的逼近质量 (人类可读投影, 不进入状态演化):
+-- 数学背景：律算 Q16 投影层的逼近质量（人类可读投影，不进入状态演化）：
 --   仲吕 log10 增益 3.4541 ≈ ZHONGLV_LOG10_MULT_Q16/2^16 = 226372/65536
 --   √3 ≈ DELTA_Q16/2^16 = 113506/65536
--- 误差界以 ℕ 差 + 饱和减法 (=0 ⟺ ≤) 的 refl 呈现
+--
+-- 核心原则：
+--   1. 误差界以 ℕ 差 + 饱和减法（=0 ⟺ ≤）的 refl 呈现；
+--   2. 无理数用定点整数比（宪法：禁浮点数/超越函数）；
+--   3. 0 postulate，全构造性。
+--
+-- 包含：zhonglv-q16/zhonglv-err/zhonglv-err-bound（仲吕增益界）· delta-sq-err/delta-sq-bound（√3 平方界）
 
 module Sovereign.Analysis.ApproxBounds where
 

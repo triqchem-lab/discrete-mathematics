@@ -1,9 +1,17 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | DiscreteSpecialFunctions — 离散特殊函数 (MSC 33)
--- 连续统 TypeError: SpecialFunctionsViaContinuation
--- 离散替代: GF(3) 指数和、Gauss 和、二次特征
--- 0 postulate.
+-- | Sovereign.Analysis.DiscreteSpecialFunctions
+-- 离散特殊函数（MSC 33）— GF(3) 二次特征与正交性
+--
+-- 数学背景：连续统病态 TypeError: SpecialFunctionsViaContinuation → 离散替代：
+--   GF(3) 指数和、Gauss 和、二次特征 χ。GF(3) 只有 3 点，至多 3 个正交基函数。
+--
+-- 核心原则：
+--   1. GF(3) 二次特征 χ(x)：x=0↦0、平方↦1、非平方↦−1；
+--   2. 正交性 Σ_x χ(x) = 0 以 refl 核对；
+--   3. 0 postulate，全构造性。
+--
+-- 包含：χ0/χ1/χ2（GF(3) 特征值）· χ-sum-zero（正交性）· legendre-1/legendre-2（离散 Legendre 符号）
 
 module Sovereign.Analysis.DiscreteSpecialFunctions where
 
