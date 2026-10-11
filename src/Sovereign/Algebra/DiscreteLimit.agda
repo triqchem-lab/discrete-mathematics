@@ -219,8 +219,10 @@ a4-order-exact = refl
 ¬-lie-limit-exists ()
 
 -- A₄ 的阶也非 1 (非平凡群)
-a4-nontrivial : ¬ (a4-discrete-order ≡ 1)
-a4-nontrivial ()
+-- 【判重组3 消歧 2026-10-11】原名 a4-nontrivial 与 MyopiaRisk:431 同名异物（本件主语 = a4-discrete-order）
+-- → 正名 a4-discrete-nontrivial（零外部消费者，改名零风险）
+a4-discrete-nontrivial : ¬ (a4-discrete-order ≡ 1)
+a4-discrete-nontrivial ()
 
 --------------------------------------------------------------------------------
 -- §5. Fourier 的离散重定义 — 4320D 离散频谱
