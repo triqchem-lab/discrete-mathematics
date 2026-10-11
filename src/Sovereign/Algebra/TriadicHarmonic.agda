@@ -183,7 +183,7 @@ alpha-power-add4 n =
       -- (((alpha-power(suc n))*α)*α)*α = ((((alpha-power n)*α)*α)*α)*α
       step4 : (((alpha-power (suc n)) *gf9 alpha) *gf9 alpha) *gf9 alpha ≡ ((((alpha-power n) *gf9 alpha) *gf9 alpha) *gf9 alpha) *gf9 alpha
       step4 = refl
-  in trans step0 (trans step1 (trans step2 (trans step3 (trans step4 (alpha-power-add4-9case a)))))
+  in trans (trans step0 (trans step1 step2)) (trans (trans step3 step4) (alpha-power-add4-9case a))
 
 -- 指数分类: α²⁺⁴ᵏ ≡ -1 (归纳证明, 0 postulate)
 α²⁺⁴ᵏ≡-𝟙 : ∀ k → alpha-power (2 + 4 * k) ≡ (T₂ , T₀)

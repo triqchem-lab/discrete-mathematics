@@ -762,7 +762,7 @@ open import Sovereign.Base.Trit using (⊗-assoc)
       (((a ⊗ c) ⊕ (negate (b ⊗ d))) ⊗ e) ⊕ (negate (((a ⊗ d) ⊕ (b ⊗ c)) ⊗ f))
       ≡
       (a ⊗ ((c ⊗ e) ⊕ (negate (d ⊗ f)))) ⊕ (negate (b ⊗ ((c ⊗ f) ⊕ (d ⊗ e))))
-    real-eq = trans r-step1 (trans r-step2 (trans r-step3 (trans r-step4 r-step5)))
+    real-eq = trans (trans r-step1 r-step2) (trans (trans r-step3 r-step4) r-step5)
 
     ------ 虚部证明 ------
     -- LHS_imag = ((a⊗c ⊕ neg(b⊗d))⊗f) ⊕ ((a⊗d ⊕ b⊗c)⊗e)

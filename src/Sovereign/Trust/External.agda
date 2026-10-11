@@ -13,6 +13,14 @@
 -- UNDER_REVIEW  : 审查中，需高维几何验证
 -- TRUSTED       : 已审查，可在宪法级证明中使用
 
+--
+-- 核心原则：
+--   1. 数学内容优先（背景→定义→引理→定理），证明每步可读；
+--   2. 具名引理 + ∙/trans 链默认 ≤3 层；零洞零 postulate 目标；
+--   3. 六段式分层：①头 ②导入 ③基础件 ④主引理 ⑤组合层 ⑥核对层。
+--
+-- 包含：data、dataNatTrust、dataNatPropertiesTrust、dataNatDivModTrust、dataIntegerTrust、dataRationalTrust
+
 module Sovereign.Trust.External where
 
 open import Data.Bool using (Bool; true; false)
@@ -23,6 +31,9 @@ open import Data.Vec using (Vec; []; _∷_)
 -- 1. 信任度枚举 (Trust Level)
 --------------------------------------------------------------------------------
 
+-- ──────────────────────────────────────────────
+-- ③ 基础件层 / ④ 主引理层（具名引理，∙ 链 ≤3）
+-- ──────────────────────────────────────────────
 data TrustLevel : Set where
   UNTRUSTED     : TrustLevel  -- 信用0，禁止使用
   UNDER_REVIEW  : TrustLevel  -- 审查中
@@ -127,5 +138,9 @@ require_trusted UNDER_REVIEW = false
 
 -- 信任检查辅助函数
 isTrustedForConstitutionalUse : TrustLevel → Bool
+
+-- ──────────────────────────────────────────────
+-- ⑤ 组合层（主定理/装配收口）
+-- ──────────────────────────────────────────────
 isTrustedForConstitutionalUse TRUSTED = true
 isTrustedForConstitutionalUse _ = false

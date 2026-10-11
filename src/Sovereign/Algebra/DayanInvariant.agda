@@ -1,14 +1,22 @@
 {-# OPTIONS --rewriting --guardedness #-}
-
 -- | Sovereign.Algebra.DayanInvariant
--- 大衍求一术 L2 不变量定理——∃k 形式（ℕ 可表达，不需 ℤ！）
 --
--- 关键洞察：不变量 ∃k∈ℤ, lt×奇+k×定=rt 等价于 lt×奇≡rt (mod 定)
--- 在 ℕ 中可以用 Data.Integer 的 ∃ 类型表达，不需要完整的 ℤ 算术。
+-- 数学背景：
+--  大衍求一术 L2 不变量定理——∃k 形式（ℕ 可表达，不需 ℤ！）
 --
--- 6/6 手算验证：不变量在每步保持。
+--  关键洞察：不变量 ∃k∈ℤ, lt×奇+k×定=rt 等价于 lt×奇≡rt (mod 定)
+--  在 ℕ 中可以用 Data.Integer 的 ∃ 类型表达，不需要完整的 ℤ 算术。
 --
--- 0 postulate / 0 hole。
+--  6/6 手算验证：不变量在每步保持。
+--
+--  0 postulate / 0 hole。
+--
+-- 核心原则：
+-- 1. ∃k 形式：不变量 lt×奇+k×定=rt ⇔ lt×奇≡rt (mod 定)——ℕ 可表达，零完整 ℤ 算术
+-- 2. 6/6 手算逐步验证：每步保持
+-- 3. 0 postulate / 0 hole
+--
+-- 包含：InvariantMod / dayan-initZ / init-invariant / InvariantPair
 module Sovereign.Algebra.DayanInvariant where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _<_; _≤_; NonZero)
@@ -63,6 +71,7 @@ open DayanStateZ public
 
 -- 不变量：∃ k ∈ ℤ, s_n × 奇 + k × 定 = r_n
 -- 即 s_n × 奇 ≡ r_n (mod 定)
+-- ─── ③ 基础件层（桥引理/字面桥/序件——全部具名）───
 InvariantMod : (奇 定 : ℕ) → DayanStateZ → Set
 InvariantMod 奇 定 s =
   Σ ℤ (λ k → lt' s *ℤ (ℕ→ℤ 奇) +ℤ k *ℤ (ℕ→ℤ 定) ≡ ℕ→ℤ (rt' s))

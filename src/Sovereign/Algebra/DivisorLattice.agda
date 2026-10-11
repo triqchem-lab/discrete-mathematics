@@ -1,11 +1,18 @@
 {-# OPTIONS --rewriting --guardedness #-}
-
 -- | Sovereign.Algebra.DivisorLattice
--- 06 序与格理论补强 — 12 的除数格 (分配格 + Möbius) (0 postulate)
 --
--- Div12 = {(a,b) | 0≤a≤2, 0≤b≤1} = 2^a·3^b — 6 元素
--- meet = 逐分量 min, join = 逐分量 max — 链 C3×C2 的乘积格 (分配格)
-
+-- 数学背景：
+--  06 序与格理论补强 — 12 的除数格 (分配格 + Möbius) (0 postulate)
+--
+--  Div12 = {(a,b) | 0≤a≤2, 0≤b≤1} = 2^a·3^b — 6 元素
+--  meet = 逐分量 min, join = 逐分量 max — 链 C3×C2 的乘积格 (分配格)
+--
+-- 核心原则：
+-- 1. Div12 = 2ᵃ·3ᵇ 六元素乘积格（C3×C2）
+-- 2. meet/join = 逐分量 min/max ⇒ 分配格
+-- 3. Fin 表实现（min/max 项表）+ Möbius 补强
+--
+-- 包含：min3 / max3 / min2 / max2 / Div12 / meet / join / min3-comm / max3-comm / min3-idem / max3-idem / min3-assoc / max3-assoc / min3-max3-absorb
 module Sovereign.Algebra.DivisorLattice where
 
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
@@ -13,6 +20,7 @@ open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong₂)
 
 -- Fin 3 的 min/max (9 项表)
+-- ─── ③ 基础件层（桥引理/字面桥/序件——全部具名）───
 min3 : Fin 3 → Fin 3 → Fin 3
 min3 fz _ = fz
 min3 (fs fz) fz = fz

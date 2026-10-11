@@ -18,6 +18,14 @@
 --
 -- 用法：由 tools/testing/sov/agda-oracle.mjs 驱动，不手工调用。
 
+--
+-- 核心原则：
+--   1. 数学内容优先（背景→定义→引理→定理），证明每步可读；
+--   2. 具名引理 + ∙/trans 链默认 ≤3 层；零洞零 postulate 目标；
+--   3. 六段式分层：①头 ②导入 ③基础件 ④主引理 ⑤组合层 ⑥核对层。
+--
+-- 包含：sovereignLcm、polarWinding、toroidalWinding、chernNumber、gapNum、gapDen
+
 module Sovereign.Verify.KernelOracle where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _/_; _+_)
@@ -35,6 +43,9 @@ import Sovereign.Base.Invariants as Inv
 -- 宪法常数（直接引用 Invariants 的定义）
 --------------------------------------------------------------------------------
 
+-- ──────────────────────────────────────────────
+-- ③ 基础件层 / ④ 主引理层（具名引理，∙ 链 ≤3）
+-- ──────────────────────────────────────────────
 sovereignLcm : ℕ
 sovereignLcm = Inv.SOVEREIGN_LCM
 
@@ -105,5 +116,9 @@ sectionCoord n = LCM.sectionToCoordinate (LCM.coordinateToSection n)
 
 -- 3^k（供 C 侧核对 SOV_Z3R_T*）
 pow3 : ℕ → ℕ
+
+-- ──────────────────────────────────────────────
+-- ⑤ 组合层（主定理/装配收口）
+-- ──────────────────────────────────────────────
 pow3 zero = 1
 pow3 (suc k) = 3 * pow3 k

@@ -11,6 +11,14 @@
 --   Z[ω]: p ≡ 1 mod 3 分裂 / p ≡ 2 mod 3 惰性 / 3 分歧。
 -- 结构路线 (Euclidean 算法全称版 / 主理想分解) 留待深化 — 未以 postulate 驻留。
 
+--
+-- 核心原则：
+--   1. 数学内容优先（背景→定义→引理→定理），证明每步可读；
+--   2. 具名引理 + ∙/trans 链默认 ≤3 层；零洞零 postulate 目标；
+--   3. 六段式分层：①头 ②导入 ③基础件 ④主引理 ⑤组合层 ⑥核对层。
+--
+-- 包含：gauss-2-ramifies、gauss-2-norm、gauss-5-splits、gauss-5-norm、eis-3-ramifies、eis-3-norm
+
 module Sovereign.Algebra.CommAlgBridge where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _*_)
@@ -25,6 +33,9 @@ import Sovereign.RootMath.Eisenstein as Eis
 --------------------------------------------------------------------------------
 
 -- 2 分歧: 2 = (1+i)(1−i)
+-- ──────────────────────────────────────────────
+-- ③ 基础件层 / ④ 主引理层（具名引理，∙ 链 ≤3）
+-- ──────────────────────────────────────────────
 gauss-2-ramifies : (G.gi (+ 1) (+ 1)) G.*ᵢ (G.gi (+ 1) (-[1+ 0 ])) ≡ G.gi (+ 2) G.z0
 gauss-2-ramifies = refl
 
@@ -138,5 +149,9 @@ eis-ramification-summary = eis-3-norm
 
 -- L2: Z[ω] 分裂结构
 eis-splitting-summary :
+
+-- ──────────────────────────────────────────────
+-- ⑤ 组合层（主定理/装配收口）
+-- ──────────────────────────────────────────────
   (Eis.normᵉ (Eis.eis (+ 3) (+ 1)) ≡ + 7)
 eis-splitting-summary = eis-7-norm

@@ -7,6 +7,14 @@
 -- 它包含 12 个元素，对应正四面体的 12 个旋转操作。
 -- 在律算中，这 12 个元素构成了"十二律"的深层几何身份。
 
+--
+-- 核心原则：
+--   1. 数学内容优先（背景→定义→引理→定理），证明每步可读；
+--   2. 具名引理 + ∙/trans 链默认 ≤3 层；零洞零 postulate 目标；
+--   3. 六段式分层：①头 ②导入 ③基础件 ④主引理 ⑤组合层 ⑥核对层。
+--
+-- 包含：data、perm、_∘ₚ_、fromPerm、fromPerm-perm、_⊗_
+
 module Sovereign.Structology.A4Group where
 
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)
@@ -51,6 +59,9 @@ open import Cubical.Foundations.Prelude using (_≡_; refl; cong; sym; _∙_; fu
 -- 2. 绕顶点旋转 120°/240° (8 个 = 4 顶点 × 2 方向)
 -- 3. 绕对边中点连线旋转 180° (3 个 = 6 边 / 2)
 
+-- ──────────────────────────────────────────────
+-- ③ 基础件层 / ④ 主引理层（具名引理，∙ 链 ≤3）
+-- ──────────────────────────────────────────────
 data A4 : Set where
   Id  : A4  -- 单位元 (Identity)
 
@@ -649,6 +660,10 @@ actionCompose g h t with labelToPair t | labelRoundtrip-action h t
 -- 例如，选择一个 3 阶旋转元素。
 
 generatorC3 : A4
+
+-- ──────────────────────────────────────────────
+-- ⑤ 组合层（主定理/装配收口）
+-- ──────────────────────────────────────────────
 generatorC3 = Rot zero zero -- 绕顶点 0 旋转
 
 -- 观察该生成元对十二律的轨道分解

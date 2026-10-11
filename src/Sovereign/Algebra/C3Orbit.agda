@@ -8,6 +8,14 @@
 -- 轨道: 1 → 3 → 5 → 1 (周期 3)
 -- 不动点: {0,2,4} (偶数项, C₃ 作用下不变 mod 6?)
 
+--
+-- 核心原则：
+--   1. 数学内容优先（背景→定义→引理→定理），证明每步可读；
+--   2. 具名引理 + ∙/trans 链默认 ≤3 层；零洞零 postulate 目标；
+--   3. 六段式分层：①头 ②导入 ③基础件 ④主引理 ⑤组合层 ⑥核对层。
+--
+-- 包含：add2-mod6、orbit-step-1、orbit-step-3、orbit-step-5、C3-mult-table、orbit-size
+
 module Sovereign.Algebra.C3Orbit where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
@@ -16,6 +24,9 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- C₃ 生成元作用: +2 (mod 6)
+-- ──────────────────────────────────────────────
+-- ③ 基础件层 / ④ 主引理层（具名引理，∙ 链 ≤3）
+-- ──────────────────────────────────────────────
 add2-mod6 : ℕ → ℕ
 add2-mod6 n = (n + 2) % 6
 
@@ -38,6 +49,10 @@ C3-mult-table = (0 ∷ 1 ∷ 2 ∷ [])  -- g⁰ = id
 
 -- 轨道定理: 轨道 {1,3,5} 的大小 = 3 (即 C₃ 群阶)
 orbit-size : (1 ≡ 1) × (add2-mod6 1 ≡ 3) × (add2-mod6 (add2-mod6 1) ≡ 5) × (add2-mod6 (add2-mod6 (add2-mod6 1)) ≡ 1)
+
+-- ──────────────────────────────────────────────
+-- ⑤ 组合层（主定理/装配收口）
+-- ──────────────────────────────────────────────
 orbit-size = refl , refl , refl , refl
 
 -- 与三分损益的对应 (Sun=+1, Yi=+2)

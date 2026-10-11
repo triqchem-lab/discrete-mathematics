@@ -1213,13 +1213,13 @@ codeToPoint-pointCode (a , b , c , d , e , f) = cong₆ (λ p q r s t u → p , 
     q4 : t3 / 3 ≡ t4
     q4 = div3f d t4
     e5 : f3 ((((pointCode (a , b , c , d , e , f) / 3) / 3) / 3) / 3) ≡ e
-    e5 = trans (cong (λ z → f3 (z / 3 / 3 / 3)) q1) (trans (cong (λ z → f3 (z / 3 / 3)) q2) (trans (cong (λ z → f3 (z / 3)) q3) (trans (cong f3 q4) (mod3f e (finToℕ f)))))
+    e5 = trans (trans (cong (λ z → f3 (z / 3 / 3 / 3)) q1) (trans (cong (λ z → f3 (z / 3 / 3)) q2) (cong (λ z → f3 (z / 3)) q3))) (trans (cong f3 q4) (mod3f e (finToℕ f)))
     t5 : ℕ
     t5 = finToℕ f + 3 * 0
     q5 : t4 / 3 ≡ t5
     q5 = trans (div3f e (finToℕ f)) (sym (+-identityʳ (finToℕ f)))
     e6 : f3 (((((pointCode (a , b , c , d , e , f) / 3) / 3) / 3) / 3) / 3) ≡ f
-    e6 = trans (cong (λ z → f3 (z / 3 / 3 / 3 / 3)) q1) (trans (cong (λ z → f3 (z / 3 / 3 / 3)) q2) (trans (cong (λ z → f3 (z / 3 / 3)) q3) (trans (cong (λ z → f3 (z / 3)) q4) (trans (cong (λ z → f3 z) q5) (mod3f f 0)))))
+    e6 = trans (trans (cong (λ z → f3 (z / 3 / 3 / 3 / 3)) q1) (trans (cong (λ z → f3 (z / 3 / 3 / 3)) q2) (cong (λ z → f3 (z / 3 / 3)) q3))) (trans (trans (cong (λ z → f3 (z / 3)) q4) (cong (λ z → f3 z) q5)) (mod3f f 0))
 
 -- decodePt 与 codeToPoint 的定义同构（digit 就是 f3 的迭代）
 decodePt-codeToPoint : ∀ i → decodePt i ≡ codeToPoint (finToℕ i)

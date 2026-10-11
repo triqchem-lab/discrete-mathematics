@@ -1,26 +1,34 @@
 {-# OPTIONS --rewriting --guardedness #-}
-
 -- | Sovereign.Algebra.HenselLiftMinimal
--- 任务书第三层·3.2 延伸：Hensel 提升存在性实例（x² ≡ 1，mod 3 → mod 9）
 --
--- 数学背景：Hensel 引理——f(a) ≡ 0 (mod p) 且 f'(a) ≢ 0 (mod p) 时，
---   根 a 唯一提升为 mod pᵏ 的根。本模块在 f(x) = x²、a = 1 与 a = 2
---   的具体实例上闭合**存在性**（提升见证），唯一性留 roadmap（需
---   非整除否证，见诚实边界）。
+-- 数学背景：
+--  任务书第三层·3.2 延伸：Hensel 提升存在性实例（x² ≡ 1，mod 3 → mod 9）
 --
---   mod 3 的根：x ≡ 1, 2（1²-1 = 0, 2²-1 = 3，均被 3 整除）
---   mod 9 的提升：x = 1（1-1 = 0）与 x = 8（64-1 = 63 = 7·9）
---   两个根都从 mod 3 成功提升到 mod 9——存在性显式见证。
+--  数学背景：Hensel 引理——f(a) ≡ 0 (mod p) 且 f'(a) ≢ 0 (mod p) 时，
+--    根 a 唯一提升为 mod pᵏ 的根。本模块在 f(x) = x²、a = 1 与 a = 2
+--    的具体实例上闭合**存在性**（提升见证），唯一性留 roadmap（需
+--    非整除否证，见诚实边界）。
 --
--- ⚠ 诚实边界：
---   1. 只证**存在性**（提升见证）；唯一性（f'(a) ≢ 0 mod p 的作用）
---      需非整除否证（¬(9 ∣ 15) 类），cubical 下 ℕ 整除否证需要
---      良基归纳或 stdlib 辅助引理，roadmap。
---   2. f'(a) 条件在本实例以非形式注释给出：f'(1) = 2 ≡ 2 mod 3 ≠ 0、
---      f'(2) = 4 ≡ 1 mod 3 ≠ 0——未形式化。
---   3. ℕ ∸ 截断减法：x² ≥ 1 对所有出现的 x 成立，∸ 即精确减法。
+--    mod 3 的根：x ≡ 1, 2（1²-1 = 0, 2²-1 = 3，均被 3 整除）
+--    mod 9 的提升：x = 1（1-1 = 0）与 x = 8（64-1 = 63 = 7·9）
+--    两个根都从 mod 3 成功提升到 mod 9——存在性显式见证。
 --
--- 0 postulate / 0 hole。
+--  ⚠ 诚实边界：
+--    1. 只证**存在性**（提升见证）；唯一性（f'(a) ≢ 0 mod p 的作用）
+--       需非整除否证（¬(9 ∣ 15) 类），cubical 下 ℕ 整除否证需要
+--       良基归纳或 stdlib 辅助引理，roadmap。
+--    2. f'(a) 条件在本实例以非形式注释给出：f'(1) = 2 ≡ 2 mod 3 ≠ 0、
+--       f'(2) = 4 ≡ 1 mod 3 ≠ 0——未形式化。
+--    3. ℕ ∸ 截断减法：x² ≥ 1 对所有出现的 x 成立，∸ 即精确减法。
+--
+--  0 postulate / 0 hole。
+--
+-- 核心原则：
+-- 1. x²≡1 的 Hensel 存在性：mod 3 根 1/2 → mod 9 提升 1/8 显式见证
+-- 2. 只证存在性——唯一性（f′(a)≢0 作用）留 roadmap（诚实边界）
+-- 3. divides 构造子形（整除见证）
+--
+-- 包含：root-1-mod-3 / root-2-mod-3 / lift-1-mod-9 / lift-8-mod-9 / root-8-mod-3 / quotient-of-63-by-9
 module Sovereign.Algebra.HenselLiftMinimal where
 
 open import Data.Nat using (ℕ; _*_; _∸_)
@@ -32,6 +40,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 --------------------------------------------------------------------------------
 
 -- x = 1：1² - 1 = 0，被 3 整除（商 0）
+-- ─── ③ 基础件层（桥引理/字面桥/序件——全部具名）───
 root-1-mod-3 : 3 ∣ ((1 * 1) ∸ 1)
 root-1-mod-3 = divides 0 refl
 

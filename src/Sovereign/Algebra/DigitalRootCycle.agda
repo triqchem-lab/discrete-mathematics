@@ -1,18 +1,25 @@
 {-# OPTIONS --rewriting --guardedness #-}
-
 -- | Sovereign.Algebra.DigitalRootCycle
--- 数字根循环定理: 2^k 模 9 的周期 6 (1→2→4→8→7→5→1)
--- 以及数字根归零与 CRT 投影归零的等价性。
 --
--- 涡旋数学环 1→2→4→8→7→5→1:
---   2^0=1, 2^1=2, 2^2=4, 2^3=8, 2^4=16→7, 2^5=32→5, 2^6=64→1
---   周期 6 由 2^6=64≡1 (mod 9) 保证。
+-- 数学背景：
+--  数字根循环定理: 2^k 模 9 的周期 6 (1→2→4→8→7→5→1)
+--  以及数字根归零与 CRT 投影归零的等价性。
 --
--- CRT 投影:
---   POLAR=144, 数字根=9→0, CRT投影极向归零
---   TORUS=46,  数字根=1,   CRT投影环向≠0 (参与6624对齐)
---   FULL_TOUR=6624, 数字根=0, CRT投影完全对齐
-
+--  涡旋数学环 1→2→4→8→7→5→1:
+--    2^0=1, 2^1=2, 2^2=4, 2^3=8, 2^4=16→7, 2^5=32→5, 2^6=64→1
+--    周期 6 由 2^6=64≡1 (mod 9) 保证。
+--
+--  CRT 投影:
+--    POLAR=144, 数字根=9→0, CRT投影极向归零
+--    TORUS=46,  数字根=1,   CRT投影环向≠0 (参与6624对齐)
+--    FULL_TOUR=6624, 数字根=0, CRT投影完全对齐
+--
+-- 核心原则：
+-- 1. 2^k mod 9 周期 6（2^6 = 64 ≡ 1）
+-- 2. 数字根归零 ⇔ CRT 投影归零
+-- 3. 6624 全巡对齐语义随注释承载
+--
+-- 包含：period-6 / POLAR / TORUS / FULL_TOUR / dr-zero-implies-crt-zero
 module Sovereign.Algebra.DigitalRootCycle where
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _^_)
@@ -30,6 +37,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans
 2^k%9-table-correct = refl
 
 -- 周期 6 定理: 2^6 % 9 ≡ 1 (即 64 ≡ 1 mod 9)
+-- ─── ③ 基础件层（桥引理/字面桥/序件——全部具名）───
 period-6 : (2 ^ 6) % 9 ≡ 1
 period-6 = refl
 

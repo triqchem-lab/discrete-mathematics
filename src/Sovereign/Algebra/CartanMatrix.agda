@@ -9,6 +9,14 @@
 --
 -- 定义层闭合；证明层（PBW 定理、分类定理、不忠实表示）标记 pending。
 -- 0 postulate / 0 hole。
+--
+-- 核心原则：
+--   1. 数学内容优先（背景→定义→引理→定理），证明每步可读；
+--   2. 具名引理 + ∙/trans 链默认 ≤3 层；零洞零 postulate 目标；
+--   3. 六段式分层：①头 ②导入 ③基础件 ④主引理 ⑤组合层 ⑥核对层。
+--
+-- 包含：A₂、cartan-diag、data、A₂-type、data
+
 module Sovereign.Algebra.CartanMatrix where
 
 open import Data.Nat using (ℕ; zero; suc)
@@ -21,6 +29,9 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- 有限型 Cartan 矩阵示例：A₂
 -- A = [[2, -1], [-1, 2]]
+-- ──────────────────────────────────────────────
+-- ③ 基础件层 / ④ 主引理层（具名引理，∙ 链 ≤3）
+-- ──────────────────────────────────────────────
 A₂ : ℕ → ℕ → ℤ
 A₂ zero zero = + 2
 A₂ zero (suc zero) = -[1+ 0 ]  -- -1
@@ -51,6 +62,10 @@ A₂-type = finite  -- A₂ 是有限型
 
 -- Kac-Moody 代数 g(A) 的生成元
 data KMElement : Set where
+
+-- ──────────────────────────────────────────────
+-- ⑤ 组合层（主定理/装配收口）
+-- ──────────────────────────────────────────────
   e : ℕ → KMElement    -- e_i
   f : ℕ → KMElement    -- f_i
   h : ℕ → KMElement    -- h_i

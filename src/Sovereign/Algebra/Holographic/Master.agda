@@ -1,8 +1,15 @@
 {-# OPTIONS --rewriting --guardedness #-}
-
 -- | jac_Master — 大衍框架统一定理 · 59模块全景
--- 0 postulate
-
+--
+-- 数学背景：
+--  0 postulate
+--
+-- 核心原则：
+-- 1. 统一定理：离散基座上的判定等价链
+-- 2. 59 模块全景对账（判据链闭合）
+-- 3. 0 postulate / 0 hole
+--
+-- 包含：统一定理对账表（59 模块全景——正文各节即清单，无独立顶层签名）
 module Sovereign.Algebra.Holographic.Master where
 
 open import Data.Nat using (ℕ)

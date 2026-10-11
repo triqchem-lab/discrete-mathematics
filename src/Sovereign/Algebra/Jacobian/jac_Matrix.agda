@@ -391,7 +391,7 @@ det-mul-core a b c d e f g h =
 
     collapse : (((t1 ⊕ t2) ⊕ (t3 ⊕ t4)) ⊕ ((n1 ⊕ n2) ⊕ (n3 ⊕ n4)))
              ≡ ((r1 ⊕ r2) ⊕ (r3 ⊕ r4))
-    collapse = trans s1 (trans s2 (trans s2b (trans s3 (trans s5 (trans s6 (trans s8 s9))))))
+    collapse = trans (trans s1 (trans s2 s2b)) (trans (trans s3 (trans s5 s6)) (trans s8 s9))
 
 
 det-mul : ∀ A B → det2 (mat-mul A B) ≡ (det2 A ⊗ det2 B)

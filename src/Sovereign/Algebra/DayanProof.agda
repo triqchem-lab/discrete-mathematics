@@ -1,10 +1,18 @@
 {-# OPTIONS --rewriting --guardedness #-}
-
 -- | Sovereign.Algebra.DayanProof
--- 大衍求一术 L2 完整证明——div-rel 反转版（消除消去步骤）
 --
--- 核心策略：div-rel 用 r ≡ rb - q×rt 形式（定义式），非 rb ≡ q×rt + r。
--- 这消除了消去引理的需要——proof 只需三步 trans。
+-- 数学背景：
+--  大衍求一术 L2 完整证明——div-rel 反转版（消除消去步骤）
+--
+--  核心策略：div-rel 用 r ≡ rb - q×rt 形式（定义式），非 rb ≡ q×rt + r。
+--  这消除了消去引理的需要——proof 只需三步 trans。
+--
+-- 核心原则：
+-- 1. div-rel 反转版（r ≡ rb − q×rt 定义式）——消除消去引理
+-- 2. proof 只需三步 trans
+-- 3. 与 DayanInvariant 的 ∃k 不变量衔接
+--
+-- 包含：Inv / step-invariant / terminate-correct
 module Sovereign.Algebra.DayanProof where
 
 open import Data.Nat using (ℕ; zero; suc)
@@ -24,6 +32,7 @@ open import Data.Product using (Σ; _×_; _,_)
 -- §1. 不变量
 --------------------------------------------------------------------------------
 
+-- ─── ③ 基础件层（桥引理/字面桥/序件——全部具名）───
 Inv : ℕ → ℕ → ℤ → ℕ → Set
 Inv 奇₀ 定₀ s rt = Σ ℤ (λ k → s * (+ 奇₀) + k * (+ 定₀) ≡ + rt)
 

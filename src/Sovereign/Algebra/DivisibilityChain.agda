@@ -1,16 +1,23 @@
 {-# OPTIONS --rewriting --guardedness #-}
-
 -- | Sovereign.Algebra.DivisibilityChain
--- 子群链阶整除: 2∣4, 4∣8
 --
--- 锚定 "2T=0→4T→8T 塔" 的阶整除关系:
---   ⟨-1⟩ 阶 2 ⊂ ⟨α⟩ 阶 4 ⊂ ⟨φ⟩ 阶 8
---   2 ∣ 4 (子群阶整除父群阶)
---   4 ∣ 8 (同上)
+-- 数学背景：
+--  子群链阶整除: 2∣4, 4∣8
 --
--- 语料锚: "月亮矩阵限制 + 归零共振" → 乘法子群链
--- 0 postulate.
-
+--  锚定 "2T=0→4T→8T 塔" 的阶整除关系:
+--    ⟨-1⟩ 阶 2 ⊂ ⟨α⟩ 阶 4 ⊂ ⟨φ⟩ 阶 8
+--    2 ∣ 4 (子群阶整除父群阶)
+--    4 ∣ 8 (同上)
+--
+--  语料锚: "月亮矩阵限制 + 归零共振" → 乘法子群链
+--  0 postulate.
+--
+-- 核心原则：
+-- 1. 子群阶整除塔：⟨-1⟩₂ ⊂ ⟨α⟩₄ ⊂ ⟨φ⟩₈，2∣4∣8
+-- 2. divides 构造子显式见证
+-- 3. 锚定「月亮矩阵限制 + 归零共振」乘法子群链
+--
+-- 包含：2-divides-4 / 4-divides-8 / 2-divides-8
 module Sovereign.Algebra.DivisibilityChain where
 
 open import Data.Nat using (ℕ; _*_)

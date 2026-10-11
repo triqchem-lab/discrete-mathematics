@@ -1,9 +1,16 @@
 {-# OPTIONS --rewriting --guardedness #-}
-
 -- | jac_PhysicalOntology — 大衍宇宙物理本体论
--- 数学基座 → 物理语义的完整映射
--- 0 postulate
-
+--
+-- 数学背景：
+--  数学基座 → 物理语义的完整映射
+--  0 postulate
+--
+-- 核心原则：
+-- 1. 数学基座 → 物理语义的完整映射（语义层，如实标注非定理层）
+-- 2. 映射逐条锚定基座件
+-- 3. 0 postulate / 0 hole
+--
+-- 包含：基座→语义映射对账表（正文各节即清单，无独立顶层签名）
 module Sovereign.Algebra.Holographic.PhysicalOntology where
 
 open import Data.Nat using (ℕ)

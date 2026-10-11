@@ -1,18 +1,26 @@
 {-# OPTIONS --rewriting --guardedness #-}
-
 -- | Sovereign.Algebra.FangCheng
--- 筹算 Agda 化第六实例：方程术（《九章算术》方程章）
 --
--- 数学来源：《九章算术》方程章——方程术（线性方程组消元法，早 Gaussian 约 1800 年）
---   "偏乘直除"——以某行乘某数，从另一行减去此行（行变换消元）
+-- 数学背景：
+--  筹算 Agda 化第六实例：方程术（《九章算术》方程章）
 --
--- 本模块：2×2 线性方程组的方程术消元
---   ax + by = e
---   cx + dy = f
---   方程术：消去 x → (bc-ad)y = ce-af → y = (ce-af)/(bc-ad)
---   这就是 Cramer 法则的 2×2 情形（中国早西方 1800 年）
+--  数学来源：《九章算术》方程章——方程术（线性方程组消元法，早 Gaussian 约 1800 年）
+--    "偏乘直除"——以某行乘某数，从另一行减去此行（行变换消元）
 --
--- 0 postulate / 0 hole。
+--  本模块：2×2 线性方程组的方程术消元
+--    ax + by = e
+--    cx + dy = f
+--    方程术：消去 x → (bc-ad)y = ce-af → y = (ce-af)/(bc-ad)
+--    这就是 Cramer 法则的 2×2 情形（中国早西方 1800 年）
+--
+--  0 postulate / 0 hole。
+--
+-- 核心原则：
+-- 1. 方程术 = 2×2 线性消元（早 Cramer/Gaussian 约 1800 年）
+-- 2. 「偏乘直除」行变换构造性实现
+-- 3. 纯 ℕ 算术——(bc−ad)y = ce−af 显式导出
+--
+-- 包含：det / y-num / fangcheng-y / x-num / fangcheng-x / test-sys / test-det / test-y-num / test-x-num / test-x / test-y
 module Sovereign.Algebra.FangCheng where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_; _∸_; _/_)
@@ -48,6 +56,7 @@ record FangCheng2 : Set where
 --------------------------------------------------------------------------------
 
 -- 行变换消去 x 后的 y 系数（即 det = ad-bc）
+-- ─── ③ 基础件层（桥引理/字面桥/序件——全部具名）───
 det : ℕ → ℕ → ℕ → ℕ → ℕ
 det a b c d = (a * d) ∸ (c * b)
 

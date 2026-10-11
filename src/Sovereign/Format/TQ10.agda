@@ -12,6 +12,14 @@
 -- 2. 奇点捕获：字节值 243-255 为能隙奇点 (Gap Singularity)，非法。
 -- 3. 16 字节对齐：对应 128 位全息通道。
 
+--
+-- 核心原则：
+--   1. 数学内容优先（背景→定义→引理→定理），证明每步可读；
+--   2. 具名引理 + ∙/trans 链默认 ≤3 层；零洞零 postulate 目标；
+--   3. 六段式分层：①头 ②导入 ③基础件 ④主引理 ⑤组合层 ⑥核对层。
+--
+-- 包含：Tryte、PackedByte、isPackedValid、tritToBase3、base3ToTrit、tritToFin
+
 module Sovereign.Format.TQ10 where
 
 open import Data.Nat using (ℕ; _+_; _*_; _<_; _≥_; _<ᵇ_)
@@ -32,6 +40,9 @@ import Sovereign.Geometry.Tryte as TryteGeom -- Import geometric definition
 -- 逻辑单元：Tryte (6 Trits = 729 态)
 -- 这是主权状态机运算的最小完整截面
 -- 引用几何定义：T⁶ 单点纤维截面
+-- ──────────────────────────────────────────────
+-- ③ 基础件层 / ④ 主引理层（具名引理，∙ 链 ≤3）
+-- ──────────────────────────────────────────────
 Tryte : Set
 Tryte = TryteGeom.Tryte
 
@@ -147,4 +158,8 @@ getPolarPhase blk = ((toℕ (phase_bias blk)) div 16) mod 16
 -- 提取局部陈数 (Chern Guard Low 5 bits)
 -- Local Chern = low 5 bits = toℕ chern_guard % 32
 getLocalChern : TQ10Block → Fin 32
+
+-- ──────────────────────────────────────────────
+-- ⑤ 组合层（主定理/装配收口）
+-- ──────────────────────────────────────────────
 getLocalChern blk = (toℕ (chern_guard blk)) mod 32
