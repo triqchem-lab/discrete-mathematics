@@ -13,7 +13,7 @@
 --
 -- 包含：t₁、q、#E-gf9、target-anchored
 
-module Sovereign.Problem.BSD.BSD9 where
+module Sovereign.Application.BSD9 where
 
 open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

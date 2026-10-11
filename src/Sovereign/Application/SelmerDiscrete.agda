@@ -11,7 +11,7 @@
 --
 -- 包含：c2-cocycle-count、c2-total-cases、c2-valid-check、c2-H1-dim、c2-H1-ok、v4-cocycle-count、v4-H1-dim、v4-H1-ok、selmer-e1
 
-module Sovereign.Problem.BSD.SelmerDiscrete where
+module Sovereign.Application.SelmerDiscrete where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Product using (_×_; _,_)

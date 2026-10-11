@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Fermat.FermatL2
+-- | Sovereign.Application.FermatL2
 -- 费马大定理的离散基座 — L2 模 3 方程行为层
 --
 -- 数学背景 (13-flt-analysis.md 验证 1 的方程层面):
@@ -23,7 +23,7 @@
 --
 -- 依赖: FermatL0 (pow3, ≢₃, zero-trit?), FermatL1 (pow3-even/odd)
 
-module Sovereign.Problem.Fermat.FermatL2 where
+module Sovereign.Application.FermatL2 where
 
 open import Data.Nat using (ℕ; zero; suc; _*_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)

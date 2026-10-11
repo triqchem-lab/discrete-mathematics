@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.RootTwoGF9
+-- | Sovereign.Application.RootTwoGF9
 -- 根号二·三步闭合 — 知识库原生锚点的形式化 (0 postulate, 全 refl)
 --
 -- 锚点 (卢先生): 「宇宙的晶体结构……所有的角度遵循为根号二。球的自转
@@ -15,7 +15,7 @@
 --   直接体现 — 三个正交方向各走一步、重复三次回原点。
 
 -- ⚠ 边界句（2026-10-11）：本模块值形件为**实例核对件（非泛型定理）**。
-module Sovereign.Physics.RootTwoGF9 where
+module Sovereign.Application.RootTwoGF9 where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 

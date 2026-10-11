@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.SpaceTimeMapping
+-- | Sovereign.Application.SpaceTimeMapping
 -- 时空映射 — Frobenius 周期(时间) × 范数坍缩(空间)
 --
 -- 语料锚:
@@ -16,7 +16,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.SpaceTimeMapping where
+module Sovereign.Application.SpaceTimeMapping where
 
 open import Data.Nat using (ℕ; _*_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

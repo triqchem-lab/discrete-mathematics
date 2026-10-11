@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.TorusChain
+-- | Sovereign.Application.TorusChain
 -- 环面链 — GF(9) 构造序的完整性
 --
 -- 语料锚 (word_62):
@@ -20,7 +20,7 @@
 -- 本模块是已有定理的结构化汇聚, 不新增证明。
 -- 0 postulate.
 
-module Sovereign.Physics.TorusChain where
+module Sovereign.Application.TorusChain where
 
 open import Data.Nat using (ℕ; _*_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | Sovereign.Problem.ABC.L1Disjunction
+-- | Sovereign.Application.L1Disjunction
 --
 -- L1 断层定理（ABC/README §四「定理（待建）」的形式化）：
 --
@@ -18,7 +18,7 @@
 -- ——盲区定理只需这两值；完整 rad 实现（质因数分解式）列 roadmap，不阻塞本定理。
 --
 -- 0 postulate / 0 hole；见证算术全部 refl 可核。
-module Sovereign.Problem.ABC.L1Disjunction where
+module Sovereign.Application.L1Disjunction where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _≡ᵇ_; _<_; _≤_; _<ᵇ_)
 open import Data.Nat.GCD using (gcd)

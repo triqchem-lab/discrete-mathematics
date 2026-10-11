@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.BSD.BSD_GF81
+-- | Sovereign.Application.BSD_GF81
 -- BSD t₄ 递推 + GF(81) 点计数 · 三曲线分化
 --
 -- 数学背景：BSD 线 GF(81)=GF(3⁴) 实例核：t₄ = t₁·t₃ − q·t₂ + 点计数 81+1−t₄，三曲线分化。
@@ -14,7 +14,7 @@
 --   （命名正名：旧头注 `jac_BSD_GF81` ≠ 模块名，2026-10-11 勘误）
 
 --
-module Sovereign.Problem.BSD.BSD_GF81 where
+module Sovereign.Application.BSD_GF81 where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

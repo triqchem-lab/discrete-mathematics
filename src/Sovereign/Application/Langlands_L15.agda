@@ -7,7 +7,7 @@
 --   1. GL₂(GF(9)) 阶数公式实例化核对（L1.5 线）；
 --   2. 诚实边界：群论面实例，非 Langlands 纲领。
 -- 包含：order-GL2
-module Sovereign.Problem.Langlands.Langlands_L15 where
+module Sovereign.Application.Langlands_L15 where
 
 open import Data.Nat using (ℕ; _*_; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

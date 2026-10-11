@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Fermat.FermatL3
+-- | Sovereign.Application.FermatL3
 -- 费马大定理的离散基座 — L3 GF(9)× 周期层
 --
 -- 数学背景 (13-flt-analysis.md 验证 2):
@@ -21,7 +21,7 @@
 --
 -- 依赖: GF9 (gf9-pow, phi, alpha), FermatL0 (幂定义层)
 
-module Sovereign.Problem.Fermat.FermatL3 where
+module Sovereign.Application.FermatL3 where
 
 open import Data.Product using (_×_; _,_)
 open import Data.Empty using (⊥; ⊥-elim)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.BSD.BSDTrace
+-- | Sovereign.Application.BSDTrace
 -- BSD Weil 迹递推 + GF(qⁿ) 点计数（闭合）
 --
 -- 数学背景：BSD 迹递推通用核：tₙ₊₂ = t₁·tₙ₊₁ − q·tₙ、#E(GF(qⁿ)) = qⁿ+1−tₙ；q=3/t₁=0 闭合实例（t₂=−6、e9=16）。
@@ -14,7 +14,7 @@
 --   （命名正名：旧头注 `jac_BSDTrace` ≠ 模块名，2026-10-11 勘误）
 
 --
-module Sovereign.Problem.BSD.BSDTrace where
+module Sovereign.Application.BSDTrace where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Nat using (ℕ)

@@ -7,7 +7,7 @@
 --   1. GL₂(GF(9)) 阶数与中心的显式计算（q=9 代入，与 GL2TestVectors 穷举交叉互证）；
 --   2. 诚实边界：本件是 GL₂(GF(9)) 群论面实例，非 Langlands 纲领对应。
 -- 包含：order、center
-module Sovereign.Problem.Langlands.GL2_Rep where
+module Sovereign.Application.GL2_Rep where
 
 open import Data.Nat using (ℕ; _*_; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

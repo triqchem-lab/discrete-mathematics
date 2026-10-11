@@ -11,7 +11,7 @@
 --
 -- 包含：dimC₀、dimC₁、rank∂₁、dimH₀、dimH₁、dimℋ₀、dimℋ₁、hodge-iso₀、hodge-iso₁、χ-complex、χ-homology、euler-identity
 
-module Sovereign.Problem.BSD.EllipticComplex where
+module Sovereign.Application.EllipticComplex where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
 open import Data.Product using (_×_; _,_)

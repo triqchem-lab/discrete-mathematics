@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.VectorFieldGeometricPhase
+-- | Sovereign.Application.VectorFieldGeometricPhase
 -- 矢量场决定几何相位 — Rust 核算的库内固化 (0 postulate, 无洞)
 --
 -- Rust 核算 (sov-math/sov-chiral/examples/entropy_spin_phase.rs) 的五项数据
@@ -20,7 +20,7 @@
 --
 -- 与 GF(3) 层 DiscreteEMField3D.curl-grad-zero (Trit 版) 的 ℚ 层对应。
 
-module Sovereign.Physics.VectorFieldGeometricPhase where
+module Sovereign.Application.VectorFieldGeometricPhase where
 
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality
