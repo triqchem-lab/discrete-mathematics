@@ -154,6 +154,21 @@ WeakComp.mult  wc22-c fzero        = 0
 WeakComp.mult  wc22-c (fsuc fzero) = 2
 WeakComp.size≡ wc22-c = refl
 
+-- 星棒小例双射的分类完备面：WeakComp 2 2 值对三分类**完备**
+-- （wc22-a/b/c 三例为全体——pair-class-2 经 size≡ 搬运收口；值层面即星棒
+--   小例双射的构造侧，一般双射仍立界 §5(i)）
+wc22-pair-class : ∀ (w : WeakComp 2 2) →
+  (WeakComp.mult w fzero ≡ 2 × WeakComp.mult w (fsuc fzero) ≡ 0)
+  ⊎ (WeakComp.mult w fzero ≡ 1 × WeakComp.mult w (fsuc fzero) ≡ 1)
+  ⊎ (WeakComp.mult w fzero ≡ 0 × WeakComp.mult w (fsuc fzero) ≡ 2)
+wc22-pair-class w = pair-class-2 (WeakComp.mult w fzero) (WeakComp.mult w (fsuc fzero)) ab≡2
+  where
+  a = WeakComp.mult w fzero
+  b = WeakComp.mult w (fsuc fzero)
+  -- size ≡def a + (b + 0)（size 双层展开）→ 尾零剥离 → a + b ≡ 2
+  ab≡2 : a + b ≡ 2
+  ab≡2 = trans (sym (cong (a +_) (+-identityʳ b))) (WeakComp.size≡ w)
+
 ------------------------------------------------------------------------
 -- §5 立界注记（诚实边界——不设空壳签名）
 -- (i) 星棒一般双射：Multi n k ↔ 星位形（Binom (n+k∸1) k 的 k-子集）——
