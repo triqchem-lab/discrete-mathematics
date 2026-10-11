@@ -151,7 +151,7 @@ s2-signature : + 0 - + 0 ≡ + 0
 s2-signature = refl
 
 -- T⁶ 奇中维: b₃ = C(6,3) = C(5,2) + C(5,3) = 10 + 10 = 20 (Pascal 恒等式;
--- ZeroHomologyEquivalence 的 Betti 对称), 反对称配对 → σ = 0
+-- docs/zero-homology-equivalence-盘点.md 的 Betti 对称（模块已归档 2026-10-11）), 反对称配对 → σ = 0
 t6-betti-middle : + 10 + + 10 ≡ + 20
 t6-betti-middle = refl
 
