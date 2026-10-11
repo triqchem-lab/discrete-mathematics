@@ -41,7 +41,7 @@ open import Sovereign.Base.Lü using (LüName;
                                       HuangZhong; LinZhong; TaiCu; NanLu;
                                       GuXian; YingZhong; RuiBin; DaLu;
                                       YiZe; JiaZhong; WuShe; ZhongLu)
-open import Sovereign.RootMath.LengthLattice using (lüToLength)
+open import Sovereign.Synthesis.LengthLattice using (lüToLength)
 open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi; applyLossGain)
 
 --------------------------------------------------------------------------------

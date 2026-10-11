@@ -19,7 +19,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Algebra.MyopiaRisk using (a4-order)
+open import Sovereign.Synthesis.MyopiaRisk using (a4-order)
 
 --------------------------------------------------------------------------------
 -- §1. 表示论接口

@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting #-}
-module Sovereign.Algebra.ProjectionDiffGeo where
+module Sovereign.Synthesis.ProjectionDiffGeo where
 
 --------------------------------------------------------------------------------
 -- 微分几何投影: T⁶ 离散环面 → 连续切空间

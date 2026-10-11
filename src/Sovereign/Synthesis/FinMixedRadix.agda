@@ -25,7 +25,7 @@
 -- 包含：enc / head / head-eq / tail-eq / enc-tail / enc-inj-pointwise
 -- 0 postulate / 0 hole。
 
-module Sovereign.Analysis.FinMixedRadix where
+module Sovereign.Synthesis.FinMixedRadix where
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _^_; _≤_; _<_; zero; suc; z≤n; s≤s)
 open import Data.Fin using (Fin; toℕ; fromℕ<) renaming (zero to fzero; suc to fsuc)

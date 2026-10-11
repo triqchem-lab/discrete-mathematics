@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.GF729Field
+-- | Sovereign.Synthesis.GF729Field
 -- GF(729) 作为 GF(9) 的三次扩张 — 内在域乘法与 ⟨α⟩ 相位内在化
 --
 -- 数学背景:
@@ -23,7 +23,7 @@
 --
 -- 0 postulate — 全部构造性证明
 
-module Sovereign.Algebra.GF729Field where
+module Sovereign.Synthesis.GF729Field where
 
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Data.Sum using (_⊎_; inj₁; inj₂)

@@ -15,7 +15,7 @@
 --
 -- 0 postulate — 全部构造性证明
 
-module Sovereign.Algebra.VortexConnections where
+module Sovereign.Synthesis.VortexConnections where
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _/_; _<_; _≤_; s≤s; z≤n)
 open import Data.Nat.DivMod using (m%n<n; m<n⇒m%n≡m)
@@ -28,7 +28,7 @@ open import Relation.Binary.PropositionalEquality
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 
 import Sovereign.Algebra.Duodecimal as D
-import Sovereign.Algebra.VortexTower as VT
+import Sovereign.Synthesis.VortexTower as VT
 import Sovereign.Structology.HoloInformation as HI
 import Sovereign.Coupling.LossGain as LG
 

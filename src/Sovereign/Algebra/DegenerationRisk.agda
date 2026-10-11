@@ -70,7 +70,7 @@ open import Sovereign.Algebra.ComplexProjection
          char-3-gf9)
 
 -- 项目: 等式截断 (T⁶ → a≡b)
-open import Sovereign.Algebra.EqualityTruncation
+open import Sovereign.Synthesis.EqualityTruncation
   using (T6Dimension; EqualityDimension; dimension-loss;
          T6Cardinality; EqualityProofCount; trit-uip;
          truncation-summary; information-ratio)

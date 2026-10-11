@@ -19,7 +19,7 @@
 --
 -- 0 postulate — 全部构造性证明
 
-module Sovereign.Algebra.GF729 where
+module Sovereign.Synthesis.GF729 where
 
 open import Data.Nat using (ℕ; _+_; _*_) renaming (_^_ to _^ℕ_)
 open import Data.Fin using (Fin; zero; suc; toℕ)

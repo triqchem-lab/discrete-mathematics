@@ -12,7 +12,7 @@
 -- 证明 DAG（评估报告 §3.3.2）：
 --   阶段一 展示群分量编码（NSEPresentation §14/§15）：
 --          compEnc + decodePt-encodePt : decodePt (encodePt x) ≡ x
---   阶段二 混合基数编码注入（Sovereign.Analysis.FinMixedRadix §3）：
+--   阶段二 混合基数编码注入（Sovereign.Synthesis.FinMixedRadix §3）：
 --          enc12-inj-pointwise（基 12，递归界 N12）
 --   阶段三 鸽巢 + 逐点传播（本模块 §3）
 --
@@ -33,7 +33,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; trans; sym; subst)
 
 open import Sovereign.Analysis.FiniteDynamics using (orbit; arith-rearrange; pigeonhole-fin)
-open import Sovereign.Analysis.FinMixedRadix using (N12; enc12; enc12-inj-pointwise; suc≤12)
+open import Sovereign.Synthesis.FinMixedRadix using (N12; enc12; enc12-inj-pointwise; suc≤12)
 open import Sovereign.Analysis.PairEnc using (pairEnc; pairEnc-injective)
 open import Sovereign.Problem.NavierStokes.NSEPresentation using
   (PresField; Torus6; Axis6; shiftAt; amp; ph; ext; compEnc; compEnc-injective;

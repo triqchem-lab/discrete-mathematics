@@ -1,5 +1,5 @@
 {-# OPTIONS --cubical --rewriting #-}
-module Sovereign.Algebra.ProjectionAnalysis where
+module Sovereign.Synthesis.ProjectionAnalysis where
 
 --------------------------------------------------------------------------------
 -- 投影分析: MSC 26 (实分析) 和 MSC 28 (测度论) 的离散本体投影

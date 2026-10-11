@@ -1,5 +1,5 @@
 {-# OPTIONS --cubical --rewriting #-}
-module Sovereign.Algebra.EqualityTruncation where
+module Sovereign.Synthesis.EqualityTruncation where
 
 --------------------------------------------------------------------------------
 -- 等式类型是一维截断

@@ -21,7 +21,7 @@
 --
 -- 0 postulate — 全部构造性证明
 
-module Sovereign.Algebra.VortexTower where
+module Sovereign.Synthesis.VortexTower where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _<_; _≤_; _>_; _≤?_; _/_; _%_; NonZero; nonZero; s≤s; z≤n)
 open import Data.Nat.DivMod

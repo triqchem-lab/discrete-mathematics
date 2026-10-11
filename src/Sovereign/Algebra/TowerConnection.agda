@@ -62,7 +62,7 @@ open import Sovereign.Algebra.GF243
   renaming (embed-gf3 to embed-3→243)
 
 -- GF(729) 加法群
-open import Sovereign.Algebra.GF729
+open import Sovereign.Synthesis.GF729
   using (GF729Vec; gf729-zero; _+gf729_; _+₃_;
          +gf729-comm; +gf729-assoc; +gf729-identityˡ; +gf729-identityʳ;
          +₃-identityˡ; +₃-identityʳ; +₃-comm; +₃-assoc;

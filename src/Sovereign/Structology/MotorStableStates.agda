@@ -10,7 +10,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Algebra.GF9 using (_+gf9_)
 open import Sovereign.Structology.A4Group using (A4)
-open import Sovereign.Algebra.MyopiaRisk using (a4-order)
+open import Sovereign.Synthesis.MyopiaRisk using (a4-order)
 
 open import Sovereign.Algebra.TriCycGraph using (TriCycGraph)
 open import Sovereign.Structology.ArthurMagicSquare

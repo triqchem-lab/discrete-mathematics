@@ -6,7 +6,7 @@
 -- 基准：黄钟归一化长度格点 81（无量纲整数）
 -- 损益操作唯一合法的长度比例演化方式
 
-module Sovereign.RootMath.LengthLattice where
+module Sovereign.Synthesis.LengthLattice where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _/_; _%_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)

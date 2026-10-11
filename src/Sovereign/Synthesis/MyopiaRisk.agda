@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting #-}
-module Sovereign.Algebra.MyopiaRisk where
+module Sovereign.Synthesis.MyopiaRisk where
 
 --------------------------------------------------------------------------------
 -- 近视风险形式化: 6 种近视的构造性证明与反证法
