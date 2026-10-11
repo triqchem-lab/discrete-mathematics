@@ -2,6 +2,8 @@
 
 -- | Sovereign.HoTT.Fibration
 -- 高维拓扑：纤维丛与和乐 (Fiber Bundles and Holonomy)
+-- ⚠ 边界句（防误引）：本模块为 T⁶ 物理纤维丛/和乐（主权状态机语境）——**非同伦论
+--   fibration**（Postnikov 纤维化语境的 fiber sequence 另线，见 PostnikovTruncation 系）。
 --
 -- 几何基底：复三维/实六维环面 T⁶
 -- 极向周期 144，环向周期 46

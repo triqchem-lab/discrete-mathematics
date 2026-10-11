@@ -2,6 +2,8 @@
 
 -- | Sovereign.HoTT.KanComposition
 -- Kan 纤维化的 6624 相位对齐边界闭合 (L2 方向)
+-- ⚠ 边界句（防误引）：6624 相位对齐的 Kan 条件**类比**——非单纯 Kan 纤维化
+--   （不是 sSet 上的 Kan 扩充/纤维化定义；仅借用 Kan 边界闭合的术语形）。
 --
 -- 基于 PhaseAlignment6624 的闭合定理，证明在 FULL_TOUR = 6624
 -- 的整数倍位置，Kan 纤维化的边界条件自然满足。
