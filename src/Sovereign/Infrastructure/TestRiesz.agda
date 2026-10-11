@@ -7,7 +7,7 @@
 --
 -- 包含：coord0、coord1、sum-func、coord0-linear、coord1-linear、sum-func-linear、test-riesz-coord0、test-riesz-sum、test-riesz-coord1、test-coord0-repr、test-sum-repr、test-coord1-repr、test-inner-e0-e0、test-inner-e1-e1
 
-module Sovereign.Analysis.TestRiesz where
+module Sovereign.Infrastructure.TestRiesz where
 
 --------------------------------------------------------------------------------
 -- Riesz 表示定理测试用例 — n=2 的 GF(3)² 向量空间 (9 个元素)

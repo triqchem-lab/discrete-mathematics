@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Trust.ReductionGapWitness — 「展示群规约缺口」的**可编译见证**（正向半边）
+-- | Sovereign.Infrastructure.ReductionGapWitness — 「展示群规约缺口」的**可编译见证**（正向半边）
 --
 -- 完整矩阵（8 个探针的 exit 码与报错原文）见
 --   `docs/techniques/presentation-reduction-gap/README.md`
@@ -33,7 +33,7 @@
 --   2. 工具链见证件非数学定理（版本戳必随回执）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Trust.ReductionGapWitness where
+module Sovereign.Infrastructure.ReductionGapWitness where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Agda.Builtin.Equality.Rewrite

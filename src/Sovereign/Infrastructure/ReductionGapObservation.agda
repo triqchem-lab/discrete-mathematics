@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Trust.ReductionGapObservation — 归一化器行为的**反射级机器强制观察**
+-- | Sovereign.Infrastructure.ReductionGapObservation — 归一化器行为的**反射级机器强制观察**
 --
 -- 为什么需要它（缺口形式化的第三层）：缺口涉及 Agda **自己的**归一化器，而 Agda 没有
 -- 「定义相等」这一内部类型 ⇒ 无法写成内部命题。但可以在**反射层**把它变成编译期**机器强制**
@@ -31,7 +31,7 @@
 --   2. 工具链见证件非数学定理（版本戳必随回执）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Trust.ReductionGapObservation where
+module Sovereign.Infrastructure.ReductionGapObservation where
 
 open import Agda.Builtin.Unit using (⊤)
 open import Agda.Builtin.String using (String)

@@ -1,16 +1,16 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Trust.KernelWitness — 内核空类型判定（eb1251683f）的**补丁相关正控制**
+-- | Sovereign.Infrastructure.KernelWitness — 内核空类型判定（eb1251683f）的**补丁相关正控制**
 --
 -- 本模块的存在理由（2026-09-13，依据用户反馈第 3 条）：
---   缺陷 —— 旧版 `Sovereign.Trust.KernelSpec` 自己 import 了 `PatchedTypeChecker`，
+--   缺陷 —— 旧版 `Sovereign.Infrastructure.KernelSpec` 自己 import 了 `PatchedTypeChecker`，
 --   而后者在**无补丁内核**上 **import 阶段就炸**（`PatchedTypeChecker.agda:84`
 --   `Is empty: R1 ≡ R2 (stuck)`）。于是 KernelSpec 的「A/B 差分」那一行，失败点落在
 --   被 import 的模块里，**KernelSpec 自己的条款从未在两版下被对照检查过** ——
 --   那一行与 `PatchedTypeChecker` 的行完全冗余，判据价值为零。
 --
 --   修法 —— 把条款拆成两个模块：
---     · `Sovereign.Trust.KernelSpec`（补丁**无关**）：锚点 + 单射性推论（K4/K2 形态）。
+--     · `Sovereign.Infrastructure.KernelSpec`（补丁**无关**）：锚点 + 单射性推论（K4/K2 形态）。
 --       它必须在 2.9.0 与官方 2.8.0.1 上**都通过** ⇒ 真正的负控制（NaN 行的对照臂）。
 --     · **本模块**（补丁**相关**）：自带相异刚性头 `R1w`/`R2w`，**不 import**
 --       `PatchedTypeChecker`，使 2.8.0.1 的失败点**精确落在本模块 K1 的空模式行**。
@@ -40,7 +40,7 @@
 --   2. 工具链见证件非数学定理（版本戳必随回执）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Trust.KernelWitness where
+module Sovereign.Infrastructure.KernelWitness where
 
 open import Data.Empty using (⊥)
 open import Data.Nat using (ℕ)

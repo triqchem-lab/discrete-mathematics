@@ -1,19 +1,19 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Trust.KernelSpec — 内核空类型判定（eb1251683f）的**补丁无关条款**
+-- | Sovereign.Infrastructure.KernelSpec — 内核空类型判定（eb1251683f）的**补丁无关条款**
 --
 -- 定位（2026-09-13 更正）：**数学侧早已证完**，缺的是「Haskell 分支 ↔ 已证条款」的
 -- **机械对接**（L2，工程件）。本模块把该对接的**规范侧**写成可编译的签名：
 -- 每一条款都能指到库内已证的三层单射性，或指到一个可复跑的 exit 码判据。
 --
 -- ⚠ 本模块是 A/B 矩阵的**真负控制**（2026-09-13 拆分，依据用户反馈第 3 条）：
---   旧版本模块自己 import 了 `Sovereign.Trust.PatchedTypeChecker`，而后者在**无补丁内核**
+--   旧版本模块自己 import 了 `Sovereign.Infrastructure.PatchedTypeChecker`，而后者在**无补丁内核**
 --   上 import 阶段就炸（`PatchedTypeChecker.agda:84` `Is empty: R1 ≡ R2 (stuck)`）。
 --   于是所谓「双版本差分」那一行的失败点落在被 import 的模块里，**本模块自己的条款
 --   从未在两版下被对照检查过** —— 那一行与 `PatchedTypeChecker` 的行完全冗余。
 --   拆分后：
 --     · **本模块**：零补丁依赖 ⇒ 必须在 2.9.0 与官方 2.8.0.1 上**都通过**（负控制臂）。
---     · `Sovereign.Trust.KernelWitness`：自带 R1w/R2w，承载 K1 正控制 ⇒ 2.9.0 通过、
+--     · `Sovereign.Infrastructure.KernelWitness`：自带 R1w/R2w，承载 K1 正控制 ⇒ 2.9.0 通过、
 --       2.8.0.1 在**它自己的** `¬R1w≡R2w ()` 行失败。
 --   四行矩阵（模块 × 内核）里「第二行通过、第四行失败」，才是「差分测的是补丁，
 --   而不是环境噪声」的有效证据。只有正控制、没有负控制的差分是无信息的。
@@ -36,7 +36,7 @@
 --   2. 工具链见证件非数学定理（版本戳必随回执）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Trust.KernelSpec where
+module Sovereign.Infrastructure.KernelSpec where
 
 open import Data.Product using (_×_; _,_; proj₁)
 open import Data.Nat.Base using (_%_)

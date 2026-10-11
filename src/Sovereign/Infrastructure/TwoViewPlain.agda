@@ -1,6 +1,6 @@
 {-# OPTIONS --guardedness #-}
 
--- | Sovereign.Trust.TwoViewPlain — PGM P1「Plain 视图」：**无规则**（故意不开 --rewriting）
+-- | Sovereign.Infrastructure.TwoViewPlain — PGM P1「Plain 视图」：**无规则**（故意不开 --rewriting）
 --
 -- 本模块是 PGM P1（规则/定义解耦的两视图模拟）的对照臂之一：
 --   · 生成元以**已定义函数**形态给出（`step`，三点 3-循环）
@@ -19,7 +19,7 @@
 --   2. 工具链见证件非数学定理（版本戳必随回执）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Trust.TwoViewPlain where
+module Sovereign.Infrastructure.TwoViewPlain where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 

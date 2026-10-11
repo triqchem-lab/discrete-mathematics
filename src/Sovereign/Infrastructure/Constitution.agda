@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.AI.Constitution
+-- | Sovereign.Infrastructure.Constitution
 -- AI 宪法规范：律算宪法在 AI 领域的形式化约束
 -- 
 -- 适用对象：任何学习、推理或应用律算合一知识图谱的人工智能系统
@@ -12,7 +12,7 @@
 --   2. 声明面如实标注，不作定理声称
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.AI.Constitution where
+module Sovereign.Infrastructure.Constitution where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)

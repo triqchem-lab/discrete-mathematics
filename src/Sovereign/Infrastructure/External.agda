@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.Trust.External
+-- | Sovereign.Infrastructure.External
 -- 信任边界：标记所有外部引用为信用0
 --
 -- 宪法原则：
@@ -21,7 +21,7 @@
 --
 -- 包含：data、dataNatTrust、dataNatPropertiesTrust、dataNatDivModTrust、dataIntegerTrust、dataRationalTrust
 
-module Sovereign.Trust.External where
+module Sovereign.Infrastructure.External where
 
 open import Data.Bool using (Bool; true; false)
 open import Data.String using (String)

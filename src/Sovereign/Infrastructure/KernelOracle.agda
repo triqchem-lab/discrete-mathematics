@@ -26,7 +26,7 @@
 --
 -- 包含：sovereignLcm、polarWinding、toroidalWinding、chernNumber、gapNum、gapDen
 
-module Sovereign.Verify.KernelOracle where
+module Sovereign.Infrastructure.KernelOracle where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _/_; _+_)
 open import Data.Nat.Show using (show)

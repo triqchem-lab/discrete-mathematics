@@ -1,8 +1,8 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | Sovereign.Verify.DuodecOracle
+-- | Sovereign.Infrastructure.DuodecOracle
 -- 律算数学 · 十二进制层的**形式化 oracle（查询面）**
 --
--- 与 `Sovereign.Verify.KernelOracle` 同一定位：本模块本身不是可执行程序，而是**查询面**——
+-- 与 `Sovereign.Infrastructure.KernelOracle` 同一定位：本模块本身不是可执行程序，而是**查询面**——
 -- 驱动脚本（`tools/testing/sov/agda-oracle.mjs --duodec`）把下面的函数名当表达式发给 Agda
 -- 交互接口（`Cmd_compute_toplevel`），拿回**形式库算出的值**，再交给 tritvm 的
 -- `--agda-check` 逐例比对。
@@ -32,7 +32,7 @@
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _<_)
 
 -- 包含：Trit/AlphaPower/Duodec ↔ ℕ 互转查询面（⊕/negate/mulAlpha/alphaInv/mixedOp/+12/*12/π3/π4/crt12/toℕ₁₂/Doz 位值）——零重定义，只搬运
-module Sovereign.Verify.DuodecOracle where
+module Sovereign.Infrastructure.DuodecOracle where
 
 open import Data.Fin using (Fin; toℕ)
 open import Data.Product using (proj₁; proj₂; _,_)

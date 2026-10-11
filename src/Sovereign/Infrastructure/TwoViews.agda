@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Trust.TwoViews — PGM P1「两视图」对照锚点
+-- | Sovereign.Infrastructure.TwoViews — PGM P1「两视图」对照锚点
 --
 -- 数学背景（展示群第一原理）：一个展示群 = ⟨生成元 | 关系⟩。同一个关系可以有两种存在方式——
 --   * **只作为定义性质**：下游要显式证明；
 --   * **作为定向重写规则**：下游 `refl` 自动归约。
 -- 本模块同时 import 同一展示群的两套视图，把这一对照固定成一个可编译的事实：
 --
---   * `Sovereign.Trust.TwoViewPlain`     —— 只有定义，故意不带规则；
+--   * `Sovereign.Infrastructure.TwoViewPlain`     —— 只有定义，故意不带规则；
 --   * `Sovereign.Trust.TwoViewRewritten` —— 定义 + `{-# REWRITE δ³-law #-}`。
 --
 -- 核心原则（P1 实测，证据见 dype `docs/theory/PGM-metatheory-and-plan.md` §4）：
@@ -24,13 +24,13 @@
 --   2. 工具链见证件非数学定理（版本戳必随回执）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Trust.TwoViews where
+module Sovereign.Infrastructure.TwoViews where
 
 open import Agda.Builtin.Equality using (_≡_; refl)
 open import Agda.Builtin.Equality.Rewrite
 
-import Sovereign.Trust.TwoViewPlain as Plain
-open import Sovereign.Trust.TwoViewPlain using (Three; p0; step)
+import Sovereign.Infrastructure.TwoViewPlain as Plain
+open import Sovereign.Infrastructure.TwoViewPlain using (Three; p0; step)
 
 import Sovereign.Base.TwoViewRewritten as Rew
 open import Sovereign.Base.TwoViewRewritten using (Carrier; δ; law-auto)

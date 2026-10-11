@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Trust.PatchedTypeChecker
+-- | Sovereign.Infrastructure.PatchedTypeChecker
 --
 -- 本地 Agda 工具链**偏离上游**的行为见证（不是数学定理，是工具链能力探针）。
 --
@@ -70,7 +70,7 @@
 --   2. 工具链见证件非数学定理（版本戳必随回执）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Trust.PatchedTypeChecker where
+module Sovereign.Infrastructure.PatchedTypeChecker where
 
 open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_)

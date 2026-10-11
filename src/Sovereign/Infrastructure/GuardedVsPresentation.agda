@@ -1,6 +1,6 @@
 {-# OPTIONS --guardedness --rewriting #-}
 
--- | Sovereign.Trust.GuardedVsPresentation — 「展示群 vs 守卫类型论」的**机器判定版**
+-- | Sovereign.Infrastructure.GuardedVsPresentation — 「展示群 vs 守卫类型论」的**机器判定版**
 --
 -- 问题（用户 2026-09-14）：依赖类型论展示群是否属于守卫类型论？
 -- 本模块只给能实测的那部分，并**纠正一个前提**：
@@ -29,7 +29,7 @@
 --   2. 工具链见证件非数学定理（版本戳必随回执）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Trust.GuardedVsPresentation where
+module Sovereign.Infrastructure.GuardedVsPresentation where
 
 open import Codata.Guarded.Stream using (Stream; head; tail; repeat; _[_])
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
