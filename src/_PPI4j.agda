@@ -67,14 +67,11 @@ private
 -- §1 谓词层（excursion 定义——x 显式参数，匹配不需索引精化）
 -- ══════════════════════════════════════════════════════════════════════════════
 
-_≢_ : ∀ {G : DiGraph} → DG.V G → DG.V G → Set
-_≢_ {G} a b = a ≡ b → ⊥
-
 -- 顶点 x 不出现在 walk 内部（端点不算——单边 walk 无内部恒真）
 NoX : ∀ {G : DiGraph} (x : DG.V G) → ∀ {u v} → Walk G u v → Set
 NoX x (nil v) = ⊤
 NoX x (cons e (nil v)) = ⊤
-NoX x (cons {v = u'} e (cons e' b)) = (x ≢ u') × NoX x (cons e' b)
+NoX x (cons {v = u'} e (cons e' b)) = (x ≡ u' → ⊥) × NoX x (cons e' b)
 
 -- 非空形（excursion 排除 nil——自由幺半群生成元非单位）
 Nonempty : ∀ {G : DiGraph} → ∀ {u v} → Walk G u v → Set
@@ -86,7 +83,7 @@ IsExc : ∀ {G : DiGraph} (x : DG.V G) → Loop G x → Set
 IsExc x w = NoX x w × Nonempty w
 
 -- 前缀扩张：p 无内部 x、终点 v ≠ x ⟹ p ++w (v→w 单边) 无内部 x
-NoX-ext : ∀ {G : DiGraph} {x u v w} (p : Walk G u v) → NoX x p → (x ≢ v)
+NoX-ext : ∀ {G : DiGraph} {x u v w} (p : Walk G u v) → NoX x p → (x ≡ v → ⊥)
         → (e : DG.edge G v w) → NoX x (p ++w cons e (nil w))
 NoX-ext (nil v) n ne e = tt
 NoX-ext (cons {v = u'} e0 (nil .u')) n ne e = ne , tt
@@ -116,16 +113,16 @@ module Cut {G : DiGraph} (eqV : (a b : DG.V G) → Dec (a ≡ b)) where
 
   cutG : ∀ {a b} (w : Walk G a b) → Out w
   cutAccG : ∀ {a u' b} (acc : Walk G a u') (t : Walk G u' b)
-          → u' ≢ a → NoX a acc
+          → (u' ≡ a → ⊥) → NoX a acc
           → Σ (List (Walk G a a))
               (λ es → Σ (Walk G a b) (λ r → concatL es ++w r ≡ acc ++w t))
 
   cutG {a} (cons {v = u'} e t) with eqV u' a
   ... | yes refl =
     -- 首边即返回：单边 excursion + 递归尾部（重构链：assoc + cong）
-    ( cons e (nil a) ∷ proj₁ (proj₁ rest)
+    ( cons e (nil a) ∷ proj₁ rest
     , proj₁ (proj₂ rest)
-    , trans (++w-assocᴱ (cons e (nil a)) (concatL (proj₁ (proj₁ rest))) (proj₁ (proj₂ rest)))
+    , trans (++w-assocᴱ (cons e (nil a)) (concatL (proj₁ rest)) (proj₁ (proj₂ rest)))
             (cong (cons e (nil a) ++w_) (proj₂ (proj₂ rest))) )
     where rest = cutG t
   ... | no u'≢a = cutAccG (cons e (nil u')) t u'≢a tt
@@ -135,10 +132,10 @@ module Cut {G : DiGraph} (eqV : (a b : DG.V G) → Dec (a ≡ b)) where
   cutAccG {a} acc (cons {v = u'} e t) ne nacc with eqV u' a
   ... | yes refl =
     -- 尾边返回：累积段收口为一个 excursion + 递归尾部
-    ( (acc ++w cons e (nil a)) ∷ proj₁ (proj₁ rest)
+    ( (acc ++w cons e (nil a)) ∷ proj₁ rest
     , proj₁ (proj₂ rest)
     , trans (trans (++w-assocᴱ (acc ++w cons e (nil a))
-                               (concatL (proj₁ (proj₁ rest))) (proj₁ (proj₂ rest)))
+                               (concatL (proj₁ rest)) (proj₁ (proj₂ rest)))
                    (cong ((acc ++w cons e (nil a)) ++w_) (proj₂ (proj₂ rest))))
             (++w-assocᴱ acc (cons e (nil a)) t) )
     where rest = cutG t
@@ -162,10 +159,10 @@ open import _PPI4d using (e01; e10; w2)
 module TC = Cut {Gskel two-chain} _≟F_
 
 -- 切分核对：w2（单往返）→ [w2] + 残段 nil
-check-cut-w2 : proj₁ (proj₁ (TC.cutG w2)) ≡ (w2 ∷ [])
+check-cut-w2 : proj₁ (TC.cutG w2) ≡ (w2 ∷ [])
 check-cut-w2 = refl
 
-check-cut-w2w2 : proj₁ (proj₁ (TC.cutG (w2 ++w w2))) ≡ (w2 ∷ w2 ∷ [])
+check-cut-w2w2 : proj₁ (TC.cutG (w2 ++w w2)) ≡ (w2 ∷ w2 ∷ [])
 check-cut-w2w2 = refl
 
 -- 残段归零核对（two-chain 具体面——泛形立界 (i) 的实例验证）
@@ -173,6 +170,16 @@ check-res-nil : proj₁ (proj₂ (TC.cutG w2)) ≡ nil fzero
 check-res-nil = refl
 
 -- excursion 判定核对（w2 内部顶点 = fsuc fzero ≠ fzero）
-check-exc-w2 : IsExc fzero w2
-check-exc-w2 = (λ ()) , tt
+fz≠fs : _≡_ {A = Fin 2} fzero (fsuc fzero) → ⊥
+fz≠fs ()
+
+-- （IsExc 双分件核对——× 对构造在本上下文怪合，分件形语义等价）
+check-exc-w2a : NoX fzero w2
+check-exc-w2a = fz≠fs , tt
+  where
+  _ : ⊤
+  _ = tt
+
+check-exc-w2b : Nonempty w2
+check-exc-w2b = tt
 
