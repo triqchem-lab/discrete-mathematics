@@ -7,7 +7,7 @@ exit_conditions: {ok: 继续下一批, partial: 修当前批≤3轮, stuck: 标d
 batches:
   - id: B001
     layer: 90-infrastructure
-    modules: [Sovereign.Structology.MatrixZ, Sovereign.Structology.Z, Sovereign.Trust.TwoViewRewritten, Sovereign.Problem.Sqrt2.Sqrt2Irrational, Sovereign.Structology.T6Rewrite, Sovereign.Structology.XuanwuAbsorptionRewrite, Sovereign.Algebra.ProbeArith, Sovereign.Algebra._ProbeAssoc, Sovereign.Cubical.IntArith, Sovereign.Cubical.Fin3, Sovereign.Cubical.Fin3Sum9, Sovereign.HoTT.DiscreteCubical]
+    modules: [Sovereign.Trust.TwoViewRewritten, Sovereign.Problem.Sqrt2.Sqrt2Irrational, Sovereign.Structology.T6Rewrite, Sovereign.Structology.XuanwuAbsorptionRewrite, Sovereign.Algebra.ProbeArith, Sovereign.Cubical.IntArith, Sovereign.Cubical.Fin3, Sovereign.Cubical.Fin3Sum9, Sovereign.HoTT.DiscreteCubical]
     grade_C_count: 2
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B002
@@ -32,12 +32,12 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B006
     layer: 00-foundation
-    modules: [Sovereign.Analysis.ApproxBounds, Sovereign.Analysis.DiscreteSpecialFunctions, Sovereign.Analysis.DiscreteVariational, Sovereign.Analysis.PairEnc, Sovereign.Analysis.RandomMatrixMoments, Sovereign.Analysis.SpecialValues, Sovereign.Applied.AcousticsDiscrete, Sovereign.Applied.PacketShiftArithmetic, Sovereign.Applied.ThermoExtended, Sovereign.Algebra.IntRingSolver, Sovereign.Arithmetic.MobiusPhi, Sovereign.Base.Axioms]
+    modules: [Sovereign.Analysis.ApproxBounds, Sovereign.Analysis.DiscreteSpecialFunctions, Sovereign.Analysis.DiscreteVariational, Sovereign.Analysis.PairEnc, Sovereign.Analysis.RandomMatrixMoments, Sovereign.Analysis.SpecialValues, Sovereign.Applied.AcousticsDiscrete, Sovereign.Applied.PacketShiftArithmetic, Sovereign.Applied.ThermoExtended, Sovereign.Arithmetic.MobiusPhi, Sovereign.Base.Axioms]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B007
     layer: 10-base
-    modules: [Sovereign.Base.FunctionTheory, Sovereign.Base.Trit, Sovereign.Coding.HammingMetric, Sovereign.Coding.PigeonholeStandard, Sovereign.Coding.Trit, Sovereign.Coupling.Dynamics, Sovereign.Coupling.TrainingSoftConstraint, Sovereign.Engine.StateMachine, Sovereign.Examples, Sovereign.Format.DigitField, Sovereign.Format.DigitRealization, Sovereign.Format.Positional (base : ℕ) (base>1 : 1 < base)]
+    modules: [Sovereign.Base.FunctionTheory, Sovereign.Base.Trit, Sovereign.Coding.HammingMetric, Sovereign.Coding.PigeonholeStandard, Sovereign.Coding.Trit, Sovereign.Coupling.Dynamics, Sovereign.Coupling.TrainingSoftConstraint, Sovereign.Engine.StateMachine, Sovereign.Examples, Sovereign.Format.DigitField, Sovereign.Format.DigitRealization, Sovereign.Format.Positional]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B008
