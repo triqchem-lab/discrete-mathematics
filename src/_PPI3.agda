@@ -246,3 +246,169 @@ check-sk-inj = refl
 --       一般形待 (d) 定陈述（群/幺半群分水岭：有向图无 flip 时逆律缺失）；
 -- (iv)  真几何（ℝⁿ 凸包）**明确排除**（连续统红线）——组合形即终形，非遗漏；
 -- (v)   退化映射：神经为半单纯集（链单射 ⇒ 无退化）——定理性事实非缺口。
+
+-- ────────────────────────────────────────────────────────────────────
+-- ⑩ (a3) 预备件 + KnGluing 对接（2026-10-11——决策 3 顺推件；细化 ⑨(i)(ii)）
+--   (i)  ∂ 复合律（半单纯关系）：face∘face 双删交换——vert 逐点形
+--        （record 级等式需 funExt/证明无关，vert 数据层即定律本体——立界注记）；
+--   (ii) KnGluing 对接：Sk 形 → K2Gluing 实例（ιv/ιf ↔ 单形包含；∂₂ ↔ face 三边包）。
+-- 修程注：fzero : Fin (suc n) 构造子形——m 未细化时结果位构造不出（本节全部
+--   Fin m 结果件均以 {zero}/{suc _} 形细化 m（隐式形模式）；递归件的 m 细化
+--   由 fsuc 尾模式承担（skip-< 同诀）。
+-- ────────────────────────────────────────────────────────────────────
+open import Sovereign.Topology.OrderComplex using (chain3-down; lin3; lin3-chain3)
+open import Sovereign.Topology._PMc2 using (KVert; KEdge; KTri; tri-face-xy; tri-face-yz)
+open import _PPI using (FaceBoundary; bd; K2Gluing)
+
+-- ⑩.1 删点双向映射（skip 的两个逆向件）
+-- unskip b a lt = 原位 a 在删 b 后的余位（a < b 时 a 的余位 = a 本身）
+unskip : ∀ {m} (b a : Fin (suc m)) → a <ᵢ b → Fin m
+unskip {zero} fzero fzero ()
+unskip {suc _} fzero _ ()
+unskip {suc _} (fsuc _) fzero _ = fzero
+unskip {suc _} (fsuc i) (fsuc j) (s≤s p) = fsuc (unskip i j p)
+
+skip-unskip : ∀ {m} (b a : Fin (suc m)) (lt : a <ᵢ b) → skip b (unskip b a lt) ≡ a
+skip-unskip {zero} fzero fzero ()
+skip-unskip {suc _} fzero _ ()
+skip-unskip {suc _} (fsuc _) fzero _ = refl
+skip-unskip {suc _} (fsuc i) (fsuc j) (s≤s p) = cong fsuc (skip-unskip i j p)
+
+-- shift a b lt = 原位 b 在删 a 后的余位（a < b 时 b 的余位前移一位）
+shift : ∀ {m} (a b : Fin (suc m)) → a <ᵢ b → Fin m
+shift {zero} fzero fzero ()
+shift {suc _} fzero fzero ()
+shift {suc _} fzero (fsuc b) _ = b
+shift {suc _} (fsuc _) fzero ()
+shift {suc _} (fsuc a) (fsuc b) (s≤s p) = fsuc (shift a b p)
+
+skip-shift : ∀ {m} (a b : Fin (suc m)) (lt : a <ᵢ b) → skip a (shift a b lt) ≡ b
+skip-shift {zero} fzero fzero ()
+skip-shift {suc _} fzero fzero ()
+skip-shift {suc _} fzero (fsuc b) _ = refl
+skip-shift {suc _} (fsuc _) fzero ()
+skip-shift {suc _} (fsuc a) (fsuc b) (s≤s p) = cong fsuc (skip-shift a b p)
+
+-- 双删交换（skip 核心代数——∂ 复合律的组合引理）：
+--   先删 B 再删 A 余位 = 先删 A 再删 B 余位（删对 {A,B} 与顺序无关）
+skip-comm2 : ∀ {m} (A B : Fin (suc (suc m))) (lt : A <ᵢ B) (x : Fin m)
+  → skip B (skip (unskip B A lt) x) ≡ skip A (skip (shift A B lt) x)
+skip-comm2 fzero fzero ()
+skip-comm2 (fsuc _) fzero ()
+skip-comm2 fzero (fsuc _) _ _ = refl
+skip-comm2 (fsuc A) (fsuc B) (s≤s lt) fzero = refl
+skip-comm2 (fsuc A) (fsuc B) (s≤s lt) (fsuc x) = cong fsuc (skip-comm2 A B lt x)
+
+-- ⑩.2 ∂ 复合律（半单纯关系）——vert 逐点形
+--   两条删 {A,B} 的复合面在顶点数据上逐点相等：
+--   face (face s B) (unskip B A lt) 与 face (face s A) (shift A B lt)
+face-face-comm : ∀ {n} (P : FinitePoset n) {k} (s : Simplex P (suc (suc k)))
+  (A B : Fin (suc (suc k))) (lt : A <ᵢ B) (x : Fin k)
+  → Simplex.vert (face P (face P s B) (unskip B A lt)) x
+  ≡ Simplex.vert (face P (face P s A) (shift A B lt)) x
+face-face-comm P s A B lt x = cong (Simplex.vert s) (skip-comm2 A B lt x)
+
+-- ⑩.3 KnGluing 对接件：顶点单形 / 三角单形 / 面三边包
+-- 顶点单形（dim 0——vchain 在 Fin 1 无严格对，空真；通用 P）
+vert-simplex : ∀ {n} (P : FinitePoset n) (v : Fin n) → Simplex P 1
+vert-simplex P v = record
+  { vert   = λ _ → v
+  ; vchain = λ i j lt → ⊥-elim (f1-<absurd i j lt) }
+  where
+    f1-<absurd : (i j : Fin 1) → i <ᵢ j → ⊥
+    f1-<absurd fzero fzero lt = ≤-zero-impossible lt
+
+-- 三角单形（dim 2）：KTri x y z ↦ 顶点表 (x,y,z)——vchain 由三边供证
+tri-v : ∀ {n} (x y z : Fin n) → Fin 3 → Fin n
+tri-v x y z fzero = x
+tri-v x y z (fsuc fzero) = y
+tri-v x y z (fsuc (fsuc fzero)) = z
+
+-- 面三边包 ↔ bd 槽位表：face0(删x)=e23 / face1(删y)=e13 / face2(删z)=e12
+tri-c : ∀ {n} (P : FinitePoset n) {x y z : Fin n}
+        (hxy : Strict P x y) (hyz : Strict P y z)
+      → (i j : Fin 3) → i <ᵢ j → Strict P (tri-v x y z i) (tri-v x y z j)
+tri-c P hxy hyz fzero fzero lt = ⊥-elim (≤-zero-impossible lt)
+tri-c P hxy hyz fzero (fsuc fzero) _ = hxy
+tri-c P hxy hyz fzero (fsuc (fsuc fzero)) _ =
+  proj₁ (proj₂ (chain3-down P (hxy , hyz)))          -- xz 边：chain3-down 纯投影（(a1) 件）
+tri-c P hxy hyz (fsuc fzero) fzero lt = ⊥-elim (≤-zero-impossible lt)
+tri-c P hxy hyz (fsuc fzero) (fsuc fzero) lt = ⊥-elim (≤-irrefl-1 lt)
+tri-c P hxy hyz (fsuc fzero) (fsuc (fsuc fzero)) _ = hyz
+tri-c P hxy hyz (fsuc (fsuc fzero)) fzero lt = ⊥-elim (≤-zero-impossible lt)
+tri-c P hxy hyz (fsuc (fsuc fzero)) (fsuc fzero) (s≤s p) = ⊥-elim (≤-zero-impossible p)
+tri-c P hxy hyz (fsuc (fsuc fzero)) (fsuc (fsuc fzero)) lt = ⊥-elim (≤-irrefl-1 lt)
+
+tri-simplex : ∀ {n} (P : FinitePoset n) {x y z : Fin n} → KTri P x y z → Simplex P 3
+tri-simplex P {x} {y} {z} t = record
+  { vert   = tri-v x y z
+  ; vchain = tri-c P (tri-face-xy P t) (tri-face-yz P t) }
+
+tri-xz : ∀ {n} (P : FinitePoset n) {x y z : Fin n} → KTri P x y z → Strict P x z
+tri-xz P t = proj₁ (proj₂ (chain3-down P t))
+
+-- ⑩.4 Sk 形 → K2Gluing（ιv/ιf ↔ 单形包含；∂₂ ↔ face 三边包）——(a3) 主件
+sk2-v : ∀ {n} (P : FinitePoset n) → KVert {n} → Sk P 2
+sk2-v P v = 0 , z≤n , vert-simplex P v
+
+sk2-f : ∀ {n} (P : FinitePoset n) {x y z : Fin n} → KTri P x y z → Sk P 2
+sk2-f P t = 2 , s≤s (s≤s z≤n) , tri-simplex P t
+
+sk2-∂ : ∀ {n} (P : FinitePoset n) {x y z : Fin n} → KTri P x y z → FaceBoundary P {x} {y} {z}
+sk2-∂ P t = bd (tri-face-xy P t) (tri-face-yz P t) (tri-xz P t)
+
+K2-from-Sk : ∀ {n} (P : FinitePoset n) → K2Gluing P
+K2-from-Sk P = record
+  { Sk2 = Sk P 2
+  ; ιv  = sk2-v P
+  ; ιf  = sk2-f P
+  ; ∂₂  = sk2-∂ P }
+
+-- 对接核对：ιv 的顶点数据 = 原顶点（单形包含语义）
+dock-ιv-vert : ∀ {n} (P : FinitePoset n) (v : Fin n)
+  → Simplex.vert (proj₂ (proj₂ (K2Gluing.ιv (K2-from-Sk P) v))) fzero ≡ v
+dock-ιv-vert P v = refl
+
+-- 对接核对：∂₂ 的三分量 = face 三边包（bd 槽位表逐字）
+∂₂-pack : ∀ {n} (P : FinitePoset n) {x y z : Fin n} (t : KTri P x y z)
+  → K2Gluing.∂₂ (K2-from-Sk P) t
+  ≡ bd (tri-face-xy P t) (tri-face-yz P t) (tri-xz P t)
+∂₂-pack P t = refl
+
+-- ⑩.5 核对层（refl 级交叉——face 三边包 vert 表）
+tri-f0-v0 : ∀ {n} (P : FinitePoset n) {x y z : Fin n} (t : KTri P x y z)
+  → Simplex.vert (face P (tri-simplex P t) fzero) fzero ≡ y
+tri-f0-v0 P t = refl
+tri-f0-v1 : ∀ {n} (P : FinitePoset n) {x y z : Fin n} (t : KTri P x y z)
+  → Simplex.vert (face P (tri-simplex P t) fzero) (fsuc fzero) ≡ z
+tri-f0-v1 P t = refl
+tri-f1-v0 : ∀ {n} (P : FinitePoset n) {x y z : Fin n} (t : KTri P x y z)
+  → Simplex.vert (face P (tri-simplex P t) (fsuc fzero)) fzero ≡ x
+tri-f1-v0 P t = refl
+tri-f1-v1 : ∀ {n} (P : FinitePoset n) {x y z : Fin n} (t : KTri P x y z)
+  → Simplex.vert (face P (tri-simplex P t) (fsuc fzero)) (fsuc fzero) ≡ z
+tri-f1-v1 P t = refl
+tri-f2-v0 : ∀ {n} (P : FinitePoset n) {x y z : Fin n} (t : KTri P x y z)
+  → Simplex.vert (face P (tri-simplex P t) (fsuc (fsuc fzero))) fzero ≡ x
+tri-f2-v0 P t = refl
+tri-f2-v1 : ∀ {n} (P : FinitePoset n) {x y z : Fin n} (t : KTri P x y z)
+  → Simplex.vert (face P (tri-simplex P t) (fsuc (fsuc fzero))) (fsuc fzero) ≡ y
+tri-f2-v1 P t = refl
+
+-- 双删交换实例核对（lin3 三链：两条删 {0,1} 路径同值）
+check-ff-lin3 :
+    Simplex.vert (face lin3 (face lin3 (tri-simplex lin3 lin3-chain3) (fsuc fzero)) fzero) fzero
+  ≡ Simplex.vert (face lin3 (face lin3 (tri-simplex lin3 lin3-chain3) fzero) fzero) fzero
+check-ff-lin3 = refl
+
+-- two-chain 对接注入（ιv 两顶点可分——与 old skel2-two-chain 的 Fin 2 占位顶点层一致）
+dock-inj-two-chain :
+    K2Gluing.ιv (K2-from-Sk two-chain) fzero
+  ≡ K2Gluing.ιv (K2-from-Sk two-chain) (fsuc fzero) → ⊥
+dock-inj-two-chain p = f0≢f1 (cong (λ c → Simplex.vert (proj₂ (proj₂ c)) fzero) p)
+
+-- ⑩.6 精确剩余（(a3) 后续定基）
+--   (i)   face-face-comm 的 record 级提升需 funExt/证明无关（vchain 为证明字段）——立界；
+--   (ii)  K2Gluing.Sk2 与 Sk 2 的承载级同一（iso/等价桥）——本件给构造 + vert 级对接核对；
+--   (iii) n-骨架归纳（KnGluing 泛化到 n）依赖 (i)(ii) 落定；
+--   (iv)  一般图神经（对称化偏序化）属 (d) π₁ 对接件（群/幺半群分水岭先定陈述）。
