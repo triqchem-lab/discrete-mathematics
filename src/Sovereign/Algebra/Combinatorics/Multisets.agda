@@ -22,7 +22,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
 open import Data.Nat.Properties using (+-assoc; +-comm; +-identityʳ; suc-injective)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Product using (_×_; _,_)
-open import Data.Sum using (_⊎_; inj₁; inj₂; inj₃)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong; cong₂)
@@ -118,7 +118,7 @@ check-ms-2-1 = refl
 -- 弱组合分类（星棒 k=2 全形——穷举边界内）：a+b ≡ 2 ⟹ (a,b) ∈ 三分类
 pair-class-2 : ∀ a b → a + b ≡ 2 →
   (a ≡ 2 × b ≡ 0) ⊎ (a ≡ 1 × b ≡ 1) ⊎ (a ≡ 0 × b ≡ 2)
-pair-class-2 zero b eq = inj₃ (refl , eq)
+pair-class-2 zero b eq = inj₂ (inj₂ (refl , eq))
   -- 0+b = b ≡ 2 [定义相等]
 pair-class-2 (suc zero) b eq = inj₂ (inj₁ (refl , suc-inj-b))
   -- 1+b = suc b ≡ suc (suc zero) ⟹ b ≡ suc zero
