@@ -103,3 +103,13 @@ minus-assoc x y z = cong (x +_) (negDistrib y z) ∙ +Assoc x (Cubical.Data.Int.
 
 minus-shift : ∀ x y z → (x - y) + z ≡ (x + z) - y
 minus-shift x y z = sym (+Assoc x (Cubical.Data.Int.-_ y) z) ∙ cong (x +_) (+Comm (Cubical.Data.Int.-_ y) z) ∙ +Assoc x z (Cubical.Data.Int.-_ y)
+
+-- ─── 2026-10-11 补件 ───
+-- negDistrib-suc : negDistrib 的 (negsuc a, pos (suc b)) 情形提层（下游按名引用）
+-- 归约链：-(negsuc a + pos (suc b)) →[+Comm 换序]→ -(pos (suc b) + negsuc a)
+--   →[negDistrib-pos-negsuc]→ -pos (suc b) + -negsuc a →[+Comm 换回]→ (- negsuc a) + (- pos (suc b))
+negDistrib-suc : ∀ a b → Cubical.Data.Int.-_ (negsuc a + pos (suc b)) ≡ Cubical.Data.Int.-_ (negsuc a) + Cubical.Data.Int.-_ (pos (suc b))
+negDistrib-suc a b =
+      cong Cubical.Data.Int.-_ (+Comm (negsuc a) (pos (suc b)))
+      ∙ negDistrib-pos-negsuc (suc b) a
+      ∙ +Comm (Cubical.Data.Int.-_ (pos (suc b))) (Cubical.Data.Int.-_ (negsuc a))

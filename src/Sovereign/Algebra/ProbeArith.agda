@@ -215,3 +215,40 @@ triℤ (negsuc a) (negsuc b) with a ≟ℕ b
 ... | eqℕ x = eq (cong negsuc x)
 ... | gtℕ x = lt (negsuc-anti b a x)
 
+-- ─── 2026-10-11 补件 ───
+-- lem-dpp : probe 的核心重排引理提层（原 probe.where 的 lem'' 链：
+--   sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ (sucℤ n +pos a) - Lf）
+
+-- 小桥 1：(Lf +pos b) - Lf ≡ pos b（回到见证 b 的原点）
+wMinusLf-dpp : ∀ (Lf : ℤ) (b : ℕ) → (Lf +pos b) + Cubical.Data.Int.-_ Lf ≡ pos b
+wMinusLf-dpp Lf b =
+      cong (λ z → z + (Cubical.Data.Int.-_ Lf)) (+Comm Lf (pos b))
+      ∙ sym (+Assoc (pos b) Lf (Cubical.Data.Int.-_ Lf))
+      ∙ cong (pos b +_) (-Cancel Lf)
+
+-- 小桥 2：-(Lf+pos b) + pos b ≡ - Lf（minusPlus 消去）
+negw+posb-dpp : ∀ (Lf : ℤ) (b : ℕ) → Cubical.Data.Int.-_ (Lf +pos b) + pos b ≡ Cubical.Data.Int.-_ Lf
+negw+posb-dpp Lf b =
+      cong (Cubical.Data.Int.-_ (Lf +pos b) +_) (sym (wMinusLf-dpp Lf b))
+      ∙ +Assoc (Cubical.Data.Int.-_ (Lf +pos b)) (Lf +pos b) (Cubical.Data.Int.-_ Lf)
+      ∙ cong (λ z → z + (Cubical.Data.Int.-_ Lf))
+          (cong (λ z → z + (Lf +pos b)) (pos0+ (Cubical.Data.Int.-_ (Lf +pos b)))
+           ∙ minusPlus (Lf +pos b) (pos 0))
+      ∙ sym (pos0+ (Cubical.Data.Int.-_ Lf))
+
+-- 重排中心：-(Lf+pos b) + pos (a+b) ≡ pos a - Lf
+dpp-inner : ∀ (Lf : ℤ) (a b : ℕ) → Cubical.Data.Int.-_ (Lf +pos b) + pos (a +ℕ b) ≡ pos a + Cubical.Data.Int.-_ Lf
+dpp-inner Lf a b =
+      cong (Cubical.Data.Int.-_ (Lf +pos b) +_) (sym (pos-+pos a b))
+      ∙ cong (Cubical.Data.Int.-_ (Lf +pos b) +_) (+Comm (pos a) (pos b))
+      ∙ +Assoc (Cubical.Data.Int.-_ (Lf +pos b)) (pos b) (pos a)
+      ∙ cong (_+ (pos a)) (negw+posb-dpp Lf b)
+      ∙ +Comm (Cubical.Data.Int.-_ Lf) (pos a)
+
+lem-dpp : ∀ (n Lf : ℤ) (a b : ℕ) → sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ (sucℤ n +pos a) - Lf
+lem-dpp n Lf a b =
+      cong (λ z → z + pos (a +ℕ b)) (sucPush n (Cubical.Data.Int.-_ (Lf +pos b)))
+      ∙ sym (+Assoc (sucℤ n) (Cubical.Data.Int.-_ (Lf +pos b)) (pos (a +ℕ b)))
+      ∙ cong (sucℤ n +_) (dpp-inner Lf a b)
+      ∙ +Assoc (sucℤ n) (pos a) (Cubical.Data.Int.-_ Lf)
+
