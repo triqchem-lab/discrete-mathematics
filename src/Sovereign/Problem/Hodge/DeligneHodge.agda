@@ -13,7 +13,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 -- ═══════════════════════════════════════════════════════════
 
 -- 三角复形: dim ℋ = dim H = 1 (来自 jac_Hodge)
-open import Sovereign.Problem.Hodge.Hodge using (hodge-isomorphism)
+open import Sovereign.Application.Hodge using (hodge-isomorphism)
 open import Sovereign.Problem.Hodge.ChainComplex
   using (ChainComplex; dimH; tri; tri-h0; tri-h1; hodge-thm)
 

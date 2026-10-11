@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
-module Sovereign.Arithmetic.CRTLemmas where
+module Sovereign.Base.CRTLemmas where
 
 open import Data.Nat using (ℕ; NonZero; zero; suc; _+_; _*_; _∸_; _/_; _≤?_)
 open import Data.Nat.GCD using (gcd)

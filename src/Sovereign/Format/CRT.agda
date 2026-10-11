@@ -18,7 +18,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong
 open import Cubical.Foundations.Prelude using () renaming (_≡_ to _≡ᶜ_)
 open import Cubical.Data.Equality.Conversion using (eqToPath)
 open import Cubical.Foundations.Isomorphism using (Iso; iso)
-open import Sovereign.Arithmetic.CRTLemmas public using (coprime-POW2-POW3; crt-merge; POW2; POW3; M)
+open import Sovereign.Base.CRTLemmas public using (coprime-POW2-POW3; crt-merge; POW2; POW3; M)
 
 kT1 : ℕ ; kT1 = 24371
 kT2 : ℕ ; kT2 = 111271

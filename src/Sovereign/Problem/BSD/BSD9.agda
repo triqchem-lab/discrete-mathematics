@@ -19,7 +19,7 @@ open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- 导入已知的 GF(3) 数据
-open import Sovereign.Problem.BSD.BSD using (trace-E1; trace-E1-zero)
+open import Sovereign.Application.BSD using (trace-E1; trace-E1-zero)
 
 -- ═══════════════════════════════════════════════
 -- 目标态 (未来态): #E(GF(9)) = 16

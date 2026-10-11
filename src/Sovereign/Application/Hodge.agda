@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.Hodge
+-- | Sovereign.Application.Hodge
 -- GF(3) 三角复形的离散 Hodge 理论 (正确版本)
 --
 -- 不同于经典 ℝ/ℂ 的 Laplacian+内积论证,
@@ -12,7 +12,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Problem.Hodge.Hodge where
+module Sovereign.Application.Hodge where
 
 open import Data.Nat using (ℕ; _+_; _∸_)
 open import Data.Fin using (Fin; zero; suc)

@@ -39,9 +39,9 @@ open import Sovereign.Structology.A4ThreeDimRep
   using (rho3; rho3-hom; chi3FromRep; rho3-identity;
          chi3-id; chi3-3cycle; chi3-double-transposition; chi3-values;
          classOf)
-open import Sovereign.Structology.BinaryTetrahedralDefiningRep
+open import Sovereign.Synthesis.BinaryTetrahedralDefiningRep
   using (SL23; orderOf; chi2FromRep; chi2-correct) renaming (classOf to classOf23)
-open import Sovereign.Structology.BinaryTetrahedralRepresentation
+open import Sovereign.Synthesis.BinaryTetrahedralRepresentation
   using (z-two; z-neg-two; z-neg-one)
 open import Sovereign.Structology.SL23Trace
   using (trace-correct)

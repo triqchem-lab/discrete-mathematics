@@ -35,14 +35,14 @@ import Sovereign.Problem.YangMills.WilsonPlaquette
 
 -- Hodge L3 ✅
 import Sovereign.Problem.Hodge.ChainComplex       -- hodge-decomp: nullity∂ ≡ rank∂∘suc + dimℋ
-import Sovereign.Problem.Hodge.Hodge
+import Sovereign.Application.Hodge
 import Sovereign.Application.HodgeTetra
 import Sovereign.Application.TorusHodge
 import Sovereign.Application.KleinHodge
 import Sovereign.Application.EulerChar
 
 -- BSD L3 ✅（自 L3* 升级: BSD 恒等式与 Hasse 界已由 WeilRigidity 闭合）
-import Sovereign.Problem.BSD.BSD
+import Sovereign.Application.BSD
 import Sovereign.Problem.BSD.BSD_L3               -- t-rec 递归 + 正确性
 import Sovereign.Problem.BSD.BSD_GF27
 import Sovereign.Problem.BSD.BSD_General
@@ -63,7 +63,7 @@ import Sovereign.Problem.Langlands.DeligneLusztig  -- 外部形式化
 
 -- PvsNP L3 ✅（separation: ∃f, EvalAlways f ∧ ∀r f(r)≢0 — 不可约三次见证, 0 postulate）
 --           + GF27Separation: 根集 = Frobenius 共轭三元组 {γ,γ³,γ⁹}, 27 元素穷举恰好 3 根
-import Sovereign.Problem.PvsNP.Complexity
+import Sovereign.Application.Complexity
 import Sovereign.Problem.PvsNP.DetMul
 import Sovereign.Problem.PvsNP.PvsNP_Conjecture
 import Sovereign.Problem.PvsNP.PvsNP_Separation
@@ -90,7 +90,7 @@ import Sovereign.Problem.Kakeya.KakeyaPathology
 import Sovereign.Algebra.Jacobian.jac_CRTDet
 import Sovereign.Algebra.Holographic.PhysicalOntology
 import Sovereign.Algebra.SpiralCycle               -- ⟨2⟩ 六环定理
-import Sovereign.Structology.HolographicPi         -- 原子化: 0 postulate, 类型层禁止约分
+import Sovereign.Synthesis.HolographicPi         -- 原子化: 0 postulate, 类型层禁止约分
 import Sovereign.Structology.IhC60Vibration        -- I_h → 46: 174 维振动表示 → 46 独立基频
 
 -- 汇总: Problem/ 61 模块 + 基础设施, 0 postulate。

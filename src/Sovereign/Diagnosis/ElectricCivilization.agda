@@ -26,7 +26,7 @@ open import Relation.Nullary.Negation using (¬_)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; tritEncode; tritDecode)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
-open import Sovereign.Structology.HolographicPi using (HolographicPi; standardHoloPi; 
+open import Sovereign.Synthesis.HolographicPi using (HolographicPi; standardHoloPi; 
                                                          holoPiNumeratorIs144; holoPiDenominatorIs46)
 open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶)
 open import Sovereign.Infrastructure.Projection using (Category; Electric; RootMathCat; StructologyCat; 

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.HolographicPi
+-- | Sovereign.Synthesis.HolographicPi
 -- 结构学：全息 π = 144/46
 --
 -- 本质：T⁶ 离散环面上极向缠绕 144 与环向缠绕 46 的原子配对
@@ -8,7 +8,7 @@
 -- 注意：非连续统 π ≈ 3.14159，禁止约分、禁止十进制展开
 -- 范畴纪律：PolarRep/ToroidalRep 为不透明原子类型——"约分"在类型层不可表达
 
-module Sovereign.Structology.HolographicPi where
+module Sovereign.Synthesis.HolographicPi where
 
 -- Experimental Verification (Scholar Loop, /data/training/cli/scholar-loop):
 --   早期快照 (2026-07-03): 23 experiments, 20/23 (87%);

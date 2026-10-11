@@ -78,7 +78,7 @@ v4-H1-ok : v4-H1-dim ≡ 0; v4-H1-ok = refl
 --   trace = 0 → 对应代数秩 = 0 → Selmer 平凡 → H¹ = 0.
 --   符合 gcd(4, 3) = 1 条件.
 
-open import Sovereign.Problem.BSD.BSD using (#E1; #E1-is-4)
+open import Sovereign.Application.BSD using (#E1; #E1-is-4)
 
 selmer-e1 : #E1 ≡ 4; selmer-e1 = #E1-is-4
 

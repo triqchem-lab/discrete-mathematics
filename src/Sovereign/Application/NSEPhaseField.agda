@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEPhaseField
+-- | Sovereign.Application.NSEPhaseField
 -- 量子格点上的量子势与环面压力 (展示群载体: Trit × AlphaPower)
 --
 -- 范式声明 (2026-09-09 修正):
@@ -22,7 +22,7 @@
 -- 依赖: Base.Trit, Algebra.GF9, Algebra.GroupTheory.DuodecClock
 -- 0 postulate / 0 hole
 
-module Sovereign.Problem.NavierStokes.NSEPhaseField where
+module Sovereign.Application.NSEPhaseField where
 
 open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n)
 open import Data.Nat.Properties using (≤-refl; m≤n⇒m≤1+n)

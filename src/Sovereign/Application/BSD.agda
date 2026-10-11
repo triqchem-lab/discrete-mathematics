@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.BSD.BSD
+-- | Sovereign.Application.BSD
 -- 离散 BSD 猜想 — 有限域椭圆曲线点计数与秩判据
 --
 -- 核心定理:
@@ -19,7 +19,7 @@
 --
 -- 包含：data、sq、rhs、on-curve、count-points、#E1、#E1-is-4、hasse-ok、trace-E1、trace-E1-zero、#E2、#E2-is-7、#E3、#E3-is-4
 
-module Sovereign.Problem.BSD.BSD where
+module Sovereign.Application.BSD where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Data.Fin using (Fin; zero; suc)

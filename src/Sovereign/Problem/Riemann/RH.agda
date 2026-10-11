@@ -2,7 +2,7 @@
 
 -- Sovereign.Problem.Riemann.RH（旧名 jac_RH）
 -- 有限域 Weil/RH — 深度形式化
--- 所有数值从 Sovereign.Problem.BSD.BSD（旧名 jac_BSD）的穷举 #E 自动推导, 无手动赋值.
+-- 所有数值从 Sovereign.Application.BSD（旧名 jac_BSD）的穷举 #E 自动推导, 无手动赋值.
 -- 0 postulate.
 
 module Sovereign.Problem.Riemann.RH where
@@ -12,7 +12,7 @@ open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- 从 jac_BSD 导入: #E 已由穷举点计数 refl 证明
-open import Sovereign.Problem.BSD.BSD using (#E1; #E2; #E6; #E1-is-4; #E2-is-7; #E6-is-1)
+open import Sovereign.Application.BSD using (#E1; #E2; #E6; #E1-is-4; #E2-is-7; #E6-is-1)
 
 -- Weil 递推 (来自 jac_BSD_L3)
 open import Sovereign.Problem.BSD.BSD_L3 using (t-rec; step; q3)

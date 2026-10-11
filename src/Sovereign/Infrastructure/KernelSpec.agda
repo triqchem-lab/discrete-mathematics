@@ -25,7 +25,7 @@
 --   （同提交另有 10 个黄金期望文件、792 行误入库 .bak、.gitignore 一行 ⇒ 合计 15 文件 +822/−43）
 --
 -- 数学锚点（三层，均已证，本模块用**签名**钉住；锚点漂移 ⇒ 本模块编译失败 = 自动告警）：
---   算术层 Sovereign.Arithmetic.CRTLemmas:22/104  coprime-POW2-POW3 / crt-merge
+--   算术层 Sovereign.Base.CRTLemmas:22/104  coprime-POW2-POW3 / crt-merge
 --   双射层 Sovereign.Algebra.Duodecimal:438/445/454  crt12-roundtrip / -inv-π3 / -inv-π4
 --   望远镜层 Sovereign.Structology.QuantumBridge:395 起「构造子注入性的 CRT 正交分解」
 --            （:604 module TelescopeVerification；:640/:661/:668/:702/:712 为名字级对应）
@@ -45,7 +45,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; sym; trans; cong; cong₂)
 
 open import Sovereign.Base.Trit using (Trit)
-open import Sovereign.Arithmetic.CRTLemmas using (POW2; POW3; M; crt-merge)
+open import Sovereign.Base.CRTLemmas using (POW2; POW3; M; crt-merge)
 open import Sovereign.Algebra.Duodecimal
   using (Duodec; π3; π4; crt12; crt12-roundtrip; crt12-inv-π3; crt12-inv-π4)
 

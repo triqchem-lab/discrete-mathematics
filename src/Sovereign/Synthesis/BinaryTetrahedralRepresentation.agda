@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.BinaryTetrahedralRepresentation
+-- | Sovereign.Synthesis.BinaryTetrahedralRepresentation
 -- 二元四面体群 2·A₄ = SL(2,3) 表示论 — 三代(3阶)与 Frobenius(4阶)之桥 (0 postulate)
 --
 -- 【本体修正】2·A₄ 的物理图像 = 两个 A₄ 的 Frobenius 共轭展开, 非中心扩张/对偶/对称。
@@ -35,7 +35,7 @@
 --   SL23Trace (矩阵→迹), BinaryTetrahedralTwoDimTensors (χ₂′/χ₂″=张量积),
 --   BinaryTetrahedralSpectrum (阶→特征值→迹)。
 
-module Sovereign.Structology.BinaryTetrahedralRepresentation where
+module Sovereign.Synthesis.BinaryTetrahedralRepresentation where
 
 open import Data.Nat using (ℕ; zero; suc) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
 open import Data.Integer.Base using (+_)

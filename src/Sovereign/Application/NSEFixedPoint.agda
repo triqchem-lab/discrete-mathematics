@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEFixedPoint
+-- | Sovereign.Application.NSEFixedPoint
 -- **不可压子空间 = nsStep 的不动点集**（逐点版）
 --
 -- 主定理（本模块）:
@@ -30,7 +30,7 @@
 -- 依赖: NSEOnT6（Field/v₁…v₆/diffF/shiftAt/div/grad/nsStep/Incompressible/iterate）,
 --       NSEIncompressible（nsStep-incompressible, 供归纳步取用）
 
-module Sovereign.Problem.NavierStokes.NSEFixedPoint where
+module Sovereign.Application.NSEFixedPoint where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

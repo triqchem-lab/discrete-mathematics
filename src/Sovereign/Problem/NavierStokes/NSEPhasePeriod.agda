@@ -25,7 +25,7 @@
 --      但按 §3 重复 4 次后回归 —— 两个断言同时为真, 不冲突。
 --
 -- 依赖: Data.List (stdlib, 已由 sovereign.agda-lib 注册为 depend: standard-library-2.4)
---       Sovereign.Problem.NavierStokes.NSEPhaseField (取其 rotate/rotate-4)
+--       Sovereign.Application.NSEPhaseField (取其 rotate/rotate-4)
 --       Sovereign.Algebra.GroupTheory.DuodecClock (AlphaPower/mulAlpha)
 -- 0 postulate / 0 hole
 
@@ -38,7 +38,7 @@ open import Relation.Binary.PropositionalEquality using
 open import Sovereign.Algebra.GroupTheory.DuodecClock using (
   AlphaPower; a0; a1; a2; mulAlpha; mulAlpha-assoc;
   mulAlpha-identityˡ; mulAlpha-identityʳ)
-open import Sovereign.Problem.NavierStokes.NSEPhaseField using (rotate; rotate-4)
+open import Sovereign.Application.NSEPhaseField using (rotate; rotate-4)
 
 --------------------------------------------------------------------------------
 -- §1. 路径累积: 一串相位元的乘积

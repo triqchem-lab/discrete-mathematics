@@ -17,7 +17,7 @@ open import Data.Nat using (ℕ; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- §1. GF(3) 数据: #E₁=4, trace=0 (来自 jac_BSD) -------------------
-open import Sovereign.Problem.BSD.BSD using (#E1-is-4)
+open import Sovereign.Application.BSD using (#E1-is-4)
 
 e1-gf3 : ℕ; e1-gf3 = 4
 e1-ok : e1-gf3 ≡ 4; e1-ok = refl

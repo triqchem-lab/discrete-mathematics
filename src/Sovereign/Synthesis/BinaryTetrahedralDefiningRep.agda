@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.BinaryTetrahedralDefiningRep
+-- | Sovereign.Synthesis.BinaryTetrahedralDefiningRep
 -- 2·A₄ = SL(2,3) 定义表示: 从 GF(3) 矩阵导出 χ₂ (0 postulate)
 --
 -- 【重要更正】此前计划用 Z[ω,i] 上生成元 a=diag(ω,ω²)、b=[[0,1],[-1,0]] 生成 24 阶群:
@@ -13,7 +13,7 @@
 --   阶 4 → 0 (特征值 i,-i),  阶 6 → 1 (特征值 -ω,-ω²)。
 -- 这正是「从表示推导特征标」, 与 BinaryTetrahedralRepresentation 的手写表一致 (24 refl)。
 
-module Sovereign.Structology.BinaryTetrahedralDefiningRep where
+module Sovereign.Synthesis.BinaryTetrahedralDefiningRep where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero; suc)
@@ -21,7 +21,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Structology.A4Representation using (Zω; oneZω; zeroZω)
-open import Sovereign.Structology.BinaryTetrahedralRepresentation
+open import Sovereign.Synthesis.BinaryTetrahedralRepresentation
   using (ConjClass2A4; chi2-2A4; z-two; z-neg-one; z-neg-two)
 
 --------------------------------------------------------------------------------

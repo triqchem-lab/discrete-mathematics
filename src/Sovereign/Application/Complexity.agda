@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.PvsNP.Complexity
+-- | Sovereign.Application.Complexity
 -- 全息计算复杂度 — M_F 不可约性穿透 P vs NP 三重屏障
 --
 -- 核心定理:
@@ -19,7 +19,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Problem.PvsNP.Complexity where
+module Sovereign.Application.Complexity where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin)

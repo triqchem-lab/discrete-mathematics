@@ -10,7 +10,7 @@ open import Sovereign.Base.Trit using (T₀; T₁)
 
 open import Sovereign.Algebra.Jacobian.jac_GF9Matrix
   using (1gf9; det3-gf9; I3-gf9; det3-gf9-I)
-open import Sovereign.Problem.PvsNP.Complexity
+open import Sovereign.Application.Complexity
   using (has-root)
 
 -- §1. 实证: 2×2 不可约 (jac_Complexity, refl) ---------------------

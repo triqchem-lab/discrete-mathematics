@@ -29,7 +29,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _^_; s≤s; z≤
 open import Data.Nat.DivMod using (m%n<n; [m+kn]%n≡m%n; m<n⇒m%n≡m)
 open import Data.Nat.Properties using (*-comm; +-comm; +-identityˡ)
 open import Data.Product using (Σ; _×_; _,_)
-open import Sovereign.Arithmetic.CRTLemmas using (crt-merge)
+open import Sovereign.Base.CRTLemmas using (crt-merge)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)
 
 -- CRT 基

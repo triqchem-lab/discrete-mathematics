@@ -45,7 +45,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 import Sovereign.Algebra.Jacobian.jac_CRTDet       -- CRT 拱顶石
 
 -- (III) 同调消失 (四种链复形)
-import Sovereign.Problem.Hodge.Hodge         -- 三角: (1,1)
+import Sovereign.Application.Hodge         -- 三角: (1,1)
 import Sovereign.Application.HodgeTetra    -- S²: (1,0,1)
 import Sovereign.Application.TorusHodge    -- T²: (1,2,1)
 import Sovereign.Application.KleinHodge    -- Klein: (1,1,0)
@@ -56,7 +56,7 @@ import Sovereign.Problem.YangMills.YM_L3         -- 2/3/4×4 λ()
 import Sovereign.Problem.YangMills.WilsonPlaquette -- 单plaquette
 
 -- (V) 全息穿透
-import Sovereign.Problem.PvsNP.Complexity     -- 2×2 has-root
+import Sovereign.Application.Complexity     -- 2×2 has-root
 import Sovereign.Problem.PvsNP.PvsNP_Conjecture -- 形式猜想
 
 -- ═══════════════════════════════════════════════════════════

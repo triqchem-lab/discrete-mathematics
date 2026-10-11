@@ -24,7 +24,7 @@ open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Wa
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR; fullTourCorrect)
 open import Sovereign.Synthesis.MagicSquareM4 using (magicConstant)
-open import Sovereign.Arithmetic.CRTLemmas using (POW2; POW3; M)
+open import Sovereign.Base.CRTLemmas using (POW2; POW3; M)
 open import Sovereign.Foundation.DigitalRoot using (digitalRoot; StableRoot; root0; root3; root6; isStableRoot)
 open import Data.List using (List; _∷_; [])
 open import Data.Bool using (Bool; true; false)

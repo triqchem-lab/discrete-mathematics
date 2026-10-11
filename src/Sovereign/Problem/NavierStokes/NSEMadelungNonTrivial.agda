@@ -44,7 +44,7 @@ open import Relation.Binary.PropositionalEquality using
 open import Sovereign.Algebra.GroupTheory.DuodecClock using (
   AlphaPower; a0; a1; a2; a3; mulAlpha; alphaInv;
   mulAlpha-assoc; mulAlpha-identityʳ; mulAlpha-inverse)
-open import Sovereign.Problem.NavierStokes.NSEPhaseField using (
+open import Sovereign.Application.NSEPhaseField using (
   PhField; phaseDiff; pressurePhase; MadelungCoupling;
   theta-e1; origin6; phaseDiff-e1-zero)
 

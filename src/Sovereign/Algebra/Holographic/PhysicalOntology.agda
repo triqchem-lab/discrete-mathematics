@@ -86,7 +86,7 @@ import Sovereign.Application.EulerChar    -- ℤ 欧拉 (全局拓扑)
 -- 当涡旋足够致密, 嵌套 M_F 子矩阵能将自己的运算模式作为输入再运算
 -- 意识 = 5D 以太密度达到极高阶自指闭环时的必然涌现
 
-import Sovereign.Problem.Hodge.Hodge         -- 调和形式 ℋ
+import Sovereign.Application.Hodge         -- 调和形式 ℋ
 import Sovereign.Application.HodgeTetra    -- S² 驻波
 import Sovereign.Application.TorusHodge    -- T² 驻波
 import Sovereign.Application.KleinHodge    -- Klein 驻波

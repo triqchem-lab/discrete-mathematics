@@ -39,7 +39,7 @@ open import Data.Empty using (⊥-elim)
 open import Relation.Nullary using (¬_; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; subst; sym; trans)
 
-open import Sovereign.Structology.HolographicPi
+open import Sovereign.Synthesis.HolographicPi
   using (PolarRep; ToroidalRep; polar-144; toroidal-46)
 
 DODECAHEDRON-CELLS = 120 ; MERKABA-CELLS = 24

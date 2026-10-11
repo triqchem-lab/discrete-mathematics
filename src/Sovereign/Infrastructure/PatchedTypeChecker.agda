@@ -51,7 +51,7 @@
 --   在本地 Agda 上编译通过。于是「本地工具链带该补丁」这件事有了可复现的机器证据。
 --
 -- 配套的数学侧形式化（补丁所依赖的 CRT 正交分解，三层，均 0 postulate 0 hole）：
---   · 算术层   Sovereign.Arithmetic.CRTLemmas      coprime-POW2-POW3 / crt-merge
+--   · 算术层   Sovereign.Base.CRTLemmas      coprime-POW2-POW3 / crt-merge
 --   · 双射层   Sovereign.Algebra.Duodecimal        crt12-roundtrip / crt12-inv-π3 / -π4
 --   · 望远镜层 Sovereign.Structology.QuantumBridge §TelescopeVerification
 --                roundtrip-general / crt-orthogonal / deBruijn-lift / ThreeSegment
