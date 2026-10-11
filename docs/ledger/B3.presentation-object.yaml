@@ -1,0 +1,9 @@
+id: B3.presentation-object
+module: Sovereign.Algebra.BraidGroup
+statement: B₃ 展示定义 record 化（唯一 presentation 关系 braid-rel + 群结构字段 + 逆律导出）
+level: A
+evidence:
+  compile_receipt: fbfae13f76c6f45860c1d22b5f419cd13ec6685348ba7c9b9771d273fb6a7af6
+  cross_check: 裁决 B2 驳回后关系入定义：3 postulate → 0；核实 2 超定收敛（逆律降导出定理）；零消费者 grep 实证
+proof_strategy: 展示群八要素 record（对象级）
+updated: 2026-10-11

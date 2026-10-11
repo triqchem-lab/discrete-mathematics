@@ -1,0 +1,9 @@
+id: H.postulate.harmonics-lock
+module: Sovereign.HoTT.CRTHarmonics
+statement: phase-lock-T1/T2 构造性闭合：∀ k → harmonic k % T1 ≡ 144 / % T2 ≡ 46（postulate → 证明）
+level: A
+evidence:
+  compile_receipt: 6e2453414852dbc328a89142252b2bc359a7270664126f5a99f189f33d78f33e
+  cross_check: 裁决 B1 驳回后重证：探针实测字面归约 1.78s（免 REWRITE）+ [m+kn]%n≡m%n + abstract-X0（prover_limits #49）
+proof_strategy: 符号/具体值拆分 + 泛型引理 lock-gen
+updated: 2026-10-11

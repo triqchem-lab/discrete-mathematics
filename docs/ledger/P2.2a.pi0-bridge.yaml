@@ -1,0 +1,9 @@
+id: P2.2a.pi0-bridge
+module: Sovereign.Topology.McCordPi0
+statement: McCord π₀ 影：cmpGraph 连通 ⇔ Alexandroff 拓扑连通（构造性双向）
+level: A
+evidence:
+  compile_receipt: 3b56d6f5301f68367adc904e712a0f74b3effb85bc0fab01985e9c0099b2dd6c
+  cross_check: 双 2 点实例交叉（two-chain Connected / two-anti Disconnected）
+proof_strategy: 构造性双向桥 + path-anti 逆变路径引理
+updated: 2026-10-11

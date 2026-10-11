@@ -1,0 +1,9 @@
+id: A5-inner-eq
+module: Sovereign.Algebra.LaurentRingLaws
+statement: assoc-inner-eq：装配链第 4 步逐点内层等式（triℤ 内/外支 + shuffle 重引 + bf j 归零）
+level: A
+evidence:
+  compile_receipt: 5fefb4ccad1b72ae4ea917b4afdfc636da04adeb4c3da9046d5276ff2a838b4f
+  cross_check: 探针 _PAI 绿 + check-in/check-out 交叉 + 总装回执
+proof_strategy: 未来态锚定逐点件 + sum-ℤ-cong 点化
+updated: 2026-10-11

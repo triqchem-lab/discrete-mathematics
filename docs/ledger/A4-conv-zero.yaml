@@ -1,0 +1,9 @@
+id: A4-conv-zero
+module: Sovereign.Algebra.LaurentRingLaws
+statement: conv-zeroˡ/ʳ：支撑空 ⇒ sums k (f *L g) ≡ pos 0
+level: A
+evidence:
+  compile_receipt: 5fefb4ccad1b72ae4ea917b4afdfc636da04adeb4c3da9046d5276ff2a838b4f
+  cross_check: 探针 _PAW 绿 + 总装回执；卷积窗口取首因子界已核
+proof_strategy: sum-ℤ-zero + ·AnnihilL/R
+updated: 2026-10-11

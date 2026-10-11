@@ -1,0 +1,9 @@
+id: A6-assoc
+module: Sovereign.Algebra.LaurentRingLaws
+statement: *assoc：∀ f g h k → sums k ((f *L g) *L h) ≡ sums k (f *L (g *L h))
+level: A
+evidence:
+  compile_receipt: 5fefb4ccad1b72ae4ea917b4afdfc636da04adeb4c3da9046d5276ff2a838b4f
+  cross_check: 探针 _PAA6 绿（9 轮收敛）+ check-mono/check-degen 独立 refl 对抗件 + oracle d2242ab6 + 总装回执
+proof_strategy: 未来态 7 步装配收 2 ∙ 链 + tri 分派
+updated: 2026-10-11

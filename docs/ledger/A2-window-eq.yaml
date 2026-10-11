@@ -1,0 +1,9 @@
+id: A2-window-eq
+module: Sovereign.Algebra.LaurentRingLaws
+statement: sum-ℤ-window-eq（修正契约）：两窗口同含支撑（Covers 零区恰在闭窗口 [L,L+n] 外）⇒ 和相等
+level: A
+evidence:
+  compile_receipt: 5fefb4ccad1b72ae4ea917b4afdfc636da04adeb4c3da9046d5276ff2a838b4f
+  cross_check: 探针 _PAW 绿 + δ尖峰反例驱动契约修正（原 Covers 差一被击落）+ 总装回执
+proof_strategy: 不变量三件套 + 双侧扩窗 trans 组合
+updated: 2026-10-11
