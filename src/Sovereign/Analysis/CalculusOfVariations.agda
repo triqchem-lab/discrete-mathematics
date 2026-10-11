@@ -31,10 +31,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
-open import Sovereign.Physics.DiscreteLagrangian
-  using (δS-equals-Δ²; variational-equals-laplacian;
-         critical-to-el; el-to-critical; satisfies-EL; is-critical;
-         el-const; el-lin)
+-- [波 2-C 检查件外移] DiscreteLagrangian import 随委托对迁出
 
 open ≡-Reasoning
 
@@ -77,14 +74,10 @@ open ≡-Reasoning
 --------------------------------------------------------------------------------
 
 -- Euler-Lagrange 方程等价性 (L2 全称)
-el-equivalence : ∀ φ i →
-  (is-critical φ i → satisfies-EL φ i)    -- 临界点 → EL
-  × (satisfies-EL φ i → is-critical φ i)  -- EL → 临界点
-el-equivalence φ i = critical-to-el φ i , el-to-critical φ i
+-- [波 2-C 检查件外移] el-equivalence 已迁 Sovereign.Physics.DiscreteLagrangianChecks
 
 -- 常数场满足 EL
-el-constant : ∀ i → satisfies-EL (λ _ → fz) i
-el-constant = el-const
+-- [波 2-C 检查件外移] el-constant 已迁 Sovereign.Physics.DiscreteLagrangianChecks
 
 -- 线性场满足 EL
 -- 已有: el-lin : ∀ i → satisfies-EL (λ p → vx p) i
