@@ -31,14 +31,6 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
-open import Sovereign.Physics.DiscreteEMField3D
-  using (Point3D; GF3; ScalarField; VectorField; next;
-         dx; dy; dz; grad; curl; div; vx; vy; vz;
-         add3; neg3; add3-comm; add3-assoc; add3-identity; add3-inverse;
-         neg3-involutive; neg3-add)
-open import Sovereign.Physics.DiscreteDiffOps
-  using (prev; mul3-comm; add3-cyclic; add-neg-zero;
-         integration-by-parts-1d; integration-by-parts-zero)
 open import Sovereign.Physics.DiscreteLagrangian
   using (δS-equals-Δ²; variational-equals-laplacian;
          critical-to-el; el-to-critical; satisfies-EL; is-critical;

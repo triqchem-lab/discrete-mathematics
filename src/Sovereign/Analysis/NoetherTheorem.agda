@@ -36,21 +36,6 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; ⊕-comm; ⊕-assoc)
-open import Sovereign.Physics.DiscreteEMField3D
-  using (Point3D; GF3; ScalarField; VectorField; next;
-         dx; dy; dz; grad; curl; div; vx; vy; vz;
-         add3; neg3; add3-comm; add3-assoc; add3-identity; add3-inverse;
-         neg3-involutive; neg3-add)
-open import Sovereign.Physics.DiscreteActionPrinciple
-  using (GaugeGroup; e; gα; gα²; gα³; _*g_; g-inv; embedG;
-         g-assoc; g-identityˡ; g-identityʳ; g-inverseˡ; g-inverseʳ;
-         embedG-hom; g-norm-is-1)
-open import Sovereign.Physics.DiscreteNoether
-  using (neg-add-identity; add-neg-zero; neg-add-distrib;
-         noether-1d-point0; noether-1d-point1; noether-1d-point2;
-         diff-comm)
-open import Sovereign.Physics.DiscreteMaxwellTime
-  using (charge-conservation; FaradayHolds; AmpereHolds; GaussHolds)
 
 open ≡-Reasoning
 
