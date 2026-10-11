@@ -14,24 +14,36 @@ module Sovereign.Algebra.BraidGroup where
 
 open import Relation.Binary.PropositionalEquality using (_≡_)
 
--- B₃ = ⟨σ₁, σ₂ | σ₁σ₂σ₁ = σ₂σ₁σ₂, σᵢσᵢ⁻¹ = e⟩ 的**展示定义**
--- 数学背景：关系是 B₃ 定义的组成部分（presentation），不是外来公理——
---   故关系以 record 字段承载（展示群八要素：载体 + 生成元 + 关系），零 postulate。
---   任何「B₃ 的模型」都是本 record 的一个实例；取用关系 = 投影字段。
+-- B₃ = ⟨σ₁, σ₂ | σ₁σ₂σ₁ = σ₂σ₁σ₂⟩ 的**展示定义**
+-- 数学背景：presentation 的关系**只有辫关系一条**（自由群上单关系）；逆元是群结构的
+--   导出（σ₁⁻¹ = inv σ₁，σ₁·σ₁⁻¹ = e 由逆公理给出）——不是独立生成元、不是关系。
+--   （2026-10-11 核实 2 修正：此前 σᵢ-inv 作关系 = 额外公理，与 B₃ 定义不符，已改导出定理。）
+-- 结构分层：群结构字段（定义"群"，同 UniversalAlgebra.Group 口径）+ 生成元 σ₁/σ₂ + 唯一关系。
 record B3 : Set₁ where
   field
     Carrier : Set
-    e      : Carrier
-    σ₁ σ₂ σ₁⁻¹ σ₂⁻¹ : Carrier
-    _·_    : Carrier → Carrier → Carrier
-    -- ① 辫关系（定义性）
+    e       : Carrier
+    _·_     : Carrier → Carrier → Carrier
+    inv     : Carrier → Carrier
+    σ₁ σ₂   : Carrier
+    -- 群结构（结构定义，非 presentation 关系）
+    assoc     : ∀ x y z → (x · y) · z ≡ x · (y · z)
+    identityˡ : ∀ x → e · x ≡ x
+    identityʳ : ∀ x → x · e ≡ x
+    inverseʳ  : ∀ x → x · inv x ≡ e
+    -- 唯一 presentation 关系
     braid-rel : (σ₁ · (σ₂ · σ₁)) ≡ (σ₂ · (σ₁ · σ₂))
-    -- ② 逆元关系（定义性）
-    σ₁-inv : (σ₁ · σ₁⁻¹) ≡ e
-    σ₂-inv : (σ₂ · σ₂⁻¹) ≡ e
 
--- 诚实边界：群公理（结合律/单位律/左逆）与 B₃ 唯一性（泛性质）留 roadmap——
---   本模块交付的是「关系入定义」的展示形态（2 postulate → 0）。
+-- 逆律 = 导出定理（投影逆公理，零新公理）
+module _ (G : B3) where
+  open B3 G
+  σ₁-inv : σ₁ · inv σ₁ ≡ e
+  σ₁-inv = inverseʳ σ₁
+  σ₂-inv : σ₂ · inv σ₂ ≡ e
+  σ₂-inv = inverseʳ σ₂
+
+-- 诚实边界：B₃ 唯一性（泛性质：任意群 + 满足辫关系的两元素 → 唯一同态）与
+--   Burau 表示实例留 roadmap。本模块交付：关系入定义的展示形态（3 postulate → 0）。
 -- Burau 表示声明（roadmap）
 -- burau-rep : B3 → GL₂(Z[t,t⁻¹])
 -- burau-rep σ₁ = [[1-t, t], [1, 0]]
