@@ -8,6 +8,10 @@
 --   本模块声明形式化切入点，不包含完整证明（需辫群基础）。
 --
 -- 0 postulate / 0 hole。
+-- 核心原则：
+--   1. 本模块 = **声明层**（切入点 + 边界），不含证明体——C 级内容如实标注，不冒充 proven
+--   2. 不忠实性结论归 Bigelow 1999（外部数学事实），本库只登记边界
+-- 包含：BurauNotFaithful 切入点声明（类型级）+ 任务书 7.1 边界注记
 module Sovereign.Algebra.BurauFaithful where
 
 open import Data.Nat using (ℕ)

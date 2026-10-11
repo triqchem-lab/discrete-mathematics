@@ -5,6 +5,11 @@
 --
 -- 提供 LüName（律名）类型和索引映射，供 Structology、RootMath、T6 等模块共享
 
+-- 数学背景：十二律 = 损益三分法生成的音名系（黄钟基准、损一/益一交替）——律算共享枚举层
+-- 核心原则：
+--   1. LüName 为十二律唯一命名源（Structology/RootMath/T6 共享，禁重复定义）
+--   2. 索引映射保持损益生成序（非音高序）
+-- 包含：LüName 枚举（十二律名）+ 索引映射
 module Sovereign.Base.Lü where
 
 open import Data.Fin using (Fin; zero; suc)

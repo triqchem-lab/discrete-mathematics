@@ -8,6 +8,8 @@
 -- 2. 物理单位 (meV, Hz) 是代数不变量在特定环境下的投影。
 -- 3. 转换通过“缩放因子” (Scaling Factors) 实现，这些因子由实验测定。
 
+-- 数学背景：离散代数不变量（极 144 / 环 46 / 能隙）↔ 物理单位（meV / Hz）的投影转换层
+-- 包含：Scaling Factors（实验测定缩放因子）+ 代数↔物理换算
 module Sovereign.Physics.Scaling where
 
 open import Data.Nat using (ℕ)

@@ -8,6 +8,11 @@
 -- 2. 禁止核心宪法模块直接引用外部标准库。
 -- 3. 必须通过此隔离层访问，以便在阶段 2 替换为高维几何重新证明的版本。
 
+-- 核心原则（宪法②隔离层）：
+--   1. 外部算术引理信任度初始为 0（UNTRUSTED），必须经此层访问
+--   2. 核心宪法模块禁止直引外部标准库
+--   3. 阶段 2 以 RootMath.Arithmetic 高维几何重证替换
+-- 包含：Data.Nat.Properties / Data.Nat.DivMod 受控重导出（+-mod / m*n%m≡0 / mod-< 等）
 module Sovereign.Arithmetic.Untrusted where
 
 -- ⚠️ UNTRUSTED: 基于连续统算术，需在高维几何中重新证明

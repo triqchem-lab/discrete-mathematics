@@ -1,4 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
+-- | Sovereign.Verify.DuodecOracle
 -- 律算数学 · 十二进制层的**形式化 oracle（查询面）**
 --
 -- 与 `Sovereign.Verify.KernelOracle` 同一定位：本模块本身不是可执行程序，而是**查询面**——
@@ -30,6 +31,7 @@
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _<_)
 
+-- 包含：Trit/AlphaPower/Duodec ↔ ℕ 互转查询面（⊕/negate/mulAlpha/alphaInv/mixedOp/+12/*12/π3/π4/crt12/toℕ₁₂/Doz 位值）——零重定义，只搬运
 module Sovereign.Verify.DuodecOracle where
 
 open import Data.Fin using (Fin; toℕ)

@@ -1,3 +1,8 @@
+-- | Sovereign.Completeness.Layer
+-- 完备性元定理 P0 系列——三层分类类型定义
+--
+-- 包含：Ontology/Bridge/Projection 三层分类类型（密度 3/729/连续统近似）——构造性定义层
+
 module Sovereign.Completeness.Layer where
 
 --------------------------------------------------------------------------------

@@ -13,6 +13,7 @@
 --   重复定义 = 5 个不同类型的定义（Agda 语义），引理不可跨模块复用。
 --
 -- 0 postulate / 0 hole。
+-- 包含：LaurentTerm / Laurent / mulTerm / _++L_ / R0——全部 Laurent 系模块的唯一定义处
 module Sovereign.Algebra.LaurentBase where
 
 open import Data.Integer using (ℤ; +_; _+_; _*_; -[1+_])
