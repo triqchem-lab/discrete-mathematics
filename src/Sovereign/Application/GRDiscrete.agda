@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.GRDiscrete
+-- | Sovereign.Application.GRDiscrete
 -- 应用层：离散广义相对论 (Christoffel 联络与曲率截断)
 --
 -- 层级: 应用数学 (中性文明投影)
@@ -12,7 +12,7 @@
 --
 -- 0 postulate, 全部构造性证明, 穷举法优先
 
-module Sovereign.Applied.GRDiscrete where
+module Sovereign.Application.GRDiscrete where
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _^_)
 open import Data.Product using (_×_; _,_)

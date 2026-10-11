@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.CelestialExtended
+-- | Sovereign.Application.CelestialExtended
 -- C56: 离散天体力学 — LCM 共振周期 + 极向/环向同步
 --
 -- 核心命题:
@@ -9,7 +9,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.CelestialExtended where
+module Sovereign.Application.CelestialExtended where
 
 open import Data.Nat using (ℕ; _+_; _*_; _^_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

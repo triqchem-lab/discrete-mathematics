@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.BlackHoleWhiteHole
+-- | Sovereign.Application.BlackHoleWhiteHole
 -- C42: 离散黑洞/白洞 — CRT 对偶 + 信息守恒
 --
 -- 核心命题:
@@ -10,7 +10,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.BlackHoleWhiteHole where
+module Sovereign.Application.BlackHoleWhiteHole where
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _∸_)
 open import Data.Product using (_×_; _,_)

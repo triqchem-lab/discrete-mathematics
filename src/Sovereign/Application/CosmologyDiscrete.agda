@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.CosmologyDiscrete
+-- | Sovereign.Application.CosmologyDiscrete
 -- C41: 离散宇宙学 — 4320 容量 + 729 格点
 --
 -- 核心命题:
@@ -9,7 +9,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.CosmologyDiscrete where
+module Sovereign.Application.CosmologyDiscrete where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _^_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

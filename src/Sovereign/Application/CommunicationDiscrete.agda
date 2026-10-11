@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.CommunicationDiscrete
+-- | Sovereign.Application.CommunicationDiscrete
 -- 应用层：离散通信理论 (信道容量与 CRT 编码)
 --
 -- 层级: 应用数学 (全息文明投影)
@@ -12,7 +12,7 @@
 --
 -- 0 postulate, 全部构造性证明, 穷举法优先
 
-module Sovereign.Applied.CommunicationDiscrete where
+module Sovereign.Application.CommunicationDiscrete where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _%_)
 open import Data.Product using (_×_; _,_)

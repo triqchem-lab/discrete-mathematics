@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.GameTheory
+-- | Sovereign.Application.GameTheory
 -- C38: 离散博弈论 — 鸽巢原理 → 周期轨道存在 + GF(3) 三值策略
 --
 -- 核心命题:
@@ -16,7 +16,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.GameTheory where
+module Sovereign.Application.GameTheory where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _<_)
 open import Data.Fin using (Fin; toℕ)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.FluidDiscrete
+-- | Sovereign.Application.FluidDiscrete
 -- 应用层：离散流体力学 (GF(3) 周期性与无耗散)
 --
 -- 层级: 应用数学 (电性文明投影)
@@ -12,7 +12,7 @@
 --
 -- 0 postulate, 全部构造性证明, 穷举法优先
 
-module Sovereign.Applied.FluidDiscrete where
+module Sovereign.Application.FluidDiscrete where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.EMDiscrete
+-- | Sovereign.Application.EMDiscrete
 -- C45: 离散电磁学 — Maxwell 截断 + 干涉
 --
 -- 核心命题:
@@ -9,7 +9,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.EMDiscrete where
+module Sovereign.Application.EMDiscrete where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Product using (_×_; _,_)

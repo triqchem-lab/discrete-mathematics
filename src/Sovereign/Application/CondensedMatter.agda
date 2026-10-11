@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.CondensedMatter
+-- | Sovereign.Application.CondensedMatter
 -- 应用层：离散凝聚态物理 (T⁶ 晶格与 A₄ 对称性)
 --
 -- 层级: 应用数学 (磁性文明投影)
@@ -12,7 +12,7 @@
 --
 -- 0 postulate, 全部构造性证明, 穷举法优先
 
-module Sovereign.Applied.CondensedMatter where
+module Sovereign.Application.CondensedMatter where
 
 open import Data.Nat using (ℕ; _+_; _*_; _^_)
 open import Data.Fin using (Fin)

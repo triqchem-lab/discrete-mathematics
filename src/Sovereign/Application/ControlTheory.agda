@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.ControlTheory
+-- | Sovereign.Application.ControlTheory
 -- C37: 离散控制论 — 有限状态系统的稳定性与周期上界
 --
 -- 核心命题:
@@ -9,7 +9,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.ControlTheory where
+module Sovereign.Application.ControlTheory where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
