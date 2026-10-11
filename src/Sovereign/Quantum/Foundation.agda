@@ -150,7 +150,7 @@ entanglement-is-from-base = Sovereign.Base.Trit.verifyMul
 --   Sovereign.Algebra.GF9 = GF(9) = GF(3)[x]/(x²+1) 的 9 元素有限域
 --   Frobenius 自同构 σ: α ↦ α³ = -α (在 GF(9) 上)
 --   共轭对 α⊗σ(α) = α⊗(-α) 不可分离
---   Sovereign.Coupling.Entanglement = 共享缠绕数的五行同步
+--   Sovereign.Synthesis.Entanglement = 共享缠绕数的五行同步
 --   纠缠 = 乘法群作用 (非局域), 叠加 = 加法群作用 (局域平移)
 
 -- 公理 3 的实现 (2026-09-08): 纠缠 = GF(9) Frobenius 共轭对 (α, σα)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coding.FFIProtocol
+-- | Sovereign.Synthesis.FFIProtocol
 -- 65 桥接规范 — 外部计算结果的可信封装 (0 postulate, 无洞无占位)
 --
 -- 外部计算 (Rust sov-guard 等) 不可在 Agda 内运行; 协议用 record 封装
@@ -11,7 +11,7 @@
 -- 与 NumericalSpec 的关系: NumericalSpec = 内部可证算法;
 -- 本模块 = 外部计算的可信接口层 (Q16 值/模逆/线性方程组解三契约)。
 
-module Sovereign.Coding.FFIProtocol where
+module Sovereign.Synthesis.FFIProtocol where
 
 open import Data.Nat using (ℕ; _*_; _+_; _∸_)
 open import Data.Product using (_×_; _,_)

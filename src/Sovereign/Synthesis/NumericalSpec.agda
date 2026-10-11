@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coding.NumericalSpec
+-- | Sovereign.Synthesis.NumericalSpec
 -- 65 数值分析 — 可验证计算的离散底座 (0 postulate)
 --
 -- 按 62/65 空白补全架构的优先级 1 实现 (不用 postulate 占位 —
@@ -11,7 +11,7 @@
 --   §3 模逆: 3⁻¹ ≡ 43691 (mod 2¹⁶) — 仲吕闭合因子的精确逆
 --   §4 GF(3) 高斯消元: 2×2 系统求解 + 代回验证 + 消元步链
 
-module Sovereign.Coding.NumericalSpec where
+module Sovereign.Synthesis.NumericalSpec where
 
 open import Data.Nat using (ℕ; _*_; _+_; _∸_; _%_)
 open import Data.Product using (_×_; _,_)

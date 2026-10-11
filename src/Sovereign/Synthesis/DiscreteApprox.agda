@@ -12,7 +12,7 @@
 --
 -- 包含：l1-dist、approx-err、l∞-dist、cheb-err、sq-err、id-err
 
-module Sovereign.Analysis.DiscreteApprox where
+module Sovereign.Synthesis.DiscreteApprox where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

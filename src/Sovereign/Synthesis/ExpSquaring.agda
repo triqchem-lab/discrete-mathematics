@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coding.ExpSquaring
+-- | Sovereign.Synthesis.ExpSquaring
 -- 68 理论 CS 补强 — 平方乘幂算法的步数定理 (0 postulate)
 --
 -- GF(9) 的 α^8: 平方链 α² → α⁴ → α⁸ 需 3 次乘法 (对数步数),
 -- 朴素乘法需 8 次 — 指数运算的 O(log n) vs O(n) 离散见证。
 -- (α⁴ = 1 引用 GF9.alpha-powers-4: α² 为 −1, α⁴ = 1)
 
-module Sovereign.Coding.ExpSquaring where
+module Sovereign.Synthesis.ExpSquaring where
 
 open import Data.Nat using (ℕ; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

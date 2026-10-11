@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.ApproxBounds
+-- | Sovereign.Synthesis.ApproxBounds
 -- 41 逼近论补强 — Q16 定点常数的误差界
 --
 -- 数学背景：律算 Q16 投影层的逼近质量（人类可读投影，不进入状态演化）：
@@ -14,7 +14,7 @@
 --
 -- 包含：zhonglv-q16/zhonglv-err/zhonglv-err-bound（仲吕增益界）· delta-sq-err/delta-sq-bound（√3 平方界）
 
-module Sovereign.Analysis.ApproxBounds where
+module Sovereign.Synthesis.ApproxBounds where
 
 open import Data.Nat using (ℕ; _*_; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

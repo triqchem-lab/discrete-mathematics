@@ -1,6 +1,6 @@
 {-# OPTIONS --cubical --guardedness --rewriting #-}
 
--- | Sovereign.Coupling.SpinTwistor
+-- | Sovereign.Synthesis.SpinTwistor
 -- 耦合域：自旋与扭量的离散复位 (0 postulate, 无洞)
 --
 -- 自旋本源：主权状态机手性分离程度的动态投影（仅存在于耦合域）—
@@ -18,7 +18,7 @@
 --   SovereignState 由 postulate → 引用 Zhonglv 真实定义;
 --   范畴分离: 标记类型 + λ () 类型不等 (数据型不等, 附录 8 模式 4)。
 
-module Sovereign.Coupling.SpinTwistor where
+module Sovereign.Synthesis.SpinTwistor where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Integer using (ℤ; +_)

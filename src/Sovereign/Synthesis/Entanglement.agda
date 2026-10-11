@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coupling.Entanglement
+-- | Sovereign.Synthesis.Entanglement
 -- 耦合域：量子纠缠——共享主权 LCM 缠绕数的五行同步
 --
 -- 本质：两个主权状态机共享同一主权 LCM 商空间中的缠绕数
 --       通过五行干涉（相生+1，相克ω）实现复振幅同步
 -- 所属宇宙力：第七力——时空场统一力
 
-module Sovereign.Coupling.Entanglement where
+module Sovereign.Synthesis.Entanglement where
 
 open import Cubical.Foundations.Prelude using ()
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _≤_; _<_)

@@ -7,7 +7,7 @@
 --
 -- 包含：n-mod3、gf3-inv、norm-factor、gf3-inv-T₁、gf3-inv-T₂、norm-factor-0、norm-factor-1、norm-factor-2、norm-factor-3、norm-factor-period3、normalized-inner、normalized-inner-sym、normalized-inner-linearˡ、l2-norm-sq
 
-module Sovereign.Analysis.L2Bridge where
+module Sovereign.Synthesis.L2Bridge where
 
 --------------------------------------------------------------------------------
 -- L² 桥接 — 离散 L² 范数与连续 L² 范数的结构对应
