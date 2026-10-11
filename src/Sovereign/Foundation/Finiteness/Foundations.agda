@@ -37,7 +37,7 @@ open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin)
 open import Data.Product using (Σ)
 open import Relation.Binary.PropositionalEquality using (_≡_; sym; trans; cong)
-open import Sovereign.Structology.PlatonicTorusProjection using (_≃_)
+open import Sovereign.Foundation.Equiv using (_≃_)
 
 --------------------------------------------------------------------------------
 -- §1. 有限性定义

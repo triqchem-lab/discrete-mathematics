@@ -64,14 +64,8 @@ toroidalTimeIsAtomic toroidal-46 = refl
 -- 3. 柏拉图投影等价映射: Fin 144 ≃ Fin 120 ⊎ Fin 24
 --------------------------------------------------------------------------------
 
-infix 4 _≃_
-
-record _≃_ (A B : Set) : Set where
-  field
-    to : A → B
-    from : B → A
-    to-from : ∀ b → to (from b) ≡ b
-    from-to : ∀ a → from (to a) ≡ a
+-- [波 2-C 接口抽取] _≃_ 上提 Sovereign.Foundation.Equiv（本模块改引，API 不变）
+open import Sovereign.Foundation.Equiv using (_≃_)
 
 120<144 : 120 < 144
 120<144 = m≤m+n 121 23  -- 121 ≤ 121 + 23 = 144

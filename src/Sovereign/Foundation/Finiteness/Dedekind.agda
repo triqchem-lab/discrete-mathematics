@@ -26,7 +26,7 @@ module Sovereign.Foundation.Finiteness.Dedekind where
 open import Data.Fin using (Fin)
 open import Data.Product using (_,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; cong; sym; trans)
-open import Sovereign.Structology.PlatonicTorusProjection using (_≃_)
+open import Sovereign.Foundation.Equiv using (_≃_)
 open import Sovereign.Foundation.FiniteDynamics using (injSurj)
 open import Sovereign.Foundation.Finiteness.Foundations
   using (InjA; DedekindFinite; Finite; ≃-to-inj; ≃-from-inj)
