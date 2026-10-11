@@ -18,7 +18,7 @@
 -- 包含：
 --   §1 mem-dec
 --   §2 isEq / isEq-dec / isEq-refl / isEq-sym / isEq-trans（等价关系）
---   §3 firstIn（结构性最小值搜索）+ q-raw / q-raw-eq / q-raw-min
+--   §3 firstIn（结构性最小值搜索——现居 Foundation.FirstHit，此处引用）+ q-raw / q-raw-eq / q-raw-min
 --   §4 q-raw-eq-of-eq + q-iff（同代表元 ⟺ 等价）
 --
 -- 关键路线（2026-09-10 闭合）：**不用 searchFin 的返回结构证最小性**。
@@ -103,58 +103,8 @@ isEq-trans G H {x} {y} {z} p q =
 -- 全部是对界 bound 的结构归纳，既不需要见证输入，也不需要良基递归。
 --------------------------------------------------------------------------------
 
--- m ≤ suc n 的二分
-≤-suc-split : ∀ {m n : ℕ} → m ≤ suc n → (m ≤ n) ⊎ (m ≡ suc n)
-≤-suc-split {zero}  z≤n       = inj₁ z≤n
-≤-suc-split {suc m} {zero}  (s≤s z≤n) = inj₂ refl
-≤-suc-split {suc m} {suc n} (s≤s m≤sn) with ≤-suc-split {m} {n} m≤sn
-... | inj₁ m≤n  = inj₁ (s≤s m≤n)
-... | inj₂ refl = inj₂ refl
-
--- 界为 0 时唯一元素是 0
-none-zero : ∀ (P : ℕ → Set) → ¬ P zero → ∀ m → m ≤ zero → ¬ P m
-none-zero P ¬p0 zero    z≤n = ¬p0
-none-zero P ¬p0 (suc _) ()
-
--- 命中分支：界内最小 ⇒ 对 suc b 内的元素也最小
-lift-first : ∀ (P : ℕ → Set) {k b m : ℕ}
-           → k ≤ b → (m ≤ b → P m → k ≤ m) → (m ≤ b) ⊎ (m ≡ suc b) → P m → k ≤ m
-lift-first P k≤b h (inj₁ m≤b)  pm = h m≤b pm
-lift-first P k≤b h (inj₂ refl) pm = m≤n⇒m≤1+n k≤b
-
--- 本界顶部命中：对界内任意满足者都 ≤（下方满足者与假设矛盾）
-top-min : ∀ (P : ℕ → Set) {b m : ℕ}
-        → (m ≤ b → ¬ P m) → (m ≤ b) ⊎ (m ≡ suc b) → P m → suc b ≤ m
-top-min P h (inj₁ m≤b)  pm = ⊥-elim (h m≤b pm)
-top-min P h (inj₂ refl) pm = ≤-refl
-
--- 全界无命中
-no-hit : ∀ (P : ℕ → Set) {b m : ℕ}
-       → (m ≤ b → ¬ P m) → ¬ P (suc b) → (m ≤ b) ⊎ (m ≡ suc b) → P m → ⊥
-no-hit P h ¬psb (inj₁ m≤b)  pm = h m≤b pm
-no-hit P h ¬psb (inj₂ refl) pm = ¬psb pm
-
--- 下半界无命中时，判定本界顶部
-firstIn-tail : ∀ (P : ℕ → Set) (b : ℕ) → (∀ m → m ≤ b → ¬ P m) → Dec (P (suc b))
-             → Σ ℕ (λ k → k ≤ suc b × P k × (∀ m → m ≤ suc b → P m → k ≤ m))
-             ⊎ (∀ m → m ≤ suc b → ¬ P m)
-firstIn-tail P b noneb (yes psb) =
-  inj₁ (suc b , (≤-refl , (psb , λ m m≤sb pm → top-min P (noneb m) (≤-suc-split m≤sb) pm)))
-firstIn-tail P b noneb (no ¬psb) =
-  inj₂ (λ m m≤sb pm → no-hit P (noneb m) ¬psb (≤-suc-split m≤sb) pm)
-
--- [0, bound] 内的首个命中
-firstIn : (P : ℕ → Set) (dec : ∀ m → Dec (P m)) (bound : ℕ)
-        → Σ ℕ (λ k → k ≤ bound × P k × (∀ m → m ≤ bound → P m → k ≤ m))
-        ⊎ (∀ m → m ≤ bound → ¬ P m)
-firstIn P dec zero with dec zero
-... | yes p0 = inj₁ (zero , (z≤n , (p0 , λ m _ _ → z≤n)))
-... | no ¬p0 = inj₂ (none-zero P ¬p0)
-firstIn P dec (suc b) with firstIn P dec b
-... | inj₁ (k , (k≤b , (pk , minb))) =
-      inj₁ (k , (m≤n⇒m≤1+n k≤b ,
-                 (pk , λ m m≤sb pm → lift-first P k≤b (minb m) (≤-suc-split m≤sb) pm)))
-... | inj₂ noneb = firstIn-tail P b noneb (dec (suc b))
+-- （2026-10-11 波 2 接口抽取：firstIn 族下沉 Sovereign.Foundation.FirstHit——通用件归位，消除 Tarski 逆向边）
+open import Sovereign.Foundation.FirstHit using (firstIn)
 
 --------------------------------------------------------------------------------
 -- §3b. Fin n 上的最小等价元

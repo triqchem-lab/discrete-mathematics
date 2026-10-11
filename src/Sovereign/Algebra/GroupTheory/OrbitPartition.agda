@@ -51,7 +51,7 @@ open import Relation.Binary.PropositionalEquality
 
 open import Sovereign.Algebra.GroupTheory.Lagrange using (FinGroup)
 open import Sovereign.Algebra.GroupTheory.OrbitStabilizer using (Action)
-open import Sovereign.Algebra.GroupTheory.CosetConstruction using (firstIn)
+open import Sovereign.Foundation.FirstHit using (firstIn)
 open import Sovereign.Algebra.GroupTheory.CosetAuto using (SubEnum; enum; index-cong)
 open import Sovereign.Algebra.GroupTheory.BurnsideFiber using (fiberSize)
 open import Sovereign.Algebra.Holographic.4320DClosure using (searchFin)

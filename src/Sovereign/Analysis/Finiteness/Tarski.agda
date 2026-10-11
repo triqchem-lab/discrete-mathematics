@@ -8,7 +8,7 @@
 --   上的可判定实例**：Fin n 的非空可判定子集族有 toℕ 最小元。与 Dedekind 版的
 --   双向等价（需经典逻辑）不入本库 —— 缺口声明见 docs/finiteness-zoo-盘点.md §5（模块已归档 2026-10-11）。
 --
--- 复用：CosetConstruction.firstIn（对界结构递归的首个命中 + 极小性；不用
+-- 复用：Foundation.FirstHit.firstIn（对界结构递归的首个命中 + 极小性；不用
 --   searchFin 返回结构 —— 库内教训 agda-empty-goal-ton-stuck）。
 --   修复注（2026-10-02 沙盒实证）：firstIn 界取 n（非已知见证的 toℕ i），min 覆盖
 --   全体 Fin n 的 toℕ，免分支；roundtrip 混用坑：ℕ 侧用 toℕ-fromℕ<、Fin 侧用
@@ -34,7 +34,7 @@ open import Data.Empty using (⊥-elim)
 open import Data.Sum using (inj₁; inj₂)
 open import Relation.Nullary using (yes; no; Dec)
 open import Relation.Binary.PropositionalEquality using (_≡_; sym; subst)
-open import Sovereign.Algebra.GroupTheory.CosetConstruction using (firstIn)
+open import Sovereign.Foundation.FirstHit using (firstIn)
 
 -- Fin n 上非空可判定子集族有 toℕ 最小元
 tarski-min : ∀ (n : ℕ) (P : Fin n → Set) (dec : ∀ i → Dec (P i)) →
