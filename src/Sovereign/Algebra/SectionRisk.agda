@@ -59,7 +59,7 @@ open import Sovereign.Algebra.Duodecimal
          +12-order)
 
 -- 项目: 数字根
-open import Sovereign.RootMath.DigitalRoot using (digitalRoot)
+open import Sovereign.Foundation.DigitalRoot using (digitalRoot)
 
 -- 项目: 退化/近视/截面 分类学
 open import Sovereign.Algebra.DegenerationTaxonomy

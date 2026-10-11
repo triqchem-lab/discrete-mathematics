@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.RootMath.DigitalRoot
+-- | Sovereign.Foundation.DigitalRoot
 -- 根数学：数字根公理与稳定驻波判定
 --
 -- 公理：稳定驻波对应的长度比例数字根必须 ∈ {0, 3, 6}（模 9 意义下）
 -- 0 代表传统数字根定义中的 9（9 ≡ 0 mod 9）。
 -- 其余因干涉相消无法在 T⁶ 环面驻留
 
-module Sovereign.RootMath.DigitalRoot where
+module Sovereign.Foundation.DigitalRoot where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
 open import Data.Nat.DivMod using (%-distribˡ-+; %-distribˡ-*)

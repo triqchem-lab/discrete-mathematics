@@ -37,7 +37,7 @@ open import Data.Bool using (Bool; true; false; if_then_else_)
 open import Data.Nat.Base using (_≡ᵇ_; _%_)
 open import Data.Nat.DivMod using (_mod_; m%n<n)
 open import Data.Fin.Properties using (toℕ-fromℕ<)
-import Sovereign.Engine.StateMachine as SM
+import Sovereign.Infrastructure.StateMachine as SM
 import Sovereign.Coupling.LCM as LCM
 import Sovereign.Coding.Trit as T
 

@@ -15,7 +15,7 @@ open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
-open import Sovereign.RootMath.DigitalRoot
+open import Sovereign.Foundation.DigitalRoot
   using (ChristosPhase; CS1; CS2; CS4; CS8; CS7; CS5;
          nextPhase; christosPeriod6; phaseToValue)
 open import Sovereign.Format.CRTMeasurement

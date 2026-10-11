@@ -16,7 +16,7 @@ open import Data.Vec using (Vec; []; _∷_; replicate)
 open import Data.Fin using (Fin; toℕ; fromℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
-import Sovereign.Engine.StateMachine as SM
+import Sovereign.Infrastructure.StateMachine as SM
 import Sovereign.Coupling.LCM as LCM
 import Sovereign.Base.Invariants as Inv
 import Sovereign.Coding.Trit as T

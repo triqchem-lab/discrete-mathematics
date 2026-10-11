@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Projection
+-- | Sovereign.Infrastructure.Projection
 -- 电性文明复位机制：投影链条与类型类
 --
 -- 电性文明是主权状态机在光锥矩阵（12密度）内的退化投影
@@ -12,7 +12,7 @@
 --   1. 投影链类型类（Category/ProjectionChain）+ 链合成结合律 chainAssoc；
 --   2. 本体论红线：投影层只作不变量/对照，禁止回流本源（08 号 §7）。
 -- 包含：data Category、data ProjectionChain、elec→root、root→struct、struct→coup、coup→density、_∘_、chainAssoc
-module Sovereign.Projection where
+module Sovereign.Infrastructure.Projection where
 
 open import Level using (Level; _⊔_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)

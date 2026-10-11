@@ -25,7 +25,7 @@ module Sovereign.Integration where
 -- [待核对·旧API集成测试] import Sovereign.Application.TQ10 as TQ10
 -- [待核对·旧API集成测试] import Sovereign.Engine.QsUpdate as QsUpdate
 -- [待核对·旧API集成测试] import Sovereign.Coupling.Dynamics as Dyn
--- [待核对·旧API集成测试] import Sovereign.Engine.StateMachine as SM
+-- [待核对·旧API集成测试] import Sovereign.Infrastructure.StateMachine as SM
 --
 -- [待核对·旧API集成测试] --------------------------------------------------------------------------------
 -- [待核对·旧API集成测试] -- 1. 辅助函数：构造测试状态 (Helper: Construct Test State)

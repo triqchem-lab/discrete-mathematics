@@ -77,7 +77,7 @@ open import Sovereign.Synthesis.EqualityTruncation
 
 -- 项目: 十二进制 / 数字根
 open import Sovereign.Algebra.Duodecimal using (Duodec)
-open import Sovereign.RootMath.DigitalRoot using (digitalRoot)
+open import Sovereign.Foundation.DigitalRoot using (digitalRoot)
 
 --------------------------------------------------------------------------------
 -- §1. 退化风险 record — 统一量化框架

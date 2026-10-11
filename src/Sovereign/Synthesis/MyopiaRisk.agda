@@ -57,7 +57,7 @@ open import Sovereign.Algebra.Duodecimal
          π3; π4; crt12; crt12-roundtrip; crt12-inv-π3; +12-order)
 
 -- 项目: 数字根
-open import Sovereign.RootMath.DigitalRoot using (digitalRoot)
+open import Sovereign.Foundation.DigitalRoot using (digitalRoot)
 
 --------------------------------------------------------------------------------
 -- §1. 近视视角维度分级

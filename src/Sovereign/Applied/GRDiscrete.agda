@@ -19,7 +19,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.RootMath.DigitalRoot
+open import Sovereign.Foundation.DigitalRoot
   using (ChristosPhase; CS1; CS2; CS4; CS8; CS7; CS5;
          nextPhase; christosPeriod6; phaseToValue)
 open import Sovereign.Algebra.ProjectionDifferential

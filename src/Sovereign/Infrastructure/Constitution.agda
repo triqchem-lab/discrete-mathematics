@@ -33,7 +33,7 @@ open import Relation.Nullary.Decidable using (does)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 
 -- 导入核心模块
-open import Sovereign.Projection using (Category; Electric; RootMathCat; StructologyCat; 
+open import Sovereign.Infrastructure.Projection using (Category; Electric; RootMathCat; StructologyCat; 
                                           CouplingCat; MetaStructCat; DensityCat;
                                           ProjectionChain; IsElectricProjection;
                                           ElectricConcept; interpret)

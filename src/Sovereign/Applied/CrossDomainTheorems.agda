@@ -45,7 +45,7 @@ open import Sovereign.Analysis.FiniteDynamics using (
 open import Sovereign.Structology.A4Representations using (
   dimSqSum; theorem-dimension-sum-of-squares)
 
-open import Sovereign.RootMath.DigitalRoot using (
+open import Sovereign.Foundation.DigitalRoot using (
   christosPeriod6; ChristosPhase; nextPhase)
 
 open import Sovereign.Algebra.GF9 using (

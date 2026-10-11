@@ -18,7 +18,7 @@ module Sovereign.Algebra.Base10Degeneration where
 --
 -- 依赖:
 --   Sovereign.Algebra.Duodecimal — Z/12Z 环结构
---   Sovereign.RootMath.DigitalRoot — 数字根
+--   Sovereign.Foundation.DigitalRoot — 数字根
 --
 -- 0 postulate — 全部构造性证明
 --------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ open import Relation.Binary.PropositionalEquality
 
 open import Sovereign.Algebra.Duodecimal
   using (Duodec; d0; d1; d2; d3; d4; d5; d6; d7; d8; d9; d10; d11)
-open import Sovereign.RootMath.DigitalRoot using (digitalRoot)
+open import Sovereign.Foundation.DigitalRoot using (digitalRoot)
 
 --------------------------------------------------------------------------------
 -- §1. 12 的整除性 — 2, 3, 4, 6 全部整除 12

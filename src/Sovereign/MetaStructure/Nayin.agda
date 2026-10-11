@@ -15,7 +15,7 @@ open import Data.Vec using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Relation.Nullary using (¬_)
 open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; wuXingBase)
-open import Sovereign.RootMath.DigitalRoot using (StableRoot; root0; root3; root6)
+open import Sovereign.Foundation.DigitalRoot using (StableRoot; root0; root3; root6)
 
 --------------------------------------------------------------------------------
 -- 1. 十天干与十二地支

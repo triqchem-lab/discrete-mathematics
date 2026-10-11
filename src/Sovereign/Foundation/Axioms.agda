@@ -65,7 +65,7 @@ record GF3Axiom : Set₁ where
 --   律管长度比值的数字根收敛于 {3,6,9} 三值集合。
 --   这决定了"什么算闭合"——数字根回到 {3,6,9} 即为闭合。
 --
--- 实现：Sovereign.RootMath.DigitalRoot
+-- 实现：Sovereign.Foundation.DigitalRoot
 --------------------------------------------------------------------------------
 
 -- 数字根接口

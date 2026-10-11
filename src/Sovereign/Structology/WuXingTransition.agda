@@ -28,7 +28,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.List using (List; []; _∷_; map; take)
 
 -- 导入 Christoffel 螺旋（离散环面原生测地线）
-open import Sovereign.RootMath.DigitalRoot
+open import Sovereign.Foundation.DigitalRoot
   using (christosSequence; christosStep; christosClosure)
 
 --------------------------------------------------------------------------------

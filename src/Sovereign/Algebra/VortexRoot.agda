@@ -18,7 +18,7 @@ module Sovereign.Algebra.VortexRoot where
 open import Data.Nat using (ℕ; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.RootMath.DigitalRoot using (digitalRoot)
+open import Sovereign.Foundation.DigitalRoot using (digitalRoot)
 
 -- 本体层重导出 (L0/L0U/L0C — Duodecial.agda 的完整代数载体)
 open import Sovereign.Algebra.Duodecimal public using (

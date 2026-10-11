@@ -29,7 +29,7 @@ open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding;
 open import Sovereign.Structology.HolographicPi using (HolographicPi; standardHoloPi; 
                                                          holoPiNumeratorIs144; holoPiDenominatorIs46)
 open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶)
-open import Sovereign.Projection using (Category; Electric; RootMathCat; StructologyCat; 
+open import Sovereign.Infrastructure.Projection using (Category; Electric; RootMathCat; StructologyCat; 
                                           CouplingCat; ProjectionChain; IsElectricProjection;
                                           ElectricConcept; HertzFrequency; CentimeterLength)
 

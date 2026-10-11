@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | Sovereign.Engine.StateMachine
+-- | Sovereign.Infrastructure.StateMachine
 -- 主权状态机：十二律相位驱动的状态演化与 TQ10 编码桥
 --
 -- 核心原则：
@@ -9,7 +9,7 @@
 -- 包含：stepPhase/stepSection/evolve、stateToTQ10/tq10ToState、zhonglvTriggeredAfter12、
 --       gapSingularityIncreasesOnInvalidInput、evolvePreservesLCM。
 
-module Sovereign.Engine.StateMachine where
+module Sovereign.Infrastructure.StateMachine where
 open import Data.Nat using (ℕ; suc; _+_; _*_; _<_; _≤_)
 open import Data.Nat.Base using (_≡ᵇ_; _%_)
 open import Data.Nat.DivMod using (_mod_)

@@ -241,14 +241,14 @@ open import Sovereign.Algebra.FieldExtensionTower public using (
 
 --------------------------------------------------------------------------------
 -- B31: Christoffel 螺旋 6 步闭合
--- 源: Sovereign.RootMath.DigitalRoot
+-- 源: Sovereign.Foundation.DigitalRoot
 -- 证明方法: refl (穷举 6 case)
 -- 序列: 1 → 2 → 4 → 8 → 7 → 5 → 1 (周期 = 6)
 -- 数学本质: 2⁶ = 64, 64 % 9 = 1 → 相位对齐
 -- 物理意义: T⁶ 环面测地线的离散生成器
 --------------------------------------------------------------------------------
 
-open import Sovereign.RootMath.DigitalRoot public using (
+open import Sovereign.Foundation.DigitalRoot public using (
   -- B31 核心: 6 步闭合
   christosPeriod6;   -- ∀ p → nextPhase⁶ p ≡ p (6 case refl)
   christosClosure;   -- iterateChristos 6 1 ≡ 1 (2⁶=64, 64%9=1)

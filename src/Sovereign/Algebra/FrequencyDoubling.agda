@@ -31,7 +31,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; trans; sym; cong)
 open import Relation.Nullary using (¬_)
-import Sovereign.RootMath.DigitalRoot as DR
+import Sovereign.Foundation.DigitalRoot as DR
 open import Sovereign.Algebra.Duodecimal
   using (Duodec; d0; d1; d2; d3; d4; d5; d6; d7; d8; d9; d10; d11;
          toℕ₁₂; _+12_; +12-order)

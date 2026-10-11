@@ -38,7 +38,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; tri
 open import Sovereign.Format.CRT using (POW2; POW3; M; crtProject; crtReconstruct; crtTheorem)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR)
-open import Sovereign.RootMath.DigitalRoot using (digitalRoot)
+open import Sovereign.Foundation.DigitalRoot using (digitalRoot)
 open import Sovereign.Algebra.GF9 using (GF9; alpha; galoisConjugate; galoisConjugate²)
 
 --------------------------------------------------------------------------------

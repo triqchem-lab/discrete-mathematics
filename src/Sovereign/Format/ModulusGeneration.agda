@@ -22,7 +22,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Base.Invariants using (SOVEREIGN_LCM; POW2₁₆; POW3₁₁)
-open import Sovereign.RootMath.DigitalRoot using (christosStep)
+open import Sovereign.Foundation.DigitalRoot using (christosStep)
 open import Sovereign.Structology.MagicSquareM4 using (Σ-M4; Orth; v34; v0; orth-v34-v0)
 
 -- 本地别名
