@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Trust.TwoViewRewritten — PGM P1「Rewritten 视图」：**带规则**
+-- | Sovereign.Base.TwoViewRewritten — PGM P1「Rewritten 视图」：**带规则**
 --
 -- 本模块是 PGM P1 的另一臂：把展示关系声明为**作用域内**的规约规则，使普遍定律
 -- 不再需要证明（`refl` 即可）。
