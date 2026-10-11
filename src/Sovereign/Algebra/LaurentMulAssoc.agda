@@ -18,14 +18,8 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; sym; trans)
 
 
-LaurentTerm : Set
-LaurentTerm = ℤ × ℤ
-
-Laurent : Set
-Laurent = List LaurentTerm
-
-mulTerm : LaurentTerm → LaurentTerm → LaurentTerm
-mulTerm (c₁ , n₁) (c₂ , n₂) = (c₁ * c₂ , n₁ + n₂)
+-- ── 2026-10-11 base-unify：类型身份归一（LaurentTerm/Laurent/mulTerm 改用 LaurentBase，消除重复定义）──
+open import Sovereign.Algebra.LaurentBase using (LaurentTerm; Laurent; mulTerm)
 
 -- Laurent 专用 map（避免 Data.List.map 的隐式推断问题）
 mapL : (LaurentTerm → LaurentTerm) → Laurent → Laurent

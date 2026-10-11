@@ -20,13 +20,8 @@ open import Relation.Nullary using (yes; no; Dec)
 open import Data.Integer.Properties using (_≟_)
 open import Data.Empty using (⊥; ⊥-elim)
 
--- Laurent 多项式的项：(系数, 指数)
-LaurentTerm : Set
-LaurentTerm = ℤ × ℤ
-
--- Laurent 多项式：项的列表（不保证排序）
-Laurent : Set
-Laurent = List LaurentTerm
+-- ── 2026-10-11 base-unify：类型身份归一（LaurentTerm/Laurent 改用 LaurentBase）──
+open import Sovereign.Algebra.LaurentBase using (LaurentTerm; Laurent)
 
 -- 零多项式
 L0 : Laurent
