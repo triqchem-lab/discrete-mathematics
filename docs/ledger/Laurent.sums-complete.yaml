@@ -1,0 +1,9 @@
+id: Laurent.sums-complete
+module: Sovereign.Algebra.LaurentSums
+statement: insertCᵌ-sums 全分支：sums u (proj₁ (insertCᵌ t ts c)) ≡ sums u ts + sums u (t ∷ [])
+level: A
+evidence:
+  compile_receipt: 4a9243b0ff2805ef9647c14f3e7182b00ef1a3f9dcfec20896c59647f017e987
+  cross_check: 既有资产实证（ᵌ/³ 字形 grep 事故更正——「无码」误报第三案）：LaurentSums:285-310（8 辅助 + 全分支 + Dec 参数式）
+proof_strategy: 插入态 SpecT 全分支（with-cmp3 精炼）
+updated: 2026-10-11

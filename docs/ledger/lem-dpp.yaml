@@ -1,0 +1,9 @@
+id: lem-dpp
+module: Sovereign.Algebra.ProbeArith
+statement: sucℤ (n - (Lf +pos b)) +pos (a +ℕ b) ≡ (sucℤ n +pos a) - Lf
+level: A
+evidence:
+  compile_receipt: 9a46e0db8e3131489107831e16c8a3c528ee2ea3351ca2e04b19415563e4ce8d
+  cross_check: 补证批：probe.lem'' 提层 + wMinusLf-dpp/negw+posb-dpp 两桥 + dpp-inner；双通道 ×3
+proof_strategy: 提层 + 两桥（sucℤ/pos 桥族）
+updated: 2026-10-11

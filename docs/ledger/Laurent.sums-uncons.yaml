@@ -1,0 +1,9 @@
+id: Laurent.sums-uncons
+module: Sovereign.Algebra.LaurentSums
+statement: sums u (t ∷ ts) ≡ sums u (t ∷ []) + sums u ts
+level: A
+evidence:
+  compile_receipt: 4a9243b0ff2805ef9647c14f3e7182b00ef1a3f9dcfec20896c59647f017e987
+  cross_check: 双 fork 去重采用（Dec 案式）；List 线双 fork 并行批
+proof_strategy: sums 逐点（Dec 案式）
+updated: 2026-10-11

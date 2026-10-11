@@ -1,0 +1,9 @@
+id: Laurent.base-unify
+module: Sovereign.Algebra.LaurentBase
+statement: LaurentTerm/Laurent/mulTerm 类型统一至 LaurentBase（List 世界类型身份归一）
+level: A
+evidence:
+  compile_receipt: 540ee12b6e50a51e5bb539858e7c867abc5e4d447944167ec2ba722cfddd1a9a
+  cross_check: 实做批：MulAssoc 7c0bf371 / PolynomialFull 2da50fe1 双件归一（-16/+4）；函数表示 Laurent 为合法异类
+proof_strategy: 类型身份归一（删本地副本）
+updated: 2026-10-11

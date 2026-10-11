@@ -1,0 +1,9 @@
+id: negDistrib-suc
+module: Sovereign.Cubical.IntArith
+statement: -_ (negsuc a + pos (suc b)) ≡ (- negsuc a) + (- pos (suc b))
+level: A
+evidence:
+  compile_receipt: 9f45b7668e45e6eba923a4cd9f7f4728fb75f77ebe45b8c026aba6f96f2d322f
+  cross_check: 补证批（fork f79d51b7）：独立 3 行链 + 双通道 refl 交叉含负值面
+proof_strategy: 独立 3 行链（+Comm→negDistrib-pos-negsuc→+Comm）
+updated: 2026-10-11

@@ -1,0 +1,9 @@
+id: negDistrib
+module: Sovereign.Cubical.IntArith
+statement: - (x + y) ≡ (- x) + (- y)（cubical ℤ 负元对加法分配）
+level: A
+evidence:
+  compile_receipt: d89e614c1ae6dfd8abad9be3ae88b25adea306c1e66146e0cfc1b976e382eee0
+  cross_check: IntArith:74 + 辅助 negDistrib-pos-negsuc:70；「无码」误报第一案（实为缺回执）
+proof_strategy: 构造递归 + predℤ/sucℤ 链
+updated: 2026-10-11
