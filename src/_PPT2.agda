@@ -26,7 +26,7 @@ open import _PPI4 using (Gskel)
 open import Sovereign.Topology.McCordPi0 using (two-chain)
 open import _PPI4c using (AStep-sk-empty)
 open import _PPI5d using (Ω2Walk; nil2; cons2; Ω2ᵈ; s2-adj)
-open import Sovereign.HoTT.PostnikovTruncation using (WeightedDiGraph; disp; zeroA)
+open import Sovereign.HoTT.PostnikovTruncation using (WeightedDiGraph; disp)
 
 -- ────────────────────────────────────────────────────────────────────
 -- §1. 离散 Postnikov 塔（抽象接口——组合形）
