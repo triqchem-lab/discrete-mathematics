@@ -143,15 +143,18 @@ eval-scale c (y ∷ ys) x =
 --      (c⊗Q)⊕(x⊗(E⊗Q)) → (c⊗Q)⊕((x⊗E)⊗Q) [sym assoc] → (c⊕x⊗E)⊗Q [sym distʳ]
 eval-* : ∀ p q x → eval (p *p q) x ≡ eval p x ⊗ eval q x
 eval-* [] q x = sym (⊗-zeroˡ (eval q x))
-eval-* (c ∷ cs) q x =
-  trans (eval-+ (scale c q) (T₀ ∷ (cs *p q)) x)
-    (trans (cong₂ _⊕_ (eval-scale c q x) lift₀)
-      (trans (cong ((c ⊗ eval q x) ⊕_)
-               (trans (cong (x ⊗_) (eval-* cs q x)) (sym (⊗-assoc x (eval cs x) (eval q x)))))
-        (sym (⊗-distʳ (eval q x) c (x ⊗ eval cs x)))))
+-- q 分案（子句重叠防卡：*p 的 xs*[] 与 (x∷xs)*ys 在 q=[] 不一致——中性 q 卡展开，
+--   故 cons 案按 q 显式分案使 *_p_ 定义展开可用）
+eval-* (c ∷ cs) [] x = sym (⊗-zeroʳ (eval (c ∷ cs) x))
+eval-* (c ∷ cs) (d ∷ ds) x =
+  trans (eval-+ (scale c (d ∷ ds)) (T₀ ∷ (cs *p (d ∷ ds))) x)
+    (trans (cong₂ _⊕_ (eval-scale c (d ∷ ds) x) lift₀)
+      (trans (cong ((c ⊗ eval (d ∷ ds) x) ⊕_)
+               (trans (cong (x ⊗_) (eval-* cs (d ∷ ds) x)) (sym (⊗-assoc x (eval cs x) (eval (d ∷ ds) x)))))
+        (sym (⊗-distʳ (eval (d ∷ ds) x) c (x ⊗ eval cs x)))))
   where
-  lift₀ : eval (T₀ ∷ (cs *p q)) x ≡ x ⊗ eval (cs *p q) x
-  lift₀ = ⊕-identityˡ (x ⊗ eval (cs *p q) x)
+  lift₀ : eval (T₀ ∷ (cs *p (d ∷ ds))) x ≡ x ⊗ eval (cs *p (d ∷ ds)) x
+  lift₀ = ⊕-identityˡ (x ⊗ eval (cs *p (d ∷ ds)) x)
 
 -- ────────────────────────────────────────────────────────────────────
 -- §3 合成除法与根（组合层）
