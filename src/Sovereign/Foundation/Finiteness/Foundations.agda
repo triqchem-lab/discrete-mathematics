@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.Finiteness.Foundations
+-- | Sovereign.Foundation.Finiteness.Foundations
 -- 任务书第一层·§1 载体与传输机件（定义层）— 有限性动物园的地基
 --
 -- 数学背景：
@@ -31,7 +31,7 @@
 --
 -- 包含：InjA、SurjA、DedekindFinite、Finite、≃-to-inj、≃-from-inj
 
-module Sovereign.Analysis.Finiteness.Foundations where
+module Sovereign.Foundation.Finiteness.Foundations where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin)

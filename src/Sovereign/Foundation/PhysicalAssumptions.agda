@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Constitution.PhysicalAssumptions
+-- | Sovereign.Foundation.PhysicalAssumptions
 -- 物理锚定登记处（轨道 B）— 全库 postulate 三分类的集中登记
 --
 -- 依据: docs/Postulate审计报告.md 三分类 + 2026-08-14 编译器实测
@@ -21,7 +21,7 @@
 --   2. 禁浮点/禁代数污染；0 postulate 目标
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Constitution.PhysicalAssumptions where
+module Sovereign.Foundation.PhysicalAssumptions where
 
 -- 三分类类型（文档化用, 不参与数学）
 data PostulateClass : Set where

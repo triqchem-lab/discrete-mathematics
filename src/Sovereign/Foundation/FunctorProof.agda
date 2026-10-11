@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting --cubical #-}
-module Sovereign.Completeness.FunctorProof where
+module Sovereign.Foundation.FunctorProof where
 
 --------------------------------------------------------------------------------
 -- 完备性元定理 P0 系列 — 函子性证明框架

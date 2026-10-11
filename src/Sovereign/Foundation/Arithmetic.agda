@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.RootMath.Arithmetic
+-- | Sovereign.Foundation.Arithmetic
 -- 根数学:高维几何审查后的算术引理
 --
 -- 宪法原则:
@@ -12,7 +12,7 @@
 --   1. 算术引理面（div-mod 唯一性、GF(3) 周期性、144 mod 3≡0 等）；
 --   2. trusted 系命名如实标注信任面（*-trusted 非内核全证）。
 -- 包含：+-mod-verified、+-mod-trusted、m*n%n≡0-trusted、mod-<-trusted、div-mod-theorem、div-mod-uniqueness、gf3-periodicity、144-mod-3≡0
-module Sovereign.RootMath.Arithmetic where
+module Sovereign.Foundation.Arithmetic where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; _<_)
 open import Data.Nat.Base using (_%_; _/_)

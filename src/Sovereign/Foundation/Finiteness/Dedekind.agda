@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.Finiteness.Dedekind
+-- | Sovereign.Foundation.Finiteness.Dedekind
 -- 任务书第一层·1.1 P0-a：型有限 ⟹ Dedekind 有限（构造性，可证）
 --
 -- 数学背景：Dedekind (1888) Definition 64。在构造性类型论中「有限」被重新定义为
@@ -21,14 +21,14 @@
 --
 -- 包含：finite
 
-module Sovereign.Analysis.Finiteness.Dedekind where
+module Sovereign.Foundation.Finiteness.Dedekind where
 
 open import Data.Fin using (Fin)
 open import Data.Product using (_,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; cong; sym; trans)
 open import Sovereign.Structology.PlatonicTorusProjection using (_≃_)
 open import Sovereign.Analysis.FiniteDynamics using (injSurj)
-open import Sovereign.Analysis.Finiteness.Foundations
+open import Sovereign.Foundation.Finiteness.Foundations
   using (InjA; DedekindFinite; Finite; ≃-to-inj; ≃-from-inj)
 
 -- 主定理（任务书 P0-a）

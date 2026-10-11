@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.Finiteness.Tarski
+-- | Sovereign.Foundation.Finiteness.Tarski
 -- 任务书第一层·1.3：Tarski-Kuratowski 极小元原理（1920–1924）在 Fin n 上的实例
 --
 -- 数学背景：Tarski 1924 / Kuratowski 1920 —— S 有限 ⟺ 非空子集族有极小元。
@@ -23,7 +23,7 @@
 --
 -- 包含：tarski-min
 
-module Sovereign.Analysis.Finiteness.Tarski where
+module Sovereign.Foundation.Finiteness.Tarski where
 
 open import Data.Nat using (ℕ; _<_; _≤_)
 open import Data.Nat.Properties using (_<?_; <⇒≤)

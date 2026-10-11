@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.GaoYangRigidLock
+-- | Sovereign.Foundation.GaoYangRigidLock
 -- 任务书第二层·2.5：Gao-Yang 有限偏序集离散同伦的「刚性锁定」构造性核
 -- （Gao, Jing-Wen; Yang, Xiao-Song, arXiv:2410.16948, 2024）
 --
@@ -30,7 +30,7 @@
 --
 -- 包含：orbit-cancel-inj、gao-yang-rigid-lock、gao-yang-rigid-lock-bound、rot3、rot3-inj、rot3-lock、rot3-lock-bound
 
-module Sovereign.Analysis.GaoYangRigidLock where
+module Sovereign.Foundation.GaoYangRigidLock where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

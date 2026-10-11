@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.Finiteness.Pigeonhole
+-- | Sovereign.Foundation.Finiteness.Pigeonhole
 -- 任务书第一层·1.2：鸽巢原理双向等价（Dirichlet 1834）
 --
 -- 数学背景：n+1 物入 n 盒必有碰撞；逆否 = 单射基数下界。
@@ -24,7 +24,7 @@
 --
 -- 包含：pigeonhole、pigeonhole←、pigeonhole-iff
 
-module Sovereign.Analysis.Finiteness.Pigeonhole where
+module Sovereign.Foundation.Finiteness.Pigeonhole where
 
 open import Data.Nat using (ℕ; _<_; _≤_)
 open import Data.Nat.Properties using (≤-trans; _<?_; ≰⇒>; ≤-pred; <-irrefl)

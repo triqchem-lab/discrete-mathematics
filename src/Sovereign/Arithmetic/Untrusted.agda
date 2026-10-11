@@ -24,6 +24,6 @@ open import Data.Nat.DivMod public
 
 -- 备注：
 -- 阶段 2 计划：
--- 1. 在 Sovereign.RootMath.Arithmetic 中重新实现上述引理。
+-- 1. 在 Sovereign.Foundation.Arithmetic 中重新实现上述引理。
 -- 2. 基于 GF(3) 格点拓扑证明。
 -- 3. 替换此模块的内容。
