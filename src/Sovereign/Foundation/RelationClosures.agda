@@ -87,8 +87,8 @@ SC-min : ∀ {A : Set} (R S : Rel A)
        → Symmetric S
        → (∀ x y → R x y → S x y)
        → ∀ x y → SC R x y → S x y
-SC-min R S symS emb x y (embS r)   = emb x y r
-SC-min R S symS emb x y (symS s)   = symS x y (SC-min R S symS emb y x s)
+SC-min R S S-sym emb x y (embS r)   = emb x y r
+SC-min R S S-sym emb x y (symS s)   = symS x y (SC-min R S S-sym emb y x s)
 
 -- 传递闭包最小性：任何包含 R 的传递关系包含 TC R（右线性归纳两案）
 TC-min : ∀ {A : Set} (R S : Rel A)

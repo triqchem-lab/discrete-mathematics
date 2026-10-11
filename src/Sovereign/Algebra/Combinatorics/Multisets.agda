@@ -134,7 +134,7 @@ pair-class-2 (suc (suc (suc a))) b eq = ⊥-elim (suc≢zero contra)
   -- 3+a+b = suc(suc(suc(a+b))) ≡ 2 ⟹ suc(a+b) ≡ zero [矛盾]
   where
   contra : suc (a + b) ≡ zero
-  contra = suc-injective (suc-injective (suc-injective eq))
+  contra = suc-injective (suc-injective eq)
   suc≢zero : ∀ {x} → suc x ≡ zero → ⊥
   suc≢zero ()
 
