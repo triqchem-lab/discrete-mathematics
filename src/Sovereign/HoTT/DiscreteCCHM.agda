@@ -112,9 +112,13 @@ discreteKan : ∀ boundary → KanFiller boundary
 discreteKan boundary = record { filler = λ n → iterTransp n (boundary 0) ; compat = λ n → refl }
 
 -- CRT crt-merge 类型映射 (Format/CRT.agda, 0 postulate 已有)
+-- [postulate 登记 2026-10-11] kind:**gap**（真缺口——v6.0 HoTT 连续化闭合占位接口，头注自认）
+--   依据：无构造性闭合路径（连续化构造待 v6.0）；**gap 不得 proven**——节点须标 blocked/立界。
 postulate discreteGlue : DiscretePhase → DiscretePhase → DiscretePhase
 
 -- CRTFiberWinding 满射性 (v6.0 HoTT 连续化闭合后消去)
+-- [postulate 登记 2026-10-11] kind:**gap**（同上——连续化闭合占位）
+--   依据：满射性构造待 v6.0 连续化；**gap 不得 proven**。
 postulate discreteCanonicity : DiscretePhase → ℕ
 
 windingP : ℕ → ℕ ; windingP n = (n % POLAR) * TORUS
