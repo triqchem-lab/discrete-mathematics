@@ -1,12 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteLightcone
+-- | Sovereign.Application.DiscreteLightcone
 -- 83 相对论补强 — GF(3)² 闵氏形式与光锥分类 (0 postulate)
 --
 -- q(x,y) = x² − y² (GF(3)): 类光 q=0 (x=±y), 类时 q=1, 类空 q=2
 -- 9 格点分类: 5 类光 + 2 类时 + 2 类空 — 离散光锥的完整结构
 
-module Sovereign.Physics.DiscreteLightcone where
+module Sovereign.Application.DiscreteLightcone where
 
 open import Data.Nat using (_+_)
 

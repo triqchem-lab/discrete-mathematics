@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.LightRotationTernary
+-- | Sovereign.Application.LightRotationTernary
 -- 光自转与三进制编码 — α 阶 4 结构的形式化 (0 postulate)
 --
 -- 核心: 光的自转由 α 的 4 阶循环群描述, 每步旋转 90°。
@@ -18,7 +18,7 @@
 -- §3 频率标定: 自转频率与 Frobenius 周期
 -- §4 与光学窗口的对接
 
-module Sovereign.Physics.LightRotationTernary where
+module Sovereign.Application.LightRotationTernary where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

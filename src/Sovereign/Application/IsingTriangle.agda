@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.IsingTriangle
+-- | Sovereign.Application.IsingTriangle
 -- 82 统计力学补强 — 三角 Ising 模型的 8 构型配分 (0 postulate)
 --
 -- 3 自旋 (T₁=+1, T₂=−1) 在三角形上: E = −(s₁s₂ + s₂s₃ + s₃s₁)
 -- 8 构型: 2 个全对齐 (E = −3), 6 个混合 (E = 1)
 -- 配分多项式: Z = 2x³ + 6x⁻¹ (x = e^{βJ}); 磁化对称 Σ m = 0
 
-module Sovereign.Physics.IsingTriangle where
+module Sovereign.Application.IsingTriangle where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

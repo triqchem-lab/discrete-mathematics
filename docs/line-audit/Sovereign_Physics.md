@@ -80,11 +80,11 @@
 
 ## `src/Sovereign/Physics/ClimateDynamics.agda`
 
-- **module**: `Sovereign.Physics.ClimateDynamics`
+- **module**: `Sovereign.Application.ClimateDynamics`
 - **行数**: 111（代码 31 / 注释 55）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.ClimateDynamics
+  - | Sovereign.Application.ClimateDynamics
   - 气候动力学 — T⁶ 环面上的矢量场
   - 核心映射:
   - 气候状态 = T⁶ 环面上的 GF(9) 矢量场
@@ -102,11 +102,11 @@
 
 ## `src/Sovereign/Physics/DNAEncoding.agda`
 
-- **module**: `Sovereign.Physics.DNAEncoding`
+- **module**: `Sovereign.Application.DNAEncoding`
 - **行数**: 104（代码 37 / 注释 44）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.DNAEncoding
+  - | Sovereign.Application.DNAEncoding
   - DNA 碱基配对 — GF(3) 有限域编码
   - 核心映射:
   - 碱基 → GF(3) 元素 (三态: 0, 1, 2)
@@ -281,11 +281,11 @@
 
 ## `src/Sovereign/Physics/DiscreteLightcone.agda`
 
-- **module**: `Sovereign.Physics.DiscreteLightcone`
+- **module**: `Sovereign.Application.DiscreteLightcone`
 - **行数**: 40（代码 18 / 注释 10）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.DiscreteLightcone
+  - | Sovereign.Application.DiscreteLightcone
   - 83 相对论补强 — GF(3)² 闵氏形式与光锥分类 (0 postulate)
   - q(x,y) = x² − y² (GF(3)): 类光 q=0 (x=±y), 类时 q=1, 类空 q=2
   - 9 格点分类: 5 类光 + 2 类时 + 2 类空 — 离散光锥的完整结构
@@ -394,11 +394,11 @@
 
 ## `src/Sovereign/Physics/DiscreteStatMech.agda`
 
-- **module**: `Sovereign.Physics.DiscreteStatMech`
+- **module**: `Sovereign.Application.DiscreteStatMech`
 - **行数**: 407（代码 239 / 注释 91）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.DiscreteStatMech — 离散统计力学 (MSC 82)
+  - | Sovereign.Application.DiscreteStatMech — 离散统计力学 (MSC 82)
   - 补强版 (2026-08), 七层, 0 postulate:
   - §1 计数型熵 S = W: n 位 GF(3) 寄存器的微态数 W(n) = 3ⁿ, 熵取微态数本身
   - (无对数计数型, GF(3) 上最自然的熵), 含乘法律 W(n+m) = W(n)·W(m).
@@ -423,7 +423,7 @@
 
 ## `src/Sovereign/Physics/ElasticityDiscrete.agda`
 
-- **module**: `Sovereign.Physics.ElasticityDiscrete`
+- **module**: `Sovereign.Application.ElasticityDiscrete`
 - **行数**: 10（代码 6 / 注释 1）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
@@ -617,11 +617,11 @@
 
 ## `src/Sovereign/Physics/FineStructureMapping.agda`
 
-- **module**: `Sovereign.Physics.FineStructureMapping`
+- **module**: `Sovereign.Application.FineStructureMapping`
 - **行数**: 145（代码 72 / 注释 47）
 - **OPTIONS**: `--rewriting --cubical --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.FineStructureMapping
+  - | Sovereign.Application.FineStructureMapping
   - 物理学：精细结构常数的律算高维映射
   - 核心定理：环面单值化定理
   - α_电 = α_律算 × (π_欧 / π_全息) × 1/8
@@ -661,7 +661,7 @@
 
 ## `src/Sovereign/Physics/HamiltonianDiscrete.agda`
 
-- **module**: `Sovereign.Physics.HamiltonianDiscrete`
+- **module**: `Sovereign.Application.HamiltonianDiscrete`
 - **行数**: 16（代码 9 / 注释 1）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
@@ -697,11 +697,11 @@
 
 ## `src/Sovereign/Physics/HydrogenBondCoherence.agda`
 
-- **module**: `Sovereign.Physics.HydrogenBondCoherence`
+- **module**: `Sovereign.Application.HydrogenBondCoherence`
 - **行数**: 179（代码 54 / 注释 88）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.HydrogenBondCoherence
+  - | Sovereign.Application.HydrogenBondCoherence
   - 氢键网络相干性 — 六重取向态 + 软模临界指数
   - 细化 WaterCriticalDerivation 中的相干增强因子:
   - Pauling 冰规则 → 六重取向态 → GF(9) 六重相位副本
@@ -745,11 +745,11 @@
 
 ## `src/Sovereign/Physics/IsingTriangle.agda`
 
-- **module**: `Sovereign.Physics.IsingTriangle`
+- **module**: `Sovereign.Application.IsingTriangle`
 - **行数**: 63（代码 35 / 注释 15）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.IsingTriangle
+  - | Sovereign.Application.IsingTriangle
   - 82 统计力学补强 — 三角 Ising 模型的 8 构型配分 (0 postulate)
   - 3 自旋 (T₁=+1, T₂=−1) 在三角形上: E = −(s₁s₂ + s₂s₃ + s₃s₁)
   - 8 构型: 2 个全对齐 (E = −3), 6 个混合 (E = 1)
@@ -760,11 +760,11 @@
 
 ## `src/Sovereign/Physics/LatticeMembrane.agda`
 
-- **module**: `Sovereign.Physics.LatticeMembrane`
+- **module**: `Sovereign.Application.LatticeMembrane`
 - **行数**: 232（代码 78 / 注释 101）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.LatticeMembrane
+  - | Sovereign.Application.LatticeMembrane
   - 膜分层引理 — 模板→频率→步长→层数的除法结构
   - 语料锚 (word_5, word_72):
   - "我们这次玩儿的模板是12×12的关系, 所以宇宙的底层模板是以太"
@@ -833,11 +833,11 @@
 
 ## `src/Sovereign/Physics/LightRotationFrequency.agda`
 
-- **module**: `Sovereign.Physics.LightRotationFrequency`
+- **module**: `Sovereign.Application.LightRotationFrequency`
 - **行数**: 142（代码 37 / 注释 73）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.LightRotationFrequency
+  - | Sovereign.Application.LightRotationFrequency
   - 光自转频率 — 从 α⁴=1 推导代数周期, 频率标定保留 (0 postulate)
   - HONEST: 诚实边界:
   - α⁴=1 给出代数周期 4, 但无法给出物理频率 (Hz)
@@ -854,11 +854,11 @@
 
 ## `src/Sovereign/Physics/LightRotationTernary.agda`
 
-- **module**: `Sovereign.Physics.LightRotationTernary`
+- **module**: `Sovereign.Application.LightRotationTernary`
 - **行数**: 204（代码 73 / 注释 93）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.LightRotationTernary
+  - | Sovereign.Application.LightRotationTernary
   - 光自转与三进制编码 — α 阶 4 结构的形式化 (0 postulate)
   - 核心: 光的自转由 α 的 4 阶循环群描述, 每步旋转 90°。
   - α⁰ = 1  (0°,   无旋转)
@@ -971,11 +971,11 @@
 
 ## `src/Sovereign/Physics/PhaseTransition.agda`
 
-- **module**: `Sovereign.Physics.PhaseTransition`
+- **module**: `Sovereign.Application.PhaseTransition`
 - **行数**: 109（代码 30 / 注释 57）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.PhaseTransition
+  - | Sovereign.Application.PhaseTransition
   - 相变 = 范数边界穿越
   - 核心映射:
   - 固态→液态: N=2→N=1 (范数减小)
@@ -992,11 +992,11 @@
 
 ## `src/Sovereign/Physics/ProteinFolding.agda`
 
-- **module**: `Sovereign.Physics.ProteinFolding`
+- **module**: `Sovereign.Application.ProteinFolding`
 - **行数**: 130（代码 42 / 注释 58）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.ProteinFolding
+  - | Sovereign.Application.ProteinFolding
   - 蛋白质折叠 — T⁶ 环面上的构象空间
   - 核心映射:
   - 蛋白质构象空间 = T⁶ 环面 (729 个可能构象)

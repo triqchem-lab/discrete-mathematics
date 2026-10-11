@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.LatticeMembrane
+-- | Sovereign.Application.LatticeMembrane
 -- 膜分层引理 — 模板→频率→步长→层数的除法结构
 --
 -- 语料锚 (word_5, word_72):
@@ -27,7 +27,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.LatticeMembrane where
+module Sovereign.Application.LatticeMembrane where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_; _/_)
 open import Data.Product using (_×_; _,_)

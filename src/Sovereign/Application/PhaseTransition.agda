@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.PhaseTransition
+-- | Sovereign.Application.PhaseTransition
 -- 相变 = 范数边界穿越
 --
 -- 核心映射:
@@ -14,7 +14,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.PhaseTransition where
+module Sovereign.Application.PhaseTransition where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_)
 open import Data.Product using (_×_; _,_)

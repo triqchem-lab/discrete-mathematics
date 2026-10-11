@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DNAEncoding
+-- | Sovereign.Application.DNAEncoding
 -- DNA 碱基配对 — GF(3) 有限域编码
 --
 -- 核心映射:
@@ -14,7 +14,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.DNAEncoding where
+module Sovereign.Application.DNAEncoding where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
 open import Data.Product using (_×_; _,_)

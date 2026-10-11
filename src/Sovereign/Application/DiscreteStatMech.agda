@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteStatMech — 离散统计力学 (MSC 82)
+-- | Sovereign.Application.DiscreteStatMech — 离散统计力学 (MSC 82)
 --
 -- 补强版 (2026-08), 七层, 0 postulate:
 --   §1 计数型熵 S = W: n 位 GF(3) 寄存器的微态数 W(n) = 3ⁿ, 熵取微态数本身
@@ -20,7 +20,7 @@
 --  Data.Rational.Solver 落链 — 求解器产出真实证明项, 非 postulate;
 --  序关系部分手证 (平方非负 + 单调性), 无 with, 无 funext.
 
-module Sovereign.Physics.DiscreteStatMech where
+module Sovereign.Application.DiscreteStatMech where
 
 open import Data.Nat using (ℕ; zero; suc; z≤n)
   renaming (_+_ to _+ℕ_; _*_ to _*ℕ_; _^_ to _^ℕ_)

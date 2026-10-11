@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.HamiltonianDiscrete
+-- | Sovereign.Application.HamiltonianDiscrete
 -- 离散哈密顿量 — DC 体系的能量算符定义
 --
 -- 核心原则:
@@ -11,7 +11,7 @@
 --
 -- 包含: 哈密顿量定义、本征值、质量间隙
 
-module Sovereign.Physics.HamiltonianDiscrete where
+module Sovereign.Application.HamiltonianDiscrete where
 
 open import Data.Nat using (ℕ)
 open import Data.Product using (_×_; _,_; Σ; ∃; ∃-syntax; proj₁; proj₂)

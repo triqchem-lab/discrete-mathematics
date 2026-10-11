@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.HydrogenBondCoherence
+-- | Sovereign.Application.HydrogenBondCoherence
 -- 氢键网络相干性 — 六重取向态 + 软模临界指数
 --
 -- 细化 WaterCriticalDerivation 中的相干增强因子:
@@ -13,7 +13,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.HydrogenBondCoherence where
+module Sovereign.Application.HydrogenBondCoherence where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_; _∸_; _/_)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)

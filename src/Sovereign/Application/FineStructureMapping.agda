@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.FineStructureMapping
+-- | Sovereign.Application.FineStructureMapping
 -- 物理学：精细结构常数的律算高维映射
 --
 -- 核心定理：环面单值化定理
@@ -9,7 +9,7 @@
 -- 记法修复 (2026-09-08): 假记法 1b1/8b8 与裸 _/_ 当 ℚ 除 → 按 QuartzPhonon
 -- 惯例 renaming (_*ℚ_/_/ℚ_) + ℚ÷ℚ 用 _÷_. 数值断言标工程占位非证明.
 
-module Sovereign.Physics.FineStructureMapping where
+module Sovereign.Application.FineStructureMapping where
 
 open import Data.Nat using (ℕ)
 open import Data.Integer using (ℤ; +_)

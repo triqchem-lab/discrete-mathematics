@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.ClimateDynamics
+-- | Sovereign.Application.ClimateDynamics
 -- 气候动力学 — T⁶ 环面上的矢量场
 --
 -- 核心映射:
@@ -16,7 +16,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.ClimateDynamics where
+module Sovereign.Application.ClimateDynamics where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
 open import Data.Product using (_×_; _,_)

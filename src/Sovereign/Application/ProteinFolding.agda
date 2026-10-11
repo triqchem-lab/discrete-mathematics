@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.ProteinFolding
+-- | Sovereign.Application.ProteinFolding
 -- 蛋白质折叠 — T⁶ 环面上的构象空间
 --
 -- 核心映射:
@@ -16,7 +16,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.ProteinFolding where
+module Sovereign.Application.ProteinFolding where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_)
 open import Data.Product using (_×_; _,_)

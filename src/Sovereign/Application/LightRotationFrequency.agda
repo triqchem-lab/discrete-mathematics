@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.LightRotationFrequency
+-- | Sovereign.Application.LightRotationFrequency
 -- 光自转频率 — 从 α⁴=1 推导代数周期, 频率标定保留 (0 postulate)
 --
 -- HONEST: 诚实边界:
@@ -14,7 +14,7 @@
 -- §4 频率关系: ν_rotation = ν_Frobenius / 2
 -- §5 诚实边界: 无法从纯代数推导 Hz
 
-module Sovereign.Physics.LightRotationFrequency where
+module Sovereign.Application.LightRotationFrequency where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
