@@ -29,7 +29,7 @@ module Sovereign.Problem.Riemann.ZetaFunctional where
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; _≢_; cong; cong₂)
-open import Sovereign.RootMath.Eisenstein
+open import Sovereign.Foundation.Eisenstein
   using (Eisenstein; eis; 0ᵉ; 1ᵉ; 3ᵉ; _+ᵉ_; _*ᵉ_; conjᵉ)
 open import Sovereign.Problem.Riemann.WeilRigidity
   using (q3; t1-E1; t1-E2; t1-E6; t2-E1; t2-E2; t2-E6;

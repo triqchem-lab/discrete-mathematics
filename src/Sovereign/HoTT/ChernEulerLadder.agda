@@ -34,7 +34,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 import Sovereign.HoTT.ChernClass as CC
 import Sovereign.Base.Trit as Trit
-import Sovereign.RootMath.Eisenstein as Eis
+import Sovereign.Foundation.Eisenstein as Eis
 
 --------------------------------------------------------------------------------
 -- §1. 二维: 陈数 = 欧拉示性数 (S² 12 胞腔 = 正十二面体)

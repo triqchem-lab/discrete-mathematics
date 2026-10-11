@@ -29,7 +29,7 @@ open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Nat using (ℕ; _≤_; z≤n; s≤s) renaming (_*_ to _*ℕ_)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; _≢_)
-open import Sovereign.RootMath.Eisenstein
+open import Sovereign.Foundation.Eisenstein
   using (Eisenstein; eis; 0ᵉ; 3ᵉ; _+ᵉ_; _*ᵉ_; conjᵉ)
 
 -- q = 3（基域 GF(3)）

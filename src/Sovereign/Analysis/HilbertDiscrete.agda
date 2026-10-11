@@ -41,7 +41,7 @@ open import Sovereign.Analysis.FiniteInnerProduct using (
   Orthogonal; zero-orthogonalˡ; zero-orthogonalʳ;
   basisVec; basisVec-diag)
 
-open import Sovereign.Analysis.FiniteDynamics using (
+open import Sovereign.Foundation.FiniteDynamics using (
   orbit; EventuallyPeriodic; orbit-eventually-periodic)
 
 open import Sovereign.Analysis.VertexAlgebraDiscrete using (

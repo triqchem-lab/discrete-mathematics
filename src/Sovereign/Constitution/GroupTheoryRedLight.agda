@@ -146,7 +146,7 @@ reducibility-witness = refl
 --------------------------------------------------------------------------------
 
 -- ⚠ 归位后（2026-09-11）: 通用件从 Analysis 取，GF9 专用件从 Algebra.FrobeniusOrbit 取
-open import Sovereign.Analysis.FiniteDynamics using (orbit)
+open import Sovereign.Foundation.FiniteDynamics using (orbit)
 open import Sovereign.Algebra.FrobeniusOrbit using
   (frobenius-orbit-period; frobenius-period-tight; frobenius-fixed-iff)
 

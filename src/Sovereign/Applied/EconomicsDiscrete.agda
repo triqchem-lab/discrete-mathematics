@@ -17,7 +17,7 @@ open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
-open import Sovereign.Analysis.FiniteDynamics
+open import Sovereign.Foundation.FiniteDynamics
   using (orbit; orbit-eventually-periodic; EventuallyPeriodic; pigeonhole-fin)
 
 --------------------------------------------------------------------------------

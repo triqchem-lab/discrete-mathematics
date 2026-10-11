@@ -32,7 +32,7 @@ open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; trans; sym; subst)
 
-open import Sovereign.Analysis.FiniteDynamics using (orbit; arith-rearrange; pigeonhole-fin)
+open import Sovereign.Foundation.FiniteDynamics using (orbit; arith-rearrange; pigeonhole-fin)
 open import Sovereign.Synthesis.FinMixedRadix using (N12; enc12; enc12-inj-pointwise; suc≤12)
 open import Sovereign.Analysis.PairEnc using (pairEnc; pairEnc-injective)
 open import Sovereign.Problem.NavierStokes.NSEPresentation using

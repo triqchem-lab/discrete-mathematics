@@ -26,7 +26,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 import Sovereign.Foundation.Gaussian as G
-import Sovereign.RootMath.Eisenstein as Eis
+import Sovereign.Foundation.Eisenstein as Eis
 
 --------------------------------------------------------------------------------
 -- Z[i] (判别式 −4): 分歧与分裂

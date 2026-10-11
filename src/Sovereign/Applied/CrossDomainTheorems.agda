@@ -39,7 +39,7 @@ open import Sovereign.Structology.BurnsideT6 using (
 
 open import Sovereign.Algebra.DiscreteDE using (Δⁿ≥3≡0; Δⁿ)
 open import Sovereign.Algebra.ProjectionDifferential using (GF3Func)
-open import Sovereign.Analysis.FiniteDynamics using (
+open import Sovereign.Foundation.FiniteDynamics using (
   pigeonhole-fin; orbit-eventually-periodic; EventuallyPeriodic; orbit)
 
 open import Sovereign.Structology.A4Representations using (

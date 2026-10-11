@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.RootMath.Eisenstein
+-- | Sovereign.Foundation.Eisenstein
 -- Eisenstein 整数环 Z[ω]:  a + b·ω, 其中 ω² + ω + 1 = 0, ω³ = 1
 --
 -- 宪法原则:
@@ -19,7 +19,7 @@
 --   1. Eisenstein 整数环 Z[ω]（ω²+ω+1=0）record 化：加法/乘法/单位元；
 --   2. 代数复数宪法面：分量整数化，禁浮点。
 -- 包含：record Eisenstein、0ᵉ、1ᵉ、ωᵉ、ω²ᵉ、3ᵉ、_+ᵉ_、_*ᵉ_
-module Sovereign.RootMath.Eisenstein where
+module Sovereign.Foundation.Eisenstein where
 
 open import Data.Integer using (ℤ; +0; +[1+_]; +_; -[1+_]; _+_; _-_; _*_; -_)
 open import Data.Integer.Properties

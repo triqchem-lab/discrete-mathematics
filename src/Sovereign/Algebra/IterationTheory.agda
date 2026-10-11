@@ -19,7 +19,7 @@
 -- 依赖:
 --   Sovereign.Base.Trit — GF(3) 三进制本体
 --   Sovereign.Algebra.GF9 — GF(9) 域运算
---   Sovereign.Analysis.FiniteDynamics — 轨道、鸽巢、周期性
+--   Sovereign.Foundation.FiniteDynamics — 轨道、鸽巢、周期性
 --
 -- 0 postulate — 全部构造性证明
 
@@ -44,7 +44,7 @@ open import Sovereign.Base.Trit
 open import Sovereign.Algebra.GF9
   using (GF9; gf9-one; gf9-zero; _+gf9_; _*gf9_; embed-gf3;
          galoisConjugate; galoisConjugate²)
-open import Sovereign.Analysis.FiniteDynamics
+open import Sovereign.Foundation.FiniteDynamics
   using (orbit; orbit-step; orbit-cong; orbit-collision-propagates;
          EventuallyPeriodic; pigeonhole-fin)
 -- ⚠ 归位后（2026-09-11）: 以下 6 个 GF9 专用名字已从 Analysis.FiniteDynamics

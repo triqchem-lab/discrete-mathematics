@@ -46,7 +46,7 @@ open import Sovereign.Algebra.GF9
   using (GF3; GF9; alpha; gf9-one; galoisConjugate; sigma-alpha; embed-gf3;
          _+gf9_; _*gf9_; +gf9-comm; +gf9-assoc; +gf9-identityˡ; +gf9-identityʳ;
          *gf9-identityˡ; *gf9-identityʳ; *gf9-comm)
-open import Sovereign.RootMath.Eisenstein using (neg-*-l; neg-*-r)
+open import Sovereign.Foundation.Eisenstein using (neg-*-l; neg-*-r)
 
 infixl 20 _-₉_
 

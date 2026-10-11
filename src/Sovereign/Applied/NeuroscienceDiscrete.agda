@@ -19,7 +19,7 @@ open import Relation.Binary.PropositionalEquality
 
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-assoc; ⊕-identityˡ; ⊕-identityʳ; ⊕-inverse; negate²)
-open import Sovereign.Analysis.FiniteDynamics
+open import Sovereign.Foundation.FiniteDynamics
   using (orbit; orbit-eventually-periodic; EventuallyPeriodic)
 
 --------------------------------------------------------------------------------

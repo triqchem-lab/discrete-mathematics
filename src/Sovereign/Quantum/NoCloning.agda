@@ -31,7 +31,7 @@ open ≡-Reasoning
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
 open import Sovereign.Quantum.Entanglement using (Qutrit; ket0; ket1)
 open import Sovereign.Algebra.GF9 using (GF9; galoisConjugate; galoisConjugate²; _+gf9_; _*gf9_; gf9-one)
-import Sovereign.RootMath.Eisenstein as Eis
+import Sovereign.Foundation.Eisenstein as Eis
 
 --------------------------------------------------------------------------------
 -- §1. GF(3) qutrit 不可克隆 (基域版)

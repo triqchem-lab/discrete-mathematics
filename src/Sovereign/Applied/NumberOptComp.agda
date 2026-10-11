@@ -19,7 +19,7 @@ open import Relation.Nullary using (¬_)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.DigitalRootCycle using (period-6)
-open import Sovereign.Analysis.FiniteDynamics using (
+open import Sovereign.Foundation.FiniteDynamics using (
   pigeonhole-fin; orbit-eventually-periodic; orbit-period-bound)
 open import Sovereign.Algebra.DiscreteDE using (Δⁿ; Δⁿ≥3≡0)
 open import Sovereign.Algebra.ProjectionDifferential using (GF3Func)

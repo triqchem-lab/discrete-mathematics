@@ -43,7 +43,7 @@ open ≡-Reasoning
 
 open import Sovereign.Structology.A4Group
   using (A4; Id; Rot; Flip; perm; _⊗_; _∘ₚ_; perm-hom)
-open import Sovereign.RootMath.Eisenstein
+open import Sovereign.Foundation.Eisenstein
   using (Eisenstein; eis; 0ᵉ; 1ᵉ; ωᵉ; ω²ᵉ; -1ᵉ; 3ᵉ; _+ᵉ_; _*ᵉ_; conjᵉ; conjᵉ-mul)
 
 --------------------------------------------------------------------------------

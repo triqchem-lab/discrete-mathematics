@@ -36,7 +36,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _≤_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Product using (Σ; _×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Analysis.FiniteDynamics
+open import Sovereign.Foundation.FiniteDynamics
   using (orbit; orbit-eventually-periodic; orbit-period-bound; EventuallyPeriodic)
 
 --------------------------------------------------------------------------------

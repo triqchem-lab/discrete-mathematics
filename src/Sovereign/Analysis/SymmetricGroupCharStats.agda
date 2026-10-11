@@ -28,7 +28,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip)
 open import Sovereign.Structology.A4Representations using
   (A4Irrep; V1; V1'; V1''; V3; dim; character; dimSqSum)
-import Sovereign.RootMath.Eisenstein as Eis
+import Sovereign.Foundation.Eisenstein as Eis
 
 -- 局部 Z[ω] 算子
 _⊞_ : Eis.Eisenstein → Eis.Eisenstein → Eis.Eisenstein

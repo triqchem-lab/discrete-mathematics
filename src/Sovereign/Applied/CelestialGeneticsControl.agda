@@ -20,7 +20,7 @@ open import Sovereign.Foundation.DigitalRoot
          nextPhase; christosPeriod6; phaseToValue)
 open import Sovereign.Format.CRTMeasurement
   using (CHRISTOFFEL-PERIOD; christoffel-closure)
-open import Sovereign.Analysis.FiniteDynamics
+open import Sovereign.Foundation.FiniteDynamics
   using (orbit; orbit-eventually-periodic; EventuallyPeriodic)
 
 --------------------------------------------------------------------------------

@@ -14,7 +14,7 @@
 --   本模块 import 复用, 只补环律, 不新增载体。
 --
 -- 路径选型 (A: 逐分量代数链 —— 已在库内完成, 本模块做迁移而不重证):
---   Sovereign.RootMath.Eisenstein 的 Eisenstein 载体与 Zω 的运算公式逐字同形
+--   Sovereign.Foundation.Eisenstein 的 Eisenstein 载体与 Zω 的运算公式逐字同形
 --   (同一 ℤ 运算、同一 ω²=-1-ω 化简形), 且已证全套环律:
 --     +ᵉ-comm / +ᵉ-assoc / +ᵉ-identityˡʳ / +ᵉ-inverseˡʳ
 --     *ᵉ-comm / *ᵉ-assoc / *ᵉ-identityˡʳ / *ᵉ-distribˡʳ
@@ -36,7 +36,7 @@ open import Relation.Binary.PropositionalEquality
 
 open import Sovereign.Structology.A4Representation
   using (Zω; mkZω; addZω; negZω; mulZω; zeroZω; oneZω; ω; ω²)
-open import Sovereign.RootMath.Eisenstein
+open import Sovereign.Foundation.Eisenstein
   using (Eisenstein; eis; _+ᵉ_; _*ᵉ_;
          +ᵉ-comm; +ᵉ-assoc; +ᵉ-identityˡ; +ᵉ-identityʳ; +ᵉ-inverseˡ; +ᵉ-inverseʳ;
          *ᵉ-comm; *ᵉ-assoc; *ᵉ-identityˡ; *ᵉ-identityʳ; *ᵉ-distribˡ; *ᵉ-distribʳ)

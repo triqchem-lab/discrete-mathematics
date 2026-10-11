@@ -37,7 +37,7 @@ open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; trans; sym)
 
-open import Sovereign.Analysis.FiniteDynamics using (orbit; arith-rearrange; pigeonhole-fin)
+open import Sovereign.Foundation.FiniteDynamics using (orbit; arith-rearrange; pigeonhole-fin)
 
 finite-orbit-obs :
   ∀ {S Idx Obs : Set} (N : ℕ) (enc : S → Fin N) (obs : S → Idx → Obs)

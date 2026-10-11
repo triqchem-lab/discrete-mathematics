@@ -33,7 +33,7 @@ open import Data.Integer using (ℤ; +_; -[1+_])
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.RootMath.Eisenstein
+open import Sovereign.Foundation.Eisenstein
   using (Eisenstein; eis; 0ᵉ; 1ᵉ; ωᵉ; ω²ᵉ; -1ᵉ; 3ᵉ; _+ᵉ_; _*ᵉ_; conjᵉ)
 
 open import Sovereign.Structology.A4Representations

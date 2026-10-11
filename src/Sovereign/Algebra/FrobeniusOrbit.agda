@@ -4,7 +4,7 @@
 --
 -- GF(9) 的 Frobenius 自同构 σ 的轨道结构（展示群实例层）。
 --
--- 定位（与 Sovereign.Analysis.FiniteDynamics 的分工）:
+-- 定位（与 Sovereign.Foundation.FiniteDynamics 的分工）:
 --   Analysis.FiniteDynamics = **通用**生成机制: orbit / 鸽巢碰撞 / collision-pw
 --   本模块                  = **具体展示群实例**: σ acting on GF(9)
 --
@@ -45,7 +45,7 @@ open import Relation.Binary.PropositionalEquality
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.GF9 using (GF9; galoisConjugate; galoisConjugate²; embed-gf3)
-open import Sovereign.Analysis.FiniteDynamics using
+open import Sovereign.Foundation.FiniteDynamics using
   (orbit; EventuallyPeriodic; pigeonhole-fin; orbit-collision-propagates; arith-rearrange)
 
 --------------------------------------------------------------------------------

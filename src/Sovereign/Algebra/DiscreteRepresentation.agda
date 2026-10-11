@@ -56,7 +56,7 @@ open import Sovereign.Structology.A4Representations
         )
 
 -- Eisenstein 整数 Z[ω]
-open import Sovereign.RootMath.Eisenstein
+open import Sovereign.Foundation.Eisenstein
   using (Eisenstein; eis; 0ᵉ; 1ᵉ; ωᵉ; ω²ᵉ; -1ᵉ; 3ᵉ; _+ᵉ_; _*ᵉ_; conjᵉ)
 
 -- GF(3)

@@ -37,7 +37,7 @@ open import Data.Unit using (⊤; tt)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
 
-open import Sovereign.RootMath.Eisenstein using
+open import Sovereign.Foundation.Eisenstein using
   ( Eisenstein; eis; 0ᵉ; 1ᵉ; ωᵉ; ω²ᵉ; -1ᵉ; 3ᵉ
   ; _+ᵉ_; _*ᵉ_; conjᵉ
   ; 1+ω+ω²≡0; ω²≡ω*ω; ω³≡1; conj-ω≡ω²; conj-ω²≡ω; ω*ω²≡1)

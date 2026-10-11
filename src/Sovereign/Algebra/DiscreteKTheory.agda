@@ -24,7 +24,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym
 open ≡-Reasoning
 
 import Sovereign.Base.Trit as Trit
-import Sovereign.RootMath.Eisenstein as Eis
+import Sovereign.Foundation.Eisenstein as Eis
 
 --------------------------------------------------------------------------------
 -- §1. K₀(pt) ≅ ℤ — Grothendieck 群完备化

@@ -78,7 +78,7 @@ import Sovereign.Application.CyclicGF27   -- γ 根结构 → 长度 26 循环�
 import Sovereign.Analysis.FiniteProbability  -- GF(3)ⁿ 均匀链 + 有理期望 + Burnside (A₄ 自然/正则作用)
 
 -- Eisenstein 环 (P1-4, wiki 12F/11R): Z[ω] 环公理 8 条 + 范数乘性 + 6 单位 (0 postulate)
-import Sovereign.RootMath.Eisenstein  -- *ᵉ-assoc/comm + conjᵉ-mul + norm-mul + unitGen C₆ 循环
+import Sovereign.Foundation.Eisenstein  -- *ᵉ-assoc/comm + conjᵉ-mul + norm-mul + unitGen C₆ 循环
 
 -- Kakeya L3 ✅
 import Sovereign.Problem.Kakeya.KakeyaGF3

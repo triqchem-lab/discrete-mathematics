@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | Sovereign.Analysis.FiniteDynamics
+-- | Sovereign.Foundation.FiniteDynamics
 -- 有限动力系统：轨道、周期性、鸽巢原理、GF(9) Frobenius 动力学
 -- | 有限动力学（轨道最终周期）
 --
@@ -9,7 +9,7 @@
 --
 -- 包含：orbit、orbit-step、orbit-cong、record、pigeonhole-fin、pigeonhole-collision、orbit-collision-propagates、arith-rearrange、orbit-eventually-periodic、orbit-period-bound、orbit-collision-pw、Inj、Surj、injSurj
 
-module Sovereign.Analysis.FiniteDynamics where
+module Sovereign.Foundation.FiniteDynamics where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _<_; _≤_; s≤s; z≤n)
 open import Data.Nat.Properties using (+-comm; +-assoc; +-identityʳ; +-suc; <⇒≤; ≤-trans; ≤-pred; m+[n∸m]≡n; m∸n≤m; n<1+n; <-irrefl)

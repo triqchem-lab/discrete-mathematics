@@ -26,7 +26,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; neg
 open import Sovereign.Algebra.GF9 using
   (GF9; galoisConjugate; alpha; _*gf9_; _+gf9_)
 import Sovereign.Foundation.Gaussian as G
-import Sovereign.RootMath.Eisenstein as Eis
+import Sovereign.Foundation.Eisenstein as Eis
 
 --------------------------------------------------------------------------------
 -- §1. 离散指数映射 exp_C4: Z/4 → C₄ (Z[i] 单位群, 生成元 i)
