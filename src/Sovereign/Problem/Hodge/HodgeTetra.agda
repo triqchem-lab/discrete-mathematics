@@ -1,8 +1,19 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_HodgeTetra — 四面体边界 (S²) Hodge 分解 · 三角→球面推广
--- 0 postulate
+-- | Sovereign.Problem.Hodge.HodgeTetra
+-- 四面体边界 (S²) Hodge 分解 · 三角→球面推广
+--
+-- 数学背景：∂Δ³ ≅ S² 的 Hodge 分解核：C₀=4, C₁=6, C₂=4（χ=2）——三角剖分到球面的推广实例。
+--
+-- 核心原则：
+--   1. 实例核（refl 级）
+--   2. χ=2 与 EulerChar 交叉一致
+--   3. ℕ ∸ 语义
+--
+-- 包含：H0, h0, h1, h2, hodge-S2
+--   （命名正名：旧头注 `jac_HodgeTetra` ≠ 模块名，2026-10-11 勘误）
 
+--
 module Sovereign.Problem.Hodge.HodgeTetra where
 
 open import Data.Nat using (ℕ; _∸_)

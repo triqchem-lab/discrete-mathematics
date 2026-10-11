@@ -1,8 +1,19 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_BSD_L3 — BSD L3: tₙ递推严格递归定义 + 正确性证明
--- 0 postulate
+-- | Sovereign.Problem.BSD.BSD_L3
+-- BSD L3：tₙ 递推严格递归定义 + 正确性证明
+--
+-- 数学背景：BSD 线 L3 层：t-rec 严格递归定义（q/t₁/n → t_{n+1}）+ step 正确性核对——递推的定义层（与 GF 实例核互补）。
+--
+-- 核心原则：
+--   1. 定义层——严格递归（终止性结构递归）
+--   2. step/t-rec 与手算值 refl 核对
+--   3. ℤ 精确值
+--
+-- 包含：step, t-rec, q3, t1, t1-val, t2-val, t3-val, t4-val, t5-val, t6-val, t7-val, t8-val, t9-val, t10-val…
+--   （命名正名：旧头注 `jac_BSD_L3` ≠ 模块名，2026-10-11 勘误）
 
+--
 module Sovereign.Problem.BSD.BSD_L3 where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)

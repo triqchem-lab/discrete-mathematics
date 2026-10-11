@@ -1,36 +1,18 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Problem.Hodge.KirchhoffZ
--- 任务书第四层·4.1：Kirchhoff 矩阵与 Matrix-Tree 定理（1847）的 ℤ 实例核
+-- Kirchhoff 矩阵与 Matrix-Tree 定理的 ℤ 实例核
 --
--- 数学背景：Kirchhoff, "Über die Auflösung der Gleichungen…"（Ann. Phys. 72
---   (1847), 497–508）：图的 Laplacian L = ∂ᵀ∂ 的任意 (n−1)×(n−1) 主子式 =
---   生成树数（Matrix-Tree 定理）。**域判断**：矩阵树定理在 GF(3) 上退化
---   （K₃ 树数 = 3 ≡ 0 被模吞掉），必须 ℤ——与 jac_Topology 的 χ = Σ(−1)ᵏ dim Hₖ
---   用 Data.Integer 同口径（本地 ℤ 先例）。
+-- 数学背景：Kirchhoff 1847 Matrix-Tree：K₃ 三角形 ℤ 系数——入射矩阵 M、Laplacian L=∂ᵀ∂、定理 A 行和零（电流定律离散形）、定理 B (n−1) 主子式 det=3=生成树数。
+--   【域判断修正 2026-10-03】CRT 通道为正解（jac_CRTDet 拱顶石），本模块 ℤ 版保留为精确值对照域（互补）。
 --
--- 本模块（K₃ 三角形实例，ℤ 系数）：
---   ① 入射矩阵 M : 边 × 顶点 → ℤ（M e v = ±1 按定向，第三顶点 0）；
---   ② Laplacian L u v = Σ_e M e u · M e v（∂ᵀ∂ 定义级）；
---   ③ 定理 A（行和零）：∀ u → Σ_v L u v ≡ 0ℤ —— Kirchhoff 电流定律的离散形；
---   ④ 定理 B（Matrix-Tree 实例）：K₃ 的 (n−1) 主子式 det = 3 = 生成树数。
+-- 核心原则：
+--   1. ℤ 精确值对照域（CRT 通道的互补面，非替代）
+--   2. 定理 A/B 均为 K₃ 实例核
+--   3. 域判断修正已入头（人类纠偏 2026-10-03）
 --
--- 【域判断修正（2026-10-03，人类纠偏）】「必须 ℤ」是草率结论：本库正解是
---   CRT 通道——jac_CRTDet 拱顶石 det = crt12(det₃, det₄)，GF(3) 分量退化由
---   Fin 4 分量补全（3 mod 4 = 3 ≠ 0），重构即非零可判。见 KirchhoffCRT.agda。
---   本模块 ℤ 版保留为**精确值对照域**（CRT 通道给 mod 12 非零可判，ℤ 给
---   精确值 3），两者互补。
+-- 包含：M, sum3, L, rowsum-0, rowsum-1, rowsum-2, lap-rowsum-zero, det2ℤ, minor, matrix-tree-K3, L00, L01, L11, L12
 --
--- ⚠ 诚实边界：
---   1. 这是 Matrix-Tree 的**实例层**（K₃ 一个图的具象计算），一般 n 的
---      「任意主子式 = 树数」定理需要 ℤ 上行列式理论 + 生成树枚举，roadmap。
---   2. 证明全部由 ℤ 字面量归约闭合（refl）——9 个 M 分量 + 6 个 L 分量 +
---      3 个行和 + 1 个主子式，均在 refl 归约可达范围（≤27 case 纪律内）。
---   3. ∂₁ 形状与 BoundaryGF3 同构（域不同：GF(3) vs ℤ），接线注明不 import
---      （域参数化泛型是 roadmap）。
---   4. CRT 对照件：Problem/Hodge/KirchhoffCRT.agda（mod 12 非零可判通道）。
---
--- 0 postulate / 0 hole。
 module Sovereign.Problem.Hodge.KirchhoffZ where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

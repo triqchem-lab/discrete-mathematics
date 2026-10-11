@@ -1,8 +1,19 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_Hodge_L3 — Hodge L3: GF(9) 射影簇 + 代数闭链 ≅ Hodge 类
--- 0 postulate
+-- | Sovereign.Problem.Hodge.Hodge_L3
+-- GF(9) 射影簇 + 代数闭链 ≅ Hodge 类
+--
+-- 数学背景：Hodge L3：ℙⁿ(GF(9)) 计数 |ℙⁿ| = (qⁿ⁺¹−1)/(q−1) 有限集、子簇可穷举——代数闭链与 Hodge 类的有限域对照。
+--
+-- 核心原则：
+--   1. 有限域实例核（GF(9) 射影计数）
+--   2. 候选/对照定位，不作一般定理
+--   3. refl 级
+--
+-- 包含：（零顶层签名——正文各节即清单：§1 ℙⁿ(GF(9)) 定义/§2 Weil-Deligne 对照/§3 L3 状态）
+--   （命名正名：旧头注 `jac_Hodge_L3` ≠ 模块名，2026-10-11 勘误）
 
+--
 module Sovereign.Problem.Hodge.Hodge_L3 where
 
 open import Data.Nat using (ℕ)

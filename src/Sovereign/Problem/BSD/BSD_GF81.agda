@@ -1,8 +1,19 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_BSD_GF81 — BSD t₄ 递推 + GF(81) 点计数 · 三曲线分化
--- 0 postulate
+-- | Sovereign.Problem.BSD.BSD_GF81
+-- BSD t₄ 递推 + GF(81) 点计数 · 三曲线分化
+--
+-- 数学背景：BSD 线 GF(81)=GF(3⁴) 实例核：t₄ = t₁·t₃ − q·t₂ + 点计数 81+1−t₄，三曲线分化。
+--
+-- 核心原则：
+--   1. 实例核（refl 级）
+--   2. Newton 恒等式递推
+--   3. ℤ 精确值
+--
+-- 包含：q3, t41, e181, t42, e281, t46, e681
+--   （命名正名：旧头注 `jac_BSD_GF81` ≠ 模块名，2026-10-11 勘误）
 
+--
 module Sovereign.Problem.BSD.BSD_GF81 where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)

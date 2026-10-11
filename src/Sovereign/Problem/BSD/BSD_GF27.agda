@@ -1,8 +1,20 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_BSD_GF27 — BSD 迹递推 t₃ + GF(27) 点计数
--- 0 postulate
+-- | Sovereign.Problem.BSD.BSD_GF27
+-- BSD 迹递推 t₃ + GF(27) 点计数
+--
+-- 数学背景：椭圆曲线 BSD 线的 GF(27) 实例核：Weil 迹递推 t_{n+2} = t₁·t_{n+1} − q·tₙ（q=3）经 Newton 恒等式给 t₃，点计数 #E(GF(27)) = 27+1−t₃。
+--   E₁/E₂/E₃ 三曲线分化实测。
+--
+-- 核心原则：
+--   1. 实例核——refl 级数值核对，非一般定理
+--   2. 迹递推取自 Weil 界族（BSD 假设语境）
+--   3. ℤ 算术精确值（禁浮点）
+--
+-- 包含：q3, t31, e127, t32, e227, t36, e627
+--   （命名正名：旧头注 `jac_BSD_GF27` ≠ 模块名，2026-10-11 勘误）
 
+--
 module Sovereign.Problem.BSD.BSD_GF27 where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)

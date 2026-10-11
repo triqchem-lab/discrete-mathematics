@@ -1,8 +1,19 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_BSD_GF243 — BSD t₅ 递推 + GF(243) · 三曲线全分化
--- 0 postulate
+-- | Sovereign.Problem.BSD.BSD_GF243
+-- BSD t₅ 递推 + GF(243) · 三曲线全分化
+--
+-- 数学背景：BSD 线 GF(243)=GF(3⁵) 实例核：t₅ = t₁·t₄ − q·t₃ 递推 + 点计数 243+1−t₅，三曲线全分化对照。
+--
+-- 核心原则：
+--   1. 实例核（refl 级数值核对）
+--   2. 递推同 BSD_GF27 族（Newton 恒等式链）
+--   3. ℤ 精确值
+--
+-- 包含：q3, t51, t52, t56
+--   （命名正名：旧头注 `jac_BSD_GF243` ≠ 模块名，2026-10-11 勘误）
 
+--
 module Sovereign.Problem.BSD.BSD_GF243 where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)

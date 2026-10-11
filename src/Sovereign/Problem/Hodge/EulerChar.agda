@@ -1,9 +1,19 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_EulerChar — 欧拉示性数 · ℤ 算术通用公式
--- χ = Σ(-1)^k dimC_k = Σ(-1)^k dimH_k
--- 0 postulate
+-- | Sovereign.Problem.Hodge.EulerChar
+-- 欧拉示性数 · ℤ 算术通用公式
+--
+-- 数学背景：χ = Σ(−1)ᵏ dimCₖ = Σ(−1)ᵏ dimHₖ 的 ℤ 交替和核——四链复形（S² 等）全验证；ℤ 替代 ℕ monus（支持负中间值，ℕ 下 0≠2 的退化在 ℤ 消失）。
+--
+-- 核心原则：
+--   1. ℤ 交替和（ℕ monus 退化点的修正域）
+--   2. 四实例全核对（χ = χ_H）
+--   3. refl 级
+--
+-- 包含：s2-χ, s2-χH, s2-euler, tri-χ, tri-χH, tri-euler, t2-χ, t2-χH, t2-euler, kl-χ, kl-χH, kl-euler
+--   （命名正名：旧头注 `jac_EulerChar` ≠ 模块名，2026-10-11 勘误）
 
+--
 module Sovereign.Problem.Hodge.EulerChar where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)

@@ -1,8 +1,19 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_KleinHodge — Klein 瓶 Hodge 分解 (第四种同调型)
--- 0 postulate
+-- | Sovereign.Problem.Hodge.KleinHodge
+-- Klein 瓶 Hodge 分解（第四种同调型）
+--
+-- 数学背景：Klein 瓶 CW 复形 C₀=1, C₁=2, C₂=1：面边界 aba⁻¹b = 2b → im(∂₂)=span(b)、rank=1——非可定向曲面的 Hodge 分解实例（第四种同调型对照）。
+--
+-- 核心原则：
+--   1. 实例核（refl 级）
+--   2. 非可定向型对照（与环面/球面互补）
+--   3. ℕ ∸ 语义
+--
+-- 包含：dimC₀, rank, H0, h0, h1, h2, kl-hodge, kl-euler
+--   （命名正名：旧头注 `jac_KleinHodge` ≠ 模块名，2026-10-11 勘误）
 
+--
 module Sovereign.Problem.Hodge.KleinHodge where
 
 open import Data.Nat using (ℕ; _∸_)

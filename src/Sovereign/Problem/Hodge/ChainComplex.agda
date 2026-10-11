@@ -1,5 +1,17 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Problem.Hodge.ChainComplex
+-- 链复形 record 与 Hodge 分解定理
+--
+-- 数学背景：Hodge 线定义层：ChainComplex record（dimC/rank∂/nullity∂/dimℋ + hodge-decomp 场：ker(∂ₖ) = im(∂_{k+1}) ⊕ ℋₖ）；dimH = nullity∸rank 的定理 dimℋ = dimH（(a+b)∸a = b）。
+--
+-- 核心原则：
+--   1. record 定义层（Hodge 分解为字段关系）
+--   2. dimℋ = dimH 为定理非定义相等
+--   3. ℕ monus 语义
+--
+-- 包含：record, dimH, dimC3, null3, dimℋ3, hodge3, tri, tri-H0, tri-H1
+--
 module Sovereign.Problem.Hodge.ChainComplex where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
