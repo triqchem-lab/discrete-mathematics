@@ -1,6 +1,8 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | DiscreteVariation — 离散变分法 (MSC 49)
+-- 【判重组5 注记 2026-10-11】与 DiscreteVariational 近名对判重：**互补双件**（本件=驻定性概念族 action2/freeL/stationary-const/nonstationary；
+-- 彼件=离散 Euler-Lagrange 族 E/energy-*/minimal-*/harmonic-mid）——签名零交叠实证，「重复名对」假设被证伪
 -- 有限集上的极值问题: 离散 Euler-Lagrange 方程.
 -- 替代连续泛函的 Gateaux 导数和 δ-变分.
 -- 0 postulate.

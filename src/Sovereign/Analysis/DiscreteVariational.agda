@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Analysis.DiscreteVariational
+-- 【判重组5 注记 2026-10-11】与 DiscreteVariation 近名对判重：互补双件（本件=离散 E-L 方程族）——非重复
 -- 49 变分法补强 — 离散能量极小与调和中点
 --
 -- 数学背景：端点固定的三点路径 (y₀=0, y₂=2)，中间值 y₁ ∈ {0,1,2}：
