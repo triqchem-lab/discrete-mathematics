@@ -41,6 +41,12 @@
 -- 参数的类型必须先于模块声明进入作用域（stdlib 的 Effect.Monad.Writer.Indexed 同款写法）
 open import Data.Nat.Base using (ℕ; _<_; NonZero; >-nonZero)
 
+-- 核心原则：
+--   1. 归一保值：expand（位展开）与 value（求值）互逆（roundtrip）；
+--   2. 加法/乘法同态：位值制运算与数字运算在 value 下交换；
+--   3. 参数化 base（base > 1）——Doz（base=12）与 Z/3¹¹ 环（base=3）共用此件。
+-- 包含：Raw（原始位串）、value（求值）、expand（位展开）、归一/同态律族。
+
 module Sovereign.Format.Positional (base : ℕ) (base>1 : 1 < base) where
 
 open import Data.Nat using (zero; suc; _+_; _*_; _^_; s≤s; z≤n)
