@@ -237,3 +237,163 @@ check-assoc-pt-t1t1t2 = refl
 --     需 negate 分配 + ⊕-swap-mid 族（四项 81-case 超穷举边界——须 rearrange 代数链）~15-25 行
 -- (iii) neg-resp-k3：negate 分配律 9-case ~10 行
 -- (iv) 一般 X 的 Hₖ 商面 rec/elim 定理族（PT-4/PM7a 立界同源）
+
+--------------------------------------------------------------------------------
+-- §5 立界清偿（2026-10-11）：①HRWells K₃ 实例化 ②add-resp-k3 ③neg-resp-k3
+--   立界件 (i)(ii)(iii) 转工时全交——K3GroupLaws.Inst 由条件形升全实例（K3Full.Done）
+--   策略：neg⊕/neg-neg 逐点 case（≤27）｜四项重排 ⊕-swap-mid 代数链
+--         （81-case 超穷举边界——附录 14 rearrange 范式）｜∂₂ 同态件=系数复制形
+--------------------------------------------------------------------------------
+
+-- §5.0 逐点补件（③件基础——§0 同族，策略 A ≤27 case）
+
+neg⊕ : ∀ a b → negate (a ⊕ b) ≡ negate a ⊕ negate b
+neg⊕ T₀ T₀ = refl
+neg⊕ T₀ T₁ = refl
+neg⊕ T₀ T₂ = refl
+neg⊕ T₁ T₀ = refl
+neg⊕ T₁ T₁ = refl
+neg⊕ T₁ T₂ = refl
+neg⊕ T₂ T₀ = refl
+neg⊕ T₂ T₁ = refl
+neg⊕ T₂ T₂ = refl
+
+neg-neg : ∀ a → negate (negate a) ≡ a
+neg-neg T₀ = refl
+neg-neg T₁ = refl
+neg-neg T₂ = refl
+
+-- 四项交换重排（(a⊕b)⊕(c⊕d) ≡ (a⊕c)⊕(b⊕d)——四项 3⁴=81 case 超穷举边界，代数链 5 步）
+⊕-swap-mid : ∀ a b c d → (a ⊕ b) ⊕ (c ⊕ d) ≡ (a ⊕ c) ⊕ (b ⊕ d)
+⊕-swap-mid a b c d = s1 ∙ s2 ∙ s3 ∙ s4 ∙ s5
+  where
+  -- (a⊕b)⊕(c⊕d) ≡ a⊕(b⊕(c⊕d))              [结合律]
+  s1 : (a ⊕ b) ⊕ (c ⊕ d) ≡ a ⊕ (b ⊕ (c ⊕ d))
+  s1 = ⊕-assoc-pt a b (c ⊕ d)
+  -- … ≡ a⊕((b⊕c)⊕d)                          [结合律反向]
+  s2 : a ⊕ (b ⊕ (c ⊕ d)) ≡ a ⊕ ((b ⊕ c) ⊕ d)
+  s2 = cong (a ⊕_) (sym (⊕-assoc-pt b c d))
+  -- … ≡ a⊕((c⊕b)⊕d)                          [中段交换]
+  s3 : a ⊕ ((b ⊕ c) ⊕ d) ≡ a ⊕ ((c ⊕ b) ⊕ d)
+  s3 = cong (λ w → a ⊕ (w ⊕ d)) (⊕-comm-pt b c)
+  -- … ≡ a⊕(c⊕(b⊕d))                          [结合律]
+  s4 : a ⊕ ((c ⊕ b) ⊕ d) ≡ a ⊕ (c ⊕ (b ⊕ d))
+  s4 = cong (a ⊕_) (⊕-assoc-pt c b d)
+  -- … ≡ (a⊕c)⊕(b⊕d)                          [结合律反向]
+  s5 : a ⊕ (c ⊕ (b ⊕ d)) ≡ (a ⊕ c) ⊕ (b ⊕ d)
+  s5 = sym (⊕-assoc-pt a c (b ⊕ d))
+
+-- 链接消去（(a⊕neg b)⊕(b⊕d) ≡ a⊕d——hr-trans 的四步消去形）
+⊕-link : ∀ a b d → (a ⊕ negate b) ⊕ (b ⊕ d) ≡ a ⊕ d
+⊕-link a b d = l1 ∙ l2 ∙ l3 ∙ l4
+  where
+  -- (a⊕neg b)⊕(b⊕d) ≡ a⊕(neg b⊕(b⊕d))      [结合律]
+  l1 : (a ⊕ negate b) ⊕ (b ⊕ d) ≡ a ⊕ (negate b ⊕ (b ⊕ d))
+  l1 = ⊕-assoc-pt a (negate b) (b ⊕ d)
+  -- … ≡ a⊕((neg b⊕b)⊕d)                      [结合律反向]
+  l2 : a ⊕ (negate b ⊕ (b ⊕ d)) ≡ a ⊕ ((negate b ⊕ b) ⊕ d)
+  l2 = cong (a ⊕_) (sym (⊕-assoc-pt (negate b) b d))
+  -- … ≡ a⊕(T₀⊕d)                             [逆元消去]
+  l3 : a ⊕ ((negate b ⊕ b) ⊕ d) ≡ a ⊕ (T₀ ⊕ d)
+  l3 = cong (λ w → a ⊕ (w ⊕ d)) (negSelfˡ b)
+  -- … ≡ a⊕d                                  [单位元]
+  l4 : a ⊕ (T₀ ⊕ d) ≡ a ⊕ d
+  l4 = cong (a ⊕_) (zerSelfˡ d)
+
+-- ∂₂ 同态件（系数复制形 ∂₂ x i = x fzero——Fin 3 三支同值）
+∂₂-add : ∀ (a b : C₂) → ∂₂ (a +ᶠ b) ≡ ∂₂ a +ᶠ ∂₂ b
+∂₂-add a b = funExt (λ { fzero → refl ; (fsuc fzero) → refl ; (fsuc (fsuc fzero)) → refl })
+
+∂₂-neg : ∀ (c : C₂) → ∂₂ (negᶠ c) ≡ negᶠ (∂₂ c)
+∂₂-neg c = funExt (λ { fzero → refl ; (fsuc fzero) → refl ; (fsuc (fsuc fzero)) → refl })
+
+zer₂ : C₂
+zer₂ = λ _ → T₀
+
+∂₂-zer : ∂₂ zer₂ ≡ zero₃
+∂₂-zer = funExt (λ { fzero → refl ; (fsuc fzero) → refl ; (fsuc (fsuc fzero)) → refl })
+
+-- §5.1 K₃ 全实例（HRWells + 同余两件——K3GroupLaws.Inst 三参数齐）
+module K3Full
+  (comp0-k3 : (c : C₂) → ∂₁ (∂₂ c) ≡ zero₃)
+  where
+
+  open _PM7a.HomologyQuotient C₁ C₀ C₂ sub₃ ∂₁ zero₃ ∂₂ comp0-k3
+    using (ImElem; HR; HRWells)
+
+  -- ③ neg-resp-k3（sub₃ (neg x)(neg x') ≡ negᶠ (sub₃ x x') ≡[e] negᶠ (∂₂ c) ≡ ∂₂ (negᶠ c)）
+  neg-resp-k3 : ∀ (x x' : C₁) → HR x x' → HR (negᶠ x) (negᶠ x')
+  neg-resp-k3 x x' (c , e) = negᶠ c , chain
+    where
+    -- 逐点：neg x i ⊕ negate(neg x' i) ≡ negate(x i ⊕ negate(x' i))   [neg⊕ 反向]
+    chain : sub₃ (negᶠ x) (negᶠ x') ≡ ∂₂ (negᶠ c)
+    chain =
+      funExt (λ i → sym (neg⊕ (x i) (negate (x' i))))
+      ∙ cong negᶠ e
+      ∙ sym (∂₂-neg c)
+
+  -- ② add-resp-k3（四项重排 + negate 分配——81-case 边界经 ⊕-swap-mid 代数链收口）
+  add-resp-k3 : ∀ (x x' y y' : C₁) → HR x x' → HR y y' → HR (x +ᶠ y) (x' +ᶠ y')
+  add-resp-k3 x x' y y' (c₁ , e₁) (c₂ , e₂) = (c₁ +ᶠ c₂) , chain
+    where
+    -- 逐点：(x⊕y)⊕neg(x'⊕y') ≡[neg⊕] (x⊕y)⊕(neg x'⊕neg y')
+    --       ≡[⊕-swap-mid] (x⊕neg x')⊕(y⊕neg y') = sub₃ x x' ⊕ sub₃ y y'
+    chain : sub₃ (x +ᶠ y) (x' +ᶠ y') ≡ ∂₂ (c₁ +ᶠ c₂)
+    chain =
+      funExt (λ i → cong ((x i ⊕ y i) ⊕_) (neg⊕ (x' i) (y' i))
+                    ∙ ⊕-swap-mid (x i) (y i) (negate (x' i)) (negate (y' i)))
+      ∙ cong₂ _+ᶠ_ e₁ e₂
+      ∙ sym (∂₂-add c₁ c₂)
+
+  -- ① 等价三律（hr-refl 零元面 / hr-sym 反向面 / hr-trans 链接消去面）
+  hr-refl-k3 : (x : C₁) → HR x x
+  hr-refl-k3 x = zer₂ , (funExt (λ i → negSelf (x i)) ∙ sym ∂₂-zer)
+
+  hr-sym-k3 : (x y : C₁) → HR x y → HR y x
+  hr-sym-k3 x y (c , e) = negᶠ c , chain
+    where
+    -- 逐点：y i ⊕ neg x i ≡[⊕-comm] neg x i ⊕ y i ≡[neg-neg 反向] neg x i ⊕ negate(neg y i)
+    --       ≡[neg⊕ 反向] negate(x i ⊕ negate(y i)) = negᶠ (sub₃ x y) i
+    chain : sub₃ y x ≡ ∂₂ (negᶠ c)
+    chain =
+      funExt (λ i → sym (neg⊕ (x i) (negate (y i))
+                         ∙ cong (negate (x i) ⊕_) (neg-neg (y i))
+                         ∙ ⊕-comm-pt (negate (x i)) (y i)))
+      ∙ cong negᶠ e
+      ∙ sym (∂₂-neg c)
+
+  hr-trans-k3 : (x y z : C₁) → HR x y → HR y z → HR x z
+  hr-trans-k3 x y z (c₁ , e₁) (c₂ , e₂) = (c₁ +ᶠ c₂) , chain
+    where
+    -- 逐点：sub₃ x z ≡[⊕-link 反向] sub₃ x y ⊕ sub₃ y z
+    chain : sub₃ x z ≡ ∂₂ (c₁ +ᶠ c₂)
+    chain =
+      funExt (λ i → sym (⊕-link (x i) (y i) (negate (z i))))
+      ∙ cong₂ _+ᶠ_ e₁ e₂
+      ∙ sym (∂₂-add c₁ c₂)
+
+  -- HRWells 组装（hr-resp = add-resp ∘ neg-resp 合成——sub x y = x +ᶠ neg y 之形）
+  wells-k3 : HRWells
+  wells-k3 = record
+    { hr-refl  = hr-refl-k3
+    ; hr-sym   = hr-sym-k3
+    ; hr-trans = hr-trans-k3
+    ; hr-resp  = λ x x' y y' h1 h2 →
+        add-resp-k3 x x' (negᶠ y) (negᶠ y') h1 (neg-resp-k3 y y' h2)
+    }
+
+  -- 全实例组装（K3GroupLaws.Inst 三参数齐——群律 transport 主定理落定）
+  module Done = K3GroupLaws.Inst comp0-k3 wells-k3 add-resp-k3 neg-resp-k3
+
+--------------------------------------------------------------------------------
+-- §6 立界清偿核对层
+--------------------------------------------------------------------------------
+
+check-swap-mid : (T₁ ⊕ T₂) ⊕ (T₀ ⊕ T₁) ≡ (T₁ ⊕ T₀) ⊕ (T₂ ⊕ T₁)
+check-swap-mid = ⊕-swap-mid T₁ T₂ T₀ T₁
+
+check-link : (T₁ ⊕ negate T₂) ⊕ (T₂ ⊕ T₀) ≡ T₁ ⊕ T₀
+check-link = ⊕-link T₁ T₂ T₀
+
+check-neg⊕ : negate (T₁ ⊕ T₂) ≡ negate T₁ ⊕ negate T₂
+check-neg⊕ = neg⊕ T₁ T₂
