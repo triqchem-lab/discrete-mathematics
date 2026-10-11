@@ -5,11 +5,11 @@
 
 ## `src/Sovereign/Trust/External.agda`
 
-- **module**: `Sovereign.Trust.External`
+- **module**: `Sovereign.Infrastructure.External`
 - **行数**: 132（代码 71 / 注释 36）
 - **OPTIONS**: `--rewriting --cubical --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Trust.External
+  - | Sovereign.Infrastructure.External
   - 信任边界：标记所有外部引用为信用0
   - 宪法原则：
   - 1. 所有 Agda 标准库引理初始信任度为 0 (UNTRUSTED)。

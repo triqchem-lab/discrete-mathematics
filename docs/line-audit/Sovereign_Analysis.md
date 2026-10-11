@@ -454,7 +454,7 @@
 
 ## `src/Sovereign/Analysis/TestRiesz.agda`
 
-- **module**: `Sovereign.Analysis.TestRiesz`
+- **module**: `Sovereign.Infrastructure.TestRiesz`
 - **行数**: 181（代码 69 / 注释 78）
 - **OPTIONS**: `--rewriting`
 - **导入 (5)**: `Data.Vec`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Base.Trit`, `Sovereign.Algebra.FunctionalDiscrete`

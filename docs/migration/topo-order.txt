@@ -236,7 +236,7 @@ import Sovereign.Structology.LuCellGrid as LuGrid
 import Sovereign.Structology.T6 as T6
 import Sovereign.Structology.Winding as W
 import Sovereign.Topology.MorseCoeffRoute
-import Sovereign.Trust.TwoViewPlain as Plain
+import Sovereign.Infrastructure.TwoViewPlain as Plain
 import Sovereign.Base.TwoViewRewritten as Rew
 import Tactic.RingSolver as Solver using (solve-macro; solve-∀-macro)
 import Tactic.RingSolver.Core.AlmostCommutativeRing as ACR
@@ -273,7 +273,7 @@ Sovereign.Physics.Scaling
 Sovereign.Completeness.Layer
 Sovereign.HoTT.ZeroHomologyEquivalence
 Sovereign.Structology.A4Group
-Sovereign.Trust.External
+Sovereign.Infrastructure.External
 Sovereign.Algebra.BraidGroup
 Sovereign.Algebra.C3Orbit
 Sovereign.Algebra.CartanMatrix
@@ -358,7 +358,7 @@ Sovereign.Problem.PvsNP.PvsNP_Conjecture
 Sovereign.Problem.Riemann.WeilRH
 Sovereign.Projection
 Sovereign.RootMath.AlgebraicComplex
-Sovereign.RootMath.Arithmetic
+Sovereign.Foundation.Arithmetic
 Sovereign.RootMath.Base
 Sovereign.RootMath.Eisenstein
 Sovereign.RootMath.Gaussian
@@ -376,11 +376,11 @@ Sovereign.Structology.TorusClosure
 Sovereign.Structology.WuXingEulerHFM
 Sovereign.Structology.Zωi
 Sovereign.Topology.FormanChiInvariant
-Sovereign.Trust.KernelWitness
-Sovereign.Trust.PatchedTypeChecker
-Sovereign.Trust.ReductionGapObservation
-Sovereign.Trust.ReductionGapWitness
-Sovereign.Trust.TwoViewPlain
+Sovereign.Infrastructure.KernelWitness
+Sovereign.Infrastructure.PatchedTypeChecker
+Sovereign.Infrastructure.ReductionGapObservation
+Sovereign.Infrastructure.ReductionGapWitness
+Sovereign.Infrastructure.TwoViewPlain
 Sovereign.Algebra.DayanState
 Sovereign.Algebra.FieldExtensionTower
 Sovereign.Algebra.KacMoodyAlgebra
@@ -391,7 +391,7 @@ Sovereign.Algebra.RootCount
 Sovereign.Algebra.SpiralCycle
 Sovereign.Algebra.SunyiBase
 Sovereign.Analysis.FiniteDynamics
-Sovereign.Analysis.Finiteness.Pigeonhole
+Sovereign.Foundation.Finiteness.Pigeonhole
 Sovereign.Application.GoodnessOfFitGF3
 Sovereign.RootMath.DigitalRoot
 Sovereign.Structology.IhC60Vibration
@@ -416,9 +416,9 @@ Sovereign.Format.DigitRealization
 Sovereign.Projection.Binary
 Sovereign.Coupling.LCM
 Sovereign.Engine.StateMachine
-Sovereign.Verify.KernelOracle
+Sovereign.Infrastructure.KernelOracle
 Sovereign.Examples
-Sovereign.Verify.DuodecOracle
+Sovereign.Infrastructure.DuodecOracle
 Sovereign.Format.Doz
 Sovereign.Coupling.Dynamics
 Sovereign.Engine.QsUpdate
@@ -459,7 +459,7 @@ Sovereign.Algebra.LaurentCanon
 Sovereign.Algebra.LaurentDistrib
 Sovereign.Projection.Decimal.Proofs
 Sovereign.Physics.FineStructureMapping
-Sovereign.Completeness.FunctorProof
+Sovereign.Foundation.FunctorProof
 Sovereign.Applied.CondensedMatter
 Sovereign.Structology.A4GenWords
 Sovereign.Structology.A4StdlibBridge
@@ -565,7 +565,7 @@ Sovereign.Algebra.Zomega
 Sovereign.Structology.BinaryTetrahedralRepresentation
 Sovereign.Structology.MatrixZω
 Sovereign.Structology.IhDecomposition
-Sovereign.Trust.TwoViews
+Sovereign.Infrastructure.TwoViews
 Sovereign.Algebra.DayanCorrect
 Sovereign.Algebra.DayanTermination
 Sovereign.Algebra.RootCount4
@@ -574,7 +574,7 @@ Sovereign.Algebra.FixedPointQ16
 Sovereign.Algebra.SunyiChain
 Sovereign.Algebra.TianYuan
 Sovereign.Application.FiniteOrbitObs
-Sovereign.Analysis.GaoYangRigidLock
+Sovereign.Foundation.GaoYangRigidLock
 Sovereign.Applied.ControlTheory
 Sovereign.Applied.EconomicsDiscrete
 Sovereign.Applied.GameTheory
@@ -585,7 +585,7 @@ Sovereign.Physics.H2OC60
 Sovereign.Topology.QAnalysisRecord
 Sovereign.Topology.FormanMinimal
 Sovereign.Topology.McCordCore
-Sovereign.Trust.GuardedVsPresentation
+Sovereign.Infrastructure.GuardedVsPresentation
 Sovereign.Algebra.Hensel2Side
 Sovereign.Structology.GF4AffineMagicSquare
 Sovereign.Structology.OrthogonalLatinSquareGF4
@@ -640,14 +640,14 @@ Sovereign.Algebra.LCMVortexConnection
 Sovereign.Algebra.VortexDifferential
 Sovereign.Algebra.VortexRoot
 Sovereign.Structology.A4GroupAction
-Sovereign.Trust.KernelSpec
+Sovereign.Infrastructure.KernelSpec
 Sovereign.Problem.Hodge.FreeAbBoundary
 Sovereign.Analysis.CauchySchwarz
 Sovereign.Analysis.FunctionalAnalysisDiscrete
 Sovereign.Analysis.L2Bridge
 Sovereign.Analysis.NormEquivalence
 Sovereign.Analysis.SpectralTheorem
-Sovereign.Analysis.TestRiesz
+Sovereign.Infrastructure.TestRiesz
 Sovereign.Algebra.Lie.LieAlgebra
 Sovereign.Algebra.AdjacencyMatrix
 Sovereign.Algebra.AlgGeomBridge
@@ -856,7 +856,7 @@ Sovereign.Structology.MotorStableStates
 Sovereign.Algebra.Jacobian.jac_CRTSpectrum
 Sovereign.Algebra.Jacobian.jac_Topology
 Sovereign.Problem.YangMills.YM_DetMul
-Sovereign.TestMemory
+Sovereign.Infrastructure.TestMemory
 Sovereign.Algebra.FiniteDefinitions
 Sovereign.Algebra.Holographic.4320DClosure
 Sovereign.Algebra.Jacobian.jac_DiscreteJC
@@ -992,14 +992,14 @@ Sovereign.Topology.MorseChain
 Sovereign.Topology.MorseRoutingK3
 Sovereign.Topology.CollapseHomologyStages
 Sovereign.Algebra.GroupTheory.CosetAuto
-Sovereign.Analysis.Finiteness.Tarski
+Sovereign.Foundation.Finiteness.Tarski
 Sovereign.Algebra.Holographic.ClassicAnalysis
 Sovereign.Topology.KerTrivial
 Sovereign.Problem.NavierStokes.NSEIncompressible
 Sovereign.Physics.VectorFieldGeometricPhase
 Sovereign.Algebra.GroupTheory.RepresentationTheory
-Sovereign.AI.Constitution
-Sovereign.Analysis.Finiteness.Foundations
+Sovereign.Infrastructure.Constitution
+Sovereign.Foundation.Finiteness.Foundations
 Sovereign.Algebra.Jacobian.jac_AutT6
 Sovereign.Algebra.Jacobian.jac_LieGroup
 Sovereign.Completeness.CompletenessTheorem
@@ -1013,7 +1013,7 @@ Sovereign.Algebra.GroupTheory.OrbitStabilizerAuto
 Sovereign.Topology.KerTrivialFull
 Sovereign.Problem.NavierStokes.NSEFixedPoint
 Sovereign.Problem.NavierStokes.NSEIterate
-Sovereign.Analysis.Finiteness.Dedekind
+Sovereign.Foundation.Finiteness.Dedekind
 Sovereign.Applied.MetaTheorems
 Sovereign.Applied.DeepStructureProofs
 Sovereign.Applied.MachineLearning

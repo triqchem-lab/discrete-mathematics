@@ -25,11 +25,11 @@
 
 ## `src/Sovereign/RootMath/Arithmetic.agda`
 
-- **module**: `Sovereign.RootMath.Arithmetic`
+- **module**: `Sovereign.Foundation.Arithmetic`
 - **行数**: 118（代码 46 / 注释 53）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.RootMath.Arithmetic
+  - | Sovereign.Foundation.Arithmetic
   - 根数学:高维几何审查后的算术引理
   - 宪法原则:
   - 1. 所有算术引理必须基于 GF(3) 格点拓扑重新证明。

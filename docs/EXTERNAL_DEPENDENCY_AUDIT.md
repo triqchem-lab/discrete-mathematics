@@ -94,11 +94,11 @@ HoTT/Equivalence.agda
 ## 5. 修复计划
 
 ### 阶段 1: 创建信任边界 (Trust Boundary)
-- [x] 创建 `Sovereign.Trust.External` 模块，标记所有外部引用为 `UNTRUSTED`。
+- [x] 创建 `Sovereign.Infrastructure.External` 模块，标记所有外部引用为 `UNTRUSTED`。
 - [ ] 在宪法文档中声明信任边界。
 
 ### 阶段 2: 高维几何重新证明
-- [ ] 在 `Sovereign.RootMath.Arithmetic` 中重新证明模运算引理：
+- [ ] 在 `Sovereign.Foundation.Arithmetic` 中重新证明模运算引理：
   - `+-mod`: 模运算分配律 (基于 GF(3) 格点)
   - `m*n%m≡0`: 乘法模零律 (基于离散环面)
   - `mod-<`: 模小于除数 (基于缠绕数)

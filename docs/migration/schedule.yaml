@@ -14,12 +14,12 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B002
     layer: 20-algebra
-    modules: [Sovereign.Topology.BarceloAHomotopy, Sovereign.Base.Lü, Sovereign.Algebra.BurauFaithful, Sovereign.Algebra.Matrix2, Sovereign.Base.Invariants, Sovereign.Arithmetic.Untrusted, Sovereign.Algebra.LaurentBase, Sovereign.Base.ZeroGeometry, Sovereign.Projection.Decimal.Axioms, Sovereign.Physics.Scaling, Sovereign.Verify.DuodecOracle, Sovereign.Completeness.Layer]
+    modules: [Sovereign.Topology.BarceloAHomotopy, Sovereign.Base.Lü, Sovereign.Algebra.BurauFaithful, Sovereign.Algebra.Matrix2, Sovereign.Base.Invariants, Sovereign.Arithmetic.Untrusted, Sovereign.Algebra.LaurentBase, Sovereign.Base.ZeroGeometry, Sovereign.Projection.Decimal.Axioms, Sovereign.Physics.Scaling, Sovereign.Infrastructure.DuodecOracle, Sovereign.Completeness.Layer]
     grade_C_count: 2
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B003
     layer: 20-algebra
-    modules: [Sovereign.HoTT.ZeroHomologyEquivalence, Sovereign.Format.TQ10, Sovereign.Structology.A4Group, Sovereign.Trust.External, Sovereign.Verify.KernelOracle, Sovereign.Algebra.BraidGroup, Sovereign.Algebra.C3Orbit, Sovereign.Algebra.CartanMatrix, Sovereign.Algebra.CommAlgBridge, Sovereign.Algebra.DayanCompose, Sovereign.Algebra.DayanCorrectZ, Sovereign.Algebra.DayanCRT]
+    modules: [Sovereign.HoTT.ZeroHomologyEquivalence, Sovereign.Format.TQ10, Sovereign.Structology.A4Group, Sovereign.Infrastructure.External, Sovereign.Infrastructure.KernelOracle, Sovereign.Algebra.BraidGroup, Sovereign.Algebra.C3Orbit, Sovereign.Algebra.CartanMatrix, Sovereign.Algebra.CommAlgBridge, Sovereign.Algebra.DayanCompose, Sovereign.Algebra.DayanCorrectZ, Sovereign.Algebra.DayanCRT]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B004
@@ -59,7 +59,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B011
     layer: 40-application
-    modules: [Sovereign.Problem.Langlands.GL2_Rep, Sovereign.Problem.Langlands.GL2TestVectors, Sovereign.Problem.Langlands.Langlands, Sovereign.Problem.Langlands.Langlands_L15, Sovereign.Problem.Langlands.S4Burnside, Sovereign.Problem.PvsNP.PvsNP_Conjecture, Sovereign.Problem.Riemann.WeilRH, Sovereign.Projection, Sovereign.RootMath.AlgebraicComplex, Sovereign.RootMath.Arithmetic, Sovereign.RootMath.Base, Sovereign.RootMath.Eisenstein]
+    modules: [Sovereign.Problem.Langlands.GL2_Rep, Sovereign.Problem.Langlands.GL2TestVectors, Sovereign.Problem.Langlands.Langlands, Sovereign.Problem.Langlands.Langlands_L15, Sovereign.Problem.Langlands.S4Burnside, Sovereign.Problem.PvsNP.PvsNP_Conjecture, Sovereign.Problem.Riemann.WeilRH, Sovereign.Projection, Sovereign.RootMath.AlgebraicComplex, Sovereign.Foundation.Arithmetic, Sovereign.RootMath.Base, Sovereign.RootMath.Eisenstein]
     grade_C_count: 3
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B012
@@ -69,7 +69,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B013
     layer: 30-synthesis
-    modules: [Sovereign.Structology.T6A4Burnside, Sovereign.Structology.TopologyLevels, Sovereign.Structology.TorusClosure, Sovereign.Structology.WuXingEulerHFM, Sovereign.Structology.Zωi, Sovereign.Topology.FormanChiInvariant, Sovereign.Trust.KernelWitness, Sovereign.Trust.PatchedTypeChecker, Sovereign.Trust.ReductionGapObservation, Sovereign.Trust.ReductionGapWitness, Sovereign.Trust.TwoViewPlain, Sovereign.Engine.QsUpdate]
+    modules: [Sovereign.Structology.T6A4Burnside, Sovereign.Structology.TopologyLevels, Sovereign.Structology.TorusClosure, Sovereign.Structology.WuXingEulerHFM, Sovereign.Structology.Zωi, Sovereign.Topology.FormanChiInvariant, Sovereign.Infrastructure.KernelWitness, Sovereign.Infrastructure.PatchedTypeChecker, Sovereign.Infrastructure.ReductionGapObservation, Sovereign.Infrastructure.ReductionGapWitness, Sovereign.Infrastructure.TwoViewPlain, Sovereign.Engine.QsUpdate]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B014
@@ -79,7 +79,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B015
     layer: 30-synthesis
-    modules: [Sovereign.Analysis.FiniteDynamics, Sovereign.Analysis.Finiteness.Pigeonhole, Sovereign.Application.GoodnessOfFitGF3, Sovereign.Format.Doz, Sovereign.HoTT.WindingCover, Sovereign.Projection.Binary, Sovereign.RootMath.DigitalRoot, Sovereign.Structology.Closure, Sovereign.Structology.IhC60Vibration, Sovereign.Structology.T6, Sovereign.Structology.Winding, Sovereign.Topology.AlexandroffFinite]
+    modules: [Sovereign.Analysis.FiniteDynamics, Sovereign.Foundation.Finiteness.Pigeonhole, Sovereign.Application.GoodnessOfFitGF3, Sovereign.Format.Doz, Sovereign.HoTT.WindingCover, Sovereign.Projection.Binary, Sovereign.RootMath.DigitalRoot, Sovereign.Structology.Closure, Sovereign.Structology.IhC60Vibration, Sovereign.Structology.T6, Sovereign.Structology.Winding, Sovereign.Topology.AlexandroffFinite]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B016
@@ -94,7 +94,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B018
     layer: 20-algebra
-    modules: [Sovereign.Algebra.LaurentDistrib, Sovereign.Projection.Decimal.Proofs, Sovereign.Physics.FineStructureMapping, Sovereign.Completeness.FunctorProof, Sovereign.Applied.CondensedMatter, Sovereign.Structology.A4GenWords, Sovereign.Structology.A4StdlibBridge, Sovereign.Structology.TetrahedralA4, Sovereign.Algebra.TrivialRepUnfaithful, Sovereign.Algebra.DayanCRTGeneric, Sovereign.Algebra.HenselReduction, Sovereign.Algebra.KaiFangSqrt3]
+    modules: [Sovereign.Algebra.LaurentDistrib, Sovereign.Projection.Decimal.Proofs, Sovereign.Physics.FineStructureMapping, Sovereign.Foundation.FunctorProof, Sovereign.Applied.CondensedMatter, Sovereign.Structology.A4GenWords, Sovereign.Structology.A4StdlibBridge, Sovereign.Structology.TetrahedralA4, Sovereign.Algebra.TrivialRepUnfaithful, Sovereign.Algebra.DayanCRTGeneric, Sovereign.Algebra.HenselReduction, Sovereign.Algebra.KaiFangSqrt3]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B019
@@ -139,7 +139,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B027
     layer: 20-algebra
-    modules: [Sovereign.Structology.MatrixZω, Sovereign.Structology.IhDecomposition, Sovereign.Trust.TwoViews, Sovereign.Algebra.DayanCorrect, Sovereign.Algebra.DayanTermination, Sovereign.Algebra.HenselLiftMod27, Sovereign.Algebra.HenselLiftMod27Part1, Sovereign.Algebra.HenselLiftMod27Part2, Sovereign.Algebra.HenselLiftRoot1, Sovereign.Algebra.HenselMod129140163, Sovereign.Algebra.HenselMod14348907, Sovereign.Algebra.HenselMod1594323]
+    modules: [Sovereign.Structology.MatrixZω, Sovereign.Structology.IhDecomposition, Sovereign.Infrastructure.TwoViews, Sovereign.Algebra.DayanCorrect, Sovereign.Algebra.DayanTermination, Sovereign.Algebra.HenselLiftMod27, Sovereign.Algebra.HenselLiftMod27Part1, Sovereign.Algebra.HenselLiftMod27Part2, Sovereign.Algebra.HenselLiftRoot1, Sovereign.Algebra.HenselMod129140163, Sovereign.Algebra.HenselMod14348907, Sovereign.Algebra.HenselMod1594323]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B028
@@ -149,7 +149,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B029
     layer: 20-algebra
-    modules: [Sovereign.Algebra.HenselReductionTower, Sovereign.Algebra.ModularRoots, Sovereign.Algebra.RootCount4, Sovereign.Algebra.RootCountClassify, Sovereign.Algebra.FixedPointQ16, Sovereign.Algebra.SunyiChain, Sovereign.Algebra.TianYuan, Sovereign.Application.FiniteOrbitObs, Sovereign.Analysis.GaoYangRigidLock, Sovereign.Applied.ControlTheory, Sovereign.Applied.EconomicsDiscrete, Sovereign.Applied.GameTheory]
+    modules: [Sovereign.Algebra.HenselReductionTower, Sovereign.Algebra.ModularRoots, Sovereign.Algebra.RootCount4, Sovereign.Algebra.RootCountClassify, Sovereign.Algebra.FixedPointQ16, Sovereign.Algebra.SunyiChain, Sovereign.Algebra.TianYuan, Sovereign.Application.FiniteOrbitObs, Sovereign.Foundation.GaoYangRigidLock, Sovereign.Applied.ControlTheory, Sovereign.Applied.EconomicsDiscrete, Sovereign.Applied.GameTheory]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B030
@@ -159,7 +159,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B031
     layer: 40-application
-    modules: [Sovereign.Physics.H2OC60, Sovereign.Topology.QAnalysisRecord, Sovereign.Topology.FormanMinimal, Sovereign.Topology.McCordCore, Sovereign.Trust.GuardedVsPresentation, Sovereign.Algebra.Hensel2Side, Sovereign.Structology.GF4AffineMagicSquare, Sovereign.Structology.OrthogonalLatinSquareGF4, Sovereign.Structology.FrequencySpaceUnity, Sovereign.Algebra.BurauRep, Sovereign.Algebra.LaurentRingLaws, Sovereign.Algebra.LaurentNorm]
+    modules: [Sovereign.Physics.H2OC60, Sovereign.Topology.QAnalysisRecord, Sovereign.Topology.FormanMinimal, Sovereign.Topology.McCordCore, Sovereign.Infrastructure.GuardedVsPresentation, Sovereign.Algebra.Hensel2Side, Sovereign.Structology.GF4AffineMagicSquare, Sovereign.Structology.OrthogonalLatinSquareGF4, Sovereign.Structology.FrequencySpaceUnity, Sovereign.Algebra.BurauRep, Sovereign.Algebra.LaurentRingLaws, Sovereign.Algebra.LaurentNorm]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B032
@@ -169,7 +169,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B033
     layer: 00-foundation
-    modules: [Sovereign.Algebra.LCMVortexConnection, Sovereign.Algebra.VortexDifferential, Sovereign.Algebra.VortexRoot, Sovereign.Structology.A4GroupAction, Sovereign.Trust.KernelSpec, Sovereign.Problem.Hodge.FreeAbBoundary, Sovereign.Analysis.CauchySchwarz, Sovereign.Analysis.FunctionalAnalysisDiscrete, Sovereign.Analysis.L2Bridge, Sovereign.Analysis.NormEquivalence, Sovereign.Analysis.SpectralTheorem, Sovereign.Analysis.TestRiesz]
+    modules: [Sovereign.Algebra.LCMVortexConnection, Sovereign.Algebra.VortexDifferential, Sovereign.Algebra.VortexRoot, Sovereign.Structology.A4GroupAction, Sovereign.Infrastructure.KernelSpec, Sovereign.Problem.Hodge.FreeAbBoundary, Sovereign.Analysis.CauchySchwarz, Sovereign.Analysis.FunctionalAnalysisDiscrete, Sovereign.Analysis.L2Bridge, Sovereign.Analysis.NormEquivalence, Sovereign.Analysis.SpectralTheorem, Sovereign.Infrastructure.TestRiesz]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B034
@@ -259,7 +259,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B051
     layer: 20-algebra
-    modules: [Sovereign.Structology.MotorStableStates, Sovereign.Algebra.Jacobian.jac_CRTSpectrum, Sovereign.Algebra.Jacobian.jac_Topology, Sovereign.Problem.YangMills.YM_DetMul, Sovereign.TestMemory, Sovereign.Algebra.FiniteDefinitions, Sovereign.Algebra.Holographic.4320DClosure, Sovereign.Algebra.Jacobian.jac_DiscreteJC, Sovereign.Algebra.Jacobian.jac_FunctionTable, Sovereign.Algebra.Jacobian.jac_NMatrix, Sovereign.Algebra.ChainHomo, Sovereign.Applied.LogicCompleteness2Var]
+    modules: [Sovereign.Structology.MotorStableStates, Sovereign.Algebra.Jacobian.jac_CRTSpectrum, Sovereign.Algebra.Jacobian.jac_Topology, Sovereign.Problem.YangMills.YM_DetMul, Sovereign.Infrastructure.TestMemory, Sovereign.Algebra.FiniteDefinitions, Sovereign.Algebra.Holographic.4320DClosure, Sovereign.Algebra.Jacobian.jac_DiscreteJC, Sovereign.Algebra.Jacobian.jac_FunctionTable, Sovereign.Algebra.Jacobian.jac_NMatrix, Sovereign.Algebra.ChainHomo, Sovereign.Applied.LogicCompleteness2Var]
     grade_C_count: 1
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B052
@@ -314,17 +314,17 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B062
     layer: 40-application
-    modules: [Sovereign.Problem.NavierStokes.NSEMadelungRefuted, Sovereign.Problem.Hodge.DeligneHodge, Sovereign.Topology.KerImQuot, Sovereign.Topology.MorseBoundaryK3, Sovereign.Topology.MorseChain, Sovereign.Topology.MorseRoutingK3, Sovereign.Topology.CollapseHomologyStages, Sovereign.Algebra.GroupTheory.CosetAuto, Sovereign.Analysis.Finiteness.Tarski, Sovereign.Algebra.Holographic.ClassicAnalysis, Sovereign.Topology.KerTrivial, Sovereign.Problem.NavierStokes.NSEIncompressible]
+    modules: [Sovereign.Problem.NavierStokes.NSEMadelungRefuted, Sovereign.Problem.Hodge.DeligneHodge, Sovereign.Topology.KerImQuot, Sovereign.Topology.MorseBoundaryK3, Sovereign.Topology.MorseChain, Sovereign.Topology.MorseRoutingK3, Sovereign.Topology.CollapseHomologyStages, Sovereign.Algebra.GroupTheory.CosetAuto, Sovereign.Foundation.Finiteness.Tarski, Sovereign.Algebra.Holographic.ClassicAnalysis, Sovereign.Topology.KerTrivial, Sovereign.Problem.NavierStokes.NSEIncompressible]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B063
     layer: 40-application
-    modules: [Sovereign.Physics.VectorFieldGeometricPhase, Sovereign.Algebra.GroupTheory.RepresentationTheory, Sovereign.AI.Constitution, Sovereign.Analysis.Finiteness.Foundations, Sovereign.Algebra.Jacobian.jac_AutT6, Sovereign.Algebra.Jacobian.jac_LieGroup, Sovereign.Completeness.CompletenessTheorem, Sovereign.Physics.LightConeMatrix, Sovereign.Structology.HoloInformation, Sovereign.Quantum.Foundation, Sovereign.Structology.QuantumBridge, Sovereign.Algebra.PlancherelTheorem]
+    modules: [Sovereign.Physics.VectorFieldGeometricPhase, Sovereign.Algebra.GroupTheory.RepresentationTheory, Sovereign.Infrastructure.Constitution, Sovereign.Foundation.Finiteness.Foundations, Sovereign.Algebra.Jacobian.jac_AutT6, Sovereign.Algebra.Jacobian.jac_LieGroup, Sovereign.Completeness.CompletenessTheorem, Sovereign.Physics.LightConeMatrix, Sovereign.Structology.HoloInformation, Sovereign.Quantum.Foundation, Sovereign.Structology.QuantumBridge, Sovereign.Algebra.PlancherelTheorem]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B064
     layer: 40-application
-    modules: [Sovereign.Algebra.GroupTheory.Burnside, Sovereign.Algebra.GroupTheory.OrbitStabilizerAuto, Sovereign.Topology.KerTrivialFull, Sovereign.Problem.NavierStokes.NSEFixedPoint, Sovereign.Problem.NavierStokes.NSEIterate, Sovereign.Analysis.Finiteness.Dedekind, Sovereign.Applied.MetaTheorems, Sovereign.Applied.DeepStructureProofs, Sovereign.Applied.MachineLearning, Sovereign.Algebra.GroupTheory.BurnsideFiber, Sovereign.Problem.NavierStokes.NSEFixedPointStrict, Sovereign.Analysis.FinitenessZoo]
+    modules: [Sovereign.Algebra.GroupTheory.Burnside, Sovereign.Algebra.GroupTheory.OrbitStabilizerAuto, Sovereign.Topology.KerTrivialFull, Sovereign.Problem.NavierStokes.NSEFixedPoint, Sovereign.Problem.NavierStokes.NSEIterate, Sovereign.Foundation.Finiteness.Dedekind, Sovereign.Applied.MetaTheorems, Sovereign.Applied.DeepStructureProofs, Sovereign.Applied.MachineLearning, Sovereign.Algebra.GroupTheory.BurnsideFiber, Sovereign.Problem.NavierStokes.NSEFixedPointStrict, Sovereign.Analysis.FinitenessZoo]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B065

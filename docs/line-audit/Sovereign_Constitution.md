@@ -45,11 +45,11 @@
 
 ## `src/Sovereign/Constitution/PhysicalAssumptions.agda`
 
-- **module**: `Sovereign.Constitution.PhysicalAssumptions`
+- **module**: `Sovereign.Foundation.PhysicalAssumptions`
 - **行数**: 90（代码 7 / 注释 73）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Constitution.PhysicalAssumptions
+  - | Sovereign.Foundation.PhysicalAssumptions
   - 物理锚定登记处（轨道 B）— 全库 postulate 三分类的集中登记
   - 依据: docs/Postulate审计报告.md 三分类 + 2026-08-14 编译器实测
   - 权威层级: Agda 编译器 > 本登记 > 各模块注释

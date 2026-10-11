@@ -16,7 +16,7 @@
 
 ## `src/Sovereign/Completeness/FunctorProof.agda`
 
-- **module**: `Sovereign.Completeness.FunctorProof`
+- **module**: `Sovereign.Foundation.FunctorProof`
 - **行数**: 156（代码 52 / 注释 84）
 - **OPTIONS**: `--cubical --rewriting --guardedness`
 - **导入 (5)**: `Cubical.Foundations.Prelude`, `Cubical.WildCat.Base`, `Cubical.WildCat.Functor`, `Data.Unit`, `Sovereign.Completeness.Layer`

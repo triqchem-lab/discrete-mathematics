@@ -49,9 +49,9 @@
 
 module Sovereign.Analysis.FinitenessZoo where
 
-open import Sovereign.Analysis.Finiteness.Foundations
-open import Sovereign.Analysis.Finiteness.Dedekind
-open import Sovereign.Analysis.Finiteness.Pigeonhole
-open import Sovereign.Analysis.Finiteness.Tarski
+open import Sovereign.Foundation.Finiteness.Foundations
+open import Sovereign.Foundation.Finiteness.Dedekind
+open import Sovereign.Foundation.Finiteness.Pigeonhole
+open import Sovereign.Foundation.Finiteness.Tarski
 
 ```

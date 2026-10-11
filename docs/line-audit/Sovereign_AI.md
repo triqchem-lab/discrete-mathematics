@@ -5,11 +5,11 @@
 
 ## `src/Sovereign/AI/Constitution.agda`
 
-- **module**: `Sovereign.AI.Constitution`
+- **module**: `Sovereign.Infrastructure.Constitution`
 - **行数**: 412（代码 255 / 注释 86）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.AI.Constitution
+  - | Sovereign.Infrastructure.Constitution
   - AI 宪法规范：律算宪法在 AI 领域的形式化约束
   - 适用对象：任何学习、推理或应用律算合一知识图谱的人工智能系统
   - 效力：所有推理必须通过本规范的类型检查与范畴边界验证
