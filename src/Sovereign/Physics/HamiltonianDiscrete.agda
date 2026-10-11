@@ -76,7 +76,7 @@ energy-gap : Trit
 energy-gap = T₁  -- F₃ 中的能隙
 
 -- 物理能隙 Δ=√3 (Sqrt3 类型)
--- 见 Sovereign.RootMath.EnergyGap
+-- 见 Sovereign.Foundation.EnergyGap
 -- algebraicEnergyGap = sqrt3
 
 --------------------------------------------------------------------------------

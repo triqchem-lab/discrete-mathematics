@@ -33,7 +33,7 @@ module Sovereign.Infrastructure.GuardedVsPresentation where
 
 open import Codata.Guarded.Stream using (Stream; head; tail; repeat; _[_])
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Trust.PresentationGapBoundary using (Three; step; step-3-law)
+open import Sovereign.Infrastructure.PresentationGapBoundary using (Three; step; step-3-law)
 
 --------------------------------------------------------------------------------
 -- ① 守卫余归纳：展开是**定义相等**（refl 即可）

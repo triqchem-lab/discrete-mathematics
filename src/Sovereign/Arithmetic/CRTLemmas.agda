@@ -8,7 +8,7 @@ open import Data.Nat.Base using (_<_; _%_; _≤_; _>_; NonZero; nonZero; >-nonZe
 open import Data.Nat.Coprimality using (Coprime; gcd≡1⇒coprime; coprime-divisor)
 open import Data.Nat.Divisibility.Core using (_∣_; quotient; divides)
 open import Data.Nat.Divisibility using (n∣m⇒m%n≡0; ∣⇒≤)
-open import Sovereign.AlgebraWrapper using (distrib-lemma)
+open import Sovereign.Infrastructure.AlgebraWrapper using (distrib-lemma)
 open import Data.Nat.Properties using (*-comm; *-assoc; [m+n]∸[m+o]≡n∸o; m+n∸n≡m; m∸n+n≡m; +-identityˡ; +-identityʳ; ≰⇒≥; <⇒≱; +-comm; +-cancelˡ-≡; m≤m+n)
 open import Data.Nat.DivMod using (m≡m%n+[m/n]*n; %-distribˡ-+; m%n%n≡m%n; m<n⇒m%n≡m)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym; cong; cong₂; subst; module ≡-Reasoning)

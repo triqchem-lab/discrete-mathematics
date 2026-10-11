@@ -26,7 +26,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 
 -- 导入核心模块
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
-open import Sovereign.RootMath.EnergyGap using (C3Element; c3-id; c3-omega; c3-omega2;
+open import Sovereign.Foundation.EnergyGap using (C3Element; c3-id; c3-omega; c3-omega2;
   phaseGenerate; phaseOvercome; ℤabs; energyGapJump; energyGapNorm)
 open import Sovereign.RootMath.AlgebraicComplex using (Sqrt3; sqrt3)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)

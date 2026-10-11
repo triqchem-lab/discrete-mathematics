@@ -37,7 +37,7 @@ open import Sovereign.Projection using (Category; Electric; RootMathCat; Structo
                                           CouplingCat; MetaStructCat; DensityCat;
                                           ProjectionChain; IsElectricProjection;
                                           ElectricConcept; interpret)
-open import Sovereign.RootMath.Base using (Trit; T₀; T₁; T₂)
+open import Sovereign.Foundation.Base using (Trit; T₀; T₁; T₂)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Structology.HolographicPi using (HolographicPi; standardHoloPi)

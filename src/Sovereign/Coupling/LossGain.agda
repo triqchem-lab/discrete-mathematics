@@ -14,7 +14,7 @@ open import Data.Bool using (T)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _/_; _%_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _-_) renaming (_+_ to _+ℤ_; _*_ to _*ℤ_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.RootMath.Base
+open import Sovereign.Foundation.Base
 
 --------------------------------------------------------------------------------
 -- 1. 损益操作类型

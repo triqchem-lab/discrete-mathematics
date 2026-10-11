@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Trust.PresentationGapBoundary — 「缺口形式化」的**边界**（哪些能写成命题，哪些不能）
+-- | Sovereign.Infrastructure.PresentationGapBoundary — 「缺口形式化」的**边界**（哪些能写成命题，哪些不能）
 --
 -- 用户提案（2026-09-14）：
 --   record PresentationReductionGap : Set₁ where
@@ -35,7 +35,7 @@
 --   2. 工具链见证件非数学定理（版本戳必随回执）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Trust.PresentationGapBoundary where
+module Sovereign.Infrastructure.PresentationGapBoundary where
 
 open import Data.Empty using (⊥)
 open import Data.Unit using (⊤; tt)

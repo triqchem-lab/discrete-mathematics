@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Projection.Binary
+-- | Sovereign.Infrastructure.Projection.Binary
 -- 投影链：二进制与三进制的有损降维与上下文拾起
 --
 -- 宪法定义：
@@ -16,7 +16,7 @@
 --   2. 投影相同 ≠ 相等（逃逸见证条款）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Projection.Binary where
+module Sovereign.Infrastructure.Projection.Binary where
 
 open import Data.Fin using (Fin; toℕ; fromℕ; zero; suc)
 open import Data.Bool using (Bool; true; false)

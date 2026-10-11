@@ -39,7 +39,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; trans; sym; cong; cong₂; subst; module ≡-Reasoning)
 open import Data.Empty using (⊥-elim)
 open import Relation.Nullary using (Dec; yes; no)
-open import Sovereign.AlgebraWrapper using (distrib-lemma)
+open import Sovereign.Infrastructure.AlgebraWrapper using (distrib-lemma)
 
 import Sovereign.Structology.Winding as W
 import Sovereign.Algebra.Duodecimal as D

@@ -100,7 +100,7 @@ record SunyiAxiom : Set₁ where
 --   零冥族的根据。相位为何能归零。
 --   所有独立分量同时回到单位元——归零不是"消失"，是"对消灭"。
 --
--- 实现：Sovereign.RootMath.EnergyGap（能隙 Δ=√3）
+-- 实现：Sovereign.Foundation.EnergyGap（能隙 Δ=√3）
 --       Sovereign.Algebra.GroupTheory.DuodecClock（mixedOp¹² = id）
 --------------------------------------------------------------------------------
 

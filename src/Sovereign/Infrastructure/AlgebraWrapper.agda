@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.AlgebraWrapper
+-- | Sovereign.Infrastructure.AlgebraWrapper
 -- 代数件薄封装层
 --
 -- 核心原则:
@@ -10,7 +10,7 @@
 -- 包含: cancel · distrib-lemma
 
 
-module Sovereign.AlgebraWrapper where
+module Sovereign.Infrastructure.AlgebraWrapper where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans)

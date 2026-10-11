@@ -20,7 +20,7 @@
 -- ⚠ **层级声明（不得当作内部定理）**：这是**反射级观察**；它证明的是「在本机这个 Agda 内核上
 --   该项的 `reduce`+`unify` 结果」，不是一般元定理。缺口的一般形式仍只能作为**外部事实**登记
 --   （见 `docs/techniques/presentation-reduction-gap/README.md`，以及同目录的
---    `Sovereign.Trust.PresentationGapBoundary` 三层说明）。
+--    `Sovereign.Infrastructure.PresentationGapBoundary` 三层说明）。
 --
 -- 依赖只用**原语** `Agda.Builtin.Reflection`（不引 stdlib 的 `Reflection`：后者会拖进
 -- Text.Printf 等一大坨，编译从 1s 变 60s）。

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.RootMath.EnergyGap
+-- | Sovereign.Foundation.EnergyGap
 -- 根数学：能隙 Δ=√3 与弦长 √3 的起源
 --
 -- 本质：T⁶ 复三维离散环面上 C3 循环群生成元作用下的复振幅跃迁
@@ -12,7 +12,7 @@
 -- - 能隙 Δ=√3 使用 Sovereign.RootMath.AlgebraicComplex.Sqrt3 代数定义
 -- - 所有物理相关参数标记为 EXPERIMENTAL_PARAMETER 记录（非 postulate）
 
-module Sovereign.RootMath.EnergyGap where
+module Sovereign.Foundation.EnergyGap where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Empty using (⊥)

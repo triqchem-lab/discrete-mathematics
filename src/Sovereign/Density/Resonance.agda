@@ -33,7 +33,7 @@ open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Wa
 open import Sovereign.Density.SevenStages using (SevenStage; DIQI_BASE_FREQ; 
                                                    diqiHarmonic; diqiHarmonics;
                                                    annualDiqiFreq; JiaZi)
-open import Sovereign.RootMath.EnergyGap using (energyGap; energyGapIsSqrt3; halfGapExact)
+open import Sovereign.Foundation.EnergyGap using (energyGap; energyGapIsSqrt3; halfGapExact)
 
 --------------------------------------------------------------------------------
 -- 1. 地气声子谱
