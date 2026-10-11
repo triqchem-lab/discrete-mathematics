@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.WaterCriticalDerivation
+-- | Sovereign.Application.WaterCriticalDerivation
 -- 水的第二临界点推导 — 从 T⁶ 环面到 228K
 --
 -- 推导链:
@@ -16,7 +16,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.WaterCriticalDerivation where
+module Sovereign.Application.WaterCriticalDerivation where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_; _∸_; _/_)
 open import Data.Product using (_×_; _,_)

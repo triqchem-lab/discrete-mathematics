@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.QuantumFieldAstrophysics
+-- | Sovereign.Application.QuantumFieldAstrophysics
 -- 量子场天体物理学 — 一切都是量子场的显化
 --
 -- 核心主张: 天体不是经典物理的引力体, 而是量子场的宏观驻波。
@@ -18,7 +18,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.QuantumFieldAstrophysics where
+module Sovereign.Application.QuantumFieldAstrophysics where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

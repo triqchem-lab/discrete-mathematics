@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.QuantumChemistry
+-- | Sovereign.Application.QuantumChemistry
 -- 量子化学 — T⁶ 离散环面上的分子结构
 --
 -- ⚠️ 核心原则:
@@ -21,7 +21,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.QuantumChemistry where
+module Sovereign.Application.QuantumChemistry where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_; _∸_)
 open import Data.Fin using (Fin; zero; suc)

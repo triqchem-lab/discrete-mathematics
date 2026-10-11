@@ -74,10 +74,10 @@ open ≡-Reasoning
 --------------------------------------------------------------------------------
 
 -- Euler-Lagrange 方程等价性 (L2 全称)
--- [波 2-C 检查件外移] el-equivalence 已迁 Sovereign.Physics.DiscreteLagrangianChecks
+-- [波 2-C 检查件外移] el-equivalence 已迁 Sovereign.Application.DiscreteLagrangianChecks
 
 -- 常数场满足 EL
--- [波 2-C 检查件外移] el-constant 已迁 Sovereign.Physics.DiscreteLagrangianChecks
+-- [波 2-C 检查件外移] el-constant 已迁 Sovereign.Application.DiscreteLagrangianChecks
 
 -- 线性场满足 EL
 -- 已有: el-lin : ∀ i → satisfies-EL (λ p → vx p) i

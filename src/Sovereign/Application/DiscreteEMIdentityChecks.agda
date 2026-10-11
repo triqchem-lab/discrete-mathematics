@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteEMIdentityChecks
+-- | Sovereign.Application.DiscreteEMIdentityChecks
 -- 离散 EM 恒等式（d²=0 族）的跨域实例核对件汇（波 2-C 检查件外移）。
 --
 -- 数学背景：curl∘grad=0 与 div∘curl=0 两条恒等式（真证明在 DiscreteEMField3D/DiscreteEMCore）
@@ -15,7 +15,7 @@
 -- 包含：§1 de Rham 形（curl-grad-zero-full/div-curl-zero-full/d-squared-zero/de-rham-complex）
 --       §2 同调形（chain-complex/d-squared-zero-hom/grad-in-ker-curl/curl-in-ker-div）
 
-module Sovereign.Physics.DiscreteEMIdentityChecks where
+module Sovereign.Application.DiscreteEMIdentityChecks where
 
 open import Data.Fin using (Fin) renaming (zero to fz)
 open import Data.Product using (_×_; _,_)

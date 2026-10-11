@@ -49,12 +49,12 @@ open ≡-Reasoning
 -- 离散分部积分: Σ φ·Δψ = -Σ ∇φ·∇ψ
 -- 已有: integration-by-parts-1d : ∀ φ ψ → sum-forward φ ψ ≡ sum-backward φ ψ
 
--- [波 2-C 检查件外移] integration-by-parts-theorem 委托对已迁 Sovereign.Physics.DiscreteDiffOpsChecks
+-- [波 2-C 检查件外移] integration-by-parts-theorem 委托对已迁 Sovereign.Application.DiscreteDiffOpsChecks
 
 -- 推论: 差分求和为零
 -- 已有: integration-by-parts-zero : ∀ φ ψ → diff-sum φ ψ ≡ fz
 
--- [波 2-C 检查件外移] diff-sum-zero 委托对已迁 Sovereign.Physics.DiscreteDiffOpsChecks
+-- [波 2-C 检查件外移] diff-sum-zero 委托对已迁 Sovereign.Application.DiscreteDiffOpsChecks
 
 --------------------------------------------------------------------------------
 -- §2. 分部积分推论

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.WaterStates
+-- | Sovereign.Application.WaterStates
 -- 水的 8 种状态 → T⁶ 离散框架建模
 --
 -- 语料锚 (PPT 层, ≥7 处逐字坐实):
@@ -20,7 +20,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.WaterStates where
+module Sovereign.Application.WaterStates where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

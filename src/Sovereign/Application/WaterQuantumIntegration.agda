@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.WaterQuantumIntegration
+-- | Sovereign.Application.WaterQuantumIntegration
 -- 水的量子数据全局统合 — 从 T⁶ 到凝聚态的完整理论链
 --
 -- 本模块统合已有水相关模块的全部数据, 建立从代数基座到物理投影的完整因果链:
@@ -18,7 +18,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.WaterQuantumIntegration where
+module Sovereign.Application.WaterQuantumIntegration where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_; _∸_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

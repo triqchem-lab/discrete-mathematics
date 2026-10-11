@@ -1014,11 +1014,11 @@
 
 ## `src/Sovereign/Physics/QuantumChemistry.agda`
 
-- **module**: `Sovereign.Physics.QuantumChemistry`
+- **module**: `Sovereign.Application.QuantumChemistry`
 - **行数**: 225（代码 48 / 注释 132）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.QuantumChemistry
+  - | Sovereign.Application.QuantumChemistry
   - 量子化学 — T⁶ 离散环面上的分子结构
   - ⚠️ 核心原则:
   - 量子化学不是薛定谔方程在势能面上的求解,
@@ -1040,11 +1040,11 @@
 
 ## `src/Sovereign/Physics/QuantumErrorCorrection.agda`
 
-- **module**: `Sovereign.Physics.QuantumErrorCorrection`
+- **module**: `Sovereign.Application.QuantumErrorCorrection`
 - **行数**: 145（代码 55 / 注释 56）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.QuantumErrorCorrection
+  - | Sovereign.Application.QuantumErrorCorrection
   - 量子纠错 — GF(3) 表面码 + Frobenius 相位保护
   - 核心映射:
   - 量子比特 = GF(3) 元素 (三态: 0, 1, 2)
@@ -1061,11 +1061,11 @@
 
 ## `src/Sovereign/Physics/QuantumFieldAstrophysics.agda`
 
-- **module**: `Sovereign.Physics.QuantumFieldAstrophysics`
+- **module**: `Sovereign.Application.QuantumFieldAstrophysics`
 - **行数**: 225（代码 43 / 注释 131）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.QuantumFieldAstrophysics
+  - | Sovereign.Application.QuantumFieldAstrophysics
   - 量子场天体物理学 — 一切都是量子场的显化
   - 核心主张: 天体不是经典物理的引力体, 而是量子场的宏观驻波。
   - 从 GF(9) 量子场基底出发, 推导光、物质、膜、天体的统一结构。
@@ -1084,7 +1084,7 @@
 
 ## `src/Sovereign/Physics/QuantumMotor.agda`
 
-- **module**: `Sovereign.Physics.QuantumMotor`
+- **module**: `Sovereign.Application.QuantumMotor`
 - **行数**: 121（代码 44 / 注释 57）
 - **OPTIONS**: `--rewriting --guardedness`
 - **导入 (8)**: `Data.Fin`, `Data.Nat`, `Data.Product`, `Relation.Binary.PropositionalEquality`, `Sovereign.Structology.A4Group`, `Sovereign.Algebra.TriCycGraph`, `Sovereign.Structology.ArthurMagicSquare`, `Sovereign.Structology.MotorStableStates`
@@ -1176,11 +1176,11 @@
 
 ## `src/Sovereign/Physics/SoftModeCriticality.agda`
 
-- **module**: `Sovereign.Physics.SoftModeCriticality`
+- **module**: `Sovereign.Application.SoftModeCriticality`
 - **行数**: 94（代码 27 / 注释 42）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.SoftModeCriticality
+  - | Sovereign.Application.SoftModeCriticality
   - 软模临界 — 从框架常数推导声子谱临界权重比
   - 目标: 将 228K 推导的最后一项依赖 (声子谱权重比 ≈1.58)
   - 从"实验输入"转化为"框架推导"。
@@ -1217,11 +1217,11 @@
 
 ## `src/Sovereign/Physics/Superconductivity.agda`
 
-- **module**: `Sovereign.Physics.Superconductivity`
+- **module**: `Sovereign.Application.Superconductivity`
 - **行数**: 132（代码 47 / 注释 55）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.Superconductivity
+  - | Sovereign.Application.Superconductivity
   - 超导态 — 范数边界的凝聚态投影
   - 核心映射:
   - 超导态 = N=0 (范数坍缩到零态, 零幂族保证稳定性)
@@ -1289,11 +1289,11 @@
 
 ## `src/Sovereign/Physics/WaterAnchors.agda`
 
-- **module**: `Sovereign.Physics.WaterAnchors`
+- **module**: `Sovereign.Application.WaterAnchors`
 - **行数**: 188（代码 34 / 注释 114）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.WaterAnchors
+  - | Sovereign.Application.WaterAnchors
   - 水的四个科研锚点 — 2025-2026 公开数据的形式化映射
   - 锚点一: 水的"无人区"与第二临界点 (-45℃ / 228K)
   - 锚点二: 量子限域与水的"六重态" (零幂族物理实例)
@@ -1308,11 +1308,11 @@
 
 ## `src/Sovereign/Physics/WaterCriticalDerivation.agda`
 
-- **module**: `Sovereign.Physics.WaterCriticalDerivation`
+- **module**: `Sovereign.Application.WaterCriticalDerivation`
 - **行数**: 206（代码 47 / 注释 118）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.WaterCriticalDerivation
+  - | Sovereign.Application.WaterCriticalDerivation
   - 水的第二临界点推导 — 从 T⁶ 环面到 228K
   - 推导链:
   - GF(9) 范数边界 (N=2) → 六重对称驻波模式
@@ -1330,11 +1330,11 @@
 
 ## `src/Sovereign/Physics/WaterQuantumIntegration.agda`
 
-- **module**: `Sovereign.Physics.WaterQuantumIntegration`
+- **module**: `Sovereign.Application.WaterQuantumIntegration`
 - **行数**: 289（代码 80 / 注释 152）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.WaterQuantumIntegration
+  - | Sovereign.Application.WaterQuantumIntegration
   - 水的量子数据全局统合 — 从 T⁶ 到凝聚态的完整理论链
   - 本模块统合已有水相关模块的全部数据, 建立从代数基座到物理投影的完整因果链:
   - T⁶ 环面 → GF(9) 矢量场 → 范数坍缩 → 水的量子态 → 凝聚态投影
@@ -1354,11 +1354,11 @@
 
 ## `src/Sovereign/Physics/WaterStates.agda`
 
-- **module**: `Sovereign.Physics.WaterStates`
+- **module**: `Sovereign.Application.WaterStates`
 - **行数**: 217（代码 74 / 注释 97）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.WaterStates
+  - | Sovereign.Application.WaterStates
   - 水的 8 种状态 → T⁶ 离散框架建模
   - 语料锚 (PPT 层, ≥7 处逐字坐实):
   - "水是标准的等离子结构，不止只有三态，还有：超临界流体、超固体、
@@ -1380,11 +1380,11 @@
 
 ## `src/Sovereign/Physics/WaterStructure.agda`
 
-- **module**: `Sovereign.Physics.WaterStructure`
+- **module**: `Sovereign.Application.WaterStructure`
 - **行数**: 175（代码 39 / 注释 104）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Physics.WaterStructure
+  - | Sovereign.Application.WaterStructure
   - 水的离散全息结构 — 从零态到球形矢量场的统一
   - 核心主张:
   - 水不是经典流体, 而是 T⁶ 环面上的量子矢量场构型。

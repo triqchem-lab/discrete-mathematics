@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.SoftModeCriticality
+-- | Sovereign.Application.SoftModeCriticality
 -- 软模临界 — 从框架常数推导声子谱临界权重比
 --
 -- 目标: 将 228K 推导的最后一项依赖 (声子谱权重比 ≈1.58)
@@ -13,7 +13,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.SoftModeCriticality where
+module Sovereign.Application.SoftModeCriticality where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_; _∸_; _/_)
 open import Data.Product using (_×_; _,_)

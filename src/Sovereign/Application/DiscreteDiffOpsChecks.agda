@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteDiffOpsChecks
+-- | Sovereign.Application.DiscreteDiffOpsChecks
 -- DiscreteDiffOps 的跨域实例核对件汇（波 2-C 检查件外移）。
 --
 -- 数学背景：离散分部积分 1D 形（Σφ·Δψ 对称式）与差分求和归零的「定理命名面」——
@@ -14,7 +14,7 @@
 --
 -- 包含：integration-by-parts-theorem（委托对）｜diff-sum-zero（委托对）
 
-module Sovereign.Physics.DiscreteDiffOpsChecks where
+module Sovereign.Application.DiscreteDiffOpsChecks where
 
 open import Data.Fin using (Fin) renaming (zero to fz)
 open import Relation.Binary.PropositionalEquality using (_≡_)

@@ -17,7 +17,7 @@
 module Sovereign.Topology.HomologicalAlgebra where
 
 -- [波 2-C 检查件外移] 本模块全部实例核对 wrapper 已迁
---   Sovereign.Physics.DiscreteEMIdentityChecks（chain-complex / d-squared-zero（→d-squared-zero-hom）/ grad-in-ker-curl / curl-in-ker-div）——
+--   Sovereign.Application.DiscreteEMIdentityChecks（chain-complex / d-squared-zero（→d-squared-zero-hom）/ grad-in-ker-curl / curl-in-ker-div）——
 --   委托目标（DiscreteEMField3D/DiscreteEMCore 恒等式）同层，方向合法；
 --   本模块保留为结构性占位（§1-§4 数学背景注释见 git 历史 4aa248b 前版）。
 -- 零 Physics 依赖 ✓（波 2-C 断链判据）

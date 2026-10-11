@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.QuantumErrorCorrection
+-- | Sovereign.Application.QuantumErrorCorrection
 -- 量子纠错 — GF(3) 表面码 + Frobenius 相位保护
 --
 -- 核心映射:
@@ -15,7 +15,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.QuantumErrorCorrection where
+module Sovereign.Application.QuantumErrorCorrection where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
 open import Data.Product using (_×_; _,_)

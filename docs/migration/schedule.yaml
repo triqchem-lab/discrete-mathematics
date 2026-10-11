@@ -89,7 +89,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B017
     layer: 30-synthesis
-    modules: [Sovereign.Analysis.FinMixedRadix, Sovereign.Algebra.LaurentCubical, Sovereign.Algebra.BurauCubical, Sovereign.HoTT.Bundle, Sovereign.HoTT.Connection, Sovereign.HoTT.EnergyGap, Sovereign.HoTT.PostnikovTruncation, Sovereign.Structology.Lattice, Sovereign.Structology.S3IsGL22, Sovereign.Applied.CelestialExtended, Sovereign.Physics.SoftModeCriticality, Sovereign.Algebra.LaurentCanon]
+    modules: [Sovereign.Analysis.FinMixedRadix, Sovereign.Algebra.LaurentCubical, Sovereign.Algebra.BurauCubical, Sovereign.HoTT.Bundle, Sovereign.HoTT.Connection, Sovereign.HoTT.EnergyGap, Sovereign.HoTT.PostnikovTruncation, Sovereign.Structology.Lattice, Sovereign.Structology.S3IsGL22, Sovereign.Applied.CelestialExtended, Sovereign.Application.SoftModeCriticality, Sovereign.Algebra.LaurentCanon]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B018
@@ -189,7 +189,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B037
     layer: 40-application
-    modules: [Sovereign.Physics.InvisibleOrbitCount, Sovereign.Application.LightRotationFrequency, Sovereign.Application.LightRotationTernary, Sovereign.Physics.OpticalSampling, Sovereign.Application.PhaseTransition, Sovereign.Physics.RightHandedNeutrinoTheorem, Sovereign.Physics.RootTwoGF9, Sovereign.Physics.TorusChain, Sovereign.Physics.WaterAnchors, Sovereign.Physics.WaterCriticalDerivation, Sovereign.Physics.WaterStates, Sovereign.Problem.Fermat.FermatL3]
+    modules: [Sovereign.Physics.InvisibleOrbitCount, Sovereign.Application.LightRotationFrequency, Sovereign.Application.LightRotationTernary, Sovereign.Physics.OpticalSampling, Sovereign.Application.PhaseTransition, Sovereign.Physics.RightHandedNeutrinoTheorem, Sovereign.Physics.RootTwoGF9, Sovereign.Physics.TorusChain, Sovereign.Application.WaterAnchors, Sovereign.Application.WaterCriticalDerivation, Sovereign.Application.WaterStates, Sovereign.Problem.Fermat.FermatL3]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B038
@@ -219,12 +219,12 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B043
     layer: 40-application
-    modules: [Sovereign.Algebra.HenselMigration729, Sovereign.Algebra.HenselMigration81, Sovereign.Algebra.HenselMigration, Sovereign.Algebra.ZhonglvClosure, Sovereign.Coupling.ZhonglvPhaseSync, Sovereign.HoTT.HomotopyPi1, Sovereign.Application.AtomicStandingWave, Sovereign.Application.ClimateDynamics, Sovereign.Application.HydrogenBondCoherence, Sovereign.Application.ProteinFolding, Sovereign.Physics.QuantumChemistry, Sovereign.Physics.QuantumErrorCorrection]
+    modules: [Sovereign.Algebra.HenselMigration729, Sovereign.Algebra.HenselMigration81, Sovereign.Algebra.HenselMigration, Sovereign.Algebra.ZhonglvClosure, Sovereign.Coupling.ZhonglvPhaseSync, Sovereign.HoTT.HomotopyPi1, Sovereign.Application.AtomicStandingWave, Sovereign.Application.ClimateDynamics, Sovereign.Application.HydrogenBondCoherence, Sovereign.Application.ProteinFolding, Sovereign.Application.QuantumChemistry, Sovereign.Application.QuantumErrorCorrection]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B044
     layer: 40-application
-    modules: [Sovereign.Physics.WaterQuantumIntegration, Sovereign.Quantum.ZeroPowerQuantum, Sovereign.Physics.QuartzPhonon, Sovereign.Topology.QAnalysisFacesInstance, Sovereign.Topology.QAnalysisTwoTriangles, Sovereign.Topology.QPathMonotone, Sovereign.Topology.FormanPerfectField, Sovereign.Topology.MorseAcyclic, Sovereign.Topology.OrderComplex, Sovereign.Topology.StongCore, Sovereign.Algebra.HenselCRTSynth, Sovereign.Algebra.LaurentSums]
+    modules: [Sovereign.Application.WaterQuantumIntegration, Sovereign.Quantum.ZeroPowerQuantum, Sovereign.Physics.QuartzPhonon, Sovereign.Topology.QAnalysisFacesInstance, Sovereign.Topology.QAnalysisTwoTriangles, Sovereign.Topology.QPathMonotone, Sovereign.Topology.FormanPerfectField, Sovereign.Topology.MorseAcyclic, Sovereign.Topology.OrderComplex, Sovereign.Topology.StongCore, Sovereign.Algebra.HenselCRTSynth, Sovereign.Algebra.LaurentSums]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B045
@@ -269,7 +269,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B053
     layer: 30-synthesis
-    modules: [Sovereign.Coupling.CartanTorsion, Sovereign.Coupling.Entanglement, Sovereign.Density.SevenStages, Sovereign.Constitution.WindingAsymmetry, Sovereign.Structology.BinaryTetrahedralSpectrum, Sovereign.Structology.SL23Cayley, Sovereign.Algebra.GenericInst, Sovereign.Structology.HolographicPi, Sovereign.Physics.Superconductivity, Sovereign.Physics.WaterStructure, Sovereign.Topology.QAnalysisStar, Sovereign.Topology.Collapse]
+    modules: [Sovereign.Coupling.CartanTorsion, Sovereign.Coupling.Entanglement, Sovereign.Density.SevenStages, Sovereign.Constitution.WindingAsymmetry, Sovereign.Structology.BinaryTetrahedralSpectrum, Sovereign.Structology.SL23Cayley, Sovereign.Algebra.GenericInst, Sovereign.Structology.HolographicPi, Sovereign.Application.Superconductivity, Sovereign.Application.WaterStructure, Sovereign.Topology.QAnalysisStar, Sovereign.Topology.Collapse]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B054
@@ -289,7 +289,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B057
     layer: 40-application
-    modules: [Sovereign.Algebra.GroupTheory.PhaseSubgroup, Sovereign.Problem.NavierStokes.NSEMadelungConstrained, Sovereign.Problem.NavierStokes.NSEMadelungNonTrivial, Sovereign.Problem.NavierStokes.NSEPhasePeriod, Sovereign.Problem.NavierStokes.NSEFinalClosure, Sovereign.Problem.PvsNP.CharPoly3, Sovereign.Problem.PvsNP.PvsNP_L15, Sovereign.Analysis.HilbertDiscrete, Sovereign.Applied.DeepAlgebraProofs, Sovereign.Physics.QuantumFieldAstrophysics, Sovereign.Physics.QuantumMotor, Sovereign.Application.DiscreteFourier]
+    modules: [Sovereign.Algebra.GroupTheory.PhaseSubgroup, Sovereign.Problem.NavierStokes.NSEMadelungConstrained, Sovereign.Problem.NavierStokes.NSEMadelungNonTrivial, Sovereign.Problem.NavierStokes.NSEPhasePeriod, Sovereign.Problem.NavierStokes.NSEFinalClosure, Sovereign.Problem.PvsNP.CharPoly3, Sovereign.Problem.PvsNP.PvsNP_L15, Sovereign.Analysis.HilbertDiscrete, Sovereign.Applied.DeepAlgebraProofs, Sovereign.Application.QuantumFieldAstrophysics, Sovereign.Application.QuantumMotor, Sovereign.Application.DiscreteFourier]
     grade_C_count: 1
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B058

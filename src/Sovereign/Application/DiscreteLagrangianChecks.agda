@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteLagrangianChecks
+-- | Sovereign.Application.DiscreteLagrangianChecks
 -- DiscreteLagrangian 的跨域实例核对件汇（波 2-C 检查件外移）。
 --
 -- 数学背景：Euler-Lagrange 等价形（临界点 ⟺ EL 方程）的「定理命名面」——
@@ -13,7 +13,7 @@
 --
 -- 包含：el-equivalence（双向委托对）｜el-constant（常值 EL）
 
-module Sovereign.Physics.DiscreteLagrangianChecks where
+module Sovereign.Application.DiscreteLagrangianChecks where
 
 open import Data.Fin using (Fin) renaming (zero to fz)
 open import Data.Product using (_×_; _,_)

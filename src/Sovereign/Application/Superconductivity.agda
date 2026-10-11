@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.Superconductivity
+-- | Sovereign.Application.Superconductivity
 -- 超导态 — 范数边界的凝聚态投影
 --
 -- 核心映射:
@@ -14,7 +14,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.Superconductivity where
+module Sovereign.Application.Superconductivity where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
 open import Data.Product using (_×_; _,_)

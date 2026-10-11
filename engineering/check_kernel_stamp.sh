@@ -9,7 +9,7 @@
 #   同理，**相异展示本就是不同对象**（Bool vs Bool2、Trit vs Fin 3、R1 vs R2）：
 #   它们的 ≡ **应当判为空**。这不是新语义，是展示群立场；传统数学的截断视角才把它抹平。
 #
-# 判据模块: src/Sovereign/Trust/PatchedTypeChecker.agda
+# 判据模块: PatchedTypeChecker（位置随迁移——find 解析）
 #   在**带 eb1251683f** 的内核上编译通过；
 #   在未打补丁的内核上报 UnsolvedConstraints: Is empty: R1 ≡ R2 (stuck)（exit 42）。
 #
@@ -29,7 +29,8 @@ set -u
 cd "$(dirname "$0")/.."
 AGDA="${AGDA:-$HOME/.local/bin/agda}"
 REF_AGDA="${REF_AGDA:-}"
-MODULE="src/Sovereign/Trust/PatchedTypeChecker.agda"
+# [波6 修复 2026-10-11] 迁移容忍形：find 全库解析（Trust→Infrastructure 迁移致硬编码断链）
+MODULE="$(find src/Sovereign -name PatchedTypeChecker.agda | head -1)"
 HEAP="${HEAP:-6G}"
 
 echo "=== 内核版本戳门禁（eb1251683f）==="

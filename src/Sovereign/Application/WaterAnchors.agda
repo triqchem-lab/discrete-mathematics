@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.WaterAnchors
+-- | Sovereign.Application.WaterAnchors
 -- 水的四个科研锚点 — 2025-2026 公开数据的形式化映射
 --
 -- 锚点一: 水的"无人区"与第二临界点 (-45℃ / 228K)
@@ -13,7 +13,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.WaterAnchors where
+module Sovereign.Application.WaterAnchors where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_; _∸_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.WaterStructure
+-- | Sovereign.Application.WaterStructure
 -- 水的离散全息结构 — 从零态到球形矢量场的统一
 --
 -- 核心主张:
@@ -21,7 +21,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.WaterStructure where
+module Sovereign.Application.WaterStructure where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
