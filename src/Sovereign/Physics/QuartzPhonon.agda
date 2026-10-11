@@ -354,7 +354,7 @@ record IonizationState : Set where
 saha-lhs-anchored : ℚ
 saha-lhs-anchored = + (10 * 10) /ℚ 990000  -- α=0.01 时的 LHS
 
--- postulate: Saha 方程实验锚定
+-- postulate: Saha 方程实验锚定  -- [kind:bridge 登记 2026-10-11] 物理锚定（genuine bridge）——登记不构造化
 -- 在 T=1978K (SiO₂ 液相线), α ≈ 0.01 (弱电离)
 -- 来源: Griem 1964, Table III-2; NIST ASD Si II lines
 postulate
@@ -393,7 +393,7 @@ postulate
 ρ-gap : ℚ
 ρ-gap = ρ-plasma -ℚ ρ-crit  -- 0.37
 
--- postulate: 渗流理论锚定
+-- postulate: 渗流理论锚定  -- [kind:bridge 登记 2026-10-11] 物理锚定（genuine bridge）——登记不构造化
 -- diamond bond percolation p_c ≈ 0.39 (Stauffer & Aharony 1994, Table 2.1)
 -- 实验值 ρ_crit = 0.38 与理论值 0.39 的偏差 < 3%
 -- 来源: N14 3.17 MHz FOM 跃迁, Zallen 1983 Fig. 4.2
@@ -460,6 +460,7 @@ c3-mod-period = refl
 -- 每 60 步 (仲吕周期) 出现一次密度跃迁
 -- 来源: S2Sovereign 训练日志, FOM 收敛曲线
 postulate
+  -- [kind:bridge 登记 2026-10-11] ρ-evolution-anchored：物理锚定（genuine bridge）
   ρ-evolution-anchored :
     -- 训练终点密度接近原始密度
     -- 完整证明需要训练动力学的离散微分方程

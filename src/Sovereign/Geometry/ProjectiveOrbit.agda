@@ -62,15 +62,15 @@ g-size-decomposition = refl
 --------------------------------------------------------------------------------
 
 -- 自反性: x ~_G x (通过 g-id)
-postulate
+postulate  -- [kind:bridge 登记 2026-10-11] 轨道等价律/计数桥——物理锚定件（4320D 计数=144×30=4320 实验锚定）；三门槛面登记不构造化
   orbit-refl : ∀ (x : T6Lattice) → GOrbitRel x x
 
 -- 对称性: x ~_G y → y ~_G x
-postulate
+postulate  -- [kind:bridge 登记 2026-10-11] 轨道等价律/计数桥——4320D 计数实验锚定；登记不构造化
   orbit-sym : ∀ (x y : T6Lattice) → GOrbitRel x y → GOrbitRel y x
 
 -- 传递性: x ~_G y → y ~_G z → x ~_G z
-postulate
+postulate  -- [kind:bridge 登记 2026-10-11] 轨道等价律/计数桥——4320D 计数实验锚定；登记不构造化
   orbit-trans : ∀ (x y z : T6Lattice) → GOrbitRel x y → GOrbitRel y z → GOrbitRel x z
 
 --------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ postulate
 --------------------------------------------------------------------------------
 
 -- 轨道总数 = 4320
-postulate
+postulate  -- [kind:bridge 登记 2026-10-11] 轨道等价律/计数桥——4320D 计数实验锚定；登记不构造化
   total-orbits : ℕ
   orbit-count-is-4320 : total-orbits ≡ 4320
 

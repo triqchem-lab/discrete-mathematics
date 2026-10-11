@@ -16,6 +16,7 @@
 
 -- ⚠ 边界句（2026-10-11）：本模块值形件为**实例核对件（非泛型定理）**。
 module Sovereign.Physics.ObservabilityAngle where
+-- [边界注 2026-10-11] 本模块为实例核对件（非泛型定理）——值形 refl 级核对，不得引为一般命题
 
 open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
