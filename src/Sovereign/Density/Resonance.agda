@@ -242,11 +242,18 @@ data EnergyLevelTransition : Set where
 data EnergyTransfer : Set where
   mkET : EnergyTransfer
 
-data ResonanceDefinition : Set where
-  mkRD : ResonanceDefinition
-
+-- 2026-10-11 定义性绑定落为真定义（B2「关系入定义」正解②）：
+-- 「共振定义 = 纳音驻波谐波滤波」是概念绑定即定义——ResonanceDefinition 取为
+-- NayinStandingWaveHarmonicFiltering 的别名，resonanceLegal = refl。
+-- 原「双 data + postulate 断言相异类型相等」与本文件「相异类型判空」风格
+-- （noEnergyLevelTransition 系空模式）构成一致性地雷——别名形消除之。
 data NayinStandingWaveHarmonicFiltering : Set where
   mkNSWHF : NayinStandingWaveHarmonicFiltering
+
+ResonanceDefinition : Set
+ResonanceDefinition = NayinStandingWaveHarmonicFiltering
+
+pattern mkRD = mkNSWHF
 
 -- 禁止表述（已证明：Resonance、EnergyLevelTransition、EnergyTransfer 为互异 data 类型）
 noEnergyLevelTransition : ¬ (Resonance ≡ EnergyLevelTransition)
@@ -257,6 +264,7 @@ noEnergyTransfer ()
 
 -- [分类: 宪法公理] [状态: 定义性声明]
 -- 共振定义 = 纳音驻波谐波滤波。非数学定理——是框架的概念绑定。
-postulate
-  resonanceLegal :
-    ResonanceDefinition ≡ NayinStandingWaveHarmonicFiltering
+-- 2026-10-11 构造化：定义性绑定 ⇒ refl（postulate -1）
+resonanceLegal :
+  ResonanceDefinition ≡ NayinStandingWaveHarmonicFiltering
+resonanceLegal = refl

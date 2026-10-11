@@ -27,7 +27,7 @@ open import Data.Nat.DivMod using (_mod_; _div_)
 open import Data.Fin using (Fin; toℕ; fromℕ; combine; remQuot; #_)
 open import Data.Vec using (Vec; []; _∷_; map)
 open import Data.Bool using (Bool; true; false; _∧_)
-open import Data.Product using (_×_; _,_)
+open import Data.Product using (_×_; _,_; proj₁; proj₂)
 
 import Sovereign.Base.Trit as Trit
 import Sovereign.Base.Invariants as Inv
@@ -106,12 +106,20 @@ pack5 (v0 ∷ v1 ∷ v2 ∷ v3 ∷ v4 ∷ []) =
 -- 使用 remQuot (标准库的混合进制解码) 反向提取 5 个 Fin 3
 unpack5 : PackedByte → Vec Trit.Trit 5
 unpack5 byte =
-  let rest1 , v0-fin = remQuot {m = 81} 3 byte
-      rest2 , v1-fin = remQuot {m = 27} 3 rest1
-      rest3 , v2-fin = remQuot {m = 9}  3 rest2
-      v4-fin , v3-fin = remQuot {m = 3}  3 rest3
-  in finToTrit v0-fin ∷ finToTrit v1-fin ∷ finToTrit v2-fin
-     ∷ finToTrit v3-fin ∷ finToTrit v4-fin ∷ []
+  finToTrit v0-fin ∷ finToTrit v1-fin ∷ finToTrit v2-fin
+    ∷ finToTrit v3-fin ∷ finToTrit v4-fin ∷ []
+  where
+  -- 透明 proj 形（2026-10-11）：pattern-let 会以 with 形卡住归约面，
+  -- 互逆律（QsUpdate pack5∘unpack5 系）需要 remQuot 链显式可见——语义与原 let 形逐值相同
+  p1 = remQuot {m = 81} 3 byte
+  p2 = remQuot {m = 27} 3 (proj₁ p1)
+  p3 = remQuot {m = 9}  3 (proj₁ p2)
+  p4 = remQuot {m = 3}  3 (proj₁ p3)
+  v0-fin = proj₂ p1
+  v1-fin = proj₂ p2
+  v2-fin = proj₂ p3
+  v3-fin = proj₂ p4
+  v4-fin = proj₁ p4
 
 --------------------------------------------------------------------------------
 -- 3. 主权块定义 (Sovereign Block Definition)

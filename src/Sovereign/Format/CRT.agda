@@ -16,6 +16,7 @@ open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Data.Unit using (⊤)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
 open import Cubical.Foundations.Prelude using () renaming (_≡_ to _≡ᶜ_)
+open import Cubical.Data.Equality.Conversion using (eqToPath)
 open import Cubical.Foundations.Isomorphism using (Iso; iso)
 open import Sovereign.Arithmetic.CRTLemmas public using (coprime-POW2-POW3; crt-merge; POW2; POW3; M)
 
@@ -224,6 +225,7 @@ crtSec a b a<2 b<3 =
 private
   open import Data.Nat using (_<_)
   open import Data.Nat.DivMod using (m%n<n; m<n⇒m%n≡m)
+  open import Data.Nat.Properties using (≤-irrelevant)
 
   CRTDom : Set ; CRTDom = Σ ℕ (λ n → n < M)
   CRTCod : Set ; CRTCod = (Σ ℕ (λ a → a < POW2)) × (Σ ℕ (λ b → b < POW3))
@@ -235,11 +237,43 @@ private
   crtReconstruct' ((a , _) , (b , _)) =
     crtReconstruct (a , b) , m%n<n (a * T1 + b * T2) M
 
-  -- 受限域往返恒等（Cubical 路径版本，Agda 2.9 跨模块路径兼容性下暂 postulate）
-  -- 构造性证明: crtSec + crtTheorem + m<n⇒m%n≡m → 数值等式，不等式证明由 <-irrelevant
-  postulate
-    crtSec-restricted : ∀ p → crtProject' (crtReconstruct' p) ≡ᶜ p
-    crtRet-restricted : ∀ n → crtReconstruct' (crtProject' n) ≡ᶜ n
+  -- 受限域往返恒等（2026-10-11 构造化闭合，postulate -2）
+  -- 原「Agda 2.9 跨模块路径兼容性下暂 postulate」实为双 _≡_ 世界（PropEq/Cubical）缺桥——
+  -- 走 PropEq 核 + eqToPath 总桥（ΣPathP 深水不涉）；数值核 = crtSec/crtTheorem 链，
+  -- 不等式分量证明无关 = ≤-irrelevant。
+  Σ-≡-lift : {P : ℕ → Set} (ir : ∀ {x} (p q : P x) → p ≡ q)
+             {a a' : ℕ} {pa : P a} {pa' : P a'} → a ≡ a' → (a , pa) ≡ (a' , pa')
+  Σ-≡-lift ir refl = cong (_ ,_) (ir _ _)
+
+  -- 数值核①：受限往返（编码侧）——crtSec 直抬带证对
+  crtSec-pair : ∀ (a b : ℕ) (a<2 : a < POW2) (b<3 : b < POW3)
+    → crtProject' (crtReconstruct' ((a , a<2) , (b , b<3))) ≡ ((a , a<2) , (b , b<3))
+  crtSec-pair a b a<2 b<3 = cong₂ _,_
+    (Σ-≡-lift (λ p q → ≤-irrelevant p q) (cong proj₁ (crtSec a b a<2 b<3)))
+    (Σ-≡-lift (λ p q → ≤-irrelevant p q) (cong proj₂ (crtSec a b a<2 b<3)))
+
+  -- 数值核②：受限往返（解码侧）——crt-merge 同余唯一性 + M 穿越 + 受限域还原
+  crtRet-pair : ∀ (n₀ : ℕ) (n₀<M : n₀ < M)
+    → crtReconstruct' (crtProject' (n₀ , n₀<M)) ≡ (n₀ , n₀<M)
+  crtRet-pair n₀ n₀<M = Σ-≡-lift (λ p q → ≤-irrelevant p q) e
+    where
+    x = (n₀ % POW2) * T1 + (n₀ % POW3) * T2
+    eP : (x % M) % POW2 ≡ n₀ % POW2
+    eP = trans (lemma-mod-cross-POW2 x)
+          (trans (lemma-linear-POW2 (n₀ % POW2) (n₀ % POW3)) (m%n%n≡m%n n₀ POW2))
+    eQ : (x % M) % POW3 ≡ n₀ % POW3
+    eQ = trans (lemma-mod-cross-POW3 x)
+          (trans (lemma-linear-POW3 (n₀ % POW2) (n₀ % POW3)) (m%n%n≡m%n n₀ POW3))
+    e : x % M ≡ n₀
+    e = trans (sym (m%n%n≡m%n x M))
+          (trans (crt-merge (x % M) n₀ eP eQ) (m<n⇒m%n≡m n₀<M))
+
+  -- 总桥：PropEq 核 → Cubical ≡ᶜ
+  crtSec-restricted : ∀ p → crtProject' (crtReconstruct' p) ≡ᶜ p
+  crtSec-restricted ((a , a<2) , (b , b<3)) = eqToPath (crtSec-pair a b a<2 b<3)
+
+  crtRet-restricted : ∀ n → crtReconstruct' (crtProject' n) ≡ᶜ n
+  crtRet-restricted (n₀ , n₀<M) = eqToPath (crtRet-pair n₀ n₀<M)
 
   crtIso : Iso CRTDom CRTCod
   crtIso = iso crtProject' crtReconstruct' crtSec-restricted crtRet-restricted
