@@ -29,6 +29,7 @@ toℚ n = (+ n) /ℚ 1
 PiHolographic : ℚ
 PiHolographic = toℚ POLAR_WINDING ÷ toℚ TOROIDAL_WINDING
 
+-- ⚠ 防误引注（2026-10-11）：PiEuclidean = 314159/100000 系 π 的**十进制近似**（定点截断），非 π 的定义——不可作 π 恒等式依据。
 PiEuclidean : ℚ
 PiEuclidean = (+ 314159) /ℚ 100000
 

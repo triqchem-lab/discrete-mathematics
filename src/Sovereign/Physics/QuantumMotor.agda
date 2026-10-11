@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- ⚠ 边界注（2026-10-11）：本模块核对件为**实例核对件（非泛型定理）**。
 module Sovereign.Physics.QuantumMotor where
 
 open import Data.Fin using (zero; suc)

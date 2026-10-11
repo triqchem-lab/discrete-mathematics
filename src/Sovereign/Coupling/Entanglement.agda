@@ -249,11 +249,13 @@ postulate
 --------------------------------------------------------------------------------
 
 -- 禁止表述：超距作用
+-- [kind: bridge 登记 2026-10-11 审计尾账批] 宪法②类语义绑定声明（术语层本体承诺非定理）——合法公理，不计 "0 postulate" 声明范围。
 postulate
   Entanglement ActionAtDistance : Set
   noActionAtDistance : ¬ (Entanglement ≡ ActionAtDistance)
 
 -- 合法表述：共享缠绕数的五行同步
+-- [kind: bridge 登记 2026-10-11 审计尾账批] 宪法②类语义绑定声明（合法表述的术语绑定）——合法公理，不计 "0 postulate" 声明范围。
 postulate
   EntanglementDefinition SharedWindingNumberWuXingSync : Set
   entanglementLegal : EntanglementDefinition ≡ SharedWindingNumberWuXingSync

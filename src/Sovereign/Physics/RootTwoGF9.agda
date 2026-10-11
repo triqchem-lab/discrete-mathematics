@@ -14,6 +14,7 @@
 -- 三步闭合: T₁ ⊕ T₁ ⊕ T₁ = T₀ (1+1+1=3≡0 mod 3), 是 C3 加法群周期 3 的
 --   直接体现 — 三个正交方向各走一步、重复三次回原点。
 
+-- ⚠ 边界句（2026-10-11）：本模块值形件为**实例核对件（非泛型定理）**。
 module Sovereign.Physics.RootTwoGF9 where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

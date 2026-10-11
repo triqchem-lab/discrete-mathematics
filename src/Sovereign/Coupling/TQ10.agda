@@ -127,6 +127,8 @@ sumBerryCurvature (b ∷ bs) =
 --------------------------------------------------------------------------------
 
 -- 主权块演化辅助函数（待实现）
+-- [kind: gap 登记 2026-10-11 审计尾账批] 语义未定（演化规则待设计）——真缺口，不得 proven；
+--   消解路线 = 演化语义设计后构造化（QFIX 先例），或改 Maybe 形部分函数。
 postulate
   updatePhaseBias : ℕ → ℕ → Word8
   updateChernGuard : ℕ → ℕ → Word8

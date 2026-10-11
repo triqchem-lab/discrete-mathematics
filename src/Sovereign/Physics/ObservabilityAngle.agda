@@ -14,6 +14,7 @@
 -- 包含：photon-structure-angle（光子结构角）· eye-sampling-angle（人眼采样角）·
 --   visible-light-observable（可见光可观测性）
 
+-- ⚠ 边界句（2026-10-11）：本模块值形件为**实例核对件（非泛型定理）**。
 module Sovereign.Physics.ObservabilityAngle where
 
 open import Data.Nat using (ℕ)

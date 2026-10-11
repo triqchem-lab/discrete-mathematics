@@ -75,14 +75,6 @@ record BaseManifold : Set₁ where
     cellCountIs12 : cellCount ≡ 12
     symmetryGroup : Set  -- A₄ 群
 
-baseManifoldS2OverA4 : BaseManifold
-baseManifoldS2OverA4 = record
-  { cellCount = 12
-  ; cellCountIs12 = refl
-  ; symmetryGroup = A4Group
-  }
-  where
-    postulate A4Group : Set
 
 -- 结构群：A₄ 群（阶 12）
 -- 生成元为 C3 循环与二次轴复合
@@ -99,6 +91,13 @@ record A4StructureGroup : Set where
     assoc : ∀ x y z → (x ⊙ y) ⊙ z ≡ x ⊙ (y ⊙ z)
     identity : ∀ x → c3-id ⊙ x ≡ x × x ⊙ c3-id ≡ x
     inverse : ∀ x → ∃[ x⁻¹ ] (x ⊙ x⁻¹ ≡ c3-id × x⁻¹ ⊙ x ≡ c3-id)
+
+baseManifoldS2OverA4 : BaseManifold
+baseManifoldS2OverA4 = record
+  { cellCount = 12
+  ; cellCountIs12 = refl
+  ; symmetryGroup = A4StructureGroup  -- 构造化（2026-10-11 占位族消解：原 where 块 postulate A4Group → 真实结构群 record 类型）
+  }
 
 a4GroupInstance : A4StructureGroup
 a4GroupInstance = record
