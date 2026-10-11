@@ -216,3 +216,128 @@ check-invᵈ-ℓ0 = refl
 --   （逐边 expand 对消——归纳 ~20-40 行）；G2s 平凡例已核（check-invᵈ-ℓ0）。
 -- (ii) 一般有向图的逆：无 flip 则 rev 落 Gᵒᵖ，π₁ᵈ 仅成幺半群——逆元存在性
 --   恰是「对称图 vs 有向图」的分水岭（Barcelo 理论的群/幺半群分界）。
+
+-- ────────────────────────────────────────────────────────────────────
+-- ⑥ 一般逆律：**反证件**（statement_wrong 定谳）+ 修正案立界
+--
+-- 数学背景：⑤节立界件「一般逆律 w ++w rev w ∼ nil」经本节定谳为**普遍假命题**——
+--   AStep 生成元只有三角替换（slide/expand），两沿皆 ≥1 边 ⇒ 空 walk `nil`
+--   是 AHomotopy **孤立点**。非空 w 时 w ++w rev w（非空）永远 ∼ 不上 nil。
+--   Q 不变量 = 「同零长 ⊕ 同正长」（len 测度法——免匹配纪律：无 absurd 模式、
+--   无索引统一，K 禁用下全程安全）。
+-- 修正案（立界，与 ⑤节 flip 分水岭并列）：
+--   (1) 逆律需 AStep 增**回溯消去生成元** backtrack：
+--       AStep'(p ++ cons e (cons (flip e) b)) (p ++ b)——生成元入定义
+--       （豁免精化判据正解②；本体论：「带反转 A-homotopy」的标准生成集）；
+--   (2) 涟漪清单：AHomotopy 合同族（disp2-respects 等）补 backtrack 案；
+--       disp2 对该案需新前提「flip 权重互逆」wt x y *A wt (flip e) ≡ oneA；
+--   (3) 修补后逆律骨架（~20-40 行）：cons e p 归纳 + rev-resp 搬运 +
+--       backtrack 收口；⊞ᵈ-inv = elimProp/q + cong [_] 一步。
+-- ────────────────────────────────────────────────────────────────────
+
+open import Data.Empty using (⊥; ⊥-elim)
+
+-- flip2s 具名化（消 λ 实参 meta）
+fl2s : ∀ {u v : DiGraph.V G2s} → DiGraph.edge G2s u v → DiGraph.edge G2s v u
+fl2s {u} {v} e = flip2s {u} {v} e
+open import Data.Nat using (ℕ; zero; suc)
+open import Data.Product using (_×_; _,_)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Cubical.Data.Bool using (Bool; true; false; isSetBool)
+open import Cubical.Foundations.Prelude using (subst)
+
+-- len：walk 边数（nil/cons 纯计算两案——免匹配纪律：无 absurd、无索引统一）
+len : ∀ {G : DiGraph} {u v} → Walk G u v → ℕ
+len (nil _) = zero
+len (cons e p) = suc (len p)
+
+Pos : ℕ → Set
+Pos zero = ⊥
+Pos (suc n) = ⊤
+
+isZeroB : ℕ → Bool
+isZeroB zero = true
+isZeroB (suc n) = false
+
+-- Q：同零长 ⊕ 同正长（AHomotopy 不变量）
+Q : ∀ {G : DiGraph} {u v} → Walk G u v → Walk G u v → Set
+Q a b = ((len a ≡ zero) × (len b ≡ zero)) ⊎ (Pos (len a) × Pos (len b))
+
+Q-self : ∀ {G : DiGraph} {u v} (a : Walk G u v) → Q a a
+Q-self (nil _) = inj₁ (refl , refl)
+Q-self (cons e p) = inj₂ (tt , tt)
+
+-- p ++ cons e b 恒正长（两案纯计算）
+++w-cons-Pos : ∀ {G : DiGraph} {u x z v} (p : Walk G u x) (e : DiGraph.edge G x z) (b : Walk G z v)
+             → Pos (len (p ++w cons e b))
+++w-cons-Pos (nil _) e b = tt
+++w-cons-Pos (cons e p) e' b = tt
+
+-- AStep 两沿恒同正长（slide/expand 皆 p ++ cons …形）
+Q-AStep : ∀ {G : DiGraph} {u v} {a b : Walk G u v} → AStep G a b → Q a b
+Q-AStep (slide p q e1 e2 e3) = inj₂ (++w-cons-Pos p e1 (cons e2 q) , ++w-cons-Pos p e3 q)
+Q-AStep (expand p q e1 e2 e3) = inj₂ (++w-cons-Pos p e3 q , ++w-cons-Pos p e1 (cons e2 q))
+
+Q-swap : ∀ {G : DiGraph} {u v} {a b : Walk G u v} → Q a b → Q b a
+Q-swap (inj₁ (x , y)) = inj₁ (y , x)
+Q-swap (inj₂ (x , y)) = inj₂ (y , x)
+
+Q-trans : ∀ {G : DiGraph} {u v} {a b c : Walk G u v} → Q a b → Q b c → Q a c
+Q-trans (inj₁ (x , _)) (inj₁ (_ , z)) = inj₁ (x , z)
+Q-trans (inj₁ (_ , eb)) (inj₂ (nb , _)) = ⊥-elim (subst Pos eb nb)
+Q-trans (inj₂ (_ , nb)) (inj₁ (eb , _)) = ⊥-elim (subst Pos eb nb)
+Q-trans (inj₂ (x , _)) (inj₂ (_ , z)) = inj₂ (x , z)
+
+-- Q 是 AHomotopy 不变量（四案归纳）
+Q-hom : ∀ {G : DiGraph} {u v} {a b : Walk G u v} → AHomotopy G a b → Q a b
+Q-hom (refl' w) = Q-self w
+Q-hom (symm h) = Q-swap (Q-hom h)
+Q-hom (trans' h1 h2) = Q-trans (Q-hom h1) (Q-hom h2)
+Q-hom (gen s) = Q-AStep s
+
+-- 主反证件：非空 w ⇒ w ++w rev w 永不 ∼ nil（通用图——**含环亦假**）
+inv-law-false : ∀ {G : DiGraph} (fl : ∀ {u v} → DiGraph.edge G u v → DiGraph.edge G v u)
+                {x y} (w : Walk G x y) (ne : Pos (len w))
+              → AHomotopy G (w ++w rev G fl w) (nil x) → ⊥
+inv-law-false {G} fl {x} {y} (cons e p) tt h = go (Q-hom h)
+  where
+  go : Q (cons e (p ++w rev G fl (cons e p))) (nil x) → ⊥
+  go (inj₁ (ez , _)) = ⊥-elim (subst Pos ez tt)
+  go (inj₂ (_ , pn)) = ⊥-elim pn
+
+-- S 分离器两桥（isZeroB ∘ len——ℕ 上归纳，K 安全）
+isZero-false : (n : ℕ) → Pos n → _≡_ {A = Bool} (isZeroB n) false
+isZero-false zero p = ⊥-elim p
+isZero-false (suc n) tt = refl
+
+S-resp : ∀ {G : DiGraph} {u v} (a b : Walk G u v) → AHomotopy G a b
+       → _≡_ {A = Bool} (isZeroB (len a)) (isZeroB (len b))
+S-resp a b h = go (Q-hom h)
+  where
+  go : Q a b → _≡_ {A = Bool} (isZeroB (len a)) (isZeroB (len b))
+  go (inj₁ (ez , ez')) = cong isZeroB ez ∙ cong isZeroB (sym ez')
+  go (inj₂ (pa , pb)) = isZero-false (len a) pa ∙ sym (isZero-false (len b) pb)
+
+S̄ : ∀ {G : DiGraph} {x : DiGraph.V G} → π₁ᵈ G x → Bool
+S̄ {G} {x} = π₁ᵈ-rec isSetBool (λ ℓ → isZeroB (len ℓ)) (λ ℓ m h → S-resp ℓ m h)
+
+T : Bool → Set
+T true = ⊤
+T false = ⊥
+
+true≢false : _≡_ {A = Bool} true false → ⊥
+true≢false p = subst T p tt
+
+-- 平凡例核对（ℓ0 路径：nil ++ rev nil = nil ∼ nil ✓）
+check-inv-law-ℓ0 : AHomotopy G2s (nil fzero ++w rev G2s (λ {u} {v} → flip2s {u} {v}) (nil fzero)) (nil fzero)
+check-inv-law-ℓ0 = AH-refl (nil fzero)
+
+-- 商面通用反证件（变量 walk 形——具体例因常值边族（edge G2s _ _ ≡ ⊤）的
+--   顶点隐式 meta 怪癖改走通用形；inv-law-false 已覆盖全部非空 walk）
+no-quot-nil-gen : ∀ {x : DiGraph.V G2s} (ℓ : Loop G2s x) → Pos (len ℓ)
+                → _≡_ {A = π₁ᵈ G2s x} [ ℓ ] [ nil x ] → ⊥
+no-quot-nil-gen ℓ p q = true≢false (sym (sym (isZero-false (len ℓ) p) ∙ cong S̄ q))
+
+-- 一般例（手工核对清单——编译外证据）：G2s 上 w = e00∷e00∷nil（2 边 loop），
+--   w ++w rev w = 4 边 walk，Q-hom 任意 ∼ 触不到 nil（inv-law-false 实例）。
+
