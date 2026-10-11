@@ -1,0 +1,62 @@
+{
+  "meta": {"name": "大衍离散全息框架", "type": "knowledge_graph", "version": "知识图谱总结", "layers": 5},
+  "layers": [
+    {"id": "L0", "name": "公理层",
+     "axioms": [
+      {"id": "GF3", "name": "GF(3) 公理", "content": "Trit 三值 + ⊕ 叠加 + ⊗ 干涉", "redline": "一切上层的原子"},
+      {"id": "DR", "name": "数字根公理", "content": "dr(L/L₀) ∈ {3,6,9}", "redline": "拓扑不动点签名"},
+      {"id": "SY", "name": "损益公理", "content": "损一 ×2/3 / 益一 ×4/3", "redline": "律管长度第一性原理"},
+      {"id": "GZ", "name": "归零公理", "content": "1²+i²=0²（虚实对消灭）", "redline": "零冥族根据"},
+      {"id": "LX", "name": "离散存在公理", "content": "GF(3) 格点为最小几何单元", "redline": "连续统为投影"}],
+     "meta_red_lines": [
+      {"id": "RP", "name": "本源/投影区分", "content": "DC 是本源，C₁₂/R₁₂/Doz 是投影"},
+      {"id": "NQ", "name": "不忠实商禁止", "content": "非忠实商非合法同余关系"},
+      {"id": "ST", "name": "术/定理区分", "content": "术是怎么做，定理是什么"}]},
+    {"id": "L1", "name": "基座层", "components": [
+      {"id": "Trit", "name": "Trit（GF(3) 实现）", "details": ["T₀, T₁, T₂ : Trit", "_⊕_（叠加，9-case）", "_⊗_（干涉，9-case）"]},
+      {"id": "FAb", "name": "FAb(n) 自由阿贝尔群", "details": ["FAb n = Fin n → Trit", "zeroᶠ/_+ᶠ_/negᶠ", "群律"]},
+      {"id": "SunyiBase", "name": "损益基元", "details": ["sun(n) = 2n/3", "yi(n) = 4n/3"]},
+      {"id": "IntArith", "name": "Cubical ℤ 算术补丁", "details": ["sucInt", "pos-+pos", "negDistrib", "sucℤ-minus", "minus-assoc", "minus-shift"]},
+      {"id": "Fin3", "name": "有限和", "details": ["sum3 : (Fin 3 → ℤ) → ℤ", "sum9-swap", "+interchange"]}]},
+    {"id": "L2", "name": "结构层", "components": [
+      {"id": "Laurent", "name": "Laurent 多项式环——两路线", "routes": [
+        {"route": "函数表示（本源）", "type": "Σ (ℤ → ℤ) IsFinSupp", "status": "LaurentCubical"},
+        {"route": "List 表示（投影）", "type": "List (ℤ × ℤ)", "status": "LaurentBase/Canon/Norm/Sort/Sums"}],
+       "core": ["sums n f = fst f n", "canon-sums-unique = funExt h"]},
+      {"id": "GF-Tower", "name": "有限域塔", "details": ["GF(3)→GF(9)→GF(27)→GF(81)→GF(243)→GF(729)→GF729Field", "Frobenius σ(x) = x³"]},
+      {"id": "Hensel-Tower", "name": "Hensel 塔", "details": ["Z/3^kZ：mod 3→…→129140163", "Z/2^kZ：mod 65536（独立）", "irred3/irred2/div-pow2/SovereignLCMRoots 8 根"]}]},
+    {"id": "L3", "name": "合成层", "pillars": [
+      {"id": "CRT", "name": "CRT 波系统", "details": ["T₁ = 65536 = 2¹⁶", "T₂ = 177147 = 3¹¹", "M = T₁·T₂", "POLAR = 144", "TORUS = 46", "SOVEREIGN_LCM"], "theorem": "分水岭定理：π₁ᵈ(Gcmp)=2 元幂等幺半群；π₁ᵈ(Gskel)≅(ℕ,+)；¬MonoidIso"},
+      {"id": "Hensel-Lift", "name": "Hensel 提升调度", "details": ["G1-G5：GenericStep/RootCount/GenericCRT/HenselLift/实例化"]},
+      {"id": "FAb-Quotient", "name": "FAb 商群与 HIT 商", "details": ["FreeAbQuotient", "FreeAbImEquiv", "f₀ 同构", "Cubical HIT SetQuotient"]}]},
+    {"id": "L4", "name": "应用层", "chains": [
+      {"id": "Morse", "name": "Morse 同调线", "flow": "FormanMinimal→DiscreteMorseGeneral→MorseRoute→MorseCoeffRoute→MorseChain→MorseCriticalHomology→MorseStrongCritical→MorseHomologyIso│Collapse│CollapseToMorse",
+       "progress": [{"node": "M1 临界链群", "status": "✅"}, {"node": "M2 routeEnum", "status": "✅ 88f6d83d"}, {"node": "M3 ∂²=0", "status": "pending（下一重点）"}, {"node": "M4 链映射", "status": "✅"}, {"node": "M5 Ψ", "status": "pending"}, {"node": "M6 链同伦", "status": "pending"}, {"node": "M7a 商型同调", "status": "✅ 07a1859d"}, {"node": "M7b 同构", "status": "pending"}]},
+      {"id": "Hodge", "name": "Hodge 线", "flow": "ChainComplex→Hodge│HodgeTetra│KleinHodge│TorusHodge→FreeAb 族→EckmannGF3/EckmannNonSplitting"},
+      {"id": "Burau-KacMoody", "name": "Burau/Kac-Moody 线（本会话主线）", "flow": "LaurentCubical→BurauCubical→BurauRep→BurauInverse→BraidGroup(record B3)→CartanMatrix→KacMoodyAlgebra→TrivialRepUnfaithful", "B3_record": ["σ₁ σ₂", "braid-rel", "σ₁-inv σ₂-inv"]},
+      {"id": "Postnikov", "name": "Postnikov 线（P2.2c）", "progress": [{"node": "πₙ-B1（Sⁿᵈ 双视图+n=1 锚点）", "status": "✅"}, {"node": "πₙ-B2（C→A 桥+柱体）", "status": "✅"}, {"node": "πₙ-B3", "status": "pending"}, {"node": "(a2) 组合实现", "status": "✅"}, {"node": "(d) v2 分离路线（分水岭定理）", "status": "✅"}, {"node": "(a3) KnGluing", "status": "✅"}, {"node": "(b3) 设计文档", "status": "✅"}]}]}
+  ],
+  "core_assets": [
+    {"name": "分水岭定理", "level": "A", "receipt": "e3c0b2c0"},
+    {"name": "Gskel 完全分类", "level": "A", "receipt": "703f9cb2"},
+    {"name": "GAP-M2 routeEnum", "level": "A", "receipt": "88f6d83d"},
+    {"name": "GAP-M7a 商型同调", "level": "A", "receipt": "07a1859d"},
+    {"name": "πₙ-B1/B2", "level": "A", "receipt": "ebd78a1e / 7fe259c8"},
+    {"name": "UniformProb 三定理", "level": "A", "receipt": "ffda3b74"},
+    {"name": "IntByParts Abel 全形", "level": "A", "receipt": "5820d115"},
+    {"name": "FiniteOrbitObs 翻案", "level": "A", "receipt": "e28604c0"}],
+  "statement_wrong": [
+    {"id": 1, "case": "逆律（nil 孤立点）", "disposition": "反证定谳 + 修正案 A"},
+    {"id": 2, "case": "附⑤（d）v2", "disposition": "v2 分离路线"},
+    {"id": "3-5", "case": "值范数 ×3", "disposition": "修正"},
+    {"id": "累计", "case": "+5", "disposition": "编译器三度拦截"}],
+  "discipline_dividends": {"exemption": "豁免正解 13/13 零豁免", "veto_delivery": "否决型交付 ×2", "prover_limits": "#51-53", "compiler_interception": "编译器三度拦截假声称"},
+  "dependencies": ["L0→L1 Trit→GF(3)→GF(9)", "L2 Laurent 函数表示→Mat3→BurauCubical", "L3 分水岭定理│CRT│Hensel", "L4 Morse│Hodge│Postnikov│Burau/Kac-Moody"],
+  "pending_queue": [
+    {"item": "GAP-M3 ∂²=0", "nature": "Morse 线关键", "priority": "高"},
+    {"item": "πₙ-B3", "nature": "Postnikov 顺推", "priority": "中高"},
+    {"item": "修正案 A", "nature": "T1/T2/T3 触发", "priority": "延后"},
+    {"item": "B001 迁移试点", "nature": "校准批", "priority": "中"},
+    {"item": "QUALITY batch1-8", "nature": "质量审计", "priority": "可并行"},
+    {"item": "Gskel 完全推广（非 two-chain）", "nature": "分离路线推广", "priority": "低"}]
+}
