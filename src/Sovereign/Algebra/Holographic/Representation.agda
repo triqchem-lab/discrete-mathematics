@@ -19,6 +19,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
+open import Sovereign.Algebra.MyopiaRisk using (a4-order)
 
 --------------------------------------------------------------------------------
 -- §1. 表示论接口
@@ -56,7 +57,8 @@ open import Sovereign.Structology.A4Representations
   using (A4Irrep; V3; V1; V1'; V1''; dim; theorem-dimension-sum-of-squares)
 
 -- Burnside for A₄
-a4-order : ℕ; a4-order = 12
+-- a4-order 提共享（2026-10-11 判重批组1）：canonical = MyopiaRisk §8a
+-- 本地副本已删
 a4-burnside : dim V3 * dim V3 + dim V1 * dim V1 + dim V1' * dim V1' + dim V1'' * dim V1'' ≡ a4-order
 a4-burnside = theorem-dimension-sum-of-squares
 

@@ -10,6 +10,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Algebra.GF9 using (_+gf9_)
 open import Sovereign.Structology.A4Group using (A4)
+open import Sovereign.Algebra.MyopiaRisk using (a4-order)
 
 open import Sovereign.Algebra.TriCycGraph using (TriCycGraph)
 open import Sovereign.Structology.ArthurMagicSquare
@@ -58,8 +59,8 @@ fourTCGtoMatrix wg0 wg1 wg2 wg3 i (suc (suc (suc zero))) = (wg0 zero) +gf9 ((wg1
 -- ══════════════════════════════════════════════════════════════
 
 -- A₄ 的阶
-a4-order : ℕ
-a4-order = 12
+-- a4-order 提共享（2026-10-11 判重批组1）：canonical = MyopiaRisk §8a（|A₄|=12 带确认引理）
+-- 本地副本已删，import 共享
 
 -- 不动点类型
 FixPoint : A4 → Set

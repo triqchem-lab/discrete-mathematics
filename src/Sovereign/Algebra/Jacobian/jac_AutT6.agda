@@ -90,6 +90,7 @@ frob-aut = I3 ⋊ σ  -- Frobenius 半线性部分, 线性部分为单位
 -- 该嵌入已由 LieDiscrete.agda 和 A4Group.agda 完全形式化.
 
 open import Sovereign.Structology.A4Group using (A4)
+open import Sovereign.Algebra.MyopiaRisk using (a4-order)
 open import Sovereign.Algebra.LieDiscrete
   using (LieGroupEvidence; lieGroupEvidence)
 
@@ -117,7 +118,8 @@ open import Sovereign.Algebra.LieDiscrete
 aut-order : ℕ  -- |Aut| 的上界
 aut-order = 729 ^ 729  -- |Sym(729)|, 极小上界 (实际 |Aut| 远小于此)
 
-a4-order : ℕ; a4-order = 12
+-- a4-order 提共享（2026-10-11 判重批组1）：canonical = MyopiaRisk §8a
+-- 本地副本已删
 a4-in-aut : ℕ; a4-in-aut = a4-order  -- |A₄| = 12 ⊂ |Aut|
 
 -- 所有有限群表示都在有限特征标表中
