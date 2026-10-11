@@ -1,8 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_WeilRH — Weil 有限域 RH · GF(3)/GF(9) 双实例独立形式化
+-- | WeilRH —（勘误：旧头注 jac_WeilRH，名≠模块名，已正名）— Weil 有限域 RH · GF(3)/GF(9) 双实例独立形式化
 -- 0 postulate
 
+-- 核心原则：
+--   1. Weil 有限域 RH 的 GF(3)/GF(9) 双实例独立形式化（点计数 e/t 对照）；
+--   2. 诚实边界：实例核对非 RH 全定理（连续统 RH 不在本框架射程）。
+-- 包含：e13、e13ok、t11、t21、e19、e23、e23ok、t12
 module Sovereign.Problem.Riemann.WeilRH where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)

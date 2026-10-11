@@ -1,8 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_PvsNP_Conjecture — 全息穿透猜想 · 形式化陈述
+-- | PvsNP_Conjecture —（勘误：旧头注 jac_PvsNP_Conjecture，名≠模块名，已正名）— 全息穿透猜想 · 形式化陈述
 -- 0 postulate (猜想本身未被证明, 仅陈述类型)
 
+-- 核心原则：
+--   1. 本件仅形式化陈述（record 陈述类型），猜想本身未被证明；
+--   2. 诚实边界：陈述层 ≠ 证明层——不得引作 P vs NP 的任何解答。
+-- 包含：record PvsNPConjecture、N、status
 module Sovereign.Problem.PvsNP.PvsNP_Conjecture where
 
 open import Data.Nat using (ℕ)

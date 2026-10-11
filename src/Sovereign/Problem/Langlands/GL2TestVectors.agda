@@ -38,6 +38,11 @@
 --
 -- 相关模块: Langlands.agda (群阶公式, 共役类计数)
 
+-- 核心原则：
+--   1. 群分类的穷举交叉验证（HFM 测试向量 test/GL2Verify.hs 对拍面）；
+--   2. Burnside 计数对账（totalClasses = burnsideSum）；
+--   3. 诚实边界：测试向量=实例核对，非一般定理。
+-- 包含：orderGL2、orderSL2、centerSize、orderGL2-ok、orderSL2-ok、orderSL2-factor-check、totalClasses、burnsideSum
 module Sovereign.Problem.Langlands.GL2TestVectors where
 
 open import Data.Nat using (ℕ; _+_; _*_)

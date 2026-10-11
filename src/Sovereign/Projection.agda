@@ -8,6 +8,10 @@
 --
 -- 律算宪法要求：识别电性文明的非法构造，并将其复位为高维离散拓扑的本源表达
 
+-- 核心原则：
+--   1. 投影链类型类（Category/ProjectionChain）+ 链合成结合律 chainAssoc；
+--   2. 本体论红线：投影层只作不变量/对照，禁止回流本源（08 号 §7）。
+-- 包含：data Category、data ProjectionChain、elec→root、root→struct、struct→coup、coup→density、_∘_、chainAssoc
 module Sovereign.Projection where
 
 open import Level using (Level; _⊔_)

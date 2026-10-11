@@ -1,8 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_GL2_Rep — GL₂(GF(9)) 表示论: Burnside + 共轭类
+-- | GL2_Rep —（勘误：旧头注 jac_GL2_Rep，名≠模块名，已正名）— GL₂(GF(9)) 表示论: Burnside + 共轭类
 -- 0 postulate
 
+-- 核心原则：
+--   1. GL₂(GF(9)) 阶数与中心的显式计算（q=9 代入，与 GL2TestVectors 穷举交叉互证）；
+--   2. 诚实边界：本件是 GL₂(GF(9)) 群论面实例，非 Langlands 纲领对应。
+-- 包含：order、center
 module Sovereign.Problem.Langlands.GL2_Rep where
 
 open import Data.Nat using (ℕ; _*_)

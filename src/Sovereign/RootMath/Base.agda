@@ -1,5 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.RootMath.Base
+-- 根数学 GF(3) 基础件：Trit 编码与运算
+--
+-- 核心原则：
+--   1. Trit ↔ ℕ 编码互逆（encodeDecodeInverse）+ GF(3) 加法 _+ᵍᶠ_；
+--   2. 根数学自有基件（与 Base/Trit 平行的独立小世界）。
+-- 包含：data Trit、tritToℕ、tritEncode、tritDecode、encodeDecodeInverse、tritEq、_+ᵍᶠ_、gf3Zero
 module Sovereign.RootMath.Base where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _<_; _≤_)

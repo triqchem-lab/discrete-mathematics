@@ -12,6 +12,10 @@
 -- - Gaussian: a + bi (i² = -1)
 -- - Sqrt3: a + b√3 (用于能隙相关计算)
 
+-- 核心原则：
+--   1. 代数复数（Gaussian/Sqrt3）以整数分量 record 表示——禁 Data.Complex（宪法）；
+--   2. 范数/共轭为代数运算非连续统模长。
+-- 包含：record Gaussian、i、_+ᵍ_、_-ᵍ_、_*ᵍ_、conjᵍ、normSqᵍ、record Sqrt3
 module Sovereign.RootMath.AlgebraicComplex where
 
 open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_)

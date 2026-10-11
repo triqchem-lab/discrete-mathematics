@@ -8,6 +8,10 @@
 -- 2. 本模块通过引用标准库已证明引理，消除所有 postulate。
 -- 3. 标准库引理视为"几何审查通过"的信任基座。
 
+-- 核心原则：
+--   1. 算术引理面（div-mod 唯一性、GF(3) 周期性、144 mod 3≡0 等）；
+--   2. trusted 系命名如实标注信任面（*-trusted 非内核全证）。
+-- 包含：+-mod-verified、+-mod-trusted、m*n%n≡0-trusted、mod-<-trusted、div-mod-theorem、div-mod-uniqueness、gf3-periodicity、144-mod-3≡0
 module Sovereign.RootMath.Arithmetic where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; _<_)
