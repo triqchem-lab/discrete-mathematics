@@ -92,9 +92,9 @@
 - **顶层签名 (7)**: `u`, `v`, `Δ`, `harmonic-u`, `harmonic-v`, `n`, `not-harmonic-n`
 - **质量**: `refl`×19；无 postulate / 无 hole
 
-## `src/Sovereign/Analysis/DiscreteFourier.agda`
+## `src/Sovereign/Application/DiscreteFourier.agda`
 
-- **module**: `Sovereign.Analysis.DiscreteFourier`
+- **module**: `Sovereign.Application.DiscreteFourier`
 - **行数**: 53（代码 26 / 注释 14）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
@@ -105,9 +105,9 @@
 - **顶层签名 (7)**: `dft-apply`, `const-vec`, `dft-const`, `e0`, `dft-e0-0`, `dft-e0-1`, `dft-e0-2`
 - **质量**: `refl`×5；无 postulate / 无 hole
 
-## `src/Sovereign/Analysis/DiscreteIntegralEq.agda`
+## `src/Sovereign/Application/DiscreteIntegralEq.agda`
 
-- **module**: `Sovereign.Analysis.DiscreteIntegralEq`
+- **module**: `Sovereign.Application.DiscreteIntegralEq`
 - **行数**: 50（代码 17 / 注释 20）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
@@ -119,9 +119,9 @@
 - **顶层签名 (5)**: `neg`, `solve-diag`, `v-solve`, `det-IλK₁`, `det-IλK₂`
 - **质量**: `refl`×5；无 postulate / 无 hole
 
-## `src/Sovereign/Analysis/DiscreteMorseTheory.agda`
+## `src/Sovereign/Application/DiscreteMorseTheory.agda`
 
-- **module**: `Sovereign.Analysis.DiscreteMorseTheory`
+- **module**: `Sovereign.Application.DiscreteMorseTheory`
 - **行数**: 43（代码 17 / 注释 15）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
@@ -132,9 +132,9 @@
 - **顶层签名 (5)**: `f`, `grad01`, `grad21`, `morse0`, `morse1`
 - **质量**: `refl`×5；无 postulate / 无 hole
 
-## `src/Sovereign/Analysis/DiscretePotential.agda`
+## `src/Sovereign/Application/DiscretePotential.agda`
 
-- **module**: `Sovereign.Analysis.DiscretePotential`
+- **module**: `Sovereign.Application.DiscretePotential`
 - **行数**: 37（代码 15 / 注释 12）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
@@ -145,9 +145,9 @@
 - **顶层签名 (5)**: `laplace3`, `laplace-const`, `laplace-linear`, `laplace-quadratic`, `harmonic-const`
 - **质量**: `refl`×5；无 postulate / 无 hole
 
-## `src/Sovereign/Analysis/DiscreteProbability.agda`
+## `src/Sovereign/Application/DiscreteProbability.agda`
 
-- **module**: `Sovereign.Analysis.DiscreteProbability`
+- **module**: `Sovereign.Application.DiscreteProbability`
 - **行数**: 56（代码 23 / 注释 19）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
@@ -274,13 +274,13 @@
 - **顶层签名 (9)**: `fa-framework-2`, `fa-framework`, `FADiscreteCarrier`, `fa-witness`, `fa-completeness-bridge`, `riesz-2`, `nondeg-2`, `norm-2-two-valued`, `hb-collapse-2`
 - **质量**: `refl`×1；无 postulate / 无 hole
 
-## `src/Sovereign/Analysis/GoodnessOfFitGF3.agda`
+## `src/Sovereign/Application/GoodnessOfFitGF3.agda`
 
-- **module**: `Sovereign.Analysis.GoodnessOfFitGF3`
+- **module**: `Sovereign.Application.GoodnessOfFitGF3`
 - **行数**: 88（代码 31 / 注释 38）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Analysis.GoodnessOfFitGF3
+  - | Sovereign.Application.GoodnessOfFitGF3
   - 62-20 拟合优度检验 — 幻方识别的 χ² 零检验 (0 postulate)
   - 骨架中的 ℚ 除法与序改用 ℕ 分子形式 (更诚实, 无实数分析):
   - χ² = Σ (Oᵢ−Eᵢ)²/Eᵢ, Eᵢ = 15 恒定 — 零检验 ⟺ 分子 Σ (Oᵢ−15)² = 0
@@ -393,13 +393,13 @@
 - **顶层签名 (28)**: `≤₃-refl`, `≤₃-trans`, `≤₃-antisym`, `≤₃-total`, `NormEquivalent`, `T₁≢T₀`, `T₂≢T₀`, `abs-gf3-multiplicative`, `abs-gf3-two-valued`, `sq-eq-abs`, `sq-negate`, `scalar-T₀-zero`, `Q-negate-invariant`, `Q-homogeneous`, `max-abs-scale`, `discrete-norm-homogeneous`, `OnUnitSphere`, `Q-definite-1`, `Q-on-sphere-1`, `Q-definite-2`, `Q-on-sphere-2`, `norm-equiv-1`, `norm-equiv-2`, `Q-not-norm-3`, `norm-equiv-fails-3`, `all-norms-topologically-equivalent`, `sup-Q-topo-equiv-1`, `sup-Q-topo-equiv-2`
 - **质量**: `refl`×53；无 postulate / 无 hole
 
-## `src/Sovereign/Analysis/RandomMatrixMoments.agda`
+## `src/Sovereign/Application/RandomMatrixMoments.agda`
 
-- **module**: `Sovereign.Analysis.RandomMatrixMoments`
+- **module**: `Sovereign.Application.RandomMatrixMoments`
 - **行数**: 159（代码 96 / 注释 38）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Analysis.RandomMatrixMoments
+  - | Sovereign.Application.RandomMatrixMoments
   - 62 统计学 (62-05/06/07 诚实版) — 对称矩阵系综的精确迹矩 (0 postulate)
   - 对"离散 Catalan 定理"的**计算验证后判定** (验证脚本: 全枚举):
   - ✓ 奇矩精确为零 (平衡二值系综 {±1} 中心化)
@@ -461,13 +461,13 @@
 - **顶层签名 (22)**: `coord0`, `coord1`, `sum-func`, `coord0-linear`, `coord1-linear`, `sum-func-linear`, `test-riesz-coord0`, `test-riesz-sum`, `test-riesz-coord1`, `test-coord0-repr`, `test-sum-repr`, `test-coord1-repr`, `test-inner-e0-e0`, `test-inner-e1-e1`, `test-inner-e0-e1`, `test-inner-sum-sum`, `test-inner-orth`, `riesz-unique-2`, `coord0-exists`, `sum-exists`, `coord0-witness-is-e0`, `sum-witness-is-ones`
 - **质量**: `refl`×16；无 postulate / 无 hole
 
-## `src/Sovereign/Analysis/UniformProb.agda`
+## `src/Sovereign/Application/UniformProb.agda`
 
-- **module**: `Sovereign.Analysis.UniformProb`
+- **module**: `Sovereign.Application.UniformProb`
 - **行数**: 38（代码 12 / 注释 13）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Analysis.UniformProb
+  - | Sovereign.Application.UniformProb
   - 60 概率论补强 — GF(3)² 均匀概率空间 (0 postulate)
   - Ω = Trit × Trit (9 点, 均匀测度): P(A) = |A|/9 — 计数承载的
   - 公理与独立性以 ℕ 计数 + 交叉相乘 refl 呈现 (无分数浮点)

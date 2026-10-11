@@ -1,5 +1,5 @@
 id: negDistrib
-module: Sovereign.Cubical.IntArith
+module: Sovereign.Base.IntArith
 statement: - (x + y) ≡ (- x) + (- y)（cubical ℤ 负元对加法分配）
 level: A
 evidence:

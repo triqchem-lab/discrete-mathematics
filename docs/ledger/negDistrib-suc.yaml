@@ -1,5 +1,5 @@
 id: negDistrib-suc
-module: Sovereign.Cubical.IntArith
+module: Sovereign.Base.IntArith
 statement: -_ (negsuc a + pos (suc b)) ≡ (- negsuc a) + (- pos (suc b))
 level: A
 evidence:

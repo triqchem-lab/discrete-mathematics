@@ -237,19 +237,19 @@ import Sovereign.Structology.T6 as T6
 import Sovereign.Structology.Winding as W
 import Sovereign.Topology.MorseCoeffRoute
 import Sovereign.Trust.TwoViewPlain as Plain
-import Sovereign.Trust.TwoViewRewritten as Rew
+import Sovereign.Base.TwoViewRewritten as Rew
 import Tactic.RingSolver as Solver using (solve-macro; solve-∀-macro)
 import Tactic.RingSolver.Core.AlmostCommutativeRing as ACR
 import Tactic.RingSolver.NonReflective as NR
-Sovereign.Trust.TwoViewRewritten
-Sovereign.Problem.Sqrt2.Sqrt2Irrational
-Sovereign.Structology.T6Rewrite
-Sovereign.Structology.XuanwuAbsorptionRewrite
+Sovereign.Base.TwoViewRewritten
+Sovereign.Application.Sqrt2Irrational
+Sovereign.Synthesis.T6Rewrite
+Sovereign.Synthesis.XuanwuAbsorptionRewrite
 Sovereign.Algebra.ProbeArith
 Sovereign.Algebra._ProbeAssoc
 BubbleLemmas
-Sovereign.Cubical.IntArith
-Sovereign.Cubical.Fin3
+Sovereign.Base.IntArith
+Sovereign.Base.Fin3
 Probe9
 ProbeA
 ProbeAssoc
@@ -259,8 +259,8 @@ ProbeD
 ProbeF
 ProbeG
 ProbeJ
-Sovereign.Cubical.Fin3Sum9
-Sovereign.HoTT.DiscreteCubical
+Sovereign.Base.Fin3Sum9
+Sovereign.Synthesis.DiscreteCubical
 Sovereign.Topology.BarceloAHomotopy
 Sovereign.Base.Lü
 Sovereign.Algebra.BurauFaithful
@@ -306,9 +306,9 @@ Sovereign.Analysis.ApproxBounds
 Sovereign.Analysis.DiscreteSpecialFunctions
 Sovereign.Analysis.DiscreteVariational
 Sovereign.Analysis.PairEnc
-Sovereign.Analysis.RandomMatrixMoments
+Sovereign.Application.RandomMatrixMoments
 Sovereign.Analysis.SpecialValues
-Sovereign.Applied.AcousticsDiscrete
+Sovereign.Application.AcousticsDiscrete
 Sovereign.Applied.PacketShiftArithmetic
 Sovereign.Applied.ThermoExtended
 ProbeH
@@ -392,7 +392,7 @@ Sovereign.Algebra.SpiralCycle
 Sovereign.Algebra.SunyiBase
 Sovereign.Analysis.FiniteDynamics
 Sovereign.Analysis.Finiteness.Pigeonhole
-Sovereign.Analysis.GoodnessOfFitGF3
+Sovereign.Application.GoodnessOfFitGF3
 Sovereign.RootMath.DigitalRoot
 Sovereign.Structology.IhC60Vibration
 Sovereign.Structology.Winding
@@ -497,15 +497,15 @@ Sovereign.Algebra.VortexConnections
 Sovereign.Analysis.DifferenceEq
 Sovereign.Analysis.DiscreteApprox
 Sovereign.Analysis.DiscreteCR
-Sovereign.Analysis.DiscreteIntegralEq
-Sovereign.Analysis.DiscreteMorseTheory
-Sovereign.Analysis.DiscretePotential
-Sovereign.Analysis.DiscreteProbability
+Sovereign.Application.DiscreteIntegralEq
+Sovereign.Application.DiscreteMorseTheory
+Sovereign.Application.DiscretePotential
+Sovereign.Application.DiscreteProbability
 Sovereign.Analysis.DiscreteSeveralComplex
 Sovereign.Analysis.DiscreteVariation
 Sovereign.Analysis.FiniteProbability
-Sovereign.Analysis.UniformProb
-Sovereign.Applied.BiologyDiscrete
+Sovereign.Application.UniformProb
+Sovereign.Application.BiologyDiscrete
 Sovereign.Applied.DomainProofs
 Sovereign.Applied.FluidDiscrete
 Sovereign.Applied.GeneticsExtended
@@ -573,7 +573,7 @@ Sovereign.Algebra.RootCountClassify
 Sovereign.Algebra.FixedPointQ16
 Sovereign.Algebra.SunyiChain
 Sovereign.Algebra.TianYuan
-Sovereign.Analysis.FiniteOrbitObs
+Sovereign.Application.FiniteOrbitObs
 Sovereign.Analysis.GaoYangRigidLock
 Sovereign.Applied.ControlTheory
 Sovereign.Applied.EconomicsDiscrete
@@ -675,7 +675,7 @@ Sovereign.Algebra.UniversalAlgebra
 Sovereign.Algebra.ZeroCrossing
 Sovereign.Analysis.FiniteInnerProduct
 Sovereign.Analysis.LinearFunctionalDiscrete
-Sovereign.Applied.AlgebraChainDeep
+Sovereign.Application.AlgebraChainDeep
 Sovereign.Applied.LeibnizGF9
 Sovereign.Coding.BCHGF9
 Sovereign.Coding.ExpSquaring
@@ -935,7 +935,7 @@ Sovereign.Analysis.HilbertDiscrete
 Sovereign.Applied.DeepAlgebraProofs
 Sovereign.Physics.QuantumFieldAstrophysics
 Sovereign.Physics.QuantumMotor
-Sovereign.Analysis.DiscreteFourier
+Sovereign.Application.DiscreteFourier
 Sovereign.Problem.Hodge.EckmannNonSplitting
 Sovereign.Problem.Hodge.GraphMorseInstance
 Sovereign.Problem.Hodge.Hodge

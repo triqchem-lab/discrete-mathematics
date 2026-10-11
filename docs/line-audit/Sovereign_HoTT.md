@@ -16,7 +16,7 @@
   - 2. 纤维 (Fiber)：30 个 Trit 构成的主权状态空间 (Sovereign Fiber)。
   - 3. 全空间 (Total Space)：底流形与纤维的直积（局部平凡化）。
   - 4. 截面 (Section)：定义在底流形上的主权状态场。
-- **导入 (8)**: `Sovereign.HoTT.DiscreteCubical`, `Data.Nat`, `Data.Vec`, `Data.Fin`, `Data.Product`, `Sovereign.Coding.Trit`, `Sovereign.HoTT.Geometry`, `Cubical.Foundations.Equiv`
+- **导入 (8)**: `Sovereign.Synthesis.DiscreteCubical`, `Data.Nat`, `Data.Vec`, `Data.Fin`, `Data.Product`, `Sovereign.Coding.Trit`, `Sovereign.HoTT.Geometry`, `Cubical.Foundations.Equiv`
 - **顶层签名 (6)**: `BaseSpace`, `Fiber`, `TotalSpace`, `projection`, `Section`, `localTriviality`
 - **质量**: `refl`×0；无 postulate / 无 hole
 
@@ -166,7 +166,7 @@
   - 联络不再是 `postulate`。我们利用 Sovereign.Coding.Trit 中的 GF(3) 结构
   - 显式定义离散平行移动 (Parallel Transport)。
   - 这使得高维几何与底层代码实现了代数上的统一。
-- **导入 (8)**: `Sovereign.HoTT.DiscreteCubical`, `Data.Nat`, `Data.Fin`, `Data.Vec`, `Sovereign.HoTT.Bundle`, `Sovereign.HoTT.Geometry`, `Sovereign.Coding.Trit`, `Cubical.Foundations.Function`
+- **导入 (8)**: `Sovereign.Synthesis.DiscreteCubical`, `Data.Nat`, `Data.Fin`, `Data.Vec`, `Sovereign.HoTT.Bundle`, `Sovereign.HoTT.Geometry`, `Sovereign.Coding.Trit`, `Cubical.Foundations.Function`
 - **顶层签名 (17)**: `iterate`, `TransportPolar`, `TransportPolarLoss`, `TransportToroidal`, `HolonomyPolar`, `iter-func`, `map-id`, `map-iter`, `⊕-assoc`, `T₁-cubed-id`, `iterate-cong`, `iterate-id`, `iter-func-eq-iterate`, `iterate3-T₁-id`, `step-144-is-id`, `HolonomyPolarIsId`, `ZhonglvPhaseSyncBundle`
 - **质量**: `refl`×41；无 postulate / 无 hole
 
@@ -187,13 +187,13 @@
 - **顶层签名 (13)**: `CRTPhase`, `shift`, `shift-additive`, `shift-FULL_TOUR-id`, `DiscretePhase`, `iterTransp`, `norm`, `fullTour-alignment`, `iterTransp-additive`, `boundedComputation`, `discreteKan`, `windingP`, `winding-balance`
 - **质量**: `refl`×2；⚠️ 2 postulate
 
-## `src/Sovereign/HoTT/DiscreteCubical.agda`
+## `src/Sovereign/Synthesis/DiscreteCubical.agda`
 
-- **module**: `Sovereign.HoTT.DiscreteCubical`
+- **module**: `Sovereign.Synthesis.DiscreteCubical`
 - **行数**: 35（代码 6 / 注释 20）
 - **OPTIONS**: `--rewriting --cubical --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.HoTT.DiscreteCubical
+  - | Sovereign.Synthesis.DiscreteCubical
   - 隔离层：集中管理未信任的 Cubical Agda 基础库
   - 宪法原则：
   - 1. Cubical.Foundations.Prelude 假设连续同伦类型论，初始信任度 0。
@@ -214,7 +214,7 @@
   - 1. Δ=√3 不是无理数，而是 **C3 群生成元作用下的代数不变量**。
   - 2. 它源于相生 (+1) 与相克 (ω) 在复平面上的离散距离。
   - 3. 时间与空间通过 **Hermite 度量** 统一：时间每步进 1（极向），空间必产生弦长 √3（环向）。
-- **导入 (5)**: `Data.Nat`, `Data.Integer`, `Data.Rational`, `Relation.Binary.PropositionalEquality`, `Sovereign.HoTT.DiscreteCubical`
+- **导入 (5)**: `Data.Nat`, `Data.Integer`, `Data.Rational`, `Relation.Binary.PropositionalEquality`, `Sovereign.Synthesis.DiscreteCubical`
 - **record 类型**: `ComplexAmplitude`, `EnergyGap`
 - **顶层签名 (9)**: `Sheng`, `Ke`, `NormSq`, `Displacement`, `GapSqEquals3`, `Gap`, `SpacetimeStep`, `UnitSpacetimeStep`, `isTopologicalBarrier`
 - **质量**: `refl`×6；无 postulate / 无 hole

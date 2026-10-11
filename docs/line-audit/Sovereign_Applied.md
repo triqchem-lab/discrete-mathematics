@@ -3,13 +3,13 @@
 共 40 个模块。
 
 
-## `src/Sovereign/Applied/AcousticsDiscrete.agda`
+## `src/Sovereign/Application/AcousticsDiscrete.agda`
 
-- **module**: `Sovereign.Applied.AcousticsDiscrete`
+- **module**: `Sovereign.Application.AcousticsDiscrete`
 - **行数**: 57（代码 16 / 注释 29）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Applied.AcousticsDiscrete
+  - | Sovereign.Application.AcousticsDiscrete
   - 应用层：离散声学 (十二律与频率比)
   - 层级: 应用数学 (电性文明投影)
   - GF(3) 合法身份: 模 3 整数算术
@@ -21,13 +21,13 @@
 - **顶层签名 (6)**: `twelve-lu-count`, `twelve-lu-as-a4`, `san-shiyi`, `er-shiliu`, `zhonglv-product`, `huangzhong-length`
 - **质量**: `refl`×7；无 postulate / 无 hole
 
-## `src/Sovereign/Applied/AlgebraChainDeep.agda`
+## `src/Sovereign/Application/AlgebraChainDeep.agda`
 
-- **module**: `Sovereign.Applied.AlgebraChainDeep`
+- **module**: `Sovereign.Application.AlgebraChainDeep`
 - **行数**: 331（代码 180 / 注释 106）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:
-  - | Sovereign.Applied.AlgebraChainDeep
+  - | Sovereign.Application.AlgebraChainDeep
   - 代数链深层证明: GF(9) 域性质强化 + 4320 组合闭包
   - B16: GF(9) 乘法逆元完整验证 (8 case: x·x⁻¹=1)
   - B17: GF(9) Frobenius σ(xy)=σ(x)σ(y) 完整验证
@@ -40,9 +40,9 @@
 - **顶层签名 (26)**: `gf9-inv-complete`, `inv-s1`, `inv-s2`, `inv-sα`, `inv-s2α`, `inv-s1α`, `inv-s12α`, `inv-s21α`, `inv-s22α`, `gf9-inv-involutive`, `gf9-frobenius-mult`, `frobenius-α²-witness`, `norm-multiplicative`, `norm-nonzero-s1`, `norm-nonzero-s2`, `norm-nonzero-sα`, `norm-nonzero-s2α`, `norm-nonzero-s1α`, `norm-nonzero-s12α`, `norm-nonzero-s21α`, `norm-nonzero-s22α`, `verify-4374∸54`, `verify-54`, `verify-729`, `combo-4320-prime`, `algebra-chain-deep-complete`
 - **质量**: `refl`×113；无 postulate / 无 hole
 
-## `src/Sovereign/Applied/BiologyDiscrete.agda`
+## `src/Sovereign/Application/BiologyDiscrete.agda`
 
-- **module**: `Sovereign.Applied.BiologyDiscrete`
+- **module**: `Sovereign.Application.BiologyDiscrete`
 - **行数**: 35（代码 18 / 注释 8）
 - **OPTIONS**: `--rewriting --guardedness`
 - **头部注释（数学背景）**:

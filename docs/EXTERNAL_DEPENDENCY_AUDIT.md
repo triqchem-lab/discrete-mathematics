@@ -102,7 +102,7 @@ HoTT/Equivalence.agda
   - `+-mod`: 模运算分配律 (基于 GF(3) 格点)
   - `m*n%m≡0`: 乘法模零律 (基于离散环面)
   - `mod-<`: 模小于除数 (基于缠绕数)
-- [ ] 在 `Sovereign.HoTT.DiscreteCubical` 中重新定义离散 Path 类型。
+- [ ] 在 `Sovereign.Synthesis.DiscreteCubical` 中重新定义离散 Path 类型。
 - [ ] 移除 `Data.Complex` 引用，使用代数数替代。
 
 ### 阶段 3: 依赖替换
