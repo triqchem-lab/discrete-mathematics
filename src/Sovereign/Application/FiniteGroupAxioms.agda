@@ -30,7 +30,7 @@ open import Sovereign.Algebra.GF9
   using (GF9; GF3; _*gf9_; _+gf9_; gf9-one; gf9-zero; galoisNorm; galoisConjugate;
          alpha; alpha-squared; alpha-powers-4; norm-mul; galoisConjugate²;
          embed-gf3; norm-conj-mul; frobenius-cube; sigma-fixed-iff-gf3)
-open import Sovereign.Physics.DiscreteActionPrinciple
+open import Sovereign.Application.DiscreteActionPrinciple
   using (GaugeGroup; e; gα; gα²; gα³; _*g_; g-inv; embedG;
          g-assoc; g-identityˡ; g-identityʳ; g-inverseˡ; g-inverseʳ;
          embedG-hom; g-norm-is-1)

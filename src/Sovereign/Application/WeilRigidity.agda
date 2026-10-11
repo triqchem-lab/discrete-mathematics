@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Riemann.WeilRigidity
+-- | Sovereign.Application.WeilRigidity
 -- 有限域 Riemann 假说的刚性形式：三条显式椭圆曲线的 Weil 定理完整形式化
 --
 -- 数学背景：
@@ -23,7 +23,7 @@
 --   §3 Eisenstein 刚性:  特征值 ∈ ℤ[ω]，α+conj(α)=t，α·conj(α)=q，
 --                       特征方程 α²+q = t·α，共轭对 / 实分裂分类
 
-module Sovereign.Problem.Riemann.WeilRigidity where
+module Sovereign.Application.WeilRigidity where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Nat using (ℕ; _≤_; z≤n; s≤s) renaming (_*_ to _*ℕ_)

@@ -33,7 +33,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144 using (MerkabaCells)
-open import Sovereign.Physics.LightCone using (LCSide; In; Out; Bdy; weight; boundaryOrbitCount)
+open import Sovereign.Application.LightCone using (LCSide; In; Out; Bdy; weight; boundaryOrbitCount)
 
 --------------------------------------------------------------------------------
 -- S1. 4320D 两种分解的等价性
@@ -231,7 +231,7 @@ all-anchors-closed = refl , refl , refl , refl
 --   GF9/(C3xC2) 轨道数 = 2  (Burnside: 12/6)
 --   GF9^3/G 轨道数 = 14   (Burnside: 756/54)
 --
--- 光锥边界公理系统已由 Sovereign.Physics.LightCone 形式化:
+-- 光锥边界公理系统已由 Sovereign.Application.LightCone 形式化:
 --   LCSide = In | Out | Bdy (构造性 data)
 --   weight(In)=3, weight(Out)=1, weight(Bdy)=7 (构造性函数)
 --   1:3 信息比: weight(Out)*3 = weight(In) (refl)

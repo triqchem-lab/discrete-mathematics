@@ -40,7 +40,7 @@ open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊗_; _⊕_; negate;
          ⊕-comm; ⊕-assoc; ⊕-identityˡ; ⊕-identityʳ;
          ⊗-comm; ⊗-identityˡ; ⊗-identityʳ; ⊗-zeroˡ; ⊗-zeroʳ)
-open import Sovereign.Problem.PvsNP.GF27Separation
+open import Sovereign.Application.GF27Separation
   using (GF27; zero27; one27; γ; _+27_; _*27_; cube27; γ3; γ9;
          root-gamma; root-gamma3; root-gamma9; gamma-cube; frobenius-cycle)
 open import Sovereign.Algebra.GF27 using ()

@@ -32,7 +32,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
 open import Sovereign.Algebra.GF9 using (GF9; _+gf9_; _*gf9_; alpha)
 
 -- 复用 DiscreteMaxwellGF9 的全部 (div9/curl9/div-curl-zero-GF9/div9-add/...)
-open import Sovereign.Physics.DiscreteMaxwellGF9
+open import Sovereign.Application.DiscreteMaxwellGF9
 
 --------------------------------------------------------------------------------
 -- §1. GF(9) 熵旋 (旋度部分 + 耗散部分)

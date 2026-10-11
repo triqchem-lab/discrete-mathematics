@@ -45,7 +45,7 @@ open import Sovereign.Synthesis.BinaryTetrahedralRepresentation
   using (z-two; z-neg-two; z-neg-one)
 open import Sovereign.Structology.SL23Trace
   using (trace-correct)
-open import Sovereign.Physics.DiscreteActionPrinciple
+open import Sovereign.Application.DiscreteActionPrinciple
   using (GaugeGroup; e; gα; gα²; gα³; _*g_; g-inv; embedG;
          g-assoc; g-identityˡ; g-identityʳ; g-inverseˡ; g-inverseʳ;
          embedG-hom; g-norm-is-1)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.EntropySpinMicro
+-- | Sovereign.Application.EntropySpinMicro
 -- 渠玉芝量子熵理论的微观输运证明 (0 postulate, 无洞)
 --
 -- 目标: 补齐"微观数学证明"层 — 熵旋有序通道为何低损耗、阈值为何跨界、
@@ -17,7 +17,7 @@
 --      一般 {0,1} 场的整数量子化 (m ≡ −κ·N·1) 需 9 点布尔分支+分配律,
 --      留作开放项 — 诚实边界, 不写假证明。
 
-module Sovereign.Physics.EntropySpinMicro where
+module Sovereign.Application.EntropySpinMicro where
 
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Nat using (ℕ; suc; _≤_; s≤s) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_; _<_ to _<ℕ_)

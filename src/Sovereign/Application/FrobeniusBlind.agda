@@ -8,7 +8,7 @@
 --   全局: 81 → 27 像 (3-to-1), det(F*) = 0
 --   Frobenius σ(y) = y³ 是 GF(3)-线性核的来源
 
-module Sovereign.Problem.Riemann.FrobeniusBlind where
+module Sovereign.Application.FrobeniusBlind where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)

@@ -31,7 +31,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; _≢_; cong; cong₂)
 open import Sovereign.Foundation.Eisenstein
   using (Eisenstein; eis; 0ᵉ; 1ᵉ; 3ᵉ; _+ᵉ_; _*ᵉ_; conjᵉ)
-open import Sovereign.Problem.Riemann.WeilRigidity
+open import Sovereign.Application.WeilRigidity
   using (q3; t1-E1; t1-E2; t1-E6; t2-E1; t2-E2; t2-E6;
          alpha-E1; alpha-E2; alpha-E6; alpha-E1-9; alpha-E2-9;
          trace-sum-E1; trace-sum-E2; trace-sum-E6; trace-sum-E2-9;

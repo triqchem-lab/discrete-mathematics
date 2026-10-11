@@ -33,7 +33,7 @@ open import Sovereign.Algebra.GF9
          galoisConjugate²; norm-mul; *gf9-identityˡ)
 open import Sovereign.Physics.DiscreteEMField3D
   using (Point3D; GF3; ScalarField; VectorField; next; add3; neg3)
-open import Sovereign.Physics.ObservabilityAngle
+open import Sovereign.Application.ObservabilityAngle
   using (photon-structure-angle; eye-sampling-angle; visible-light-observable)
 
 --------------------------------------------------------------------------------

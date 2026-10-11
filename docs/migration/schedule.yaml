@@ -14,7 +14,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B002
     layer: 20-algebra
-    modules: [Sovereign.Topology.BarceloAHomotopy, Sovereign.Base.Lü, Sovereign.Algebra.BurauFaithful, Sovereign.Algebra.Matrix2, Sovereign.Base.Invariants, Sovereign.Arithmetic.Untrusted, Sovereign.Algebra.LaurentBase, Sovereign.Base.ZeroGeometry, Sovereign.Projection.Decimal.Axioms, Sovereign.Physics.Scaling, Sovereign.Infrastructure.DuodecOracle, Sovereign.Foundation.Layer]
+    modules: [Sovereign.Topology.BarceloAHomotopy, Sovereign.Base.Lü, Sovereign.Algebra.BurauFaithful, Sovereign.Algebra.Matrix2, Sovereign.Base.Invariants, Sovereign.Arithmetic.Untrusted, Sovereign.Algebra.LaurentBase, Sovereign.Base.ZeroGeometry, Sovereign.Projection.Decimal.Axioms, Sovereign.Application.Scaling, Sovereign.Infrastructure.DuodecOracle, Sovereign.Foundation.Layer]
     grade_C_count: 2
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B003
@@ -49,12 +49,12 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B009
     layer: 40-application
-    modules: [Sovereign.HoTT.M4CRTBridge, Sovereign.HoTT.Paths, Sovereign.HoTT.PhaseAlignment6624, Sovereign.HoTT.PhaseTransitionPaths, Sovereign.MetaStructure.WuXing, Sovereign.Physics.AlphaRelation, Sovereign.Physics.DataAnchors, Sovereign.Physics.DiscreteEMField3D, Sovereign.Physics.DiscreteEMField, Sovereign.Physics.ObservabilityAngle, Sovereign.Problem.ABC.L1Rad, Sovereign.Problem.BSD.BSD_General]
+    modules: [Sovereign.HoTT.M4CRTBridge, Sovereign.HoTT.Paths, Sovereign.HoTT.PhaseAlignment6624, Sovereign.HoTT.PhaseTransitionPaths, Sovereign.MetaStructure.WuXing, Sovereign.Physics.AlphaRelation, Sovereign.Physics.DataAnchors, Sovereign.Physics.DiscreteEMField3D, Sovereign.Physics.DiscreteEMField, Sovereign.Application.ObservabilityAngle, Sovereign.Problem.ABC.L1Rad, Sovereign.Problem.BSD.BSD_General]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B010
     layer: 40-application
-    modules: [Sovereign.Problem.BSD.BSD_GF243, Sovereign.Problem.BSD.BSD_GF27, Sovereign.Problem.BSD.BSD_GF81, Sovereign.Problem.BSD.BSD_L3, Sovereign.Problem.BSD.BSDTrace, Sovereign.Problem.Hodge.ChainComplex, Sovereign.Problem.Hodge.EulerChar, Sovereign.Problem.Hodge.Hodge_L3, Sovereign.Problem.Hodge.HodgeTetra, Sovereign.Problem.Hodge.KirchhoffZ, Sovereign.Problem.Hodge.KleinHodge, Sovereign.Problem.Hodge.TorusHodge]
+    modules: [Sovereign.Problem.BSD.BSD_GF243, Sovereign.Problem.BSD.BSD_GF27, Sovereign.Problem.BSD.BSD_GF81, Sovereign.Application.BSD_L3, Sovereign.Problem.BSD.BSDTrace, Sovereign.Problem.Hodge.ChainComplex, Sovereign.Problem.Hodge.EulerChar, Sovereign.Problem.Hodge.Hodge_L3, Sovereign.Problem.Hodge.HodgeTetra, Sovereign.Problem.Hodge.KirchhoffZ, Sovereign.Problem.Hodge.KleinHodge, Sovereign.Problem.Hodge.TorusHodge]
     grade_C_count: 1
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B011
@@ -124,7 +124,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B024
     layer: 40-application
-    modules: [Sovereign.Problem.NavierStokes.NSVortex, Sovereign.Problem.PvsNP.Algorithm, Sovereign.Problem.PvsNP.Complexity3, Sovereign.Problem.PvsNP.CubicRoot, Sovereign.Problem.PvsNP.CubicRootTest, Sovereign.Problem.PvsNP.GF27Separation, Sovereign.Problem.PvsNP.PvsNP_Separation, Sovereign.Problem.Riemann.AlgGeom, Sovereign.Problem.Riemann.FrobeniusBlind, Sovereign.Problem.YangMills.SU2_Embedding, Sovereign.Structology.DynamicMagicSquare, Sovereign.Structology.FiniteTopology]
+    modules: [Sovereign.Problem.NavierStokes.NSVortex, Sovereign.Problem.PvsNP.Algorithm, Sovereign.Problem.PvsNP.Complexity3, Sovereign.Problem.PvsNP.CubicRoot, Sovereign.Problem.PvsNP.CubicRootTest, Sovereign.Application.GF27Separation, Sovereign.Problem.PvsNP.PvsNP_Separation, Sovereign.Problem.Riemann.AlgGeom, Sovereign.Application.FrobeniusBlind, Sovereign.Problem.YangMills.SU2_Embedding, Sovereign.Structology.DynamicMagicSquare, Sovereign.Structology.FiniteTopology]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B025
@@ -134,7 +134,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B026
     layer: 40-application
-    modules: [Sovereign.Physics.DiscreteDiffOps, Sovereign.Physics.DiscreteEMCore, Sovereign.Physics.EntropySpinLaw, Sovereign.Problem.ABC.L1Disjunction, Sovereign.Problem.Hodge.EulerPoincareInstance, Sovereign.Problem.Hodge.FormanMorseInequality, Sovereign.Foundation.EnergyGap, Sovereign.Structology.DiscreteCalculus, Sovereign.Coupling.LossGain, Sovereign.Problem.Riemann.WeilRigidity, Sovereign.Algebra.Zomega, Sovereign.Structology.BinaryTetrahedralRepresentation]
+    modules: [Sovereign.Physics.DiscreteDiffOps, Sovereign.Physics.DiscreteEMCore, Sovereign.Physics.EntropySpinLaw, Sovereign.Problem.ABC.L1Disjunction, Sovereign.Problem.Hodge.EulerPoincareInstance, Sovereign.Problem.Hodge.FormanMorseInequality, Sovereign.Foundation.EnergyGap, Sovereign.Structology.DiscreteCalculus, Sovereign.Coupling.LossGain, Sovereign.Application.WeilRigidity, Sovereign.Algebra.Zomega, Sovereign.Structology.BinaryTetrahedralRepresentation]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B027
@@ -184,7 +184,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B036
     layer: 40-application
-    modules: [Sovereign.Algebra.ZeroCrossing, Sovereign.Analysis.FiniteInnerProduct, Sovereign.Analysis.LinearFunctionalDiscrete, Sovereign.Application.AlgebraChainDeep, Sovereign.Applied.LeibnizGF9, Sovereign.Coding.BCHGF9, Sovereign.Coding.ExpSquaring, Sovereign.Constitution.DecisionSoundness, Sovereign.Physics.ChiralInterference, Sovereign.Physics.DiscreteMaxwellGF9, Sovereign.Physics.DNAEncoding, Sovereign.Physics.HoneycombMagneticField]
+    modules: [Sovereign.Algebra.ZeroCrossing, Sovereign.Analysis.FiniteInnerProduct, Sovereign.Analysis.LinearFunctionalDiscrete, Sovereign.Application.AlgebraChainDeep, Sovereign.Applied.LeibnizGF9, Sovereign.Coding.BCHGF9, Sovereign.Coding.ExpSquaring, Sovereign.Constitution.DecisionSoundness, Sovereign.Physics.ChiralInterference, Sovereign.Application.DiscreteMaxwellGF9, Sovereign.Physics.DNAEncoding, Sovereign.Physics.HoneycombMagneticField]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B037
@@ -204,7 +204,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B040
     layer: 40-application
-    modules: [Sovereign.Problem.Fermat.FermatL1, Sovereign.Problem.Hodge.BoundaryGF3, Sovereign.Problem.Kakeya.KakeyaPathology, Sovereign.Problem.NavierStokes.NSEFluxTelescope, Sovereign.Problem.NavierStokes.NSRegularity, Sovereign.Coding.CyclicGF27, Sovereign.Topology.MorseBoundaryDT, Sovereign.Topology.MorsePairingLaw, Sovereign.Analysis.IntegrationByParts, Sovereign.Physics.DiscreteLagrangian, Sovereign.Physics.DiscreteActionPrinciple, Sovereign.Physics.DiscreteMaxwellTime]
+    modules: [Sovereign.Application.FermatL1, Sovereign.Problem.Hodge.BoundaryGF3, Sovereign.Problem.Kakeya.KakeyaPathology, Sovereign.Problem.NavierStokes.NSEFluxTelescope, Sovereign.Problem.NavierStokes.NSRegularity, Sovereign.Coding.CyclicGF27, Sovereign.Topology.MorseBoundaryDT, Sovereign.Topology.MorsePairingLaw, Sovereign.Analysis.IntegrationByParts, Sovereign.Physics.DiscreteLagrangian, Sovereign.Application.DiscreteActionPrinciple, Sovereign.Physics.DiscreteMaxwellTime]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B041
@@ -249,7 +249,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B049
     layer: 40-application
-    modules: [Sovereign.Problem.NavierStokes.NSEPhaseField, Sovereign.Problem.NavierStokes.NSEPresentation, Sovereign.Structology.SphericalVector, Sovereign.Problem.PvsNP.Complexity, Sovereign.Problem.PvsNP.DetMul, Sovereign.Problem.Riemann.Sheaf, Sovereign.Problem.YangMills.SUn_GF9, Sovereign.Problem.YangMills.WilsonLoop, Sovereign.Problem.YangMills.WilsonPlaquette, Sovereign.Problem.YangMills.YM_Action, Sovereign.Problem.YangMills.YM_Full, Sovereign.Problem.YangMills.YM_L3]
+    modules: [Sovereign.Problem.NavierStokes.NSEPhaseField, Sovereign.Problem.NavierStokes.NSEPresentation, Sovereign.Structology.SphericalVector, Sovereign.Problem.PvsNP.Complexity, Sovereign.Problem.PvsNP.DetMul, Sovereign.Problem.Riemann.Sheaf, Sovereign.Problem.YangMills.SUn_GF9, Sovereign.Problem.YangMills.WilsonLoop, Sovereign.Application.WilsonPlaquette, Sovereign.Problem.YangMills.YM_Action, Sovereign.Problem.YangMills.YM_Full, Sovereign.Problem.YangMills.YM_L3]
     grade_C_count: 2
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B050
@@ -264,7 +264,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B052
     layer: 40-application
-    modules: [Sovereign.Problem.Fermat.FermatL2, Sovereign.Problem.Fermat.FermatL4_NatLift, Sovereign.Problem.NavierStokes.NSEConservationCore, Sovereign.Topology.MorseRouteListDT, Sovereign.Topology.MorseSqZeroFull, Sovereign.Analysis.CalculusOfVariations, Sovereign.Physics.DiscreteLagrangian3D, Sovereign.Algebra.GroupTheory.FiniteGroupAxioms, Sovereign.Physics.DiscreteMaxwellConservation, Sovereign.Physics.DiscreteNoether, Sovereign.Physics.MaxwellFromLagrangian, Sovereign.Physics.EntropySpinMicro]
+    modules: [Sovereign.Problem.Fermat.FermatL2, Sovereign.Problem.Fermat.FermatL4_NatLift, Sovereign.Problem.NavierStokes.NSEConservationCore, Sovereign.Topology.MorseRouteListDT, Sovereign.Topology.MorseSqZeroFull, Sovereign.Analysis.CalculusOfVariations, Sovereign.Physics.DiscreteLagrangian3D, Sovereign.Algebra.GroupTheory.FiniteGroupAxioms, Sovereign.Physics.DiscreteMaxwellConservation, Sovereign.Physics.DiscreteNoether, Sovereign.Physics.MaxwellFromLagrangian, Sovereign.Application.EntropySpinMicro]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B053
@@ -304,7 +304,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B060
     layer: 40-application
-    modules: [Sovereign.Algebra.MyopiaRisk, Sovereign.Applied.CelestialGeneticsControl, Sovereign.Geometry.ProjectiveTransform, Sovereign.Applied.BlackHoleWhiteHole, Sovereign.Applied.CommunicationDiscrete, Sovereign.Applied.CosmologyDiscrete, Sovereign.Applied.InformationFrame, Sovereign.Geometry.ProjectiveOrbit, Sovereign.Physics.LightCone, Sovereign.Structology.HolographicSpace, Sovereign.Format.ModulusGeneration, Sovereign.Structology.Platonics]
+    modules: [Sovereign.Algebra.MyopiaRisk, Sovereign.Applied.CelestialGeneticsControl, Sovereign.Geometry.ProjectiveTransform, Sovereign.Applied.BlackHoleWhiteHole, Sovereign.Applied.CommunicationDiscrete, Sovereign.Applied.CosmologyDiscrete, Sovereign.Applied.InformationFrame, Sovereign.Geometry.ProjectiveOrbit, Sovereign.Application.LightCone, Sovereign.Structology.HolographicSpace, Sovereign.Format.ModulusGeneration, Sovereign.Structology.Platonics]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B061

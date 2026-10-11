@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteActionPrinciple
+-- | Sovereign.Application.DiscreteActionPrinciple
 -- 离散作用量原理 — 离散规范群 + 场强定义 (0 postulate)
 --
 -- 本模块包含:
@@ -15,7 +15,7 @@
 --   变分导出 Maxwell: DiscreteLagrangian + DiscreteLagrangian3D (已证)
 --   Noether 定理: DiscreteNoether (已证, §8 深层证明)
 
-module Sovereign.Physics.DiscreteActionPrinciple where
+module Sovereign.Application.DiscreteActionPrinciple where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

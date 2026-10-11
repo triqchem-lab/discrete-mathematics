@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.Scaling
+-- | Sovereign.Application.Scaling
 -- 物理缩放：离散代数单位与物理单位的转换
 --
 -- 宪法条款：
@@ -10,7 +10,7 @@
 
 -- 数学背景：离散代数不变量（极 144 / 环 46 / 能隙）↔ 物理单位（meV / Hz）的投影转换层
 -- 包含：Scaling Factors（实验测定缩放因子）+ 代数↔物理换算
-module Sovereign.Physics.Scaling where
+module Sovereign.Application.Scaling where
 
 open import Data.Nat using (ℕ)
 open import Data.Integer using (ℤ; +_)

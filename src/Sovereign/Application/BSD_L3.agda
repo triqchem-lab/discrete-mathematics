@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.BSD.BSD_L3
+-- | Sovereign.Application.BSD_L3
 -- BSD L3：tₙ 递推严格递归定义 + 正确性证明
 --
 -- 数学背景：BSD 线 L3 层：t-rec 严格递归定义（q/t₁/n → t_{n+1}）+ step 正确性核对——递推的定义层（与 GF 实例核互补）。
@@ -14,7 +14,7 @@
 --   （命名正名：旧头注 `jac_BSD_L3` ≠ 模块名，2026-10-11 勘误）
 
 --
-module Sovereign.Problem.BSD.BSD_L3 where
+module Sovereign.Application.BSD_L3 where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Nat using (ℕ; zero; suc)

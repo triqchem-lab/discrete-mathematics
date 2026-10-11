@@ -60,7 +60,7 @@ open import Sovereign.Application.DiscreteMaxwellTime
          divE-step; faraday-preserves-divB; charge-conservation)
 
 -- GF9 统一 Maxwell
-open import Sovereign.Physics.DiscreteMaxwellGF9
+open import Sovereign.Application.DiscreteMaxwellGF9
   using (GF9VecTime; GF9ScalTime; UnifiedMaxwellHolds; UnifiedMaxwellStep;
          ampere-from-unified; faraday-from-unified;
          charge-conservation-GF9; σ-time-comm)

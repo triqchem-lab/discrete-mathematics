@@ -53,7 +53,7 @@ import Sovereign.Application.EulerChar     -- ℤ 欧拉全部闭合
 
 -- (IV) 质量间隙
 import Sovereign.Problem.YangMills.YM_L3         -- 2/3/4×4 λ()
-import Sovereign.Problem.YangMills.WilsonPlaquette -- 单plaquette
+import Sovereign.Application.WilsonPlaquette -- 单plaquette
 
 -- (V) 全息穿透
 import Sovereign.Application.Complexity     -- 2×2 has-root

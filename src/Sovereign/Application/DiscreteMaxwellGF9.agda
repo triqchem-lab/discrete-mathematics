@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteMaxwellGF9
+-- | Sovereign.Application.DiscreteMaxwellGF9
 -- 78 电磁学 — GF(9) 共轭电磁学时间演化层 (0 postulate, 无洞)
 --
 -- 电场 E 与磁场 B 是一个 GF(9) 场 F = E + Bα 的实部与虚部。
@@ -20,7 +20,7 @@
 -- 诚实边界: 与 DiscreteEMField3D 的 Fin 3 静态内核是两套格点表示
 -- (Trit vs Fin 3), 本模块独立基于 Trit, 是离散第一性本体的相位升维层。
 
-module Sovereign.Physics.DiscreteMaxwellGF9 where
+module Sovereign.Application.DiscreteMaxwellGF9 where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

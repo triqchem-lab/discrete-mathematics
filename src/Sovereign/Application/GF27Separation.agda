@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.PvsNP.GF27Separation
+-- | Sovereign.Application.GF27Separation
 -- PvsNP 分离定理的 GF(27) 扩域版: 不可约三次 λ³+2λ+1 的完全根结构
 --
 -- 数学背景:
@@ -18,7 +18,7 @@
 --   §5 GF(3) 内无根（3 λ()）—— Eval/Invert 分离从 GF(3) 到 GF(27) 的完整见证
 --   §6 Vieta: 根和 = 0, 根积 = 2
 
-module Sovereign.Problem.PvsNP.GF27Separation where
+module Sovereign.Application.GF27Separation where
 
 open import Data.Product using (_×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)

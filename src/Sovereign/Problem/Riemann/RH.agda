@@ -15,7 +15,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Application.BSD using (#E1; #E2; #E6; #E1-is-4; #E2-is-7; #E6-is-1)
 
 -- Weil 递推 (来自 jac_BSD_L3)
-open import Sovereign.Problem.BSD.BSD_L3 using (t-rec; step; q3)
+open import Sovereign.Application.BSD_L3 using (t-rec; step; q3)
 
 --------------------------------------------------------------------------------
 -- §1. trace = q+1 - #E  (从穷举 #E 自动推导, 非手动赋值)

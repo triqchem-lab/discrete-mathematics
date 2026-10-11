@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Fermat.FermatL1
+-- | Sovereign.Application.FermatL1
 -- 费马大定理的离散基座 — L1 幂周期层
 --
 -- 数学背景 (13-flt-analysis.md 验证 1):
@@ -21,7 +21,7 @@
 --
 -- 依赖: FermatL0 (pow3 定义, 零幂族, 非零分类)
 
-module Sovereign.Problem.Fermat.FermatL1 where
+module Sovereign.Application.FermatL1 where
 
 open import Data.Nat using (ℕ; zero; suc; _*_)
 open import Data.Product using (_×_; _,_)

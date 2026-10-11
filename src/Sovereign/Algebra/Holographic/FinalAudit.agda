@@ -31,7 +31,7 @@ import Sovereign.Problem.YangMills.YM_SpectralGap -- 精确谱 λ₀=4/λ₁=1, 
 import Sovereign.Problem.YangMills.YM_Full
 import Sovereign.Problem.YangMills.YM_DetMul
 import Sovereign.Problem.YangMills.SU2_Embedding
-import Sovereign.Problem.YangMills.WilsonPlaquette
+import Sovereign.Application.WilsonPlaquette
 
 -- Hodge L3 ✅
 import Sovereign.Problem.Hodge.ChainComplex       -- hodge-decomp: nullity∂ ≡ rank∂∘suc + dimℋ
@@ -43,13 +43,13 @@ import Sovereign.Application.EulerChar
 
 -- BSD L3 ✅（自 L3* 升级: BSD 恒等式与 Hasse 界已由 WeilRigidity 闭合）
 import Sovereign.Application.BSD
-import Sovereign.Problem.BSD.BSD_L3               -- t-rec 递归 + 正确性
+import Sovereign.Application.BSD_L3               -- t-rec 递归 + 正确性
 import Sovereign.Problem.BSD.BSD_GF27
 import Sovereign.Problem.BSD.BSD_General
 
 -- RH L3 ✅（自 L0+ 升级: 有限域 Weil 定理的整数形式 + Eisenstein 共轭对刚性）
 import Sovereign.Problem.Riemann.WeilRH
-import Sovereign.Problem.Riemann.WeilRigidity     -- t²+3s²=4q, L(E,1)=#E, α+conj(α)=t, αβ=q
+import Sovereign.Application.WeilRigidity     -- t²+3s²=4q, L(E,1)=#E, α+conj(α)=t, αβ=q
 import Sovereign.Problem.Riemann.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
 import Sovereign.Problem.Riemann.RH
 import Sovereign.Problem.Riemann.Galois
@@ -67,7 +67,7 @@ import Sovereign.Application.Complexity
 import Sovereign.Problem.PvsNP.DetMul
 import Sovereign.Problem.PvsNP.PvsNP_Conjecture
 import Sovereign.Problem.PvsNP.PvsNP_Separation
-import Sovereign.Problem.PvsNP.GF27Separation
+import Sovereign.Application.GF27Separation
 
 -- 编码理论 (P1-2, wiki 94B): GF(9) BCH 码 [8,6,3] + GF(27) 三元循环码
 import Sovereign.Coding.HammingMetric

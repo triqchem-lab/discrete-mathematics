@@ -33,7 +33,7 @@ open import Sovereign.Application.EntropySpinLaw
 open import Sovereign.Physics.EntropySpinVerification
   using (S-field; dxdy-commℚ; dydz-commℚ; dzdx-commℚ;
          divℚ; divℚ-curl-zero; divS-identity)
-open import Sovereign.Physics.EntropySpinMicro using (zeroΨ)
+open import Sovereign.Application.EntropySpinMicro using (zeroΨ)
 open import Sovereign.Physics.EntropySpinQuantize
   using (fromBool; countQ9; m₀; quantized-mass-integral)
 

@@ -33,7 +33,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
 
 open import Sovereign.Problem.Fermat.FermatL0 using (pow3; _≢₃_; zero-trit?)
-open import Sovereign.Problem.Fermat.FermatL1 using (pow3-even; pow3-odd)
+open import Sovereign.Application.FermatL1 using (pow3-even; pow3-odd)
 
 --------------------------------------------------------------------------------
 -- §1. n 奇: 方程退化为线性

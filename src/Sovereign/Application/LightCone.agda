@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Physics.LightCone
+-- | Sovereign.Application.LightCone
 -- 光锥边界公理系统: 将 LightConeSide 从 postulate 升级为可计算公理
 --
 -- 物理基础: 渠玉芝熵旋理论 — 光子通过左右旋螺旋对抵消形成中心驻波(质量涌现)
@@ -15,7 +15,7 @@
 --   LC-4: 边界量子化 boundaryOrbitCount=7 (来自 T6/(C2xC3))
 --   LC-5: 热带产生 3x7=21
 
-module Sovereign.Physics.LightCone where
+module Sovereign.Application.LightCone where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Product using (_×_; _,_)

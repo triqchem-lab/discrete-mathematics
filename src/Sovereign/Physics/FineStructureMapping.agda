@@ -19,7 +19,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_)
 
 -- 导入律算核心不变量
 open import Sovereign.Base.Invariants using (POLAR_WINDING; TOROIDAL_WINDING)
-open import Sovereign.Physics.Scaling using (WuXingAlpha)  -- α_律算 = 0.0583
+open import Sovereign.Application.Scaling using (WuXingAlpha)  -- α_律算 = 0.0583
 
 -- ℕ → ℚ
 toℚ : ℕ → ℚ
