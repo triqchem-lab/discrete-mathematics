@@ -34,7 +34,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_)
 open import Sovereign.Algebra.FreeAb using (FAb; zeroᶠ)
 open import Sovereign.Problem.Hodge.FreeAbBoundary using (C₀; C₁)
 open import Sovereign.Problem.Hodge.ChainComplex using (dimH)
-open import Sovereign.Algebra.Jacobian.jac_Topology
+open import Sovereign.Application.jac_Topology
   using (filled3C; dimH-filled3-0; dimH-filled3-1; dimH-filled3-2)
 
 --------------------------------------------------------------------------------

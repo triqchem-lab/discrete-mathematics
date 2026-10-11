@@ -20,7 +20,7 @@ open import Data.Fin using (Fin; toℕ; fromℕ; zero) renaming (suc to fSuc)
 open import Data.Bool using (Bool; true; false; if_then_else_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-import Sovereign.Format.TQ10 as TQ10
+import Sovereign.Application.TQ10 as TQ10
 
 updateHigh4 : Fin 256 → Fin 16 → Fin 256
 updateHigh4 oldVal newVal =

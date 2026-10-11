@@ -29,7 +29,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 
 import Sovereign.Algebra.Duodecimal as D
 import Sovereign.Synthesis.VortexTower as VT
-import Sovereign.Structology.HoloInformation as HI
+import Sovereign.Application.HoloInformation as HI
 import Sovereign.Coupling.LossGain as LG
 
 --------------------------------------------------------------------------------

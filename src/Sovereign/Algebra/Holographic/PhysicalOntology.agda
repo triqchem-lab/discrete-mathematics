@@ -26,7 +26,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 -- 以太: 不可压缩的 GF(9) 信息流体, 充满 T⁶ 的每个格点
 
 -- 空间基座
-import Sovereign.Algebra.Jacobian.jac_AutT6       -- Aut(T⁶/GF(9))
+import Sovereign.Application.jac_AutT6       -- Aut(T⁶/GF(9))
 import Sovereign.Algebra.Holographic.InfoClosure  -- 4320D 信息容量
 
 -- ═══════════════════════════════════════════════════════════
@@ -66,7 +66,7 @@ import Sovereign.Algebra.Jacobian.jac_LieGroup     -- expD (σ 替代 exp)
 -- 光速 = 以太表面张力的局部函数 (非恒定)
 -- 链复形边界 ∂ 描述波前传播
 
-import Sovereign.Algebra.Jacobian.jac_Topology     -- 边界算子 ∂
+import Sovereign.Application.jac_Topology     -- 边界算子 ∂
 import Sovereign.Problem.Hodge.ChainComplex -- 泛链复形
 
 -- ═══════════════════════════════════════════════════════════

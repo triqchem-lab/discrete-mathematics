@@ -11,7 +11,7 @@
 --   ∂ 线性性三条全缺（本模块补齐，K₃ ∂₁ 字面量表逐点 + ac4 重排）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Algebra.FreeAbGroupLaws where
+module Sovereign.Application.FreeAbGroupLaws where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Relation.Binary.PropositionalEquality

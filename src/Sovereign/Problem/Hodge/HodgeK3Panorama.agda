@@ -17,7 +17,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Problem.Hodge.ChainComplex using (dimH)
 import Sovereign.Problem.Hodge.ChainComplex as CC
-open import Sovereign.Algebra.Jacobian.jac_Topology
+open import Sovereign.Application.jac_Topology
   using (filled3C; dimH-filled3-0; dimH-filled3-1; dimH-filled3-2)
 open import Sovereign.Topology.FormanChiInvariant using (chi-m-f)
 

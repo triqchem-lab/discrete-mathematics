@@ -15,7 +15,7 @@
 --   需代数 Morse 边界路由（交替路径），roadmap。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.DiscreteMorseGeneral where
+module Sovereign.Application.DiscreteMorseGeneral where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Maybe using (Maybe; just; nothing)

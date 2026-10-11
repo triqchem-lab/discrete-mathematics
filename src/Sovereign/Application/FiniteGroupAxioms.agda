@@ -16,7 +16,7 @@
 --
 -- 全部 0 postulate, GF(3) 穷举 refl + 符号推理。
 
-module Sovereign.Algebra.GroupTheory.FiniteGroupAxioms where
+module Sovereign.Application.FiniteGroupAxioms where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

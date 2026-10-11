@@ -39,7 +39,7 @@ open import Relation.Nullary using (¬_)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Topology.FormanMinimal using (Sx; dim; v0; v1; v2; e01; e12; e20; t)
 open import Sovereign.Topology.FormanPerfectField using (perfectVF; nothing-just)
-open import Sovereign.Topology.DiscreteMorseGeneral
+open import Sovereign.Application.DiscreteMorseGeneral
   using (DiscreteMorseFunction; IsCritical; criticalComplex; sx-perfect; crit0-v2)
 open import Sovereign.Topology.FormanChiInvariant using (chi-c; chi-m-f)
 

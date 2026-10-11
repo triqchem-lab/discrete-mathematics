@@ -9,7 +9,7 @@
 --   §3 余数判据: GF(3)x²+1无根, GF(9)α是根
 --   §4 进制层级表: 五列对比 + CRT 分解
 
-module Sovereign.Algebra.CharacteristicTower where
+module Sovereign.Application.CharacteristicTower where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

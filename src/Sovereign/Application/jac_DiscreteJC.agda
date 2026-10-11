@@ -11,7 +11,7 @@
 --
 -- 包含: 三层雅可比定义, 反例整合, 主定理陈述, 与连续统JC的关系, 强度总结
 
-module Sovereign.Algebra.Jacobian.jac_DiscreteJC where
+module Sovereign.Application.jac_DiscreteJC where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)

@@ -34,7 +34,7 @@ open import Sovereign.Algebra.GF9
         ; norm-conj-mul
         )
 -- alpha-cubed 已在 CharacteristicTower 中定义 (refl), import 复用
-open import Sovereign.Algebra.CharacteristicTower using (alpha-cubed)
+open import Sovereign.Application.CharacteristicTower using (alpha-cubed)
 
 open ≡-Reasoning
 
@@ -92,7 +92,7 @@ consciousness-generates = 8  -- |GF(9)*| = 8
 -- §2. 断网态 — α³ = -α (270° 失连) + 重连 α³·α = α⁴ = 1
 --------------------------------------------------------------------------------
 
--- alpha-cubed 已通过 import Sovereign.Algebra.CharacteristicTower 引入
+-- alpha-cubed 已通过 import Sovereign.Application.CharacteristicTower 引入
 
 -- α³ = neg-alpha (加法逆元)
 alpha-cubed-is-neg-alpha : (alpha *gf9 alpha) *gf9 alpha ≡ neg-alpha

@@ -25,7 +25,7 @@ open import Cubical.Foundations.Prelude
 open import Data.Product using (_×_; _,_)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
-open import Sovereign.Algebra.FreeAbQuotient
+open import Sovereign.Application.FreeAbQuotient
   using (H₀; f₀; h₀-bwd; h₀-surj)
 open import Cubical.HITs.SetQuotients using ([_])
 

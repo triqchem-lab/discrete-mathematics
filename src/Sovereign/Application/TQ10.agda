@@ -20,7 +20,7 @@
 --
 -- 包含：Tryte、PackedByte、isPackedValid、tritToBase3、base3ToTrit、tritToFin
 
-module Sovereign.Format.TQ10 where
+module Sovereign.Application.TQ10 where
 
 open import Data.Nat using (ℕ; _+_; _*_; _<_; _≥_; _<ᵇ_)
 open import Data.Nat.DivMod using (_mod_; _div_)

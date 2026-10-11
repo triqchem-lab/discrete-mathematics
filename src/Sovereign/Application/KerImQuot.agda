@@ -12,7 +12,7 @@
 --   泛型层：GenericKerIm record——ker 谓词 + im 包含 + 商接口的抽象封装。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.KerImQuot where
+module Sovereign.Application.KerImQuot where
 
 open import Cubical.Foundations.Prelude
   using (_≡_; refl; cong; sym; _∙_)

@@ -26,7 +26,7 @@
 --
 -- 0 postulate — 全部构造性证明
 
-module Sovereign.Algebra.DiscreteComplexAnalysis where
+module Sovereign.Application.DiscreteComplexAnalysis where
 
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Data.Empty using (⊥; ⊥-elim)

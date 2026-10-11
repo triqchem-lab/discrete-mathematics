@@ -22,7 +22,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; neg
 open import Data.Fin using (Fin; zero; suc)
 open import Relation.Binary.PropositionalEquality using (cong; trans)
 
-open import Sovereign.Algebra.Jacobian.jac_Topology using (GF3Vec; 0v)
+open import Sovereign.Application.jac_Topology using (GF3Vec; 0v)
 
 -- §1. 3点 DFT 矩阵 (GF(3) 版) --------------------------------------
 -- 经典 DFT₃ = [[1,1,1],[1,ω,ω²],[1,ω²,ω]], ω = e^{2πi/3}.

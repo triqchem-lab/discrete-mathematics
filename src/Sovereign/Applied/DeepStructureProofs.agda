@@ -91,12 +91,12 @@ open import Sovereign.Structology.BurnsideT6 public using (
 
 --------------------------------------------------------------------------------
 -- B26: 4320 = 2×12×36×5 (手性-十二律-苞元-五行分解)
--- 源: Sovereign.Structology.HoloInformation
+-- 源: Sovereign.Application.HoloInformation
 -- 证明方法: refl
 -- 等价分解: 24(梅尔卡巴) × 36(水态) × 5(五行) = 2(手性) × 12(十二律) × 36 × 5
 --------------------------------------------------------------------------------
 
-open import Sovereign.Structology.HoloInformation public using (
+open import Sovereign.Application.HoloInformation public using (
   4320D-chiral-lv-harmonic-wuxing;  -- B26 核心: 2*12*36*5 ≡ 4320
   4320D-merkaba-firewater;          -- 24*36*5 ≡ 4320
   4320D-decomposition-equivalent;   -- 24*36*5 ≡ 2*12*36*5

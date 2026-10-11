@@ -25,7 +25,7 @@
 --   全息 pi = 144/46 — 12/13 实验确认, 6 轮独立验证, 10^15x 能量跨度
 --   Burnside 解 — Python 数值验证 SigmaChi(g)=3194298 (NSE.agda)
 
-module Sovereign.Structology.HoloInformation where
+module Sovereign.Application.HoloInformation where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_)
 open import Data.Product using (_×_; _,_)

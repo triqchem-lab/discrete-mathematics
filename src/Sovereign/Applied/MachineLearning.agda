@@ -19,7 +19,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
 open import Sovereign.Analysis.FiniteDynamics
   using (orbit; orbit-eventually-periodic; EventuallyPeriodic)
-open import Sovereign.Structology.HoloInformation
+open import Sovereign.Application.HoloInformation
   using (IndependentInfo; independent-info-is-4320D;
          TotalYaoSpace; GaugeGroupOrder54)
 

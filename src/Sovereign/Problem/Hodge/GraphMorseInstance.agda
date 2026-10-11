@@ -27,7 +27,7 @@ module Sovereign.Problem.Hodge.GraphMorseInstance where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; _≥_; z≤n; s≤s)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Algebra.Jacobian.jac_Topology
+open import Sovereign.Application.jac_Topology
   using (dimH-graph3-0; dimH-graph3-1)
 
 --------------------------------------------------------------------------------

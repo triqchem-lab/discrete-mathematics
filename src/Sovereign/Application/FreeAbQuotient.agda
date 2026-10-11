@@ -16,7 +16,7 @@
 --   群律以 transport-of-structure 形态闭合（沿 f₀ 同构拉回 Trit 群结构）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Algebra.FreeAbQuotient where
+module Sovereign.Application.FreeAbQuotient where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Cubical.Data.Empty.Base using (⊥)

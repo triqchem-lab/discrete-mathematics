@@ -22,7 +22,7 @@ module Sovereign.Problem.Hodge.PerfectMorseInequality where
 open import Data.Nat using (ℕ; zero; suc; _≤_; _≥_; z≤n; s≤s)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Algebra.Jacobian.jac_Topology
+open import Sovereign.Application.jac_Topology
   using (dimH-filled3-0; dimH-filled3-1; dimH-filled3-2)
 
 --------------------------------------------------------------------------------

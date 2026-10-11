@@ -13,7 +13,7 @@
 --   约化规则：x⁵ ≡ x + 2 (mod p(x), GF(3))
 --
 -- 耦合域连接：
---   PackedByte = Fin 243 (Sovereign.Format.TQ10)
+--   PackedByte = Fin 243 (Sovereign.Application.TQ10)
 --   GF243 = Vec Trit 5 — 相同的 243 态载体
 --   pack5/unpack5 提供集合双射
 --   GF243 携带加法群结构；PackedByte 是裸存储
@@ -232,7 +232,7 @@ pow-3-5 = refl
 -- 9. 与 PackedByte (PackedTryte5) 的连接
 --------------------------------------------------------------------------------
 
--- PackedByte (定义于 Sovereign.Format.TQ10)：
+-- PackedByte (定义于 Sovereign.Application.TQ10)：
 --   PackedByte = Fin 243
 --   pack5   : Vec Trit 5 → Fin 243  (混合进制编码)
 --   unpack5 : Fin 243 → Vec Trit 5  (混合进制解码)

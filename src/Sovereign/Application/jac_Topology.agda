@@ -27,7 +27,7 @@
 --   §3 dimH (ChainComplex 记录实例 + 与 Hodge.tri 对齐)
 --   §4 欧拉示性数 EulerCharacteristic (χ = Σ(−1)ᵏ dimHₖ, 具象计算)
 
-module Sovereign.Algebra.Jacobian.jac_Topology where
+module Sovereign.Application.jac_Topology where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
 open import Data.Fin using (Fin; zero; suc)

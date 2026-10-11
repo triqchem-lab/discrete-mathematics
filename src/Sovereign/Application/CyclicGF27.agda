@@ -26,7 +26,7 @@
 --
 -- 0 postulate。
 
-module Sovereign.Coding.CyclicGF27 where
+module Sovereign.Application.CyclicGF27 where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _<_; s≤s)
 open import Data.Nat.Properties

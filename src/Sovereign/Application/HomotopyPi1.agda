@@ -22,7 +22,7 @@
 --   PathAlg 记录是群公理词汇层；relations 跨对象语义：t6-generate 的生成元
 --   g1..g6 是 DC 混合生成元走圈的净位移基，其关系（分量阶、交换）由 DC 关系
 --   投影而来；本层不新增关系、不自称展示群（八要素判据适用性 = 投影层）。
-module Sovereign.HoTT.HomotopyPi1 where
+module Sovereign.Application.HomotopyPi1 where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans)
 open import Data.Fin using (Fin; zero; suc)
