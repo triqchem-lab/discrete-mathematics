@@ -45,7 +45,7 @@ Sovereign.Physics.DiscreteActionPrinciple
 
 - `Sovereign.Algebra.GF9` (GF(9) 域, α, 范数, 共轭)
 - `Sovereign.Base.Trit` (GF(3) 基础运算)
-- `Sovereign.Physics.DiscreteEMField3D` (差分算子, curl, div)
+- `Sovereign.Application.DiscreteEMField3D` (差分算子, curl, div)
 - `Sovereign.Physics.DiscreteEMCore` (div-curl-zero, 规范不变性)
 - `Sovereign.Physics.DiscreteMaxwellTime` (四律, charge-conservation)
 - `Sovereign.Physics.DiscreteMaxwellGF9` (统一 Maxwell)

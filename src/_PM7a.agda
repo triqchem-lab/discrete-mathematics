@@ -29,7 +29,7 @@ open import Cubical.Data.Empty.Base using (⊥)
 open import Cubical.Data.Equality.Conversion using (eqToPath)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
 open import Sovereign.Algebra.FreeAb using (FAb; negᶠ; neg-add)
-open import Sovereign.Problem.Hodge.FreeAbBoundary using (C₀; C₁; C₂; ∂₁; ∂₂)
+open import Sovereign.Application.FreeAbBoundary using (C₀; C₁; C₂; ∂₁; ∂₂)
 open import Sovereign.Application.FreeAbHomologyGroup using (aug; aug-∂₁-zero)
 
 --------------------------------------------------------------------------------

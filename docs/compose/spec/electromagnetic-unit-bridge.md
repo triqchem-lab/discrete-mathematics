@@ -78,7 +78,7 @@ Sovereign.Physics.ElectromagneticUnitBridge
 - `Data.Rational` (ℚ, 已在多个物理模块使用)
 - `Data.Integer` (ℤ)
 - `Sovereign.Base.Trit` (GF(3) 代数)
-- `Sovereign.Physics.DiscreteEMField3D` (3D 场运算)
+- `Sovereign.Application.DiscreteEMField3D` (3D 场运算)
 - `Sovereign.Physics.DiscreteEMCore` (div-curl-zero, 规范不变性)
 - `Sovereign.Physics.DiscreteMaxwellTime` (四律)
 - `Sovereign.Algebra.GF9` (GF(9) 域)

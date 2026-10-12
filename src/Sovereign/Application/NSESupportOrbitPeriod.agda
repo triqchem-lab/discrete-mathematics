@@ -29,7 +29,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Relation.Binary.PropositionalEquality using
   (_≡_; refl; trans; cong; sym)
 
-open import Sovereign.Problem.NavierStokes.NSEOnT6 using
+open import Sovereign.Application.NSEOnT6 using
   (Field; nsStep; iterate; iterate-+; EventuallyPeriodic)
 open import Sovereign.Application.NSEFixedPointStrict using (supportCount)
 

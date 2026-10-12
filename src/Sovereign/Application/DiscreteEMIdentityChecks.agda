@@ -20,7 +20,7 @@ module Sovereign.Application.DiscreteEMIdentityChecks where
 open import Data.Fin using (Fin) renaming (zero to fz)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_)
-open import Sovereign.Physics.DiscreteEMField3D
+open import Sovereign.Application.DiscreteEMField3D
   using (GF3; ScalarField; VectorField; grad; curl; div; curl-grad-zero)
 open import Sovereign.Application.DiscreteEMCore using (div-curl-zero)
 

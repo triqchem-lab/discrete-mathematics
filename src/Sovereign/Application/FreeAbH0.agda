@@ -24,7 +24,7 @@ open import Data.Product using (Σ; _×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
 open import Sovereign.Algebra.FreeAb using (FAb)
-open import Sovereign.Problem.Hodge.FreeAbBoundary using (∂₁; ∂₂; C₀; C₁; C₂)
+open import Sovereign.Application.FreeAbBoundary using (∂₁; ∂₂; C₀; C₁; C₂)
 
 --------------------------------------------------------------------------------
 -- §1. H₂ = 0：∂₂ 在生成元上单射（平凡——∂₂ 保留首系数）

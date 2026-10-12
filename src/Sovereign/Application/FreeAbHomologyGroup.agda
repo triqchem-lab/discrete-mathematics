@@ -29,7 +29,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-assoc; ⊕-comm)
 open import Sovereign.Base.Trit using (⊕-identityʳ)
-open import Sovereign.Problem.Hodge.FreeAbBoundary
+open import Sovereign.Application.FreeAbBoundary
   using (C₀; C₁; C₂; ∂₁; ∂₂)
 open import Sovereign.Application.FreeAbH0 using (h₂-zero)
 

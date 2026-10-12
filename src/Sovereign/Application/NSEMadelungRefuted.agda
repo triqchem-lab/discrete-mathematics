@@ -38,7 +38,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Sovereign.Algebra.GroupTheory.DuodecClock using (AlphaPower; a0; a1; a2; mulAlpha)
 open import Sovereign.Application.NSEPhaseField using (
   Torus6; PhField; phaseDiff; pressurePhase; quantumPotentialPhase; theta-e1)
-open import Sovereign.Problem.NavierStokes.NSEMadelungConstrained using (coupling⇒square)
+open import Sovereign.Application.NSEMadelungConstrained using (coupling⇒square)
 
 --------------------------------------------------------------------------------
 -- §1. 反例点

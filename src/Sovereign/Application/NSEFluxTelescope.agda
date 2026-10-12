@@ -31,7 +31,7 @@
 --   （例如涡旋自持造成的长期再分布）**仍开放**——那需要总量守恒或支撑集单调性定理
 --   （已登记为下一步, 不在本模块冒充）。
 --
--- 依赖: Sovereign.Problem.NavierStokes.NSEOnT6（算子与 shiftAt-cubed）
+-- 依赖: Sovereign.Application.NSEOnT6（算子与 shiftAt-cubed）
 --       Sovereign.Base.Trit（Trit 表与 negate）
 
 module Sovereign.Application.NSEFluxTelescope where
@@ -41,7 +41,7 @@ open import Relation.Binary.PropositionalEquality using
 
 open import Sovereign.Base.Trit using
   (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-assoc; ⊕-comm; ⊕-identityˡ)
-open import Sovereign.Problem.NavierStokes.NSEOnT6 using (
+open import Sovereign.Application.NSEOnT6 using (
   C3; Torus6; ScalarField; Field; shiftAt; shiftAt-cubed; diffF; div; nsStep; sum3)
 
 open ≡-Reasoning

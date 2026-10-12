@@ -24,7 +24,7 @@ open import Sovereign.Algebra.GF9
   using (GF9; _*gf9_; _+gf9_; gf9-one; gf9-zero; galoisNorm;
          alpha; alpha-squared; alpha-powers-4; alpha-powers-sum-zero;
          *gf9-identityˡ; +gf9-identityˡ)
-open import Sovereign.Physics.DiscreteEMField3D using (add3)
+open import Sovereign.Application.DiscreteEMField3D using (add3)
 
 --------------------------------------------------------------------------------
 -- §1. 乘法群阶 (穷举证明)

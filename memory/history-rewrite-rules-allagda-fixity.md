@@ -217,7 +217,7 @@ dc-order-12                  CyclicGroupStructure.agda:15   ✅ 复现
 | `dc-order-12` | `CyclicGroupStructure:15` | **我自己造成的残留** —— 头注释承诺该名，但我把它实现成了 `mixedOp-power-12` | ✅ 头注释改引真实符号名 |
 | `c8-summary` | `FermatL3.agda:20` | 头注释「本层主定理」第 3 项承诺，而文件尾部**只有一坨被 `{- -}` 注释掉的汇总文本**（§4 标题已预留「C₈ 周期汇总」）⇒ 作者写了却从未落成定义 | ✅ **落成真定义**（见 §7.8） |
 | `jac_Langlands` | `Langlands.agda:3`（另散布 8 处注释） | 全库注释都用这个旧名；真实 module 名是 `Sovereign.Problem.Langlands.Langlands` | ✅ 头注释改真名，旧名保留为可 grep 别名 |
-| `jac_RH` | `RH.agda:3` | 同理，真实名 `Sovereign.Problem.Riemann.RH` | ✅ 同上；顺带修同文件头部的旧名 `jac_BSD`（真名 `Sovereign.Problem.BSD.BSD`） |
+| `jac_RH` | `RH.agda:3` | 同理，真实名 `Sovereign.Application.RH` | ✅ 同上；顺带修同文件头部的旧名 `jac_BSD`（真名 `Sovereign.Problem.BSD.BSD`） |
 
 **修复后复跑：Tier-1 从 5 条 → 2 条**，剩下的 2 条恰是下面 7.6 的已知假阳性 ✅。
 

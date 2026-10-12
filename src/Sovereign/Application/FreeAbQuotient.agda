@@ -30,7 +30,7 @@ open import Cubical.HITs.SetQuotients.Properties using (elim; elimProp2)
 open import Cubical.Foundations.HLevels using (isPropΠ)
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; ⊕-comm)
-open import Sovereign.Problem.Hodge.FreeAbBoundary
+open import Sovereign.Application.FreeAbBoundary
   using (C₀; C₁; C₂; ∂₁; ∂₂)
 
 --------------------------------------------------------------------------------

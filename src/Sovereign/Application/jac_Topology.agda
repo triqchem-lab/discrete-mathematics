@@ -41,7 +41,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
 open import Sovereign.Algebra.Jacobian.jac_Discrete using (Mat2; det2)
 open import Sovereign.Algebra.Jacobian.jac_Matrix
   using (Rank; rank; rank2; det≠0→rank2)
-open import Sovereign.Problem.Hodge.ChainComplex as CC
+open import Sovereign.Application.ChainComplex as CC
   using (ChainComplex; dimH; tri)
 
 -- 注: _⊕_/_⊗_ 来自 Base.Trit (import), Agda 不允许在使用方模块重声明 fixity

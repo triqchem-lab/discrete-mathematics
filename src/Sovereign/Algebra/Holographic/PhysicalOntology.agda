@@ -67,7 +67,7 @@ import Sovereign.Algebra.Jacobian.jac_LieGroup     -- expD (σ 替代 exp)
 -- 链复形边界 ∂ 描述波前传播
 
 import Sovereign.Application.jac_Topology     -- 边界算子 ∂
-import Sovereign.Problem.Hodge.ChainComplex -- 泛链复形
+import Sovereign.Application.ChainComplex -- 泛链复形
 
 -- ═══════════════════════════════════════════════════════════
 -- 第五本体: 量子纠缠 = 深水 CRT 连接

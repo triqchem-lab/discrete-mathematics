@@ -35,7 +35,7 @@ open import Sovereign.Topology.MorseCoeffRoute
   using (coeffᵏ; triVFᶜ; routing-k3)
 open module MCRD = Sovereign.Topology.MorseCoeffRoute.CoeffRouteDef
   Sx triVFᶜ FaceRel coeffᵏ
-open import Sovereign.Problem.Hodge.FreeAbBoundary using (∂₁; ∂₂)
+open import Sovereign.Application.FreeAbBoundary using (∂₁; ∂₂)
 open import Sovereign.Topology.MorseCriticalHomology using (∂₁ᶜ)
 
 --------------------------------------------------------------------------------

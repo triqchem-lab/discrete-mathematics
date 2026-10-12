@@ -35,8 +35,8 @@ open import Sovereign.Algebra.GF9
         ; gf9-pow; zero-power-gf9; gf9-zero-mulˡ; gf9-zero-mulʳ
         )
 open import Sovereign.Algebra.NormCollapse using (norm-collapse; birth-proof)
-open import Sovereign.Physics.OpticalWindow using (light-birth)
-open import Sovereign.Physics.RightHandedNeutrinoTheorem using (frobenius-swaps)
+open import Sovereign.Application.OpticalWindow using (light-birth)
+open import Sovereign.Application.RightHandedNeutrinoTheorem using (frobenius-swaps)
 
 --------------------------------------------------------------------------------
 -- §1. 量子场基底: GF(9) = 万物的载体

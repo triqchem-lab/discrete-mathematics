@@ -24,7 +24,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong; cong₂)
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-assoc; ⊕-comm; ⊕-identityˡ)
-open import Sovereign.Problem.Hodge.FreeAbBoundary using (C₀; C₁; ∂₁)
+open import Sovereign.Application.FreeAbBoundary using (C₀; C₁; ∂₁)
 open import Sovereign.Application.FreeAbGroupLaws
   using (neg-flip-r; neg-flip; neg-distrib; ∂₁-add; ∂₁-neg; ∂₁-zero)
 

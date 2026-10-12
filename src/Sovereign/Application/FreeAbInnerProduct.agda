@@ -24,7 +24,7 @@ open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; cong; cong₂)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊗-comm)
 open import Sovereign.Algebra.FreeAb using (FAb)
-open import Sovereign.Problem.Hodge.FreeAbBoundary using (C₁)
+open import Sovereign.Application.FreeAbBoundary using (C₁)
 
 --------------------------------------------------------------------------------
 -- §1. 内积定义（三分量逐点积和）

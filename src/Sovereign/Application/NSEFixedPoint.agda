@@ -38,10 +38,10 @@ open import Relation.Binary.PropositionalEquality using
   (_≡_; refl; trans; cong)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-identityʳ)
-open import Sovereign.Problem.NavierStokes.NSEOnT6 using
+open import Sovereign.Application.NSEOnT6 using
   (C3; Torus6; ScalarField; Field; v1; v2; v3; v4; v5; v6;
    shiftAt; diffF; div; grad; nsStep; Incompressible; iterate)
-open import Sovereign.Problem.NavierStokes.NSEIncompressible using (nsStep-incompressible)
+open import Sovereign.Application.NSEIncompressible using (nsStep-incompressible)
 
 --------------------------------------------------------------------------------
 -- §1. 分量与轴的选择器（对齐 grad 六分量 = 轴 0/1/2 各两次）

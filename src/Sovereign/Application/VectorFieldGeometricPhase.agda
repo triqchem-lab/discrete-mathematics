@@ -28,7 +28,7 @@ open import Relation.Binary.PropositionalEquality
 open ≡-Reasoning
 open import Data.Rational using (ℚ; _-_; -_; _*_; 0ℚ; 1ℚ)
 open import Data.Rational.Properties using (+-inverseʳ)
-open import Sovereign.Physics.DiscreteEMField3D using (Point3D)
+open import Sovereign.Application.DiscreteEMField3D using (Point3D)
 open import Sovereign.Application.EntropySpinLaw
 open import Sovereign.Application.EntropySpinVerification
   using (S-field; dxdy-commℚ; dydz-commℚ; dzdx-commℚ;

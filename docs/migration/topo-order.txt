@@ -168,9 +168,9 @@ import Sovereign.Application.BSD_GF27
 import Sovereign.Problem.BSD.BSD_General
 import Sovereign.Problem.BSD.BSD_L3               -- t-rec 递归 + 正确性
 import Sovereign.Application.ZetaDiscrete
-import Sovereign.Problem.Hodge.ChainComplex       -- hodge-decomp: nullity∂ ≡ rank∂∘suc + dimℋ
-import Sovereign.Problem.Hodge.ChainComplex -- 泛链复形
-import Sovereign.Problem.Hodge.ChainComplex as CC
+import Sovereign.Application.ChainComplex       -- hodge-decomp: nullity∂ ≡ rank∂∘suc + dimℋ
+import Sovereign.Application.ChainComplex -- 泛链复形
+import Sovereign.Application.ChainComplex as CC
 import Sovereign.Problem.Hodge.DeligneHodge    -- Deligne 独立形式化
 import Sovereign.Problem.Hodge.EulerChar
 import Sovereign.Problem.Hodge.EulerChar     -- ℤ 欧拉全部闭合
@@ -197,7 +197,7 @@ import Sovereign.Application.GL2TestVectors
 import Sovereign.Application.Langlands
 import Sovereign.Application.S4Burnside
 import Sovereign.Application.NSE          -- 12 定理
-import Sovereign.Problem.NavierStokes.NSRegularity -- §5 动力学: step³-id/单射/能量守恒/周期
+import Sovereign.Application.NSRegularity -- §5 动力学: step³-id/单射/能量守恒/周期
 import Sovereign.Application.NSVortex
 import Sovereign.Problem.PvsNP.Complexity
 import Sovereign.Problem.PvsNP.Complexity     -- 2×2 has-root
@@ -208,12 +208,12 @@ import Sovereign.Application.PvsNP_Conjecture -- 形式猜想
 import Sovereign.Problem.PvsNP.PvsNP_Separation
 import Sovereign.Application.Galois
 import Sovereign.Application.Galois      -- σ²=id (心跳)
-import Sovereign.Problem.Riemann.RH
+import Sovereign.Application.RH
 import Sovereign.Application.WeilRH
 import Sovereign.Application.WeilRH          -- Weil 独立形式化
 import Sovereign.Application.WeilRH       -- GF(3)↔GF(9) 对偶
 import Sovereign.Problem.Riemann.WeilRigidity     -- t²+3s²=4q
-import Sovereign.Problem.Riemann.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
+import Sovereign.Application.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
 import Sovereign.Problem.YangMills.SU2_Embedding
 import Sovereign.Problem.YangMills.WilsonPlaquette
 import Sovereign.Problem.YangMills.WilsonPlaquette -- 单plaquette
@@ -332,7 +332,7 @@ Sovereign.HoTT.PhaseAlignment6624
 Sovereign.HoTT.PhaseTransitionPaths
 Sovereign.MetaStructure.WuXing
 Sovereign.Application.AlphaRelation
-Sovereign.Physics.DiscreteEMField3D
+Sovereign.Application.DiscreteEMField3D
 Sovereign.Physics.DiscreteEMField
 Sovereign.Physics.ObservabilityAngle
 Sovereign.Application.L1Rad
@@ -342,7 +342,7 @@ Sovereign.Application.BSD_GF27
 Sovereign.Problem.BSD.BSD_GF81
 Sovereign.Problem.BSD.BSD_L3
 Sovereign.Problem.BSD.BSDTrace
-Sovereign.Problem.Hodge.ChainComplex
+Sovereign.Application.ChainComplex
 Sovereign.Problem.Hodge.EulerChar
 Sovereign.Problem.Hodge.Hodge_L3
 Sovereign.Problem.Hodge.HodgeTetra
@@ -402,7 +402,7 @@ Sovereign.Topology.AtkinQAnalysis
 Sovereign.Topology.MorseRoute
 Sovereign.Trust.PresentationGapBoundary
 Sovereign.Algebra.Hensel3Side
-Sovereign.Physics.EntropySpin
+Sovereign.Application.EntropySpin
 Sovereign.Structology.OrthogonalLatinSquare
 Sovereign.Structology.GF4
 Sovereign.Structology.SP2Ternary
@@ -527,7 +527,7 @@ Sovereign.Application.FermatL0
 Sovereign.Problem.Hodge.EckmannGF3
 Sovereign.Application.KakeyaGF3
 Sovereign.Application.NSE
-Sovereign.Problem.NavierStokes.NSEOnT6
+Sovereign.Application.NSEOnT6
 Sovereign.Application.NSVortex
 Sovereign.Problem.PvsNP.Algorithm
 Sovereign.Problem.PvsNP.Complexity3
@@ -555,8 +555,8 @@ Sovereign.Application.DiscreteDiffOps
 Sovereign.Physics.DiscreteEMCore
 Sovereign.Physics.EntropySpinLaw
 Sovereign.Problem.ABC.L1Disjunction
-Sovereign.Problem.Hodge.EulerPoincareInstance
-Sovereign.Problem.Hodge.FormanMorseInequality
+Sovereign.Application.EulerPoincareInstance
+Sovereign.Application.FormanMorseInequality
 Sovereign.RootMath.EnergyGap
 Sovereign.Structology.DiscreteCalculus
 Sovereign.Coupling.LossGain
@@ -581,7 +581,7 @@ Sovereign.Applied.GameTheory
 Sovereign.Applied.NeuroscienceDiscrete
 Sovereign.MetaStructure.Nayin
 Sovereign.Applied.MolecularSymmetry
-Sovereign.Physics.H2OC60
+Sovereign.Application.H2OC60
 Sovereign.Topology.QAnalysisRecord
 Sovereign.Topology.FormanMinimal
 Sovereign.Topology.McCordCore
@@ -641,7 +641,7 @@ Sovereign.Algebra.VortexDifferential
 Sovereign.Algebra.VortexRoot
 Sovereign.Structology.A4GroupAction
 Sovereign.Infrastructure.KernelSpec
-Sovereign.Problem.Hodge.FreeAbBoundary
+Sovereign.Application.FreeAbBoundary
 Sovereign.Analysis.CauchySchwarz
 Sovereign.Analysis.FunctionalAnalysisDiscrete
 Sovereign.Analysis.L2Bridge
@@ -683,13 +683,13 @@ Sovereign.Constitution.DecisionSoundness
 Sovereign.Physics.ChiralInterference
 Sovereign.Physics.DiscreteMaxwellGF9
 Sovereign.Physics.DNAEncoding
-Sovereign.Physics.HoneycombMagneticField
-Sovereign.Physics.InvisibleOrbitCount
+Sovereign.Application.HoneycombMagneticField
+Sovereign.Application.InvisibleOrbitCount
 Sovereign.Physics.LightRotationFrequency
 Sovereign.Physics.LightRotationTernary
-Sovereign.Physics.OpticalSampling
+Sovereign.Application.OpticalSampling
 Sovereign.Physics.PhaseTransition
-Sovereign.Physics.RightHandedNeutrinoTheorem
+Sovereign.Application.RightHandedNeutrinoTheorem
 Sovereign.Physics.RootTwoGF9
 Sovereign.Physics.TorusChain
 Sovereign.Physics.WaterAnchors
@@ -698,7 +698,7 @@ Sovereign.Physics.WaterStates
 Sovereign.Problem.Fermat.FermatL3
 Sovereign.Problem.Kakeya.KakeyaGF9
 Sovereign.Application.Galois
-Sovereign.Problem.Riemann.Variety
+Sovereign.Application.Variety
 Sovereign.Problem.Sqrt2.GF9Sqrt2
 Sovereign.Problem.YangMills.YM_SpectralGap
 Sovereign.Quantum.Entanglement
@@ -719,12 +719,12 @@ Sovereign.Applied.CircuitExtended
 Sovereign.Problem.BSD.BSD9
 Sovereign.Problem.BSD.SelmerDiscrete
 Sovereign.Application.ZetaDiscrete
-Sovereign.Problem.Riemann.RH
+Sovereign.Application.RH
 Sovereign.Problem.Fermat.FermatL1
-Sovereign.Problem.Hodge.BoundaryGF3
+Sovereign.Application.BoundaryGF3
 Sovereign.Problem.Kakeya.KakeyaPathology
 Sovereign.Problem.NavierStokes.NSEFluxTelescope
-Sovereign.Problem.NavierStokes.NSRegularity
+Sovereign.Application.NSRegularity
 Sovereign.Coding.CyclicGF27
 Sovereign.Topology.MorseBoundaryDT
 Sovereign.Topology.MorsePairingLaw
@@ -740,14 +740,14 @@ Sovereign.Coupling.TQ10
 Sovereign.Coupling.Zhonglv
 Sovereign.RootMath.LengthLattice
 Sovereign.Structology.Aether
-Sovereign.Problem.Riemann.ZetaFunctional
+Sovereign.Application.ZetaFunctional
 Sovereign.Structology.BinaryTetrahedralDefiningRep
 Sovereign.Structology.BinaryTetrahedralIrreducibility
 Sovereign.Structology.BinaryTetrahedralTwoDimTensors
 Sovereign.Structology.MagicSquare144Partition
 Sovereign.Algebra.ZhonglvClosure
 Sovereign.Coupling.ZhonglvPhaseSync
-Sovereign.Physics.QuartzPhonon
+Sovereign.Application.QuartzPhonon
 Sovereign.Topology.QAnalysisFacesInstance
 Sovereign.Topology.QAnalysisTwoTriangles
 Sovereign.Topology.QPathMonotone
@@ -800,9 +800,9 @@ Sovereign.Algebra.FreeAbGroupLaws
 Sovereign.Algebra.FreeAbQuotient
 Sovereign.Application.FreeAbH0
 Sovereign.Application.FreeAbHomology
-Sovereign.Problem.Hodge.FreeAbImSubsetPlane
+Sovereign.Application.FreeAbImSubsetPlane
 Sovereign.Application.FreeAbInnerProduct
-Sovereign.Problem.Hodge.FreeAbPlaneSurjective
+Sovereign.Application.FreeAbPlaneSurjective
 Sovereign.Algebra.ConsciousnessLayer
 Sovereign.Algebra.ComplexProjection
 Sovereign.Algebra.ProjectionAnalysis
@@ -827,9 +827,9 @@ Sovereign.Geometry.GeometricFidelity
 Sovereign.Physics.HamiltonianDiscrete
 Sovereign.Physics.LatticeMembrane
 Sovereign.Problem.ABC.ABCL1
-Sovereign.Problem.NavierStokes.NSEBlowupBound
+Sovereign.Application.NSEBlowupBound
 Sovereign.Problem.NavierStokes.NSEPhaseField
-Sovereign.Problem.NavierStokes.NSEPresentation
+Sovereign.Application.NSEPresentation
 Sovereign.Structology.SphericalVector
 Sovereign.Problem.PvsNP.Complexity
 Sovereign.Problem.PvsNP.DetMul
@@ -849,7 +849,7 @@ Sovereign.Algebra.PontryaginC3
 Sovereign.Analysis.VertexAlgebraDiscrete
 Sovereign.Analysis.NormDiscrete
 Sovereign.Physics.EntropySpinBalance
-Sovereign.Physics.OpticalWindow
+Sovereign.Application.OpticalWindow
 Sovereign.Quantum.Measurement
 Sovereign.Quantum.NoCloning
 Sovereign.Structology.MotorStableStates
@@ -907,8 +907,8 @@ Sovereign.Algebra.CRTDetGeneral
 Sovereign.Problem.Hodge.FreeAbImEquiv
 Sovereign.Topology.ChainQuotIso
 Sovereign.Application.FreeAbHomologyGroup
-Sovereign.Problem.Hodge.FreeAbHodgeVerdict
-Sovereign.Problem.Hodge.FreeAbNonDegenerate
+Sovereign.Application.FreeAbHodgeVerdict
+Sovereign.Application.FreeAbNonDegenerate
 Sovereign.Algebra.DegenerationRisk
 Sovereign.Algebra.DiscreteAnalysis
 Sovereign.Algebra.DiscreteDE
@@ -925,10 +925,10 @@ Sovereign.Problem.Fermat.FermatL4_Mod12Cycle
 Sovereign.Algebra.Dihedral.CayleyMetric
 Sovereign.Algebra.GroupTheory.DCGroup
 Sovereign.Algebra.GroupTheory.PhaseSubgroup
-Sovereign.Problem.NavierStokes.NSEMadelungConstrained
-Sovereign.Problem.NavierStokes.NSEMadelungNonTrivial
+Sovereign.Application.NSEMadelungConstrained
+Sovereign.Application.NSEMadelungNonTrivial
 Sovereign.Problem.NavierStokes.NSEPhasePeriod
-Sovereign.Problem.NavierStokes.NSEFinalClosure
+Sovereign.Application.NSEFinalClosure
 Sovereign.Problem.PvsNP.CharPoly3
 Sovereign.Problem.PvsNP.PvsNP_L15
 Sovereign.Analysis.HilbertDiscrete
@@ -936,12 +936,12 @@ Sovereign.Applied.DeepAlgebraProofs
 Sovereign.Physics.QuantumFieldAstrophysics
 Sovereign.Physics.QuantumMotor
 Sovereign.Application.DiscreteFourier
-Sovereign.Problem.Hodge.EckmannNonSplitting
+Sovereign.Application.EckmannNonSplitting
 Sovereign.Problem.Hodge.GraphMorseInstance
 Sovereign.Problem.Hodge.Hodge
 Sovereign.Problem.Hodge.HodgeK3Panorama
 Sovereign.Problem.Hodge.PerfectMorseInequality
-Sovereign.Problem.Hodge.PerfectMorseInstance
+Sovereign.Application.PerfectMorseInstance
 Sovereign.Topology.MorseCriticalHomology
 Sovereign.Topology.MorseStrongCritical
 Sovereign.Algebra.GroupTheory.CosetConstruction
@@ -995,7 +995,7 @@ Sovereign.Algebra.GroupTheory.CosetAuto
 Sovereign.Foundation.Finiteness.Tarski
 Sovereign.Algebra.Holographic.ClassicAnalysis
 Sovereign.Topology.KerTrivial
-Sovereign.Problem.NavierStokes.NSEIncompressible
+Sovereign.Application.NSEIncompressible
 Sovereign.Physics.VectorFieldGeometricPhase
 Sovereign.Algebra.GroupTheory.RepresentationTheory
 Sovereign.Infrastructure.Constitution
@@ -1003,7 +1003,7 @@ Sovereign.Foundation.Finiteness.Foundations
 Sovereign.Algebra.Jacobian.jac_AutT6
 Sovereign.Algebra.Jacobian.jac_LieGroup
 Sovereign.Completeness.CompletenessTheorem
-Sovereign.Physics.LightConeMatrix
+Sovereign.Application.LightConeMatrix
 Sovereign.Structology.HoloInformation
 Sovereign.Quantum.Foundation
 Sovereign.Structology.QuantumBridge
@@ -1021,12 +1021,12 @@ Sovereign.Algebra.GroupTheory.BurnsideFiber
 Sovereign.Problem.NavierStokes.NSEFixedPointStrict
 Sovereign.Analysis.FinitenessZoo
 Sovereign.Algebra.GroupTheory.OrbitPartition
-Sovereign.Problem.NavierStokes.NSESupportBound
+Sovereign.Application.NSESupportBound
 Sovereign.Problem.NavierStokes.NSESupportNonMonotone
 Sovereign.Problem.NavierStokes.NSESupportOrbitPeriod
 Sovereign.Problem.NavierStokes.NSESupportZero
 Sovereign.Algebra.GroupTheory.BurnsideMain
-Sovereign.Problem.NavierStokes.NSESupportFixedInv
+Sovereign.Application.NSESupportFixedInv
 Sovereign.Algebra.GroupTheory.ActionIsomorphism
 Sovereign.Algebra.GroupTheory.BurnsideCriterion
 Sovereign.Algebra.GroupTheory.BurnsideNecklace

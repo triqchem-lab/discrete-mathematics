@@ -14,7 +14,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- 三角复形: dim ℋ = dim H = 1 (来自 jac_Hodge)
 open import Sovereign.Application.Hodge using (hodge-isomorphism)
-open import Sovereign.Problem.Hodge.ChainComplex
+open import Sovereign.Application.ChainComplex
   using (ChainComplex; dimH; tri; tri-h0; tri-h1; hodge-thm)
 
 -- 代数闭链维数 = Hodge 类维数 = 1

@@ -43,7 +43,7 @@ open ≡-Reasoning
 --   dx-neg, dy-neg, dz-neg, dx-add, dy-add, dz-add,
 --   grad, vx, vy, vz, div, curl, curl-grad-zero,
 --   pair-cancel-1/2/3, div-curl-zero-paired, shuffle23
-open import Sovereign.Physics.DiscreteEMField3D
+open import Sovereign.Application.DiscreteEMField3D
 
 ------------------------------------------------------------------------------
 -- §0a. 向量加法与零元

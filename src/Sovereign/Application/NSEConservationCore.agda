@@ -24,7 +24,7 @@ open import Relation.Binary.PropositionalEquality using
 
 open import Sovereign.Base.Trit using
   (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-assoc; ⊕-comm; ⊕-identityˡ; ⊕-identityʳ)
-open import Sovereign.Problem.NavierStokes.NSEOnT6 using
+open import Sovereign.Application.NSEOnT6 using
   (C3; Torus6; ScalarField; sum3; shift3; sum3-+; negate-⊕)
 open import Sovereign.Application.NSEFluxTelescope using (cancel3; swap2)
 

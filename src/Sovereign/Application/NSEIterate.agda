@@ -29,10 +29,10 @@ module Sovereign.Application.NSEIterate where
 open import Data.Nat using (ℕ; zero; suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans)
 
-open import Sovereign.Problem.NavierStokes.NSEOnT6 using
+open import Sovereign.Application.NSEOnT6 using
   (Field; Incompressible; nsStep; iterate)
 open import Sovereign.Application.NSEConservation using (totalF; total-nsStep)
-open import Sovereign.Problem.NavierStokes.NSEIncompressible using (nsStep-incompressible)
+open import Sovereign.Application.NSEIncompressible using (nsStep-incompressible)
 
 --------------------------------------------------------------------------------
 -- §1. n 步总量不变

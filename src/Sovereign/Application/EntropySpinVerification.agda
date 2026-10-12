@@ -29,7 +29,7 @@ open import Data.Rational.Base using (mkℚ)
 open import Data.Rational.Properties
   using (+-assoc; +-comm; +-identityˡ; +-identityʳ; +-inverseʳ;
          neg-distrib-+; *-zeroʳ)
-open import Sovereign.Physics.DiscreteEMField3D using (Point3D; next)
+open import Sovereign.Application.DiscreteEMField3D using (Point3D; next)
 open import Sovereign.Application.EntropySpinLaw
 
 -- ℚ 双负 (stdlib 2.4 未导出; mkℚ 三情形 refl)

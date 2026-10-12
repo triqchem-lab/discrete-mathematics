@@ -44,7 +44,7 @@ open import Data.Rational using (ℚ; _+_; _-_; _*_; _/_; -_; 0ℚ; 1ℚ)
 open import Data.Rational.Properties
   using (+-assoc; +-comm; +-identityˡ; +-identityʳ; +-inverseʳ;
          *-distribˡ-+; neg-distrib-+)
-open import Sovereign.Physics.DiscreteEMField3D using (Point3D; next)
+open import Sovereign.Application.DiscreteEMField3D using (Point3D; next)
 
 --------------------------------------------------------------------------------
 -- §0. ℚ 值场与离散差分

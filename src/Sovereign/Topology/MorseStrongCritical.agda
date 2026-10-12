@@ -22,11 +22,11 @@ module Sovereign.Topology.MorseStrongCritical where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; z≤n; s≤s)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Problem.Hodge.ChainComplex
+open import Sovereign.Application.ChainComplex
   using (ChainComplex; dimH)
 open import Sovereign.Application.jac_Topology
   using (filled3C; dimH-filled3-0; dimH-filled3-1; dimH-filled3-2)
-import Sovereign.Problem.Hodge.ChainComplex as CC
+import Sovereign.Application.ChainComplex as CC
 
 --------------------------------------------------------------------------------
 -- §1. 单点复形：完美场临界复形（唯一临界 v2）

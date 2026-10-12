@@ -22,7 +22,7 @@ open import Sovereign.Base.Trit
          ⊗-assoc; ⊗-comm; ⊗-identityʳ; ⊗-distribˡ-⊕)
 open import Sovereign.Algebra.FreeAb
   using (FAb; zeroᶠ; _+ᶠ_; negᶠ; neg-add)
-open import Sovereign.Problem.Hodge.FreeAbBoundary
+open import Sovereign.Application.FreeAbBoundary
   using (C₀; C₁; ∂₁)
 
 --------------------------------------------------------------------------------

@@ -22,7 +22,7 @@ module Sovereign.Algebra.Holographic.FinalAudit where
 
 -- Navier-Stokes L3 ✅
 import Sovereign.Application.NSE          -- 12 定理, 0 postulate
-import Sovereign.Problem.NavierStokes.NSRegularity -- §5 动力学: step³-id/单射/能量守恒/周期
+import Sovereign.Application.NSRegularity -- §5 动力学: step³-id/单射/能量守恒/周期
 import Sovereign.Application.NSVortex
 
 -- Yang-Mills L3 ✅
@@ -34,7 +34,7 @@ import Sovereign.Application.SU2_Embedding
 import Sovereign.Application.WilsonPlaquette
 
 -- Hodge L3 ✅
-import Sovereign.Problem.Hodge.ChainComplex       -- hodge-decomp: nullity∂ ≡ rank∂∘suc + dimℋ
+import Sovereign.Application.ChainComplex       -- hodge-decomp: nullity∂ ≡ rank∂∘suc + dimℋ
 import Sovereign.Application.Hodge
 import Sovereign.Application.HodgeTetra
 import Sovereign.Application.TorusHodge
@@ -50,8 +50,8 @@ import Sovereign.Application.BSD_General
 -- RH L3 ✅（自 L0+ 升级: 有限域 Weil 定理的整数形式 + Eisenstein 共轭对刚性）
 import Sovereign.Application.WeilRH
 import Sovereign.Application.WeilRigidity     -- t²+3s²=4q, L(E,1)=#E, α+conj(α)=t, αβ=q
-import Sovereign.Problem.Riemann.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
-import Sovereign.Problem.Riemann.RH
+import Sovereign.Application.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
+import Sovereign.Application.RH
 import Sovereign.Application.Galois
 import Sovereign.Application.ZetaDiscrete
 

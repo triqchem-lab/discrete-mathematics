@@ -34,7 +34,7 @@ open import Relation.Binary.PropositionalEquality
 open ≡-Reasoning
 
 -- 第二基石: GF3 域律 + 差分 + div/curl + dx/dy/dz-add/neg + 交换性
-open import Sovereign.Physics.DiscreteEMField3D
+open import Sovereign.Application.DiscreteEMField3D
 -- 核心定理层: addVec3(+零元) + shuffle22 + div-curl-zero 全形式
 open import Sovereign.Application.DiscreteEMCore
 

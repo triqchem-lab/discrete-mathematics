@@ -154,7 +154,7 @@
 | 3 | `Sovereign.Structology.T6` | 38 | 8% | T⁶ 离散环面 |
 | 4 | `Sovereign.Structology.Winding` | 29 | 6% | 缠绕数 |
 | 5 | `Sovereign.Base.Invariants` | 28 | 6% | 拓扑不变量 |
-| 6 | `Sovereign.Physics.DiscreteEMField3D` | 25 | 5% | 电磁场 3D |
+| 6 | `Sovereign.Application.DiscreteEMField3D` | 25 | 5% | 电磁场 3D |
 | 7 | `Sovereign.Algebra.Duodecimal` | 24 | 5% | Z/12 环 |
 | 8 | `Sovereign.Structology.A4Group` | 23 | 5% | A₄ 群 |
 | 9 | `Sovereign.Algebra.ProjectionDifferential` | 19 | 4% | 投影微分 |

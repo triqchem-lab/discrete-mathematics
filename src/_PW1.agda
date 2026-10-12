@@ -30,7 +30,7 @@ open import Sovereign.Algebra.Combinatorics.Counting using (binom)
 open import Sovereign.Topology.Graphs.Trees using (SpanningTree; K2; spanning-K2)
 
 open import Sovereign.Application.InformationEntropy using (entTotal)
-open import Sovereign.Physics.EntropySpin using (entropySpinNum)
+open import Sovereign.Application.EntropySpin using (entropySpinNum)
 
 open import Sovereign.Algebra.Polynomials using (eval)
 open import Sovereign.Algebra.LaurentPolynomial using (Laurent; const; coeff)

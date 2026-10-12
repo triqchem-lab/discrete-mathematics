@@ -38,15 +38,15 @@ open import Sovereign.Analysis.PairEnc using (pairEnc; pairEnc-injective)
 open import Sovereign.Synthesis.FinMixedRadix using (enc12; enc12-inj-pointwise; suc≤12)
 open import Sovereign.Foundation.FiniteDynamics using (orbit)
 open import Sovereign.Application.FiniteOrbitObs using (finite-orbit-obs)
-open import Sovereign.Problem.NavierStokes.NSEPresentation using
+open import Sovereign.Application.NSEPresentation using
   (decodePt; encodePt; decodePt-encodePt)
-open import Sovereign.Problem.NavierStokes.NSEOnT6 using
+open import Sovereign.Application.NSEOnT6 using
   (C3; Torus6; ScalarField; Field; v1; v2; v3; v4; v5; v6;
    sum6; shiftAt; diffF; _+S_; _+F_; div; grad; nsStep)
 open import Sovereign.Application.NSEFixedPoint using (comp; axisOf)
 open import Sovereign.Application.NSEFixedPointStrict using (supportCount)
 open import Sovereign.Application.NSEConservation using (sum6-cong)
-open import Sovereign.Problem.NavierStokes.NSESupportFixedInv using (supportCount-ext)
+open import Sovereign.Application.NSESupportFixedInv using (supportCount-ext)
 
 --------------------------------------------------------------------------------
 -- §1. 槽位管道: Fin 4374 ↔ Fin 6 × Torus6（6 × 729）

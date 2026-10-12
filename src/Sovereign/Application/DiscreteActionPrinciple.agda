@@ -34,7 +34,7 @@ open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
 
 -- 3D 场运算
-open import Sovereign.Physics.DiscreteEMField3D
+open import Sovereign.Application.DiscreteEMField3D
   using (Point3D; GF3; ScalarField; VectorField; next;
          dx; dy; dz; grad; curl; div; vx; vy; vz;
          add3; neg3)

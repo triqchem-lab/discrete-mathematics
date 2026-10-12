@@ -24,7 +24,7 @@ open import Function using (_∘_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
 
-open import Sovereign.Physics.DiscreteEMField3D
+open import Sovereign.Application.DiscreteEMField3D
   using (Point3D; GF3; ScalarField; VectorField; next;
          dx; dy; dz; grad; curl; div; vx; vy; vz;
          add3; neg3; add3-comm; add3-assoc; add3-identity; add3-inverse;

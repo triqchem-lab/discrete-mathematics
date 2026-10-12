@@ -22,7 +22,7 @@ open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Product using (Σ; _×_; _,_)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
-open import Sovereign.Problem.Hodge.FreeAbBoundary using (C₀; C₁; C₂; ∂₁; ∂₂)
+open import Sovereign.Application.FreeAbBoundary using (C₀; C₁; C₂; ∂₁; ∂₂)
 open import Sovereign.Topology.MorseCriticalHomology using (∂₁ᶜ; C₀ᶜ; C₁ᶜ)
 open import Sovereign.Algebra.FreeAb using (zeroᶠ)
 open import Sovereign.Synthesis.ChainQuotIso using (Zero; zero-pt; zero-iso)

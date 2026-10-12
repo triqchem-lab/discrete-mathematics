@@ -76,7 +76,7 @@ module HomologyIso
 -- ────────────────────────────────────────────────────────────────────
 -- §2 K₃ 恒等 quasi-iso 实例（尊重性/同伦见证均由 hr-refl-k3 承载）
 -- ────────────────────────────────────────────────────────────────────
-open import Sovereign.Problem.Hodge.FreeAbBoundary using (C₀; C₁; C₂; ∂₁; ∂₂)
+open import Sovereign.Application.FreeAbBoundary using (C₀; C₁; C₂; ∂₁; ∂₂)
 
 module K3Instance
   (comp0-k3 : (c : C₂) → ∂₁ (∂₂ c) ≡ zero₃)

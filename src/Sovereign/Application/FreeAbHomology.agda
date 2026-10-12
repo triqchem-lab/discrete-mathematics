@@ -30,7 +30,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; trans; sym)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
 open import Sovereign.Algebra.FreeAb using (FAb)
-open import Sovereign.Problem.Hodge.FreeAbBoundary using (∂₁; ∂₂; C₁)
+open import Sovereign.Application.FreeAbBoundary using (∂₁; ∂₂; C₁)
 
 --------------------------------------------------------------------------------
 -- §1. GF(3) 消去律：a + 2b ≡ 0 → a ≡ b（9 case；6 支构造子冲突 λ ()）

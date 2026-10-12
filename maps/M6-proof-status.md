@@ -373,20 +373,20 @@
 - `Sovereign.Physics.DiscreteNoether` — 437行, refl×106
 - `Sovereign.Physics.DiscreteActionPrinciple` — 280行, refl×92
 - `Sovereign.Physics.DiscreteMaxwellGF9` — 1116行, refl×70
-- `Sovereign.Physics.DiscreteEMField3D` — 513行, refl×55
+- `Sovereign.Application.DiscreteEMField3D` — 513行, refl×55
 - `Sovereign.Physics.DiscreteEMField` — 339行, refl×48
 - `Sovereign.Physics.DiscreteStatMech` — 407行, refl×38
 - `Sovereign.Physics.DiscreteLagrangian` — 162行, refl×37
-- `Sovereign.Physics.OpticalWindow` — 498行, refl×37
+- `Sovereign.Application.OpticalWindow` — 498行, refl×37
 - `Sovereign.Physics.LatticeMembrane` — 232行, refl×28
-- `Sovereign.Physics.OpticalSampling` — 357行, refl×28
+- `Sovereign.Application.OpticalSampling` — 357行, refl×28
 - `Sovereign.Physics.EntropySpinVerification` — 473行, refl×26
 - `Sovereign.Physics.LightRotationTernary` — 204行, refl×24
 - `Sovereign.Physics.DiscreteDiffOps` — 240行, refl×23
 - `Sovereign.Physics.ChiralInterference` — 170行, refl×17
 - `Sovereign.Physics.DiscreteLagrangian3D` — 343行, refl×16
 - `Sovereign.Physics.WaterQuantumIntegration` — 289行, refl×15
-- `Sovereign.Physics.H2OC60` — 240行, refl×13
+- `Sovereign.Application.H2OC60` — 240行, refl×13
 - `Sovereign.Physics.IsingTriangle` — 63行, refl×13
 - `Sovereign.Physics.QuantumMotor` — 121行, refl×13
 - `Sovereign.Physics.DiscreteMaxwellTime` — 315行, refl×12
@@ -398,10 +398,10 @@
 - `Sovereign.Physics.EntropySpinQuantize` — 250行, refl×10
 - `Sovereign.Physics.LightRotationFrequency` — 142行, refl×10
 - `Sovereign.Physics.ProteinFolding` — 130行, refl×10
-- `Sovereign.Physics.RightHandedNeutrinoTheorem` — 107行, refl×10
-- `Sovereign.Physics.LightConeMatrix` — 266行, refl×9
+- `Sovereign.Application.RightHandedNeutrinoTheorem` — 107行, refl×10
+- `Sovereign.Application.LightConeMatrix` — 266行, refl×9
 - `Sovereign.Physics.Superconductivity` — 132行, refl×9
-- `Sovereign.Physics.InvisibleOrbitCount` — 104行, refl×8
+- `Sovereign.Application.InvisibleOrbitCount` — 104行, refl×8
 - `Sovereign.Physics.LightCone` — 137行, refl×8
 - `Sovereign.Physics.MaxwellFromLagrangian` — 233行, refl×8
 - `Sovereign.Physics.DiscreteEMCore` — 327行, refl×7
@@ -411,12 +411,12 @@
 - `Sovereign.Physics.DNAEncoding` — 104行, refl×6
 - `Sovereign.Physics.TorusChain` — 151行, refl×6
 - `Sovereign.Physics.DiscreteMaxwellConservation` — 126行, refl×5
-- `Sovereign.Physics.EntropySpin` — 184行, refl×5
+- `Sovereign.Application.EntropySpin` — 184行, refl×5
 - `Sovereign.Physics.RootTwoGF9` — 41行, refl×5
 - `Sovereign.Physics.SpaceTimeMapping` — 101行, refl×5
 - `Sovereign.Physics.WaterStructure` — 175行, refl×5
 - `Sovereign.Physics.AlphaRelation` — 57行, refl×4
-- `Sovereign.Physics.HoneycombMagneticField` — 201行, refl×4
+- `Sovereign.Application.HoneycombMagneticField` — 201行, refl×4
 - `Sovereign.Physics.HydrogenBondCoherence` — 179行, refl×4
 - `Sovereign.Physics.ObservabilityAngle` — 46行, refl×4
 - `Sovereign.Physics.PhaseTransition` — 109行, refl×4
@@ -437,9 +437,9 @@
 - `Sovereign.Problem.NavierStokes.NSE` — 306行, refl×49
 - `Sovereign.Problem.Riemann.FrobeniusBlind` — 285行, refl×43
 - `Sovereign.Problem.YangMills.YM_SpectralGap` — 526行, refl×35
-- `Sovereign.Problem.Riemann.ZetaFunctional` — 279行, refl×33
+- `Sovereign.Application.ZetaFunctional` — 279行, refl×33
 - `Sovereign.Problem.Riemann.WeilRigidity` — 228行, refl×26
-- `Sovereign.Problem.Riemann.RH` — 109行, refl×24
+- `Sovereign.Application.RH` — 109行, refl×24
 - `Sovereign.Problem.BSD.BSD_L3` — 77行, refl×21
 - `Sovereign.Problem.PvsNP.CubicRootTest` — 133行, refl×17
 - `Sovereign.Problem.PvsNP.GF27Separation` — 172行, refl×17
@@ -449,14 +449,14 @@
 - `Sovereign.Problem.Hodge.Hodge` — 93行, refl×10
 - `Sovereign.Problem.Kakeya.KakeyaGF3` — 204行, refl×10
 - `Sovereign.Problem.Hodge.TorusHodge` — 46行, refl×9
-- `Sovereign.Problem.NavierStokes.NSRegularity` — 166行, refl×9
+- `Sovereign.Application.NSRegularity` — 166行, refl×9
 - `Sovereign.Problem.NavierStokes.NSVortex` — 128行, refl×9
 - `Sovereign.Problem.PvsNP.PvsNP_Separation` — 131行, refl×9
 - `Sovereign.Problem.Riemann.Galois` — 178行, refl×9
 - `Sovereign.Problem.Hodge.HodgeTetra` — 34行, refl×8
 - `Sovereign.Problem.Hodge.KleinHodge` — 41行, refl×8
 - `Sovereign.Problem.Kakeya.KakeyaPathology` — 272行, refl×8
-- `Sovereign.Problem.Hodge.ChainComplex` — 40行, refl×6
+- `Sovereign.Application.ChainComplex` — 40行, refl×6
 - `Sovereign.Problem.Hodge.EulerChar` — 44行, refl×6
 - `Sovereign.Problem.PvsNP.Complexity` — 229行, refl×6
 - `Sovereign.Problem.PvsNP.Complexity3` — 55行, refl×6
@@ -473,7 +473,7 @@
 - `Sovereign.Problem.Hodge.DeligneHodge` — 27行, refl×3
 - `Sovereign.Problem.Kakeya.KakeyaGF9` — 180行, refl×3
 - `Sovereign.Problem.PvsNP.PvsNP_L15` — 28行, refl×3
-- `Sovereign.Problem.Riemann.Variety` — 34行, refl×3
+- `Sovereign.Application.Variety` — 34行, refl×3
 - `Sovereign.Problem.YangMills.SU2_Embedding` — 37行, refl×3
 - `Sovereign.Problem.BSD.ZetaDiscrete` — 54行, refl×2
 - `Sovereign.Problem.Hodge.Hodge_L3` — 28行, refl×2
@@ -613,7 +613,7 @@
 | `Sovereign.Coupling.Entanglement` | 3 | 13 | 待分类 |
 | `Sovereign.Coupling.TQ10` | 3 | 5 | 待分类 |
 | `Sovereign.Coupling.Zhonglv` | 3 | 8 | 待分类 |
-| `Sovereign.Physics.QuartzPhonon` | 3 | 47 | 待分类 |
+| `Sovereign.Application.QuartzPhonon` | 3 | 47 | 待分类 |
 | `Sovereign.Structology.Platonics` | 3 | 22 | 待分类 |
 | `Sovereign.Structology.T6` | 3 | 101 | REWRITE配套 |
 | `Sovereign.RootMath.DigitalRoot` | 2 | 1 | 待分类 |

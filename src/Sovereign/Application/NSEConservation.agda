@@ -32,7 +32,7 @@ open import Relation.Binary.PropositionalEquality using
   (_≡_; refl; trans; cong; cong₂)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-identityʳ)
-open import Sovereign.Problem.NavierStokes.NSEOnT6 using
+open import Sovereign.Application.NSEOnT6 using
   (C3; Torus6; ScalarField; Field; v1; v2; v3; v4; v5; v6; mkField;
    sum3; sum6; shift3; shiftAt; shiftF; diffF; _+S_; _+F_; div; grad; nsStep)
 open import Sovereign.Application.NSEConservationCore using

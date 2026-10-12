@@ -25,7 +25,7 @@ open import Cubical.Foundations.HLevels using (isSetΠ; isPropΠ; isPropΠ2)
 import _PM7a
 open import Sovereign.Algebra.FreeAb using (FAb; _+ᶠ_; negᶠ)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate)
-open import Sovereign.Problem.Hodge.FreeAbBoundary using (C₀; C₁; C₂; ∂₁; ∂₂)
+open import Sovereign.Application.FreeAbBoundary using (C₀; C₁; C₂; ∂₁; ∂₂)
 
 --------------------------------------------------------------------------------
 -- §0 逐点 Trit 律（策略 A ≤27 case——transport 源的最底层）

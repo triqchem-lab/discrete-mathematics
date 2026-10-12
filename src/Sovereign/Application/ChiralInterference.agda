@@ -33,7 +33,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; fin3ToTrit; ⊕-comm; ⊕-inverse; negate²)
-open import Sovereign.Physics.DiscreteEMField3D using (Point3D; next)
+open import Sovereign.Application.DiscreteEMField3D using (Point3D; next)
 open import Sovereign.Algebra.GF9 using (GF9; gf9-one; gf9-zero; alpha; _+gf9_; _*gf9_; galoisConjugate; galoisConjugate²)
 
 --------------------------------------------------------------------------------

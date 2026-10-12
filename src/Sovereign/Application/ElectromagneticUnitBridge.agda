@@ -43,7 +43,7 @@ open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
 
 -- 第二基石: 3D 场运算
-open import Sovereign.Physics.DiscreteEMField3D
+open import Sovereign.Application.DiscreteEMField3D
   using (Point3D; GF3; ScalarField; VectorField; next; vx; vy; vz;
          dx; dy; dz; grad; curl; div)
 
@@ -70,7 +70,7 @@ open import Sovereign.Application.DiscreteMaxwellConservation
   using (yee-B; yee-E; gauss-preservation; yee-gauss-preservation)
 
 -- 混合偏导交换 (从第二基石)
-open import Sovereign.Physics.DiscreteEMField3D
+open import Sovereign.Application.DiscreteEMField3D
   using (dy-dx-comm; dz-dx-comm; dz-dy-comm)
 
 --------------------------------------------------------------------------------
