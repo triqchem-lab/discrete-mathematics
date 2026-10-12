@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEPresentation
+-- | Sovereign.Application.NSEPresentation
 -- 离散 N-S 的**展示群**表述 (无信息丢失)
 --
 -- 定位: 取代 NSEOnT6 的纯 GF(3) 幅度载体。按 `docs/duodecimal/11-type-theory-presentation.md`
@@ -28,7 +28,7 @@
 -- 依赖: Base.Trit, Algebra.GroupTheory.DuodecClock (已证群律)
 -- 0 postulate / 0 hole
 
-module Sovereign.Problem.NavierStokes.NSEPresentation where
+module Sovereign.Application.NSEPresentation where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _^_; _<_; _≤_; z≤n; s≤s)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤n⇒m≤1+n; +-mono-≤; *-mono-≤)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Riemann.ZetaFunctional
+-- | Sovereign.Application.ZetaFunctional
 -- 有限域 zeta 函数的有理式、函数方程与零点刚性 (P1-1, 11M 离散版)
 --
 -- 数学背景:
@@ -24,7 +24,7 @@
 --   §2 函数方程: Z(1/qT) = Z(T) — 交叉相乘 + 约分形式 (三条曲线 + GF(9) 层)
 --   §3 零点刚性: P*(α)=P*(β)=0 (互逆多项式), 判别式 Δ=t²−4q=−3s²
 
-module Sovereign.Problem.Riemann.ZetaFunctional where
+module Sovereign.Application.ZetaFunctional where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)
 open import Data.Product using (_×_; _,_)

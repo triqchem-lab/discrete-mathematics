@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEFinalClosure
+-- | Sovereign.Application.NSEFinalClosure
 --
 -- 离散 NSE 的**最终周期性闭合**：从展示群状态编码到有限动力学鸽巢引理。
 --
@@ -22,7 +22,7 @@
 --
 -- 0 postulate / 0 hole。
 
-module Sovereign.Problem.NavierStokes.NSEFinalClosure where
+module Sovereign.Application.NSEFinalClosure where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _*_; _^_; _≤_; _<_; z≤n; s≤s)
 open import Data.Nat.Properties using (<⇒≤; n<1+n; m+[n∸m]≡n; +-comm; +-assoc; +-identityʳ; +-suc)
@@ -35,7 +35,7 @@ open import Relation.Binary.PropositionalEquality
 open import Sovereign.Foundation.FiniteDynamics using (orbit; arith-rearrange; pigeonhole-fin)
 open import Sovereign.Synthesis.FinMixedRadix using (N12; enc12; enc12-inj-pointwise; suc≤12)
 open import Sovereign.Analysis.PairEnc using (pairEnc; pairEnc-injective)
-open import Sovereign.Problem.NavierStokes.NSEPresentation using
+open import Sovereign.Application.NSEPresentation using
   (PresField; Torus6; Axis6; shiftAt; amp; ph; ext; compEnc; compEnc-injective;
    decodePt; encodePt; decodePt-encodePt)
 

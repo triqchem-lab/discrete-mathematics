@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEBlowupBound
+-- | Sovereign.Application.NSEBlowupBound
 -- 离散意义下的「无爆聚」：定义 + 定理 (闭合 NSEPhaseField 的 O3 第二半)
 --
 -- 背景: NSEPhaseField.agda:396-401 与 :541-549 把 O3 记为**立场而非定理**,
@@ -32,7 +32,7 @@
 --
 -- 0 postulate / 0 hole
 
-module Sovereign.Problem.NavierStokes.NSEBlowupBound where
+module Sovereign.Application.NSEBlowupBound where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

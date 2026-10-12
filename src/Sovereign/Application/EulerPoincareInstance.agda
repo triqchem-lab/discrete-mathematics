@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.EulerPoincareInstance
+-- | Sovereign.Application.EulerPoincareInstance
 -- 任务书第四/五层桥接：欧拉–庞加莱公式的 K₃ 实例闭合
 --
 -- 数学背景：欧拉–庞加莱公式 χ = Σ(-1)^k β_k 对有限 CW 复形成立。
@@ -16,12 +16,12 @@
 --      对应 β/Morse 和一致——不混用。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.EulerPoincareInstance where
+module Sovereign.Application.EulerPoincareInstance where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Problem.Hodge.ChainComplex using (dimH; tri)
+open import Sovereign.Application.ChainComplex using (dimH; tri)
 
 --------------------------------------------------------------------------------
 -- §1. 图 1-骨架的欧拉–庞加莱（K₃：V=3, E=3, F=0）

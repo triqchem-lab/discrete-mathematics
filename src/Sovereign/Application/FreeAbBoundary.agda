@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.FreeAbBoundary
+-- | Sovereign.Application.FreeAbBoundary
 -- 任务书第二层·2.1 收官 + 2.5 解阻塞：FreeAb 载体上的泛型边界算子与
 --   ∂∘∂ ≡ 0 主定理（K₃ 填充三角实例）
 --
@@ -25,7 +25,7 @@
 --   本模块是同一 ∂∂=0 定理在 FreeAb 泛型载体上的重述）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.FreeAbBoundary where
+module Sovereign.Application.FreeAbBoundary where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Nat using (ℕ; zero; suc)

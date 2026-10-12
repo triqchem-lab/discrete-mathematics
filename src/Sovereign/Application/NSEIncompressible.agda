@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEIncompressible
+-- | Sovereign.Application.NSEIncompressible
 -- **无条件**版不可压保持: `nsStep` 保持 `Incompressible`
 --
 -- 背景: `NSEOnT6:615` 的同名定理带前提 `(∀ f x → laplacian f x ≡ T₀)` ——
@@ -26,13 +26,13 @@
 --
 -- 依赖: NSEOnT6（算子与 diffF-+/sum6-+/Incompressible）, NSEConservation（sum6-cong）
 
-module Sovereign.Problem.NavierStokes.NSEIncompressible where
+module Sovereign.Application.NSEIncompressible where
 
 open import Data.Fin using (zero; suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; cong)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-identityʳ)
-open import Sovereign.Problem.NavierStokes.NSEOnT6 using
+open import Sovereign.Application.NSEOnT6 using
   (C3; Torus6; ScalarField; Field; v1; v2; v3; v4; v5; v6; zeroField;
    sum6; shiftAt; shiftF; diffF; _+S_; _+F_; div; grad; nsStep; Incompressible;
    diffF-+S; sum6-+)

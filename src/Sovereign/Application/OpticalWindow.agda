@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.OpticalWindow
+-- | Sovereign.Application.OpticalWindow
 -- 光学窗口形式化 — 可见光 = 电磁学的频率窗口 (0 postulate)
 --
 -- 核心主张: 光不是独立实体, 是电磁场在 Frobenius 频率窗口的共振表现。
@@ -14,7 +14,7 @@
 -- §4 衍射: 离散 Huygens-Fresnel
 -- §5 与已有模块的对接
 
-module Sovereign.Physics.OpticalWindow where
+module Sovereign.Application.OpticalWindow where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_)
 open import Data.Nat.Properties using (*-suc)
@@ -30,12 +30,12 @@ open import Sovereign.Algebra.GF9
          galoisNorm-conjugate;
          alpha; neg-alpha; alpha-squared; alpha-powers-4; alpha-powers-sum-zero;
          galoisConjugate²; norm-mul; *gf9-identityˡ; +gf9-identityˡ; *gf9-assoc)
-open import Sovereign.Physics.DiscreteEMField3D
+open import Sovereign.Application.DiscreteEMField3D
   using (Point3D; GF3; ScalarField; VectorField; next;
          dx; dy; dz; grad; curl; div; add3; neg3)
 open import Sovereign.Application.ObservabilityAngle
   using (photon-structure-angle; eye-sampling-angle; visible-light-observable)
-open import Sovereign.Physics.OpticalSampling
+open import Sovereign.Application.OpticalSampling
   using (norm-nondegenerate; norm-nondegenerate-at; norm-nondegenerate-witness)
 
 --------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.OpticalSampling
+-- | Sovereign.Application.OpticalSampling
 -- 光学采样理论 — 眼睛 = 90° 匹配滤波器 (0 postulate)
 --
 -- 核心主张 (卢先生语料):
@@ -15,7 +15,7 @@
 --   §4 采样率-频率正比律
 --   §5 发射端-采样端互锁
 
-module Sovereign.Physics.OpticalSampling where
+module Sovereign.Application.OpticalSampling where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _∸_)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
@@ -31,7 +31,7 @@ open import Sovereign.Algebra.GF9
          galoisNorm-conjugate;
          alpha; neg-alpha; alpha-squared; alpha-powers-4;
          galoisConjugate²; norm-mul; *gf9-identityˡ)
-open import Sovereign.Physics.DiscreteEMField3D
+open import Sovereign.Application.DiscreteEMField3D
   using (Point3D; GF3; ScalarField; VectorField; next; add3; neg3)
 open import Sovereign.Application.ObservabilityAngle
   using (photon-structure-angle; eye-sampling-angle; visible-light-observable)

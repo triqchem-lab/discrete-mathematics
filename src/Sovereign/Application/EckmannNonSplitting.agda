@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.EckmannNonSplitting
+-- | Sovereign.Application.EckmannNonSplitting
 -- 任务书第四层·4.2 最后一块：Eckmann 分解不分裂的显式 GF(3) 见证
 --
 -- 数学背景：任务书 §4.2 的 ⚠ 修正指出：Eckmann 正交直和分解
@@ -22,7 +22,7 @@
 --   与 ker ∂₁（闭 1-链核）；二者相交非零 ⟺ 直和分解失效。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.EckmannNonSplitting where
+module Sovereign.Application.EckmannNonSplitting where
 
 open import Data.Product using (Σ; _×_; _,_)
 open import Relation.Binary.PropositionalEquality

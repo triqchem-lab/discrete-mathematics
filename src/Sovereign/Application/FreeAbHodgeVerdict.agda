@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.FreeAbHodgeVerdict
+-- | Sovereign.Application.FreeAbHodgeVerdict
 -- 任务书第二层·2.5 裁决：Hodge 分解在 GF(3) 标准内积下的机器裁决
 --
 -- 先算后验（oracle 回执 0e7da6ea，108 点全枚举无抽样）：
@@ -24,7 +24,7 @@
 --   (b) Hodge 分解改述为无内积形式（裂张量/显式补）——后续立项。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.FreeAbHodgeVerdict where
+module Sovereign.Application.FreeAbHodgeVerdict where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Nat using (ℕ; zero; suc)
@@ -32,7 +32,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
 open import Sovereign.Algebra.FreeAb using (FAb)
-open import Sovereign.Problem.Hodge.FreeAbBoundary
+open import Sovereign.Application.FreeAbBoundary
   using (∂₁; ∂₂; C₀; C₁; C₂; ∂∂-unit)
 open import Sovereign.Application.FreeAbHomology
   using (cycle-coeffs-equal)

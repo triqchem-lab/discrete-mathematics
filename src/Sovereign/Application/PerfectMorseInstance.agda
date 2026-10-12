@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.PerfectMorseInstance
+-- | Sovereign.Application.PerfectMorseInstance
 -- 任务书第五层·5.1 深化：Forman **完美 Morse 函数**实例（K₃ 填充三角）
 --
 -- 数学背景：Forman (1998) 称满足 m_k = β_k（每个维数取等）的离散 Morse
@@ -25,7 +25,7 @@
 --   3. 一般定理「完美 Morse 函数 ⟺ 极小复形」roadmap。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.PerfectMorseInstance where
+module Sovereign.Application.PerfectMorseInstance where
 
 open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

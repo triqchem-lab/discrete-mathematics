@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.FreeAbPlaneSurjective
+-- | Sovereign.Application.FreeAbPlaneSurjective
 -- 任务书第二层·2.5 推进：增广零平面的满性（平面 ⊆ im ∂₁——反向包含）
 --
 -- 数学背景：FreeAbImSubsetPlane 闭合了 im ∂₁ ⊆ 平面（正向）；本模块闭合
@@ -19,7 +19,7 @@
 -- 复用：FreeAbBoundary（∂₁/C₁/w₃ 风格）、FreeAb、Base/Trit 全律。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.FreeAbPlaneSurjective where
+module Sovereign.Application.FreeAbPlaneSurjective where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Product using (Σ; _×_; _,_)
@@ -29,7 +29,7 @@ open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_;
          ⊕-identityʳ; ⊗-comm; ⊗-distribˡ-⊕)
 open import Sovereign.Algebra.FreeAb using (FAb)
-open import Sovereign.Problem.Hodge.FreeAbBoundary using (∂₁; C₁)
+open import Sovereign.Application.FreeAbBoundary using (∂₁; C₁)
 
 --------------------------------------------------------------------------------
 -- §1. 三算术引理

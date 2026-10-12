@@ -3,7 +3,7 @@
 -- | jac_Variety — GF(9) 上代数簇基础设施
 -- 0 postulate
 
-module Sovereign.Problem.Riemann.Variety where
+module Sovereign.Application.Variety where
 
 open import Data.Nat using (ℕ)
 open import Data.Product using (_×_; _,_)

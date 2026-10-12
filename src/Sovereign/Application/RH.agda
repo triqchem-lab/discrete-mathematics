@@ -1,11 +1,11 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- Sovereign.Problem.Riemann.RH（旧名 jac_RH）
+-- Sovereign.Application.RH（旧名 jac_RH）
 -- 有限域 Weil/RH — 深度形式化
 -- 所有数值从 Sovereign.Application.BSD（旧名 jac_BSD）的穷举 #E 自动推导, 无手动赋值.
 -- 0 postulate.
 
-module Sovereign.Problem.Riemann.RH where
+module Sovereign.Application.RH where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Nat using (ℕ)

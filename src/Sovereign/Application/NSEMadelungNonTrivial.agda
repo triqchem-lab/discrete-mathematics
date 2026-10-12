@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEMadelungNonTrivial
+-- | Sovereign.Application.NSEMadelungNonTrivial
 -- Madelung 耦合的 ∀-版 (NSEPhaseField 的 O2)：给出实例 + 判定该陈述是否有意义
 --
 -- 背景 (NSEPhaseField.agda:366-370 原文):
@@ -34,7 +34,7 @@
 --
 -- 0 postulate / 0 hole
 
-module Sovereign.Problem.NavierStokes.NSEMadelungNonTrivial where
+module Sovereign.Application.NSEMadelungNonTrivial where
 
 open import Data.Product using (Σ; _,_)
 open import Data.Fin using (zero)

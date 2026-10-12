@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.BoundaryGF3
+-- | Sovereign.Application.BoundaryGF3
 -- 任务书第四层·4.2 链复形接线（最小核）：三角形 ∂² = 0 的 GF(3) 构造性实例
 --
 -- 数学背景：链复形公理 ∂² = 0（边界之边界为零）是离散 Hodge 理论的地基
@@ -24,7 +24,7 @@
 --   3. H₁ ≠ 0 的非边缘闭链见证（同调非平凡性）是 roadmap——本模块只证 ∂² = 0。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.BoundaryGF3 where
+module Sovereign.Application.BoundaryGF3 where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Relation.Nullary using (¬_)

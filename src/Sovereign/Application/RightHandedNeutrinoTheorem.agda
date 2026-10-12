@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Physics.RightHandedNeutrinoTheorem
+-- | Sovereign.Application.RightHandedNeutrinoTheorem
 -- 右旋中微子定理 (0 postulate, 无洞)
 --
 -- 定理内容 (代数层, 全部 refl):
@@ -27,7 +27,7 @@
 --
 -- 依赖: Algebra.GF9 (α² = −1, Gal(GF(9)/GF(3)) ≅ C₂, σ(α) = −α)。
 
-module Sovereign.Physics.RightHandedNeutrinoTheorem where
+module Sovereign.Application.RightHandedNeutrinoTheorem where
 
 open import Data.Bool using (Bool; true; false)
 open import Data.Product using (_×_; _,_)

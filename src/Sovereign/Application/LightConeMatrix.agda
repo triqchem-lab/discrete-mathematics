@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Physics.LightConeMatrix
+-- | Sovereign.Application.LightConeMatrix
 -- 光锥矩阵: GF9^3 上的光子↔物质熵旋变换算子
 --
 -- 理论基础: 渠玉芝熵旋定理 + 大衍4320D T6商空间理论
@@ -17,7 +17,7 @@
 --   水态层  (36=3x12):   C3三态 x A4谐波 → 信息承载
 --   五行层  (5):          模数共振 → 质量涌现通道
 
-module Sovereign.Physics.LightConeMatrix where
+module Sovereign.Application.LightConeMatrix where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEMadelungConstrained
+-- | Sovereign.Application.NSEMadelungConstrained
 -- Madelung 耦合「受约束版」的判定：为何钉死 Qphase 仍不够，以及正确的归约形式
 --
 -- 背景: 上一轮我（依据 `NSEPhaseField:350` 的散文注记）建议把 O2 重述为
@@ -26,7 +26,7 @@
 --
 -- 0 postulate / 0 hole
 
-module Sovereign.Problem.NavierStokes.NSEMadelungConstrained where
+module Sovereign.Application.NSEMadelungConstrained where
 
 open import Data.Product using (Σ; _,_)
 open import Data.Fin using (zero; suc)

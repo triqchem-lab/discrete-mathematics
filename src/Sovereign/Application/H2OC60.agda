@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Physics.H2OC60
+-- | Sovereign.Application.H2OC60
 -- H2O@C60 量子受限模型形式化: 6D 平动-转动动力学 -> T6 晶格映射
 --
 -- 实验来源:
@@ -18,7 +18,7 @@
 -- 6. 0.5 meV 基态分裂 -> Delta=sqrt(3) 能隙热阈值投影
 -- 7. 10h ortho->para 转换 -> 环向缠绕因子 a=1 的手性分离弛豫
 
-module Sovereign.Physics.H2OC60 where
+module Sovereign.Application.H2OC60 where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _/_)
 

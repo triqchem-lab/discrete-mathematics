@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Physics.InvisibleOrbitCount
+-- | Sovereign.Application.InvisibleOrbitCount
 -- 不可见自由度的系统计数: 共轭轨道对账 (0 postulate, 无洞)
 --
 -- 先算后写 — 与知识库"64 分型 = 51 有形 + 13 无形"的对账结论:
@@ -21,7 +21,7 @@
 --   (b) 13 的代数对应与卢先生清单的逐项对应是框架层解读;
 --       本模块证明的是计数结构本身 (不动点唯一性 + 对合 + 对数算术)。
 
-module Sovereign.Physics.InvisibleOrbitCount where
+module Sovereign.Application.InvisibleOrbitCount where
 
 open import Data.Nat using (ℕ; _/_; _+_; _*_)
 open import Data.Empty using (⊥-elim)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteEMField3D
+-- | Sovereign.Application.DiscreteEMField3D
 -- 78 电磁学 — 3D 环面 (Fin 3)³ 的离散场论第二基石 (0 postulate)
 --
 -- 数学背景：3D 离散环面 (Fin 3)³ 上的电磁场——场值逐点取 GF(3)，
@@ -14,7 +14,7 @@
 -- 包含：GF3（基域件）· Point3D（场点）· add3/neg3（运算）·
 --   add3-comm/assoc/identity/inverse（加法四律）· 场结构件族
 
-module Sovereign.Physics.DiscreteEMField3D where
+module Sovereign.Application.DiscreteEMField3D where
 
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.FreeAbNonDegenerate
+-- | Sovereign.Application.FreeAbNonDegenerate
 -- 任务书第二层·2.5 修正：GF(3) 标准点积非退化——上一节点「退化」结论
 --   系概念混淆（迷向 ≠ 退化），本模块机器修正。
 --
@@ -15,7 +15,7 @@
 --   塔在库内（Algebra/GF9），后续需 GF(9) 系数再上塔。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.FreeAbNonDegenerate where
+module Sovereign.Application.FreeAbNonDegenerate where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Nat using (ℕ; zero; suc)
@@ -26,7 +26,7 @@ open import Relation.Binary.PropositionalEquality
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-identityˡ; ⊕-identityʳ)
 open import Sovereign.Algebra.FreeAb using (FAb)
-open import Sovereign.Problem.Hodge.FreeAbBoundary using (C₁)
+open import Sovereign.Application.FreeAbBoundary using (C₁)
 open import Sovereign.Application.FreeAbInnerProduct using (inner; w111)
 
 --------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.HoneycombMagneticField
+-- | Sovereign.Application.HoneycombMagneticField
 -- 蜂窝磁场 — 蜂窝晶格几何与量子场的深度耦合
 --
 -- 蜂窝磁场不是单一物理概念, 而是在蜂窝状晶格结构中,
@@ -20,7 +20,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Physics.HoneycombMagneticField where
+module Sovereign.Application.HoneycombMagneticField where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

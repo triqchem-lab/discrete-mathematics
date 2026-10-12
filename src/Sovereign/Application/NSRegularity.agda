@@ -14,7 +14,7 @@
 -- 复用: Sovereign.Base.Trit, NSVortex
 -- 0 postulate.
 
-module Sovereign.Problem.NavierStokes.NSRegularity where
+module Sovereign.Application.NSRegularity where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; s≤s; z≤n)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)

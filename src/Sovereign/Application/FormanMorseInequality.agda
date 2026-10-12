@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.FormanMorseInequality
+-- | Sovereign.Application.FormanMorseInequality
 -- 任务书第五层·5.1 后半：Forman Morse 不等式实例（K₃ + triangleVF）
 --
 -- 数学背景：Forman (1998) 离散 Morse 理论的核心定理是 **Morse 不等式**
@@ -24,12 +24,12 @@
 --   3. χ = 0（欧拉示性数）的独立验证见 jac_Topology §4。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.FormanMorseInequality where
+module Sovereign.Application.FormanMorseInequality where
 
 open import Data.Nat using (ℕ; zero; suc; _≤_; _≥_; z≤n; s≤s)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Problem.Hodge.ChainComplex using (dimH; tri)
+open import Sovereign.Application.ChainComplex using (dimH; tri)
 
 --------------------------------------------------------------------------------
 -- §1. Betti 数（从 ChainComplex.tri 的 dimH 提取，jac_Topology 证书背书）

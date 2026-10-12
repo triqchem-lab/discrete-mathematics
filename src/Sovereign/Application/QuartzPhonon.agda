@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.QuartzPhonon
+-- | Sovereign.Application.QuartzPhonon
 -- 石英声子等离子体物理：相变、电离、泛音谱、C₃ 孤子
 --
 -- 训练验证：S2Sovereign 1.27B, 31000 步, 282 分钟
@@ -8,7 +8,7 @@
 --
 -- 复用：H2OC60(46/21/39), EnergyGap(Δ²=3 镜像), EntropySpin(4320D 镜像), Invariants(144/46/C=2)
 
-module Sovereign.Physics.QuartzPhonon where
+module Sovereign.Application.QuartzPhonon where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _<_; _≤_; _∸_)
   renaming (_/_ to _÷_; _%_ to _mod_)
@@ -23,7 +23,7 @@ open import Sovereign.Base.Invariants
   using (POLAR_WINDING; TOROIDAL_WINDING; CHERN_NUMBER)
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; c3-cw; c3-cw³)
-open import Sovereign.Physics.H2OC60
+open import Sovereign.Application.H2OC60
   using (c60-modes-equals-toroidal; tropical-bands-decomposition
         ; spectral-lines-decomposition; symmetryBreakingRatio
         ; ortho-para-ratio; ground-state-match)
@@ -40,7 +40,7 @@ private
   gap-sq-equals-3 : gap-sq ≡ + 3 /ℚ 1
   gap-sq-equals-3 = refl
 
--- 注意: Sovereign.Physics.EntropySpin 当前有编译错误 (line 76: _|_ 解析冲突)
+-- 注意: Sovereign.Application.EntropySpin 当前有编译错误 (line 76: _|_ 解析冲突)
 -- 此处本地镜像其核心定义，待 EntropySpin 修复后切换为直接 import
 -- 原始定义: ManifoldDim4320 = 2 * 12 * 36 * 5
 private

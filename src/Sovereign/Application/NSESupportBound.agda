@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSESupportBound
+-- | Sovereign.Application.NSESupportBound
 -- 支撑集可观察量的**双界**: countOver ≤ 729; supportCount ≤ 4374
 --
 -- 背景: O3 通道 ⑤（再分布/集中度）的「界」半。`NSEFixedPointStrict` 交付了
@@ -21,7 +21,7 @@
 --
 -- 依赖: NSEFixedPointStrict（isNonZero/fold1N/countOver/supportCount）; Data.Nat.Properties
 
-module Sovereign.Problem.NavierStokes.NSESupportBound where
+module Sovereign.Application.NSESupportBound where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
@@ -30,7 +30,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Nat.Properties using (≤-trans; ≤-reflexive; +-mono-≤)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Problem.NavierStokes.NSEOnT6 using
+open import Sovereign.Application.NSEOnT6 using
   (C3; Torus6; ScalarField; Field; v1; v2; v3; v4; v5; v6)
 open import Sovereign.Application.NSEFixedPointStrict using
   (isNonZero; fold1N; countOver; supportCount)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEOnT6
+-- | Sovereign.Application.NSEOnT6
 -- N-S 方程在 T⁶ 离散商环面上的构造性形式化 (GF(3) 六维环面, 729 格点)
 --
 -- 数学背景:
@@ -62,7 +62,7 @@
 -- 依赖: Sovereign.Base.Trit (GF(3) 环公理)
 -- 0 postulate / 0 hole / 0 sorry
 
-module Sovereign.Problem.NavierStokes.NSEOnT6 where
+module Sovereign.Application.NSEOnT6 where
 
 open import Data.List using (List; []; _∷_; length; zipWith)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _^_; _<_; _≤_; _∸_; z≤n; s≤s)

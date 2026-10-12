@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSESupportFixedInv
+-- | Sovereign.Application.NSESupportFixedInv
 -- supportCount 在不动点集上不变（O3 通道 ⑤ 的「不变性」增量）
 --
 -- 主定理:
@@ -23,7 +23,7 @@
 --
 -- 0 postulate / 0 hole
 
-module Sovereign.Problem.NavierStokes.NSESupportFixedInv where
+module Sovereign.Application.NSESupportFixedInv where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
@@ -31,7 +31,7 @@ open import Data.Product using (_,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; cong; sym)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Problem.NavierStokes.NSEOnT6 using
+open import Sovereign.Application.NSEOnT6 using
   (C3; Torus6; ScalarField; Field; v1; v2; v3; v4; v5; v6; nsStep; iterate; Incompressible)
 open import Sovereign.Application.NSEFixedPoint using
   (comp; nsStep-fixed; iterate-fixed)

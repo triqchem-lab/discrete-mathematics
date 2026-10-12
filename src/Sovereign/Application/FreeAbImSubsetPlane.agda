@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.FreeAbImSubsetPlane
+-- | Sovereign.Application.FreeAbImSubsetPlane
 -- 任务书第二层·2.5 推进：im ∂₁ ⊆ 增广零平面（∑(∂₁x) ≡ 0）
 --
 -- 数学背景：K₃ 链群（FreeAb 载体）上，任意边链的边界在三个顶点上的
@@ -10,13 +10,13 @@
 -- 枚举口径：27 = 3³ case，恰在「≤27 case 允许枚举」阈值内。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.FreeAbImSubsetPlane where
+module Sovereign.Application.FreeAbImSubsetPlane where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
 open import Sovereign.Algebra.FreeAb using (FAb)
-open import Sovereign.Problem.Hodge.FreeAbBoundary using (∂₁; C₁)
+open import Sovereign.Application.FreeAbBoundary using (∂₁; C₁)
 
 -- 三系数辅助边链
 w₃ : Trit → Trit → Trit → C₁

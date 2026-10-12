@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.EntropySpin
+-- | Sovereign.Application.EntropySpin
 -- 物理学：熵旋理论质量涌现机制与 4320D 流形映射
 -- (2026-08 修复版: 原版有解析错误且未入库 — 见 §2b 修复注记)
 --
@@ -49,7 +49,7 @@
 --    2 构造子数据类型 + 2×2 Bool 配对表 (协议定义, 不是定理);
 --    C₂ Frobenius 不动点的严格证明在 Algebra/GF9.agda (galoisFixedPoint)。
 
-module Sovereign.Physics.EntropySpin where
+module Sovereign.Application.EntropySpin where
 
 open import Data.Nat using (ℕ; _+_; _*_; _<_)
 open import Data.Nat.Properties using (_<?_)
