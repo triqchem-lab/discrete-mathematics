@@ -37,7 +37,7 @@ open import Sovereign.Application.NSEFixedPoint using
   (comp; nsStep-fixed; iterate-fixed)
 open import Sovereign.Application.NSEFixedPointStrict using
   (isNonZero; fold1N; countOver; supportCount; slopeField; slope-is-fixed)
-open import Sovereign.Problem.NavierStokes.NSESupportZero using (fold1N-cong; plus6-cong)
+open import Sovereign.Application.NSESupportZero using (fold1N-cong; plus6-cong)
 
 --------------------------------------------------------------------------------
 -- §1. 逐点相等 ⇒ 计数相等

@@ -45,7 +45,7 @@ import Sovereign.Application.EulerChar
 import Sovereign.Application.BSD
 import Sovereign.Application.BSD_L3               -- t-rec 递归 + 正确性
 import Sovereign.Problem.BSD.BSD_GF27
-import Sovereign.Problem.BSD.BSD_General
+import Sovereign.Application.BSD_General
 
 -- RH L3 ✅（自 L0+ 升级: 有限域 Weil 定理的整数形式 + Eisenstein 共轭对刚性）
 import Sovereign.Application.WeilRH
@@ -64,7 +64,7 @@ import Sovereign.Application.DeligneLusztig  -- 外部形式化
 -- PvsNP L3 ✅（separation: ∃f, EvalAlways f ∧ ∀r f(r)≢0 — 不可约三次见证, 0 postulate）
 --           + GF27Separation: 根集 = Frobenius 共轭三元组 {γ,γ³,γ⁹}, 27 元素穷举恰好 3 根
 import Sovereign.Application.Complexity
-import Sovereign.Problem.PvsNP.DetMul
+import Sovereign.Application.DetMul
 import Sovereign.Application.PvsNP_Conjecture
 import Sovereign.Problem.PvsNP.PvsNP_Separation
 import Sovereign.Application.GF27Separation
@@ -83,8 +83,8 @@ import Sovereign.Foundation.Eisenstein  -- *ᵉ-assoc/comm + conjᵉ-mul + norm-
 -- Kakeya L3 ✅
 import Sovereign.Application.KakeyaGF3
 import Sovereign.Application.KakeyaGF9
-import Sovereign.Problem.Kakeya.KakeyaMF
-import Sovereign.Problem.Kakeya.KakeyaPathology
+import Sovereign.Application.KakeyaMF
+import Sovereign.Application.KakeyaPathology
 
 -- 基础设施
 import Sovereign.Algebra.Jacobian.jac_CRTDet
