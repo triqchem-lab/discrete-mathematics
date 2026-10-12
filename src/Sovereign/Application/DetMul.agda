@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
-module Sovereign.Problem.PvsNP.DetMul where
+module Sovereign.Application.DetMul where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)
 

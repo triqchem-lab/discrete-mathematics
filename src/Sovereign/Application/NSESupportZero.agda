@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSESupportZero
+-- | Sovereign.Application.NSESupportZero
 -- 支撑集可观察量的**零场刻画**: supportCount v ≡ 0 ⇔ 逐点全零
 --
 -- 背景: O3 通道 ⑤ 的「零元端」。`NSEFixedPointStrict` 交定义、`NSESupportBound` 交界;
@@ -23,7 +23,7 @@
 -- 依赖: NSEFixedPointStrict（isNonZero/fold1N/countOver/supportCount）;
 --       NSEFixedPoint（comp）; NSEOnT6 / Base.Trit
 
-module Sovereign.Problem.NavierStokes.NSESupportZero where
+module Sovereign.Application.NSESupportZero where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

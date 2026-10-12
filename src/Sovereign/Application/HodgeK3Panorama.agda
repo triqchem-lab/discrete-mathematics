@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.HodgeK3Panorama
+-- | Sovereign.Application.HodgeK3Panorama
 -- 任务书第二层·2.5 实例收官：K₃ Hodge 理论全谱系一览
 --
 -- 汇总四线交叉验证结果（全部并行/本会话已闭合，回执在案）：
@@ -10,7 +10,7 @@
 --   Hodge 分解否定：FreeAbHodgeVerdict（oracle 108 点，迷向阻断）
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.HodgeK3Panorama where
+module Sovereign.Application.HodgeK3Panorama where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_×_; _,_)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
-module Sovereign.Problem.ABC.ABCL1 where
+module Sovereign.Application.ABCL1 where
 
 -- | 两维度壁垒：**乘法轴穿不过平展投影**（IUTT「不可压成一维」的离散对应）
 --

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.FreeAbImEquiv
+-- | Sovereign.Application.FreeAbImEquiv
 -- 任务书第二层·2.5 泛型化（GAP-M7a-im-equiv）：Σ 商等价的 isEquivRel 完整链
 --
 -- 数学背景（标准同调商形态）：
@@ -16,7 +16,7 @@
 -- 复用：FreeAbGroupLaws（neg-flip-r/neg-flip/neg-distrib/∂₁-add/∂₁-neg）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.FreeAbImEquiv where
+module Sovereign.Application.FreeAbImEquiv where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Product using (Σ; _×_; _,_)

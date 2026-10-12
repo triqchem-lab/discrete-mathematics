@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Riemann.AlgGeom
+-- | Sovereign.Application.AlgGeom
 -- 离散代数几何 — GF(9) 上有限代数簇与函数-矩阵对偶
 --
 -- 核心定理:
@@ -11,7 +11,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Problem.Riemann.AlgGeom where
+module Sovereign.Application.AlgGeom where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Fin using (Fin; zero; suc)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.KirchhoffCRT
+-- | Sovereign.Application.KirchhoffCRT
 -- 任务书第四层·4.1：Kirchhoff / Matrix-Tree 的 CRT 通道（K₃ 实例）
 --
 -- 数学背景（人类纠偏后修正）：矩阵树定理在 GF(3) 单域上退化（K₃ 树数
@@ -22,7 +22,7 @@
 --   ℤ 给精确值 3，CRT 通道给「mod 12 非零可判」——本库判非零只需后者。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.KirchhoffCRT where
+module Sovereign.Application.KirchhoffCRT where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Sovereign.Algebra.Duodecimal

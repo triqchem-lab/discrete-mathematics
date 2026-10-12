@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.PerfectMorseInequality
+-- | Sovereign.Application.PerfectMorseInequality
 -- 任务书第五层·5.1 深化：完美 Morse 不等式实例（K₃ 填充三角）
 --
 -- 数学背景：Forman (1998) 完美 Morse 函数的定义是 m_k = β_k 逐维取等
@@ -17,7 +17,7 @@
 --   χ 一致性已在 EulerPoincareInstance §5 闭合。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.PerfectMorseInequality where
+module Sovereign.Application.PerfectMorseInequality where
 
 open import Data.Nat using (ℕ; zero; suc; _≤_; _≥_; z≤n; s≤s)
 open import Data.Product using (_×_; _,_)

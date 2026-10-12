@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 ------------------------------------------------------------------------
--- | Sovereign.Problem.Sqrt2.GF9Sqrt2
+-- | Sovereign.Application.GF9Sqrt2
 -- 方案 A：x² = 2 在 GF(9) 中的解集恰为 {α, σ(α)} —— Frobenius 共轭对
 --
 -- 数学背景:
@@ -18,7 +18,7 @@
 -- 依赖: Sovereign.Algebra.GF9（只读导入，不改基础设施）；0 postulate。
 ------------------------------------------------------------------------
 
-module Sovereign.Problem.Sqrt2.GF9Sqrt2 where
+module Sovereign.Application.GF9Sqrt2 where
 
 open import Data.Empty using (⊥)
 open import Data.Product using (_×_; _,_)

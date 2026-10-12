@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.GraphMorseInstance
+-- | Sovereign.Application.GraphMorseInstance
 -- 任务书第五层·5.1 家族补全：图 K₃（1-骨架）上的 Morse 不等式实例
 --
 -- 数学背景：与前两个实例（FormanMorseInequality / PerfectMorseInstance，
@@ -23,7 +23,7 @@
 --     1 个临界边——这是 β₁ = 1 的 Morse 语义；一般证明 roadmap）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.GraphMorseInstance where
+module Sovereign.Application.GraphMorseInstance where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; _≥_; z≤n; s≤s)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

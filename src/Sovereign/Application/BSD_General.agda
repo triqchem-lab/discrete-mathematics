@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.BSD.BSD_General
+-- | Sovereign.Application.BSD_General
 -- BSD Weil 迹递推 · 三条独立定理（0 postulate）
 --
 -- 数学背景：Weil 迹公式在 BSD 线的离散面——q³ 递推下迹的三态
@@ -14,7 +14,7 @@
 --
 -- 包含：q3（递推件）· trace0/trace-3/trace+3（迹三定理）
 
-module Sovereign.Problem.BSD.BSD_General where
+module Sovereign.Application.BSD_General where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Nat using (ℕ)

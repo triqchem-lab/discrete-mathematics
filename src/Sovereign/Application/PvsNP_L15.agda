@@ -3,7 +3,7 @@
 -- | jac_PvsNP_L15 — PvsNP L1.5: 3×3 不可约性穷举判定
 -- 0 postulate
 
-module Sovereign.Problem.PvsNP.PvsNP_L15 where
+module Sovereign.Application.PvsNP_L15 where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (T₀; T₁)
