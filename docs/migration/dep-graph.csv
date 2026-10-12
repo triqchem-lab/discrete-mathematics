@@ -1128,18 +1128,18 @@ Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.PvsNP.Complexi
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.DetMul
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.GF27Separation
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.PvsNP_Conjecture
-Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.PvsNP.PvsNP_Separation
+Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.PvsNP_Separation
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.Galois
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.Riemann.RH
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.WeilRH
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.WeilRigidity     -- t²+3s²=4q, L(E,1)=#E, α+conj(α)=t, αβ=q
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.Riemann.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
-Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.YangMills.SU2_Embedding
+Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.SU2_Embedding
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.WilsonPlaquette
-Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.YangMills.YM_DetMul
-Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.YangMills.YM_Full
+Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.YM_DetMul
+Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.YM_Full
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.YM_L3          -- 平凡构型 gap, 0 postulate
-Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.YangMills.YM_SpectralGap -- 精确谱 λ₀=4/λ₁=1, Δ=3>0, tr/det 一致性
+Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.YM_SpectralGap -- 精确谱 λ₀=4/λ₁=1, Δ=3>0, tr/det 一致性
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Foundation.Eisenstein  -- *ᵉ-assoc/comm + conjᵉ-mul + norm-mul + unitGen C₆ 循环
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Structology.HolographicPi         -- 原子化: 0 postulate, 类型层禁止约分
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Structology.IhC60Vibration        -- I_h → 46: 174 维振动表示 → 46 独立基频
@@ -3652,23 +3652,23 @@ Sovereign.Application.FermatL3,Data.Product
 Sovereign.Application.FermatL3,Relation.Binary.PropositionalEquality
 Sovereign.Application.FermatL3,Sovereign.Algebra.GF9
 Sovereign.Application.FermatL3,Sovereign.Base.Trit
-Sovereign.Problem.Fermat.FermatL4_Mod12Cycle,Data.Empty
-Sovereign.Problem.Fermat.FermatL4_Mod12Cycle,Data.Nat
-Sovereign.Problem.Fermat.FermatL4_Mod12Cycle,Data.Product
-Sovereign.Problem.Fermat.FermatL4_Mod12Cycle,Data.Sum
-Sovereign.Problem.Fermat.FermatL4_Mod12Cycle,Function.Base
-Sovereign.Problem.Fermat.FermatL4_Mod12Cycle,Relation.Binary.PropositionalEquality
-Sovereign.Problem.Fermat.FermatL4_Mod12Cycle,Sovereign.Algebra.Duodecimal
-Sovereign.Problem.Fermat.FermatL4_Mod12Cycle,Sovereign.Algebra.GroupTheory.DayanCore
-Sovereign.Problem.Fermat.FermatL4_Mod12Cycle,Sovereign.Algebra.GroupTheory.DuodecClock
-Sovereign.Problem.Fermat.FermatL4_Mod12Cycle,Sovereign.Base.Trit
-Sovereign.Problem.Fermat.FermatL4_NatLift,Data.Empty
-Sovereign.Problem.Fermat.FermatL4_NatLift,Data.Nat
-Sovereign.Problem.Fermat.FermatL4_NatLift,Data.Sum
-Sovereign.Problem.Fermat.FermatL4_NatLift,Relation.Binary.PropositionalEquality
-Sovereign.Problem.Fermat.FermatL4_NatLift,Sovereign.Base.Trit
-Sovereign.Problem.Fermat.FermatL4_NatLift,Sovereign.Application.FermatL0
-Sovereign.Problem.Fermat.FermatL4_NatLift,Sovereign.Application.FermatL1
+Sovereign.Application.FermatL4_Mod12Cycle,Data.Empty
+Sovereign.Application.FermatL4_Mod12Cycle,Data.Nat
+Sovereign.Application.FermatL4_Mod12Cycle,Data.Product
+Sovereign.Application.FermatL4_Mod12Cycle,Data.Sum
+Sovereign.Application.FermatL4_Mod12Cycle,Function.Base
+Sovereign.Application.FermatL4_Mod12Cycle,Relation.Binary.PropositionalEquality
+Sovereign.Application.FermatL4_Mod12Cycle,Sovereign.Algebra.Duodecimal
+Sovereign.Application.FermatL4_Mod12Cycle,Sovereign.Algebra.GroupTheory.DayanCore
+Sovereign.Application.FermatL4_Mod12Cycle,Sovereign.Algebra.GroupTheory.DuodecClock
+Sovereign.Application.FermatL4_Mod12Cycle,Sovereign.Base.Trit
+Sovereign.Application.FermatL4_NatLift,Data.Empty
+Sovereign.Application.FermatL4_NatLift,Data.Nat
+Sovereign.Application.FermatL4_NatLift,Data.Sum
+Sovereign.Application.FermatL4_NatLift,Relation.Binary.PropositionalEquality
+Sovereign.Application.FermatL4_NatLift,Sovereign.Base.Trit
+Sovereign.Application.FermatL4_NatLift,Sovereign.Application.FermatL0
+Sovereign.Application.FermatL4_NatLift,Sovereign.Application.FermatL1
 Sovereign.Problem.Hodge.BoundaryGF3,Data.Fin
 Sovereign.Problem.Hodge.BoundaryGF3,Relation.Binary.PropositionalEquality
 Sovereign.Problem.Hodge.BoundaryGF3,Relation.Nullary
@@ -4071,9 +4071,9 @@ Sovereign.Application.PvsNP_L15,Relation.Binary.PropositionalEquality
 Sovereign.Application.PvsNP_L15,Sovereign.Algebra.Jacobian.jac_GF9Matrix
 Sovereign.Application.PvsNP_L15,Sovereign.Base.Trit
 Sovereign.Application.PvsNP_L15,Sovereign.Problem.PvsNP.Complexity
-Sovereign.Problem.PvsNP.PvsNP_Separation,Data.Product
-Sovereign.Problem.PvsNP.PvsNP_Separation,Relation.Binary.PropositionalEquality
-Sovereign.Problem.PvsNP.PvsNP_Separation,Sovereign.Base.Trit
+Sovereign.Application.PvsNP_Separation,Data.Product
+Sovereign.Application.PvsNP_Separation,Relation.Binary.PropositionalEquality
+Sovereign.Application.PvsNP_Separation,Sovereign.Base.Trit
 Sovereign.Application.AlgGeom,Data.Fin
 Sovereign.Application.AlgGeom,Data.Nat
 Sovereign.Application.AlgGeom,Data.Product
@@ -4093,13 +4093,13 @@ Sovereign.Problem.Riemann.RH,Data.Nat
 Sovereign.Problem.Riemann.RH,Relation.Binary.PropositionalEquality
 Sovereign.Problem.Riemann.RH,Sovereign.Problem.BSD.BSD
 Sovereign.Problem.Riemann.RH,Sovereign.Application.BSD_L3
-Sovereign.Problem.Riemann.Sheaf,Data.Bool
-Sovereign.Problem.Riemann.Sheaf,Data.Fin
-Sovereign.Problem.Riemann.Sheaf,Data.Nat
-Sovereign.Problem.Riemann.Sheaf,Data.Product
-Sovereign.Problem.Riemann.Sheaf,Relation.Binary.PropositionalEquality
-Sovereign.Problem.Riemann.Sheaf,Sovereign.Algebra.Jacobian.jac_GF9Matrix
-Sovereign.Problem.Riemann.Sheaf,Sovereign.Base.Trit
+Sovereign.Application.Sheaf,Data.Bool
+Sovereign.Application.Sheaf,Data.Fin
+Sovereign.Application.Sheaf,Data.Nat
+Sovereign.Application.Sheaf,Data.Product
+Sovereign.Application.Sheaf,Relation.Binary.PropositionalEquality
+Sovereign.Application.Sheaf,Sovereign.Algebra.Jacobian.jac_GF9Matrix
+Sovereign.Application.Sheaf,Sovereign.Base.Trit
 Sovereign.Problem.Riemann.Variety,Data.Nat
 Sovereign.Problem.Riemann.Variety,Data.Product
 Sovereign.Problem.Riemann.Variety,Relation.Binary.PropositionalEquality
@@ -4125,51 +4125,51 @@ Sovereign.Application.GF9Sqrt2,Sovereign.Algebra.GF9
 Sovereign.Application.GF9Sqrt2,Sovereign.Base.Trit
 Sovereign.Application.Sqrt2Irrational,Agda.Builtin.Equality
 Sovereign.Application.Sqrt2Irrational,Agda.Builtin.Nat
-Sovereign.Problem.Sqrt2.Sqrt2Valuation,Agda.Builtin.Equality
-Sovereign.Problem.Sqrt2.Sqrt2Valuation,Agda.Builtin.Nat
-Sovereign.Problem.Sqrt2.Sqrt2Valuation,Sovereign.Application.Sqrt2Irrational
-Sovereign.Problem.YangMills.SU2_Embedding,Data.Nat
-Sovereign.Problem.YangMills.SU2_Embedding,Data.Product
-Sovereign.Problem.YangMills.SU2_Embedding,Relation.Binary.PropositionalEquality
-Sovereign.Problem.YangMills.SU2_Embedding,Sovereign.Base.Trit
-Sovereign.Problem.YangMills.SUn_GF9,Data.Nat
-Sovereign.Problem.YangMills.SUn_GF9,Data.Product
-Sovereign.Problem.YangMills.SUn_GF9,Relation.Binary.PropositionalEquality
-Sovereign.Problem.YangMills.SUn_GF9,Sovereign.Algebra.Jacobian.jac_GF9Matrix
-Sovereign.Problem.YangMills.WilsonLoop,Data.Nat
-Sovereign.Problem.YangMills.WilsonLoop,Data.Product
-Sovereign.Problem.YangMills.WilsonLoop,Relation.Binary.PropositionalEquality
-Sovereign.Problem.YangMills.WilsonLoop,Sovereign.Algebra.Holographic.LatticeField
-Sovereign.Problem.YangMills.WilsonLoop,Sovereign.Algebra.Jacobian.jac_CRTDet
-Sovereign.Problem.YangMills.WilsonLoop,Sovereign.Algebra.Jacobian.jac_GF9Matrix
+Sovereign.Application.Sqrt2Valuation,Agda.Builtin.Equality
+Sovereign.Application.Sqrt2Valuation,Agda.Builtin.Nat
+Sovereign.Application.Sqrt2Valuation,Sovereign.Application.Sqrt2Irrational
+Sovereign.Application.SU2_Embedding,Data.Nat
+Sovereign.Application.SU2_Embedding,Data.Product
+Sovereign.Application.SU2_Embedding,Relation.Binary.PropositionalEquality
+Sovereign.Application.SU2_Embedding,Sovereign.Base.Trit
+Sovereign.Application.SUn_GF9,Data.Nat
+Sovereign.Application.SUn_GF9,Data.Product
+Sovereign.Application.SUn_GF9,Relation.Binary.PropositionalEquality
+Sovereign.Application.SUn_GF9,Sovereign.Algebra.Jacobian.jac_GF9Matrix
+Sovereign.Application.WilsonLoop,Data.Nat
+Sovereign.Application.WilsonLoop,Data.Product
+Sovereign.Application.WilsonLoop,Relation.Binary.PropositionalEquality
+Sovereign.Application.WilsonLoop,Sovereign.Algebra.Holographic.LatticeField
+Sovereign.Application.WilsonLoop,Sovereign.Algebra.Jacobian.jac_CRTDet
+Sovereign.Application.WilsonLoop,Sovereign.Algebra.Jacobian.jac_GF9Matrix
 Sovereign.Application.WilsonPlaquette,Data.Product
 Sovereign.Application.WilsonPlaquette,Relation.Binary.PropositionalEquality
 Sovereign.Application.WilsonPlaquette,Sovereign.Algebra.Jacobian.jac_GF9Matrix
-Sovereign.Problem.YangMills.YM_Action,Relation.Binary.PropositionalEquality
-Sovereign.Problem.YangMills.YM_Action,Sovereign.Algebra.Jacobian.jac_GF9Matrix
-Sovereign.Problem.YangMills.YM_DetMul,Relation.Binary.PropositionalEquality
-Sovereign.Problem.YangMills.YM_DetMul,Sovereign.Algebra.Jacobian.jac_Discrete
-Sovereign.Problem.YangMills.YM_DetMul,Sovereign.Algebra.Jacobian.jac_GF9Matrix
-Sovereign.Problem.YangMills.YM_DetMul,Sovereign.Algebra.Jacobian.jac_Matrix
-Sovereign.Problem.YangMills.YM_DetMul,Sovereign.Base.Trit
-Sovereign.Problem.YangMills.YM_Full,Relation.Binary.PropositionalEquality
-Sovereign.Problem.YangMills.YM_Full,Sovereign.Algebra.Jacobian.jac_GF9Matrix
+Sovereign.Application.YM_Action,Relation.Binary.PropositionalEquality
+Sovereign.Application.YM_Action,Sovereign.Algebra.Jacobian.jac_GF9Matrix
+Sovereign.Application.YM_DetMul,Relation.Binary.PropositionalEquality
+Sovereign.Application.YM_DetMul,Sovereign.Algebra.Jacobian.jac_Discrete
+Sovereign.Application.YM_DetMul,Sovereign.Algebra.Jacobian.jac_GF9Matrix
+Sovereign.Application.YM_DetMul,Sovereign.Algebra.Jacobian.jac_Matrix
+Sovereign.Application.YM_DetMul,Sovereign.Base.Trit
+Sovereign.Application.YM_Full,Relation.Binary.PropositionalEquality
+Sovereign.Application.YM_Full,Sovereign.Algebra.Jacobian.jac_GF9Matrix
 Sovereign.Application.YM_L3,Data.Product
 Sovereign.Application.YM_L3,Relation.Binary.PropositionalEquality
 Sovereign.Application.YM_L3,Sovereign.Algebra.Jacobian.jac_GF9Matrix
-Sovereign.Problem.YangMills.YM_SpectralGap,Data.Integer
-Sovereign.Problem.YangMills.YM_SpectralGap,Data.Integer.Properties
-Sovereign.Problem.YangMills.YM_SpectralGap,Data.Nat
-Sovereign.Problem.YangMills.YM_SpectralGap,Data.Product
-Sovereign.Problem.YangMills.YM_SpectralGap,Relation.Binary.PropositionalEquality
-Sovereign.Problem.YangMills.YM_SpectralGap,Sovereign.Algebra.GF9
-Sovereign.Problem.YangMills.YM_SpectralGap,Sovereign.Base.Trit
-Sovereign.Problem.YangMills.YM_SpectralGap,Sovereign.Foundation.Eisenstein
-Sovereign.Problem.YangMills.YM_Transfer,Data.Product
-Sovereign.Problem.YangMills.YM_Transfer,Relation.Binary.PropositionalEquality
-Sovereign.Problem.YangMills.YM_Transfer,Sovereign.Algebra.Jacobian.jac_GF9Matrix
-Sovereign.Problem.YangMills.YMTransfer,Relation.Binary.PropositionalEquality
-Sovereign.Problem.YangMills.YMTransfer,Sovereign.Algebra.Jacobian.jac_GF9Matrix
+Sovereign.Application.YM_SpectralGap,Data.Integer
+Sovereign.Application.YM_SpectralGap,Data.Integer.Properties
+Sovereign.Application.YM_SpectralGap,Data.Nat
+Sovereign.Application.YM_SpectralGap,Data.Product
+Sovereign.Application.YM_SpectralGap,Relation.Binary.PropositionalEquality
+Sovereign.Application.YM_SpectralGap,Sovereign.Algebra.GF9
+Sovereign.Application.YM_SpectralGap,Sovereign.Base.Trit
+Sovereign.Application.YM_SpectralGap,Sovereign.Foundation.Eisenstein
+Sovereign.Application.YM_Transfer,Data.Product
+Sovereign.Application.YM_Transfer,Relation.Binary.PropositionalEquality
+Sovereign.Application.YM_Transfer,Sovereign.Algebra.Jacobian.jac_GF9Matrix
+Sovereign.Application.YMTransfer,Relation.Binary.PropositionalEquality
+Sovereign.Application.YMTransfer,Sovereign.Algebra.Jacobian.jac_GF9Matrix
 Sovereign.Infrastructure.Projection,Data.Bool
 Sovereign.Infrastructure.Projection,Data.Integer
 Sovereign.Infrastructure.Projection,Data.Nat

@@ -27,10 +27,10 @@ import Sovereign.Application.NSVortex
 
 -- Yang-Mills L3 ✅
 import Sovereign.Application.YM_L3          -- 平凡构型 gap, 0 postulate
-import Sovereign.Problem.YangMills.YM_SpectralGap -- 精确谱 λ₀=4/λ₁=1, Δ=3>0, tr/det 一致性
-import Sovereign.Problem.YangMills.YM_Full
-import Sovereign.Problem.YangMills.YM_DetMul
-import Sovereign.Problem.YangMills.SU2_Embedding
+import Sovereign.Application.YM_SpectralGap -- 精确谱 λ₀=4/λ₁=1, Δ=3>0, tr/det 一致性
+import Sovereign.Application.YM_Full
+import Sovereign.Application.YM_DetMul
+import Sovereign.Application.SU2_Embedding
 import Sovereign.Application.WilsonPlaquette
 
 -- Hodge L3 ✅
@@ -66,7 +66,7 @@ import Sovereign.Application.DeligneLusztig  -- 外部形式化
 import Sovereign.Application.Complexity
 import Sovereign.Application.DetMul
 import Sovereign.Application.PvsNP_Conjecture
-import Sovereign.Problem.PvsNP.PvsNP_Separation
+import Sovereign.Application.PvsNP_Separation
 import Sovereign.Application.GF27Separation
 
 -- 编码理论 (P1-2, wiki 94B): GF(9) BCH 码 [8,6,3] + GF(27) 三元循环码

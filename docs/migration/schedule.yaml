@@ -84,7 +84,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B016
     layer: 40-application
-    modules: [Sovereign.Topology.AtkinQ1, Sovereign.Topology.AtkinQAnalysis, Sovereign.Topology.HighDimClosure, Sovereign.Topology.MorseRoute, Sovereign.Infrastructure.PresentationGapBoundary, Sovereign.Algebra.Hensel3Side, Sovereign.Physics.EntropySpin, Sovereign.Structology.OrthogonalLatinSquare, Sovereign.Coupling.LCM, Sovereign.Structology.GF4, Sovereign.Structology.SP2Ternary, Sovereign.Problem.Sqrt2.Sqrt2Valuation]
+    modules: [Sovereign.Topology.AtkinQ1, Sovereign.Topology.AtkinQAnalysis, Sovereign.Topology.HighDimClosure, Sovereign.Topology.MorseRoute, Sovereign.Infrastructure.PresentationGapBoundary, Sovereign.Algebra.Hensel3Side, Sovereign.Physics.EntropySpin, Sovereign.Structology.OrthogonalLatinSquare, Sovereign.Coupling.LCM, Sovereign.Structology.GF4, Sovereign.Structology.SP2Ternary, Sovereign.Application.Sqrt2Valuation]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B017
@@ -124,7 +124,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B024
     layer: 40-application
-    modules: [Sovereign.Application.NSVortex, Sovereign.Application.Algorithm, Sovereign.Application.Complexity3, Sovereign.Application.CubicRoot, Sovereign.Application.CubicRootTest, Sovereign.Application.GF27Separation, Sovereign.Problem.PvsNP.PvsNP_Separation, Sovereign.Application.AlgGeom, Sovereign.Application.FrobeniusBlind, Sovereign.Problem.YangMills.SU2_Embedding, Sovereign.Structology.DynamicMagicSquare, Sovereign.Structology.FiniteTopology]
+    modules: [Sovereign.Application.NSVortex, Sovereign.Application.Algorithm, Sovereign.Application.Complexity3, Sovereign.Application.CubicRoot, Sovereign.Application.CubicRootTest, Sovereign.Application.GF27Separation, Sovereign.Application.PvsNP_Separation, Sovereign.Application.AlgGeom, Sovereign.Application.FrobeniusBlind, Sovereign.Application.SU2_Embedding, Sovereign.Structology.DynamicMagicSquare, Sovereign.Structology.FiniteTopology]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B025
@@ -194,7 +194,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B038
     layer: 40-application
-    modules: [Sovereign.Application.KakeyaGF9, Sovereign.Application.Galois, Sovereign.Problem.Riemann.Variety, Sovereign.Application.GF9Sqrt2, Sovereign.Problem.YangMills.YM_SpectralGap, Sovereign.Quantum.Entanglement, Sovereign.Structology.ArthurMagicSquare, Sovereign.Structology.GF9AffineMagicSquare, Sovereign.Structology.GF9MagicSquare, Sovereign.Algebra.Jacobian.jac_Matrix, Sovereign.Algebra.BCWDegeneracy, Sovereign.Algebra.Holographic.Conjecture]
+    modules: [Sovereign.Application.KakeyaGF9, Sovereign.Application.Galois, Sovereign.Problem.Riemann.Variety, Sovereign.Application.GF9Sqrt2, Sovereign.Application.YM_SpectralGap, Sovereign.Quantum.Entanglement, Sovereign.Structology.ArthurMagicSquare, Sovereign.Structology.GF9AffineMagicSquare, Sovereign.Structology.GF9MagicSquare, Sovereign.Algebra.Jacobian.jac_Matrix, Sovereign.Algebra.BCWDegeneracy, Sovereign.Algebra.Holographic.Conjecture]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B039
@@ -249,22 +249,22 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B049
     layer: 40-application
-    modules: [Sovereign.Problem.NavierStokes.NSEPhaseField, Sovereign.Problem.NavierStokes.NSEPresentation, Sovereign.Structology.SphericalVector, Sovereign.Problem.PvsNP.Complexity, Sovereign.Application.DetMul, Sovereign.Problem.Riemann.Sheaf, Sovereign.Problem.YangMills.SUn_GF9, Sovereign.Problem.YangMills.WilsonLoop, Sovereign.Application.WilsonPlaquette, Sovereign.Problem.YangMills.YM_Action, Sovereign.Problem.YangMills.YM_Full, Sovereign.Application.YM_L3]
+    modules: [Sovereign.Problem.NavierStokes.NSEPhaseField, Sovereign.Problem.NavierStokes.NSEPresentation, Sovereign.Structology.SphericalVector, Sovereign.Problem.PvsNP.Complexity, Sovereign.Application.DetMul, Sovereign.Application.Sheaf, Sovereign.Application.SUn_GF9, Sovereign.Application.WilsonLoop, Sovereign.Application.WilsonPlaquette, Sovereign.Application.YM_Action, Sovereign.Application.YM_Full, Sovereign.Application.YM_L3]
     grade_C_count: 2
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B050
     layer: 40-application
-    modules: [Sovereign.Problem.YangMills.YM_Transfer, Sovereign.Problem.YangMills.YMTransfer, Sovereign.Algebra.InformationStructure, Sovereign.Application.SpaceTimeMapping, Sovereign.Algebra.GF9Semiring, Sovereign.Algebra.PontryaginC3, Sovereign.Analysis.VertexAlgebraDiscrete, Sovereign.Analysis.NormDiscrete, Sovereign.Application.EntropySpinBalance, Sovereign.Physics.OpticalWindow, Sovereign.Quantum.Measurement, Sovereign.Quantum.NoCloning]
+    modules: [Sovereign.Application.YM_Transfer, Sovereign.Application.YMTransfer, Sovereign.Algebra.InformationStructure, Sovereign.Application.SpaceTimeMapping, Sovereign.Algebra.GF9Semiring, Sovereign.Algebra.PontryaginC3, Sovereign.Analysis.VertexAlgebraDiscrete, Sovereign.Analysis.NormDiscrete, Sovereign.Application.EntropySpinBalance, Sovereign.Physics.OpticalWindow, Sovereign.Quantum.Measurement, Sovereign.Quantum.NoCloning]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B051
     layer: 20-algebra
-    modules: [Sovereign.Structology.MotorStableStates, Sovereign.Algebra.Jacobian.jac_CRTSpectrum, Sovereign.Algebra.Jacobian.jac_Topology, Sovereign.Problem.YangMills.YM_DetMul, Sovereign.Infrastructure.TestMemory, Sovereign.Algebra.FiniteDefinitions, Sovereign.Algebra.Holographic.4320DClosure, Sovereign.Algebra.Jacobian.jac_DiscreteJC, Sovereign.Algebra.Jacobian.jac_FunctionTable, Sovereign.Algebra.Jacobian.jac_NMatrix, Sovereign.Algebra.ChainHomo, Sovereign.Applied.LogicCompleteness2Var]
+    modules: [Sovereign.Structology.MotorStableStates, Sovereign.Algebra.Jacobian.jac_CRTSpectrum, Sovereign.Algebra.Jacobian.jac_Topology, Sovereign.Application.YM_DetMul, Sovereign.Infrastructure.TestMemory, Sovereign.Algebra.FiniteDefinitions, Sovereign.Algebra.Holographic.4320DClosure, Sovereign.Algebra.Jacobian.jac_DiscreteJC, Sovereign.Algebra.Jacobian.jac_FunctionTable, Sovereign.Algebra.Jacobian.jac_NMatrix, Sovereign.Algebra.ChainHomo, Sovereign.Applied.LogicCompleteness2Var]
     grade_C_count: 1
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B052
     layer: 40-application
-    modules: [Sovereign.Application.FermatL2, Sovereign.Problem.Fermat.FermatL4_NatLift, Sovereign.Application.NSEConservationCore, Sovereign.Topology.MorseRouteListDT, Sovereign.Topology.MorseSqZeroFull, Sovereign.Analysis.CalculusOfVariations, Sovereign.Application.DiscreteLagrangian3D, Sovereign.Algebra.GroupTheory.FiniteGroupAxioms, Sovereign.Application.DiscreteMaxwellConservation, Sovereign.Application.DiscreteNoether, Sovereign.Application.MaxwellFromLagrangian, Sovereign.Application.EntropySpinMicro]
+    modules: [Sovereign.Application.FermatL2, Sovereign.Application.FermatL4_NatLift, Sovereign.Application.NSEConservationCore, Sovereign.Topology.MorseRouteListDT, Sovereign.Topology.MorseSqZeroFull, Sovereign.Analysis.CalculusOfVariations, Sovereign.Application.DiscreteLagrangian3D, Sovereign.Algebra.GroupTheory.FiniteGroupAxioms, Sovereign.Application.DiscreteMaxwellConservation, Sovereign.Application.DiscreteNoether, Sovereign.Application.MaxwellFromLagrangian, Sovereign.Application.EntropySpinMicro]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B053
@@ -284,7 +284,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B056
     layer: 20-algebra
-    modules: [Sovereign.Algebra.DiscreteLimit, Sovereign.Applied.EMDiscrete, Sovereign.Applied.GRDiscrete, Sovereign.Applied.ImageProcessing, Sovereign.Applied.LinguisticsDiscrete, Sovereign.Algebra.Character.FrequencyMode, Sovereign.Algebra.TowerConnection, Sovereign.Algebra.GroupTheory.ClockIteration, Sovereign.Algebra.Pi4Homomorphism, Sovereign.Problem.Fermat.FermatL4_Mod12Cycle, Sovereign.Algebra.Dihedral.CayleyMetric, Sovereign.Algebra.GroupTheory.DCGroup]
+    modules: [Sovereign.Algebra.DiscreteLimit, Sovereign.Applied.EMDiscrete, Sovereign.Applied.GRDiscrete, Sovereign.Applied.ImageProcessing, Sovereign.Applied.LinguisticsDiscrete, Sovereign.Algebra.Character.FrequencyMode, Sovereign.Algebra.TowerConnection, Sovereign.Algebra.GroupTheory.ClockIteration, Sovereign.Algebra.Pi4Homomorphism, Sovereign.Application.FermatL4_Mod12Cycle, Sovereign.Algebra.Dihedral.CayleyMetric, Sovereign.Algebra.GroupTheory.DCGroup]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B057
