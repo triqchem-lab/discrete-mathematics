@@ -33,7 +33,7 @@ open import Relation.Binary.PropositionalEquality
 open Relation.Binary.PropositionalEquality.≡-Reasoning
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; _⊕_; negate; ⊕-comm; ⊕-assoc; ⊕-inverse; ⊕-identityˡ)
-open import Sovereign.Problem.Hodge.EckmannGF3 using (V3; zeroV)
+open import Sovereign.Application.EckmannGF3 using (V3; zeroV)
 
 --------------------------------------------------------------------------------
 -- §1. 三角形边界算子

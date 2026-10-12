@@ -3,7 +3,7 @@
 -- | jac_DeligneHodge — Deligne Weil 猜想 · 在三角复形上的独立形式化
 -- 0 postulate
 
-module Sovereign.Problem.Hodge.DeligneHodge where
+module Sovereign.Application.DeligneHodge where
 
 open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

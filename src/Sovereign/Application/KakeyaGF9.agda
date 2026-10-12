@@ -14,7 +14,7 @@
 -- 复用: Sovereign.Algebra.GF9 — 全部 Frobenius/范数/迹/乘法群定理
 -- 0 postulate.
 
-module Sovereign.Problem.Kakeya.KakeyaGF9 where
+module Sovereign.Application.KakeyaGF9 where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)

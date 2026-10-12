@@ -82,7 +82,7 @@ import Sovereign.Foundation.Eisenstein  -- *ᵉ-assoc/comm + conjᵉ-mul + norm-
 
 -- Kakeya L3 ✅
 import Sovereign.Application.KakeyaGF3
-import Sovereign.Problem.Kakeya.KakeyaGF9
+import Sovereign.Application.KakeyaGF9
 import Sovereign.Problem.Kakeya.KakeyaMF
 import Sovereign.Problem.Kakeya.KakeyaPathology
 

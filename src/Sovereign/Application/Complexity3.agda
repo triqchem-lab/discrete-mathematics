@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
-module Sovereign.Problem.PvsNP.Complexity3 where
+module Sovereign.Application.Complexity3 where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)

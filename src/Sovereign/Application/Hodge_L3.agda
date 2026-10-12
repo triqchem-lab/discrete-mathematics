@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.Hodge_L3
+-- | Sovereign.Application.Hodge_L3
 -- GF(9) 射影簇 + 代数闭链 ≅ Hodge 类
 --
 -- 数学背景：Hodge L3：ℙⁿ(GF(9)) 计数 |ℙⁿ| = (qⁿ⁺¹−1)/(q−1) 有限集、子簇可穷举——代数闭链与 Hodge 类的有限域对照。
@@ -14,7 +14,7 @@
 --   （命名正名：旧头注 `jac_Hodge_L3` ≠ 模块名，2026-10-11 勘误）
 
 --
-module Sovereign.Problem.Hodge.Hodge_L3 where
+module Sovereign.Application.Hodge_L3 where
 
 open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

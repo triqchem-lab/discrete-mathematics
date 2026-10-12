@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.MaxwellFromLagrangian
+-- | Sovereign.Application.MaxwellFromLagrangian
 -- 从作用量原理推导 Maxwell 四律 (L3 深层证明)
 --
 -- 核心命题:
@@ -15,7 +15,7 @@
 --
 -- 全部 0 postulate, GF(3) 穷举 refl + 符号推理。
 
-module Sovereign.Physics.MaxwellFromLagrangian where
+module Sovereign.Application.MaxwellFromLagrangian where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

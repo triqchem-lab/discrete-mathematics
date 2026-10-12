@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.EntropySpinBalance
+-- | Sovereign.Application.EntropySpinBalance
 -- 渠玉芝熵旋平衡定理 (GF(9) 版) — 微观量子熵 → 宏观电磁学的贯通 (0 postulate)
 --
 -- 深度证明: 把「熵旋平衡」从浅层锚点深化为「旋度部分(磁场)无散 + 耗散
@@ -21,7 +21,7 @@
 -- 这就是「量子环面流体的熵旋平衡 ⟹ 电磁场的无源动力学」的实质推导 —
 --   生成链从微观(熵旋)到宏观(电磁)的闭合定理。
 
-module Sovereign.Physics.EntropySpinBalance where
+module Sovereign.Application.EntropySpinBalance where
 
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality

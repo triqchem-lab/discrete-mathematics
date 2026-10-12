@@ -66,7 +66,7 @@ import Sovereign.Algebra.Jacobian.jac_Pigeonhole     -- 组合
 import Sovereign.Application.jac_AutT6           -- 群论
 import Sovereign.Algebra.Holographic.InfoClosure     -- 信息论
 import Sovereign.Application.WeilRH          -- Weil 独立形式化
-import Sovereign.Problem.Hodge.DeligneHodge    -- Deligne 独立形式化
+import Sovereign.Application.DeligneHodge    -- Deligne 独立形式化
 import Sovereign.Application.DeligneLusztig  -- DL 独立形式化
 
 -- ═══════════════════════════════════════════════════════════

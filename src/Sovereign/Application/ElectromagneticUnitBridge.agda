@@ -66,7 +66,7 @@ open import Sovereign.Application.DiscreteMaxwellGF9
          charge-conservation-GF9; σ-time-comm)
 
 -- Yee 蛙跳 + 高斯保持
-open import Sovereign.Physics.DiscreteMaxwellConservation
+open import Sovereign.Application.DiscreteMaxwellConservation
   using (yee-B; yee-E; gauss-preservation; yee-gauss-preservation)
 
 -- 混合偏导交换 (从第二基石)

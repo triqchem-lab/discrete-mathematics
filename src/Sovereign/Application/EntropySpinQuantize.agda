@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.EntropySpinQuantize
+-- | Sovereign.Application.EntropySpinQuantize
 -- 熵旋质量量子化: 两个开放接缝的闭合 (0 postulate, 无洞)
 --
 -- 接缝 1 (一般 {0,1} 场整数量子化) — 闭合:
@@ -18,7 +18,7 @@
 --   (Base/Invariants: CHERN_NUMBER = 2), 不由本模块导出 —
 --   本模块闭合的是"质量 = N·m₀ 整数量子化"这一代数定律。
 
-module Sovereign.Physics.EntropySpinQuantize where
+module Sovereign.Application.EntropySpinQuantize where
 
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Bool using (Bool; true; false)

@@ -3,7 +3,7 @@
 -- | jac_CharPoly3 — 3×3 det判定 + 不可约性框架
 -- 0 postulate
 
-module Sovereign.Problem.PvsNP.CharPoly3 where
+module Sovereign.Application.CharPoly3 where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (T₀; T₁)

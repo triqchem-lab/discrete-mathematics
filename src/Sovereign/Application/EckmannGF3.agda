@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.EckmannGF3
+-- | Sovereign.Application.EckmannGF3
 -- 任务书第四层·4.2：Eckmann 离散 Hodge 定理（1944/45）的 GF(3) 退化核对
 --
 -- 数学背景：Eckmann, "Harmonische Funktionen und Randwertaufgaben in einem
@@ -23,7 +23,7 @@
 --   3. 系数域锁定 GF(3)（Base/Trit 本源），不涉连续统内积。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.EckmannGF3 where
+module Sovereign.Application.EckmannGF3 where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Empty using (⊥)

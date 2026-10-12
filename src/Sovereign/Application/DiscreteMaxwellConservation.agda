@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteMaxwellConservation
+-- | Sovereign.Application.DiscreteMaxwellConservation
 -- 78 电磁学 — 离散 Maxwell 守恒层: Yee 蛙跳 + 高斯保持 (0 postulate, 无洞)
 --
 -- 先符号设计, 再落链。闭环的最后一环:
@@ -24,7 +24,7 @@
 -- 取 B 序列为原始参数 — 高斯保持定理只依赖 AmpereStep, 与 B 的
 -- 更新方式无关, 这正是其代数内涵。
 
-module Sovereign.Physics.DiscreteMaxwellConservation where
+module Sovereign.Application.DiscreteMaxwellConservation where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

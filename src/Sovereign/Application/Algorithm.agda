@@ -7,7 +7,7 @@
 -- 正确性: det(M_F) ≠ 0 ⟺ F 是双射 (鸽巢原理)
 -- 复杂度: O(N³) 行列式计算, N = |S|
 
-module Sovereign.Problem.PvsNP.Algorithm where
+module Sovereign.Application.Algorithm where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl)
