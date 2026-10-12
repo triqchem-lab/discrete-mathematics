@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.BSD.BSD_GF27
+-- | Sovereign.Application.BSD_GF27
 -- BSD 迹递推 t₃ + GF(27) 点计数
 --
 -- 数学背景：椭圆曲线 BSD 线的 GF(27) 实例核：Weil 迹递推 t_{n+2} = t₁·t_{n+1} − q·tₙ（q=3）经 Newton 恒等式给 t₃，点计数 #E(GF(27)) = 27+1−t₃。
@@ -15,7 +15,7 @@
 --   （命名正名：旧头注 `jac_BSD_GF27` ≠ 模块名，2026-10-11 勘误）
 
 --
-module Sovereign.Problem.BSD.BSD_GF27 where
+module Sovereign.Application.BSD_GF27 where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Fermat.FermatL4_NatLift
+-- | Sovereign.Application.FermatL4_NatLift
 -- 费马大定理的离散基座 — L4 ℤ/ℕ 提升层
 --
 -- 数学背景 (13-flt-analysis.md §9.2 "ℤ 提升是元论证" 的构造性闭合):
@@ -25,7 +25,7 @@
 --
 -- 依赖: FermatL1 (pow3-even, GF(3)× 偶次坍缩), Trit (环公理), Data.Nat
 
-module Sovereign.Problem.Fermat.FermatL4_NatLift where
+module Sovereign.Application.FermatL4_NatLift where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_)
 open import Data.Empty using (⊥; ⊥-elim)

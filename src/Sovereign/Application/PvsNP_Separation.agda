@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
-module Sovereign.Problem.PvsNP.PvsNP_Separation where
+module Sovereign.Application.PvsNP_Separation where
 
 open import Data.Product using (_×_; _,_; ∃; Σ; Σ-syntax)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym)

@@ -7,7 +7,7 @@
 --   1. S₄ Burnside 计数验证（Langlands 第七例对照面）；
 --   2. 实例核对（非一般定理）。
 -- 包含：s4-order、s4-burnside
-module Sovereign.Problem.Langlands.S4Burnside where
+module Sovereign.Application.S4Burnside where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

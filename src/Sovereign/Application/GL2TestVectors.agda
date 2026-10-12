@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Problem.Langlands.GL2TestVectors
+-- | Sovereign.Application.GL2TestVectors
 -- GL₂(GF(9)) 群分类的 HFM 穷举交叉验证测试向量
 --
 -- HFM 验证 (test/GL2Verify.hs):
@@ -43,7 +43,7 @@
 --   2. Burnside 计数对账（totalClasses = burnsideSum）；
 --   3. 诚实边界：测试向量=实例核对，非一般定理。
 -- 包含：orderGL2、orderSL2、centerSize、orderGL2-ok、orderSL2-ok、orderSL2-factor-check、totalClasses、burnsideSum
-module Sovereign.Problem.Langlands.GL2TestVectors where
+module Sovereign.Application.GL2TestVectors where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- Sovereign.Problem.Langlands.Langlands（旧名 jac_Langlands）
+-- Sovereign.Application.Langlands（旧名 jac_Langlands）
 -- GL₂(GF(9)) 共轭类 + 特征标 — 深度形式化
 --
 -- 深度提升: 共轭类大小从代数公式参数化推导 (q=9).
 -- 类个数: (q-1), (q-1)(q-2)/2, q(q-1)/2, q-1 — 需要除法, 用具体值.
 -- 0 postulate.
 
--- | Sovereign.Problem.Langlands.Langlands
+-- | Sovereign.Application.Langlands
 -- GL₂(GF(9)) 共轭类 + 特征标 — 深度形式化
 --
 -- 核心原则：
@@ -15,7 +15,7 @@
 --   2. |G| = (q²-1)(q²-q) 与类大小之和对账；
 --   3. 诚实边界：GL₂(GF(9)) 群论面（旧名 jac_Langlands——已正名），非 Langlands 纲领。
 -- 包含：q、q²、|G|、|G|-ok、sCent、sSplit、sAni、sUni、sSplit-ok、sAni-ok、sUni-ok
-module Sovereign.Problem.Langlands.Langlands where
+module Sovereign.Application.Langlands where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_; _/_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

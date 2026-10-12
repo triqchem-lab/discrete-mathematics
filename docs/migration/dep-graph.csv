@@ -1104,9 +1104,9 @@ Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Coding.CyclicGF27   --
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Coding.HammingMetric
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.BSD.BSD
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.BSD_General
-Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.BSD.BSD_GF27
+Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.BSD_GF27
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.BSD_L3               -- t-rec 递归 + 正确性
-Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.BSD.ZetaDiscrete
+Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.ZetaDiscrete
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.Hodge.ChainComplex       -- hodge-decomp: nullity∂ ≡ rank∂∘suc + dimℋ
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.Hodge.EulerChar
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.Hodge.Hodge
@@ -1118,10 +1118,10 @@ Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.Kakeya.KakeyaG
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.KakeyaMF
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.KakeyaPathology
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.DeligneLusztig  -- 外部形式化
-Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.Langlands.GL2TestVectors
-Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.Langlands.Langlands
-Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.Langlands.S4Burnside
-Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.NavierStokes.NSE          -- 12 定理, 0 postulate
+Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.GL2TestVectors
+Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.Langlands
+Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.S4Burnside
+Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.NSE          -- 12 定理, 0 postulate
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.NavierStokes.NSRegularity -- §5 动力学: step³-id/单射/能量守恒/周期
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Application.NSVortex
 Sovereign.Algebra.Holographic.FinalAudit,import Sovereign.Problem.PvsNP.Complexity
@@ -3588,10 +3588,10 @@ Sovereign.Application.L1Disjunction,Data.Nat
 Sovereign.Application.L1Disjunction,Data.Nat.GCD
 Sovereign.Application.L1Disjunction,Data.Product
 Sovereign.Application.L1Disjunction,Relation.Binary.PropositionalEquality
-Sovereign.Application.L1Disjunction,Sovereign.Problem.ABC.L1Rad
-Sovereign.Problem.ABC.L1Rad,Data.Bool
-Sovereign.Problem.ABC.L1Rad,Data.Nat
-Sovereign.Problem.ABC.L1Rad,Relation.Binary.PropositionalEquality
+Sovereign.Application.L1Disjunction,Sovereign.Application.L1Rad
+Sovereign.Application.L1Rad,Data.Bool
+Sovereign.Application.L1Rad,Data.Nat
+Sovereign.Application.L1Rad,Relation.Binary.PropositionalEquality
 Sovereign.Application.BSD9,Data.Nat
 Sovereign.Application.BSD9,Relation.Binary.PropositionalEquality
 Sovereign.Application.BSD9,Sovereign.Problem.BSD.BSD
@@ -3606,8 +3606,8 @@ Sovereign.Application.BSD_General,Data.Nat
 Sovereign.Application.BSD_General,Relation.Binary.PropositionalEquality
 Sovereign.Application.BSD_GF243,Data.Integer
 Sovereign.Application.BSD_GF243,Relation.Binary.PropositionalEquality
-Sovereign.Problem.BSD.BSD_GF27,Data.Integer
-Sovereign.Problem.BSD.BSD_GF27,Relation.Binary.PropositionalEquality
+Sovereign.Application.BSD_GF27,Data.Integer
+Sovereign.Application.BSD_GF27,Relation.Binary.PropositionalEquality
 Sovereign.Application.BSD_GF81,Data.Integer
 Sovereign.Application.BSD_GF81,Relation.Binary.PropositionalEquality
 Sovereign.Application.BSD_L3,Data.Integer
@@ -3625,9 +3625,9 @@ Sovereign.Application.SelmerDiscrete,Data.Product
 Sovereign.Application.SelmerDiscrete,Relation.Binary.PropositionalEquality
 Sovereign.Application.SelmerDiscrete,Sovereign.Base.Trit
 Sovereign.Application.SelmerDiscrete,Sovereign.Problem.BSD.BSD
-Sovereign.Problem.BSD.ZetaDiscrete,Data.Nat
-Sovereign.Problem.BSD.ZetaDiscrete,Relation.Binary.PropositionalEquality
-Sovereign.Problem.BSD.ZetaDiscrete,Sovereign.Problem.BSD.BSD
+Sovereign.Application.ZetaDiscrete,Data.Nat
+Sovereign.Application.ZetaDiscrete,Relation.Binary.PropositionalEquality
+Sovereign.Application.ZetaDiscrete,Sovereign.Problem.BSD.BSD
 Sovereign.Application.FermatL0,Data.Empty
 Sovereign.Application.FermatL0,Data.Nat
 Sovereign.Application.FermatL0,Data.Sum
@@ -3708,13 +3708,13 @@ Sovereign.Problem.Hodge.FreeAbBoundary,Data.Nat
 Sovereign.Problem.Hodge.FreeAbBoundary,Relation.Binary.PropositionalEquality
 Sovereign.Problem.Hodge.FreeAbBoundary,Sovereign.Algebra.FreeAb
 Sovereign.Problem.Hodge.FreeAbBoundary,Sovereign.Base.Trit
-Sovereign.Problem.Hodge.FreeAbH0,Data.Fin
-Sovereign.Problem.Hodge.FreeAbH0,Data.Nat
-Sovereign.Problem.Hodge.FreeAbH0,Data.Product
-Sovereign.Problem.Hodge.FreeAbH0,Relation.Binary.PropositionalEquality
-Sovereign.Problem.Hodge.FreeAbH0,Sovereign.Algebra.FreeAb
-Sovereign.Problem.Hodge.FreeAbH0,Sovereign.Base.Trit
-Sovereign.Problem.Hodge.FreeAbH0,Sovereign.Problem.Hodge.FreeAbBoundary
+Sovereign.Application.FreeAbH0,Data.Fin
+Sovereign.Application.FreeAbH0,Data.Nat
+Sovereign.Application.FreeAbH0,Data.Product
+Sovereign.Application.FreeAbH0,Relation.Binary.PropositionalEquality
+Sovereign.Application.FreeAbH0,Sovereign.Algebra.FreeAb
+Sovereign.Application.FreeAbH0,Sovereign.Base.Trit
+Sovereign.Application.FreeAbH0,Sovereign.Problem.Hodge.FreeAbBoundary
 Sovereign.Problem.Hodge.FreeAbHodgeVerdict,Data.Fin
 Sovereign.Problem.Hodge.FreeAbHodgeVerdict,Data.Nat
 Sovereign.Problem.Hodge.FreeAbHodgeVerdict,Data.Product
@@ -3722,23 +3722,23 @@ Sovereign.Problem.Hodge.FreeAbHodgeVerdict,Relation.Binary.PropositionalEquality
 Sovereign.Problem.Hodge.FreeAbHodgeVerdict,Sovereign.Algebra.FreeAb
 Sovereign.Problem.Hodge.FreeAbHodgeVerdict,Sovereign.Base.Trit
 Sovereign.Problem.Hodge.FreeAbHodgeVerdict,Sovereign.Problem.Hodge.FreeAbBoundary
-Sovereign.Problem.Hodge.FreeAbHodgeVerdict,Sovereign.Problem.Hodge.FreeAbHomology
-Sovereign.Problem.Hodge.FreeAbHomology,Data.Fin
-Sovereign.Problem.Hodge.FreeAbHomology,Data.Nat
-Sovereign.Problem.Hodge.FreeAbHomology,Data.Product
-Sovereign.Problem.Hodge.FreeAbHomology,Relation.Binary.PropositionalEquality
-Sovereign.Problem.Hodge.FreeAbHomology,Relation.Nullary
-Sovereign.Problem.Hodge.FreeAbHomology,Sovereign.Algebra.FreeAb
-Sovereign.Problem.Hodge.FreeAbHomology,Sovereign.Base.Trit
-Sovereign.Problem.Hodge.FreeAbHomology,Sovereign.Problem.Hodge.FreeAbBoundary
-Sovereign.Problem.Hodge.FreeAbHomologyGroup,Data.Empty
-Sovereign.Problem.Hodge.FreeAbHomologyGroup,Data.Fin
-Sovereign.Problem.Hodge.FreeAbHomologyGroup,Data.Product
-Sovereign.Problem.Hodge.FreeAbHomologyGroup,Relation.Binary.PropositionalEquality
-Sovereign.Problem.Hodge.FreeAbHomologyGroup,Relation.Nullary
-Sovereign.Problem.Hodge.FreeAbHomologyGroup,Sovereign.Base.Trit
-Sovereign.Problem.Hodge.FreeAbHomologyGroup,Sovereign.Problem.Hodge.FreeAbBoundary
-Sovereign.Problem.Hodge.FreeAbHomologyGroup,Sovereign.Problem.Hodge.FreeAbH0
+Sovereign.Problem.Hodge.FreeAbHodgeVerdict,Sovereign.Application.FreeAbHomology
+Sovereign.Application.FreeAbHomology,Data.Fin
+Sovereign.Application.FreeAbHomology,Data.Nat
+Sovereign.Application.FreeAbHomology,Data.Product
+Sovereign.Application.FreeAbHomology,Relation.Binary.PropositionalEquality
+Sovereign.Application.FreeAbHomology,Relation.Nullary
+Sovereign.Application.FreeAbHomology,Sovereign.Algebra.FreeAb
+Sovereign.Application.FreeAbHomology,Sovereign.Base.Trit
+Sovereign.Application.FreeAbHomology,Sovereign.Problem.Hodge.FreeAbBoundary
+Sovereign.Application.FreeAbHomologyGroup,Data.Empty
+Sovereign.Application.FreeAbHomologyGroup,Data.Fin
+Sovereign.Application.FreeAbHomologyGroup,Data.Product
+Sovereign.Application.FreeAbHomologyGroup,Relation.Binary.PropositionalEquality
+Sovereign.Application.FreeAbHomologyGroup,Relation.Nullary
+Sovereign.Application.FreeAbHomologyGroup,Sovereign.Base.Trit
+Sovereign.Application.FreeAbHomologyGroup,Sovereign.Problem.Hodge.FreeAbBoundary
+Sovereign.Application.FreeAbHomologyGroup,Sovereign.Application.FreeAbH0
 Sovereign.Application.FreeAbImEquiv,Data.Fin
 Sovereign.Application.FreeAbImEquiv,Data.Product
 Sovereign.Application.FreeAbImEquiv,Relation.Binary.PropositionalEquality
@@ -3750,12 +3750,12 @@ Sovereign.Problem.Hodge.FreeAbImSubsetPlane,Relation.Binary.PropositionalEqualit
 Sovereign.Problem.Hodge.FreeAbImSubsetPlane,Sovereign.Algebra.FreeAb
 Sovereign.Problem.Hodge.FreeAbImSubsetPlane,Sovereign.Base.Trit
 Sovereign.Problem.Hodge.FreeAbImSubsetPlane,Sovereign.Problem.Hodge.FreeAbBoundary
-Sovereign.Problem.Hodge.FreeAbInnerProduct,Data.Fin
-Sovereign.Problem.Hodge.FreeAbInnerProduct,Relation.Binary.PropositionalEquality
-Sovereign.Problem.Hodge.FreeAbInnerProduct,Relation.Nullary
-Sovereign.Problem.Hodge.FreeAbInnerProduct,Sovereign.Algebra.FreeAb
-Sovereign.Problem.Hodge.FreeAbInnerProduct,Sovereign.Base.Trit
-Sovereign.Problem.Hodge.FreeAbInnerProduct,Sovereign.Problem.Hodge.FreeAbBoundary
+Sovereign.Application.FreeAbInnerProduct,Data.Fin
+Sovereign.Application.FreeAbInnerProduct,Relation.Binary.PropositionalEquality
+Sovereign.Application.FreeAbInnerProduct,Relation.Nullary
+Sovereign.Application.FreeAbInnerProduct,Sovereign.Algebra.FreeAb
+Sovereign.Application.FreeAbInnerProduct,Sovereign.Base.Trit
+Sovereign.Application.FreeAbInnerProduct,Sovereign.Problem.Hodge.FreeAbBoundary
 Sovereign.Problem.Hodge.FreeAbNonDegenerate,Data.Fin
 Sovereign.Problem.Hodge.FreeAbNonDegenerate,Data.Nat
 Sovereign.Problem.Hodge.FreeAbNonDegenerate,Data.Product
@@ -3764,7 +3764,7 @@ Sovereign.Problem.Hodge.FreeAbNonDegenerate,Relation.Nullary
 Sovereign.Problem.Hodge.FreeAbNonDegenerate,Sovereign.Algebra.FreeAb
 Sovereign.Problem.Hodge.FreeAbNonDegenerate,Sovereign.Base.Trit
 Sovereign.Problem.Hodge.FreeAbNonDegenerate,Sovereign.Problem.Hodge.FreeAbBoundary
-Sovereign.Problem.Hodge.FreeAbNonDegenerate,Sovereign.Problem.Hodge.FreeAbInnerProduct
+Sovereign.Problem.Hodge.FreeAbNonDegenerate,Sovereign.Application.FreeAbInnerProduct
 Sovereign.Problem.Hodge.FreeAbPlaneSurjective,Data.Fin
 Sovereign.Problem.Hodge.FreeAbPlaneSurjective,Data.Product
 Sovereign.Problem.Hodge.FreeAbPlaneSurjective,Relation.Binary.PropositionalEquality
@@ -3796,9 +3796,9 @@ Sovereign.Problem.Hodge.HodgeTetra,Relation.Binary.PropositionalEquality
 Sovereign.Application.KirchhoffCRT,Relation.Binary.PropositionalEquality
 Sovereign.Application.KirchhoffCRT,Sovereign.Algebra.Duodecimal
 Sovereign.Application.KirchhoffCRT,Sovereign.Algebra.Jacobian.jac_CRTDet
-Sovereign.Problem.Hodge.KirchhoffZ,Data.Fin
-Sovereign.Problem.Hodge.KirchhoffZ,Data.Integer
-Sovereign.Problem.Hodge.KirchhoffZ,Relation.Binary.PropositionalEquality
+Sovereign.Application.KirchhoffZ,Data.Fin
+Sovereign.Application.KirchhoffZ,Data.Integer
+Sovereign.Application.KirchhoffZ,Relation.Binary.PropositionalEquality
 Sovereign.Problem.Hodge.KleinHodge,Data.Nat
 Sovereign.Problem.Hodge.KleinHodge,Data.Product
 Sovereign.Problem.Hodge.KleinHodge,Relation.Binary.PropositionalEquality
@@ -3849,21 +3849,21 @@ Sovereign.Application.DeligneLusztig,Relation.Binary.PropositionalEquality
 Sovereign.Application.DeligneLusztig,Sovereign.Structology.A4Representations
 Sovereign.Application.GL2_Rep,Data.Nat
 Sovereign.Application.GL2_Rep,Relation.Binary.PropositionalEquality
-Sovereign.Problem.Langlands.GL2TestVectors,Data.Integer
-Sovereign.Problem.Langlands.GL2TestVectors,Data.Nat
-Sovereign.Problem.Langlands.GL2TestVectors,Relation.Binary.PropositionalEquality
-Sovereign.Problem.Langlands.Langlands,Data.Integer
-Sovereign.Problem.Langlands.Langlands,Relation.Binary.PropositionalEquality
+Sovereign.Application.GL2TestVectors,Data.Integer
+Sovereign.Application.GL2TestVectors,Data.Nat
+Sovereign.Application.GL2TestVectors,Relation.Binary.PropositionalEquality
+Sovereign.Application.Langlands,Data.Integer
+Sovereign.Application.Langlands,Relation.Binary.PropositionalEquality
 Sovereign.Application.Langlands_L15,Data.Nat
 Sovereign.Application.Langlands_L15,Relation.Binary.PropositionalEquality
-Sovereign.Problem.Langlands.S4Burnside,Data.Nat
-Sovereign.Problem.Langlands.S4Burnside,Relation.Binary.PropositionalEquality
-Sovereign.Problem.NavierStokes.NSE,Data.Bool
-Sovereign.Problem.NavierStokes.NSE,Data.Nat
-Sovereign.Problem.NavierStokes.NSE,Data.Nat.DivMod
-Sovereign.Problem.NavierStokes.NSE,Relation.Binary.PropositionalEquality
-Sovereign.Problem.NavierStokes.NSE,Sovereign.Base.Invariants
-Sovereign.Problem.NavierStokes.NSE,Sovereign.Base.Trit
+Sovereign.Application.S4Burnside,Data.Nat
+Sovereign.Application.S4Burnside,Relation.Binary.PropositionalEquality
+Sovereign.Application.NSE,Data.Bool
+Sovereign.Application.NSE,Data.Nat
+Sovereign.Application.NSE,Data.Nat.DivMod
+Sovereign.Application.NSE,Relation.Binary.PropositionalEquality
+Sovereign.Application.NSE,Sovereign.Base.Invariants
+Sovereign.Application.NSE,Sovereign.Base.Trit
 Sovereign.Problem.NavierStokes.NSEBlowupBound,Data.Fin
 Sovereign.Problem.NavierStokes.NSEBlowupBound,Data.Nat
 Sovereign.Problem.NavierStokes.NSEBlowupBound,Data.Nat.Properties

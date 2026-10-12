@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Riemann.Sheaf
+-- | Sovereign.Application.Sheaf
 -- 离散层论 — GF(9) 上有限拓扑空间的层与 Čech 上同调
 --
 -- 核心定理:
@@ -11,7 +11,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Problem.Riemann.Sheaf where
+module Sovereign.Application.Sheaf where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Fin using (Fin; zero; suc)

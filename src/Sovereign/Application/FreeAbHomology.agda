@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.FreeAbHomology
+-- | Sovereign.Application.FreeAbHomology
 -- 任务书第二层·2.5 推进：FreeAb 载体上的同调消没实例（H₁ = 0）
 --
 -- 数学背景：K₃ 填充三角（FreeAbBoundary 的链群 C₂--∂₂-->C₁--∂₁-->C₀）
@@ -20,7 +20,7 @@
 -- 复用：FreeAb（载体）、FreeAbBoundary（∂₁/∂₂）、Base/Trit（算术）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.FreeAbHomology where
+module Sovereign.Application.FreeAbHomology where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Nat using (ℕ; zero; suc)

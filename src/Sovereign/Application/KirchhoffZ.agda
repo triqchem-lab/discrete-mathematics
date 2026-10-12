@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.KirchhoffZ
+-- | Sovereign.Application.KirchhoffZ
 -- Kirchhoff 矩阵与 Matrix-Tree 定理的 ℤ 实例核
 --
 -- 数学背景：Kirchhoff 1847 Matrix-Tree：K₃ 三角形 ℤ 系数——入射矩阵 M、Laplacian L=∂ᵀ∂、定理 A 行和零（电流定律离散形）、定理 B (n−1) 主子式 det=3=生成树数。
@@ -13,7 +13,7 @@
 --
 -- 包含：M, sum3, L, rowsum-0, rowsum-1, rowsum-2, lap-rowsum-zero, det2ℤ, minor, matrix-tree-K3, L00, L01, L11, L12
 --
-module Sovereign.Problem.Hodge.KirchhoffZ where
+module Sovereign.Application.KirchhoffZ where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Integer using (ℤ; 0ℤ; 1ℤ; +_; _+_; _*_; _-_; -_)

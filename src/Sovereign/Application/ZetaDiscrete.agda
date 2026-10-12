@@ -11,7 +11,7 @@
 --
 -- 包含：e1-gf3、e1-ok、e1-gf9
 
-module Sovereign.Problem.BSD.ZetaDiscrete where
+module Sovereign.Application.ZetaDiscrete where
 
 open import Data.Nat using (ℕ; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

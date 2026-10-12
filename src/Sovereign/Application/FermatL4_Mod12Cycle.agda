@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Fermat.FermatL4_Mod12Cycle
+-- | Sovereign.Application.FermatL4_Mod12Cycle
 -- 费马大定理的离散基座 — L4 R₁₂ 幂周期闭包层
 --
 -- 数学背景 (对应 DC12 论文"定理 1 幂周期闭包"的真内核; 论文表有误, 本层按真表):
@@ -27,7 +27,7 @@
 --
 -- 0 postulate. 依赖: Duodecimal (R₁₂ = Duodec 环), Data.Nat.
 
-module Sovereign.Problem.Fermat.FermatL4_Mod12Cycle where
+module Sovereign.Application.FermatL4_Mod12Cycle where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (_×_; _,_)

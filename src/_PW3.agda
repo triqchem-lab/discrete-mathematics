@@ -23,7 +23,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 open import Sovereign.Topology.Graphs.GraphBasic using (Graph; V; adj; adj-sym; adj-irrefl; degree)
 open import Sovereign.Topology.Graphs.Matchings using (Tri; t0; t1; t2; adj3; adj3-sym; adj3-irrefl)
-open import Sovereign.Problem.Hodge.KirchhoffZ using (L)
+open import Sovereign.Application.KirchhoffZ using (L)
 open import Sovereign.Topology.Graphs.Colorings using (cf2)
 open import Sovereign.Topology.Graphs.RamseyFinite using (isEdge5; pent; v0; v1; v2; v3; v4)
 

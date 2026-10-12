@@ -34,7 +34,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
 open import Sovereign.Algebra.FreeAb using (FAb)
 open import Sovereign.Problem.Hodge.FreeAbBoundary
   using (∂₁; ∂₂; C₀; C₁; C₂; ∂∂-unit)
-open import Sovereign.Problem.Hodge.FreeAbHomology
+open import Sovereign.Application.FreeAbHomology
   using (cycle-coeffs-equal)
 
 --------------------------------------------------------------------------------

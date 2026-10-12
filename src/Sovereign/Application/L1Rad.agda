@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | Sovereign.Problem.ABC.L1Rad
+-- | Sovereign.Application.L1Rad
 -- ABC 问题 L1 断层线：rad(n) 无平方因子根的实现与实例核对
 --
 -- 数学背景：rad(n) = n 的无平方因子根（全部素因子之积）——abc 不等式的核心算术函数；
@@ -12,7 +12,7 @@
 --
 -- 包含：stripGo/radGo（递归件）· rad（主定义）·
 --   rad-1/rad-120/rad-480000/rad-4（四实例）· 480000-factors（因子表）
-module Sovereign.Problem.ABC.L1Rad where
+module Sovereign.Application.L1Rad where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _≡ᵇ_; _≤ᵇ_)
 open import Data.Bool using (Bool; true; false; if_then_else_)

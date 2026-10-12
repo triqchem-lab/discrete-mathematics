@@ -49,17 +49,17 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B009
     layer: 40-application
-    modules: [Sovereign.HoTT.M4CRTBridge, Sovereign.HoTT.Paths, Sovereign.HoTT.PhaseAlignment6624, Sovereign.HoTT.PhaseTransitionPaths, Sovereign.MetaStructure.WuXing, Sovereign.Application.AlphaRelation, Sovereign.Application.DataAnchors, Sovereign.Physics.DiscreteEMField3D, Sovereign.Application.DiscreteEMField, Sovereign.Application.ObservabilityAngle, Sovereign.Problem.ABC.L1Rad, Sovereign.Application.BSD_General]
+    modules: [Sovereign.HoTT.M4CRTBridge, Sovereign.HoTT.Paths, Sovereign.HoTT.PhaseAlignment6624, Sovereign.HoTT.PhaseTransitionPaths, Sovereign.MetaStructure.WuXing, Sovereign.Application.AlphaRelation, Sovereign.Application.DataAnchors, Sovereign.Physics.DiscreteEMField3D, Sovereign.Application.DiscreteEMField, Sovereign.Application.ObservabilityAngle, Sovereign.Application.L1Rad, Sovereign.Application.BSD_General]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B010
     layer: 40-application
-    modules: [Sovereign.Application.BSD_GF243, Sovereign.Problem.BSD.BSD_GF27, Sovereign.Application.BSD_GF81, Sovereign.Application.BSD_L3, Sovereign.Application.BSDTrace, Sovereign.Problem.Hodge.ChainComplex, Sovereign.Problem.Hodge.EulerChar, Sovereign.Application.Hodge_L3, Sovereign.Problem.Hodge.HodgeTetra, Sovereign.Problem.Hodge.KirchhoffZ, Sovereign.Problem.Hodge.KleinHodge, Sovereign.Problem.Hodge.TorusHodge]
+    modules: [Sovereign.Application.BSD_GF243, Sovereign.Application.BSD_GF27, Sovereign.Application.BSD_GF81, Sovereign.Application.BSD_L3, Sovereign.Application.BSDTrace, Sovereign.Problem.Hodge.ChainComplex, Sovereign.Problem.Hodge.EulerChar, Sovereign.Application.Hodge_L3, Sovereign.Problem.Hodge.HodgeTetra, Sovereign.Application.KirchhoffZ, Sovereign.Problem.Hodge.KleinHodge, Sovereign.Problem.Hodge.TorusHodge]
     grade_C_count: 1
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B011
     layer: 40-application
-    modules: [Sovereign.Application.GL2_Rep, Sovereign.Problem.Langlands.GL2TestVectors, Sovereign.Problem.Langlands.Langlands, Sovereign.Application.Langlands_L15, Sovereign.Problem.Langlands.S4Burnside, Sovereign.Application.PvsNP_Conjecture, Sovereign.Application.WeilRH, Sovereign.Infrastructure.Projection, Sovereign.Foundation.AlgebraicComplex, Sovereign.Foundation.Arithmetic, Sovereign.Foundation.Base, Sovereign.Foundation.Eisenstein]
+    modules: [Sovereign.Application.GL2_Rep, Sovereign.Application.GL2TestVectors, Sovereign.Application.Langlands, Sovereign.Application.Langlands_L15, Sovereign.Application.S4Burnside, Sovereign.Application.PvsNP_Conjecture, Sovereign.Application.WeilRH, Sovereign.Infrastructure.Projection, Sovereign.Foundation.AlgebraicComplex, Sovereign.Foundation.Arithmetic, Sovereign.Foundation.Base, Sovereign.Foundation.Eisenstein]
     grade_C_count: 3
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B012
@@ -119,7 +119,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B023
     layer: 40-application
-    modules: [Sovereign.Geometry.Tryte, Sovereign.Application.DiscreteLightcone, Sovereign.Application.DiscreteStatMech, Sovereign.Application.ElasticityDiscrete, Sovereign.Application.IsingTriangle, Sovereign.Problem.BSD.BSD, Sovereign.Application.EllipticComplex, Sovereign.Application.FermatL0, Sovereign.Application.EckmannGF3, Sovereign.Application.KakeyaGF3, Sovereign.Problem.NavierStokes.NSE, Sovereign.Problem.NavierStokes.NSEOnT6]
+    modules: [Sovereign.Geometry.Tryte, Sovereign.Application.DiscreteLightcone, Sovereign.Application.DiscreteStatMech, Sovereign.Application.ElasticityDiscrete, Sovereign.Application.IsingTriangle, Sovereign.Problem.BSD.BSD, Sovereign.Application.EllipticComplex, Sovereign.Application.FermatL0, Sovereign.Application.EckmannGF3, Sovereign.Application.KakeyaGF3, Sovereign.Application.NSE, Sovereign.Problem.NavierStokes.NSEOnT6]
     grade_C_count: 1
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B024
@@ -199,7 +199,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B039
     layer: 40-application
-    modules: [Sovereign.Algebra.InjSurj, Sovereign.Algebra.Jacobian.jac_Injectivity, Sovereign.Algebra.Pigeonhole, Sovereign.Algebra.ChainHom, Sovereign.Topology.Chain2, Sovereign.Topology.MorseHomologyIso, Sovereign.Algebra.DiscreteComplexAnalysis, Sovereign.Applied.CircuitExtended, Sovereign.Application.BSD9, Sovereign.Application.SelmerDiscrete, Sovereign.Problem.BSD.ZetaDiscrete, Sovereign.Problem.Riemann.RH]
+    modules: [Sovereign.Algebra.InjSurj, Sovereign.Algebra.Jacobian.jac_Injectivity, Sovereign.Algebra.Pigeonhole, Sovereign.Algebra.ChainHom, Sovereign.Topology.Chain2, Sovereign.Topology.MorseHomologyIso, Sovereign.Algebra.DiscreteComplexAnalysis, Sovereign.Applied.CircuitExtended, Sovereign.Application.BSD9, Sovereign.Application.SelmerDiscrete, Sovereign.Application.ZetaDiscrete, Sovereign.Problem.Riemann.RH]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B040
@@ -234,7 +234,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B046
     layer: 40-application
-    modules: [Sovereign.Algebra.Jacobian.jac_CRTDet4, Sovereign.Application.KirchhoffCRT, Sovereign.Application.KakeyaMF, Sovereign.Algebra.FrequencyDoubling, Sovereign.Algebra.FreeAbGroupLaws, Sovereign.Algebra.FreeAbQuotient, Sovereign.Problem.Hodge.FreeAbH0, Sovereign.Problem.Hodge.FreeAbHomology, Sovereign.Problem.Hodge.FreeAbImSubsetPlane, Sovereign.Problem.Hodge.FreeAbInnerProduct, Sovereign.Problem.Hodge.FreeAbPlaneSurjective, Sovereign.Algebra.ConsciousnessLayer]
+    modules: [Sovereign.Algebra.Jacobian.jac_CRTDet4, Sovereign.Application.KirchhoffCRT, Sovereign.Application.KakeyaMF, Sovereign.Algebra.FrequencyDoubling, Sovereign.Algebra.FreeAbGroupLaws, Sovereign.Algebra.FreeAbQuotient, Sovereign.Application.FreeAbH0, Sovereign.Application.FreeAbHomology, Sovereign.Problem.Hodge.FreeAbImSubsetPlane, Sovereign.Application.FreeAbInnerProduct, Sovereign.Problem.Hodge.FreeAbPlaneSurjective, Sovereign.Algebra.ConsciousnessLayer]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B047
@@ -279,7 +279,7 @@ batches:
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B055
     layer: 40-application
-    modules: [Sovereign.Structology.BurnsideT6, Sovereign.Structology.MagicSquareM4, Sovereign.Structology.XuanwuAbsorption, Sovereign.Algebra.CRTDetGeneral, Sovereign.Application.FreeAbImEquiv, Sovereign.Topology.ChainQuotIso, Sovereign.Problem.Hodge.FreeAbHomologyGroup, Sovereign.Problem.Hodge.FreeAbHodgeVerdict, Sovereign.Problem.Hodge.FreeAbNonDegenerate, Sovereign.Algebra.DegenerationRisk, Sovereign.Algebra.DiscreteAnalysis, Sovereign.Algebra.DiscreteDE]
+    modules: [Sovereign.Structology.BurnsideT6, Sovereign.Structology.MagicSquareM4, Sovereign.Structology.XuanwuAbsorption, Sovereign.Algebra.CRTDetGeneral, Sovereign.Application.FreeAbImEquiv, Sovereign.Topology.ChainQuotIso, Sovereign.Application.FreeAbHomologyGroup, Sovereign.Problem.Hodge.FreeAbHodgeVerdict, Sovereign.Problem.Hodge.FreeAbNonDegenerate, Sovereign.Algebra.DegenerationRisk, Sovereign.Algebra.DiscreteAnalysis, Sovereign.Algebra.DiscreteDE]
     grade_C_count: 0
     depends_on_batches: []   # 拓扑序已保证叶子优先
   - id: B056

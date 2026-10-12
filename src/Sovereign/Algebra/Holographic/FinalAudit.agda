@@ -21,7 +21,7 @@ module Sovereign.Algebra.Holographic.FinalAudit where
 -- ═══════════════════════════════════════════════════════════
 
 -- Navier-Stokes L3 ✅
-import Sovereign.Problem.NavierStokes.NSE          -- 12 定理, 0 postulate
+import Sovereign.Application.NSE          -- 12 定理, 0 postulate
 import Sovereign.Problem.NavierStokes.NSRegularity -- §5 动力学: step³-id/单射/能量守恒/周期
 import Sovereign.Application.NSVortex
 
@@ -44,7 +44,7 @@ import Sovereign.Application.EulerChar
 -- BSD L3 ✅（自 L3* 升级: BSD 恒等式与 Hasse 界已由 WeilRigidity 闭合）
 import Sovereign.Application.BSD
 import Sovereign.Application.BSD_L3               -- t-rec 递归 + 正确性
-import Sovereign.Problem.BSD.BSD_GF27
+import Sovereign.Application.BSD_GF27
 import Sovereign.Application.BSD_General
 
 -- RH L3 ✅（自 L0+ 升级: 有限域 Weil 定理的整数形式 + Eisenstein 共轭对刚性）
@@ -53,12 +53,12 @@ import Sovereign.Application.WeilRigidity     -- t²+3s²=4q, L(E,1)=#E, α+conj
 import Sovereign.Problem.Riemann.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
 import Sovereign.Problem.Riemann.RH
 import Sovereign.Application.Galois
-import Sovereign.Problem.BSD.ZetaDiscrete
+import Sovereign.Application.ZetaDiscrete
 
 -- Langlands L3 ✅（自 L1.5 升级: Steinberg 正交性为真证明, 类结构 8·1+28·90+36·72+8·80=5760）
-import Sovereign.Problem.Langlands.GL2TestVectors
-import Sovereign.Problem.Langlands.Langlands
-import Sovereign.Problem.Langlands.S4Burnside
+import Sovereign.Application.GL2TestVectors
+import Sovereign.Application.Langlands
+import Sovereign.Application.S4Burnside
 import Sovereign.Application.DeligneLusztig  -- 外部形式化
 
 -- PvsNP L3 ✅（separation: ∃f, EvalAlways f ∧ ∀r f(r)≢0 — 不可约三次见证, 0 postulate）

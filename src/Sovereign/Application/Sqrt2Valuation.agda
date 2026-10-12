@@ -1,6 +1,6 @@
 {-# OPTIONS --guardedness #-}
 ------------------------------------------------------------------------
--- | Sovereign.Problem.Sqrt2.Sqrt2Valuation
+-- | Sovereign.Application.Sqrt2Valuation
 -- 方案 B：√2 无理性的 2-adic 赋值（指数/对数）版证明
 --
 -- 数学背景:
@@ -16,7 +16,7 @@
 --   复用 parity/Odd/odd-square/¬dub-sucdub/dub-inj/≤ 工具箱）；0 postulate。
 ------------------------------------------------------------------------
 
-module Sovereign.Problem.Sqrt2.Sqrt2Valuation where
+module Sovereign.Application.Sqrt2Valuation where
 
 open import Agda.Builtin.Nat using (Nat; zero; suc; _+_; _*_)
 open import Agda.Builtin.Equality using (_≡_; refl)

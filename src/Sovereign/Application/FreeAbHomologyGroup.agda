@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.FreeAbHomologyGroup
+-- | Sovereign.Application.FreeAbHomologyGroup
 -- 任务书第二层·2.5 泛型化（GAP-M7a）：FAb 载体上的**商型同调群**
 --
 -- 数学背景：此前同调以谓词/维数形态存在（dimH 维数级、FreeAbHomology
@@ -19,7 +19,7 @@
 -- 复用：FreeAbBoundary（∂₁/∂₂/C₀-C₂）+ FreeAbH0（h₂-zero）+ Base/Trit。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.FreeAbHomologyGroup where
+module Sovereign.Application.FreeAbHomologyGroup where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Product using (_×_; _,_)
@@ -31,7 +31,7 @@ open import Sovereign.Base.Trit
 open import Sovereign.Base.Trit using (⊕-identityʳ)
 open import Sovereign.Problem.Hodge.FreeAbBoundary
   using (C₀; C₁; C₂; ∂₁; ∂₂)
-open import Sovereign.Problem.Hodge.FreeAbH0 using (h₂-zero)
+open import Sovereign.Application.FreeAbH0 using (h₂-zero)
 
 --------------------------------------------------------------------------------
 -- §1. 增广映射 aug : C₀ → Trit 及线性

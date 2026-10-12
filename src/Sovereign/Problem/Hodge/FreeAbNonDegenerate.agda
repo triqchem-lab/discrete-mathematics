@@ -27,7 +27,7 @@ open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-identityˡ; ⊕-identityʳ)
 open import Sovereign.Algebra.FreeAb using (FAb)
 open import Sovereign.Problem.Hodge.FreeAbBoundary using (C₁)
-open import Sovereign.Problem.Hodge.FreeAbInnerProduct using (inner; w111)
+open import Sovereign.Application.FreeAbInnerProduct using (inner; w111)
 
 --------------------------------------------------------------------------------
 -- §1. 单位向量（生成元对偶基）

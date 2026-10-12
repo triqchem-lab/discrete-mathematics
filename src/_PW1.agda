@@ -25,7 +25,7 @@ open import Sovereign.Algebra.Duodecimal using (_+12_; π3; d5; d7; d8)
 open import Sovereign.Algebra.NumberTheory.ModularArithmetic using (⊕ₙ)
 open import _PDH1 using (trit3)
 
-open import Sovereign.Problem.Hodge.KirchhoffZ using (det2ℤ; minor)
+open import Sovereign.Application.KirchhoffZ using (det2ℤ; minor)
 open import Sovereign.Algebra.Combinatorics.Counting using (binom)
 open import Sovereign.Topology.Graphs.Trees using (SpanningTree; K2; spanning-K2)
 

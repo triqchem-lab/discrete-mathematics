@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.FreeAbInnerProduct
+-- | Sovereign.Application.FreeAbInnerProduct
 -- 任务书第二层·2.5 推进：FreeAb 载体上的内积机件 + 退化性机器见证
 --
 -- 数学背景：Hodge 分解（C_k = im ∂_{k+1} ⊕ H_k ⊕ im ∂*ₖ）依赖
@@ -17,7 +17,7 @@
 --   (b) Hodge 分解改述为无内积形式（Z₁ = B₁ ⊕˅ … 的显式余_tensor）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.FreeAbInnerProduct where
+module Sovereign.Application.FreeAbInnerProduct where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Relation.Nullary using (¬_)

@@ -164,10 +164,10 @@ import Sovereign.HoTT.Geometry as Geo
 import Sovereign.HoTT.Geometry as Geom
 import Sovereign.Physics.Scaling as Scale
 import Sovereign.Problem.BSD.BSD
-import Sovereign.Problem.BSD.BSD_GF27
+import Sovereign.Application.BSD_GF27
 import Sovereign.Problem.BSD.BSD_General
 import Sovereign.Problem.BSD.BSD_L3               -- t-rec 递归 + 正确性
-import Sovereign.Problem.BSD.ZetaDiscrete
+import Sovereign.Application.ZetaDiscrete
 import Sovereign.Problem.Hodge.ChainComplex       -- hodge-decomp: nullity∂ ≡ rank∂∘suc + dimℋ
 import Sovereign.Problem.Hodge.ChainComplex -- 泛链复形
 import Sovereign.Problem.Hodge.ChainComplex as CC
@@ -193,10 +193,10 @@ import Sovereign.Problem.Kakeya.KakeyaMF
 import Sovereign.Problem.Kakeya.KakeyaPathology
 import Sovereign.Application.DeligneLusztig  -- DL 独立形式化
 import Sovereign.Application.DeligneLusztig  -- 外部形式化
-import Sovereign.Problem.Langlands.GL2TestVectors
-import Sovereign.Problem.Langlands.Langlands
-import Sovereign.Problem.Langlands.S4Burnside
-import Sovereign.Problem.NavierStokes.NSE          -- 12 定理
+import Sovereign.Application.GL2TestVectors
+import Sovereign.Application.Langlands
+import Sovereign.Application.S4Burnside
+import Sovereign.Application.NSE          -- 12 定理
 import Sovereign.Problem.NavierStokes.NSRegularity -- §5 动力学: step³-id/单射/能量守恒/周期
 import Sovereign.Application.NSVortex
 import Sovereign.Problem.PvsNP.Complexity
@@ -335,10 +335,10 @@ Sovereign.Application.AlphaRelation
 Sovereign.Physics.DiscreteEMField3D
 Sovereign.Physics.DiscreteEMField
 Sovereign.Physics.ObservabilityAngle
-Sovereign.Problem.ABC.L1Rad
+Sovereign.Application.L1Rad
 Sovereign.Problem.BSD.BSD_General
 Sovereign.Problem.BSD.BSD_GF243
-Sovereign.Problem.BSD.BSD_GF27
+Sovereign.Application.BSD_GF27
 Sovereign.Problem.BSD.BSD_GF81
 Sovereign.Problem.BSD.BSD_L3
 Sovereign.Problem.BSD.BSDTrace
@@ -346,14 +346,14 @@ Sovereign.Problem.Hodge.ChainComplex
 Sovereign.Problem.Hodge.EulerChar
 Sovereign.Problem.Hodge.Hodge_L3
 Sovereign.Problem.Hodge.HodgeTetra
-Sovereign.Problem.Hodge.KirchhoffZ
+Sovereign.Application.KirchhoffZ
 Sovereign.Problem.Hodge.KleinHodge
 Sovereign.Problem.Hodge.TorusHodge
 Sovereign.Problem.Langlands.GL2_Rep
-Sovereign.Problem.Langlands.GL2TestVectors
-Sovereign.Problem.Langlands.Langlands
+Sovereign.Application.GL2TestVectors
+Sovereign.Application.Langlands
 Sovereign.Problem.Langlands.Langlands_L15
-Sovereign.Problem.Langlands.S4Burnside
+Sovereign.Application.S4Burnside
 Sovereign.Application.PvsNP_Conjecture
 Sovereign.Application.WeilRH
 Sovereign.Projection
@@ -526,7 +526,7 @@ Sovereign.Problem.BSD.EllipticComplex
 Sovereign.Application.FermatL0
 Sovereign.Problem.Hodge.EckmannGF3
 Sovereign.Application.KakeyaGF3
-Sovereign.Problem.NavierStokes.NSE
+Sovereign.Application.NSE
 Sovereign.Problem.NavierStokes.NSEOnT6
 Sovereign.Application.NSVortex
 Sovereign.Problem.PvsNP.Algorithm
@@ -718,7 +718,7 @@ Sovereign.Algebra.DiscreteComplexAnalysis
 Sovereign.Applied.CircuitExtended
 Sovereign.Problem.BSD.BSD9
 Sovereign.Problem.BSD.SelmerDiscrete
-Sovereign.Problem.BSD.ZetaDiscrete
+Sovereign.Application.ZetaDiscrete
 Sovereign.Problem.Riemann.RH
 Sovereign.Problem.Fermat.FermatL1
 Sovereign.Problem.Hodge.BoundaryGF3
@@ -798,10 +798,10 @@ Sovereign.Problem.Kakeya.KakeyaMF
 Sovereign.Algebra.FrequencyDoubling
 Sovereign.Algebra.FreeAbGroupLaws
 Sovereign.Algebra.FreeAbQuotient
-Sovereign.Problem.Hodge.FreeAbH0
-Sovereign.Problem.Hodge.FreeAbHomology
+Sovereign.Application.FreeAbH0
+Sovereign.Application.FreeAbHomology
 Sovereign.Problem.Hodge.FreeAbImSubsetPlane
-Sovereign.Problem.Hodge.FreeAbInnerProduct
+Sovereign.Application.FreeAbInnerProduct
 Sovereign.Problem.Hodge.FreeAbPlaneSurjective
 Sovereign.Algebra.ConsciousnessLayer
 Sovereign.Algebra.ComplexProjection
@@ -906,7 +906,7 @@ Sovereign.Structology.XuanwuAbsorption
 Sovereign.Algebra.CRTDetGeneral
 Sovereign.Problem.Hodge.FreeAbImEquiv
 Sovereign.Topology.ChainQuotIso
-Sovereign.Problem.Hodge.FreeAbHomologyGroup
+Sovereign.Application.FreeAbHomologyGroup
 Sovereign.Problem.Hodge.FreeAbHodgeVerdict
 Sovereign.Problem.Hodge.FreeAbNonDegenerate
 Sovereign.Algebra.DegenerationRisk

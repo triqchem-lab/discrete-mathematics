@@ -109,7 +109,7 @@ l1-disjunction =
 --    既有签名一律不变；本节只做实例化与交叉核证。
 --------------------------------------------------------------------------------
 
-open import Sovereign.Problem.ABC.L1Rad using (rad; rad-120; rad-480000)
+open import Sovereign.Application.L1Rad using (rad; rad-120; rad-480000)
 
 -- 参数化事实的具体应用：l1-obs-blind rad rad-120 rad-480000
 l1-rad-blind : {X : Set} (f : ℕ × ℕ × ℕ × ℕ → X) →

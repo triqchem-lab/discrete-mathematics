@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.Hodge.FreeAbH0
+-- | Sovereign.Application.FreeAbH0
 -- 任务书第二层·2.5 收官：GF(3) 系数链群的同调群全部机器闭合
 --
 --   H₂ = 0（∂₂ 单射于生成元——平凡）
@@ -16,7 +16,7 @@
 -- 复用：FreeAbBoundary（∂₁/C₁/C₀）、Base/Trit。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Problem.Hodge.FreeAbH0 where
+module Sovereign.Application.FreeAbH0 where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Nat using (ℕ; zero; suc)

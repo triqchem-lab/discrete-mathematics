@@ -10,7 +10,7 @@
 --   2. 外部九圈类计算不改变本框架判定（投影层）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Problem.YangMills.SUn_GF9 where
+module Sovereign.Application.SUn_GF9 where
 
 open import Data.Nat using (ℕ)
 open import Data.Product using (_×_; _,_)

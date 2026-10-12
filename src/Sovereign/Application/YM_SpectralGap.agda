@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.YangMills.YM_SpectralGap
+-- | Sovereign.Application.YM_SpectralGap
 -- 单 plaquette Wilson 转移矩阵的精确谱与质量间隙（严格化 YM_L3 的平凡 gap）
 --
 -- 数学背景：
@@ -28,7 +28,7 @@
 --   2. 外部九圈类计算不改变本框架判定（投影层）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Problem.YangMills.YM_SpectralGap where
+module Sovereign.Application.YM_SpectralGap where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)
 open import Data.Integer.Properties
