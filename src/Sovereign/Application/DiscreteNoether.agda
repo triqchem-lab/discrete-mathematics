@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteNoether
+-- | Sovereign.Application.DiscreteNoether
 -- 离散 Noether 定理 — 从规范对称性导出电荷守恒 (0 postulate)
 --
 -- 核心证明链:
@@ -12,7 +12,7 @@
 --
 -- 全部 0 postulate。
 
-module Sovereign.Physics.DiscreteNoether where
+module Sovereign.Application.DiscreteNoether where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

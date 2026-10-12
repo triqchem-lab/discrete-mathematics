@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEFluxTelescope
+-- | Sovereign.Application.NSEFluxTelescope
 -- O3 的物理判据（通量型）+ 首条定理：轴向循环净通量恒为零（离散散度/telescoping）
 --
 -- 背景: `NSE.O3.blowup-physical` 要求「给出**物理意义**上的离散爆聚判据,
@@ -34,7 +34,7 @@
 -- 依赖: Sovereign.Problem.NavierStokes.NSEOnT6（算子与 shiftAt-cubed）
 --       Sovereign.Base.Trit（Trit 表与 negate）
 
-module Sovereign.Problem.NavierStokes.NSEFluxTelescope where
+module Sovereign.Application.NSEFluxTelescope where
 
 open import Relation.Binary.PropositionalEquality using
   (_≡_; refl; sym; trans; cong; module ≡-Reasoning)

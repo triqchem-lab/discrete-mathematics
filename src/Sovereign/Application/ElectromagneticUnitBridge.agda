@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.ElectromagneticUnitBridge
+-- | Sovereign.Application.ElectromagneticUnitBridge
 -- 电磁学标定层 — 频率单标定 + 范数坍缩投影 (0 postulate)
 --
 -- 核心思想: 光是频率, 不是速度。空间是频率的逆平方投影, 时间是频率倒数。
@@ -21,7 +21,7 @@
 -- §6 Maxwell 方程标定保持
 -- HONEST: §7 命名层锚点 (注释级)
 
-module Sovereign.Physics.ElectromagneticUnitBridge where
+module Sovereign.Application.ElectromagneticUnitBridge where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

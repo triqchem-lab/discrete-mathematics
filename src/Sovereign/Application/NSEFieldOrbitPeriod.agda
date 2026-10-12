@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEFieldOrbitPeriod
+-- | Sovereign.Application.NSEFieldOrbitPeriod
 -- **supportCount 轨道的无条件最终周期**（⑤ 收官·真·最后一件）
 --
 -- 主定理（本模块）:
@@ -21,7 +21,7 @@
 --
 -- 0 postulate / 0 hole。
 
-module Sovereign.Problem.NavierStokes.NSEFieldOrbitPeriod where
+module Sovereign.Application.NSEFieldOrbitPeriod where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _≤_; _<_; z≤n; s≤s)
 open import Data.Nat.Properties using (+-mono-≤; *-mono-≤; ≤-refl)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteLagrangian3D
+-- | Sovereign.Application.DiscreteLagrangian3D
 -- 3D 离散拉格朗日密度 + 变分导出 Maxwell (0 postulate)
 --
 -- 从 DiscreteLagrangian (1D 三点) 推广到 3D 27 点:
@@ -12,7 +12,7 @@
 --
 -- 全部 0 postulate, GF(3) 穷举 refl。
 
-module Sovereign.Physics.DiscreteLagrangian3D where
+module Sovereign.Application.DiscreteLagrangian3D where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSESupportNonMonotone
+-- | Sovereign.Application.NSESupportNonMonotone
 -- **supportCount 在 nsStep 下非单调**（双向见证）—— O3 通道 ⑤ 单调性问题的**判定**
 --
 -- 主定理（本模块）:
@@ -22,7 +22,7 @@
 --
 -- 0 postulate / 0 hole
 
-module Sovereign.Problem.NavierStokes.NSESupportNonMonotone where
+module Sovereign.Application.NSESupportNonMonotone where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

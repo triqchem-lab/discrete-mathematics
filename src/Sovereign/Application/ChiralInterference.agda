@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.ChiralInterference
+-- | Sovereign.Application.ChiralInterference
 -- 手征干涉层: C3 旋转 → 场论驻波的缺失中间层 (0 postulate, 无洞)
 --
 -- 元理论对析评审指定三大缺口之首。焊接内容:
@@ -26,7 +26,7 @@
 --   3) "光子→驻波→质量"的完整证明链需再接 massEmergence 层
 --      (Physics/EntropySpin), 本模块只焊 C3→场论桥。
 
-module Sovereign.Physics.ChiralInterference where
+module Sovereign.Application.ChiralInterference where
 
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality

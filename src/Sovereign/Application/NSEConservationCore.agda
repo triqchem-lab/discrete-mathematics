@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEConservationCore
+-- | Sovereign.Application.NSEConservationCore
 -- 总量守恒的核心代数包（C₃ 循环层）+ 剩余装配步骤的障碍记录
 --
 -- 背景: O3 线的多步/耦合集中需要**总量守恒**（Σ 场量在 `nsStep` 下不变）。
@@ -16,7 +16,7 @@
 --
 -- 依赖: NSEOnT6（sum3 / shift3 / sum3-+ / negate-⊕）, NSEFluxTelescope（cancel3）, Base.Trit
 
-module Sovereign.Problem.NavierStokes.NSEConservationCore where
+module Sovereign.Application.NSEConservationCore where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Relation.Binary.PropositionalEquality using
@@ -26,7 +26,7 @@ open import Sovereign.Base.Trit using
   (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-assoc; ⊕-comm; ⊕-identityˡ; ⊕-identityʳ)
 open import Sovereign.Problem.NavierStokes.NSEOnT6 using
   (C3; Torus6; ScalarField; sum3; shift3; sum3-+; negate-⊕)
-open import Sovereign.Problem.NavierStokes.NSEFluxTelescope using (cancel3; swap2)
+open import Sovereign.Application.NSEFluxTelescope using (cancel3; swap2)
 
 open ≡-Reasoning
 

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEIterate
+-- | Sovereign.Application.NSEIterate
 -- n 步不变量保持: 总量与不可压性在 `iterate n nsStep` 下保持
 --
 -- 背景: 前两批封了 `nsStep` **单步**的两条集中通道:
@@ -24,7 +24,7 @@
 -- 依赖: NSEConservation（totalF/total-nsStep）, NSEIncompressible（nsStep-incompressible）,
 --       NSEOnT6（Field/Incompressible/nsStep/iterate）
 
-module Sovereign.Problem.NavierStokes.NSEIterate where
+module Sovereign.Application.NSEIterate where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans)

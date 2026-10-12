@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSESupportOrbitPeriod
+-- | Sovereign.Application.NSESupportOrbitPeriod
 -- supportCount 轨道的**最终周期**（「波动式集中」排除的最后一件）—— **条件版**
 --
 -- 主定理（本模块）:
@@ -23,7 +23,7 @@
 -- 判型注: 相等链 + 一次 cong —— 非配对弹出族、非表事实。
 -- 0 postulate / 0 hole（**未编译**: 写盘时任务预算墙内, 下段编译取据）
 
-module Sovereign.Problem.NavierStokes.NSESupportOrbitPeriod where
+module Sovereign.Application.NSESupportOrbitPeriod where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Relation.Binary.PropositionalEquality using

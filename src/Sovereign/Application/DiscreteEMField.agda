@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DiscreteEMField
+-- | Sovereign.Application.DiscreteEMField
 -- 78 电磁学 — 3×3 周期环面上的离散场论第一基石 (0 postulate)
 --
 -- 数学背景：3×3 周期环面（周期边界格点场论）上的离散电磁场——
@@ -13,7 +13,7 @@
 --
 -- 包含：GF3（基域件）· Point2D（场点）· add3/neg3（运算）· add3 四律 · 场结构件族
 
-module Sovereign.Physics.DiscreteEMField where
+module Sovereign.Application.DiscreteEMField where
 
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

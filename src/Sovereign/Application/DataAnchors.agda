@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Physics.DataAnchors
+-- | Sovereign.Application.DataAnchors
 -- 数据实证：理论模型与物理实验数据的锚定
 --
 -- 数学背景：唯象数据锚——理论量（能隙/环面缠绕/五行比率）与实验观测
@@ -15,7 +15,7 @@
 --   THEORETICAL_GAP_ENERGY/TOROIDAL_WINDING（理论量）·
 --   Anchor_ToroidalWinding_C60/Anchor_WuXing_TrapPist1（两锚件）· TRAPPIST_RATIO/WUXING_RATIO（比率）
 
-module Sovereign.Physics.DataAnchors where
+module Sovereign.Application.DataAnchors where
 
 open import Data.Nat using (ℕ; s≤s)
 open import Data.Nat.Properties using (m≤m+n)

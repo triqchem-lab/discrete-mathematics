@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEMadelungRefuted
+-- | Sovereign.Application.NSEMadelungRefuted
 -- (★) 平方恒等式的**反例** —— 受约束版 Madelung 耦合为假（构造性见证）
 --
 -- 背景: O2 线的三度收束。
@@ -29,7 +29,7 @@
 --
 -- 0 postulate / 0 hole
 
-module Sovereign.Problem.NavierStokes.NSEMadelungRefuted where
+module Sovereign.Application.NSEMadelungRefuted where
 
 open import Data.Product using (Σ; _,_)
 open import Data.Fin using (zero; suc)

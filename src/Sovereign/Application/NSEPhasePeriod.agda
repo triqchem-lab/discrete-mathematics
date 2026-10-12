@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Problem.NavierStokes.NSEPhasePeriod
+-- | Sovereign.Application.NSEPhasePeriod
 -- 相位路径累积的周期律 (闭合 NSEPhaseField 的 O3 可证部分)
 --
 -- 背景 (来自 NSEPhaseField.agda 的开放义务清单 :541-549):
@@ -29,7 +29,7 @@
 --       Sovereign.Algebra.GroupTheory.DuodecClock (AlphaPower/mulAlpha)
 -- 0 postulate / 0 hole
 
-module Sovereign.Problem.NavierStokes.NSEPhasePeriod where
+module Sovereign.Application.NSEPhasePeriod where
 
 open import Data.List using (List; []; _∷_; _++_; [_])
 open import Relation.Binary.PropositionalEquality using
