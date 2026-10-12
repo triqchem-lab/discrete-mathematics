@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------
--- | Sovereign.Problem.Sqrt2.Sqrt2Irrational
+-- | Sovereign.Application.Sqrt2Irrational
 -- √2 是无理数 — 完整形式化证明
 --
 -- 数学背景:

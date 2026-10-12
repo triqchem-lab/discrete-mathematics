@@ -12,7 +12,7 @@
 --   与 Sqrt2Irrational 的无穷递降互为替代证明：此处不递降，
 --   用的是"指数的奇偶性"（对数 parity）。
 --
--- 依赖: Sovereign.Problem.Sqrt2.Sqrt2Irrational（自建模块，只读导入，
+-- 依赖: Sovereign.Application.Sqrt2Irrational（自建模块，只读导入，
 --   复用 parity/Odd/odd-square/¬dub-sucdub/dub-inj/≤ 工具箱）；0 postulate。
 ------------------------------------------------------------------------
 
