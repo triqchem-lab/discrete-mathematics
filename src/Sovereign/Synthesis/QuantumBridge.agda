@@ -20,7 +20,7 @@ open import Function using (_∘_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym; cong)
 
 -- 已有模块
-open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; wuXingBase)
+open import Sovereign.Base.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; wuXingBase)
 open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR; fullTourCorrect)
 open import Sovereign.Synthesis.MagicSquareM4 using (magicConstant)

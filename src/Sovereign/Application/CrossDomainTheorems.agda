@@ -54,7 +54,7 @@ open import Sovereign.Algebra.GF9 using (
 open import Sovereign.Synthesis.Winding using (
   PolarWinding; ToroidalWinding; polarWindingValue; toroidalWindingValue)
 
-open import Sovereign.MetaStructure.WuXing using (
+open import Sovereign.Base.WuXing using (
   WuXing; Fire; Earth; Metal; Water; Wood; generate)
 
 open import Sovereign.Base.Trit using (Trit; T₀)

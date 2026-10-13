@@ -31,7 +31,7 @@ open import Sovereign.Synthesis.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹�
                                                 zhonglvClosure; lcmRemainder)
 open import Sovereign.Synthesis.Zhonglv using (SovereignState; evolveStep;
                                                 chernConservation; zhonglvVerification)
-open import Sovereign.MetaStructure.WuXing using (WuXing; wuXingBase)
+open import Sovereign.Base.WuXing using (WuXing; wuXingBase)
 
 --------------------------------------------------------------------------------
 -- 1. 共享缠绕数定义

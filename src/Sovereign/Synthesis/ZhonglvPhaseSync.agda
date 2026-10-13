@@ -45,7 +45,7 @@ open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 
 -- 导入核心模块
-open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; wuXingBase)
+open import Sovereign.Base.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; wuXingBase)
 open import Sovereign.Base.Nayin using (NayinSound; NayinFingerprint; nayinToWuxing)
 open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding;
                                                   polarWindingValue; toroidalWindingValue)

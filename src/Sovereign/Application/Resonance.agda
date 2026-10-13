@@ -29,7 +29,7 @@ open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 open import Sovereign.Base.Nayin using (NayinSound; JianXiaShui; NayinFingerprint; 
                                                   nayinToWuxing; nayinResonanceFreq;
                                                   DIQI_BASE)
-open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; wuXingBase)
+open import Sovereign.Base.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; wuXingBase)
 open import Sovereign.Application.SevenStages using (SevenStage; DIQI_BASE_FREQ; 
                                                    diqiHarmonic; diqiHarmonics;
                                                    annualDiqiFreq; JiaZi)

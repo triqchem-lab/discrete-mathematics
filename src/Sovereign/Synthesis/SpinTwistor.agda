@@ -41,7 +41,7 @@ open import Sovereign.Synthesis.LossGain using (LossGain; Sun; Yi)
 open import Sovereign.Synthesis.ParityViolation
   using (ToroidalPower; mkPower; ChiralSymmetry; SingleChiral; PairedConserved;
          BreakingStarted; BreakingObvious; BreakingComplete; parityStatus)
-open import Sovereign.MetaStructure.WuXing using (Chirality)
+open import Sovereign.Base.WuXing using (Chirality)
 open import Sovereign.Synthesis.T6 using (T6Lattice)
 
 --------------------------------------------------------------------------------

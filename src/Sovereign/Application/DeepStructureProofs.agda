@@ -312,13 +312,13 @@ b33-lcm-factors = refl , refl
 
 --------------------------------------------------------------------------------
 -- B34: 五行 C₅ 循环群: generate⁵ = id (新增证明)
--- 源: Sovereign.MetaStructure.WuXing (generate 定义)
+-- 源: Sovereign.Base.WuXing (generate 定义)
 -- 证明方法: 穷举 5 case, refl
 -- 相生循环: 火→土→金→水→木→火
 -- 数学本质: generate 是 5 元素集合上的 5-循环置换, 阶为 5
 --------------------------------------------------------------------------------
 
-open import Sovereign.MetaStructure.WuXing public using (
+open import Sovereign.Base.WuXing public using (
   WuXing;            -- 五行类型: Fire, Earth, Metal, Water, Wood
   Fire; Earth; Metal; Water; Wood;
   generate;          -- 相生: 火→土→金→水→木→火

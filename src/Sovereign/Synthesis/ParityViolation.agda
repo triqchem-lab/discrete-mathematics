@@ -35,7 +35,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Relation.Nullary using (¬_)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.MetaStructure.WuXing using (Chirality; LeftHanded; RightHanded)
+open import Sovereign.Base.WuXing using (Chirality; LeftHanded; RightHanded)
 
 --------------------------------------------------------------------------------
 -- 1. 五行相克复振幅

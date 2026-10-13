@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.MetaStructure.WuXing
+-- | Sovereign.Base.WuXing
 -- 元结构层：五行模数区定义与动力学关系
 --
 -- 数学背景：五行（木火土金水）+ 手性（Chirality）的生成结构——
@@ -14,7 +14,7 @@
 -- 包含：WuXing/Chirality（五行与手性 data）· wuXingBase/wuXingToIndex（基数与索引）·
 --   generate/overcome（生成/克服）· getCurrentWuXing（动力学）· wuXingBasesCorrect（核对）
 
-module Sovereign.MetaStructure.WuXing where
+module Sovereign.Base.WuXing where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Nat.DivMod using (_mod_)

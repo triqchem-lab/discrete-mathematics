@@ -31,7 +31,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Synthesis.LossGain using (LossGain; Sun; Yi; applyLossGain)
-open import Sovereign.MetaStructure.WuXing using (WuXing; wuXingBase)
+open import Sovereign.Base.WuXing using (WuXing; wuXingBase)
 
 --------------------------------------------------------------------------------
 -- 1. 范畴标签
