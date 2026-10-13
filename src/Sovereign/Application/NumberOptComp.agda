@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.NumberOptComp
+-- | Sovereign.Application.NumberOptComp
 -- 浅层应用定理：数论、组合优化、可计算性
 --
 -- 数论: 2^n mod 9 完整周期表、CRT 互素条件
@@ -9,7 +9,7 @@
 --
 -- 全部构造性证明，0 postulate，穷举法优先。
 
-module Sovereign.Applied.NumberOptComp where
+module Sovereign.Application.NumberOptComp where
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _^_; _≤_; zero; suc)
 open import Data.Fin using (Fin; toℕ)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.LogicCompleteness2Var
+-- | Sovereign.Application.LogicCompleteness2Var
 -- 应用层：双变量三值逻辑函数完备性
 --
 -- 层级: 应用数学 (电性文明投影)
@@ -18,7 +18,7 @@
 --
 -- 0 postulate, 全部构造性证明, 穷举法优先
 
-module Sovereign.Applied.LogicCompleteness2Var where
+module Sovereign.Application.LogicCompleteness2Var where
 
 open import Data.Nat using (ℕ; _*_)
 open import Data.Product using (_×_; _,_)

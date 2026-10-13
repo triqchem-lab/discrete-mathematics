@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.MachineLearning
+-- | Sovereign.Application.MachineLearning
 -- C60: 离散机器学习 — 三值网络收敛 + 4320 容量上限
 --
 -- 核心命题:
@@ -9,7 +9,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.MachineLearning where
+module Sovereign.Application.MachineLearning where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Data.Fin using (Fin; toℕ) renaming (zero to fzero; suc to fsuc)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.NeuroscienceDiscrete
+-- | Sovereign.Application.NeuroscienceDiscrete
 -- C40: 离散神经科学 — 轨道即记忆 + 三值神经元
 --
 -- 核心命题:
@@ -9,7 +9,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.NeuroscienceDiscrete where
+module Sovereign.Application.NeuroscienceDiscrete where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Fin using (Fin)

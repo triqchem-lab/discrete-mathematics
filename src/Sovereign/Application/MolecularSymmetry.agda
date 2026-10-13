@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.MolecularSymmetry
+-- | Sovereign.Application.MolecularSymmetry
 -- 应用层：离散分子对称性 (C₆₀ 振动模与对称群)
 --
 -- 层级: 应用数学 (磁性文明投影)
@@ -12,7 +12,7 @@
 --
 -- 0 postulate, 全部构造性证明, 穷举法优先
 
-module Sovereign.Applied.MolecularSymmetry where
+module Sovereign.Application.MolecularSymmetry where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

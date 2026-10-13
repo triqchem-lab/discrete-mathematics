@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.PleiadianCosmology
+-- | Sovereign.Application.PleiadianCosmology
 -- C44: 昴宿星宇宙学 — 全息=CRT + 12 涡旋根
 --
 -- 核心命题:
@@ -9,7 +9,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.PleiadianCosmology where
+module Sovereign.Application.PleiadianCosmology where
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_)
 open import Data.Product using (_×_; _,_)

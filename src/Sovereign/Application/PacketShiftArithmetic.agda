@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.PacketShiftArithmetic
+-- | Sovereign.Application.PacketShiftArithmetic
 --
 -- 数学背景：递归波包估计中的「移位余量」线性算术。
 -- 原文件为 Lean 4 源 `Euler/PacketShiftArithmetic.lean`（命名空间
@@ -22,7 +22,7 @@
 -- 包含：H/M/HF/MF 四个移位函数；减法工具 3 条；Lean 原文件 10 条定理逐条迁移；
 --       具体点对抗验证 8 条。
 
-module Sovereign.Applied.PacketShiftArithmetic where
+module Sovereign.Application.PacketShiftArithmetic where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _≤_; s≤s; z≤n)
 open import Data.Nat.Properties using (

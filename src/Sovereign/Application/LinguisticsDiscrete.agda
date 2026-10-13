@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.LinguisticsDiscrete
+-- | Sovereign.Application.LinguisticsDiscrete
 -- C58: 离散语言学 — GF(3) 三值语法 + Δ³≡0 递归截断
 --
 -- 核心命题:
@@ -9,7 +9,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.LinguisticsDiscrete where
+module Sovereign.Application.LinguisticsDiscrete where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (_×_; _,_)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 -- ⚠ 口径注（2026-10-11）：本模块「数值验证 refl」件为**实例核对件（非泛型定理）**——数值点验证 ≠ 泛型命题证明。
-module Sovereign.Applied.MetaTheorems where
+module Sovereign.Application.MetaTheorems where
 
 --------------------------------------------------------------------------------
 -- 元定理 E81-E100 — 关于代数链本身的定理

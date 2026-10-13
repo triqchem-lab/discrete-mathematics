@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.OpticsDiscrete
+-- | Sovereign.Application.OpticsDiscrete
 -- 应用层：离散光学 (GF(3) 干涉与频率比)
 --
 -- 层级: 应用数学 (电性文明投影)
@@ -13,7 +13,7 @@
 --
 -- 0 postulate, 全部构造性证明, 穷举法优先
 
-module Sovereign.Applied.OpticsDiscrete where
+module Sovereign.Application.OpticsDiscrete where
 
 open import Data.Nat using (ℕ; _+_; _*_; _^_)
 open import Relation.Binary.PropositionalEquality

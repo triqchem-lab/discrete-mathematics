@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.ParticlePhysics
+-- | Sovereign.Application.ParticlePhysics
 -- 应用层：离散粒子物理 (A₄ 表示与粒子代)
 --
 -- 层级: 应用数学 (中性文明投影)
@@ -12,7 +12,7 @@
 --
 -- 0 postulate, 全部构造性证明, 穷举法优先
 
-module Sovereign.Applied.ParticlePhysics where
+module Sovereign.Application.ParticlePhysics where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Product using (_×_; _,_)
