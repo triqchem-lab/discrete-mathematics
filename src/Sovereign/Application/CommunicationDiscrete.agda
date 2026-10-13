@@ -18,7 +18,7 @@ open import Data.Nat using (ℕ; _+_; _*_; _∸_; _%_)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Structology.BurnsideT6
+open import Sovereign.Synthesis.BurnsideT6
   using (yao-4320; independent-info-from-yao)
 open import Sovereign.Synthesis.CRT
   using (crtTheorem; crtProject; crtReconstruct; POW2; POW3; M)

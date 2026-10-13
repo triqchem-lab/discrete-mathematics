@@ -60,14 +60,14 @@ b23-crt-modulus-value = refl
 
 --------------------------------------------------------------------------------
 -- B24: Burnside 轨道大小之和 = 729 (群论闭包)
--- 源: Sovereign.Structology.BurnsideT6
+-- 源: Sovereign.Synthesis.BurnsideT6
 -- 证明方法: refl (穷举)
 -- 轨道结构: G = (C₃)³ × C₂, |G| = 54
 --   1 个轨道 (GF(3)³, 大小 27) + 13 个自由轨道 (大小 54) = 729 点
 -- 定理: 27×1 + 54×13 ≡ 729
 --------------------------------------------------------------------------------
 
-open import Sovereign.Structology.BurnsideT6 public using (
+open import Sovereign.Synthesis.BurnsideT6 public using (
   orbit-sizes-sum-729;     -- B24 核心: 27*1 + 54*13 ≡ 729
   burnside-orbit-t6-value; -- 轨道数 ≡ 14
   burnside-t6-full;        -- 54 * 14 ≡ 729 + 27
@@ -78,12 +78,12 @@ open import Sovereign.Structology.BurnsideT6 public using (
 
 --------------------------------------------------------------------------------
 -- B25: 4320 = 729×6 − 54 (爻变维度)
--- 源: Sovereign.Structology.BurnsideT6
+-- 源: Sovereign.Synthesis.BurnsideT6
 -- 证明方法: refl
 -- 物理意义: 裸状态空间 (729×6) 减去规范群阶 (54) = 物理自由度 (4320)
 --------------------------------------------------------------------------------
 
-open import Sovereign.Structology.BurnsideT6 public using (
+open import Sovereign.Synthesis.BurnsideT6 public using (
   yao-4320;                -- B25 核心: 729*6 ∸ 54 ≡ 4320
   both-paths-to-4320;      -- 24*36*5 ≡ 729*6 ∸ 54 (两条路径汇合)
   independent-info-from-yao -- 729*6 ∸ 54 的定义

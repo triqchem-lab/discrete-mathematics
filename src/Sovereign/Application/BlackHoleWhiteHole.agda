@@ -18,7 +18,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Synthesis.CRT
   using (crtProject; crtReconstruct; crtTheorem; crtSec-core; M; POW2; POW3)
-open import Sovereign.Structology.BurnsideT6
+open import Sovereign.Synthesis.BurnsideT6
   using (yao-4320; independent-info-from-yao)
 
 --------------------------------------------------------------------------------

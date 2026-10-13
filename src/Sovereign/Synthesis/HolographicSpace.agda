@@ -29,7 +29,7 @@ open import Sovereign.Algebra.GF9 using
 open import Sovereign.Analysis.FiniteInnerProduct using
   ( VectorSpace; gf9-zero; zeroVec; normSq; hermitianIP; basisVec; basisVec-diag
   ; normSq-basisVec; basis-orthogonal)
-open import Sovereign.Structology.BurnsideT6 using
+open import Sovereign.Synthesis.BurnsideT6 using
   ( orbit-sizes-sum-729; group-closure-complete
   ; independent-info-from-yao; yao-4320)
 

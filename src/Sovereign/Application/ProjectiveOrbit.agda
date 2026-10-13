@@ -17,7 +17,7 @@ open import Data.Product using (_×_; _,_; Σ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
 
 open import Sovereign.Synthesis.T6 using (T6Lattice; toℕ-sum)
-open import Sovereign.Structology.BurnsideT6 using ()
+open import Sovereign.Synthesis.BurnsideT6 using ()
 open import Sovereign.Geometry.ProjectiveCore
   using (GElement; g-action-full; GOrbitRel; g-id)
 

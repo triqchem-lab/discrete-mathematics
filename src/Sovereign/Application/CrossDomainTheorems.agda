@@ -32,7 +32,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Synthesis.CRT using (
   crtTheorem; crtProject; crtReconstruct; M; POW2; POW3)
 
-open import Sovereign.Structology.BurnsideT6 using (
+open import Sovereign.Synthesis.BurnsideT6 using (
   orbit-sizes-sum-729; yao-4320; orbit-count-total;
   orbit-size-gf3³; orbit-count-gf3³; orbit-size-free; orbit-count-free;
   burnside-consistency; gf3³-size; gf3³-size-verify)

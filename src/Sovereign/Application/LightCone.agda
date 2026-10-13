@@ -23,7 +23,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.GF9 using (GF9; galoisConjugate)
-open import Sovereign.Structology.BurnsideT6 using (c2-gf9)
+open import Sovereign.Synthesis.BurnsideT6 using (c2-gf9)
 
 --------------------------------------------------------------------------------
 -- S1. 因果锥类型 (构造性 data, 非 postulate)
