@@ -8,7 +8,7 @@ open import Data.Vec using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 open import Sovereign.Synthesis.T6 using (T6Lattice)
-open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
+open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR)
 open import Sovereign.Geometry.TorusGeometry
   using (T6Lattice; t6Add; t6Zero; t6Scale; g1; g2; g3; g4; g5; g6)

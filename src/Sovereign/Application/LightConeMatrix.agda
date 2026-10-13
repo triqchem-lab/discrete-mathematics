@@ -25,7 +25,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; c3-cw; c3-ccw; negate)
 open import Sovereign.Algebra.GF9 using (GF9; galoisConjugate; alpha; embed-gf3)
-open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
+open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144 using (MerkabaCells)
 open import Sovereign.Structology.BurnsideT6 using (c2-gf9; c3-gf9)
 open import Sovereign.Application.LightCone using (LCSide; In; Out; Bdy; weight; boundaryOrbitCount)

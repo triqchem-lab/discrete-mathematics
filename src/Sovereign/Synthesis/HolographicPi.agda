@@ -43,7 +43,7 @@ open import Data.Bool using (Bool; true; false; if_then_else_)
 open import Agda.Builtin.String using (String)
 
 -- 导入核心模块
-open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
+open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Synthesis.ZhonglvPhaseSync using (HOLOGRAPHIC_PERIOD; PrimaryQuotientSpace;
                                                       HolographicQuotientSpace; PRIMARY_PERIOD)
 open import Sovereign.Coupling.LossGain using (LossGain)

@@ -23,7 +23,7 @@ open import Relation.Nullary.Decidable.Core using (does)
 open import Relation.Nullary.Negation using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; Tryte; tritToℕ; tritToℤ)
-open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
+open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶;
                                                 LossGain; Sun; Yi; applyLossGain;

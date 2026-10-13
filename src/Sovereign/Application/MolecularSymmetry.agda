@@ -17,7 +17,7 @@ module Sovereign.Application.MolecularSymmetry where
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Structology.Winding
+open import Sovereign.Synthesis.Winding
   using (ToroidalWinding; toroidalWindingValue; PolarWinding; polarWindingValue)
 
 --------------------------------------------------------------------------------

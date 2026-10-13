@@ -5,7 +5,7 @@ module Sovereign.Application.ProjectiveInvariants where
 open import Data.Nat using (ℕ; _+_; _*_; _%_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Structology.Winding
+open import Sovereign.Synthesis.Winding
   using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144
   using (FULL_TOUR)

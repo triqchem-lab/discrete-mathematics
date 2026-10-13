@@ -24,7 +24,7 @@ open import Relation.Nullary.Negation using (¬_)
 
 -- 导入核心模块
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; tritEncode; tritDecode)
-open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
+open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Synthesis.HolographicPi using (HolographicPi; standardHoloPi; 
                                                          holoPiNumeratorIs144; holoPiDenominatorIs46)

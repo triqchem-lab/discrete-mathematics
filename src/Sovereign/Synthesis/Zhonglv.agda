@@ -22,7 +22,7 @@ open import Data.Product using (_×_; _,_)
 -- 导入主权 LCM 模数
 open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶;
                                                 huangzhongLCMRemainder; zhonglvClosure)
-open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding;
+open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding;
                                                   polarWindingValue; toroidalWindingValue)
 
 --------------------------------------------------------------------------------

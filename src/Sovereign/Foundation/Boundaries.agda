@@ -29,7 +29,7 @@ open import Data.Product using (∃; ∃-syntax; _×_; _,_)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
+open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi; applyLossGain)
 open import Sovereign.MetaStructure.WuXing using (WuXing; wuXingBase)
 

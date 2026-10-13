@@ -35,7 +35,7 @@ open import Data.Product using (_×_; _,_; ∃; ∃-syntax; Σ)
 open import Data.Sum using (_⊎_)
 
 -- 导入核心模块
-open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding; 
+open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Base.Lü using (LüName;
                                       HuangZhong; LinZhong; TaiCu; NanLu;

@@ -53,7 +53,7 @@ open import Sovereign.Base.ZeroGeometry using (PlatonicSolid; Tetrahedron; Hexah
   Dodecahedron; Icosahedron; Octahedron; SphereA4;
   faceCount; vertexCount; edgeCount; eulerChi;
   c5AxisCount; c5NonTrivialRotations; numPlatonicSolids)
-open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding;
+open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding;
   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Synthesis.MagicSquareM4 using (M4; magicConstant)
 

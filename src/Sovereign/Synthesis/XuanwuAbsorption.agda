@@ -26,7 +26,7 @@ open import Data.Vec using (Vec; []; _∷_; lookup)
 open import Sovereign.Synthesis.Closure
   using (State; mkState; polar; toroidal; step; stepN;
          isHolographicState; zhonglvPhaseSyncOp; iteratePhaseSync; convergenceToHolographicState)
-open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
+open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR; fullTourCorrect)
 
 -- stepN 由 Closure 模块级导出, 此处不再重复定义

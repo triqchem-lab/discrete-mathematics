@@ -11,7 +11,7 @@ open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; c3-cw; c3-ccw; negate; negate²)
 open import Sovereign.Algebra.GF9
   using (GF9; galoisConjugate; galoisConjugate²)
-open import Sovereign.Structology.Winding
+open import Sovereign.Synthesis.Winding
   using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144
   using (MerkabaCells)

@@ -21,7 +21,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; sym
 
 -- 已有模块
 open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; wuXingBase)
-open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
+open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR; fullTourCorrect)
 open import Sovereign.Synthesis.MagicSquareM4 using (magicConstant)
 open import Sovereign.Base.CRTLemmas using (POW2; POW3; M)

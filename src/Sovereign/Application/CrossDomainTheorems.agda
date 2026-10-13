@@ -51,7 +51,7 @@ open import Sovereign.Foundation.DigitalRoot using (
 open import Sovereign.Algebra.GF9 using (
   GF9; galoisConjugate; galoisConjugate²)
 
-open import Sovereign.Structology.Winding using (
+open import Sovereign.Synthesis.Winding using (
   PolarWinding; ToroidalWinding; polarWindingValue; toroidalWindingValue)
 
 open import Sovereign.MetaStructure.WuXing using (

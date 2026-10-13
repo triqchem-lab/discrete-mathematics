@@ -1,11 +1,11 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.Winding
+-- | Sovereign.Synthesis.Winding
 -- 结构学：极向缠绕数 144、环向缠绕数 46
 --
 -- 核心原则：缠绕数是不可拆分的拓扑不变量，由实验锚定
 
-module Sovereign.Structology.Winding where
+module Sovereign.Synthesis.Winding where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Vec using (Vec; _∷_; [])
