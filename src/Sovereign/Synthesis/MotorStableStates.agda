@@ -1,5 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Synthesis.MotorStableStates
+-- 马达稳定态 —— 矩阵作用下的不动点结构。
+--
+-- 数学背景：§1 稳定态定义（矩阵作用下不变的态）；
+--   §2 零矩阵的稳定态性质（全域都是不动点）。
+--   与「无不动点 → 极限环」的核心哲学对偶：零矩阵是退化情形（处处不动点），
+--   非零涡旋则给出周期轨道。
 module Sovereign.Synthesis.MotorStableStates where
 
 open import Data.Fin using (Fin; zero; suc)

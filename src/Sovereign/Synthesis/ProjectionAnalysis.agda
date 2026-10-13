@@ -1,4 +1,12 @@
 {-# OPTIONS --cubical --rewriting #-}
+
+-- | Sovereign.Synthesis.ProjectionAnalysis
+-- 分析学投影 —— MSC 26/28 的离散退化面。
+--
+-- 数学背景：§1 MSC 26：实分析投影（T⁶ 格点 → 「连续坐标」）；
+--   §2 MSC 28：测度论投影（离散计数 → 「连续测度」）；§3 退化分析（投影的信息丢失结构）；
+--   §4 投影总结（MSC 26 + MSC 28 的统一视图）。
+--   主旨：连续分析的两大支柱（坐标/测度）都是离散结构的投影，投影必有信息丢失。
 module Sovereign.Synthesis.ProjectionAnalysis where
 
 --------------------------------------------------------------------------------

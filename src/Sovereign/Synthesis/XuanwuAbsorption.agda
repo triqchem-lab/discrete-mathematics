@@ -1,4 +1,14 @@
 {-# OPTIONS --guardedness --rewriting #-}
+
+-- | Sovereign.Synthesis.XuanwuAbsorption
+-- 玄武吸收 —— 46 周期的 REWRITE 归一化。
+--
+-- 数学背景：以三条 REWRITE 规则把 46 周期吸收进内核归约（避免 mod-helper 展开爆堆）：
+--   mod46k: mod-helper 0 45 (46·k) 45 ≡ 0；div46k: div-helper 0 45 (46·k) 45 ≡ k；
+--   mod-a+598: mod-helper 0 45 (a+598) 45 ≡ mod-helper 0 45 a 45（598 = 13×46）。
+--   应用于 FULL_TOUR 的整除性见证（% 144 ≡ 0、% 46 ≡ 0，refl 级）。
+--   ⚠ REWRITE 为传染性元层工具（2026-10-10 人类裁决：非必要不用），本件的使用属
+--   已入册的「mod-helper 类内核资源爆炸」豁免情形。
 module Sovereign.Synthesis.XuanwuAbsorption where
 
 open import Agda.Builtin.Equality using (_≡_; refl)

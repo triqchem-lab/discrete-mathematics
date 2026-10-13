@@ -1,5 +1,12 @@
 {-# OPTIONS --rewriting #-}
 
+-- | Sovereign.Synthesis.BurnsideT6
+-- Burnside 轨道计数在 T⁶ 上的应用。
+--
+-- 数学背景：以 Burnside 引理（轨道数 = 群作用下不动点的平均）计数 T⁶ 格点在
+--   涡旋群（PolarWinding / ToroidalWinding）作用下的轨道；C₃ 循环 c3-cw/c3-ccw 与
+--   GF(9) Frobenius 共轭 galoisConjugate 提供两类群作用，MerkabaCells（144 幻方格）
+--   给出计数载体。是「表示论有限封顶」的计数侧见证。
 module Sovereign.Synthesis.BurnsideT6 where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_)

@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
+
+-- | Sovereign.Synthesis.LCM
+-- SOVEREIGN_LCM 与主权截面 —— 3 进制编解码与模运算。
+--
+-- 数学背景：SOVEREIGN_LCM = 3¹¹ · 2¹⁶ = 11609505792；GAP_THRESHOLD = 243 (=3⁵)；
+--   主权截面 SovereignSection = Vec Trit 30（30 位三进制字），配 powersOf3 权重向量，
+--   由 sectionToCoordinate / coordinateToSection 作 3 进制 ↔ ℕ 的双向编解码，
+--   modLCM 把任意字折回 LCM 商空间。是「主权 LCM 商空间」的核心载体件。
 module Sovereign.Synthesis.LCM where
 open import Data.Fin using (Fin; toℕ; fromℕ; zero; suc)
 open import Data.Fin.Properties using (toℕ<n; toℕ-fromℕ<; toℕ-injective)
