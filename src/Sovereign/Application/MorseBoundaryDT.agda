@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseBoundaryDT
+-- | Sovereign.Application.MorseBoundaryDT
 -- 任务书第五层·5.1 泛型化 M3 首站：双三角上的 **∂²=0 路径配对相消**
 --
 -- 数学背景（oracle 已核数值）：
@@ -14,7 +14,7 @@
 --   Face τ e'，续程证据由尾递归自带）——支持任意跳数；CoefRoute = 单跳特例。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseBoundaryDT where
+module Sovereign.Application.MorseBoundaryDT where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Maybe using (Maybe; just; nothing)
@@ -23,9 +23,9 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_; _⊕_)
-open import Sovereign.Topology.DoubleTriangle
+open import Sovereign.Synthesis.DoubleTriangle
   using (Sx2; v0; v1; v2; v3; e01; e02; e12; e13; e23; FL; FR; V2)
-import Sovereign.Topology.MorseCoeffRoute
+import Sovereign.Application.MorseCoeffRoute
 --------------------------------------------------------------------------------
 -- §1. 统一系数表：coeff2 w σ = ∂σ 的 w 系数（16 实项 + 兜底）
 --------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ data Face2 : Sx2 → Sx2 → Set where
 -- §3. 路由关系：CoefRoute（修正版——任意跳数，统一机件）
 --------------------------------------------------------------------------------
 
-open module MCR = Sovereign.Topology.MorseCoeffRoute.CoeffRouteDef
+open module MCR = Sovereign.Application.MorseCoeffRoute.CoeffRouteDef
   Sx2 V2 Face2 coeff2
 
 CR = CoefRoute

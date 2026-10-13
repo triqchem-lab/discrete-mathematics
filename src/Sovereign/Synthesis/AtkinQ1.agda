@@ -14,7 +14,7 @@
 --      情形是 roadmap。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.AtkinQ1 where
+module Sovereign.Synthesis.AtkinQ1 where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Product using (Σ; _×_; _,_)

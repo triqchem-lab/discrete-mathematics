@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.DoubleTriangle
+-- | Sovereign.Synthesis.DoubleTriangle
 -- 任务书第五层·5.1 泛型化 M3/M6 测试床：双三角复形（12-1 = 11 胞腔）
 --
 -- 数学背景：K₃ 上所有合法场的 Morse 复形 ≤1 维（三循环配对被无环性
@@ -17,7 +17,7 @@
 --     ⟹ T₁ ⊕ T₂ = T₀——路径配对相消 ✓
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.DoubleTriangle where
+module Sovereign.Synthesis.DoubleTriangle where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Maybe using (Maybe; just; nothing)

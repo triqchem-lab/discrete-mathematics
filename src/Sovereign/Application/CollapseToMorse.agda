@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.CollapseToMorse
+-- | Sovereign.Application.CollapseToMorse
 -- 任务书第五层·5.1 推进：可坍缩 ⟹ 完美 Morse（B4 正向实例）
 --
 -- 数学背景：坍缩序列 (e01,t) → (v1,e12) → (v2,e20)（Collapse.agda）
@@ -15,7 +15,7 @@
 --   但计数同为 (1,0,0)。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.CollapseToMorse where
+module Sovereign.Application.CollapseToMorse where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Maybe using (Maybe; just; nothing)

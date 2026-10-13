@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.BarceloAHomotopy
+-- | Sovereign.Synthesis.BarceloAHomotopy
 -- 任务书 2.4：Barcelo/Babson A-homotopy——图映射同伦的组合近似（定义层 + 等价闭包）
 --
 -- 数学背景：A-homotopy 是图同伦的组合替代（Barcelo 1992 / Babson-Bennequin）——
@@ -15,7 +15,7 @@
 --
 -- 包含：DiGraph / Walk / AStep / AHomotopy / refl-sym-trans 三律
 
-module Sovereign.Topology.BarceloAHomotopy where
+module Sovereign.Synthesis.BarceloAHomotopy where
 
 open import Data.Empty using (⊥; ⊥-elim)
 

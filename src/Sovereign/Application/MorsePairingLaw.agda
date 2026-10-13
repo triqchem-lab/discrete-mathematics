@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorsePairingLaw
+-- | Sovereign.Application.MorsePairingLaw
 -- M3 里程碑 3：匹配结构设计——反例 + 带显式前提的泛型定理
 --
 -- 计划分水岭裁决：路径 (b)。
@@ -10,7 +10,7 @@
 --   非 postulate——record 假设参数是构造性合法形式）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorsePairingLaw where
+module Sovereign.Application.MorsePairingLaw where
 
 open import Data.List using (List; _∷_; [])
 open import Data.Maybe using (Maybe; just; nothing)
@@ -22,7 +22,7 @@ open import Data.Unit using (⊤)
 
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-identityʳ)
-open import Sovereign.Topology.MorsePartialG
+open import Sovereign.Application.MorsePartialG
 
 --------------------------------------------------------------------------------
 -- §1. 构造性反例——现有字段不足以推出 ∂²=0

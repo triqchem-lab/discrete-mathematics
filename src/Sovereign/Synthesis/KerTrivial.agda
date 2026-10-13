@@ -1,6 +1,6 @@
 {-# OPTIONS --cubical --rewriting --guardedness #-}
 
--- | Sovereign.Topology.KerTrivial
+-- | Sovereign.Synthesis.KerTrivial
 -- 完备性层 C4：H₁ 核的无条件平凡化——∂₁ᶜ 单射的系数级展开（逐点版）
 --
 -- 数学内容：
@@ -15,7 +15,7 @@
 --   即核的逐点平凡）；Σ 完整点级的 PathP 组装留 roadmap。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.KerTrivial where
+module Sovereign.Synthesis.KerTrivial where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Unit using (⊤; tt)

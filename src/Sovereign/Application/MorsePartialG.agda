@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorsePartialG
+-- | Sovereign.Application.MorsePartialG
 -- Morse 泛型化 M3：∂^Morse 边界算子——泛型框架（Trit 陈述层）
 --
 -- 修正（v2）：
@@ -12,7 +12,7 @@
 -- m3-assembly (T₂⊗(T₁⊕T₂)≡T₀ refl ✓)
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorsePartialG where
+module Sovereign.Application.MorsePartialG where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.List using (List; _∷_; [])

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseAcyclic
+-- | Sovereign.Application.MorseAcyclic
 -- 任务书第五层·5.1 补件：Morse 配对场的**无环性**（泛型）
 --
 -- 数学背景：Forman 配对箭头 σ → τ（V σ ≡ just τ）满足维度律
@@ -14,7 +14,7 @@
 -- 复用：FormanMinimal.Sx/triangleVF/dim（Topology/ 目录 Morse 分类）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseAcyclic where
+module Sovereign.Application.MorseAcyclic where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Maybe using (Maybe; just; nothing)

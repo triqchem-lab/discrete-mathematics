@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.FormanChiInvariant
+-- | Sovereign.Application.FormanChiInvariant
 -- 任务书第五层·5.1 泛型化：Forman 第一定理的**计数核**（χ 不变性）
 --
 -- 数学背景：Forman 第一定理（χ_m 与场无关）的一般机制是**计数恒等式**：
@@ -22,7 +22,7 @@
 --   （rank/nullity 不变性，需代数 Morse 边界路由）roadmap。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.FormanChiInvariant where
+module Sovereign.Application.FormanChiInvariant where
 
 open import Data.Nat using (ℕ; _+_; _∸_)
 -- 泛型计数恒等式 chi-cancel 已闭合（§1，含 p₂ 修正项）。

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseCoeffRoute
+-- | Sovereign.Application.MorseCoeffRoute
 -- 任务书第五层·5.1 泛型化第二块：**系数簿记 + 临界判定路由**
 --
 -- 数学背景：代数 Morse 边界的完整路由——每条交替路径携带**系数乘积**
@@ -19,7 +19,7 @@
 -- 复用：Algebra.FreeAb（无关但同线）、Base/Trit 算术、MorseRoute（降维模式）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseCoeffRoute where
+module Sovereign.Application.MorseCoeffRoute where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc; _<_; _≤_)

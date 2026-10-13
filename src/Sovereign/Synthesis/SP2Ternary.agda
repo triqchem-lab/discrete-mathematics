@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.SP2Ternary
+-- | Sovereign.Synthesis.SP2Ternary
 -- SP2 三进制读法: 两条轨道岔口 (0 postulate, 纯 Z/3 计算)
 --
 -- SP2 = 磁→光的电磁场转化。它的三进制表示把三个方向/频率标成 Z/3 = {0,1,2},
@@ -10,7 +10,7 @@
 --
 -- 本模块只证明算子的轨道结构 (refl / λ()); 物理/本体论解读见知识库, 不进入证明链。
 
-module Sovereign.Structology.SP2Ternary where
+module Sovereign.Synthesis.SP2Ternary where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
