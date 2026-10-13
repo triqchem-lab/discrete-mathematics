@@ -26,7 +26,7 @@ open import Relation.Nullary using (¬_)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.GF9 using
   ( GF9; gf9-one; _+gf9_; _*gf9_; galoisConjugate; galoisNorm)
-open import Sovereign.Analysis.FiniteInnerProduct using
+open import Sovereign.Algebra.FiniteInnerProduct using
   ( VectorSpace; gf9-zero; zeroVec; normSq; hermitianIP; basisVec; basisVec-diag
   ; normSq-basisVec; basis-orthogonal)
 open import Sovereign.Synthesis.BurnsideT6 using

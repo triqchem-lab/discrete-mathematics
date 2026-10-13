@@ -39,7 +39,7 @@ open import Sovereign.Algebra.GF9 using (
   lemma-frobenius-multiplicative;
   conjugatePair-size-1)
 
-open import Sovereign.Analysis.FiniteInnerProduct using (
+open import Sovereign.Algebra.FiniteInnerProduct using (
   VectorSpace; gf9-zero; zeroVec; _+V_; _·V_;
   hermitianIP; normSq; Orthogonal;
   *gf9-zeroˡ; *gf9-zeroʳ;

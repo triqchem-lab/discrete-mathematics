@@ -50,7 +50,7 @@ open import Sovereign.Algebra.GF9 using (
   negate-⊗; negate-⊗-comm; negate-⊗-negate;
   lemma-frobenius-multiplicative; embed-gf3; galoisNorm)
 
--- GF(3) 版本参考 (后续切换到 Sovereign.Analysis.FiniteInnerProduct)
+-- GF(3) 版本参考 (后续切换到 Sovereign.Algebra.FiniteInnerProduct)
 import Sovereign.Algebra.FunctionalDiscrete as GF3FuncAnalysis
 
 --------------------------------------------------------------------------------

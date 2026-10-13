@@ -34,7 +34,7 @@ open import Sovereign.Algebra.GF9 using (
   GF9; gf9-one; _+gf9_; _*gf9_;
   galoisConjugate; galoisConjugate²; galoisNorm; embed-gf3)
 
-open import Sovereign.Analysis.FiniteInnerProduct using (
+open import Sovereign.Algebra.FiniteInnerProduct using (
   VectorSpace; gf9-zero; zeroVec; _+V_; _·V_;
   hermitianIP; hermitian-conj-sym; normSq;
   normSq-of-zero; galoisNorm-zero;

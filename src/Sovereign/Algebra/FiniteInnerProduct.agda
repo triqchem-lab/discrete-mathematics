@@ -7,7 +7,7 @@
 --
 -- 包含：VectorSpace、gf9-zero、zeroVec、*gf9-zeroˡ、*gf9-zeroʳ、+gf9-swap-middle、negate-⊕-self、negate-⊗-negate-self、sumGF9、sumGF9-cong、sumGF9-const-zero、sumGF9-additive、sumGF9-scalar、conj-additive
 
-module Sovereign.Analysis.FiniteInnerProduct where
+module Sovereign.Algebra.FiniteInnerProduct where
 
 --------------------------------------------------------------------------------
 -- GF(9) 有限维内积空间

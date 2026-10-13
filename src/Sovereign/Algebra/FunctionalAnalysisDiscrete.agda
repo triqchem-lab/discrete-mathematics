@@ -18,7 +18,7 @@ module Sovereign.Algebra.FunctionalAnalysisDiscrete where
 --   Sovereign.Algebra.FunctionalDiscrete — GF(3)ⁿ 内积空间, Riesz, 算子
 --
 -- P1-B 子模块 (待其他 agent 完成后切换):
---   Sovereign.Analysis.FiniteInnerProduct     — 有限维内积空间
+--   Sovereign.Algebra.FiniteInnerProduct     — 有限维内积空间
 --   Sovereign.Algebra.LinearFunctionalDiscrete — 离散线性泛函
 --
 -- P0 桥接:
