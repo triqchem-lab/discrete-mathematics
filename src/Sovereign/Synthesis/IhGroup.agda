@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.IhGroup
+-- | Sovereign.Synthesis.IhGroup
 -- 本源结构线 S-P1：I_h 正二十面体对称群的 Agda 形式化
 --
 -- 数学背景：
@@ -30,7 +30,7 @@
 --
 -- 包含: F3、F5、F2、data、data、record、det-mul、IhOrder、MerkabaOrder、PolarWinding、polar-winding-check
 
-module Sovereign.Structology.IhGroup where
+module Sovereign.Synthesis.IhGroup where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Fin using (Fin; zero; suc)

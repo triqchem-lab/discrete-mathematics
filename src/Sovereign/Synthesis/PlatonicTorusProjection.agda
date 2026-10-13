@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.PlatonicTorusProjection
+-- | Sovereign.Synthesis.PlatonicTorusProjection
 -- 柏拉图几何体 + 群信息论 → T⁶ 环面投影的等价映射 (类型级可证定理)
 --
 -- 物理锚定 (量子晶格 / 声子模型 / 神经网络训练验证):
@@ -27,7 +27,7 @@
 -- 的关系: 旧版在 ℕ 层断言 ¬(144≡120+24)/¬(k=2) — 可计算反驳, ⊥ 可导出;
 -- 本模块在类型层陈述同一教义, 全部为可证定理。
 
-module Sovereign.Structology.PlatonicTorusProjection where
+module Sovereign.Synthesis.PlatonicTorusProjection where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _<_; _≤_; _<?_; s≤s)
 open import Data.Nat.Properties using (+-monoˡ-<; <-trans; m≤m+n; m∸n+n≡m; ≮⇒≥; m+n≮n; m+n∸n≡m; ≤-pred; ∸-monoˡ-≤)

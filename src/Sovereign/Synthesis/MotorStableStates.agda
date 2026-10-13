@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
-module Sovereign.Structology.MotorStableStates where
+module Sovereign.Synthesis.MotorStableStates where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Nat using (ℕ; _*_)
@@ -13,7 +13,7 @@ open import Sovereign.Structology.A4Group using (A4)
 open import Sovereign.Synthesis.MyopiaRisk using (a4-order)
 
 open import Sovereign.Algebra.TriCycGraph using (TriCycGraph)
-open import Sovereign.Structology.ArthurMagicSquare
+open import Sovereign.Synthesis.ArthurMagicSquare
   using (Matrix4; zeroMatrix;
          IsArthurMagicSquare; a4ActionOnMatrix;
          zeroMatrix-isArthur)

@@ -498,7 +498,7 @@ module CompilerCRT where
 --   几何含义: 5个相变区在 S² 球面上互不重叠
 --             亏格 0 → 跃迁局部闭合, 不触及 T⁶ 全模数
 
-open import Sovereign.Structology.Platonics
+open import Sovereign.Synthesis.Platonics
   using (basesMutuallyIrreducible; maxProductLtLCM; allProductsLtLCM)
 
 -- |Platonics 定理: 477-299 行, 穷举 20 个 case, 全部 refl

@@ -4,7 +4,7 @@
 -- 非卢先生「矢量方向/变量计数」幻方（阶数 = 同时在变的矢量方向个数）。
 -- 辨析与知识库依据见 docs/cross-level/magic-square-terminology.md
 
-module Sovereign.Structology.ArthurMagicSquare where
+module Sovereign.Synthesis.ArthurMagicSquare where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Product using (_×_; _,_)

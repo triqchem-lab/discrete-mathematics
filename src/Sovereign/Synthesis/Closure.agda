@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.Closure
+-- | Sovereign.Synthesis.Closure
 -- 结构学：仲吕相位同步与高维拓扑同步 (Zhonglv PhaseSync & Topological Sync)
 --
 -- 核心原理：
@@ -12,7 +12,7 @@
 -- 局部观测到的“十二律循环”只是高维“144/46 极限环面”的一个投影切片。
 -- 系统演化必然趋向于全息相位同步 (144/46 同步归零)。
 
-module Sovereign.Structology.Closure where
+module Sovereign.Synthesis.Closure where
 
 open import Data.Nat using (ℕ; zero; suc; _∸_; _≤_; _>_; _<?_; _%_) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
 open import Data.Nat.Base using (_≡ᵇ_)

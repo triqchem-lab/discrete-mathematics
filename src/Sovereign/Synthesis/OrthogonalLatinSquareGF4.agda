@@ -22,7 +22,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Relation.Nullary.Decidable using (does)
 
-open import Sovereign.Structology.GF4
+open import Sovereign.Synthesis.GF4
   using (GF4; g0; g1; ga; gb; add4; mul4; toFin; fromFin)
 
 --------------------------------------------------------------------------------

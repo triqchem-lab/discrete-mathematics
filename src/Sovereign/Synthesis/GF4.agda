@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.GF4
+-- | Sovereign.Synthesis.GF4
 -- GF(4) = GF(2)[α]/(α²+α+1): 四元域, 完整域公理 (0 postulate)
 --
 -- 元素 {0, 1, α, α+1}, 特征 2 (x+x=0), α²=α+1, α(α+1)=1, (α+1)²=α。
 -- 用于 GF(4) → 正交拉丁方 → 幻方的域论生成链; 与 GF(3)/GF(9)/GF(27) 并列。
 -- 判型符号化（≤64-case 表 → rep/Bit 代数链）
 
-module Sovereign.Structology.GF4 where
+module Sovereign.Synthesis.GF4 where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero; suc)

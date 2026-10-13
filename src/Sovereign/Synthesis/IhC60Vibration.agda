@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.IhC60Vibration
+-- | Sovereign.Synthesis.IhC60Vibration
 -- I_h → 46 定理: C60 的 174 维振动表示在 I_h 下分解出恰好 46 个独立基频
 --
 -- 数学背景:
@@ -23,7 +23,7 @@
 --   §8 选择定则: IR 活性 = T₁u (4 支), Raman = A_g+H_g (10 支),
 --      14 条可观测谱线 + 32 暗模 = 46
 
-module Sovereign.Structology.IhC60Vibration where
+module Sovereign.Synthesis.IhC60Vibration where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Nat using (ℕ; suc) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_; _∸_ to _∸ℕ_)

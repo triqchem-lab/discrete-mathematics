@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.OrthogonalLatinSquare
+-- | Sovereign.Synthesis.OrthogonalLatinSquare
 -- 正交拉丁方 → 幻方 (Euler 构造, 0 postulate)
 --
 -- 【术语边界】本模块「幻方」= 数学数字幻方（行列对角线和相等）。
@@ -22,7 +22,7 @@
 -- 后者经 M4CRTBridge.agda 投影到 CRT 模域 {34,0,16,-16}。故本模块把
 -- "幻方矩阵" 从给定升级为构造推导, 再送入既有 CRT 桥。
 
-module Sovereign.Structology.OrthogonalLatinSquare where
+module Sovereign.Synthesis.OrthogonalLatinSquare where
 
 open import Data.Nat using (ℕ; _+_; _*_; _≟_)
 open import Data.Fin using (Fin; zero; suc)

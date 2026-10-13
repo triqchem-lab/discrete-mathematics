@@ -25,7 +25,7 @@ open import Data.Nat using (ℕ; _+_; _*_; _∸_; _/_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Structology.Winding using (ToroidalWinding)
-open import Sovereign.Structology.IhC60Vibration
+open import Sovereign.Synthesis.IhC60Vibration
   using (vibMult; Ag; Au; T1g; T1u; T2g; T2u; Gg; Gu; Hg; Hu; freq-46)
 
 --------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.SL23Trace
+-- | Sovereign.Synthesis.SL23Trace
 -- 矩阵 → 迹 → 特征标: SL(2,3) 定义表示的显式迹 (0 postulate)
 --
 -- 表示论的源头是矩阵: 特征标是矩阵的迹。本模块显式证明:
@@ -12,7 +12,7 @@
 -- 其在特征 0 的忠实二维表示需 1/2 (「半元素」), 故 Z[ω,i] 整环上无忠实二维矩阵表示,
 -- 迹含 ω 的 χ₂′/χ₂″ 由张量积 χ₂ ⊗ {χ₁′,χ₁″} 导出 (见 BinaryTetrahedralTwoDimTensors)。
 
-module Sovereign.Structology.SL23Trace where
+module Sovereign.Synthesis.SL23Trace where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Product using (_×_; _,_)
@@ -20,7 +20,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Synthesis.BinaryTetrahedralDefiningRep
   using (SL23; g0; g1; g2; g3; g4; g5; g6; g7; g8; g9; g10; g11; g12; g13; g14; g15; g16; g17; g18; g19; g20; g21; g22; g23; classOf)
-open import Sovereign.Structology.SL23Cayley using (Mat2; toMat; add3)
+open import Sovereign.Synthesis.SL23Cayley using (Mat2; toMat; add3)
 
 --------------------------------------------------------------------------------
 -- §1. 迹 (mod 3)

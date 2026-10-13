@@ -91,7 +91,7 @@ import Sovereign.Algebra.Jacobian.jac_CRTDet
 import Sovereign.Algebra.Holographic.PhysicalOntology
 import Sovereign.Algebra.SpiralCycle               -- ⟨2⟩ 六环定理
 import Sovereign.Synthesis.HolographicPi         -- 原子化: 0 postulate, 类型层禁止约分
-import Sovereign.Structology.IhC60Vibration        -- I_h → 46: 174 维振动表示 → 46 独立基频
+import Sovereign.Synthesis.IhC60Vibration        -- I_h → 46: 174 维振动表示 → 46 独立基频
 
 -- 汇总: Problem/ 61 模块 + 基础设施, 0 postulate。
 -- L3: NS / YM / Hodge / BSD / RH(有限域版) / Langlands / PvsNP / Kakeya = 8 项

@@ -41,10 +41,10 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂; module ≡-Reasoning)
 open ≡-Reasoning
 
-open import Sovereign.Structology.GF4
+open import Sovereign.Synthesis.GF4
   using (GF4; g0; g1; ga; gb; add4; mul4;
          add4-comm; add4-assoc; distrib-left; distrib-right)
-open import Sovereign.Structology.OrthogonalLatinSquare
+open import Sovereign.Synthesis.OrthogonalLatinSquare
   using (L1; L2; super0; allDistinct; orthogonal; sum4; rowSum; column;
          diagSum; antidiagSum)
 

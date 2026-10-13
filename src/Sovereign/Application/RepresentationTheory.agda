@@ -43,7 +43,7 @@ open import Sovereign.Synthesis.BinaryTetrahedralDefiningRep
   using (SL23; orderOf; chi2FromRep; chi2-correct) renaming (classOf to classOf23)
 open import Sovereign.Synthesis.BinaryTetrahedralRepresentation
   using (z-two; z-neg-two; z-neg-one)
-open import Sovereign.Structology.SL23Trace
+open import Sovereign.Synthesis.SL23Trace
   using (trace-correct)
 open import Sovereign.Application.DiscreteActionPrinciple
   using (GaugeGroup; e; gα; gα²; gα³; _*g_; g-inv; embedG;

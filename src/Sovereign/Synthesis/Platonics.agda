@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Structology.Platonics
+-- | Sovereign.Synthesis.Platonics
 -- 五正多面体 → 五行基数: 对称群特征模数的 CRT 投影形式化
 --
 -- 【证明路径】(v5.3, 2026-07-03)
@@ -33,7 +33,7 @@
 -- 注意: 后四个基数的推导链尚未完成形式化. 当前的基数被标记为
 -- 有外部实验锚定的 postulate, 等待从对称群到模数的完整构造性证明.
 
-module Sovereign.Structology.Platonics where
+module Sovereign.Synthesis.Platonics where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _%_; _≤_; _<_)
 open import Data.Nat.DivMod using (_mod_; _div_; m%n<n)

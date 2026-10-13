@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.SL23Cayley
+-- | Sovereign.Synthesis.SL23Cayley
 -- SL(2,3) 的 Cayley 表与 576 对封闭性 (GF(3) 定义表示, 0 postulate)
 --
 -- 深度证明 (补充 BinaryTetrahedralDefiningRep): SL(2,3) = {det=1 的 GF(3) 2×2 矩阵},
@@ -8,7 +8,7 @@
 --   toMat (x ⊗ y) ≡ mulMat2 (toMat x) (toMat y)
 -- 封闭性亦由 det 乘法性保证 (det(AB)=det(A)det(B)=1), 此处显式穷举与理论一致。
 
-module Sovereign.Structology.SL23Cayley where
+module Sovereign.Synthesis.SL23Cayley where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero; suc)

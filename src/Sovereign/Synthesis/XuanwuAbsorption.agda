@@ -23,7 +23,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; tran
 open ≡-Reasoning
 open import Data.Nat.DivMod using (%-distribˡ-+; m%n<n; m%n%n≡m%n)
 open import Data.Vec using (Vec; []; _∷_; lookup)
-open import Sovereign.Structology.Closure
+open import Sovereign.Synthesis.Closure
   using (State; mkState; polar; toroidal; step; stepN;
          isHolographicState; zhonglvPhaseSyncOp; iteratePhaseSync; convergenceToHolographicState)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)

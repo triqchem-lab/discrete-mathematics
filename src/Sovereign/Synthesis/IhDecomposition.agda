@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.IhDecomposition
+-- | Sovereign.Synthesis.IhDecomposition
 -- 本源结构线 S-P2：I_h 分解——120 + 24 = 144 的结构化证明
 --
 -- 数学内容：
@@ -16,11 +16,11 @@
 --   144 阶幻方 = I_h(120) + Merkaba(24) 对称性的格点编码
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Structology.IhDecomposition where
+module Sovereign.Synthesis.IhDecomposition where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Structology.IhGroup
+open import Sovereign.Synthesis.IhGroup
   using (A5; IhElement; IhOrder; MerkabaOrder; PolarWinding; polar-winding-check)
 
 --------------------------------------------------------------------------------

@@ -12,9 +12,9 @@ open import Sovereign.Structology.A4Group
   using (A4; Id; Rot; Flip; _⊗_; generatorC3)
 
 open import Sovereign.Algebra.TriCycGraph using (TriCycGraph)
-open import Sovereign.Structology.ArthurMagicSquare
+open import Sovereign.Synthesis.ArthurMagicSquare
   using (Matrix4; a4ActionOnMatrix; IsArthurMagicSquare)
-open import Sovereign.Structology.MotorStableStates
+open import Sovereign.Synthesis.MotorStableStates
   using (IsA4Invariant)
 
 -- ══════════════════════════════════════════════════════════════

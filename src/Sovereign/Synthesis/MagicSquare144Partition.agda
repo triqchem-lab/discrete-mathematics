@@ -12,8 +12,8 @@ module Sovereign.Synthesis.MagicSquare144Partition where
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Product using (_×_; _,_)
-open import Sovereign.Structology.IhGroup using (MerkabaOrder)
-open import Sovereign.Structology.IhDecomposition
+open import Sovereign.Synthesis.IhGroup using (MerkabaOrder)
+open import Sovereign.Synthesis.IhDecomposition
   using (IhTotal; HolographicTotal; polar-consistent)
 
 --------------------------------------------------------------------------------
