@@ -25,9 +25,9 @@ open import Sovereign.Algebra.GF9 using (GF9; gf9-one; gf9-zero; _+gf9_; _*gf9_)
 open import Sovereign.Algebra.GroupTheory.DuodecClock using
   (DuodecPoint; AlphaPower; a0; a1; a2; a3; mixedOp; duodec-e; rho; rho-involution;
    mulAlpha; alphaInv)
-open import Sovereign.Algebra.Jacobian.jac_Discrete using (Mat2; det2; I2)
-open import Sovereign.Algebra.Jacobian.jac_Matrix using (mat-mul)
-open import Sovereign.Algebra.Jacobian.jac_GF9Matrix using (det2-gf9)
+open import Sovereign.Algebra.Jacobian.Discrete using (Mat2; det2; I2)
+open import Sovereign.Algebra.Jacobian.Matrix using (mat-mul)
+open import Sovereign.Algebra.Jacobian.GF9Matrix using (det2-gf9)
 open import Sovereign.Algebra.AdjacencyMatrix using (AdjMatrix4; mulMat4; matI4)
 
 --------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_Discrete
+-- | Sovereign.Algebra.Jacobian.Discrete
 -- Phase 2: 形式导数 vs 差分算子 vs 函数表矩阵
 --
 -- 三种"雅可比"的区分:
@@ -13,7 +13,7 @@
 --        多项式函数空间 GF(3)^{GF(3)} 中 x³ = x (Fermat)。
 --        BCW 规约在形式多项式环上工作, Fermat 坍缩在函数空间上工作。
 
-module Sovereign.Algebra.Jacobian.jac_Discrete where
+module Sovereign.Algebra.Jacobian.Discrete where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)

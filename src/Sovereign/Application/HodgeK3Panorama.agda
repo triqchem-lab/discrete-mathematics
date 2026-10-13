@@ -17,7 +17,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Application.ChainComplex using (dimH)
 import Sovereign.Application.ChainComplex as CC
-open import Sovereign.Application.jac_Topology
+open import Sovereign.Application.Topology
   using (filled3C; dimH-filled3-0; dimH-filled3-1; dimH-filled3-2)
 open import Sovereign.Application.FormanChiInvariant using (chi-m-f)
 

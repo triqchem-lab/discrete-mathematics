@@ -47,7 +47,7 @@ open import Sovereign.Synthesis.T6
          toℕ-sum; toℕ-sum<729; toℕ-sum-injective; rightInv; leftInv)
 
 -- 低维验证模块 (已有, 0 postulate)
-open import Sovereign.Algebra.Jacobian.jac_GF3
+open import Sovereign.Algebra.Jacobian.GF3
   using (GF3²; shift; Sx; Sy; _⊖_; F-gf3; gf3-collision; gf3-not-surj;
          Δx-F1-counter; Δy-F1-counter; Δx-F2-counter; Δy-F2-counter;
          JΔ-counter; det-JΔ-counter; det-JΔ-id)
@@ -62,11 +62,11 @@ open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
          encode9; decode9; encode9-injective; decode9-injective;
          compress; expand; expand∘compress)
 
-open import Sovereign.Algebra.Jacobian.jac_Injectivity
+open import Sovereign.Algebra.Jacobian.Injectivity
   using (NonSingular; nonsingular→bijective; nonsingular→inj; inj→surj;
          Collision; collision→not-inj; F-gf3-collision; F-gf3-not-inj)
 
-open import Sovereign.Algebra.Jacobian.jac_Discrete
+open import Sovereign.Algebra.Jacobian.Discrete
   using (Mat2; det2; GF3²; FormalJacDet1; FunctionTableInj; formal-not-table)
 
 open import Sovereign.Algebra.Holographic.Conjecture

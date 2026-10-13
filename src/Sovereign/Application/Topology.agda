@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_Topology
+-- | Sovereign.Algebra.Jacobian.Topology
 -- 离散同调矩阵化 — 有限复形 · 边界矩阵 · dimH · 欧拉示性数
 --
 -- 数学背景:
@@ -27,7 +27,7 @@
 --   §3 dimH (ChainComplex 记录实例 + 与 Hodge.tri 对齐)
 --   §4 欧拉示性数 EulerCharacteristic (χ = Σ(−1)ᵏ dimHₖ, 具象计算)
 
-module Sovereign.Application.jac_Topology where
+module Sovereign.Application.Topology where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
 open import Data.Fin using (Fin; zero; suc)
@@ -38,8 +38,8 @@ open import Relation.Nullary using (yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong)
 open import Data.Integer using (ℤ; +_) renaming (_+_ to _+ℤ_; _-_ to _-ℤ_)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
-open import Sovereign.Algebra.Jacobian.jac_Discrete using (Mat2; det2)
-open import Sovereign.Algebra.Jacobian.jac_Matrix
+open import Sovereign.Algebra.Jacobian.Discrete using (Mat2; det2)
+open import Sovereign.Algebra.Jacobian.Matrix
   using (Rank; rank; rank2; det≠0→rank2)
 open import Sovereign.Application.ChainComplex as CC
   using (ChainComplex; dimH; tri)

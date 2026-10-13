@@ -184,7 +184,7 @@ matrix-irred = refl
 -- 以下验证 GF(9) 版本的核心引理.
 --------------------------------------------------------------------------------
 
-open import Sovereign.Algebra.Jacobian.jac_GF9Matrix
+open import Sovereign.Algebra.Jacobian.GF9Matrix
   using (GF9; 0gf9; 1gf9; det2-gf9; det2-gf9-I; det2-gf9-nonzero)
 
 -- GF(9) 上 I₂ 的特征多项式: λ² ⊖ 2·λ ⊕ 1
@@ -207,7 +207,7 @@ open import Sovereign.Algebra.Jacobian.jac_GF9Matrix
 -- 这由 jac_GF9Matrix 的 det3-gf9 提供行列式计算,
 -- 由本模块的 eval-quad/has-root 策略推广到 3 次多项式.
 
-open import Sovereign.Algebra.Jacobian.jac_GF9Matrix
+open import Sovereign.Algebra.Jacobian.GF9Matrix
   using (GF9; 0gf9; 1gf9; det2-gf9; det3-gf9; det3-gf9-I)
 
 -- 3×3 不可约性判定: I₃ 的 det=1gf9 ≠ 0gf9 (已验证).

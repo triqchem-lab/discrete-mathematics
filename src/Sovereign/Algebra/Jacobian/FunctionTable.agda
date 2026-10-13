@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_FunctionTable
+-- | Sovereign.Algebra.Jacobian.FunctionTable
 -- 函数表矩阵 M_F: det ≠ 0 ⟺ F 双射 (利用列结构绕过 N×N 行列式)
 --
 -- 核心原则:
@@ -11,7 +11,7 @@
 --
 -- 包含: 2×2 行列式实例, 抽象论证, 等价性定理, 低维验证
 
-module Sovereign.Algebra.Jacobian.jac_FunctionTable where
+module Sovereign.Algebra.Jacobian.FunctionTable where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)
@@ -22,13 +22,13 @@ open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
 
 -- 已有的 Jacobian 模块 (全部 0 postulate)
-open import Sovereign.Algebra.Jacobian.jac_Discrete
+open import Sovereign.Algebra.Jacobian.Discrete
   using (Mat2; det2; GF3²)
-open import Sovereign.Algebra.Jacobian.jac_GF3
+open import Sovereign.Algebra.Jacobian.GF3
   using (F-gf3; gf3-collision; gf3-not-surj)
 open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
   using (Inj2; Surj2; pigeonhole-2)
-open import Sovereign.Algebra.Jacobian.jac_Injectivity
+open import Sovereign.Algebra.Jacobian.Injectivity
   using (NonSingular; surj→inj; x⊕negx≡0; F-gf3-not-inj)
 
 _↔_ : Set → Set → Set

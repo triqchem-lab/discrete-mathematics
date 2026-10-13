@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_CRTSpectrum
+-- | Sovereign.Algebra.Jacobian.CRTSpectrum
 -- CRT 正交分解与矩阵谱 (det/rank/双射性) 的连接
 --
 -- 核心原则：
@@ -13,7 +13,7 @@
 -- 包含：Duodec 双射 CRT 分解、零因子可见性、行列式单位性、
 --   GF(3)² 谱分类、CRT 加速定理
 
-module Sovereign.Algebra.Jacobian.jac_CRTSpectrum where
+module Sovereign.Algebra.Jacobian.CRTSpectrum where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
@@ -31,9 +31,9 @@ open import Sovereign.Algebra.Duodecimal
         ; π3-homo-+; π3-homo-*; _+12_; _*12_; neg12
         ; DuodecUnit; u1; u5; u7; u11; unitToDuodec
         ; zero-divisor-2×6; zero-divisor-3×4; zero-divisor-4×3; zero-divisor-6×2)
-open import Sovereign.Algebra.Jacobian.jac_Discrete
+open import Sovereign.Algebra.Jacobian.Discrete
   using (Mat2; det2; I2; GF3²)
-open import Sovereign.Algebra.Jacobian.jac_Matrix
+open import Sovereign.Algebra.Jacobian.Matrix
   using (inv; mat-mul; mat-scale)
 
 --------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 -- 但 Frobenius 盲区 (∂(x³)/∂x=0) 仍然存在。
 -- 逐点 JC 在 GF(3) 上为假; 全局 JC 平凡为真。
 
-module Sovereign.Algebra.Jacobian.jac_GF3 where
+module Sovereign.Algebra.Jacobian.GF3 where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)

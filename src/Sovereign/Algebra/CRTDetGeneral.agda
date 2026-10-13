@@ -24,9 +24,9 @@ open import Relation.Binary.PropositionalEquality
 open import Sovereign.Base.Trit using (Trit)
 open import Sovereign.Algebra.Duodecimal
   using (Duodec; π3; π4; crt12; crt12-roundtrip)
-open import Sovereign.Algebra.Jacobian.jac_CRTDet
+open import Sovereign.Algebra.Jacobian.CRTDet
   using (Mat; det; MatT; detT; π3-det)
-open import Sovereign.Algebra.Jacobian.jac_CRTDet4
+open import Sovereign.Algebra.Jacobian.CRTDet4
   using (detT4; π4-det)
 
 -- π3 侧构造函数（构造 MatT = Fin n → Fin n → Trit）

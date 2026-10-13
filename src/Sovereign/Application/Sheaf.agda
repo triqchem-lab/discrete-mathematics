@@ -103,7 +103,7 @@ topology-sheaf-alignment = refl
 --------------------------------------------------------------------------------
 
 -- GF(9) 层接口 (复用 jac_GF9Matrix)
-open import Sovereign.Algebra.Jacobian.jac_GF9Matrix
+open import Sovereign.Algebra.Jacobian.GF9Matrix
   using (GF9; GF9Mat; rank2-gf9; rank3-gf9; rank4-gf9)
 
 -- 注: 完整 GF(9)-层同调计算需层论基础设施 (~800行).

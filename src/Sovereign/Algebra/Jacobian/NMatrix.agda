@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_NMatrix
+-- | Sovereign.Algebra.Jacobian.NMatrix
 -- 函数表矩阵 M_F: det(M_F) ≠ 0 ⟺ F 双射
 --
 -- 核心洞察: M_F 每列是标准基向量 (e_{F(j)}).
@@ -12,7 +12,7 @@
 -- 不计算 9×9 行列式; 用 Fin 9 查找表定义矩阵.
 -- 0 postulate.
 
-module Sovereign.Algebra.Jacobian.jac_NMatrix where
+module Sovereign.Algebra.Jacobian.NMatrix where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; cong; sym; trans; subst)
@@ -25,12 +25,12 @@ open import Relation.Nullary using (Dec; yes; no)
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂)
 
-open import Sovereign.Algebra.Jacobian.jac_Discrete
+open import Sovereign.Algebra.Jacobian.Discrete
   using (GF3²)
 open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
   using (Inj2; Surj2; pigeonhole-2; encode9; decode9; encode9-injective; decode9-injective;
           decode9-encode9; encode9-decode9)
-open import Sovereign.Algebra.Jacobian.jac_Injectivity
+open import Sovereign.Algebra.Jacobian.Injectivity
   using (NonSingular; surj→inj)
 
 _↔_ : Set → Set → Set

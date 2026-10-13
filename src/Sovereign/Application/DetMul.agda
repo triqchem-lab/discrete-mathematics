@@ -7,7 +7,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym;
 -- 导入 GF(9) 运算
 open import Sovereign.Algebra.GF9
   using (GF9; _+gf9_; _*gf9_; neg-gf9; +gf9-comm; +gf9-assoc; *gf9-comm; *gf9-assoc)
-open import Sovereign.Algebra.Jacobian.jac_GF9Matrix using (0gf9; 1gf9; det2-gf9)
+open import Sovereign.Algebra.Jacobian.GF9Matrix using (0gf9; 1gf9; det2-gf9)
 
 -- ═══════════════════════════════════════════════════════════
 -- 定理: det(AB) = det(A)·det(B) for 2×2 GF(9) matrices

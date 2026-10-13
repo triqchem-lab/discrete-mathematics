@@ -21,11 +21,11 @@ open import Data.Nat using (ℕ)
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂)
 
-open import Sovereign.Algebra.Jacobian.jac_Discrete
+open import Sovereign.Algebra.Jacobian.Discrete
   using (GF3²)
 open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
   using (encode9; decode9; decode9-encode9; encode9-decode9)
-open import Sovereign.Algebra.Jacobian.jac_NMatrix
+open import Sovereign.Algebra.Jacobian.NMatrix
   using (funcTable; DetNonzero; detNonzero↔bij)
 open import Sovereign.Algebra.Holographic.EscapeAnalysis
   using (fermat-cubic; collapse→not-detnonzero)

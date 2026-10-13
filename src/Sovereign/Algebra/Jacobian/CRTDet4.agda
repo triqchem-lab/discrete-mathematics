@@ -10,7 +10,7 @@
 -- 依赖：jac_CRTDet（π3 侧全部引理 + Fin4 算子 + π4-homo-+/π4-homo-* 已证）
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Algebra.Jacobian.jac_CRTDet4 where
+module Sovereign.Algebra.Jacobian.CRTDet4 where
 
 open import Data.Nat using (ℕ) renaming (zero to nzero; suc to nsuc)
 open import Data.Fin using (Fin; zero; suc)
@@ -21,14 +21,14 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; neg
 open import Sovereign.Algebra.Duodecimal
   using (Duodec; d0; d1; d2; d3; d4; d5; d6; d7; d8; d9; d10; d11
        ; _+12_; _*12_; neg12; π3; π4; crt12)
-open import Sovereign.Algebra.Jacobian.jac_CRTDet
+open import Sovereign.Algebra.Jacobian.CRTDet
   using (Mat; det; minor; sumD; sgn; punch)
 
 -- ── Fin 4 环算子 (复用 jac_CRTDet §2c) ─────────────────────────────
-open import Sovereign.Algebra.Jacobian.jac_CRTDet
+open import Sovereign.Algebra.Jacobian.CRTDet
   using (_+4_; _*4_; neg4)
   renaming (π4-homo-+ to π4-homo-+; π4-homo-* to π4-homo-*)
-open import Sovereign.Algebra.Jacobian.jac_CRTDet using (π4-neg)
+open import Sovereign.Algebra.Jacobian.CRTDet using (π4-neg)
 
 -- ── Fin 4 行列式 (镜像 detT，Fin 4 用 +4/*4) ──────────────────────
 sumT4 : ∀ {k} → (Fin k → Fin 4) → Fin 4

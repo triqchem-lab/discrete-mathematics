@@ -8,7 +8,7 @@ module Sovereign.Application.CharPoly3 where
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (T₀; T₁)
 
-open import Sovereign.Algebra.Jacobian.jac_GF9Matrix
+open import Sovereign.Algebra.Jacobian.GF9Matrix
   using (1gf9; det3-gf9; I3-gf9; det3-gf9-I)
 open import Sovereign.Application.Complexity
   using (has-root)

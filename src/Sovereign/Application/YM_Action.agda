@@ -10,7 +10,7 @@
 module Sovereign.Application.YM_Action where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; sym; trans)
-open import Sovereign.Algebra.Jacobian.jac_GF9Matrix
+open import Sovereign.Algebra.Jacobian.GF9Matrix
   using (0gf9; 1gf9; det2-gf9; det2-gf9-I)
   using (0gf9; 1gf9; GF9Mat; det2-gf9)
 

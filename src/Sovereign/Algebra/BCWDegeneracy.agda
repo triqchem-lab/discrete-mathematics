@@ -8,7 +8,7 @@ module Sovereign.Algebra.BCWDegeneracy where
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Product using (_×_; _,_)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_)
-open import Sovereign.Algebra.Jacobian.jac_GF3
+open import Sovereign.Algebra.Jacobian.GF3
   using (GF3²; F-gf3; gf3-collision; det-J-formal; J-formal; det2)
 
 -- Fermat 坍缩: y³=y 在 GF(3) 函数空间上

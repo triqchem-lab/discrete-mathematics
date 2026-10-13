@@ -43,7 +43,7 @@ open import Sovereign.Algebra.Jacobian.jac_Pigeonhole using (
   encode9-injective; decode9-injective;
   Inj1; Surj1; pigeonhole-1)
 
-open import Sovereign.Algebra.Jacobian.jac_CRTDet using (
+open import Sovereign.Algebra.Jacobian.CRTDet using (
   det2-gf3; crt-det-I₂; crt-det-nonzero)
 
 open import Sovereign.Application.KakeyaGF3 using (

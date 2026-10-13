@@ -25,12 +25,12 @@ A ↔ B = (A → B) × (B → A)
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊗_)
 
-open import Sovereign.Algebra.Jacobian.jac_Discrete
+open import Sovereign.Algebra.Jacobian.Discrete
   using (GF3²)
 open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
   using (encode9; decode9; decode9-encode9; encode9-decode9;
          encode9-injective; decode9-injective; Inj2; Surj2)
-open import Sovereign.Algebra.Jacobian.jac_NMatrix
+open import Sovereign.Algebra.Jacobian.NMatrix
   using (funcTable; DetNonzero; detNonzero↔bij; toTrit)
 
 --------------------------------------------------------------------------------

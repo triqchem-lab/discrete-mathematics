@@ -17,11 +17,11 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂)
 
-open import Sovereign.Algebra.Jacobian.jac_Discrete
+open import Sovereign.Algebra.Jacobian.Discrete
   using (Mat2; det2; I2; GF3²; FormalJacDet1; FunctionTableInj;
          formal-passes; formal-not-table)
 
-open import Sovereign.Algebra.Jacobian.jac_GF3
+open import Sovereign.Algebra.Jacobian.GF3
   using (F-gf3; gf3-collision; gf3-not-surj; det-J-formal; det2-I2)
 
 open import Sovereign.Algebra.Jacobian.jac_Pigeonhole

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_PermDet
+-- | Sovereign.Algebra.Jacobian.PermDet
 -- 置换矩阵 det ≢ d0 —— 「结构代理 ⟺ 真行列式」桥的正向
 --
 -- 数学背景:
@@ -20,7 +20,7 @@
 --     给出 n-1 置换矩阵, 归纳闭合; sgn 单位性 (sgn-val ∈ {d1,d11}) 保非零.
 --------------------------------------------------------------------------------
 
-module Sovereign.Algebra.Jacobian.jac_PermDet where
+module Sovereign.Algebra.Jacobian.PermDet where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂; trans; subst)
@@ -35,11 +35,11 @@ open import Relation.Nullary using (Dec; yes; no)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.Duodecimal
   using (Duodec; d0; d1; d2; d3; d4; d5; d6; d7; d8; d9; d10; d11; _+12_; _*12_; neg12)
-open import Sovereign.Algebra.Jacobian.jac_CRTDet
+open import Sovereign.Algebra.Jacobian.CRTDet
   using (Mat; det; punch; minor; sgn; sumD)
-open import Sovereign.Algebra.Jacobian.jac_Discrete using (GF3²)
+open import Sovereign.Algebra.Jacobian.Discrete using (GF3²)
 open import Sovereign.Algebra.Jacobian.jac_Pigeonhole using (encode9; decode9)
-open import Sovereign.Algebra.Jacobian.jac_NMatrix
+open import Sovereign.Algebra.Jacobian.NMatrix
   using (funcTable; toTrit; DetNonzero; NoZeroRow; ColDistinct; hit⇒; ⇐hit)
 
 _↔_ : Set → Set → Set

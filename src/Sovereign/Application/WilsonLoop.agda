@@ -16,7 +16,7 @@ open import Data.Nat using (ℕ)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans)
 
-open import Sovereign.Algebra.Jacobian.jac_GF9Matrix
+open import Sovereign.Algebra.Jacobian.GF9Matrix
   using (GF9; 0gf9; 1gf9; GF9Mat; det2-gf9; det3-gf9; I3-gf9; det2-gf9-I; det3-gf9-I)
 open import Sovereign.Algebra.Holographic.LatticeField
   using (mass-gap-I2)
@@ -95,7 +95,7 @@ joint-mass-gap = (λ p → 1≢0 (trans (sym det2-gf9-I) p))
 --   [2026-09 勘误] 「分解为 3x3/4x4 小分量」是误读: 分量矩阵仍 NxN, 3/4 是环元素数 (jac_CRTDet §3 措辞修正); 一般 N 同态已类型化 (pi3-det/pi4-det/det-crt12), 本行推广表述以 jac_CRTDet 为准.
 -- 不需要 N×N 行列式, 0 postulate.
 
-open import Sovereign.Algebra.Jacobian.jac_CRTDet
+open import Sovereign.Algebra.Jacobian.CRTDet
   using (crt-det-nonzero)
 
 -- CRT 质量间隙: 所有分量 det≠0 ⇒ 全局质量间隙

@@ -4,7 +4,7 @@
 -- 半直积 GL₃(GF(9)) ⋊ Gal(GF(9)/GF(3)) 的结构定义
 -- 0 postulate
 
-module Sovereign.Application.jac_AutT6 where
+module Sovereign.Application.AutT6 where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_)
 open import Data.Fin using (Fin; zero; suc)

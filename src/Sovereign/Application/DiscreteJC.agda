@@ -11,7 +11,7 @@
 --
 -- 包含: 三层雅可比定义, 反例整合, 主定理陈述, 与连续统JC的关系, 强度总结
 
-module Sovereign.Application.jac_DiscreteJC where
+module Sovereign.Application.DiscreteJC where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)
@@ -26,12 +26,12 @@ open import Sovereign.Base.Trit
 --------------------------------------------------------------------------------
 
 -- 从 jac_Discrete 导入 (Mat2, det2, I2, GF3² 是核心基础类型)
-open import Sovereign.Algebra.Jacobian.jac_Discrete
+open import Sovereign.Algebra.Jacobian.Discrete
   using (Mat2; det2; I2; GF3²; FormalJacDet1; FunctionTableInj;
          formal-passes; formal-not-table; F-blind; formal-jac-blind; table-fails)
 
 -- 从 jac_GF3 导入 (GF(3)² 反例, 形式导数/差分算子具体实例)
-open import Sovereign.Algebra.Jacobian.jac_GF3
+open import Sovereign.Algebra.Jacobian.GF3
   using (F-gf3; gf3-collision; gf3-not-surj; det-J-formal; det2-I2;
          JΔ-counter; det-JΔ-counter; J-formal; J-formal≡I;
          Δx-F1-counter; Δy-F1-counter; Δx-F2-counter; Δy-F2-counter;
@@ -49,7 +49,7 @@ open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
   using (Inj2; Surj2; pigeonhole-2)
 
 -- 从 jac_Injectivity 导入 (非奇异→双射 证明链)
-open import Sovereign.Algebra.Jacobian.jac_Injectivity
+open import Sovereign.Algebra.Jacobian.Injectivity
   using (Collision; collision→not-inj; NonSingular; nonsingular→bijective;
          nonsingular→inj→bij; F-gf3-not-inj; F-gf3-not-surj; F-gf3-not-bij)
 
@@ -58,7 +58,7 @@ open import Sovereign.Algebra.Holographic.Conjecture
   using (PointwiseJC; pointwise-I2; inj→surj-GF3²; pointwise-not-surjective)
 
 -- 从 jac_Matrix 导入 (行列式乘法性, 逆矩阵, 秩分类)
-open import Sovereign.Algebra.Jacobian.jac_Matrix
+open import Sovereign.Algebra.Jacobian.Matrix
   using (det-mul; det≠0→invertible; invertible→det≠0; det≠0→rank2; Rank; rank)
 
 --------------------------------------------------------------------------------

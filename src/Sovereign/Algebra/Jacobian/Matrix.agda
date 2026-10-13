@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_Matrix
+-- | Sovereign.Algebra.Jacobian.Matrix
 -- GF(3) 上 2×2 矩阵的完整线性代数理论
 --
 -- 核心原则：
@@ -11,7 +11,7 @@
 --
 -- 包含：乘法逆元、矩阵运算、行列式乘法性、伴随矩阵、逆矩阵、秩分类
 
-module Sovereign.Algebra.Jacobian.jac_Matrix where
+module Sovereign.Algebra.Jacobian.Matrix where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
@@ -23,7 +23,7 @@ open import Sovereign.Base.Trit
         ; ⊕-assoc; ⊕-comm; ⊕-identityˡ; ⊕-identityʳ; ⊕-inverse
         ; ⊗-assoc; ⊗-comm; ⊗-identityˡ; ⊗-identityʳ
         ; ⊗-distribˡ-⊕; ⊗-distribʳ-⊕; ⊗-zeroˡ; ⊗-zeroʳ)
-open import Sovereign.Algebra.Jacobian.jac_Discrete
+open import Sovereign.Algebra.Jacobian.Discrete
 open import Sovereign.Algebra.GF27 using (negate-⊕; negate-⊗)
   using (Mat2; det2; I2; GF3²)
 

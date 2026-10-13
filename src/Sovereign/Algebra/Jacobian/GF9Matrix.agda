@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_GF9Matrix
+-- | Sovereign.Algebra.Jacobian.GF9Matrix
 -- GF(9) 矩阵代数基础设施 — 解锁 BSD/Complexity/LatticeField 三个模块
 --
 -- 核心定义:
@@ -10,7 +10,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Algebra.Jacobian.jac_GF9Matrix where
+module Sovereign.Algebra.Jacobian.GF9Matrix where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin; zero; suc)

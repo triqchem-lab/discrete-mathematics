@@ -87,7 +87,7 @@ import Sovereign.Application.KakeyaMF
 import Sovereign.Application.KakeyaPathology
 
 -- 基础设施
-import Sovereign.Algebra.Jacobian.jac_CRTDet
+import Sovereign.Algebra.Jacobian.CRTDet
 import Sovereign.Algebra.Holographic.PhysicalOntology
 import Sovereign.Algebra.SpiralCycle               -- ⟨2⟩ 六环定理
 import Sovereign.Synthesis.HolographicPi         -- 原子化: 0 postulate, 类型层禁止约分

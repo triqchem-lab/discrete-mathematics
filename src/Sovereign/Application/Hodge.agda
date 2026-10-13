@@ -19,7 +19,7 @@ open import Data.Fin using (Fin; zero; suc)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
-open import Sovereign.Application.jac_Topology
+open import Sovereign.Application.Topology
   using (GF3Vec; boundary3; rank∂; nullity∂; dimH0; dimH1)
 
 --------------------------------------------------------------------------------

@@ -32,7 +32,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 -- jac_NMatrix: detNonzero↔bij (0 postulate)
 -- jac_CRTDet:   crt-det-I₂, crt-det-nonzero (0 postulate)
 
-open import Sovereign.Algebra.Jacobian.jac_CRTDet
+open import Sovereign.Algebra.Jacobian.CRTDet
   using (crt-det-I₂; crt-det-nonzero)
 
 -- §2. 无信息丢失定理 ------------------------------------------------

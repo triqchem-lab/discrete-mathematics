@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_Injectivity
+-- | Sovereign.Algebra.Jacobian.Injectivity
 -- 函数表矩阵非奇异 ⟹ F 单射 ⟹ F 双射 的完整证明链
 --
 -- 核心原则:
@@ -11,7 +11,7 @@
 --
 -- 包含: 碰撞概念, 2×2同列→det=0, 核心证明链, 反例验证
 
-module Sovereign.Algebra.Jacobian.jac_Injectivity where
+module Sovereign.Algebra.Jacobian.Injectivity where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)
@@ -24,10 +24,10 @@ open import Sovereign.Base.Trit
 open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
   using (Inj2; Surj2; GF3²; pigeonhole-2)
 
-open import Sovereign.Algebra.Jacobian.jac_Discrete
+open import Sovereign.Algebra.Jacobian.Discrete
   using (Mat2; det2)
 
-open import Sovereign.Algebra.Jacobian.jac_GF3
+open import Sovereign.Algebra.Jacobian.GF3
   using (F-gf3; gf3-collision; gf3-not-surj)
 
 --------------------------------------------------------------------------------

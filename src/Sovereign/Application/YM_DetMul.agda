@@ -20,12 +20,12 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_)
 
-open import Sovereign.Algebra.Jacobian.jac_Discrete
+open import Sovereign.Algebra.Jacobian.Discrete
   using (Mat2; det2; I2)
-open import Sovereign.Algebra.Jacobian.jac_Matrix
+open import Sovereign.Algebra.Jacobian.Matrix
   using (mat-mul; det-mul)
 
-open import Sovereign.Algebra.Jacobian.jac_GF9Matrix
+open import Sovereign.Algebra.Jacobian.GF9Matrix
   using (GF9; 0gf9; 1gf9; det2-gf9; det3-gf9; det4-gf9; I3-gf9; I4-gf9;
          det2-gf9-I; det3-gf9-I; det4-gf9-I)
 

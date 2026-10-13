@@ -3,7 +3,7 @@
 -- | jac_LinearAlgebra — GF(3) 无零因子 + 行列式秩 + 线性无关
 -- 0 postulate
 
-module Sovereign.Algebra.Jacobian.jac_LinearAlgebra where
+module Sovereign.Algebra.Jacobian.LinearAlgebra where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Sum using (_⊎_; inj₁; inj₂)

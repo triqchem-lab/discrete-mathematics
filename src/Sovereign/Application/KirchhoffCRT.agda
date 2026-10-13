@@ -27,7 +27,7 @@ module Sovereign.Application.KirchhoffCRT where
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Sovereign.Algebra.Duodecimal
   using (Duodec; d0; d3; d2; d11; π3; π4; crt12; crt12-roundtrip)
-open import Sovereign.Algebra.Jacobian.jac_CRTDet
+open import Sovereign.Algebra.Jacobian.CRTDet
   using (det2D)
 
 --------------------------------------------------------------------------------

@@ -133,8 +133,8 @@ record FiniteAutGroup : Set₁ where
 --
 -- 0 postulate.
 
-open import Sovereign.Algebra.Jacobian.jac_Discrete using (Mat2)
-open import Sovereign.Algebra.Jacobian.jac_Matrix using (mat-mul; mat-add; mat-scale; mat-mul-scale-l; mat-mul-scale-r; ⊕-swap4)
+open import Sovereign.Algebra.Jacobian.Discrete using (Mat2)
+open import Sovereign.Algebra.Jacobian.Matrix using (mat-mul; mat-add; mat-scale; mat-mul-scale-l; mat-mul-scale-r; ⊕-swap4)
 open import Sovereign.Base.Trit using (Trit; _⊕_; _⊗_; negate)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
@@ -162,7 +162,7 @@ diag-commute = refl
 
 open import Sovereign.Algebra.GF9 using
   (GF9; galoisConjugate; galoisConjugate²; alpha; _*gf9_; _+gf9_)
-open import Sovereign.Algebra.Jacobian.jac_GF9Matrix using
+open import Sovereign.Algebra.Jacobian.GF9Matrix using
   (GF9Mat; I2-gf9; 1gf9; 0gf9; neg-gf9)
 
 -- σ 的矩阵作用 (分量 Frobenius): σ(A)(i,j) = galoisConjugate(A i j)

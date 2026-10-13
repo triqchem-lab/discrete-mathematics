@@ -31,7 +31,7 @@ open import Data.Product using (Σ; _×_; _,_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym)
 open import Sovereign.Base.Trit using (Trit; T₁)
-open import Sovereign.Application.jac_Topology
+open import Sovereign.Application.Topology
   using (V3; zeroV; oneV; ∂₂Δ; ∂₁Δ; face-cycle; ∂₁∂₂-zero)
 
 --------------------------------------------------------------------------------

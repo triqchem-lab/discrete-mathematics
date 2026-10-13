@@ -10,7 +10,7 @@
 --   本模块: 高维可逆性 → CRT 同态投影至 3×3/4×4 局部分量判定。
 --   参见: docs/Kakeya-元诊断-连续统病态vs离散自愈.md §二
 
-module Sovereign.Algebra.Jacobian.jac_CRTDet where
+module Sovereign.Algebra.Jacobian.CRTDet where
 
 open import Data.Nat using (ℕ) renaming (zero to nzero; suc to nsuc)
 open import Data.Fin using (Fin; zero; suc)

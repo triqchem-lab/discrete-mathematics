@@ -26,7 +26,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 -- 以太: 不可压缩的 GF(9) 信息流体, 充满 T⁶ 的每个格点
 
 -- 空间基座
-import Sovereign.Application.jac_AutT6       -- Aut(T⁶/GF(9))
+import Sovereign.Application.AutT6       -- Aut(T⁶/GF(9))
 import Sovereign.Algebra.Holographic.InfoClosure  -- 4320D 信息容量
 
 -- ═══════════════════════════════════════════════════════════
@@ -37,7 +37,7 @@ import Sovereign.Algebra.Holographic.InfoClosure  -- 4320D 信息容量
 -- 质量 = 涡旋中心的 5D 以太密度 = |M_F| 的特征值大小
 
 import Sovereign.Application.Galois      -- σ²=id (心跳)
-import Sovereign.Algebra.Jacobian.jac_GF9Matrix    -- det2/3/4-gf9
+import Sovereign.Algebra.Jacobian.GF9Matrix    -- det2/3/4-gf9
 
 -- ═══════════════════════════════════════════════════════════
 -- 第二本体: 重力 = 5D 密度梯度压力差
@@ -47,7 +47,7 @@ import Sovereign.Algebra.Jacobian.jac_GF9Matrix    -- det2/3/4-gf9
 -- 重力井 = 外围高压 → 中心低压的梯度推力
 -- CRT 分解: 3-分量 (物质) × 4-分量 (场) 的密度耦合
 
-import Sovereign.Algebra.Jacobian.jac_CRTDet       -- CRT 拱顶石
+import Sovereign.Algebra.Jacobian.CRTDet       -- CRT 拱顶石
 
 -- ═══════════════════════════════════════════════════════════
 -- 第三本体: 时间 = 计算延迟
@@ -66,7 +66,7 @@ import Sovereign.Algebra.Jacobian.jac_LieGroup     -- expD (σ 替代 exp)
 -- 光速 = 以太表面张力的局部函数 (非恒定)
 -- 链复形边界 ∂ 描述波前传播
 
-import Sovereign.Application.jac_Topology     -- 边界算子 ∂
+import Sovereign.Application.Topology     -- 边界算子 ∂
 import Sovereign.Application.ChainComplex -- 泛链复形
 
 -- ═══════════════════════════════════════════════════════════
@@ -90,7 +90,7 @@ import Sovereign.Application.Hodge         -- 调和形式 ℋ
 import Sovereign.Application.HodgeTetra    -- S² 驻波
 import Sovereign.Application.TorusHodge    -- T² 驻波
 import Sovereign.Application.KleinHodge    -- Klein 驻波
-import Sovereign.Algebra.Jacobian.jac_NMatrix       -- M_F 全息编码
+import Sovereign.Algebra.Jacobian.NMatrix       -- M_F 全息编码
 
 -- ═══════════════════════════════════════════════════════════
 -- 本体论公理: Frobenius 心跳 = 宇宙第一因
