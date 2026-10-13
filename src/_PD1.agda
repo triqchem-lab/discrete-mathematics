@@ -21,7 +21,7 @@ module _PD1 where
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Relation.Nullary using (¬)
+open import Relation.Nullary using (¬_)
 
 open import Sovereign.Topology.BarceloAHomotopy
   using (DiGraph; Walk; nil; AHomotopy; AH-refl; AH-symm; AH-trans; _++w_; cons; AStep; slide; expand)
