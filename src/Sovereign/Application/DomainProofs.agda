@@ -1,11 +1,11 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.DomainProofs
+-- | Sovereign.Application.DomainProofs
 -- 浅层应用定理：KCL 电流守恒、密码子空间、Trit 全序与格运算
 --
 -- 全部构造性证明，0 postulate，穷举法优先。
 
-module Sovereign.Applied.DomainProofs where
+module Sovereign.Application.DomainProofs where
 
 open import Data.Nat using (ℕ; _*_; _+_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)

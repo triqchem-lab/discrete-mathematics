@@ -19,7 +19,7 @@ module Sovereign.Algebra.FunctionalAnalysisDiscrete where
 --
 -- P1-B 子模块 (待其他 agent 完成后切换):
 --   Sovereign.Analysis.FiniteInnerProduct     — 有限维内积空间
---   Sovereign.Analysis.LinearFunctionalDiscrete — 离散线性泛函
+--   Sovereign.Algebra.LinearFunctionalDiscrete — 离散线性泛函
 --
 -- P0 桥接:
 --   注册 FunctionalAnalysis 的离散载体证据

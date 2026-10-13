@@ -1,5 +1,5 @@
 {-# OPTIONS --cubical --guardedness --rewriting #-}
-module Sovereign.Completeness.CompletenessTheorem where
+module Sovereign.Foundation.CompletenessTheorem where
 
 --------------------------------------------------------------------------------
 -- 完备性元定理 P0 系列 — ∀ 连续概念 ∃ 离散替代

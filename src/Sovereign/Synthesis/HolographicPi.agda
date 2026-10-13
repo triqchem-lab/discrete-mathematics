@@ -44,7 +44,7 @@ open import Agda.Builtin.String using (String)
 
 -- 导入核心模块
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding)
-open import Sovereign.Coupling.ZhonglvPhaseSync using (HOLOGRAPHIC_PERIOD; PrimaryQuotientSpace;
+open import Sovereign.Synthesis.ZhonglvPhaseSync using (HOLOGRAPHIC_PERIOD; PrimaryQuotientSpace;
                                                       HolographicQuotientSpace; PRIMARY_PERIOD)
 open import Sovereign.Coupling.LossGain using (LossGain)
 

@@ -1,12 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coupling.CartanTorsion
+-- | Sovereign.Synthesis.CartanTorsion
 -- 耦合域：嘉当挠场量子物理学的离散复位
 -- 
 -- 本质：主权状态机在 T⁶ 离散环面上平行移动与和乐效应的连续统投影
 -- 离散本源：联络 = 五行干涉，曲率 = 局部陈数贡献，挠率 = 仲吕不交
 
-module Sovereign.Coupling.CartanTorsion where
+module Sovereign.Synthesis.CartanTorsion where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; _≡ᵇ_)
 open import Data.Integer using (ℤ; +_; -[1+_])

@@ -34,7 +34,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; trans; sym)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate; fin3ToTrit)
-open import Sovereign.Analysis.PairEnc using (pairEnc; pairEnc-injective)
+open import Sovereign.Base.PairEnc using (pairEnc; pairEnc-injective)
 open import Sovereign.Synthesis.FinMixedRadix using (enc12; enc12-inj-pointwise; suc≤12)
 open import Sovereign.Foundation.FiniteDynamics using (orbit)
 open import Sovereign.Application.FiniteOrbitObs using (finite-orbit-obs)

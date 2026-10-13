@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | Sovereign.Analysis.VertexAlgebraDiscrete
+-- | Sovereign.Algebra.VertexAlgebraDiscrete
 -- GF(9) 离散顶点代数: char 3 截断使 OPE 模式有限化
 --
 -- 核心洞察: 在特征 3 域上, n! ≡ 0 (n ≥ 3),
@@ -15,7 +15,7 @@
 --
 -- 包含：*V-comm、*V-assoc、unitVec、*V-identityˡ、*V-identityʳ、*V-zeroˡ、*V-zeroʳ、VertexOp、Y、Y-pointwise、vacuum、vacuum-creation、vacuum-zero-op、Y-unit-id
 
-module Sovereign.Analysis.VertexAlgebraDiscrete where
+module Sovereign.Algebra.VertexAlgebraDiscrete where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Fin using (Fin; fromℕ)

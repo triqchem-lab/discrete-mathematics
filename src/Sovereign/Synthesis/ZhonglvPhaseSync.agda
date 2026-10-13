@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coupling.ZhonglvPhaseSync
+-- | Sovereign.Synthesis.ZhonglvPhaseSync
 -- v5.2: 仲吕相位同步（非闭合）
 -- 耦合域：仲吕相位同步——六十律纳甲初级商空间到全息商空间的升维跃迁
 --
@@ -27,7 +27,7 @@
 --     strengthened, and some may later be simplified.
 --------------------------------------------------------------------------------
 
-module Sovereign.Coupling.ZhonglvPhaseSync where
+module Sovereign.Synthesis.ZhonglvPhaseSync where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _/_; _≤_; _<_; _∸_)
 open import Data.Nat.Properties using (m≤m+n; ≤-trans; *-monoˡ-<; <⇒≤)

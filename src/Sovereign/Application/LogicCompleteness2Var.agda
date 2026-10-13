@@ -25,8 +25,8 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
-open import Sovereign.Applied.DomainProofs using (_∧T_; _∨T_)
-open import Sovereign.Applied.CircuitExtended using (Δ₀; Δ₁; Δ₂)
+open import Sovereign.Application.DomainProofs using (_∧T_; _∨T_)
+open import Sovereign.Application.CircuitExtended using (Δ₀; Δ₁; Δ₂)
 
 
 --------------------------------------------------------------------------------

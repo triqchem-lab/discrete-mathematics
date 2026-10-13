@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.CircuitExtended
+-- | Sovereign.Application.CircuitExtended
 -- 应用层：扩展电路理论 (三值逻辑门)
 --
 -- 层级: 应用数学 (电性文明投影)
@@ -17,14 +17,14 @@
 --
 -- 0 postulate, 全部构造性证明, 穷举法优先
 
-module Sovereign.Applied.CircuitExtended where
+module Sovereign.Application.CircuitExtended where
 
 open import Data.Nat using (ℕ; _*_)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; negate; _⊕_)
-open import Sovereign.Applied.DomainProofs using (_∧T_; _∨T_; _≤T_; le-00; le-01; le-02; le-11; le-12; le-22)
+open import Sovereign.Application.DomainProofs using (_∧T_; _∨T_; _≤T_; le-00; le-01; le-02; le-11; le-12; le-22)
 
 --------------------------------------------------------------------------------
 -- 1. 三值逻辑门: AND = min, OR = max

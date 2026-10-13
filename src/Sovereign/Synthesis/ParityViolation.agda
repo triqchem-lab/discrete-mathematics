@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coupling.ParityViolation
+-- | Sovereign.Synthesis.ParityViolation
 -- 耦合域：宇称不守恒——环向缠绕深化引发的手性对偶破缺 (0 postulate, 无洞)
 --
 -- 本质：主权状态机在环向缠绕模 46 深化过程中，五行相克（ω, ω²）导致
@@ -24,7 +24,7 @@
 --   不可证的 ∃ν 存在性否定 → 诚实的抑制形式 (状态相分类);
 --   wuxingBase → wuXingBase 导入名修正。
 
-module Sovereign.Coupling.ParityViolation where
+module Sovereign.Synthesis.ParityViolation where
 
 open import Data.Nat using (ℕ; zero; suc; _≥_; _^_; s≤s)
 open import Data.Integer using (ℤ; +_; -[1+_]; _>_; -<+)

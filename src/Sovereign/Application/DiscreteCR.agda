@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.DiscreteCR
+-- | Sovereign.Application.DiscreteCR
 -- 30/32 复分析补强 — GF(3) 离散拉普拉斯与调和性 (0 postulate)
 --
 -- 连续: f 全纯 ⟹ u = Re f, v = Im f 调和 (Δu = Δv = 0)
@@ -17,7 +17,7 @@
 --
 -- 包含：u、v、Δ、harmonic-u、harmonic-v、n、not-harmonic-n
 
-module Sovereign.Analysis.DiscreteCR where
+module Sovereign.Application.DiscreteCR where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Relation.Nullary using (¬_)

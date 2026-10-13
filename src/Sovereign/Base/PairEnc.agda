@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.PairEnc
+-- | Sovereign.Base.PairEnc
 --
 -- 有限类型对的混合基数编码：Fin 3 × Fin 4 → Fin 12。
 --
@@ -17,7 +17,7 @@
 --
 -- 包含：pairEnc / toℕ-pairEnc / pairEnc-injective
 
-module Sovereign.Analysis.PairEnc where
+module Sovereign.Base.PairEnc where
 
 open import Data.Nat using (ℕ; _+_; _*_; _≤_; _<_; zero; suc; z≤n; s≤s)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

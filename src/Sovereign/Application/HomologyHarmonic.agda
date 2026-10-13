@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.HomologyHarmonic
+-- | Sovereign.Application.HomologyHarmonic
 -- 同调代数与调和分析的浅层定理
 --
 -- MSC 55: 同调截断 — Δ³≡0 意味着高阶同调消失
@@ -22,7 +22,7 @@
 -- 0 postulate — 全部构造性证明, 穷举法优先
 --------------------------------------------------------------------------------
 
-module Sovereign.Applied.HomologyHarmonic where
+module Sovereign.Application.HomologyHarmonic where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Product using (_×_; _,_; Σ)

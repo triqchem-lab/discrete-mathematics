@@ -44,7 +44,7 @@ open import Sovereign.Analysis.FiniteInnerProduct using (
 open import Sovereign.Foundation.FiniteDynamics using (
   orbit; EventuallyPeriodic; orbit-eventually-periodic)
 
-open import Sovereign.Analysis.VertexAlgebraDiscrete using (
+open import Sovereign.Algebra.VertexAlgebraDiscrete using (
   VertexOp; Y; vacuum; _*V_)
 
 --------------------------------------------------------------------------------

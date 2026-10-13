@@ -7,7 +7,7 @@
 --
 -- 包含：gf9-zero、VectorSpace、0⃗₉、basis9、*gf9-zeroˡ、*gf9-zeroʳ、scalar9-zero、+v9-identityˡ、+v9-identityʳ、+gf9-shuffle、inner9、inner9-zeroˡ、inner9-additiveˡ、inner9-homogeneousˡ
 
-module Sovereign.Analysis.LinearFunctionalDiscrete where
+module Sovereign.Algebra.LinearFunctionalDiscrete where
 
 --------------------------------------------------------------------------------
 -- GF(9) 上的线性泛函和 Riesz 表示定理

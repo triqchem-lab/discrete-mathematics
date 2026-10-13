@@ -48,7 +48,7 @@ open import Sovereign.Structology.A4Representations using
   ; A4Irrep; V3; V1; V1'; V1''
   ; dim; dimSqSum)
 
-open import Sovereign.Applied.HomologyHarmonic using
+open import Sovereign.Application.HomologyHarmonic using
   ( charVal; charInner; 12ᵉ
   ; plancherel-V3; plancherel-V1; plancherel-V1'; plancherel-V1''
   ; plancherel-V3-V1; plancherel-V3-V1'; plancherel-V3-V1''

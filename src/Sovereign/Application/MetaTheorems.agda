@@ -18,7 +18,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Relation.Nullary using (¬_)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
-open import Sovereign.Completeness.CompletenessTheorem using (completedCount)
+open import Sovereign.Foundation.CompletenessTheorem using (completedCount)
 open import Sovereign.Algebra.ProjectionDifferential using (GF3Func; Δ; Δ³≡0)
 open import Sovereign.Algebra.GF9 using (GF9; galoisConjugate; galoisConjugate²)
 

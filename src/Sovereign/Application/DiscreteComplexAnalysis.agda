@@ -22,7 +22,7 @@
 -- 依赖:
 --   Sovereign.Base.Trit — GF(3)
 --   Sovereign.Algebra.GF9 — GF(9) 域
---   Sovereign.Analysis.DiscreteCR — 离散拉普拉斯
+--   Sovereign.Application.DiscreteCR — 离散拉普拉斯
 --
 -- 0 postulate — 全部构造性证明
 
@@ -47,7 +47,7 @@ open import Sovereign.Algebra.GF9
          +gf9-comm; +gf9-assoc; +gf9-identityˡ; +gf9-identityʳ;
          *gf9-comm; *gf9-assoc; *gf9-identityˡ; *gf9-identityʳ;
          *gf9-distribˡ-+gf9; *gf9-distribʳ-+gf9)
-open import Sovereign.Analysis.DiscreteCR
+open import Sovereign.Application.DiscreteCR
   using (u; v; Δ; harmonic-u; harmonic-v; n; not-harmonic-n)
 
 --------------------------------------------------------------------------------

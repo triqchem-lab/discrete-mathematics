@@ -7,7 +7,7 @@
 --
 -- 包含：normReal、maxT、normSup、data、≤t-refl、≤t-trans、≤t-antisym、≤t-total、maxT-ubˡ、maxT-ubʳ、galoisNorm-zero、galoisNorm-of-zero、maxT-zero、normSup-zero
 
-module Sovereign.Analysis.NormDiscrete where
+module Sovereign.Algebra.NormDiscrete where
 
 --------------------------------------------------------------------------------
 -- 离散范数理论 — GF(9)ⁿ 上的范数结构
@@ -25,7 +25,7 @@ module Sovereign.Analysis.NormDiscrete where
 --   ④ 所有范数诱导相同离散拓扑
 --
 -- 依赖:
---   Sovereign.Analysis.LinearFunctionalDiscrete — GF(9) 向量空间/内积
+--   Sovereign.Algebra.LinearFunctionalDiscrete — GF(9) 向量空间/内积
 --   Sovereign.Algebra.GF9 — GF(9) 域运算和 Galois 范数
 --
 -- 0 postulate — 全部构造性证明
@@ -56,7 +56,7 @@ open import Sovereign.Algebra.GF9 using (
   *gf9-distribˡ-+gf9; *gf9-distribʳ-+gf9;
   negate-⊗; negate-⊗-comm; negate-⊗-negate)
 
-open import Sovereign.Analysis.LinearFunctionalDiscrete using (
+open import Sovereign.Algebra.LinearFunctionalDiscrete using (
   VectorSpace; gf9-zero; _+v9_; _·v9_; 0⃗₉; inner9;
   *gf9-zeroˡ; *gf9-zeroʳ; scalar9-zero;
   +v9-identityˡ; +v9-identityʳ)

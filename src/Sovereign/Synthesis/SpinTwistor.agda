@@ -34,11 +34,11 @@ open import Relation.Nullary using (¬_)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; negate)
 open import Sovereign.Algebra.GF9 using (GF9; alpha; galoisConjugate; galoisConjugate²)
-open import Sovereign.Coupling.CartanTorsion
+open import Sovereign.Synthesis.CartanTorsion
   using (DiscreteComplex; _+ᵢ_; _+ᶜ_; conjugate)
 open import Sovereign.Synthesis.Zhonglv using (SovereignState)
 open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi)
-open import Sovereign.Coupling.ParityViolation
+open import Sovereign.Synthesis.ParityViolation
   using (ToroidalPower; mkPower; ChiralSymmetry; SingleChiral; PairedConserved;
          BreakingStarted; BreakingObvious; BreakingComplete; parityStatus)
 open import Sovereign.MetaStructure.WuXing using (Chirality)

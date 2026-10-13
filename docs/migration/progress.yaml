@@ -29,39 +29,39 @@ move_face:
   archive_frozen: 20
   top_level_files: 3
   migration_objects: 471
-  moved: 400
-  pending: 71
-  progress_pct: 84.9
+  moved: 412
+  pending: 59
+  progress_pct: 87.5
 
-# 已完成：源目录已 100% 清空（214 件）
+# 已完成：源目录已 100% 清空（254 件）
 done_dirs:
   - {dir: Problem,  moved: 117, pending: 0}
   - {dir: Physics,  moved: 63, pending: 0}
+  - {dir: Applied,  moved: 38, pending: 0}
   - {dir: Trust,  moved: 9, pending: 0}
   - {dir: Coding,  moved: 7, pending: 0}
   - {dir: Constitution,  moved: 5, pending: 0}
   - {dir: PDE,  moved: 4, pending: 0}
   - {dir: Arithmetic,  moved: 3, pending: 0}
+  - {dir: Completeness,  moved: 2, pending: 0}
   - {dir: Verify,  moved: 2, pending: 0}
   - {dir: AI,  moved: 1, pending: 0}
   - {dir: Engine,  moved: 1, pending: 0}
   - {dir: RootMath,  moved: 1, pending: 0}
   - {dir: MagicSquareM4,  moved: 1, pending: 0}
 
-# 待办：按待迁件数降序（71 件）
+# 待办：按待迁件数降序（59 件）
 pending_dirs:
   - {dir: Structology, moved: 49, pending: 21, target: [Synthesis]}
   - {dir: Topology, moved: 30, pending: 20, target: [Application, Synthesis]}
-  - {dir: Analysis, moved: 25, pending: 6, target: [Algebra, Application, Base, Foundation, Infrastructure, Synthesis]}
-  - {dir: Coupling, moved: 6, pending: 4, target: [Synthesis]}
-  - {dir: Applied, moved: 35, pending: 3, target: [Application]}
   - {dir: Format, moved: 4, pending: 3, target: [Synthesis]}
   - {dir: Geometry, moved: 11, pending: 3, target: [Application]}
   - {dir: HoTT, moved: 21, pending: 3, target: [Synthesis]}
   - {dir: MetaStructure, moved: 0, pending: 2, target: [Base]}
   - {dir: Quantum, moved: 3, pending: 2, target: [Application]}
+  - {dir: Analysis, moved: 30, pending: 1, target: [Algebra, Application, Base, Foundation, Infrastructure, Synthesis]}
   - {dir: Base, moved: 0, pending: 1, target: [Base, Infrastructure]}
-  - {dir: Completeness, moved: 1, pending: 1, target: [Foundation]}
+  - {dir: Coupling, moved: 9, pending: 1, target: [Synthesis]}
   - {dir: Density, moved: 1, pending: 1, target: [Application]}
   - {dir: Diagnosis, moved: 0, pending: 1, target: [Foundation]}
 
@@ -101,3 +101,4 @@ waves:
   - {wave: "PL",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "PM",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "PN",       date: "2026-10-13", moved: 5, note: "续迁批（叶件/低涟漪，断链0）"}
+  - {wave: "QA",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}
