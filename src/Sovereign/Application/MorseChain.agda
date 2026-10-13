@@ -28,7 +28,7 @@ open import Sovereign.Application.FormanMinimal
 open import Sovereign.Application.FormanPerfectField using (FaceRel)
 open import Sovereign.Application.MorseCoeffRoute using (triVFᶜ)
 open import Sovereign.Application.FreeAbBoundary using (C₀; C₁; C₂)
-open import Sovereign.Topology.MorseCriticalHomology using (C₀ᶜ; C₁ᶜ)
+open import Sovereign.Application.MorseCriticalHomology using (C₀ᶜ; C₁ᶜ)
 
 --------------------------------------------------------------------------------
 -- §1. IsCritical 实例化（triVF 场 K₃ Sx 载体）

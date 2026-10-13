@@ -25,7 +25,7 @@ open import Relation.Binary.PropositionalEquality
 
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
-open import Sovereign.Topology.MorseCriticalHomology using (∂₁ᶜ; C₀ᶜ; C₁ᶜ)
+open import Sovereign.Application.MorseCriticalHomology using (∂₁ᶜ; C₀ᶜ; C₁ᶜ)
 open import Sovereign.Algebra.FreeAb using (zeroᶠ)
 open import Sovereign.Algebra.LiftCriterion
   using (NonZero₃; ⊗-cancel)

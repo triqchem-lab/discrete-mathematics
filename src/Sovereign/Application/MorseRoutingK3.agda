@@ -26,7 +26,7 @@ open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
-open import Sovereign.Topology.MorseCriticalHomology using (∂₁ᶜ; C₁ᶜ; C₀ᶜ)
+open import Sovereign.Application.MorseCriticalHomology using (∂₁ᶜ; C₁ᶜ; C₀ᶜ)
 
 --------------------------------------------------------------------------------
 -- §1. 生成元与路径系数（GF(3) 逐点计算，全部字面量闭合）

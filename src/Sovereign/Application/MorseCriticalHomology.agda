@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseCriticalHomology
+-- | Sovereign.Application.MorseCriticalHomology
 -- 任务书第五层·5.1 推进：非完美场临界复形同调实例（Morse 同调定理的
 --   第一个非平凡实例——超越完美场的平凡点复形）
 --
@@ -25,7 +25,7 @@
 --   （注：外部建议的维数指标 C₂=⟨e₂₀⟩ 系笔误，本模块用标准指标。）
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseCriticalHomology where
+module Sovereign.Application.MorseCriticalHomology where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Nat using (ℕ; zero; suc; _∸_)
