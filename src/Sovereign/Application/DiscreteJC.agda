@@ -45,7 +45,7 @@ open import Sovereign.Application.FrobeniusBlind
          gf9-add; gf9-neg; π₂₉; shift9)
 
 -- 从 jac_Pigeonhole 导入 (鸽巢原理, 单射/满射定义)
-open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
+open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective
   using (Inj2; Surj2; pigeonhole-2)
 
 -- 从 jac_Injectivity 导入 (非奇异→双射 证明链)

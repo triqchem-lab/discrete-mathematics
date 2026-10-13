@@ -38,7 +38,7 @@ open import Sovereign.Algebra.Duodecimal
 open import Sovereign.Algebra.Jacobian.CRTDet
   using (Mat; det; punch; minor; sgn; sumD)
 open import Sovereign.Algebra.Jacobian.Discrete using (GF3²)
-open import Sovereign.Algebra.Jacobian.jac_Pigeonhole using (encode9; decode9)
+open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective using (encode9; decode9)
 open import Sovereign.Algebra.Jacobian.NMatrix
   using (funcTable; toTrit; DetNonzero; NoZeroRow; ColDistinct; hit⇒; ⇐hit)
 

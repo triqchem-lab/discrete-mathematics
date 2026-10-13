@@ -21,7 +21,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
 
-open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
+open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective
   using (Inj2; Surj2; GF3²; pigeonhole-2)
 
 open import Sovereign.Algebra.Jacobian.Discrete

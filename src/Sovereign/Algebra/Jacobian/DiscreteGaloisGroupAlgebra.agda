@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_LieGroup
+-- | Sovereign.Algebra.Jacobian.DiscreteGaloisGroupAlgebra
 -- 离散 Frobenius-Galois 群代数 — 从连续李群到有限自同构群
 --
 -- 核心定理:
@@ -12,7 +12,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Algebra.Jacobian.jac_LieGroup where
+module Sovereign.Algebra.Jacobian.DiscreteGaloisGroupAlgebra where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Data.Fin using (Fin; zero; suc)

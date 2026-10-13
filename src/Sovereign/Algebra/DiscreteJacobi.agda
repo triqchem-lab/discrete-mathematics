@@ -14,7 +14,7 @@ module Sovereign.Algebra.DiscreteJacobi where
 open import Data.Product using (_×_; _,_; Σ)
 
 open import Sovereign.Algebra.Jacobian.Discrete using (GF3²)
-open import Sovereign.Algebra.Jacobian.jac_Pigeonhole using (Inj2; Surj2; pigeonhole-2)
+open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective using (Inj2; Surj2; pigeonhole-2)
 open import Sovereign.Algebra.Jacobian.NMatrix using (funcTable; DetNonzero; detNonzero↔bij)
 
 -- 主定理: det(M_F) ≠ 0 ⟺ F 双射

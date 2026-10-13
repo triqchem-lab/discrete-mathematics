@@ -47,7 +47,7 @@ open Finite
 -- §2. Fin 3 版完整闭合（jac_Pigeonhole 导出）
 --------------------------------------------------------------------------------
 
-open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
+open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective
   using (pigeonhole-1)
 
 trit-dedekind : DedekindFinite Trit

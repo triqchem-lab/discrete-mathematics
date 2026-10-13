@@ -27,7 +27,7 @@ open import Sovereign.Base.Trit
 
 open import Sovereign.Algebra.Jacobian.Discrete
   using (GF3²)
-open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
+open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective
   using (Inj2; Surj2; pigeonhole-2; encode9; decode9; encode9-injective; decode9-injective;
           decode9-encode9; encode9-decode9)
 open import Sovereign.Algebra.Jacobian.Injectivity

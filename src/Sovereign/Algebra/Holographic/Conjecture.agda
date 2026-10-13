@@ -24,7 +24,7 @@ open import Sovereign.Algebra.Jacobian.Discrete
 open import Sovereign.Algebra.Jacobian.GF3
   using (F-gf3; gf3-collision; gf3-not-surj; det-J-formal; det2-I2)
 
-open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
+open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective
   using (Inj2; Surj2; pigeonhole-2)
 
 --------------------------------------------------------------------------------

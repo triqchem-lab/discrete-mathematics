@@ -37,7 +37,7 @@ open import Sovereign.Algebra.GF9 using (
   galoisConjugate; galoisConjugate²;
   lemma-frobenius-multiplicative)
 
-open import Sovereign.Algebra.Jacobian.jac_Pigeonhole using (
+open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective using (
   GF3²; encode9; decode9;
   encode9-decode9; decode9-encode9;
   encode9-injective; decode9-injective;

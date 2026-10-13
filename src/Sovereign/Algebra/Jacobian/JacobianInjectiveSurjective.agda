@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.jac_Pigeonhole
+-- | Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective
 -- 鸽巢原理: GF(3)¹ 上 单射 ⟹ 满射
 -- 完全构造性证明, 0 postulate
 --
@@ -11,7 +11,7 @@
 --   本模块将雅可比逐点条件还原为函数表矩阵的列互异与行列式非零。
 --   参见: docs/Kakeya-元诊断-连续统病态vs离散自愈.md §二
 
-module Sovereign.Algebra.Jacobian.jac_Pigeonhole where
+module Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)

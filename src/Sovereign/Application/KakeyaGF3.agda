@@ -12,7 +12,7 @@
 --
 -- 复用:
 --   Sovereign.Base.Trit — GF(3) 底层
---   Sovereign.Algebra.Jacobian.jac_Pigeonhole — 鸽巢原理
+--   Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective — 鸽巢原理
 --
 -- 0 postulate.
 

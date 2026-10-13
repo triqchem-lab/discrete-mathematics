@@ -62,7 +62,7 @@ import Sovereign.Application.PvsNP_Conjecture -- 形式猜想
 -- ═══════════════════════════════════════════════════════════
 -- 三大闭包 + 外部定理
 -- ═══════════════════════════════════════════════════════════
-import Sovereign.Algebra.Jacobian.jac_Pigeonhole     -- 组合
+import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective     -- 组合
 import Sovereign.Application.AutT6           -- 群论
 import Sovereign.Algebra.Holographic.InfoClosure     -- 信息论
 import Sovereign.Application.WeilRH          -- Weil 独立形式化

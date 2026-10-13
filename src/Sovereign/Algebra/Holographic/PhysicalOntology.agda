@@ -57,7 +57,7 @@ import Sovereign.Algebra.Jacobian.CRTDet       -- CRT 拱顶石
 -- 低密度区: M_F 简单 → σ 迭代快 → 宏观时间快
 -- 引力时间膨胀 = 局部以太密度的计算复杂性差异
 
-import Sovereign.Algebra.Jacobian.jac_LieGroup     -- expD (σ 替代 exp)
+import Sovereign.Algebra.Jacobian.DiscreteGaloisGroupAlgebra     -- expD (σ 替代 exp)
 
 -- ═══════════════════════════════════════════════════════════
 -- 第四本体: 光 = 表面张力波

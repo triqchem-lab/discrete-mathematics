@@ -66,7 +66,7 @@ pigeonhole-suc {n} f = pigeonhole-neg (n<1+n n) f
 --   已在 InjSurj.pigeonhole-trit 中完整闭合
 --------------------------------------------------------------------------------
 
-open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
+open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective
   using (pigeonhole-1)
 
 -- Trit 版：单射 ⟹ 满射

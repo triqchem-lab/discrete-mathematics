@@ -23,7 +23,7 @@ open import Sovereign.Base.Trit
 
 open import Sovereign.Algebra.Jacobian.Discrete
   using (GF3²)
-open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
+open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective
   using (encode9; decode9; decode9-encode9; encode9-decode9)
 open import Sovereign.Algebra.Jacobian.NMatrix
   using (funcTable; DetNonzero; detNonzero↔bij)

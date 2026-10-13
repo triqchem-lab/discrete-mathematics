@@ -57,7 +57,7 @@ open import Sovereign.Application.FrobeniusBlind
   using (GF9; GF9²; F-frob; σ₉; α₉; frob-3to1; frob-collision-1; frob-collision-2;
          Δy-F2-const; Δy-F2-at-00; σ-shift)
 
-open import Sovereign.Algebra.Jacobian.jac_Pigeonhole
+open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective
   using (GF3²; Inj2; Surj2; pigeonhole-2; pigeonhole-1;
          encode9; decode9; encode9-injective; decode9-injective;
          compress; expand; expand∘compress)
