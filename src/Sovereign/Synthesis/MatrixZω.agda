@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.MatrixZω
+-- | Sovereign.Synthesis.MatrixZω
 -- Z[ω] 上的最小矩阵库 — A₄ 三维表示 ρ₃ 构造的基础设施 (0 postulate)
 --
 -- 矩阵用 Vec (Vec Zω m) n 表示 (n 行 m 列), 提供:
 --   dot (向量内积), mulMat (矩阵乘法), trace (迹)。
 -- 全部递归/定义展开, 无 postulate。
 
-module Sovereign.Structology.MatrixZω where
+module Sovereign.Synthesis.MatrixZω where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero)

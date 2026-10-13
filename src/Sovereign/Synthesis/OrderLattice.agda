@@ -4,7 +4,7 @@
 -- GF(3) 上的偏序与格: 有限集上所有序关系可穷举.
 -- 0 postulate.
 
-module Sovereign.Structology.OrderLattice where
+module Sovereign.Synthesis.OrderLattice where
 
 open import Data.Nat using (ℕ)
 open import Data.Product using (_×_; _,_)

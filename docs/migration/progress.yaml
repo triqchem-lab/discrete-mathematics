@@ -29,9 +29,9 @@ move_face:
   archive_frozen: 20
   top_level_files: 3
   migration_objects: 471
-  moved: 347
-  pending: 124
-  progress_pct: 73.7
+  moved: 359
+  pending: 112
+  progress_pct: 76.2
 
 # 已完成：源目录已 100% 清空（214 件）
 done_dirs:
@@ -48,10 +48,10 @@ done_dirs:
   - {dir: RootMath,  moved: 1, pending: 0}
   - {dir: MagicSquareM4,  moved: 1, pending: 0}
 
-# 待办：按待迁件数降序（124 件）
+# 待办：按待迁件数降序（112 件）
 pending_dirs:
-  - {dir: Structology, moved: 23, pending: 47, target: [Synthesis]}
   - {dir: Topology, moved: 3, pending: 47, target: [Application, Synthesis]}
+  - {dir: Structology, moved: 35, pending: 35, target: [Synthesis]}
   - {dir: Analysis, moved: 25, pending: 6, target: [Algebra, Application, Base, Foundation, Infrastructure, Synthesis]}
   - {dir: Coupling, moved: 6, pending: 4, target: [Synthesis]}
   - {dir: Applied, moved: 35, pending: 3, target: [Application]}
@@ -96,3 +96,4 @@ waves:
   - {wave: "PG",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "PH",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "PI",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}
+  - {wave: "PJ",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}

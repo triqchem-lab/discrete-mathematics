@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.GF9AffineMagicSquare
+-- | Sovereign.Synthesis.GF9AffineMagicSquare
 -- GF(9) 幻方链推广: a≠b 判据在特征 3 的形态 (0 postulate)
 --
 -- 【特征分离】(对照 GF4AffineMagicSquare 的特征 2 统一判据)
@@ -21,7 +21,7 @@
 -- 【命名层锚点】三进制「矢量对称幻方」实例: L_α/L_2α 两环同步旋转,
 --   完全闭合是动态过程的不变量 (本体定义见 GF4AffineMagicSquare 头注释)。
 
-module Sovereign.Structology.GF9AffineMagicSquare where
+module Sovereign.Synthesis.GF9AffineMagicSquare where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Vec using (Vec; []; _∷_)

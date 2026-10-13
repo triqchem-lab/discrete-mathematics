@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.MagicSquare144Partition
+-- | Sovereign.Synthesis.MagicSquare144Partition
 -- 本源结构线 S-P3：144 阶幻方 I_h/Merkaba 分区标注
 --
 -- 复用 IhDecomposition 的分解树和 MagicSquare144 的容器定义。
 -- 目标：将 144 胞腔的 I_h(120)/Merkaba(24) 分区形式化。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Structology.MagicSquare144Partition where
+module Sovereign.Synthesis.MagicSquare144Partition where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

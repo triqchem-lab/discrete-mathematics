@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.Lattice
+-- | Sovereign.Synthesis.Lattice
 -- 结构学：长度格点序列 (十二律)
 --
 -- 核心概念：
@@ -11,7 +11,7 @@
 -- "黄钟归一化长度格点 81" ... "仲吕长度格点 30"
 -- "十二律 LCM 余数序列"
 
-module Sovereign.Structology.Lattice where
+module Sovereign.Synthesis.Lattice where
 
 open import Data.Nat using (ℕ; _+_; _*_; _<_)
 open import Data.Vec.Base using (Vec; []; _∷_; lookup; length)

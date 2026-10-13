@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.HolographicSpace
+-- | Sovereign.Synthesis.HolographicSpace
 -- 全息态与基模 — 信息论闭包的类型基础设施
 --
 -- 核心原则:
@@ -14,7 +14,7 @@
 --
 -- 0 postulate — 全部构造性证明
 
-module Sovereign.Structology.HolographicSpace where
+module Sovereign.Synthesis.HolographicSpace where
 
 open import Agda.Builtin.Equality using (_≡_; refl)
 

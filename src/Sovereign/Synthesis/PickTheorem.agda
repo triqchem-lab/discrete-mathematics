@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.PickTheorem
+-- | Sovereign.Synthesis.PickTheorem
 -- 52 离散几何补强 — Pick 定理的格三角形见证 (0 postulate)
 --
 -- 三角形 (0,0), (4,0), (0,4):
@@ -18,7 +18,7 @@
 --
 -- 包含: boundary-points、interior-points、triangle-area、pick-identity
 
-module Sovereign.Structology.PickTheorem where
+module Sovereign.Synthesis.PickTheorem where
 
 open import Data.Nat using (ℕ; _+_; _∸_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

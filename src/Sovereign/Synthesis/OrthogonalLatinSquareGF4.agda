@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.OrthogonalLatinSquareGF4
+-- | Sovereign.Synthesis.OrthogonalLatinSquareGF4
 -- GF(4) 域公式 → 正交拉丁方 → 半幻方 (0 postulate)
 --
 -- 域生成: L1(i,j) = i + j,  L2(i,j) = α·i + j  (GF(4) 加法/乘法)
@@ -12,7 +12,7 @@
 -- 给出完全幻方 (对角也 = 34)。故 genL1 ≢ L1, 之前「genL1-eq-L1 = refl」的假设错误。
 -- 本模块证明 GF(4) 域论链「域 → 正交拉丁方 → 半幻方」, 与 M₄ 的完全幻方互补。
 
-module Sovereign.Structology.OrthogonalLatinSquareGF4 where
+module Sovereign.Synthesis.OrthogonalLatinSquareGF4 where
 
 open import Data.Nat using (ℕ; _+_; _*_; _≟_)
 open import Data.Fin using (Fin; zero; suc; toℕ)

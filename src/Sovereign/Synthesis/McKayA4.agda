@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.McKayA4
+-- | Sovereign.Synthesis.McKayA4
 -- P3.2：McKay 对应的 A₄ 实例——A₄ 不可约表示 ↔ D₄ Dynkin 图
 --
 -- 任务书 8.1：McKay 对应（1980）
@@ -11,7 +11,7 @@
 -- 本模块：声明 McKay 对应的 A₄ 实例（4 个不可约表示 ↔ D₄ 的 4 个顶点）
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Structology.McKayA4 where
+module Sovereign.Synthesis.McKayA4 where
 
 open import Data.Nat using (ℕ; _*_; _+_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

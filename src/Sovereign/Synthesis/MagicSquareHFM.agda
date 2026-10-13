@@ -6,7 +6,7 @@
 -- 【术语边界】本模块「幻方」= 数学数字幻方（行列对角线和相等）。
 -- 非卢先生「矢量方向/变量计数」幻方。辨析见 docs/cross-level/magic-square-terminology.md
 
--- | Sovereign.Structology.MagicSquareHFM
+-- | Sovereign.Synthesis.MagicSquareHFM
 -- M4 幻方常数的 HFM 交叉验证
 
 
@@ -18,7 +18,7 @@
 --
 -- 包含: row0、row0-ok、row1、row1-ok、row2、row2-ok、row3、row3-ok、col0、col0-ok、col1、col1-ok、col2、col2-ok
 
-module Sovereign.Structology.MagicSquareHFM where
+module Sovereign.Synthesis.MagicSquareHFM where
 
 open import Data.Nat using (ℕ; _+_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

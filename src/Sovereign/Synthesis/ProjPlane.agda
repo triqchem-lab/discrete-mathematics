@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.ProjPlane
+-- | Sovereign.Synthesis.ProjPlane
 -- 51 几何补强 — 射影平面 PG(2,3) (0 postulate)
 --
 -- PG(2,3) (GF(3) 上的射影平面): 13 点, 13 线, 每线 4 点, 每点过 4 线。
@@ -17,7 +17,7 @@
 --
 -- 包含: pg-points、pg-lines、incidence-count、duality、total-incidence、line-at-infinity
 
-module Sovereign.Structology.ProjPlane where
+module Sovereign.Synthesis.ProjPlane where
 
 open import Data.Nat using (ℕ; _*_; _+_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

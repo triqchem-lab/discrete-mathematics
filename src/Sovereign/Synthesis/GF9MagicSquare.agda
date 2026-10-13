@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.GF9MagicSquare
+-- | Sovereign.Synthesis.GF9MagicSquare
 -- GF(9) = GF(3)[α]/(α²+1) 正交拉丁方 → 9 阶幻方 (Euler 构造, 0 postulate)
 --
 -- 【术语边界】本模块「幻方」= 数学数字幻方（行列对角线和相等，幻常数 369）。
@@ -13,7 +13,7 @@
 -- 拉丁性 ⟹ 行/列和 = 幻常数; 正交性 ⟹ 81 元互异 = {1..81} (正规幻方)。
 -- 对应 Rust sov-validation/ternary_magic.rs 的数值核验。
 
-module Sovereign.Structology.GF9MagicSquare where
+module Sovereign.Synthesis.GF9MagicSquare where
 
 open import Data.Nat using (ℕ; _+_; _*_; _≟_)
 open import Data.Fin using (Fin; zero; suc)
