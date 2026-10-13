@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Constitution.WindingAsymmetry
+-- | Sovereign.Foundation.WindingAsymmetry
 -- 宪法：宇宙非对称性——源于缠绕数与泛音列公理
 -- 
 -- 核心论断：
@@ -15,7 +15,7 @@
 --   2. 禁浮点/禁代数污染；0 postulate 目标
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Constitution.WindingAsymmetry where
+module Sovereign.Foundation.WindingAsymmetry where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _/_; _≤_; _≥_; _∸_; NonZero; ≢-nonZero; nonZero; s≤s; z≤n)
 open import Data.Nat.DivMod using (m%n<n; [m+kn]%n≡m%n)

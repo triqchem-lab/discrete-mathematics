@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Arithmetic.Untrusted
+-- | Sovereign.Base.Untrusted
 -- 隔离层：集中管理未信任的外部算术引理 (Data.Nat.*)
 --
 -- 宪法原则：
@@ -13,7 +13,7 @@
 --   2. 核心宪法模块禁止直引外部标准库
 --   3. 阶段 2 以 RootMath.Arithmetic 高维几何重证替换
 -- 包含：Data.Nat.Properties / Data.Nat.DivMod 受控重导出（+-mod / m*n%m≡0 / mod-< 等）
-module Sovereign.Arithmetic.Untrusted where
+module Sovereign.Base.Untrusted where
 
 -- ⚠️ UNTRUSTED: 基于连续统算术，需在高维几何中重新证明
 -- 包含：模运算分配律 (+-mod), 乘法模零律 (m*n%m≡0), 模小于除数 (mod-<) 等

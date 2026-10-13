@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.ProbThermo
+-- | Sovereign.Application.ProbThermo
 -- 应用层： 概率论与热力学的浅层定理 (GF(3) / Burnside 版)
 --
 -- 层级: 应用数学 (电性/磁性文明投影)
@@ -15,7 +15,7 @@
 --
 -- 0 postulate, 全部构造性证明, 穷举法优先
 
-module Sovereign.Applied.ProbThermo where
+module Sovereign.Application.ProbThermo where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _<_; _≤_; s≤s; z≤n)
 open import Data.Product using (_×_; _,_; ∃; ∃-syntax)

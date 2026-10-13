@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coding.BCHGF9
+-- | Sovereign.Synthesis.BCHGF9
 -- GF(9) 上的 [8,6,3] BCH 码: 最小距离界 + 系统编码 + 单错纠错 (P1-2, wiki 94B)
 --
 -- 数学背景:
@@ -27,7 +27,7 @@
 --
 -- 0 postulate。
 
-module Sovereign.Coding.BCHGF9 where
+module Sovereign.Synthesis.BCHGF9 where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _%_; _<_; _≤_; _≟_; s≤s)
 open import Data.Nat.Properties

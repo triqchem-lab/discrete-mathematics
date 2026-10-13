@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Constitution.DecisionSoundness
+-- | Sovereign.Foundation.DecisionSoundness
 --
 -- 宪法：离散判定层的**可靠性边界** —— dype 判定引擎修复的 Agda 依据。
 --
@@ -30,7 +30,7 @@
 --   2. 禁浮点/禁代数污染；0 postulate 目标
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Constitution.DecisionSoundness where
+module Sovereign.Foundation.DecisionSoundness where
 
 open import Data.Bool using (Bool; true; false)
 open import Data.Empty using (⊥)

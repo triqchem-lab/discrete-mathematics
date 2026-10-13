@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Constitution.GroupTheoryRedLight
+-- | Sovereign.Foundation.GroupTheoryRedLight
 -- 群论红灯审查 — 六大连续统缺陷的离散修复形式化 (0 postulate)
 --
 -- 对应 docs/群论红灯审查-离散全息修复.md 的修正版映射表。
@@ -18,7 +18,7 @@
 --   2. 禁浮点/禁代数污染；0 postulate 目标
 --
 -- 包含：a4-order、ih-order、d4-order、gl2-order
-module Sovereign.Constitution.GroupTheoryRedLight where
+module Sovereign.Foundation.GroupTheoryRedLight where
 
 open import Data.Nat using (ℕ; _*_; _+_)
 open import Data.Product using (_×_; _,_; Σ)

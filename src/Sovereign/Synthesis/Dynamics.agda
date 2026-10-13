@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Coupling.Dynamics
+-- | Sovereign.Synthesis.Dynamics
 -- 耦合域动力学：高 4 位/低 5 位双通道状态更新（十二律相位与幅度分量）
 --
 -- 核心原则：
@@ -11,7 +11,7 @@
 --      toℕ/(if 分支)/(返回型) 各面全部自洽。
 -- 包含：updateHigh4/updateLow5（通道更新）、step（单步）、evolveN（n 步迭代）。
 
-module Sovereign.Coupling.Dynamics where
+module Sovereign.Synthesis.Dynamics where
 
 open import Data.Nat using (ℕ; suc; _+_; _*_; _<_; _≥_) renaming (zero to zéro)
 open import Data.Nat.Base using (_≡ᵇ_)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Arithmetic.MobiusPhi
+-- | Sovereign.Base.MobiusPhi
 -- 11M 解析数论补强 — Möbius 函数与 Euler φ（12 的除数格上）
 --
 -- 数学背景：乘性数论的离散载体 12 = 2²·3，除数格 {1,2,3,4,6,12}：
@@ -15,7 +15,7 @@
 --
 -- 包含：mu-1..mu-12（Möbius 值表）· mobius-sum（反演 Σ=0）· phi-12（φ(12)=4 与 V₄ 一致）
 
-module Sovereign.Arithmetic.MobiusPhi where
+module Sovereign.Base.MobiusPhi where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

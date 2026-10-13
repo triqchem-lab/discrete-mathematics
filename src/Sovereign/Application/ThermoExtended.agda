@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.ThermoExtended
+-- | Sovereign.Application.ThermoExtended
 -- 应用层：扩展热力学 — 配分函数与轨道分解
 --
 -- 数学背景：Burnside 引理：GF(9)³ 在 (C₃×C₂) 作用下轨道数
@@ -15,7 +15,7 @@
 --
 -- 包含：partition-function-14/partition-decomposition（配分函数）· orbit-decomposition-729/lattice-total/free-orbit-size（轨道分解核对）
 
-module Sovereign.Applied.ThermoExtended where
+module Sovereign.Application.ThermoExtended where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coding.HammingMetric
+-- | Sovereign.Synthesis.HammingMetric
 -- Hamming 距离的构造性形式化——编码理论度量公理的 0-postulate 证明
 --
 -- 核心原则:
@@ -25,7 +25,7 @@
 --   3. 布尔面 bool 为逐位比较的底层，pointwise 提升为向量级。
 -- 包含：bool/Word 载体、card（相异计数）、pointwise（逐位提升）、hamming（距离主件）。
 
-module Sovereign.Coding.HammingMetric where
+module Sovereign.Synthesis.HammingMetric where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
 open import Data.Nat.Properties using (+-comm; +-assoc; +-identityʳ; ≤-refl; ≤-trans; +-mono-≤; m≤n⇒m≤1+n; m+n≡0⇒m≡0; m+n≡0⇒n≡0)

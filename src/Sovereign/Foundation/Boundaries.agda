@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Constitution.Boundaries
+-- | Sovereign.Foundation.Boundaries
 -- 宪法：范畴边界、合法转换、非法封禁
 -- 
 -- 核心原则：
@@ -17,7 +17,7 @@
 --   2. 禁浮点/禁代数污染；0 postulate 目标
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Constitution.Boundaries where
+module Sovereign.Foundation.Boundaries where
 
 open import Data.Empty using (⊥)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
