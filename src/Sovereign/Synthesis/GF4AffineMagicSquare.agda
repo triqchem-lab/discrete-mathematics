@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.GF4AffineMagicSquare
+-- | Sovereign.Synthesis.GF4AffineMagicSquare
 -- 完全幻方五定理: GF(4) 仿射正交拉丁方对 (0 postulate)
 --
 -- 【幻方定义: 一本体 + 两投影】(会话裁定 #11, 修正此前「三层并列」表述)
@@ -29,7 +29,7 @@
 --   docs/cross-level/gf4-affine-magic-square-verification.md
 --   Rust: sov-math/sov-validation/src/gf4_magic.rs
 
-module Sovereign.Structology.GF4AffineMagicSquare where
+module Sovereign.Synthesis.GF4AffineMagicSquare where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Fin using (Fin; zero; suc)

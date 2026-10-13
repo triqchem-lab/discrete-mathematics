@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.BinaryTetrahedralIrreducibility
+-- | Sovereign.Synthesis.BinaryTetrahedralIrreducibility
 -- 2·A₄ = SL(2,3) 推导特征标不可约性重证: ⟨χ,χ⟩ = 1 (item 5, 0 postulate)
 --
 -- 核心原则:
@@ -16,7 +16,7 @@
 --
 -- 数值预验证: sov-math/sov-validation/src/chi_inner.rs (cargo test 通过)
 
-module Sovereign.Structology.BinaryTetrahedralIrreducibility where
+module Sovereign.Synthesis.BinaryTetrahedralIrreducibility where
 
 open import Data.Nat using (ℕ; _+_)
 open import Data.Fin using (Fin; zero; suc)

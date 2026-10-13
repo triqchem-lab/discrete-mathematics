@@ -1,13 +1,13 @@
 {-# OPTIONS --guardedness --rewriting #-}
 
--- | Sovereign.Structology.Aether
+-- | Sovereign.Synthesis.Aether
 -- 结构学：以太——T⁶ 离散环面格点基底
 -- 
 -- 本质：主权 LCM 商空间的格点全集
 --       极向 144 与环向 46 的全息展开
 -- 注意：以太本身不演化，演化的是主权状态机的缠绕数与虚实比
 
-module Sovereign.Structology.Aether where
+module Sovereign.Synthesis.Aether where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_; s≤s)
 open import Data.Nat.DivMod using (_/_; _%_; m%n<n; m%n+[m/n]*n≡m)

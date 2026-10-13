@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.BinaryTetrahedralSpectrum
+-- | Sovereign.Synthesis.BinaryTetrahedralSpectrum
 -- 谱的显式处理: 阶 → 特征值 → 迹 = 特征标 (0 postulate)
 --
 -- 填补表示论缺口「谱定理的有限域版」: 有限群表示的特征值由元素阶数决定,
@@ -11,7 +11,7 @@
 -- 本模块把特征值显式写出 (在 Z[ω,i] 中), 证明其和 = 由阶数推导的 χ₂,
 -- 使 Zωi 环落到其本来的用途 (4 阶元素的 ±i 特征值)。
 
-module Sovereign.Structology.BinaryTetrahedralSpectrum where
+module Sovereign.Synthesis.BinaryTetrahedralSpectrum where
 
 open import Data.Nat using (ℕ)
 open import Data.Integer.Base using (+_)

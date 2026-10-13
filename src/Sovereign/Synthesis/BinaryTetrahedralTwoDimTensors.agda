@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.BinaryTetrahedralTwoDimTensors
+-- | Sovereign.Synthesis.BinaryTetrahedralTwoDimTensors
 -- 2·A₄ 的另外两个二维不可约表示: χ₂′ 与 χ₂″ 的张量积推导 (0 postulate)
 --
 -- 深度证明 (与 BinaryTetrahedralDefiningRep 组成完整链):
@@ -13,7 +13,7 @@
 --   二维表示 ≅ 定义表示 ⊗ {1, χ₁′, χ₁″} (三维张量积分解)。
 -- Z[ω,i] 的 i 分量在迹中消去, 特征标落在 Z[ω]。
 
-module Sovereign.Structology.BinaryTetrahedralTwoDimTensors where
+module Sovereign.Synthesis.BinaryTetrahedralTwoDimTensors where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

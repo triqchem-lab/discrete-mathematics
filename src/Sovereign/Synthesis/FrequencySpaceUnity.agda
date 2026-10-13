@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.FrequencySpaceUnity
+-- | Sovereign.Synthesis.FrequencySpaceUnity
 -- 频率-空间一体: 泛音结构 (Christoffel 螺旋 mod 3) 与格点平移的统一 (0 postulate)
 --
 -- 泛音公理 (信息论第一性): 频率的离散结构 ≅ 空间的格点结构。
@@ -12,7 +12,7 @@
 -- 本模块只证明算子轨道结构 (refl); 物理读法 (overtone=频率, spaceStep=空间)
 -- 属命名层, 不进入证明链。
 
-module Sovereign.Structology.FrequencySpaceUnity where
+module Sovereign.Synthesis.FrequencySpaceUnity where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Vec using (Vec; []; _∷_)

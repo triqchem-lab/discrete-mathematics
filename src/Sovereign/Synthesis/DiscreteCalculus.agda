@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.DiscreteCalculus
+-- | Sovereign.Synthesis.DiscreteCalculus
 -- 结构学：代数复数场与离散微分算子
 --
 -- 宪法更新：
 -- - 移除 Data.Complex (违反纯代数宪法)。
 -- - 使用 Sovereign.Foundation.AlgebraicComplex 替代。
 
-module Sovereign.Structology.DiscreteCalculus where
+module Sovereign.Synthesis.DiscreteCalculus where
 
 -- ⚠️ 宪法合规：使用代数复数替代连续统复数
 open import Sovereign.Foundation.AlgebraicComplex using (Sqrt3; _+s3_; _+ˢ_; _-ˢ_; _*ˢ_; sqrt3)

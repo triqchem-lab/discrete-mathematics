@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.DefectSum
+-- | Sovereign.Synthesis.DefectSum
 -- 53 微分几何补强 — 离散 Gauss-Bonnet: 四面体顶角亏 (0 postulate)
 --
 -- 正四面体: 4 顶点, 每顶点 3 个三角形 → 亏角 = 2π − 3·(π/3) = π
@@ -17,7 +17,7 @@
 --
 -- 包含: tet-vertices、tet-faces、tet-edges、vertex-defect、total-defect、gauss-bonnet、tet-euler
 
-module Sovereign.Structology.DefectSum where
+module Sovereign.Synthesis.DefectSum where
 
 open import Data.Nat using (ℕ; _*_; _∸_)
 open import Data.Integer using (ℤ; +_; _+_; _-_)

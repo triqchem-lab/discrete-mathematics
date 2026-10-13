@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.FiniteTopology
+-- | Sovereign.Synthesis.FiniteTopology
 -- 54 点集拓扑补强 — GF(3) 三点的 Sierpiński 拓扑 (0 postulate)
 --
 -- X = Trit, τ = {∅, {T₀}, {T₀,T₁}, X} — 有限拓扑完整公理:
 --   并/交封闭 (16 项表), T₀ 分离 (见证 {T₀}),
 --   非 T₁ (含 T₁ 不含 T₀ 的开集不存在)
 
-module Sovereign.Structology.FiniteTopology where
+module Sovereign.Synthesis.FiniteTopology where
 
 open import Data.Bool using (Bool; true; false)
 open import Data.Product using (_×_; _,_; Σ)

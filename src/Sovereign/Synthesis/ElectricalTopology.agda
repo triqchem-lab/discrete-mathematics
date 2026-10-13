@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.Structology.ElectricalTopology
+-- | Sovereign.Synthesis.ElectricalTopology
 -- ⚠️ 废弃：电性文明拓扑（连续统退化投影）
 --
 -- 宪法裁定：
@@ -8,18 +8,18 @@
 -- - 根据 ADR-004，外部连续统引用信用为 0。
 -- - 本模块仅作为历史对照组存在，禁止用于任何宪法级证明。
 --
--- 替代方案：参见 Sovereign.Structology.DiscreteCalculus (代数复数版本)
+-- 替代方案：参见 Sovereign.Synthesis.DiscreteCalculus (代数复数版本)
 
 
 --
 -- 核心原则:
 --   1. ⚠ 废弃件：Data.Complex 违反纯代数宪法（ADR-004 外部连续统信用 0）
 --   2. 仅作历史对照组存在——禁止用于任何宪法级证明
---   3. 替代方案：Sovereign.Structology.DiscreteCalculus（代数复数版本）
+--   3. 替代方案：Sovereign.Synthesis.DiscreteCalculus（代数复数版本）
 --
 -- 包含: Phase_Cont、Connection、computeCurvature、computeChernNumber
 
-module Sovereign.Structology.ElectricalTopology where
+module Sovereign.Synthesis.ElectricalTopology where
 
 -- ⚠️ UNTRUSTED: 连续统复数，仅用于对照
 open import Data.Fin using (Fin; zero; suc; toℕ)

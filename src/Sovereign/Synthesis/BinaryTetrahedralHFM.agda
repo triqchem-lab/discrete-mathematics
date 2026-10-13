@@ -3,7 +3,7 @@
 -- 主证明见: BinaryTetrahedral.agda
 {-# OPTIONS #-}
 
--- | Sovereign.Structology.BinaryTetrahedralHFM
+-- | Sovereign.Synthesis.BinaryTetrahedralHFM
 -- Q₈ 置换群构造 + 2A₄ ≅ Q₈ ⋊ C₃ 的 HFM 交叉验证
 --
 -- HFM 验证 (test/Construct2A4.hs, test/Semidirect.hs):
@@ -36,7 +36,7 @@
 --
 -- 包含: sizeQ8、sizeC3、sizeA4、size2A4、sizeCenter、irrepCount、sizeQ8-ok、size2A4-ok、sizeCenter-ok、sumDimSq2A4、sumDimSq2A4-ok、sumDimSqA4、sumDimSqA4-ok
 
-module Sovereign.Structology.BinaryTetrahedralHFM where
+module Sovereign.Synthesis.BinaryTetrahedralHFM where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

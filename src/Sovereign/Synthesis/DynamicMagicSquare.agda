@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.DynamicMagicSquare
+-- | Sovereign.Synthesis.DynamicMagicSquare
 -- 动态幻方: 矢量方向动态系统 (本体类型, 卢先生定义)
 --
 -- 幻方不是静态数字排列, 而是过程:
@@ -22,7 +22,7 @@
 --   §3 两条基座轨道的周期/归零性质
 --   §4 卢先生阶数序列 3,5,8,13,21,34,55,89,144 (斐波那契递推 + 144=POLAR_WINDING 锚定)
 
-module Sovereign.Structology.DynamicMagicSquare where
+module Sovereign.Synthesis.DynamicMagicSquare where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Fin using (Fin)
