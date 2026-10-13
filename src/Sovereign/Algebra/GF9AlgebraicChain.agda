@@ -1,4 +1,14 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Algebra.GF9AlgebraicChain
+-- 代数链：GF(3) → GF(9) → GF(9)* → Frobenius → Norm → Trace。
+--
+-- 数学背景：七层级各以 record 定义并附构造性证明 ——
+--   层级 1/2：GF(3) 加法群 (Z/3Z,+) 量子叠加 / 乘法群 (Z/2Z,×)；
+--   层级 3/4：GF(9) 加法群 ((Z/3Z)²,+) 二维叠加 / 乘法群 (Z/8Z,×) 量子纠缠；
+--   层级 5：Frobenius σ —— 共轭（手征翻转）；
+--   层级 6：Norm N(z) = z·σ(z) —— 模长；层级 7：Trace Tr(z) = z+σ(z) —— 投影。
+--   0 postulate。
 module Sovereign.Algebra.GF9AlgebraicChain where
 
 --------------------------------------------------------------------------------

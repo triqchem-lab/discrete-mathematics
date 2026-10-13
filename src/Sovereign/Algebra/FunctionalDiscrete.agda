@@ -1,4 +1,11 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Algebra.FunctionalDiscrete
+-- 离散泛函分析 —— GF(3)ⁿ 上的向量空间 / 内积 / 范数 / 泛函。
+--
+-- 数学背景：§1 向量空间运算（GF(3)ⁿ 的线性结构）；§1b 向量空间公理的构造性验证；
+--   §2 有限维内积空间（GF(3)ⁿ 上双线性形式）；§3 离散范数；§4 线性泛函 GF(3)ⁿ → GF(3)；
+--   §5 Riesz 表示定理（离散版，穷举构造性证明）。
 module Sovereign.Algebra.FunctionalDiscrete where
 
 --------------------------------------------------------------------------------

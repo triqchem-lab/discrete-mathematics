@@ -1,4 +1,10 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Algebra.GF27
+-- GF(27) = GF(3)[x]/(x³+2x+1) —— 域扩张塔第三级。
+--
+-- 数学背景：§0 前置 GF(3) 辅助引理；§1 GF(27) 类型；§2 加法与加法群 (Z/3Z)³；
+--   §3 乘法 α³ = α+2、α⁴ = α²+2α；§4 乘法单位元；§5 乘法交换律。
 module Sovereign.Algebra.GF27 where
 
 -- GF(3³) = GF(3)[x]/(x³+2x+1)

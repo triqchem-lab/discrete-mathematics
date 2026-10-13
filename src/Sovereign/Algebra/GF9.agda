@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Algebra.GF9
+-- GF(9) = GF(3)[x]/(x²+1) —— 域扩张塔第二级，全库承重基座。
+--
+-- 数学背景（基座判据四条）：① char 2 vs char 3：特征 2 中 x²+1 退化、无 90°（4 阶元）；
+--   ② |GF(9)*| = 8 = 2³；③ 12 = 3 × 4 = char 3 × α 阶 4；
+--   ④ ⚠「三股麻花」≠「三阶元」：GF(9)* 是 8 阶循环群，无 3 阶元素（3 ∤ 8）。
+--   正文：§1 GF(3²) 域定义；§2 Galois 共轭（Frobenius σ: a+bα ↦ a−bα）。
 module Sovereign.Algebra.GF9 where
 
 -- GF(3²) = GF(3)[x]/(x²+1)

@@ -1,3 +1,9 @@
+-- | Sovereign.Algebra.FieldExtensionTower
+-- GF(3) 域扩张塔 —— 子域判据与乘法群阶。
+--
+-- 数学背景：① 域阶 |GF(3ⁿ)| = 3ⁿ；② 子域关系 GF(3^a) ⊂ GF(3^b) ⟺ a ∣ b
+--   （正向构造性给出商 q 使 b ≡ q·a，非子域用穷举商 + () 模式矛盾）；
+--   ③ 乘法群阶 |GF(3ⁿ)*| = 3ⁿ − 1。§6 收与项目其他件的连接。
 module Sovereign.Algebra.FieldExtensionTower where
 
 --------------------------------------------------------------------------------

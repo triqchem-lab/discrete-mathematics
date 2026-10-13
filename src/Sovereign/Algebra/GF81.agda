@@ -1,4 +1,11 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Algebra.GF81
+-- GF(81) = GF(3)[x]/(x⁴+2x+1) —— 域扩张塔第四级。
+--
+-- 数学背景：§0 前置 GF(3) 辅助引理；§1 GF(81) 类型；§2 加法与加法群 (Z/3Z)⁴；
+--   §3 乘法 α⁴ = 2α+1（即 α⁴ = 1 + 2α）；§4 乘法单位元；
+--   §5 乘法交换律（经多项式模型）。
 module Sovereign.Algebra.GF81 where
 
 -- GF(3⁴) = GF(3)[x]/(x⁴+x+2)
