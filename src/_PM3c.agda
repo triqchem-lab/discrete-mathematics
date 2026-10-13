@@ -24,7 +24,7 @@ open import Sovereign.Topology.MorsePairingLaw using
   (oneStepPair; oneStepPair-zero; ⊗-zeroʳ-loc)
 open import _PM3b using
   (via-tail-cancel; via-prefix-cancel; via-propagate; via-propagate-tail)
-open import Sovereign.Topology.MorseSqZeroK3 using (m3-cancel; m3-assembly)
+open import Sovereign.Application.MorseSqZeroK3 using (m3-cancel; m3-assembly)
 open import Sovereign.Topology.MorseCoeffRoute using (module CoeffRouteDef)
 
 ------------------------------------------------------------------------

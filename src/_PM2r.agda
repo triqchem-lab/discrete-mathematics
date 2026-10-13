@@ -27,7 +27,7 @@ open import Data.Maybe using (Maybe; just; nothing)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Relation.Binary.PropositionalEquality
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Topology.MorseRouteListG
+open import Sovereign.Application.MorseRouteListG
   using (FiniteK; EnumComplete; allCells; upTo; _∈List_; here; there; RouteListG)
 import Sovereign.Topology.MorseCoeffRoute as MCR
 open import Sovereign.Topology.FormanMinimal

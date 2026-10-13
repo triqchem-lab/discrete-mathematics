@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseChiBoth
+-- | Sovereign.Application.MorseChiBoth
 -- 任务书第五层·5.1 深化：双场 χ 一致性 + 完美场无环性实例化
 --
 -- 数学背景：Forman 第一定理（离散 Dehn-Sommerville）：对任意 Morse
@@ -18,7 +18,7 @@
 --   ——泛型接口的第二复用。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseChiBoth where
+module Sovereign.Application.MorseChiBoth where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; z≤n; s≤s)
 open import Data.Empty using (⊥; ⊥-elim)

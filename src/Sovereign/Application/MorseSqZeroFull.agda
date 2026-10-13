@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseSqZeroFull
+-- | Sovereign.Application.MorseSqZeroFull
 -- M3 里程碑 4-5：多胞腔 pair-popping——带 PairingLaw 前提的完整 ∂²=0
 --
 -- 证明结构（复用最大化）：
@@ -12,7 +12,7 @@
 --       带出口两步系数和 sumFull σ τ ωs ≡ T₀。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseSqZeroFull where
+module Sovereign.Application.MorseSqZeroFull where
 
 open import Data.List using (List; _∷_; [])
 open import Data.Maybe using (Maybe; just; nothing)

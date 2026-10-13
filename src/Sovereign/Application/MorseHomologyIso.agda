@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseHomologyIso
+-- | Sovereign.Application.MorseHomologyIso
 -- M7 同调同构——Morse 泛型线收官
 --
 -- 数学内容：
@@ -13,7 +13,7 @@
 --      承担——诚实边界注记。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseHomologyIso where
+module Sovereign.Application.MorseHomologyIso where
 
 open import Data.Nat using (ℕ; zero; suc; _∸_)
 open import Relation.Binary.PropositionalEquality

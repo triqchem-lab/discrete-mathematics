@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseChain
+-- | Sovereign.Application.MorseChain
 -- 任务书第五层·5.1 泛型化 M1：临界 k-胞腔集上的 Morse 链群
 --
 -- 数学背景：Morse 复合的 k-链群由 V 的临界 k-胞腔自由生成：
@@ -13,7 +13,7 @@
 -- 复用：DiscreteMorseGeneral（IsCritical/criticalComplex）+ MorseCriticalHomology（C₀ᶜ/C₁ᶜ）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseChain where
+module Sovereign.Application.MorseChain where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Nat using (ℕ; zero; suc)

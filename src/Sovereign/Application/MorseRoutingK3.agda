@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseRoutingK3
+-- | Sovereign.Application.MorseRoutingK3
 -- 任务书第五层·5.1 交叉验证：K₃ 交替路径路由——∂₁ᶜ 的独立第三证明路径
 --
 -- 数学背景：代数 Morse 边界的路由系数 = 交替路径的系数乘积：
@@ -20,7 +20,7 @@
 --   ——同一 ∂₁ᶜ 的第三条独立证明路径（对抗验证协议）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseRoutingK3 where
+module Sovereign.Application.MorseRoutingK3 where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

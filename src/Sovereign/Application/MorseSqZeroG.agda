@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseSqZeroG
+-- | Sovereign.Application.MorseSqZeroG
 -- Morse 泛型化 M3.1-M3.3：∂² 消元——两步路由系数配对
 --
 -- 数学内容：
@@ -15,7 +15,7 @@
 --   实例层已闭合：K₃ 双三角 m3-cancel (T₁⊕T₂≡T₀ refl ✓)
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseSqZeroG where
+module Sovereign.Application.MorseSqZeroG where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Maybe using (Maybe; just; nothing)

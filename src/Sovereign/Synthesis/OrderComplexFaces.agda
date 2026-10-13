@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.OrderComplexFaces
+-- | Sovereign.Synthesis.OrderComplexFaces
 -- 任务书第二层·2.3 general q 层启动：序复形三角的 q 层数据
 --
 -- 数学背景：Atkin (1972) Q-analysis 的 general q 层——两个 p-单形
@@ -24,7 +24,7 @@
 --      复形，roadmap。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.OrderComplexFaces where
+module Sovereign.Synthesis.OrderComplexFaces where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s)

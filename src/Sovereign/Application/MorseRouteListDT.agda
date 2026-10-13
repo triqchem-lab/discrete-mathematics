@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseRouteListDT
+-- | Sovereign.Application.MorseRouteListDT
 -- 任务书第五层·5.1 泛型化 M2 实例首站：双三角的 **routeList + 完备性**
 --
 -- 数学背景：M3 的 ∂^Morse 需要 Σ_{p ∈ routeList σ τ} ε(p)·τ。
@@ -15,7 +15,7 @@
 -- 复用：MorseBoundaryDT（三路由见证 + m3-cancel）+ DoubleTriangle。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseRouteListDT where
+module Sovereign.Application.MorseRouteListDT where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)

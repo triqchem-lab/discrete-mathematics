@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseSqZeroK3
+-- | Sovereign.Application.MorseSqZeroK3
 -- M3.4：K₃ 双三角 ∂²=0 完整定理——所有配对消去的合成
 --
 -- 数学推导：
@@ -13,7 +13,7 @@
 --   只有一个 ∂² 需要检查（FL → e₀₂ → v₂）——m3-assembly 给出消去。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseSqZeroK3 where
+module Sovereign.Application.MorseSqZeroK3 where
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

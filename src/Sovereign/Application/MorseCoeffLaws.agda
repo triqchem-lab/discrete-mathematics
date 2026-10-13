@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseCoeffLaws
+-- | Sovereign.Application.MorseCoeffLaws
 -- 任务书第五层·5.1 泛型化第三块：μ 乘积**一般组合律**
 --
 -- 数学背景：代数 Morse 边界的路由系数 μ(path) 是交替路径上系数的
@@ -21,7 +21,7 @@
 -- 复用：Base/Trit（⊗-identityʳ/⊗-comm/⊗-assoc 全 3-27 case 已证）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseCoeffLaws where
+module Sovereign.Application.MorseCoeffLaws where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)

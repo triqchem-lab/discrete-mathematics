@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseRouteListG
+-- | Sovereign.Application.MorseRouteListG
 -- 任务书第五层·5.1 泛型化 M2：泛型路由列表 routeList
 --
 -- 数学背景：M3 的 ∂^Morse 需要 Σ_{p ∈ routeList σ τ} μ(p)·τ。
@@ -12,7 +12,7 @@
 --   （step-decreases 保证 fuel = dim σ 即够用）
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseRouteListG where
+module Sovereign.Application.MorseRouteListG where
 
 open import Data.Nat using (ℕ; zero; suc; _<_; _≤_)
 open import Data.List using (List; _∷_; [])

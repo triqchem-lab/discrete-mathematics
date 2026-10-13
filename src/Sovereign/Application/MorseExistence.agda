@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseExistence
+-- | Sovereign.Application.MorseExistence
 -- 任务书第五层·5.1 补件：Morse 场**存在性**（一般 K）+ 三场 χ 一致
 --
 -- 数学背景：Forman 理论的**存在性方向**——任意（有限）复形都 admits
@@ -13,7 +13,7 @@
 --   ——第四复用）、MorseChiBoth（χ 定义）、CollapseToMorse（collapseVF）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseExistence where
+module Sovereign.Application.MorseExistence where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc)
