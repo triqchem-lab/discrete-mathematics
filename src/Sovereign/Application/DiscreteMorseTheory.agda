@@ -37,7 +37,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
 open import Relation.Nullary using (¬_)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Topology.FormanMinimal using (Sx; dim; v0; v1; v2; e01; e12; e20; t)
+open import Sovereign.Application.FormanMinimal using (Sx; dim; v0; v1; v2; e01; e12; e20; t)
 open import Sovereign.Topology.FormanPerfectField using (perfectVF; nothing-just)
 open import Sovereign.Application.DiscreteMorseGeneral
   using (DiscreteMorseFunction; IsCritical; criticalComplex; sx-perfect; crit0-v2)

@@ -27,7 +27,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; con
 
 open import Data.Nat.Properties using (suc-injective)
 
-open import Sovereign.Topology.FormanMinimal as ᶠᵐ using (t)
+open import Sovereign.Application.FormanMinimal as ᶠᵐ using (t)
 tt≠v2 : ¬ (ᶠᵐ.t ≡ ᶠᵐ.v2)
 tt≠v2 ()
 
@@ -94,7 +94,7 @@ critical-not-upper dimK V σ (_ , hupper) τ s = hupper (τ , s)
 --   （MorseField 的三字段与 DiscreteMorseFunction 的三字段逐一同型）
 --------------------------------------------------------------------------------
 
-open import Sovereign.Topology.FormanMinimal
+open import Sovereign.Application.FormanMinimal
   using (Sx; dim; v0; v1; v2; e01; e12; e20; t)
 open import Sovereign.Topology.FormanPerfectField
   using (perfectVF; perfect-dim-law; e01≢v2; e12≢v2; t≢v2; nothing-just;

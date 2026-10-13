@@ -24,7 +24,7 @@ open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; trans; cong)
 open import Data.Nat.Properties using (suc-injective)
-open import Sovereign.Topology.FormanMinimal
+open import Sovereign.Application.FormanMinimal
   using (Sx; dim; MorseField)
 
 --------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ morse-acyclic-2 V dl σ τ h₁ h₂ =
 --------------------------------------------------------------------------------
 
 open import Data.Maybe using (Maybe; just)
-open import Sovereign.Topology.FormanMinimal renaming (triangleVF to triVF)
+open import Sovereign.Application.FormanMinimal renaming (triangleVF to triVF)
 
 nothing-just : ∀ {τ : Sx} → ¬ (nothing ≡ just τ)
 nothing-just ()

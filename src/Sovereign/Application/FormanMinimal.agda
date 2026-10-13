@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.FormanMinimal
+-- | Sovereign.Application.FormanMinimal
 -- 任务书第五层·5.1：Forman 离散 Morse 理论（1998）的构造性最小核
 --
 -- 数学背景：Forman, "Morse Theory for Cell Complexes"（Adv. Math. 134 (1998),
@@ -20,7 +20,7 @@
 --      但路径不同（Morse 约化 vs CRT 分量）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.FormanMinimal where
+module Sovereign.Application.FormanMinimal where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

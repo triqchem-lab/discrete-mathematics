@@ -32,7 +32,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; trans; sym; cong; subst)
-open import Sovereign.Topology.FormanMinimal
+open import Sovereign.Application.FormanMinimal
   using (Sx; v0; v1; v2; e01; e12; e20; t; dim; MorseField)
 
 --------------------------------------------------------------------------------

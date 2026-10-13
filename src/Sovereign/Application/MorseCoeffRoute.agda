@@ -99,7 +99,7 @@ module CoeffDescent (K : Set) (dimK : K → ℕ)
 -- §4. K₃ 实例：非完美场 triVF 的路由系数（对照 ∂₁ᶜ）
 --------------------------------------------------------------------------------
 
-open import Sovereign.Topology.FormanMinimal
+open import Sovereign.Application.FormanMinimal
   using (Sx; v0; v1; v2; e01; e12; e20; t)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Sovereign.Topology.FormanPerfectField

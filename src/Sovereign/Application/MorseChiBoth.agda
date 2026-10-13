@@ -26,7 +26,7 @@ open import Data.Maybe using (Maybe; just; nothing)
 open import Data.Product using (_×_; _,_)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Topology.FormanMinimal
+open import Sovereign.Application.FormanMinimal
   using (Sx; dim; v0; v1; v2; e01; e12; e20; t)
   renaming (triangleVF to triVF)
 open import Sovereign.Application.MorseAcyclic using (morse-acyclic-2)

@@ -35,7 +35,7 @@ open import Data.Maybe using (just)
 
 open import Sovereign.Base.Trit using
   (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-comm; ⊕-assoc; ⊕-identityˡ; ⊕-identityʳ)
-open import Sovereign.Topology.FormanMinimal using (Sx; v0; v1; v2; e01; e12; e20; t)
+open import Sovereign.Application.FormanMinimal using (Sx; v0; v1; v2; e01; e12; e20; t)
 open import _PM56 using (Chain; PairConnector; pair-hom-kernel; conn-hom-kernel; unit-r)
 open import _PM56b using (negT; negChain; ∂₁ˢ; scl; ∂C; H₁; ρ₁; H₂; ρ₂)
 open import Sovereign.Application.MorseBoundaryK3 using (∂M-e₂₀-v₁; ∂M-e₂₀-v₂)

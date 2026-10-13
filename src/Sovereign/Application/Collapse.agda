@@ -29,7 +29,7 @@ open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Unit using (⊤; tt)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Topology.FormanMinimal
+open import Sovereign.Application.FormanMinimal
   using (Sx; dim; v0; v1; v2; e01; e12; e20; t)
 open import Sovereign.Topology.FormanPerfectField
   using (FaceRel; f-v0-e01; f-v1-e01; f-v1-e12; f-v2-e12;

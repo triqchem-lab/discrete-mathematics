@@ -30,7 +30,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Application.MorseRouteListG
   using (FiniteK; EnumComplete; allCells; upTo; _∈List_; here; there; RouteListG)
 import Sovereign.Application.MorseCoeffRoute as MCR
-open import Sovereign.Topology.FormanMinimal
+open import Sovereign.Application.FormanMinimal
   using (Sx; v0; v1; v2; e01; e12; e20; t)
 
 --------------------------------------------------------------------------------

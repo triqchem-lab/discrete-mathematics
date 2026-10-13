@@ -27,7 +27,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_; _⊕_)
 open import Sovereign.Algebra.FreeAb using (FAb)
-open import Sovereign.Topology.FormanMinimal
+open import Sovereign.Application.FormanMinimal
   using (Sx; v0; v1; v2; e01; e12; e20; t)
 open import Sovereign.Topology.FormanPerfectField
   using (FaceRel; f-v2-e20)
