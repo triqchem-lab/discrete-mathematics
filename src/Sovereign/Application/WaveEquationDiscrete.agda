@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting #-}
-module Sovereign.PDE.WaveEquationDiscrete where
+module Sovereign.Application.WaveEquationDiscrete where
 
 --------------------------------------------------------------------------------
 -- GF(3) 离散波动方程 — MSC 35L05 (波动方程) 的离散本源

@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting #-}
-module Sovereign.PDE.HeatEquationDiscrete where
+module Sovereign.Application.HeatEquationDiscrete where
 
 --------------------------------------------------------------------------------
 -- GF(3) 离散热方程 — MSC 35K05 (热方程) 的离散本源

@@ -1,6 +1,6 @@
 {-# OPTIONS --cubical --guardedness --rewriting #-}
 
--- | Sovereign.HoTT.WindingCover
+-- | Sovereign.Synthesis.WindingCover
 -- 万有覆盖与 encode-decode 框架
 --
 -- 参考 HoTT-Agda LoopSpaceCircle.agda 的 encode-decode 模式：
@@ -10,7 +10,7 @@
 --
 -- 应用到 T⁶ 环面：极向缠绕 144、环向缠绕 46
 
-module Sovereign.HoTT.WindingCover where
+module Sovereign.Synthesis.WindingCover where
 
 open import Data.Nat using (ℕ; _+_; _*_) renaming (zero to ℕzero; suc to ℕsuc)
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)

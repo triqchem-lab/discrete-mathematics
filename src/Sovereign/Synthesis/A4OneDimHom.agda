@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.A4OneDimHom
+-- | Sovereign.Synthesis.A4OneDimHom
 -- A₄ 一维表示的同态构造 — 从 abelianization 推导特征标 (0 postulate)
 --
 -- 深度证明 (第一步): A₄ 的三个一维表示 (ρ₁, ρ₁′, ρ₁″) 不是手写特征标,
@@ -14,7 +14,7 @@
 --   A₄ = ⟨gs, gt⟩; 生成元对引理 ab-step (2×12 = 24 案 refl) +
 --   词归纳传播 ab-word + dispatcher — 不再保留 12×12 = 144 案穷举表。
 
-module Sovereign.Structology.A4OneDimHom where
+module Sovereign.Synthesis.A4OneDimHom where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Relation.Binary.PropositionalEquality

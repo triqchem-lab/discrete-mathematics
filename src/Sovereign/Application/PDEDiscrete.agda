@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting #-}
-module Sovereign.PDE.PDEDiscrete where
+module Sovereign.Application.PDEDiscrete where
 
 --------------------------------------------------------------------------------
 -- 离散偏微分方程统一模块 — P2 合并入口
@@ -10,9 +10,9 @@ module Sovereign.PDE.PDEDiscrete where
 --   Sovereign.Algebra.DiscreteDE — GF(3) 差分算子, 幂零性, 离散 ODE/PDE
 --
 -- P2 子模块 (待其他 agent 完成后切换):
---   Sovereign.PDE.ConvergenceAlignment  — 收敛性与对齐
---   Sovereign.PDE.HeatEquationDiscrete  — 离散热方程
---   Sovereign.PDE.WaveEquationDiscrete  — 离散波方程
+--   Sovereign.Application.ConvergenceAlignment  — 收敛性与对齐
+--   Sovereign.Application.HeatEquationDiscrete  — 离散热方程
+--   Sovereign.Application.WaveEquationDiscrete  — 离散波方程
 --
 -- P0 桥接:
 --   注册 ODEPDE 的离散载体证据

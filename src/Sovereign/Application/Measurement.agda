@@ -15,7 +15,7 @@
 -- 复用: Sovereign.Base.Trit, Quantum.Entanglement
 -- 0 postulate.
 
-module Sovereign.Quantum.Measurement where
+module Sovereign.Application.Measurement where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)

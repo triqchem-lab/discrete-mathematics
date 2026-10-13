@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting #-}
-module Sovereign.PDE.ConvergenceAlignment where
+module Sovereign.Application.ConvergenceAlignment where
 
 --------------------------------------------------------------------------------
 -- 收敛对齐 — GF(3) 有限域上差分方程解的极限环收敛

@@ -2,7 +2,7 @@
 -- 主证明见: A4Representations.agda, BurnsideT6.agda
 {-# OPTIONS #-}
 
--- | Sovereign.Structology.A4Orbits3
+-- | Sovereign.Synthesis.A4Orbits3
 -- A₄ 三维不可约表示在 GF(3)³ (=27 点) 上的 Burnside 轨道计数
 --
 -- HFM 交叉验证 (test/FinalVerify.hs):
@@ -44,7 +44,7 @@
 --
 -- 包含: fix-identity、fix-double-transposition、fix-3cycle、burnside-sum、burnside-sum-correct、orbit-count、orbit-count-correct、orbit-count-factor-check、small-orbit-size、small-orbit-count、large-orbit-size、large-orbit-count、orbit-decomposition-sum、total-points-verified
 
-module Sovereign.Structology.A4Orbits3 where
+module Sovereign.Synthesis.A4Orbits3 where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

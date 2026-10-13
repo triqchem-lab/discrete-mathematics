@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.A4StdlibBridge
+-- | Sovereign.Synthesis.A4StdlibBridge
 -- 任务书 B0a 收官：A4Group 的 stdlib 桥（逐点形式 + 路径应用导出）
 --
 -- 数学背景：A4Group 的 perm-hom 是 cubical Path（perm (x⊗y) ≡ perm x ∘ₚ perm y），
@@ -10,7 +10,7 @@
 -- 复用：Structology/A4Group（A4/perm/⊗/perm-hom 全部已证核心模块）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Structology.A4StdlibBridge where
+module Sovereign.Synthesis.A4StdlibBridge where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Cubical.Foundations.Prelude using (_≡_; refl; cong)

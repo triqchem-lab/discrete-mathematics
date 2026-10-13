@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.Structology.A4GroupAction
+-- | Sovereign.Synthesis.A4GroupAction
 -- A₄ 群作用 — 正则表示、消去律、传递/自由、非交换（与十二进制严格分离）
 --
 -- A₄ = 正四面体旋转群 = 交错群 Alt(4)，12 阶非交换，是三代费米子对称群。
@@ -22,7 +22,7 @@
 --   §5  A₄ 非交换（两个 3-循环/对换不交换的逐点见证）
 --   §6  A₄ → Z/12 无单射同态（非交换 vs 交换，交换性矛盾）
 
-module Sovereign.Structology.A4GroupAction where
+module Sovereign.Synthesis.A4GroupAction where
 
 open import Data.Nat using (ℕ; _*_)
 open import Data.Fin using (Fin; zero; suc)

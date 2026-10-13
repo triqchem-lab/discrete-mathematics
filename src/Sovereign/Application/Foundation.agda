@@ -1,7 +1,7 @@
 {-# OPTIONS --rewriting #-}
 {-# OPTIONS --cubical --guardedness #-}
 
--- | Sovereign.Quantum.Foundation
+-- | Sovereign.Application.Foundation
 -- 量子数学完整定义：大衍拓扑与干涉规约体系
 --
 -- 本框架将高维类型论中的计算规约（Reduction）正式提升为物理空间中
@@ -26,7 +26,7 @@
 --   docs/理论澄清-极向缠绕相位轨迹124875.md
 --   律算合一知识图谱 v2.5+
 
-module Sovereign.Quantum.Foundation where
+module Sovereign.Application.Foundation where
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _^_; _/_)
 open import Data.Product using (_×_; _,_)

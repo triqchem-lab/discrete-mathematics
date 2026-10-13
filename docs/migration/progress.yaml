@@ -29,17 +29,18 @@ move_face:
   archive_frozen: 20
   top_level_files: 3
   migration_objects: 471
-  moved: 323
-  pending: 148
-  progress_pct: 68.6
+  moved: 335
+  pending: 136
+  progress_pct: 71.1
 
-# 已完成：源目录已 100% 清空（210 件）
+# 已完成：源目录已 100% 清空（214 件）
 done_dirs:
   - {dir: Problem,  moved: 117, pending: 0}
   - {dir: Physics,  moved: 63, pending: 0}
   - {dir: Trust,  moved: 9, pending: 0}
   - {dir: Coding,  moved: 7, pending: 0}
   - {dir: Constitution,  moved: 5, pending: 0}
+  - {dir: PDE,  moved: 4, pending: 0}
   - {dir: Arithmetic,  moved: 3, pending: 0}
   - {dir: Verify,  moved: 2, pending: 0}
   - {dir: AI,  moved: 1, pending: 0}
@@ -47,19 +48,18 @@ done_dirs:
   - {dir: RootMath,  moved: 1, pending: 0}
   - {dir: MagicSquareM4,  moved: 1, pending: 0}
 
-# 待办：按待迁件数降序（148 件）
+# 待办：按待迁件数降序（136 件）
 pending_dirs:
-  - {dir: Structology, moved: 7, pending: 63, target: [Synthesis]}
+  - {dir: Structology, moved: 11, pending: 59, target: [Synthesis]}
   - {dir: Topology, moved: 3, pending: 47, target: [Application, Synthesis]}
   - {dir: Analysis, moved: 25, pending: 6, target: [Algebra, Application, Base, Foundation, Infrastructure, Synthesis]}
-  - {dir: Quantum, moved: 0, pending: 5, target: [Application]}
   - {dir: Coupling, moved: 6, pending: 4, target: [Synthesis]}
-  - {dir: HoTT, moved: 20, pending: 4, target: [Synthesis]}
-  - {dir: PDE, moved: 0, pending: 4, target: [Application]}
   - {dir: Applied, moved: 35, pending: 3, target: [Application]}
   - {dir: Format, moved: 4, pending: 3, target: [Synthesis]}
   - {dir: Geometry, moved: 11, pending: 3, target: [Application]}
+  - {dir: HoTT, moved: 21, pending: 3, target: [Synthesis]}
   - {dir: MetaStructure, moved: 0, pending: 2, target: [Base]}
+  - {dir: Quantum, moved: 3, pending: 2, target: [Application]}
   - {dir: Base, moved: 0, pending: 1, target: [Base, Infrastructure]}
   - {dir: Completeness, moved: 1, pending: 1, target: [Foundation]}
   - {dir: Density, moved: 1, pending: 1, target: [Application]}
@@ -94,3 +94,4 @@ waves:
   - {wave: "PD",       date: "2026-10-13", moved: 12, note: "Arithmetic/Coding/Constitution/Coupling 跨层件 + Applied 3 件 → Base/Synthesis/Foundation/Application（0 涟漪）"}
   - {wave: "PF",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "PG",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}
+  - {wave: "PH",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}

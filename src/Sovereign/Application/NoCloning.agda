@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Quantum.NoCloning
+-- | Sovereign.Application.NoCloning
 -- 不可克隆定理 — 律算合一量子层三个载体的统一陈述 (0 postulate)
 --
 -- 基础分层 (2026-08-16 修正版):
@@ -20,7 +20,7 @@
 --   §2 GF(9) 版 + 共轭结构: 驻波 (共轭不动点) / 谐波 (共轭对)
 --   §3 Z[ω] 电路版: 线性 + 酉性 (保范) + 克隆协议
 
-module Sovereign.Quantum.NoCloning where
+module Sovereign.Application.NoCloning where
 
 open import Data.Product using (_×_; _,_; Σ)
 open import Data.Empty using (⊥)
