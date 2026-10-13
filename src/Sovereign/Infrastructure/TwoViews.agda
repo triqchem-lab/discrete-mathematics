@@ -32,8 +32,8 @@ open import Agda.Builtin.Equality.Rewrite
 import Sovereign.Infrastructure.TwoViewPlain as Plain
 open import Sovereign.Infrastructure.TwoViewPlain using (Three; p0; step)
 
-import Sovereign.Base.TwoViewRewritten as Rew
-open import Sovereign.Base.TwoViewRewritten using (Carrier; δ; law-auto)
+import Sovereign.Infrastructure.TwoViewRewritten as Rew
+open import Sovereign.Infrastructure.TwoViewRewritten using (Carrier; δ; law-auto)
 
 ------------------------------------------------------------------------
 -- 规则式一侧

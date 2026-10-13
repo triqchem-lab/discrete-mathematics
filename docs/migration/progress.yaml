@@ -29,11 +29,11 @@ move_face:
   archive_frozen: 20
   top_level_files: 3
   migration_objects: 471
-  moved: 470
-  pending: 1
-  progress_pct: 99.8
+  moved: 471
+  pending: 0
+  progress_pct: 100.0
 
-# 已完成：源目录已 100% 清空（470 件）
+# 已完成：源目录已 100% 清空（471 件）
 done_dirs:
   - {dir: Problem,  moved: 117, pending: 0}
   - {dir: Structology,  moved: 70, pending: 0}
@@ -56,14 +56,14 @@ done_dirs:
   - {dir: MetaStructure,  moved: 2, pending: 0}
   - {dir: Verify,  moved: 2, pending: 0}
   - {dir: AI,  moved: 1, pending: 0}
+  - {dir: Base,  moved: 1, pending: 0}
   - {dir: Diagnosis,  moved: 1, pending: 0}
   - {dir: Engine,  moved: 1, pending: 0}
   - {dir: RootMath,  moved: 1, pending: 0}
   - {dir: MagicSquareM4,  moved: 1, pending: 0}
 
-# 待办：按待迁件数降序（1 件）
+# 待办：按待迁件数降序（0 件）
 pending_dirs:
-  - {dir: Base, moved: 0, pending: 1, target: [Base, Infrastructure]}
 
 waves:
   - {wave: "1-B001",   date: "2026-10-11 23:10", moved: 9}
@@ -124,3 +124,4 @@ waves:
   - {wave: "H16",       date: "2026-10-13", moved: 1, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "H17",       date: "2026-10-13", moved: 1, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "H18",       date: "2026-10-13", moved: 1, note: "续迁批（叶件/低涟漪，断链0）"}
+  - {wave: "收尾",       date: "2026-10-13", moved: 1, note: "最后1件：Base/TwoViewRewritten → Infrastructure（波1就绪清单遗留件）；迁移对象 471/471 = 100%"}

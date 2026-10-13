@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Base.TwoViewRewritten — PGM P1「Rewritten 视图」：**带规则**
+-- | Sovereign.Infrastructure.TwoViewRewritten — PGM P1「Rewritten 视图」：**带规则**
 --
 -- 本模块是 PGM P1 的另一臂：把展示关系声明为**作用域内**的规约规则，使普遍定律
 -- 不再需要证明（`refl` 即可）。
@@ -26,7 +26,7 @@
 
 -- ③ 基础件层（夹具定义，无④⑤⑥——机制最小模型）
 
-module Sovereign.Base.TwoViewRewritten where
+module Sovereign.Infrastructure.TwoViewRewritten where
 
 -- ② 导入区
 open import Agda.Builtin.Equality using (_≡_; refl)
