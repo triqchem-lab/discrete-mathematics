@@ -7,7 +7,7 @@
 --
 -- 包含：data、≤T-refl、≤T-max、≤T-trans、norm-sq、norm-sq-T₀、norm-sq-T₁、norm-sq-T₂、norm-sq-≤₁、norm-sq-eq-T₀、norm-sq-is-abs、cauchy-schwarz-1、cauchy-schwarz-1-equality、no-isotropic-2
 
-module Sovereign.Analysis.CauchySchwarz where
+module Sovereign.Algebra.CauchySchwarz where
 
 --------------------------------------------------------------------------------
 -- Cauchy-Schwarz 不等式与三角不等式 — GF(3) 内积空间的有限域版本

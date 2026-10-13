@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.HilbertDiscrete
+-- | Sovereign.Algebra.HilbertDiscrete
 -- 离散 Hilbert 空间: GF(9)ⁿ + Hermitian 内积 + 有限维完备性
 --
 -- 核心结构:
@@ -20,7 +20,7 @@
 --
 -- 包含：DiscreteHilbert、⟨_∣_⟩、‖_‖²、positive-definite、zero-norm、zero-orth、conj-symmetric、hilbert-complete-fin、frobenius-hilbert-cycle、embed-vertex、embed-vacuum-zero、basis、basis-self、hilbert-discrete-summary
 
-module Sovereign.Analysis.HilbertDiscrete where
+module Sovereign.Algebra.HilbertDiscrete where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin)

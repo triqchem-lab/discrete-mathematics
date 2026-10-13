@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.DiscreteVariational
+-- | Sovereign.Algebra.DiscreteVariational
 -- 【判重组5 注记 2026-10-11】与 DiscreteVariation 近名对判重：互补双件（本件=离散 E-L 方程族）——非重复
 -- 49 变分法补强 — 离散能量极小与调和中点
 --
@@ -15,7 +15,7 @@
 --
 -- 包含：E（能量函数）· energy-0/1/2（能量表）· minimal-0/2（极小性）· harmonic-mid（调和中点）· euler-lagrange-discrete
 
-module Sovereign.Analysis.DiscreteVariational where
+module Sovereign.Algebra.DiscreteVariational where
 
 open import Data.Nat using (ℕ; _*_; _+_; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.CalculusOfVariations
+-- | Sovereign.Algebra.CalculusOfVariations
 -- 变分原理统一结构 (L3 深层证明)
 --
 -- 核心命题:
@@ -22,7 +22,7 @@
 --
 -- 包含：el-equivalence、el-constant
 
-module Sovereign.Analysis.CalculusOfVariations where
+module Sovereign.Algebra.CalculusOfVariations where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

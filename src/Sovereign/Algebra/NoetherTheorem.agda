@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.NoetherTheorem
+-- | Sovereign.Algebra.NoetherTheorem
 -- Noether 定理统一结构 (L3 深层证明)
 --
 -- 核心命题:
@@ -27,7 +27,7 @@
 --       + GF(3) 双实例（ℤ/2 交换对称⟹⊕-和守恒；ℤ/3 旋转对称⟹⊕-和守恒）
 --       + 核对件（具体点 refl 交叉）
 
-module Sovereign.Analysis.NoetherTheorem where
+module Sovereign.Algebra.NoetherTheorem where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

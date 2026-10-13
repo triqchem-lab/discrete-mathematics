@@ -18,7 +18,7 @@
 --   ∂̄f(常值)=T₂≢0——张力根源疑为 ∂̄f 定义非差分算子（f(x⊕1)y ⊕ f x(y⊕1) 无相减项）；
 --   数学面不动，待裁决后修（本注记仅如实标注）。本模块零代码消费者（grep 实证 2026-10-11）。
 
-module Sovereign.Analysis.DiscreteSeveralComplex where
+module Sovereign.Algebra.DiscreteSeveralComplex where
 
 open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

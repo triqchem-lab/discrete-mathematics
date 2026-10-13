@@ -7,7 +7,7 @@
 --
 -- 包含：data、≤₃-refl、≤₃-trans、≤₃-antisym、≤₃-total、NormEquivalent、T₁≢T₀、T₂≢T₀、abs-gf3-multiplicative、abs-gf3-two-valued、sq-eq-abs、sq-negate、scalar-T₀-zero、Q-negate-invariant
 
-module Sovereign.Analysis.NormEquivalence where
+module Sovereign.Algebra.NormEquivalence where
 
 --------------------------------------------------------------------------------
 -- 范数等价定理: 有限维 GF(3)ⁿ 上所有范数等价

@@ -7,7 +7,7 @@
 --
 -- 包含：record、fa-framework-2、fa-framework、FADiscreteCarrier、fa-witness、fa-completeness-bridge、riesz-2、nondeg-2、norm-2-two-valued、hb-collapse-2
 
-module Sovereign.Analysis.FunctionalAnalysisDiscrete where
+module Sovereign.Algebra.FunctionalAnalysisDiscrete where
 
 --------------------------------------------------------------------------------
 -- 离散泛函分析统一模块 — P1-B 合并入口

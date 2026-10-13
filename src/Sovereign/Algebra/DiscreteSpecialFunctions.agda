@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.DiscreteSpecialFunctions
+-- | Sovereign.Algebra.DiscreteSpecialFunctions
 -- 离散特殊函数（MSC 33）— GF(3) 二次特征与正交性
 --
 -- 数学背景：连续统病态 TypeError: SpecialFunctionsViaContinuation → 离散替代：
@@ -13,7 +13,7 @@
 --
 -- 包含：χ0/χ1/χ2（GF(3) 特征值）· χ-sum-zero（正交性）· legendre-1/legendre-2（离散 Legendre 符号）
 
-module Sovereign.Analysis.DiscreteSpecialFunctions where
+module Sovereign.Algebra.DiscreteSpecialFunctions where
 
 open import Data.Integer using (ℤ; +_; -[1+_])
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

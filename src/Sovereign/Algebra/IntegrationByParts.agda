@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.IntegrationByParts
+-- | Sovereign.Algebra.IntegrationByParts
 -- 分部积分统一结构 (L3 深层证明)
 --
 -- 核心命题:
@@ -24,7 +24,7 @@
 --
 -- 包含：integration-by-parts-theorem、diff-sum-zero
 
-module Sovereign.Analysis.IntegrationByParts where
+module Sovereign.Algebra.IntegrationByParts where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

@@ -31,9 +31,9 @@ move_face:
   archive_frozen: 20      # src/Sovereign/_archive（已移出至 archive/）
   top_level_files: 3      # Examples.agda / Integration.agda / TestMemory.agda（顶层聚合件）
   migration_objects: 469  # 需跨目录迁移的件数
-  moved: 238
-  pending: 231
-  progress_pct: 50.7
+  moved: 250
+  pending: 219
+  progress_pct: 53.3
 
 # 已完成：源目录已 100% 清空（193 件）
 done_dirs:
@@ -50,7 +50,7 @@ pending_dirs:
   - {dir: Topology,     moved: 3,  pending: 47, target: [Application, Synthesis]}
   - {dir: Applied,      moved: 11, pending: 27, target: [Application]}
   - {dir: HoTT,         moved: 2,  pending: 22, target: [Synthesis]}
-  - {dir: Analysis,     moved: 10, pending: 21, target: [Algebra, Application, Base]}
+  - {dir: Analysis,     moved: 22, pending: 9,  target: [Algebra, Application, Base]}
   - {dir: Geometry,     moved: 0,  pending: 14, target: [Application]}
   - {dir: Format,       moved: 0,  pending: 7,  target: [Synthesis]}
   - {dir: Coupling,     moved: 4,  pending: 6,  target: [Synthesis]}
@@ -88,3 +88,5 @@ waves:
   - {wave: 13,         date: "2026-10-12 08:23", moved: 12}
   - {wave: 14,         date: "2026-10-12 08:37", moved: 34, note: "迁移池收官批（非全量）"}
   - {wave: "终验",     date: "2026-10-12 08:43", moved: 0,  note: "6ab1ad1 收尾；此后转 π_n 课题"}
+  # —— 续迁（2026-10-13 起）——
+  - {wave: "PA",       date: "2026-10-13", moved: 12, note: "续迁第1批：Analysis 12 件 0 涟漪（11→Algebra / FiniteProbability→Application），V1 12/12"}

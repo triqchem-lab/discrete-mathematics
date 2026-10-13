@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.FiniteProbability
+-- | Sovereign.Application.FiniteProbability
 -- 有限概率空间: GF(3)ⁿ 均匀分布 + ℚ 有理期望 + Burnside 1/12 + Markov 平稳分布 (P1-3, wiki 60A)
 --
 -- 数学背景 (wiki 28-probability):
@@ -31,7 +31,7 @@
 --
 -- 包含：Rat、scalar、rat3、sumGF3、GF3ⁿ-size、uniform、uniform-norm、expectation、expect-const、expect-uniform、probability、fix4、fixR、mulA4
 
-module Sovereign.Analysis.FiniteProbability where
+module Sovereign.Application.FiniteProbability where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_)
 open import Data.Nat.Properties

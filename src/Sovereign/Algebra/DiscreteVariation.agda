@@ -15,7 +15,7 @@
 --
 -- 包含：action2、freeL、δ-action、δ-free、stationary-const、nonstationary
 
-module Sovereign.Analysis.DiscreteVariation where
+module Sovereign.Algebra.DiscreteVariation where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_)
 open import Data.Product using (_×_; _,_)

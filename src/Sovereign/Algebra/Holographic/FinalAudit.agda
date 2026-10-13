@@ -75,7 +75,7 @@ import Sovereign.Coding.BCHGF9       -- 最小距离界 + 系统编码 + 单错�
 import Sovereign.Application.CyclicGF27   -- γ 根结构 → 长度 26 循环码 + freshman's dream (0 postulate)
 
 -- 有限概率空间 (P1-3, wiki 60A 离散版): 全离散无浮点, 概率 = 整数比交叉相乘
-import Sovereign.Analysis.FiniteProbability  -- GF(3)ⁿ 均匀链 + 有理期望 + Burnside (A₄ 自然/正则作用)
+import Sovereign.Application.FiniteProbability  -- GF(3)ⁿ 均匀链 + 有理期望 + Burnside (A₄ 自然/正则作用)
 
 -- Eisenstein 环 (P1-4, wiki 12F/11R): Z[ω] 环公理 8 条 + 范数乘性 + 6 单位 (0 postulate)
 import Sovereign.Foundation.Eisenstein  -- *ᵉ-assoc/comm + conjᵉ-mul + norm-mul + unitGen C₆ 循环
