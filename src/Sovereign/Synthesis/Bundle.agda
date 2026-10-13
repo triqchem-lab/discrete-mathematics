@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.HoTT.Bundle
+-- | Sovereign.Synthesis.Bundle
 -- 高维拓扑：主权状态机的纤维丛结构 (Fiber Bundle Structure)
 --
 -- 定义：
@@ -9,7 +9,7 @@
 -- 3. 全空间 (Total Space)：底流形与纤维的直积（局部平凡化）。
 -- 4. 截面 (Section)：定义在底流形上的主权状态场。
 
-module Sovereign.HoTT.Bundle where
+module Sovereign.Synthesis.Bundle where
 
 -- ⚠️ ISOLATION (Phase 1): Imported via DiscreteCubical Proxy.
 -- 原引用: Cubical.Foundations.Prelude, Cubical.Core.Everything

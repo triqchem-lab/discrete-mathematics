@@ -3,7 +3,7 @@
 -- 主证明见: ProjectiveTransform.agda
 {-# OPTIONS #-}
 
--- | Sovereign.Geometry.ProjectiveTransformHFM
+-- | Sovereign.Application.ProjectiveTransformHFM
 -- A₄×C₃ 直积的 HFM 交叉验证
 --
 -- HFM 验证 (test/SovereignGroups.hs):
@@ -32,7 +32,7 @@
 --
 -- 包含（分层）：基础件层：orderA4/orderC3/orderProduct｜主引理层：*-ok 核对件｜核对层：conjClassesA4 数据面
 --
-module Sovereign.Geometry.ProjectiveTransformHFM where
+module Sovereign.Application.ProjectiveTransformHFM where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

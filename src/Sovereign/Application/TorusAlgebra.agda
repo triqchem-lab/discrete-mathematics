@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
-module Sovereign.Geometry.TorusAlgebra where
+module Sovereign.Application.TorusAlgebra where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Vec using (Vec; []; _∷_)

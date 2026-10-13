@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.HoTT.CanonicityAlignment
+-- | Sovereign.Synthesis.CanonicityAlignment
 -- L3 方向: CRT 商空间相位对齐 (v6.8 四极框架重构)
 --
 -- 核心命题（四极框架）:
@@ -16,7 +16,7 @@
 --     PhaseFamily(clockToCRT 0) ≡ PhaseFamily(clockToCRT 6624)
 --   此为非平凡命题 — 不是常数族的恒等, 而是 CRT 商空间的几何不变性.
 
-module Sovereign.HoTT.CanonicityAlignment where
+module Sovereign.Synthesis.CanonicityAlignment where
 
 open import Data.Nat using (ℕ; suc; _+_; _*_; _%_; _<_)
 open import Data.Nat.DivMod using ([m+kn]%n≡m%n; m%n<n)

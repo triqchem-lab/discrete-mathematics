@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Geometry.Tryte
+-- | Sovereign.Application.Tryte
 -- 几何定义：Tryte 作为 T⁶ 环面的单点纤维截面
 --
 -- 核心几何意义：
@@ -24,7 +24,7 @@
 -- 每个 五行子纤维 都是一个完整的 T⁶ 单点截面 (6 Trit)。
 -- 即：SovereignFiber $\cong$ 5 $\times$ Tryte。
 
-module Sovereign.Geometry.Tryte where
+module Sovereign.Application.Tryte where
 
 open import Data.Vec using (Vec; []; _∷_; _[_]=_; lookup; take; drop; _++_)
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)

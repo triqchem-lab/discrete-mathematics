@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
-module Sovereign.Geometry.TorusGeodesic where
+module Sovereign.Application.TorusGeodesic where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin; zero; suc)

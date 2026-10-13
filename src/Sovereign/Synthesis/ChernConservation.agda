@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.HoTT.ChernConservation
+-- | Sovereign.Synthesis.ChernConservation
 -- 核心证明：陈数 C=2 的代数守恒性
 --
 -- 证明策略：
@@ -13,7 +13,7 @@
 -- 3. 利用代数恒等式证明：全局平移不改变差分 ( (x+1) - (y+1) = x - y )。
 --    - 因此 Σ K'_i = Σ K_i，陈数守恒。
 
-module Sovereign.HoTT.ChernConservation where
+module Sovereign.Synthesis.ChernConservation where
 
 open import Data.Vec using (Vec; lookup; _∷_; []; _++_; map; zipWith; length; sum; foldr)
 open import Data.Vec.Properties using (map-++)
@@ -25,7 +25,7 @@ open import Data.Integer.Properties using (+-comm; +-assoc; neg-distrib-+; +-ide
 open import Relation.Binary.PropositionalEquality.Properties using (subst-∘; ≡-Reasoning)
 
 import Sovereign.Base.Trit as Trit
-import Sovereign.HoTT.Bundle as Bundle
+import Sovereign.Synthesis.Bundle as Bundle
 
 --------------------------------------------------------------------------------
 -- 1. 基础代数结构 (Algebraic Structure of Fiber)

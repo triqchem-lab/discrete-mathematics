@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
-module Sovereign.Geometry.TorusFourier where
+module Sovereign.Application.TorusFourier where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Vec using (Vec; []; _∷_)

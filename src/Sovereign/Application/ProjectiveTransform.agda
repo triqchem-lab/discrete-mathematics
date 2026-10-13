@@ -1,9 +1,9 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Geometry.ProjectiveTransform
+-- | Sovereign.Application.ProjectiveTransform
 -- 射影变换群 A₄ ⋊ C₃ + CRT 谱投影
 
-module Sovereign.Geometry.ProjectiveTransform where
+module Sovereign.Application.ProjectiveTransform where
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_)
 open import Data.Fin using (Fin; zero; suc)

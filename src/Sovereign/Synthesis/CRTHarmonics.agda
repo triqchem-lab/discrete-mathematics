@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.HoTT.CRTHarmonics
+-- | Sovereign.Synthesis.CRTHarmonics
 -- CRT 理论的谐波与驻波解释 (v5.19)
 --
 -- CRT 域 = 双周期系统的拍频谐波谱
@@ -30,7 +30,7 @@
 --
 -- 包含（分层）：基础件层：T1/T2/M/POLAR/TORUS 字面桥+abstract-X0｜主引理层：lock-gen 泛型｜组合层：phase-lock-T1/T2｜核对层：canon 具体值核对
 --
-module Sovereign.HoTT.CRTHarmonics where
+module Sovereign.Synthesis.CRTHarmonics where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _^_; _∸_; NonZero)
 open import Data.Nat.Properties using (*-assoc; *-comm)

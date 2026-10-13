@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.HoTT.CRTFiberWinding
+-- | Sovereign.Synthesis.CRTFiberWinding
 -- CRT 纤维与环面绕数交互理论 (v5.18)
 --
 -- 核心发现:
@@ -23,7 +23,7 @@
 --   原因: Agda GHC 后端的 mod-helper 是 O(n) 递归, 51亿次递归需要 6GB+ 内存.
 --   这些命题已通过外部验证 (Python/GHC 计算), 数学内容不变.
 
-module Sovereign.HoTT.CRTFiberWinding where
+module Sovereign.Synthesis.CRTFiberWinding where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _^_; s≤s; z≤n)
 open import Data.Nat.DivMod using (m%n<n; [m+kn]%n≡m%n; m<n⇒m%n≡m)

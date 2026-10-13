@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.HoTT.Connection
+-- | Sovereign.Synthesis.Connection
 -- 高维拓扑：纤维丛上的离散联络与和乐 (Connection and Holonomy)
 --
 -- 核心修正：
@@ -8,7 +8,7 @@
 -- 显式定义离散平行移动 (Parallel Transport)。
 -- 这使得高维几何与底层代码实现了代数上的统一。
 
-module Sovereign.HoTT.Connection where
+module Sovereign.Synthesis.Connection where
 
 -- ⚠️ ISOLATION (Phase 1): Imported via DiscreteCubical Proxy.
 -- 原引用: Cubical.Foundations.Prelude
@@ -23,7 +23,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)
 open import Data.Vec using (Vec; []; _∷_; map)
 
-import Sovereign.HoTT.Bundle as Bun
+import Sovereign.Synthesis.Bundle as Bun
 import Sovereign.Synthesis.Geometry as Geo
 import Sovereign.Base.Coding.Trit as T
 open T using (Trit; T₀; T₁; T₂)
