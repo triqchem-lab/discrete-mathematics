@@ -23,7 +23,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.GroupTheory.DuodecClock using
   (DuodecPoint; AlphaPower; a0; a1; a2; a3; mixedOp; mixedOp^12; mixedOp-12-cycle)
 open import Sovereign.Synthesis.T6 using (T6Lattice)
-open import Sovereign.Structology.A4Representations using (A4Irrep; V3; dim)
+open import Sovereign.Synthesis.A4Representations using (A4Irrep; V3; dim)
 
 -- 载体: T⁶ 相位格点 × DC 状态（幅度 GF(3) × 相位 C₄）
 record SphericalVector : Set where

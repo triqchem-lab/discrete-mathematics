@@ -42,7 +42,7 @@ open import Sovereign.Foundation.Eisenstein using
   ; _+ᵉ_; _*ᵉ_; conjᵉ
   ; 1+ω+ω²≡0; ω²≡ω*ω; ω³≡1; conj-ω≡ω²; conj-ω²≡ω; ω*ω²≡1)
 
-open import Sovereign.Structology.A4Representations using
+open import Sovereign.Synthesis.A4Representations using
   ( ConjugacyClass; C1; C2; C3; C4
   ; classSize; classSizeSum
   ; A4Irrep; V3; V1; V1'; V1''

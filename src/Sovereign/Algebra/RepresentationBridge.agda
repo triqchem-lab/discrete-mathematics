@@ -32,7 +32,7 @@ open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Structology.A4Representations
+open import Sovereign.Synthesis.A4Representations
   using (A4Irrep; V3; V1; V1'; V1''; dim)
 
 open import Sovereign.Structology.BinaryTetrahedral

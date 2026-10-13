@@ -38,7 +38,7 @@ open import Sovereign.Algebra.ProjectionDifferential using (
   GF3Func; shift; Δ; sum3; Δ³≡0; Δ-const-zero; const-func)
 open import Sovereign.Algebra.DiscreteDE using (
   Δⁿ; Δⁿ≥3≡0; Δ⁴≡0; Δ≡0→const)
-open import Sovereign.Structology.A4Representations using (
+open import Sovereign.Synthesis.A4Representations using (
   A4Irrep; V3; V1; V1'; V1'';
   ConjugacyClass; C1; C2; C3; C4;
   classSize; dim)

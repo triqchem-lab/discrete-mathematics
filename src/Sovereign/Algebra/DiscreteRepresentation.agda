@@ -43,7 +43,7 @@ open import Sovereign.Synthesis.A4Group
   using (A4; Id; Rot; Flip; perm)
 
 -- A₄ 表示论: 共轭类, 不可约表示, 特征标
-open import Sovereign.Structology.A4Representations
+open import Sovereign.Synthesis.A4Representations
   using ( ConjugacyClass; C1; C2; C3; C4
         ; classSize; classify
         ; A4Irrep; V3; V1; V1'; V1''

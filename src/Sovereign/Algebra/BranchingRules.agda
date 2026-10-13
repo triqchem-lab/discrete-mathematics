@@ -36,7 +36,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Foundation.Eisenstein
   using (Eisenstein; eis; 0ᵉ; 1ᵉ; ωᵉ; ω²ᵉ; -1ᵉ; 3ᵉ; _+ᵉ_; _*ᵉ_; conjᵉ)
 
-open import Sovereign.Structology.A4Representations
+open import Sovereign.Synthesis.A4Representations
   using ( A4Irrep; V3; V1; V1'; V1''
         ; dim
         ; ConjugacyClass; C1; C2; C3; C4

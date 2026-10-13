@@ -53,7 +53,7 @@ record Character (G : Set) : Set₁ where
 -- 以下重导出.
 --------------------------------------------------------------------------------
 
-open import Sovereign.Structology.A4Representations
+open import Sovereign.Synthesis.A4Representations
   using (A4Irrep; V3; V1; V1'; V1''; dim; theorem-dimension-sum-of-squares)
 
 -- Burnside for A₄

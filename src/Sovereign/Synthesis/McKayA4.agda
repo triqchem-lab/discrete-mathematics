@@ -16,7 +16,7 @@ module Sovereign.Synthesis.McKayA4 where
 open import Data.Nat using (ℕ; _*_; _+_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Product using (Σ; _,_; _×_)
-open import Sovereign.Structology.A4Representations
+open import Sovereign.Synthesis.A4Representations
   using (A4Irrep; V3; V1; V1'; V1''; dim; dimSqSum)
 
 --------------------------------------------------------------------------------

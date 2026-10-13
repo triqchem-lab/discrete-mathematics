@@ -19,7 +19,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 -- ═══════════════════════════════════════════════════════════
 
 -- A₄: |G| = 12, Σdim² = 3²+1²+1²+1² = 12
-open import Sovereign.Structology.A4Representations
+open import Sovereign.Synthesis.A4Representations
   using (theorem-dimension-sum-of-squares; dim; V3; V1; V1'; V1'')
 
 -- 声明层升级（2026-10-11）：裸常数对账 → A4Representations 主定理实调（Burnside Σdim²=|G|）

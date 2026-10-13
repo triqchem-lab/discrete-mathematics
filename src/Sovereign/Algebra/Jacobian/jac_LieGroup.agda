@@ -286,7 +286,7 @@ sdMAS = mNegαI2 , suc zero
 --   theorem-dimension-sum-of-squares: dim²和 = 12
 --   character-at-identity: χᵢ(Id) = dimᵢ
 -- 以下重导出关键定理.
-open import Sovereign.Structology.A4Representations
+open import Sovereign.Synthesis.A4Representations
   using (A4Irrep; V3; V1; V1'; V1'';
          dim; theorem-dimension-sum-of-squares)
 open import Sovereign.Algebra.LieDiscrete

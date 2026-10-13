@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.A4Representations
+-- | Sovereign.Synthesis.A4Representations
 -- A₄ 群的不可约表示理论 (补强版, 2026-08, 0 postulate)
 --
 -- 核心结果:
@@ -26,7 +26,7 @@
 --   注意: 本模块修正了旧版共轭类分派错误 (C2 = 编码 {3,6,9,12}, C3 = {2,7,8,13},
 --   与 V₄ 陪集一致 — 旧版混类使 abelianize 不成为同态, 由乘性表 144 例暴露)。
 
-module Sovereign.Structology.A4Representations where
+module Sovereign.Synthesis.A4Representations where
 
 infixl 6 _·₃_
 

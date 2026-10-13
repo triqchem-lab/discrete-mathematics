@@ -108,14 +108,14 @@ open import Sovereign.Application.HoloInformation public using (
 
 --------------------------------------------------------------------------------
 -- B27: 特征标正交性完整 (5 个正交定理)
--- 源: Sovereign.Structology.A4Representations
+-- 源: Sovereign.Synthesis.A4Representations
 -- 证明方法: refl (穷举共轭类)
 -- A₄ 有 4 个共轭类 C1(1), C2(4), C3(4), C4(3)
 -- 4 个不可约表示: V3(3维), V1(1维), V1'(1维), V1''(1维)
 -- 正交性: ⟨χᵢ, χⱼ⟩ = δᵢⱼ × |A₄| = 12δᵢⱼ
 --------------------------------------------------------------------------------
 
-open import Sovereign.Structology.A4Representations public using (
+open import Sovereign.Synthesis.A4Representations public using (
   -- B27 核心: 5 个正交定理
   χ₁-self-orthogonal;       -- Σ|C|·1·1 = 1+4+4+3 = 12
   χ₁'-self-orthogonal;      -- 1+4+4+3 = 12

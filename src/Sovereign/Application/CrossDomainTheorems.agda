@@ -42,7 +42,7 @@ open import Sovereign.Algebra.ProjectionDifferential using (GF3Func)
 open import Sovereign.Foundation.FiniteDynamics using (
   pigeonhole-fin; orbit-eventually-periodic; EventuallyPeriodic; orbit)
 
-open import Sovereign.Structology.A4Representations using (
+open import Sovereign.Synthesis.A4Representations using (
   dimSqSum; theorem-dimension-sum-of-squares)
 
 open import Sovereign.Foundation.DigitalRoot using (

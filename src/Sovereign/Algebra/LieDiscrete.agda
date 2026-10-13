@@ -35,7 +35,7 @@ open import Sovereign.Structology.BinaryTetrahedral public
 open import Sovereign.Algebra.RepresentationBridge public
 
 -- A₄ 不可约表示 (BranchingRules/RepresentationBridge 内部使用, 未 public 重导出)
-open import Sovereign.Structology.A4Representations
+open import Sovereign.Synthesis.A4Representations
   using (A4Irrep; V3; V1; V1'; V1''; dim)
 
 --------------------------------------------------------------------------------
