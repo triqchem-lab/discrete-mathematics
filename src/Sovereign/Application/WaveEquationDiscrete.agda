@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Application.WaveEquationDiscrete
+-- 离散波动方程 —— 连续能量守恒的 GF(3) 置换化。
+--
+-- 数学背景：① 常数稳态：waveStep(const c, const c) = (const c, const c)；
+--   ② 可逆性：波动步进是有限状态空间（729 = 3⁶ 个状态）上的置换；
+--   ③ 能量：定义动能 + 势能，常数态能量为 T₀；
+--   ④ 连续能量守恒是 GF(3) 有限置换的「不存在的极限」投影。
 module Sovereign.Application.WaveEquationDiscrete where
 
 --------------------------------------------------------------------------------

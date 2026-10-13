@@ -1,5 +1,11 @@
 {-# OPTIONS --rewriting #-}
 
+-- | Sovereign.Application.TorusFourier
+-- T⁶ 离散 Fourier —— CRT 谱投影即离散变换。
+--
+-- 数学背景：把 CRT 谱投影直接用作 T⁶ 上的离散 Fourier 变换（fourierProj: T6Lattice → ℕ × ℕ，
+--   及其逆 fourierInv）；因 CRT 是环同构（无损降维），此「变换」在有限格点上**精确可逆**，
+--   没有连续 Fourier 的收敛/截断问题。
 module Sovereign.Application.TorusFourier where
 
 open import Data.Fin using (Fin; zero; suc)

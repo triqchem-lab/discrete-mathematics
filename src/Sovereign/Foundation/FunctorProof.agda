@@ -1,4 +1,11 @@
 {-# OPTIONS --rewriting --cubical #-}
+
+-- | Sovereign.Foundation.FunctorProof
+-- 投影函子 —— sim: ContinuousCat → DiscreteCat 的范畴论表述。
+--
+-- 数学背景：§1 连续概念范畴；§2 离散层级范畴；§3 投影函子 sim: ContinuousCat → DiscreteCat；
+--   §4 函子性质验证（保持复合与单位）；§5 投影函子的语义。
+--   与 CompletenessTheorem 互补：后者证载体存在，本件证「投影」是函子（保结构）。
 module Sovereign.Foundation.FunctorProof where
 
 --------------------------------------------------------------------------------

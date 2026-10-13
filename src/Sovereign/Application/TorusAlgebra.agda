@@ -1,5 +1,11 @@
 {-# OPTIONS --rewriting #-}
 
+-- | Sovereign.Application.TorusAlgebra
+-- T⁶ 坐标代数 —— Trit/GF(3) 载体互换与坐标函数代数。
+--
+-- 数学背景：给出 Trit ↔ GF(3)（Fin 3）的双向载体映射 tritOf / finOf，
+--   并以 CoordFunc = T6Lattice → GF3 为坐标函数空间，constFn 为常值元；
+--   是 T⁶ 上函数代数（Fourier / 测地线 / 波动）的公共底层。
 module Sovereign.Application.TorusAlgebra where
 
 open import Data.Fin using (Fin; zero; suc)

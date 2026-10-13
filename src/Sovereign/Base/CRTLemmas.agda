@@ -1,5 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Base.CRTLemmas
+-- CRT 数论引理库 —— SOVEREIGN_LCM 的整除/互素基础件。
+--
+-- 数学背景：以 M = POW2 × POW3 = 2¹⁶ × 3¹¹ = 65536 × 177147（= SOVEREIGN_LCM）为常数，
+--   汇集 CRT 所需的 ℕ 层引理：整除（_∣_ / 商 / n∣m⇒m%n≡0）、GCD 与互素
+--   （gcd≡1⇒coprime / coprime-divisor）、模运算重排（%-distribˡ-+ / m≡m%n+[m/n]*n）等。
+--   Base 层承重件（CRT 家族与算术基础件的公共前置）。
 module Sovereign.Base.CRTLemmas where
 
 open import Data.Nat using (ℕ; NonZero; zero; suc; _+_; _*_; _∸_; _/_; _≤?_)

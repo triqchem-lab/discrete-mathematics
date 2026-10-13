@@ -1,5 +1,11 @@
 {-# OPTIONS --rewriting #-}
 
+-- | Sovereign.Application.TorusGeodesic
+-- T⁶ 测地线 —— Christoffel 方向即坐标轴生成元。
+--
+-- 数学背景：离散环面上「测地线」退化为沿各坐标轴的**方向向量** c1..c6 = g1..g6
+--   （TorusGeometry 的六个生成元）；因环面平坦（曲率 0），无需 Christoffel 联络的
+--   协变导数机制，直线即测地线——连续侧的非平凡联络在此为空结构。
 module Sovereign.Application.TorusGeodesic where
 
 open import Data.Nat using (ℕ; zero; suc)
