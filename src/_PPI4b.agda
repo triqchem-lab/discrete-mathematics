@@ -35,7 +35,7 @@ open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; _∙_; su
 open import Cubical.HITs.SetQuotients using ([_]; squash/; elimProp; eq/)
 open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Topology.McCordCore using (cmpEdge)
-open import Sovereign.Topology._PMc2 using (KEdge)
+open import Sovereign.Synthesis._PMc2 using (KEdge)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import Sovereign.Topology.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; AHomotopy; AStep; AH-refl)

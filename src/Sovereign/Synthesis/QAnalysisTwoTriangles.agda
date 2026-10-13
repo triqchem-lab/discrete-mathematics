@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.QAnalysisTwoTriangles
+-- | Sovereign.Synthesis.QAnalysisTwoTriangles
 -- 任务书第二层·2.3 深化：双三角复形的 **q=1 面连通**
 --
 -- 数学背景：Atkin Q-analysis 的 q 层级——两个 p-单形 q-连通当且仅当
@@ -19,7 +19,7 @@
 --   复形成员（面间对象）与一般 k 单形 roadmap。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.QAnalysisTwoTriangles where
+module Sovereign.Synthesis.QAnalysisTwoTriangles where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product using (_×_; _,_)

@@ -257,7 +257,7 @@ check-sk-inj = refl
 --   由 fsuc 尾模式承担（skip-< 同诀）。
 -- ────────────────────────────────────────────────────────────────────
 open import Sovereign.Topology.OrderComplex using (chain3-down; lin3; lin3-chain3)
-open import Sovereign.Topology._PMc2 using (KVert; KEdge; KTri; tri-face-xy; tri-face-yz)
+open import Sovereign.Synthesis._PMc2 using (KVert; KEdge; KTri; tri-face-xy; tri-face-yz)
 open import _PPI using (FaceBoundary; bd; K2Gluing)
 
 -- ⑩.1 删点双向映射（skip 的两个逆向件）

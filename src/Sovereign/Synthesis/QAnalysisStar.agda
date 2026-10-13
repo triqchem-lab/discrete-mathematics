@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.QAnalysisStar
+-- | Sovereign.Synthesis.QAnalysisStar
 -- 任务书第二层·2.3 + 2.2 交叉：星形连通的**泛型化**（QStarAnalysis）
 --
 -- 数学背景：McCordCore 定理 A（锥形连通核）——有全局最小元 ⊥ 的有限
@@ -23,7 +23,7 @@
 --       + QAnalysisFacesInstance（FaceShare3/sym）
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.QAnalysisStar where
+module Sovereign.Synthesis.QAnalysisStar where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Sum using (_⊎_; inj₁; inj₂)

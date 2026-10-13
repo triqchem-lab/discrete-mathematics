@@ -37,7 +37,7 @@ open import _PPI using (Loop)
 open import _PPI4 using (Gskel; MonoidIso)
 open import _PPI2 using (π₁ᵈ; _⊞ᵈ_; π₁ᵈ-rec)
 open import _PPI4c using (edgeGskel-neq; ah-diag-sk)
-open import Sovereign.Topology._PMc2 using (KEdge)
+open import Sovereign.Synthesis._PMc2 using (KEdge)
 open import _PPI4d using (e01; e10; w0; w2; w4)
 
 private

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.QPathMonotone
+-- | Sovereign.Synthesis.QPathMonotone
 -- 任务书第二层·2.3 深化：q 层级**单调性定理**（泛型）
 --
 -- 数学背景：Atkin Q-analysis 的核心层级性质——若高层共享关系蕴含
@@ -17,7 +17,7 @@
 -- 复用：QAnalysisRecord.QPathG（泛型 data）
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.QPathMonotone where
+module Sovereign.Synthesis.QPathMonotone where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product using (_×_; _,_)

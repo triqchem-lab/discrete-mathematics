@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.StongCore
+-- | Sovereign.Synthesis.StongCore
 -- 任务书第二层·2.2 后半：Stong 的 beat point / core（1966）构造性最小核
 --
 -- 数学背景：Stong, "Finite topological spaces"（Trans. AMS 123 (1966),
@@ -26,7 +26,7 @@
 --      {0}）——Stong 唯一性是**同伦型**唯一，不是载体唯一；此点入注记防误读。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.StongCore where
+module Sovereign.Synthesis.StongCore where
 
 open import Data.Empty using (⊥)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

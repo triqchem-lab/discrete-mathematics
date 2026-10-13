@@ -14,7 +14,7 @@
 --   2. **两者不是同一谓词**：cmpEdge 含自环（⊑ 反身），IsChain2 不含（Strict 带 ≢）
 --      ⇒ 桥必须带 x ≢ y 分离条件，等价只在相异点对上成立（自环处无对应单形）；
 --   3. 骨架层只交组合数据（顶点/边/面谓词），不冒充几何实现（第 3 步立界）。
-module Sovereign.Topology._PMc2 where
+module Sovereign.Synthesis._PMc2 where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
