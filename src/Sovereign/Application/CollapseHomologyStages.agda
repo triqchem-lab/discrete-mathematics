@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.CollapseHomologyStages
+-- | Sovereign.Application.CollapseHomologyStages
 -- 任务书第五层·5.1 推进：坍缩序列**同调不变**实例（B2）
 --
 -- 数学背景：初等坍缩保持同调。K₃ 完美坍缩序列的四阶段：
@@ -18,7 +18,7 @@
 --   pointC（MorseStrongCritical）、filled3C（jac_Topology）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.CollapseHomologyStages where
+module Sovereign.Application.CollapseHomologyStages where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; z≤n; s≤s)
 open import Data.Product using (_×_; _,_)

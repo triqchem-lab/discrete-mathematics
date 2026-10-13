@@ -33,7 +33,7 @@ open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong)
 open import Relation.Nullary using (¬_)
 open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
-open import Sovereign.Topology.McCordPi0 using (two-chain; _⊑₂_; ⊑₂-00; ⊑₂-01; ⊑₂-11)
+open import Sovereign.Synthesis.McCordPi0 using (two-chain; _⊑₂_; ⊑₂-00; ⊑₂-01; ⊑₂-11)
 open import Sovereign.Topology.OrderComplex using (Strict)
 
 -- ────────────────────────────────────────────────────────────────────

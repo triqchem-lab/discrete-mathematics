@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseBoundaryK3
+-- | Sovereign.Application.MorseBoundaryK3
 -- 任务书第五层·5.1 泛型化 M2 sanity check：Morse 边界 ∂^Morse 的
 --   **关系形态聚合**在 K₃ 上与手算 ∂₁ᶜ 对账
 --
@@ -19,7 +19,7 @@
 -- 复用：MorseCoeffRoute（routing-k3 + CoefRouteDef）+ MorseCriticalHomology（∂₁ᶜ）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseBoundaryK3 where
+module Sovereign.Application.MorseBoundaryK3 where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

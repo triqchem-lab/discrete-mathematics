@@ -14,7 +14,7 @@
 --       Primitive/Cubical.hs +18 ／ Datatypes.hs +9 ／ Substitute.hs +9
 --     ⚠ 该分支**保持上游的 `UnifyStuck`**（`failure = return $ UnifyStuck []`），
 --       并把 `test/Fail/Issue292.agda` **留在 Fail**——即**不改变**上游「不允许证明类型可区分」的决定。
---     其本地形式化对应见 Sovereign.Structology.QuantumBridge §TelescopeVerification
+--     其本地形式化对应见 Sovereign.Synthesis.QuantumBridge §TelescopeVerification
 --       （`makeTau`/`liftS`/`nTarget`/`retract` 名字级对应，见该模块 :640,661,666,695,702,712）。
 --
 --   · **eb1251683f**（2026-07-27，本地提交；**与 PR #8611 是两件事**）= 本模块见证的那个变更：
@@ -53,7 +53,7 @@
 -- 配套的数学侧形式化（补丁所依赖的 CRT 正交分解，三层，均 0 postulate 0 hole）：
 --   · 算术层   Sovereign.Base.CRTLemmas      coprime-POW2-POW3 / crt-merge
 --   · 双射层   Sovereign.Algebra.Duodecimal        crt12-roundtrip / crt12-inv-π3 / -π4
---   · 望远镜层 Sovereign.Structology.QuantumBridge §TelescopeVerification
+--   · 望远镜层 Sovereign.Synthesis.QuantumBridge §TelescopeVerification
 --                roundtrip-general / crt-orthogonal / deBruijn-lift / ThreeSegment
 --                （该模块 395 行起自述「Agda PR #8611: 构造子注入性的 CRT 正交分解」）
 --

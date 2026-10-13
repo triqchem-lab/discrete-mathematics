@@ -31,7 +31,7 @@ open import Data.Product using (_×_; _,_; proj₁; proj₂)
 
 import Sovereign.Base.Trit as Trit
 import Sovereign.Base.Invariants as Inv
-import Sovereign.Geometry.Tryte as TryteGeom -- Import geometric definition
+import Sovereign.Application.Tryte as TryteGeom -- Import geometric definition
 
 --------------------------------------------------------------------------------
 -- 1. 基础存储单元 (Storage Units)

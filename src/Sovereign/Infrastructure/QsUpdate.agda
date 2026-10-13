@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.Engine.QsUpdate
+-- | Sovereign.Infrastructure.QsUpdate
 -- 引擎层：主权块权重 (qs) 的物理更新逻辑
 --
 -- 核心原理：
@@ -19,7 +19,7 @@
 --   2. 编码双射件为构造性数据，断言面如实标注
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Engine.QsUpdate where
+module Sovereign.Infrastructure.QsUpdate where
 
 open import Data.Vec using (Vec; map; _∷_; [])
 open import Data.Fin using (Fin; zero; suc; combine; remQuot)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.KerTrivialFull
+-- | Sovereign.Synthesis.KerTrivialFull
 -- 完备性层④：H₁ 核的完整 Σ 点级平凡化（无 cubical）
 --
 -- 数学内容：
@@ -11,7 +11,7 @@
 --         KerPt (zeroᶠ 1) 是 Prop → Σ 装配无需 PathP。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.KerTrivialFull where
+module Sovereign.Synthesis.KerTrivialFull where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂; subst)

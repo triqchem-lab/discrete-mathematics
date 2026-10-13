@@ -27,7 +27,7 @@
 -- 数学锚点（三层，均已证，本模块用**签名**钉住；锚点漂移 ⇒ 本模块编译失败 = 自动告警）：
 --   算术层 Sovereign.Base.CRTLemmas:22/104  coprime-POW2-POW3 / crt-merge
 --   双射层 Sovereign.Algebra.Duodecimal:438/445/454  crt12-roundtrip / -inv-π3 / -inv-π4
---   望远镜层 Sovereign.Structology.QuantumBridge:395 起「构造子注入性的 CRT 正交分解」
+--   望远镜层 Sovereign.Synthesis.QuantumBridge:395 起「构造子注入性的 CRT 正交分解」
 --            （:604 module TelescopeVerification；:640/:661/:668/:702/:712 为名字级对应）
 
 --

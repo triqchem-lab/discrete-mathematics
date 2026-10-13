@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Geometry.ConformalInvariants
+-- | Sovereign.Application.ConformalInvariants
 -- T⁶ 共形不变量: 内积保持 + 射影→共形嵌入
 -- 0 postulate
 
@@ -13,7 +13,7 @@
 --
 -- 包含（分层）：基础件层：conf-cardinality/1458 定义｜主引理层：proj-order-ok、index-ok｜核对层：conf-cardinality-1458
 --
-module Sovereign.Geometry.ConformalInvariants where
+module Sovereign.Application.ConformalInvariants where
 
 open import Data.Nat using (ℕ; _*_)
 open import Data.Nat.DivMod using (_/_)

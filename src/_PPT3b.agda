@@ -31,7 +31,7 @@ open import _PPI2 using (π₁ᵈ; _⊞ᵈ_)
 open import _PPI4 using (MonoidIso; Gskel)
 open import _PPT2 using (PostnikovTower; tower-gskel)
 open import _PPT3 using (StageEq; stage-eq-gskel)
-open import Sovereign.Topology.McCordPi0 using (two-chain)
+open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 
 --------------------------------------------------------------------------------
 -- §1 transport 件（泛型——A B 抽象变量，J 规则 refl 匹配）

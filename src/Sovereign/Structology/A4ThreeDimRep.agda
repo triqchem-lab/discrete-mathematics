@@ -25,7 +25,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip; _⊗_)
 open import Sovereign.Structology.A4Representation
   using (Zω; oneZω; zeroZω; negZω; mkZω; ConjClass; chi3)
-open import Sovereign.Structology.MatrixZω using (Mat; mulMat; trace)
+open import Sovereign.Synthesis.MatrixZω using (Mat; mulMat; trace)
 
 --------------------------------------------------------------------------------
 -- §1. ρ₃: 12 个 3×3 矩阵 (V₀ 基下的整数坐标, 全显式)

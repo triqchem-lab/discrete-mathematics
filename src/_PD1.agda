@@ -34,8 +34,7 @@ open import _PPI4 using (Gskel; Gcmp; MonoidIso; Flip; Gskel-flip; Gcmp-flip)
 --    形式化选择：返边 witness 的「存在谓词型」，AHomotopy 可消性面留证明侧
 -- ────────────────────────────────────────────────────────────────────
 
-record Mergeable (G : DiGraph) : Set₁
- where
+record Mergeable (G : DiGraph) : Set₁ where
   field
     return-edge : ∀ {u v} → DiGraph.edge G u v → DiGraph.edge G v u
     return-ah   : ∀ {u v} (e : DiGraph.edge G u v) →

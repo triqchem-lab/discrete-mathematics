@@ -23,7 +23,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Agda.Builtin.Equality using () renaming (refl to reflᴱ; _≡_ to _≡ᴱ_)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; _∙_)
 open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; Walk; nil; cons)
-open import Sovereign.Topology.McCordPi0 using (two-chain; ⊑₂-01)
+open import Sovereign.Synthesis.McCordPi0 using (two-chain; ⊑₂-01)
 open import _PPI4 using (Gskel)
 open import _PPI4g
   using (npos; nneg; loopK; loop-classify; unloop; npos-≡-rounds;

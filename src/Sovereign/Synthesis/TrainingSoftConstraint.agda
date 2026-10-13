@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coupling.TrainingSoftConstraint
+-- | Sovereign.Synthesis.TrainingSoftConstraint
 -- 耦合域：训练期能隙Δ软约束 (Soft Constraint)
 --
 -- 宪法约束：
@@ -16,7 +16,7 @@
 -- 包含：DELTA_HALF_SCALED/PENALTY_MULTIPLIER（定点常量）、computeDeviation/applySoftConstraint、
 --       softConstraintInactiveWithinGap/softConstraintIncreasesEnergyOutsideGap。
 
-module Sovereign.Coupling.TrainingSoftConstraint where
+module Sovereign.Synthesis.TrainingSoftConstraint where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _≤_; _<_; _≥_; _>_)
 open import Data.Nat.Base using (_<ᵇ_; _≤ᵇ_)

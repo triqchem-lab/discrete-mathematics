@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | Sovereign.Geometry.GeometricFidelity
+-- | Sovereign.Application.GeometricFidelity
 -- QUAD.T2 几何极保真度判定：指名投影逐条量保真度（24 号文档 :97 任务）
 --
 -- 数学背景:
@@ -18,7 +18,7 @@
 --   落地建议（24 号指示）: 「识别」职责改用已存在的 set quotient
 --     T6╱A4（T6.agda:960）; 其与 φ-respects（T6:976-977 postulate）的
 --     相容性 = 商等价生成元与截断见证的相容, 留待人类裁决（journal 已记）。
-module Sovereign.Geometry.GeometricFidelity where
+module Sovereign.Application.GeometricFidelity where
 
 open import Data.Product using (_×_; _,_; Σ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; _≢_)

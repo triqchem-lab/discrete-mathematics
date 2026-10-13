@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.Collapse
+-- | Sovereign.Application.Collapse
 -- 任务书第五层·5.1 推进：可坍缩理论阶段 1——自由面 + 初等坍缩 + K₃ 序列
 --
 -- 数学背景：初等坍缩删除一对 (τ, σ)，其中 τ 是 σ 的**自由面**：
@@ -22,7 +22,7 @@
 --   = FaceRel 枚举 + 已删项排除（构造子冲突 λ ()——cubical 单层安全）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.Collapse where
+module Sovereign.Application.Collapse where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

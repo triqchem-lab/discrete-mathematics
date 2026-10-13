@@ -32,7 +32,7 @@ open import Cubical.HITs.SetQuotients using ([_]; squash/)
 open import Cubical.HITs.SetQuotients.Properties using (rec; elimProp; elimProp2)
 open import Sovereign.Topology.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; AHomotopy; _++w_)
-open import Sovereign.Topology.McCordPi0 using (two-chain; ⊑₂-01; _⊑₂_)
+open import Sovereign.Synthesis.McCordPi0 using (two-chain; ⊑₂-01; _⊑₂_)
 open import _PPI using (Loop)
 open import _PPI4 using (Gskel; MonoidIso)
 open import _PPI2 using (π₁ᵈ; _⊞ᵈ_; π₁ᵈ-rec)

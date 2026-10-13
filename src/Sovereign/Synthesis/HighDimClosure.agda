@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.HighDimClosure
+-- | Sovereign.Synthesis.HighDimClosure
 -- 拓扑学：仲吕闭合的高维几何原理与极限环面演化
 --
 -- 核心区分：
@@ -16,7 +16,7 @@
 --   奇偶配对不变量 ⇒ 奇偶失配初态永远到不了 (0,0)（见 convergenceRefuted）。
 --   正确表述：收敛**仅对奇偶配对的初态**可能成立（何时命中属 roadmap，未证不入类型层）。
 
-module Sovereign.Topology.HighDimClosure where
+module Sovereign.Synthesis.HighDimClosure where
 
 open import Data.Nat using (ℕ; suc; zero; _<?_; _%_; _/_; NonZero)
 open import Data.Nat.Properties using (+-suc; +-identityʳ; +-assoc; ≡ᵇ⇒≡)

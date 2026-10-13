@@ -27,7 +27,7 @@ open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Topology.McCordCore using (cmpEdge)
 open import Sovereign.Topology.OrderComplex
   using (Strict; IsChain2; IsChain3; IsChain; chain2-fn; isChain2→general; general→chain2; strict→cmp)
-open import Sovereign.Topology.McCordPi0 using (two-chain; two-anti; _⊑₂_; ⊑₂-01)
+open import Sovereign.Synthesis.McCordPi0 using (two-chain; two-anti; _⊑₂_; ⊑₂-01)
 
 -- 双向蕴含 + 析取映射 + 等价复合（基础件层）
 _↔_ : Set → Set → Set

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Geometry.ProjectiveOrbit
+-- | Sovereign.Application.ProjectiveOrbit
 -- 4320D 轨道分解：Burnside 映射与轨道计数
 --
 -- 构建在 ProjectiveCore 之上:
@@ -8,7 +8,7 @@
 --   射影点 = G-不可约轨道
 --   全息信息轨道 = 729 × 6 − 54 = 4320
 
-module Sovereign.Geometry.ProjectiveOrbit where
+module Sovereign.Application.ProjectiveOrbit where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Data.Fin using (Fin; zero; suc)

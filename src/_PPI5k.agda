@@ -117,7 +117,7 @@ chk-p3-nil = [ refl3 (nil2 (nil s2v0)) ]
 -- §5.0 续段导入区（追加——显式 using）
 -- ────────────────────────────────────────────────────────────────────
 
-open import Sovereign.Topology.McCordPi0 using (two-chain; ⊑₂-01; _⊑₂_)
+open import Sovereign.Synthesis.McCordPi0 using (two-chain; ⊑₂-01; _⊑₂_)
 open import _PPI4
 open import _PPI4d using (w2)
 open import Data.Fin using (Fin; zero; suc)

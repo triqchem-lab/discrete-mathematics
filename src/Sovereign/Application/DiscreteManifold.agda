@@ -4,7 +4,7 @@
 -- T⁶ 作为离散流形，有限点集 + 组合不变量.
 -- 0 postulate.
 
-module Sovereign.Geometry.DiscreteManifold where
+module Sovereign.Application.DiscreteManifold where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

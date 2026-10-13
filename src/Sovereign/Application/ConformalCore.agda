@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Geometry.ConformalCore
+-- | Sovereign.Application.ConformalCore
 -- 共形几何核心：共形群 Conf = (C₃)⁶ ⋊ C₂ + 共形点 = Conf-轨道
 --
 -- GF(3) 保角性: λ²≡1 → 缩放保持内积不变 (inner-scale2-inv)
 -- Conf = (C₃ × C₃ × C₃ × C₃ × C₃ × C₃) ⋊ C₂, |Conf| = 1458
 -- 射影群 G = (C₃)³ ⋊ C₂ 是 Conf 的子群
 
-module Sovereign.Geometry.ConformalCore where
+module Sovereign.Application.ConformalCore where
 
 open import Data.Nat using (ℕ; _*_)
 open import Data.Fin using (Fin; zero; suc)

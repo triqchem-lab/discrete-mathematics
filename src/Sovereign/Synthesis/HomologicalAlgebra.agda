@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.HomologicalAlgebra
+-- | Sovereign.Synthesis.HomologicalAlgebra
 -- 同调代数统一结构 (L3 深层证明)
 --
 -- 核心命题:
@@ -14,7 +14,7 @@
 --
 -- 全部 0 postulate, GF(3) 穷举 refl + 符号推理。
 
-module Sovereign.Topology.HomologicalAlgebra where
+module Sovereign.Synthesis.HomologicalAlgebra where
 
 -- [波 2-C 检查件外移] 本模块全部实例核对 wrapper 已迁
 --   Sovereign.Application.DiscreteEMIdentityChecks（chain-complex / d-squared-zero（→d-squared-zero-hom）/ grad-in-ker-curl / curl-in-ker-div）——

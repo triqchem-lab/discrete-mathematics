@@ -123,3 +123,21 @@ AStep-back : ∀ {u} (p q : Walk G u u) (e : edge u v) →
 | 7 | FreeAbQuotient 群律 transport 先例 | `Application/FreeAbQuotient:111/127/213` | ✓ |
 | 8 | Barcelo 对称图回溯自动存在（经典 A-群=群的结构根源） | web 检索（zbmath 1108.05030/Perspectives/Smith 综述） | ✓ 检索结论 |
 | 9 | 修正案 A 三触发台账 | 台账在案（T1 对外交付需 McCord iso/T2/T3） | ✓ |
+
+
+---
+
+## 七、校订注记与跨批协同（2026-10-13 晚，主台追记）
+
+### 7.1 校订：本文档**无需修正**（错记在叙述层，不在此文档）
+本报告 §1.1 表格已把 v2 写作「**幸存性待证**（H1/H2）」、§4.2 明列「两支皆幸存 ⇒ v2 定理 = ¬MonoidIso」——**从未声称**「逆律全域普适、分水岭整体消解」。该措辞出现在**会话叙述层**（进度报告/汇总），属**叙述层越界**，现予更正：
+- **准确表述**：backtrack 是**新增的展示生成集 face**（关系入定义，_PPI2:229-236 正解②）；v1（无回溯 face）的分水岭定理**原样成立**（`_PPI2:301 inv-law-false` 仍是该 face 的合法否证件）；v2 是**另一 face**，其分类（H1 ℤ 侧 / H2 幂等侧）**待施工**。
+- **不得混读**：v1 结论 ≠ v2 结论；两 face 的定理各自成立，互不推翻。这就是「分层传导」的准确含义（**不是**「分水岭整体消解」）。
+
+### 7.2 协同：A2 §4.1 的 `AStep-back` 与桥件设计甲1 的 `AStep-bt` = **同一对象**
+| 面 | 出处 | 定义形 |
+|---|---|---|
+| A2 修正案 A | 本报告 §4.1（源自 `_PPI2:230`） | `AStep-back : (p q) (e : edge u v) → AHomotopy-rel (p ++w cons e (cons (flip e) q)) (p ++w q)` |
+| N₁-Pi1-PTS 桥件（甲1） | `docs/plan/N1-Pi1-PTS-bridge-design-2026-10-13.md` §二 | `bt : p ++w (cons e (cons (flip e) b)) → p ++w b`（flip 走 `SymEdge-sym`，零公理） |
+
+**结论（避免双重定义）**：二者**逐字同形** ⇒ 应**合并为一批工**——先落 `AStep-bt`（新 face data，零改现件）→ 同批产出（a）A2 的逆律骨架（~20-40 行，`_PPI2:232` 原文锚）、（b）桥件的 `bt-collapse`（`w ++w rev w ~ᵇᵗ nil`）、（c）A2 H1/H2 分类的**两个 face 对照表**。**合并理由**：同一生成集若在两处各自定义，会立即产生「相异刚性头」式的双定义污染（dype 审计案同族）。

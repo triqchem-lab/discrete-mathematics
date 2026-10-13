@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.DeRhamComplex
+-- | Sovereign.Synthesis.DeRhamComplex
 -- 离散 de Rham 复形 (L3 深层证明)
 --
 -- 核心命题:
@@ -15,7 +15,7 @@
 --
 -- 全部 0 postulate, GF(3) 穷举 refl + 符号推理。
 
-module Sovereign.Topology.DeRhamComplex where
+module Sovereign.Synthesis.DeRhamComplex where
 
 -- [波 2-C 检查件外移] 本模块全部实例核对 wrapper 已迁
 --   Sovereign.Application.DiscreteEMIdentityChecks（curl-grad-zero-full / div-curl-zero-full / d-squared-zero / de-rham-complex）——

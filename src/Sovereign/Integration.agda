@@ -21,10 +21,10 @@ module Sovereign.Integration where
 -- [待核对·旧API集成测试] import Sovereign.Base.Axioms as Ax
 -- [待核对·旧API集成测试] import Sovereign.Base.TritOps as TritOps
 -- [待核对·旧API集成测试] import Sovereign.MetaStructure.WuXing as WuXing
--- [待核对·旧API集成测试] import Sovereign.Structology.Lattice as Lat
+-- [待核对·旧API集成测试] import Sovereign.Synthesis.Lattice as Lat
 -- [待核对·旧API集成测试] import Sovereign.Application.TQ10 as TQ10
--- [待核对·旧API集成测试] import Sovereign.Engine.QsUpdate as QsUpdate
--- [待核对·旧API集成测试] import Sovereign.Coupling.Dynamics as Dyn
+-- [待核对·旧API集成测试] import Sovereign.Infrastructure.QsUpdate as QsUpdate
+-- [待核对·旧API集成测试] import Sovereign.Synthesis.Dynamics as Dyn
 -- [待核对·旧API集成测试] import Sovereign.Infrastructure.StateMachine as SM
 --
 -- [待核对·旧API集成测试] --------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.Zωi
+-- | Sovereign.Synthesis.Zωi
 -- Z[ω,i] 环: 2·A₄ = SL(2,3) 二维不可约表示的忠实环 (0 postulate)
 --
 -- 为什么需要 i: Z[ω] 只有 3 阶元素 (ω³=1), 但 2·A₄ 的二维表示需要 4 阶元素
@@ -20,7 +20,7 @@
 -- 注意: 本模块定义前, 初稿公式有两处错误 (ω 系数漏 +dd′, i 系数符号反),
 -- 已由穷举反例 (ωi)²≠1+ω 与结合律反例否决并修正。此为「先算后写」纪律。
 
-module Sovereign.Structology.Zωi where
+module Sovereign.Synthesis.Zωi where
 
 open import Data.Integer.Base using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)
 open import Data.Product using (_×_; _,_)

@@ -27,7 +27,7 @@ open import Agda.Builtin.Equality using () renaming (refl to reflᴱ; _≡_ to _
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; _∙_)
 open import Sovereign.Topology.BarceloAHomotopy
   using (DiGraph; Walk; AStep; AHomotopy; slide; expand; refl'; symm; trans'; gen)
-open import Sovereign.Topology.McCordPi0 using (two-chain)
+open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import _PPI4 using (Gskel)
 
 private

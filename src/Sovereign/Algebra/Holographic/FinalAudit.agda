@@ -70,8 +70,8 @@ import Sovereign.Application.PvsNP_Separation
 import Sovereign.Application.GF27Separation
 
 -- 编码理论 (P1-2, wiki 94B): GF(9) BCH 码 [8,6,3] + GF(27) 三元循环码
-import Sovereign.Coding.HammingMetric
-import Sovereign.Coding.BCHGF9       -- 最小距离界 + 系统编码 + 单错纠错 (0 postulate)
+import Sovereign.Synthesis.HammingMetric
+import Sovereign.Synthesis.BCHGF9       -- 最小距离界 + 系统编码 + 单错纠错 (0 postulate)
 import Sovereign.Application.CyclicGF27   -- γ 根结构 → 长度 26 循环码 + freshman's dream (0 postulate)
 
 -- 有限概率空间 (P1-3, wiki 60A 离散版): 全离散无浮点, 概率 = 整数比交叉相乘

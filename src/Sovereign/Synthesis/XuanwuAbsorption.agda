@@ -1,5 +1,5 @@
 {-# OPTIONS --guardedness --rewriting #-}
-module Sovereign.Structology.XuanwuAbsorption where
+module Sovereign.Synthesis.XuanwuAbsorption where
 
 open import Agda.Builtin.Equality using (_≡_; refl)
 open import Agda.Builtin.Nat using (mod-helper; div-helper; _+_; _*_)

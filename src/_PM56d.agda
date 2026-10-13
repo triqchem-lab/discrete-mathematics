@@ -25,7 +25,7 @@ open import Sovereign.Topology.FormanMinimal using (Sx; v0; v1; v2; e01; e12; e2
 open import _PM56 using (Chain)
 open import _PM56b using (negT; negChain; ∂₁ˢ; scl; ∂C)
 open import _PM56c using (lookup; π-col)
-open import Sovereign.Topology.MorseBoundaryK3 using (∂M-e₂₀-v₁; ∂M-e₂₀-v₂)
+open import Sovereign.Application.MorseBoundaryK3 using (∂M-e₂₀-v₁; ∂M-e₂₀-v₂)
 
 -------------------------------------------------------------------------
 -- §1 H-col（坍缩同伦——顶点面系数设计）

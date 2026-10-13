@@ -264,7 +264,7 @@ open import Sovereign.Foundation.DigitalRoot public using (
 --------------------------------------------------------------------------------
 -- B32: 6624 = 144 × 46 (完整环面巡游)
 -- 源: 多源交叉验证
---   Sovereign.Structology.QuantumBridge.full-tour-6624
+--   Sovereign.Synthesis.QuantumBridge.full-tour-6624
 --   Sovereign.Structology.MagicSquare144.fullTourCorrect
 --   Sovereign.Geometry.ProjectiveInvariants.t-is-6624
 --   Sovereign.HoTT.PhaseAlignment6624.fullTourValue

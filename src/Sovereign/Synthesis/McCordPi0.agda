@@ -16,7 +16,7 @@
 --
 -- 包含：Disconnected / Connected / path-snoc / path-anti / π₀-bridge₁ / π₀-bridge₂ /
 --       connected-no-unreachable / two-chain / two-anti / check-two-chain / check-two-anti
-module Sovereign.Topology.McCordPi0 where
+module Sovereign.Synthesis.McCordPi0 where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

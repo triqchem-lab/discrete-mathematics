@@ -25,7 +25,7 @@ open import Cubical.Foundations.Prelude using (funExt) renaming (_≡_ to _≡�
 open import Cubical.Data.Equality as CE using (eqToPath; pathToEq)
 open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Topology.OrderComplex using (Strict; lin3)
-open import Sovereign.Topology.McCordPi0 using (two-chain)
+open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import _PPI3 using (Simplex; face; _<ᵢ_; unskip; shift)
 open import _PPI3c using (s₃; SimplexExt; face-face-comm-rec; ≤-irrel)
 

@@ -28,7 +28,7 @@ open import Sovereign.Application.H2OC60
         ; spectral-lines-decomposition; symmetryBreakingRatio
         ; ortho-para-ratio; ground-state-match)
 
--- 注意: Sovereign.HoTT.EnergyGap 当前有编译错误 (line 94: × 未导入)
+-- 注意: Sovereign.Synthesis.EnergyGap 当前有编译错误 (line 94: × 未导入)
 -- 此处本地镜像其核心定义，待 EnergyGap 修复后切换为直接 import
 -- 原始定义: GapSqEquals3 : NormSq Displacement ≡ 3 / 1
 -- 镜像: 位移矢量 Ke - Sheng 的范数平方

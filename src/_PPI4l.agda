@@ -37,7 +37,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Sovereign.Topology.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; _++w_)
-open import Sovereign.Topology.McCordPi0 using (two-chain)
+open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import _PPI4 using (Gskel)
 open import _PPI4c using (edgeGskel-neq)
 open import _PPI4d using (e01; e10; w2)

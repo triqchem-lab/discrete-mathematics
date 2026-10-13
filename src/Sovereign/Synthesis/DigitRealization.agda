@@ -6,13 +6,13 @@
 --   3. 12 态位域 ⇄ 三态域 + 2 二态域的显式拆合（bitsToFin4/fin4ToBits）。
 -- 包含：bitsToFin4/fin4ToBits（显式双射）、fin4 位值族、容量⇒位数不等式件。
 
-module Sovereign.Format.DigitRealization where
+module Sovereign.Synthesis.DigitRealization where
 
--- | Sovereign.Format.DigitRealization —— **桥：位域 ↔ 进制**
+-- | Sovereign.Synthesis.DigitRealization —— **桥：位域 ↔ 进制**
 --
 -- 本模块**不是**任一范畴的内部事实，而是两个范畴之间的桥：
---   · 左：`Sovereign.Format.DigitField` —— 位域（字段状态数、划分）
---   · 右：`Sovereign.Format.Positional` / `Doz` —— 进制（权重 `b^k`、位值 `0..b−1`、逢 b 进一）
+--   · 左：`Sovereign.Synthesis.DigitField` —— 位域（字段状态数、划分）
+--   · 右：`Sovereign.Synthesis.Positional` / `Doz` —— 进制（权重 `b^k`、位值 `0..b−1`、逢 b 进一）
 --
 -- 桥只有两句话，而且**都是双射或不等式，不是相等**：
 --

@@ -6,17 +6,17 @@
 --   3. 与进制的桥不在本模块（见 DigitRealization）。
 -- 包含：FieldCapacity（容量类型）、capacity（容量运算族：乘/幂/比较）。
 
-module Sovereign.Format.DigitField where
+module Sovereign.Synthesis.DigitField where
 
--- | Sovereign.Format.DigitField —— **位域层**
+-- | Sovereign.Synthesis.DigitField —— **位域层**
 --
 -- ── 范畴声明（本模块只谈这一件事）────────────────────────────────────────
 --   · **位域（digit field）** = 字内的一段字段，由**状态数**（容量）刻画：
 --     一个字段能取多少种值、如何划分成更小的字段。
 --     位域层的事实是纯粹的容量算术（乘、幂、比较），**不含任何记数法语义**。
 --   · **进制（numeral base / radix）** = 记数法：位值权重 `b^k`、位的取值范围 `0..b−1`、
---     逢 b 进一。这是**另一个范畴**，见 `Sovereign.Format.Positional` / `Sovereign.Format.Doz`。
---   · 两者之间的桥（用某个位域去承载某个进制的位）见 `Sovereign.Format.DigitRealization`。
+--     逢 b 进一。这是**另一个范畴**，见 `Sovereign.Synthesis.Positional` / `Sovereign.Synthesis.Doz`。
+--   · 两者之间的桥（用某个位域去承载某个进制的位）见 `Sovereign.Synthesis.DigitRealization`。
 --
 -- ── 禁止的表述（本模块的存在就是为了挡住它）─────────────────────────────
 --   ❌ 「12 进制 = 3 × 2 × 2」

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Format.Positional
+-- | Sovereign.Synthesis.Positional
 -- 泛型位值制（base-b positional system）—— **归一保值 + 加法/乘法同态**
 --
 -- 为什么需要这个模块（两个已知缺口的共同根）：
@@ -47,7 +47,7 @@ open import Data.Nat.Base using (ℕ; _<_; NonZero; >-nonZero)
 --   3. 参数化 base（base > 1）——Doz（base=12）与 Z/3¹¹ 环（base=3）共用此件。
 -- 包含：Raw（原始位串）、value（求值）、expand（位展开）、归一/同态律族。
 
-module Sovereign.Format.Positional (base : ℕ) (base>1 : 1 < base) where
+module Sovereign.Synthesis.Positional (base : ℕ) (base>1 : 1 < base) where
 
 open import Data.Nat using (zero; suc; _+_; _*_; _^_; s≤s; z≤n)
 open import Data.Nat.DivMod using (_%_; _/_; m%n<n; m≡m%n+[m/n]*n)

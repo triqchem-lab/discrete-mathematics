@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Density.Resonance
+-- | Sovereign.Application.Resonance
 -- 密度：量子共振——纳音驻波主峰的谐波筛选
 -- 
 -- 本质：纳音驻波主峰在地气声子谱（基频 144Hz）中的谐波筛选与拓扑相变
@@ -12,7 +12,7 @@
 --   2. 唯象锚定非定理；引用必带实验来源
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Density.Resonance where
+module Sovereign.Application.Resonance where
 
 open import Cubical.Foundations.Prelude hiding (_≡_; refl)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _≤_; _<_ ; _>_)

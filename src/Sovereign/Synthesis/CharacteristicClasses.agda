@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.CharacteristicClasses
+-- | Sovereign.Synthesis.CharacteristicClasses
 -- 特征标类统一结构 (L3 深层证明)
 --
 -- 核心命题:
@@ -14,7 +14,7 @@
 --
 -- 全部 0 postulate, GF(3) 穷举 refl + 符号推理。
 
-module Sovereign.Topology.CharacteristicClasses where
+module Sovereign.Synthesis.CharacteristicClasses where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)

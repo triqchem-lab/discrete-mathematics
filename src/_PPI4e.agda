@@ -27,7 +27,7 @@ open import Agda.Builtin.Equality using () renaming (refl to reflᴱ)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; _∙_)
 open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Topology.McCordCore using (cmpEdge)
-open import Sovereign.Topology.McCordPi0 using (two-chain; _⊑₂_; ⊑₂-00; ⊑₂-01; ⊑₂-11)
+open import Sovereign.Synthesis.McCordPi0 using (two-chain; _⊑₂_; ⊑₂-00; ⊑₂-01; ⊑₂-11)
 open import Sovereign.Topology.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; AStep; AHomotopy; slide; expand; refl'; symm; trans'; gen)
 open import _PPI4 using (Gcmp)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.Chain2
+-- | Sovereign.Synthesis.Chain2
 -- M6 双级链结构——非平凡链同伦（h∂ 项完整，无省略）
 --
 -- 数学内容：
@@ -14,7 +14,7 @@
 --   满足条件（依赖 sum-distr：⊗ 对 ⊕ 求和的分配）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.Chain2 where
+module Sovereign.Synthesis.Chain2 where
 
 open import Data.List using (List; _∷_; [])
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; cong; cong₂; sym)

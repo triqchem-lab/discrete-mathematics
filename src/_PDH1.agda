@@ -34,7 +34,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Topology.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; _++w_; AHomotopy)
 open import _PPI2 using (π₁ᵈ; _⊞ᵈ_; π₁ᵈ-rec)
-open import Sovereign.Topology.McCordPi0 using (two-chain)
+open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import _PPI4 using (Gskel)
 open import _PPI4c using (AStep-sk-empty; ah-diag-sk)
 open import _PPI4g using (npos; nneg; loopK; loopK-+; npos-loopK)

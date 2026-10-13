@@ -33,7 +33,7 @@ open import Sovereign.Algebra.GF9
          galoisConjugate-pair)
 open import Sovereign.Structology.A4Representation
   using (Zω; mkZω; oneZω; zeroZω; negZω; ConjClass; chi3)
-open import Sovereign.Structology.MatrixZω using (trace)
+open import Sovereign.Synthesis.MatrixZω using (trace)
 open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip) renaming (_⊗_ to _⊗A4_)
 open import Sovereign.Structology.A4ThreeDimRep
   using (rho3; rho3-hom; chi3FromRep; rho3-identity;

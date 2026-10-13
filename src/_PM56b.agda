@@ -29,7 +29,7 @@ open import Data.Product using (_×_; _,_)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
 open import Sovereign.Topology.FormanMinimal using (Sx; v0; v1; v2; e01; e12; e20; t)
 open import _PM56 using (Chain; PairConnector; pair-hom-kernel; conn-hom-kernel; unit-r)
-open import Sovereign.Topology.MorseBoundaryK3 using (∂M-e₂₀-v₁; ∂M-e₂₀-v₂)
+open import Sovereign.Application.MorseBoundaryK3 using (∂M-e₂₀-v₁; ∂M-e₂₀-v₂)
 
 -------------------------------------------------------------------------
 -- §1 Sx 边界表（循环定向——FreeAbBoundary 同源）+ 链层算子

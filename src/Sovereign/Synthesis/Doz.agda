@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Format.Doz
+-- | Sovereign.Synthesis.Doz
 -- **Doz —— 十二进制位值制（dozenal positional notation）**
 --
 -- 本体论位置（严格按 `docs/duodecimal/01-ontology.md` / `08-terminology.md`）：
@@ -17,7 +17,7 @@
 -- 是本库已记录的错误（`PROJECT_MEMORY.md` 2026-08-25 21:30 经验教训）。
 --
 -- 本模块补的是**一直缺失的那一层**：`docs/duodecimal/01-ontology.md` 写着 Doz
--- 「记数法层（尚未系统形式化）」。这里用 `Sovereign.Format.Positional` 的 base = 12 实例
+-- 「记数法层（尚未系统形式化）」。这里用 `Sovereign.Synthesis.Positional` 的 base = 12 实例
 -- 把它形式化，并给出机器位宽（9 位）下的语义定理。
 --
 -- ── 位宽为什么是 9 ─────────────────────────────────────────────────────
@@ -25,8 +25,8 @@
 --   · 12¹⁰ = 61,917,364,224 > 3²⁷ ✗
 --   · **本模块是「进制层」**（记数法）：只谈基 `b = 12` 的权重 `12^k`、位值 `0..11`、逢 12 进一。
 --     它**不谈**这些位值在字里如何被承载——那是**位域（digit field）**，另一个范畴：
---       · 位域层      → `Sovereign.Format.DigitField`（字段状态数、划分、容量）
---       · 位域 ↔ 进制 桥 → `Sovereign.Format.DigitRealization`（双射，不是等号）
+--       · 位域层      → `Sovereign.Synthesis.DigitField`（字段状态数、划分、容量）
+--       · 位域 ↔ 进制 桥 → `Sovereign.Synthesis.DigitRealization`（双射，不是等号）
 --     ⚠️ 禁止把「进制」与「位域」写成同一件事（如「12 进制 = 3 × 2 × 2」）：
 --     见 `docs/duodecimal/08-terminology.md` §7.5。
 --   · 本模块只规定**位数上限**（`DOZ_DIGITS = 9`）与进位规则；**不规定**一位数位占几个字段 ——
@@ -49,7 +49,7 @@ open import Data.Nat.Base using (ℕ; _<_)
 --   2. CRT=物理波系统/谱投影，非模运算定理（红线）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Format.Doz where
+module Sovereign.Synthesis.Doz where
 
 open import Data.Nat using (zero; suc; _+_; _*_; _^_; s≤s; z≤n)
 open import Data.List using (List; []; _∷_; reverse)
@@ -61,7 +61,7 @@ open import Data.Product using (proj₁)
 open import Relation.Nullary using (yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-import Sovereign.Format.Positional as P
+import Sovereign.Synthesis.Positional as P
 
 -- base = 12，且 1 < 12
 module Pos = P 12 (s≤s (s≤s z≤n))

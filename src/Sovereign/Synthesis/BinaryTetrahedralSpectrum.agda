@@ -18,7 +18,7 @@ open import Data.Integer.Base using (+_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Structology.Zωi
+open import Sovereign.Synthesis.Zωi
   using (Zωi; mkZωi; zeroZωi; oneZωi; ωZωi; iZωi; addZωi; negZωi; mulZωi)
 open import Sovereign.Structology.A4Representation using (Zω; mkZω)
 open import Sovereign.Synthesis.BinaryTetrahedralDefiningRep

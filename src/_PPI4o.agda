@@ -197,7 +197,7 @@ module HeadLaw {G : DiGraph} (eqV : (a b : DG.V G) → Dec (a ≡ b)) where
 
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Fin.Properties using () renaming (_≟_ to _≟F_)
-open import Sovereign.Topology.McCordPi0 using (two-chain)
+open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import _PPI4 using (Gskel)
 open import _PPI4d using (e01; e10; w2)
 
