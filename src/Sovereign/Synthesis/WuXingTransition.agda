@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.WuXingTransition
+-- | Sovereign.Synthesis.WuXingTransition
 -- 五行对称群跃迁链：A₄ → O_h → I_h → I → O → A₄
 -- v5.5 (2026-07-03): 手性 Z₂ 因子生命周期 + 环向缠绕幂次 a 序参量
 -- v5.6 (2026-07-03): Christoffel 螺旋深层推导 —— a序列和Z₂因子从离散测地线导出
@@ -18,7 +18,7 @@
 --     → scanl 累加 [0,1,3,4,6] = a序列
 --     → a奇偶性 → Z₂因子 (奇=含反射, 偶=纯旋转)
 
-module Sovereign.Structology.WuXingTransition where
+module Sovereign.Synthesis.WuXingTransition where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _/_; _<ᵇ_)
 open import Data.Bool using (Bool; true; false)

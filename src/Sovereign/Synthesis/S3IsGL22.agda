@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.S3IsGL22
+-- | Sovereign.Synthesis.S3IsGL22
 -- S₃ ≅ GL(2,2): SP2 含反射全对称的 GF(2) 矩阵实现 (0 postulate)
 --
 -- GL(2,2) = GF(2) 上 det=1 的 2×2 可逆矩阵, 共 6 个, 与 S₃ 同构。
@@ -8,7 +8,7 @@
 -- 非交换 (唯一 6 阶非交换群即 S₃)。这是 SP2 含反射对称的代数载体,
 -- GF(2) 只服务于 SP2 的反射, 不进入 GF(3)/GF(9) 主基座。
 
-module Sovereign.Structology.S3IsGL22 where
+module Sovereign.Synthesis.S3IsGL22 where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero; suc)

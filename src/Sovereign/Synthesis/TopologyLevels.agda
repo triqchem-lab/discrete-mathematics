@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.TopologyLevels
+-- | Sovereign.Synthesis.TopologyLevels
 -- 结构学：多层级拓扑定义（磁性、中性、全息）
 --
 -- 本模块旨在纠正以往使用“电性文明”（连续统/有理数/复数）定义拓扑的错误。
@@ -10,7 +10,7 @@
 -- 2. 中性文明 (144 密度): 基于主权 LCM 模数的整数推演
 -- 3. 全息文明 (4320 密度): 基于公理的瞬时同步
 
-module Sovereign.Structology.TopologyLevels where
+module Sovereign.Synthesis.TopologyLevels where
 
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; fromℕ<; _≟_)
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _∸_)

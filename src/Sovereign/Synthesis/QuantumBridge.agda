@@ -1,12 +1,12 @@
 {-# OPTIONS --cubical --guardedness --rewriting #-}
 
--- | Sovereign.Structology.QuantumBridge
+-- | Sovereign.Synthesis.QuantumBridge
 -- 量子数学桥：CRT域 ←→ 幻方正交 ←→ T⁶环面
 --
 -- 将已有证明串联为统一框架, 不引入新 postulate。
 -- 全部使用 refl 验证代数关系。
 
-module Sovereign.Structology.QuantumBridge where
+module Sovereign.Synthesis.QuantumBridge where
 open import Data.Fin using (Fin; zero; suc; toℕ)
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_; _∸_; _/_; _^_; _<?_; _<_; _≤_)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.TetrahedralA4
+-- | Sovereign.Synthesis.TetrahedralA4
 -- 正四面体旋转群 = A₄: 元素阶分解 1 + 3×2 + 8×3 (0 postulate)
 --
 -- 卢先生原生锚: 正四面体 = 「两个周期」(180° 双对换, 阶 2) + 「三生三」(120° 三循环, 阶 3)。
@@ -12,7 +12,7 @@
 -- 本模块把「阶结构」作为正四面体旋转群的代数指纹, 与 A4Group 的群结构桥接;
 -- 物理/本体论解读 (sp3 四面体 = 频率+时间+空间) 属命名层, 不进入证明链。
 
-module Sovereign.Structology.TetrahedralA4 where
+module Sovereign.Synthesis.TetrahedralA4 where
 
 open import Data.Nat using (ℕ; _*_; _+_)
 open import Data.Fin using (Fin; zero; suc)

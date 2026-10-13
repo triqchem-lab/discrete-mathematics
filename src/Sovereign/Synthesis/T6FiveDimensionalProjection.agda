@@ -1,6 +1,6 @@
 {-# OPTIONS --cubical --rewriting --guardedness #-}
 
--- | Sovereign.Structology.T6FiveDimensionalProjection
+-- | Sovereign.Synthesis.T6FiveDimensionalProjection
 -- T⁶ 五维物理投影: 六枚坐标的显式维度标注 (0 postulate, 无洞)
 --
 --   T⁶ = (x, y, z, cL, cR, g)
@@ -17,7 +17,7 @@
 -- 与 T6.agda 的 729 双射对接: project729 = decompose ∘ finToT6
 -- 为后续物理模块提供维度框架 (本体层 PhysicalOntology: 5D 以太 = T⁶ + GF(9))。
 
-module Sovereign.Structology.T6FiveDimensionalProjection where
+module Sovereign.Synthesis.T6FiveDimensionalProjection where
 
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)

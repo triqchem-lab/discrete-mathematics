@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | Sovereign.Structology.SphericalVector
+-- | Sovereign.Synthesis.SphericalVector
 -- 球谐矢量桥对象：T⁶ 相位格点 × C₄ 相位纤维 × A₄ 矢量表示 V3 的统一命名锚点
 --
 -- 数学背景: 判据第③层（维数塌缩截断）审计
@@ -15,7 +15,7 @@
 --   3. 变换律 = A₄ 三维矢量不可约表示 V3（球谐 l=1 矢量内容）
 --   4. 投影层（C₂ 符号 / C₁₂ 指标 / 实数角）禁止回流本模块
 --      （相位不可约性元公理: memory/crt-wave-physics-not-modular-arithmetic.md:77）
-module Sovereign.Structology.SphericalVector where
+module Sovereign.Synthesis.SphericalVector where
 
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

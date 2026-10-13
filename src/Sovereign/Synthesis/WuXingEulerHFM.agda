@@ -3,10 +3,10 @@
 -- 主证明见: WuXingTransition.agda
 {-# OPTIONS #-}
 
--- | Sovereign.Structology.WuXingEulerHFM
+-- | Sovereign.Synthesis.WuXingEulerHFM
 -- 柏拉图立体 Euler 示性数的 HFM 交叉验证
 
-module Sovereign.Structology.WuXingEulerHFM where
+module Sovereign.Synthesis.WuXingEulerHFM where
 
 open import Data.Integer using (ℤ; +_; -_; _+_; _-_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

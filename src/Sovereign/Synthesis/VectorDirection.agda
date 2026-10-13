@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.VectorDirection
+-- | Sovereign.Synthesis.VectorDirection
 -- 矢量方向计数: 卢先生「幻方」的矢量义 (0 postulate)
 --
 -- 术语边界 (docs/cross-level/magic-square-terminology.md):
@@ -15,7 +15,7 @@
 --   144 阶 = 12 维对称关系 = 12 × 12 = 144 个矢量方向/力学关系
 --   排列数 n! = 置换群 Sₙ 的大小 (144! ≈ 1.51×10⁹⁶, 组合爆炸非浮点精度)
 
-module Sovereign.Structology.VectorDirection where
+module Sovereign.Synthesis.VectorDirection where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _^_; _+_)
 open import Data.Fin using (Fin; zero; suc)

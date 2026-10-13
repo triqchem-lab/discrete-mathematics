@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.StandingWave
+-- | Sovereign.Synthesis.StandingWave
 -- 三代 = 三个驻波构型 (波节 T₀ / 波峰 T₁ / 波谷 T₂), 0 postulate
 --
 -- 本体: 三代费米子不是三个独立粒子, 而是同一手征旋转 (CW/CCW 共轭) 的
@@ -14,7 +14,7 @@
 --
 -- 三代循环 (⊕ T₁ 即 C₃ 生成元): T₀ → T₁ → T₂ → T₀ (生之序)
 
-module Sovereign.Structology.StandingWave where
+module Sovereign.Synthesis.StandingWave where
 
 open import Data.Product using (_×_; _,_; Σ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

@@ -3,7 +3,7 @@
 -- 主证明见: T6.agda, BurnsideT6.agda
 {-# OPTIONS #-}
 
--- | Sovereign.Structology.T6A4Burnside
+-- | Sovereign.Synthesis.T6A4Burnside
 -- T⁶/A₄ Burnside 轨道计数：A₄ 置换 T⁶ 前 4 个坐标
 --
 -- HFM 交叉验证 (HaskellForMaths, 见 test/T6Burnside.hs)：
@@ -18,7 +18,7 @@
 --   Burnside 和 = 81 + 3·9 + 4·9 + 4·9 = 180
 --   轨道数 = 180 / 12 = 15
 
-module Sovereign.Structology.T6A4Burnside where
+module Sovereign.Synthesis.T6A4Burnside where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

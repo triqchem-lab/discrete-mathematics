@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.TorusClosure
+-- | Sovereign.Synthesis.TorusClosure
 -- 定理三: T⁶ 离散环面的代数闭包与无无穷远定理
 --
 -- 在 T⁶ = (GF(3))⁶ (729 格点) 上, 原生 Frobenius σ(x)=x³ 下,
@@ -13,7 +13,7 @@
 --       jac_EscapeAnalysis.agda (Alpöge 反例阻断分析)
 --       Structology.T6 (t6ToFin/finToT6 双射, Fin 729 编码)
 
-module Sovereign.Structology.TorusClosure where
+module Sovereign.Synthesis.TorusClosure where
 
 open import Data.Fin using (Fin)
 open import Data.Nat using (ℕ)
