@@ -1,4 +1,11 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Application.PDEDiscrete
+-- 离散偏微分方程 —— ODE/PDE 面的 GF(3) 复核件。
+--
+-- 数学背景：§1 GF(3) 辅助引理；§2 高阶差分算子；§3 GF3Func 求值与制表；
+--   §4 线性离散 ODE；§5 非线性离散 ODE；§6 二维离散 PDE。
+--   与 Algebra/DiscreteDE 同族（本件在 Application 层作 PDE 应用面）。
 module Sovereign.Application.PDEDiscrete where
 
 --------------------------------------------------------------------------------

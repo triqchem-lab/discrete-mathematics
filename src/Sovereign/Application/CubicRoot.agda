@@ -1,5 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Application.CubicRoot
+-- GF(3) 三次多项式根测试定理。
+--
+-- 数学背景：f(λ) = λ³ + a·λ² + b·λ + c 在 GF(3) 上可约 ⟺ ∃ r ∈ {0,1,2}, f(r) = 0。
+--   证明：(⇒) 若 f = (λ−r)·q 则 f(r) = 0；(⇐) 若 f(r) = 0 则
+--   f = (λ−r)·(λ² + (a+r)λ + (b+ar+r²))，三个 r 分别验证因式分解恒等式。
+--   求值公式（用 2³ ≡ 2, 2² ≡ 1）：f(0) = c；f(1) = 1+a+b+c；f(2) = 2+a+2b+c。
 module Sovereign.Application.CubicRoot where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)

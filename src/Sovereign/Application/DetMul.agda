@@ -1,5 +1,11 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Application.DetMul
+-- GF(9) 2×2 矩阵的行列式乘性 —— det(AB) = det(A)·det(B)。
+--
+-- 数学背景：A = [[a,b],[c,d]]，B = [[e,f],[g,h]]，展开两侧并消去（核心两步）：
+--   LHS det(AB) = (ae+bg)(cf+dh) ⊖ (af+bh)(ce+dg)；
+--   RHS det(A)·det(B) = (ad⊖bc)(eh⊖fg)。GL₂(GF(9)) 群律的行列式侧见证。
 module Sovereign.Application.DetMul where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)

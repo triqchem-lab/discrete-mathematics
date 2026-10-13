@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Application.ConvergenceAlignment
+-- 收敛对齐 —— 离散迭代的极限环与「离散解 = 精确解」。
+--
+-- 数学背景：§1 离散状态序列（DiscreteStateSeq）；§2 GF3Func 基数定理 |GF3Func| = 27；
+--   §3 鸽巢原理：28 个 GF3Func 值必有碰撞；§4 极限环收敛（LimitCycleConvergence +
+--   theorem-finite-cycle）；§5 精确对齐：离散解 = 精确解（无近似）；§6 幂零性约束
+--   Δ³ ≡ 0 限制暂态长度。
 module Sovereign.Application.ConvergenceAlignment where
 
 --------------------------------------------------------------------------------

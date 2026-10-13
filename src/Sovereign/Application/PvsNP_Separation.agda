@@ -1,5 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Application.PvsNP_Separation
+-- P vs NP 分离的有限域模拟 —— Eval 与 Invert 的构造性分离。
+--
+-- 数学背景：§1 多项式求值 —— Eval 类（P）；§2 因式分解 —— Invert 类（NP）；
+--   §3 不可约多项式 = 单向函数屏障；§4 分离定理 Eval ≢ Invert；
+--   §5 可约对照：Invert 成功；§6 分离的简洁表述。
+--   ⚠ 范围界定：非复杂性类分离，而是 GF(3) 上的代数分离（有限域模拟）。
 module Sovereign.Application.PvsNP_Separation where
 
 open import Data.Product using (_×_; _,_; ∃; Σ; Σ-syntax)

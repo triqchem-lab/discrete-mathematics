@@ -1,5 +1,10 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Application.CubicRootTest
+-- 三次求根的一致性测试件 —— §3 因式分解展开恒等式。
+--
+-- 数学背景：对 CubicRoot 的求根作展开核验：把因式分解结果重新展开，
+--   验证与原始三次多项式逐系数恒等（补 §1-§2 的求根构造）。
 module Sovereign.Application.CubicRootTest where
 
 open import Data.Product using (_×_; _,_)

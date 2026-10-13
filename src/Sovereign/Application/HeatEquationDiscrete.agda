@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Application.HeatEquationDiscrete
+-- 离散热方程 —— 连续耗散的 GF(3) 周期化。
+--
+-- 数学背景：① 离散 Laplace 在 Z/3Z 上等于 Δ²（二阶差分）；
+--   ② 热步进周期 3：heatStep³ ≡ id（连续热方程无此性质）；
+--   ③ 能量不耗散而是循环：E(step u) = E(u) + 2·s²（GF(3)）；
+--   ④ 连续耗散是 GF(3) 周期性的「不存在的极限」投影。
 module Sovereign.Application.HeatEquationDiscrete where
 
 --------------------------------------------------------------------------------
