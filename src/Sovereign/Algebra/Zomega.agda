@@ -10,7 +10,7 @@
 --
 -- 载体勘定 (勿重定义):
 --   Zω / mkZω / addZω / mulZω / negZω / zeroZω / oneZω 已在
---   Sovereign.Structology.A4Representation 定义 (记录对 (a,b) ∈ ℤ²)。
+--   Sovereign.Synthesis.A4Representation 定义 (记录对 (a,b) ∈ ℤ²)。
 --   本模块 import 复用, 只补环律, 不新增载体。
 --
 -- 路径选型 (A: 逐分量代数链 —— 已在库内完成, 本模块做迁移而不重证):
@@ -34,7 +34,7 @@ open import Data.Integer.Properties using (*-zeroˡ; *-zeroʳ; neg-involutive)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; sym; trans)
 
-open import Sovereign.Structology.A4Representation
+open import Sovereign.Synthesis.A4Representation
   using (Zω; mkZω; addZω; negZω; mulZω; zeroZω; oneZω; ω; ω²)
 open import Sovereign.Foundation.Eisenstein
   using (Eisenstein; eis; _+ᵉ_; _*ᵉ_;

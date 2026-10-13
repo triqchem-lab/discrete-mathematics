@@ -23,7 +23,7 @@ open import Data.Vec using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Synthesis.A4Group using (A4; Id; Rot; Flip; _⊗_)
-open import Sovereign.Structology.A4Representation
+open import Sovereign.Synthesis.A4Representation
   using (Zω; oneZω; zeroZω; negZω; mkZω; ConjClass; chi3)
 open import Sovereign.Synthesis.MatrixZω using (Mat; mulMat; trace)
 

@@ -45,7 +45,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong; cong₂)
 
 -- 复用 A₄ 表示论的 Z[ω] 环
-open import Sovereign.Structology.A4Representation
+open import Sovereign.Synthesis.A4Representation
   using (Zω; mkZω; zeroZω; oneZω; ω; ω²; addZω; mulZω; conjZω; negZω)
 
 --------------------------------------------------------------------------------

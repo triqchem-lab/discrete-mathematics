@@ -13,7 +13,7 @@ open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero)
 open import Data.Vec using (Vec; []; _∷_; map; lookup; allFin; tail)
 
-open import Sovereign.Structology.A4Representation
+open import Sovereign.Synthesis.A4Representation
   using (Zω; addZω; mulZω; zeroZω; oneZω; negZω)
 
 --------------------------------------------------------------------------------

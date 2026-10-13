@@ -20,7 +20,7 @@ open import Data.Product using (_×_; _,_; Σ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
-open import Sovereign.Structology.A4Representation using (Zω; oneZω; ω; ω²)
+open import Sovereign.Synthesis.A4Representation using (Zω; oneZω; ω; ω²)
 open import Sovereign.Algebra.GroupTheory.DuodecClock using (a0)
 open import Sovereign.Algebra.Character.FrequencyMode
   using (FrequencyMode; mode-amp; mode-phase; mode-10; mode-20)

@@ -22,7 +22,7 @@ open import Relation.Binary.PropositionalEquality
 open ≡-Reasoning
 
 -- 复用 Z[ω] 环 (ω²=-1-ω, ω³=1)
-open import Sovereign.Structology.A4Representation
+open import Sovereign.Synthesis.A4Representation
   using (Zω; oneZω; ω; ω²; mulZω)
 
 --------------------------------------------------------------------------------

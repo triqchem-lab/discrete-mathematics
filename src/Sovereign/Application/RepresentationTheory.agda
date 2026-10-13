@@ -31,7 +31,7 @@ open import Sovereign.Algebra.GF9
          alpha; alpha-squared; alpha-powers-4; norm-mul; galoisConjugate²;
          embed-gf3; norm-conj-mul; frobenius-cube; sigma-fixed-iff-gf3;
          galoisConjugate-pair)
-open import Sovereign.Structology.A4Representation
+open import Sovereign.Synthesis.A4Representation
   using (Zω; mkZω; oneZω; zeroZω; negZω; ConjClass; chi3)
 open import Sovereign.Synthesis.MatrixZω using (trace)
 open import Sovereign.Synthesis.A4Group using (A4; Id; Rot; Flip) renaming (_⊗_ to _⊗A4_)

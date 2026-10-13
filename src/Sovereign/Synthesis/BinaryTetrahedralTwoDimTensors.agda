@@ -18,7 +18,7 @@ module Sovereign.Synthesis.BinaryTetrahedralTwoDimTensors where
 open import Data.Fin using (Fin; zero; suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Structology.A4Representation using (Zω; mulZω; conjZω)
+open import Sovereign.Synthesis.A4Representation using (Zω; mulZω; conjZω)
 open import Sovereign.Synthesis.BinaryTetrahedralRepresentation
   using (ConjClass2A4; chi1'-2A4; chi1''-2A4; chi2-2A4; chi2'-2A4; chi2''-2A4)
 
