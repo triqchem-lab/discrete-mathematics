@@ -1,0 +1,90 @@
+# ============================================================
+# 五层目录迁移 · 执行进度台账（progress.yaml）
+# ============================================================
+# 生成：2026-10-13（北京时间）｜依据：2026-10-12 08:43 最后一次迁移提交（6ab1ad1）后的工作树实测
+# 口径：判据 = 原路径存在性——layer-map.csv 记录的迁移对象，其原路径若已消失 ⇒ 已迁；仍在原位 ⇒ 待迁。
+# 基线：docs/migration/layer-map.csv（波 0 产物，803 行）
+# 说明：本文件即《结构化迁移排期-2026-10-11.md》§七承诺的进度台账；只增不改史，每完成一批在此追加。
+# ============================================================
+
+meta:
+  generated: "2026-10-13"
+  timezone: "Asia/Shanghai (UTC+8)"
+  basis: "docs/migration/layer-map.csv"
+  judge: "original_path_exists"
+  layers: [Foundation, Base, Algebra, Synthesis, Application, Infrastructure]
+  last_move_commit: "6ab1ad1"
+  last_move_time: "2026-10-12 08:43 +0800"
+  status: "施工中断——波 14 后工作重心转 π_n 同伦课题，非计划收尾"
+
+# 就地面（六段式头注释改造，不搬目录）——已完结
+inplace_six_section:
+  status: done
+  modules: 216
+  batches: [B001-B012, B013, B014]
+  note: "144 + 54 + 38 ≈ 216 模块；V1 全绿"
+
+# 移动面（git mv 到六层 + module/import/台账同步）——进行中
+move_face:
+  total_rows: 803
+  in_layer_kept: 311      # 原目录即层目录，保名不迁：Algebra 242 / Application 29 / Synthesis 12 / Base 11 / Foundation 9 / Infrastructure 8
+  archive_frozen: 20      # src/Sovereign/_archive（已移出至 archive/）
+  top_level_files: 3      # Examples.agda / Integration.agda / TestMemory.agda（顶层聚合件）
+  migration_objects: 469  # 需跨目录迁移的件数
+  moved: 238
+  pending: 231
+  progress_pct: 50.7
+
+# 已完成：源目录已 100% 清空（193 件）
+done_dirs:
+  - {dir: Problem,  moved: 117, pending: 0}
+  - {dir: Physics,  moved: 63,  pending: 0}
+  - {dir: Trust,    moved: 9,   pending: 0}
+  - {dir: Verify,   moved: 2,   pending: 0}
+  - {dir: AI,       moved: 1,   pending: 0}
+  - {dir: RootMath, moved: 1,   pending: 0}
+
+# 待办：按待迁件数降序（231 件）
+pending_dirs:
+  - {dir: Structology,  moved: 7,  pending: 63, target: [Synthesis]}
+  - {dir: Topology,     moved: 3,  pending: 47, target: [Application, Synthesis]}
+  - {dir: Applied,      moved: 11, pending: 27, target: [Application]}
+  - {dir: HoTT,         moved: 2,  pending: 22, target: [Synthesis]}
+  - {dir: Analysis,     moved: 10, pending: 21, target: [Algebra, Application, Base]}
+  - {dir: Geometry,     moved: 0,  pending: 14, target: [Application]}
+  - {dir: Format,       moved: 0,  pending: 7,  target: [Synthesis]}
+  - {dir: Coupling,     moved: 4,  pending: 6,  target: [Synthesis]}
+  - {dir: Quantum,      moved: 0,  pending: 5,  target: [Application]}
+  - {dir: Constitution, moved: 1,  pending: 4,  target: [Foundation]}
+  - {dir: PDE,          moved: 0,  pending: 4,  target: [Application]}
+  - {dir: Arithmetic,   moved: 1,  pending: 2,  target: [Base]}
+  - {dir: Coding,       moved: 5,  pending: 2,  target: [Synthesis]}
+  - {dir: Density,      moved: 0,  pending: 2,  target: [Synthesis]}
+  - {dir: MetaStructure, moved: 0, pending: 2,  target: [Base]}
+  - {dir: Completeness, moved: 1,  pending: 1,  target: [Foundation]}
+  - {dir: Diagnosis,    moved: 0,  pending: 1,  target: [Foundation]}
+  - {dir: Engine,       moved: 0,  pending: 1,  target: [Infrastructure]}
+
+# 已执行波次（记录用；moved 为 commit 自报件数，非实测口径——两者口径不同，勿相加）
+waves:
+  - {wave: "1-B001",   date: "2026-10-11 23:10", moved: 9}
+  - {wave: "1-40-app", date: "2026-10-11 23:11", moved: 12}
+  - {wave: "2-B",      date: "2026-10-11 23:39", moved: 24, note: "定层修正 9+15"}
+  - {wave: "3-L1",     date: "2026-10-11 23:31", moved: 8}
+  - {wave: "3-L2",     date: "2026-10-11 23:32", moved: 14}
+  - {wave: "3-S",      date: "2026-10-11 23:43", moved: 16, note: "S-1..S-4"}
+  - {wave: "3-T",      date: "2026-10-11 23:49", moved: 20}
+  - {wave: "3-U",      date: "2026-10-11 23:57", moved: 15}
+  - {wave: "3-V",      date: "2026-10-12 00:05", moved: 13}
+  - {wave: 4,          date: "2026-10-12 07:04", moved: 12}
+  - {wave: 5,          date: "2026-10-12 07:30", moved: 13}
+  - {wave: 6,          date: "2026-10-12 07:36", moved: 14}
+  - {wave: 7,          date: "2026-10-12 07:41", moved: 14}
+  - {wave: 8,          date: "2026-10-12 07:49", moved: 15}
+  - {wave: 9,          date: "2026-10-12 08:00", moved: 14}
+  - {wave: 10,         date: "2026-10-12 08:04", moved: 12}
+  - {wave: 11,         date: "2026-10-12 08:08", moved: 15}
+  - {wave: 12,         date: "2026-10-12 08:15", moved: 14}
+  - {wave: 13,         date: "2026-10-12 08:23", moved: 12}
+  - {wave: 14,         date: "2026-10-12 08:37", moved: 34, note: "迁移池收官批（非全量）"}
+  - {wave: "终验",     date: "2026-10-12 08:43", moved: 0,  note: "6ab1ad1 收尾；此后转 π_n 课题"}
