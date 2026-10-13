@@ -1,20 +1,24 @@
 # ============================================================
 # 五层目录迁移 · 执行进度台账（progress.yaml）
 # ============================================================
-# 生成：2026-10-13（北京时间）｜判据：原路径存在性（layer-map.csv 803 行）
+# 生成：2026-10-13（初版）／2026-10-14（核对更正：total_rows/status/last_move/PE 批）
+# 判据：原路径存在性（layer-map.csv 803 模块行；文件共 808 行 = 表头 1 + 注释 2 + 空行 2 + 803）
 # 说明：本文件即《结构化迁移排期-2026-10-11.md》§七承诺的进度台账；只增不改史。
 # 派生脚本：由 layer-map.csv + 工作树实测重算，勿手改数字段。
+# ⚠ 2026-10-14 核对注：move_face 四类明细 309+20+3+472 = 804，与 layer-map 模块行 803 差 1（未定位）；
+#    total_rows 以权威源 layer-map.csv 的 803 模块行为准。
 # ============================================================
 
 meta:
   generated: "2026-10-13"
+  updated: "2026-10-14"
   timezone: "Asia/Shanghai (UTC+8)"
   basis: "docs/migration/layer-map.csv"
   judge: "original_path_exists"
   layers: [Foundation, Base, Algebra, Synthesis, Application, Infrastructure]
-  last_move_commit: "6ab1ad1"
-  last_move_time: "2026-10-12 08:43 +0800"
-  status: "施工中断——波 14 后工作重心转 π_n 同伦课题，非计划收尾"
+  last_move_commit: "42deaef"
+  last_move_time: "2026-10-13 +0800"
+  status: "移动面已完工（2026-10-13 收官，472 件全迁、断链 0）；遗留项：命名裁决（纯名 vs F00/B10）与 docs/principles.md §四候选，均不阻塞本迁移"
 
 inplace_six_section:
   status: done
@@ -24,7 +28,7 @@ inplace_six_section:
 
 # 移动面（git mv 到六层 + module/import/台账同步）——进行中
 move_face:
-  total_rows: 805
+  total_rows: 803
   in_layer_kept: 309
   archive_frozen: 20
   top_level_files: 3
@@ -92,6 +96,7 @@ waves:
   - {wave: "PB",       date: "2026-10-13", moved: 12, note: "续迁第2批：Analysis 3 + Applied 9（→Algebra/Application），断链0，V1 12/12"}
   - {wave: "PC",       date: "2026-10-13", moved: 12, note: "Applied 12 件 → Application（0 涟漪）"}
   - {wave: "PD",       date: "2026-10-13", moved: 12, note: "Arithmetic/Coding/Constitution/Coupling 跨层件 + Applied 3 件 → Base/Synthesis/Foundation/Application（0 涟漪）"}
+  - {wave: "PE",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）【2026-10-14 核对补记：本批原漏记于 waves，12 件均已迁；件级见 续迁清单-2026-10-13.csv 第 68–79 行】"}
   - {wave: "PF",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "PG",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "PH",       date: "2026-10-13", moved: 12, note: "续迁批（叶件/低涟漪，断链0）"}
@@ -125,3 +130,6 @@ waves:
   - {wave: "H17",       date: "2026-10-13", moved: 1, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "H18",       date: "2026-10-13", moved: 1, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "收尾",       date: "2026-10-13", moved: 1, note: "最后1件：Base/TwoViewRewritten → Infrastructure（波1就绪清单遗留件）；迁移对象 471/471 = 100%"}
+  # ⚠ 2026-10-14 口径修正注（不改上文原文）：上条「471/471」为收官当时口径。
+  #   B 类补迁（Coupling/TQ10 → Synthesis/TQ10，提交 c1948c0）之后，迁移对象总数修正为 472
+  #   （见本文件 move_face.migration_objects: 472 与 done_dirs 合计 472）。两者并存，以 472 为准。
