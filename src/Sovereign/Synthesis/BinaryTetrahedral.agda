@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.BinaryTetrahedral
+-- | Sovereign.Synthesis.BinaryTetrahedral
 -- 二元四面体群 2A₄ — A₄ 在 SU(2) 中的非平凡中心扩张
 --
 -- 核心结构:
@@ -37,7 +37,7 @@
 --
 -- 包含: data、negQ、negQ-involutive、_、q8-i²、q8-j²、q8-k²、q8-ij、q8-jk、q8-ki、q8-ji、q8-kj、q8-ik、q8-neg1-central
 
-module Sovereign.Structology.BinaryTetrahedral where
+module Sovereign.Synthesis.BinaryTetrahedral where
 
 open import Data.Nat using (ℕ; zero; suc)
   renaming (_+_ to _+N_; _*_ to _*N_)

@@ -27,7 +27,7 @@ module Sovereign.Algebra.LieDiscrete where
 open import Sovereign.Algebra.BranchingRules public
 
 -- P3-B: 2A₄ = Q₈ ⋊ C₃ 二元四面体群
-open import Sovereign.Structology.BinaryTetrahedral public
+open import Sovereign.Synthesis.BinaryTetrahedral public
   renaming (W1 to BW1; W1' to BW1'; W1'' to BW1'';
             W2 to BW2; W2' to BW2'; W2'' to BW2''; W3 to BW3)
 

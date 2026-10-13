@@ -35,7 +35,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Synthesis.A4Representations
   using (A4Irrep; V3; V1; V1'; V1''; dim)
 
-open import Sovereign.Structology.BinaryTetrahedral
+open import Sovereign.Synthesis.BinaryTetrahedral
   using (BTIrrep; btDim)
   renaming (W1 to BW1; W1' to BW1'; W1'' to BW1''; W2 to BW2; W2' to BW2'; W2'' to BW2''; W3 to BW3)
 
