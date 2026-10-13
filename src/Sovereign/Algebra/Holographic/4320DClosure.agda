@@ -347,7 +347,7 @@ alpoege-vs-t6 =
 --   (不可分 F 仍须 729×729 全局判定; 结构性判据 NoZeroRow ∧ ColDistinct 见 §7)
 
 -- 注: 此处为概念性陈述。CRT 分解的具体构造见:
---   Sovereign.Format.CRT (crt12, π3, π4, crtProject, crtReconstruct)
+--   Sovereign.Synthesis.CRT (crt12, π3, π4, crtProject, crtReconstruct)
 --   Sovereign.Base.CRTLemmas (CRT 正交分解引理)
 
 -- 4320D 商空间的几何意义

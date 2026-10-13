@@ -29,7 +29,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 -- 源模块导入
 --------------------------------------------------------------------------------
 
-open import Sovereign.Format.CRT using (
+open import Sovereign.Synthesis.CRT using (
   crtTheorem; crtProject; crtReconstruct; M; POW2; POW3)
 
 open import Sovereign.Structology.BurnsideT6 using (

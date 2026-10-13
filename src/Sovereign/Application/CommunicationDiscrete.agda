@@ -20,7 +20,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Structology.BurnsideT6
   using (yao-4320; independent-info-from-yao)
-open import Sovereign.Format.CRT
+open import Sovereign.Synthesis.CRT
   using (crtTheorem; crtProject; crtReconstruct; POW2; POW3; M)
 
 --------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 --   2. CRT=物理波系统/谱投影，非模运算定理（红线）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Format.CRT where
+module Sovereign.Synthesis.CRT where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_; _∸_)
 open import Data.Nat.Properties using (*-comm; *-assoc; +-identityʳ; +-identityˡ; *-identityʳ; *-zeroʳ)

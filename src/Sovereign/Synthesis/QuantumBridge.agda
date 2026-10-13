@@ -208,7 +208,7 @@ spirals-per-toroidal = refl
 -- 177147 / 65536 ≈ 2.703... (不是整数, 所以产生截断)
 -- 这个截断是离散性的来源: 连续浮点的"光滑"假设在此断裂
 
-open import Sovereign.Format.CRT using (POW2; POW3)
+open import Sovereign.Synthesis.CRT using (POW2; POW3)
 
 truncation-ratio : POW3 / POW2 ≡ 2
 truncation-ratio = refl  -- 177147 / 65536 = 2 (整数除法截断)
@@ -590,7 +590,7 @@ record TorusLatticePoint : Set where
 --   但都满足: project ∘ embed = id
 
 -- |已验证: CRT 往返恒等 (Format.CRT.crtTheorem)
-open import Sovereign.Format.CRT using (crtTheorem)
+open import Sovereign.Synthesis.CRT using (crtTheorem)
 -- crtTheorem x: crtReconstruct(crtProject x) ≡ x % M
 
 -- |已验证: M4 正交 (MagicSquareM4)
@@ -914,7 +914,7 @@ conjugate-idempotent-2 : c3-inverse (c3-inverse T₂) ≡ T₂ ; conjugate-idemp
 --   eigen-conjugate(e16⁺) = e16⁻, eigen-conjugate(e16⁻) = e16⁺
 --------------------------------------------------------------------------------
 
-open import Sovereign.Format.CRT using (CRTEigenvalue; e34; e0; e16⁺; e16⁻)
+open import Sovereign.Synthesis.CRT using (CRTEigenvalue; e34; e0; e16⁺; e16⁻)
 
 -- CRT 本征值 → GF(3) Trit 的同态投影
 crt-to-trit : CRTEigenvalue → Trit

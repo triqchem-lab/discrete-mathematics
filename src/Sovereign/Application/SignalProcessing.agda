@@ -15,7 +15,7 @@ open import Data.Nat using (ℕ; _+_; _*_; _%_; _^_)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Format.CRT
+open import Sovereign.Synthesis.CRT
   using (crtProject; crtReconstruct; crtTheorem; M; POW2; POW3)
 
 --------------------------------------------------------------------------------

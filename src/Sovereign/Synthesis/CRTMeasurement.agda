@@ -40,7 +40,7 @@ open import Sovereign.Structology.MagicSquare144
   using (FULL_TOUR; fullTourCorrect)
 open import Sovereign.Base.Invariants
   using (CHERN_NUMBER)
-open import Sovereign.Format.CRT
+open import Sovereign.Synthesis.CRT
   using (POW2; POW3; M; crtProject)
 
 --------------------------------------------------------------------------------

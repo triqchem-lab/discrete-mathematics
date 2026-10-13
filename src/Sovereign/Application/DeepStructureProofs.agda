@@ -30,7 +30,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 --------------------------------------------------------------------------------
 -- B23: CRT 重构唯一性
--- 源: Sovereign.Format.CRT
+-- 源: Sovereign.Synthesis.CRT
 -- 证明方法: 构造性 (CRT 正交分解 + 模运算分配律链)
 -- 定理: ∀ x → crtReconstruct (crtProject x) ≡ x % M
 --   crtProject x = (x % 2¹⁶ , x % 3¹¹)
@@ -38,7 +38,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 --   M = 2¹⁶ × 3¹¹ = 11609505792
 --------------------------------------------------------------------------------
 
-open import Sovereign.Format.CRT public using (
+open import Sovereign.Synthesis.CRT public using (
   crtTheorem;        -- B23 核心: ∀ x → crtReconstruct (crtProject x) ≡ x % M
   crtProject;        -- ℕ → ℕ × ℕ
   crtReconstruct;    -- ℕ × ℕ → ℕ
