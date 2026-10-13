@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.HoTT.Equivalence
+-- | Sovereign.Synthesis.Equivalence
 -- 高维拓扑：代码与几何的同伦等价证明
 --
 -- 核心目标：
@@ -22,7 +22,7 @@
 --
 -- 包含（分层）：基础件层：toℕ-mod2/isEven-*｜主引理层：stepSection-δ｜组合层：stepEqualsTransportWhenGain/Loss｜核对层：演化-输运逐点核对
 --
-module Sovereign.HoTT.Equivalence where
+module Sovereign.Synthesis.Equivalence where
 
 open import Cubical.Foundations.Prelude hiding (_≡_; refl; cong)
 open import Cubical.Foundations.Equiv
@@ -42,8 +42,8 @@ import Sovereign.Synthesis.LCM as LCM
 import Sovereign.Base.Coding.Trit as T
 
 -- 导入高维几何模型 (Geometry)
-import Sovereign.HoTT.Bundle as Bundle
-import Sovereign.HoTT.Connection as Conn
+import Sovereign.Synthesis.Bundle as Bundle
+import Sovereign.Synthesis.Connection as Conn
 
 --------------------------------------------------------------------------------
 -- 1. 核心引理：代码步进与几何传输的操作等价性

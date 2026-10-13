@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.HoTT.Fibration
+-- | Sovereign.Synthesis.Fibration
 -- 高维拓扑：纤维丛与和乐 (Fiber Bundles and Holonomy)
 -- ⚠ 边界句（防误引）：本模块为 T⁶ 物理纤维丛/和乐（主权状态机语境）——**非同伦论
 --   fibration**（Postnikov 纤维化语境的 fiber sequence 另线，见 PostnikovTruncation 系）。
@@ -19,7 +19,7 @@
 --
 -- 包含（分层）：基础件层：BaseSpace/BasePoint/双 Transport record｜主引理层：transportPolar/transportToroidal 定义｜组合层：iterSB-zero｜核对层：和乐核对
 --
-module Sovereign.HoTT.Fibration where
+module Sovereign.Synthesis.Fibration where
 
 open import Cubical.Core.Primitives renaming (_≡_ to _≡ᶜ_)
 open import Cubical.Foundations.Prelude using (Type; _≃_)

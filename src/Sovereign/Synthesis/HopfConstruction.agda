@@ -1,6 +1,6 @@
 {-# OPTIONS --cubical --guardedness --rewriting #-}
 
--- | Sovereign.HoTT.HopfConstruction
+-- | Sovereign.Synthesis.HopfConstruction
 -- 离散 Hopf 纤维化：T⁶/A₄
 --
 -- 全空间 = T6Lattice (GF(3)⁶, 729 格点)
@@ -20,7 +20,7 @@
 --
 -- 包含（分层）：基础件层：TotalSpace/Base/OrbitFiber｜主引理层：totalProj/invA4｜组合层：totalProjSurj｜核对层：轨道商核对
 --
-module Sovereign.HoTT.HopfConstruction where
+module Sovereign.Synthesis.HopfConstruction where
 
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)
 open import Data.Vec using (Vec; []; _∷_)

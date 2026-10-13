@@ -1,6 +1,6 @@
 {-# OPTIONS --guardedness --rewriting #-}
 
--- | Sovereign.HoTT.T6Homotopy
+-- | Sovereign.Synthesis.T6Homotopy
 -- T⁶ 离散环面同伦理论
 --
 -- T⁶ = (GF(3))⁶ = 729 点有限离散空间
@@ -13,7 +13,7 @@
 --   环路空间 → 缠绕数 144/46
 --   Christoffel 螺旋 → 离散测地线
 
-module Sovereign.HoTT.T6Homotopy where
+module Sovereign.Synthesis.T6Homotopy where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; _<_; s≤s)

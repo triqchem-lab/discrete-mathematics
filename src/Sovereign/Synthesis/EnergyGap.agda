@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.HoTT.EnergyGap
+-- | Sovereign.Synthesis.EnergyGap
 -- 高维拓扑：能隙 Δ=√3 的代数本源与时空统一
 --
 -- 核心宪法：
@@ -8,7 +8,7 @@
 -- 2. 它源于相生 (+ 1) 与相克 (ω) 在复平面上的离散距离。
 -- 3. 时间与空间通过 **Hermite 度量** 统一：时间每步进 1（极向），空间必产生弦长 √3（环向）。
 
-module Sovereign.HoTT.EnergyGap where
+module Sovereign.Synthesis.EnergyGap where
 
 open import Data.Nat using (ℕ; zero; suc; _<_ ; s≤s; z≤n)
 open import Data.Integer using (ℤ; +_; -[1+_])

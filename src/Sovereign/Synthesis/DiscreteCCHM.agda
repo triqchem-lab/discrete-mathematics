@@ -1,4 +1,4 @@
--- | Sovereign.HoTT.DiscreteCCHM
+-- | Sovereign.Synthesis.DiscreteCCHM
 -- 离散 CCHM: CCHM 核心机制的 GF(3) 离散化桥接
 --   shift = CRT 环面上的 C3 Burnside 群作用 (非递归 ℕ 迭代)
 --   shift-additive = g^(m+n) = g^m ∘ g^n (群指数基本性质)
@@ -14,7 +14,7 @@
 --
 -- 包含（分层）：基础件层：CRTPhase/DiscretePhase/norm｜主引理层：shift-additive｜组合层：shift-FULL_TOUR-id｜核对层：iterTransp 核对
 --
-module Sovereign.HoTT.DiscreteCCHM where
+module Sovereign.Synthesis.DiscreteCCHM where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; NonZero)
 open import Data.Nat.DivMod using ([m+kn]%n≡m%n; m≡m%n+[m/n]*n)

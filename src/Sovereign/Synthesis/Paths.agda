@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.HoTT.Paths
+-- | Sovereign.Synthesis.Paths
 -- 高维拓扑：路径与环路 (Paths and Loops) in T⁶
 --
 -- 数学背景：T⁶ 离散商空间上的两族路径——极向 (Polar) 与环向 (Toroidal)，
@@ -14,7 +14,7 @@
 -- 包含：nextP/nextT（迭代）· PolarPath/ToroidalPath（路径 data）·
 --   PolarLoop/ToroidalLoop/fullPolarLoop（环路族）· iterToroidal-step（环向步）
 
-module Sovereign.HoTT.Paths where
+module Sovereign.Synthesis.Paths where
 
 open import Cubical.Core.Primitives renaming (_≡_ to _≡ᶜ_)
 open import Cubical.Foundations.Prelude using (Type; _≃_; Path)

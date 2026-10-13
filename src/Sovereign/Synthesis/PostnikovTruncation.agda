@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.HoTT.PostnikovTruncation
+-- | Sovereign.Synthesis.PostnikovTruncation
 -- 任务书 6.1：Postnikov 截断的离散对应——walk 累积位移的 1-截断 + A-homotopy 守恒
 --
 -- 数学背景：Postnikov 塔的 n-截断抹除 > n 阶同伦信息。离散对应（库内语境）：
@@ -15,7 +15,7 @@
 --
 -- 包含：WeightedDiGraph / disp（净位移）/ ++w-disp / slide-expand-守恒 / AH-resp
 
-module Sovereign.HoTT.PostnikovTruncation where
+module Sovereign.Synthesis.PostnikovTruncation where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
 open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; V; Walk; nil; cons; _++w_; AStep; slide; expand; AHomotopy; refl'; symm; trans'; gen)

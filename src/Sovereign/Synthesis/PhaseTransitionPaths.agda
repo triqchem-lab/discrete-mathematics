@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.HoTT.PhaseTransitionPaths
+-- | Sovereign.Synthesis.PhaseTransitionPaths
 -- 高维拓扑：五行相变路径与同伦类型
 --
 -- 数学背景：元结构层的五行状态空间与相变类型学——五态（火土金水木）间相变的路径形态；
@@ -14,7 +14,7 @@
 -- 包含：SymmetryLabel（对称标签）· StateSpace（状态空间 record）·
 --   StateFire/Earth/Metal/Water/Wood（五态）· PhaseTransitionType（相变类型）
 
-module Sovereign.HoTT.PhaseTransitionPaths where
+module Sovereign.Synthesis.PhaseTransitionPaths where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Nat.Properties using (+-comm)

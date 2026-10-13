@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.HoTT.KanComposition
+-- | Sovereign.Synthesis.KanComposition
 -- Kan 纤维化的 6624 相位对齐边界闭合 (L2 方向)
 -- ⚠ 边界句（防误引）：6624 相位对齐的 Kan 条件**类比**——非单纯 Kan 纤维化
 --   （不是 sSet 上的 Kan 扩充/纤维化定义；仅借用 Kan 边界闭合的术语形）。
@@ -23,7 +23,7 @@
 --   所有 6 个 GF(3) 维度同时回到起点。
 --   在这个 "全息对齐点" 上，所有局部纤维变换的总和等于零。
 
-module Sovereign.HoTT.KanComposition where
+module Sovereign.Synthesis.KanComposition where
 
 open import Data.Nat
   using (ℕ; zero; suc; _+_; _*_; _%_; _/_)

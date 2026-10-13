@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.HoTT.M4CRTBridge
+-- | Sovereign.Synthesis.M4CRTBridge
 -- M₄ 幻方正交拓扑 ↔ CRT 谐波理论的深层桥接 (v5.20)
 --
 -- 数学背景：M₄ 幻方特征值谱 {34, 0, ±16} 与 CRT 谐波基（216 = 6³）的对应桥；
@@ -14,7 +14,7 @@
 -- 包含：M4RealEigenvalue/M4CRTEigenvalue（特征值两型）· project/CRT216（桥）·
 --   sqCongruence/sixCubed（平方同余与立方基数）· T6-cardinal/t6-over-216（基数件）
 
-module Sovereign.HoTT.M4CRTBridge where
+module Sovereign.Synthesis.M4CRTBridge where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_)
 open import Data.Nat.DivMod using (_/_)

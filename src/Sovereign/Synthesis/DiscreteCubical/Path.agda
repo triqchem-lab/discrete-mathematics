@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.HoTT.DiscreteCubical.Path
+-- | Sovereign.Synthesis.DiscreteCubical/Path
 -- 离散路径类型：T⁶ 环面上的离散连接
 --
 -- 宪法原则：
@@ -17,7 +17,7 @@
 --
 -- 包含（分层）：基础件层：reflPath/composeDiscretePaths｜主引理层：+-assoc｜组合层：trivialHomotopy/zeroFin144｜核对层：路径复合核对
 --
-module Sovereign.HoTT.DiscreteCubical.Path where
+module Sovereign.Synthesis.DiscreteCubical/Path where
 
 open import Data.Nat.Base using (ℕ; zero; suc; _+_; _*_; _%_)
 open import Data.Fin using (Fin; toℕ) renaming (zero to fzero)
