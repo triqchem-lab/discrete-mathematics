@@ -24,6 +24,9 @@
 -- 0 postulate / 0 hole。
 module Sovereign.Application.EckmannNonSplitting where
 
+-- [裁决 2026-10-13] 不分裂定位 = 离散 Hodge 理论的**独立现象学**证据（GF(3) 内积不正定的真实数学现象；
+--   连续理论无此现象）——非「替代主张」的支持/反对面（替代主张已修正为自足+对应义，见任务书 v2.0 裁决节）。
+
 open import Data.Product using (Σ; _×_; _,_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym)
