@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_LinearAlgebra — GF(3) 无零因子 + 行列式秩 + 线性无关
+-- | LinearAlgebra — GF(3) 无零因子 + 行列式秩 + 线性无关
 -- 0 postulate
 
 module Sovereign.Algebra.Jacobian.LinearAlgebra where
@@ -68,7 +68,7 @@ rank2-ok : rank-by-det T₁ T₀ T₀ T₁ ≡ 2; rank2-ok = refl
 ⊗-table = refl , refl , refl , refl , refl , refl , refl , refl , refl
 
 -- §6. 总结
--- jac_LinearAlgebra: GF(3) 线性代数完整基础, 0 postulate.
+-- LinearAlgebra: GF(3) 线性代数完整基础, 0 postulate.
 --   ✅ 无零因子 (no-zero-divisor, 9-case)
 --   ✅ 消去律 (cancel-⊗, 18-case)
 --   ✅ 行列式 det2' + 非零判定

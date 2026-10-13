@@ -10,9 +10,9 @@
 -- 解决高维状态机在定理证明器中的爆炸问题.
 --
 -- 证明引用:
---   jac_Pigeonhole.agda  — Fin 9→8 鸽巢原理 + REWRITE decode9-encode9
---   jac_Injectivity.agda — 单射 ⟺ 满射 (右逆构造)
---   jac_4320DClosure.agda — 729 点鸽巢推广 (附录 6 引用分离策略)
+--   JacobianInjectiveSurjective.agda  — Fin 9→8 鸽巢原理 + REWRITE decode9-encode9
+--   Injectivity.agda — 单射 ⟺ 满射 (右逆构造)
+--   4320DClosure.agda — 729 点鸽巢推广 (附录 6 引用分离策略)
 --
 -- 全部 0 postulate.
 
@@ -30,7 +30,7 @@ open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 
 ------------------------------------------------------------------------------
--- 组件 1: 单射/满射等价性 (jac_Injectivity.agda, 0 postulate)
+-- 组件 1: 单射/满射等价性 (Injectivity.agda, 0 postulate)
 --
 -- 对任意 F: Fin N → Fin N (N ≤ 729), 可判定:
 --   Inj F → Surj F   (鸽巢原理)
@@ -43,7 +43,7 @@ Inj F = ∀ {x y} → F x ≡ F y → x ≡ y
 Surj : ∀{N : ℕ} → (Fin N → Fin N) → Set
 Surj {N} F = ∀ y → Σ (Fin N) (λ x → F x ≡ y)
 
--- 引用: jac_Pigeonhole.pigeonhole-2, jac_Injectivity.surj→inj
+-- 引用: JacobianInjectiveSurjective.pigeonhole-2, Injectivity.surj→inj
 
 ------------------------------------------------------------------------------
 -- 组件 2: Fin 编码 → 矩阵等价 (REWRITE 技巧)
@@ -51,7 +51,7 @@ Surj {N} F = ∀ y → Σ (Fin N) (λ x → F x ≡ y)
 -- encode9/decode9 双射 + REWRITE decode9-encode9
 -- 使得 decode9(encode9 p) 成为定义等式,
 -- 从而 funcTable 在编译时正确归约.
--- 来自 jac_Pigeonhole.agda, 0 postulate.
+-- 来自 JacobianInjectiveSurjective.agda, 0 postulate.
 ------------------------------------------------------------------------------
 
 -- Fin N 编码接口 (由具体模块实现)
@@ -67,18 +67,18 @@ record FinEncoding (N : Set) (n : ℕ) : Set₁ where
 --
 -- compress/expand (Fin 729→728) 在已编译模块中定义,
 -- 新模块引用时不触发递归归一化.
--- 来自 jac_Pigeonhole.agda 的 compress/expand/expand∘compress,
--- 用于 jac_4320DClosure.agda 的 729 点鸽巢推广.
+-- 来自 JacobianInjectiveSurjective.agda 的 compress/expand/expand∘compress,
+-- 用于 4320DClosure.agda 的 729 点鸽巢推广.
 ------------------------------------------------------------------------------
 
--- 引用分离接口 (签名对齐 jac_Pigeonhole.agda: compress {n} k j (k≢j) → Fin n)
+-- 引用分离接口 (签名对齐 JacobianInjectiveSurjective.agda: compress {n} k j (k≢j) → Fin n)
 record SeparatedRecursion : Set₁ where
   field
     compress   : {n : ℕ} → (k : Fin (suc n)) → (j : Fin (suc n)) → k ≢ j → Fin n
     expand     : {n : ℕ} → (k : Fin (suc n)) → Fin n → Fin (suc n)
     expand∘compress : {n : ℕ} (k : Fin (suc n)) (j : Fin (suc n)) (k≢j : k ≢ j) →
                       expand k (compress k j k≢j) ≡ j
-    -- 以上函数来自 jac_Pigeonhole, 已编译, 引用时不触发归一化
+    -- 以上函数来自 JacobianInjectiveSurjective, 已编译, 引用时不触发归一化
 
 ------------------------------------------------------------------------------
 -- 综合定理: 鸽巢原理的形式化标准化
@@ -89,6 +89,6 @@ record SeparatedRecursion : Set₁ where
 --   (c) 两者均可通过 Fin 编码 + 引用分离
 --       推广至 N≤729 而不触发类型检查器超时"
 --
--- 状态: 全部在 jac_Pigeonhole, jac_Injectivity, jac_4320DClosure
+-- 状态: 全部在 JacobianInjectiveSurjective, Injectivity, 4320DClosure
 --       中以 0 postulate 形式化验证.
 ------------------------------------------------------------------------------

@@ -13,7 +13,7 @@
 -- 核心原则:
 --   1. 边界算子 = 入射矩阵 (§2 桥接定理 M∂1-boundary3: 矩阵元与 ∂₁ 系数逐点一致)
 --   2. rank/nullity 由双侧证书钉住 (消元法具体而真):
---      rank ∂₁ = 2 — 下界: 2×2 子式 det = T₁ ≠ T₀ ⟹ 满秩 (复用 jac_Matrix.rank);
+--      rank ∂₁ = 2 — 下界: 2×2 子式 det = T₁ ≠ T₀ ⟹ 满秩 (复用 Matrix.rank);
 --                  上界: 列消元 c₂ = T₂·c₀ ⊕ T₂·c₁ (elim-c2)
 --      nullity ∂₁ = 1 — ker ∂₁ = { k·(T₁,T₁,T₁) } 完备刻画 (ker-span, 27-case)
 --   3. dimH 复用 Problem.Hodge.ChainComplex 记录 (不重定义), 与既有 tri 实例对齐
@@ -237,7 +237,7 @@ minor2-det = refl
 minor2-det≢0 : det2 minor2 ≢ T₀
 minor2-det≢0 = λ ()
 
--- 复用 jac_Matrix: det ≠ T₀ ⟹ 2×2 子式满秩 (rank2)
+-- 复用 Matrix: det ≠ T₀ ⟹ 2×2 子式满秩 (rank2)
 -- ⟹ rank ∂₁ ≥ 2 (下界证书)
 minor2-rank : rank minor2 ≡ rank2
 minor2-rank = det≠0→rank2 minor2 minor2-det≢0
@@ -307,7 +307,7 @@ chain-cond (suc (suc (suc ())))
 face-∂-filled3 : to3 (FiniteComplex.face-∂ filled3 zero) ≡ oneV
 face-∂-filled3 = refl
 
--- [roadmap] GF(9) 侧的消元法 rank 接口已存在: jac_GF9Matrix.rank2-gf9 / rank3-gf9;
+-- [roadmap] GF(9) 侧的消元法 rank 接口已存在: GF9Matrix.rank2-gf9 / rank3-gf9;
 --   本模块的 GF(3) 消元计算与 GF(9) 版本的对齐留后续模块。
 
 --------------------------------------------------------------------------------
@@ -455,8 +455,8 @@ euler-poincare-filled3 = refl
 
 -- [roadmap] 一般定理「χ = 0 ⟺ 存在双射 F : V → E」(与 det(M_F) ≠ 0 ⟺ 双射的
 --   代数恒等) 未形式化, 不在此断言。两侧引理已备:
---   - 双射侧: jac_Pigeonhole.pigeonhole-2 (Inj2 F → Surj2 F), encode9/decode9 往返
---   - 行列式侧: jac_Matrix.det≠0→rank2 / det-mul / inverse
+--   - 双射侧: JacobianInjectiveSurjective.pigeonhole-2 (Inj2 F → Surj2 F), encode9/decode9 往返
+--   - 行列式侧: Matrix.det≠0→rank2 / det-mul / inverse
 --   本模块给出的是具象复形上的 χ 计算 (χ_graph3 = 0, |V| = |E| = 3 时存在双射
 --   Fin 3 → Fin 3 是鸽巢平凡情形), 一般等价待 §2 消元框架推广到任意 V×E 矩阵。
 --------------------------------------------------------------------------------

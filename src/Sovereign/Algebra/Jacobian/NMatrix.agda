@@ -160,7 +160,7 @@ detNonzero↔surj-inj F =
 detNonzero↔bij : ∀ F → DetNonzero (funcTable F) ↔ (Inj2 F × Surj2 F)
 detNonzero↔bij = detNonzero↔surj-inj
 
--- 连接 NonSingular (来自 jac_Injectivity)
+-- 连接 NonSingular (来自 Injectivity)
 detNonzero↔nonsingular : ∀ F → DetNonzero (funcTable F) ↔ NonSingular F
 detNonzero↔nonsingular F =
   (λ dn → proj₁ (proj₁ (detNonzero↔bij F) dn)) ,

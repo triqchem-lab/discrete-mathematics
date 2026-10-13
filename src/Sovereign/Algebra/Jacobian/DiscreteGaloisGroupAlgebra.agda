@@ -46,7 +46,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; neg
 σ T₂ = T₂  -- 在 GF(3) 上 σ=id! 但在 GF(9) 上 σ(α)=-α.
 
 -- 对于本模块, 我们工作在纯 GF(3) 上 (Trit),
--- 其中 σ=id. 推广到 GF(9) 由 jac_FrobeniusBlind.agda 和 GF9.agda 处理.
+-- 其中 σ=id. 推广到 GF(9) 由 FrobeniusBlind.agda 和 GF9.agda 处理.
 
 -- 离散指数: exp_D(t) = σ^t = id (在 GF(3) 上)
 expD : ℕ → Trit → Trit
@@ -114,7 +114,7 @@ c2-order g = refl
 -- 是庞大的有限群但严格可穷举.
 --
 -- 完整形式化需要 GF(9) 上的矩阵乘法与行列式理论,
--- 当前在 jac_Matrix.agda (GF(3) 2×2) 和 GF9.agda 中有部分基础设施.
+-- 当前在 Matrix.agda (GF(3) 2×2) 和 GF9.agda 中有部分基础设施.
 -- 本节提供接口定义.
 
 -- 有限自同构群 (占位接口)

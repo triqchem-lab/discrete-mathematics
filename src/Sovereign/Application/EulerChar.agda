@@ -11,7 +11,7 @@
 --   3. refl 级
 --
 -- 包含：s2-χ, s2-χH, s2-euler, tri-χ, tri-χH, tri-euler, t2-χ, t2-χH, t2-euler, kl-χ, kl-χH, kl-euler
---   （命名正名：旧头注 `jac_EulerChar` ≠ 模块名，2026-10-11 勘误）
+--   （命名正名：旧头注 `EulerChar` ≠ 模块名，2026-10-11 勘误）
 
 --
 module Sovereign.Application.EulerChar where

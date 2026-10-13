@@ -102,7 +102,7 @@ example-nonsingular-fails = F-gf3-not-inj
 -- 本项目已形式化证明:
 --   NonSingular(=Inj2) F ⟺ F 双射              (§2, 0 postulate)
 --   2×2 行列式 det ≠ 0 → 列互异                  (§3, 0 postulate)
---   2×2 行列式 det = 0 → 不可逆                   (jac_Matrix, 0 postulate)
+--   2×2 行列式 det = 0 → 不可逆                   (Matrix, 0 postulate)
 --   F 非双射 → 函数表 M_F 有相同列或全零行         (§5 反例)
 --
 -- 已知但未在 Agda 中构造的:

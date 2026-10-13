@@ -11,7 +11,7 @@
 --   3. ℕ ∸ 语义
 --
 -- 包含：H0, h0, h1, h2, hodge-S2
---   （命名正名：旧头注 `jac_HodgeTetra` ≠ 模块名，2026-10-11 勘误）
+--   （命名正名：旧头注 `HodgeTetra` ≠ 模块名，2026-10-11 勘误）
 
 --
 module Sovereign.Application.HodgeTetra where

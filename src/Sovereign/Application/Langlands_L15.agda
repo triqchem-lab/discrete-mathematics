@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Langlands_L15 —（勘误：旧头注 jac_Langlands_L15，名≠模块名，已正名）— Langlands L1.5: GL₂(GF(9)) 表示论框架
+-- | Langlands_L15 —（勘误：旧头注 Langlands_L15，名≠模块名，已正名）— Langlands L1.5: GL₂(GF(9)) 表示论框架
 -- 0 postulate
 
 -- 核心原则：

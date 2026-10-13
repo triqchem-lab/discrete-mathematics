@@ -3,7 +3,7 @@
 -- | Sovereign.Algebra.Lie.LieAlgebra
 -- 离散李代数 — GF(3) 上的括号结构完整形式化 (0 postulate)
 --
--- 与 jac_LieGroup (Jacobian 家族) 分开的独立建立; 重复内容为有意为之。
+-- 与 DiscreteGaloisGroupAlgebra (Jacobian 家族) 分开的独立建立; 重复内容为有意为之。
 --
 -- 结构:
 --   §1 局部 2×2 GF(3) 矩阵环 (对式 Mat2T: 加法/取负/乘法)

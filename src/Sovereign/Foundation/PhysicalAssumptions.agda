@@ -37,7 +37,7 @@ data PostulateClass : Set where
 -- ① 机械约束（保留, 非缺陷）:
 --   T6.agda: div3k / mod3k / gf3Toℕ-A4-inv（REWRITE 规则, 4320D 归约加速）
 --   XuanwuAbsorption.agda: mod46k / div46k / mod-a+598（REWRITE）
---   jac_Pigeonhole.agda: decode9-encode9（REWRITE）
+--   JacobianInjectiveSurjective.agda: decode9-encode9（REWRITE）
 --   Format/CRT.agda: crtSec-restricted / crtRet-restricted（cubical 桥, 2 条）
 --     — 2026-08-14 实测尝试构造性版本: ΣPathP+J 桥因 Agda 2.9.0 跨模块
 --       路径差异（隐参逃逸）失败, 与原注释警告一致。crtSec 方向的

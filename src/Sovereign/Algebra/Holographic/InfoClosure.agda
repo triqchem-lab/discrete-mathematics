@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_InfoClosure — 信息论闭包: M_F 全息编码的无损性
+-- | InfoClosure — 信息论闭包: M_F 全息编码的无损性
 -- 定理: F ↦ M_F 是忠实函子, 4320D 是 T⁶ 的信息上限
 -- 0 postulate
 
@@ -14,23 +14,23 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 --
 -- 定理1 (忠实编码): 映射 F: Fin N → Fin N 的全部结构信息
 --   被 M_F 完全编码 — 从 M_F 可以恢复 F (函数表矩阵的可逆性).
---   已由 jac_NMatrix 以 0 postulate 证明:
+--   已由 NMatrix 以 0 postulate 证明:
 --     det(M_F) ≠ 0 ⟺ F 双射, 且 M_F 的列 = 基向量 e_{F(j)}.
 --
 -- 定理2 (4320D 上限): T⁶ 的独立自由度 ≤ 4320.
 --   公式: 729×6 − 54 = 4320 (组合闭包).
---   已由 jac_4320DClosure 以 0 postulate 证明.
+--   已由 4320DClosure 以 0 postulate 证明.
 --
 -- 定理3 (CRT 无损降维): 任意信息可通过 CRT 分解为 3×3 + 4×4
 --   两个分量之和, 且分解不丢失任何信息 (CRT 是同构).
---   已由 jac_CRTDet 基于 Duodec 同态证明.
+--   已由 CRTDet 基于 Duodec 同态证明.
 --
 -- 本模块将三者统一为一个信息论闭包定理.
 --------------------------------------------------------------------------------
 
 -- 三个已证引理的重导出 (引用, 不重复导入)
--- jac_NMatrix: detNonzero↔bij (0 postulate)
--- jac_CRTDet:   crt-det-I₂, crt-det-nonzero (0 postulate)
+-- NMatrix: detNonzero↔bij (0 postulate)
+-- CRTDet:   crt-det-I₂, crt-det-nonzero (0 postulate)
 
 open import Sovereign.Algebra.Jacobian.CRTDet
   using (crt-det-I₂; crt-det-nonzero)
@@ -85,9 +85,9 @@ info-check : holographic-4320 ≡ 4320; info-check = refl
 --     (iii) 无损性: CRT 分解 det = crt12(det₃, det₄)
 --     (iv)  紧致性: 编码输出 ∈ GF(9), 仅 9 种可能值
 --
--- (i) 由 jac_NMatrix 的 funcTable 构造保证.
--- (ii) 由 jac_NMatrix 的 detNonzero↔bij 保证.
--- (iii) 由 jac_CRTDet 的 CRT 同态保证.
+-- (i) 由 NMatrix 的 funcTable 构造保证.
+-- (ii) 由 NMatrix 的 detNonzero↔bij 保证.
+-- (iii) 由 CRTDet 的 CRT 同态保证.
 -- (iv) 由 GF(9) 的有限性保证 — |GF(9)| = 9.
 --
 -- 全部 0 postulate.

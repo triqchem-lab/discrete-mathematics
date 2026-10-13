@@ -9,7 +9,7 @@
 --
 --   临界计数（PerfectMorseInstance 的配对表 v0↔e01, v1↔e12, e20↔t）：
 --     m₀ = 1, m₁ = 0, m₂ = 0
---   Betti 数（jac_Topology filled3C，已证 refl）：
+--   Betti 数（Topology filled3C，已证 refl）：
 --     β₀ = 1, β₁ = 0, β₂ = 0
 --   三条不等式全部取等——完美。
 --
@@ -26,7 +26,7 @@ open import Sovereign.Application.Topology
   using (dimH-filled3-0; dimH-filled3-1; dimH-filled3-2)
 
 --------------------------------------------------------------------------------
--- §1. Betti 数（jac_Topology filled3C 已证 refl）
+-- §1. Betti 数（Topology filled3C 已证 refl）
 --------------------------------------------------------------------------------
 
 β₀ β₁ β₂ : ℕ

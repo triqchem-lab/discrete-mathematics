@@ -4,7 +4,7 @@
 -- 任务书第二层·2.5 实例收官：K₃ Hodge 理论全谱系一览
 --
 -- 汇总四线交叉验证结果（全部并行/本会话已闭合，回执在案）：
---   同调群 β = (1,0,0)：jac_Topology + FreeAbH0 全机器闭合
+--   同调群 β = (1,0,0)：Topology + FreeAbH0 全机器闭合
 --   Morse 三场 χ_m 一致：FormanChiInvariant + CollapseToMorse
 --   Eckmann 失效：EckmannNonSplitting（non-splitting-witness 已证）
 --   Hodge 分解否定：FreeAbHodgeVerdict（oracle 108 点，迷向阻断）
@@ -22,7 +22,7 @@ open import Sovereign.Application.Topology
 open import Sovereign.Application.FormanChiInvariant using (chi-m-f)
 
 --------------------------------------------------------------------------------
--- §1. 同调群 β = (1,0,0)（jac_Topology 已证 refl）
+-- §1. 同调群 β = (1,0,0)（Topology 已证 refl）
 --------------------------------------------------------------------------------
 
 sec1-betti₀ : dimH filled3C 0 ≡ 1

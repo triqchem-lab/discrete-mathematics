@@ -1,7 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | WilsonLoop — 3×3 Wilson 圈 + 格点质量间隙定理
--- （正名勘误 2026-10-11：原头注写 jac_WilsonLoop ≠ 模块名，已正名）
+-- （正名勘误 2026-10-11：原头注写 WilsonLoop ≠ 模块名，已正名）
 -- 0 postulate
 
 --
@@ -65,8 +65,8 @@ wilson-mass-gap p = 1≢0 (trans (sym det3-gf9-I) p)   -- det(I₃)=1gf9 导出
 --------------------------------------------------------------------------------
 -- §3. 与 2×2 质量间隙的统一
 --
--- jac_LatticeField: 2×2 det≠0 → mass-gap-I2 (λ())
--- jac_WilsonLoop:  3×3 det≠0 → wilson-mass-gap (λ())
+-- LatticeField: 2×2 det≠0 → mass-gap-I2 (λ())
+-- WilsonLoop:  3×3 det≠0 → wilson-mass-gap (λ())
 --
 -- 联合定理: 对任意 N×N Hamiltonian H,
 --   若存在 2×2 或 3×3 子矩阵 M ⊂ H 满足 det(M) ≠ 0,
@@ -88,11 +88,11 @@ joint-mass-gap = (λ p → 1≢0 (trans (sym det2-gf9-I) p))
 --------------------------------------------------------------------------------
 -- §4. CRT 分解质量间隙 — N×N 推广 ---------------------------------
 --
--- 由 jac_CRTDet: 任意 N×N Wilson 圈 W,
+-- 由 CRTDet: 任意 N×N Wilson 圈 W,
 --   det(W) ≠ 0 ⟺ det(W₃) ≠ 0 ∧ det(W₄) ≠ 0.
 -- 其中 W₃, W₄ 是 ≤4×4 的 CRT 分量.
 -- 因此: N×N 质量间隙由 2×2/3×3/4×4 的 det≠0 判定.
---   [2026-09 勘误] 「分解为 3x3/4x4 小分量」是误读: 分量矩阵仍 NxN, 3/4 是环元素数 (jac_CRTDet §3 措辞修正); 一般 N 同态已类型化 (pi3-det/pi4-det/det-crt12), 本行推广表述以 jac_CRTDet 为准.
+--   [2026-09 勘误] 「分解为 3x3/4x4 小分量」是误读: 分量矩阵仍 NxN, 3/4 是环元素数 (CRTDet §3 措辞修正); 一般 N 同态已类型化 (pi3-det/pi4-det/det-crt12), 本行推广表述以 CRTDet 为准.
 -- 不需要 N×N 行列式, 0 postulate.
 
 open import Sovereign.Algebra.Jacobian.CRTDet
@@ -118,7 +118,7 @@ crt-mass-gap = (λ p → 1≢0 (trans (sym det2-gf9-I) p))
 --   离散版本直接在有限格点上定义, 不取极限.
 --   质量间隙 = 有限矩阵的谱间隙 = 有限组合事实.
 --
--- 本模块 (jac_WilsonLoop) + jac_LatticeField 构成 YM 的离散核心:
+-- 本模块 (WilsonLoop) + LatticeField 构成 YM 的离散核心:
 --   ✅ 2×2 Hamiltonian 质量间隙 (mass-gap-I2)
 --   ✅ 3×3 Wilson 圈质量间隙 (wilson-mass-gap)
 --   ✅ 联合定理框架

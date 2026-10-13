@@ -14,9 +14,9 @@
 --
 -- ⚠ 诚实边界：
 --   1. Morse 不等式 m_k ≥ β_k 完整形式需要同调群——本模块只给 β₀ 层连通性
---      核对；完整不等式接 jac_Topology 同调机件，roadmap。
+--      核对；完整不等式接 Topology 同调机件，roadmap。
 --   2. 一般复形上的矢量场是 roadmap；本模块锁枚举实例（7 单形，逐 case 构造）。
---   3. 「局部配对替代全局计算」与 jac_Topology 的 2×2 子式秩证书同族，
+--   3. 「局部配对替代全局计算」与 Topology 的 2×2 子式秩证书同族，
 --      但路径不同（Morse 约化 vs CRT 分量）。
 --
 -- 0 postulate / 0 hole。

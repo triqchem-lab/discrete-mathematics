@@ -10,7 +10,7 @@
 --   类型论等价：m < n ↔ ¬ ∃ (f : Fin n → Fin m), Injective f
 --
 -- 已有资产：std pigeonhole（否定版：m > n → ¬ Injective f）
---           jac_Pigeonhole.pigeonhole-1（Trit/Fin 3 肯定版）
+--           JacobianInjectiveSurjective.pigeonhole-1（Trit/Fin 3 肯定版）
 -- 工作量：~50 行
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.Pigeonhole where
@@ -62,7 +62,7 @@ pigeonhole-suc {n} f = pigeonhole-neg (n<1+n n) f
 --------------------------------------------------------------------------------
 -- §2. 鸽巢原理（肯定版：Trit 版完整闭合）
 --
---   Trit : Injective f → Surjective f（jac_Pigeonhole.pigeonhole-1 导出）
+--   Trit : Injective f → Surjective f（JacobianInjectiveSurjective.pigeonhole-1 导出）
 --   已在 InjSurj.pigeonhole-trit 中完整闭合
 --------------------------------------------------------------------------------
 

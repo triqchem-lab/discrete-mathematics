@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_WilsonPlaquette — YM 单 plaquette Wilson 圈 · 独立形式化
+-- | WilsonPlaquette — YM 单 plaquette Wilson 圈 · 独立形式化
 -- 0 postulate
 
 --

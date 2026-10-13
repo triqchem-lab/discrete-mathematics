@@ -14,8 +14,8 @@
 --   大衍框架首次完成这一翻译
 --
 -- 复用:
---   jac_Pigeonhole — encode9/decode9 (GF3² ↔ Fin 9 双射)
---   jac_CRTDet — det2-gf3 (GF(3) 2×2 行列式)
+--   JacobianInjectiveSurjective — encode9/decode9 (GF3² ↔ Fin 9 双射)
+--   CRTDet — det2-gf3 (GF(3) 2×2 行列式)
 --   GF9 — galoisConjugate (Frobenius 共轭)
 --   KakeyaGF3 — Dir2/方向空间
 --
@@ -102,7 +102,7 @@ MF3-id (suc (suc zero)) (suc zero) = refl
 MF3-id (suc (suc zero)) (suc (suc zero)) = refl
 
 --------------------------------------------------------------------------------
--- §2. GF3² 的全局编码 (复用 jac_Pigeonhole)
+-- §2. GF3² 的全局编码 (复用 JacobianInjectiveSurjective)
 --
 -- encode9 : GF3² → Fin 9 (双射)
 -- decode9 : Fin 9 → GF3² (双射)
@@ -113,19 +113,19 @@ MF3-id (suc (suc zero)) (suc (suc zero)) = refl
 -- 9×9 函数表矩阵 M_F 的构造基础
 --------------------------------------------------------------------------------
 
--- GF3² 的编码是双射 (复用 jac_Pigeonhole)
+-- GF3² 的编码是双射 (复用 JacobianInjectiveSurjective)
 encode9-bijection : ∀ (i : Fin 9) → encode9 (decode9 i) ≡ i
 encode9-bijection = encode9-decode9
 
 decode9-bijection : ∀ (p : GF3²) → decode9 (encode9 p) ≡ p
 decode9-bijection = decode9-encode9
 
--- 编码单射 (复用 jac_Pigeonhole)
+-- 编码单射 (复用 JacobianInjectiveSurjective)
 encode9-inj : ∀ {p q : GF3²} → encode9 p ≡ encode9 q → p ≡ q
 encode9-inj = encode9-injective
 
 --------------------------------------------------------------------------------
--- §3. 鸽巢原理 → M_F 行列式非零 (复用 jac_Pigeonhole)
+-- §3. 鸽巢原理 → M_F 行列式非零 (复用 JacobianInjectiveSurjective)
 --
 -- 定理 (pigeonhole-1): ∀ f : Trit → Trit, Inj1 f → Surj1 f
 -- 即: GF(3) 上单射必满射
@@ -139,7 +139,7 @@ pigeonhole-gf3 : ∀ f → Inj1 f → Surj1 f
 pigeonhole-gf3 = pigeonhole-1
 
 --------------------------------------------------------------------------------
--- §4. CRT 行列式分解 (复用 jac_CRTDet)
+-- §4. CRT 行列式分解 (复用 CRTDet)
 --
 -- 定理: det(M) = crt12(det(M₃), det(M₄))
 -- 高维可逆性 → CRT 同态投影至 3×3/4×4 局部分量
@@ -150,11 +150,11 @@ pigeonhole-gf3 = pigeonhole-1
 --   两者都是"降维", 但大衍是代数降维, Dvir 是计数降维
 --------------------------------------------------------------------------------
 
--- det(I₂) = 1 ≠ 0 (复用 jac_CRTDet)
+-- det(I₂) = 1 ≠ 0 (复用 CRTDet)
 det-I₂-nonzero : det2-gf3 T₁ T₀ T₀ T₁ ≢ T₀
 det-I₂-nonzero = crt-det-nonzero
 
--- det(I₂) = 1 (复用 jac_CRTDet)
+-- det(I₂) = 1 (复用 CRTDet)
 det-I₂-eq-1 : det2-gf3 T₁ T₀ T₀ T₁ ≡ T₁
 det-I₂-eq-1 = crt-det-I₂
 

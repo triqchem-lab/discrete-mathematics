@@ -115,7 +115,7 @@ record CharPoly (n : ℕ) : Set where
 --   代数不可约性 (全局) ⟺ 高复杂度 (NP-hard)
 --
 -- 其形式化实现依赖:
---   1. GF(9) 上的多项式不可约性判定 (来自 jac_Matrix 的扩展)
+--   1. GF(9) 上的多项式不可约性判定 (来自 Matrix 的扩展)
 --   2. 有限域上代数簇的 Galois 理论 (来自 GF9.agda)
 --   3. 电路复杂度的离散编码 (新建设施)
 -- 此为第四波的长期工程目标.
@@ -174,10 +174,10 @@ matrix-irred : has-root T₀ T₁ ≡ T₀
 matrix-irred = refl
 
 --------------------------------------------------------------------------------
--- §5. GF(9) 推广: 利用 jac_GF9Matrix
+-- §5. GF(9) 推广: 利用 GF9Matrix
 --
 -- GF(9) 上 2×2 矩阵的不可约性与 GF(3) 版本完全同构.
--- 利用 det2-gf9 (来自 jac_GF9Matrix), 特征多项式为:
+-- 利用 det2-gf9 (来自 GF9Matrix), 特征多项式为:
 --   p(λ) = λ² ⊖ tr·λ ⊕ det  (在 GF(9) 上)
 --   irreducibility ⇔ no root in GF(9) = 9 elements.
 --
@@ -199,12 +199,12 @@ open import Sovereign.Algebra.Jacobian.GF9Matrix
 -- N×N 推广: GF(9) 上 N×N 矩阵 M_F 的不可约性
 -- = charpoly 在 GF(9) 上无根 (N≤3)
 -- = charpoly 无可分解因式 (N>3)
--- 由 jac_GF9Matrix 的 det3-gf9 支持 3×3 特征多项式的计算.
+-- 由 GF9Matrix 的 det3-gf9 支持 3×3 特征多项式的计算.
 
--- 3×3 验证: jac_GF9Matrix.det3-gf9 已验证 det(I₃)=1gf9 (refl).
+-- 3×3 验证: GF9Matrix.det3-gf9 已验证 det(I₃)=1gf9 (refl).
 -- 特征多项式 p_M(λ) = det(λI - M) = det3-gf9(λI-M).
 -- 对 N=3, 穷举 λ∈GF(9) 的 9 个值即可判定不可约性.
--- 这由 jac_GF9Matrix 的 det3-gf9 提供行列式计算,
+-- 这由 GF9Matrix 的 det3-gf9 提供行列式计算,
 -- 由本模块的 eval-quad/has-root 策略推广到 3 次多项式.
 
 open import Sovereign.Algebra.Jacobian.GF9Matrix
@@ -217,13 +217,13 @@ open import Sovereign.Algebra.Jacobian.GF9Matrix
 --------------------------------------------------------------------------------
 -- §6. 结论
 --
--- jac_Complexity 建立了全息不可约性的完整框架:
+-- Complexity 建立了全息不可约性的完整框架:
 --   ✅ GF(3) 二次多项式根检验 (eval-quad + has-root)
 --   ✅ GF(3) 不可约实例 (matrix-irred, refl)
 --   ✅ 三重屏障穿透论证
 --   ✅ GF(9) 桥接 (det2-gf9-nonzero)
 --   ✅ 全息穿透定理陈述
 --   0 postulate.
---   CRT N×N 推广: det3-gf9 + jac_CRTDet → 所有 CRT 分量 ≤4×4 不可约判定.
---   [2026-09 勘误] 「分解为 3x3/4x4 小分量」是误读: 分量矩阵仍 NxN, 3/4 是环元素数 (jac_CRTDet §3 措辞修正); 一般 N 同态已类型化 (pi3-det/pi4-det/det-crt12), 本行推广表述以 jac_CRTDet 为准.
+--   CRT N×N 推广: det3-gf9 + CRTDet → 所有 CRT 分量 ≤4×4 不可约判定.
+--   [2026-09 勘误] 「分解为 3x3/4x4 小分量」是误读: 分量矩阵仍 NxN, 3/4 是环元素数 (CRTDet §3 措辞修正); 一般 N 同态已类型化 (pi3-det/pi4-det/det-crt12), 本行推广表述以 CRTDet 为准.
 --   完整形式化约需 300 行 GF(9) 特征多项式穷举.

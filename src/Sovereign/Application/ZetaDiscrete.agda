@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_ZetaDiscrete — GF(q) 有限域 zeta + Weil 定理 (未来态)
+-- | ZetaDiscrete — GF(q) 有限域 zeta + Weil 定理 (未来态)
 -- 0 postulate
 
 -- | 离散 zeta 对照
@@ -16,13 +16,13 @@ module Sovereign.Application.ZetaDiscrete where
 open import Data.Nat using (ℕ; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
--- §1. GF(3) 数据: #E₁=4, trace=0 (来自 jac_BSD) -------------------
+-- §1. GF(3) 数据: #E₁=4, trace=0 (来自 BSD) -------------------
 open import Sovereign.Application.BSD using (#E1-is-4)
 
 e1-gf3 : ℕ; e1-gf3 = 4
 e1-ok : e1-gf3 ≡ 4; e1-ok = refl
 
--- §2. GF(9) 数据: #E₁=16, trace=-6 (来自 jac_BSDTrace) ------------
+-- §2. GF(9) 数据: #E₁=16, trace=-6 (来自 BSDTrace) ------------
 e1-gf9 : ℕ; e1-gf9 = 16
 
 -- §3. Weil zeta 函数 ----------------------------------------------

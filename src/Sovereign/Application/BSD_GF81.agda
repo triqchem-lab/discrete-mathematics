@@ -11,7 +11,7 @@
 --   3. ℤ 精确值
 --
 -- 包含：q3, t41, e181, t42, e281, t46, e681
---   （命名正名：旧头注 `jac_BSD_GF81` ≠ 模块名，2026-10-11 勘误）
+--   （命名正名：旧头注 `BSD_GF81` ≠ 模块名，2026-10-11 勘误）
 
 --
 module Sovereign.Application.BSD_GF81 where

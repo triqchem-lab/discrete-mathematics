@@ -73,7 +73,7 @@ pointwise-not-surjective :
   PointwiseJC I2 × (Surj2 F-gf3 → ⊥)
 pointwise-not-surjective = pointwise-passes-gf3 , gf3-not-surjective
 
--- (d) 从 jac_Discrete 复用: 形式导数条件 ⊄ 函数表条件
+-- (d) 从 Discrete 复用: 形式导数条件 ⊄ 函数表条件
 -- formal-not-table : Σ Mat2 (λ J → FormalJacDet1 J × Σ F (FunctionTableInj F → ⊥))
 -- (F-blind: x³=y³=y, F=(x,0), 单射性失败)
 
@@ -83,7 +83,7 @@ pointwise-not-surjective = pointwise-passes-gf3 , gf3-not-surjective
 
 -- 在有限集 S 上, F: S → S 是双射 ⟺ F 的全局矩阵 M_F 行列式非零
 --
--- 证明结构 (详见 jac_Theorem.agda):
+-- 证明结构 (详见 Theorem.agda):
 --   1. 鸽巢原理: 有限集上 单射 ⟺ 满射 ⟺ 双射
 --   2. (⇒) F 双射 → M_F 是置换矩阵 → det = ±1 ≠ 0
 --   3. (⇐) det ≠ 0 → M_F 可逆 → F 单射 → 鸽巢 → F 双射
@@ -94,13 +94,13 @@ pointwise-not-surjective = pointwise-passes-gf3 , gf3-not-surjective
 -- 5. 逐点 vs 全局: 不等价性总结
 --------------------------------------------------------------------------------
 
--- 三层雅可比强度 (jac_Discrete §5, jac_FrobeniusBlind §6):
+-- 三层雅可比强度 (Discrete §5, FrobeniusBlind §6):
 --   形式导数 (最弱, Frobenius 盲区)
 --     < 差分算子 (无 Frobenius 盲区, 但仍是局部条件)
 --       < 函数表/单射性 (全局条件, 精确判定双射)
 --
 -- GF(3)² 反例: det J_formal = 1 但 F 非双射 (pointwise-not-surjective)
--- GF(9)² 反例: det J_Δ = 1+α ≠ 0 但 F 非双射 (jac_FrobeniusBlind §6)
+-- GF(9)² 反例: det J_Δ = 1+α ≠ 0 但 F 非双射 (FrobeniusBlind §6)
 
 --------------------------------------------------------------------------------
 -- 6. 实验验证摘要
@@ -109,4 +109,4 @@ pointwise-not-surjective = pointwise-passes-gf3 , gf3-not-surjective
 -- GF(9)²: 59,049 BCW 映射, 93.3% 非双射 (逐点条件全部满足)
 -- GF(9)²: 全局矩阵 det(F*) = 0 精确检测全部非双射
 -- GF(3)²: F(x,y) = (x, 0), det J = 1, 非双射 (3-to-1, gf3-not-surj)
--- 详见 jac_Theorem.agda §4
+-- 详见 Theorem.agda §4

@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | jac_PhysicalOntology — 大衍宇宙物理本体论
+-- | PhysicalOntology — 大衍宇宙物理本体论
 --
 -- 数学背景：
 --  数学基座 → 物理语义的完整映射
@@ -95,7 +95,7 @@ import Sovereign.Algebra.Jacobian.NMatrix       -- M_F 全息编码
 -- ═══════════════════════════════════════════════════════════
 -- 本体论公理: Frobenius 心跳 = 宇宙第一因
 -- ═══════════════════════════════════════════════════════════
--- σ(x) = x³, σ² = id (jac_Galois, refl)
+-- σ(x) = x³, σ² = id (Galois, refl)
 -- 克里斯托螺旋测地线 = σ-迭代轨道: x → σ(x) → σ²(x) = x
 -- 这是水晶宇宙的底层编码器 — 所有物理现象的主频时钟
 

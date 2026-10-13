@@ -11,7 +11,7 @@
 --   3. ℤ 精确值
 --
 -- 包含：q3, t51, t52, t56
---   （命名正名：旧头注 `jac_BSD_GF243` ≠ 模块名，2026-10-11 勘误）
+--   （命名正名：旧头注 `BSD_GF243` ≠ 模块名，2026-10-11 勘误）
 
 --
 module Sovereign.Application.BSD_GF243 where

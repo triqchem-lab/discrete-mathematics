@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_YM_Full — YM 全规模: SU(2) 任意构型 + Wilson 圈
+-- | YM_Full — YM 全规模: SU(2) 任意构型 + Wilson 圈
 -- 0 postulate
 
 --
@@ -19,7 +19,7 @@ open import Sovereign.Algebra.Jacobian.GF9Matrix
 -- §1. 平凡构型实证 (所有 N≤4) -----------------------------------
 
 -- ── 声明层升级（2026-10-11）：det 计算导出链（替代裸 λ() 模式）──
--- 机制：det(I) 经 jac_GF9Matrix 既有件计算为 1gf9（refl 级），再由 1gf9 ≢ 0gf9 导出
+-- 机制：det(I) 经 GF9Matrix 既有件计算为 1gf9（refl 级），再由 1gf9 ≢ 0gf9 导出
 --（非平凡构型的一般命题为「det 乘积」形——诚实边界：实例核，非 YM 质量间隙全定理）
 1≢0 : 1gf9 ≢ 0gf9
 1≢0 = λ ()

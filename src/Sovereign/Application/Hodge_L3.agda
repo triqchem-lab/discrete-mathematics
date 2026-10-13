@@ -11,7 +11,7 @@
 --   3. refl 级
 --
 -- 包含：（零顶层签名——正文各节即清单：§1 ℙⁿ(GF(9)) 定义/§2 Weil-Deligne 对照/§3 L3 状态）
---   （命名正名：旧头注 `jac_Hodge_L3` ≠ 模块名，2026-10-11 勘误）
+--   （命名正名：旧头注 `Hodge_L3` ≠ 模块名，2026-10-11 勘误）
 
 --
 module Sovereign.Application.Hodge_L3 where
@@ -28,7 +28,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 -- Zₖ(X) = 余维k子簇的自由 Abel 群
 -- 对有限域 X/GF(9): dim Zₖ ⊗ ℚ = dim H²ᵏ(X) (Weil 猜想, Deligne 1974)
 
--- 三角复形上的实例: dim ℋ = dim H (来自 jac_Hodge)
+-- 三角复形上的实例: dim ℋ = dim H (来自 Hodge)
 -- 一般射影簇: dim(代数闭链) = dim(Hodge 类) 在有限域上已由 Weil/Deligne 证明
 
 -- §3. Hodge L3 状态 ------------------------------------------------

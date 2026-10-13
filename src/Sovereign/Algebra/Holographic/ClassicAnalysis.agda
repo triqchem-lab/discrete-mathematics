@@ -105,5 +105,5 @@ record DescriptiveCompleteness : Set₁ where
 
 -- B型反例: 声称 det(M_F) ≠ 0 但 F 非双射
 -- 当前提交数: 0
--- 判定: 若提交, 由 jac_EscapeAnalysis.collapse→not-detnonzero 直接驳回
--- 或由 jac_NMatrix.detNonzero↔bij 导出矛盾
+-- 判定: 若提交, 由 EscapeAnalysis.collapse→not-detnonzero 直接驳回
+-- 或由 NMatrix.detNonzero↔bij 导出矛盾

@@ -21,10 +21,10 @@
 --   M5 ∀n πₙ 同构：BLOCKED（依赖 M3/M4 + 一般同伦群）。
 --   **全量定理未完成**——本模块闭合的是其组合前置件，不含任何完成宣称。
 --
--- 【本地资产接线】矩阵化谱系：`Algebra/Jacobian/jac_Topology.agda` 的
+-- 【本地资产接线】矩阵化谱系：`Algebra/Jacobian/Topology.agda` 的
 --   FiniteComplex（顶点/边/面 + 入射数据）与 BoundaryMatrix（GF(3) 入射矩阵 +
 --   rank/nullity 双侧证书）是序复形的**矩阵计算层**；本模块是**组合公理层**
---   （链的严格序 + 下降封闭）——两层互补：本层的链概念是 jac_Topology 入射
+--   （链的严格序 + 下降封闭）——两层互补：本层的链概念是 Topology 入射
 --   数据的组合语义；同调维数走 `Problem/Hodge/ChainComplex.dimH` 接口。
 --
 -- 0 postulate / 0 hole。

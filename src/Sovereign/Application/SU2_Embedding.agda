@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_SU2_Embedding — SU(2) ⊂ SL₂(GF(9)) 嵌入
+-- | SU2_Embedding — SU(2) ⊂ SL₂(GF(9)) 嵌入
 -- 0 postulate
 
 --

@@ -11,7 +11,7 @@
 --   3. ℕ ∸ 语义
 --
 -- 包含：dimC₀, rank, null₁, H0, h0, h1, h2, t2-hodge
---   （命名正名：旧头注 `jac_TorusHodge` ≠ 模块名，2026-10-11 勘误）
+--   （命名正名：旧头注 `TorusHodge` ≠ 模块名，2026-10-11 勘误）
 
 --
 module Sovereign.Application.TorusHodge where

@@ -13,7 +13,7 @@
 -- 复用（本地资产）：
 --   · FormanMinimal.triangleVF——配对矢量场与临界判定
 --   · ChainComplex.tri——三角形链复形的 dimH（tri-H0/tri-H1 已证）
---   · jac_Topology 的 ker-span/rank 证书——rank ∂₁ = 2、nullity ∂₁ = 1
+--   · Topology 的 ker-span/rank 证书——rank ∂₁ = 2、nullity ∂₁ = 1
 --
 -- ⚠ 诚实边界：
 --   1. 这是 Morse 不等式的**实例层**（K₃ + 一个具体矢量场）。一般定理
@@ -21,7 +21,7 @@
 --      Morse 约化理论（链复形同构证明），roadmap。
 --   2. β 的值由 ChainComplex.tri 的 dimH 计算（rank/nullity 消元证书），
 --      非独立重算——复用不重造。
---   3. χ = 0（欧拉示性数）的独立验证见 jac_Topology §4。
+--   3. χ = 0（欧拉示性数）的独立验证见 Topology §4。
 --
 -- 0 postulate / 0 hole。
 module Sovereign.Application.FormanMorseInequality where
@@ -32,7 +32,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Application.ChainComplex using (dimH; tri)
 
 --------------------------------------------------------------------------------
--- §1. Betti 数（从 ChainComplex.tri 的 dimH 提取，jac_Topology 证书背书）
+-- §1. Betti 数（从 ChainComplex.tri 的 dimH 提取，Topology 证书背书）
 --------------------------------------------------------------------------------
 
 β₀ β₁ β₂ : ℕ

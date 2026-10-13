@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_CRTDet4 — CRT 行列式分解 π4 侧扩展
+-- | CRTDet4 — CRT 行列式分解 π4 侧扩展
 --
--- 补齐 jac_CRTDet 的 π4 侧 roadmap：
+-- 补齐 CRTDet 的 π4 侧 roadmap：
 --   π4-sumD：π4 保持有限和（镜像 π3-sumD）
 --   π4-sgn：π4 保持交错符号（镜像 π3-sgn）
 --   π4-det：一般 N 行列式 π4 同态（镜像 π3-det，Laplace 归纳）
 --
--- 依赖：jac_CRTDet（π3 侧全部引理 + Fin4 算子 + π4-homo-+/π4-homo-* 已证）
+-- 依赖：CRTDet（π3 侧全部引理 + Fin4 算子 + π4-homo-+/π4-homo-* 已证）
 --
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.Jacobian.CRTDet4 where
@@ -24,7 +24,7 @@ open import Sovereign.Algebra.Duodecimal
 open import Sovereign.Algebra.Jacobian.CRTDet
   using (Mat; det; minor; sumD; sgn; punch)
 
--- ── Fin 4 环算子 (复用 jac_CRTDet §2c) ─────────────────────────────
+-- ── Fin 4 环算子 (复用 CRTDet §2c) ─────────────────────────────
 open import Sovereign.Algebra.Jacobian.CRTDet
   using (_+4_; _*4_; neg4)
   renaming (π4-homo-+ to π4-homo-+; π4-homo-* to π4-homo-*)
@@ -89,7 +89,7 @@ detT4 {nsuc n} M = sumT4 (λ j → sgnT4 j *4 (M zero j *4 detT4 (minorT4 M j)))
 -- ✅ π4-det：一般 N 行列式 π4 同态（Laplace 归纳，镜像 π3-det）
 --
 -- P0-2 缺口闭合：
---   π3 侧：π3-det（jac_CRTDet §2b，已有）
+--   π3 侧：π3-det（CRTDet §2b，已有）
 --   π4 侧：π4-det（本模块，新增）
 --   CRT 组装：det M ≡ crt12(π3-det M, π4-det M)——由 crt12-roundtrip 保证
 --   剩余：det≠0 ⟺ (det₃≠0 ∧ det₄≠0) 的完整非零性判定——roadmap

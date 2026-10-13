@@ -18,7 +18,7 @@ open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective using (Inj2; 
 open import Sovereign.Algebra.Jacobian.NMatrix using (funcTable; DetNonzero; detNonzero↔bij)
 
 -- 主定理: det(M_F) ≠ 0 ⟺ F 双射
--- 完整证明在 jac_NMatrix.detNonzero↔bij (0 postulate)
+-- 完整证明在 NMatrix.detNonzero↔bij (0 postulate)
 theorem : ∀ F → DetNonzero (funcTable F) → Inj2 F × Surj2 F
 theorem F dn = fst (detNonzero↔bij F) dn
   where fst : ∀{A B} → (A → B) × (B → A) → A → B; fst (f , _) = f

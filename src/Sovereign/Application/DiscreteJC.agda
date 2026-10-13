@@ -25,39 +25,39 @@ open import Sovereign.Base.Trit
 -- §0. 基础类型 (从各模块导入, 避免符号冲突)
 --------------------------------------------------------------------------------
 
--- 从 jac_Discrete 导入 (Mat2, det2, I2, GF3² 是核心基础类型)
+-- 从 Discrete 导入 (Mat2, det2, I2, GF3² 是核心基础类型)
 open import Sovereign.Algebra.Jacobian.Discrete
   using (Mat2; det2; I2; GF3²; FormalJacDet1; FunctionTableInj;
          formal-passes; formal-not-table; F-blind; formal-jac-blind; table-fails)
 
--- 从 jac_GF3 导入 (GF(3)² 反例, 形式导数/差分算子具体实例)
+-- 从 GF3 导入 (GF(3)² 反例, 形式导数/差分算子具体实例)
 open import Sovereign.Algebra.Jacobian.GF3
   using (F-gf3; gf3-collision; gf3-not-surj; det-J-formal; det2-I2;
          JΔ-counter; det-JΔ-counter; J-formal; J-formal≡I;
          Δx-F1-counter; Δy-F1-counter; Δx-F2-counter; Δy-F2-counter;
          id-gf3; JΔ-id; det-JΔ-id)
 
--- 从 jac_FrobeniusBlind 导入 (GF(9)² 反例, 差分算子也失败)
+-- 从 FrobeniusBlind 导入 (GF(9)² 反例, 差分算子也失败)
 open import Sovereign.Application.FrobeniusBlind
   using (GF9; GF9²; F-frob; frob-3to1; Δy-F2-const;
          Δx-F1-const; Δy-F1-const; Δx-F2-const;
          frob-collision-1; frob-collision-2;
          gf9-add; gf9-neg; π₂₉; shift9)
 
--- 从 jac_Pigeonhole 导入 (鸽巢原理, 单射/满射定义)
+-- 从 JacobianInjectiveSurjective 导入 (鸽巢原理, 单射/满射定义)
 open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective
   using (Inj2; Surj2; pigeonhole-2)
 
--- 从 jac_Injectivity 导入 (非奇异→双射 证明链)
+-- 从 Injectivity 导入 (非奇异→双射 证明链)
 open import Sovereign.Algebra.Jacobian.Injectivity
   using (Collision; collision→not-inj; NonSingular; nonsingular→bijective;
          nonsingular→inj→bij; F-gf3-not-inj; F-gf3-not-surj; F-gf3-not-bij)
 
--- 从 jac_Conjecture 导入 (离散雅可比猜想陈述)
+-- 从 Conjecture 导入 (离散雅可比猜想陈述)
 open import Sovereign.Algebra.Holographic.Conjecture
   using (PointwiseJC; pointwise-I2; inj→surj-GF3²; pointwise-not-surjective)
 
--- 从 jac_Matrix 导入 (行列式乘法性, 逆矩阵, 秩分类)
+-- 从 Matrix 导入 (行列式乘法性, 逆矩阵, 秩分类)
 open import Sovereign.Algebra.Jacobian.Matrix
   using (det-mul; det≠0→invertible; invertible→det≠0; det≠0→rank2; Rank; rank)
 
@@ -90,7 +90,7 @@ open import Sovereign.Algebra.Jacobian.Matrix
 --------------------------------------------------------------------------------
 
 -- 2a. GF(3)² 反例: 形式导数 det J = 1 但 F 非双射
---   来源于 jac_GF3.agda §7:
+--   来源于 GF3.agda §7:
 --     F-gf3(x,y) = (x, y + 2·y³) = (x, 0)
 --     det J_formal(F-gf3) = 1 (Frobenius 盲区)
 --     但 F-gf3 3-to-1 坍缩, 非双射
@@ -107,7 +107,7 @@ pointwise-insufficient-GF3 = F-gf3 , pointwise-I2 , gf3-not-surjective
   ... | (p , Fp≡01) = gf3-not-surj p Fp≡01
 
 -- 2b. GF(9)² 反例: 差分算子 det J_Δ = 1+α ≠ 0 但 F 非双射
---   来源于 jac_FrobeniusBlind.agda §5-6:
+--   来源于 FrobeniusBlind.agda §5-6:
 --     F-frob(x,y) = (x, y + α·σ(y)), σ(y) = y³
 --     J_Δ(F-frob) = [[1,0],[0,1+α]], det = 1+α ≠ 0
 --     但 F-frob 3-to-1, Frobenius 核结构, 非双射
@@ -156,7 +156,7 @@ pointwise-insufficient =
 -- 定理: 在 GF(3)² 上, NonSingular F → Bijective F
 -- 其中 NonSingular F = Inj2 F (等价于 det(M_F) ≠ 0)
 --
--- 证明链 (来自 jac_Injectivity):
+-- 证明链 (来自 Injectivity):
 --   NonSingular F → Inj2 F (定义恒等)
 --   Inj2 F → Surj2 F (鸽巢原理, pigeonhole-2, 0 postulate)
 --   综合: NonSingular F → Inj2 F × Surj2 F
@@ -272,7 +272,7 @@ DiscreteJacobiEquiv-GF3² F =
 --   GF(3)² 结果: ❌ 失败 — F-gf3: det J = 1 但 F 非双射 (Frobenius 盲区)
 --   GF(9)² 结果: ❌ 失败 — F-frob: det J = 1 但 F 非双射 (Frobenius 盲区)
 --   失败原因: char 3 下 ∂(x³)/∂x = 0, 雅可比看不见纯三次项
---   来源: jac_GF3.agda §7, jac_FrobeniusBlind.agda §3
+--   来源: GF3.agda §7, FrobeniusBlind.agda §3
 
 -- 层次 2: 差分算子 (中等)
 --   定义: J_Δ(F)(p) = [[Δ_x F₁, Δ_y F₁], [Δ_x F₂, Δ_y F₂]]
@@ -282,7 +282,7 @@ DiscreteJacobiEquiv-GF3² F =
 --   GF(9)² 结果: ❌ 失败 — F-frob: det J_Δ = 1+α ≠ 0 但 F 非双射 (局部→全局鸿沟)
 --   失败原因: 差分算子消除 Frobenius 盲区, 但仍是逐点局部条件,
 --             不蕴含全局双射性
---   来源: jac_GF3.agda §9-13, jac_FrobeniusBlind.agda §5-6
+--   来源: GF3.agda §9-13, FrobeniusBlind.agda §5-6
 
 -- 层次 3: 函数表矩阵 (最强, 重言式)
 --   定义: M_F[i][j] = 1 当 F(point_j) = point_i, 否则 0
@@ -291,7 +291,7 @@ DiscreteJacobiEquiv-GF3² F =
 --   GF(9)² 结果: ✅ 正确 — 等价于 Inj2 F, 由鸽巢原理保证
 --   成功原因: 全局矩阵精确编码了 F 的全部信息,
 --             有限集线性代数 + 鸽巢原理 = 精确判定
---   来源: jac_Injectivity.agda §5, jac_Pigeonhole.agda §4
+--   来源: Injectivity.agda §5, JacobianInjectiveSurjective.agda §4
 
 -- 强度关系:
 --   形式导数 < 差分算子 < 函数表矩阵
@@ -299,25 +299,25 @@ DiscreteJacobiEquiv-GF3² F =
 --   全局条件 (3) 精确等价于双射性
 
 -- 各层的反例索引:
---   形式导数反例: jac_GF3.agda (F-gf3), jac_FrobeniusBlind.agda (F-frob)
---   差分算子反例: jac_FrobeniusBlind.agda (F-frob, det J_Δ = 1+α ≠ 0)
---   函数表矩阵: 无反例 — 精确判定 (jac_Injectivity.agda, jac_Pigeonhole.agda)
+--   形式导数反例: GF3.agda (F-gf3), FrobeniusBlind.agda (F-frob)
+--   差分算子反例: FrobeniusBlind.agda (F-frob, det J_Δ = 1+α ≠ 0)
+--   函数表矩阵: 无反例 — 精确判定 (Injectivity.agda, JacobianInjectiveSurjective.agda)
 
 --------------------------------------------------------------------------------
 -- §7. 形式化状态总结
 --------------------------------------------------------------------------------
 
 -- 已证模块 (0 postulate):
---   jac_GF3.agda         — GF(3)² 形式导数反例 (9-case 穷举)
---   jac_Discrete.agda    — 形式导数 vs 函数表矩阵的区分
---   jac_FrobeniusBlind.agda — GF(9)² 差分算子反例 (81-case 穷举)
---   jac_Pigeonhole.agda  — 鸽巢原理: 单射⟹满射 (构造性, 0 postulate)
---   jac_Matrix.agda      — 2×2 矩阵理论 (det-mul 6561-case, 逆矩阵)
---   jac_Injectivity.agda — NonSingular→Bijective 证明链
---   jac_Conjecture.agda  — 离散JC陈述 + 逐点反例
---   jac_Theorem.agda     — 离散雅可比定理最终陈述
---   jac_Algorithm.agda   — 全局矩阵判定算法 + CRT 加速
---   jac_DiscreteJC.agda  — 本模块: 三层整合 + 主定理
+--   GF3.agda         — GF(3)² 形式导数反例 (9-case 穷举)
+--   Discrete.agda    — 形式导数 vs 函数表矩阵的区分
+--   FrobeniusBlind.agda — GF(9)² 差分算子反例 (81-case 穷举)
+--   JacobianInjectiveSurjective.agda  — 鸽巢原理: 单射⟹满射 (构造性, 0 postulate)
+--   Matrix.agda      — 2×2 矩阵理论 (det-mul 6561-case, 逆矩阵)
+--   Injectivity.agda — NonSingular→Bijective 证明链
+--   Conjecture.agda  — 离散JC陈述 + 逐点反例
+--   Theorem.agda     — 离散雅可比定理最终陈述
+--   Algorithm.agda   — 全局矩阵判定算法 + CRT 加速
+--   DiscreteJC.agda  — 本模块: 三层整合 + 主定理
 
 -- 待扩展:
 --   1. GF(3)⁶/G (4320D) 上 CRT 正交分解的形式化证明

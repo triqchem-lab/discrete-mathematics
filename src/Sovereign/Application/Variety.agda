@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_Variety — GF(9) 上代数簇基础设施
+-- | Variety — GF(9) 上代数簇基础设施
 -- 0 postulate
 
 module Sovereign.Application.Variety where

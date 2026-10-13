@@ -44,7 +44,7 @@ record Finite (A : Set) : Set₁ where
 open Finite
 
 --------------------------------------------------------------------------------
--- §2. Fin 3 版完整闭合（jac_Pigeonhole 导出）
+-- §2. Fin 3 版完整闭合（JacobianInjectiveSurjective 导出）
 --------------------------------------------------------------------------------
 
 open import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective
@@ -119,7 +119,7 @@ surj-compose {A} {n} fin f surj b =
 --   Fin n 泛型版：injective-to + inj-compose-real + surj-compose + pigeonhole-neg
 --     全部可用——只是 Fin n 的 pigeonhole 肯定版缺一个封闭引理
 --     现有 stdlib pigeonhole 提供否定版（m > n → ¬ Injective f），
---     肯定版（Injective f → Surjective f）在 jac_Pigeonhole 中只对 Trit 闭合。
+--     肯定版（Injective f → Surjective f）在 JacobianInjectiveSurjective 中只对 Trit 闭合。
 --
 --   结论：Trit 版完整闭合；Fin n 泛型版留 roadmap（P1-1 双向等价）。
 --   证明核心架构已完整（injective-to + surj-compose + pigeonhole-neg）

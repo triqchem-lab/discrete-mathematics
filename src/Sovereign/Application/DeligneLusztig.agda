@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_DeligneLusztig — Deligne-Lusztig 理论 · 在 A₄ 上的独立形式化
+-- | DeligneLusztig — Deligne-Lusztig 理论 · 在 A₄ 上的独立形式化
 -- 0 postulate
 
 --

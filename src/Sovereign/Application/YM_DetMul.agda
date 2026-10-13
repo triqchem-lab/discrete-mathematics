@@ -1,8 +1,8 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_YM_DetMul — YM L3: det(AB)=det(A)·det(B) + 质量间隙
+-- | YM_DetMul — YM L3: det(AB)=det(A)·det(B) + 质量间隙
 --
--- 证明策略: GF(3) det-mul (jac_Matrix, 0 postulate, 6561 case)
+-- 证明策略: GF(3) det-mul (Matrix, 0 postulate, 6561 case)
 --          → GF(9) 是 GF(3) 的交换扩张
 --          → 同一多项式恒等式扩张到 GF(9)
 --          → SU(2) 的 det=1 约束下: det(UV)=1≠0 → 质量间隙
@@ -30,10 +30,10 @@ open import Sovereign.Algebra.Jacobian.GF9Matrix
          det2-gf9-I; det3-gf9-I; det4-gf9-I)
 
 --------------------------------------------------------------------------------
--- §0. GF(3) det-mul 引用 (来自 jac_Matrix, 6561-case 穷举, 0 postulate)
+-- §0. GF(3) det-mul 引用 (来自 Matrix, 6561-case 穷举, 0 postulate)
 --------------------------------------------------------------------------------
 
--- det-mul 已由 jac_Matrix 完整证明 (6561 case refl).
+-- det-mul 已由 Matrix 完整证明 (6561 case refl).
 -- 这里直接引用, 提供类型签名可见的证明项.
 det-mul-GF3 : ∀ (A B : Mat2) → det2 (mat-mul A B) ≡ (det2 A ⊗ det2 B)
 det-mul-GF3 = det-mul
@@ -41,7 +41,7 @@ det-mul-GF3 = det-mul
 --------------------------------------------------------------------------------
 -- §1. 定理声明: det-mul 对 GF(9) 成立
 --
--- 由 jac_Matrix.det-mul (0 postulate) 通过 GF(3)→GF(9) 代数扩张.
+-- 由 Matrix.det-mul (0 postulate) 通过 GF(3)→GF(9) 代数扩张.
 -- GF(9) ≅ GF(3)(α), α²+1=0. 每个 GF(9) 元素 (c₀,c₁) 写作 c₀+c₁α.
 -- 行列式多项式 p(a₁₁,…,a₂₂) 在 GF(3) 上恒等于 det(A)·det(B).
 -- 在 GF(9) 上: det(AB) = p(a₁₁,…,a₂₂) = p 在 GF(9) 的取值
@@ -67,7 +67,7 @@ I2-nonzero p = 1≢0 (trans (sym det2-gf9-I) p)   -- det(I₂)=1gf9 导出 [批2
 -- ∀ U,V ∈ SU(2,GF(9)): det(U)=det(V)=1.
 -- 由 det-mul: det(U·V) = det(U)·det(V) = 1·1 = 1 ≠ 0 → 质量间隙.
 -- CRT N×N: 任意 N 分解为 3×3+4×4, 每个分量 det≠0 → 全矩阵 det≠0.
---   [2026-09 勘误] 「分解为 3x3/4x4 小分量」是误读: 分量矩阵仍 NxN, 3/4 是环元素数 (jac_CRTDet §3 措辞修正); 一般 N 同态已类型化 (pi3-det/pi4-det/det-crt12), 本行推广表述以 jac_CRTDet 为准.
+--   [2026-09 勘误] 「分解为 3x3/4x4 小分量」是误读: 分量矩阵仍 NxN, 3/4 是环元素数 (CRTDet §3 措辞修正); 一般 N 同态已类型化 (pi3-det/pi4-det/det-crt12), 本行推广表述以 CRTDet 为准.
 --------------------------------------------------------------------------------
 
 -- 规范不变量的质量间隙: ∀g∈G, det(g)≠0gf9

@@ -11,7 +11,7 @@
 --   3. ℤ 精确值
 --
 -- 包含：step, t-rec, q3, t1, t1-val, t2-val, t3-val, t4-val, t5-val, t6-val, t7-val, t8-val, t9-val, t10-val…
---   （命名正名：旧头注 `jac_BSD_L3` ≠ 模块名，2026-10-11 勘误）
+--   （命名正名：旧头注 `BSD_L3` ≠ 模块名，2026-10-11 勘误）
 
 --
 module Sovereign.Application.BSD_L3 where

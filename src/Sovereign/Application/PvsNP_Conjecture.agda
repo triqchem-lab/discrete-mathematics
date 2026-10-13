@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | PvsNP_Conjecture —（勘误：旧头注 jac_PvsNP_Conjecture，名≠模块名，已正名）— 全息穿透猜想 · 形式化陈述
+-- | PvsNP_Conjecture —（勘误：旧头注 PvsNP_Conjecture，名≠模块名，已正名）— 全息穿透猜想 · 形式化陈述
 -- 0 postulate (猜想本身未被证明, 仅陈述类型)
 
 -- 核心原则：
@@ -29,7 +29,7 @@ record PvsNPConjecture (N : ℕ) : Set₁ where
     no-poly : ℕ → ℕ    -- 不存在多项式电路
 
 -- ═══════════════════════════════════════════════════════════
--- 实证: 2×2 GF(3) 不可约实例 (来自 jac_Complexity)
+-- 实证: 2×2 GF(3) 不可约实例 (来自 Complexity)
 -- ═══════════════════════════════════════════════════════════
 -- has-root T₀ T₁ ≡ T₀ (无根, 不可约), refl.
 -- 猜想在 N=2 上的实证就位, 全规模证明开放.

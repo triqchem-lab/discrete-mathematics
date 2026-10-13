@@ -11,7 +11,7 @@
 --   3. ℕ ∸ 语义
 --
 -- 包含：dimC₀, rank, H0, h0, h1, h2, kl-hodge, kl-euler
---   （命名正名：旧头注 `jac_KleinHodge` ≠ 模块名，2026-10-11 勘误）
+--   （命名正名：旧头注 `KleinHodge` ≠ 模块名，2026-10-11 勘误）
 
 --
 module Sovereign.Application.KleinHodge where

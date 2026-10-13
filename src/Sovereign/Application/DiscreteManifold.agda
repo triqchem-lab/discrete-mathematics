@@ -12,7 +12,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 
 -- §1. T⁶ 流形不变量 ---------------------------------------------
 -- 维数: dim(T⁶) = 6, 点数: |T⁶| = 3⁶ = 729.
--- Betti 数 (来自 jac_Topology): b₀=1, b₁=6, ..., b₆=1.
+-- Betti 数 (来自 Topology): b₀=1, b₁=6, ..., b₆=1.
 
 -- Euler 示性数: χ = Σ(-1)ᵏ bₖ
 -- 对环面 Tⁿ: χ = 0.

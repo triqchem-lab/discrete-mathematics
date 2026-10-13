@@ -13,7 +13,7 @@
 --     e20 ↔ t（e20 是 t 的面，且 e20 未被占用）
 --   唯一临界单形：v2 → m₀ = 1, m₁ = 0, m₂ = 0
 --
---   填充三角形的 Betti 数（jac_Topology filled3C，已证 refl）：
+--   填充三角形的 Betti 数（Topology filled3C，已证 refl）：
 --     β₀ = 1, β₁ = 0, β₂ = 0
 --   三条不等式 m₀ ≥ β₀ ∧ m₁ ≥ β₁ ∧ m₂ ≥ β₂ 全部取等——完美。
 --
@@ -21,7 +21,7 @@
 --   1. 配对合法性（下端点未占用、面关系）以头注配对表非形式给出；
 --      配对的逐条形式判定（IsPaired 类）在 FormanMinimal 风格上可
 --      展开，本模块聚焦计数与不等式层。
---   2. β 值复用 jac_Topology.filled3C 的 dimH 数值引理——复用不重造。
+--   2. β 值复用 Topology.filled3C 的 dimH 数值引理——复用不重造。
 --   3. 一般定理「完美 Morse 函数 ⟺ 极小复形」roadmap。
 --
 -- 0 postulate / 0 hole。
@@ -33,7 +33,7 @@ open import Sovereign.Application.Topology
   using (dimH-filled3-0; dimH-filled3-1; dimH-filled3-2)
 
 --------------------------------------------------------------------------------
--- §1. Betti 数（从 jac_Topology filled3C 的 dimH 数值引理复用）
+-- §1. Betti 数（从 Topology filled3C 的 dimH 数值引理复用）
 --
 --   dimH-filled3-0 : dimH filled3C 0 ≡ 1（已证）
 --   dimH-filled3-1 : dimH filled3C 1 ≡ 0（已证）

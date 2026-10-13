@@ -19,7 +19,7 @@
 --   ⟹ (H₀,H₁,H₂) = (1,0,0) ≡ dimH filled3C（Morse 同调定理实例闭合）
 --
 -- 复用：Algebra.FreeAb（FAb 载体）、FreeAbBoundary（定向约定基准）、
---   jac_Topology（dimH-filled3 对齐目标）。
+--   Topology（dimH-filled3 对齐目标）。
 --
 -- ⚠ 诚实边界：具体非完美场的实例；一般 f 的交替路径路由 roadmap。
 --   （注：外部建议的维数指标 C₂=⟨e₂₀⟩ 系笔误，本模块用标准指标。）
@@ -94,7 +94,7 @@ record MorseHomologyAgreement : Set₁ where
   field
     -- 临界复形侧
     crit-hom₀ : hom₀-dim ≡ 1
-    -- 填充三角侧（jac_Topology 已证 refl）
+    -- 填充三角侧（Topology 已证 refl）
     orig-hom₀ : dimH filled3C 0 ≡ 1
     orig-hom₁ : dimH filled3C 1 ≡ 0
     orig-hom₂ : dimH filled3C 2 ≡ 0

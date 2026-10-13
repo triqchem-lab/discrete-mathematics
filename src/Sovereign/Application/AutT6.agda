@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_AutT6 — Aut(T⁶/GF(9)) 群论闭包
+-- | AutT6 — Aut(T⁶/GF(9)) 群论闭包
 -- 半直积 GL₃(GF(9)) ⋊ Gal(GF(9)/GF(3)) 的结构定义
 -- 0 postulate
 
@@ -128,11 +128,11 @@ a4-in-aut : ℕ; a4-in-aut = a4-order  -- |A₄| = 12 ⊂ |Aut|
 --------------------------------------------------------------------------------
 -- §5. 与 34 模块的对齐 ---------------------------------------------
 --
--- jac_LieGroup: SO(3)→A₄ → A₄ ⊂ Aut(T⁶/GF(9)). 推广完成.
--- jac_Langlands: Galois 上同调 H¹(G, M) — G = Aut(T⁶/GF(9)) 的子商.
--- jac_Galois: Gal(GF(9)/GF(3)) ≅ C₂ — 这是 Aut 的半线性部分.
--- jac_Topology: T⁶ 链复形 — 边界算子 ∂ 保持 Aut 作用.
--- jac_BSD: Selmer 群 ⊂ H¹(G, E[n]) — G = Aut 的子群.
+-- DiscreteGaloisGroupAlgebra: SO(3)→A₄ → A₄ ⊂ Aut(T⁶/GF(9)). 推广完成.
+-- Langlands: Galois 上同调 H¹(G, M) — G = Aut(T⁶/GF(9)) 的子商.
+-- Galois: Gal(GF(9)/GF(3)) ≅ C₂ — 这是 Aut 的半线性部分.
+-- Topology: T⁶ 链复形 — 边界算子 ∂ 保持 Aut 作用.
+-- BSD: Selmer 群 ⊂ H¹(G, E[n]) — G = Aut 的子群.
 --
 -- 群论闭包定理将 A₄ 实例推广为 Aut(T⁶/GF(9)) 的抽象代数结构,
 -- 为所有需要 Galois 群作用的模块提供了统一的群论语言.

@@ -9,16 +9,16 @@
 --   直和性失效）。本模块在三角形复形上给出**显式见证**：
 --     oneV = (1,1,1) 同时满足
 --       ∈ im ∂₂（face-cycle：∂₂ T₁ ≡ oneV）
---       ∈ ker ∂₁（const1-in-kernel，jac_Topology 已证）
---       ≠ 0   （oneV≢zeroV，jac_Topology 已证）
+--       ∈ ker ∂₁（const1-in-kernel，Topology 已证）
+--       ≠ 0   （oneV≢zeroV，Topology 已证）
 --
 -- 复用（本地资产，按「先查再写」纪律侦察）：全部零件来自
---   `Algebra/Jacobian/jac_Topology.agda`——∂₂Δ/face-cycle（面边界）、
+--   `Algebra/Jacobian/Topology.agda`——∂₂Δ/face-cycle（面边界）、
 --   const1-in-kernel（常值链入核）、oneV/zeroV/oneV≢zeroV。
 --   本模块零新证明负担，纯组装。
 --
 -- 记号对照（任务书原文 im(∂₁) ∩ ker(δ⁰) 为上下链记号混排；以库内
---   jac_Topology 口径为准）：C¹ 上的两子空间 = im ∂₂（面边界像）
+--   Topology 口径为准）：C¹ 上的两子空间 = im ∂₂（面边界像）
 --   与 ker ∂₁（闭 1-链核）；二者相交非零 ⟺ 直和分解失效。
 --
 -- 0 postulate / 0 hole。
@@ -35,7 +35,7 @@ open import Sovereign.Application.Topology
   using (V3; zeroV; oneV; ∂₂Δ; ∂₁Δ; face-cycle; ∂₁∂₂-zero)
 
 --------------------------------------------------------------------------------
--- §1. 三个零件（全部复用 jac_Topology 已证结果，零新证明）
+-- §1. 三个零件（全部复用 Topology 已证结果，零新证明）
 --------------------------------------------------------------------------------
 
 -- (a) oneV ∈ im ∂₂：面边界算子在 T₁ 处的像恰为 oneV
@@ -43,7 +43,7 @@ ones-in-im∂₂ : oneV ≡ ∂₂Δ T₁
 ones-in-im∂₂ = sym face-cycle
 
 -- (b) oneV ∈ ker ∂₁：常值 1-链是闭链（oneV 分量全字面，∂₁Δ 归约即闭合；
---     jac_Topology 侧完备刻画 = ker-span：ker ∂₁ = {k·oneV}）
+--     Topology 侧完备刻画 = ker-span：ker ∂₁ = {k·oneV}）
 ones-in-ker∂₁ : ∂₁Δ oneV ≡ zeroV
 ones-in-ker∂₁ = refl
 
@@ -69,7 +69,7 @@ non-splitting-witness =
 --------------------------------------------------------------------------------
 -- §3. 整层包含：im ∂₂ ⊆ ker ∂₁（不只一个 witness，整层都闭）
 --
--- jac_Topology.∂₁∂₂-zero 已证（链条件）；重述为本模块口径下的层包含。
+-- Topology.∂₁∂₂-zero 已证（链条件）；重述为本模块口径下的层包含。
 --------------------------------------------------------------------------------
 
 im∂₂-subset-ker∂₁ : ∀ x → ∂₁Δ (∂₂Δ x) ≡ zeroV

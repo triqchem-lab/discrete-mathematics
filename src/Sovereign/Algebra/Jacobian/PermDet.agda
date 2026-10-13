@@ -4,10 +4,10 @@
 -- 置换矩阵 det ≢ d0 —— 「结构代理 ⟺ 真行列式」桥的正向
 --
 -- 数学背景:
---   jac_NMatrix 的 DetNonzero 是结构代理 (无全零行 ∧ 列互异), 不是算出来的
+--   NMatrix 的 DetNonzero 是结构代理 (无全零行 ∧ 列互异), 不是算出来的
 --   行列式. 本模块把「真行列式」一侧接上: 置换矩阵 (每列恰一个 d1, 列像互异,
 --   经 Perm = 双射 + 显式逆) 的 Laplace 行列式 det ≢ d0 —— 结构判定不虚报的
---   类型级证据 (jac_FunctionTable §6 gap 第一击).
+--   类型级证据 (FunctionTable §6 gap 第一击).
 --   ⚠ 另一半「同列 → det = 0」需列反对称性 (交换两列变号), 留 roadmap;
 --     本模块亦不主张可逆性 (R₁₂ 零因子红线, det≢0 是元素级事实).
 --
@@ -164,7 +164,7 @@ predF-eq : ∀ {n} (x : Fin (nsuc n)) (p : x ≢ zero) (r : Fin n)
 predF-eq zero p r = ⊥-elim (p refl)
 predF-eq (suc y) p r = (λ { refl → refl }) , (λ e → cong suc e)
 
--- toD: Dec → Duodec (d1/d0), 与 jac_NMatrix.toTrit 同型
+-- toD: Dec → Duodec (d1/d0), 与 NMatrix.toTrit 同型
 toD : ∀ {A : Set} → Dec A → Duodec
 toD (yes _) = d1
 toD (no  _) = d0
@@ -327,7 +327,7 @@ det-struct-nonzero M ρ ρ-inj ρ-surj cb e =
     (trans (sym (det-ext M _ (colbasis-ptwise M ρ ρ-inj ρ-surj cb))) e)
 
 --------------------------------------------------------------------------------
--- §7. 9 点推论: jac_NMatrix 结构代理 → 真 det ------------------------
+-- §7. 9 点推论: NMatrix 结构代理 → 真 det ------------------------
 --
 -- DetNonzero (funcTable F) = NoZeroRow ∧ ColDistinct
 --   → ρF F j = encode9 (F (decode9 j)) 单射 (ColDistinct) + 满射 (NoZeroRow)

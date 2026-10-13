@@ -7,7 +7,7 @@
 --   §1. 有限拓扑空间 (Fin n 上任意开集族)
 --   §2. GF(9)-值预层与层条件
 --   §3. Čech 上同调 Ȟ⁰, Ȟ¹ 的有限计算
---   §4. 与 jac_Topology 同调的对齐
+--   §4. 与 Topology 同调的对齐
 --
 -- 0 postulate.
 
@@ -58,7 +58,7 @@ record Presheaf (n : ℕ) : Set₁ where
 -- 它是层的原型 — 粘合条件平凡满足.
 --
 -- Čech 上同调: Ȟ⁰ = GF(3), Ȟ¹ = 0 (对可缩空间).
--- 这与 jac_Topology 的同调计算对齐:
+-- 这与 Topology 的同调计算对齐:
 --   连续空间的 H⁰ = ℝ (连通分支数), Ȟ¹ = 0.
 --   离散常值层: dim Ȟ⁰ = 1, dim Ȟ¹ = 0.
 --------------------------------------------------------------------------------
@@ -72,10 +72,10 @@ sheaf-verify : const-sheaf-H0 ≡ 1
 sheaf-verify = refl
 
 --------------------------------------------------------------------------------
--- §3. 与 jac_Topology 同调的对齐
+-- §3. 与 Topology 同调的对齐
 --
--- jac_Topology: 三角复形 → 单纯同调 H_k
--- jac_Sheaf:    有限拓扑 → Čech 上同调 Ȟ^k
+-- Topology: 三角复形 → 单纯同调 H_k
+-- Sheaf:    有限拓扑 → Čech 上同调 Ȟ^k
 --
 -- 在离散框架下, 两者是统一的:
 --   对给定有限拓扑空间的神经复形 (Nerve),
@@ -97,12 +97,12 @@ topology-sheaf-alignment = refl
 --
 -- GF(9)-值层: ℱ(U) 是 GF(9)-向量空间.
 -- 所有有限层论在 GF(9) 上保持: 有限性 → 可穷举.
--- 利用 jac_GF9Matrix 的矩阵运算,
+-- 利用 GF9Matrix 的矩阵运算,
 -- Čech 上同调可完全退化为 GF(9) 矩阵的秩计算.
--- 这与 jac_Topology 的 "同调 = 边界矩阵秩" 策略一致.
+-- 这与 Topology 的 "同调 = 边界矩阵秩" 策略一致.
 --------------------------------------------------------------------------------
 
--- GF(9) 层接口 (复用 jac_GF9Matrix)
+-- GF(9) 层接口 (复用 GF9Matrix)
 open import Sovereign.Algebra.Jacobian.GF9Matrix
   using (GF9; GF9Mat; rank2-gf9; rank3-gf9; rank4-gf9)
 
@@ -112,9 +112,9 @@ open import Sovereign.Algebra.Jacobian.GF9Matrix
 --------------------------------------------------------------------------------
 -- §5. 总结
 --
--- jac_Sheaf: 离散层论框架, 0 postulate.
+-- Sheaf: 离散层论框架, 0 postulate.
 --   ✅ 预层 + 层接口 (Presheaf record)
 --   ✅ 常值层 Čech 上同调 (dim Ȟ⁰=1, refl)
---   ✅ 与 jac_Topology 同调对齐
+--   ✅ 与 Topology 同调对齐
 --   完整层同调计算需层论基础设施 (~800行).
 --------------------------------------------------------------------------------

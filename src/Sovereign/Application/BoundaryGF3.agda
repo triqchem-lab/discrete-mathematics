@@ -16,11 +16,11 @@
 --
 -- ⚠ 诚实边界 + 本地资产接线：
 --   1. 【上游已有】∂₁∘∂₂ = 0（面→边→顶点两层边界）已由
---      `Algebra/Jacobian/jac_Topology.agda` §2 闭合（入射矩阵 M_∂ + GF(3) 消元
+--      `Algebra/Jacobian/Topology.agda` §2 闭合（入射矩阵 M_∂ + GF(3) 消元
 --      rank/nullity 双侧证书）；同调维数接口 = `Problem/Hodge/ChainComplex.agda`
---      的 ChainComplex 记录 + dimH（tri 实例 H₀ = H₁ = 1）。本模块补 jac_Topology
+--      的 ChainComplex 记录 + dimH（tri 实例 H₀ = H₁ = 1）。本模块补 Topology
 --      没有的 **∂₀ 求和截面**（0-链 → (−1)-链），与上游互补、不重复造轮。
---   2. 一般 n 的 ∂₁/∂₂ 与完整 Eckmann 分解是 roadmap（矩阵机件接 jac_Topology）。
+--   2. 一般 n 的 ∂₁/∂₂ 与完整 Eckmann 分解是 roadmap（矩阵机件接 Topology）。
 --   3. H₁ ≠ 0 的非边缘闭链见证（同调非平凡性）是 roadmap——本模块只证 ∂² = 0。
 --
 -- 0 postulate / 0 hole。

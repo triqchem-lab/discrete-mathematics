@@ -155,10 +155,10 @@ rank4-gf9 M with det4-gf9 M
 --------------------------------------------------------------------------------
 -- §4. 总结
 --
--- jac_GF9Matrix: GF(9) 矩阵基础设施, 0 postulate.
+-- GF9Matrix: GF(9) 矩阵基础设施, 0 postulate.
 --   ✅ 2×2 行列式 (det2-gf9)
 --   ✅ 3×3 行列式 (det3-gf9, Laplace)
 --   ✅ 4×4 行列式 (det4-gf9, Laplace)
 --   ✅ 秩接口 (rank2/3/4-gf9)
---   解锁: jac_BSD / jac_Complexity / jac_LatticeField 的多维扩展
+--   解锁: BSD / Complexity / LatticeField 的多维扩展
 --------------------------------------------------------------------------------

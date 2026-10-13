@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_SelmerDiscrete — 离散 Selmer 群: C₂ cocycle 穷举 + H¹ 计算
+-- | SelmerDiscrete — 离散 Selmer 群: C₂ cocycle 穷举 + H¹ 计算
 -- 0 postulate
 
 -- | Selmer 群离散对照
@@ -74,7 +74,7 @@ v4-H1-ok : v4-H1-dim ≡ 0; v4-H1-ok = refl
 -- 推论: 若 G 的阶与 GF(3) 加法群的阶 (3) 互质, 则 H¹(G, GF(3)) = 0.
 --       gcd(|G|, 3) = 1 ⇒ H¹ = 0.
 --
--- jac_BSD 的 E₁ 实例: GF(3) 上 #E = 4 = q+1.
+-- BSD 的 E₁ 实例: GF(3) 上 #E = 4 = q+1.
 --   trace = 0 → 对应代数秩 = 0 → Selmer 平凡 → H¹ = 0.
 --   符合 gcd(4, 3) = 1 条件.
 

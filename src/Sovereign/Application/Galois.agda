@@ -115,7 +115,7 @@ galois-order-match = refl
 -- 迹:   GF(9) → GF(3), 加法群同态
 --------------------------------------------------------------------------------
 
--- 范数 (由 jac_GF9Matrix 或 GF9.agda 的 galoisNorm 提供)
+-- 范数 (由 GF9Matrix 或 GF9.agda 的 galoisNorm 提供)
 norm9 : GF9 → Trit
 norm9 (a , b) = (a ⊗ a) ⊕ (b ⊗ b)  -- a²+b²
 
@@ -136,14 +136,14 @@ trace-α : trace9 (T₀ , T₁) ≡ T₀
 trace-α = refl
 
 --------------------------------------------------------------------------------
--- §5. 与 jac_Langlands 和 jac_AlgGeom 的桥接
+-- §5. 与 Langlands 和 AlgGeom 的桥接
 --
 -- Galois 上同调: H¹(Gal(GF(9)/GF(3)), M) ≅ ker(N)/im(σ-1)
---   这是 Hilbert 定理 90 的离散版本 (jac_Langlands 接口).
+--   这是 Hilbert 定理 90 的离散版本 (Langlands 接口).
 --
 -- 代数簇的 Galois 作用: V/GF(9) 上的 Frobenius 作用
 --   诱导点计数公式: |V(𝔽_q)| = Σ (-1)^i Tr(Frob | H^i_c)
---   这是 Weil 猜想的离散原型 (jac_AlgGeom + jac_Topology 接口).
+--   这是 Weil 猜想的离散原型 (AlgGeom + Topology 接口).
 --
 -- 本模块建立的 Galois 理论是 Langlands 纲领和代数几何中
 -- 所有 Galois 作用的最小可验证实例.
@@ -162,7 +162,7 @@ trace-α = refl
 --------------------------------------------------------------------------------
 -- §6. 总结
 --
--- jac_Galois 建立了有限域 Galois 理论的完整微观实例:
+-- Galois 建立了有限域 Galois 理论的完整微观实例:
 --   ✅ GF(9)/GF(3) Galois 扩张 (dim=2, Gal≅C₂)
 --   ✅ Frobenius σ(x)=x³ 是生成元 (σ²=id)
 --   ✅ 不动域 = GF(3) (验证)

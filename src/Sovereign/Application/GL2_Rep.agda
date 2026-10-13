@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | GL2_Rep —（勘误：旧头注 jac_GL2_Rep，名≠模块名，已正名）— GL₂(GF(9)) 表示论: Burnside + 共轭类
+-- | GL2_Rep —（勘误：旧头注 GL2_Rep，名≠模块名，已正名）— GL₂(GF(9)) 表示论: Burnside + 共轭类
 -- 0 postulate
 
 -- 核心原则：

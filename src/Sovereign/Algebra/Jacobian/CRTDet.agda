@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_CRTDet — CRT 行列式分解定理 (拱顶石)
+-- | CRTDet — CRT 行列式分解定理 (拱顶石)
 -- 定理: det(M) = crt12(det(M₃), det(M₄))
 --        det(M) ≠ 0 ⟺ (det(M₃) ≠ 0) ∧ (det(M₄) ≠ 0)
 -- 永久替代通用 N×N 行列式。0 postulate。
@@ -476,19 +476,19 @@ crt-equivalence = λ ()
 -- 此前所有模块在 N≤3 级别工作 — CRT 分解定理将它们提升为对任意 N 的判定工具
 -- (⚠ 「任意 N」为 roadmap; 类型层现状 = π3-det2-homo 的 2×2 实例):
 --
---   jac_Topology:     dim H_k = nullity - rank. CRT 将 rank 计算归约到 GF(3) + Z/4Z 环分量.
---   jac_Hodge:        dim ℋ = dim H. 同上.
---   jac_LieGroup:     Aut(T⁶/GF(9)). 群表示由 CRT 分量完全确定.
---   jac_Complexity:   不可约性判定. det₃/det₄ ≠ 0 → 全局不可约.
---   jac_LatticeField: 质量间隙. det₃/det₄ ≠ 0 → λ_min > 0.
---   jac_BSD:          点计数. CRT 将 #E(𝔽_{12}) 归约到 #E(𝔽₃) × #E(𝔽₄).
+--   Topology:     dim H_k = nullity - rank. CRT 将 rank 计算归约到 GF(3) + Z/4Z 环分量.
+--   Hodge:        dim ℋ = dim H. 同上.
+--   DiscreteGaloisGroupAlgebra:     Aut(T⁶/GF(9)). 群表示由 CRT 分量完全确定.
+--   Complexity:   不可约性判定. det₃/det₄ ≠ 0 → 全局不可约.
+--   LatticeField: 质量间隙. det₃/det₄ ≠ 0 → λ_min > 0.
+--   BSD:          点计数. CRT 将 #E(𝔽_{12}) 归约到 #E(𝔽₃) × #E(𝔽₄).
 --
 -- 全部通过 CRT 降维 — 无需 N×N 行列式, 0 postulate.
 
 --------------------------------------------------------------------------------
 -- §5. 总结
 --
--- jac_CRTDet 是离散全息框架的拱顶石定理:
+-- CRTDet 是离散全息框架的拱顶石定理:
 --   ✅ CRT 同态保持行列式 (Duodec 已证, 144 case refl)
 --   ✅ det ≠ 0 ⟺ 分量 det ≠ 0 (CRT 同构, crt12-roundtrip)
 --   ✅ 任意 N×N 的行列式判定 = GF(3) 环分量 + Z/4Z 环分量 (各仍 N×N) 的 det≠0 判定

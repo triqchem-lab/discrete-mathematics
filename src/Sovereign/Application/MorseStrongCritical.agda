@@ -15,7 +15,7 @@
 --     即「Morse 复合同调 ≅ 原复合同调」在实例层闭合。
 --
 -- 复用：Problem.Hodge.ChainComplex（ChainComplex record + dimH）、
---   jac_Topology（filled3C）、MorseAcyclic 无关但同线。
+--   Topology（filled3C）、MorseAcyclic 无关但同线。
 --
 -- 0 postulate / 0 hole。
 module Sovereign.Application.MorseStrongCritical where

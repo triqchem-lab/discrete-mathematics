@@ -9,8 +9,8 @@
 --   ② 代数共轭 — σ 是域自同构, 盲区可见
 --   ③ 描述完备 — 全局函数表矩阵 M_F 精确判定
 --
--- 证明: jac_4320DClosure.agda (鸽子笼原理 T⁶ 推广, 0 postulate)
---       jac_EscapeAnalysis.agda (Alpöge 反例阻断分析)
+-- 证明: 4320DClosure.agda (鸽子笼原理 T⁶ 推广, 0 postulate)
+--       EscapeAnalysis.agda (Alpöge 反例阻断分析)
 --       Structology.T6 (t6ToFin/finToT6 双射, Fin 729 编码)
 
 module Sovereign.Synthesis.TorusClosure where
@@ -20,12 +20,12 @@ open import Data.Nat using (ℕ)
 open import Data.Product using (Σ; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_)
 
--- 代数共轭可见性 (σ 域自同构的接口): 占位定义, 语义见 jac_4320DClosure
+-- 代数共轭可见性 (σ 域自同构的接口): 占位定义, 语义见 4320DClosure
 record FrobeniusVisible : Set₁ where
   field
     frobenius : ∀ {A : Set} → (A → A) → A → A  -- 原生 Frobenius σ(x)=x³ (接口签名)
 
--- 描述完备矩阵 (全局函数表 M_F): 占位定义, 语义见 jac_EscapeAnalysis
+-- 描述完备矩阵 (全局函数表 M_F): 占位定义, 语义见 EscapeAnalysis
 record GlobalMatrix : Set₁ where
   field
     matrixSize : ℕ

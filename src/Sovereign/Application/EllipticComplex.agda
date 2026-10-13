@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_EllipticComplex — dim ℋ = dim H (Hodge 定理, rank-nullity 链)
+-- | EllipticComplex — dim ℋ = dim H (Hodge 定理, rank-nullity 链)
 -- 0 postulate
 
 -- | 椭圆复形离散对照
@@ -40,7 +40,7 @@ open import Sovereign.Base.Trit using (Trit)
 -- 不需要行列式, 不需要特征值, 不需要 Laplace 谱分解.
 --------------------------------------------------------------------------------
 
--- §2. 实例: 三角复形 (来自 jac_Hodge 的已验证结果) ----------------
+-- §2. 实例: 三角复形 (来自 Hodge 的已验证结果) ----------------
 -- dim C₀=3, dim C₁=3
 -- rank(∂₁: C₁→C₀) = 2
 -- dim ker(∂₁) = 3 - 2 = 1 (nullity)
@@ -50,7 +50,7 @@ open import Sovereign.Base.Trit using (Trit)
 --
 -- 调和形式:
 --   ℋ₀ = ker(Δ₀), ℋ₁ = ker(Δ₁)
---   dim ℋ₀ = 1, dim ℋ₁ = 1 (已验证, jac_Hodge)
+--   dim ℋ₀ = 1, dim ℋ₁ = 1 (已验证, Hodge)
 
 dimC₀ : ℕ; dimC₀ = 3
 dimC₁ : ℕ; dimC₁ = 3
@@ -78,8 +78,8 @@ euler-identity : χ-complex ≡ χ-homology; euler-identity = refl
 -- 2×2/3×3 上由 det2'/det3-gf9 穷举判定, 0 postulate.
 --
 -- 完整证明链:
---   (1) rank-nullity: dim C_k = rank(∂_k) + nullity(∂_k)  [jac_Topology]
---   (2) Hodge 分解:   ker(∂_k) = im(∂_{k+1}) ⊕ ℋ_k        [jac_Hodge]
+--   (1) rank-nullity: dim C_k = rank(∂_k) + nullity(∂_k)  [Topology]
+--   (2) Hodge 分解:   ker(∂_k) = im(∂_{k+1}) ⊕ ℋ_k        [Hodge]
 --   (3) 同调定义:     dim H_k = nullity(∂_k) - rank(∂_{k+1}) [代数恒等]
 --   (4) 调和 = 同调:   dim ℋ_k = (nullity - rank_{k+1}) = dim H_k  [本模块]
 --

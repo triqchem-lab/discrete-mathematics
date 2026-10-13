@@ -11,16 +11,16 @@ open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
--- 从 jac_BSD 导入: #E 已由穷举点计数 refl 证明
+-- 从 BSD 导入: #E 已由穷举点计数 refl 证明
 open import Sovereign.Application.BSD using (#E1; #E2; #E6; #E1-is-4; #E2-is-7; #E6-is-1)
 
--- Weil 递推 (来自 jac_BSD_L3)
+-- Weil 递推 (来自 BSD_L3)
 open import Sovereign.Application.BSD_L3 using (t-rec; step; q3)
 
 --------------------------------------------------------------------------------
 -- §1. trace = q+1 - #E  (从穷举 #E 自动推导, 非手动赋值)
 --
--- jac_BSD 在 ℕ 中计算了 #E, trace-E1 = 4∸#E1 = refl.
+-- BSD 在 ℕ 中计算了 #E, trace-E1 = 4∸#E1 = refl.
 -- 这里在 ℤ 中重新表述, 所有值自动归约.
 --------------------------------------------------------------------------------
 
@@ -106,4 +106,4 @@ e27 : ℤ; e27 = (+ 27 + + 1) - t3-E1rec   -- 28-0=28
 e27-ok : e27 ≡ + 28; e27-ok = refl
 
 -- 0 postulate. 16 个 refl 证明项.
--- 所有数值从 jac_BSD.#E 穷举自动推导.
+-- 所有数值从 BSD.#E 穷举自动推导.

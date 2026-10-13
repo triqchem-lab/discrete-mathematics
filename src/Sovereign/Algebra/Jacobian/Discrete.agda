@@ -60,7 +60,7 @@ FormalJacDet1 J = det2 J ≡ T₁
 -- ΔF = SF - F, 其中 S 是移位算子
 -- 差分算子作用于函数 (不是形式多项式),
 -- 自动消化 Fermat 恒等式 x^p = x, 无 Frobenius 盲区。
--- 详见 jac_GF3.agda §9-13。
+-- 详见 GF3.agda §9-13。
 
 --------------------------------------------------------------------------------
 -- 4. 函数表矩阵 (有限集线性代数, 重言式)
@@ -119,4 +119,4 @@ formal-not-table = formal-jac-blind , (formal-passes , (F-blind , table-fails))
 --
 -- 差分算子 ΔF = SF - F 是真正的离散雅可比:
 --   无 Frobenius 盲区, 精确反映函数的局部变化率。
---   详见 jac_GF3.agda §9-13 的构造性证明。
+--   详见 GF3.agda §9-13 的构造性证明。

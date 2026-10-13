@@ -4,7 +4,7 @@
 -- 任务书第五层·5.1 推进：坍缩序列**同调不变**实例（B2）
 --
 -- 数学背景：初等坍缩保持同调。K₃ 完美坍缩序列的四阶段：
---   阶段 0：满三角（7 单形）        dimH = (1,0,0)（jac_Topology 已证）
+--   阶段 0：满三角（7 单形）        dimH = (1,0,0)（Topology 已证）
 --   阶段 1：删 (e01,t)（5 单形）    剩余 = 图 v1-v2-v0（两边的树）
 --   阶段 2：删 (v1,e12)（3 单形）   剩余 = 单边 v2-v0
 --   阶段 3：删 (v2,e20)（1 单形）   剩余 = 点 {v0}
@@ -15,7 +15,7 @@
 --   阶段 2 ∂₁ 单列非零 ⟹ 秩 1。
 --
 -- 复用：ChainComplex record + dimH（Problem/Hodge/ChainComplex）、
---   pointC（MorseStrongCritical）、filled3C（jac_Topology）。
+--   pointC（MorseStrongCritical）、filled3C（Topology）。
 --
 -- 0 postulate / 0 hole。
 module Sovereign.Application.CollapseHomologyStages where
@@ -104,7 +104,7 @@ CC.ChainComplex.hodge-decomp stage2 = s2-hodge
 -- §3. 四阶段同调一致（逐维：H₀ = 1 ∧ H₁ = 0 ∧ H₂ = 0）
 --------------------------------------------------------------------------------
 
--- 阶段 0（满三角，jac_Topology 已证）∥ 阶段 3（点，MorseStrongCritical 已证）
+-- 阶段 0（满三角，Topology 已证）∥ 阶段 3（点，MorseStrongCritical 已证）
 -- 本模块补齐中间两阶段的 dimH：
 stage1-hom-0 : dimH stage1 0 ≡ 1
 stage1-hom-0 = refl

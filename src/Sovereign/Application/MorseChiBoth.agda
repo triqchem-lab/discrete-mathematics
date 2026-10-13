@@ -11,7 +11,7 @@
 --     m = (2,1,0)，χ_m = 2∸1+0 = 1
 --   完美场 perfectVF（配对 v0↦e01, v1↔e12, e20↔t，临界 {v2}）：
 --     m = (1,0,0)，χ_m = 1∸0+0 = 1
---   两场 χ_m 相等且 ≡ 1 —— 对应 jac_Topology 的 χ-filled3（ℤ 侧
+--   两场 χ_m 相等且 ≡ 1 —— 对应 Topology 的 χ-filled3（ℤ 侧
 --   χH filled3C ≡ + 1，已证 refl；ℕ 侧本模块独立闭合）。
 --
 -- 另：泛型无环定理（MorseAcyclic.morse-acyclic-2）在完美场上实例化

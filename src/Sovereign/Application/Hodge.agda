@@ -25,7 +25,7 @@ open import Sovereign.Application.Topology
 --------------------------------------------------------------------------------
 -- §1. Hodge 数值 (Betti 数)
 --
--- 所有数值由 jac_Topology 的 rank-nullity 定理保证.
+-- 所有数值由 Topology 的 rank-nullity 定理保证.
 -- 0 postulate。
 --------------------------------------------------------------------------------
 

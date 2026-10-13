@@ -11,7 +11,7 @@
 --   3. ℤ 精确值
 --
 -- 包含：q, t₂, e9, t₁0, e16
---   （命名正名：旧头注 `jac_BSDTrace` ≠ 模块名，2026-10-11 勘误）
+--   （命名正名：旧头注 `BSDTrace` ≠ 模块名，2026-10-11 勘误）
 
 --
 module Sovereign.Application.BSDTrace where

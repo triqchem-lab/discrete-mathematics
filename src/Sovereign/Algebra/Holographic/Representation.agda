@@ -59,7 +59,7 @@ open import Sovereign.Synthesis.A4Representations
 -- Burnside for A₄
 -- a4-order 提共享（2026-10-11 判重批组1）：canonical = MyopiaRisk §8a
 -- 本地副本已删
--- 【判重组2 注记 2026-10-11】a4-burnside 双体判重：本体与 jac_LieGroup:296 为异上下文实例（共享内核同源）——合法异类
+-- 【判重组2 注记 2026-10-11】a4-burnside 双体判重：本体与 DiscreteGaloisGroupAlgebra:296 为异上下文实例（共享内核同源）——合法异类
 a4-burnside : dim V3 * dim V3 + dim V1 * dim V1 + dim V1' * dim V1' + dim V1'' * dim V1'' ≡ a4-order
 a4-burnside = theorem-dimension-sum-of-squares
 
@@ -113,7 +113,7 @@ a4-verified = record
 --------------------------------------------------------------------------------
 -- §5. 总结
 --
--- jac_Representation: 有限群表示论框架, 0 postulate.
+-- Representation: 有限群表示论框架, 0 postulate.
 --   ✅ Burnside 定理接口 + A₄ 实例 (Σ dim²=12, refl)
 --   ✅ 特征标正交性接口
 --   ✅ 一般有限群框架 (GLₙ(GF(9)) 推广路线)

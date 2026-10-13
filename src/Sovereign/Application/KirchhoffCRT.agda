@@ -5,7 +5,7 @@
 --
 -- 数学背景（人类纠偏后修正）：矩阵树定理在 GF(3) 单域上退化（K₃ 树数
 --   3 ≡ 0 被模吞）。**本库正解不是 ℤ，而是 CRT 通道**——
---   `Algebra/Jacobian/jac_CRTDet.agda` 拱顶石已闭合
+--   `Algebra/Jacobian/CRTDet.agda` 拱顶石已闭合
 --   det(M) = crt12(det(M₃), det(M₄))（det-crt12，一般 N）：
 --   GF(3) 分量虽退化，**Fin 4 分量保信息**（3 mod 4 = 3 ≠ 0），
 --   crt12 重构即得 d3 ≠ 0——树数 ≢ 0 可判，无需 ℤ。
@@ -17,7 +17,7 @@
 --   ③ mt-fin4-preserves：Fin 4 分量 ≢ 0——信息保留的机器见证；
 --   ④ mt-crt-reconstruct：crt12(π3, π4) ≡ d3——重构保真（crt12-roundtrip 实例）。
 --
--- 复用（本地资产）：jac_CRTDet.det2D（2×2 Duodec 行列式）+ crt12-roundtrip
+-- 复用（本地资产）：CRTDet.det2D（2×2 Duodec 行列式）+ crt12-roundtrip
 --   + Duodecimal 的 12 环算子（全表 refl）。与 KirchhoffZ（ℤ 对照域）并列：
 --   ℤ 给精确值 3，CRT 通道给「mod 12 非零可判」——本库判非零只需后者。
 --

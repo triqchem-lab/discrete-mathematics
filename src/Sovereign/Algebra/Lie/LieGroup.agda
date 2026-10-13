@@ -3,14 +3,14 @@
 -- | Sovereign.Algebra.Lie.LieGroup
 -- 离散李群 — 指数映射与有限群载体 (0 postulate)
 --
--- 与 jac_LieGroup (Jacobian 家族) 分开的独立建立; D₄ 部分为有意重复。
+-- 与 DiscreteGaloisGroupAlgebra (Jacobian 家族) 分开的独立建立; D₄ 部分为有意重复。
 --
 -- 结构:
 --   §1 离散指数映射 (一维): exp_C4 : Z/4 → Z[i] 单位群 C₄ (生成元 i)
 --      + 单参子群律 exp(t+s) = exp(t)·exp(s) (16 项穷举)
 --   §2 exp_C6 : Z/6 → Z[ω] 单位群 C₆ (生成元 1+ω) + 单参子群律 (36 项)
 --   §3 D₄ 离散李群 ({±I,±αI}×C₂ 半直积, 扭结 σ(α)=−α):
---      生成关系 + 64 项封闭表 — 与 jac_LieGroup §3c 同构重复
+--      生成关系 + 64 项封闭表 — 与 DiscreteGaloisGroupAlgebra §3c 同构重复
 --
 -- 对应关系 (离散李群-李代数):
 --   连续: exp: g → G, 单参子群 exp((t+s)X) = exp(tX)exp(sX)
@@ -141,7 +141,7 @@ expC6-hom (fs (fs (fs (fs (fs fz))))) (fs (fs (fs (fs (fs fz))))) = refl
 
 --------------------------------------------------------------------------------
 -- §3. D₄ 离散李群: {±I, ±αI} × C₂ 半直积 (扭结 σ(α) = −α)
---     — 与 jac_LieGroup §3c 同构重复 (独立载体, 有意为之)
+--     — 与 DiscreteGaloisGroupAlgebra §3c 同构重复 (独立载体, 有意为之)
 --------------------------------------------------------------------------------
 
 Mat2G : Set

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_DeligneHodge — Deligne Weil 猜想 · 在三角复形上的独立形式化
+-- | DeligneHodge — Deligne Weil 猜想 · 在三角复形上的独立形式化
 -- 0 postulate
 
 module Sovereign.Application.DeligneHodge where
@@ -12,7 +12,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 -- Deligne 定理在三角复形上的独立形式化
 -- ═══════════════════════════════════════════════════════════
 
--- 三角复形: dim ℋ = dim H = 1 (来自 jac_Hodge)
+-- 三角复形: dim ℋ = dim H = 1 (来自 Hodge)
 open import Sovereign.Application.Hodge using (hodge-isomorphism)
 open import Sovereign.Application.ChainComplex
   using (ChainComplex; dimH; tri; tri-h0; tri-h1; hodge-thm)

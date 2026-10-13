@@ -25,4 +25,4 @@ open import Sovereign.Algebra.Jacobian.GF9Matrix using (0gf9; 1gf9; det2-gf9)
 --   (by *gf9-comm: a*e*d*h = a*d*e*h, etc.)
 --
 -- 完整 ≡-Reasoning 链 ~80 行. 当前: 定理声明 + 代数论证.
--- 0 postulate. 实证: det(I₂)=1gf9 ≠ 0gf9 (已由 jac_GF9Matrix 证明).
+-- 0 postulate. 实证: det(I₂)=1gf9 ≠ 0gf9 (已由 GF9Matrix 证明).

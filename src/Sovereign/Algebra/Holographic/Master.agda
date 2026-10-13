@@ -1,5 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | jac_Master — 大衍框架统一定理 · 59模块全景
+-- | Master — 大衍框架统一定理 · 59模块全景
 --
 -- 数学背景：
 --  0 postulate
@@ -29,12 +29,12 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 --   (V)   M_F 特征多项式不可约 (全息穿透)
 --
 -- 证明锚点:
---   (I)⇔(II): jac_NMatrix.detNonzero↔bij (0 postulate)
---   (II)⇔(III): jac_Topology.rank∂=2, dimH=1 (refl)
---   (II)⇔(IV): jac_YMTransfer gap2/gap3/gap4 (λ())
---   (II)⇔(V): jac_Complexity.has-root (refl, 2×2)
+--   (I)⇔(II): NMatrix.detNonzero↔bij (0 postulate)
+--   (II)⇔(III): Topology.rank∂=2, dimH=1 (refl)
+--   (II)⇔(IV): YMTransfer gap2/gap3/gap4 (λ())
+--   (II)⇔(V): Complexity.has-root (refl, 2×2)
 --
--- 推广: (II)⇔(III)⇔(IV)⇔(V) 由 CRT 分解 (jac_CRTDet)
+-- 推广: (II)⇔(III)⇔(IV)⇔(V) 由 CRT 分解 (CRTDet)
 --   归约到 ≤4×4 分量, 0 postulate.
 
 -- ═══════════════════════════════════════════════════════════

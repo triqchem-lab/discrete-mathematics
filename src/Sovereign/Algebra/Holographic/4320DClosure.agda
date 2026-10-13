@@ -99,8 +99,8 @@ t6PointBounded v = toℕ<n (t6ToFin v)
 -- §2. 差分算子在 T⁶ 上的定义
 --
 -- ΔF = SF - F, 其中 S 是 T⁶ 上的移位算子
--- 对 GF(3)² 已在 jac_GF3 §9-13 证明: Δ 消除 Frobenius 盲区
--- 对 GF(9)² 已在 jac_FrobeniusBlind §5 证明: Δ 仍不充分 (局部→全局鸿沟)
+-- 对 GF(3)² 已在 GF3 §9-13 证明: Δ 消除 Frobenius 盲区
+-- 对 GF(9)² 已在 FrobeniusBlind §5 证明: Δ 仍不充分 (局部→全局鸿沟)
 -- 关键区别: 在 T⁶ 上, 鸽巢原理保证全局条件完备
 --------------------------------------------------------------------------------
 
@@ -117,7 +117,7 @@ shift6 : T6Lattice → T6Lattice
 shift6 (v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ v0 ∷ []) =
   v5 ∷ v4 ∷ v3 ∷ v2 ∷ v1 ∷ f3-shift v0 ∷ []
 
--- GF(3) 减法 (复用 jac_GF3 的 _⊖_)
+-- GF(3) 减法 (复用 GF3 的 _⊖_)
 _⊖t_ : Trit → Trit → Trit
 a ⊖t b = a ⊕ negate b
 
@@ -134,7 +134,7 @@ a ⊖t b = a ⊕ negate b
 -- 在实际判定中, 用 NonSingularT6 (= InjT6) 等价替代行列式判定
 -- 详见 §4 环面有界性定理
 
--- 低维参考: GF(3)² 上的差分算子 (jac_GF3 §9-13)
+-- 低维参考: GF(3)² 上的差分算子 (GF3 §9-13)
 --   Δ_x F₁ = 1, Δ_y F₁ = 0, Δ_x F₂ = 0, Δ_y F₂ = 0
 --   det J_Δ = 0 ← 正确检测 F-gf3 非双射
 -- T⁶ 上同理: Δ 作用于有限函数空间, 全局矩阵 M_F 精确判定
@@ -196,7 +196,7 @@ t6ToFin-injective : ∀ {a b : T6Lattice} → t6ToFin a ≡ t6ToFin b → a ≡ 
 t6ToFin-injective eq = trans (sym (leftInv _)) (trans (cong finToT6 eq) (leftInv _))
 
 -- T⁶ 鸽巢定理: 单射 ⟹ 满射 (0 postulate)
--- 策略: compress/expand from jac_Pigeonhole (已编译, 引用不重现递归深度)
+-- 策略: compress/expand from JacobianInjectiveSurjective (已编译, 引用不重现递归深度)
 -- + stdlib pigeonhole → 碰撞 → t6ToFin-injective → contradiction
 pigeonhole-T6 : ∀ (F : T6Lattice → T6Lattice) → InjT6 F → SurjT6 F
 pigeonhole-T6 F inj q with searchFin (λ i → F (finToT6 i) ≡ q) (λ i → t6-dec-eq (F (finToT6 i)) q)
@@ -241,7 +241,7 @@ pigeonhole-T6 F inj q with searchFin (λ i → F (finToT6 i) ≡ q) (λ i → t6
 --------------------------------------------------------------------------------
 
 -- 非奇异 (全局矩阵意义下) = 单射 (函数表矩阵列互异)
--- 这与 jac_Injectivity.agda 的 NonSingular 定义一致
+-- 这与 Injectivity.agda 的 NonSingular 定义一致
 NonSingularT6 : (T6Lattice → T6Lattice) → Set
 NonSingularT6 F = InjT6 F
 
@@ -385,9 +385,9 @@ discrete-jacobian-T6 =
   -- 即: 非奇异 ⟹ 双射 (已由 §4 证明)
 
 -- 低维验证 (0 postulate, 全部已编译通过):
---   GF(3)¹ (3 点): pigeonhole-1 (jac_Pigeonhole), 单射 ⟹ 满射
---   GF(3)² (9 点): pigeonhole-2 (jac_Pigeonhole), 单射 ⟹ 满射
---   GF(9)² (81 点): 全局矩阵 det = 0 精确检测 93.3% 非双射 (jac_FrobeniusBlind)
+--   GF(3)¹ (3 点): pigeonhole-1 (JacobianInjectiveSurjective), 单射 ⟹ 满射
+--   GF(3)² (9 点): pigeonhole-2 (JacobianInjectiveSurjective), 单射 ⟹ 满射
+--   GF(9)² (81 点): 全局矩阵 det = 0 精确检测 93.3% 非双射 (FrobeniusBlind)
 
 -- 逐点雅可比 vs 全局矩阵 (三层强度):
 --   形式导数 (最弱, Frobenius 盲区)
@@ -406,7 +406,7 @@ discrete-jacobian-T6 =
 --
 -- 验证命令:
 --   cd /data/work/discrete-mathematics
---   agda src/Sovereign/Algebra/Jacobian/jac_4320DClosure.agda
+--   agda src/Sovereign/Algebra/Jacobian/4320DClosure.agda
 --
 -- 预期: 所有类型检查通过, 0 postulate, 0 unsolved metas
 -- 状态: 核心定理 (pigeonhole-T6, nonsingularT6→bijective) 完整闭合

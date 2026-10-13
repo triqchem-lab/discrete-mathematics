@@ -1,7 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | BSD9 — GF(9) 椭圆曲线点计数 · 未来态锁定法
--- 【正名 2026-10-11】旧头写 jac_BSD9（命名漂移）——实名 BSD9；勘误留痕
+-- 【正名 2026-10-11】旧头写 BSD9（命名漂移）——实名 BSD9；勘误留痕
 -- 目标: #E(GF(9)) = 16 (Hasse紧界), 由迹递推一步到位
 -- 不使用暴力枚举. 0 postulate.
 
@@ -26,7 +26,7 @@ open import Sovereign.Application.BSD using (trace-E1; trace-E1-zero)
 -- ═══════════════════════════════════════════════
 
 -- 源数据 (过去态): GF(3) 上 #E₁=4, t₁=0
-t₁ : ℕ; t₁ = 0  -- trace-E1-zero: 4∸4=0 (refl, 来自 jac_BSD)
+t₁ : ℕ; t₁ = 0  -- trace-E1-zero: 4∸4=0 (refl, 来自 BSD)
 
 -- 递推: t₂ = t₁² - 2q, q=3 → t₂ = 0-6 = -6 (ℤ)
 -- 在 ℤ 上计算, ℕ monus 不可用. 以下标注 ℤ 上结果.

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | jac_YM_Transfer — YM 转移矩阵 · 多链接格点一般构造
+-- | YM_Transfer — YM 转移矩阵 · 多链接格点一般构造
 -- 【判重组4 注记 2026-10-11】与 YMTransfer.agda 近名对判重：异物互补（本件=一般构造，彼件=CRT 质量间隙闭合）
 -- ——非重复；近名易混，模块改名会破迁移清单故保留原名（交叉注记消歧）
 -- 0 postulate
@@ -31,7 +31,7 @@ open import Sovereign.Algebra.Jacobian.GF9Matrix
 -- 平凡构型 (U₁=U₂=I₂)
 
 -- ── 声明层升级（2026-10-11）：det 计算导出链（替代裸 λ() 模式）──
--- 机制：det(I) 经 jac_GF9Matrix 既有件计算为 1gf9（refl 级），再由 1gf9 ≢ 0gf9 导出
+-- 机制：det(I) 经 GF9Matrix 既有件计算为 1gf9（refl 级），再由 1gf9 ≢ 0gf9 导出
 --（非平凡构型的一般命题为「det 乘积」形——诚实边界：实例核，非 YM 质量间隙全定理）
 1≢0 : 1gf9 ≢ 0gf9
 1≢0 = λ ()

@@ -21,7 +21,7 @@ SU2Element : Set; SU2Element = GF9Mat 2 2
 -- W□ = I₂, det = 1gf9 ≠ 0gf9 → 质量间隙
 
 -- ── 声明层升级（2026-10-11）：det 计算导出链（替代裸 λ() 模式）──
--- 机制：det(I) 经 jac_GF9Matrix 既有件计算为 1gf9（refl 级），再由 1gf9 ≢ 0gf9 导出
+-- 机制：det(I) 经 GF9Matrix 既有件计算为 1gf9（refl 级），再由 1gf9 ≢ 0gf9 导出
 --（非平凡构型的一般命题为「det 乘积」形——诚实边界：实例核，非 YM 质量间隙全定理）
 1≢0 : 1gf9 ≢ 0gf9
 1≢0 = λ ()

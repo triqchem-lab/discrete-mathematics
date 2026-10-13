@@ -10,7 +10,7 @@
 --   配对：v0 ↔ e01（唯一配对；e12/e20 的下端点 v1/v2 均为临界顶点，
 --     不可再配——Morse 配对的排除规则）
 --   临界计数：m₀ = 2（v1, v2），m₁ = 2（e12, e20）
---   图 K₃ 的 Betti 数（jac_Topology graph3C，已证）：β₀ = 1, β₁ = 1
+--   图 K₃ 的 Betti 数（Topology graph3C，已证）：β₀ = 1, β₁ = 1
 --   不等式：m₀ = 2 ≥ β₀ = 1 ✓，m₁ = 2 ≥ β₁ = 1 ✓
 --
 --   对比价值：图 β = (1,1) vs 填充 β = (1,0,0)——同一顶点集、不同复形，
@@ -18,7 +18,7 @@
 --
 -- ⚠ 诚实边界：
 --   1. 配对合法性头注非形式给出（同前两实例口径）。
---   2. β 复用 jac_Topology.graph3C 的 dimH 数值引理（refl 已证）。
+--   2. β 复用 Topology.graph3C 的 dimH 数值引理（refl 已证）。
 --   3. 图上不存在完美 Morse 场（K₃ 有一条独立圈，任何 Morse 场至少
 --     1 个临界边——这是 β₁ = 1 的 Morse 语义；一般证明 roadmap）。
 --
@@ -31,7 +31,7 @@ open import Sovereign.Application.Topology
   using (dimH-graph3-0; dimH-graph3-1)
 
 --------------------------------------------------------------------------------
--- §1. 图 K₃ 的 Betti 数（jac_Topology graph3C 已证引理复用）
+-- §1. 图 K₃ 的 Betti 数（Topology graph3C 已证引理复用）
 --
 --   dimH-graph3-0 : dimH graph3C 0 ≡ 1（连通）
 --   dimH-graph3-1 : dimH graph3C 1 ≡ 1（一个独立圈）
