@@ -90,7 +90,7 @@ PF,Sovereign.HoTT.CanonicityAlignment,Sovereign.Synthesis.CanonicityAlignment,sr
 PF,Sovereign.HoTT.ChernConservation,Sovereign.Synthesis.ChernConservation,src/Sovereign/HoTT/ChernConservation.agda,src/Sovereign/Synthesis/ChernConservation.agda,Synthesis,0
 PF,Sovereign.HoTT.Connection,Sovereign.Synthesis.Connection,src/Sovereign/HoTT/Connection.agda,src/Sovereign/Synthesis/Connection.agda,Synthesis,0
 PG,Sovereign.HoTT.DiscreteCCHM,Sovereign.Synthesis.DiscreteCCHM,src/Sovereign/HoTT/DiscreteCCHM.agda,src/Sovereign/Synthesis/DiscreteCCHM.agda,Synthesis,0
-PG,Sovereign.HoTT.DiscreteCubical.Path,Sovereign.Synthesis.DiscreteCubical/Path,src/Sovereign/HoTT/DiscreteCubical/Path.agda,src/Sovereign/Synthesis/DiscreteCubical/Path.agda,Synthesis,0
+PG,Sovereign.HoTT.DiscreteCubical.Path,Sovereign.Synthesis.DiscreteCubical.Path,src/Sovereign/HoTT/DiscreteCubical/Path.agda,src/Sovereign/Synthesis/DiscreteCubical/Path.agda,Synthesis,0
 PG,Sovereign.HoTT.EnergyGap,Sovereign.Synthesis.EnergyGap,src/Sovereign/HoTT/EnergyGap.agda,src/Sovereign/Synthesis/EnergyGap.agda,Synthesis,0
 PG,Sovereign.HoTT.Equivalence,Sovereign.Synthesis.Equivalence,src/Sovereign/HoTT/Equivalence.agda,src/Sovereign/Synthesis/Equivalence.agda,Synthesis,0
 PG,Sovereign.HoTT.Fibration,Sovereign.Synthesis.Fibration,src/Sovereign/HoTT/Fibration.agda,src/Sovereign/Synthesis/Fibration.agda,Synthesis,0
