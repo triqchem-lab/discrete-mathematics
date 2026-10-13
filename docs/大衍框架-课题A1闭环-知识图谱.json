@@ -1,0 +1,224 @@
+{
+ "meta": {
+  "name": "大衍框架·课题A1闭环-知识图谱",
+  "date": "2026-10-11",
+  "witness": "7755309",
+  "source_docs": [
+   "docs/研究课题清单-基线v2-2026-10-11.md",
+   "docs/plan/A1-pi-n-ontology-research.md",
+   "docs/大衍离散全息框架-数学知识图谱-证明严格性版.md",
+   "docs/plan/任务池前置研究-2026-10-11.md",
+   "docs/大衍框架-课题A1闭环-整合.md"
+  ]
+ },
+ "research_projects": [
+  {
+   "id": "A1",
+   "class": "A",
+   "priority": "P0",
+   "problem": "πₙ≥2 离散对应物本体论",
+   "completion": "设计文档+本体论论证",
+   "status": "部分建成（报告落+13 锚验证+h₁/h₂ 已施工）",
+   "deps": []
+  },
+  {
+   "id": "A2",
+   "class": "A",
+   "priority": "P0",
+   "problem": "修正案 A（backtrack 生成元）与分水岭定理 v2",
+   "completion": "完整数学设计+分水岭 v2",
+   "status": "研究中",
+   "deps": [
+    "分水岭定理 proven"
+   ]
+  },
+  {
+   "id": "A3",
+   "class": "A",
+   "priority": "P0",
+   "problem": "E10 截断商不忠实→E10 本身路径",
+   "completion": "严格路径设计",
+   "status": "研究中",
+   "deps": [
+    "_PK10 proven"
+   ]
+  },
+  {
+   "id": "B1",
+   "class": "B",
+   "priority": "P1",
+   "problem": "Bigelow 定理离散证明路径",
+   "completion": "路径设计+关键实例验证",
+   "status": "研究中（检索）",
+   "deps": [
+    "Laurent 线 proven"
+   ]
+  },
+  {
+   "id": "B2",
+   "class": "B",
+   "priority": "P2",
+   "problem": "Church-Turing 三模型等价",
+   "completion": "完整设计+论题/定理区分",
+   "status": "研究中",
+   "deps": [
+    "_PCT1 proven"
+   ]
+  },
+  {
+   "id": "B3",
+   "class": "B",
+   "priority": "P2",
+   "problem": "Myhill-Nerode 一般形",
+   "completion": "一般形完整证明设计",
+   "status": "研究中",
+   "deps": [
+    "_PMN1 proven"
+   ]
+  },
+  {
+   "id": "C1",
+   "class": "C",
+   "priority": "P3",
+   "problem": "Trakhtenbrot 完整证明",
+   "completion": "归约构造完整设计",
+   "status": "研究中",
+   "deps": [
+    "_PFT2 proven",
+    "CT 机器级桥（真实前置——修正）"
+   ]
+  },
+  {
+   "id": "D1",
+   "class": "D",
+   "priority": "P1",
+   "problem": "分水岭定理一般化",
+   "completion": "一般图分水岭+分类算法",
+   "status": "研究中",
+   "deps": [
+    "分水岭定理 proven"
+   ]
+  },
+  {
+   "id": "D2",
+   "class": "D",
+   "priority": "P1",
+   "problem": "discreteHurewicz 严格化",
+   "completion": "完整形式化设计",
+   "status": "研究中（DH-1..4b 已施工）",
+   "deps": [
+    "πₙ 线 proven"
+   ]
+  },
+  {
+   "id": "D3",
+   "class": "D",
+   "priority": "P2",
+   "problem": "Dodziuk 替代论证",
+   "completion": "替代主张严格论证",
+   "status": "研究中",
+   "deps": [
+    "Eckmann proven"
+   ]
+  }
+ ],
+ "external_refs": [
+  {
+   "theorem": "Bigelow n≥5（Burau 不忠实）",
+   "label": "外部定理（仅引用陈述）",
+   "linked": "B1",
+   "discrete_path": "显式核元素验证候选（可形式化 ~100-200 行）",
+   "note": "不硬开理由=工作量+工具链（非违红线）"
+  },
+  {
+   "theorem": "K(E10) 32 维不忠实",
+   "label": "外部定理（仅引用陈述）",
+   "linked": "A3",
+   "note": "截断商不忠实≠本身（边界句 _PK10:5-9）"
+  },
+  {
+   "theorem": "一般 McKay 对应",
+   "label": "外部定理（仅引用陈述）",
+   "linked": "8.x",
+   "note": "A4/McKayA4 在库"
+  }
+ ],
+ "proof_base": {
+  "L0": "GF(3) 公理+五公理族+三红线（本源/投影、不忠实商禁止、术/定理）",
+  "L1": [
+   "Trit 9-case",
+   "FAb(n) 群律",
+   "SunyiBase",
+   "IntArith",
+   "Fin3/Fin3Sum9"
+  ],
+  "L2": [
+   "Laurent 函数表示（canon-sums-unique=funExt h）",
+   "GF(9) 域扩张",
+   "有限域塔",
+   "Hensel 塔（28/28 回执）"
+  ],
+  "L3": [
+   "分水岭定理（e3c0b2c0+双证 83a8d0e4/598cc04b）",
+   "crt-det-general（222db327）",
+   "Eckmann GF(3) 不分裂（ones-in-im∂₂——im∂₂ 面 oneV 承载）",
+   "FAb 商群/Hₖ 群律（K3Full 3d4b7c2a/28577cb9）"
+  ],
+  "L4": [
+   "Morse 边界路由（∂²=0 全形/级联 scoped 四联证据链）",
+   "Hodge",
+   "Burau/Kac-Moody（braid-rel/record B3:33）",
+   "Postnikov Ωⁿ（PT-1..6 全链+πₙ-B1..B5）"
+  ],
+  "dependency_chains": [
+   "代数链：GF3→Trit→FAb→Laurent→Mat3→BurauCubical→B3→Cartan→KacMoody",
+   "同伦链：GF3→FAb→AHomotopy→π₁ᵈ→Gcmp/Gskel→分水岭",
+   "同调链：GF3→ChainComplex→∂²=0→路由→临界同调→Morse 定理实例"
+  ]
+ },
+ "ontology_A1": {
+  "candidate_paths": [
+   "A 组合球面 Sⁿᵈ",
+   "B Ωⁿ 迭代（主定义）",
+   "C sSet Kan（已排除）",
+   "D Barcelo A-同伦（图同态 on cubical grids）"
+  ],
+  "choice": "B 主定义 + A 对接面（n=1 锚=数学约束）",
+  "honest_state": {
+   "proven": [
+    "n=1 锚 _PPI5d:126",
+    "Ωⁿ B1-B5",
+    "π₂ᵈ+rec/elim _PPI5j",
+    "TruncAbove _PPT6:52",
+    "h₁/h₂（dim-1/2 已施工 _PDH1/_PDH5）"
+   ],
+   "need_tools": [
+    "Sⁿᵈ 一般递归",
+    "Ω⁴+（零命中立界）",
+    "πₙᵈ 阿贝尔性",
+    "临界胞腔判据球面定理（对接 DiscreteMorseGeneral:52-57）"
+   ],
+   "undetermined": [
+    "圈长↔群结构",
+    "C₄ 精确形式化",
+    "Gao-Yang 调和"
+   ]
+  },
+  "core_tension": "Gao-Yang 离散=经典拷贝（投影侧）vs 本项目组合本源（分水岭证 π₁ᵈ 不必成群）——对应定理=桥非定义",
+  "open_questions": 5
+ },
+ "task_pool": {
+  "P1": "9/9 ✅",
+  "P2": "12/12 ✅",
+  "P3": "9/9 ✅",
+  "wiring": "13 线/25 边（_PW1-4）",
+  "estimate_note": "报告内估行/批次=T-1 前置研究历史快照——终态以本字段为准"
+ },
+ "consistency": {
+  "verdict": "五文件数学语义一致无冲突",
+  "calibrations": [
+   "Eckmann 陈述形（im∂₂/oneV）",
+   "任务池估行=历史快照注记"
+  ]
+ }
+}
