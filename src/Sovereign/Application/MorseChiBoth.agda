@@ -30,7 +30,7 @@ open import Sovereign.Application.FormanMinimal
   using (Sx; dim; v0; v1; v2; e01; e12; e20; t)
   renaming (triangleVF to triVF)
 open import Sovereign.Application.MorseAcyclic using (morse-acyclic-2)
-open import Sovereign.Topology.FormanPerfectField
+open import Sovereign.Application.FormanPerfectField
   using (perfectVF; perfect-dim-law)
 
 --------------------------------------------------------------------------------

@@ -26,7 +26,7 @@ open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Application.FormanMinimal
   using (Sx; dim; v0; v1; v2; e01; e12; e20; t; MorseField)
-open import Sovereign.Topology.FormanPerfectField
+open import Sovereign.Application.FormanPerfectField
   using (perfectVF; nothing-just; e12≢t; e01≢v2)
 
 --------------------------------------------------------------------------------

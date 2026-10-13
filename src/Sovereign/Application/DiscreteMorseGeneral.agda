@@ -96,7 +96,7 @@ critical-not-upper dimK V σ (_ , hupper) τ s = hupper (τ , s)
 
 open import Sovereign.Application.FormanMinimal
   using (Sx; dim; v0; v1; v2; e01; e12; e20; t)
-open import Sovereign.Topology.FormanPerfectField
+open import Sovereign.Application.FormanPerfectField
   using (perfectVF; perfect-dim-law; e01≢v2; e12≢v2; t≢v2; nothing-just;
          e01≢e12; e01≢t; e12≢t)
 

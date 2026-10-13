@@ -102,7 +102,7 @@ module CoeffDescent (K : Set) (dimK : K → ℕ)
 open import Sovereign.Application.FormanMinimal
   using (Sx; v0; v1; v2; e01; e12; e20; t)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Sovereign.Topology.FormanPerfectField
+open import Sovereign.Application.FormanPerfectField
   using (FaceRel; f-v0-e20; f-v1-e01; f-v2-e12;
          f-v0-e01; f-v2-e20; f-e01-t; f-e12-t; f-e20-t)
 

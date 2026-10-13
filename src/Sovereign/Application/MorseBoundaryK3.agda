@@ -29,7 +29,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_; _⊕_)
 open import Sovereign.Algebra.FreeAb using (FAb)
 open import Sovereign.Application.FormanMinimal
   using (Sx; v0; v1; v2; e01; e12; e20; t)
-open import Sovereign.Topology.FormanPerfectField
+open import Sovereign.Application.FormanPerfectField
   using (FaceRel; f-v2-e20)
 open import Sovereign.Application.MorseCoeffRoute
   using (coeffᵏ; triVFᶜ; routing-k3)

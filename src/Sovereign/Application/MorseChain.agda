@@ -25,7 +25,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
 open import Sovereign.Algebra.FreeAb using (FAb)
 open import Sovereign.Application.FormanMinimal
   using (Sx; v0; v1; v2; e01; e12; e20; t; dim)
-open import Sovereign.Topology.FormanPerfectField using (FaceRel)
+open import Sovereign.Application.FormanPerfectField using (FaceRel)
 open import Sovereign.Application.MorseCoeffRoute using (triVFᶜ)
 open import Sovereign.Application.FreeAbBoundary using (C₀; C₁; C₂)
 open import Sovereign.Topology.MorseCriticalHomology using (C₀ᶜ; C₁ᶜ)

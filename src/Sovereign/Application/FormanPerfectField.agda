@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.FormanPerfectField
+-- | Sovereign.Application.FormanPerfectField
 -- 任务书第五层·5.1 深化：完美配对场的**形式合法性**
 --
 -- 数学背景：PerfectMorseInstance 闭合了完美临界计数（m = β = (1,0,0)），
@@ -21,7 +21,7 @@
 --   一般定理（完美 ⟺ 极小复形）roadmap。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.FormanPerfectField where
+module Sovereign.Application.FormanPerfectField where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc)
