@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Geometry.TorusGeometry
+-- | Sovereign.Application.TorusGeometry
 -- T⁶ 环面几何：加法群结构 + 群公理 + 基本群 + 测地线
 --
 -- T⁶ = (GF3)⁶, 729 个格点的 6 维离散环面
 -- 加法群: (C₃)⁶, 逐分量 +₃ mod 3
 -- π₁(T⁶) ≅ (C₃)⁶ ≅ T6Lattice (离散环面的基本群同构于加法群本身)
 
-module Sovereign.Geometry.TorusGeometry where
+module Sovereign.Application.TorusGeometry where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Nat using (ℕ; zero; suc)

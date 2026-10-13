@@ -32,7 +32,7 @@ open import Sovereign.Algebra.GF9
         ; gf9-zero-mulˡ
         )
 open import Sovereign.Synthesis.T6 using (T6Lattice; GF3)
-open import Sovereign.Geometry.TorusGeometry
+open import Sovereign.Application.TorusGeometry
   using ( t6Add; t6Zero; t6Neg
         ; t6Add-identityˡ
         )

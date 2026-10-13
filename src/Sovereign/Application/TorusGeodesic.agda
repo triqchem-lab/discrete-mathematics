@@ -10,7 +10,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Sovereign.Synthesis.T6 using (T6Lattice)
 open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR)
-open import Sovereign.Geometry.TorusGeometry
+open import Sovereign.Application.TorusGeometry
   using (T6Lattice; t6Add; t6Zero; t6Scale; g1; g2; g3; g4; g5; g6)
 
 -- Christoffel 方向: 测地线沿各坐标轴的方向向量
