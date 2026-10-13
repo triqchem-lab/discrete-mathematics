@@ -25,7 +25,7 @@ open import Data.Integer using (ℤ; +_; -[1+_])
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip)
+open import Sovereign.Synthesis.A4Group using (A4; Id; Rot; Flip)
 open import Sovereign.Structology.A4Representations using
   (A4Irrep; V1; V1'; V1''; V3; dim; character; dimSqSum)
 import Sovereign.Foundation.Eisenstein as Eis

@@ -14,7 +14,7 @@ module Sovereign.Synthesis.A4StdlibBridge where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Cubical.Foundations.Prelude using (_≡_; refl; cong)
-open import Sovereign.Structology.A4Group
+open import Sovereign.Synthesis.A4Group
   using (A4; perm; _⊗_; perm-hom)
 
 --------------------------------------------------------------------------------

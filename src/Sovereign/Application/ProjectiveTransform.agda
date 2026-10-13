@@ -12,7 +12,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Synthesis.T6 using (T6Lattice)
-open import Sovereign.Structology.A4Group using ()
+open import Sovereign.Synthesis.A4Group using ()
 open import Sovereign.Geometry.ProjectiveCore
   using (GElement; g-action-full; g-mul)
 open import Sovereign.Application.ProjectiveInvariants using (t; t-is-6624)

@@ -34,7 +34,7 @@ open import Sovereign.Algebra.GF9
 open import Sovereign.Structology.A4Representation
   using (Zω; mkZω; oneZω; zeroZω; negZω; ConjClass; chi3)
 open import Sovereign.Synthesis.MatrixZω using (trace)
-open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip) renaming (_⊗_ to _⊗A4_)
+open import Sovereign.Synthesis.A4Group using (A4; Id; Rot; Flip) renaming (_⊗_ to _⊗A4_)
 open import Sovereign.Synthesis.A4ThreeDimRep
   using (rho3; rho3-hom; chi3FromRep; rho3-identity;
          chi3-id; chi3-3cycle; chi3-double-transposition; chi3-values;

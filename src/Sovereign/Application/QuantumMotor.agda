@@ -8,7 +8,7 @@ open import Data.Nat using (ℕ)
 open import Data.Product using (_×_; _,_; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Structology.A4Group
+open import Sovereign.Synthesis.A4Group
   using (A4; Id; Rot; Flip; _⊗_; generatorC3)
 
 open import Sovereign.Algebra.TriCycGraph using (TriCycGraph)

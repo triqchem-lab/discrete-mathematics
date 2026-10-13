@@ -30,7 +30,7 @@ open import Relation.Binary.PropositionalEquality
 -- Cubical 路径 (只用于桥接层; 本模块下游全部使用命题相等)
 import Cubical.Foundations.Prelude as C
 
-open import Sovereign.Structology.A4Group
+open import Sovereign.Synthesis.A4Group
   using (A4; Id; Rot; Flip; _⊗_; perm; fromPerm; fromPerm-perm; assoc)
 
 --------------------------------------------------------------------------------

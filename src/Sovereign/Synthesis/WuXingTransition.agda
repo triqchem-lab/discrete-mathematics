@@ -496,7 +496,7 @@ theorem-z2-lifecycle-via-group-theory =
 --------------------------------------------------------------------------------
 
 open import Data.Vec using (Vec; _∷_; [])
-import Sovereign.Structology.A4Group as A4G
+import Sovereign.Synthesis.A4Group as A4G
 open import Data.Fin using (Fin; zero; suc)
 
 -- 6.1 A4 的 12 个元素（穷举枚举）

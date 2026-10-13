@@ -18,7 +18,7 @@ open import Data.Nat using (ℕ; _*_; _+_)
 open import Data.Fin using (Fin; zero; suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip; _⊗_)
+open import Sovereign.Synthesis.A4Group using (A4; Id; Rot; Flip; _⊗_)
 
 --------------------------------------------------------------------------------
 -- §1. 元素阶

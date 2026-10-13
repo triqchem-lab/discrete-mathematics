@@ -32,7 +32,7 @@ open import Data.Product using (_×_; _,_; ∃; ∃-syntax; proj₁; proj₂)
 open import Data.Vec using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; cong₂; subst; module ≡-Reasoning)
 
-import Sovereign.Structology.A4Group as A4
+import Sovereign.Synthesis.A4Group as A4
 
 --------------------------------------------------------------------------------
 -- 1. 律胞腔网格格点（静态索引）

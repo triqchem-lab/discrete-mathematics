@@ -1017,7 +1017,7 @@ GF9-ConjugatePair x = Σ GF9 (λ y → (y ≡ x) ⊎ (y ≡ galoisConjugate x))
 -- Galois 共轭 σ 作用于每个 GF9 纤维的虚部 (第二分量)
 --------------------------------------------------------------------------------
 
-open import Sovereign.Structology.A4Group as A4 using (A4; perm)
+open import Sovereign.Synthesis.A4Group as A4 using (A4; perm)
 open import Sovereign.Synthesis.T6 using (allA4)
 
 -- A4 置换在 GF9⁶ 上的实现 (同 applyPerm 但作用于 GF9 类型)

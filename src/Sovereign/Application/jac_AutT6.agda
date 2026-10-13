@@ -89,7 +89,7 @@ frob-aut = I3 ⋊ σ  -- Frobenius 半线性部分, 线性部分为单位
 -- A₄ ⊂ SO(3) → A₄ ⊂ GL₃(GF(3)) ⊂ GL₃(GF(9)).
 -- 该嵌入已由 LieDiscrete.agda 和 A4Group.agda 完全形式化.
 
-open import Sovereign.Structology.A4Group using (A4)
+open import Sovereign.Synthesis.A4Group using (A4)
 open import Sovereign.Synthesis.MyopiaRisk using (a4-order)
 open import Sovereign.Algebra.LieDiscrete
   using (LieGroupEvidence; lieGroupEvidence)

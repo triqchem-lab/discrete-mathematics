@@ -48,7 +48,7 @@ open import Data.Unit using (⊤; tt)
 open import Relation.Nullary.Decidable using (True; toWitness)
 
 -- 导入核心模块
-open import Sovereign.Structology.A4Group using (A4; _⊗_; Id; assoc; identity; inverse)
+open import Sovereign.Synthesis.A4Group using (A4; _⊗_; Id; assoc; identity; inverse)
 open import Sovereign.Base.ZeroGeometry using (PlatonicSolid; Tetrahedron; Hexahedron;
   Dodecahedron; Icosahedron; Octahedron; SphereA4;
   faceCount; vertexCount; edgeCount; eulerChi;

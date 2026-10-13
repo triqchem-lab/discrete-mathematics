@@ -54,7 +54,7 @@ open import Cubical.Data.Equality.Conversion using (eqToPath; pathToEq)
 open import Data.Vec.Properties using (≡-dec)
 open import Data.Nat.DivMod using (%-distribˡ-+; %-distribˡ-*; m%n%n≡m%n; +-distrib-/-∣ˡ; m*n/n≡m; [m+kn]%n≡m%n)
 open import Data.Nat.Divisibility using (divides-refl)
-import Sovereign.Structology.A4Group as A4
+import Sovereign.Synthesis.A4Group as A4
 
 -- T⁶ = (ℤ/3ℤ)⁶ = GF(3)⁶
 -- 每个维度取值 Fin 3

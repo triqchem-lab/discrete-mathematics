@@ -33,7 +33,7 @@ open import Data.Unit using (⊤; tt)
 -- 使 assoc/identity 的 Cubical _≡_ 透传, 避免跨库 UnequalTerms (A4 vs A4 i)。
 open import Cubical.Foundations.Prelude using (_≡_; refl; cong; sym; _∙_; subst)
 
-open import Sovereign.Structology.A4Group
+open import Sovereign.Synthesis.A4Group
   using (A4; Id; Rot; Flip; perm; _⊗_; assoc; identity)
 open import Sovereign.Algebra.Duodecimal
   using (Duodec; d0; d1; d2; d3; d4; d5; d6; d7; d8; d9; d10; d11; _+12_)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.Structology.A4Group
+-- | Sovereign.Synthesis.A4Group
 -- 结构学：A₄ 群（正四面体旋转对称群）
 --
 -- A₄ 群是十二律几何对称性的代数核心。
@@ -15,7 +15,7 @@
 --
 -- 包含：data、perm、_∘ₚ_、fromPerm、fromPerm-perm、_⊗_
 
-module Sovereign.Structology.A4Group where
+module Sovereign.Synthesis.A4Group where
 
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)
 open import Data.Nat using (ℕ; _+_; _*_; _∸_)

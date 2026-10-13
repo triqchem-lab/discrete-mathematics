@@ -39,7 +39,7 @@ open import Data.Integer using (ℤ; +_; -[1+_])
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; trans; sym)
 
 -- A₄ 群: 类型和构造子 (不导入 Cubical 证明)
-open import Sovereign.Structology.A4Group
+open import Sovereign.Synthesis.A4Group
   using (A4; Id; Rot; Flip; perm)
 
 -- A₄ 表示论: 共轭类, 不可约表示, 特征标

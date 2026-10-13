@@ -68,7 +68,7 @@ omega-pow-mul (suc (suc zero)) (suc (suc zero)) = refl
 open import Data.Fin using (Fin; zero; suc)
 
 -- 复用 A₄ 群 (12 元素: Id, Rot i j, Flip k) 与乘法 _⊗_
-open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip; _⊗_)
+open import Sovereign.Synthesis.A4Group using (A4; Id; Rot; Flip; _⊗_)
 
 -- 生成元词表示 (A₄ = ⟨gs, gt⟩, 词归纳传播用)
 open import Sovereign.Synthesis.A4GenWords

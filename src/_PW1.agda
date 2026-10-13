@@ -35,7 +35,7 @@ open import Sovereign.Application.EntropySpin using (entropySpinNum)
 open import Sovereign.Algebra.Polynomials using (eval)
 open import Sovereign.Algebra.LaurentPolynomial using (Laurent; const; coeff)
 
-open import Sovereign.Structology.A4Group using (perm; Rot)
+open import Sovereign.Synthesis.A4Group using (perm; Rot)
 open import Sovereign.Algebra.Combinatorics.Permutations using (c3)
 
 -- ────────────────────────────────────────────────────────────────────

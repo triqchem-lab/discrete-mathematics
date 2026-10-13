@@ -9,7 +9,7 @@ open import Data.Product using (_×_; _,_; Σ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Algebra.GF9 using (_+gf9_)
-open import Sovereign.Structology.A4Group using (A4)
+open import Sovereign.Synthesis.A4Group using (A4)
 open import Sovereign.Synthesis.MyopiaRisk using (a4-order)
 
 open import Sovereign.Algebra.TriCycGraph using (TriCycGraph)

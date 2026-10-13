@@ -22,7 +22,7 @@ open import Data.Product using (_×_; _,_)
 open import Data.Vec using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip; _⊗_)
+open import Sovereign.Synthesis.A4Group using (A4; Id; Rot; Flip; _⊗_)
 open import Sovereign.Structology.A4Representation
   using (Zω; oneZω; zeroZω; negZω; mkZω; ConjClass; chi3)
 open import Sovereign.Synthesis.MatrixZω using (Mat; mulMat; trace)
@@ -336,7 +336,7 @@ open import Data.Product using (proj₁)
 open import Relation.Binary.PropositionalEquality using (sym; cong; trans)
 open import Sovereign.Synthesis.A4GenWords
   using (Word; ε; _▸_; gen; ev; ⊗-assocₚ; pathToEqA4)
-open import Sovereign.Structology.A4Group using (identity)
+open import Sovereign.Synthesis.A4Group using (identity)
 
 -- 生成元词的右嵌套矩阵链: chain ε X = X; chain (c ▸ w) X = ρ₃(gen c) · chain w X
 chain : Word → Mat 3 3 → Mat 3 3

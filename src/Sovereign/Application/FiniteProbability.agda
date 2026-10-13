@@ -42,7 +42,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; _≢_; cong; cong₂; sym; trans; subst; module ≡-Reasoning)
 open ≡-Reasoning
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Structology.A4Group using (A4; Id; Rot; Flip; perm)
+open import Sovereign.Synthesis.A4Group using (A4; Id; Rot; Flip; perm)
 
 --------------------------------------------------------------------------------
 -- §1. 有理概率 (整数对, 无浮点)

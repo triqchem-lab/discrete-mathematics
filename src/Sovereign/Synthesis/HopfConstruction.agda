@@ -42,7 +42,7 @@ open import Cubical.HITs.PropositionalTruncation
 open import Cubical.Functions.Surjection using (isSurjection)
 
 import Sovereign.Synthesis.T6 as T6
-import Sovereign.Structology.A4Group as A4
+import Sovereign.Synthesis.A4Group as A4
 
 --------------------------------------------------------------------------------
 -- 1. 真正的纤维化结构

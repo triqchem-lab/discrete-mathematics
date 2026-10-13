@@ -84,7 +84,7 @@ IsClassicalMagicSquare M = IsRowConstant M × IsColConstant M × DiagMatchesRow 
 -- 亚瑟量子电机的幻方满足 A₄-等变约束。
 -- A₄ 通过置换表示 perm : A4 → Fin 4 → Fin 4 作用于矩阵。
 
-open import Sovereign.Structology.A4Group
+open import Sovereign.Synthesis.A4Group
   using (A4; Id; Rot; Flip; perm)
 
 -- A₄ 在矩阵上的作用：重排行列索引

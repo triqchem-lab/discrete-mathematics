@@ -42,7 +42,7 @@ open import Sovereign.Base.Invariants using (POW2₁₆; POW3₁₁)
 --   C = ±2, Δ = √3, π_H = 144/46, n_sλ² = 4
 --
 -- Experimentally confirmed: 20/23 experiments passed (87%), Scholar Loop v4.0.
--- See Sovereign.Structology.A4Group for the full A₄ group construction.
+-- See Sovereign.Synthesis.A4Group for the full A₄ group construction.
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
