@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coupling.LossGain
+-- | Sovereign.Synthesis.LossGain
 -- 耦合域：移宫转调（损益操作）、主权 LCM 模数、仲吕对齐
 -- 
 -- 损益操作是长度比例演化的唯一合法方式：
 -- - 损：长度 × 2/3（a+1, b-1）
 -- - 益：长度 × 4/3（a+2, b-1）
 
-module Sovereign.Coupling.LossGain where
+module Sovereign.Synthesis.LossGain where
 
 open import Agda.Builtin.List using (List; []; _∷_)
 open import Data.Bool using (T)

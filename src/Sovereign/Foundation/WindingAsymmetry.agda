@@ -42,7 +42,7 @@ open import Sovereign.Base.Lü using (LüName;
                                       GuXian; YingZhong; RuiBin; DaLu;
                                       YiZe; JiaZhong; WuShe; ZhongLu)
 open import Sovereign.Synthesis.LengthLattice using (lüToLength)
-open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi; applyLossGain)
+open import Sovereign.Synthesis.LossGain using (LossGain; Sun; Yi; applyLossGain)
 
 --------------------------------------------------------------------------------
 -- 1. 泛音列公理：L = L₀ · 2^a · 3^b

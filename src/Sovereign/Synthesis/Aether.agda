@@ -29,7 +29,7 @@ open import Relation.Nullary using (¬_)
 open import Sovereign.Synthesis.T6 using (T6Lattice; GF3; Cell; CellDimension; polarStep; toroidalStep; finToT6; t6ToFin; leftInv)
 open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
-open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; LossGain)
+open import Sovereign.Synthesis.LossGain using (SOVEREIGN_LCM; LossGain)
 
 --------------------------------------------------------------------------------
 -- Experimental Verification (Scholar Loop v4.0, 2026-07-03)

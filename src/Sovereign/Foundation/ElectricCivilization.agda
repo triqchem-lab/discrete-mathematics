@@ -28,7 +28,7 @@ open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding;
                                                   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Synthesis.HolographicPi using (HolographicPi; standardHoloPi; 
                                                          holoPiNumeratorIs144; holoPiDenominatorIs46)
-open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶)
+open import Sovereign.Synthesis.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶)
 open import Sovereign.Infrastructure.Projection using (Category; Electric; RootMathCat; StructologyCat; 
                                           CouplingCat; ProjectionChain; IsElectricProjection;
                                           ElectricConcept; HertzFrequency; CentimeterLength)

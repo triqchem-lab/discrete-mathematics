@@ -37,7 +37,7 @@ open import Sovereign.Algebra.GF9 using (GF9; alpha; galoisConjugate; galoisConj
 open import Sovereign.Synthesis.CartanTorsion
   using (DiscreteComplex; _+ᵢ_; _+ᶜ_; conjugate)
 open import Sovereign.Synthesis.Zhonglv using (SovereignState)
-open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi)
+open import Sovereign.Synthesis.LossGain using (LossGain; Sun; Yi)
 open import Sovereign.Synthesis.ParityViolation
   using (ToroidalPower; mkPower; ChiralSymmetry; SingleChiral; PairedConserved;
          BreakingStarted; BreakingObvious; BreakingComplete; parityStatus)

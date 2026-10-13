@@ -14,7 +14,7 @@ open import Data.Product using (Σ; ∃; ∃-syntax; _,_)
 open import Data.Vec using (Vec; []; _∷_; lookup; map)
 open import Data.Fin using (Fin; zero; toℕ; fromℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi; applyLossGain)
+open import Sovereign.Synthesis.LossGain using (LossGain; Sun; Yi; applyLossGain)
 open import Sovereign.Base.Lü using (LüName; HuangZhong; LinZhong; TaiCu; NanLu; GuXian; YingZhong; RuiBin; DaLu; YiZe; JiaZhong; WuShe; ZhongLu; lüToIndex; indexToLü)
 
 --------------------------------------------------------------------------------

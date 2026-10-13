@@ -30,7 +30,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 import Sovereign.Algebra.Duodecimal as D
 import Sovereign.Synthesis.VortexTower as VT
 import Sovereign.Application.HoloInformation as HI
-import Sovereign.Coupling.LossGain as LG
+import Sovereign.Synthesis.LossGain as LG
 
 --------------------------------------------------------------------------------
 -- C1. CRT₁₂ 往返恒等 — Z/12Z ≅ Z/3Z × Z/4Z

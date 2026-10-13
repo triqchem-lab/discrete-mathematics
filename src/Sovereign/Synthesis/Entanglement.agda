@@ -26,7 +26,7 @@ open import Relation.Nullary using (¬_)
 -- 导入核心模块
 open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding;
                                                   polarWindingValue; toroidalWindingValue)
-open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶;
+open import Sovereign.Synthesis.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶;
                                                 LossGain; Sun; Yi; applyLossGain;
                                                 zhonglvClosure; lcmRemainder)
 open import Sovereign.Synthesis.Zhonglv using (SovereignState; evolveStep;

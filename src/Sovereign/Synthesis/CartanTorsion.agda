@@ -31,7 +31,7 @@ open import Sovereign.Foundation.EnergyGap using (C3Element; c3-id; c3-omega; c3
 open import Sovereign.Foundation.AlgebraicComplex using (Sqrt3; sqrt3)
 open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Synthesis.T6 using (T6Lattice; GF3)
-open import Sovereign.Coupling.LossGain using (LossGain; Sun; Yi; applyLossGain)
+open import Sovereign.Synthesis.LossGain using (LossGain; Sun; Yi; applyLossGain)
 open import Sovereign.Synthesis.Zhonglv using (SovereignState; chernConservation)
 open import Sovereign.MetaStructure.WuXing using (WuXing; Chirality; LeftHanded; RightHanded)
 

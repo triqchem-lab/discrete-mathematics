@@ -46,7 +46,7 @@ open import Agda.Builtin.String using (String)
 open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
 open import Sovereign.Synthesis.ZhonglvPhaseSync using (HOLOGRAPHIC_PERIOD; PrimaryQuotientSpace;
                                                       HolographicQuotientSpace; PRIMARY_PERIOD)
-open import Sovereign.Coupling.LossGain using (LossGain)
+open import Sovereign.Synthesis.LossGain using (LossGain)
 
 --------------------------------------------------------------------------------
 -- 1. 全息 π = 144/46 的宪法定义
@@ -240,7 +240,7 @@ record CuttingLossGainIsomorphism : Set where
     isomorphism      : ⊤
 
 -- 损益链类型（割圆术中的增益/损耗操作）
--- LossGain 从 Sovereign.Coupling.LossGain 导入
+-- LossGain 从 Sovereign.Synthesis.LossGain 导入
 
 cuttingIsomorphismInstance : CuttingLossGainIsomorphism
 cuttingIsomorphismInstance = record

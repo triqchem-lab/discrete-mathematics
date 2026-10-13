@@ -49,7 +49,7 @@ open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Wa
 open import Sovereign.Base.Nayin using (NayinSound; NayinFingerprint; nayinToWuxing)
 open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding;
                                                   polarWindingValue; toroidalWindingValue)
-open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶;
+open import Sovereign.Synthesis.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶;
                                                 LossGain; Sun; Yi; applyLossGain)
 
 --------------------------------------------------------------------------------
