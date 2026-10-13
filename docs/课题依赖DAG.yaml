@@ -1,0 +1,151 @@
+dag:
+  acyclic: true
+  critical_paths:
+  - - GF3
+    - Trit
+    - FAb
+    - Watershed
+    - A2
+    - D1
+  - - GF3
+    - Pi1
+    - PiN
+    - A1
+    - A1c
+  - - GF3
+    - Laurent
+    - B1
+  edges:
+  - from: Laurent
+    to: B1
+    type: hard
+  - from: Watershed
+    to: A2
+    type: hard
+  - from: Watershed
+    to: D1
+    type: hard
+  - from: Pi1
+    to: A1
+    type: hard
+  - from: PiN
+    to: A1
+    type: hard
+  - from: PiN
+    to: D2
+    type: hard
+  - from: PiDH
+    to: D2
+    type: hard
+  - from: Eckmann
+    to: D3
+    type: hard
+  - from: CT1
+    to: B2
+    type: hard
+  - from: PR
+    to: B2
+    type: hard
+  - from: MN
+    to: B3
+    type: hard
+  - from: Comp
+    to: C1
+    type: hard
+  - from: A1
+    to: D2
+    type: soft
+  - from: A2
+    to: D1
+    type: soft
+  - from: EBig
+    to: B1
+    type: external
+  - from: EK10
+    to: A3
+    type: external
+  - from: EMcKay
+    to: A3
+    type: external
+  - from: PPoly
+    to: B1
+    type: supply
+  - from: PGraph
+    to: D1
+    type: supply
+  - from: PConn
+    to: D1
+    type: supply
+  - from: PCount
+    to: B3
+    type: supply
+  - from: PProb
+    to: D3
+    type: supply
+  - from: A1
+    to: A1a
+    type: sub
+  - from: A1
+    to: A1b
+    type: sub
+  - from: A1
+    to: A1c
+    type: sub
+  - from: A1
+    to: A1d
+    type: sub
+  - from: A1b
+    to: A1c
+    type: sub
+  - from: A1a
+    to: A1d
+    type: sub
+  name: 大衍框架·课题依赖DAG
+  nodes:
+    A1_subtasks:
+    - A1a
+    - A1b
+    - A1c
+    - A1d
+    base:
+    - GF3
+    - Trit
+    - FAb
+    - Laurent
+    - Watershed
+    - Eckmann
+    - Pi1
+    - PiN
+    - CRT
+    - Morse
+    - PiDH
+    - CT1
+    - PR
+    - MN
+    - Comp
+    external:
+    - EBig
+    - EK10
+    - EMcKay
+    supply:
+    - PPoly
+    - PGraph
+    - PConn
+    - PCount
+    - PProb
+    tasks:
+      A:
+      - A1
+      - A2
+      - A3
+      B:
+      - B1
+      - B2
+      - B3
+      C:
+      - C1
+      D:
+      - D1
+      - D2
+      - D3
+  version: '2026-10-13'
