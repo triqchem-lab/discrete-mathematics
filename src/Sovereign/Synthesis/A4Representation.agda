@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.A4Representation
+-- | Sovereign.Synthesis.A4Representation
 -- A₄ 表示论: 不可约表示 {1, 1′, 1″, 3} + 特征标正交性 (0 postulate, 全 refl)
 --
 -- 三代费米子的代数起源: A₄ 的三维不可约表示在 Z₃ 子群上分支为
@@ -22,7 +22,7 @@
 --
 -- 包含: record、zeroZω、oneZω、ω、ω²、addZω、negZω、subZω、mulZω、conjZω、omega-sum-zero、omega-cubed、omega-squared-form、ConjClass
 
-module Sovereign.Structology.A4Representation where
+module Sovereign.Synthesis.A4Representation where
 
 open import Data.Nat using (ℕ; zero; suc) renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
 open import Data.Integer.Base using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)
