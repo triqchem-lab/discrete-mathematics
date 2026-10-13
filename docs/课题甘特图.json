@@ -1,0 +1,128 @@
+{
+  "gantt": {
+    "name": "大衍框架·课题关键路径甘特图",
+    "start": "2026-10-13",
+    "end": "2026-11-16",
+    "total_weeks": 4.5,
+    "tasks": [
+      {
+        "id": "base",
+        "name": "基座已证",
+        "start": "2026-10-06",
+        "end": "2026-10-13",
+        "status": "done"
+      },
+      {
+        "id": "a1",
+        "name": "A1 πₙ≥2 本体论",
+        "start": "2026-10-13",
+        "duration": "14d",
+        "status": "active"
+      },
+      {
+        "id": "a2",
+        "name": "A2 修正案A与分水岭",
+        "start": "2026-10-13",
+        "duration": "14d",
+        "status": "active"
+      },
+      {
+        "id": "a3",
+        "name": "A3 E10 截断商",
+        "start": "2026-10-13",
+        "duration": "14d",
+        "status": "active"
+      },
+      {
+        "id": "a1a",
+        "name": "A1a Sⁿᵈ 递归构造",
+        "after": "a1",
+        "duration": "7d"
+      },
+      {
+        "id": "a1b",
+        "name": "A1b Ω⁴+ 机件",
+        "after": "a1",
+        "duration": "10d",
+        "critical": true
+      },
+      {
+        "id": "a1c",
+        "name": "A1c 阿贝尔性 n≥2",
+        "after": "a1b",
+        "duration": "7d",
+        "critical": true
+      },
+      {
+        "id": "a1d",
+        "name": "A1d 临界胞腔判据",
+        "after": "a1a",
+        "duration": "10d"
+      },
+      {
+        "id": "b1",
+        "name": "B1 Bigelow 离散路径",
+        "start": "2026-10-13",
+        "duration": "14d"
+      },
+      {
+        "id": "b2",
+        "name": "B2 CT 三模型等价",
+        "start": "2026-10-13",
+        "duration": "14d"
+      },
+      {
+        "id": "b3",
+        "name": "B3 Myhill-Nerode 一般形",
+        "start": "2026-10-13",
+        "duration": "14d"
+      },
+      {
+        "id": "c1",
+        "name": "C1 Trakhtenbrot 完整",
+        "start": "2026-10-13",
+        "duration": "14d"
+      },
+      {
+        "id": "d2",
+        "name": "D2 discreteHurewicz",
+        "start": "2026-10-13",
+        "duration": "14d",
+        "critical": true
+      },
+      {
+        "id": "d3",
+        "name": "D3 Dodziuk 替代论证",
+        "start": "2026-10-13",
+        "duration": "14d"
+      },
+      {
+        "id": "d1",
+        "name": "D1 分水岭一般化",
+        "after": "a2",
+        "duration": "14d",
+        "critical": true
+      }
+    ],
+    "critical_paths": [
+      [
+        "A2",
+        "D1"
+      ],
+      [
+        "A1",
+        "A1b",
+        "A1c"
+      ],
+      [
+        "B1"
+      ]
+    ],
+    "longest_path": [
+      "A1",
+      "A1b",
+      "A1c"
+    ],
+    "total_duration_weeks": 4.5
+  }
+}
