@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.Format.ModulusGeneration
+-- | Sovereign.Synthesis.ModulusGeneration
 -- 幻方正交拓扑：CRT 模数生成协议
 --
 -- 给定环面测地线步数 k，用 M₄ 本征谱 + 克里斯托螺旋
@@ -12,7 +12,7 @@
 --   2. CRT=物理波系统/谱投影，非模运算定理（红线）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Format.ModulusGeneration where
+module Sovereign.Synthesis.ModulusGeneration where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _/_; _%_)
 open import Data.Integer using (+_)

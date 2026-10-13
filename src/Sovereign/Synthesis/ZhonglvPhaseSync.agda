@@ -46,7 +46,7 @@ open import Data.Product using (_×_; _,_; ∃; ∃-syntax)
 
 -- 导入核心模块
 open import Sovereign.MetaStructure.WuXing using (WuXing; Fire; Earth; Metal; Water; Wood; wuXingBase)
-open import Sovereign.MetaStructure.Nayin using (NayinSound; NayinFingerprint; nayinToWuxing)
+open import Sovereign.Base.Nayin using (NayinSound; NayinFingerprint; nayinToWuxing)
 open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding;
                                                   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶;

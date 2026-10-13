@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.HoTT.ChernEulerLadder
+-- | Sovereign.Synthesis.ChernEulerLadder
 -- 陈数 × 欧拉示性数 — 代数拓扑维度阶梯
 --
 -- 陈数与欧拉示性数同属代数拓扑的特征类理论:
@@ -25,14 +25,14 @@
 --
 -- 包含（分层）：基础件层：s2-12cell-vertices/edges/faces｜主引理层：s2-12cell-euler、s3-euler｜组合层：chern-equals-euler-2d｜核对层：c3-closed-cw-winding
 --
-module Sovereign.HoTT.ChernEulerLadder where
+module Sovereign.Synthesis.ChernEulerLadder where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)
 open import Data.Nat using (ℕ; _∸_)
 open import Data.Fin using (Fin; zero; suc; toℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
-import Sovereign.HoTT.ChernClass as CC
+import Sovereign.Synthesis.ChernClass as CC
 import Sovereign.Base.Trit as Trit
 import Sovereign.Foundation.Eisenstein as Eis
 

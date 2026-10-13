@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.HoTT.PhaseAlignment6624
+-- | Sovereign.Synthesis.PhaseAlignment6624
 -- T⁶ 环面的 6624 相位对齐定理 (v1.0)
 --
 -- 数学背景：POLAR=144 × TORUS=46 = FULL_TOUR=6624——双振子拍频谐振对齐的数学面；
@@ -14,7 +14,7 @@
 -- 包含：POLAR/TORUS/FULL_TOUR（三常量）· Π-H（谱投影）·
 --   alignmentIdentity/fullTourValue（对齐恒等式与全环值）· polarZero/toroidalZero（双零位）
 
-module Sovereign.HoTT.PhaseAlignment6624 where
+module Sovereign.Synthesis.PhaseAlignment6624 where
 
 open import Data.Nat
   using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _<_; _≤_; s≤s)

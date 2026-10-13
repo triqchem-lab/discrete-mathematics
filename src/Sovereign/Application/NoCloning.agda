@@ -29,7 +29,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong
 open ≡-Reasoning
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
-open import Sovereign.Quantum.Entanglement using (Qutrit; ket0; ket1)
+open import Sovereign.Application.Entanglement using (Qutrit; ket0; ket1)
 open import Sovereign.Algebra.GF9 using (GF9; galoisConjugate; galoisConjugate²; _+gf9_; _*gf9_; gf9-one)
 import Sovereign.Foundation.Eisenstein as Eis
 

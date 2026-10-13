@@ -14,7 +14,7 @@
 -- 复用: Sovereign.Base.Trit (GF(3) 运算)
 -- 0 postulate.
 
-module Sovereign.Quantum.Entanglement where
+module Sovereign.Application.Entanglement where
 
 open import Relation.Nullary using (¬_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)

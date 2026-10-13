@@ -266,8 +266,8 @@ open import Sovereign.Foundation.DigitalRoot public using (
 -- 源: 多源交叉验证
 --   Sovereign.Synthesis.QuantumBridge.full-tour-6624
 --   Sovereign.Structology.MagicSquare144.fullTourCorrect
---   Sovereign.Geometry.ProjectiveInvariants.t-is-6624
---   Sovereign.HoTT.PhaseAlignment6624.fullTourValue
+--   Sovereign.Application.ProjectiveInvariants.t-is-6624
+--   Sovereign.Synthesis.PhaseAlignment6624.fullTourValue
 -- 证明方法: refl
 -- 物理意义: 极向缠绕 (144) × 环向缠绕 (46) = 环面格点总数
 -- 宪法约束: 144/46 禁止约分 (原子拓扑不变量)
@@ -356,7 +356,7 @@ b34-generate-images = refl , refl , refl , refl , refl
 
 --------------------------------------------------------------------------------
 -- B35: 纳音 60 = 5 × 12 (六十甲子) (新增证明)
--- 源: Sovereign.MetaStructure.Nayin (allJiaZi : Vec JiaZi 60)
+-- 源: Sovereign.Base.Nayin (allJiaZi : Vec JiaZi 60)
 -- 证明方法: refl
 -- 数学本质: 天干 (10) 与地支 (12) 的 LCM 周期
 --   LCM(10, 12) = 60

@@ -1,12 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.MetaStructure.Nayin
+-- | Sovereign.Base.Nayin
 -- 元结构层：六十甲子纳音拓扑指纹
 -- 
 -- 纳音是主权状态机在特定天干地支下的驻波谐波主峰拓扑指纹
 -- 禁止将纳音解释为五行比喻或音律象征
 
-module Sovereign.MetaStructure.Nayin where
+module Sovereign.Base.Nayin where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_)
 open import Data.Fin using (Fin; toℕ; fromℕ; #_)

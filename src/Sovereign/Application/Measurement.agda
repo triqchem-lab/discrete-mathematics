@@ -25,7 +25,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
-open import Sovereign.Quantum.Entanglement using (
+open import Sovereign.Application.Entanglement using (
   Basis3; ∣0⟩; ∣1⟩; ∣2⟩; 0≢1; 0≢2; 1≢2;
   Qutrit; ket0; ket1; ket2)
 

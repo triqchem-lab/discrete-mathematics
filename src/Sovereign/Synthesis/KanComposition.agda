@@ -35,7 +35,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans)
 
 -- 导入 6624 相位对齐定理
-open import Sovereign.HoTT.PhaseAlignment6624
+open import Sovereign.Synthesis.PhaseAlignment6624
   using (POLAR; TORUS; FULL_TOUR; closureTheorem; alignmentIdentity)
 
 --------------------------------------------------------------------------------

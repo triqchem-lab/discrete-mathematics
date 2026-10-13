@@ -42,7 +42,7 @@ open import Sovereign.Structology.Winding using (PolarWinding; ToroidalWinding;
                                                   polarWindingValue; toroidalWindingValue)
 open import Sovereign.Synthesis.HolographicPi using (HolographicPi; standardHoloPi)
 open import Sovereign.Coupling.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶)
-open import Sovereign.Diagnosis.ElectricCivilization using (EightMisconceptions; 
+open import Sovereign.Foundation.ElectricCivilization using (EightMisconceptions; 
                                                               ConstitutionalIsolation;
                                                               prohibitedTerms; prohibitedUnits;
                                                               lawfulLanguage; isolationInstance)

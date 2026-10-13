@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Density.SevenStages
+-- | Sovereign.Application.SevenStages
 -- 密度：七阶段周期、爻变窗口、地气声子谱基频 144 Hz
 -- 
 -- 七阶段：空生火→火生土→土生金→金生水→水生木→木生火→入空
@@ -12,7 +12,7 @@
 --   2. 唯象锚定非定理；引用必带实验来源
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Density.SevenStages where
+module Sovereign.Application.SevenStages where
 
 -- 七阶段周期：主权呼吸的宏观节拍
 data SevenStage : Set where

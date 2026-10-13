@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Structology.A4ThreeDimRep
+-- | Sovereign.Synthesis.A4ThreeDimRep
 -- A₄ 三维不可约表示 ρ₃ 的构造 + 同态证明 (0 postulate)
 --
 -- 深度证明 (最后一步): 三代费米子的代数起源 = "3 维表示" 不再手写特征标,
@@ -14,7 +14,7 @@
 --   ρ₁′, ρ₁″ (1 维) — A4OneDimHom (ω 幂 ∘ abelianization)
 --   ρ₃ (3 维)       — 本模块 (V₀ 限制, 迹即 χ₃)
 
-module Sovereign.Structology.A4ThreeDimRep where
+module Sovereign.Synthesis.A4ThreeDimRep where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Integer using (ℤ; +_; -[1+_])

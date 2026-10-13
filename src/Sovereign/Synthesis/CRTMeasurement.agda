@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Format.CRTMeasurement
+-- | Sovereign.Synthesis.CRTMeasurement
 -- CRT 的中国原始含义："周期丈量"，不是西方片面的同余代数
 --
 -- CRT.agda 处理 POW2=2¹⁶, POW3=3¹¹（互质，标准 CRT 代数同构）
@@ -20,7 +20,7 @@
 --   2. CRT=物理波系统/谱投影，非模运算定理（红线）
 --
 -- 包含：（重导/声明件——正文即清单）
-module Sovereign.Format.CRTMeasurement where
+module Sovereign.Synthesis.CRTMeasurement where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _∸_; _^_; _<_)
 open import Data.Nat.Properties

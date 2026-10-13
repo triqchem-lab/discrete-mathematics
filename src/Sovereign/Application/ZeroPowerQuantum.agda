@@ -1,6 +1,6 @@
 {-# OPTIONS --guardedness --rewriting #-}
 
--- | Sovereign.Quantum.ZeroPowerQuantum
+-- | Sovereign.Application.ZeroPowerQuantum
 -- 零幂族量子定理 — T⁶ 六维矢量相位回归 (L3 深度证明)
 --
 -- ⚠️ 核心原则: 量子态 = T⁶ 六维矢量, 不是 GF(9) 二维矢量
@@ -27,7 +27,7 @@
 --
 -- 0 postulate.
 
-module Sovereign.Quantum.ZeroPowerQuantum where
+module Sovereign.Application.ZeroPowerQuantum where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_)
 open import Data.Vec using (Vec; []; _∷_; lookup)

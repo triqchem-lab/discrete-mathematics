@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting #-}
 
-module Sovereign.Geometry.ProjectiveInvariants where
+module Sovereign.Application.ProjectiveInvariants where
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

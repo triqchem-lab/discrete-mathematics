@@ -28,7 +28,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong
 open import Sovereign.Base.Trit using (Trit; T₀)
 
 -- CRT 投影常量（来自 HoTT/PhaseAlignment6624）
-open import Sovereign.HoTT.PhaseAlignment6624 using (POLAR; TORUS; FULL_TOUR)
+open import Sovereign.Synthesis.PhaseAlignment6624 using (POLAR; TORUS; FULL_TOUR)
 
 --------------------------------------------------------------------------------
 -- S1. CRT 商空间: Z_144 × Z_46

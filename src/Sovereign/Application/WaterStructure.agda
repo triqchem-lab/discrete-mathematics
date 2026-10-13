@@ -44,7 +44,7 @@ open import Sovereign.Geometry.TorusGeometry
         ; t6Add-identityˡ; t6Add-identityʳ
         ; t6Add-comm
         )
-open import Sovereign.Quantum.ZeroPowerQuantum
+open import Sovereign.Application.ZeroPowerQuantum
   using ( zero-is-identity; zero-inverse-cancel
         ; zero-component-stable; zero-t6-stable
         ; zero-gf9-pow-stable

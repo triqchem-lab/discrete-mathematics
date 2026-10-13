@@ -46,7 +46,7 @@ open import Sovereign.Algebra.ProjectionDifferential
          eval₀-y; eval₀-sec-neq; DifferenceVsDifferential; gf3-difference)
 
 -- 项目: CRT 丈量 (measure-parity, gcd(144,46)=2)
-open import Sovereign.Format.CRTMeasurement
+open import Sovereign.Synthesis.CRTMeasurement
   using (POLAR-RULER; TOROIDAL-RULER; GCD-144-46;
          2∣144; 2∣46; euclid-step1; euclid-step2; euclid-step3; euclid-step4;
          measure-parity; FULL-TOUR; LCM-144-46; full-tour-is-2-lcm)

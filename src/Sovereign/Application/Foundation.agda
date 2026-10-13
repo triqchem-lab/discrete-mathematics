@@ -359,7 +359,7 @@ stable-5-dr = refl
 -- 正交性由幻方本征向量的流形垂直保证, 不依赖 gcd 判据
 -- 来源: scholar-loop/docs/research-notes/formal-lemmas.md 引理2
 
-open import Sovereign.Format.ModulusGeneration using ()
+open import Sovereign.Synthesis.ModulusGeneration using ()
 -- ModulusGeneration 提供 m_i(k) 生成函数和 Orth 判据
 
 -- |模数集合的基数: 7

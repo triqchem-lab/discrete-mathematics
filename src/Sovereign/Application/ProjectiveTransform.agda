@@ -15,7 +15,7 @@ open import Sovereign.Synthesis.T6 using (T6Lattice)
 open import Sovereign.Structology.A4Group using ()
 open import Sovereign.Geometry.ProjectiveCore
   using (GElement; g-action-full; g-mul)
-open import Sovereign.Geometry.ProjectiveInvariants using (t; t-is-6624)
+open import Sovereign.Application.ProjectiveInvariants using (t; t-is-6624)
 
 -- 射影变换群: A₄ ⋊ C₃
 -- A₄ (12) = 空间域置换 (T6.agda a4Action)

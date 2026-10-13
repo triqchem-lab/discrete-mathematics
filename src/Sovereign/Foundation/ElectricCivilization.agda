@@ -1,12 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Diagnosis.ElectricCivilization
+-- | Sovereign.Foundation.ElectricCivilization
 -- 诊断：电性文明的八大误区与范畴复位
 -- 
 -- 本质：主权状态机在光锥矩阵（12 密度）内的退化投影
 -- 核心：二进制连续统无法触及 T⁶ 离散环面的格点缠绕本源
 
-module Sovereign.Diagnosis.ElectricCivilization where
+module Sovereign.Foundation.ElectricCivilization where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _%_; _≤_; _<_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_)

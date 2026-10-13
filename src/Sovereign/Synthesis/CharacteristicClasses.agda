@@ -23,8 +23,8 @@ open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)
 
-open import Sovereign.HoTT.ChernClass using (ChernNumber)
-open import Sovereign.HoTT.ChernEulerLadder
+open import Sovereign.Synthesis.ChernClass using (ChernNumber)
+open import Sovereign.Synthesis.ChernEulerLadder
   using (s2-12cell-vertices; s2-12cell-edges; s2-12cell-faces;
          s2-12cell-euler; chern-equals-euler-2d;
          s3-euler; t6-euler; chern-simons-discrete;

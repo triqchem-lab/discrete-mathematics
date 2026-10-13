@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.HoTT.ChernClass
+-- | Sovereign.Synthesis.ChernClass
 -- 高维拓扑：陈数 C=2 的定义与拓扑守恒
 --
 -- 陈数是描述纤维丛整体扭曲程度的全局拓扑不变量
@@ -15,7 +15,7 @@
 --
 -- 包含（分层）：基础件层：Fiber/Transport*/Curvature｜主引理层：ChernNumber 定义｜组合层：ChernNumberIsTwo｜核对层：数值核对
 --
-module Sovereign.HoTT.ChernClass where
+module Sovereign.Synthesis.ChernClass where
 
 open import Data.Nat using (ℕ; _+_; _*_; _%_)
 open import Data.Fin using (Fin; toℕ) renaming (zero to fzero)
