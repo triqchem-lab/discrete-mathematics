@@ -121,3 +121,75 @@ idPmor-S2 = record
   ; Q     = linPoset 3
   ; fV    = idV
   ; fmono = idPmorStrict }
+
+-- ════════════════════════════════════════════════════════════════════
+-- -- ════════════════════════════════════════════════════════════════════
+-- §5 A1c-2 装配批（whisk-swap 真证词——追加式，A1a 骨架零触碰）
+-- 类型来源：A1c 报告 §四/A1b §6 原子⑥；纪律：rec 商映射不落假签名
+-- ════════════════════════════════════════════════════════════════════
+
+open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/)
+open import _PPI5j using (addL⁺; addR⁺; whiskΩ3; add2⁺)
+open import _PPI5g using (_++2_; Ω3Walk⁺; refl3+)
+open import Sovereign.Topology.BarceloAHomotopy using (Walk; nil)
+-- Walk/Ω2Walk 从 _PPI5f 层（re-export _PPI5d）——以 _PPI5d 直引零重证
+open import _PPI5d using (Ω2Walk; nil2; s2-adj; s2v0)
+open import _PPI5f using (Ω3Walk; refl3)
+
+-- ────────────────────────────────────────────────────────────────────
+-- α0 核对面（S²ᵈ 单位抽样——whisk-swap 的可行证词面）
+--   addL⁺ c0s2 [c0s2] ≡ [c0s2 ++2 c0s2]  与  addR⁺ c0s2 [c0s2] ≡ [c0s2 ++2 c0s2]
+--   同为 rec 于 [_c0s2] 的 definitional face（_6e360da9 承载）——
+--   在 [c0s2 ++2 c0s2] 共同 RHS 处 trans 便可得 add-comm-nils 的直接证明
+--   （_PPI5l 已收 add-comm-nils = refl——嵌入定在该 align 面）。
+-- ────────────────────────────────────────────────────────────────────
+
+-- ────────────────────────────────────────────────────────────────────
+-- α1 原子① whiskΩ3-nil 单位缘饰件
+--   whiskΩ3 定义第一案：whiskΩ3 p (refl3+ (nil2 c)) = refl3+ (p ++2 nil2 c)
+--   这是 p 任意下的 definitional 面——不是新引理而是 rec 计算律的**特例面继承**。
+--   本节给出：前缀缘饰于单位 2-界的显式引理（refl 级亲算可证面）。
+-- ────────────────────────────────────────────────────────────────────
+
+-- ρ面：S²ᵈ 的 π₂ᵈ⁺ 单位类
+w0 : Walk s2-adj s2v0 s2v0
+w0 = nil s2v0
+
+c0 : Ω2Walk s2-adj s2v0 w0 w0
+c0 = nil2 w0
+
+-- 单位缘饰亲算面：whiskΩ3 c0 (refl3+ c0) 的 definitional 归约
+--   = refl3+ (c0 ++2 c0)——refl 级
+check-whisk-nil : whiskΩ3 c0 (refl3+ c0) ≡ refl3+ (c0 ++2 c0)
+check-whisk-nil = refl
+
+-- ────────────────────────────────────────────────────────────────────
+-- α2 原子② whisk-swap-nil 特例（单位交换——S²ᵈ 载体）
+--   对 c = e = nil2：addL⁺ c0 [c0] ≡ addR⁺ c0 [c0]——单位交换特例，
+--   两侧 RHS 同为 [nil2 ++2 nil2]——rec 计算律亲 definitional 引导
+-- ────────────────────────────────────────────────────────────────────
+
+check-swap-nil : addL⁺ c0 [ c0 ] ≡ addR⁺ c0 [ c0 ]
+check-swap-nil = refl
+
+-- ────────────────────────────────────────────────────────────────────
+-- α3 add-comm-nils 接长（_PPI5l 的 add-comm-nils 已收 _6e360da9；本处补
+--   "双侧聚合面"——两侧引理并在一起，可 trans 收口）
+-- ────────────────────────────────────────────────────────────────────
+
+-- 接长面（两步 trans，每一步是对既有实例的引用——零新机件）
+add-comm-nils-2step
+  : addL⁺ c0 [ c0 ] ≡ [ c0 ++2 c0 ]
+  × addR⁺ c0 [ c0 ] ≡ [ c0 ++2 c0 ]
+add-comm-nils-2step = refl , refl
+
+-- ────────────────────────────────────────────────────────────────────
+-- §6 立界（无空壳签名——防假签名循环）
+--    (i) 全称 whisk-swap（c/e 任意）：rec 商映射两侧递归异路径——refl 不可达。
+--        真证词 = whiskΩ3/whiskR 缘饰引理**全装配**（A1c §四）——装配引理
+--        whiskΩ3-nil/whiskR-nil 全链走完后，加 elimProp 面方把交换推到全称；
+--        工作量 = 独立批（A1c 报告排程）。
+--    (ii) 细商 π₂ᵈ 交换性：3-塌缩完备性依赖（A1b 续段在途件）
+--    (iii) π₄ 阿贝尔性：随 A1b 续段机件
+--    （本节零 {! !} 零假签名）
+-- ────────────────────────────────────────────────────────────────────
