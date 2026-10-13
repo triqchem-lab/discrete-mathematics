@@ -31,12 +31,12 @@
 
 ① 模块头数学背景优先 ② 命名反映数学内容（禁缩写/漂移）③ 每步证明数学注释 ④ where 有序无前向引用 ⑤ 条件符号分组 ⑥ 复杂证明结构可视化（ASCII 阶段图）。
 
-## 四、目录架构：现行 vs 候选（⚠ 候选未裁决）
+## 四、目录架构：现行 vs 候选（✅ 已裁决 2026-10-14）
 
-- **现行**（权威：AGENTS.md Architecture）：`RootMath → Base → Algebra → Arithmetic → Format → Structology → Constitution → Coupling → Density`（+ HoTT/Topology/Physics 侧链），模块独立编译。
-- **候选**（2026-10-11 审查报告提案）：`00-foundation / 10-base / 20-algebra / 30-synthesis / 40-application / 90-infrastructure` 五层编号架构（依赖 `00 → 10 → 20 → 30 → 40` 单向）。
-- **状态：候选、未裁决**——涉及 512 文件全量迁移 + 全量重编 + AGENTS.md/门禁脚本/台账 module 字段同步，须人类排期裁决后执行。**在此之前一切引用以现行架构为准。**
-- **遗留：非层目录残留 9 件（2026-10-13 人类裁决——并入本节命名裁决一并处理）**：`Topology/Graphs/*` 8 件（GraphBasic/Connectivity/Trees/Matchings/Colorings/Flows/Cycles/RamseyFinite）+ `Arithmetic/LinearRecurrence.agda`。它们**不属**五层迁移对象（`layer-map.csv` 803 行基线未收录，故不计入 471/471 口径），而是 `docs/离散数学基础-缺面模块清单-2026-10-11.md` §二/§四的**缺面新建研究件**，并作 `docs/plan/D1D3-watershed-general-dodziuk.md:36`「Graphs 面 8 件」的分水岭（Dodziuk）课题承载件。其目录名（`Topology/`、`Arithmetic/`）非六层，去留随本节命名裁决统一定夺。
+- **现行（已裁决，权威）**：**纯名六层** —— `Foundation / Base / Algebra / Synthesis / Application / Infrastructure`（依赖单向 `Foundation → Base → Algebra → Synthesis → Application`，`Infrastructure` 横切）。**2026-10-14 人类裁决：追认「纯名六层」为裁决结果**（与已执行实况一致，零返工）；`F00/B10` 编号形式**不采纳**。
+- **已执行实况（2026-10-14）**：移动面 **474 / 474 件全迁**、断链 0；非六层目录**已全部清空**（26 个源目录 + 顶层）；`layer-map.csv` 803 模块行 = 留驻件 309 + `_archive` 冻结 20 + 跨目录件 474。机读台账见 `docs/migration/progress.yaml`。
+- **历史注**（不改史）：本条原记「候选（2026-10-11 审查报告提案）：`00-foundation / 10-base / …` 五层编号架构；状态：候选、未裁决」——该候选**未被采纳**，实际执行采用纯名六层。
+- **A 类非层残留 9 件 —— 已处置（2026-10-14 人类裁决：按「拓扑侧链」定层）**：`Topology/Graphs/*` 8 件（GraphBasic/Connectivity/Trees/Matchings/Colorings/Flows/Cycles/RamseyFinite）→ **`Synthesis/Graphs/`**；`Arithmetic/LinearRecurrence.agda` → **`Algebra/`**。它们不属 `layer-map.csv` 803 行基线（故不计入 471/474 口径），而是 `docs/离散数学基础-缺面模块清单-2026-10-11.md` §二/§四的缺面新建研究件、`docs/plan/D1D3-watershed-general-dodziuk.md:36`「Graphs 面 8 件」的分水岭（Dodziuk）课题承载件。迁移实况：**零涟漪残留**、V1 **9/9 EXIT=0**。
 
 ## 五、命名与示例的本地校准（防漂移）
 

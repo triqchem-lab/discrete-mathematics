@@ -139,3 +139,4 @@ waves:
   #   B 类补迁（Coupling/TQ10 → Synthesis/TQ10，提交 c1948c0）之后，迁移对象总数修正为 472
   #   （见本文件 move_face.migration_objects）；同日核对又定位到 2 件漏执行件并补迁，现为 474。
   - {wave: "收尾2",      date: "2026-10-14", moved: 2, note: "核对发现的漏执行件：顶层 Examples、Integration → Infrastructure（layer-map 第 392/441 行定层 Infrastructure，旧记 top_level_files 误列为保留件）；零涟漪（无外部引用）、V1 2/2 EXIT=0；顶层自此清空（0 件）"}
+  - {wave: "A类",        date: "2026-10-14", moved: 9, note: "命名裁决（2026-10-14 人类：追认纯名六层 + A 类按拓扑侧链定层）后处置非层残留 9 件：Topology/Graphs×8 → Synthesis/Graphs/、Arithmetic/LinearRecurrence → Algebra/；断链残留 0、V1 9/9 EXIT=0；非六层目录自此全部清空。⚠ 该 9 件不属 layer-map 803 行基线，故不计入 move_face.migration_objects(474)、亦不计入 done_dirs 合计"}

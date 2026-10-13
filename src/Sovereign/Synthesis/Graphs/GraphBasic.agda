@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.Graphs.GraphBasic
+-- | Sovereign.Synthesis.Graphs.GraphBasic
 -- 无向简单图基础（Mathlib Combinatorics.SimpleGraph 对标）
 --
 -- 数学背景：简单图 = 顶点集 + 对称且无自环的邻接关系（SimpleGraph 语义）。
@@ -17,7 +17,7 @@
 -- 包含：Graph（对称形）· toDiGraph/fromDiGraph 互导往返 · 邻接/度（枚举参数形）
 --       · GraphIso（≅ 双向件）· subGraph/removeV/removeEdge · 诱导商图（商无关形）· 核对层
 
-module Sovereign.Topology.Graphs.GraphBasic where
+module Sovereign.Synthesis.Graphs.GraphBasic where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong)

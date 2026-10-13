@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.Graphs.RamseyFinite
+-- | Sovereign.Synthesis.Graphs.RamseyFinite
 -- 有限 Ramsey 定理面：2-着色泛型形 + R(3,3)=6 下界见证（五边形着色）
 -- 数学背景：R(3,3)=6——任意 K₆ 的红/蓝 2-着色必含单色三角；
 --   下界（>5）= K₅ 存在无单色三角着色（五边形环：红=五边形边、蓝=对角）。
@@ -14,7 +14,7 @@
 --
 -- 包含：Coloring2 · mono3 · pent（五边形着色）· 无单色三角十核对 · 立界注记
 
-module Sovereign.Topology.Graphs.RamseyFinite where
+module Sovereign.Synthesis.Graphs.RamseyFinite where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Bool using (Bool; true; false; _∨_; _∧_; not)

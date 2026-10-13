@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Arithmetic.LinearRecurrence
+-- | Sovereign.Algebra.LinearRecurrence
 -- 线性递推序列的 GF(3) 形——递推定义层 + Fib 型实例 + 特征方程骨架。
 --
 -- 数学背景：常系数线性递推 x(n+2) = a·x(n+1) + b·x(n) 的序列生成与特征方程
@@ -14,7 +14,7 @@
 --
 -- 包含：runRec2/Fib3 · charEval · 核对层 · 立界注记
 
-module Sovereign.Arithmetic.LinearRecurrence where
+module Sovereign.Algebra.LinearRecurrence where
 
 open import Data.Nat using (ℕ; zero; suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

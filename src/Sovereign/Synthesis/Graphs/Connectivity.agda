@@ -1,6 +1,6 @@
 {-# OPTIONS --cubical --rewriting --guardedness #-}
 
--- | Sovereign.Topology.Graphs.Connectivity
+-- | Sovereign.Synthesis.Graphs.Connectivity
 -- 图连通性基础（Mathlib SimpleGraph.Connectivity 对标）
 --
 -- 数学背景：可达关系 = 邻接的自反传递闭包；连通分支 = 顶点集对可达关系的商
@@ -16,7 +16,7 @@
 -- 包含：Reachable（自反传递闭包）· Connected · π₀ 分支商 · 割点/桥判据
 --       · Bipartite 二着色 · 核对层（K2 全项）
 
-module Sovereign.Topology.Graphs.Connectivity where
+module Sovereign.Synthesis.Graphs.Connectivity where
 
 open import Agda.Builtin.Equality using (_≡_) renaming (refl to reflᴾ)
 open import Relation.Nullary using (Dec; yes; no)
@@ -31,7 +31,7 @@ open import Data.Unit using (⊤; tt)
 open import Cubical.Foundations.Prelude using () renaming (_≡_ to _≡ᶜ_)
 open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/)
 
-open import Sovereign.Topology.Graphs.GraphBasic
+open import Sovereign.Synthesis.Graphs.GraphBasic
   using (Graph; V; adj; adj-sym; adj-irrefl; subGraph; removeV; removeEdge; K2)
 
 --------------------------------------------------------------------------------

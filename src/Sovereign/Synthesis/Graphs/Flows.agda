@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.Graphs.Flows
+-- | Sovereign.Synthesis.Graphs.Flows
 -- 网络流基础（Mathlib Combinatorics.SimpleGraph.Flow 对标）
 --
 -- 数学背景：有向容量网络上的可行流 = 容量约束 + 反对称 + 内部顶点守恒；
@@ -17,7 +17,7 @@
 -- 包含：sumL/outF/inF 求和面 · Flow（流定义层）· flowVal（流值）· Cut/cutCap（割与割容量）
 --       · K2 单位流/割实例（全证）· 核对层
 
-module Sovereign.Topology.Graphs.Flows where
+module Sovereign.Synthesis.Graphs.Flows where
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong)
@@ -30,7 +30,7 @@ open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.List using (List; []; _∷_; map)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 
-open import Sovereign.Topology.Graphs.GraphBasic using (Graph; V; adj)
+open import Sovereign.Synthesis.Graphs.GraphBasic using (Graph; V; adj)
 
 --------------------------------------------------------------------------------
 -- §1 基础件层：求和面（枚举参数形——GraphBasic degree 范式）

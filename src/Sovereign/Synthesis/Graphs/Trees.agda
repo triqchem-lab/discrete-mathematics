@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.Graphs.Trees
+-- | Sovereign.Synthesis.Graphs.Trees
 -- 树 = 无简单圈的连通图（构造性形式化）
 --
 -- 数学背景：树的等价刻画族（无圈连通 / |E|=|V|-1 / 叶存在 / 唯一路径）是图论基础面。
@@ -18,7 +18,7 @@
 -- 包含：Chain · ∈ᵥ/NoDup · Cycle · Acyclic · Tree · SpanningTree · nadj/IsLeaf
 --       · Bit/K2 实例（tree-K2 / leaf-K2 / spanning-K2）· 核对层
 
-module Sovereign.Topology.Graphs.Trees where
+module Sovereign.Synthesis.Graphs.Trees where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s)
@@ -28,8 +28,8 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans; subst)
 
-open import Sovereign.Topology.Graphs.GraphBasic using (Graph; V; adj; adj-sym; adj-irrefl)
-open import Sovereign.Topology.Graphs.Connectivity using (Reachable; reflR; stepR; Connected)
+open import Sovereign.Synthesis.Graphs.GraphBasic using (Graph; V; adj; adj-sym; adj-irrefl)
+open import Sovereign.Synthesis.Graphs.Connectivity using (Reachable; reflR; stepR; Connected)
 
 ------------------------------------------------------------------------
 -- 基础件层：∈ᵥ / NoDup（自含——关系入定义）

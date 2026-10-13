@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.Graphs.Matchings
+-- | Sovereign.Synthesis.Graphs.Matchings
 -- 任务池 P2 图论续第一件：图匹配——选定边集两两不交（每顶点至多一条选定边）。
 --   数学背景：匹配/最大匹配/完美匹配是组合优化基础面；Hall 定理（完美匹配的
 --   邻域刻画）与 König 定理是经典深件——本模块定义层 + 小例全证 + 深件立界。
@@ -13,15 +13,15 @@
 --
 -- 包含：Matching · covers/Unmatched/Perfect/Maximal · K2/K3 实例（全证）· 核对层
 
-module Sovereign.Topology.Graphs.Matchings where
+module Sovereign.Synthesis.Graphs.Matchings where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans)
 
-open import Sovereign.Topology.Graphs.GraphBasic using (Graph; V; adj; adj-sym; adj-irrefl)
-open import Sovereign.Topology.Graphs.Trees using (Bit; b0; b1; neq01; neq10; adj2; adj2-sym; adj2-irrefl; y-flip; K2)
+open import Sovereign.Synthesis.Graphs.GraphBasic using (Graph; V; adj; adj-sym; adj-irrefl)
+open import Sovereign.Synthesis.Graphs.Trees using (Bit; b0; b1; neq01; neq10; adj2; adj2-sym; adj2-irrefl; y-flip; K2)
 
 --------------------------------------------------------------------------------
 -- §1 定义层：Matching（关系入定义）

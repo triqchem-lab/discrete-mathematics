@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.Graphs.Cycles
+-- | Sovereign.Synthesis.Graphs.Cycles
 -- 圈、圈空间雏形与 Euler 回路
 --
 -- 数学背景：圈 = 无重复顶点的闭途径（长 ≥2 内部顶点——Trees.Cycle 口径）；
@@ -17,7 +17,7 @@
 -- 包含：clen · EdgeOf · EulerCircuit · CycleSpace 雏形 · C3/K3 实例
 --       · c3-cycle / euler-K3 · 核对层
 
-module Sovereign.Topology.Graphs.Cycles where
+module Sovereign.Synthesis.Graphs.Cycles where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s)
@@ -26,9 +26,9 @@ open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym)
 
-open import Sovereign.Topology.Graphs.GraphBasic using (Graph; V; adj; adj-sym; adj-irrefl)
-open import Sovereign.Topology.Graphs.Connectivity using (Reachable; reflR; stepR; Connected)
-open import Sovereign.Topology.Graphs.Trees
+open import Sovereign.Synthesis.Graphs.GraphBasic using (Graph; V; adj; adj-sym; adj-irrefl)
+open import Sovereign.Synthesis.Graphs.Connectivity using (Reachable; reflR; stepR; Connected)
+open import Sovereign.Synthesis.Graphs.Trees
   using (Chain; chn; chs; _∈ᵥ_; ev-here; ev-there; NoDup; nd-[]; nd-∷; Cycle)
 
 ------------------------------------------------------------------------

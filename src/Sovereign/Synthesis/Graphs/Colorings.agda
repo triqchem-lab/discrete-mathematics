@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.Graphs.Colorings
+-- | Sovereign.Synthesis.Graphs.Colorings
 -- 任务池 P2 图论续第二件：图着色——相邻顶点异色（proper k-着色）与色数。
 --   数学背景：着色/色数是图论基础面；四色定理是经典深件——本模块定义层 +
 --   小例全证（K2/K3）+ 深件立界。与 Connectivity.Bipartite（二着色 Bool 形）
@@ -14,7 +14,7 @@
 --
 -- 包含：Coloring/TwoColoring · cf2 桥 · bipartite→2 · K2/K3 全证 · 核对层
 
-module Sovereign.Topology.Graphs.Colorings where
+module Sovereign.Synthesis.Graphs.Colorings where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc)
@@ -25,9 +25,9 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans)
 
-open import Sovereign.Topology.Graphs.GraphBasic using (Graph; V; adj; adj-sym; adj-irrefl)
-open import Sovereign.Topology.Graphs.Connectivity using (Bipartite)
-open import Sovereign.Topology.Graphs.Trees using (Bit; b0; b1; neq01; neq10; adj2; adj2-sym; adj2-irrefl; K2)
+open import Sovereign.Synthesis.Graphs.GraphBasic using (Graph; V; adj; adj-sym; adj-irrefl)
+open import Sovereign.Synthesis.Graphs.Connectivity using (Bipartite)
+open import Sovereign.Synthesis.Graphs.Trees using (Bit; b0; b1; neq01; neq10; adj2; adj2-sym; adj2-irrefl; K2)
 
 --------------------------------------------------------------------------------
 -- §1 定义层：Coloring（Σ 形——色映射 + 异色性，性质随数据携带）
