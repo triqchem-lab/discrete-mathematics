@@ -195,26 +195,34 @@ def _report(toks, order, comm_name):
     for (k, ln, pre, ident, spec) in rows:
         print(f"{k:>4} {ln:>4} {pre:<17} {ident:>7} {spec:>9}")
     # 结果文档
+    segs = segments(toks, 10)
+    accs = []
+    cum0 = I4
+    for seg in segs:
+        for tok in seg:
+            cum0 = matmul(cum0, R(int(tok[1])) if tok[0] == "s" else Rinv(int(tok[1])))
+        accs.append(cum0)
     with open("docs/plan/B1-oracle-results.md", "w") as f:
         f.write("# B1 oracle 结果：Bigelow 1999 显式核元素 w 的 Burau₅ 分段计算\n\n")
-        f.write("> 纯整数 Laurent（禁浮点）｜oracle 供料非证明（Agda 唯一裁决）｜%s\n\n" % __import__("datetime").date.today().isoformat())
-        f.write("- 约定：%s/%s（两种读序中 burau(w)≡I 命中者——Bigelow 自洽转录）\n" % (comm_name, order))
-        f.write("- 词长：%d tokens（报告原文标 120——按 σ₁²/σ₄³/σ₄⁵/σ₁⁻² 展开计 110+换位子结构十，如实注）\n" % len(toks))
-        f.write("- 主件：burau(w) ≡ I ✓（`mat_eq_I` 全 16 项系数=规范字典零恒等）\n")
-        f.write("- 非平凡性：置换表示 w↦%s ≢ id ✓（④ 修正：核元素 t=-1 特化必 I——置换面才是 w≢e 的离散见证）\n\n" % per)
-        f.write("## 分段中间矩阵（%d 段 × ≤10 词长——Agda 分段引理草案供料）\n\n" % len(rows))
+        f.write("> 纯整数 Laurent（禁浮点）｜oracle 供料非证明（Agda 唯一裁决）｜2026-10-11\n\n")
+        f.write("- 来源：TeX 逐字（arXiv:math/9904100 e-print 1999-16.tex :370-374）——ψ₂ 首轮转录勘误（σ₁²/σ₂² 漏并错序）后命中\n")
+        f.write("- 约定：%s/%s；换位子=A⁻¹B⁻¹AB（TeX :206 权威）；自检：braid 关系+逆对全过、全扭 Δ² ↦ t⁵·I ✓\n" % (comm_name, order))
+        f.write("- 词长：%d tokens（原文标 120——逐字展开计 122，差 2 如实注：不虚构解释）\n" % len(toks))
+        f.write("- **主件：burau(w) ≡ I ✓（双序 LtoR/RtoL 同过；mat_eq_I 全 16 项=规范字典零恒等）\n")
+        f.write("- **非平凡性（诚实）：w ≢ e 的证人未定**——置换表示恒等（w∈P₅ 纯辫）、t=-1 特化恒 I（核元素任何特化必 I——B1 报告④原案「t 特化 ≢I」**证伪**，statement_wrong 修正如实）\n")
+        f.write("- 下批建议：Garside 规范形批（NF(w)≠1 ⟹ w≠e——离散可算证人，参照 G-W-Y peyl 面机件）；若爆则几何定理外引（E 类）\n\n")
+        f.write("## 分段中间矩阵（%d 段 × ≤10 词长——累计≡I 仅末段）\n\n" % len(rows))
         f.write("| seg | len | 词前缀 | 累计≡I? | t=-1 特化 |\n|---|---|---|---|---|\n")
         for (k, ln, pre, ident, spec) in rows:
             f.write("| %d | %d | `%s` | %s | %s |\n" % (k, ln, pre, ident, spec))
         f.write("\n## 分段累积矩阵全量表（Agda 分段引理真供料——每段终点 4×4 系数字典）\n\n")
-        if order == "LtoR":
-            cum0=I4; accs=[]
-            for seg in segs:
-                for tok in seg: cum0=matmul(cum0, R(int(tok[1])) if tok[0]=="s" else Rinv(int(tok[1])))
-                accs.append(cum0)
-        f.write("".join("seg %d 终点矩阵：\n%s\n"%((k+1), "\n".join("  ["+", ".join(ps(accs[k][i][j]) for j in range(4))+"]" for i in range(4))) ) for k in range(len(accs)))
-        f.write("\n## Agda 分段引理草案\n\n")
-        f.write("每段 `burau-seg-k : burau₅ (w-k) ≡ 累计矩阵字面` ——参照 #53 预案逐段 `refl`（不许一次 110 词大 refl）+ LaurentFn 字典字面（`Algebra/LaurentFn` 函数表示/canon 面）。\n")
+        for k, M in enumerate(accs, 1):
+            f.write("seg %d 终点矩阵：\n" % k)
+            for i in range(4):
+                f.write("  [" + ", ".join(ps(M[i][j]) for j in range(4)) + "]\n")
+            f.write("\n")
+        f.write("## Agda 分段引理草案\n\n")
+        f.write("每段 `burau-seg-k : burau₅ (seg-k 词) ≡ 段矩阵字面`——#53 预案逐段 refl（禁一次 122 词大 refl）+ LaurentFn 字典字面（canon-sums-unique=funExt 面）+ 主件=分段链 trans 收口段末 I。\n")
     print("结果 → docs/plan/B1-oracle-results.md")
 
 if __name__ == "__main__":
