@@ -5,8 +5,13 @@
 # 判据：原路径存在性（layer-map.csv 803 模块行；文件共 808 行 = 表头 1 + 注释 2 + 空行 2 + 803）
 # 说明：本文件即《结构化迁移排期-2026-10-11.md》§七承诺的进度台账；只增不改史。
 # 派生脚本：由 layer-map.csv + 工作树实测重算，勿手改数字段。
-# ⚠ 2026-10-14 核对注：move_face 四类明细 309+20+3+472 = 804，与 layer-map 模块行 803 差 1（未定位）；
-#    total_rows 以权威源 layer-map.csv 的 803 模块行为准。
+# ⚠ 2026-10-14 核对注（已定位，取代旧「差 1 未定位」注）：
+#   机械分类（layer-map 803 模块行的路径第 3 段 vs 目标层）得：
+#     留驻件 309 + _archive 冻结 20 + 跨目录件(迁移对象) 474 = 803 ✓ 自洽
+#   旧记 migration_objects 472 / top_level_files 3 系口径错误——顶层三件
+#   （Examples / Integration / TestMemory）在 layer-map 里定的目标层是 Infrastructure，
+#   本属迁移对象，却被当成「保留件」排除。2026-10-14 已补迁 Examples、Integration
+#   （TestMemory 早在波 3-L2 迁入 Infrastructure），顶层自此清空（0 件）。
 # ============================================================
 
 meta:
@@ -31,9 +36,9 @@ move_face:
   total_rows: 803
   in_layer_kept: 309
   archive_frozen: 20
-  top_level_files: 3
-  migration_objects: 472
-  moved: 472
+  top_level_files: 0
+  migration_objects: 474
+  moved: 474
   pending: 0
   progress_pct: 100.0
 
@@ -132,4 +137,5 @@ waves:
   - {wave: "收尾",       date: "2026-10-13", moved: 1, note: "最后1件：Base/TwoViewRewritten → Infrastructure（波1就绪清单遗留件）；迁移对象 471/471 = 100%"}
   # ⚠ 2026-10-14 口径修正注（不改上文原文）：上条「471/471」为收官当时口径。
   #   B 类补迁（Coupling/TQ10 → Synthesis/TQ10，提交 c1948c0）之后，迁移对象总数修正为 472
-  #   （见本文件 move_face.migration_objects: 472 与 done_dirs 合计 472）。两者并存，以 472 为准。
+  #   （见本文件 move_face.migration_objects）；同日核对又定位到 2 件漏执行件并补迁，现为 474。
+  - {wave: "收尾2",      date: "2026-10-14", moved: 2, note: "核对发现的漏执行件：顶层 Examples、Integration → Infrastructure（layer-map 第 392/441 行定层 Infrastructure，旧记 top_level_files 误列为保留件）；零涟漪（无外部引用）、V1 2/2 EXIT=0；顶层自此清空（0 件）"}

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Examples
+-- | Sovereign.Infrastructure.Examples
 -- 示例与验证：律算合一基础代码运行演示 (已适配新 StateMachine 接口)
 
 -- 核心原则：
@@ -9,7 +9,7 @@
 --   3. 状态链示范：initialState → stateAfter1 → stateAfter12 的走钟轨迹。
 -- 包含：runState/initialState/stateAfter1/stateAfter12、checkInitPhase/checkPhase1/checkPhase12 族。
 
-module Sovereign.Examples where
+module Sovereign.Infrastructure.Examples where
 
 open import Data.Nat using (ℕ; _+_; _*_; _<_; _≥_; _mod_; _div_; suc; zero)
 open import Data.Vec using (Vec; []; _∷_; replicate)

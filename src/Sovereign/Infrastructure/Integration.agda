@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Integration
+-- | Sovereign.Infrastructure.Integration
 -- 集成测试：全知识点关系连接与依赖验证
 --
 -- 本模块旨在通过 Agda 的类型系统，证明所有独立开发的模块
 -- （公理、结构、格式、引擎）能够无缝协作，形成一个自洽的律算系统。
 -- 它是“依赖关系分析”的可执行证明。
 
-module Sovereign.Integration where
+module Sovereign.Infrastructure.Integration where
 
 -- [待核对·旧API集成测试] open import Data.Nat using (ℕ; _+_; _*_; _<_; _≥_; _mod_; _div_; suc; zero)
 -- [待核对·旧API集成测试] open import Data.Vec using (Vec; []; _∷_; replicate)

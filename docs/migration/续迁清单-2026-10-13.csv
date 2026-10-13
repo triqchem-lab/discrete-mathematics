@@ -230,3 +230,5 @@ QE,Sovereign.Topology.MorseRoute,Sovereign.Application.MorseRoute,src/Sovereign/
 QE,Sovereign.Topology.MorseStrongCritical,Sovereign.Application.MorseStrongCritical,src/Sovereign/Topology/MorseStrongCritical.agda,src/Sovereign/Application/MorseStrongCritical.agda,Application,1
 QE,Sovereign.Topology.OrderComplex,Sovereign.Synthesis.OrderComplex,src/Sovereign/Topology/OrderComplex.agda,src/Sovereign/Synthesis/OrderComplex.agda,Synthesis,1
 QE,Sovereign.Topology.QAnalysisFacesInstance,Sovereign.Synthesis.QAnalysisFacesInstance,src/Sovereign/Topology/QAnalysisFacesInstance.agda,src/Sovereign/Synthesis/QAnalysisFacesInstance.agda,Synthesis,1
+收尾2,Sovereign.Examples,Sovereign.Infrastructure.Examples,src/Sovereign/Examples.agda,src/Sovereign/Infrastructure/Examples.agda,Infrastructure,0
+收尾2,Sovereign.Integration,Sovereign.Infrastructure.Integration,src/Sovereign/Integration.agda,src/Sovereign/Infrastructure/Integration.agda,Infrastructure,0
