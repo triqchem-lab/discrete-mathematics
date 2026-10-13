@@ -1,4 +1,11 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Algebra.ProjectionDifferential
+-- 投影微分学 —— GF(3) 上的差分算子与矩阵代数。
+--
+-- 数学背景：§1 GF(3) 函数空间与差分算子（MSC 34-35）；§2 移位算子的周期性 S³ = id；
+--   §3 差分算子的幂零性 Δ³ ≡ 0；§4 望远镜恒等式 sum3(Δf) ≡ T₀；
+--   §5 步长固定性（差分 ≠ 微分）；§6 GF(3) 上的矩阵代数（MSC 46-47）。
 module Sovereign.Algebra.ProjectionDifferential where
 
 --------------------------------------------------------------------------------

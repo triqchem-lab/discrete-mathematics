@@ -1,4 +1,13 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Algebra.SectionRisk
+-- 截面风险 —— 投影的右逆不唯一所引发的规范选择问题。
+--
+-- 数学背景：刻画截面四要件 —— ① 投影 π: Full → Partial 是满射；
+--   ② 存在右逆 s: Partial → Full（π(s(x)) ≡ x）；③ 右逆不唯一
+--   （∃ s₁ s₂, s₁ ≠ s₂, π∘s₁ ≡ π∘s₂ ≡ id）；④ 需额外信息（「规范选择」）才能确定正确提升。
+--   实例：§2 复分析（MSC 30-32）← GF(9) Frobenius（2D 截面）；
+--   §3 微分几何（MSC 53）← T⁶ 离散环面（切空间截面）。
 module Sovereign.Algebra.SectionRisk where
 
 --------------------------------------------------------------------------------

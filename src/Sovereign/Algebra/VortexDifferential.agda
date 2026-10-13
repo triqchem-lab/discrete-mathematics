@@ -1,4 +1,11 @@
 {-# OPTIONS --rewriting --guardedness #-}
+
+-- | Sovereign.Algebra.VortexDifferential
+-- 涡旋微分学 —— Z/12Z 上的差分与卷积。
+--
+-- 数学背景：§1 函数空间与基本算子；§2 GF(3) 辅助引理；§3 卷积定义（经 sum12）；
+--   §4 Z/12Z 减法辅助引理；§5 差分算子的基本性质；
+--   §6 三步差分 Δ₁₂³ f(x) = f(x+3) ⊕ negate(f(x))。
 module Sovereign.Algebra.VortexDifferential where
 
 --------------------------------------------------------------------------------

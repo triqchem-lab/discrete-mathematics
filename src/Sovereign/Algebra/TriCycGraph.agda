@@ -1,5 +1,10 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Algebra.TriCycGraph
+-- 三角循环图 —— C₃ 生成元与 Frobenius 移位的图论载体。
+--
+-- 数学背景：§1 三角循环图（Triangular Cyclic Graph）；§2 pureShift³ = id（C₃ 生成元）；
+--   §3 Frobenius 移位的六阶性质；§4 图的代数运算；§5 图的总权重。
 module Sovereign.Algebra.TriCycGraph where
 
 open import Data.Fin using (Fin; zero; suc)

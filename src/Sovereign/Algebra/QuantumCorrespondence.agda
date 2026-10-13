@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Algebra.QuantumCorrespondence
+-- 量子对应定理 —— 离散代数结构的量子力学诠释。
+--
+-- 数学背景：§1 叠加定理 —— GF(3) 加法群的量子叠加结构（三个基态 {T₀,T₁,T₂} 的线性组合）；
+--   §2 纠缠定理 —— GF(9) Frobenius 共轭的量子纠缠结构（共轭对不可分离）；
+--   §3 本源相位定理 —— GF9⟨α⟩ 旋转群（展示群本源相位层）；
+--   §4 三者统一 —— 完整量子结构。
 module Sovereign.Algebra.QuantumCorrespondence where
 
 --------------------------------------------------------------------------------

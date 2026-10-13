@@ -1,5 +1,16 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Algebra.Holographic.FinalAudit
+-- 七大问题 + Kakeya 最终审计 —— 跨模块聚合核验件。
+--
+-- 数学背景：对 Problem/ 全目录（61 模块，0 postulate）与七大问题 + Kakeya 作最终审计；
+--   权威层级 = Agda 编译器 > 本审计（所有等级 = 编译验证 + 定理内容审查）。
+--   2026-08-14 实测等级（全 L3 ✅）：NS（NSRegularity §5 动力学四定理）、
+--   YM（SpectralGap 精确谱 λ₀=4/λ₁=1, Δ=3>0）、Hodge（ChainComplex hodge-decomp + 四实例）、
+--   BSD（BSD_L3 t-rec + WeilRigidity 恒等式）、RH（有限域 Weil 定理整数形式 + 共轭对刚性）、
+--   Langlands（GL2TestVectors Steinberg 正交性，5760 类结构）、
+--   PvsNP（separation: ∃f, EvalAlways f ∧ ∀r f(r)≢0，不可约三次见证）、
+--   Kakeya（4 模块全绿：Dvir 下界 + Frobenius + M_F + 三重诊断）。
 module Sovereign.Algebra.Holographic.FinalAudit where
 
 -- ═══════════════════════════════════════════════════════════

@@ -1,5 +1,11 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Application.Complexity3
+-- 复杂度判定 §2 面 —— 特征多项式不可约性。
+--
+-- 数学背景：不可约判定：charPoly(λ) = λ³ + aλ² + bλ + c；
+--   以 GF(3) 上三次多项式的因式结构（含不可约情形）判定全局不可约性，
+--   与 CRT 分量的 det₃/det₄ ≠ 0 判据互为镜像。
 module Sovereign.Application.Complexity3 where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)

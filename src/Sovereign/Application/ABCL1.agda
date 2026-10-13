@@ -1,5 +1,11 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Application.ABCL1
+-- ABC 猜想 L1 面 —— 加法维度与乘法维度的壁垒。
+--
+-- 数学背景：§1 平展侧：V₄（Klein 四元群）的指数是 2；§2 乘法侧：⟨α⟩ 有 4 阶元；
+--   §3 壁垒定理（两侧结构不可互推）；§4 对照：加法维度**穿得过**（库中已证，此处只引用）。
+--   对应 ABC 猜想中加法结构 ⊥ 乘法结构的核心障碍。
 module Sovereign.Application.ABCL1 where
 
 -- | 两维度壁垒：**乘法轴穿不过平展投影**（IUTT「不可压成一维」的离散对应）
