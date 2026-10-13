@@ -37,7 +37,7 @@ open import Relation.Nullary using (¬_)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; tritToℕ; verifyZero; verifyMul)
 open import Sovereign.Synthesis.CRT using (POW2; POW3; M; crtProject; crtReconstruct; crtTheorem)
 open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
-open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR)
+open import Sovereign.Synthesis.MagicSquare144 using (FULL_TOUR)
 open import Sovereign.Foundation.DigitalRoot using (digitalRoot)
 open import Sovereign.Algebra.GF9 using (GF9; alpha; galoisConjugate; galoisConjugate²)
 

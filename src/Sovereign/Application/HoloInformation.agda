@@ -32,7 +32,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
-open import Sovereign.Structology.MagicSquare144 using (MerkabaCells)
+open import Sovereign.Synthesis.MagicSquare144 using (MerkabaCells)
 open import Sovereign.Application.LightCone using (LCSide; In; Out; Bdy; weight; boundaryOrbitCount)
 
 --------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 {-# OPTIONS --cubical --guardedness --rewriting #-}
 
--- | Sovereign.Structology.MagicSquare144
+-- | Sovereign.Synthesis.MagicSquare144
 -- 结构学：144 阶幻方静态容器
 --
 -- 【术语边界】本模块「144 阶幻方」= 144 胞腔静态容器（120 + 24），
@@ -12,7 +12,7 @@
 -- 正十二面体 120 胞腔与梅尔卡巴 24 胞腔并集
 -- 此静态组成 ≠ 缠绕数分解
 
-module Sovereign.Structology.MagicSquare144 where
+module Sovereign.Synthesis.MagicSquare144 where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _<_)
 open import Data.Nat.DivMod using (m%n<n)

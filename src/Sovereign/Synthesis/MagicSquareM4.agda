@@ -54,7 +54,7 @@ open import Data.Integer using (ℤ; +_; -_; _+_; _-_)
 open import Data.Vec using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Product using (_×_; _,_; Σ)
-open import Sovereign.Structology.MagicSquare144 using (FULL_TOUR)
+open import Sovereign.Synthesis.MagicSquare144 using (FULL_TOUR)
 
 --------------------------------------------------------------------------------
 -- 辅助：模等价关系

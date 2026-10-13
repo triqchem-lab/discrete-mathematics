@@ -13,7 +13,7 @@ open import Sovereign.Algebra.GF9
   using (GF9; galoisConjugate; galoisConjugate²)
 open import Sovereign.Synthesis.Winding
   using (PolarWinding; ToroidalWinding)
-open import Sovereign.Structology.MagicSquare144
+open import Sovereign.Synthesis.MagicSquare144
   using (MerkabaCells)
 
 -- S0. GF9 上群作用定义

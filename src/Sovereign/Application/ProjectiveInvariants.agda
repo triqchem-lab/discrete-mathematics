@@ -7,7 +7,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Synthesis.Winding
   using (PolarWinding; ToroidalWinding)
-open import Sovereign.Structology.MagicSquare144
+open import Sovereign.Synthesis.MagicSquare144
   using (FULL_TOUR)
 open import Sovereign.Geometry.ProjectiveCore
   using (GElement; g-action-full)
