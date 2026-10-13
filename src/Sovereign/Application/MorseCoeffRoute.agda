@@ -30,7 +30,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; subst)
 open import Data.Nat.Properties using (<-≤-trans)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_)
-open import Sovereign.Topology.MorseRoute using (MorseFieldG)
+open import Sovereign.Application.MorseRoute using (MorseFieldG)
 
 --------------------------------------------------------------------------------
 -- §1. MorseCoeffField record（GF(3) 系数版泛型场）

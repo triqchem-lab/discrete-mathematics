@@ -28,7 +28,7 @@ open import Sovereign.Application.ChainComplex
 import Sovereign.Application.ChainComplex as CC
 open import Sovereign.Application.jac_Topology
   using (filled3C; dimH-filled3-0; dimH-filled3-1; dimH-filled3-2)
-open import Sovereign.Topology.MorseStrongCritical using (pointC)
+open import Sovereign.Application.MorseStrongCritical using (pointC)
 
 --------------------------------------------------------------------------------
 -- §1. 阶段 1 复形：删 (e01,t) 后——3 顶点 + 2 边（树 v1-v2-v0）

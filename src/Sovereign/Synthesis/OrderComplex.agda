@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.OrderComplex
+-- | Sovereign.Synthesis.OrderComplex
 -- McCord 分解 M2：序复形 K(X) 的组合层（任务书 §2.2 M2）
 --
 -- 数学背景：McCord (1966) 对有限 T₀ 空间 X 构造序复形 K(X)——单形 = X 的
@@ -28,7 +28,7 @@
 --   数据的组合语义；同调维数走 `Problem/Hodge/ChainComplex.dimH` 接口。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.OrderComplex where
+module Sovereign.Synthesis.OrderComplex where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc; _≤_; _<_; z≤n; s≤s)

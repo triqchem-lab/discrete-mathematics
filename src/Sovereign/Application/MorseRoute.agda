@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseRoute
+-- | Sovereign.Application.MorseRoute
 -- 任务书第五层·5.1 泛型化：交替路径路由的**关系形态**——
 --   任意 f 的 Morse 边界路由的第一块泛型机件
 --
@@ -18,7 +18,7 @@
 -- 复用：FormanMinimal.dim（降维目标）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseRoute where
+module Sovereign.Application.MorseRoute where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc; _<_; _≤_)

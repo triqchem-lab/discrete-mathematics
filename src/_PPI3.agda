@@ -34,7 +34,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong)
 open import Relation.Nullary using (¬_)
 open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain; _⊑₂_; ⊑₂-00; ⊑₂-01; ⊑₂-11)
-open import Sovereign.Topology.OrderComplex using (Strict)
+open import Sovereign.Synthesis.OrderComplex using (Strict)
 
 -- ────────────────────────────────────────────────────────────────────
 -- ③ 基础件层：Fin 序 + 删点（组合面映射的机件）
@@ -256,7 +256,7 @@ check-sk-inj = refl
 --   Fin m 结果件均以 {zero}/{suc _} 形细化 m（隐式形模式）；递归件的 m 细化
 --   由 fsuc 尾模式承担（skip-< 同诀）。
 -- ────────────────────────────────────────────────────────────────────
-open import Sovereign.Topology.OrderComplex using (chain3-down; lin3; lin3-chain3)
+open import Sovereign.Synthesis.OrderComplex using (chain3-down; lin3; lin3-chain3)
 open import Sovereign.Synthesis._PMc2 using (KVert; KEdge; KTri; tri-face-xy; tri-face-yz)
 open import _PPI using (FaceBoundary; bd; K2Gluing)
 

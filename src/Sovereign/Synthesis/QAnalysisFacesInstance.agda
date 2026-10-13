@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.QAnalysisFacesInstance
+-- | Sovereign.Synthesis.QAnalysisFacesInstance
 -- 任务书第二层·2.3 深化：lin3 面共享的 QAnalysis 实例
 --
 -- 数学背景：QAnalysisRecord 的泛型 QAnalysis record 在此以 lin3 序复形
@@ -14,7 +14,7 @@
 -- 复用：QAnalysisRecord.QAnalysis/QPathR/qreflR/share→path/qtransR
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.QAnalysisFacesInstance where
+module Sovereign.Synthesis.QAnalysisFacesInstance where
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product using (_×_; _,_)

@@ -42,7 +42,7 @@ open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; cong; trans; subst)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
-open import Sovereign.Topology.OrderComplex using (Strict)
+open import Sovereign.Synthesis.OrderComplex using (Strict)
 open import _PPI3 using (_<ᵢ_; Simplex) renaming (≤-irrefl-1 to ≤irr1)
 open import _PPI5 using
   ( linPoset; Snd-face; sub-face; vert-distinct; DStep; DHomotopy; refl'; symm'; trans'; gen

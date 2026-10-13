@@ -27,8 +27,8 @@ open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain; _⊑₂_; ⊑₂-00; ⊑₂-01; ⊑₂-11)
 open import Sovereign.Synthesis._PMc2
   using (KVert; KEdge; KTri; tri-face-xy; tri-face-yz; chain2-KEdge; an2-KEdge-absurd)
-open import Sovereign.Topology.OrderComplex using (chain3-down)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.OrderComplex using (chain3-down)
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; _++w_; AStep; slide; expand; AHomotopy; refl'; symm; trans'; gen;
          AH-refl; AH-symm; AH-trans)
 

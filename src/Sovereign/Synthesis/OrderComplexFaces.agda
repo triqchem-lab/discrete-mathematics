@@ -33,7 +33,7 @@ open import Data.Product using (Σ; _×_; _,_; ∃-syntax)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Topology.OrderComplex
+open import Sovereign.Synthesis.OrderComplex
   using (lin3; IsChain)
 
 --------------------------------------------------------------------------------

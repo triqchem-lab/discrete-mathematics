@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.MorseStrongCritical
+-- | Sovereign.Application.MorseStrongCritical
 -- 任务书第五层·5.1 深化：强 Morse 不等式 + 临界复形 Morse 同调实例
 --
 -- 数学背景：
@@ -18,7 +18,7 @@
 --   jac_Topology（filled3C）、MorseAcyclic 无关但同线。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.MorseStrongCritical where
+module Sovereign.Application.MorseStrongCritical where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; z≤n; s≤s)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

@@ -21,7 +21,7 @@ open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import _PPI3 using (Simplex; face; _<ᵢ_; skip; skip-<)
 open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
-open import Sovereign.Topology.OrderComplex using (Strict)
+open import Sovereign.Synthesis.OrderComplex using (Strict)
 open import _PPI5 using (linPoset; strict-lin; vchain-1case)
 
 -- ────────────────────────────────────────────────────────────────────
@@ -139,7 +139,7 @@ idPmor-S2 = record
 open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/)
 open import _PPI5j using (addL⁺; addR⁺; whiskΩ3; add2⁺)
 open import _PPI5g using (_++2_; Ω3Walk⁺; refl3+)
-open import Sovereign.Topology.BarceloAHomotopy using (Walk; nil)
+open import Sovereign.Synthesis.BarceloAHomotopy using (Walk; nil)
 -- Walk/Ω2Walk 从 _PPI5f 层（re-export _PPI5d）——以 _PPI5d 直引零重证
 open import _PPI5d using (Ω2Walk; nil2; s2-adj; s2v0)
 open import _PPI5f using (Ω3Walk; refl3)

@@ -91,7 +91,7 @@ mccord-star-check = star-connects mccord-chain2 (fsuc fzero) (fsuc fzero)
 -- §4. 实例二：Face3 面（FaceShare3+ 包装含自返，center = F0）
 --------------------------------------------------------------------------------
 
-open import Sovereign.Topology.QAnalysisFacesInstance
+open import Sovereign.Synthesis.QAnalysisFacesInstance
   using (Face3; F0; F1; F2; FaceShare3; faces-share-sym; fs-10; fs-20)
 
 -- FaceShare3+：自返构造子 + 交叉提升（避免修改已证模块）

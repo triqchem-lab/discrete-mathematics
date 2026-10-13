@@ -25,7 +25,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 open import Relation.Nullary using (¬_)
 open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Topology.McCordCore using (cmpEdge)
-open import Sovereign.Topology.OrderComplex
+open import Sovereign.Synthesis.OrderComplex
   using (Strict; IsChain2; IsChain3; IsChain; chain2-fn; isChain2→general; general→chain2; strict→cmp)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain; two-anti; _⊑₂_; ⊑₂-01)
 
