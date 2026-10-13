@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | YM_Full — YM 全规模: SU(2) 任意构型 + Wilson 圈
+-- | Sovereign.Application.YM_Full
+-- YM_Full — YM 全规模: SU(2) 任意构型 + Wilson 圈
 -- 0 postulate
 
 --

@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Application.QuantumMotor
 -- ⚠ 边界注（2026-10-11）：本模块核对件为**实例核对件（非泛型定理）**。
 module Sovereign.Application.QuantumMotor where
 

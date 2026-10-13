@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | Master — 大衍框架统一定理 · 59模块全景
+-- | Sovereign.Algebra.Holographic.Master
+-- Master — 大衍框架统一定理 · 59模块全景
 --
 -- 数学背景：
 --  0 postulate

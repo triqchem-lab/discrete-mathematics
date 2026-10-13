@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | DeligneHodge — Deligne Weil 猜想 · 在三角复形上的独立形式化
+-- | Sovereign.Application.DeligneHodge
+-- DeligneHodge — Deligne Weil 猜想 · 在三角复形上的独立形式化
 -- 0 postulate
 
 module Sovereign.Application.DeligneHodge where

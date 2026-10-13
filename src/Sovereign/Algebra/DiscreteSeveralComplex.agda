@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | DiscreteSeveralComplex — 离散多复变 (MSC 32)
+-- | Sovereign.Algebra.DiscreteSeveralComplex
+-- DiscreteSeveralComplex — 离散多复变 (MSC 32)
 -- ℂⁿ 被诊断 TypeError: 全纯域不可有限编码
 -- 离散替代: GF(3)ⁿ 函数空间 + 有限复形 Cauchy-Riemann
 -- 0 postulate.

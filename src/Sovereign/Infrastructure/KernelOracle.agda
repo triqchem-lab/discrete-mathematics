@@ -1,4 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
+-- | Sovereign.Infrastructure.KernelOracle
 -- 律算数学 · 内核移植层的**形式化 oracle（查询面）**
 --
 -- 为什么是「查询面」而不是可执行程序：本库大量模块带 `--rewriting`，而 Agda 的 GHC 后端

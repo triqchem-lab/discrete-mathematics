@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Synthesis.PlatoElements
 {- | Sovereign.Synthesis.PlatoElements
 
   Plato 元素-多面体对应（任务书 v2.0 §8.2 层——P3 随缘尾件）。

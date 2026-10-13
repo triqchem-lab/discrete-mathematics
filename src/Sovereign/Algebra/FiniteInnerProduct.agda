@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | GF9 向量空间上的有限内积空间
+-- | Sovereign.Algebra.FiniteInnerProduct
+-- GF9 向量空间上的有限内积空间
 --
 -- 核心原则：VectorSpace n（GF9 分量）+ 内积结构实例核
 --          零向量/加法单位件（gf9-zero/zeroVec）为构造层

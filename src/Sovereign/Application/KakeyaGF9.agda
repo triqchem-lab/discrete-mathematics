@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | KakeyaGF9 — 挂谷猜想的 GF(9) 原生共轭结构 (大衍独有)
+-- | Sovereign.Application.KakeyaGF9
+-- KakeyaGF9 — 挂谷猜想的 GF(9) 原生共轭结构 (大衍独有)
 --
 -- GF(9) = GF(3)[α]/(α²+1), Gal(GF(9)/GF(3)) ≅ C₂
 -- Frobenius 自同构 σ(a+bα) = a-bα 是原生 Galois 共轭

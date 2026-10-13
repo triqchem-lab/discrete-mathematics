@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | EllipticComplex — dim ℋ = dim H (Hodge 定理, rank-nullity 链)
+-- | Sovereign.Application.EllipticComplex
+-- EllipticComplex — dim ℋ = dim H (Hodge 定理, rank-nullity 链)
 -- 0 postulate
 
 -- | 椭圆复形离散对照

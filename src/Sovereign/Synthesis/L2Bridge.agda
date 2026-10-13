@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting #-}
--- | L² 空间离散桥（mod3/norm-factor 编码）
+-- | Sovereign.Synthesis.L2Bridge
+-- L² 空间离散桥（mod3/norm-factor 编码）
 --
 -- 核心原则：n-mod3/gf3-inv/norm-factor 为 GF(3) 编码桥件
 --          桥接件只作不变量——投影不回流本源

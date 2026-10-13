@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | DiscreteFourier — 离散 Fourier 变换 (MSC 44)
+-- | Sovereign.Application.DiscreteFourier
+-- DiscreteFourier — 离散 Fourier 变换 (MSC 44)
 -- T⁶ 上的有限 Fourier 变换: GF(3)ⁿ → GF(3)ⁿ 酉矩阵.
 -- 0 postulate.
 

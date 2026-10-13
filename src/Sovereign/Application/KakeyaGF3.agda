@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | KakeyaGF3 — 挂谷猜想的 GF(3) 基座: 向量空间/方向/直线/Dvir下界
+-- | Sovereign.Application.KakeyaGF3
+-- KakeyaGF3 — 挂谷猜想的 GF(3) 基座: 向量空间/方向/直线/Dvir下界
 --
 -- 数学背景:
 --   Dvir (2008): |K| ≥ C_n q^n, 任意有限域 F_q, 2页纸多项式方法

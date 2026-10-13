@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | PhysicalOntology — 大衍宇宙物理本体论
+-- | Sovereign.Algebra.Holographic.PhysicalOntology
+-- PhysicalOntology — 大衍宇宙物理本体论
 --
 -- 数学背景：
 --  数学基座 → 物理语义的完整映射

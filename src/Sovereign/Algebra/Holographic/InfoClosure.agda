@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | InfoClosure — 信息论闭包: M_F 全息编码的无损性
+-- | Sovereign.Algebra.Holographic.InfoClosure
+-- InfoClosure — 信息论闭包: M_F 全息编码的无损性
 -- 定理: F ↦ M_F 是忠实函子, 4320D 是 T⁶ 的信息上限
 -- 0 postulate
 

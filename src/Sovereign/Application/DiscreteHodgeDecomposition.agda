@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Application.DiscreteHodgeDecomposition
 {- | Sovereign.Application.DiscreteHodgeDecomposition
 
   Dodziuk 组合 Hodge 分解面（任务书 v2.0 §4.3——P3 随缘尾件）。

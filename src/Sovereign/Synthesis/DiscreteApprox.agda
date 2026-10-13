@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | DiscreteApprox — 离散逼近论 (MSC 41)
+-- | Sovereign.Synthesis.DiscreteApprox
+-- DiscreteApprox — 离散逼近论 (MSC 41)
 -- GF(3) 上的 L¹/L∞ 最佳逼近.
 -- 0 postulate.
 

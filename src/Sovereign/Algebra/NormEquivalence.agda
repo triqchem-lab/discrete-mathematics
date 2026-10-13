@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting #-}
--- | 离散范数等价定理（≤₃ 序形）
+-- | Sovereign.Algebra.NormEquivalence
+-- 离散范数等价定理（≤₃ 序形）
 --
 -- 核心原则：≤₃ 序三律（refl/trans）具名分层
 --          范数等价实例核——有限维离散形非一般定理

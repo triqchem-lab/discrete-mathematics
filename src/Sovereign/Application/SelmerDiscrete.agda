@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | SelmerDiscrete — 离散 Selmer 群: C₂ cocycle 穷举 + H¹ 计算
+-- | Sovereign.Application.SelmerDiscrete
+-- SelmerDiscrete — 离散 Selmer 群: C₂ cocycle 穷举 + H¹ 计算
 -- 0 postulate
 
 -- | Selmer 群离散对照

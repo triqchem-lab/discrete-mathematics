@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | YM_DetMul — YM L3: det(AB)=det(A)·det(B) + 质量间隙
+-- | Sovereign.Application.YM_DetMul
+-- YM_DetMul — YM L3: det(AB)=det(A)·det(B) + 质量间隙
 --
 -- 证明策略: GF(3) det-mul (Matrix, 0 postulate, 6561 case)
 --          → GF(9) 是 GF(3) 的交换扩张

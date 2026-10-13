@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | SUn_GF9 — SU(2,GF(9)) 规范群 + Wilson作用量 + 质量间隙
+-- | Sovereign.Application.SUn_GF9
+-- SUn_GF9 — SU(2,GF(9)) 规范群 + Wilson作用量 + 质量间隙
 -- SU(2,GF(9)) ≅ 2A₄ (24元素, BinaryTetrahedral 已形式化)
 -- 0 postulate
 

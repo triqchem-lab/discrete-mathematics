@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting #-}
--- | 离散泛函分析框架（record 形）
+-- | Sovereign.Algebra.FunctionalAnalysisDiscrete
+-- 离散泛函分析框架（record 形）
 --
 -- 核心原则：FunctionalAnalysisDiscreteFramework n = 框架记录（载体+运算+定律字段）
 --          fa-framework-2/fa-framework 为具体实例核

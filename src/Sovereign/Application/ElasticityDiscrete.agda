@@ -1,4 +1,5 @@
 {-# OPTIONS --rewriting --guardedness #-}
+-- | Sovereign.Application.ElasticityDiscrete
 -- MSC 73 · GF(3)格点弹性
 module Sovereign.Application.ElasticityDiscrete where
 

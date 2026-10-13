@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | ZetaDiscrete — GF(q) 有限域 zeta + Weil 定理 (未来态)
+-- | Sovereign.Application.ZetaDiscrete
+-- ZetaDiscrete — GF(q) 有限域 zeta + Weil 定理 (未来态)
 -- 0 postulate
 
 -- | 离散 zeta 对照

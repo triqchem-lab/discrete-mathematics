@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | DiscreteSeveralComplex — 离散多复变 (MSC 32)
+-- | Sovereign.Algebra.DiscreteSeveralComplexData
+-- DiscreteSeveralComplex — 离散多复变 (MSC 32)
 -- GF(3)² 上的双变量多项式零点穷举.
 -- 0 postulate.
 

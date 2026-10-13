@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | _PMc（P2.2 最小可证核心：McCord π₀ 影——连通性对应）
+-- | Sovereign.Synthesis.McCordPi0
+-- _PMc（P2.2 最小可证核心：McCord π₀ 影——连通性对应）
 --
 -- 数学背景：McCord 1966 主命题：有限 T₀ 空间 X 存在单纯复形 K(X) 与弱同伦等价
 --   |K(X)| → X。其 **0 阶面**（π₀ 影）：X 拓扑连通 ⇔ 比较图 cmpGraph(P) 连通。

@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | DiscreteKTheory — 离散 K-理论 (MSC 19)
+-- | Sovereign.Algebra.DiscreteKTheory
+-- DiscreteKTheory — 离散 K-理论 (MSC 19)
 -- 有限格点上的真实 K 理论结构, 0 postulate:
 --   §1 K₀(pt) ≅ ℤ — Grothendieck 群完备化 (虚向量丛 E⊖F 的等价类)
 --   §2 符号同态 — 离散 H² = Z/3Z 上 c₁ 的可加性 (negate 9 穷举)

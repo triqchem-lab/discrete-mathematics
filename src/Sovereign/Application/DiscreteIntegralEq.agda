@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | DiscreteIntegralEq — 离散积分方程 (MSC 45)
+-- | Sovereign.Application.DiscreteIntegralEq
+-- DiscreteIntegralEq — 离散积分方程 (MSC 45)
 -- GF(3) 上的有限和方程: u = λKu + f, K 是 GF(3) 矩阵.
 -- Fredholm 积分方程的离散对应.
 -- 0 postulate.

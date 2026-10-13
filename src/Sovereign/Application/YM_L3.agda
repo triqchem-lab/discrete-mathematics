@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | YM_L3 — YM 质量间隙 L3 证明
+-- | Sovereign.Application.YM_L3
+-- YM_L3 — YM 质量间隙 L3 证明
 -- 转移矩阵 T 对平凡构型: det≠0 ⇒ 可逆/无零特征值（离散口径；原「λ_min>0」连续口径已撤——GF(9) 无序）
 -- 非平凡构型: det 由 CRT 分解 ≤4×4 保证
 -- 0 postulate

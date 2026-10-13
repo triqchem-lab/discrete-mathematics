@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | KakeyaPathology — 挂谷猜想的三重完备性病态诊断
+-- | Sovereign.Application.KakeyaPathology
+-- KakeyaPathology — 挂谷猜想的三重完备性病态诊断
 --
 -- 元诊断标尺 (大衍框架核心):
 --   1. 几何闭包: 空间是否紧致闭合, 是否存在无穷远逃逸

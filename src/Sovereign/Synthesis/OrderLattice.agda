@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | OrderLattice — 离散序与格理论 (MSC 06)
+-- | Sovereign.Synthesis.OrderLattice
+-- OrderLattice — 离散序与格理论 (MSC 06)
 -- GF(3) 上的偏序与格: 有限集上所有序关系可穷举.
 -- 0 postulate.
 

@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | WeilRH —（勘误：旧头注 WeilRH，名≠模块名，已正名）— Weil 有限域 RH · GF(3)/GF(9) 双实例独立形式化
+-- | Sovereign.Application.WeilRH
+-- WeilRH —（勘误：旧头注 WeilRH，名≠模块名，已正名）— Weil 有限域 RH · GF(3)/GF(9) 双实例独立形式化
 -- 0 postulate
 
 -- 核心原则：

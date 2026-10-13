@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting #-}
--- | 离散谱定理实例核
+-- | Sovereign.Algebra.SpectralTheorem
+-- 离散谱定理实例核
 --
 -- 核心原则：有限矩阵谱分解的离散基座实例核
 --          特征数据走 GF(9)/Trit 编码

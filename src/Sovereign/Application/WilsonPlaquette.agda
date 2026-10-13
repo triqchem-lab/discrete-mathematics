@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | WilsonPlaquette — YM 单 plaquette Wilson 圈 · 独立形式化
+-- | Sovereign.Application.WilsonPlaquette
+-- WilsonPlaquette — YM 单 plaquette Wilson 圈 · 独立形式化
 -- 0 postulate
 
 --

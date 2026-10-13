@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | DeligneLusztig — Deligne-Lusztig 理论 · 在 A₄ 上的独立形式化
+-- | Sovereign.Application.DeligneLusztig
+-- DeligneLusztig — Deligne-Lusztig 理论 · 在 A₄ 上的独立形式化
 -- 0 postulate
 
 --

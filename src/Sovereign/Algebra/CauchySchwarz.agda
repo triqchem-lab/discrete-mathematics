@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting #-}
--- | Trit 序上的 Cauchy-Schwarz 实例核
+-- | Sovereign.Algebra.CauchySchwarz
+-- Trit 序上的 Cauchy-Schwarz 实例核
 --
 -- 核心原则：离散基座实例核非一般定理（Trit 格序 _≤T_ 上的内积不等式形）
 --          序件（≤T-refl/≤T-max）与不等式链分层，∸ 消解走具名件

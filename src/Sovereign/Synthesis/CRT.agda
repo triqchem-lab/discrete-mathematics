@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
+-- | Sovereign.Synthesis.CRT
 --
 -- 核心原则：
 --   0. 中国剩余投影（物理波系统/谱投影，非模运算定理）

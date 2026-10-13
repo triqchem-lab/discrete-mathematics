@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | DiscretePotential — 离散位势论 (MSC 31)
+-- | Sovereign.Application.DiscretePotential
+-- DiscretePotential — 离散位势论 (MSC 31)
 -- GF(3) 格点上的 Laplace 方程 Δu = f.
 -- 0 postulate.
 

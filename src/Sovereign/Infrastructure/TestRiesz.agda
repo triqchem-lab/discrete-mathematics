@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting #-}
--- | Riesz 表示定理测试件/实例核
+-- | Sovereign.Infrastructure.TestRiesz
+-- Riesz 表示定理测试件/实例核
 --
 -- 核心原则：测试性实例核（含具体数值核对）
 --          数值核对 ≠ 证明——仅作对抗验证面

@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting #-}
--- | 离散范数理论（Trit 值范数）
+-- | Sovereign.Algebra.NormDiscrete
+-- 离散范数理论（Trit 值范数）
 --
 -- 核心原则：normReal/normSup/maxT——Trit 值范数实例核
 --          范数取值在 Trit 格非 ℝ——禁连续统外推

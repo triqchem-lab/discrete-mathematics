@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Measurement — GF(3) 离散量子测量
+-- | Sovereign.Application.Measurement
+-- Measurement — GF(3) 离散量子测量
 --
 -- 连续统病态: ℂ 上的测量涉及连续谱投影 + 概率幅 |α|² ∈ ℝ
 -- 离散自愈: GF(3) 上测量是有限映射, 结果 ∈ {T₀,T₁,T₂}

@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Entanglement — GF(3) 离散量子纠缠
+-- | Sovereign.Application.Entanglement
+-- Entanglement — GF(3) 离散量子纠缠
 --
 -- 连续统病态: ℂ²⊗ℂ² 上的纠缠态涉及连续参数 (Bloch 球)
 -- 离散自愈: GF(3)²⊗GF(3)² 只有 81 个态, 纠缠可穷举

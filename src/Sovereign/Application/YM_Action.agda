@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Application.YM_Action
 --
 -- 核心原则：
 --   0. YM 作用量离散形（构造性数据层——格点实例核）

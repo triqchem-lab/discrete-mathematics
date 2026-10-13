@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | AutT6 — Aut(T⁶/GF(9)) 群论闭包
+-- | Sovereign.Application.AutT6
+-- AutT6 — Aut(T⁶/GF(9)) 群论闭包
 -- 半直积 GL₃(GF(9)) ⋊ Gal(GF(9)/GF(3)) 的结构定义
 -- 0 postulate
 

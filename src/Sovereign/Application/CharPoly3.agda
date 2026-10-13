@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | CharPoly3 — 3×3 det判定 + 不可约性框架
+-- | Sovereign.Application.CharPoly3
+-- CharPoly3 — 3×3 det判定 + 不可约性框架
 -- 0 postulate
 
 module Sovereign.Application.CharPoly3 where

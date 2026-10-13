@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | LinearAlgebra — GF(3) 无零因子 + 行列式秩 + 线性无关
+-- | Sovereign.Algebra.Jacobian.LinearAlgebra
+-- LinearAlgebra — GF(3) 无零因子 + 行列式秩 + 线性无关
 -- 0 postulate
 
 module Sovereign.Algebra.Jacobian.LinearAlgebra where

@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | CRTDet4 — CRT 行列式分解 π4 侧扩展
+-- | Sovereign.Algebra.Jacobian.CRTDet4
+-- CRTDet4 — CRT 行列式分解 π4 侧扩展
 --
 -- 补齐 CRTDet 的 π4 侧 roadmap：
 --   π4-sumD：π4 保持有限和（镜像 π3-sumD）

@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | ChainComplex — GF(3) 离散链复形与同调
+-- | Sovereign.Algebra.ChainComplex
+-- ChainComplex — GF(3) 离散链复形与同调
 --
 -- 连续统病态: 连续空间的链复形涉及无穷维向量空间
 -- 离散自愈: GF(3) 上链复形是有限维, 同调群可精确计算

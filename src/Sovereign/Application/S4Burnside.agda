@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | S4Burnside —（勘误：旧头注 S4Burnside，名≠模块名，已正名）— S₄ Burnside 验证 · Langlands 第二实例
+-- | Sovereign.Application.S4Burnside
+-- S4Burnside —（勘误：旧头注 S4Burnside，名≠模块名，已正名）— S₄ Burnside 验证 · Langlands 第二实例
 -- 0 postulate
 
 -- 核心原则：

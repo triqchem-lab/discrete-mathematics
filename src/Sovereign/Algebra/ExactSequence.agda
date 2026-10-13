@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | ExactSequence — GF(3) 离散正合序列
+-- | Sovereign.Algebra.ExactSequence
+-- ExactSequence — GF(3) 离散正合序列
 --
 -- 连续统病态: 连续空间的正合序列涉及无穷维向量空间
 -- 离散自愈: GF(3) 上正合序列是有限维, 可精确验证

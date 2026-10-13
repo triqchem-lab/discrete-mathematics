@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | DiscreteManifold — 离散流形 (MSC 57)
+-- | Sovereign.Application.DiscreteManifold
+-- DiscreteManifold — 离散流形 (MSC 57)
 -- T⁶ 作为离散流形，有限点集 + 组合不变量.
 -- 0 postulate.
 

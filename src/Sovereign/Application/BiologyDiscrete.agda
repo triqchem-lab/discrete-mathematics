@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | BiologyDiscrete — MSC 92 数理生物 · GF(3) 三态基因型
+-- | Sovereign.Application.BiologyDiscrete
+-- BiologyDiscrete — MSC 92 数理生物 · GF(3) 三态基因型
 -- 连续统 TypeError: ContinuousPopulationWithoutFiniteFitness
 -- 离散替代: Trit 基因型 + 离散复制动力学
 

@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | NSRegularity — N-S 方程的 GF(3) 离散正则性判据
+-- | Sovereign.Application.NSRegularity
+-- NSRegularity — N-S 方程的 GF(3) 离散正则性判据
 --
 -- 连续统病态: ℝ³ 上 N-S 正则性 (是否存在光滑解) 是千禧年问题
 -- 离散自愈: GF(3)³ 上所有函数自动光滑 (有限格点, 无 ε→0)

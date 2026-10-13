@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
--- | 探针 _PNormU：Laurent.norm-unique 攻坚件（唯一写域 = 本文件）
+-- | Sovereign.Algebra.LaurentNormSwap
+-- 探针 _PNormU：Laurent.norm-unique 攻坚件（唯一写域 = 本文件）
 -- 数学背景：norm = insertCᵌ 并项折线（insert-last fold，LaurentSums.normC 同形）。
 --   合并消 tie ⇒ `∀ xs ys → xs ↭ ys → norm xs ≡ norm ys` 免 Canon/NoZero 前提
 --   （是 sort-unique 的严格加强：sort 需 Canon 前提排除 tie，norm 以合并消 tie）。

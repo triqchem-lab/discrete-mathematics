@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
+-- | Sovereign.Synthesis.ArthurMagicSquare
 -- 【术语边界】本模块「幻方」= 数学数字幻方（行列对角线和相等）。
 -- 非卢先生「矢量方向/变量计数」幻方（阶数 = 同时在变的矢量方向个数）。
 -- 辨析与知识库依据见 docs/cross-level/magic-square-terminology.md

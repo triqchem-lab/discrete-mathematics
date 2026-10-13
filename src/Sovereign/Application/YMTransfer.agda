@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | YMTransfer — YM 转移矩阵 + CRT 质量间隙 (闭合)
+-- | Sovereign.Application.YMTransfer
+-- YMTransfer — YM 转移矩阵 + CRT 质量间隙 (闭合)
 -- 【判重组4 注记 2026-10-11】与 YM_Transfer.agda 近名对判重：异物互补（本件=CRT 闭合，彼件=一般构造）——非重复
 -- det≠0 ⇒ 可逆/无零特征值（⚠ 边界纠偏 2026-10-11：GF(9) 无序——「λ_min>0」是连续统口径，
 --   离散正解 = det≠0 ⇒ 可逆（矩阵非奇异）；质量间隙的连续口径不在本件范围）。实证: 2×2/3×3/4×4.

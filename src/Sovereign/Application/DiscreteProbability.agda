@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | DiscreteProbability — 离散概率论 (MSC 62)
+-- | Sovereign.Application.DiscreteProbability
+-- DiscreteProbability — 离散概率论 (MSC 62)
 -- GF(3) 上的有限概率空间: 6 个事件的离散分布.
 -- 0 postulate.
 

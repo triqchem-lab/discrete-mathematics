@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | PvsNP_Conjecture —（勘误：旧头注 PvsNP_Conjecture，名≠模块名，已正名）— 全息穿透猜想 · 形式化陈述
+-- | Sovereign.Application.PvsNP_Conjecture
+-- PvsNP_Conjecture —（勘误：旧头注 PvsNP_Conjecture，名≠模块名，已正名）— 全息穿透猜想 · 形式化陈述
 -- 0 postulate (猜想本身未被证明, 仅陈述类型)
 
 -- 核心原则：

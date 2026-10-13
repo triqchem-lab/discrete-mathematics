@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | BSD9 — GF(9) 椭圆曲线点计数 · 未来态锁定法
+-- | Sovereign.Application.BSD9
+-- BSD9 — GF(9) 椭圆曲线点计数 · 未来态锁定法
 -- 【正名 2026-10-11】旧头写 BSD9（命名漂移）——实名 BSD9；勘误留痕
 -- 目标: #E(GF(9)) = 16 (Hasse紧界), 由迹递推一步到位
 -- 不使用暴力枚举. 0 postulate.

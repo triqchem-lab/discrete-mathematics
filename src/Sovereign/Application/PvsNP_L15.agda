@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | PvsNP_L15 — PvsNP L1.5: 3×3 不可约性穷举判定
+-- | Sovereign.Application.PvsNP_L15
+-- PvsNP_L15 — PvsNP L1.5: 3×3 不可约性穷举判定
 -- 0 postulate
 
 module Sovereign.Application.PvsNP_L15 where

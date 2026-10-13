@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | NSVortex — N-S 方程的 GF(3) 离散涡旋演化
+-- | Sovereign.Application.NSVortex
+-- NSVortex — N-S 方程的 GF(3) 离散涡旋演化
 --
 -- 连续统病态: ℝ³ 上 N-S 方程的涡旋可无限细分 → 爆破奇点
 -- 离散自愈: GF(3)³ 格点上涡旋密度有刚性上限 → 正则性自动保证

@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | SU2_Embedding — SU(2) ⊂ SL₂(GF(9)) 嵌入
+-- | Sovereign.Application.SU2_Embedding
+-- SU2_Embedding — SU(2) ⊂ SL₂(GF(9)) 嵌入
 -- 0 postulate
 
 --

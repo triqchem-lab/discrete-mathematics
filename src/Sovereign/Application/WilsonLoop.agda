@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | WilsonLoop — 3×3 Wilson 圈 + 格点质量间隙定理
+-- | Sovereign.Application.WilsonLoop
+-- WilsonLoop — 3×3 Wilson 圈 + 格点质量间隙定理
 -- （正名勘误 2026-10-11：原头注写 WilsonLoop ≠ 模块名，已正名）
 -- 0 postulate
 

@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | CRTDet — CRT 行列式分解定理 (拱顶石)
+-- | Sovereign.Algebra.Jacobian.CRTDet
+-- CRTDet — CRT 行列式分解定理 (拱顶石)
 -- 定理: det(M) = crt12(det(M₃), det(M₄))
 --        det(M) ≠ 0 ⟺ (det(M₃) ≠ 0) ∧ (det(M₄) ≠ 0)
 -- 永久替代通用 N×N 行列式。0 postulate。

@@ -1,5 +1,6 @@
 {-# OPTIONS --rewriting #-}
--- | GF9 向量空间上的线性泛函
+-- | Sovereign.Algebra.LinearFunctionalDiscrete
+-- GF9 向量空间上的线性泛函
 --
 -- 核心原则：VectorSpace n + _+v9_ 加法结构
 --          线性泛函实例核（有限维）

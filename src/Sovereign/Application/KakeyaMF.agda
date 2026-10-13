@@ -1,6 +1,7 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | KakeyaMF — M_F 全局编码: 大衍框架独有的挂谷判定协议
+-- | Sovereign.Application.KakeyaMF
+-- KakeyaMF — M_F 全局编码: 大衍框架独有的挂谷判定协议
 --
 -- 核心定理: det(M_F) ≠ 0 ⟺ F 双射 ⟺ 挂谷集完备
 --
