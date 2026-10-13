@@ -36,6 +36,7 @@
 - **现行**（权威：AGENTS.md Architecture）：`RootMath → Base → Algebra → Arithmetic → Format → Structology → Constitution → Coupling → Density`（+ HoTT/Topology/Physics 侧链），模块独立编译。
 - **候选**（2026-10-11 审查报告提案）：`00-foundation / 10-base / 20-algebra / 30-synthesis / 40-application / 90-infrastructure` 五层编号架构（依赖 `00 → 10 → 20 → 30 → 40` 单向）。
 - **状态：候选、未裁决**——涉及 512 文件全量迁移 + 全量重编 + AGENTS.md/门禁脚本/台账 module 字段同步，须人类排期裁决后执行。**在此之前一切引用以现行架构为准。**
+- **遗留：非层目录残留 9 件（2026-10-13 人类裁决——并入本节命名裁决一并处理）**：`Topology/Graphs/*` 8 件（GraphBasic/Connectivity/Trees/Matchings/Colorings/Flows/Cycles/RamseyFinite）+ `Arithmetic/LinearRecurrence.agda`。它们**不属**五层迁移对象（`layer-map.csv` 803 行基线未收录，故不计入 471/471 口径），而是 `docs/离散数学基础-缺面模块清单-2026-10-11.md` §二/§四的**缺面新建研究件**，并作 `docs/plan/D1D3-watershed-general-dodziuk.md:36`「Graphs 面 8 件」的分水岭（Dodziuk）课题承载件。其目录名（`Topology/`、`Arithmetic/`）非六层，去留随本节命名裁决统一定夺。
 
 ## 五、命名与示例的本地校准（防漂移）
 
