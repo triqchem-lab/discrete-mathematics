@@ -1,12 +1,12 @@
 {-# OPTIONS --rewriting #-}
 
--- | Sovereign.Geometry.ProjectiveCore
+-- | Sovereign.Application.ProjectiveCore
 -- 4320D 射影几何核心：规范群 G = (C₃)³ ⋊ C₂ + 射影点 = G-不可约轨道
 --
 -- G = (C₃ × C₃ × C₃) ⋊ C₂, |G| = 54
 -- 信息 = 群轨道, 非 βη 语法等价
 
-module Sovereign.Geometry.ProjectiveCore where
+module Sovereign.Application.ProjectiveCore where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin; zero; suc)

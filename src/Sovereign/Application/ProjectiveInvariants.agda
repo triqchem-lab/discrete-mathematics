@@ -9,7 +9,7 @@ open import Sovereign.Synthesis.Winding
   using (PolarWinding; ToroidalWinding)
 open import Sovereign.Synthesis.MagicSquare144
   using (FULL_TOUR)
-open import Sovereign.Geometry.ProjectiveCore
+open import Sovereign.Application.ProjectiveCore
   using (GElement; g-action-full)
 
 -- 6624 = 144 × 46 (直接使用 refl 验证)

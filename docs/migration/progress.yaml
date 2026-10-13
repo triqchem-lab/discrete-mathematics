@@ -29,17 +29,18 @@ move_face:
   archive_frozen: 20
   top_level_files: 3
   migration_objects: 471
-  moved: 467
-  pending: 4
-  progress_pct: 99.2
+  moved: 468
+  pending: 3
+  progress_pct: 99.4
 
-# 已完成：源目录已 100% 清空（336 件）
+# 已完成：源目录已 100% 清空（350 件）
 done_dirs:
   - {dir: Problem,  moved: 117, pending: 0}
   - {dir: Physics,  moved: 63, pending: 0}
   - {dir: Applied,  moved: 38, pending: 0}
   - {dir: Analysis,  moved: 31, pending: 0}
   - {dir: HoTT,  moved: 24, pending: 0}
+  - {dir: Geometry,  moved: 14, pending: 0}
   - {dir: Coupling,  moved: 10, pending: 0}
   - {dir: Trust,  moved: 9, pending: 0}
   - {dir: Coding,  moved: 7, pending: 0}
@@ -58,10 +59,9 @@ done_dirs:
   - {dir: RootMath,  moved: 1, pending: 0}
   - {dir: MagicSquareM4,  moved: 1, pending: 0}
 
-# 待办：按待迁件数降序（4 件）
+# 待办：按待迁件数降序（3 件）
 pending_dirs:
   - {dir: Base, moved: 0, pending: 1, target: [Base, Infrastructure]}
-  - {dir: Geometry, moved: 13, pending: 1, target: [Application]}
   - {dir: Structology, moved: 69, pending: 1, target: [Synthesis]}
   - {dir: Topology, moved: 49, pending: 1, target: [Application, Synthesis]}
 
@@ -121,3 +121,4 @@ waves:
   - {wave: "H13",       date: "2026-10-13", moved: 1, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "H14",       date: "2026-10-13", moved: 1, note: "续迁批（叶件/低涟漪，断链0）"}
   - {wave: "H15",       date: "2026-10-13", moved: 1, note: "续迁批（叶件/低涟漪，断链0）"}
+  - {wave: "H16",       date: "2026-10-13", moved: 1, note: "续迁批（叶件/低涟漪，断链0）"}

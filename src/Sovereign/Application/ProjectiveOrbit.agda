@@ -18,7 +18,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans
 
 open import Sovereign.Synthesis.T6 using (T6Lattice; toℕ-sum)
 open import Sovereign.Synthesis.BurnsideT6 using ()
-open import Sovereign.Geometry.ProjectiveCore
+open import Sovereign.Application.ProjectiveCore
   using (GElement; g-action-full; GOrbitRel; g-id)
 
 --------------------------------------------------------------------------------
