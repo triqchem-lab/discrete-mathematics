@@ -1,4 +1,11 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Algebra.ComplexProjection
+-- ℂ 是 GF(9) 的连续投影。
+--
+-- 数学背景：GF(9) 与 ℂ 的结构类比 —— §3 丢失证明：GF(9) 有限（9 元素）vs ℂ 无限
+--   （不可数）；§4 特征差异 char 3 vs char 0。判据：**char 3 是本质结构，char 0 是退化**；
+--   §6 给出 GF(9) → ℂ 的退化实例（归 DegenerationTaxonomy 分类）。
 module Sovereign.Algebra.ComplexProjection where
 
 --------------------------------------------------------------------------------

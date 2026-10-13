@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Algebra.DiscreteDE
+-- 离散微分方程 —— ODE/PDE 的 GF(3) 离散替代。
+--
+-- 数学背景：§1 GF(3) 辅助引理（消去律）；§2 高阶差分算子 Δⁿ 与幂零性推广；
+--   §3 GF3Func 求值与制表；§4 线性离散 ODE Δy = g（Fredholm 相容性 + 解的构造）；
+--   §5 非线性 Δy(x) = f(x, y(x))；§6 二维离散 PDE（离散 Laplace 方程 Δ₁²u + Δ₂²u = 0）；
+--   §7 幂零性推论：≥3 阶 ODE 的最高阶导数恒为零；§8 与连续 DE 的投影关系。
 module Sovereign.Algebra.DiscreteDE where
 
 --------------------------------------------------------------------------------

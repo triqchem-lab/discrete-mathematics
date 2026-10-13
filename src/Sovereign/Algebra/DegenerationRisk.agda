@@ -1,4 +1,14 @@
 {-# OPTIONS --cubical --rewriting #-}
+
+-- | Sovereign.Algebra.DegenerationRisk
+-- 退化风险形式化：5 种退化的具体信息丢失量化。
+--
+-- 数学背景：统一退化风险 record 量化五组投影的信息损失 ——
+--   GF(2) ← GF(3)：手征性 / C₃ / Frobenius 丢失；
+--   Base-10 ← Base-12：整除性 / 涡旋闭合丢失；
+--   ℂ ← GF(9)：挠结构 / 有限性丢失；
+--   a≡b ← T⁶：维度 / 路径丢失；
+--   π₁ ← π_∞：高阶同伦丢失。
 module Sovereign.Algebra.DegenerationRisk where
 
 --------------------------------------------------------------------------------

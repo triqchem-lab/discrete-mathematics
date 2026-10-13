@@ -1,4 +1,12 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Algebra.AlgebraicPoleUnified
+-- 代数极统一视图：Z/12Z 涡旋环本体 + 截面代数链（升格版判据，2026-09-27）。
+--
+-- 数学背景：把「代数极」统一为 record —— 本体 = Z/12Z 涡旋环（阶 12，根 "123"），
+--   单位群 (Z/12Z)* ≅ V₄（阶 4）；生成元侧取 GF(3)、扩张域侧取 GF(9)。
+--   完备性声明：代数极 = DuodecPoint（本源）× GF(3)（生成元）× GF(9)（扩张域）。
+--   含三角循环 L1 → L3 → L8 → L1 的闭合性（GF 生成 → GF 扩张 → 投影层 → GF 生成）。
 module Sovereign.Algebra.AlgebraicPoleUnified where
 
 --------------------------------------------------------------------------------

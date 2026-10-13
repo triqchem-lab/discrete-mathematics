@@ -1,4 +1,11 @@
 {-# OPTIONS --rewriting --guardedness #-}
+
+-- | Sovereign.Algebra.ChainZ3toZ12
+-- Z/3Z → Z/12Z 全链路形式化。
+--
+-- 数学背景：把原 81-case 穷举表事实升格为**换位链**证明（char-3 三重消去）。
+--   核心对象 VortexFunc = Duodec → Trit，即 Z/12Z → GF(3) 的涡旋函数；
+--   idp 等通用引理支撑链式换位。
 module Sovereign.Algebra.ChainZ3toZ12 where
 
 --------------------------------------------------------------------------------

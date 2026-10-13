@@ -1,4 +1,13 @@
 {-# OPTIONS --rewriting #-}
+
+-- | Sovereign.Algebra.DegenerationTaxonomy
+-- 退化 / 近视 / 截面 分类学。
+--
+-- 数学背景：三种降级形态的严格区分与强度排序 ——
+--   ① 退化（Degeneration）：投影丢失代数结构（非单射）；
+--   ② 近视（Myopia）：局部有效但全局失效；
+--   ③ 截面（Section）：高维投影，有效但不完整（不可逆）。
+--   severity 给出分类层级的量化排序，§5 收具体退化实例。
 module Sovereign.Algebra.DegenerationTaxonomy where
 
 --------------------------------------------------------------------------------
