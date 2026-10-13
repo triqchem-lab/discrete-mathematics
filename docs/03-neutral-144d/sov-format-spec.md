@@ -72,7 +72,7 @@ int sov_read(FILE *fp, sov_block_holographic_t *block) {
 
 ## 五、与 Agda 形式化库的对接
 
-在 `Sovereign.Coupling.TQ10` 模块中，定义：
+在 `Sovereign.Synthesis.TQ10` 模块中，定义：
 
 ```agda
 record SovBlock : Set where

@@ -380,7 +380,7 @@ src/Sovereign/Coupling/LCM.agda,Synthesis,目录默认(Coupling)
 src/Sovereign/Coupling/LossGain.agda,Synthesis,目录默认(Coupling)；被违5次
 src/Sovereign/Coupling/ParityViolation.agda,Synthesis,目录默认(Coupling)
 src/Sovereign/Coupling/SpinTwistor.agda,Synthesis,目录默认(Coupling)
-src/Sovereign/Application/TQ10.agda,Application,波 2-B 定层修正（依赖方向）
+src/Sovereign/Coupling/TQ10.agda,Synthesis,漏收补记（2026-10-13 补迁）
 src/Sovereign/Coupling/TrainingSoftConstraint.agda,Synthesis,目录默认(Coupling)
 src/Sovereign/Coupling/Zhonglv.agda,Synthesis,目录默认(Coupling)
 src/Sovereign/Coupling/ZhonglvPhaseSync.agda,Synthesis,目录默认(Coupling)

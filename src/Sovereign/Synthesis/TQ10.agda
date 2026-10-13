@@ -1,13 +1,13 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Coupling.TQ10
+-- | Sovereign.Synthesis.TQ10
 -- 主权 TQ1_0 格式：16 字节主权块的类型论定义
 -- 
 -- 本质：主权状态机在 T⁶ 离散环面主权 LCM 商空间中的格点快照
 -- 长度：16 字节（128 位），对齐于 16 字节边界
 -- 基底：纯整数域，主权 LCM 模运算或 GF(3) 格点算术
 
-module Sovereign.Coupling.TQ10 where
+module Sovereign.Synthesis.TQ10 where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _%_; _/_; _≤_) renaming (_+_ to _+ℕ_; _<_ to _<ℕ_)
 open import Data.Nat.Properties using (_≟_)
