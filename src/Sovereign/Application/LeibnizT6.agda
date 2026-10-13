@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.LeibnizT6
+-- | Sovereign.Application.LeibnizT6
 -- 多维 Leibniz 规则 — T⁶ = GF(3)⁶ 上的方向差分代数
 --
 -- 核心结果:
@@ -28,7 +28,7 @@
 -- 0 postulate — 全部构造性证明, 穷举法优先
 --------------------------------------------------------------------------------
 
-module Sovereign.Applied.LeibnizT6 where
+module Sovereign.Application.LeibnizT6 where
 
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (

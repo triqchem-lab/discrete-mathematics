@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.CrossDomainTheorems
+-- | Sovereign.Application.CrossDomainTheorems
 -- 跨域定理 D61–D80: 代数链定理在不同领域的投影
 --
 -- 核心原则: 跨域定理 = 已有定理的领域语义包装。
@@ -18,7 +18,7 @@
 --   D69: 6624 ↔ 宇宙学       D79: 对称 ↔ 美学
 --   D70: CRT ↔ 密码学        D80: 格点 ↔ 建筑
 
-module Sovereign.Applied.CrossDomainTheorems where
+module Sovereign.Application.CrossDomainTheorems where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _^_; _<_; _%_)
 open import Data.Product using (_×_; _,_; Σ)

@@ -1,10 +1,9 @@
 # ============================================================
 # 五层目录迁移 · 执行进度台账（progress.yaml）
 # ============================================================
-# 生成：2026-10-13（北京时间）｜依据：2026-10-12 08:43 最后一次迁移提交（6ab1ad1）后的工作树实测
-# 口径：判据 = 原路径存在性——layer-map.csv 记录的迁移对象，其原路径若已消失 ⇒ 已迁；仍在原位 ⇒ 待迁。
-# 基线：docs/migration/layer-map.csv（波 0 产物，803 行）
-# 说明：本文件即《结构化迁移排期-2026-10-11.md》§七承诺的进度台账；只增不改史，每完成一批在此追加。
+# 生成：2026-10-13（北京时间）｜判据：原路径存在性（layer-map.csv 803 行）
+# 说明：本文件即《结构化迁移排期-2026-10-11.md》§七承诺的进度台账；只增不改史。
+# 派生脚本：由 layer-map.csv + 工作树实测重算，勿手改数字段。
 # ============================================================
 
 meta:
@@ -17,7 +16,6 @@ meta:
   last_move_time: "2026-10-12 08:43 +0800"
   status: "施工中断——波 14 后工作重心转 π_n 同伦课题，非计划收尾"
 
-# 就地面（六段式头注释改造，不搬目录）——已完结
 inplace_six_section:
   status: done
   modules: 216
@@ -26,46 +24,47 @@ inplace_six_section:
 
 # 移动面（git mv 到六层 + module/import/台账同步）——进行中
 move_face:
-  total_rows: 803
-  in_layer_kept: 311      # 原目录即层目录，保名不迁：Algebra 242 / Application 29 / Synthesis 12 / Base 11 / Foundation 9 / Infrastructure 8
-  archive_frozen: 20      # src/Sovereign/_archive（已移出至 archive/）
-  top_level_files: 3      # Examples.agda / Integration.agda / TestMemory.agda（顶层聚合件）
-  migration_objects: 469  # 需跨目录迁移的件数
-  moved: 250
-  pending: 219
-  progress_pct: 53.3
+  total_rows: 805
+  in_layer_kept: 310
+  archive_frozen: 20
+  top_level_files: 3
+  migration_objects: 471
+  moved: 263
+  pending: 208
+  progress_pct: 55.8
 
-# 已完成：源目录已 100% 清空（193 件）
+# 已完成：源目录已 100% 清空（194 件）
 done_dirs:
   - {dir: Problem,  moved: 117, pending: 0}
-  - {dir: Physics,  moved: 63,  pending: 0}
-  - {dir: Trust,    moved: 9,   pending: 0}
-  - {dir: Verify,   moved: 2,   pending: 0}
-  - {dir: AI,       moved: 1,   pending: 0}
-  - {dir: RootMath, moved: 1,   pending: 0}
+  - {dir: Physics,  moved: 63, pending: 0}
+  - {dir: Trust,  moved: 9, pending: 0}
+  - {dir: Verify,  moved: 2, pending: 0}
+  - {dir: AI,  moved: 1, pending: 0}
+  - {dir: RootMath,  moved: 1, pending: 0}
+  - {dir: MagicSquareM4,  moved: 1, pending: 0}
 
-# 待办：按待迁件数降序（231 件）
+# 待办：按待迁件数降序（208 件）
 pending_dirs:
-  - {dir: Structology,  moved: 7,  pending: 63, target: [Synthesis]}
-  - {dir: Topology,     moved: 3,  pending: 47, target: [Application, Synthesis]}
-  - {dir: Applied,      moved: 11, pending: 27, target: [Application]}
-  - {dir: HoTT,         moved: 2,  pending: 22, target: [Synthesis]}
-  - {dir: Analysis,     moved: 22, pending: 9,  target: [Algebra, Application, Base]}
-  - {dir: Geometry,     moved: 0,  pending: 14, target: [Application]}
-  - {dir: Format,       moved: 0,  pending: 7,  target: [Synthesis]}
-  - {dir: Coupling,     moved: 4,  pending: 6,  target: [Synthesis]}
-  - {dir: Quantum,      moved: 0,  pending: 5,  target: [Application]}
-  - {dir: Constitution, moved: 1,  pending: 4,  target: [Foundation]}
-  - {dir: PDE,          moved: 0,  pending: 4,  target: [Application]}
-  - {dir: Arithmetic,   moved: 1,  pending: 2,  target: [Base]}
-  - {dir: Coding,       moved: 5,  pending: 2,  target: [Synthesis]}
-  - {dir: Density,      moved: 0,  pending: 2,  target: [Synthesis]}
-  - {dir: MetaStructure, moved: 0, pending: 2,  target: [Base]}
-  - {dir: Completeness, moved: 1,  pending: 1,  target: [Foundation]}
-  - {dir: Diagnosis,    moved: 0,  pending: 1,  target: [Foundation]}
-  - {dir: Engine,       moved: 0,  pending: 1,  target: [Infrastructure]}
+  - {dir: Structology, moved: 7, pending: 63, target: [Synthesis]}
+  - {dir: Topology, moved: 3, pending: 47, target: [Application, Synthesis]}
+  - {dir: HoTT, moved: 2, pending: 22, target: [Synthesis]}
+  - {dir: Applied, moved: 20, pending: 18, target: [Application]}
+  - {dir: Geometry, moved: 0, pending: 14, target: [Application]}
+  - {dir: Format, moved: 0, pending: 7, target: [Synthesis]}
+  - {dir: Analysis, moved: 25, pending: 6, target: [Algebra, Application, Base, Foundation, Infrastructure, Synthesis]}
+  - {dir: Coupling, moved: 4, pending: 6, target: [Synthesis]}
+  - {dir: Quantum, moved: 0, pending: 5, target: [Application]}
+  - {dir: Constitution, moved: 1, pending: 4, target: [Foundation]}
+  - {dir: PDE, moved: 0, pending: 4, target: [Application]}
+  - {dir: Arithmetic, moved: 1, pending: 2, target: [Base]}
+  - {dir: Coding, moved: 5, pending: 2, target: [Synthesis]}
+  - {dir: Density, moved: 0, pending: 2, target: [Application]}
+  - {dir: MetaStructure, moved: 0, pending: 2, target: [Base]}
+  - {dir: Base, moved: 0, pending: 1, target: [Base, Infrastructure]}
+  - {dir: Completeness, moved: 1, pending: 1, target: [Foundation]}
+  - {dir: Diagnosis, moved: 0, pending: 1, target: [Foundation]}
+  - {dir: Engine, moved: 0, pending: 1, target: [Infrastructure]}
 
-# 已执行波次（记录用；moved 为 commit 自报件数，非实测口径——两者口径不同，勿相加）
 waves:
   - {wave: "1-B001",   date: "2026-10-11 23:10", moved: 9}
   - {wave: "1-40-app", date: "2026-10-11 23:11", moved: 12}
@@ -90,3 +89,4 @@ waves:
   - {wave: "终验",     date: "2026-10-12 08:43", moved: 0,  note: "6ab1ad1 收尾；此后转 π_n 课题"}
   # —— 续迁（2026-10-13 起）——
   - {wave: "PA",       date: "2026-10-13", moved: 12, note: "续迁第1批：Analysis 12 件 0 涟漪（11→Algebra / FiniteProbability→Application），V1 12/12"}
+  - {wave: "PB",       date: "2026-10-13", moved: 12, note: "续迁第2批：Analysis 3 + Applied 9（→Algebra/Application），断链0，V1 12/12"}

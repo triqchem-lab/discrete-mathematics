@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.EconomicsDiscrete
+-- | Sovereign.Application.EconomicsDiscrete
 -- C57: 离散经济学 — 有限资源分配均衡 + 729 格点鸽巢原理
 --
 -- 核心命题:
@@ -9,7 +9,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.EconomicsDiscrete where
+module Sovereign.Application.EconomicsDiscrete where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _<_)
 open import Data.Fin using (Fin; toℕ)

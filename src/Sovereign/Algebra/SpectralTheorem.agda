@@ -7,7 +7,7 @@
 --
 -- 包含：is-self-adjoint、IsEigenpair、⊗-eq、inner-scalarˡ、inner-scalarʳ、eigenvector-orthogonal、linear-op-zero-1、spectral-1-go、spectral-1、inner-2、proj-op、proj-self-adjoint、proj-eigen-1、proj-eigen-0
 
-module Sovereign.Analysis.SpectralTheorem where
+module Sovereign.Algebra.SpectralTheorem where
 
 --------------------------------------------------------------------------------
 -- 谱定理: GF(3)ⁿ 上自伴算子的特征分解

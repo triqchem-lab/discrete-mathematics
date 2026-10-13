@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.ImageProcessing
+-- | Sovereign.Application.ImageProcessing
 -- C59: 离散图像处理 — Δ 边缘检测 + Δ² 平滑
 --
 -- 核心命题:
@@ -9,7 +9,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.ImageProcessing where
+module Sovereign.Application.ImageProcessing where
 
 open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Product using (_×_; _,_)

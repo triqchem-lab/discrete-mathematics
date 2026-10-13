@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.LeibnizGF9
+-- | Sovereign.Application.LeibnizGF9
 -- Leibniz 规则从 GF(3) 3 点函数推广到 GF(9) 9 点函数
 --
 -- 核心结果:
@@ -23,7 +23,7 @@
 -- 0 postulate — 全部构造性证明, 穷举法优先
 --------------------------------------------------------------------------------
 
-module Sovereign.Applied.LeibnizGF9 where
+module Sovereign.Application.LeibnizGF9 where
 
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (

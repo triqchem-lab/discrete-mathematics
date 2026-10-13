@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.GeneticsExtended
+-- | Sovereign.Application.GeneticsExtended
 -- C39: 扩展遗传学 — 密码子 27 + GF(3) 特征 3
 --
 -- 核心命题:
@@ -9,7 +9,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.GeneticsExtended where
+module Sovereign.Application.GeneticsExtended where
 
 open import Data.Nat using (ℕ; _*_; _^_)
 open import Data.Product using (_×_)

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --cubical --guardedness #-}
 
--- | Sovereign.Applied.DeepStructureProofs
+-- | Sovereign.Application.DeepStructureProofs
 -- 深层结构证明索引 (B23–B35)
 --
 -- 本模块是证明索引：汇总并重导出已在各源模块中完成的深层证明，
@@ -22,7 +22,7 @@
 --   B34: 五行 C₅ generate⁵=id       ← 本地穷举 (新增)
 --   B35: 纳音 60 = 5×12             ← 本地 refl (新增)
 
-module Sovereign.Applied.DeepStructureProofs where
+module Sovereign.Application.DeepStructureProofs where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _%_; _^_)
 open import Data.Product using (_×_; _,_)

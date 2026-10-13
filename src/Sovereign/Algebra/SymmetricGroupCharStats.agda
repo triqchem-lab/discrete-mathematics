@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.SymmetricGroupCharStats
+-- | Sovereign.Algebra.SymmetricGroupCharStats
 -- 62-10 群表示统计 — A₄ 的 Plancherel 分布与特征标期望 (0 postulate)
 --
 -- Plancherel 分布: P(λ) = (dim λ)²/|G| — 整数权重 w(λ) = dim λ²
@@ -18,7 +18,7 @@
 --
 -- 包含：w1、plancherel-normalized、col-C1、col-C2、col-C3、col-C4、row-V1、row-V3、row-V1'、row-V1''
 
-module Sovereign.Analysis.SymmetricGroupCharStats where
+module Sovereign.Algebra.SymmetricGroupCharStats where
 
 open import Data.Product using (_×_; _,_)
 open import Data.Integer using (ℤ; +_; -[1+_])

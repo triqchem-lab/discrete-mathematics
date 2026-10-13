@@ -1,12 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.CelestialGeneticsControl
+-- | Sovereign.Application.CelestialGeneticsControl
 -- 浅层应用定理：天体力学 (Christoffel 螺旋/轨道共振)、
 -- 遗传学扩展 (密码子手征)、控制论 (状态转移周期/可控性)
 --
 -- 全部构造性证明，0 postulate，穷举法优先。
 
-module Sovereign.Applied.CelestialGeneticsControl where
+module Sovereign.Application.CelestialGeneticsControl where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_)
 open import Data.Fin using (Fin)

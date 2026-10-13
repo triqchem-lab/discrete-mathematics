@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Analysis.SpecialValues
+-- | Sovereign.Algebra.SpecialValues
 -- 33 特殊函数补强 — 阶乘/二项系数/Pascal 恒等式
 --
 -- 数学背景：阶乘表 0!..6! 与 Pascal 三角 C(n,k)（n≤6，21 项）的
@@ -13,7 +13,7 @@
 --
 -- 包含：fact-0..fact-6（阶乘表）· fact-recurrence-6 · C0-0..C6-6（Pascal 21 项）· pascal-*（递推样本）· row-sum-4
 
-module Sovereign.Analysis.SpecialValues where
+module Sovereign.Algebra.SpecialValues where
 
 open import Data.Nat using (ℕ; _*_; _+_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

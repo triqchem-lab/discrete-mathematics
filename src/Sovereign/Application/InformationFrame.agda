@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Applied.InformationFrame
+-- | Sovereign.Application.InformationFrame
 -- C43: 信息帧 — 格点快照 + 帧容量
 --
 -- 核心命题:
@@ -9,7 +9,7 @@
 --
 -- 0 postulate, 穷举法优先
 
-module Sovereign.Applied.InformationFrame where
+module Sovereign.Application.InformationFrame where
 
 open import Data.Nat using (ℕ; _+_; _*_; _∸_; _^_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
