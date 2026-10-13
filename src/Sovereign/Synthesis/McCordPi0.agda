@@ -28,7 +28,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans
 open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Sovereign.Synthesis.AlexandroffFinite using (FinitePoset; IsUpset)
 open import Sovereign.Synthesis.AtkinQAnalysis using (Path; nil; cons)
-open import Sovereign.Topology.McCordCore using (cmpEdge)
+open import Sovereign.Synthesis.McCordCore using (cmpEdge)
 
 --------------------------------------------------------------------------------
 -- §1 连通性（Alexandroff 语义：开集 = upset；分割双侧皆开）

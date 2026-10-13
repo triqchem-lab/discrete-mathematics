@@ -29,7 +29,7 @@ open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; _∙_)
 open import Cubical.Foundations.HLevels using (isProp; isPropΠ)
 open import Cubical.HITs.SetQuotients using ([_]; squash/; eq/; elimProp)
 open import Cubical.Data.Nat using (isSetℕ)
-open import Sovereign.Topology.McCordCore using (cmpEdge)
+open import Sovereign.Synthesis.McCordCore using (cmpEdge)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; _++w_; AHomotopy; slide; expand; refl'; trans'; gen)

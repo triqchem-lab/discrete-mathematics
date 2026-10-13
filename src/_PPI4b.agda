@@ -34,7 +34,7 @@ open import Agda.Builtin.Equality using () renaming (refl to reflᴱ)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; _∙_; subst)
 open import Cubical.HITs.SetQuotients using ([_]; squash/; elimProp; eq/)
 open import Sovereign.Synthesis.AlexandroffFinite using (FinitePoset)
-open import Sovereign.Topology.McCordCore using (cmpEdge)
+open import Sovereign.Synthesis.McCordCore using (cmpEdge)
 open import Sovereign.Synthesis._PMc2 using (KEdge)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import Sovereign.Synthesis.BarceloAHomotopy

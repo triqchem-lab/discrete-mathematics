@@ -42,7 +42,7 @@ open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; subst; cong; trans)
 open import Sovereign.Synthesis.AlexandroffFinite using (FinitePoset)
-open import Sovereign.Topology.McCordCore using (cmpEdge)
+open import Sovereign.Synthesis.McCordCore using (cmpEdge)
 
 --------------------------------------------------------------------------------
 -- §1. 严格序（链的原子步）：⊑ 且 ≠

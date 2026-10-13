@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.McCordCore
+-- | Sovereign.Synthesis.McCordCore
 -- 任务书第二层·2.2：McCord 弱等价（1966）的构造性 0 层核
 --
 -- 数学背景：McCord, "Singular homology groups and homotopy groups of finite
@@ -20,7 +20,7 @@
 --      是弱同伦等价的必要面，不充分（高阶 πₙ 不在本核内）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.McCordCore where
+module Sovereign.Synthesis.McCordCore where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)

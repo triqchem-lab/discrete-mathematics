@@ -36,7 +36,7 @@ open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym)
 open import Sovereign.Synthesis.AlexandroffFinite
   using (FinitePoset; chain2; chain2-⊑)
-open import Sovereign.Topology.McCordCore using (cmpEdge)
+open import Sovereign.Synthesis.McCordCore using (cmpEdge)
 
 --------------------------------------------------------------------------------
 -- §1. beat 两变体（分变体定义，不强制合取）

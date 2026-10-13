@@ -32,7 +32,7 @@ open import Sovereign.Synthesis.QAnalysisRecord
   using (QAnalysis; QPathR; qreflR; share→path; qtransR; qsymR; qstep; qnil)
 open import Sovereign.Synthesis.AlexandroffFinite
   using (FinitePoset; chain2; chain2-⊑)
-open import Sovereign.Topology.McCordCore using (HasBottom; cmpEdge)
+open import Sovereign.Synthesis.McCordCore using (HasBottom; cmpEdge)
 
 --------------------------------------------------------------------------------
 -- §1. QStarAnalysis record（QAnalysis + 星形中心两字段）

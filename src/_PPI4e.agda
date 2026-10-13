@@ -26,7 +26,7 @@ open import Data.Bool using (Bool; true; false)
 open import Agda.Builtin.Equality using () renaming (refl to reflᴱ)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; _∙_)
 open import Sovereign.Synthesis.AlexandroffFinite using (FinitePoset)
-open import Sovereign.Topology.McCordCore using (cmpEdge)
+open import Sovereign.Synthesis.McCordCore using (cmpEdge)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain; _⊑₂_; ⊑₂-00; ⊑₂-01; ⊑₂-11)
 open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; AStep; AHomotopy; slide; expand; refl'; symm; trans'; gen)
