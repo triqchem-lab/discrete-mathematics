@@ -26,7 +26,7 @@ open import Data.Product using (Σ-syntax; _×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
-open import Sovereign.Topology.AlexandroffFinite using (FinitePoset; IsUpset)
+open import Sovereign.Synthesis.AlexandroffFinite using (FinitePoset; IsUpset)
 open import Sovereign.Synthesis.AtkinQAnalysis using (Path; nil; cons)
 open import Sovereign.Topology.McCordCore using (cmpEdge)
 

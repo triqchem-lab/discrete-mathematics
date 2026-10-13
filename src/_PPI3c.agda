@@ -29,7 +29,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
 open import Relation.Nullary using (¬_)
-open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
+open import Sovereign.Synthesis.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Synthesis.OrderComplex using (Strict; lin3; lin3-down-instance)
 open import _PPI3 using (Simplex; face; face-face-comm; _<ᵢ_; skip; skip-<; unskip; shift; skip-comm2)
 

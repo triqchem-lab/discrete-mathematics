@@ -20,7 +20,7 @@ open import Data.Fin using (Fin; zero; suc)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import _PPI3 using (Simplex; face; _<ᵢ_; skip; skip-<)
-open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
+open import Sovereign.Synthesis.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Synthesis.OrderComplex using (Strict)
 open import _PPI5 using (linPoset; strict-lin; vchain-1case)
 

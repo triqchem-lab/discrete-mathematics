@@ -23,7 +23,7 @@ open import Data.Unit using (⊤; tt)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; subst; subst₂)
 open import Relation.Nullary using (¬_)
-open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
+open import Sovereign.Synthesis.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain; _⊑₂_; ⊑₂-00; ⊑₂-01; ⊑₂-11)
 open import Sovereign.Synthesis._PMc2
   using (KVert; KEdge; KTri; tri-face-xy; tri-face-yz; chain2-KEdge; an2-KEdge-absurd)

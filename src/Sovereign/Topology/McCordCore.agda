@@ -26,7 +26,7 @@ open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
+open import Sovereign.Synthesis.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Synthesis.AtkinQAnalysis using (Graph; Path; nil; cons)
 
 --------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ bottom-unique P b₀ b₁ h₀ h₁ =
 -- 两点路径 x → 0 → 1 显式构造。
 --------------------------------------------------------------------------------
 
-open import Sovereign.Topology.AlexandroffFinite using (chain2; chain2-⊑)
+open import Sovereign.Synthesis.AlexandroffFinite using (chain2; chain2-⊑)
 
 chain2-bot : HasBottom chain2
 chain2-bot = record

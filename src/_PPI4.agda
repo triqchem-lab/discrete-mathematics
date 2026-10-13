@@ -27,7 +27,7 @@ open import Data.Fin using (Fin)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong)
 open import Cubical.HITs.SetQuotients using ([_])
-open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
+open import Sovereign.Synthesis.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Topology.McCordCore using (cmpEdge)
 open import Sovereign.Synthesis._PMc2 using (KEdge)
 open import Sovereign.Synthesis.BarceloAHomotopy

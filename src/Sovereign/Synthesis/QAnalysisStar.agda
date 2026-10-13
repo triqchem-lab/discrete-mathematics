@@ -30,7 +30,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Synthesis.QAnalysisRecord
   using (QAnalysis; QPathR; qreflR; share→path; qtransR; qsymR; qstep; qnil)
-open import Sovereign.Topology.AlexandroffFinite
+open import Sovereign.Synthesis.AlexandroffFinite
   using (FinitePoset; chain2; chain2-⊑)
 open import Sovereign.Topology.McCordCore using (HasBottom; cmpEdge)
 

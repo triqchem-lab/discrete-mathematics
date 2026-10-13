@@ -34,7 +34,7 @@ open import Data.Product using (Σ; _×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym)
-open import Sovereign.Topology.AlexandroffFinite
+open import Sovereign.Synthesis.AlexandroffFinite
   using (FinitePoset; chain2; chain2-⊑)
 open import Sovereign.Topology.McCordCore using (cmpEdge)
 

@@ -23,7 +23,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong;
 open import Relation.Nullary using (¬_)
 open import Cubical.Foundations.Prelude using (funExt) renaming (_≡_ to _≡ₚ_)
 open import Cubical.Data.Equality as CE using (eqToPath; pathToEq)
-open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
+open import Sovereign.Synthesis.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Synthesis.OrderComplex using (Strict; lin3)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import _PPI3 using (Simplex; face; _<ᵢ_; unskip; shift)

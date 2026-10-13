@@ -41,7 +41,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; subst; cong; trans)
-open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
+open import Sovereign.Synthesis.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Topology.McCordCore using (cmpEdge)
 
 --------------------------------------------------------------------------------

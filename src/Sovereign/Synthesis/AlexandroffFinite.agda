@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Topology.AlexandroffFinite
+-- | Sovereign.Synthesis.AlexandroffFinite
 -- 任务书第二层·2.1：Alexandroff 离散空间（1937）的有限构造性实例
 --
 -- 数学背景：Alexandroff, "Diskrete Räume"（Mat. Sb. 2(44):3, 1937, 501–519；
@@ -20,7 +20,7 @@
 --      函数等式——NSE.T15 / GaoYangRigidLock 同纪律）。
 --
 -- 0 postulate / 0 hole。
-module Sovereign.Topology.AlexandroffFinite where
+module Sovereign.Synthesis.AlexandroffFinite where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
