@@ -25,7 +25,7 @@ open import Data.Product using (_×_; _,_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Agda.Builtin.Equality using () renaming (refl to reflᴱ; _≡_ to _≡ᴱ_)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; _∙_)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; AStep; AHomotopy; slide; expand; refl'; symm; trans'; gen)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import _PPI4 using (Gskel)

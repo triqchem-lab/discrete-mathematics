@@ -18,7 +18,7 @@ open import Data.Product using (proj₁)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Fin.Properties using () renaming (_≟_ to _≟F_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; _++w_)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import _PPI4 using (Gskel)

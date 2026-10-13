@@ -31,9 +31,9 @@ open import Sovereign.Topology.FormanMinimal
   using (Sx; v0; v1; v2; e01; e12; e20; t)
 open import Sovereign.Topology.FormanPerfectField
   using (FaceRel; f-v2-e20)
-open import Sovereign.Topology.MorseCoeffRoute
+open import Sovereign.Application.MorseCoeffRoute
   using (coeffᵏ; triVFᶜ; routing-k3)
-open module MCRD = Sovereign.Topology.MorseCoeffRoute.CoeffRouteDef
+open module MCRD = Sovereign.Application.MorseCoeffRoute.CoeffRouteDef
   Sx triVFᶜ FaceRel coeffᵏ
 open import Sovereign.Application.FreeAbBoundary using (∂₁; ∂₂)
 open import Sovereign.Topology.MorseCriticalHomology using (∂₁ᶜ)

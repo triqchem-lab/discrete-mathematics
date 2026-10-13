@@ -31,7 +31,7 @@ open import Cubical.HITs.SetQuotients using ([_]; squash/; eq/; elimProp)
 open import Cubical.Data.Nat using (isSetℕ)
 open import Sovereign.Topology.McCordCore using (cmpEdge)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; _++w_; AHomotopy; slide; expand; refl'; trans'; gen)
 open import _PPI using (Loop)
 open import _PPI2 using (π₁ᵈ; len; _⊞ᵈ_; π₁ᵈ-rec; true≢false)

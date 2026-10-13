@@ -23,7 +23,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Relation.Nullary using (¬_)
 
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; AHomotopy; AH-refl; AH-symm; AH-trans; _++w_; cons; AStep; slide; expand)
 open import _PPI2 using (π₁ᵈ; _⊞ᵈ_; π₁ᵈ-rec; []-resp)
 open import _PPI4 using (Gskel; Gcmp; MonoidIso; Flip; Gskel-flip; Gcmp-flip)

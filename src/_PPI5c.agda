@@ -31,7 +31,7 @@ open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂)
 open import Data.List using (List; []; _∷_)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
 
-open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; Walk; nil; cons; _++w_; AHomotopy; refl'; symm; trans'; gen)
+open import Sovereign.Synthesis.BarceloAHomotopy using (DiGraph; Walk; nil; cons; _++w_; AHomotopy; refl'; symm; trans'; gen)
 open import _PPI using (++w-resp-r; ++w-resp-l)
 open import _PPI5 using (BasedMap; DHomotopy; DStep)
 open import _PPI2 using (π₁ᵈ; []-resp)

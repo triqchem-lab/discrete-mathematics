@@ -35,7 +35,7 @@ open import Data.Fin.Properties using () renaming (_≟_ to _≟F_)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; _++w_)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import _PPI4 using (Gskel)

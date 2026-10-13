@@ -20,8 +20,8 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; con
 open import Data.Empty using (⊥)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
-open import Sovereign.Topology.MorsePartialG
-open import Sovereign.Topology.MorsePairingLaw
+open import Sovereign.Application.MorsePartialG
+open import Sovereign.Application.MorsePairingLaw
   using (PairingLaw; oneStepPair; oneStepPair-zero; C3; cσ; cω; cτ)
 
 --------------------------------------------------------------------------------

@@ -18,7 +18,7 @@
 module Sovereign.Synthesis.PostnikovTruncation where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
-open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; V; Walk; nil; cons; _++w_; AStep; slide; expand; AHomotopy; refl'; symm; trans'; gen)
+open import Sovereign.Synthesis.BarceloAHomotopy using (DiGraph; V; Walk; nil; cons; _++w_; AStep; slide; expand; AHomotopy; refl'; symm; trans'; gen)
 open DiGraph using (V; edge)
 
 -- ────────────────────────────────────────────────────────────────────

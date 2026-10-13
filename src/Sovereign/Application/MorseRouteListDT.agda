@@ -19,7 +19,7 @@ module Sovereign.Application.MorseRouteListDT where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
-open import Sovereign.Topology.MorseBoundaryDT
+open import Sovereign.Application.MorseBoundaryDT
   using (r-FL-e02; r-e02-v2-direct; outer-route; inner-route;
          m3-cancel; m3-fl)
 

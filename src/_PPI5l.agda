@@ -21,7 +21,7 @@ module _PPI5l where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/)
-open import Sovereign.Topology.BarceloAHomotopy using (Walk; nil; cons)
+open import Sovereign.Synthesis.BarceloAHomotopy using (Walk; nil; cons)
 open import _PPI5d using (s2-adj; s2v0; Ω2Walk; nil2; cons2)
 open import _PPI5g using (Ω3Walk⁺; refl3+; _++2_; Ω3Walkᵇ)
 open import _PPI5j using (π₂ᵈ⁺; addL⁺; addR⁺; whiskΩ3)

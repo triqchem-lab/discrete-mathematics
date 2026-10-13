@@ -23,7 +23,7 @@ open import Data.Unit using (⊤; tt)
 open import Data.Fin using (Fin) renaming (zero to fzero)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; subst)
 
-open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; Walk; nil)
+open import Sovereign.Synthesis.BarceloAHomotopy using (DiGraph; Walk; nil)
 open import _PPT2 using (PostnikovTower; tower-gskel; tower-s2; Ω2-triv-gskel)
 open import _PPI2 using (π₁ᵈ)
 open import _PPI4 using (Gskel)

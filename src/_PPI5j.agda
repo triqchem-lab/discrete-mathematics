@@ -26,7 +26,7 @@ module _PPI5j where
 -- ────────────────────────────────────────────────────────────────────
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; funExt; isProp; isSet; subst)
 open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/; squash/; rec; elimProp; elimProp2)
-open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; Walk)
+open import Sovereign.Synthesis.BarceloAHomotopy using (DiGraph; Walk)
 open import _PPI5d using (Ω2Walk; nil2; cons2; s2-adj; s2v0; w3; omega2-wit)
 open import _PPI5f using (Ω3Step; fill-tri; Ω3Walk; symm3; π₂ᵈ; chk-π2-wit-triv; omega2-wit-triv)
 open import _PPI5g using (_++2_; bub; Ω3Step⁺; base3+; whisk3; bub3; Ω3Walk⁺; refl3+; symm3+; trans3+; gen3+; embed3)

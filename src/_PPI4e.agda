@@ -28,7 +28,7 @@ open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; _∙_)
 open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Topology.McCordCore using (cmpEdge)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain; _⊑₂_; ⊑₂-00; ⊑₂-01; ⊑₂-11)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; AStep; AHomotopy; slide; expand; refl'; symm; trans'; gen)
 open import _PPI4 using (Gcmp)
 open import _PPI2 using (len; true≢false)

@@ -30,7 +30,7 @@ open import Cubical.Foundations.HLevels using (isPropΠ)
 open import Cubical.Data.Nat using (isSetℕ)
 open import Cubical.HITs.SetQuotients using ([_]; squash/)
 open import Cubical.HITs.SetQuotients.Properties using (rec; elimProp; elimProp2)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; AHomotopy; _++w_)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain; ⊑₂-01; _⊑₂_)
 open import _PPI using (Loop)

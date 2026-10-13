@@ -20,7 +20,7 @@ module _PPI4h where
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product using (Σ; _×_; _,_)
 open import Agda.Builtin.Equality using () renaming (refl to reflᴱ; _≡_ to _≡ᴱ_)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; AStep; AHomotopy; slide; expand; refl'; symm; trans'; gen)
 
 private

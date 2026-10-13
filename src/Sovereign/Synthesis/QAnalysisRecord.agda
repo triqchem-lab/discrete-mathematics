@@ -57,7 +57,7 @@ qsymR qa (qstep c s p) =
 -- §4. 实例：AtkinQ1 边连通（复用 Topology/AtkinQ1.agda）
 --------------------------------------------------------------------------------
 
-open import Sovereign.Topology.AtkinQ1
+open import Sovereign.Synthesis.AtkinQ1
   using (Edge; Edge-share; share-sym)
   renaming (e01 to at-e01; e12 to at-e12)
 

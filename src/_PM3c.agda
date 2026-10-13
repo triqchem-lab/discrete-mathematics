@@ -20,12 +20,12 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; trans; cong)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
-open import Sovereign.Topology.MorsePairingLaw using
+open import Sovereign.Application.MorsePairingLaw using
   (oneStepPair; oneStepPair-zero; ⊗-zeroʳ-loc)
 open import _PM3b using
   (via-tail-cancel; via-prefix-cancel; via-propagate; via-propagate-tail)
 open import Sovereign.Application.MorseSqZeroK3 using (m3-cancel; m3-assembly)
-open import Sovereign.Topology.MorseCoeffRoute using (module CoeffRouteDef)
+open import Sovereign.Application.MorseCoeffRoute using (module CoeffRouteDef)
 
 ------------------------------------------------------------------------
 -- §1 路由跳贡献项（两形——与 CoefRoute 两构造子对齐）

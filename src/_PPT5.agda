@@ -23,7 +23,7 @@ open import Data.Unit using (⊤; tt)
 open import Data.Product using (Σ; _,_)
 open import Agda.Builtin.Equality using (_≡_; refl)
 
-open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; Walk; AHomotopy; nil)
+open import Sovereign.Synthesis.BarceloAHomotopy using (DiGraph; Walk; AHomotopy; nil)
 open import _PPI2 using (π₁ᵈ)
 open import _PPT2 using (PostnikovTower; tower-gskel)
 open import _PPI4h using (NoTriangle; ah-diag-gen)

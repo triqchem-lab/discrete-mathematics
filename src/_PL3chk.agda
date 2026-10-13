@@ -7,7 +7,7 @@ module _PL3chk where
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Nat.Properties using (+-assoc; +-comm; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; Walk; nil; cons; AStep; slide; AHomotopy; gen)
+open import Sovereign.Synthesis.BarceloAHomotopy using (DiGraph; Walk; nil; cons; AStep; slide; AHomotopy; gen)
 open import Sovereign.Synthesis.PostnikovTruncation
 open WeightedDiGraph
 

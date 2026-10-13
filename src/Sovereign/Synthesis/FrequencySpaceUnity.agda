@@ -19,7 +19,7 @@ open import Data.Vec using (Vec; []; _∷_)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Structology.SP2Ternary using (SP2Dir; double; succ3)
+open import Sovereign.Synthesis.SP2Ternary using (SP2Dir; double; succ3)
 
 --------------------------------------------------------------------------------
 -- §1. 频率面与空间面 (同一个 GF(3) = Fin 3 的两个自同构)

@@ -43,7 +43,7 @@ open import Relation.Binary.PropositionalEquality
 open import Agda.Builtin.Equality using () renaming (refl to reflᴱ; _≡_ to _≡ᴱ_)
 open import Cubical.Foundations.Prelude using () renaming (_≡_ to _≡ᶜ_)
 open import Cubical.Data.Equality.Conversion using (eqToPath)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; _++w_)
 open import _PPI using (Loop)
 

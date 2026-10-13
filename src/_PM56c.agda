@@ -39,7 +39,7 @@ open import Sovereign.Topology.FormanMinimal using (Sx; v0; v1; v2; e01; e12; e2
 open import _PM56 using (Chain; PairConnector; pair-hom-kernel; conn-hom-kernel; unit-r)
 open import _PM56b using (negT; negChain; ∂₁ˢ; scl; ∂C; H₁; ρ₁; H₂; ρ₂)
 open import Sovereign.Application.MorseBoundaryK3 using (∂M-e₂₀-v₁; ∂M-e₂₀-v₂)
-open import Sovereign.Topology.CollapseToMorse using (collapseVF)
+open import Sovereign.Application.CollapseToMorse using (collapseVF)
 
 -------------------------------------------------------------------------
 -- §0 lookup 机件（形式和口径）+ Trit 小引理

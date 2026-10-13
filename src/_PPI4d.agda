@@ -25,7 +25,7 @@ open import Data.Nat using (ℕ; zero; suc)
 open import Data.Bool using (Bool; true; false)
 open import Agda.Builtin.Equality using () renaming (refl to reflᴱ; _≡_ to _≡ᴱ_)
 open import Cubical.Foundations.Prelude using (_≡_; refl; cong)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; AHomotopy)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain; ⊑₂-01)
 open import _PPI4 using (Gskel)

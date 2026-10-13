@@ -23,9 +23,9 @@ open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Application.DiscreteMorseGeneral
   using (DiscreteMorseFunction)
-open import Sovereign.Topology.FormanChiInvariant using (chi-m-f)
+open import Sovereign.Application.FormanChiInvariant using (chi-m-f)
 open import Sovereign.Topology.FormanMinimal using (Sx; v0; v1; v2; e01; e12; e20; t; dim)
-open import Sovereign.Topology.CollapseToMorse using (collapseVF)
+open import Sovereign.Application.CollapseToMorse using (collapseVF)
 
 --------------------------------------------------------------------------------
 -- §1. 存在性：任意 K 上的平凡 Morse 场（全临界，无配对）

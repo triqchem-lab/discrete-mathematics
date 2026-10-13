@@ -30,7 +30,7 @@ open import Cubical.HITs.SetQuotients using ([_])
 open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Topology.McCordCore using (cmpEdge)
 open import Sovereign.Synthesis._PMc2 using (KEdge)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
 open import _PPI2 using (π₁ᵈ; _⊞ᵈ_; invᵈ)
 
 --------------------------------------------------------------------------------

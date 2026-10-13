@@ -38,7 +38,7 @@ open import Data.List using (List; []; _∷_)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; _++w_)
 open import _PPI4j using (module Cut; NoX; Nonempty; IsExc; NoX-ext; ++w-assocᴱ)
 open import _PPI4k using (module LoopRes)

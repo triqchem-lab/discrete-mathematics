@@ -21,7 +21,7 @@ open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Cubical.Foundations.Prelude using (_≡_; refl)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
-open import Sovereign.Topology.BarceloAHomotopy using (Walk; AStep; slide; expand)
+open import Sovereign.Synthesis.BarceloAHomotopy using (Walk; AStep; slide; expand)
 open import _PPI5d using (Ω2Walk; nil2; cons2; s2-adj; s2v0; w3; w'; omega2-wit; face012-slide; face012-expand)
 
 -- ─── §1 S²ᵈ 面/边/2-链（组合链面——GF(3) 系数）────────────────────

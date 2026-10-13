@@ -22,7 +22,7 @@ open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.List.Relation.Unary.Any using (Any; here; there)
 open import Data.List.Membership.Propositional using (_∈_)
 open import Sovereign.Application.MorseSqZeroK3 using (m3-cancel; m3-assembly)
-open import Sovereign.Topology.MorsePairingLaw using
+open import Sovereign.Application.MorsePairingLaw using
   (PairingLaw; oneStepPair; oneStepPair-zero)
 
 ------------------------------------------------------------------------

@@ -26,7 +26,7 @@ open import Sovereign.Algebra.FreeAb using (zeroᶠ)
 open import Sovereign.Algebra.LiftCriterion using (NonZero₃; tt; ⊗-cancel)
 
 -- 复用 KerTrivial 的核谓词与引理
-open import Sovereign.Topology.KerTrivial using (KerPt; ker-from-T₁; H-carrier; Zero→H₁; H₁→Zero; zero-pt-in-ker)
+open import Sovereign.Synthesis.KerTrivial using (KerPt; ker-from-T₁; H-carrier; Zero→H₁; H₁→Zero; zero-pt-in-ker)
 open import Sovereign.Synthesis.ChainQuotIso using (Zero; zero-pt)
 
 open import Relation.Nullary using (yes; no)

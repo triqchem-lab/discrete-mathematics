@@ -31,7 +31,7 @@ open import Cubical.HITs.SetQuotients.Properties
   using (elimProp2) renaming (elimProp to elimProp/q)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; _++w_; AHomotopy)
 open import _PPI2 using (π₁ᵈ; _⊞ᵈ_; π₁ᵈ-rec)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)

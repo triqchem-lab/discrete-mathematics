@@ -29,7 +29,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Topology.FormanMinimal
   using (Sx; dim; v0; v1; v2; e01; e12; e20; t)
   renaming (triangleVF to triVF)
-open import Sovereign.Topology.MorseAcyclic using (morse-acyclic-2)
+open import Sovereign.Application.MorseAcyclic using (morse-acyclic-2)
 open import Sovereign.Topology.FormanPerfectField
   using (perfectVF; perfect-dim-law)
 

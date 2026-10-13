@@ -20,7 +20,7 @@ open import Data.Empty using (⊥-elim)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; Walk; nil)
+open import Sovereign.Synthesis.BarceloAHomotopy using (DiGraph; Walk; nil)
 open import _PPI2 using (π₁ᵈ; G2s)
 open import _PPI4 using (Gskel)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)

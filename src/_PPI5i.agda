@@ -24,7 +24,7 @@ open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/)
 open import Cubical.Foundations.Prelude using (_≡_; refl)
 open import Relation.Binary.PropositionalEquality using () renaming (_≡_ to _≡ᴱ_; refl to reflᴱ)
 
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; AStep; AHomotopy)
 open import _PPI5 using (BasedMap; DHomotopy)
 open import _PPI5c using (BMHom; BMapQ; bmQ)

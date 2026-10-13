@@ -37,7 +37,7 @@ open import Sovereign.Topology.AlexandroffFinite using (FinitePoset)
 open import Sovereign.Topology.McCordCore using (cmpEdge)
 open import Sovereign.Synthesis._PMc2 using (KEdge)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; AHomotopy; AStep; AH-refl)
 open import _PPI2
   using (π₁ᵈ; len; Pos; Q; Q-hom; S̄; true≢false)

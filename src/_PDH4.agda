@@ -27,7 +27,7 @@ open import Cubical.Foundations.Prelude
 open import Cubical.HITs.SetQuotients using (_/_; [_])
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
-open import Sovereign.Topology.BarceloAHomotopy using (Walk; nil; cons; _++w_)
+open import Sovereign.Synthesis.BarceloAHomotopy using (Walk; nil; cons; _++w_)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import _PPI2 using (π₁ᵈ; _⊞ᵈ_)
 open import _PPI4 using (Gskel)

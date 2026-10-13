@@ -18,7 +18,7 @@ open import Data.Fin using () renaming (zero to fzero; suc to fsuc)
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; _∙_; isSet)
 open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/; squash/)
 open import Cubical.HITs.SetQuotients.Properties using (rec)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; AHomotopy; AH-refl; AH-symm; AH-trans)
 open import _PPI using (Loop; π₁-Spec; G2; ℓ0)
 
@@ -81,7 +81,7 @@ check-quot-ℓ0' = π₁ᵈ-refl ℓ0
 open import Cubical.Foundations.Prelude using (funExt; cong) renaming (subst2 to subst₂)
 open import Cubical.Foundations.HLevels using (isSetΠ)
 open import Cubical.HITs.SetQuotients.Properties using (elimProp3) renaming (elimProp to elimProp/q)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (cons; _++w_; AStep; slide; expand; refl'; symm; trans'; gen)
 open import _PPI using (⊞-resp; ++w-resp-l)
 open import Data.Fin using (Fin)

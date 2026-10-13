@@ -24,7 +24,7 @@ open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; cong; cong₂; subst)
-open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; nil)
+open import Sovereign.Synthesis.BarceloAHomotopy using (DiGraph; nil)
 open import Cubical.HITs.SetQuotients using ([_])
 open import Cubical.Data.Equality as CE using (eqToPath; pathToEq)
 open import _PPI2 using (π₁ᵈ; _⊞ᵈ_)

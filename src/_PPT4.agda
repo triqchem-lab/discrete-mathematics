@@ -23,7 +23,7 @@ module _PPT4 where
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Unit using (⊤; tt)
 open import Cubical.Foundations.Prelude using (_≡_; refl)
-open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; Walk)
+open import Sovereign.Synthesis.BarceloAHomotopy using (DiGraph; Walk)
 open import _PPT2 using (PostnikovTower)
 open import _PPI5d using (Ω2Walk; nil2; s2-adj; s2v0; w3; omega2-wit)
 open import _PPI5f using (Ω3Walk; omega2-wit-triv)

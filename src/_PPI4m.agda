@@ -29,7 +29,7 @@ open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; cong₂; 
 open import Cubical.Data.Nat using (isSetℕ)
 open import Cubical.HITs.SetQuotients using ([_])
 open import Cubical.HITs.SetQuotients.Properties using (elimProp)
-open import Sovereign.Topology.BarceloAHomotopy
+open import Sovereign.Synthesis.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; _++w_)
 open import Sovereign.Synthesis.McCordPi0 using (two-chain)
 open import _PPI using (Loop)

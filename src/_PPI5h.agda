@@ -23,7 +23,7 @@ module _PPI5h where
 -- ② 导入区
 open import Cubical.Foundations.Prelude using (_≡_; refl; sym; cong; subst)
 open import Data.Product using (Σ; Σ-syntax; _,_)
-open import Sovereign.Topology.BarceloAHomotopy using (DiGraph; Walk; nil; cons; AStep)
+open import Sovereign.Synthesis.BarceloAHomotopy using (DiGraph; Walk; nil; cons; AStep)
 open import _PPI5d using (Ω2Walk; nil2; cons2; s2-adj; s2v0; s2v1; s2v2; s2v3;
                           S2edge; s01; s12; s20; s02; s13; s30; s03;
                           w3; w3b; w'; omega2-wit; face012-slide; face013-slide)
