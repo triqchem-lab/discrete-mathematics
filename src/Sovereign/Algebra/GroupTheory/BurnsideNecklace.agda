@@ -34,6 +34,21 @@
 --       §4 necklace-numOrbits / necklace-fixCount / necklace-stabCount /
 --          necklace-classical / 六条轨道的显式大小分解
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      ⚠ 未显式 record（以 f16 等具体载体承载）
+--  ② 生成元    rot（C₄ 旋转生成元）
+--  ③ 关系      act（群作用）+ rot⁴ = id
+--  ④ 相位      ⚠ 未显式（旋转的相位语汇未单独给出）
+--  ⑤ 时钟      rot⁴（四步回位）
+--  ⑥ 归零      ⚠ 未显式
+--  ⑦ 刚性      ⚠ 未显式
+--  ⑧ 核对      necklace-numOrbits（2 色 4 珠 = (1/4)(2⁴+2¹+2²+2¹) = 6 的计数核对）
+--
+-- 形状贴合: **5/8**
+-- 定位: Burnside（Cauchy–Frobenius）引理的招牌应用（块 5）。
+
 module Sovereign.Algebra.GroupTheory.BurnsideNecklace where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _≤_)

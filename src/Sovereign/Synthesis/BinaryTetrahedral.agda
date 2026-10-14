@@ -37,6 +37,22 @@
 --
 -- 包含: data、negQ、negQ-involutive、_、q8-i²、q8-j²、q8-k²、q8-ij、q8-jk、q8-ki、q8-ji、q8-kj、q8-ik、q8-neg1-central
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      data Q8 + data C3G + record BT（半直积 2A₄ ≅ Q₈ ⋊ C₃）
+--  ② 生成元    i / j / k（四元数生成元）+ C₃ 的旋转生成元
+--  ③ 关系      q8-i² / q8-j² / q8-k²（四元数关系 i²=j²=k²=−1）
+--  ④ 相位      ⚠ 未显式（相位语汇由 C₃ 旋转分量隐含）
+--  ⑤ 时钟      ⚠ 未显式
+--  ⑥ 归零      negQ-involutive（−1 的对合性）
+--  ⑦ 刚性      q8-neg1-central（中心元 −1 的刚定位）
+--  ⑧ 核对      q8-neg1-central 等 refl 确认
+--
+-- 形状贴合: **5/8**
+-- ⚠ 定性: 2A₄ 是 A₄ 在 SU(2) 中的**非平凡中心扩张**（半直积，**非**直积 A₄ × Z₂）——
+--   归类时勿按直积理解。
+
 module Sovereign.Synthesis.BinaryTetrahedral where
 
 open import Data.Nat using (ℕ; zero; suc)

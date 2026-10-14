@@ -26,6 +26,21 @@
 --
 -- 包含: sigmaDC 的群同态性（乘性 / 单位 / 逆元）+ 具体点对抗验证
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      DuodecPoint（σ 作用的载体）
+--  ② 生成元    σ_DC（相位取逆生成元）
+--  ③ 关系      sigmaDC-homo（保持乘法）+ 保持单位/逆元
+--  ④ 相位      相位取逆（⟨α⟩ 上的 k ↦ −k）
+--  ⑤ 时钟      ⚠ 未显式（走钟过程见 GroupTheory/ClockIteration）
+--  ⑥ 归零      sigmaDC-e（保持单位元）
+--  ⑦ 刚性      **σ_DC 是 DC 展示群的群自同构** —— 由 GF(9) 的 Frobenius σ(x)=x³
+--             在 ⟨α⟩ ≅ C₄ 上诱导 ⇒ **本件即「刚性」要素的专门件**（正源 §二 2.4 的兑现）
+--  ⑧ 核对      sigmaDC-homo-check-mixed / sigmaDC-inv-check / sigmaDC-e-check（refl 确认）
+--
+-- 形状贴合: **5/8**（核心是 ⑦ 刚性；载体/生成元/关系/核对齐备）
+
 module Sovereign.Algebra.GroupTheory.DCSigmaAut where
 
 open import Data.Product using (_,_)

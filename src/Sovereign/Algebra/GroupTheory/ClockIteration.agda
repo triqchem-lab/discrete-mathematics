@@ -52,6 +52,21 @@
 --       §6 mixedOp-power-agrees-^12（与既有硬编码路径一致）
 --       §7 generator-order-12（真因子见证）
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      DuodecPoint（本源侧，分量分解）
+--  ② 生成元    tritStep（幅度步进）+ phaStep（相位步进）
+--  ③ 关系      过程律: mixedOp-power-add / mixedOp-power-decompose
+--  ④ 相位      phaStep（⟨α⟩ 的逐步旋转）
+--  ⑤ 时钟      mixedOp-power-*（走钟 n 步的过程律）—— **本件即「时钟」要素的专门件**
+--  ⑥ 归零      tritStep-3（幅度三步闭合）
+--  ⑦ 刚性      ⚠ 未显式（刚性见 GroupTheory/DCSigmaAut）
+--  ⑧ 核对      iterate-add 等 refl 确认
+--
+-- 形状贴合: **5/8**（缺 刚性 等）
+-- 定位: 杜德克时钟的**走钟过程**（参数化迭代 / 过程律 / 分量分解 / 联合周期，块 7）。
+
 module Sovereign.Algebra.GroupTheory.ClockIteration where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)

@@ -21,6 +21,21 @@
 -- 依赖: GF9 (GF9Star/gen/α), NormExactSequence (核/阶), DuodecClock (AlphaPower)
 -- 不改动任何上游模块。
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      ⟨α⟩（GF(9)× ≅ C₈ 的 4 阶循环子群）
+--  ② 生成元    gen = 1 + α（gen-generates-all 已证）
+--  ③ 关系      群律（循环群 C₄ 的乘法结构）
+--  ④ 相位      **alpha-order-exactly-4** —— 相位阶恰为 4 ⇒ **本件即「相位」要素的专门件**
+--  ⑤ 时钟      阶 4（四步回位，与 ClockIteration 的走钟过程互补）
+--  ⑥ 归零      alpha-4-id（α⁴ = id）
+--  ⑦ 刚性      ⚠ 未显式（刚性见 GroupTheory/DCSigmaAut）
+--  ⑧ 核对      alpha-2-not-id / alpha-not-id（**否证式核对**：确认阶不是 1 也不是 2）
+--
+-- 形状贴合: **5/8**（核心是 ④ 相位）
+-- 理论现实（本件自述）: 相位是**群结构**，不是坐标计算。
+
 module Sovereign.Algebra.GroupTheory.PhaseSubgroup where
 
 open import Data.Nat using (ℕ; zero; suc; _*_; _+_)

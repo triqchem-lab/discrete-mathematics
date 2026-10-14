@@ -26,6 +26,21 @@
 --   §4 具体实例：C₄ 正则作用（|Orbit|=4, |Stab|=1）；C₄ 在 Fin 2 上的奇偶作用（|Orbit|=2, |Stab|=2）
 --   §5 对抗验证：具体点 refl 交叉比对
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      record Action（群作用结构：G 作用于 X）
+--  ② 生成元    群 G 的生成元（通用件，由 Action 参数化给出）
+--  ③ 关系      orbit-stabilizer 定理: |Orbit a| × |Stab a| = |G|
+--  ④ 相位      ⚠ 未显式（通用件不含相位语汇）
+--  ⑤ 时钟      C4-regular（C₄ 正则作用）
+--  ⑥ 归零      ⚠ 未显式
+--  ⑦ 刚性      ⚠ 未显式
+--  ⑧ 核对      reg-stab / reg-complete / reg-orbit 的实例核对
+--
+-- 形状贴合: **5/8**
+-- 定性: 通用定理件（orbit-stabilizer），相位/时钟属具体群语汇、部分不适用。
+
 module Sovereign.Algebra.GroupTheory.OrbitStabilizer where
 
 open import Data.Nat using (ℕ; _*_)
