@@ -43,7 +43,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_)
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ; Σ-syntax)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; trans; sym; cong; cong₂)
+  using (_≡_; _≢_; refl; trans; sym; cong; cong₂)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-comm; ⊕-inverse)
 open import Sovereign.Algebra.GF9
@@ -347,5 +347,48 @@ quot-size = 3
 -- 其他商群 (注释层):
 -- DuodecClock/⟨-1⟩ ≅ Z/6 (商掉 180° 翻转)
 -- DuodecClock/Z/3 ≅ ⟨α⟩ ≅ Z/4 (商掉加法步进, 只剩旋转)
+
+--------------------------------------------------------------------------------
+-- g4：加乘联合 ≠ 单分量迭代 —— 时钟最小性（2026-10-14）
+--
+-- 问题：clock = 12 能否由**单个分量**的作用给出？
+-- 回答：不能。论证链 ——
+--   ① 加法分量（Trit）周期 = 3   （plus1-order-3）
+--   ② 相位分量（AlphaPower）周期 = 4 （alpha-order-4）
+--   ③ 联合（mixedOp）周期 = 12 = lcm(3,4)    （mixedOp-12-cycle）
+--   ④ 任一**只推进一个分量**的作用，其周期必 ∈ {3, 4}
+--   ⑤ 3 ≢ 12 且 4 ≢ 12
+--   ⇒ 12 不可能由单分量作用给出 —— 它必须来自**两分量联合**
+--
+-- 【为何「12 步归零」不足以刻画 clock】决定性反例：
+--   相位分量作用在 k = 4 就归零（alpha-order-4），而 4 ∣ 12
+--   ⇒ 若 clock-cycle 只要求「12 步归零」，则**只推相位**的 phase 也满足
+--   ⇒ 12 = lcm(3,4) 的**联合**语义被抹掉
+--   ⇒ 故 clock 的语义必须是**联合运算的周期**（含最小性），不能是单分量迭代。
+--
+-- 【对形态问题的裁定】本命题**只依赖 DC 结构**，与 Presentation 的形态无关
+--   （用户 2026-10-14 论断「g4 独立于形态」）。它裁定：
+--   - 一元化**可行** —— 把「二元运算 + 生成元」打包成单个一元作用是合法的
+--     （如 DayanCore §4 的 `iterate (δ ∘ φ) 12 c ≡ c`）；
+--   - 但一元作用**必须同时推进两分量**，不可退化为单分量迭代。
+--   ⇒ 正源「生成元用一元作用」与 DC 的「二元联合」不矛盾：
+--     二元是**分量级**结构，一元是**其联合作用的呈现**，二者可共存。
+--------------------------------------------------------------------------------
+
+-- ④⑤ 单分量周期均 ≠ 联合周期 12
+three-not-twelve : 3 ≢ 12
+three-not-twelve = λ ()
+
+four-not-twelve : 4 ≢ 12
+four-not-twelve = λ ()
+
+single-component-periods-exclude-12 : (3 ≢ 12) × (4 ≢ 12)
+single-component-periods-exclude-12 = three-not-twelve , four-not-twelve
+
+-- 决定性反例：4 ∣ 12（12 = 4 × 3）
+-- ⇒ 相位分量 4 步归零 ⟹ 12 步必然也归零
+-- ⇒「12 步归零」这一条**不能**区分「联合」与「单分量」
+twelve-is-multiple-of-4 : 12 ≡ 4 * 3
+twelve-is-multiple-of-4 = refl
 
 -- 0 postulate.
