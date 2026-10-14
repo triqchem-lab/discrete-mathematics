@@ -54,7 +54,7 @@ open import Sovereign.Algebra.GF9 using
    _*s_; _^s_; gen; galoisNorm; galoisConjugate;
    alpha; alpha-squared; alpha-powers-4; gf9-one; _*gf9_;
    gen-pow-0; gen-pow-2; gen-pow-4; gen-pow-6; gen-pow-8;
-   gen-generates-all; *s-identityˡ; *s-identityʳ; *s-comm)
+   gen-generates-all; *s-identityˡ; *s-identityʳ; *s-comm; *s-assoc)
 open import Sovereign.Algebra.GroupTheory.NormExactSequence using
   (gen-order-8; norm-kernel-is-even-power; ker-cyclic;
    sα-order-4; sα-order-not-2; s2-not-s1; sα-not-s1; s2α-not-s1)
@@ -217,15 +217,25 @@ phase-structure-GF9Star = record
   rot2-s1 : rot (rot s1) ≡ s2
   rot2-s1 = refl
 
-  -- 四步回位对**全体** GF9Star 成立 —— 用法直接穷举 8 个元素
-  -- （GF9Star 是 data 枚举，_*s_ 为具体乘法表，逐例归一化即 refl；
-  --   §4 的 rot-4-id 只覆盖 ⟨α⟩ 的 4 个元素，此处扩到全场）
+  -- 四步回位对**全体** GF9Star 成立
+  -- 代数链证法（依赖 2026-10-14 补的 *s-assoc；此前该引理缺失，只能 8 元素穷举）
   rot4-id-all : ∀ x → rot (rot (rot (rot x))) ≡ x
-  rot4-id-all s1    = refl
-  rot4-id-all s2    = refl
-  rot4-id-all sα    = refl
-  rot4-id-all s2α   = refl
-  rot4-id-all s1α   = refl
-  rot4-id-all s12α  = refl
-  rot4-id-all s21α  = refl
-  rot4-id-all s22α  = refl
+  rot4-id-all x =
+    rot (rot (rot (rot x)))
+      ≡⟨ refl ⟩
+    (((x *s sα) *s sα) *s sα) *s sα
+      ≡⟨ *s-assoc ((x *s sα) *s sα) sα sα ⟩
+    ((x *s sα) *s sα) *s (sα *s sα)
+      ≡⟨ *s-assoc (x *s sα) sα (sα *s sα) ⟩
+    (x *s sα) *s (sα *s (sα *s sα))
+      ≡⟨ *s-assoc x sα (sα *s (sα *s sα)) ⟩
+    x *s (sα *s (sα *s (sα *s sα)))
+      ≡⟨ cong (x *s_) (sym sα-pow-4) ⟩
+    x *s s1
+      ≡⟨ *s-identityʳ x ⟩
+    x
+      ∎
+    where
+    -- sα *s (sα *s (sα *s sα)) ≡ sα⁴ ≡ s1
+    sα-pow-4 : sα *s (sα *s (sα *s sα)) ≡ s1
+    sα-pow-4 = sα-order-4

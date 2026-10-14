@@ -827,6 +827,23 @@ open import Sovereign.Base.Trit using (⊗-assoc)
       (a ⊗ ((c ⊗ f) ⊕ (d ⊗ e))) ⊕ (b ⊗ ((c ⊗ e) ⊕ (negate (d ⊗ f))))
     imag-eq = trans i-step1 (trans i-step2 (trans i-step3 i-step4))
 
+-- ═══════════════════════════════════════════════════════════════
+-- 乘法结合律 —— GF9Star 群结构缺失的一环（2026-10-14 补）
+-- ═══════════════════════════════════════════════════════════════
+-- 此前 GF9Star 有 identityˡ/ʳ、comm、inv-correct，但**无结合律**，
+-- 导致下游（如 PhaseSubgroup 的相位结构）只能退回 8 元素穷举。
+-- 此处用 toGF9 同态 + *gf9-assoc + 单射三步给出，免 512-case 穷举。
+--
+-- ⚠ 位置约束: 必须放在 *gf9-assoc 之后（Agda 无前向引用）。
+*s-assoc : ∀ x y z → (x *s y) *s z ≡ x *s (y *s z)
+*s-assoc x y z = toGF9-inj (
+  toGF9 ((x *s y) *s z)                 ≡⟨ *s-toGF9 (x *s y) z ⟩
+  toGF9 (x *s y) *gf9 toGF9 z            ≡⟨ cong (_*gf9 toGF9 z) (*s-toGF9 x y) ⟩
+  (toGF9 x *gf9 toGF9 y) *gf9 toGF9 z    ≡⟨ *gf9-assoc (toGF9 x) (toGF9 y) (toGF9 z) ⟩
+  toGF9 x *gf9 (toGF9 y *gf9 toGF9 z)    ≡⟨ sym (cong (toGF9 x *gf9_) (*s-toGF9 y z)) ⟩
+  toGF9 x *gf9 toGF9 (y *s z)            ≡⟨ sym (*s-toGF9 x (y *s z)) ⟩
+  toGF9 (x *s (y *s z))                  ∎)
+
 --------------------------------------------------------------------------------
 -- 13. GF9 本体乘法逆元 — 域结构的最后一环
 -- 在 GF9 = GF3 × GF3 本体上构造逆元（第 10 节只在 GF9Star 上构造）
