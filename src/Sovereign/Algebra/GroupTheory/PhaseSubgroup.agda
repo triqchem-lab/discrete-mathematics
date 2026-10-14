@@ -45,6 +45,8 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Nullary.Negation using (¬_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; trans; cong; cong₂)
+open import Relation.Binary.PropositionalEquality using (module ≡-Reasoning)
+open ≡-Reasoning
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.GF9 using
@@ -176,3 +178,54 @@ alphaPower-order-exactly-4 :
   (mulAlpha (mulAlpha (mulAlpha a1 a1) a1) a1 ≡ a0)
   × (mulAlpha a1 a1 ≡ a0 → ⊥)
 alphaPower-order-exactly-4 = alphaPower-order-4 , alphaPower-order-not-2
+
+--------------------------------------------------------------------------------
+-- §6. 相位结构 record —— 相位 / 时钟 / 归零 收于一处
+--
+-- L2 结构对齐试点（规范: docs/maps/八要素统一形状-2026-10-14.md §三/§七）。
+-- 背景：§1–§5 把三要素作为**散落的顶层定理**给出（alpha-order-exactly-4 /
+--   rot-orbit / rot-4-id / alpha-4-id …）。本 §6 把它们**收进同一关系 record**，
+--   使 ④相位 / ⑤时钟 / ⑥归零 各有统一字段落点。
+--
+-- ⚠ 零破坏：既有顶层定理**全部保留**，本 record 只是它们的结构化打包；
+--   下游引用面不变（本件无外部引用者）。
+--------------------------------------------------------------------------------
+
+record PhaseStructure4 : Set₁ where
+  field
+    -- ① 载体
+    carrier : Set
+    -- ② 生成元：相位旋转算子
+    step : carrier → carrier
+    -- ④ 相位：下界见证 —— 存在两步不回位的元素（故阶不是 1、2）
+    two-step-witness : carrier
+    two-step-not-id : step (step two-step-witness) ≢ two-step-witness
+    -- ⑤ 时钟 + ⑥ 归零：四步回位（走钟一圈 = 周期闭合）
+    step4-id : ∀ x → step (step (step (step x))) ≡ x
+
+-- 实例：GF(9)× 上的相位结构（⟨α⟩ 的 90° 步进；rot x = x *s sα）
+phase-structure-GF9Star : PhaseStructure4
+phase-structure-GF9Star = record
+  { carrier          = GF9Star
+  ; step             = rot
+  ; two-step-witness = s1
+  ; two-step-not-id  = λ e → s2-not-s1 (trans (sym rot2-s1) e)
+  ; step4-id         = rot4-id-all
+  }
+  where
+  -- 两步：rot (rot s1) = s1 *s (sα ^s 2) = s2
+  rot2-s1 : rot (rot s1) ≡ s2
+  rot2-s1 = refl
+
+  -- 四步回位对**全体** GF9Star 成立 —— 用法直接穷举 8 个元素
+  -- （GF9Star 是 data 枚举，_*s_ 为具体乘法表，逐例归一化即 refl；
+  --   §4 的 rot-4-id 只覆盖 ⟨α⟩ 的 4 个元素，此处扩到全场）
+  rot4-id-all : ∀ x → rot (rot (rot (rot x))) ≡ x
+  rot4-id-all s1    = refl
+  rot4-id-all s2    = refl
+  rot4-id-all sα    = refl
+  rot4-id-all s2α   = refl
+  rot4-id-all s1α   = refl
+  rot4-id-all s12α  = refl
+  rot4-id-all s21α  = refl
+  rot4-id-all s22α  = refl
