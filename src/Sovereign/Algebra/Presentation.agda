@@ -144,3 +144,36 @@ dc-presentation = record
   ; rigidity    = rho         -- 约定：由 GF9.galoisConjugate 诱导（rho = lambda ∘ mu）
   ; check       = mixedOp-identityʳ
   }
+
+--------------------------------------------------------------------------------
+-- g3：Presentation 是通用模板还是 DC 特化？—— 结构与实例的双重回答
+--
+-- 【探结构】曾试图用「从 DayanCore 构造 Presentation」来定位二者差异，**失败且证据确凿**：
+--   DayanCore 的字段是 δ/φ : carrier → carrier（**一元作用**）+ δ³/φ⁴/δφ-comm，
+--   **没有** step(二元)/unit/assoc/zeroˡ/zeroʳ ⇒ 群式与生成元式**不可互转**。
+--   （编译器证据：dayan-joint-order-12 对 DayanCore 是局部模块内定义，不可导出引用。）
+--
+-- 【形态对照】本库现存四种**并列**的展示结构形态，Presentation 只是其中一种：
+--   ┌ Presentation      群式： step(二元) + unit + 群律 + phase + clock + rigidity
+--   ├ DayanCore         生成元式：δ/φ(一元) + δ³/φ⁴/δφ-comm        ← 更贴正源
+--   ├ DCCyclicStructure 关系式：assoc/comm/period
+--   ├ ZeroOblivion      关系式：addZeroR/L + mulAlphaCycle + tritCycle + jointCycle
+--   └ AbstractPresentation 极简：carrier + δ(一元) + δ³            （TwoViewPlain/Rewritten）
+--
+-- 【⚠ 自我反省】正源 11-type-theory-presentation.md §二 明确「**生成元用 data**（归纳类型）」、
+--   §四 的 DC 展开写的是 g₃/g₄ **作用**——即**一元作用**形态（如 DayanCore 的 δ/φ）。
+--   本 Presentation 却把生成元做成**二元 `step`**，偏离正源；
+--   之所以照此设计，是为迁就既有件（DCGroup 的 mixedOp 是二元）。
+--   ⇒ 若要与正源严格一致，应改为「一元 `gens : A → A` 族 + 由它生成的联合」。
+--
+-- 【实例数】完整实例目前**仅 dc-presentation 一个**；候选普查结果：
+--   - TwoViewPlain / TwoViewRewritten 的 AbstractPresentation：仅 3 要素，缺 5 项 ⇒ 不可实例化
+--   - DayanCore：形态不同，不可实例化（见上）
+--   - A4（12 阶）：**红线排除** —— DuodecClock 明写「禁挂 A₄ ≅ Z/12 或 A₄ 是十二进制」，
+--     A₄ = V₄⋊C₃ 非交换，与「加乘联合（交换）」不同物
+--   - GF(3)/GF(9) 系：无「联合 + 刚性」齐备者
+--
+-- 【裁定】Presentation 目前是**群式 + GF9 刚性约束的 DC 族特化模板**，尚非通用模板。
+--   要成为通用模板，需要（a）按正源改为一元生成元式，且（b）找到第二个
+--   天然带 GF9 Galois 刚性的对象。
+--------------------------------------------------------------------------------
