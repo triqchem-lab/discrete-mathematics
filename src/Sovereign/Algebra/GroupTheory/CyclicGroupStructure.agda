@@ -30,6 +30,12 @@
 --  ⑧ 核对      dc-period-structure / dc-cyclic-structure 的 refl 确认
 --
 -- 形状贴合: **6/8**（缺 刚性、核对）
+--
+-- L2 结构对齐状态:
+--   ✅ **关系 record 已就位** —— 新增 `record DCPhaseClock`（§3b）收拢 ④相位(phase-order)
+--      / ⑤时钟(clock-period) / ⑥归零(zero-trit)。此前三者只以**积类型**
+--      dc-period-structure 打包（非 record）。既有 DCCyclicStructure 与
+--      dc-period-structure 均保留不动（零破坏）。
 
 module Sovereign.Algebra.GroupTheory.CyclicGroupStructure where
 
@@ -122,5 +128,32 @@ dc-cyclic-structure = record
   }
   where
   open import Sovereign.Algebra.GroupTheory.DuodecClock using (mixedOp-assoc; mixedOp-comm)
+
+--------------------------------------------------------------------------------
+-- L2 结构对齐（规范: docs/maps/八要素统一形状-2026-10-14.md）——
+-- 相位 / 时钟 / 归零 收进同一关系 record
+--
+-- 背景：本件的 ④相位(alpha-pow4-id) / ⑤时钟(joint-period-12) / ⑥归零(trit-cubed)
+--   此前只以**积类型** dc-period-structure 打包（非 record），且 DCCyclicStructure
+--   只含群律字段。本 §3b 把三者收进 record，作为该件的关系 record 落点。
+-- ⚠ 零破坏：DCCyclicStructure 与 dc-period-structure 均保留不动。
+--------------------------------------------------------------------------------
+
+record DCPhaseClock : Set where
+  field
+    -- ④ 相位：⟨α⟩ 分量四阶（乘 a1 四次的作用 = 恒等）
+    phase-order  : mulAlpha (mulAlpha (mulAlpha (mulAlpha a1 a1) a1) a1) a1 ≡ a1
+    -- ⑤ 时钟：联合周期 12 = 3 × 4（**推论**，由 gcd(3,4)=1 得 lcm=12，非定义）
+    clock-period : 3 * 4 ≡ 12
+    -- ⑥ 归零：损益分量三步归零（⊕³ = T₀）
+    zero-trit    : ∀ x → (x ⊕ x) ⊕ x ≡ T₀
+
+-- 实例：DC 的相位/时钟/归零结构
+dc-phase-clock : DCPhaseClock
+dc-phase-clock = record
+  { phase-order  = alpha-pow4-id
+  ; clock-period = joint-period-12
+  ; zero-trit    = trit-cubed
+  }
 
 -- 0 postulate.

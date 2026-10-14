@@ -41,6 +41,13 @@
 -- 形状贴合: **6/8**（缺 刚性、核对）
 -- ⚠ 本件是**表现级公理基座**：头部即给出展示群本源 DC = ⟨δ, φ | δ³ = id, φ⁴ = id, δφ = φδ⟩，
 --   且注明投影侧（C₁₂/R₁₂/Doz）有损、勿混写（01-ontology:137 红线）。
+--
+-- L2 结构对齐状态:
+--   ✅ 载体字段命名 —— `record DayanCore` 已用规范字段名 `carrier`
+--   ✅ **关系 record 已就位** —— `record DayanCore` 本身即 ④相位(φ⁴ = α⁴=id) +
+--      ⑥归零(δ³ = ⊕³=id) 的统一落点；⑤时钟由 §4 导出定理
+--      `dayan-joint-order-12 : ∀ c → iterate (δ ∘ φ) 12 c ≡ c`（12 步走钟一圈）承载。
+--      推论：本件**已是 L2 目标形态**，无需重组。
 
 module Sovereign.Algebra.GroupTheory.DayanCore where
 
