@@ -25,6 +25,15 @@ Agda 形式化证明 + Python 工程验证双轨制。
   只扫 `src/Sovereign`，其它目录里的草稿会「从未编译、也从未进门禁」——2026-09-13 的实例
   （`src/{01-electric-12d,02-magnetic-24d,03-neutral-144d}`）已归档到 `archive/civlayers-2026-07/`。
   修法：路径与 module 名对齐；`where` 只留给函数子句。
+- 八要素索引（**非门禁**）: `engineering/index_presentations.sh [ROOT]`（默认 `src`）——
+  **索引工具，不是验证工具**。列出所有 `Presentation` 实例（形如 `X : Presentation A`）及其实例
+  字段**齐 / 缺**、白名单排除（`Techniques/`、`/archive/`）。字段模板从
+  `src/Sovereign/Algebra/Presentation.agda` 的 record **运行时提取**（不硬编码 ⇒ 增删字段无需改脚本）。
+  输出带免责声明、**不判「通过 / 不通过」**：「字段齐全」只表示**形式**上提供了字段，
+  **不**表示 `assoc` 成立、`rigidity` 确由 `galoisConjugate` 诱导 —— 那属 Agda 类型检查器与
+  `proof_dag` 台账的权威（权威顺序：类型检查器 > 台账 > 本索引）。退出码 `0` = 索引完成
+  （不代表任何数学结论），`2` = 用法错误。用法与输出解读详见
+  `docs/maps/八要素统一形状-2026-10-14.md` §8.7。
 - 编译产物: `_build/`、`*.agdai`（gitignored），不要删除
 
 ## Architecture
