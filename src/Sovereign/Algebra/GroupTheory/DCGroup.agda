@@ -26,6 +26,12 @@
 --  ⑧ 核对      alpha-order-4 等 refl 确认（不产生结构）
 --
 -- 形状贴合: **八项齐备**（本件是展示群的公认兑现例；命名沿用数学名而非要素名）
+--
+-- L2 结构对齐状态:
+--   ✅ 载体字段命名 —— 本件 record 无独立 carrier 字段（ZeroOblivion 以 DuodecPoint 为域）
+--   ✅ **关系 record 已就位** —— `record ZeroOblivion`（§5）即本件的**相位/时钟/归零
+--      统一落点**：addZeroR/L（⑥归零）+ mulAlphaCycle（④相位 α⁴=1）+ tritCycle（⑥损益零冥）
+--      + jointCycle（⑤时钟 mixedOp¹²=id）。推论：本件**已是 L2 目标形态**，无需重组。
 
 module Sovereign.Algebra.GroupTheory.DCGroup where
 

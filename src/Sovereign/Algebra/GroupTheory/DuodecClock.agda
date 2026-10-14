@@ -64,6 +64,12 @@
 --  ⑧ 核对      duodec-clock-roundtrip / order-4 的 refl 确认（不产生结构）
 --
 -- 形状贴合: **八项齐备**；record 内已用 `carrier` 字段名（贴合规范最高档）
+--
+-- L2 结构对齐状态:
+--   ✅ 载体字段命名 —— `ZeroOblivion` 已用规范字段名 `carrier`
+--   ✅ **关系 record 已就位** —— `record ZeroOblivion`（§6b 附近）即本件的
+--      相位/时钟/归零统一落点（addZeroR/L + mulAlphaCycle + tritCycle + jointCycle）。
+--      推论：本件**已是 L2 目标形态**，无需重组。
 
 module Sovereign.Algebra.GroupTheory.DuodecClock where
 
