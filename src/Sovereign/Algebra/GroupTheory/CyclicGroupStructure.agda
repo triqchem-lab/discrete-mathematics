@@ -17,6 +17,20 @@
 --
 -- 依赖: DuodecClock (mixedOp, mulAlpha, DuodecPoint, 分量级群公理)
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      record DCCyclicStructure + DuodecPoint（分量级：Trit × AlphaPower）
+--  ② 生成元    Trit 的 ⊕（GF(3) 加法）+ AlphaPower 的 mulAlpha（⟨α⟩ 乘法）
+--  ③ 关系      trit-cubed（⊕³ = id）/ alpha-pow4-id（α⁴ = id）/ mixedOp 交换律
+--  ④ 相位      alpha-pow4-id（⟨α⟩ 四阶）
+--  ⑤ 时钟      joint-period-12（联合周期 12 = lcm(3,4)，是**推论**不是定义）
+--  ⑥ 归零      trit-cubed + alpha-pow4-id（两分量各自的归零）
+--  ⑦ 刚性      ⚠ 未显式
+--  ⑧ 核对      dc-period-structure / dc-cyclic-structure 的 refl 确认
+--
+-- 形状贴合: **6/8**（缺 刚性、核对）
+
 module Sovereign.Algebra.GroupTheory.CyclicGroupStructure where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)

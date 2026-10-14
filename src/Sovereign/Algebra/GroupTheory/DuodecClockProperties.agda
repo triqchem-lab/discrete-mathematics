@@ -22,6 +22,21 @@
 --
 -- 0 postulate.
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      DuodecPoint = Trit × AlphaPower（引用 DuodecClock）
+--  ② 生成元    混合运算 (x,a) ⊕ (y,b) = (x⊕y, mulAlpha a b) —— 加乘联合
+--  ③ 关系      阶定理族: alpha-order-4 / neg1-order-2 / plus1-order-3 / order-k-divides-n
+--  ④ 相位      alpha-in-duodec / neg1-in-alpha（⟨α⟩ 的 C₄ 位置）
+--  ⑤ 时钟      plus1-order-3（幅度 3 步）+ alpha-order-4（相位 4 步）
+--  ⑥ 归零      e-is-zero（单位元即零）+ order-2-divides-4（子群阶整除）
+--  ⑦ 刚性      ⚠ 未显式（本件无 Frobenius 诱导）
+--  ⑧ 核对      order-2-divides-4 / order-4-divides-12 的 refl 确认
+--
+-- 形状贴合: **7/8**（缺 刚性）
+-- ⚠ 红线（本件自述）: 混合运算是**加乘联合周期**，不是模 12 加法群。
+
 module Sovereign.Algebra.GroupTheory.DuodecClockProperties where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _%_; _^_)

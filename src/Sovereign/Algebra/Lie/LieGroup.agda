@@ -16,6 +16,22 @@
 --   连续: exp: g → G, 单参子群 exp((t+s)X) = exp(tX)exp(sX)
 --   离散: exp_C4/exp_C6 为有限周期单参子群 (C₄/C₆), 同态律逐项 refl
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      Mat2G : Set（2×2 矩阵群）+ SDElem : Set
+--  ② 生成元    expC4 的生成元 i（Z/4 → Z[i] 单位群 C₄）；expC6 侧同理
+--  ③ 关系      expC4-hom / expC6-hom（指数映射的群同态性）
+--  ④ 相位      C₄（生成元 i）/ C₆ 的相位结构
+--  ⑤ 时钟      expC4 周期 4 + expC6 周期 6（next4g / next6g 步进）
+--  ⑥ 归零      ⚠ 未显式命名（由单位群结构承载）
+--  ⑦ 刚性      ⚠ 未显式（与 DiscreteGaloisGroupAlgebra 分开建立；D₄ 部分有意重复）
+--  ⑧ 核对      ⚠ 未显式
+--
+-- 形状贴合: **6/8**（缺 刚性、核对）
+-- ⚠ 定性: 本件与 `Algebra/Jacobian/DiscreteGaloisGroupAlgebra` **有意分开、不合并**
+--   （本件自述「D₄ 部分为有意重复」）—— 归类时勿误判为重复件。
+
 module Sovereign.Algebra.Lie.LieGroup where
 
 open import Data.Fin using (Fin; toℕ) renaming (zero to fz; suc to fs)

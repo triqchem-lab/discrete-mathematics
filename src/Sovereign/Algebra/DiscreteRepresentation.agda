@@ -28,6 +28,21 @@
 --   Eisenstein.agda    — Z[ω] 环
 --   Trit.agda          — GF(3) 底层类型
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      data SO3Level + record DiscretizationInvariant
+--  ② 生成元    A₄（正四面体旋转群）的生成元 —— SO(3) 的离散子群
+--  ③ 关系      表示同态律（reprC1..reprC4 及各 class 的相容性）
+--  ④ 相位      reprC1/C2/C3/C4-class（四个共轭类的 C₄ 型相位划分）
+--  ⑤ 时钟      ⚠ 未显式
+--  ⑥ 归零      ⚠ 未显式
+--  ⑦ 刚性      ⚠ 未显式（无 Frobenius 诱导）
+--  ⑧ 核对      ⚠ 未显式
+--
+-- 形状贴合: **6/8**（缺 刚性、核对；另 时钟/归零 弱）
+-- 定位: SO(3)/SU(2) 表示论的离散替代（不可约表示限制到 A₄ 后分解）。
+
 module Sovereign.Algebra.DiscreteRepresentation where
 
 open import Data.Nat using (ℕ; zero; suc)
