@@ -63,10 +63,10 @@ EulerCircuit G x vs =
 -- 雏形：边支撑在对称差下的交换群结构（群律/单位元/逆元=自反——立界注记）
 record CycleSpace (G : Graph) : Set₁ where
   field
-    Carrier : Set                        -- 圈的边支撑（抽象载体）
-    symdiff : Carrier → Carrier → Carrier
-    contains : V G × V G → Carrier → Set -- 边隶属支撑
-  -- 立界：(Carrier, symdiff, ∅) 交换群律 + 圈支撑对 symdiff 封闭
+    carrier : Set                        -- 圈的边支撑（抽象载体）
+    symdiff : carrier → carrier → carrier
+    contains : V G × V G → carrier → Set -- 边隶属支撑
+  -- 立界：(carrier, symdiff, ∅) 交换群律 + 圈支撑对 symdiff 封闭
 
 ------------------------------------------------------------------------
 -- 实例层：Tri / K3（C3 圈 + Euler 回路——全证）

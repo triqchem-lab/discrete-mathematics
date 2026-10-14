@@ -54,14 +54,14 @@ closed-instance = refl
 
 record AbstractPresentation : Set₁ where
   field
-    Carrier : Set
-    δ : Carrier → Carrier
+    carrier : Set
+    δ : carrier → carrier
     δ³ : ∀ c → δ (δ (δ c)) ≡ c
 
 open AbstractPresentation
 
 -- 抽象形态下，定律只能由字段给出（没有规则可用）
-from-field : (p : AbstractPresentation) (c : Carrier p) → δ p (δ p (δ p c)) ≡ c
+from-field : (p : AbstractPresentation) (c : carrier p) → δ p (δ p (δ p c)) ≡ c
 from-field p c = δ³ p c
 
 -- 0 postulate / 0 hole。

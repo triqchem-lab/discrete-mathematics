@@ -32,11 +32,11 @@ open import Relation.Binary.PropositionalEquality using (_≡_)
 -- ──────────────────────────────────────────────
 record B3 : Set₁ where
   field
-    Carrier : Set
-    e       : Carrier
-    _·_     : Carrier → Carrier → Carrier
-    inv     : Carrier → Carrier
-    σ₁ σ₂   : Carrier
+    carrier : Set
+    e       : carrier
+    _·_     : carrier → carrier → carrier
+    inv     : carrier → carrier
+    σ₁ σ₂   : carrier
     -- 群结构（结构定义，非 presentation 关系）
     assoc     : ∀ x y z → (x · y) · z ≡ x · (y · z)
     identityˡ : ∀ x → e · x ≡ x

@@ -66,11 +66,11 @@ open import Data.Product using (Σ; _×_; _,_)
 -- GF(3) 域接口（道体的类型规范）
 record GF3Axiom : Set₁ where
   field
-    Carrier : Set
-    _⊕_ : Carrier → Carrier → Carrier
-    _⊗_ : Carrier → Carrier → Carrier
-    𝟘 : Carrier    -- 加法单位（吸收态）
-    𝟙 : Carrier    -- 乘法单位（平衡态）
+    carrier : Set
+    _⊕_ : carrier → carrier → carrier
+    _⊗_ : carrier → carrier → carrier
+    𝟘 : carrier    -- 加法单位（吸收态）
+    𝟙 : carrier    -- 乘法单位（平衡态）
 
 -- 实现引用：Trit 满足此接口
 -- witness: Sovereign.Base.Trit 的 Trit 类型 + _⊕_ + _⊗_ + T₀ + T₁
@@ -124,9 +124,9 @@ record SunyiAxiom : Set₁ where
 -- 归零接口
 record GuilingAxiom : Set₁ where
   field
-    Carrier : Set
-    ε : Carrier          -- 单位元
-    归零 : Carrier → Set  -- 归零判定（回到单位元）
+    carrier : Set
+    ε : carrier          -- 单位元
+    归零 : carrier → Set  -- 归零判定（回到单位元）
     -- 核心性质：mixedOp¹² = ε（联合周期归零）
 
 --------------------------------------------------------------------------------

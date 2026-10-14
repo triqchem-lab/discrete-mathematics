@@ -14,15 +14,15 @@
 -- ⚠ **代价**：本模块携带规则 ⇒ 任何 import 它的模块**被迫**开启 `--rewriting`
 --   （实测 `[InfectiveImport]`），且**无法只取定义、不要规则**（见 PGM 评估 §Q1）。
 --
--- ⚠ **postulate 性质声明**：此处的 `Carrier`/`δ` 是**抽象展示群的签名**、`δ³-law` 是其**关系**
+-- ⚠ **postulate 性质声明**：此处的 `carrier`/`δ` 是**抽象展示群的签名**、`δ³-law` 是其**关系**
 --   （即条件命题的**前件**），**不是"未证的引理"**。它们不冒充定理。
 
 -- 核心原则：
 --   1. 生成元必须 stuck 头暴露（postulate 夹具）——Agda 拒收 LHS 归约的规则
---   2. Carrier/δ/δ³-law = kind:rewrite 类豁免（人类裁决 2026-09-13 A 案）：最小合法单元
+--   2. carrier/δ/δ³-law = kind:rewrite 类豁免（人类裁决 2026-09-13 A 案）：最小合法单元
 --   3. 不构成定理缺口、不被下游定理引用（裁决三合取条件）
 --
--- 包含：TwoViewRewritten 视图 record（Carrier/δ/δ³-law 三件 + REWRITE 注册）
+-- 包含：TwoViewRewritten 视图 record（carrier/δ/δ³-law 三件 + REWRITE 注册）
 
 -- ③ 基础件层（夹具定义，无④⑤⑥——机制最小模型）
 
@@ -37,8 +37,8 @@ open import Agda.Builtin.Equality.Rewrite
 --------------------------------------------------------------------------------
 
 postulate
-  Carrier : Set
-  δ : Carrier → Carrier
+  carrier : Set
+  δ : carrier → carrier
   δ³-law : ∀ c → δ (δ (δ c)) ≡ c
 
 {-# REWRITE δ³-law #-}

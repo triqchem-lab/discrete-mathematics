@@ -165,13 +165,13 @@ LossGainSig = record { OpSymbol = LossGain; Arity = λ _ → 1 }
 -- 签名下的结构：载体类型 + 操作解释
 record Structure (Σ : Signature) : Set₁ where
   field
-    Carrier : Set
-    op      : (f : Signature.OpSymbol Σ) → Vec Carrier (Signature.Arity Σ f) → Carrier
+    carrier : Set
+    op      : (f : Signature.OpSymbol Σ) → Vec carrier (Signature.Arity Σ f) → carrier
 
 -- 十二律损益结构：载体 = ℕ，操作为 Sun/Yi
 LossGainStructure : Structure LossGainSig
 LossGainStructure = record
-  { Carrier = ℕ
+  { carrier = ℕ
   ; op      = λ { Sun → λ {(n Vec.∷ Vec.[]) → sunOp n}
                 ; Yi  → λ {(n Vec.∷ Vec.[]) → yiOp n}
                 }

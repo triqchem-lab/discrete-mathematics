@@ -227,7 +227,7 @@ t6-norm-class = refl
 -- record 字段是接口约束 (由使用者提供), 不是 postulate。
 --
 -- 与离散版本的关键区别:
---   ① Carrier 和 Scalar 是抽象类型 (不指定为 GF(3)ⁿ 或 GF(3))
+--   ① carrier 和 Scalar 是抽象类型 (不指定为 GF(3)ⁿ 或 GF(3))
 --   ② 内积值在抽象 Scalar 中 (不是 GF(3))
 --   ③ 对称性是公理化的 (record 字段), 非穷举验证
 --------------------------------------------------------------------------------
@@ -235,13 +235,13 @@ t6-norm-class = refl
 record ContInnerProductSpace : Set₁ where
   field
     -- 向量空间载体 (不指定具体类型, 不假设为 ℝⁿ)
-    Carrier : Set
+    carrier : Set
     -- 标量域载体 (不指定为 ℝ, 可以是任何类型)
     Scalar : Set
-    -- 内积运算: Carrier × Carrier → Scalar
-    inner : Carrier → Carrier → Scalar
+    -- 内积运算: carrier × carrier → Scalar
+    inner : carrier → carrier → Scalar
     -- 内积对称性 (结构公理, 作为 record 字段由实例提供)
-    cont-inner-sym : ∀ (x y : Carrier) → inner x y ≡ inner y x
+    cont-inner-sym : ∀ (x y : carrier) → inner x y ≡ inner y x
 
 --------------------------------------------------------------------------------
 -- §6. L² 桥接 record — 离散内积空间 → 连续内积空间的投影
@@ -249,7 +249,7 @@ record ContInnerProductSpace : Set₁ where
 -- 桥接 = 投影映射 + 模 3 归约 + 保持性
 --
 -- 交换图:
---   GF(3)ⁿ ──project──→ Carrier
+--   GF(3)ⁿ ──project──→ carrier
 --     │                     │
 --     │ ⟨·,·⟩_disc         │ inner
 --     ↓                     ↓
@@ -268,7 +268,7 @@ record L2Bridge (n : ℕ) (C : ContInnerProductSpace) : Set where
   open ContInnerProductSpace C
   field
     -- 投影映射: 离散向量 → 连续向量
-    project : Vec Trit n → Carrier
+    project : Vec Trit n → carrier
     -- 模 3 归约: 连续标量 → GF(3)
     reduce : Scalar → Trit
     -- 保持性: 内积在投影下保持 (模 3 意义)
@@ -395,7 +395,7 @@ t6-l2-norm-degenerate xs = t6-l2-degenerate xs xs
 -- 将 GF(3)ⁿ 离散内积空间打包为 ContInnerProductSpace
 discrete-as-cont : ℕ → ContInnerProductSpace
 discrete-as-cont n = record
-  { Carrier        = Vec Trit n
+  { carrier        = Vec Trit n
   ; Scalar         = Trit
   ; inner          = standard-inner-product n
   ; cont-inner-sym = inner-sym n

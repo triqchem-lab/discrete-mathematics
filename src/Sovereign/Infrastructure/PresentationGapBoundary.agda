@@ -16,7 +16,7 @@
 --      而是把一个真命题（δ³ 成立）的否定当成要求。
 --
 --   ② **能内部证明的是它的语义影子**：定律是**内容**而非定义——
---      存在「有 Carrier、有 δ」而定律失败的模型（`law-is-content`：Bool 上的 `not`/
+--      存在「有 carrier、有 δ」而定律失败的模型（`law-is-content`：Bool 上的 `not`/
 --      两点上的 `flip`），故定律不可能由其余结构（也就是「定义」）逼出。
 --      对照：三点上的 3-循环满足定律（`presentation-instance`）⇒ ① 的反证不是空谈。
 --
@@ -48,8 +48,8 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; subst
 
 record DeltaPresentation : Set₁ where
   field
-    Carrier : Set
-    δ : Carrier → Carrier
+    carrier : Set
+    δ : carrier → carrier
     δ³ : ∀ c → δ (δ (δ c)) ≡ c
 
 open DeltaPresentation
@@ -60,11 +60,11 @@ open DeltaPresentation
 
 -- 用户提案的字段形态
 naive-no-automatic-reduction : (p : DeltaPresentation) → Set
-naive-no-automatic-reduction p = ∀ (c : Carrier p) → ¬ (δ p (δ p (δ p c)) ≡ c)
+naive-no-automatic-reduction p = ∀ (c : carrier p) → ¬ (δ p (δ p (δ p c)) ≡ c)
 
 -- ① 机器判定：**只要载体非空**，该字段就不可居留
 --    （因为 δ³ 正是 record 的字段，直接给出反例项）
-naive-encoding-refuted : ∀ (p : DeltaPresentation) (c : Carrier p)
+naive-encoding-refuted : ∀ (p : DeltaPresentation) (c : carrier p)
                        → ¬ (naive-no-automatic-reduction p)
 naive-encoding-refuted p c h = h c (δ³ p c)
 
@@ -83,7 +83,7 @@ isA : Two → Set
 isA a = ⊤
 isA b = ⊥
 
--- 存在满足「有 Carrier、有 δ」而定律**失败**的模型
+-- 存在满足「有 carrier、有 δ」而定律**失败**的模型
 --   ⇒ 定律不能由其余结构（即「定义」）逼出 —— 这是能在 Agda 内部证的那一半
 law-is-content : ¬ (∀ (x : Two) → flip (flip (flip x)) ≡ x)
 law-is-content h = subst isA (sym (h a)) tt
@@ -107,7 +107,7 @@ step-3-law p1 = refl
 step-3-law p2 = refl
 
 presentation-instance : DeltaPresentation
-presentation-instance = record { Carrier = Three ; δ = step ; δ³ = step-3-law }
+presentation-instance = record { carrier = Three ; δ = step ; δ³ = step-3-law }
 
 -- 具体实例的**闭合项**：归一化器自己就能算（与抽象形态对照；抽象形态见 docs/ 探针矩阵）
 closed-instance-computes : step (step (step p0)) ≡ p0

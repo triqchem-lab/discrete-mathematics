@@ -33,7 +33,7 @@ import Sovereign.Infrastructure.TwoViewPlain as Plain
 open import Sovereign.Infrastructure.TwoViewPlain using (Three; p0; step)
 
 import Sovereign.Infrastructure.TwoViewRewritten as Rew
-open import Sovereign.Infrastructure.TwoViewRewritten using (Carrier; δ; law-auto)
+open import Sovereign.Infrastructure.TwoViewRewritten using (carrier; δ; law-auto)
 
 ------------------------------------------------------------------------
 -- 规则式一侧

@@ -82,13 +82,13 @@ data KMElement : Set where
 -- ────────────────────────────────────────────────────────────────────
 record KacMoodyPresentation : Set₁ where
   field
-    Carrier : Set
-    e'      : ℕ → Carrier
-    f'      : ℕ → Carrier
-    h'      : ℕ → Carrier
-    zero'   : Carrier
-    _+'     : Carrier → Carrier → Carrier
-    _·'_    : Carrier → Carrier → Carrier
+    carrier : Set
+    e'      : ℕ → carrier
+    f'      : ℕ → carrier
+    h'      : ℕ → carrier
+    zero'   : carrier
+    _+'     : carrier → carrier → carrier
+    _·'_    : carrier → carrier → carrier
 
     -- presentation 关系（截断形——本 record 的关系字段 = 且仅 = 下列二条）
     hh-rel : ∀ i j → (h' i) ·' (h' j) ≡ zero'    -- [hᵢ,hⱼ] = 0

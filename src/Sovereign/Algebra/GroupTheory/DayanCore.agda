@@ -12,11 +12,11 @@
 -- **最低公理基座** (用户确认的纯分量级定义)。
 --
 -- 与既有链条的关系 (依赖侧全部本地形式化):
---   Carrier = DuodecPoint = Trit × AlphaPower (12 元素, DuodecClock)
+--   carrier = DuodecPoint = Trit × AlphaPower (12 元素, DuodecClock)
 --   δ (加法生成元): 平移 (t , a) ↦ (t ⊕ T₁ , a)  — Trit 特征 3 (CyclicGroupStructure.trit-cubed)
 --   φ (乘法生成元): 平移 (t , a) ↦ (t , mulAlpha a1 a) — ⟨α⟩ 阶 4 (mulAlpha 乘法表)
 --
--- 依赖类型论要点: 记录将 Carrier 作为字段, 三条关系作为字段——
+-- 依赖类型论要点: 记录将 carrier 作为字段, 三条关系作为字段——
 -- 信息全保留: 载体、生成元、关系在同一记录内可复核, 无集合论商化信息丢失。
 --
 -- 深度: 表现级 record 为 L4 (抽象公理), 实例与导出定理为 L2/L3 (分量级 cong₂ + 归纳)。
@@ -64,9 +64,9 @@ iterate f (suc n) c = f (iterate f n c)
 
 record DayanCore : Set₁ where
   field
-    Carrier : Set
-    δ       : Carrier → Carrier   -- 加法生成元 (⊕ 的平移语义, 特征 3)
-    φ       : Carrier → Carrier   -- 乘法生成元 (α, 阶 4)
+    carrier : Set
+    δ       : carrier → carrier   -- 加法生成元 (⊕ 的平移语义, 特征 3)
+    φ       : carrier → carrier   -- 乘法生成元 (α, 阶 4)
     δ³      : ∀ c → δ (δ (δ c)) ≡ c           -- ⊕³ = id
     φ⁴      : ∀ c → φ (φ (φ (φ c))) ≡ c       -- α⁴ = id
     δφ-comm : ∀ c → δ (φ c) ≡ φ (δ c)         -- ⊕α = α⊕
@@ -99,7 +99,7 @@ dayan-δφ-comm (t , a) = refl   -- 两分量正交: cong₂ _,_ refl refl
 
 duodec-dayan-core : DayanCore
 duodec-dayan-core = record
-  { Carrier = DuodecPoint
+  { carrier = DuodecPoint
   ; δ = dayan-δ
   ; φ = dayan-φ
   ; δ³ = dayan-δ³
@@ -139,7 +139,7 @@ module _ (dc : DayanCore) where
       iter-φ-swap (suc m) c = cong φ (iter-φ-swap m c)
 
   -- 周期分解: δ 的迭代按 3 归零, φ 的迭代按 4 归零
-  iter-+ : ∀ (f : Carrier → Carrier) m n c →
+  iter-+ : ∀ (f : carrier → carrier) m n c →
     iterate f (m + n) c ≡ iterate f m (iterate f n c)
   iter-+ f zero n c = refl
   iter-+ f (suc m) n c = cong f (iter-+ f m n c)

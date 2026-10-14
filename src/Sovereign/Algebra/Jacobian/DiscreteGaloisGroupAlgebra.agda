@@ -120,10 +120,10 @@ c2-order g = refl
 -- 有限自同构群 (占位接口)
 record FiniteAutGroup : Set₁ where
   field
-    Carrier : Set
-    _·_     : Carrier → Carrier → Carrier
-    unit    : Carrier
-    inv     : Carrier → Carrier
+    carrier : Set
+    _·_     : carrier → carrier → carrier
+    unit    : carrier
+    inv     : carrier → carrier
     -- 群公理待填充
 
 -- §3b. 矩阵对易子 (李代数括号的离散对应) ---------------------------
