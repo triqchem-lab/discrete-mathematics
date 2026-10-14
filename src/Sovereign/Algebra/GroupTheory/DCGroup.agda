@@ -13,6 +13,20 @@
 --
 -- 包含: Group 实例、特征 3 证明、周期 12 证明、Frobenius 诱导
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      DuodecPoint = Trit × AlphaPower（类型别名 = 乘积类型）
+--  ② 生成元    mixedOp（加法步进 Z/3 ⊕ 乘法旋转 ⟨α⟩，加乘联合）
+--  ③ 关系      DCGroup : Group DuodecPoint（8 条群律实例化）
+--  ④ 相位      mulAlpha / alphaInv（C₄ 位置，α⁴ = a0）
+--  ⑤ 时钟      mixedOp-12-cycle（12 步走钟一圈）+ alpha-order-4
+--  ⑥ 归零      duodec-e（单位元）+ addZeroR/L + tritCycle（⊕³ = T₀）
+--  ⑦ 刚性      galoisConjugate（Frobenius 从 GF9 诱导）+ rho
+--  ⑧ 核对      alpha-order-4 等 refl 确认（不产生结构）
+--
+-- 形状贴合: **八项齐备**（本件是展示群的公认兑现例；命名沿用数学名而非要素名）
+
 module Sovereign.Algebra.GroupTheory.DCGroup where
 
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)

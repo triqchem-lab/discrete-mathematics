@@ -7,6 +7,20 @@
 --   单位群 (Z/12Z)* ≅ V₄（阶 4）；生成元侧取 GF(3)、扩张域侧取 GF(9)。
 --   完备性声明：代数极 = DuodecPoint（本源）× GF(3)（生成元）× GF(9)（扩张域）。
 --   含三角循环 L1 → L3 → L8 → L1 的闭合性（GF 生成 → GF 扩张 → 投影层 → GF 生成）。
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      record AlgebraicPole（Set₁）+ AlgebraicPoleCarrier = GF3 × GF9 × Duodec
+--  ② 生成元    L0-op 字段（mixedOp）+ 分层生成元 S1/S2（GF(3) 加法/乘法群）
+--  ③ 关系      L0/L0U/S1/S2-proofs 字段（AbelianGroupProofs 族）
+--  ④ 相位      phase + alpha / alpha-squared（C₄ 与 α 相位）
+--  ⑤ 时钟      three-cycles（三角循环 L1 → L3 → L8 → L1 的闭合性）
+--  ⑥ 归零      L0-id 字段（= duodec-e）
+--  ⑦ 刚性      galoisConjugate（Frobenius 从 GF9 诱导）
+--  ⑧ 核对      refl 层确认（升格版判据 2026-09-27 自述）
+--
+-- 形状贴合: **八项齐备**（分层命名 L0-/L0U-/S1-/S2-，非要素名）
+
 module Sovereign.Algebra.AlgebraicPoleUnified where
 
 --------------------------------------------------------------------------------

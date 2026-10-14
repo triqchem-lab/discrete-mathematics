@@ -9,6 +9,20 @@
 --   层级 5：Frobenius σ —— 共轭（手征翻转）；
 --   层级 6：Norm N(z) = z·σ(z) —— 模长；层级 7：Trace Tr(z) = z+σ(z) —— 投影。
 --   0 postulate。
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      七层级 record（GF(3) → GF(9) → GF(9)* → Frobenius → Norm → Trace）
+--  ② 生成元    _⊕_ / _·_（各层级运算）
+--  ③ 关系      record AbelianGroupProofs / CommGroupProofs（群律字段族）
+--  ④ 相位      alpha / alpha-squared（⟨α⟩ 子群）
+--  ⑤ 时钟      ⚠ 未显式（无走钟周期定理）
+--  ⑥ 归零      e / ε（各层级单位元字段）
+--  ⑦ 刚性      galoisConjugate + record FrobeniusProofs
+--  ⑧ 核对      ⚠ 未显式（无 roundtrip/一致性面）
+--
+-- 形状贴合: **6/8**（缺 时钟、核对）⇒ L2 补齐的双项候选
+
 module Sovereign.Algebra.GF9AlgebraicChain where
 
 --------------------------------------------------------------------------------

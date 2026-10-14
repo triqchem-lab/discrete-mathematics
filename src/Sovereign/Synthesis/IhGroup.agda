@@ -30,6 +30,21 @@
 --
 -- 包含: F3、F5、F2、data、data、record、det-mul、IhOrder、MerkabaOrder、PolarWinding、polar-winding-check
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      data A5 + data Det + record IhElement（rot : A5 , det : Det）
+--  ② 生成元    A₅ 的生成元（20 面体旋转面）
+--  ③ 关系      det-mul（C₂ 乘法表）+ A₅ 群律
+--  ④ 相位      ⚠ 未显式（本件无 C₄ 相位面）
+--  ⑤ 时钟      IhOrder = 120（群阶）
+--  ⑥ 归零      ⚠ 未显式（IhElement 无单位元字段）
+--  ⑦ 刚性      ⚠ 未显式（无 Frobenius 诱导）
+--  ⑧ 核对      check 系 refl 确认（不产生结构）
+--
+-- 形状贴合: **5/8**（载体/生成元/关系/时钟/核对在位；相位/归零/刚性缺）
+--   ⇒ L2 结构对齐的候选；缺项如实在此登记，不虚报齐备
+
 module Sovereign.Synthesis.IhGroup where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)

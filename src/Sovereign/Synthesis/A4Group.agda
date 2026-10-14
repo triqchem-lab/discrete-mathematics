@@ -15,6 +15,20 @@
 --
 -- 包含：data、perm、_∘ₚ_、fromPerm、fromPerm-perm、_⊗_
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      data A4（12 元素）+ TwelveTones（十二律载体）
+--  ② 生成元    A₄ 的 3-循环与对换生成元
+--  ③ 关系      A₄ 乘法表与群律
+--  ④ 相位      ⚠ 未显式
+--  ⑤ 时钟      -cycles（三循环结构）
+--  ⑥ 归零      e（单位元）
+--  ⑦ 刚性      ⚠ 未显式（无 Frobenius 诱导）
+--  ⑧ 核对      *-roundtrip 系 refl 确认
+--
+-- 形状贴合: **6/8**（缺 相位、刚性）⇒ L2 补齐的候选
+
 module Sovereign.Synthesis.A4Group where
 
 open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ)

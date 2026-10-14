@@ -51,6 +51,20 @@
 -- ⚠️ 勘误: 语料 "触 1/64 转 = 5.5125°" 应为 5.625° (360/64)
 -- ───────────────────────────────────────────────────────────────
 
+-- ═══════════════════════════════════════════════════════════════
+-- 八要素对照（形状规范: docs/maps/八要素统一形状-2026-10-14.md）
+-- ═══════════════════════════════════════════════════════════════
+--  ① 载体      data AlphaPower + DuodecPoint = Trit × AlphaPower
+--  ② 生成元    Z/3 加法步进（+1 周期 3）⊕ ⟨α⟩ 乘法旋转（乘 α 四步回位）
+--  ③ 关系      record ZeroOblivion（五层零冥字段族）
+--  ④ 相位      alpha / alphaInv / alphaInv-homo（C₄，90° 旋转）
+--  ⑤ 时钟      duodec-clock-roundtrip + rotation-order-4（走钟一圈）
+--  ⑥ 归零      duodec-e + addZeroR/L + tritCycle（三层：加法/相位/联合）
+--  ⑦ 刚性      rho（Frobenius 诱导的相位反射；unique 系唯一性）
+--  ⑧ 核对      duodec-clock-roundtrip / order-4 的 refl 确认（不产生结构）
+--
+-- 形状贴合: **八项齐备**；record 内已用 `carrier` 字段名（贴合规范最高档）
+
 module Sovereign.Algebra.GroupTheory.DuodecClock where
 
 open import Data.Nat using (ℕ; _*_; _+_)
