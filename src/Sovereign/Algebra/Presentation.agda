@@ -55,21 +55,30 @@ iterate f (suc n) x = f (iterate f n x)
 --------------------------------------------------------------------------------
 record Presentation (A : Set) : Set₁ where
   field
-    -- ② 生成元（运算/作用）
+    -- ② 生成元（联合运算）
     step : A → A → A
+    -- ② 生成元元（"联合"沿它走钟；见 ⑤）
+    g : A
     -- ⑥ 归零（单位元）
     unit : A
     -- ③ 关系（结合律 + 单位律）
     assoc     : ∀ x y z → step (step x y) z ≡ step x (step y z)
     zeroˡ     : ∀ x → step unit x ≡ x
     zeroʳ     : ∀ x → step x unit ≡ x
-    -- ④ 相位（旋转算子 + 阶 + 循环语句）
+    -- ④ 相位（**某一分量**的旋转算子 + 阶 + 循环语句）
+    --
+    -- ⚠ 相位是**分量级**的：在 DC 里它是 ⟨α⟩ ⊂ GF(9)* 的 C₄ 旋转（周期 4）。
     phase       : A → A
     phase-order : ℕ
     phase-cycle : ∀ x → iterate phase phase-order x ≡ x
-    -- ⑤ 时钟（走钟周期 + 一圈回位语句）
+    -- ⑤ 时钟（**联合**运算沿 g 的周期 + 一圈回位语句）
+    --
+    -- ⚠ 关键区分（DuodecClock 红线）：「十二进制 = 加法步进 Z/3 ⊕ 乘法旋转 ⟨α⟩
+    --   —— **加乘联合**，非纯加法直积、非 C₁₂ 循环群、非 C₃×C₄ 直积」。
+    --   故 clock 必须是**联合运算 step 沿生成元 g** 的周期（DC 里 = lcm(3,4) = 12），
+    --   **不是** phase 的迭代（那等于把 12 降格为 4 的倍数，丢掉加法分量）。
     clock       : ℕ
-    clock-cycle : ∀ x → iterate phase clock x ≡ x
+    clock-cycle : ∀ x → iterate (λ y → step y g) clock x ≡ x
     -- ⑦ 刚性（约定：必须由 GF9.galoisConjugate 诱导）
     rigidity : A → A
     -- ⑧ 核对（refl 层，仅确认定义自洽；正源：不产生结构）
@@ -83,6 +92,7 @@ open Presentation public
 -- 素材全部取自既有件（DuodecClock / DuodecClockProperties），本实例只做**对接**，
 -- 不新证任何东西 —— 这正是 L3 的目的：把散在具体件里的八要素接到统一接口上。
 --------------------------------------------------------------------------------
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.GroupTheory.DuodecClock using
   (DuodecPoint; AlphaPower; a0; a1; a2; a3;
    mixedOp; duodec-e; mulAlpha; mixedOp-assoc; mixedOp-12-cycle;
@@ -101,26 +111,36 @@ dc-phase-cycle (t , a1) = refl
 dc-phase-cycle (t , a2) = refl
 dc-phase-cycle (t , a3) = refl
 
--- 时钟：相位分量走钟 12 步回位（12 = 3 × 4；相位侧按 4 归零，故 4 | 12 ⇒ 12 步 = id）
--- AlphaPower 是 4 元素枚举、mulAlpha 为具体乘法表 ⇒ 逐例归一化即 refl
-dc-clock-cycle : ∀ x → iterate dc-phase 12 x ≡ x
-dc-clock-cycle (t , a0) = refl
-dc-clock-cycle (t , a1) = refl
-dc-clock-cycle (t , a2) = refl
-dc-clock-cycle (t , a3) = refl
+-- 时钟：**联合**运算沿生成元 g = (T₁,a1) 走钟 12 步回位
+-- ⚠ 不是 phase 的迭代 —— 12 = lcm(3,4) 是「特征 3 加法」与「C₄ 旋转」的联合周期
+-- DuodecPoint 是 12 元素枚举、mixedOp 为分量级具体运算 ⇒ 逐例归一化即 refl
+dc-clock-cycle : ∀ x → iterate (λ y → mixedOp y (T₁ , a1)) 12 x ≡ x
+dc-clock-cycle (T₀ , a0) = refl
+dc-clock-cycle (T₀ , a1) = refl
+dc-clock-cycle (T₀ , a2) = refl
+dc-clock-cycle (T₀ , a3) = refl
+dc-clock-cycle (T₁ , a0) = refl
+dc-clock-cycle (T₁ , a1) = refl
+dc-clock-cycle (T₁ , a2) = refl
+dc-clock-cycle (T₁ , a3) = refl
+dc-clock-cycle (T₂ , a0) = refl
+dc-clock-cycle (T₂ , a1) = refl
+dc-clock-cycle (T₂ , a2) = refl
+dc-clock-cycle (T₂ , a3) = refl
 
 dc-presentation : Presentation DuodecPoint
 dc-presentation = record
   { step        = mixedOp
+  ; g           = (T₁ , a1)   -- 联合生成元（特征 3 步进 × C₄ 旋转）
   ; unit        = duodec-e
   ; assoc       = mixedOp-assoc
   ; zeroˡ       = mixedOp-identityˡ
   ; zeroʳ       = mixedOp-identityʳ
-  ; phase       = dc-phase
+  ; phase       = dc-phase    -- 分量级相位（⟨α⟩ 的 C₄ 旋转，周期 4）
   ; phase-order = 4
   ; phase-cycle = dc-phase-cycle
-  ; clock       = 12
+  ; clock       = 12          -- **联合**周期 lcm(3,4)，非相位的倍数
   ; clock-cycle = dc-clock-cycle
-  ; rigidity    = rho          -- 约定：由 GF9.galoisConjugate 诱导的相位反射
+  ; rigidity    = rho         -- 约定：由 GF9.galoisConjugate 诱导（rho = lambda ∘ mu）
   ; check       = mixedOp-identityʳ
   }
