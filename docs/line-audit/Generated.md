@@ -18,3 +18,6 @@
 - **OPTIONS**: `--rewriting`
 - **导入 (2)**: `Data.Nat`, `Sovereign.Structology.T6`
 - **质量**: `refl`×0；⚠️ 1 postulate
+
+> **【迁移 2026-10-14】** `src/Generated/` → **`probes/Generated/`**（本地目录，.gitignore 屏蔽）。
+> 模块名不变（`Generated.*`）；`probes` 已在 include 路径中。

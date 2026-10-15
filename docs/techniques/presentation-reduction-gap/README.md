@@ -53,3 +53,8 @@ done
 - 上表 `GapProbe4` 与提及的 `GapProbe6` **文件已不在库内**（9-14 实测后未留存/被删），
   矩阵行为当时实测记录，不再可复跑；其余 7 个 GapProbe + Infect/T3/Pgm1/Pgm2 均在
   `src/Techniques/`，10-02 复测与矩阵一致（唯一例外见 pgm-assessment 的 Pgm1 复测注）。
+
+> **【迁移 2026-10-14】** 探针文件已由 `src/Techniques/` 迁至 **`probes/Techniques/`**
+> （`probes/` 受 `.gitignore` 屏蔽，仅本地 git 管理）。**模块名不变**（`Techniques.*`），
+> 因为 `sovereign.agda-lib` 的 include 路径含 `probes` ⇒ 内部 `open import Techniques.T3` 不断。
+> 本文档中的 `src/Techniques/...` 路径均应按 `probes/Techniques/...` 读取。

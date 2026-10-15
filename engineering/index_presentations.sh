@@ -19,6 +19,11 @@ cd "$(dirname "$0")/.." || exit 2
 ROOT="${1:-src}"
 DEF="src/Sovereign/Algebra/Presentation.agda"
 
+if [ ! -d "$ROOT" ]; then
+  echo "ROOT 不存在：$ROOT（用法：engineering/index_presentations.sh [ROOT]，默认 src）" >&2
+  exit 2
+fi
+
 if [ ! -f "$DEF" ]; then
   echo "找不到 $DEF（工作目录 $(pwd) 是否正确？）" >&2
   exit 2
@@ -31,7 +36,8 @@ FIELDS=$(awk '/^record Presentation/,/^open Presentation/' "$DEF" \
 N_FIELDS=$(echo "$FIELDS" | grep -c . || true)
 
 # ── 白名单：工具件 / 非展示群件，不参与索引（DuodecClock 红线：A₄ 亦非十二进制） ──
-WHITELIST_RE='Techniques/|/archive/'
+#   2026-10-14：`Techniques/`、`Generated/` 已迁至 `probes/`（本地目录，见 probes/README.md）
+WHITELIST_RE='probes/|/archive/'
 
 echo "════ 八要素 Presentation 索引（root=$ROOT）════"
 echo "字段模板（来自 $DEF，共 $N_FIELDS 字段）："

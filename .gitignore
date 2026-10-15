@@ -12,3 +12,8 @@ docs/agda/docx/
 docs/agda/txt/
 .mimosa/
 .zcode/
+# 本地证明代码（PN 线）：仅本地 git 管理，不上云
+pn-proofs/
+# 本地探针/过程迭代代码（仅本地 git 管理，不上云）
+_build.bak-*/
+probes/

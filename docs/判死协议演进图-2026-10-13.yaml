@@ -1,0 +1,31 @@
+title: 判死协议演进图 v1→v3（A/B/C/D 四节）
+date: 2026-10-13
+nature: 流程文献（非证明）；权威在 proof_dag 台账
+A_evolution:
+  - version: v1
+    trigger: fork 代理静默死亡多起
+    rule: 单一探针（send_message 可达性）判死
+    defeated_by: [7c353bac, 460d635d, b8394142]
+  - version: v2
+    trigger: 反例——探针 unreachable 但实际存活
+    rule: 探针 + mtime 双证
+  - version: v3
+    trigger: 反例4（a6f471f7）
+    rule: 写域证据（mtime + git log 双证）= 唯一活性判据；探针 = 辅助（addressability ≠ liveness）；fork 存体 = 主台外科清创收绿
+B_core_rules:
+  liveness: mtime + git log 双证齐
+  death: mtime 停滞 + git 无写入 + 探针 unreachable 三者合
+  lost_with_body: v3.1 新增——队列丢失且 WIP 落盘 → 主台入域收尸接管（修型 + 复收回执）
+C_counterexamples:
+  - {id: 7c353bac, v1_verdict: 误判死, v3_truth: 存活}
+  - {id: 460d635d, v1_verdict: 误判死, v3_truth: 存活}
+  - {id: b8394142, v1_verdict: 误判死, v3_truth: 存活}
+  - {id: a6f471f7, v1_verdict: 判死, v3_truth: 未当时死}
+  - {id: "5ab2375c(routeB,2026-10-13)", v1_verdict: 探针 unreachable, v3_truth: "_PEH3.agda mtime 14:15 存体——主台接管修型收口 A 级 aca63ab1"}
+D_formation:
+  - 长跑子代理必备失联计时（超常规单件时长无回报即查 mtime+git）
+  - 判定权在文件系统与 git（探针辅助）
+  - fork 存体三步：读 WIP → 主台修型（语法级）→ 复编取回执 + ledger 收账
+  - runtime/queue 故障按环境 journal limit 记，不扣分
+  - 主台接管只修语法级，语义级保留原代理结构
+v4_proposal_pending_human: 长跑代理 dispatch 显式注入 timeoutMs + 启动即 mirror status ping（未人类批准不启用）
