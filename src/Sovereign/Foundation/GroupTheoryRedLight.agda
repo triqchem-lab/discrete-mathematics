@@ -28,7 +28,7 @@ open import Relation.Nullary using (¬_)
 open import Data.Empty using (⊥)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
-open import Sovereign.Algebra.GF9 using
+open import Sovereign.Algebra.FieldTower.GF9 using
   (GF9; galoisConjugate; galoisConjugate²; alpha; gf9-one; _*gf9_;
    lemma-frobenius-multiplicative; embed-gf3)
 
@@ -147,7 +147,7 @@ reducibility-witness = refl
 
 -- ⚠ 归位后（2026-09-11）: 通用件从 Analysis 取，GF9 专用件从 Algebra.FrobeniusOrbit 取
 open import Sovereign.Foundation.FiniteDynamics using (orbit)
-open import Sovereign.Algebra.FrobeniusOrbit using
+open import Sovereign.Algebra.FieldTower.FrobeniusOrbit using
   (frobenius-orbit-period; frobenius-period-tight; frobenius-fixed-iff)
 
 -- Frobenius 轨道的刚性: 周期 2 处处成立 (软路径 → 有限置换)

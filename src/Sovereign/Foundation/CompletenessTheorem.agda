@@ -43,12 +43,12 @@ open import Sovereign.Foundation.Layer
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 
 -- 项目模块: 离散载体 (6 个已完成)
-open import Sovereign.Algebra.ProjectionDifferential using (GF3Func; Δ; Δ³≡0)
-open import Sovereign.Synthesis.T6 using (T6Lattice; finToT6)
-open import Sovereign.Synthesis.A4Group using (A4; Id)
-open import Sovereign.Algebra.GF9 using (GF9)
+open import Sovereign.Algebra.Analytic.ProjectionDifferential using (GF3Func; Δ; Δ³≡0)
+open import Sovereign.Synthesis.Combinatorics.T6 using (T6Lattice; finToT6)
+open import Sovereign.Synthesis.A4.A4Group using (A4; Id)
+open import Sovereign.Algebra.FieldTower.GF9 using (GF9)
 open import Sovereign.Algebra.Holographic.4320D using (dim-4320)
-open import Sovereign.Algebra.DiscreteLimit using (DiscreteLimit; const-converges)
+open import Sovereign.Algebra.Analytic.DiscreteLimit using (DiscreteLimit; const-converges)
 
 --------------------------------------------------------------------------------
 -- §1. 连续概念宇宙
@@ -208,7 +208,7 @@ discrete-nonzero = (λ ()) , ((λ ()) , ((λ ()) , (λ ())))
 --   覆盖一致性: 整数自旋↔膨胀表示, 半整数自旋↔旋量表示
 --------------------------------------------------------------------------------
 
-open import Sovereign.Algebra.LieDiscrete
+open import Sovereign.Algebra.GroupTheory.LieDiscrete
   using (LieGroupEvidence; lieGroupEvidence)
 
 -- P3 证据: LieGroupSO3 的离散替代具有完整表示论结构

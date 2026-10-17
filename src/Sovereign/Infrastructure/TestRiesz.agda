@@ -19,7 +19,7 @@ module Sovereign.Infrastructure.TestRiesz where
 --   3. 唯一性: ∀ v1 v2 → (∀ f → f(v1)≡f(v2)) → v1≡v2
 --
 -- 依赖:
---   Sovereign.Algebra.FunctionalDiscrete — GF(3)ⁿ 离散泛函分析
+--   Sovereign.Algebra.Analytic.FunctionalDiscrete — GF(3)ⁿ 离散泛函分析
 --
 -- 约束:
 --   • 不用递归/归纳 — 所有证明为 n=2 的穷举/计算
@@ -37,7 +37,7 @@ open import Sovereign.Base.Trit using (
   ⊗-identityˡ; ⊗-identityʳ; ⊗-comm;
   ⊗-distribˡ-⊕; ⊗-zeroˡ; ⊗-zeroʳ)
 
-open import Sovereign.Algebra.FunctionalDiscrete using (
+open import Sovereign.Algebra.Analytic.FunctionalDiscrete using (
   -- 向量空间运算
   _+v_; _·v_; 0⃗; basis;
   -- 内积

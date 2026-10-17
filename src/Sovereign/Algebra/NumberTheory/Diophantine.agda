@@ -60,7 +60,7 @@ open import Relation.Binary.PropositionalEquality
 open import Sovereign.Algebra.NumberTheory.Divisibility using (∣-∸)
 open import Sovereign.Algebra.NumberTheory.ModularArithmetic using (⊕ₙ)
 open import Sovereign.Base.Trit using (Trit; T₁; T₂; _⊗_)
-open import Sovereign.Algebra.Duodecimal
+open import Sovereign.Algebra.GroupTheory.Duodecimal
   using (Duodec; d1; d5; π3; π4; crt12; _*4_)
 
 --------------------------------------------------------------------------------

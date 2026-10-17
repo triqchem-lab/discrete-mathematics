@@ -21,14 +21,14 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong
 open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Relation.Nullary.Decidable using (does)
 open import Sovereign.Base.Trit using (negate; Trit; T₀; T₁; T₂; _⊕_; _⊗_)
-open import Sovereign.Algebra.GF9 using (GF9; gf9-one; gf9-zero; _+gf9_; _*gf9_)
+open import Sovereign.Algebra.FieldTower.GF9 using (GF9; gf9-one; gf9-zero; _+gf9_; _*gf9_)
 open import Sovereign.Algebra.GroupTheory.DuodecClock using
   (DuodecPoint; AlphaPower; a0; a1; a2; a3; mixedOp; duodec-e; rho; rho-involution;
    mulAlpha; alphaInv)
 open import Sovereign.Algebra.Jacobian.Discrete using (Mat2; det2; I2)
 open import Sovereign.Algebra.Jacobian.Matrix using (mat-mul)
 open import Sovereign.Algebra.Jacobian.GF9Matrix using (det2-gf9)
-open import Sovereign.Algebra.AdjacencyMatrix using (AdjMatrix4; mulMat4; matI4)
+open import Sovereign.Algebra.LinearAlgebra.AdjacencyMatrix using (AdjMatrix4; mulMat4; matI4)
 
 --------------------------------------------------------------------------------
 -- §1. 矩阵定义

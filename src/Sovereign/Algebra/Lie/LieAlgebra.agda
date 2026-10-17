@@ -23,7 +23,7 @@ open ≡-Reasoning
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; negate²;
   ⊕-comm; ⊕-assoc; ⊕-identityˡ; ⊕-identityʳ; ⊕-inverse;
   ⊗-comm; ⊗-assoc; ⊗-distribˡ-⊕; ⊗-distribʳ-⊕; ⊗-identityˡ; ⊗-identityʳ)
-open import Sovereign.Algebra.GF27 using (negate-⊕; negate-⊗; negate-⊗-comm)
+open import Sovereign.Algebra.FieldTower.GF27 using (negate-⊕; negate-⊗; negate-⊗-comm)
 
 --------------------------------------------------------------------------------
 -- §1. 局部 2×2 GF(3) 矩阵环 (对式, 全归约)

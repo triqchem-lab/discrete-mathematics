@@ -6,7 +6,7 @@ Agda 形式化证明 + Python 工程验证双轨制。
 ## Project
 - 技术栈: Agda 2.9.0-nightly（默认环境 `/opt/agda/2.9.0`；`~/.local/bin/agda` 为 stack 构建副本、既有回执 `checkerBin` 口径，两者结果一致）, standard-library-2.4, cubical-0.9, agda-categories, agda-algebras
 - 库注册: `sovereign.agda-lib` (flags: `--guardedness --cubical -WnoUnsupportedIndexedMatch`, include: `src`) — **2026-10-02 收编**：`--cubical` 上收为全库默认（承重：44 个文件级 cubical 模块 + 73 个依赖者），原同名 `src/Sovereign.agda-lib` 已删；文件级 `--rewriting` 纪律不变（REWRITE 传染性照旧）
-- 入口: ~~`src/Sovereign/All.agda`~~ 已取消 (2026-09-07 去聚合化, 模块独立编译); 全库 512 个 `.agda` 文件
+- 入口: ~~`src/Sovereign/All.agda`~~ 已取消 (2026-09-07 去聚合化, 模块独立编译); 全库 **823** 个 `.agda`（`src/Sovereign` 实测 2026-10-19；迁移结案时记为 803，之后有新增）
 - Python 轨道: `engineering/software/sovereign_core/` (零外部依赖)
 - Git: 单分支 `master` → github.com/triqchem-lab/discrete-mathematics
 
@@ -37,14 +37,16 @@ Agda 形式化证明 + Python 工程验证双轨制。
 - 编译产物: `_build/`、`*.agdai`（gitignored），不要删除
 
 ## Architecture
-- `Base/` — GF(3) Trit 公理与不变量: POLAR=144, TORUS=46, CHERN=±2, SOVEREIGN_LCM=3¹¹·2¹⁶
-- `Structology/` — T⁶ 环面、幻方 (M4/Arthur)、A₄ 群、格点、稳定态与 Burnside
-- `Coupling/` — LCM 桥、仲吕相移、损益链、TQ10 格式
-- `HoTT/` — CRT 谐波/纤维、T⁶ 同伦、陈类、万有覆盖
-- `Format/` — CRT 基、谱投影; `Geometry/` — 射影(4320D G-轨道)、共形(1458)、环面几何
-- `Algebra/` — GF(9)/GF(27)…、数字根、C₃ 轨道、Jacobian、Holographic; `Engine/` — 主权状态机; `MetaStructure/` — 五行、纳音
-- 其余: Arithmetic/, Physics/, Quantum/, Topology/, Analysis/, PDE/, Density/, Coding/, Problem/, Trust/, Constitution/, AI/
-- 顶层: `Integration.agda`、`Projection.agda`、`Examples.agda`（`All.agda` 已取消）
+- `src/Sovereign/Base/`（**17** 个 `.agda`）— GF(3) 原语 `Trit`/`_⊕_`/`_⊗_`/`negate`、不变量（POLAR=144, TORUS=46, CHERN=±2）、`Base/Coding/Trit`（类型级编码）
+- `src/Sovereign/Foundation/`（**31** 个 `.agda`）— L0 公理层：数字根、损益、归零、离散存在、元数学红线
+- `src/Sovereign/Infrastructure/`（**26** 个 `.agda`）— 跨切带（豁免 import 单调性）：Engine/Trust/Verify/审计聚合/宪法审查、`Projection/`、`TwoViewRewritten`
+- `src/Sovereign/Algebra/`（**277** 个 `.agda`，**17 个概念子目录、无直属文件**）— L2 结构层：`FieldTower/`(27，**GF(3^k) 域塔** GF9/GF27/GF81/GF243/GF729 + Frobenius)、`Jacobian/`(58)、`GroupTheory/`(52)、`Analytic/`(35)、`RingTheory/`(32)、`Combinatorics/`(15)、`NumberTheory/`(14)、`Holographic/`(12)、`LinearAlgebra/`(7)、`UniversalAlgebra/`(7)、`Automata/`(5)、`Dihedral/`(5)、`Character/`(2)、`Lie/`(2)、`Quantum/`(2)、`Representation/`(1)、`Spectral/`(1)
+- `src/Sovereign/Synthesis/`（**168** 个 `.agda`，**15 个概念子目录、无直属文件**）— L3 合成层：`Homotopy/`(25，含 **分水岭定理** 相关 `T6`/`T6Homotopy`)、`Combinatorics/`(24)、`A4/`(19)、`CRT/`(18，波系统/Hensel/TQ10)、`Physics/`(16)、`Analysis/`(13)、`Geometry/`(10)、`NumberTheory/`(10)、`Topology/`(9)、`Graphs/`(8)、`FieldTower/`(6)、`Format/`(5)、`Representation/`(3)、`DiscreteCubical/`(1)、`Model/`(1)
+- `src/Sovereign/Application/`（**304** 个 `.agda`，**25 个概念子目录、无直属文件**）— L4 应用层：`Problems/`（BSD/Kakeya/ABC/FLT/RH/NavierStokes/YangMills/PvsNP/Hodge/Langlands/Sqrt2）、`Physics/`(80)、`Analysis/`、`Geometry/`、`Homotopy/`、`Morse/`、`CrossDomain/`、`Topology/`、`Algebra/`、`Coding/`、`Coupling/`、`Diagnosis/`、`ML/`、含 `ABCL1` 壁垒定理 / `KakeyaPathology` 三重完备性
+- 纯文档/参考目录（**无 `.agda`**，不得当代码目录用）：`Arithmetic/`（4 `.md`）、`Constitution/`（README）、`Problem/`（2 `.md` + 6 `.pdf`，含 IUTT 参考）
+- **层序（依赖单调性，禁反向）**：`Foundation(L0) → Base(L1) → Algebra(L2) → Synthesis(L3) → Application(L4)`；`Infrastructure` 为跨切带（豁免单向律）。判据见 `docs/migration/五层架构文档.md`。
+- **分类规范**：`docs/decisions/目录结构-三库对照-2026-10-19.md`（对照 agda-unimath/stdlib）。**三层层内细分已全部完成（2026-10-19）**：`Application/` 304→25 子目录、`Algebra/` 277→18、`Synthesis/` 168→15，**三层直属文件均为 0**；逐桶内核校验 24/24 + 33/33 绿（4 个 Laurent 模块已用 `--no-fast-reduce` 修好），**全库门禁 823/823 全绿**。
+- **目录重组台账**：`docs/migration/目录重组-进度.md`（流程 5 步 + 回执 + 教训）、`目录重组-映射-2026-10-19.csv`（304 行 old→new 权威映射）
 - 文档: `docs/`（架构/审计/路线图，中文）、`maps/` M1–M6、`memory/` 索引
 
 ## Conventions
@@ -69,7 +71,7 @@ Agda 形式化证明 + Python 工程验证双轨制。
     （链内 0 条规则 ⇒ 去旗标只解锁、不破坏）。未做：真改库内那 9 处 pragma（`Base/Trit` 被 300+ 模块 import，需单独任务 + 全量重编）。
   - 证据: `docs/techniques/pgm-assessment.md` Q1/Q1b、dype `docs/theory/PGM-metatheory-and-plan.md` §4「P1 泛化验证」
 - 宪法约束（详见 `memory/dual_track_constitution.md`）: 禁浮点数（无理数用定点整数比）、禁 postulate、范畴分离、144/46 全息 π 禁止约分、十二律长度表静态、标准库信任度=0
-- 工作区现状: `src/Sovereign/Algebra/GF9.agda` 有未提交改动；`src/_test_irrelevant.agda` 是未跟踪草稿
+- 工作区现状: 目录重组后 `GF9` 位于 `src/Sovereign/Algebra/FieldTower/GF9.agda`；`src/_test_irrelevant.agda` 是未跟踪草稿
 
 ## Notes
 （待补充）

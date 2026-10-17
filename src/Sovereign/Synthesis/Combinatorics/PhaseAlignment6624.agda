@@ -1,0 +1,241 @@
+{-# OPTIONS --rewriting --guardedness #-}
+
+-- | Sovereign.Synthesis.Combinatorics.PhaseAlignment6624
+-- T⁶ 环面的 6624 相位对齐定理 (v1.0)
+--
+-- 数学背景：POLAR=144 × TORUS=46 = FULL_TOUR=6624——双振子拍频谐振对齐的数学面；
+--   本框架的 CRT 是物理波系统（驻波/谐波对齐），不是模运算定理（红线）。
+--
+-- 核心原则：
+--   1. 6624 = 144·46 全息禁止约分（宪法约束）；
+--   2. 对齐恒等式 alignmentIdentity 是全环闭合的核对件；
+--   3. 双零位（polarZero/toroidalZero）= 归零机制的落点核对。
+--
+-- 包含：POLAR/TORUS/FULL_TOUR（三常量）· Π-H（谱投影）·
+--   alignmentIdentity/fullTourValue（对齐恒等式与全环值）· polarZero/toroidalZero（双零位）
+
+module Sovereign.Synthesis.Combinatorics.PhaseAlignment6624 where
+
+open import Data.Nat
+  using (ℕ; zero; suc; _+_; _*_; _%_; _/_; _<_; _≤_; s≤s)
+open import Data.Nat.DivMod
+  using (m≡m%n+[m/n]*n; [m+kn]%n≡m%n; m%n<n; m<n⇒m%n≡m)
+open import Data.Nat.Properties
+  using (*-comm; *-assoc; *-distribˡ-+; +-assoc; +-mono-≤; *-mono-≤; ≤-refl; ≤-trans; ≤-pred)
+open import Relation.Binary.PropositionalEquality
+  using (_≡_; refl; cong; sym; trans; module ≡-Reasoning)
+open import Data.Product using (_×_; _,_)
+
+--------------------------------------------------------------------------------
+-- 1. 宪法常数
+--------------------------------------------------------------------------------
+
+-- 极向缠绕数 = 144 (空间剖分)
+POLAR : ℕ
+POLAR = 144
+
+-- 环向缠绕数 = 46 (时间频率)
+TORUS : ℕ
+TORUS = 46
+
+-- 完整环面巡游步数 = 144 × 46
+FULL_TOUR : ℕ
+FULL_TOUR = 144 * 46
+
+-- 全息常数 = 144 / 46 (有理数，注意这不是相除后的精确值 3.13...,
+-- 而是空间剖分与时间频率的不可通约比)
+Π-H : ℕ × ℕ
+Π-H = (144 , 46)
+
+--------------------------------------------------------------------------------
+-- 2. 对齐恒等式
+--------------------------------------------------------------------------------
+
+-- 定理 2.1: 对齐恒等式
+-- FULL_TOUR 严格等于 POLAR × TORUS
+alignmentIdentity : FULL_TOUR ≡ 144 * 46
+alignmentIdentity = refl
+
+-- 定理 2.2: FULL_TOUR 的数值
+fullTourValue : FULL_TOUR ≡ 6624
+fullTourValue = refl
+
+-- 定理 2.3: 对角性质
+-- FULL_TOUR % POLAR ≡ 0 (极向归零)
+-- FULL_TOUR % TORUS ≡ 0 (环向归零)
+polarZero : FULL_TOUR % POLAR ≡ 0
+polarZero = refl
+
+toroidalZero : FULL_TOUR % TORUS ≡ 0
+toroidalZero = refl
+
+--------------------------------------------------------------------------------
+-- 3. 相位闭合定理
+--------------------------------------------------------------------------------
+
+-- 定理 3.1: 闭合适用性
+-- 任何 FULL_TOUR 的整数倍都同时落在 POLAR 和 TORUS 的零点上
+-- 定理 3.1: 闭合适用性
+-- 定理 3.1: 闭合适用性
+-- FULL_TOUR = POLAR × TORUS = 144 × 46, 故 n×6624 = (n×46)×144 = (n×TORUS)×POLAR
+-- [m+kn]%n≡m%n 0 (n*TORUS) POLAR ⇒ 0%144 = 0
+closureTheorem : ∀ n → (n * FULL_TOUR) % POLAR ≡ 0 × (n * FULL_TOUR) % TORUS ≡ 0
+closureTheorem n =
+  let
+    polarEq : n * FULL_TOUR ≡ (n * TORUS) * POLAR
+    polarEq = trans refl
+      (trans (cong (n *_) (*-comm 144 46))
+      (sym (*-assoc n 46 144)))
+    toroidalEq : n * FULL_TOUR ≡ (n * POLAR) * TORUS
+    toroidalEq = sym (*-assoc n 144 46)
+  in
+  ( trans (cong (_% 144) polarEq) ([m+kn]%n≡m%n 0 (n * TORUS) 144)
+  , trans (cong (_% 46) toroidalEq) ([m+kn]%n≡m%n 0 (n * POLAR) 46)
+  )
+
+--------------------------------------------------------------------------------
+-- 4. 相位重同步定理
+--------------------------------------------------------------------------------
+
+-- 定理 4.1: 状态分解
+-- 使用标准恒等式: m ≡ m%n + (m/n)*n
+decompositionLemma : ∀ x → x ≡ (x % POLAR) + POLAR * (x / POLAR)
+decompositionLemma x = trans (m≡m%n+[m/n]*n x POLAR)
+  (cong ((x % POLAR) +_) (*-comm (x / POLAR) POLAR))
+
+-- 定理 4.2: 模 FULL_TOUR 的重同步
+-- x % FULL_TOUR ≡ (x % POLAR) + POLAR * ((x / POLAR) % TORUS)
+--
+-- 证明: 通用恒等式 ∀a,b>0, x%(a·b) = (x%a) + a·((x/a)%b)
+--
+--    设 r = x%(a·b), q = x/(a·b), r' = x%a, q' = x/a
+--    则 x = r + q·a·b = r' + q'·a
+--    r = r' + q'·a - q·a·b = r' + a·(q' - q·b)
+--
+--    由于 q' = (q·a·b + r)/a = q·b + r/a (整数除法的线性分配)
+--    且 r/a < b (因 r < a·b)
+--    所以 q' % b = r/a = q' - q·b
+--    故 r = r' + a·(q'%b) ∎
+--
+-- 相位重同步定理: x % 6624 = (x % 144) + 144 * ((x / 144) % 46)
+-- 证明: x = r + 144*q (m≡m%n+[m/n]*n), q = q' + 46*k (同理), 
+-- x = r + 144*q' + 6624*k。左边 = (r + 144*q' + 6624*k) % 6624
+-- = (r + 144*q') % 6624 ([m+kn]%n≡m%n)。
+-- 因 r < 144, q' < 46 → r + 144*q' < 6624 → % ≡ id (m<n⇒m%n≡m)。
+phaseResyncTheorem : ∀ x → (x % FULL_TOUR) ≡ (x % POLAR) + POLAR * ((x / POLAR) % TORUS)
+phaseResyncTheorem x =
+  let open ≡-Reasoning
+      r = x % POLAR
+      q = x / POLAR
+      q' = q % TORUS
+      k = q / TORUS
+      
+      -- x = r + POLAR * q（与 decompositionLemma 同款 *-comm 桥）
+      x≡r+Pq : x ≡ r + POLAR * q
+      x≡r+Pq = trans (m≡m%n+[m/n]*n x POLAR)
+                     (cong (λ z → (x % POLAR) + z) (*-comm (x / POLAR) POLAR))
+
+      -- q = q' + TORUS * k
+      q≡q'+Tk : q ≡ q' + TORUS * k
+      q≡q'+Tk = trans (m≡m%n+[m/n]*n q TORUS)
+                      (cong (λ z → (q % TORUS) + z) (*-comm (q / TORUS) TORUS))
+      
+      -- 分配律实例（本模块局部定义, 规避跨版本引理形态差异）
+      distr-Pq' : POLAR * (q' + TORUS * k) ≡ POLAR * q' + POLAR * (TORUS * k)
+      distr-Pq' = *-distribˡ-+ POLAR q' (TORUS * k)
+
+      -- x = r + POLAR*q' + FULL_TOUR*k
+      x≡r+Pq'+Fk : x ≡ r + POLAR * q' + FULL_TOUR * k
+      x≡r+Pq'+Fk = begin
+        x                  ≡⟨ x≡r+Pq ⟩
+        r + POLAR * q      ≡⟨ cong (λ z → r + POLAR * z) q≡q'+Tk ⟩
+        r + POLAR * (q' + TORUS * k) ≡⟨ cong (r +_) distr-Pq' ⟩
+        r + (POLAR * q' + POLAR * (TORUS * k)) ≡⟨ sym (+-assoc r (POLAR * q') (POLAR * (TORUS * k))) ⟩
+        (r + POLAR * q') + POLAR * (TORUS * k) ≡⟨ cong ((r + POLAR * q') +_) (sym (*-assoc POLAR TORUS k)) ⟩
+        (r + POLAR * q') + (POLAR * TORUS) * k ≡⟨⟩
+        (r + POLAR * q') + FULL_TOUR * k ∎
+      
+      -- x % FULL_TOUR = (r + POLAR*q') % FULL_TOUR
+      x%F≡r+Pq'%F : x % FULL_TOUR ≡ (r + POLAR * q') % FULL_TOUR
+      x%F≡r+Pq'%F = begin
+        x % FULL_TOUR              ≡⟨ cong (_% FULL_TOUR) x≡r+Pq'+Fk ⟩
+        ((r + POLAR * q') + FULL_TOUR * k) % FULL_TOUR
+          ≡⟨ cong (_% FULL_TOUR) (cong (λ z → (r + POLAR * q') + z) (*-comm FULL_TOUR k)) ⟩
+        ((r + POLAR * q') + k * FULL_TOUR) % FULL_TOUR
+          ≡⟨ [m+kn]%n≡m%n (r + POLAR * q') k FULL_TOUR ⟩
+        (r + POLAR * q') % FULL_TOUR ∎
+      
+      -- r < POLAR
+      r<POLAR : r < POLAR
+      r<POLAR = m%n<n x POLAR
+      
+      -- q' < TORUS
+      q'<TORUS : q' < TORUS
+      q'<TORUS = m%n<n q TORUS
+      
+      -- r + POLAR*q' < FULL_TOUR
+      r+Pq'<F : r + POLAR * q' < FULL_TOUR
+      r+Pq'<F =
+        let r≤143 : r ≤ 143
+            r≤143 = ≤-pred r<POLAR
+            q'≤45 : q' ≤ 45
+            q'≤45 = ≤-pred q'<TORUS
+            Pq'≤6480 : POLAR * q' ≤ 6480
+            Pq'≤6480 = *-mono-≤ (≤-refl {144}) q'≤45
+            r+Pq'≤6623 : r + POLAR * q' ≤ 6623
+            r+Pq'≤6623 = +-mono-≤ r≤143 Pq'≤6480
+        in s≤s r+Pq'≤6623
+  in begin
+    x % FULL_TOUR                    ≡⟨ x%F≡r+Pq'%F ⟩
+    (r + POLAR * q') % FULL_TOUR     ≡⟨ m<n⇒m%n≡m r+Pq'<F ⟩
+    r + POLAR * q'                   ∎
+
+--------------------------------------------------------------------------------
+-- 5. 缠绕数关系
+--------------------------------------------------------------------------------
+
+-- 定理 5.1: 极向周期
+-- 每 144 步极向归零
+polarPeriod : POLAR * 1 ≡ 144
+polarPeriod = refl
+
+-- 定理 5.2: 环向周期
+-- 每 46 步环向归零
+toroidalPeriod : TORUS * 1 ≡ 46
+toroidalPeriod = refl
+
+-- 定理 5.3: 对齐周期
+-- 极向和环向在 FULL_TOUR = 6624 步后同时归零
+-- 这是定理 3.1 的特例 (n = 1)
+alignmentPeriod : FULL_TOUR % POLAR ≡ 0 × FULL_TOUR % TORUS ≡ 0
+alignmentPeriod = (polarZero , toroidalZero)
+
+--------------------------------------------------------------------------------
+-- 6. 关于 3312 的错误路径说明
+--------------------------------------------------------------------------------
+
+-- 某些推导倾向于使用 3312 = 6624 / 2 作为"简化值"
+-- 但 3312 丢失了 FULL_TOUR 中的完整相位信息：
+--   144 * 23 = 3312   → 极向对齐，环向对齐在 23 步（非周期点）
+--   72 * 46  = 3312   → 环向对齐，极向对齐在 72 步（半周期）
+--
+-- 因此 3312 不是真正的全相位对齐点——只有 6624 是。
+-- 这与 CRT 域要求完整环面巡游（FULL_TOUR）而非约化步数的原理一致。
+
+--------------------------------------------------------------------------------
+-- 7. 连接到 Agda #3733 的映射
+
+-- L1 (工程层): Δ 参照系
+--   对应: 对齐恒等式 alignmentIdentity
+--   意义: 如同 makeTau 的 nTarget = nOld + nctel - 1，
+--         FULL_TOUR 正确反映了双周期系统的完整拓扑尺寸
+
+-- L2 (计算层): Kan 纤维化自动边界闭合
+--   对应: 闭合定理 closureTheorem
+--   意义: 任何 FULL_TOUR 整数倍都是双零点，提供了 Kan 纤维化
+--         在边界上自动闭合适用的数学保障
+
+-- L3 (元理论层): 索引族单值语义
+--   对应: 相位重同步定理 phaseResyncTheorem
+--   意义: 任意状态的 FULL_TOUR 分解公式提供了索引族
+--         在全局/局部坐标间无歧义映射的公理基础

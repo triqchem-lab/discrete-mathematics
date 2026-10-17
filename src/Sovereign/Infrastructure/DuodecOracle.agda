@@ -11,8 +11,8 @@
 -- 归纳类型与 ℕ 互转），**不重新定义任何数学**。所有取值都直接来自：
 --   · `Sovereign.Base.Trit`                     （⊕ / negate / tritToℕ）
 --   · `Sovereign.Algebra.GroupTheory.DuodecClock`（mulAlpha / alphaInv / mixedOp / duodec-inv / toDuodec）
---   · `Sovereign.Algebra.Duodecimal`             （_+12_ / _*12_ / π3 / π4 / crt12 / toℕ₁₂）
---   · `Sovereign.Synthesis.Doz`                     （十二进制位值制；本次新增）
+--   · `Sovereign.Algebra.GroupTheory.Duodecimal`             （_+12_ / _*12_ / π3 / π4 / crt12 / toℕ₁₂）
+--   · `Sovereign.Synthesis.Format.Doz`                     （十二进制位值制；本次新增）
 -- 这样 oracle 与实现之间不会出现「我自己重写一遍再自己校验」的循环。
 --
 -- 覆盖与缺口：
@@ -40,8 +40,8 @@ open import Data.String using (String)
 
 import Sovereign.Base.Trit as T
 import Sovereign.Algebra.GroupTheory.DuodecClock as DC
-import Sovereign.Algebra.Duodecimal as Duo
-import Sovereign.Synthesis.Doz as Doz
+import Sovereign.Algebra.GroupTheory.Duodecimal as Duo
+import Sovereign.Synthesis.Format.Doz as Doz
 
 --------------------------------------------------------------------------------
 -- 1. ℕ ↔ 归纳类型的搬运（唯一允许的「新代码」，且无任何数学内容）

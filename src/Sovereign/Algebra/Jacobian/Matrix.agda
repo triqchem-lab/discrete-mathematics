@@ -24,7 +24,7 @@ open import Sovereign.Base.Trit
         ; ⊗-assoc; ⊗-comm; ⊗-identityˡ; ⊗-identityʳ
         ; ⊗-distribˡ-⊕; ⊗-distribʳ-⊕; ⊗-zeroˡ; ⊗-zeroʳ)
 open import Sovereign.Algebra.Jacobian.Discrete
-open import Sovereign.Algebra.GF27 using (negate-⊕; negate-⊗)
+open import Sovereign.Algebra.FieldTower.GF27 using (negate-⊕; negate-⊗)
   using (Mat2; det2; I2; GF3²)
 
 --------------------------------------------------------------------------------

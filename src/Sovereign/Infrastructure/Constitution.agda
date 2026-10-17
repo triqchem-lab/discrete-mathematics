@@ -38,10 +38,10 @@ open import Sovereign.Infrastructure.Projection using (Category; Electric; RootM
                                           ProjectionChain; IsElectricProjection;
                                           ElectricConcept; interpret)
 open import Sovereign.Foundation.Base using (Trit; T₀; T₁; T₂)
-open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding; 
+open import Sovereign.Synthesis.NumberTheory.Winding using (PolarWinding; ToroidalWinding; 
                                                   polarWindingValue; toroidalWindingValue)
-open import Sovereign.Synthesis.HolographicPi using (HolographicPi; standardHoloPi)
-open import Sovereign.Synthesis.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶)
+open import Sovereign.Synthesis.Geometry.HolographicPi using (HolographicPi; standardHoloPi)
+open import Sovereign.Synthesis.CRT.LossGain using (SOVEREIGN_LCM; POW3¹¹; POW2¹⁶)
 open import Sovereign.Foundation.ElectricCivilization using (EightMisconceptions; 
                                                               ConstitutionalIsolation;
                                                               prohibitedTerms; prohibitedUnits;

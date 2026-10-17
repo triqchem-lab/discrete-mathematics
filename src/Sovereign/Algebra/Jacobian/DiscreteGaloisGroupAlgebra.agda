@@ -160,7 +160,7 @@ diag-commute = refl
 -- §3c. σ 矩阵作用 + 半直积完成 (2026-08-16: 接口级 → 显式子群 D₄ 全形式化)
 --------------------------------------------------------------------------------
 
-open import Sovereign.Algebra.GF9 using
+open import Sovereign.Algebra.FieldTower.GF9 using
   (GF9; galoisConjugate; galoisConjugate²; alpha; _*gf9_; _+gf9_)
 open import Sovereign.Algebra.Jacobian.GF9Matrix using
   (GF9Mat; I2-gf9; 1gf9; 0gf9; neg-gf9)
@@ -286,10 +286,10 @@ sdMAS = mNegαI2 , suc zero
 --   theorem-dimension-sum-of-squares: dim²和 = 12
 --   character-at-identity: χᵢ(Id) = dimᵢ
 -- 以下重导出关键定理.
-open import Sovereign.Synthesis.A4Representations
+open import Sovereign.Synthesis.A4.A4Representations
   using (A4Irrep; V3; V1; V1'; V1'';
          dim; theorem-dimension-sum-of-squares)
-open import Sovereign.Algebra.LieDiscrete
+open import Sovereign.Algebra.GroupTheory.LieDiscrete
   using (LieGroupEvidence; lieGroupEvidence)
 
 -- 定理 (a): Burnside dim²和 = 12 = |A₄|
@@ -304,7 +304,7 @@ a4-burnside = theorem-dimension-sum-of-squares
 
 -- 重导出 LieDiscrete 的完整证据
 module LieDiscreteEvidence where
-  open import Sovereign.Algebra.LieDiscrete public
+  open import Sovereign.Algebra.GroupTheory.LieDiscrete public
     using (LieGroupEvidence; lieGroupEvidence)
 
 -- 结论: A₄ 特征标表封顶:

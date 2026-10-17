@@ -100,7 +100,7 @@ record DigitalRootAxiom : Set₁ where
 --   损一：管缩短，频率升高（下生）
 --   益一：管增长，频率降低（上生）
 --
--- 实现：Sovereign.Algebra.SunyiBase（sun/yi + Frac + SOVEREIGN_LCM 推导）
+-- 实现：Sovereign.Algebra.NumberTheory.SunyiBase（sun/yi + Frac + SOVEREIGN_LCM 推导）
 --------------------------------------------------------------------------------
 
 -- 损益接口

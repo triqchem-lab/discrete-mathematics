@@ -42,7 +42,7 @@ open import Relation.Nullary using (Dec; yes; no)
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; tritToFin3; fin3ToTrit)
 
-open import Sovereign.Synthesis.T6
+open import Sovereign.Synthesis.Combinatorics.T6
   using (T6Lattice; GF3; t6ToFin; finToT6; t6Cardinality;
          toℕ-sum; toℕ-sum<729; toℕ-sum-injective; rightInv; leftInv)
 
@@ -53,7 +53,7 @@ open import Sovereign.Algebra.Jacobian.GF3
          JΔ-counter; det-JΔ-counter; det-JΔ-id)
   renaming (id-gf3 to id-gf3²)
 
-open import Sovereign.Application.FrobeniusBlind
+open import Sovereign.Application.Problems.RH.FrobeniusBlind
   using (GF9; GF9²; F-frob; σ₉; α₉; frob-3to1; frob-collision-1; frob-collision-2;
          Δy-F2-const; Δy-F2-at-00; σ-shift)
 
@@ -347,7 +347,7 @@ alpoege-vs-t6 =
 --   (不可分 F 仍须 729×729 全局判定; 结构性判据 NoZeroRow ∧ ColDistinct 见 §7)
 
 -- 注: 此处为概念性陈述。CRT 分解的具体构造见:
---   Sovereign.Synthesis.CRT (crt12, π3, π4, crtProject, crtReconstruct)
+--   Sovereign.Synthesis.CRT.CRT (crt12, π3, π4, crtProject, crtReconstruct)
 --   Sovereign.Base.CRTLemmas (CRT 正交分解引理)
 
 -- 4320D 商空间的几何意义

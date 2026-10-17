@@ -40,7 +40,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; cong; cong₂; sym; trans)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; negate)
-open import Sovereign.Algebra.GF9 using (GF9; galoisConjugate)
+open import Sovereign.Algebra.FieldTower.GF9 using (GF9; galoisConjugate)
 
 --------------------------------------------------------------------------------
 -- §0 逻辑小件（自足，不依赖 stdlib 的 Bool 库）

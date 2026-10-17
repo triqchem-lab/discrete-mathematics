@@ -35,7 +35,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; trans; sym)
 
 -- Z/12Z 涡旋环本体 (根 "123")
-open import Sovereign.Algebra.Duodecimal using (
+open import Sovereign.Algebra.GroupTheory.Duodecimal using (
   Duodec; d0; d1; d2; d3; d4; d5; d6; d7; d8; d9; d10; d11;
   +1; _+12_)
 

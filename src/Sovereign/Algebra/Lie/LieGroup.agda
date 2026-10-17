@@ -39,7 +39,7 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
-open import Sovereign.Algebra.GF9 using
+open import Sovereign.Algebra.FieldTower.GF9 using
   (GF9; galoisConjugate; alpha; _*gf9_; _+gf9_)
 import Sovereign.Foundation.Gaussian as G
 import Sovereign.Foundation.Eisenstein as Eis

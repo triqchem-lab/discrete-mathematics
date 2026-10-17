@@ -25,8 +25,8 @@ open import Relation.Binary.PropositionalEquality
 
 -- ⚠ 重构归位（2026-09-11）: 本模块是**通用**有限动力系统机制，
 -- 原先夹带的 GF9 专用物（Frobenius 轨道、不动点刻画、GF9↔Fin9 编码、
--- 周期上界）已全部归位到 `Sovereign.Algebra.FrobeniusOrbit`。
--- 因此这里不再 import `Sovereign.Base.Trit` / `Sovereign.Algebra.GF9` ——
+-- 周期上界）已全部归位到 `Sovereign.Algebra.FieldTower.FrobeniusOrbit`。
+-- 因此这里不再 import `Sovereign.Base.Trit` / `Sovereign.Algebra.FieldTower.GF9` ——
 -- 通用模块不承载具体域，依赖方向变纯粹。
 
 --------------------------------------------------------------------------------

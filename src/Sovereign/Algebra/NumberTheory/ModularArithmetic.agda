@@ -20,7 +20,7 @@ open import Data.Nat.Properties using (+-comm; +-assoc; +-identityʳ; m+[n∸m]�
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
-open import Sovereign.Algebra.Duodecimal using (Duodec; d7; d8; _+12_; π3)
+open import Sovereign.Algebra.GroupTheory.Duodecimal using (Duodec; d7; d8; _+12_; π3)
 
 --------------------------------------------------------------------------------
 -- §1 基础件层：⊕ₙ 模加法（值层）

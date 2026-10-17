@@ -1,6 +1,6 @@
 {-# OPTIONS --cubical --guardedness #-}
 
--- | Sovereign.Cubical.Fin3Sum9
+-- | Sovereign.Base.Fin3Sum9
 -- Fin 3 上 9 项求和的展平/交换引理族——服务 Laurent → Burau → Braid 链的 sum9 转置
 --
 -- 核心原则：

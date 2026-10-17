@@ -31,7 +31,7 @@ open import Relation.Binary.PropositionalEquality.Properties
   using (module ≡-Reasoning)
 open ≡-Reasoning
 
-import Sovereign.Application.TQ10 as TQ10
+import Sovereign.Application.Coupling.TQ10 as TQ10
 import Sovereign.Base.TritOps as TritOps
 import Sovereign.Base.Trit as Trit
 

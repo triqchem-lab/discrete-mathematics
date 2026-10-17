@@ -24,7 +24,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
-open import Sovereign.Algebra.GF9
+open import Sovereign.Algebra.FieldTower.GF9
   using (GF9; GF3; _*gf9_; _+gf9_; gf9-one; gf9-zero; galoisNorm; galoisConjugate;
          galoisTrace; embed-gf3;
          alpha; alpha-squared; alpha-powers-4; alpha-powers-sum-zero;

@@ -1,6 +1,6 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
--- | Sovereign.Algebra.Jacobian.Theorem
+-- | Sovereign.Algebra.Holographic.Theorem
 -- Phase 6: 离散雅可比定理 — 最终陈述
 --
 -- 在离散环面 GF(3)⁶/G (4320D 全息空间) 上:

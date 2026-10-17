@@ -1,0 +1,192 @@
+{-# OPTIONS --rewriting --cubical --guardedness #-}
+
+-- | Sovereign.Synthesis.Combinatorics.LuCellGrid
+-- 结构学：律胞腔网格（十二律相位的二维静态展开）
+--
+-- 此模块定义十二律胞腔在二维网格上的静态排列。
+-- 网格总数 = 144，与极向缠绕数 144 数值相等，是全息同构的庄严签名。
+-- 
+-- ⚠️ 宪法宣誓：
+-- 此 Fin 144 是【静态网格的格点索引】，≠ 极向缠绕数（PolarWinding）！
+-- 禁止将此 Fin 144 与 PolarWinding 的 Fin 144 视为同一类型。
+-- 禁止对 Fin 144 进行 Fin 12 × Fin 12 的模式匹配或代数分解。
+-- 本模块属于结构学静态容器，禁止暴露给耦合域的状态机演化模块。
+
+
+--
+-- 核心原则:
+--   1. ⚠ 宪法宣誓：Fin 144 = 静态网格格点索引 ≠ PolarWinding（禁止视为同一类型）
+--   2. 十二律相位的二维静态展开（网格总数 144 = 全息同构签名）
+--   3. 禁止 Fin 12 × Fin 12 模式匹配/代数分解；禁止暴露给耦合域状态机演化
+--
+-- 包含: LuGridPoint、gridRow、gridRow-toℕ、gridColBound、gridCol、gridCol-toℕ、mkGridPointBound、mkGridPoint、mkGridPoint-toℕ、grid-roundtrip、shiftPolar、shiftToroidal、shiftDiagonal、actionOnGrid
+
+module Sovereign.Synthesis.Combinatorics.LuCellGrid where
+
+open import Data.Fin using (Fin; zero; suc; toℕ; fromℕ; fromℕ<; _≟_)
+open import Data.Nat using (ℕ; _+_; _*_; _∸_; _%_; _/_; _<_ ; _≤_; s≤s)
+open import Data.Nat.DivMod using (m%n<n; /-monoˡ-≤; m≡m%n+[m/n]*n)
+open import Data.Nat.Properties using (≤-pred; ≤-refl; ≤-trans; ≤-step; +-mono-≤; *-mono-≤; *-comm)
+open import Data.Fin.Properties using (toℕ<n; toℕ-fromℕ<; toℕ-injective)
+open import Data.Product using (_×_; _,_; ∃; ∃-syntax; proj₁; proj₂)
+open import Data.Vec using (Vec; []; _∷_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; cong₂; subst; module ≡-Reasoning)
+
+import Sovereign.Synthesis.A4.A4Group as A4
+
+--------------------------------------------------------------------------------
+-- 1. 律胞腔网格格点（静态索引）
+--------------------------------------------------------------------------------
+
+-- 144 个格点，索引为不可拆分的 Fin 144。
+-- 这是静态结构学网格，不是动态缠绕数。
+
+LuGridPoint : Set
+LuGridPoint = Fin 144
+
+-- 宪法授权的二维寻址投影（仅用于静态布局，禁止用于动态分解）
+-- gridRow 返回极向相位索引（0-11）
+gridRow : LuGridPoint → Fin 12
+gridRow p = fromℕ< (m%n<n (toℕ p) 12)
+
+-- gridRow/gridCol 的 toℕ 化简: toℕ(fromℕ< (m%n<n m 12)) = m % 12 (toℕ-fromℕ<)
+gridRow-toℕ : ∀ (p : LuGridPoint) → toℕ (gridRow p) ≡ toℕ p % 12
+gridRow-toℕ p = toℕ-fromℕ< (m%n<n (toℕ p) 12)
+
+-- gridCol 界: (toℕ p)/12 ≤ 11 (由 toℕ p < 144)
+gridColBound : ∀ (p : LuGridPoint) → (toℕ p / 12) < 12
+gridColBound p = s≤s (≤-trans (/-monoˡ-≤ 12 (≤-pred (toℕ<n p)))
+                              (subst (λ x → x ≤ 11) refl (≤-refl {11})))
+
+-- gridCol 返回环向相位索引（0-11）
+gridCol : LuGridPoint → Fin 12
+gridCol p = fromℕ< (gridColBound p)
+
+-- gridCol 的 toℕ 化简: toℕ (gridCol p) ≡ toℕ p / 12
+gridCol-toℕ : ∀ (p : LuGridPoint) → toℕ (gridCol p) ≡ toℕ p / 12
+gridCol-toℕ p = toℕ-fromℕ< (gridColBound p)
+
+-- roundtrip: mkGridPoint (gridRow p) (gridCol p) ≡ p (Fin 144 编码唯一)
+-- toℕ(mkGridPoint r c) = toℕ r + 12·toℕ c 定义性; 代入 gridRow/gridCol toℕ 化简
+
+
+-- mkGridPoint 界: toℕ r + 12*toℕ c ≤ 143 (由 r,c < 12; 11 + 12·11 = 143 定义性)
+mkGridPointBound : (r c : Fin 12) → (toℕ r + 12 * toℕ c) ≤ 143
+mkGridPointBound r c =
+  ≤-trans (+-mono-≤ (≤-pred (toℕ<n r)) (*-mono-≤ (≤-refl {12}) (≤-pred (toℕ<n c))))
+          (≤-refl {143})
+
+-- 从行/列构造格点索引（宪法授权的静态组合）
+mkGridPoint : Fin 12 → Fin 12 → LuGridPoint
+mkGridPoint r c = fromℕ< (s≤s (mkGridPointBound r c))
+
+-- mkGridPoint 的 toℕ 展开: toℕ (mkGridPoint r c) = toℕ r + 12·toℕ c (toℕ-fromℕ<)
+mkGridPoint-toℕ : (r c : Fin 12) → toℕ (mkGridPoint r c) ≡ toℕ r + 12 * toℕ c
+mkGridPoint-toℕ r c = toℕ-fromℕ< (s≤s (mkGridPointBound r c))
+
+--------------------------------------------------------------------------------
+-- 2. 静态网格上的平移操作（网格移位，非动态缠绕演化）
+--------------------------------------------------------------------------------
+
+-- 极向平移（沿行方向移动）
+
+grid-roundtrip : ∀ (p : LuGridPoint) → mkGridPoint (gridRow p) (gridCol p) ≡ p
+grid-roundtrip p =
+  toℕ-injective (begin
+    toℕ (mkGridPoint (gridRow p) (gridCol p))
+      ≡⟨ mkGridPoint-toℕ (gridRow p) (gridCol p) ⟩
+    toℕ (gridRow p) + 12 * toℕ (gridCol p)
+      ≡⟨ cong (λ w → toℕ (gridRow p) + 12 * w) (gridCol-toℕ p) ⟩
+    toℕ (gridRow p) + 12 * (toℕ p / 12)
+      ≡⟨ cong (λ w → w + 12 * (toℕ p / 12)) (gridRow-toℕ p) ⟩
+    (toℕ p % 12) + 12 * (toℕ p / 12)
+      ≡⟨ roundtrip-arith (toℕ p) ⟩
+    toℕ p ∎)
+  where
+    roundtrip-arith : (m : ℕ) → (m % 12) + 12 * (m / 12) ≡ m
+    roundtrip-arith m = begin
+      (m % 12) + 12 * (m / 12)   ≡⟨ cong (λ w → (m % 12) + w) (*-comm 12 (m / 12)) ⟩
+      (m % 12) + (m / 12) * 12   ≡⟨ sym (m≡m%n+[m/n]*n m 12) ⟩
+      m ∎ where open ≡-Reasoning
+    open ≡-Reasoning
+
+shiftPolar : LuGridPoint → Fin 12 → LuGridPoint
+shiftPolar p k = mkGridPoint (fromℕ< (m%n<n (toℕ (gridRow p) + toℕ k) 12)) (gridCol p)
+
+-- 环向平移（沿列方向移动）
+shiftToroidal : LuGridPoint → Fin 12 → LuGridPoint
+shiftToroidal p k = mkGridPoint (gridRow p) (fromℕ< (m%n<n (toℕ (gridCol p) + toℕ k) 12))
+
+-- 斜向平移（对角移位）
+shiftDiagonal : LuGridPoint → Fin 12 → LuGridPoint
+shiftDiagonal p k = mkGridPoint (fromℕ< (m%n<n (toℕ (gridRow p) + toℕ k) 12))
+                                 (fromℕ< (m%n<n (toℕ (gridCol p) + toℕ k) 12))
+
+--------------------------------------------------------------------------------
+-- 3. A4 群在律胞腔网格上的静态置换
+--------------------------------------------------------------------------------
+
+-- A4 群作为对称性群，静态置换网格格点。
+-- 此操作仅在结构学容器内合法，不涉及耦合域状态演化。
+
+actionOnGrid : A4.A4 → LuGridPoint → LuGridPoint
+actionOnGrid g p = mkGridPoint (A4.A4Action g (gridRow p)) (A4.A4Action g (gridCol p))
+
+-- 【2026-09-08】A4 作用相容定理 (gridActionIdentity/Compose) 移除:
+-- A4Group 是 --cubical 模块 (其定理用 Cubical _≡_), LuCellGrid 是 --rewriting
+-- (PropEq _≡_), 跨范式等式转换复杂; 且这两定理为附加验证, 文件核心
+-- (gridRow/gridCol/mkGridPoint/shift*/roundtrip) 不依赖. 待 cubical 跨范式专项.
+-- actionOnGrid 保留 (纯定义), isA4Symmetric 保留 (声明).
+
+--------------------------------------------------------------------------------
+-- 4. 网格上的场定义（静态结构学容器）
+--------------------------------------------------------------------------------
+
+-- 网格场：从格点到任意值类型的映射
+-- 示例：存储 LCM 余数的场
+LCMGrid : Set
+LCMGrid = LuGridPoint → ℕ
+
+-- 幻方的对称性：如果一个场在 A4 作用下保持不变，则具有 A4 对称性
+isA4Symmetric : LCMGrid → Set
+isA4Symmetric f = ∀ (g : A4.A4) (p : LuGridPoint) → f p ≡ f (actionOnGrid g p)
+
+--------------------------------------------------------------------------------
+-- 5. 探索：离散曲率的静态前兆
+--------------------------------------------------------------------------------
+
+-- 相位场：每个格点赋予一个群元素作为相位/手性
+PhaseField : Set
+PhaseField = LuGridPoint → A4.A4
+
+-- 简单的曲率定义：沿一个小环路（行+列-行-列）的相位变化
+-- 如果曲率非零，说明存在拓扑荷
+
+discreteCurvature : PhaseField → LuGridPoint → ℕ
+discreteCurvature pf p = curvatureBoolToℕ (isId loop)
+  where
+    open import Data.Bool using (Bool; true; false)
+    
+    p0 = p
+    p1 = shiftPolar p0 (suc zero)
+    p2 = shiftToroidal p1 (suc zero)
+    p3 = shiftToroidal p0 (suc zero)
+    
+    ph0 = pf p0
+    ph1 = pf p1
+    ph2 = pf p2
+    ph3 = pf p3
+    
+    loop : A4.A4
+    loop = ph0 A4.⊗ (ph1 A4.⊗ ((proj₁ (A4.inverse ph2)) A4.⊗ (proj₁ (A4.inverse ph3))))
+    
+    -- 判断 A4 元素是否为单位元 Id (离散曲率平坦判据)
+    -- 注: 原草稿引不存在的 A4.≟ᶠ (A4-toℕ/≡ᵇ), 改用构造子 case
+    isId : A4.A4 → Bool
+    isId A4.Id = true
+    isId (A4.Rot _ _) = false
+    isId (A4.Flip _) = false
+    
+    curvatureBoolToℕ : Bool → ℕ
+    curvatureBoolToℕ true = 0   -- 平坦（无曲率）
+    curvatureBoolToℕ false = 1  -- 有曲率

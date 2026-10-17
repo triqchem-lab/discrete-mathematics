@@ -1,5 +1,5 @@
 {-# OPTIONS --cubical --guardedness #-}
--- | Sovereign.Cubical.Fin3
+-- | Sovereign.Base.Fin3
 -- Fin 3 上的求和交换/分配引理——服务 Laurent → Burau → Braid 链
 --
 -- 核心原则：

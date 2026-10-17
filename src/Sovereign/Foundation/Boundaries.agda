@@ -29,8 +29,8 @@ open import Data.Product using (∃; ∃-syntax; _×_; _,_)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Synthesis.Winding using (PolarWinding; ToroidalWinding)
-open import Sovereign.Synthesis.LossGain using (LossGain; Sun; Yi; applyLossGain)
+open import Sovereign.Synthesis.NumberTheory.Winding using (PolarWinding; ToroidalWinding)
+open import Sovereign.Synthesis.CRT.LossGain using (LossGain; Sun; Yi; applyLossGain)
 open import Sovereign.Base.WuXing using (WuXing; wuXingBase)
 
 --------------------------------------------------------------------------------

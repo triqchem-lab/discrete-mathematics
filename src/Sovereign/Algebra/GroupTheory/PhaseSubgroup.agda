@@ -49,7 +49,7 @@ open import Relation.Binary.PropositionalEquality using (module ≡-Reasoning)
 open ≡-Reasoning
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Algebra.GF9 using
+open import Sovereign.Algebra.FieldTower.GF9 using
   (GF9; GF9Star; toGF9; s1; s2; sα; s2α; s1α; s12α; s21α; s22α;
    _*s_; _^s_; gen; galoisNorm; galoisConjugate;
    alpha; alpha-squared; alpha-powers-4; gf9-one; _*gf9_;

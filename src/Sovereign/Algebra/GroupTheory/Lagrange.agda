@@ -61,7 +61,7 @@ open import Function.Definitions using (Injective)
 open import Function.Bundles using (_⇔_; Equivalence; mk⇔)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong; cong₂; subst; module ≡-Reasoning)
-open import Sovereign.Algebra.Duodecimal
+open import Sovereign.Algebra.GroupTheory.Duodecimal
   using (Duodec; d0; d1; d2; d3; d4; d5; d6; d7; d8; d9; d10; d11;
          _+12_; +12-assoc; +12-comm; +12-identityʳ; +12-inverse; neg12)
 

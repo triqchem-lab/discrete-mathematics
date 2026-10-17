@@ -19,7 +19,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong; cong₂)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
-open import Sovereign.Algebra.Duodecimal
+open import Sovereign.Algebra.GroupTheory.Duodecimal
   using (Duodec; d0; d1; d2; d3; d4; d5; d6; d7; d8; d9; d10; d11
        ; _+12_; _*12_; neg12; π3; π4; crt12)
 open import Sovereign.Algebra.Jacobian.CRTDet

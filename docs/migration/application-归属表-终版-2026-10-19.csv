@@ -1,0 +1,305 @@
+file,bucket,evidence_kind,confidence,evidence
+ABCL1.agda,Problems/ABC,关键词,高,-- | Sovereign.Application.ABCL1
+AcousticsDiscrete.agda,Applied/Physics,关键词,高,-- | Sovereign.Applied.AcousticsDiscrete
+AlgGeom.agda,Applied/Geometry,关键词,高,-- | Sovereign.Application.AlgGeom
+AlgebraChainDeep.agda,Applied/Algebra,头注释,低,头注释：GF(9) 域性质强化 + 4320 组合闭包
+Algorithm.agda,Problems/PvsNP,原始记录,低,src/Sovereign/Problem/PvsNP/Algorithm.agda｜layer=Application｜basis=目录默认(Problem)｜审计=docs/l
+AlphaRelation.agda,Applied/Algebra,关键词,高,-- | Sovereign.Application.AlphaRelation
+AtomicStandingWave.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.AtomicStandingWave
+AutT6.agda,Applied/Geometry,关键词,高,-- | Sovereign.Application.AutT6
+BSD.agda,Problems/BSD,关键词,高,-- | Sovereign.Application.BSD
+BSD9.agda,Problems/BSD,关键词,高,-- | Sovereign.Application.BSD9
+BSDTrace.agda,Problems/BSD,关键词,高,-- | Sovereign.Application.BSDTrace
+BSD_GF243.agda,Problems/BSD,关键词,高,-- | Sovereign.Application.BSD_GF243
+BSD_GF27.agda,Problems/BSD,关键词,高,-- | Sovereign.Application.BSD_GF27
+BSD_GF81.agda,Problems/BSD,关键词,高,-- | Sovereign.Application.BSD_GF81
+BSD_General.agda,Problems/BSD,关键词,高,-- | Sovereign.Application.BSD_General
+BSD_L3.agda,Problems/BSD,关键词,高,-- | Sovereign.Application.BSD_L3
+BiologyDiscrete.agda,Applied/CrossDomain,关键词,高,-- | Sovereign.Application.BiologyDiscrete
+BlackHoleWhiteHole.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.BlackHoleWhiteHole
+BoundaryGF3.agda,Problems/Hodge,原始记录,低,src/Sovereign/Problem/Hodge/BoundaryGF3.agda｜layer=Application｜basis=目录默认(Problem)｜审计=docs
+CelestialExtended.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.CelestialExtended
+CelestialGeneticsControl.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.CelestialGeneticsControl
+ChainComplex.agda,Applied/Algebra,原始记录,低,src/Sovereign/Algebra/ChainComplex.agda｜layer=Algebra｜basis=目录默认(Algebra)｜审计=docs/line-aud
+CharPoly3.agda,Problems/PvsNP,原始记录,低,src/Sovereign/Problem/PvsNP/CharPoly3.agda｜layer=Application｜basis=目录默认(Problem)｜审计=docs/l
+CharacteristicTower.agda,Applied/Algebra,头注释,—,头注释：特征塔与进制层级 — 坍缩判据 + 余数判据
+ChiralInterference.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/ChiralInterference.agda｜layer=Application｜basis=目录默认(Physics)｜审计=doc
+CircuitExtended.agda,Applied/CrossDomain,原始记录,—,src/Sovereign/Applied/CircuitExtended.agda｜layer=Application｜basis=目录默认(Applied)｜审计=docs/l
+ClimateDynamics.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.ClimateDynamics
+Collapse.agda,Method/Morse,关键词,高,-- | Sovereign.Application.Collapse
+CollapseHomologyStages.agda,Applied/Topology,原始记录,低,src/Sovereign/Topology/CollapseHomologyStages.agda｜layer=Application｜basis=Topology Morse/
+CollapseToMorse.agda,Method/Morse,关键词,高,-- | Sovereign.Application.CollapseToMorse
+CommunicationDiscrete.agda,Applied/CrossDomain,关键词,高,-- | Sovereign.Application.CommunicationDiscrete
+Complexity.agda,Problems/PvsNP,原始记录,—,src/Sovereign/Problem/PvsNP/Complexity.agda｜layer=Application｜basis=目录默认(Problem)；被违2次｜审计=
+Complexity3.agda,Problems/PvsNP,原始记录,低,src/Sovereign/Problem/PvsNP/Complexity3.agda｜layer=Application｜basis=目录默认(Problem)｜审计=docs
+CondensedMatter.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.CondensedMatter
+ConformalCore.agda,Applied/Geometry,关键词,高,-- | Sovereign.Application.ConformalCore
+ConformalInvariants.agda,Applied/Geometry,关键词,高,-- | Sovereign.Application.ConformalInvariants
+ControlTheory.agda,Applied/CrossDomain,关键词,高,-- | Sovereign.Application.ControlTheory
+ConvergenceAlignment.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.ConvergenceAlignment
+CosmologyDiscrete.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.CosmologyDiscrete
+CrossDomainTheorems.agda,Applied/CrossDomain,原始记录,—,src/Sovereign/Applied/CrossDomainTheorems.agda｜layer=Application｜basis=目录默认(Applied)｜审计=do
+CubicRoot.agda,Applied/Algebra,关键词,高,-- | Sovereign.Application.CubicRoot
+CubicRootTest.agda,Applied/Algebra,关键词,高,-- | Sovereign.Application.CubicRootTest
+CyclicGF27.agda,Applied/Coding,头注释,低,头注释：GF(27) 根结构 → 长度 26 三元循环码
+DNAEncoding.agda,Applied/CrossDomain,关键词,高,-- | Sovereign.Application.DNAEncoding
+DataAnchors.agda,Applied/Physics,原始记录,—,src/Sovereign/Physics/DataAnchors.agda｜layer=Application｜basis=目录默认(Physics)｜审计=docs/line-
+DeepStructureProofs.agda,Applied/CrossDomain,原始记录,低,src/Sovereign/Applied/DeepStructureProofs.agda｜layer=Application｜basis=目录默认(Applied)｜审计=do
+DeligneHodge.agda,Problems/Hodge,关键词,高,-- | Sovereign.Application.DeligneHodge
+DeligneLusztig.agda,Problems/Langlands,原始记录,低,src/Sovereign/Problem/Langlands/DeligneLusztig.agda｜layer=Application｜basis=目录默认(Problem)；
+DetMul.agda,Applied/Algebra,关键词,高,-- | Sovereign.Application.DetMul
+DiscreteActionPrinciple.agda,Applied/Physics,关键词,中,-- | Sovereign.Application.DiscreteActionPrinciple
+DiscreteCR.agda,Applied/Analysis,原始记录,低,src/Sovereign/Analysis/DiscreteCR.agda｜layer=Application｜basis=Analysis 逐件细分；被违1次｜审计=docs/
+DiscreteComplexAnalysis.agda,Applied/Analysis,头注释,低,头注释：离散复分析 — GF(9) 作为离散 ℂ 的函数论
+DiscreteDiffOps.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/DiscreteDiffOps.agda｜layer=Application｜basis=目录默认(Physics)；被违2次｜审计=d
+DiscreteDiffOpsChecks.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.DiscreteDiffOpsChecks
+DiscreteEMCore.agda,Applied/Physics,关键词,中,-- | Sovereign.Application.DiscreteEMCore
+DiscreteEMField.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.DiscreteEMField
+DiscreteEMField3D.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.DiscreteEMField3D
+DiscreteEMIdentityChecks.agda,Applied/Physics,头注释,低,头注释：curl∘grad=0 / div∘curl=0 的跨域实例核对
+DiscreteFourier.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.DiscreteFourier
+DiscreteHodgeDecomposition.agda,Problems/Hodge,关键词,高,-- | Sovereign.Application.DiscreteHodgeDecomposition
+DiscreteIntegralEq.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.DiscreteIntegralEq
+DiscreteJC.agda,Applied/Algebra,关键词,高,-- | Sovereign.Algebra.Jacobian.DiscreteJC
+DiscreteLagrangian.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/DiscreteLagrangian.agda｜layer=Application｜basis=目录默认(Physics)；被违1次｜审
+DiscreteLagrangian3D.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/DiscreteLagrangian3D.agda｜layer=Application｜basis=目录默认(Physics)｜审计=d
+DiscreteLagrangianChecks.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.DiscreteLagrangianChecks
+DiscreteLightcone.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.DiscreteLightcone
+DiscreteManifold.agda,Applied/Geometry,原始记录,低,src/Sovereign/Geometry/DiscreteManifold.agda｜layer=Application｜basis=目录默认(Geometry)｜审计=doc
+DiscreteMaxwellConservation.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.DiscreteMaxwellConservation
+DiscreteMaxwellGF9.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.DiscreteMaxwellGF9
+DiscreteMaxwellTime.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/DiscreteMaxwellTime.agda｜layer=Application｜basis=目录默认(Physics)；被违1次｜
+DiscreteMorseGeneral.agda,Method/Morse,关键词,高,-- | Sovereign.Topology.DiscreteMorseGeneral
+DiscreteMorseTheory.agda,Method/Morse,头注释,低,头注释：Forman 离散 Morse 理论 = 有限 CW 复形上的匹配
+DiscreteNoether.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/DiscreteNoether.agda｜layer=Application｜basis=目录默认(Physics)；被违1次｜审计=d
+DiscretePotential.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.DiscretePotential
+DiscreteProbability.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.DiscreteProbability
+DiscreteStatMech.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.DiscreteStatMech — 离散统计力学 (MSC 82)
+DomainProofs.agda,Applied/CrossDomain,原始记录,—,src/Sovereign/Applied/DomainProofs.agda｜layer=Application｜basis=目录默认(Applied)｜审计=docs/line
+EMDiscrete.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.EMDiscrete
+EckmannGF3.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.EckmannGF3
+EckmannNonSplitting.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.EckmannNonSplitting
+EconomicsDiscrete.agda,Applied/CrossDomain,关键词,高,-- | Sovereign.Application.EconomicsDiscrete
+ElasticityDiscrete.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.ElasticityDiscrete
+ElectromagneticUnitBridge.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.ElectromagneticUnitBridge
+EllipticComplex.agda,Problems/BSD,原始记录,低,src/Sovereign/Problem/BSD/EllipticComplex.agda｜layer=Application｜basis=目录默认(Problem)｜审计=do
+Entanglement.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.Entanglement
+EntropySpin.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.EntropySpin
+EntropySpinBalance.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.EntropySpinBalance
+EntropySpinLaw.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.EntropySpinLaw
+EntropySpinMicro.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/EntropySpinMicro.agda｜layer=Application｜basis=目录默认(Physics)｜审计=docs/
+EntropySpinQuantize.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.EntropySpinQuantize
+EntropySpinVerification.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.EntropySpinVerification
+EulerChar.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.EulerChar
+EulerPoincareInstance.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.EulerPoincareInstance
+FermatL0.agda,Problems/FLT,关键词,高,-- | Sovereign.Application.FermatL0
+FermatL1.agda,Problems/FLT,关键词,高,-- | Sovereign.Application.FermatL1
+FermatL2.agda,Problems/FLT,原始记录,低,src/Sovereign/Problem/Fermat/FermatL2.agda｜layer=Application｜basis=目录默认(Problem)
+FermatL3.agda,Problems/FLT,关键词,高,-- | Sovereign.Application.FermatL3
+FermatL4_Mod12Cycle.agda,Problems/FLT,原始记录,低,src/Sovereign/Problem/Fermat/FermatL4_Mod12Cycle.agda｜layer=Application｜basis=目录默认(Problem
+FermatL4_NatLift.agda,Problems/FLT,原始记录,低,src/Sovereign/Problem/Fermat/FermatL4_NatLift.agda｜layer=Application｜basis=目录默认(Problem)
+FineStructureMapping.agda,Applied/Physics,原始记录,—,src/Sovereign/Physics/FineStructureMapping.agda｜layer=Application｜basis=目录默认(Physics)｜审计=d
+FiniteGroupAxioms.agda,Applied/Algebra,头注释,低,头注释：有限群公理统一结构（结合/单位/逆/同态）
+FiniteOrbitObs.agda,Applied/Analysis,头注释,低,头注释：有限动力学观察值版（NSEFinalClosure §4 泛化）
+FiniteProbability.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.FiniteProbability
+FluidDiscrete.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.FluidDiscrete
+FormanChiInvariant.agda,Method/Morse,关键词,高,-- | Sovereign.Application.FormanChiInvariant
+FormanMinimal.agda,Method/Morse,关键词,高,-- | Sovereign.Application.FormanMinimal
+FormanMorseInequality.agda,Problems/Hodge,原始记录,低,src/Sovereign/Problem/Hodge/FormanMorseInequality.agda｜layer=Application｜basis=目录默认(Proble
+FormanPerfectField.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.FormanPerfectField
+Foundation.agda,Applied/Physics/Quantum,原始记录,—,src/Sovereign/Quantum/Foundation.agda｜layer=Application｜basis=目录默认(Quantum)｜审计=docs/line-a
+FreeAbBoundary.agda,Problems/Hodge,原始记录,低,src/Sovereign/Problem/Hodge/FreeAbBoundary.agda｜layer=Application｜basis=目录默认(Problem)；被违3次
+FreeAbGroupLaws.agda,Applied/Homotopy,关键词,高,-- | Sovereign.Algebra.FreeAbGroupLaws
+FreeAbH0.agda,Applied/Homotopy,关键词,高,-- | Sovereign.Application.FreeAbH0
+FreeAbHodgeVerdict.agda,Problems/Hodge,关键词,高,-- | Sovereign.Application.FreeAbHodgeVerdict
+FreeAbHomology.agda,Problems/Hodge,原始记录,低,src/Sovereign/Problem/Hodge/FreeAbHomology.agda｜layer=Application｜basis=目录默认(Problem)｜审计=d
+FreeAbHomologyGroup.agda,Applied/Homotopy,关键词,高,-- | Sovereign.Application.FreeAbHomologyGroup
+FreeAbImEquiv.agda,Applied/Homotopy,关键词,高,-- | Sovereign.Application.FreeAbImEquiv
+FreeAbImSubsetPlane.agda,Applied/Homotopy,关键词,高,-- | Sovereign.Application.FreeAbImSubsetPlane
+FreeAbInnerProduct.agda,Problems/Hodge,原始记录,低,src/Sovereign/Problem/Hodge/FreeAbInnerProduct.agda｜layer=Application｜basis=目录默认(Problem)｜
+FreeAbNonDegenerate.agda,Problems/Hodge,原始记录,低,src/Sovereign/Problem/Hodge/FreeAbNonDegenerate.agda｜layer=Application｜basis=目录默认(Problem)
+FreeAbPlaneSurjective.agda,Applied/Homotopy,关键词,高,-- | Sovereign.Application.FreeAbPlaneSurjective
+FreeAbQuotient.agda,Applied/Homotopy,关键词,高,-- | Sovereign.Algebra.FreeAbQuotient
+FrobeniusBlind.agda,Problems/RH,原始记录,低,src/Sovereign/Problem/Riemann/FrobeniusBlind.agda｜layer=Application｜basis=目录默认(Problem)；被违
+GF27Separation.agda,Problems/PvsNP,关键词,高,-- | Sovereign.Application.GF27Separation
+GF9Sqrt2.agda,Problems/Sqrt2,关键词,高,------------------------------------------------------------------------
+GL2TestVectors.agda,Applied/Algebra,关键词,高,-- | Sovereign.Application.GL2TestVectors
+GL2_Rep.agda,Problems/Langlands,原始记录,低,src/Sovereign/Problem/Langlands/GL2_Rep.agda｜layer=Application｜basis=目录默认(Problem)｜审计=docs
+GRDiscrete.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.GRDiscrete
+Galois.agda,Applied/Algebra,关键词,高,-- | Sovereign.Application.Galois
+GameTheory.agda,Applied/CrossDomain,关键词,高,-- | Sovereign.Application.GameTheory
+GeneticsExtended.agda,Applied/CrossDomain,关键词,高,-- | Sovereign.Application.GeneticsExtended
+GeometricFidelity.agda,Applied/Geometry,原始记录,低,src/Sovereign/Geometry/GeometricFidelity.agda｜layer=Application｜basis=目录默认(Geometry)｜审计=do
+GoodnessOfFitGF3.agda,Applied/Analysis,关键词,高,-- | Sovereign.Analysis.GoodnessOfFitGF3
+GraphMorseInstance.agda,Method/Morse,关键词,高,-- | Sovereign.Application.GraphMorseInstance
+H2OC60.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/H2OC60.agda｜layer=Application｜basis=目录默认(Physics)｜审计=docs/line-audit
+HamiltonianDiscrete.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.HamiltonianDiscrete
+HeatEquationDiscrete.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.HeatEquationDiscrete
+Hodge.agda,Problems/Hodge,关键词,高,-- | Sovereign.Application.Hodge
+HodgeK3Panorama.agda,Problems/Hodge,原始记录,低,src/Sovereign/Problem/Hodge/HodgeK3Panorama.agda｜layer=Application｜basis=目录默认(Problem)｜审计=
+HodgeTetra.agda,Problems/Hodge,关键词,高,-- | Sovereign.Application.HodgeTetra
+Hodge_L3.agda,Problems/Hodge,关键词,高,-- | Sovereign.Application.Hodge_L3
+HoloInformation.agda,Applied/CrossDomain,头注释,低,头注释：全息信息论 4320D 形式化
+HomologyHarmonic.agda,Applied/CrossDomain,原始记录,低,src/Sovereign/Applied/HomologyHarmonic.agda｜layer=Application｜basis=目录默认(Applied)；被违1次｜审计=
+HomotopyPi1.agda,Applied/Homotopy,头注释,低,头注释：离散同伦路径复合幺半群 + π₁(T⁶)=格点加法群
+HoneycombMagneticField.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.HoneycombMagneticField
+HydrogenBondCoherence.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/HydrogenBondCoherence.agda｜layer=Application｜basis=目录默认(Physics)｜审计=
+ImageProcessing.agda,Applied/CrossDomain,关键词,高,-- | Sovereign.Application.ImageProcessing
+InformationEntropy.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.InformationEntropy
+InformationFrame.agda,Applied/Diagnosis,关键词,高,-- | Sovereign.Application.InformationFrame
+InvisibleOrbitCount.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/InvisibleOrbitCount.agda｜layer=Application｜basis=目录默认(Physics)｜审计=do
+IsingTriangle.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.IsingTriangle
+KakeyaGF3.agda,Problems/Kakeya,关键词,高,-- | Sovereign.Application.KakeyaGF3
+KakeyaGF9.agda,Problems/Kakeya,关键词,高,-- | Sovereign.Application.KakeyaGF9
+KakeyaMF.agda,Problems/Kakeya,关键词,高,-- | Sovereign.Application.KakeyaMF
+KakeyaPathology.agda,Problems/Kakeya,关键词,高,-- | Sovereign.Application.KakeyaPathology
+KerImQuot.agda,Applied/Homotopy,关键词,高,-- | Sovereign.Topology.KerImQuot
+KirchhoffCRT.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.KirchhoffCRT
+KirchhoffZ.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.KirchhoffZ
+KleinHodge.agda,Problems/Hodge,关键词,高,-- | Sovereign.Application.KleinHodge
+L1Disjunction.agda,Problems/ABC,原始记录,低,src/Sovereign/Problem/ABC/L1Disjunction.agda｜layer=Application｜basis=目录默认(Problem)
+L1Rad.agda,Problems/ABC,原始记录,低,src/Sovereign/Problem/ABC/L1Rad.agda｜layer=Application｜basis=目录默认(Problem)
+Langlands.agda,Problems/Langlands,关键词,高,-- Sovereign.Application.Langlands（旧名 jac_Langlands）
+Langlands_L15.agda,Problems/Langlands,关键词,高,-- | Sovereign.Application.Langlands_L15
+LatticeMembrane.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.LatticeMembrane
+LeibnizGF9.agda,Applied/CrossDomain,原始记录,低,src/Sovereign/Applied/LeibnizGF9.agda｜layer=Application｜basis=目录默认(Applied)｜审计=docs/line-a
+LeibnizT6.agda,Applied/CrossDomain,原始记录,—,src/Sovereign/Applied/LeibnizT6.agda｜layer=Application｜basis=目录默认(Applied)｜审计=docs/line-au
+LightCone.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.LightCone
+LightConeMatrix.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.LightConeMatrix
+LightRotationFrequency.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.LightRotationFrequency
+LightRotationTernary.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.LightRotationTernary
+LinguisticsDiscrete.agda,Applied/CrossDomain,关键词,高,-- | Sovereign.Application.LinguisticsDiscrete
+LogicCompleteness2Var.agda,Applied/Diagnosis,关键词,高,-- | Sovereign.Application.LogicCompleteness2Var
+MachineLearning.agda,Applied/ML,关键词,高,-- | Sovereign.Application.MachineLearning
+MaxwellFromLagrangian.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.MaxwellFromLagrangian
+Measurement.agda,Applied/Physics,关键词,中,-- | Sovereign.Application.Measurement
+MetaTheorems.agda,Applied/CrossDomain,原始记录,—,src/Sovereign/Applied/MetaTheorems.agda｜layer=Application｜basis=目录默认(Applied)｜审计=docs/line
+MolecularSymmetry.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.MolecularSymmetry
+MorseAcyclic.agda,Method/Morse,关键词,高,-- | Sovereign.Application.MorseAcyclic
+MorseBoundaryDT.agda,Applied/Topology,原始记录,低,src/Sovereign/Topology/MorseBoundaryDT.agda｜layer=Application｜basis=Topology Morse/Forman 
+MorseBoundaryK3.agda,Applied/Topology,原始记录,低,src/Sovereign/Topology/MorseBoundaryK3.agda｜layer=Application｜basis=Topology Morse/Forman 
+MorseChain.agda,Applied/Homotopy,关键词,高,-- | Sovereign.Application.MorseChain
+MorseChiBoth.agda,Method/Morse,关键词,高,-- | Sovereign.Application.MorseChiBoth
+MorseCoeffLaws.agda,Method/Morse,关键词,高,-- | Sovereign.Application.MorseCoeffLaws
+MorseCoeffRoute.agda,Applied/Topology,原始记录,低,src/Sovereign/Topology/MorseCoeffRoute.agda｜layer=Application｜basis=Topology Morse/Forman 
+MorseCriticalHomology.agda,Applied/Homotopy,关键词,高,-- | Sovereign.Application.MorseCriticalHomology
+MorseExistence.agda,Method/Morse,关键词,高,-- | Sovereign.Application.MorseExistence
+MorseHomologyIso.agda,Applied/Homotopy,关键词,高,-- | Sovereign.Application.MorseHomologyIso
+MorsePairingLaw.agda,Method/Morse,关键词,高,-- | Sovereign.Application.MorsePairingLaw
+MorsePartialG.agda,Method/Morse,关键词,高,-- | Sovereign.Application.MorsePartialG
+MorseRoute.agda,Applied/Topology,原始记录,低,src/Sovereign/Topology/MorseRoute.agda｜layer=Application｜basis=Topology Morse/Forman 应用面｜审
+MorseRouteListDT.agda,Method/Morse,关键词,高,-- | Sovereign.Application.MorseRouteListDT
+MorseRouteListG.agda,Method/Morse,关键词,高,-- | Sovereign.Application.MorseRouteListG
+MorseRoutingK3.agda,Applied/Topology,原始记录,低,src/Sovereign/Topology/MorseRoutingK3.agda｜layer=Application｜basis=Topology Morse/Forman 应
+MorseSqZeroFull.agda,Method/Morse,关键词,高,-- | Sovereign.Application.MorseSqZeroFull
+MorseSqZeroG.agda,Method/Morse,关键词,高,-- | Sovereign.Application.MorseSqZeroG
+MorseSqZeroK3.agda,Method/Morse,关键词,高,-- | Sovereign.Application.MorseSqZeroK3
+MorseStrongCritical.agda,Applied/Topology,原始记录,低,src/Sovereign/Topology/MorseStrongCritical.agda｜layer=Application｜basis=Topology Morse/For
+NSE.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSE — N-S方程 GF(3) 全域精确解
+NSEBlowupBound.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEBlowupBound
+NSEConservation.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEConservation
+NSEConservationCore.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEConservationCore
+NSEFieldOrbitPeriod.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEFieldOrbitPeriod
+NSEFinalClosure.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEFinalClosure
+NSEFixedPoint.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEFixedPoint
+NSEFixedPointStrict.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEFixedPointStrict
+NSEFluxTelescope.agda,Problems/NavierStokes,原始记录,低,src/Sovereign/Problem/NavierStokes/NSEFluxTelescope.agda｜layer=Application｜basis=目录默认(Prob
+NSEIncompressible.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEIncompressible
+NSEIterate.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEIterate
+NSEMadelungConstrained.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEMadelungConstrained
+NSEMadelungNonTrivial.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEMadelungNonTrivial
+NSEMadelungRefuted.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEMadelungRefuted
+NSEOnT6.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEOnT6
+NSEPhaseField.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEPhaseField
+NSEPhasePeriod.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEPhasePeriod
+NSEPresentation.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSEPresentation
+NSESupportBound.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSESupportBound
+NSESupportFixedInv.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSESupportFixedInv
+NSESupportNonMonotone.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSESupportNonMonotone
+NSESupportOrbitPeriod.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSESupportOrbitPeriod
+NSESupportZero.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSESupportZero
+NSRegularity.agda,Problems/NavierStokes,原始记录,低,src/Sovereign/Problem/NavierStokes/NSRegularity.agda｜layer=Application｜basis=目录默认(Problem)
+NSVortex.agda,Problems/NavierStokes,关键词,高,-- | Sovereign.Application.NSVortex
+NeuroscienceDiscrete.agda,Applied/CrossDomain,关键词,高,-- | Sovereign.Application.NeuroscienceDiscrete
+NoCloning.agda,Applied/Algebra,原始记录,低,src/Sovereign/Algebra/NoCloning.agda｜layer=Algebra｜basis=目录默认(Algebra)｜审计=docs/line-audit/
+NumberOptComp.agda,Applied/CrossDomain,原始记录,—,src/Sovereign/Applied/NumberOptComp.agda｜layer=Application｜basis=目录默认(Applied)｜审计=docs/lin
+ObservabilityAngle.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.ObservabilityAngle
+OpticalSampling.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.OpticalSampling
+OpticalWindow.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.OpticalWindow
+OpticsDiscrete.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.OpticsDiscrete
+OptimizationDiscrete.agda,Applied/CrossDomain,关键词,高,-- | Sovereign.Application.OptimizationDiscrete
+PDEDiscrete.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.PDEDiscrete
+PacketShiftArithmetic.agda,Applied/CrossDomain,原始记录,低,src/Sovereign/Applied/PacketShiftArithmetic.agda｜layer=Application｜basis=目录默认(Applied)｜审计=
+PaninaApplications.agda,Method/Morse,关键词,中,-- | Sovereign.Application.PaninaApplications — Panina 离散 Morse 应用实例
+ParticlePhysics.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.ParticlePhysics
+PerfectMorseInequality.agda,Problems/Hodge,原始记录,低,src/Sovereign/Problem/Hodge/PerfectMorseInequality.agda｜layer=Application｜basis=目录默认(Probl
+PerfectMorseInstance.agda,Method/Morse,关键词,高,-- | Sovereign.Application.PerfectMorseInstance
+PhaseTransition.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.PhaseTransition
+PleiadianCosmology.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.PleiadianCosmology
+ProbThermo.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.ProbThermo
+ProjectiveCore.agda,Applied/Geometry,关键词,高,-- | Sovereign.Application.ProjectiveCore
+ProjectiveInvariants.agda,Applied/Geometry,关键词,高,-- | Sovereign.Application.ProjectiveInvariants
+ProjectiveOrbit.agda,Applied/Geometry,关键词,高,-- | Sovereign.Application.ProjectiveOrbit
+ProjectiveTransform.agda,Applied/Geometry,关键词,高,-- | Sovereign.Application.ProjectiveTransform
+ProjectiveTransformHFM.agda,Applied/Geometry,关键词,高,"-- 本模块是 HFM 交叉验证测试向量, 不替代原形式化证明。"
+ProteinFolding.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.ProteinFolding
+PvsNP_Conjecture.agda,Problems/PvsNP,关键词,高,-- | Sovereign.Application.PvsNP_Conjecture
+PvsNP_L15.agda,Problems/PvsNP,关键词,高,-- | Sovereign.Application.PvsNP_L15
+PvsNP_Separation.agda,Problems/PvsNP,关键词,高,-- | Sovereign.Application.PvsNP_Separation
+QuantumChemistry.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.QuantumChemistry
+QuantumErrorCorrection.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.QuantumErrorCorrection
+QuantumFieldAstrophysics.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/QuantumFieldAstrophysics.agda｜layer=Application｜basis=目录默认(Physics)｜
+QuantumMotor.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.QuantumMotor
+QuartzPhonon.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/QuartzPhonon.agda｜layer=Application｜basis=目录默认(Physics)｜审计=docs/line
+RH.agda,Problems/RH,原始记录,低,src/Sovereign/Problem/Riemann/RH.agda｜layer=Application｜basis=目录默认(Problem)；被违1次｜审计=docs/l
+RandomMatrixMoments.agda,Applied/Analysis,关键词,高,-- | Sovereign.Analysis.RandomMatrixMoments
+RepresentationTheory.agda,Applied/Algebra,关键词,高,-- | Sovereign.Algebra.GroupTheory.RepresentationTheory
+Resonance.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.Resonance
+RightHandedNeutrinoTheorem.agda,Applied/Physics,原始记录,低,src/Sovereign/Physics/RightHandedNeutrinoTheorem.agda｜layer=Application｜basis=目录默认(Physics
+RootTwoGF9.agda,Problems/Sqrt2,关键词,高,-- | Sovereign.Application.RootTwoGF9
+S4Burnside.agda,Problems/Langlands,原始记录,低,src/Sovereign/Problem/Langlands/S4Burnside.agda｜layer=Application｜basis=目录默认(Problem)；被违1次
+SU2_Embedding.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.SU2_Embedding
+SUn_GF9.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.SUn_GF9
+Scaling.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.Scaling
+SelmerDiscrete.agda,Problems/Langlands,关键词,高,-- | Sovereign.Application.SelmerDiscrete
+SevenStages.agda,Applied/Physics/Density,原始记录,—,src/Sovereign/Density/SevenStages.agda｜layer=Application｜basis=目录默认(Density)｜审计=docs/line-
+Sheaf.agda,Applied/Geometry,关键词,高,-- | Sovereign.Application.Sheaf
+SignalProcessing.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.SignalProcessing
+SoftModeCriticality.agda,Method/Morse,关键词,高,-- | Sovereign.Application.SoftModeCriticality
+SpaceTimeMapping.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.SpaceTimeMapping
+Sqrt2Irrational.agda,Problems/Sqrt2,关键词,高,------------------------------------------------------------------------
+Sqrt2Valuation.agda,Problems/Sqrt2,关键词,高,------------------------------------------------------------------------
+Superconductivity.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.Superconductivity
+TQ10.agda,Applied/Coupling,原始记录,低,src/Sovereign/Coupling/TQ10.agda｜layer=Synthesis｜basis=漏收补记（2026-10-13 补迁）｜审计=docs/line-au
+ThermoExtended.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.ThermoExtended
+Topology.agda,Applied/Topology,头注释,低,头注释：离散同调矩阵化 — 边界矩阵/dimH/欧拉示性数
+TorusAlgebra.agda,Applied/Geometry,原始记录,低,src/Sovereign/Geometry/TorusAlgebra.agda｜layer=Application｜basis=目录默认(Geometry)｜审计=docs/li
+TorusChain.agda,Applied/Geometry,关键词,高,-- | Sovereign.Application.TorusChain
+TorusFourier.agda,Applied/Geometry,原始记录,低,src/Sovereign/Geometry/TorusFourier.agda｜layer=Application｜basis=目录默认(Geometry)｜审计=docs/li
+TorusGeodesic.agda,Applied/Geometry,关键词,高,-- | Sovereign.Application.TorusGeodesic
+TorusGeometry.agda,Applied/Geometry,原始记录,低,src/Sovereign/Geometry/TorusGeometry.agda｜layer=Application｜basis=目录默认(Geometry)；被违1次｜审计=d
+TorusHodge.agda,Problems/Hodge,关键词,高,-- | Sovereign.Application.TorusHodge
+Tryte.agda,Applied/Algebra,关键词,高,-- | Sovereign.Application.Tryte
+UniformProb.agda,Applied/Analysis,关键词,高,-- | Sovereign.Analysis.UniformProb
+Variety.agda,Applied/Geometry,关键词,高,-- | Sovereign.Application.Variety
+VectorFieldGeometricPhase.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.VectorFieldGeometricPhase
+WaterAnchors.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.WaterAnchors
+WaterCriticalDerivation.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.WaterCriticalDerivation
+WaterQuantumIntegration.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.WaterQuantumIntegration
+WaterStates.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.WaterStates
+WaterStructure.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.WaterStructure
+WaveEquationDiscrete.agda,Applied/Analysis,关键词,高,-- | Sovereign.Application.WaveEquationDiscrete
+WeilRH.agda,Problems/RH,关键词,高,-- | Sovereign.Application.WeilRH
+WeilRigidity.agda,Problems/RH,关键词,中,-- | Sovereign.Application.WeilRigidity
+WilsonLoop.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.WilsonLoop
+WilsonPlaquette.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.WilsonPlaquette
+YMTransfer.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.YMTransfer
+YM_Action.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.YM_Action
+YM_DetMul.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.YM_DetMul
+YM_Full.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.YM_Full
+YM_L3.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.YM_L3
+YM_SpectralGap.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.YM_SpectralGap
+YM_Transfer.agda,Problems/YangMills,关键词,高,-- | Sovereign.Application.YM_Transfer
+ZeroPowerQuantum.agda,Applied/Physics,关键词,高,-- | Sovereign.Application.ZeroPowerQuantum
+ZetaDiscrete.agda,Problems/RH,关键词,高,-- | Sovereign.Application.ZetaDiscrete
+ZetaFunctional.agda,Problems/RH,关键词,高,-- | Sovereign.Application.ZetaFunctional

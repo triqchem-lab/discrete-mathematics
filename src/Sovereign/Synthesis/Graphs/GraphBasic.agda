@@ -30,7 +30,7 @@ open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.List using (List; []; _∷_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 
-import Sovereign.Synthesis.BarceloAHomotopy as BA
+import Sovereign.Synthesis.Homotopy.BarceloAHomotopy as BA
 
 --------------------------------------------------------------------------------
 -- §1 基础件层：Graph 定义（关系入定义——对称 + 无自环 = 简单图的结构公理）

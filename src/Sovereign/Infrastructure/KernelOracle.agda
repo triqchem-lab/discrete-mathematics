@@ -10,8 +10,8 @@
 -- 覆盖与**缺口**（诚实清单）：
 --   ✅ GF(3) 加/乘/范数      ← Sovereign.Base.Coding.Trit（_⊕_/_⊗_；环公理在 Sovereign.Base.Trit 里穷举 refl）
 --   ✅ 宪法常数              ← Sovereign.Base.Invariants
---   ✅ 5-trit 打包 / 解包     ← Sovereign.Synthesis.LCM（pack5 / unpack5）
---   ✅ LCM 桥 (acc*3¹¹)/2¹⁶  ← 与 Sovereign.Synthesis.Zhonglv 的同式定义
+--   ✅ 5-trit 打包 / 解包     ← Sovereign.Synthesis.NumberTheory.LCM（pack5 / unpack5）
+--   ✅ LCM 桥 (acc*3¹¹)/2¹⁶  ← 与 Sovereign.Synthesis.CRT.Zhonglv 的同式定义
 --   ⚠ 30-trit 截面 → 坐标     ← LCM.coordinateToSection / sectionToCoordinate（内核侧还没有对应实现）
 --   ❌ **11 位基 3 环（内核 sov_z3r_*）在库里没有形式化对应**：库里的三进制向量是
 --      SovereignSection = Vec Trit 30，而内核/C++ 用的是 11 位（3¹¹）。这一层尚未被形式验证
@@ -37,7 +37,7 @@ open import Data.List using (List; _∷_; [])
 
 import Sovereign.Base.Coding.Trit as C
 open C using (Trit; T₀; T₁; T₂; toℕ)
-import Sovereign.Synthesis.LCM as LCM
+import Sovereign.Synthesis.NumberTheory.LCM as LCM
 import Sovereign.Base.Invariants as Inv
 
 --------------------------------------------------------------------------------

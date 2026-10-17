@@ -29,7 +29,7 @@ open import Relation.Nullary.Negation using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Algebra.GF9 using
+open import Sovereign.Algebra.FieldTower.GF9 using
   (GF9; GF9Star; toGF9; s1; s2; sα; s2α; s1α; s12α; s21α; s22α;
    _*s_; _^s_; gen; galoisNorm;
    gen-pow-0; gen-pow-2; gen-pow-4; gen-pow-6; gen-pow-8; gen-generates-all)

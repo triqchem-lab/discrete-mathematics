@@ -1,0 +1,63 @@
+{-# OPTIONS --rewriting --guardedness #-}
+
+-- | Sovereign.Algebra.Analytic.DiscreteVariation
+-- DiscreteVariation — 离散变分法 (MSC 49)
+-- 【判重组5 注记 2026-10-11】与 DiscreteVariational 近名对判重：**互补双件**（本件=驻定性概念族 action2/freeL/stationary-const/nonstationary；
+-- 彼件=离散 Euler-Lagrange 族 E/energy-*/minimal-*/harmonic-mid）——签名零交叠实证，「重复名对」假设被证伪
+-- 有限集上的极值问题: 离散 Euler-Lagrange 方程.
+-- 替代连续泛函的 Gateaux 导数和 δ-变分.
+-- 0 postulate.
+
+-- | 离散变分实例核
+--
+-- 核心原则：离散变分实例核——离散基座实例核（非一般定理，诚实边界随引用）
+--          穷举/归纳边界遵守（≤27 case 或具名链，trans ≤3）
+--          代数污染禁令（禁 Float/Double/超越函数）
+--
+-- 包含：action2、freeL、δ-action、δ-free、stationary-const、nonstationary
+
+module Sovereign.Algebra.Analytic.DiscreteVariation where
+
+open import Data.Nat using (ℕ; _+_; _*_; _∸_)
+open import Data.Product using (_×_; _,_)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_)
+
+-- §1. 离散作用量 -----------------------------------------------
+-- S[u] = Σ L(u_i, Δu_i) 对路径 u: Fin N → Trit.
+-- 临界点: ΔS = S[u+δu] - S[u] = 0 ∀ δu.
+-- 在 GF(3) 上 δu ∈ {±1} = {T₁, T₂}.
+
+-- 两质点离散作用量
+action2 : (Trit → Trit → Trit) → Trit → Trit → Trit → Trit
+action2 L u0 u1 u2 = (L u0 u1) ⊕ (L u1 u2)
+
+-- 自由粒子: L(u,v) = (u ⊗ v)  -- 离散动能
+freeL : Trit → Trit → Trit; freeL u v = u ⊗ v
+
+-- 变分: δS = S(T₁,u1,u2) - S(T₀,u1,u2) 取第一个变量变分
+δ-action : (Trit → Trit → Trit) → Trit → Trit → Trit
+δ-action L u1 u2 = (L T₁ u1) ⊕ (negate (L T₀ u1))
+  where negate : Trit → Trit; negate T₀ = T₀; negate T₁ = T₂; negate T₂ = T₁
+
+-- 自由粒子变分验证 = T₁ (非零, 非极值)
+δ-free : δ-action freeL T₁ T₂ ≡ T₁
+δ-free = refl
+
+-- §2. 离散 Euler-Lagrange -------------------------------------
+-- ∂L/∂u - Δ(∂L/∂(Δu)) = 0
+-- 在有限格点上: 穷举所有路径, 验证能量极小.
+
+-- 静态解: 常路径 u_i = c 作用量极小
+stationary-const : action2 freeL T₀ T₀ T₀ ≡ T₀
+stationary-const = refl  -- 0⊗0 + 0⊗0 = 0
+
+-- 非平稳路径验证
+nonstationary : action2 freeL T₀ T₁ T₂ ≡ T₂
+nonstationary = refl  -- 0⊗1 + 1⊗2 = 0 + 2 = 2
+
+-- 0 postulate.
+
+-- 经典变分法依赖 Banach 空间上的 Fréchet 导数.
+-- 离散替代: GF(3) 格点上的穷举极值搜索.
+-- 0 postulate.

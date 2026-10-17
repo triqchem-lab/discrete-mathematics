@@ -27,7 +27,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 -- 以太: 不可压缩的 GF(9) 信息流体, 充满 T⁶ 的每个格点
 
 -- 空间基座
-import Sovereign.Application.AutT6       -- Aut(T⁶/GF(9))
+import Sovereign.Application.Geometry.AutT6       -- Aut(T⁶/GF(9))
 import Sovereign.Algebra.Holographic.InfoClosure  -- 4320D 信息容量
 
 -- ═══════════════════════════════════════════════════════════
@@ -37,7 +37,7 @@ import Sovereign.Algebra.Holographic.InfoClosure  -- 4320D 信息容量
 -- 涡旋中心 = 高 σ-迭代密度区
 -- 质量 = 涡旋中心的 5D 以太密度 = |M_F| 的特征值大小
 
-import Sovereign.Application.Galois      -- σ²=id (心跳)
+import Sovereign.Application.Algebra.Galois      -- σ²=id (心跳)
 import Sovereign.Algebra.Jacobian.GF9Matrix    -- det2/3/4-gf9
 
 -- ═══════════════════════════════════════════════════════════
@@ -67,8 +67,8 @@ import Sovereign.Algebra.Jacobian.DiscreteGaloisGroupAlgebra     -- expD (σ 替
 -- 光速 = 以太表面张力的局部函数 (非恒定)
 -- 链复形边界 ∂ 描述波前传播
 
-import Sovereign.Application.Topology     -- 边界算子 ∂
-import Sovereign.Application.ChainComplex -- 泛链复形
+import Sovereign.Application.Topology.Topology     -- 边界算子 ∂
+import Sovereign.Application.Algebra.ChainComplex -- 泛链复形
 
 -- ═══════════════════════════════════════════════════════════
 -- 第五本体: 量子纠缠 = 深水 CRT 连接
@@ -77,8 +77,8 @@ import Sovereign.Application.ChainComplex -- 泛链复形
 -- 在深水 5D 密度轴上由同一条 CRT 螺旋测地线连接
 -- crt12-roundtrip: 3-分量与4-分量是同构的 — 深水连接瞬时不需"传"
 
-import Sovereign.Application.WeilRH       -- GF(3)↔GF(9) 对偶
-import Sovereign.Application.EulerChar    -- ℤ 欧拉 (全局拓扑)
+import Sovereign.Application.Problems.RH.WeilRH       -- GF(3)↔GF(9) 对偶
+import Sovereign.Application.Analysis.EulerChar    -- ℤ 欧拉 (全局拓扑)
 
 -- ═══════════════════════════════════════════════════════════
 -- 第六本体: 意识 = 高阶自指涡旋
@@ -87,10 +87,10 @@ import Sovereign.Application.EulerChar    -- ℤ 欧拉 (全局拓扑)
 -- 当涡旋足够致密, 嵌套 M_F 子矩阵能将自己的运算模式作为输入再运算
 -- 意识 = 5D 以太密度达到极高阶自指闭环时的必然涌现
 
-import Sovereign.Application.Hodge         -- 调和形式 ℋ
-import Sovereign.Application.HodgeTetra    -- S² 驻波
-import Sovereign.Application.TorusHodge    -- T² 驻波
-import Sovereign.Application.KleinHodge    -- Klein 驻波
+import Sovereign.Application.Problems.Hodge.Hodge         -- 调和形式 ℋ
+import Sovereign.Application.Problems.Hodge.HodgeTetra    -- S² 驻波
+import Sovereign.Application.Problems.Hodge.TorusHodge    -- T² 驻波
+import Sovereign.Application.Problems.Hodge.KleinHodge    -- Klein 驻波
 import Sovereign.Algebra.Jacobian.NMatrix       -- M_F 全息编码
 
 -- ═══════════════════════════════════════════════════════════

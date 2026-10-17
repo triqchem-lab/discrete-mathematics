@@ -46,7 +46,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; trans; sym; cong; cong₂)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-comm; ⊕-inverse)
-open import Sovereign.Algebra.GF9
+open import Sovereign.Algebra.FieldTower.GF9
   using ( GF9; gf9-one; gf9-zero; alpha; _*gf9_; _+gf9_
         ; *gf9-assoc; *gf9-comm; alpha-squared; alpha-powers-4
         )
@@ -63,11 +63,11 @@ open import Sovereign.Algebra.GroupTheory.DuodecClock
         ; mixed-to-+12; joint-period-12
         ; gf9-char-3; alpha-rotation-order-4; alpha-squared-is-neg-one
         )
-open import Sovereign.Algebra.Duodecimal
+open import Sovereign.Algebra.GroupTheory.Duodecimal
   using (Duodec; _+12_; _*12_; neg12; d0; d1; d2; d3; d4; d5; d6
         ; d7; d8; d9; d10; d11
         ; +12-assoc; +12-comm; +12-identityˡ; +12-identityʳ; +12-inverse)
-open import Sovereign.Algebra.DivisibilityChain using (2-divides-4; 4-divides-8)
+open import Sovereign.Algebra.RingTheory.DivisibilityChain using (2-divides-4; 4-divides-8)
 
 --------------------------------------------------------------------------------
 -- §1. 群论性质 (基于分量运算)

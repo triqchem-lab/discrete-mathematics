@@ -25,7 +25,7 @@ open import Data.Fin using (Fin; zero; suc)
 
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; ⊕-comm; ⊗-comm)
-open import Sovereign.Algebra.Duodecimal
+open import Sovereign.Algebra.GroupTheory.Duodecimal
   using (Duodec; d0; d1; d2; d3; d4; d5; d6; d7; d8; d9; d10; d11
         ; π3; π4; crt12; crt12-roundtrip; crt12-inv-π3; crt12-inv-π4
         ; π3-homo-+; π3-homo-*; _+12_; _*12_; neg12

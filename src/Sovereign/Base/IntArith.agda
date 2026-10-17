@@ -1,6 +1,6 @@
 {-# OPTIONS --cubical --guardedness #-}
 
--- | Sovereign.Cubical.IntArith
+-- | Sovereign.Base.IntArith
 -- Cubical ℤ 算术补丁引理（减法与加法重排）
 --
 -- 核心原则：

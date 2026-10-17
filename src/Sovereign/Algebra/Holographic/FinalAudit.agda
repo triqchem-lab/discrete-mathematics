@@ -32,77 +32,77 @@ module Sovereign.Algebra.Holographic.FinalAudit where
 -- ═══════════════════════════════════════════════════════════
 
 -- Navier-Stokes L3 ✅
-import Sovereign.Application.NSE          -- 12 定理, 0 postulate
-import Sovereign.Application.NSRegularity -- §5 动力学: step³-id/单射/能量守恒/周期
-import Sovereign.Application.NSVortex
+import Sovereign.Application.Problems.NavierStokes.NSE          -- 12 定理, 0 postulate
+import Sovereign.Application.Problems.NavierStokes.NSRegularity -- §5 动力学: step³-id/单射/能量守恒/周期
+import Sovereign.Application.Problems.NavierStokes.NSVortex
 
 -- Yang-Mills L3 ✅
-import Sovereign.Application.YM_L3          -- 平凡构型 gap, 0 postulate
-import Sovereign.Application.YM_SpectralGap -- 精确谱 λ₀=4/λ₁=1, Δ=3>0, tr/det 一致性
-import Sovereign.Application.YM_Full
-import Sovereign.Application.YM_DetMul
-import Sovereign.Application.SU2_Embedding
-import Sovereign.Application.WilsonPlaquette
+import Sovereign.Application.Problems.YangMills.YM_L3          -- 平凡构型 gap, 0 postulate
+import Sovereign.Application.Problems.YangMills.YM_SpectralGap -- 精确谱 λ₀=4/λ₁=1, Δ=3>0, tr/det 一致性
+import Sovereign.Application.Problems.YangMills.YM_Full
+import Sovereign.Application.Problems.YangMills.YM_DetMul
+import Sovereign.Application.Problems.YangMills.SU2_Embedding
+import Sovereign.Application.Problems.YangMills.WilsonPlaquette
 
 -- Hodge L3 ✅
-import Sovereign.Application.ChainComplex       -- hodge-decomp: nullity∂ ≡ rank∂∘suc + dimℋ
-import Sovereign.Application.Hodge
-import Sovereign.Application.HodgeTetra
-import Sovereign.Application.TorusHodge
-import Sovereign.Application.KleinHodge
-import Sovereign.Application.EulerChar
+import Sovereign.Application.Algebra.ChainComplex       -- hodge-decomp: nullity∂ ≡ rank∂∘suc + dimℋ
+import Sovereign.Application.Problems.Hodge.Hodge
+import Sovereign.Application.Problems.Hodge.HodgeTetra
+import Sovereign.Application.Problems.Hodge.TorusHodge
+import Sovereign.Application.Problems.Hodge.KleinHodge
+import Sovereign.Application.Analysis.EulerChar
 
 -- BSD L3 ✅（自 L3* 升级: BSD 恒等式与 Hasse 界已由 WeilRigidity 闭合）
-import Sovereign.Application.BSD
-import Sovereign.Application.BSD_L3               -- t-rec 递归 + 正确性
-import Sovereign.Application.BSD_GF27
-import Sovereign.Application.BSD_General
+import Sovereign.Application.Problems.BSD.BSD
+import Sovereign.Application.Problems.BSD.BSD_L3               -- t-rec 递归 + 正确性
+import Sovereign.Application.Problems.BSD.BSD_GF27
+import Sovereign.Application.Problems.BSD.BSD_General
 
 -- RH L3 ✅（自 L0+ 升级: 有限域 Weil 定理的整数形式 + Eisenstein 共轭对刚性）
-import Sovereign.Application.WeilRH
-import Sovereign.Application.WeilRigidity     -- t²+3s²=4q, L(E,1)=#E, α+conj(α)=t, αβ=q
-import Sovereign.Application.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
-import Sovereign.Application.RH
-import Sovereign.Application.Galois
-import Sovereign.Application.ZetaDiscrete
+import Sovereign.Application.Problems.RH.WeilRH
+import Sovereign.Application.Problems.RH.WeilRigidity     -- t²+3s²=4q, L(E,1)=#E, α+conj(α)=t, αβ=q
+import Sovereign.Application.Problems.RH.ZetaFunctional  -- Z(T) 有理式 + 函数方程 Z(1/qT)=Z(T) + 零点刚性 (P1-1)
+import Sovereign.Application.Problems.RH.RH
+import Sovereign.Application.Algebra.Galois
+import Sovereign.Application.Problems.RH.ZetaDiscrete
 
 -- Langlands L3 ✅（自 L1.5 升级: Steinberg 正交性为真证明, 类结构 8·1+28·90+36·72+8·80=5760）
-import Sovereign.Application.GL2TestVectors
-import Sovereign.Application.Langlands
-import Sovereign.Application.S4Burnside
-import Sovereign.Application.DeligneLusztig  -- 外部形式化
+import Sovereign.Application.Algebra.GL2TestVectors
+import Sovereign.Application.Problems.Langlands.Langlands
+import Sovereign.Application.Problems.Langlands.S4Burnside
+import Sovereign.Application.Problems.Langlands.DeligneLusztig  -- 外部形式化
 
 -- PvsNP L3 ✅（separation: ∃f, EvalAlways f ∧ ∀r f(r)≢0 — 不可约三次见证, 0 postulate）
 --           + GF27Separation: 根集 = Frobenius 共轭三元组 {γ,γ³,γ⁹}, 27 元素穷举恰好 3 根
-import Sovereign.Application.Complexity
-import Sovereign.Application.DetMul
-import Sovereign.Application.PvsNP_Conjecture
-import Sovereign.Application.PvsNP_Separation
-import Sovereign.Application.GF27Separation
+import Sovereign.Application.Problems.PvsNP.Complexity
+import Sovereign.Application.Algebra.DetMul
+import Sovereign.Application.Problems.PvsNP.PvsNP_Conjecture
+import Sovereign.Application.Problems.PvsNP.PvsNP_Separation
+import Sovereign.Application.Problems.PvsNP.GF27Separation
 
 -- 编码理论 (P1-2, wiki 94B): GF(9) BCH 码 [8,6,3] + GF(27) 三元循环码
-import Sovereign.Synthesis.HammingMetric
-import Sovereign.Synthesis.BCHGF9       -- 最小距离界 + 系统编码 + 单错纠错 (0 postulate)
-import Sovereign.Application.CyclicGF27   -- γ 根结构 → 长度 26 循环码 + freshman's dream (0 postulate)
+import Sovereign.Synthesis.NumberTheory.HammingMetric
+import Sovereign.Synthesis.NumberTheory.BCHGF9       -- 最小距离界 + 系统编码 + 单错纠错 (0 postulate)
+import Sovereign.Application.Coding.CyclicGF27   -- γ 根结构 → 长度 26 循环码 + freshman's dream (0 postulate)
 
 -- 有限概率空间 (P1-3, wiki 60A 离散版): 全离散无浮点, 概率 = 整数比交叉相乘
-import Sovereign.Application.FiniteProbability  -- GF(3)ⁿ 均匀链 + 有理期望 + Burnside (A₄ 自然/正则作用)
+import Sovereign.Application.Analysis.FiniteProbability  -- GF(3)ⁿ 均匀链 + 有理期望 + Burnside (A₄ 自然/正则作用)
 
 -- Eisenstein 环 (P1-4, wiki 12F/11R): Z[ω] 环公理 8 条 + 范数乘性 + 6 单位 (0 postulate)
 import Sovereign.Foundation.Eisenstein  -- *ᵉ-assoc/comm + conjᵉ-mul + norm-mul + unitGen C₆ 循环
 
 -- Kakeya L3 ✅
-import Sovereign.Application.KakeyaGF3
-import Sovereign.Application.KakeyaGF9
-import Sovereign.Application.KakeyaMF
-import Sovereign.Application.KakeyaPathology
+import Sovereign.Application.Problems.Kakeya.KakeyaGF3
+import Sovereign.Application.Problems.Kakeya.KakeyaGF9
+import Sovereign.Application.Problems.Kakeya.KakeyaMF
+import Sovereign.Application.Problems.Kakeya.KakeyaPathology
 
 -- 基础设施
 import Sovereign.Algebra.Jacobian.CRTDet
 import Sovereign.Algebra.Holographic.PhysicalOntology
-import Sovereign.Algebra.SpiralCycle               -- ⟨2⟩ 六环定理
-import Sovereign.Synthesis.HolographicPi         -- 原子化: 0 postulate, 类型层禁止约分
-import Sovereign.Synthesis.IhC60Vibration        -- I_h → 46: 174 维振动表示 → 46 独立基频
+import Sovereign.Algebra.FieldTower.SpiralCycle               -- ⟨2⟩ 六环定理
+import Sovereign.Synthesis.Geometry.HolographicPi         -- 原子化: 0 postulate, 类型层禁止约分
+import Sovereign.Synthesis.Physics.IhC60Vibration        -- I_h → 46: 174 维振动表示 → 46 独立基频
 
 -- 汇总: Problem/ 61 模块 + 基础设施, 0 postulate。
 -- L3: NS / YM / Hodge / BSD / RH(有限域版) / Langlands / PvsNP / Kakeya = 8 项

@@ -9,7 +9,7 @@
 --
 -- 宪法合规：
 -- - 零 postulate（2026-10-11 构造化达成：8 postulate 全消——3 消解/2 关系入定义/2 值修正/1 实现）
--- - 能隙 Δ=√3 使用 Sovereign.RootMath.AlgebraicComplex.Sqrt3 代数定义
+-- - 能隙 Δ=√3 使用 Sovereign.Foundation.AlgebraicComplex.Sqrt3 代数定义
 -- - 所有物理相关参数标记为 EXPERIMENTAL_PARAMETER 记录（非 postulate）
 
 module Sovereign.Foundation.EnergyGap where

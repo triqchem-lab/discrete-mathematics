@@ -42,7 +42,7 @@ open import Sovereign.Base.Trit using
   (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate;
    ⊕-assoc; ⊕-comm; ⊕-identityˡ; ⊕-identityʳ; ⊕-inverse;
    ⊗-assoc; ⊗-comm; ⊗-identityˡ; ⊗-identityʳ; negate²)
-open import Sovereign.Algebra.GF9 using
+open import Sovereign.Algebra.FieldTower.GF9 using
   (GF9; gf9-one; gf9-zero; alpha; _*gf9_;
    galoisConjugate; galoisConjugate²; galoisConjugate-add; galoisConjugate-mul)
 open import Sovereign.Algebra.GroupTheory.DuodecClock using
@@ -56,7 +56,7 @@ open import Sovereign.Algebra.GroupTheory.DuodecClock using
    rho;
    alphaInv)
 open import Sovereign.Algebra.GroupTheory.DuodecClockProperties using (alpha-order-4)
-open import Sovereign.Algebra.UniversalAlgebra using (Group; AbelianGroup)
+open import Sovereign.Algebra.UniversalAlgebra.UniversalAlgebra using (Group; AbelianGroup)
 
 --------------------------------------------------------------------------------
 -- §1. DC 的 Group 注册

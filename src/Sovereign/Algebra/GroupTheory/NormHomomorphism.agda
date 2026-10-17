@@ -26,7 +26,7 @@ open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; cong₂; module ≡-Reasoning)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_; ⊗-identityˡ; ⊗-identityʳ)
-open import Sovereign.Algebra.GF9 using
+open import Sovereign.Algebra.FieldTower.GF9 using
   (GF9; GF9Star; toGF9; s1; _*s_; _^s_; inv; inv-correct; *s-comm; *s-toGF9;
    galoisNorm; norm-mul; _*gf9_)
 

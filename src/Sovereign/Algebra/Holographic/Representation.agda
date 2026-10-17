@@ -19,7 +19,7 @@ open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Synthesis.MyopiaRisk using (a4-order)
+open import Sovereign.Synthesis.Analysis.MyopiaRisk using (a4-order)
 
 --------------------------------------------------------------------------------
 -- §1. 表示论接口
@@ -53,7 +53,7 @@ record Character (G : Set) : Set₁ where
 -- 以下重导出.
 --------------------------------------------------------------------------------
 
-open import Sovereign.Synthesis.A4Representations
+open import Sovereign.Synthesis.A4.A4Representations
   using (A4Irrep; V3; V1; V1'; V1''; dim; theorem-dimension-sum-of-squares)
 
 -- Burnside for A₄

@@ -8,7 +8,7 @@
 -- 本模块同时 import 同一展示群的两套视图，把这一对照固定成一个可编译的事实：
 --
 --   * `Sovereign.Infrastructure.TwoViewPlain`     —— 只有定义，故意不带规则；
---   * `Sovereign.Trust.TwoViewRewritten` —— 定义 + `{-# REWRITE δ³-law #-}`。
+--   * `Sovereign.Infrastructure.TwoViewRewritten` —— 定义 + `{-# REWRITE δ³-law #-}`。
 --
 -- 核心原则（P1 实测，证据见 dype `docs/theory/PGM-metatheory-and-plan.md` §4）：
 --   ① 定义式视图的下游**零旗标成本**；而本模块只要 import 了带规则的一侧，

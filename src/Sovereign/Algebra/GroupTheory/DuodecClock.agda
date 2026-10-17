@@ -87,10 +87,10 @@ open import Relation.Binary.PropositionalEquality
 open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; negate;
          ⊕-assoc; ⊕-identityˡ; ⊕-identityʳ; ⊕-inverse; ⊕-comm)
-open import Sovereign.Algebra.GF9
+open import Sovereign.Algebra.FieldTower.GF9
   using (GF9; gf9-one; gf9-zero; alpha; alpha-squared; alpha-powers-4;
          _+gf9_; _*gf9_; *gf9-assoc)
-open import Sovereign.Algebra.Duodecimal
+open import Sovereign.Algebra.GroupTheory.Duodecimal
   using (Duodec; π3; π4; crt12; crt12-roundtrip; crt12-inv-π3; crt12-inv-π4;
          +1; _+12_; _*12_; d0; d1; d2; d4; d8)
 

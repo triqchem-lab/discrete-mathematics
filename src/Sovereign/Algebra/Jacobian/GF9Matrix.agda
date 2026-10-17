@@ -24,7 +24,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; neg
 -- §1. GF(9) 元素与向量
 --------------------------------------------------------------------------------
 
-open import Sovereign.Algebra.GF9 using (GF9; _+gf9_; _*gf9_)
+open import Sovereign.Algebra.FieldTower.GF9 using (GF9; _+gf9_; _*gf9_)
 
 0gf9 : GF9; 0gf9 = T₀ , T₀
 1gf9 : GF9; 1gf9 = T₁ , T₀

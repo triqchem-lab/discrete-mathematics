@@ -46,29 +46,29 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 import Sovereign.Algebra.Jacobian.CRTDet       -- CRT 拱顶石
 
 -- (III) 同调消失 (四种链复形)
-import Sovereign.Application.Hodge         -- 三角: (1,1)
-import Sovereign.Application.HodgeTetra    -- S²: (1,0,1)
-import Sovereign.Application.TorusHodge    -- T²: (1,2,1)
-import Sovereign.Application.KleinHodge    -- Klein: (1,1,0)
-import Sovereign.Application.EulerChar     -- ℤ 欧拉全部闭合
+import Sovereign.Application.Problems.Hodge.Hodge         -- 三角: (1,1)
+import Sovereign.Application.Problems.Hodge.HodgeTetra    -- S²: (1,0,1)
+import Sovereign.Application.Problems.Hodge.TorusHodge    -- T²: (1,2,1)
+import Sovereign.Application.Problems.Hodge.KleinHodge    -- Klein: (1,1,0)
+import Sovereign.Application.Analysis.EulerChar     -- ℤ 欧拉全部闭合
 
 -- (IV) 质量间隙
-import Sovereign.Application.YM_L3         -- 2/3/4×4 λ()
-import Sovereign.Application.WilsonPlaquette -- 单plaquette
+import Sovereign.Application.Problems.YangMills.YM_L3         -- 2/3/4×4 λ()
+import Sovereign.Application.Problems.YangMills.WilsonPlaquette -- 单plaquette
 
 -- (V) 全息穿透
-import Sovereign.Application.Complexity     -- 2×2 has-root
-import Sovereign.Application.PvsNP_Conjecture -- 形式猜想
+import Sovereign.Application.Problems.PvsNP.Complexity     -- 2×2 has-root
+import Sovereign.Application.Problems.PvsNP.PvsNP_Conjecture -- 形式猜想
 
 -- ═══════════════════════════════════════════════════════════
 -- 三大闭包 + 外部定理
 -- ═══════════════════════════════════════════════════════════
 import Sovereign.Algebra.Jacobian.JacobianInjectiveSurjective     -- 组合
-import Sovereign.Application.AutT6           -- 群论
+import Sovereign.Application.Geometry.AutT6           -- 群论
 import Sovereign.Algebra.Holographic.InfoClosure     -- 信息论
-import Sovereign.Application.WeilRH          -- Weil 独立形式化
-import Sovereign.Application.DeligneHodge    -- Deligne 独立形式化
-import Sovereign.Application.DeligneLusztig  -- DL 独立形式化
+import Sovereign.Application.Problems.RH.WeilRH          -- Weil 独立形式化
+import Sovereign.Application.Problems.Hodge.DeligneHodge    -- Deligne 独立形式化
+import Sovereign.Application.Problems.Langlands.DeligneLusztig  -- DL 独立形式化
 
 -- ═══════════════════════════════════════════════════════════
 -- 59 模块, 0 postulate. 统一定理: 五等价 + CRT 推广.
