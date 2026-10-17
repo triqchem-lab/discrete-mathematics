@@ -1,14 +1,6 @@
 module,path,nodes
-Sovereign.Algebra.NumberTheory.TianYuan,src/Sovereign/Algebra/NumberTheory/TianYuan.agda,1
-Sovereign.Algebra.NumberTheory.FangCheng,src/Sovereign/Algebra/NumberTheory/FangCheng.agda,1
-Sovereign.Algebra.GroupTheory.DayanInvariant,src/Sovereign/Algebra/GroupTheory/DayanInvariant.agda,1
-Sovereign.Algebra.GroupTheory.DayanProof,src/Sovereign/Algebra/GroupTheory/DayanProof.agda,1
 Sovereign.Synthesis.Physics.IhGroup,src/Sovereign/Synthesis/Physics/IhGroup.agda,1
 Sovereign.Synthesis.Physics.IhDecomposition,src/Sovereign/Synthesis/Physics/IhDecomposition.agda,1
-Sovereign.Algebra.GroupTheory.DayanCRT,src/Sovereign/Algebra/GroupTheory/DayanCRT.agda,1
-Sovereign.Algebra.GroupTheory.DayanCRTGeneric,src/Sovereign/Algebra/GroupTheory/DayanCRTGeneric.agda,1
-Sovereign.Algebra.UniversalAlgebra.ListLaws,src/Sovereign/Algebra/UniversalAlgebra/ListLaws.agda,1
-Sovereign.Algebra.RingTheory.ChainHom,src/Sovereign/Algebra/RingTheory/ChainHom.agda,1
 Sovereign.Algebra.RingTheory.ChainHomo,src/Sovereign/Algebra/RingTheory/ChainHomo.agda,1
 Sovereign.Algebra.Jacobian.HenselLiftSchedule,src/Sovereign/Algebra/Jacobian/HenselLiftSchedule.agda,1
 Sovereign.Algebra.GroupTheory.DayanCompose,src/Sovereign/Algebra/GroupTheory/DayanCompose.agda,1
