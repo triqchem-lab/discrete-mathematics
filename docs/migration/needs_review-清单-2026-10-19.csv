@@ -1,0 +1,161 @@
+node,type,module,has_receipt,kind,statement,note
+Sovereign.Structology.T6Rewrite,src 内可解析,Sovereign.Synthesis.Combinatorics.T6Rewrite,False,lemma,T6Rewrite：REWRITE 夹具族（声明面——非命题面，C 级如实）,模块字段重映射：Sovereign.Synthesis.T6Rewrite → Sovereign.Synthesis.Combinatorics.T6Rewrite（代码实名，仅
+FX.audit.dype-kernel-replacement,无 module,,False,lemma,【审计裁决】「dype 以自研内核替代 Agda 做数学裁决」在当前 HEAD 上不成立：dype 可执行文件就是 Agda 本体（src/,【细化（2026-09-13，回答用户追问）】① 本仓自己已有的定位：`Sovereign/Trust/PatchedTypeChecker.agda:3-26` 把 `eb125
+FX.audit.dayan-engine-soundness,无 module,,False,lemma,【审计裁决】Dayan 的等价判定引擎（Kernel/Conversion.hs 的 convTerm/gf9CrtEquivalent 三,待处理：若将来把 convTerm/convType 接进内核或用作裁决，必须先修：① 置换/轨道等价不得当真定义相等；② CRT 投影在非互质模数下不可当真相等；③ gf9Crt
+DYPE.fix.docs.readme-claims,无 module,,False,lemma,纠偏 dype/README.md 中与源码不符的 5 处断言（彻底平替内核 / O(1) 查表 / 内核内置 4320D 合流引擎 / 内,已完成，但**无 proof_compile 回执可得**（文档节点）⇒ 停在 needs_review 请人复核，不冒充 proven。证据：① 5 处旧断言 grep 命中 0
+DYPE.fix.docs.hacking-attribution,无 module,,False,lemma,纠偏 dype/HACKING.md 的「内核修改」章节：把「并非本项目自行改动」改为事实归属（eb1251683f 是本项目本地提交，不在,已完成，无编译回执 ⇒ needs_review。证据：HACKING.md「内核修改」章节已重写为事实归属（eb1251683f author = Yan Li <yanli@t
+DYPE.fix.spec-sync,无 module,,False,lemma,把 dype/test/Spec.hs 同步到修复后的判定语义：① lookupIndex 返回值改 Maybe（shouldBe Just,已改完 6 处（import 增 sameAlignmentParity/decideTerm/decEqGf9；:293-303 双向一致性改 Maybe + 新增不可达 Not
+FX.audit.issue292-when-used,无 module,,False,lemma,说清 Issue292 的机制与**何时会被用到**：它测的是「两个相异刚性头（不同零元 Def / 不同构造子指标）之间的异构相等类型判空,已完成 ⇒ needs_review。时间线（git/文件头）：2011-05-30 Andreas 加入 → 2015-09-22 rename fail→Fail（145fdd
+FX.audit.patch-capability-demo,无 module,,False,lemma,用一个 30 行以内的最小文件，在本仓自己的定义上演示该补丁带来的**具体能力**（两个相异零元定义/类型之间的空类型判定），并以 Agda,已完成，无 proof_compile 回执可得（探针文件在 /tmp，不属库模块）⇒ needs_review 请人复核。证据：/tmp/i292demo/D1.agda（Boo
+FX.audit.kernel-stamp-scope,无 module,,False,lemma,把「本仓所有编译通过都打在非保守内核上」这句话**拆成可核验的命题**：① 回执由哪个二进制/哪个提交产生；② 受影响的是哪一类判定（空类型,【2026-09-13 实测更新，两处状态变化】① 「官方 vs 本地」已由 A/B 坐实（不再依赖代码级推论）：2.8.0.1 对 Issue292/D1/D2/D4 全 exi
+DYPE.judge.ontology,无 module,,False,lemma,本体论判定：展示群原理下「结构 = 生成方式」，两个生成方式不同的类型（Bool vs Bool2 / Trit vs Fin 3）本就应作,判定：与第一原理**同向** ⇒ needs_review（元理论立场，非 Agda 定理，不自行当结论入库）。文档锚点：docs/duodecimal/20-dc-type-th
+DYPE.judge.library-dep,无 module,,False,lemma,量化本库对「相异刚性头判空」这一能力的真实依赖：把 714 处 λ() 分类为「构造子冲突」（两版都过）与「定义/类型冲突」（仅补丁版过），,"已量化（样本级，非全量）⇒ needs_review。方法学教训：静态扫描（按构造子归属分类）**不可靠**（跨模块构造子大量落到 ""None""，误报 960 条），真正的判据是*"
+DYPE.l2.clauses,src 内可解析,Sovereign.Infrastructure.KernelSpec,False,lemma,DYPE L2 子句面（deferred 账面件）,A-续四段重取：7c2009e9
+DYPE.l2.controls,无 module,,False,lemma,对条款实例做正/负控制：在补丁版 2.9.0 与官方 2.8.0.1 下分别编译同一批实例，得到 exit 码矩阵（正控制应仅补丁版通过；负,控制矩阵实测完成（无编译回执，控制文件在 /tmp）⇒ needs_review：K1 正控制 2.9.0 exit=0 / 2.8.0.1 exit=42（`[UnsolvedC
+DYPE.l2.number-correction,无 module,,False,lemma,数字更正：我在 09-13 的流水里转述了 HACKING.md 的“Unify.hs +9/−2”；git numstat 实测为 +8/,更正已入账（append-only）：git numstat 实测 `Empty.hs +1/−0`、`Unify.hs +8/−1`（内核 2 文件 / 净 +9 −1）；HAC
+DYPE.l2.clauses.module,src 内可解析,Sovereign.Infrastructure.KernelSpec,False,lemma,DYPE L2 子句模块面,A-续四段重取：7c2009e9
+H.tracked-modules.compile-audit,无 module,,False,lemma,对 2026-09-13 一次性入库的 **75 个未跟踪 Agda 模块**做编译状态审计（跟踪 ≠ 已验证）：批量编译并给出【通过/失败,上游 `DYPE.l2.clauses` 的陈述/依赖已变更 → 需复核（blueprint refinement）
+H.civlayers.parse-clean,src 内可解析,Sovereign.Synthesis.CRT.Zhonglv,False,lemma,"把归档稿中剩余的解析错清零：archive/civlayers-2026-07/{02-magnetic-24d/SpinTwistor,0",模块字段重映射：Sovereign.Synthesis.Zhonglv → Sovereign.Synthesis.CRT.Zhonglv（代码实名，仅台账旧字段；状态不变）
+DYPE.hs.idxToGf9-total,src 内可解析,Sovereign.Base.Trit,False,lemma,重取挂账：idxToGf9-total（deferred 面账面）,A-续（片 5/7）——历史账面件（dype 面 deferred 家族）
+DYPE.hs.det-bounds,无 module,,False,lemma,"`src/Dayan/Compute/Det.hs` 用 `m !! (i*9+j)` 访问 9×9 矩阵（i,j ∈ [0,8]）：需么给",不变量是隐式约定，「长度=81」没有类型/构造保证
+DYPE.hs.orbit-bounds,无 module,,False,lemma,`src/Dayan/Compute/Orbit.hs` 的 `trits !! (perm !! i)` 依赖两个未文档化的长度不变量（p,同名文件的稳定子验证我上轮已修过；这里是不变量未文档化的索引访问
+DYPE.theory.no-fake-proof-refs,无 module,,False,lemma,`ProofGen/Jacobian.hs` 把「dype 算出的值」练成**字面量塞进等式类型**并用 `refl` 当证明（:4/:10,理论问题：把「算出来」当「证明了」（本库宪法点名禁止的 refl-as-proof）；且生成的语言无法表达目标库的 `()` 空模式
+DYPE.theory.verifier-honesty,无 module,,False,lemma,验证管线的报告必须区分「证明通过」与「带假设/打洞通过」：现 `report` 对任何 `ExitSuccess` 都写 “Agda ver,用户口径：**这是数学验证器，不是数值计算器** ⇒ 它必须分清「证了」与「假设了」/「打洞了」
+DYPE.theory.no-continuum,无 module,,False,lemma,清掉 `Core/` 里的连续统污染（本库宪法禁 `Double`/`Float`/`sqrt`/`pi`）：`holographicRat,与本库宪法一致：Sovereign 侧禁浮点（无理数用定点整数比）；dype 作为验证器不得自带连续统残留
+DYPE.theory.presentation-layer,无 module,,False,object,`src/Dayan` 里**没有展示群层**：无生成元 δ/φ、无关系 δ³=id/φ⁴=id/δφ=φδ、无相位 C₄、无时钟 12 的,真正的「理论升级」：本轮只立项（dype 侧做有限穷举验证，定理证明仍在 src/Sovereign）
+FX.pgm.assessment,无 module,,False,lemma,PGM 设计的可验证边界：① **规则不可局部排除**（实测：不开 `--rewriting` 而 import 带规则模块 ⇒ `[Inf,用户交付的是 PGM **设计文档**（自标“不是已实现系统”）；本节点只给**可实测的边界**，并纠正两条前提（其中一条是**我自己先前的假设**）
+DYPE.theory.pgm-plan-doc,src 内可解析,Sovereign.Base.Trit,False,lemma,重取挂账：pgm-plan-doc（deferred 面账面）,A-续（片 5/7）——历史账面件（deferred 面）
+DYPE.docs.reference-corpus,无 module,,False,lemma,把 `/home/yanli/文档/math` 中与 dype（依赖类型论 / Agda 内核与归约 / HoTT-Cubical / 配对,用户指令：把 /home/yanli/文档/math 中可作参考资料的文档复制到 docs；本节点只处理 **dype 侧（类型论/内核/归约）**，主库数学侧另列建议不明的部分不
+H.pgm.rewrite-criterion-impl,无 module,,False,lemma,判定器需实现「rewrite 豁免」的**条件 3（依赖判据）**：postulate 只要**参与某条已注册 REWRITE 规则**（作,实施要点（不改插件就先挂着）：③ 的机械形式 = 「若把该 postulate 从模块里删掉，某个已注册 {-# REWRITE … #-} 规则会因缺少符号/类型而编译失败」；可
+QUAD.T3.t6-origin,无 module,,False,lemma,【T3】`T⁶` 的本源位置：它由 DC 如何生成？（展示群第一原理要求「结构 = 生成方式」）,验证：在库内找到/补 `DC → T⁶` 的生成路径；找不到就**标「未建立」**（不得含混）。
+QUAD.T4.6624-rewording,无 module,,False,lemma,【T4】拓扑极口径改写：`6624 = 144×46` 必须写成**物理波系统/谐振对齐**（红线），不得写成模运算定理。,验证：改写后保留「不是模运算定理」声明，且不引入新断言。
+QUAD.T5.gf9-pole-is-source-side,无 module,,False,lemma,【T5】GF9 极归位：明确它是**本源侧结构**（作用于 DC 相位分量的域自同构 σ），而非与另三极并列的**投影侧判据**。,验证：只需改**层级归属**的表述（已有两条回执支撑），不需新证明；但「与另三极不同层」是**由此推出**的判断，应标明。
+QUAD.T7.ruler-scope-and-toDuodec,无 module,,False,lemma,【T7】壁垒尺子的适用面与 toDuodec 的更正：① 尺子（IsUnitHom/Inj）**只适用于群/环同态型投影**——适用于 cr,三个要点：① **尺子只适用于群/环同态型投影**（适用范围收窄，用户审阅意见成立）；② **toDuodec 是同构而非非同态**（用户 §2.2 该行被库内定理推翻）⇒ “有损
+QUALITY.audit-msc2022,无 module,,False,theorem,全库质量审计（MSC 2022 对照 16 行）：每域四维评分（铁律合规/判型合规/构造性/一致性）+ 缺陷清单 + 修复优先级；覆盖层不重,"用户口径：项目已按 MSC 2022 重构，覆盖不是问题，**质量才是**。批次 0 底料已出：591 模块/132,494 行；洞文件 14、postulate 文件 20、li"
+QUALITY.batch0-machine,无 module,,False,lemma,全库机器统计底料：postulate/hole（两种语法）/规模/lint/重复定义扫描,验证：bash 统计可复跑 + check_structure_lint。
+QUALITY.batch6-geometry-physics,src 内可解析,Sovereign.Application.Geometry.ConformalCore,False,lemma,QUALITY batch6（几何/物理审计）,A-续四段重取：e4270a5c
+QUALITY.batch8-structology-foundation,src 内可解析,Sovereign.Synthesis.Combinatorics.T6,False,lemma,QUALITY batch8（结构论+基座审计）,模块字段重映射：Sovereign.Synthesis.T6 → Sovereign.Synthesis.Combinatorics.T6（代码实名，仅台账旧字段；状态不变）
+QFIX.dup-names,无 module,,False,lemma,重复顶层名判重（a4-burnside/adjugate/act 等 10 组）,【结案】逐组结论（file:line 全录）：a4-order=同物四写→提共享｜a4-nontrivial=同名异物→消歧｜a4-burnside/YM 对/Variation 
+Taskbook-13item-completion-audit,无 module,,False,lemma,任务书 13 项优先级任务完成度对账（2026-10-03）：全量闭合 4 / 核闭合 5 / 未做 4；无假完成——核闭合项均如实标注缺口,分档明细——【全量闭合 4】P0-a injSurj 推广（Dedekind.agda，回执 27990bbe）；P0 CRT 行列式一般 N（jac_CRTDet det-crt
+P3.2-hensel-lift-existence,src 内可解析,Sovereign.Algebra.Jacobian.HenselLiftMinimal,False,lemma,Hensel 提升存在性（池件重取）,模块字段重映射：Sovereign.Algebra.HenselLiftMinimal → Sovereign.Algebra.Jacobian.HenselLiftMinimal
+P3.2-hensel-lift-uniqueness,src 内可解析,Sovereign.Algebra.Jacobian.HenselLiftUniqueness,False,lemma,Hensel 提升唯一性（池件重取）,模块字段重映射：Sovereign.Algebra.HenselLiftUniqueness → Sovereign.Algebra.Jacobian.HenselLiftUniq
+Laurent.distrib-pointwise-refuted,src 内可解析,Sovereign.Algebra.RingTheory.LaurentDistrib,False,lemma,Laurent 逐点分配反证件（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentDistrib → Sovereign.Algebra.RingTheory.LaurentDistrib（代码实
+Laurent.distrib-perm,src 内可解析,Sovereign.Algebra.RingTheory.LaurentDistrib,False,lemma,Laurent 分配置换形（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentDistrib → Sovereign.Algebra.RingTheory.LaurentDistrib（代码实
+Laurent.sort-perm-and-sorted,src 内可解析,Sovereign.Algebra.RingTheory.LaurentSort,False,lemma,Laurent 排序置换与有序（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentSort → Sovereign.Algebra.RingTheory.LaurentSort（代码实名，仅台账旧
+LaurentRing.T1a-definitions,src 内可解析,Sovereign.Algebra.RingTheory.LaurentRing,False,lemma,LaurentRing T1a 定义面（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentRing → Sovereign.Algebra.RingTheory.LaurentRing（代码实名，仅台账旧
+Laurent.sort-unique,src 内可解析,Sovereign.Algebra.RingTheory.LaurentSort,False,lemma,Laurent 排序唯一（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentSort → Sovereign.Algebra.RingTheory.LaurentSort（代码实名，仅台账旧
+Laurent.canon-unique,src 内可解析,Sovereign.Algebra.RingTheory.LaurentCanon,False,lemma,Laurent 规范形唯一（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentCanon → Sovereign.Algebra.RingTheory.LaurentCanon（代码实名，仅台
+Laurent.norm-insertc,src 内可解析,Sovereign.Algebra.RingTheory.LaurentNorm,False,lemma,Laurent norm-insertc（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentNorm → Sovereign.Algebra.RingTheory.LaurentNorm（代码实名，仅台账旧
+Laurent.insertC-sums,src 内可解析,Sovereign.Algebra.RingTheory.LaurentSums,False,lemma,Laurent insertC-sums（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentSums → Sovereign.Algebra.RingTheory.LaurentSums（代码实名，仅台账旧
+Laurent.sums-uncons,src 内可解析,Sovereign.Algebra.RingTheory.LaurentSums,False,lemma,Laurent sums-uncons（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentSums → Sovereign.Algebra.RingTheory.LaurentSums（代码实名，仅台账旧
+Laurent.base-unify,src 内可解析,Sovereign.Algebra.RingTheory.LaurentBase,False,lemma,Laurent 基础件（池件重取——账面件）,模块字段重映射：Sovereign.Algebra.LaurentBase → Sovereign.Algebra.RingTheory.LaurentBase（代码实名，仅台账旧
+Laurent.sums-complete,src 内可解析,Sovereign.Algebra.RingTheory.LaurentSums,False,lemma,Laurent sums-complete（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentSums → Sovereign.Algebra.RingTheory.LaurentSums（代码实名，仅台账旧
+Laurent.norm-plus,src 内可解析,Sovereign.Algebra.RingTheory.LaurentRing,False,lemma,Laurent norm-plus（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentRing → Sovereign.Algebra.RingTheory.LaurentRing（代码实名，仅台账旧
+Laurent.ring-axioms,src 内可解析,Sovereign.Algebra.RingTheory.LaurentRing,False,lemma,Laurent 环公理族（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentRing → Sovereign.Algebra.RingTheory.LaurentRing（代码实名，仅台账旧
+Laurent.canon-sums-unique,src 内可解析,Sovereign.Algebra.RingTheory.LaurentSums,False,lemma,Laurent canon-sums-unique（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentSums → Sovereign.Algebra.RingTheory.LaurentSums（代码实名，仅台账旧
+Topology.DeRhamComplex-proven,src 内可解析,Sovereign.Synthesis.Topology.DeRhamComplex,False,lemma,DeRhamComplex——离散 de Rham 复形,内容定级 C 级（不是 A 级 ⇒ 不能标 proven）：模块 src/Sovereign/Synthesis/Topology/DeRhamComplex.agda 共 24 
+Topology.HomologicalAlgebra-proven,src 内可解析,Sovereign.Synthesis.Homotopy.HomologicalAlgebra,False,lemma,HomologicalAlgebra——同调代数基础（核/像/商）,内容定级 C 级（不能标 proven）：模块 src/Sovereign/Synthesis/Homotopy/HomologicalAlgebra.agda 共 23 行，去注
+Laurent.norm-unique,src 内可解析,Sovereign.Algebra.RingTheory.LaurentNormSwap,False,lemma,Laurent norm-unique（池件重取）,模块字段重映射：Sovereign.Algebra.LaurentNormSwap → Sovereign.Algebra.RingTheory.LaurentNormSwap（代
+D1.mergeable-skeleton,探针/pn 路径,probes/_PD1,False,lemma,D1-impl：Mergeable G（返边判据 record+AH 消去前提）——双向骨架+样例二例（必要方向立界）,内容定级闸门 C 级拦截（启发式）→ 按诚实降档：needs_review + 回执挂 evidence（不 force——与 GAP-M7b/T6Rewrite 同池：真证明体在
+A1c.instance-face-S2,探针/pn 路径,probes/_PPI5l,False,lemma,A1c 实例面：add2⁺-comm-S2 核对面+whisk-swap-S2 装配骨架（S²ᵈ π₂ᵈᵐ 扩展商交换实例级）,fork 幸存体+接管（b4197c9）：EXIT=0 零洞零 postulate；立界：一般形/π₄ 随 A1b 续段（已绿 045b151）——内容=实例核对面+装配骨架（非全
+A1c2.add2-comm-generic-status,探针/pn 路径,probes/_PEH13,False,lemma,「∀ q r : π₂ᵈ⁺，add2⁺ q r ≡ add2⁺ r q」——判定为假（结构论证：自由群胚一般非交换），**无机器反证**；已,**不得标 refuted**（无机器反例）：台账状态 needs_review，证据档位=结构论证（弱档）。若日后造出与 `_++2_` 相容的可计算次序不变量（正规形/判别子）
+PN4.bt-face-general,探针/pn 路径,pn-proofs/_PN4,False,lemma,bt 面一般定义,
+PN4.PN3-subface-embedding,探针/pn 路径,pn-proofs/_PN4,False,lemma,PN3 子面嵌入,
+PN4.bt-cong-laws,探针/pn 路径,pn-proofs/_PN4,False,lemma,bt 同余律（`AHbt` 的 refl/symm/trans）,
+PN4.bt-collapse-ctx,探针/pn 路径,pn-proofs/_PN4,False,lemma,上下文塌缩,
+PN4.bt-collapse-general,探针/pn 路径,pn-proofs/_PN4,False,lemma,一般塌缩（`bt-collapse-general`）,
+PN4.two-vertex-collapse-G2f,探针/pn 路径,pn-proofs/_PN4,False,lemma,G2f 的两点塌缩,
+PN4.refute-PN3-closed-face-G2f,探针/pn 路径,pn-proofs/_PN4,False,lemma,反驳：G2f 上 PN3 闭面不成立,
+PN4.refute-bt-trivial-G2s,探针/pn 路径,pn-proofs/_PN4,False,lemma,反驳：G2s 上 bt 平凡不成立,
+PN10.RedTheory,探针/pn 路径,pn-proofs/_PN10,False,lemma,Red 理论（PN10）,
+PN10.⇒₁-len,探针/pn 路径,pn-proofs/_PN10,False,lemma,`⇒₁` 与长度,
+PN10.Red-normal,探针/pn 路径,pn-proofs/_PN10,False,lemma,Red 正规形,
+PN10.⇒₁→AHbt,探针/pn 路径,pn-proofs/_PN10,False,lemma,`⇒₁` 蕴含 `AHbt`,
+PN10.ovl,探针/pn 路径,pn-proofs/_PN10,False,lemma,重叠引理 `ovl`,
+PN10.lc-ht-lc-th,探针/pn 路径,pn-proofs/_PN10,False,lemma,`lc-ht-lc-th`（临界对局部合流）,
+PN11.stack-normalizer,探针/pn 路径,pn-proofs/_PN11,False,lemma,栈正规化器（PN11）,
+PN11.red-unique-L,探针/pn 路径,pn-proofs/_PN11,False,lemma,`red-unique-L`（既约唯一性，栈版）,
+PN12.nf-exists,探针/pn 路径,pn-proofs/_PN12,False,lemma,范式存在性（`nf-exists`）,
+PN12.group-assoc,探针/pn 路径,pn-proofs/_PN12,False,lemma,群结合律,
+PN12.group-laws,探针/pn 路径,pn-proofs/_PN12,False,lemma,群律,
+PN12.mul-cong,探针/pn 路径,pn-proofs/_PN12,False,lemma,乘法相容性,
+PN12.tree-trivial,探针/pn 路径,pn-proofs/_PN12,False,lemma,树支平凡,
+PN12.tree-path-unique,探针/pn 路径,pn-proofs/_PN12,False,lemma,树中路径唯一,
+PN12.ret-loops,探针/pn 路径,pn-proofs/_PN12,False,lemma,ret 环,
+PN12.reassoc4,探针/pn 路径,pn-proofs/_PN12,False,lemma,四元重结合 `reassoc4`,
+PN12.bt-left-cancel,探针/pn 路径,pn-proofs/_PN12,False,lemma,左消去,
+PN12.generation,探针/pn 路径,pn-proofs/_PN12,False,lemma,生成性,
+PN12.nontree-generation,探针/pn 路径,pn-proofs/_PN12,False,lemma,非树边生成性,
+PN12.nontree-complete-invariant,探针/pn 路径,pn-proofs/_PN12,False,lemma,非树边完全不变式,
+PN12.bt-right-cancel,探针/pn 路径,pn-proofs/_PN12,False,lemma,右消去,
+PN12.reduceG-iff-ahbt,探针/pn 路径,pn-proofs/_PN12,False,lemma,`reduceG` 等价于 `AHbt`（双向）,
+PN12.free-action-torsor,探针/pn 路径,pn-proofs/_PN12,False,lemma,自由作用的 torsor 结构,
+PN12.action-laws,探针/pn 路径,pn-proofs/_PN12,False,lemma,作用律,
+PN12.normal-form-closure,探针/pn 路径,pn-proofs/_PN12,False,lemma,范式封闭性,
+PN12.Red-decidable,探针/pn 路径,pn-proofs/_PN12,False,lemma,`Red` 可判定,
+PN12.trivial-and-act-inv,探针/pn 路径,pn-proofs/_PN12,False,lemma,平凡性与逆作用,
+PN12.reduceG-idempotent,探针/pn 路径,pn-proofs/_PN12,False,lemma,`reduceG` 幂等,
+PN12.rev-bt,探针/pn 路径,pn-proofs/_PN12,False,lemma,`rev-bt`,
+PN12.rev-inj,探针/pn 路径,pn-proofs/_PN12,False,lemma,`rev` 单射,
+PN13.tree-defs-and-size-pos,探针/pn 路径,pn-proofs/_PN13,False,lemma,树的定义与尺寸正性,
+PN13.ecount-size,探针/pn 路径,pn-proofs/_PN13,False,lemma,边计数与尺寸,
+PN13.adversarial-checks,探针/pn 路径,pn-proofs/_PN13,False,lemma,对抗验证（PN13）,
+PN13.forest-rank,探针/pn 路径,pn-proofs/_PN13,False,lemma,森林秩,
+PN13.trivial-char,探针/pn 路径,pn-proofs/_PN13,False,lemma,平凡性刻画,
+PN13.monotonicity,探针/pn 路径,pn-proofs/_PN13,False,lemma,单调性,
+PN12.conj-mul,探针/pn 路径,pn-proofs/_PN12,False,lemma,共轭乘法,
+PN12.filterE-laws,探针/pn 路径,pn-proofs/_PN12,False,lemma,`filterE` 的定律,
+PN12.toElems-loop,探针/pn 路径,pn-proofs/_PN12,False,lemma,`toElems` 与 `loop`,
+PN12.nontree-roundtrip,探针/pn 路径,pn-proofs/_PN12,False,lemma,非树边往返,
+PN12.general-answer,探针/pn 路径,pn-proofs/_PN12,False,lemma,一般图答案（`_PN12` 层主体）,
+PN14.spanning-tree-object,探针/pn 路径,pn-proofs/_PN14,False,lemma,SpanningTree 接口对象（含 `nontree-rep`/`nontree-rep-flips`/`ret-base` 三字段；`,
+PN14.g2f-instance,探针/pn 路径,pn-proofs/_PN14,False,lemma,G2f 上的 SpanningTree 实例（`g2f-spanning`）,
+PN14.nontree-closure,探针/pn 路径,pn-proofs/_PN14,False,lemma,非树边闭包,
+PN15.free-group-carrier,探针/pn 路径,pn-proofs/_PN15,False,lemma,自由群载体,
+PN15.words-are-walks,探针/pn 路径,pn-proofs/_PN15,False,lemma,字与走的互转（`to-from-w` / `from-to-w`）,
+PN15.free-has-no-relations,探针/pn 路径,pn-proofs/_PN15,False,lemma,自由性（无关系）,
+PN15.word-concat-hom,探针/pn 路径,pn-proofs/_PN15,False,lemma,字拼接的同态性,
+PN15.edge-decidable,探针/pn 路径,pn-proofs/_PN15,False,lemma,边的可判定性,
+PN15.elem-decidable,探针/pn 路径,pn-proofs/_PN15,False,lemma,Elem 的可判定性,
+PN15.classify-decidable,探针/pn 路径,pn-proofs/_PN15,False,lemma,分类的可判定性,
+PN15.free-group-laws,探针/pn 路径,pn-proofs/_PN15,False,lemma,自由群的群律,
+PN15.mul-preserves-red,探针/pn 路径,pn-proofs/_PN15,False,lemma,乘法保持既约性,
+PN15.redwalk-carrier,探针/pn 路径,pn-proofs/_PN15,False,lemma,既约走载体,
+PN15.redwalk-inverse-laws,探针/pn 路径,pn-proofs/_PN15,False,lemma,既约走上的逆律,【blocked 解除（第 118 轮）——**我上一轮的假设是错的，一次查定义即破**】上一轮我判定「库内有两个不同的 `rev`（`PN3.Face.rev` vs `PN4.
+PN15.inv-core-unconditional,探针/pn 路径,pn-proofs/_PN15,False,lemma,`inv-core` 的无条件版,
+PN15.quotient-group-laws,探针/pn 路径,pn-proofs/_PN15,False,lemma,商群律,
+PN15.quotient-right-laws,探针/pn 路径,pn-proofs/_PN15,False,lemma,商群的右律,
+PN15.quotient-group-complete,探针/pn 路径,pn-proofs/_PN15,False,lemma,商群的完整性,
+PN15.free-universal-property,探针/pn 路径,pn-proofs/_PN15,False,lemma,自由群的万有性质,
+PN15.setoid-group-data,探针/pn 路径,pn-proofs/_PN15,False,lemma,SetoidGroupData 记录（Carrier/_≈_/refl≈/sym≈/trans≈/_⋆_/⋆-cong/e₀/ι/单位律…）,
+PN15.setoid-laws-approx,探针/pn 路径,pn-proofs/_PN15,False,lemma,setoid 层群律,
+PN15.free-setoid-group-instance,探针/pn 路径,pn-proofs/_PN15,False,lemma,自由群的 SetoidGroupData 实例（`BA-setoid-group`）,
+PN15.setoid-group-iso,探针/pn 路径,pn-proofs/_PN15,False,lemma,SetoidGroupIso 记录（to/from/to-cong/from-cong/to-mul/from-mul/to-from/fr,
+PN16.nontree-generators,探针/pn 路径,pn-proofs/_PN16,False,lemma,非树边生成元集,
+PN16.treesec-wiring,探针/pn 路径,pn-proofs/_PN16,False,lemma,TreeSec 接线,
+PN14.vertex-enumeration,探针/pn 路径,pn-proofs/_PN14,False,lemma,顶点枚举,
+PN14.g2f-venum,探针/pn 路径,pn-proofs/_PN14,False,lemma,G2f 的顶点枚举,
+PN14.connected-and-istree,探针/pn 路径,pn-proofs/_PN14,False,lemma,连通性与树判定,
+PN14.flip-tree-symmetric,探针/pn 路径,pn-proofs/_PN14,False,lemma,flip-tree（导出定理形式）,
+PN14.spanning-from,探针/pn 路径,pn-proofs/_PN14,False,lemma,由 `Connected` 构造 SpanningTree（参数：loop/dec/nrep/nf/pb，第 220 行）,
+PN14.bfs-connected,探针/pn 路径,pn-proofs/_PN14,False,lemma,BFSConnected 记录（path/path-a/dist/dist-a/dist-zero/nonzero-nonbase）,
+PN12.one-loop,探针/pn 路径,pn-proofs/_PN12,False,lemma,单边对消 `one-loop`,
+PN15.word-carrier-bridges,探针/pn 路径,pn-proofs/_PN15,False,lemma,字载体的桥接件,
+PN4.tree-loop-uncond,探针/pn 路径,pn-proofs/_PN4,False,lemma,`tree-loop-uncond`（无条件树环消去）,
+PN14.tree-loop-wired,探针/pn 路径,pn-proofs/_PN14,False,lemma,tree-loop 接线,
+PN14.toElems-aux,探针/pn 路径,pn-proofs/_PN14,False,lemma,toElems 辅助件,
+PN14.all-edges-last,探针/pn 路径,pn-proofs/_PN14,False,lemma,all-edges-last,
+PN5.tree-loop-of-tree,探针/pn 路径,pn-proofs/_PN5,False,lemma,树的 loop 消去（`_PN5`）,
+PN5.tree-spanning,探针/pn 路径,pn-proofs/_PN5,False,lemma,树支生成树（`tree-spanning`，第 220 轮新增 `ret-base` 参数）,
+PN15.word-setoid-group,探针/pn 路径,pn-proofs/_PN15,False,lemma,字侧 setoid 群（十二件）,
+PN16.gen-filtered,探针/pn 路径,pn-proofs/_PN16,False,lemma,生成元的过滤式定义,
+PN16.from-cong-word,探针/pn 路径,pn-proofs/_PN16,False,lemma,`from-cong-word`（字层）,
+PN16.toGen=filterE,探针/pn 路径,pn-proofs/_PN16,False,lemma,`toGen=filterE`（历史件；已被裁决 Ⅴ 的代表过滤取代）,
+PN16.setV-top,探针/pn 路径,pn-proofs/_PN16,False,lemma,★★★★★ **`setV⊤`：`⊤` 的证明层 proof-irrelevance 可构造性证明（纠正第 189 轮的误判）**。`set,
+PN16.prodA-hom,探针/pn 路径,pn-proofs/_PN16,False,lemma,★★★★ **`prodA` 的拼接同态律 + `AHbt` 相容性（两条，为 Ⅶ 的修法奠基）**。① `prodA-++ : (acc),
+PN16.from-to-A-new,探针/pn 路径,pn-proofs/_PN16,False,lemma,★★★★★ **`from-to-A`（按新 `to` 重推）—— 一行**。`from-to-A : (x) → from (to x) ,
+PN16.adversarial-checks,探针/pn 路径,pn-proofs/_PN16,False,fixture,★★★★ **对抗验证（具体点交叉比对）**。纪律要求：构造性定理写完后必须在**具体点**上用独立计算比对。两条：① `go-orient,
+PN16.distrib-laws,探针/pn 路径,pn-proofs/_PN16,False,lemma,★★★★ **两条分配律（crux 归纳的脚手架）**。① `toEdges-++ : (p q) → PN15.toEdges (p ++,
+PN16.canon-field,探针/pn 路径,pn-proofs/_PN14,False,lemma,*** 裁决 Ⅸ 已执行（证据行号）：`_PN14.agda:88` 新增字段 `nontree-rep-canon`；`_PN14.agd,为什么：**接口变更 ⇒ 需人类裁决**；`from-to` 从条件版转无条件的唯一缺口｜怎么验证：`proof_compile` 对 `_PN14`/`_PN15`/`_PN16
+L7-to-from-rep,探针/pn 路径,pn-proofs/_PN16,False,theorem,to-from-rep: (r : RepWord) → FG3.F.reduceG (to (from (proj₁ r))) ≡ FG3,内容闸门报 C 级是因为 pn-proofs/ 不在 agda-lib 的 include 路径下（源文件定位失败），非内容空壳；实际证明体在 _PN16.to-from-Σ。已另
+L6-go-cases,探针/pn 路径,pn-proofs/_PN16,False,theorem,go②③: go 函数对树边/非树边的处理正确性（大部分已有：go-toEdges-reduce/bridge-connect 等已编译✅）,L5 全绿后评估：go-toEdges-reduce/bridge-connect/to-from-C/faithful/from-to-A/B/toEdgesO-ret/loop
