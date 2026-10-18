@@ -234,8 +234,8 @@ data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 �
 | **A-3** | `wsum-resp : Ω3Walk⁺ G x c c' → wsum c ≡ wsum c'`（三生成元 + 四闭包构造子）| A-2 ✅ | 同上 | 同上 | ✅ **达成**（回执 `88440b6f0f54…`，5.1s，0 postulate/0 hole）—— 形状对齐 `_PEH9:246-252` ✓ |
 | **A-4** | `wsum-++2 : wsum (c ++2 e) ≡ wsum c + wsum e`（可加性）| A-2 ✅ | 同上 | 同上 | ✅ **达成**（回执 `229b0b5d085a…`）—— ★ **走 Cubical 路线**（`Cubical.Data.Int` + `Properties` 的 `pos0+`/`+Comm`/`+Assoc`）✓ |
 | ~~A-5~~ | ~~`∃ a b. wsum (a ++2 b) ≢ wsum (b ++2 a)`~~ | — | — | — | ❌ **原形不可达**（ℤ 交换 ⇒ 恒相等 ✓）—— 但 ★ **这是「方法错」不是「命题错」** ✗（见下方改道）|
-| **A-5'** | ★ **改道后的 A-5**（照 `PN2.pio1-noiso` 模板）：在见证实例上**枚举** `π₂ᵈ⁺` 的类 + **类型级**证 `[a ++2 b] ≢ [b ++2 a]` | A-3 ✅ | `proof_compile` | `exit 0` + 回执 ⇒ **`refuted`** ✓ | ⬜ **未开工**（★ **主路线** ✓）|
-| **A-6** | ~~C-4 自由群分离器~~（`Label = Bool × ℕ × ℕ` + `cancel`）| — | — | — | ⬜ **降为备选** ✗（缺 ⑦ 刚性 ✓；且卡在 `cons` 解析 ✗）|
+| **A-5'** | ★ **改道后的 A-5**（`_PN12.Fold`/`GroupC` 实例化 + 自由幺半群判别子）：`to = reduceG ∘ toW` + `to-resp` + `witness-neq` | A-3 ✅ | `proof_compile` | `exit 0` + 回执 ⇒ **`refuted`** ✓ | ✅ **达成**（`probes/_PEH21`，回执 `a6b6ba46…`；`add2-comm-generic-status` 已升 refuted ✓，见下方闭合记录）|
+| **A-6** | ~~C-4 自由群分离器~~（`Label = Bool × ℕ × ℕ` + `cancel`）| — | — | — | ✅ **达成（改道）**——自造 `cancel` 链退役 ✗，改由 **`_PN12.Fold`/`GroupC` 实例化**完成（`LabelGraph` + 两个 `open module` ✓，见闭合记录教训①）|
 
 #### ★★ A-5 改道依据（2026-10-19，`PN2.pio1-noiso` 模板）
 
@@ -264,10 +264,10 @@ data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 �
 
 | 原子 | 内容 | 验证 | 状态 |
 |---|---|---|---|
-| **A5'-1** | 在见证实例上枚举 `π₂ᵈ⁺` 的类（`to`/`of` 双向 + `quot-cover` + `of-to-id`）| `proof_compile` | ⬜ |
-| **A5'-2** | 两个具体 2-走 `a b`，证 `[a ++2 b]` 与 `[b ++2 a]` **落在不同类**（类型级）| 同上 | ⬜ |
-| **A5'-3** | ⇒ `¬ (Ω3Walk⁺ G x (a ++2 b) (b ++2 a))` ⇒ **`refuted`** ✓ | 同上 | ⬜ |
-| **A5'-4** | （八要素补全）⑦ 刚性：从 `GF9.galoisConjugate` 诱导 | 同上 | ⬜ |
+| **A5'-1** | 枚举件 = **`LabelGraph` + `PN12.Fold`/`GroupC` 实例化**（`to = reduceG ∘ toW` + `to-idem`，`_PEH21`）| `proof_compile` | ✅（回执 `7dae8c8d…`；范式计算 `to-c1`/`to-c2` 见 A5'-2 ✓）|
+| **A5'-2** | 见证对：`LoopG` 上两个**同型** `ASTep`（前缀长 0 vs 1 ⇒ label `(t,0,1) ≢ (t,1,0)`）| 同上 | ✅（`labs-neq` + `word-swap-≠`，回执 `ad7755fc…`）|
+| **A5'-3** | `witness-neq : ¬ (Ω3Walk⁺ LoopG tt c1 c2)`（`to-resp` 提升到商层）| 同上 | ✅（回执 `a6b6ba46…`；**`add2-comm-generic-status` 已升 refuted** ✓）|
+| **A5'-4** | 八要素对表（`A1c2.A5'-4.presentation`，对象级 ✓）| 同上 | 🟡 **部分达成**（①②③④⑤⑥⑧ ✅；⑦ `invLabel` 对合已证 ✓ 但 **GF9 诱导正式桥未建** ⚠ 诚实缺口，对分离非必需 ✓）|
 
 #### ★★ A-5' 闭合记录（2026-10-19，全部 proven ✓）
 
@@ -300,8 +300,8 @@ data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 �
 | 原子 | 签名 | 依赖 | 验证 | 达成判据 | 状态 |
 |---|---|---|---|---|---|
 | **B-1** | `record SetoidMonoidIso (S T : SetoidMonoidData) : Set₁`（按 `_PN15.agda:135` 的 `SetoidGroupIso` 写，去掉 `inv`/`invˡ`/`invʳ` 三字段）| — | `proof_compile` 新模块 | `exit 0` + 回执 | ✅ **达成**（`probes/_PEH17.agda`，回执 `9e030ec33c70…`）|
-| **B-2** | `π₁ᵈ-card : ∀ (G) → …`（**基数 = 2**：由 `gcmp-classify` 的二分给出）| `PIO-1a.library-side` ✓ | 同上 | 同上 | ⬜ 未开工 |
-| **B-3** | 条件式陈述：`(h : π₁(|N₁Gcmp|) 平凡) → ¬ (SetoidMonoidIso π₁ᵈ-类 (trivial-monoid))` | B-1, B-2 | 同上 | 同上 ⇒ `proven` ✓ | ⬜ 未开工 |
+| **B-2** | `π₁ᵈ-card : ∀ (G) → …`（**基数 = 2**：由 `gcmp-classify` 的二分给出）| `PIO-1a.library-side` ✓ | 同上 | 同上 | ⬜ **未开工**（注：**实例级**枚举已在 `_PN2` ✓（`to2`/`of2`/`quot-cover` proven ✓）；**泛型 `∀ G` 件未提** ✗ —— 坐标：照 `_PN2.agda:127-151` 五件套泛型化）|
+| **B-3** | 条件式陈述：`(h : π₁(|N₁Gcmp|) 平凡) → ¬ (SetoidMonoidIso π₁ᵈ-类 (trivial-monoid))` | B-1, B-2 | 同上 | 同上 ⇒ `proven` ✓ | ⬜ **未开工**（注：¬iso 的**无条件**结论已在 `_PN2`（`no-iso-π₁ᵈ-unit` proven ✓）；缺口 = **B-1 的 `SetoidMonoidIso`（`_PEH17`）与 `_PN2` 同构概念的桥接** ✗ —— 坐标：`_PEH17` 的 8 字段 record 对齐 `_PN2` 的同构件）|
 | **B-4** | （备选）B1 路径：库内自足化 `π₁(|N₁G|)` 的组合替身 | — | — | — | ⬜ **不建议**（代价高、风险高，见 §2.3）|
 
 **策略（L2）**：B-1 是**定义层**（`record` ⇒ 对象级验收 ✓，见 doctrine）；B-2 用**分类器 + 计数**（`gcmp-classify` 的 `inj₁`/`inj₂` 二分 ✓）；B-3 用**基数矛盾**（`2 ≠ 1` ✓）。
@@ -312,12 +312,12 @@ data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 �
 
 ```
 ✅ 已完成（2026-10-19）：A-0 / A-1 / A-2 / A-3 / A-4 ｜ B-1
-⬜ 下一步（改道后）：
-① A5'-1 枚举 π₂ᵈ⁺ 的类（照 PN2.pio1-noiso 的 to/of 双向 + quot-cover + of-to-id）
-② A5'-2 两个具体 2-走 a b，类型级证 [a ++2 b] ≢ [b ++2 a]
-③ A5'-3 ⇒ refuted ✓
-④ A5'-4 八要素补全：⑦ 刚性（从 GF9.galoisConjugate 诱导，范式 Presentation.agda:144）
-⑤ B-2 → B-3
+✅ 已完成（2026-10-19 全部）：件 A 全链（A-0..A-4 + A-5' 九层 + 见证对 + 八要素对表）｜B-1
+⬜ 剩余（严格口径）：
+① B-2：π₁ᵈ-card 泛型件（实例已在 _PN2 ✓，泛型 ∀ G 未提 ✗）
+② B-3：SetoidMonoidIso（_PEH17）↔ _PN2 no-iso 的桥接
+③ ⑦ GF9 诱导正式桥（Label → GF9 映射 + 保持性；对分离非必需 ✓）
+④ 探针收编：_PEH21 升入 src/Sovereign/Synthesis/Homotopy/（_PEH19/20 自造件退役 ✗ 勿重走）
 ```
 
 **每原子收尾（纪律）**：`proof_compile`（拿回执）→ `proof_dag add/update`（记账）→ `check`（看断链不增）→ `journal`（记流水）→ **提交** ✓
@@ -343,11 +343,11 @@ data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 �
 
 | # | 子任务 | 验证命令 | 达成判据 | 状态 |
 |---|---|---|---|---|
-| 4-2 | 补 `MonoidIso`-型接口件 | `proof_compile <新模块>` | `exit 0` + 回执 | ⬜ **未开工** |
-| 4-3 | 件 B 条件式（B3） | 同上 | 新陈述编译通过 ⇒ `proven` | ⬜ **未开工** |
-| 4-4 | 件 A 建 `rec⁺`（A1，**先探针**）| `proof_compile probes/_PEH13*.agda` | 探针 `exit 0` + `f-resp` 有证明体 | ⬜ **未开工** |
-| 4-5 | 件 A 撞墙则立界 | `prover_limits add` | 条目带**实测证据** | ⬜ **不适用**（尚未撞墙）|
-| 4-6 | 件 A 找不相等见证 | 需 4-4 先成 | 存在 `q r` 使 `f q ≢ f r` ⇒ 可标 `refuted` | ⬜ **未开工**（依赖 4-4）|
+| 4-2 | 补 `MonoidIso`-型接口件 | `proof_compile <新模块>` | `exit 0` + 回执 | ✅ **达成**（B-1：`_PEH17` 的 `SetoidMonoidIso` 8 字段 record，回执 `9e030ec3…`）|
+| 4-3 | 件 B 条件式（B3） | 同上 | 新陈述编译通过 ⇒ `proven` | ⬜ **未开工**（同 B-3：需 `_PEH17` ↔ `_PN2` 桥接 ✗）|
+| 4-4 | 件 A 建 `rec⁺`（A1，**先探针**）| `proof_compile probes/_PEH13*.agda` | 探针 `exit 0` + `f-resp` 有证明体 | ✅ **目标达成（手段改道）**——`rec⁺` 未建，但分离器已由 C-4（`to`+`to-resp`+`witness-neq`）完成 ✓（`rec⁺` 降为不需要 ✗）|
+| 4-5 | 件 A 撞墙则立界 | `prover_limits add` | 条目带**实测证据** | ✅ **达成**（已撞墙并全部入册：`cons-shadowed-parse-lhs` 等，实测证据齐 ✓）|
+| 4-6 | 件 A 找不相等见证 | 需 4-4 先成 | 存在 `q r` 使 `f q ≢ f r` ⇒ 可标 `refuted` | ✅ **达成**（`witness-neq` ✓，回执 `a6b6ba46…`；`add2-comm-generic-status` 已升 refuted ✓）|
 
 ### 7.3 验收命令速查（每步收尾必跑）
 
