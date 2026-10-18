@@ -28,6 +28,39 @@
 
 ---
 
+## 0.5 复用清单（**动手前必读** —— 2026-10-19 用 DSH `grep` 工具实测）
+
+> 纪律：**先查代码实现与复用，原子构建**。以下均已实测命中；**新写之前先复用**。
+
+### 件 A 可复用的（集合层消去范式 —— **已在用，不是新造**）
+
+| 复用件 | 位置 | 说明 |
+|---|---|---|
+| **`rec squash/ (λ c → …) (λ c c' s → eq/ …)`** | 全库 **17+ 处** | 集合层消去范式（常值函子 + respect）|
+| **`add2⁺` 本身就是这么定义的** | `probes/_PPI5j.agda:141`、`_PEH13.agda:8` | `add2⁺ q r = rec squash/ (λ c → addL⁺ c r) resp-outer q` ✓ |
+| `addL⁺` / `addR⁺` | `_PPI5j.agda:131/:136` | 单变元版（`rec squash/` + `whiskΩ3` / `whiskR-walk`）|
+| **`π₁ᵈ-rec`** | `_PPI2.agda:94/:193` | **1 维商的集合层 rec** —— `_PPI4.agda:118` 称其为「**`_PPI2` 既有形**」✓ |
+| 范式文档 | `_PN5.agda:79`、`_PN6.agda:66` | 「商面消去按 **`_PEH14` 范式**：`rec`（需 `isSet` 余域）/ `rec2` / `elimProp`」✓ |
+| `rec`/`rec2` 的 import 行 | `_PN5:100`、`_PN6:85`、`_PEH14:38` | 直接抄 import ✓ |
+
+**⇒ 结论**：`A1c2` 路径 A1 的**机制（集合层 rec + respect）在库内已成熟** ✓ —— 缺的**只是**一个「对 `Ω3Walk⁺` 不变的**判别不变量**」✗（现有 17 处 `rec` 的余域**全是商**，没有一处到 `ℕ`/`Bool` ✗）。
+⇒ **原子第一步**：按 `_PPI5j:131` 的形状写 `f : Ω2Walk → ℕ` + `f-resp : ∀ c c' s → f c ≡ f c'`，**先只证 respect**（不急着找不相等见证）。
+
+### 件 B 可复用的（同构接口范式 + 库侧分类件）
+
+| 复用件 | 位置 | 说明 |
+|---|---|---|
+| **`record SetoidGroupIso (S T : SetoidGroupData) : Set₁`** | `_PN15.agda:135` | **通用同构 record 已在** ✓（8 字段：`to`/`from`/`to-cong`/`from-cong`/`from-to`/`to-from`/`from-mul`/`to-mul`）⇒ monoid 版**按它写**（小改动）✓ |
+| `gcmp-classify`（分类主件）| `probes/_PPI4e.agda:95` | **库侧 A 级**：`∀ (w : Walk (Gcmp two-chain) fzero fzero) → …`，恰两类 ✓ |
+| `cls-ex-nil` / `cls-ex-loop` | `_PPI4e.agda:115/:119` | 两类各自的见证 ✓ |
+| 完备性 | `_PPI4e.agda:147` | 「完备性 = `gcmp-classify` 本体（全部 `fzero` 闭 walk 二分）」✓ |
+| 旗复形构造件 | `pn-proofs/_PN1.agda:3/:5-8/:327` | `Shape n` / `N₁Trivialization` ✓（**已在**，更正旧注「零命中」✗）|
+| 立界件 | `pn-proofs/_PN1.agda:321` | 「本库**无几何实现 `\|·\|` 与拓扑 `π₁`**」✓ |
+
+**⇒ 结论**：`PIO-1` 的**库侧**（`π₁ᵈ` 恰两类 ⇒ 基数 2）**已 A 级** ✓；**外部侧**（`π₁(|N₁G|)=0`）**已立界** ✗ ⇒ 路径 **B2 拆分**是**直接可做**的 ✓。
+
+---
+
 ## 1. 件 A：`A1c2.add2-comm-generic-status`
 
 ### 1.1 命题与当前判定
