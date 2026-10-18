@@ -210,9 +210,27 @@ data Ω2Walk (G) (x) : Walk G x x → Walk G x x → Set where
 
 | 原子 | 签名（**可直接写进模块**）| 依赖 | 验证 | 达成判据 | 状态 |
 |---|---|---|---|---|---|
-| **A-0** | *设计*：定出 `f` 的**具体公式**（候选：步数 / 首步的 `ASTep` 端点 / 各步「面号」的加权和）| — | 手工推演 + 3 个具体 2-walk 上试算 | 在 `Ω3Walk⁺` 的**三个生成元** `{fill-tri, whisk3, bub3}` 上分别试算，确认 `f` 在它们下**不变** | ⬜ 未开工 |
-| **A-1** | `len2 : ∀ {w w'} → Ω2Walk G x w w' → ℕ`（步数；**非不变**，但为后续原子提供归纳骨架）| — | `proof_compile` 探针 | `exit 0` + 回执 | ⬜ 未开工 |
-| **A-2** | `f : ∀ {w w'} → Ω2Walk G x w w' → ℕ`（A-0 定出的不变量）| A-0 | 同上 | 同上 | ⬜ 未开工 |
+| **A-0** | *设计*：定出 `f` 的**具体公式**（候选：步数 / 首步的 `ASTep` 端点 / 各步「面号」的加权和）| — | 手工推演 + 3 个具体 2-walk 上试算 | 在 `Ω3Walk⁺` 的**三个生成元** `{fill-tri, whisk3, bub3}` 上分别试算，确认 `f` 在它们下**不变** | 🟡 **部分完成**（见下）|
+
+#### ★ A-0 取证结果（2026-10-19 实测，`probes/_PPI5g.agda:48-58`）
+
+```agda
+data Ω3Step⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 → Set where
+  base3+ : …                                   -- ① fill-tri 嵌入（尾位气泡收缩）
+  whisk3 : (c₁ : Ω2Walk G x w1 wm) {c c' : Ω2Walk G x wm w2} → …  -- ② 缘饰/**前缀提升**
+  bub3   : (c₁ : Ω2Walk G x w1 wm) {wm' : …} → …                  -- ③ 任意位气泡消去
+data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 → Set where …  -- 闭包
+```
+
+**关键结构事实（决定 `f` 的设计空间）**：
+1. **`whisk3` 是左同余** ✓（`c₁ ++2 c` ↝ `c₁ ++2 c'`）⇒ **任何不变量必须对「前缀拼接」不变** ✗ —— 强约束：`f` 只能「看见」**尾部** ✓
+2. ⇒ **不能用**：步数 ✗（`bub3` 会变）、首步 ✗（`whisk3` 会变）、整条 `ASTep` 序列 ✗
+3. **可用方向（待验）**：`f` 取**尾部不变量** —— 候选：(i) 最右非气泡段的形状；(ii) 末尾 `ASTep` 的**类型**（注意：目标走 = 类型指标 ✗ 不可用，但 `ASTep` 的**构造子标签**可用 ✓）
+4. ⚠ **风险已明确**：三候选若**全部**撞墙 ⇒ 按 A3 路径**立界** + 记 `prover_limits` ✓（**不改陈述** ✗）
+
+**已验生成元实例**（供 A-2/A-3 复用 ✓）：`_PPI5g.agda:125` `chk-bub-wit = bub3 (nil2 w3) face012-slide (nil2 w3)` ✓｜`:132` `chk-whisk3-s2 : Ω3Step⁺ s2-adj s2v0 (bub face012-slide ++2 bub face012-slide) (bub face012-slide)` ✓
+| **A-1** | `len2 : ∀ {w w'} → Ω2Walk G x w w' → ℕ`（步数；**非不变**，但为后续原子提供归纳骨架）| — | `proof_compile` 探针 | `exit 0` + 回执 | ✅ **达成**（`probes/_PEH16.agda`，回执 `eda6390f03e7…`）|
+| **A-2** | `f : ∀ {w w'} → Ω2Walk G x w w' → ℕ`（A-0 定出的不变量）| A-0 | 同上 | 同上 | ⬜ 未开工（**阻塞在 A-0**）|
 | **A-3** | `f-resp : ∀ {w w'} (c c' : Ω2Walk G x w w') → Ω3Walk⁺ G x c c' → f c ≡ f c'`（**相容性**：核心难点）| A-2 | 同上 | 同上（**须对三个生成元逐个分情况**）| ⬜ 未开工 |
 | **A-4** | `f-++2 : ∀ (a b) → f (a ++2 b) ≡ g (f a) (f b)`（与 `_++2_` 相容；`g` 为组合律）| A-2 | 同上 | 同上 | ⬜ 未开工 |
 | **A-5** | 见证对：`∃ a b. f (a ++2 b) ≢ f (b ++2 a)`（**机器反证**）| A-3, A-4 | `proof_compile` + 具体点 | 存在性与不相等**都有证明体** ⇒ **可标 `refuted`** ✓ | ⬜ 未开工 |
@@ -227,7 +245,7 @@ data Ω2Walk (G) (x) : Walk G x x → Walk G x x → Set where
 
 | 原子 | 签名 | 依赖 | 验证 | 达成判据 | 状态 |
 |---|---|---|---|---|---|
-| **B-1** | `record SetoidMonoidIso (S T : SetoidMonoidData) : Set₁`（按 `_PN15.agda:135` 的 `SetoidGroupIso` 写，去掉 `inv`/`invˡ`/`invʳ` 三字段）| — | `proof_compile` 新模块 | `exit 0` + 回执 | ⬜ 未开工 |
+| **B-1** | `record SetoidMonoidIso (S T : SetoidMonoidData) : Set₁`（按 `_PN15.agda:135` 的 `SetoidGroupIso` 写，去掉 `inv`/`invˡ`/`invʳ` 三字段）| — | `proof_compile` 新模块 | `exit 0` + 回执 | ✅ **达成**（`probes/_PEH17.agda`，回执 `9e030ec33c70…`）|
 | **B-2** | `π₁ᵈ-card : ∀ (G) → …`（**基数 = 2**：由 `gcmp-classify` 的二分给出）| `PIO-1a.library-side` ✓ | 同上 | 同上 | ⬜ 未开工 |
 | **B-3** | 条件式陈述：`(h : π₁(|N₁Gcmp|) 平凡) → ¬ (SetoidMonoidIso π₁ᵈ-类 (trivial-monoid))` | B-1, B-2 | 同上 | 同上 ⇒ `proven` ✓ | ⬜ 未开工 |
 | **B-4** | （备选）B1 路径：库内自足化 `π₁(|N₁G|)` 的组合替身 | — | — | — | ⬜ **不建议**（代价高、风险高，见 §2.3）|
