@@ -42,7 +42,7 @@ open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; subst; cong; cong₂; trans)
 open import Data.Nat.Properties using (*-suc; ≤-refl; <-≤-trans; m≤m+n)
-open import Data.Nat.Properties using (*-assoc; *-comm; *-distribʳ-+; *-distribˡ-+; *-zeroʳ; ≤-trans)
+open import Data.Nat.Properties using (*-assoc; *-comm; +-comm; *-distribʳ-+; *-distribˡ-+; *-zeroʳ; ≤-trans)
 open import Data.Nat.DivMod using (_%_; _/_; m≡m%n+[m/n]*n; [m+kn]%n≡m%n; m%n<n)
 open import Data.Nat.Divisibility using (m%n≡0⇒n∣m; n∣m⇒m%n≡0; _∣?_)
 open import Data.Nat.Divisibility using (∣-trans; 1∣_; *-cancelˡ-∣)
@@ -303,3 +303,57 @@ extract (suc j) A B h ¬B with euclid3 A B (∣-trans (3∣3^suc-j j) h)
             (subst (λ z → 3 ^ suc j ∣ z) (sym (*-comm C 3))
                    (extract-step j C
                      (extract j C B (extract-cancel j A B C A≡C*3 h) ¬B)))
+
+--------------------------------------------------------------------------------
+-- §8. 一般 Hensel 提升唯一性（x² ≡ 1，mod 3^k）—— 主定理
+--
+-- 目标：∀ k x → 3^k ∣ (x*x ∸ 1) → 3 ∣ (x ∸ 1) → 3^k ∣ (x ∸ 1)
+--   读法：在 mod 3 层与 1 同余的那个根，其 mod 3^k 提升**唯一**。
+--
+-- 证明：x = 0 平凡（0 ∸ 1 = 0）；x = suc q 时
+--   ① `diff-sq`：x²-1 = (x+1)·(x∸1)
+--   ② `¬3∣x+1`：由 3 ∣ x∸1 得 x∸1 = d·3，故 x+1 = suc (suc (d·3)) ≡ 2 (mod 3) ⇒ 3 ∤ x+1
+--   ③ `extract`：3^k ∣ (x∸1)·(x+1) 且 3 ∤ x+1 ⇒ 3^k ∣ x∸1   ∎
+--------------------------------------------------------------------------------
+
+-- (suc q) + 1 ≡ suc (suc q)   （`+-comm` 把 stuck 的 `q + 1` 换成 `1 + q`，后者归约为 `suc q`）
+sucq+1≡sucsucq : ∀ q → suc q + 1 ≡ suc (suc q)
+sucq+1≡sucsucq q = cong suc (+-comm q 1)
+
+-- 3 ∤ suc (suc (d · 3))
+--   `suc (suc (d*3))` **定义上**就是 `2 + d*3`（2 是构造子 ⇒ `+` 归约），故可用 [m+kn]%n≡m%n
+mod-sucsuc : ∀ d → (suc (suc (d * 3))) % 3 ≡ 2
+mod-sucsuc d = [m+kn]%n≡m%n 2 d 3
+
+¬3∣sucsuc : ∀ d → ¬ (3 ∣ suc (suc (d * 3)))
+¬3∣sucsuc d h =
+  ¬2≡0 (trans (sym (mod-sucsuc d)) (n∣m⇒m%n≡0 (suc (suc (d * 3))) 3 h))
+  where
+    ¬2≡0 : ¬ (2 ≡ 0)
+    ¬2≡0 ()
+
+-- ★ 一般 Hensel 提升唯一性
+hensel-unique : ∀ k x → 3 ^ k ∣ (x * x ∸ 1) → 3 ∣ (x ∸ 1) → 3 ^ k ∣ (x ∸ 1)
+hensel-unique k zero h h3 = divides 0 refl
+hensel-unique k (suc q) h h3 = extract k q (suc q + 1) hAB ¬B
+  where
+    d : ℕ
+    d = quotient h3
+
+    q≡d3 : q ≡ d * 3
+    q≡d3 = m∣n⇒n≡quotient*m h3
+
+    -- 3^k ∣ q * (suc q + 1)
+    hAB : 3 ^ k ∣ q * (suc q + 1)
+    hAB = subst (λ z → 3 ^ k ∣ z) (sym qX≡) (subst (λ z → 3 ^ k ∣ z) (diff-sq q) h)
+      where
+        qX≡ : q * (suc q + 1) ≡ suc (suc q) * q
+        qX≡ = trans (cong (q *_) (sucq+1≡sucsucq q))
+                    (sym (*-comm (suc (suc q)) q))
+
+    -- 3 ∤ (suc q + 1)
+    ¬B : ¬ (3 ∣ suc q + 1)
+    ¬B hB = ¬3∣sucsuc d (subst (λ z → 3 ∣ z) eqB hB)
+      where
+        eqB : suc q + 1 ≡ suc (suc (d * 3))
+        eqB = trans (cong suc (cong (_+ 1) q≡d3)) (cong suc (+-comm (d * 3) 1))
