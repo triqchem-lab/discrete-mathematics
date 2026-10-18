@@ -231,9 +231,10 @@ data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 �
 **已验生成元实例**（供 A-2/A-3 复用 ✓）：`_PPI5g.agda:125` `chk-bub-wit = bub3 (nil2 w3) face012-slide (nil2 w3)` ✓｜`:132` `chk-whisk3-s2 : Ω3Step⁺ s2-adj s2v0 (bub face012-slide ++2 bub face012-slide) (bub face012-slide)` ✓
 | **A-1** | `len2 : ∀ {w w'} → Ω2Walk G x w w' → ℕ`（步数；**非不变**，但为后续原子提供归纳骨架）| — | `proof_compile` 探针 | `exit 0` + 回执 | ✅ **达成**（`probes/_PEH16.agda`，回执 `eda6390f03e7…`）|
 | **A-2** | `wsum : Ω2Walk G x w w' → ℤ`（有符号步数和，候选 C-1）| A-0 ✅ | `proof_compile` 探针 | `exit 0` + 回执 | ✅ **达成**（`probes/_PEH16.agda:66-80`，回执 `e1e7c5a206e3…`）⚠ **非分离器** ✗ |
-| **A-3** | `wsum-resp : ∀ (c c') → Ω3Walk⁺ G x c c' → wsum c ≡ wsum c'`（**相容性**）| A-2 ✅ | 同上 | 同上（**须对三个生成元逐个分情况**）| ⬜ **未开工**（设计已定：`fill-tri`/`bub3` 靠 `+1−1=0` ✓；`whisk3` 靠**可加性** ✓）|
-| **A-4** | `f-++2 : ∀ (a b) → f (a ++2 b) ≡ g (f a) (f b)`（与 `_++2_` 相容；`g` 为组合律）| A-2 | 同上 | 同上 | ⬜ 未开工 |
-| **A-5** | 见证对：`∃ a b. f (a ++2 b) ≢ f (b ++2 a)`（**机器反证**）| A-3, A-4 | `proof_compile` + 具体点 | 存在性与不相等**都有证明体** ⇒ **可标 `refuted`** ✓ | ⬜ 未开工（**须走 C-4 非交换目标** ✗）|
+| **A-3** | `wsum-resp`（相容性）| A-2 ✅ | 同上 | 同上 | ✅ **形状已由 `_PEH9.agda:246-252` 的 `respStep-coarse` 证成** ✓（三案逐字一致）；⚠ ℤ 载体需先解决（见 A-4）|
+| **A-4** | `wsum-++2`（可加性）| A-2 ✅ | 同上 | 同上 | 🟡 **形状已由 `_PEH9.agda:199-205` 的 `F++2` 证成** ✓；⚠ **本轮阻断**：stdlib 2.4 **双 `ℤ` 载体**（`Properties` 用 `ℤ i` ✗ ≠ builtin `ℤ` ✓）⇒ 已入 `prover_limits: stdlib24-integer-two-carriers` ✓（**撤块不硬绕** ✓）|
+| **A-5** | 见证对：`∃ a b. wsum (a ++2 b) ≢ wsum (b ++2 a)` | A-3, A-4 | — | — | ❌ **不可达**（**结构性**：ℤ 交换 ⇒ 恒相等 ✗）|
+| **A-6** | **C-4 分离器**：`f4 c` = 标签字模「`expand` = `slide` 的逆」= 自由群元素 | A-2 | `proof_compile` 探针 | 同上 | ⬜ **未开工**（★ **唯一的分离路径** ✓，对应 `_PEH13.agda:50` 自述的「自由群胚正规形/判别子」✓）|
 | **A-6** | （**C-4 分离器**）`f4 c` = 标签字模「`expand` = `slide` 的逆」⇒ 自由群元素 | A-2 | 同上 | 同上 | ⬜ **未开工**（真正的分离路径 ✓）|
 
 **策略（L2）**：A-1/A-2 用**结构递归**（`Ω2Walk` 两个构造子 ✓）；A-3 用**穷举生成元**（`Ω3Walk⁺` 的生成集有限 ✓ ⇒ 3 case ✓，符合「≤27 case 全用」✓）；A-5 用**否定证明**（策略 C ✓）。
