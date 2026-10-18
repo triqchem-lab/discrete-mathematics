@@ -269,6 +269,26 @@ data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 �
 | **A5'-3** | ⇒ `¬ (Ω3Walk⁺ G x (a ++2 b) (b ++2 a))` ⇒ **`refuted`** ✓ | 同上 | ⬜ |
 | **A5'-4** | （八要素补全）⑦ 刚性：从 `GF9.galoisConjugate` 诱导 | 同上 | ⬜ |
 
+#### ★★ A-5' 闭合记录（2026-10-19，全部 proven ✓）
+
+| 原子 | 状态 | 回执 |
+|---|---|---|
+| A5'-1 标签层（`wlen`/`Label`/`label`/`invLabel`/`label-inv`/`_≟L_`/`cancel`，`_PEH19`）| ✅ | `f5a57d8c…`/`55b80bfd…` |
+| A5'-1 引理层（`invLabel-inv`/`cancel-pair`/`toRaw`/`toRaw-++2`）| ✅ | `5a5ed623…`/`ee8f68a7…` |
+| A5'-1e 图实例化（`LabelGraph` + `PN12.Fold`/`GroupC`，`_PEH21`）| ✅ | `7dae8c8d…` |
+| 三案（`bubble-eq`/`base3-eq`/`toW-++2`/`whisk3-eq`/`bubble-mid`/`bub-eq`）| ✅ | `6a1cbedb…` 等 6 件 |
+| **`to-resp`（总装配，含局部 `assocL`）** | ✅ | `c73ebb38…` |
+| 判别力（`hd`/`just-inj`/`word-swap-≠`/`nil≢cons`）| ✅ | `ad7755fc…` |
+| **A5'-2/3 见证对 `witness-neq : ¬ (Ω3Walk⁺ LoopG tt c1 c2)`** | ✅ | `a6b6ba46…` |
+| A5'-4 八要素对表（`A1c2.A5'-4.presentation`，对象级）| ✅ | 同上 |
+
+**连锁升级** ✓：`A1c2.add2-comm-generic-status` **blocked → refuted**（构造性见证落地 ✓）。
+
+**★ 路线教训（入册）** ✓：① **先查库再自造**（自造 `cancel` 链被 `_PN12.Fold`/`GroupC` 两个 `open module` 取代，`_PEH19`/`_PEH20` 自造件已退役 ✗ 勿重走）；② **库件带脏隐式参数时同内容局部重证更便宜**（`assocL` 3 行 vs `++w-assoc` 层级调试）；③ **同族硬约束**（判等层 stdlib `_≡_`+`Dec`，代数层 Cubical Int 族）。
+
+**诚实缺口** ⚠：八要素 ⑦ 的 **GF9 诱导正式桥**未建（`invLabel` 对合已证 ✓ 且同型于 σ ✓，但 Label→GF9 映射未建 ✗）—— 对分离非必需 ✓。
+
+
 **策略（L2）**：A-1/A-2 用**结构递归**（`Ω2Walk` 两个构造子 ✓）；A-3 用**穷举生成元**（`Ω3Walk⁺` 的生成集有限 ✓ ⇒ 3 case ✓，符合「≤27 case 全用」✓）；A-5 用**否定证明**（策略 C ✓）。
 
 **风险与备选**：若 A-3 在某个生成元上**撞墙**（不变性其实不成立 ⇒ 该 `f` 选错）⇒ 退回 A-0 换公式 ✓（**不是**改陈述 ✗）。若 3 个候选公式**全部**撞墙 ⇒ 按 A3 路径**立界** + 记 `prover_limits` ✓。
