@@ -301,7 +301,7 @@ data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 �
 |---|---|---|---|---|---|
 | **B-1** | `record SetoidMonoidIso (S T : SetoidMonoidData) : Set₁`（按 `_PN15.agda:135` 的 `SetoidGroupIso` 写，去掉 `inv`/`invˡ`/`invʳ` 三字段）| — | `proof_compile` 新模块 | `exit 0` + 回执 | ✅ **达成**（`probes/_PEH17.agda`，回执 `9e030ec33c70…`）|
 | **B-2** | `π₁ᵈ-card : ∀ (G) → …`（**基数 = 2**：由 `gcmp-classify` 的二分给出）| `PIO-1a.library-side` ✓ | 同上 | 同上 | ⬜ **未开工**（注：**实例级**枚举已在 `_PN2` ✓（`to2`/`of2`/`quot-cover` proven ✓）；**泛型 `∀ G` 件未提** ✗ —— 坐标：照 `_PN2.agda:127-151` 五件套泛型化）|
-| **B-3** | 条件式陈述：`(h : π₁(|N₁Gcmp|) 平凡) → ¬ (SetoidMonoidIso π₁ᵈ-类 (trivial-monoid))` | B-1, B-2 | 同上 | 同上 ⇒ `proven` ✓ | ⬜ **未开工**（注：¬iso 的**无条件**结论已在 `_PN2`（`no-iso-π₁ᵈ-unit` proven ✓）；缺口 = **B-1 的 `SetoidMonoidIso`（`_PEH17`）与 `_PN2` 同构概念的桥接** ✗ —— 坐标：`_PEH17` 的 8 字段 record 对齐 `_PN2` 的同构件）|
+| **B-3** | 条件式陈述：`(h : π₁(|N₁Gcmp|) 平凡) → ¬ (SetoidMonoidIso π₁ᵈ-类 (trivial-monoid))` | B-1, B-2 | 同上 | 同上 ⇒ `proven` ✓ | 🟡 **核心已证**（`PIO-1.B-3.no-iso-bridge`，`_PEH22` 回执 `62595bb1…`：抽象否定件 ✓——`≈` 恒等 + 两点不同 ⇒ ¬ Iso ✓）；**剩机械装配**：① 类 setoid 实例（`≈ = _≡_`，律引 `additive-laws` ✓）② 两个不同类（`_PN2` 的 `of2` 对经 `to2-of2-c0/c1` ✓）|
 | **B-4** | （备选）B1 路径：库内自足化 `π₁(|N₁G|)` 的组合替身 | — | — | — | ⬜ **不建议**（代价高、风险高，见 §2.3）|
 
 **策略（L2）**：B-1 是**定义层**（`record` ⇒ 对象级验收 ✓，见 doctrine）；B-2 用**分类器 + 计数**（`gcmp-classify` 的 `inj₁`/`inj₂` 二分 ✓）；B-3 用**基数矛盾**（`2 ≠ 1` ✓）。
@@ -315,7 +315,7 @@ data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 �
 ✅ 已完成（2026-10-19 全部）：件 A 全链（A-0..A-4 + A-5' 九层 + 见证对 + 八要素对表）｜B-1
 ⬜ 剩余（严格口径）：
 ① B-2：π₁ᵈ-card 泛型件（实例已在 _PN2 ✓，泛型 ∀ G 未提 ✗）
-② B-3：SetoidMonoidIso（_PEH17）↔ _PN2 no-iso 的桥接
+② B-3：桥接核心已证（`_PEH22` ✓）；剩类 setoid 实例 + 两不同类（机械装配）
 ③ ⑦ GF9 诱导正式桥（Label → GF9 映射 + 保持性；对分离非必需 ✓）
 ④ 探针收编：_PEH21 升入 src/Sovereign/Synthesis/Homotopy/（_PEH19/20 自造件退役 ✗ 勿重走）
 ```
