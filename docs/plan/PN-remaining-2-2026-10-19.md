@@ -267,7 +267,7 @@ data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 �
 | **A5'-1** | 枚举件 = **`LabelGraph` + `PN12.Fold`/`GroupC` 实例化**（`to = reduceG ∘ toW` + `to-idem`，`_PEH21`）| `proof_compile` | ✅（回执 `7dae8c8d…`；范式计算 `to-c1`/`to-c2` 见 A5'-2 ✓）|
 | **A5'-2** | 见证对：`LoopG` 上两个**同型** `ASTep`（前缀长 0 vs 1 ⇒ label `(t,0,1) ≢ (t,1,0)`）| 同上 | ✅（`labs-neq` + `word-swap-≠`，回执 `ad7755fc…`）|
 | **A5'-3** | `witness-neq : ¬ (Ω3Walk⁺ LoopG tt c1 c2)`（`to-resp` 提升到商层）| 同上 | ✅（回执 `a6b6ba46…`；**`add2-comm-generic-status` 已升 refuted** ✓）|
-| **A5'-4** | 八要素对表（`A1c2.A5'-4.presentation`，对象级 ✓）| 同上 | 🟡 **部分达成**（①②③④⑤⑥⑧ ✅；⑦ `invLabel` 对合已证 ✓ 但 **GF9 诱导正式桥未建** ⚠ 诚实缺口，对分离非必需 ✓）|
+| **A5'-4** | 八要素对表（`A1c2.A5'-4.presentation`，对象级 ✓）+ **⑦ GF9 诱导桥**（`_PEH24`：相位嵌入 `φ` + 交换方块 `φ-comm` ✓）| 同上 | ✅ **达成**（八要素全表 ✅；⑦ 交换方块已证 ✓——`φ` 相位嵌入非单射 ✗ 但刚性本不动幅度 ✓，诚实标注在 `_PEH24` 头 ✓）|
 
 #### ★★ A-5' 闭合记录（2026-10-19，全部 proven ✓）
 
@@ -286,7 +286,7 @@ data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 �
 
 **★ 路线教训（入册）** ✓：① **先查库再自造**（自造 `cancel` 链被 `_PN12.Fold`/`GroupC` 两个 `open module` 取代，`_PEH19`/`_PEH20` 自造件已退役 ✗ 勿重走）；② **库件带脏隐式参数时同内容局部重证更便宜**（`assocL` 3 行 vs `++w-assoc` 层级调试）；③ **同族硬约束**（判等层 stdlib `_≡_`+`Dec`，代数层 Cubical Int 族）。
 
-**诚实缺口** ⚠：八要素 ⑦ 的 **GF9 诱导正式桥**未建（`invLabel` 对合已证 ✓ 且同型于 σ ✓，但 Label→GF9 映射未建 ✗）—— 对分离非必需 ✓。
+**⑦ GF9 桥** ✅：已闭合（`_PEH24` `φ-comm` 交换方块 ✓，回执 `74b52c30…`；`φ` 相位嵌入非单射 ✗ 但刚性本不动幅度 ✓——诚实标注在 `_PEH24` 头 ✓）。
 
 
 **策略（L2）**：A-1/A-2 用**结构递归**（`Ω2Walk` 两个构造子 ✓）；A-3 用**穷举生成元**（`Ω3Walk⁺` 的生成集有限 ✓ ⇒ 3 case ✓，符合「≤27 case 全用」✓）；A-5 用**否定证明**（策略 C ✓）。
@@ -316,7 +316,7 @@ data Ω3Walk⁺ (G) (x) : {w1 w2} → Ω2Walk G x w1 w2 → Ω2Walk G x w1 w2 �
 ⬜ 剩余（严格口径）：
 ① B-2：π₁ᵈ-card 泛型件（实例已在 _PN2 ✓，泛型 ∀ G 未提 ✗）
 ② B-3：桥接核心（`_PEH22` ✓）+ 两不同类（`_PEH23` ✓）已备；剩类 setoid 实例（需真类级 `⋆` = 商双递归 ✗）
-③ ⑦ GF9 诱导正式桥（Label → GF9 映射 + 保持性；对分离非必需 ✓）
+③ ~~⑦ GF9 诱导正式桥~~ ✅ 已闭合（`_PEH24` `φ-comm` ✓）—— 剩仅 B-2 / B-3③（真类级 ⋆）
 ④ 探针收编：_PEH21 升入 src/Sovereign/Synthesis/Homotopy/（_PEH19/20 自造件退役 ✗ 勿重走）
 ```
 
