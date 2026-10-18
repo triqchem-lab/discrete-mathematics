@@ -64,7 +64,18 @@ python3 -m pytest engineering/tests/   # 29 passed
 
 ## 核心代数链 Core Algebra Chain
 
-全部 0 postulate, 各核心模块独立 `agda` 编译 exit 0 (All.agda 已取消, 模块独立)。
+**本条链**全部 0 postulate, 各核心模块独立 `agda` 编译 exit 0 (All.agda 已取消, 模块独立)。
+
+> **范围声明（口径边界，2026-10-19）**：上面这句「0 postulate」**只覆盖本条核心代数链**，
+> **不是全库断言**。全库实测（块式 + 单行式两种写法**全量扫描，无抽样**）：
+> **27 个模块**含 `postulate` 声明 —— 其中 **5** 个带 `{-# REWRITE #-}` 语法依据
+> （`T6` / `T6Rewrite` / `XuanwuAbsorption` / `XuanwuAbsorptionRewrite` / `TwoViewRewritten`），
+> **14** 个带项目自认的**桥接公理登记注释**，**8** 个**无任何标记**；
+> 另有 **41 处单行式** `postulate foo : Type`（判定器 2026-09-14 前漏扫，现已覆盖）。
+> 该口径**逐模块可核验**：`docs/techniques/postulate-audit.md` + oracle 回执 `1dadfc18…`。
+> 台账口径：`proven` 要求的是「**0 未声明**」而非「0 postulate」——
+> 有 `postulate` 的模块仍可 proven，但每个 postulate 必须**逐个声明** kind
+> （`rewrite` / `unreachable` / `bridge` / `gap`），其中 `gap` **不能** proven。
 
 ```
 GF(3) 公理 ──→ GF(9) 域 ──→ DuodecClock ──→ A₄ 群 ──→ DiscreteFibonacci
