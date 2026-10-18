@@ -42,10 +42,11 @@ open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; subst; cong; cong₂; trans)
 open import Data.Nat.Properties using (*-suc; ≤-refl; <-≤-trans; m≤m+n)
-open import Data.Nat.Properties using (*-assoc; *-comm; *-distribʳ-+; *-distribˡ-+; ≤-trans)
+open import Data.Nat.Properties using (*-assoc; *-comm; *-distribʳ-+; *-distribˡ-+; *-zeroʳ; ≤-trans)
 open import Data.Nat.DivMod using (_%_; _/_; m≡m%n+[m/n]*n; [m+kn]%n≡m%n; m%n<n)
 open import Data.Nat.Divisibility using (m%n≡0⇒n∣m; n∣m⇒m%n≡0; _∣?_)
 open import Data.Nat.Divisibility using (∣-trans; 1∣_; *-cancelˡ-∣)
+open import Data.Nat.Divisibility using (quotient; m∣n⇒n≡quotient*m)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (yes; no)
 
@@ -228,30 +229,6 @@ euclid3 A B h with 3 ∣? A | 3 ∣? B
     ... | inj₂ (inj₂ A2) | inj₂ (inj₂ B2) = ¬3∣4 (subst (λ z → 3 ∣ z) (cong₂ _*_ A2 B2) h2)
 
 --------------------------------------------------------------------------------
--- §7. 【WIP —— 已注释隔离，2026-10-19】提取引理：3^k ∣ A*B → ¬(3∣B) → 3^k ∣ A
---
--- ⚠ 状态：**本段未通过编译**，故整体注释隔离（文本原样保留，不删）。
---   障碍（精确到行）：`3C≡e3sj` 这条链
---     3 * (e * 3^j)  ≡⟨ *-assoc 3 e (3^j) ⟩  (3 * e) * 3^j
---                    ≡⟨ cong (_* (3^j)) (*-comm 3 e) ⟩  (e * 3) * 3^j
---                    ≡⟨ sym (*-assoc e 3 (3^j)) ⟩  e * (3 * 3^j)
---   报错：`(e + 2 * e) * 3 ^ j` 与 `e * 3 ^ j + 2 * (e * 3 ^ j)` 不相等。
---   根因：`_*_` 是内建原语（NATMUL），`3 * X` 会**归约**成 `X + 2 * X`，
---         而 `e * X` 不归约 ⇒ 链中每一步的"书写形式"与"归约形式"错位。
---   下一步建议：把 `extract-step` 改成用 `quotient`（`m∣n⇒n≡quotient*m`）
---         直接构造 `divides`，并把等式写成**归约后**的形状（两边都用 `_+_`/`_*_`
---         的显式展开），或改用 `m*n∣⇒m∣` / `m∣m*n` 一类 stdlib 整除引理绕开手工代数。
---
--- 证明思路（归纳于 k，思路本身无误，只是末尾代数卡在归约形式上）：
---   k = 0：3^0 = 1，而 1 ∣ A 恒成立（`1∣_`）
---   k = suc j：
---     · `3 ∣ 3^suc j` ⇒ 由 `∣-trans` 得 `3 ∣ A*B`
---     · `euclid3` ⇒ `3 ∣ A ⊎ 3 ∣ B`；第二支与 ¬(3∣B) 矛盾 ⇒ `3 ∣ A`，设 A ≡ C*3
---     · `A*B ≡ (C*3)*B ≡ (C*B)*3`，又 `3^suc j = 3 * 3^j`
---       ⇒ `3 * 3^j ∣ 3 * (C*B)` ⇒（`*-cancelˡ-∣ 3`）`3^j ∣ C*B`
---     · 归纳假设（同一 ¬(3∣B)）⇒ `3^j ∣ C`，设 C ≡ e*3^j
---     · 于是 `3*C ≡ e * 3^suc j` ⇒ `3^suc j ∣ 3*C`；而 `A ≡ C*3 ≡ 3*C` ⇒ `3^suc j ∣ A`  ∎
---------------------------------------------------------------------------------
 -- §7. 提取引理（唯一性主定理的第③步）：3^k ∣ A*B → ¬(3∣B) → 3^k ∣ A
 --
 -- 归纳于 k：
@@ -261,44 +238,68 @@ euclid3 A B h with 3 ∣? A | 3 ∣? B
 --     · `euclid3` ⇒ `3 ∣ A ⊎ 3 ∣ B`；第二支与 ¬(3∣B) 矛盾 ⇒ `3 ∣ A`，设 A ≡ C*3
 --     · `A*B ≡ (C*3)*B ≡ (C*B)*3`，又 `3^suc j = 3 * 3^j`
 --       ⇒ `3 * 3^j ∣ 3 * (C*B)` ⇒（`*-cancelˡ-∣ 3`）`3^j ∣ C*B`
---     · 归纳假设（同一 ¬(3∣B)）⇒ `3^j ∣ C`，设 C ≡ e*3^j
---     · 于是 `3*C ≡ (3*e)*3^j ≡ (e*3)*3^j ≡ e * 3^suc j` ⇒ `3^suc j ∣ 3*C`
---     · 而 `A ≡ C*3 ≡ 3*C`（`*-comm`）⇒ `3^suc j ∣ A`  ∎
+--     · 归纳假设（同一 ¬(3∣B)）⇒ `3^j ∣ C`
+--     · `extract-step` ⇒ `3 * 3^j ∣ 3*C`；而 `A ≡ C*3 ≡ 3*C` ⇒ `3^suc j ∣ A`  ∎
+--
+-- ⚠ 关键教训（本段曾卡 10 次编译）：`_*_` 是**内建原语**（BUILTIN NATMUL），
+--   `3 * X` 会归约为 `X + 2 * X`，而 `e * X`（e 为变量）**卡住**。
+--   故写 trans 链时**两边必须统一写成归约后的形状**，否则报错只说
+--   「(e + 2*e) * 3^j 与 e*3^j + 2*(e*3^j) 不相等」而不提示是哪一步。
+--   本段因此改用 `quotient`（`m∣n⇒n≡quotient*m`）直接构造 `divides`。
 --------------------------------------------------------------------------------
 
 -- 3 ∣ 3^suc j
--- 3∣3^suc-j : ∀ j → 3 ∣ 3 ^ suc j
--- 3∣3^suc-j j = divides (3 ^ j) (*-comm 3 (3 ^ j))
-
--- 3 * C ≡ e * 3^suc j   （当 C ≡ e * 3^j）
--- 3C≡e3sj : ∀ e j → 3 * (e * 3 ^ j) ≡ e * 3 ^ suc j
--- 3C≡e3sj e j =
---   trans (*-assoc 3 e (3 ^ j))
---     (trans (cong (_* (3 ^ j)) (*-comm 3 e)) (sym (*-assoc e 3 (3 ^ j))))
-
--- 归纳步的辅助（顶层；**把归纳假设的结果当参数传入**，避免前向引用 `extract`）
--- 前提：3^j ∣ C；结论：3^suc j ∣ 3*C
--- extract-step : ∀ j C → 3 ^ j ∣ C → 3 ^ suc j ∣ 3 * C
--- extract-step j C (divides e C≡e*3^j) =
---   divides e (trans (cong (3 *_) C≡e*3^j) (3C≡e3sj e j))
+3∣3^suc-j : ∀ j → 3 ∣ 3 ^ suc j
+3∣3^suc-j j = divides (3 ^ j) (*-comm 3 (3 ^ j))
 
 -- A*B ≡ (C*B)*3   （当 A ≡ C*3）
--- AB≡C3 : ∀ A B C → A ≡ C * 3 → A * B ≡ C * B * 3
--- AB≡C3 A B C A≡C*3 =
---   trans (cong (_* B) A≡C*3)
---     (trans (*-assoc C 3 B) (cong (_* 3) (*-comm 3 B)))
+AB≡C3 : ∀ A B C → A ≡ C * 3 → A * B ≡ C * B * 3
+AB≡C3 A B C A≡C*3 =
+  trans (cong (_* B) A≡C*3)
+    (trans (*-assoc C 3 B)
+      (trans (cong (C *_) (*-comm 3 B)) (sym (*-assoc C B 3))))
 
 -- 把 A*B 上的整除搬到 (C*B)*3 上，再剥掉一个 3 ⇒ 3^j ∣ C*B
--- extract-cancel : ∀ j A B C → A ≡ C * 3 → 3 ^ suc j ∣ A * B → 3 ^ j ∣ C * B
--- extract-cancel j A B C A≡C*3 h =
---   *-cancelˡ-∣ 3 (subst (λ z → 3 * 3 ^ j ∣ z) (*-comm (C * B) 3)
---                        (subst (λ z → 3 ^ suc j ∣ z) (sym (AB≡C3 A B C A≡C*3)) h))
+extract-cancel : ∀ j A B C → A ≡ C * 3 → 3 ^ suc j ∣ A * B → 3 ^ j ∣ C * B
+extract-cancel j A B C A≡C*3 h =
+  *-cancelˡ-∣ 3 (subst (λ z → 3 * 3 ^ j ∣ z) (*-comm (C * B) 3)
+                       (subst (λ z → 3 ^ suc j ∣ z) (AB≡C3 A B C A≡C*3) h))
 
--- extract : ∀ k A B → 3 ^ k ∣ A * B → ¬ (3 ∣ B) → 3 ^ k ∣ A
--- extract zero A B h ¬B = 1∣ A
--- extract (suc j) A B h ¬B with euclid3 A B (∣-trans (3∣3^suc-j j) h)
--- ... | inj₂ 3∣B = ⊥-elim (¬B 3∣B)
--- ... | inj₁ (divides C A≡C*3) =
---       subst (λ z → 3 ^ suc j ∣ z) (sym A≡C*3)
---             (extract-step j C (extract j C B (extract-cancel j A B C A≡C*3 h) ¬B))
+-- ★ 3^j ∣ C ⇒ 3 * 3^j ∣ 3 * C
+--   见证取 h 的商 q（`quotient h`），等式两边**都写成归约后形状**：
+--     3 * C ≡ 3 * (q * 3^j) ≡ (q*3^j) + 2*(q*3^j)      ← 3 * X 的归约形
+--           ≡ (q*3^j) + q*(2*3^j)                        ← 2*(q*3^j) ≡ q*(2*3^j)
+--           ≡ q * (3^j + 2*3^j) ≡ q * (3 * 3^j)          ← 分配律
+extract-step : ∀ j C → 3 ^ j ∣ C → 3 * 3 ^ j ∣ 3 * C
+extract-step j C h = divides q eq
+  where
+    q : ℕ
+    q = quotient h
 
+    C≡ : C ≡ q * 3 ^ j
+    C≡ = m∣n⇒n≡quotient*m h
+
+    -- 2 * X 归约为 X + 1*X；1 * Y 归约为 Y + 0。故两边**都写成归约后形状**：
+    --   LHS = (q*3^j) + 1*(q*3^j) = (q*3^j) + ((q*3^j) + 0)
+    --   RHS = q*(3^j + 1*3^j)    = q*(3^j + (3^j + 0))
+    -- 走分配律（而不是 *-assoc，它的 RHS 形状与 LHS 的归约形不匹配）
+    ac : 2 * (q * 3 ^ j) ≡ q * (2 * 3 ^ j)
+    ac = sym (trans (*-distribˡ-+ q (3 ^ j) (3 ^ j + 0))
+              (cong ((q * 3 ^ j) +_)
+                    (trans (*-distribˡ-+ q (3 ^ j) 0)
+                           (cong ((q * 3 ^ j) +_) (*-zeroʳ q)))))
+
+    eq : 3 * C ≡ q * (3 * 3 ^ j)
+    eq = trans (cong (3 *_) C≡)
+         (trans (cong ((q * 3 ^ j) +_) ac)
+                (sym (*-distribˡ-+ q (3 ^ j) (2 * 3 ^ j))))
+
+extract : ∀ k A B → 3 ^ k ∣ A * B → ¬ (3 ∣ B) → 3 ^ k ∣ A
+extract zero A B h ¬B = 1∣ A
+extract (suc j) A B h ¬B with euclid3 A B (∣-trans (3∣3^suc-j j) h)
+... | inj₂ 3∣B = ⊥-elim (¬B 3∣B)
+... | inj₁ (divides C A≡C*3) =
+      subst (λ z → 3 ^ suc j ∣ z) (sym A≡C*3)
+            (subst (λ z → 3 ^ suc j ∣ z) (sym (*-comm C 3))
+                   (extract-step j C
+                     (extract j C B (extract-cancel j A B C A≡C*3 h) ¬B)))
