@@ -5,9 +5,10 @@
 --  任务书第三层·3.2 延伸：Hensel 提升存在性实例（x² ≡ 1，mod 3 → mod 9）
 --
 --  数学背景：Hensel 引理——f(a) ≡ 0 (mod p) 且 f'(a) ≢ 0 (mod p) 时，
---    根 a 唯一提升为 mod pᵏ 的根。本模块在 f(x) = x²、a = 1 与 a = 2
---    的具体实例上闭合**存在性**（提升见证），唯一性留 roadmap（需
---    非整除否证，见诚实边界）。
+--    根 a 唯一提升为 mod pᵏ 的根。
+--    **2026-10-19 升级**：本模块原只有 f(x) = x²、a ∈ {1,2} 的 **mod 3 → mod 9 实例**；
+--    现已补上**一般 k 的存在性定理**（见 §4）——对任意 k，`3^k ∸ 1` 是 x² ≡ 1 (mod 3^k)
+--    的根（平凡根 1 亦对任意 k 成立）。一般**唯一性**仍留 roadmap。
 --
 --    mod 3 的根：x ≡ 1, 2（1²-1 = 0, 2²-1 = 3，均被 3 整除）
 --    mod 9 的提升：x = 1（1-1 = 0）与 x = 8（64-1 = 63 = 7·9）
@@ -34,6 +35,10 @@ module Sovereign.Algebra.Jacobian.HenselLiftMinimal where
 open import Data.Nat using (ℕ; _*_; _∸_)
 open import Data.Nat.Divisibility using (_∣_; divides)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Nat using (_+_; _^_; _≤_; suc; zero; s≤s; z≤n)
+open import Data.Nat.Properties
+  using ( *-suc; *-comm; m≤m*n; *-monoʳ-≤; ≤-refl; ≤-reflexive; ≤-trans )
+open import Relation.Binary.PropositionalEquality using (sym; trans; cong)
 
 --------------------------------------------------------------------------------
 -- §1. 根的 mod 3 层：x = 1 与 x = 2 都是 x² ≡ 1 (mod 3) 的根
@@ -76,3 +81,70 @@ root-8-mod-3 = divides 21 refl
 
 quotient-of-63-by-9 : 63 ≡ 7 * 9
 quotient-of-63-by-9 = refl
+
+--------------------------------------------------------------------------------
+-- §4. 一般 k 的 Hensel 提升**存在性**（x² ≡ 1，mod 3^k）—— 2026-10-19 补
+--
+-- 陈述：对**任意** k，`3^k ∸ 1` 是 x² ≡ 1 (mod 3^k) 的根（平凡根 1 亦对任意 k 成立）。
+--   为什么这是「一般存在性」：x² ≡ 1 在 mod 3 有两个根 1 与 2（= -1）；
+--   提升 1 的是 **1**（平凡）；提升 2 的是 **3^k ∸ 1**（因 3^k ∸ 1 ≡ -1 ≡ 2 mod 3）。
+--
+-- 核心恒等式：(m ∸ 1)² ∸ 1 = (m ∸ 2) · m   （m ≥ 2）
+--
+-- 证明路线的两条要点（踩过的坑，留给后来者）：
+--   1. **stdlib 的 `_+_`/`_*_` 按第一个参数递归** ⇒ `p + 1`、`p * X` 对变量 p **卡住不归约**。
+--      故一律写 `suc p` / `suc (suc p)`——这样 `∸` 与 `*` 才会归约。
+--   2. `*-suc` 让 `∸ 1` 直接归约：`suc p * suc p ≡ suc p + suc p * p`，
+--      而 `suc p + X` 定义上归约为 `suc (p + X)`，故 `(suc p + X) ∸ 1` **定义上**即 `p + X`
+--      ⇒ `∸ 1` 这一步是 `refl`，不需要任何 ∸ 引理。
+--
+-- 对抗验证（具体点独立核算，Python 精确整数）：k = 0..9 逐一核对
+--   `X = (3^k - 1)² - 1 = (3^k - 2)·3^k` 且 `3^k ∣ X`——全部通过。
+--------------------------------------------------------------------------------
+
+-- m ∸ 1 ≡ suc (m ∸ 2)      （m ≥ 2，模式匹配）
+sub1-eq : ∀ m → 2 ≤ m → m ∸ 1 ≡ suc (m ∸ 2)
+sub1-eq (suc (suc q)) (s≤s (s≤s _)) = refl
+
+-- suc (suc (m ∸ 2)) ≡ m    （m ≥ 2，模式匹配）
+suc2∸2 : ∀ m → 2 ≤ m → suc (suc (m ∸ 2)) ≡ m
+suc2∸2 (suc (suc q)) (s≤s (s≤s _)) = refl
+
+-- 核心恒等式：(suc p)² ∸ 1 ≡ suc (suc p) · p
+sq-minus-one : ∀ p → (suc p * suc p) ∸ 1 ≡ suc (suc p) * p
+sq-minus-one p = cong (_∸ 1) (*-suc (suc p) p)
+
+-- 1 ≤ 3^j
+1≤3^j : ∀ j → 1 ≤ 3 ^ j
+1≤3^j zero    = s≤s z≤n
+1≤3^j (suc j) =
+  ≤-trans (1≤3^j j)
+    (≤-trans (m≤m*n (3 ^ j) 3)                  -- 3^j ≤ 3^j * 3
+             (≤-reflexive (*-comm (3 ^ j) 3)))  -- ≡ 3 * 3^j
+
+-- 2 ≤ 3^suc k
+pow3-≥2 : ∀ k → 2 ≤ 3 ^ suc k
+pow3-≥2 k =
+  ≤-trans (s≤s (s≤s z≤n))                       -- 2 ≤ 3
+    (≤-trans ≤-refl                             -- 3 ≤ 3 * 1（3 * 1 归约为 3）
+             (*-monoʳ-≤ 3 (1≤3^j k)))           -- 3 * 1 ≤ 3 * 3^k
+
+-- ★ 一般 Hensel 提升存在性（非平凡根）：3^k ∸ 1 是 x² ≡ 1 (mod 3^k) 的根，商为 3^k ∸ 2
+hensel-root-minus-one : ∀ k → 3 ^ k ∣ ((3 ^ k ∸ 1) * (3 ^ k ∸ 1)) ∸ 1
+hensel-root-minus-one zero    = divides 0 refl
+hensel-root-minus-one (suc j) = divides (m ∸ 2) (trans eq (*-comm m (m ∸ 2)))
+  where
+    m : ℕ
+    m = 3 ^ suc j
+
+    h2 : 2 ≤ m
+    h2 = pow3-≥2 j
+
+    eq : ((m ∸ 1) * (m ∸ 1)) ∸ 1 ≡ m * (m ∸ 2)
+    eq = trans (cong (λ z → (z * z) ∸ 1) (sub1-eq m h2))
+               (trans (sq-minus-one (m ∸ 2))
+                      (cong (λ z → z * (m ∸ 2)) (suc2∸2 m h2)))
+
+-- ★ 一般 Hensel 提升存在性（平凡根）：1 是 x² ≡ 1 (mod 3^k) 的根，对任意 k
+hensel-root-one : ∀ k → 3 ^ k ∣ ((1 * 1) ∸ 1)
+hensel-root-one k = divides 0 refl
