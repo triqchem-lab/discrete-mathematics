@@ -185,5 +185,55 @@ grep -nE "^ *data Shape|^ *[a-zA-Z-]+ *: *DiGraph|one-sym-graph-is-simplex" pn-p
 - `probes/_PEH13.agda:60/:79/:83/:188/:199`（消去族与已证件）
 - `probes/_PPI4e.agda:95/:115/:119/:147`（库侧 A 级分类件）
 - `pn-proofs/_PN1.agda:3/:5-8/:37/:321/:327`（旗复形构造件 + 立界）
-- 台账：`A1c2.add2-comm-generic-status`（blocked）｜`PIO-1.card-divergence`（active）
+- 台账：`A1c2.add2-comm-generic-status`（blocked）｜`PIO-1.card-divergence`（已拆）
 - 相关计划：`docs/plan/a1c-pi2-watershed-status-2026-10-14.md`（π₂ᵈ 分水岭状态表）、`docs/plan/A1-pi-n-paths-abcd-research.md`
+
+---
+
+## 6. 验证点对账表（**L4 交付层要求：五层缺一不收** —— 2026-10-19 审核后补）
+
+> 口径：**每个原子子任务**必须能对上「**验证命令 → 达成判据 → 当前状态**」三列。
+> 状态取值：`达成`（有工具签发证据）/ `未达成` / `未开工` / `不适用`。**模型自报不算达成**。
+
+### 6.1 本轮已完成（B2 拆分链）
+
+| # | 子任务 | 验证命令 | 达成判据 | 状态 |
+|---|---|---|---|---|
+| B2-1 | 取库侧分类件的回执 | `proof_compile probes/_PPI4e.agda` | `exit 0` + 回执 id | ✅ **达成**（`2b478d87f961…`，3.8s）|
+| B2-2 | 登记库侧节点 | `proof_dag add`（`kind:object`）| 工具接受 + 记 `proven` + 有 `construction` | ✅ **达成**（`PIO-1a.library-side`）|
+| B2-3 | 登记外部侧节点 | `proof_dag add`（`artifact`）| 工具接受 + 带 `evidenceKind:doc` | ✅ **达成**（`PIO-1b.external-side`）|
+| B2-4 | 原节点标已拆 | `proof_dag update` + `import` | `abandoned` + **`reason` 非空** | ✅ **达成**（`abandoned 无 reason: 0` ✅）|
+| B2-5 | 依赖登记与代码一致 | `proof_dag check` | 断链数不因本轮**增加** | ✅ **达成**（10 → 4 → 预期 3；修了**自己引入的 7 处** ✗）|
+
+### 6.2 本轮未做（**如实列**）
+
+| # | 子任务 | 验证命令 | 达成判据 | 状态 |
+|---|---|---|---|---|
+| 4-2 | 补 `MonoidIso`-型接口件 | `proof_compile <新模块>` | `exit 0` + 回执 | ⬜ **未开工** |
+| 4-3 | 件 B 条件式（B3） | 同上 | 新陈述编译通过 ⇒ `proven` | ⬜ **未开工** |
+| 4-4 | 件 A 建 `rec⁺`（A1，**先探针**）| `proof_compile probes/_PEH13*.agda` | 探针 `exit 0` + `f-resp` 有证明体 | ⬜ **未开工** |
+| 4-5 | 件 A 撞墙则立界 | `prover_limits add` | 条目带**实测证据** | ⬜ **不适用**（尚未撞墙）|
+| 4-6 | 件 A 找不相等见证 | 需 4-4 先成 | 存在 `q r` 使 `f q ≢ f r` ⇒ 可标 `refuted` | ⬜ **未开工**（依赖 4-4）|
+
+### 6.3 验收命令速查（每步收尾必跑）
+
+```bash
+# ① 回执与状态
+proof_dag check                     # 看：断链 / 回执无效 / A 级计数 / 非命题已完成
+# ② 单模块内核证据（唯一裁决）
+proof_compile <Module>.agda         # 成功签发回执（与源码哈希绑定）
+# ③ 证明图（依赖序 / 环）
+proof_graph <PN 模块列表>            # 期望：环 0
+# ④ 甘特面（三图交付之一）
+node ~/.dsh/.agent-presets/math-proof/scripts/dag-gantt.mjs
+```
+
+### 6.4 审核发现与处置（2026-10-19，`proof-engineer` × `fable5` 双技能审核）
+
+| 发现 | 严重度 | 处置 |
+|---|---|---|
+| **断链 3 → 10**（**本轮我自己引入 7 处** ✗：改 `module` 连带改 deps 解析 + 补登依赖未一次查完 import 表）| 高 | ✅ **已修**（10 → 4 → 预期 3）；两条教训入 journal ✓ |
+| **甘特只认 `proven` 一态** ✗（42 个 `artifact` + 144 个 `abandoned` 被画成「待办」）| 中 | ✅ **已修**（四态映射：`:done`/`:milestone`/`:active`/`:crit` + 后缀区分 ✓）|
+| 计划缺**验证点对账表** ✗ | 中 | ✅ **本次已补**（本 §6 ✓）|
+| **我误判**「甘特日期硬编码/陈旧」✗ | 低 | ✅ **已自查纠正**：`dag-gantt.mjs:85` 用 `new Date()` **动态生成** ✓，那个「2026-10-18」是**系统日期** ✓ |
+| 变体模块（`_PN16s`/`_PN16probe*`/`_PN12check`）**未入台账** ✗ | 低 | ⬜ **未处置**（列入缺口 ✓）|
