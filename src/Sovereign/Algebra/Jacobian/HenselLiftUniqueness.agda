@@ -12,8 +12,22 @@
 --   来源 = 整除引理的**定义性展开**（27 ≤ x ≡ 26 < x，18 ≤ x ≡ 17 < x，
 --   m < n ≡ suc m ≤ n）。
 --
--- ⚠ 诚实边界：枚举见证针对三个具体候选；一般 Hensel 唯一性
---   （∀x 量化 + f'(a) 条件的形式化）roadmap。
+-- ⚠ 诚实边界：枚举见证针对三个具体候选。
+--
+--   **2026-10-19 进展：一般唯一性的基础件已证（§5）**，目标陈述与证明计划如下——
+--   目标：  ∀ k x → 3^k ∣ (x * x ∸ 1) → 3 ∣ (x ∸ 1) → 3^k ∣ (x ∸ 1)
+--   证明结构：
+--     ① 因式分解 x² - 1 = (x∸1)(x+1)                     ✅ §5.1（已证 diff-sq）
+--     ② 3 | x∸1 ⇒ 3 ∤ x+1（因 x+1 ≡ 2 mod 3）              ← 待做
+--     ③ 提取引理 ∀ k A B → 3^k ∣ A*B → ¬(3∣B) → 3^k ∣ A   ← 待做
+--        其中 k=1 那步 = **Euclid-for-3**：3 | A*B → 3 | A ⊎ 3 | B
+--        可经 stdlib 走通（已核实存在）：
+--          · `m%n≡0⇔n∣m`（3 | m ⟺ m % 3 ≡ 0）、`m%n≡0⇒n∣m`
+--          · `[m+kn]%n≡m%n`（剥掉 3 的倍数）
+--          · `m≡m%n+[m/n]*n`（A = A%3 + (A/3)*3）
+--        ⇒ 先证 (A*B) % 3 ≡ (A%3 * B%3) % 3，再对 A%3、B%3 ∈ {0,1,2} 分 9 例
+--          （其中三例用 §5.2 的 ¬3∣1 / ¬3∣2 / ¬3∣4 导出矛盾）
+--     ④ 归纳步：3^(k+1) | A*B ⟹ 3 | A ⟹ A = 3C ⟹ 3^k | C*B ⟹（IH）3^k | C
 --
 -- 0 postulate / 0 hole。
 module Sovereign.Algebra.Jacobian.HenselLiftUniqueness where
@@ -26,7 +40,8 @@ open import Data.Nat.Properties
          n<1+n)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; sym; subst)
+  using (_≡_; refl; sym; subst; cong)
+open import Data.Nat.Properties using (*-suc; ≤-refl; <-≤-trans; m≤m+n)
 
 --------------------------------------------------------------------------------
 -- §1. 泛型助手
@@ -96,3 +111,45 @@ import Sovereign.Algebra.Jacobian.HenselLiftMinimal as HLM
 
 lift-witness-8 : 9 ∣ ((8 * 8) ∸ 1)
 lift-witness-8 = HLM.lift-8-mod-9
+
+--------------------------------------------------------------------------------
+-- §5. 一般唯一性的基础件（2026-10-19 补）
+--
+-- 目标（待完整闭合）：∀ k x → 3^k ∣ (x * x ∸ 1) → 3 ∣ (x ∸ 1) → 3^k ∣ (x ∸ 1)
+-- 完整计划见模块头注释。本节先落**确定需要且已证**的两组引理。
+--------------------------------------------------------------------------------
+
+-- §5.1 因式分解：x² - 1 = (x ∸ 1)(x + 1)（x = suc q 形式）
+--   `cong (q +_) (*-suc q q)` 之后两边**定义上**归约到同一项：
+--     LHS: suc q * suc q = suc q + q * suc q → suc (q + q * suc q) → ∸1 → q + q * suc q
+--     RHS: suc (suc q) * q = q + suc q * q = q + (q + q * q)
+--   而 `*-suc q q : q * suc q ≡ q + q * q` 正好接上。
+diff-sq : ∀ q → (suc q * suc q) ∸ 1 ≡ suc (suc q) * q
+diff-sq q = cong (q +_) (*-suc q q)
+
+-- §5.2 3 的非整除否证（Euclid-for-3 的 9 例里要用 3∤1 / 3∤2 / 3∤4）
+--   手法同 §2：对 `divides q h` 的商 q 分情况，用 ≤<-asym 导出矛盾。
+
+¬3∣1 : ¬ (3 ∣ 1)
+¬3∣1 (divides zero h) = ≤<-asym 1 zero (subst (λ w → 1 ≤ w) h (≤-refl)) (s≤s z≤n)
+¬3∣1 (divides (suc q) h) =
+  ≤<-asym ((suc q) * 3) 1
+    (subst (λ w → w ≤ 1) h (≤-refl))
+    (<-≤-trans (s≤s (s≤s z≤n)) (m≤m+n 3 (q * 3)))      -- 1 < 3 ≤ 3 + q·3
+
+¬3∣2 : ¬ (3 ∣ 2)
+¬3∣2 (divides zero h) = ≤<-asym 2 zero (subst (λ w → 2 ≤ w) h (≤-refl)) (s≤s z≤n)
+¬3∣2 (divides (suc q) h) =
+  ≤<-asym ((suc q) * 3) 2
+    (subst (λ w → w ≤ 2) h (≤-refl))
+    (<-≤-trans ≤-refl (m≤m+n 3 (q * 3)))                -- 2 < 3 ≤ 3 + q·3
+
+¬3∣4 : ¬ (3 ∣ 4)
+¬3∣4 (divides zero h) = ≤<-asym 4 zero (subst (λ w → 4 ≤ w) h (≤-refl)) (s≤s z≤n)
+¬3∣4 (divides (suc zero) h) =
+  ≤<-asym 4 3 (subst (λ w → 4 ≤ w) h ≤-refl) ≤-refl   -- 4 ≡ 1·3（归约为 3）
+¬3∣4 (divides (suc (suc q)) h) =
+  ≤<-asym ((suc (suc q)) * 3) 4
+    (subst (λ w → w ≤ 4) h (≤-refl))
+    (<-≤-trans (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))     -- 4 < 6
+               (m≤m+n 6 (q * 3)))                      -- 6 ≤ 6 + q·3
