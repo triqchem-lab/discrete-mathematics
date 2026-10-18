@@ -40,8 +40,13 @@ open import Data.Nat.Properties
          n<1+n)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; sym; subst; cong)
+  using (_≡_; refl; sym; subst; cong; cong₂; trans)
 open import Data.Nat.Properties using (*-suc; ≤-refl; <-≤-trans; m≤m+n)
+open import Data.Nat.Properties using (*-assoc; *-comm; *-distribʳ-+; *-distribˡ-+; ≤-trans)
+open import Data.Nat.DivMod using (_%_; _/_; m≡m%n+[m/n]*n; [m+kn]%n≡m%n; m%n<n)
+open import Data.Nat.Divisibility using (m%n≡0⇒n∣m; n∣m⇒m%n≡0; _∣?_)
+open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Relation.Nullary using (yes; no)
 
 --------------------------------------------------------------------------------
 -- §1. 泛型助手
@@ -153,3 +158,70 @@ diff-sq q = cong (q +_) (*-suc q q)
     (subst (λ w → w ≤ 4) h (≤-refl))
     (<-≤-trans (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))     -- 4 < 6
                (m≤m+n 6 (q * 3)))                      -- 6 ≤ 6 + q·3
+
+--------------------------------------------------------------------------------
+-- §6. Euclid-for-3：3 ∣ A*B ⟹ 3 ∣ A ⊎ 3 ∣ B（2026-10-19）
+--
+-- 路线（全部 stdlib 引理，签名已核实）：
+--   ① `m≡m%n+[m/n]*n`：A = A%3 + (A/3)*3
+--   ② 分配律 + 结合/交换：A*B = A%3*B + ((A/3)*B)*3
+--   ③ `[m+kn]%n≡m%n`：剥掉 3 的倍数 ⇒ (A*B)%3 ≡ (A%3*B)%3
+--   ④ 对 B 重复 ②③ ⇒ (A%3*B)%3 ≡ (A%3*B%3)%3
+--   ⑤ `m%n<n` ⇒ A%3、B%3 ∈ {0,1,2}；再分 9 例（用 §5.2 的 ¬3∣1/¬3∣2/¬3∣4）
+--------------------------------------------------------------------------------
+
+-- ① (A*B) % 3 ≡ ((A%3) * B) % 3
+--   ⚠ 括号不可省：`_%_` 与 `_*_` 同为 infixl 7 ⇒ `A % 3 * B % 3` 解析为 `((A%3)*B)%3`
+mod-mul-left : ∀ A B → (A * B) % 3 ≡ ((A % 3) * B) % 3
+mod-mul-left A B =
+  trans (cong (_% 3) eq) ([m+kn]%n≡m%n ((A % 3) * B) ((A / 3) * B) 3)
+  where
+    shift : (A / 3) * 3 * B ≡ (A / 3) * B * 3
+    shift = trans (*-assoc (A / 3) 3 B)
+            (trans (cong ((A / 3) *_) (*-comm 3 B)) (sym (*-assoc (A / 3) B 3)))
+
+    eq : A * B ≡ (A % 3) * B + (A / 3) * B * 3
+    eq = trans (cong (_* B) (m≡m%n+[m/n]*n A 3))
+         (trans (*-distribʳ-+ B (A % 3) ((A / 3) * 3))
+                (cong ((A % 3) * B +_) shift))
+
+-- ② ((A%3) * B) % 3 ≡ ((A%3) * (B%3)) % 3
+mod-mul-right : ∀ A B → ((A % 3) * B) % 3 ≡ ((A % 3) * (B % 3)) % 3
+mod-mul-right A B =
+  trans (cong (_% 3) eq) ([m+kn]%n≡m%n ((A % 3) * (B % 3)) ((A % 3) * (B / 3)) 3)
+  where
+    eq : (A % 3) * B ≡ (A % 3) * (B % 3) + (A % 3) * (B / 3) * 3
+    eq = trans (cong ((A % 3) *_) (m≡m%n+[m/n]*n B 3))
+         (trans (*-distribˡ-+ (A % 3) (B % 3) ((B / 3) * 3))
+                (cong ((A % 3) * (B % 3) +_) (sym (*-assoc (A % 3) (B / 3) 3))))
+
+-- ③ 合起来：(A*B) % 3 ≡ ((A%3) * (B%3)) % 3
+mod-mul : ∀ A B → (A * B) % 3 ≡ ((A % 3) * (B % 3)) % 3
+mod-mul A B = trans (mod-mul-left A B) (mod-mul-right A B)
+
+-- n < 3 ⇒ n ≡ 0 ⊎ n ≡ 1 ⊎ n ≡ 2
+<3-cases : ∀ n → n < 3 → n ≡ 0 ⊎ n ≡ 1 ⊎ n ≡ 2
+<3-cases zero h = inj₁ refl
+<3-cases (suc zero) h = inj₂ (inj₁ refl)
+<3-cases (suc (suc zero)) h = inj₂ (inj₂ refl)
+<3-cases (suc (suc (suc n))) h =
+  ⊥-elim (≤<-asym 4 3 (≤-trans (m≤m+n 4 n) h) ≤-refl)   -- h : 4 + n ≤ 3，与 3 < 4 矛盾
+
+-- ★ Euclid-for-3
+euclid3 : ∀ A B → 3 ∣ A * B → 3 ∣ A ⊎ 3 ∣ B
+euclid3 A B h with 3 ∣? A | 3 ∣? B
+... | yes 3∣A | _       = inj₁ 3∣A
+... | no ¬A | yes 3∣B   = inj₂ 3∣B
+... | no ¬A | no ¬B     = ⊥-elim contra
+  where
+    h2 : 3 ∣ (A % 3) * (B % 3)
+    h2 = m%n≡0⇒n∣m ((A % 3) * (B % 3)) 3 (trans (sym (mod-mul A B)) (n∣m⇒m%n≡0 (A * B) 3 h))
+
+    contra : ⊥
+    contra with <3-cases (A % 3) (m%n<n A 3) | <3-cases (B % 3) (m%n<n B 3)
+    ... | inj₁ A0  | _            = ¬A (m%n≡0⇒n∣m A 3 A0)
+    ... | inj₂ _   | inj₁ B0      = ¬B (m%n≡0⇒n∣m B 3 B0)
+    ... | inj₂ (inj₁ A1) | inj₂ (inj₁ B1) = ¬3∣1 (subst (λ z → 3 ∣ z) (cong₂ _*_ A1 B1) h2)
+    ... | inj₂ (inj₁ A1) | inj₂ (inj₂ B2) = ¬3∣2 (subst (λ z → 3 ∣ z) (cong₂ _*_ A1 B2) h2)
+    ... | inj₂ (inj₂ A2) | inj₂ (inj₁ B1) = ¬3∣2 (subst (λ z → 3 ∣ z) (cong₂ _*_ A2 B1) h2)
+    ... | inj₂ (inj₂ A2) | inj₂ (inj₂ B2) = ¬3∣4 (subst (λ z → 3 ∣ z) (cong₂ _*_ A2 B2) h2)
