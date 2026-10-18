@@ -66,12 +66,13 @@ python3 -m pytest engineering/tests/   # 29 passed
 
 **本条链**全部 0 postulate, 各核心模块独立 `agda` 编译 exit 0 (All.agda 已取消, 模块独立)。
 
-> **范围声明（口径边界，2026-10-19）**：上面这句「0 postulate」**只覆盖本条核心代数链**，
-> **不是全库断言**。全库实测（块式 + 单行式两种写法**全量扫描，无抽样**）：
-> **27 个模块**含 `postulate` 声明 —— 其中 **5** 个带 `{-# REWRITE #-}` 语法依据
+> **范围声明（口径边界，2026-10-19；数字经判定器自身函数复核）**：上面这句「0 postulate」**只覆盖本条核心代数链**，
+> **不是全库断言**。全库实测（**用判定器自身的 `postulateNames` 全量扫描，无抽样**，非手写正则）：
+> **17 个模块**含 `postulate` 声明 —— 其中 **5** 个带 `{-# REWRITE #-}` 语法依据
 > （`T6` / `T6Rewrite` / `XuanwuAbsorption` / `XuanwuAbsorptionRewrite` / `TwoViewRewritten`），
-> **14** 个带项目自认的**桥接公理登记注释**，**8** 个**无任何标记**；
-> 另有 **41 处单行式** `postulate foo : Type`（判定器 2026-09-14 前漏扫，现已覆盖）。
+> 其余 **12** 个中 **5** 个带项目自认的**桥接公理登记注释**、**7** 个**无标记**（逐个定性见台账
+> `H.postulate.audit.unmarked8`：**7/7 判为 `bridge`，0 个 `gap`**，待人类裁决）。
+> 单行式 `postulate foo : Type` 已纳入扫描（判定器 2026-09-14 前漏扫，现已覆盖）。
 > 该口径**逐模块可核验**：`docs/techniques/postulate-audit.md` + oracle 回执 `1dadfc18…`。
 > 台账口径：`proven` 要求的是「**0 未声明**」而非「0 postulate」——
 > 有 `postulate` 的模块仍可 proven，但每个 postulate 必须**逐个声明** kind
