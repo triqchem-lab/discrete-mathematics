@@ -1949,3 +1949,56 @@ a_n = 2a_{n−1} + 3^{n−2}     ⇒ a_n = 3^{n−1} + 2^{n−1}
 - 块结构：需在 `CoeffN` 上定义「按末坐标分度」的分解 ✓（~60 行）
 - `V_nA` 的块相容性 ✓（~30 行）
 - 两个维数引理 ✓（需要维数机制 ✗ —— 但**现在命题已知为真** ✓，形式化是机械的）
+
+---
+
+## §42. 块分解形式化：`GF3BlockSplit`（2026-10-20，回执 `e4bb616f`）
+
+### 42.1 已完成（0 postulate / 0 hole）
+
+```agda
+CoeffN n = Torus n → Trit
+splitAt : CoeffN (suc n) → Fin 3 → CoeffN n       -- 三个切片
+join    : CoeffN n → CoeffN n → CoeffN n → CoeffN (suc n)
+
+join-split      : join (切 p 三片) x ≡ p x          -- 先切再拼复原（点态）
+split-join-0/1/2 : 先拼再切（三条，refl）
+mulX2-slice     : mulX2 (fsuc i) p (k ∷ rest) ≡ mulX2 i (splitAt p k) rest
+
+★ 块恒等式（= 块矩阵 [[A,0,0],[0,A,0],[I,0,A]]）：
+sum2-block-0 : sum2 p (f0 ∷ rest) ≡ sum2 (splitAt p f0) rest
+sum2-block-1 : sum2 p (f1 ∷ rest) ≡ sum2 (splitAt p f1) rest
+sum2-block-2 : sum2 p (f2 ∷ rest) ≡ splitAt p f0 rest ⊕ sum2 (splitAt p f2) rest
+```
+
+**`sum2-block-2` 就是 `I` 块** ✓ —— 新坐标项把 `p₀` 送回 ✓ ✓
+
+### 42.2 人类更正的关键等式（**已实算验证 ✓ n=1..5**）
+
+人类指出我的 `rank(A|_V)` 表述不严 ✗，正确形式是：
+```
+b_n = b_{n−1} + dim(ker A² ∩ V_{n−1}A)
+```
+
+**实算验证** `dim(ker F_n² ∩ V_nA) = dim V_nA − b_n` ✓：
+
+| n | `dim V_nA` | `b_n` | `V−b_n` | `ker A²∩V` |
+|---|---|---|---|---|
+| 1 | 1 | 0 | 1 | 1 ✓ |
+| 2 | 5 | 1 | 4 | 4 ✓ |
+| 3 | 19 | 5 | 14 | 14 ✓ |
+| 4 | 65 | 19 | 46 | 46 ✓ |
+| 5 | 211 | 65 | 146 | 146 ✓ |
+
+⇒ **互补性成立** ✓（`ker A² ∩ V` 与 `ker A ∩ V` 在 `V` 中互补 ✓）
+
+### 42.3 剩余形式化（人类估计 ~140 行 / 2–3 轮）
+
+| 件 | 内容 | 状态 |
+|---|---|---|
+| ① 块矩阵定义 | ✅ **本轮完成**（`sum2-block-0/1/2`）|
+| ② `V_nA` 块相容 | ⬜ |
+| ③ 核的块分解 | ⬜ |
+| ④ **互补性引理** | ⬜（实算已验证 ✓，形式化需维数机制 ✗）|
+| ⑤ `b_n` 递推 | ⬜ |
+| ⑥ `q_n = 3^{n−1}` | ⬜ |
