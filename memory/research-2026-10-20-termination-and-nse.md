@@ -203,3 +203,45 @@ leray-not-unconditional : Σ Field (λ v → ¬ PoissonSolvable v)
 - ✗ 本报告未验证 `ω ∉ GF(3)` 对谱分解路线的完整影响；第 4.3 节末尾的疑问是**待验证**，不是结论。
 - ✗ 文献部分只做了 1 轮检索（3 条 query），**未做交叉验证**；引用仅作线索。
 - ✓ 第 1–3 节的「本地已有 / 陈述有误」判断均基于**读源码**（给了行号），可信。
+
+---
+
+## §6. T4 收口（2026-10-20 终局判定）
+
+### 6.1 结论
+
+**T4 的可证部分全部落地，精确秩定理判定为不可达 ✗（diagnosis: `proof_too_hard`）。**
+
+### 6.2 已证（Agda 内核）
+
+| 定理 | 内容 | 回执 |
+|---|---|---|
+| `lineForm6` | `laplacian6 f x ≡ Σ_j lineSum j f x`（Δ = Σ M_j）| `d955c71e` |
+| `lineSum-sq` | `lineSum i (lineSum i f) x ≡ T₀`（M_j² ≡ 0）| `d955c71e` |
+| `elim-head` / `elimBelow` / `elimBelow-heads` | 消元层（单行 + 列步 + 不变式）| `17a18ba0` |
+| `add-then-cancel` / `scale-cancel` | 行变换可逆 | `2bcd5199` |
+| `axisLap6-eq-lineSum` / `lap3-eq` | 二阶差分 = 线求和 | `d955c71e` |
+
+### 6.3 已算（oracle 精确整数，非证明）
+
+`rank laplacian6 = 454`，`ker = 275`；三轴复刻 `378 / 351` **复现**（差分验证 ✓）。回执 `dae6f7dc`。
+
+### 6.4 不可达的三条理由（均可复核）
+
+① **四库无 rank-nullity** —— `agda-stdlib` / `1lab` / `agda-unimath` / `cubical` 实测 grep 全无 ✗；
+② **cubical 适配不划算** —— `Matrix/RowTransformation`(744 行) + `Elementaries`(321 行) 有行变换但**无 rank**；
+   做 `CommRing Trit` 适配器 60–80 行，只换来我已有的 138 行（`GF3RowOps`）⇒ 净亏 ✗；
+③ **即使建成 A2 也不够** ✗ —— `rank laplacian6 = 454` 仍需在 Agda 里**执行** 729×729 消元 ✗
+   ⇒ 「用类型检查器当计算器」✗ 违反红线 ✗。
+
+### 6.5 新发现（未形式化）
+
+`M_j` 两两交换 + `M_j² ≡ 0` + 只有 6 个算子 ⇒ 乘积 `Δ⁷ = Σ_{a₁+…+a₆=7}` 的每一项都含某个 `M_j^{a_j}`（`a_j ≥ 2`）
+⇒ **`Δ⁷ ≡ 0`** ✓。
+**但这不与 rank 454 矛盾** ✓：`Δ² = Σ_{i≠j} MᵢMⱼ ≠ 0` ⇒ 没有 `im Δ ⊆ ker Δ` 的限制 ✓。
+形式化需 ~100 行求和展开机器 ✗，未做。
+
+### 6.6 T3 已完全覆盖 T4 的实际用途
+
+T3 只需要 `ker Δ₆ ≠ {0}` ✓（已证 `eb5ecd90` / `eb84a0eb`），
+**不需要精确秩** ✗。
