@@ -494,3 +494,93 @@ char-0 的语言在 `n ≤ 4` 处**碰巧正确** ✗，掩盖了它是错的语
 
 **第 10 条路线（若继续）应该是**：3-torsion 的结构（临界群 / sandpile）✗
 —— 但 `torsion = 0,0,0,0,1,8` 无规律 ✗，需要更多数据（n=7 需 2187×2187 有理消元 ✗ 太慢）
+
+---
+
+## 十五、★ 展示群 8 要素审查：T4 的环**缺相位与刚性**（2026-10-21）
+
+### 15.1 库里的刚性/自同构机件（全部已存在 ✓）
+
+| 机件 | 精确位置 |
+|---|---|
+| `galoisConjugate`（Frobenius `σ(x)=x³`）| `Algebra/FieldTower/GF9.agda` |
+| **`sigma-equals-cube : σ(x) ≡ x·x·x`** | `GroupTheory/GaloisTheory.agda:60` |
+| `sigma-involution/-additive/-multiplicative/-injective` | 同上 44–57 |
+| `sigmaDC`（`σ_DC(t,a) = (t, α⁻¹)`）| `GroupTheory/DCGroup.agda:120` |
+| **`sigmaDC-homo` / `-e` / `-inv`** ⇒ **`σ_DC ∈ Aut(DC)`** | **`GroupTheory/DCSigmaAut.agda:60/69/78`** |
+| **`Aut(DuodecClock) ≅ V₄`** | `DuodecClockProperties.agda:320` |
+| `record Presentation` 的 `rigidity` 字段（须由 `galoisConjugate` 诱导）| `UniversalAlgebra/Presentation.agda:83` |
+| `record FrobeniusProofs` | `FieldTower/GF9AlgebraicChain.agda:227` |
+| `Aut(T⁶/GF(9)) = GL₃(GF(9)) ⋊ C₂` | `Holographic/InfoClosure.agda:107` |
+
+### 15.2 DC 的 8 要素：✅ 完整
+
+| # | 要素 | 库内锚点 |
+|---|---|---|
+| ① | 载体 | `DuodecPoint = Trit × AlphaPower` |
+| ② | 生成元 | `Trit`（GF(3) 加）+ `AlphaPower`（⟨α⟩≅C₄ 乘）|
+| ③ | 关系 | `DayanCore` 字段 + `ZeroOblivion` 五字段 |
+| ④ | 相位 | `a0/a1/a2/a3` = 0°/90°/180°/270° |
+| ⑤ | 时钟 | `mixedOp-12-cycle` |
+| ⑥ | 归零 | `tritCycle` / `α⁴` / `mixedOp¹²` / 仲吕 12 |
+| ⑦ | **刚性** | `sigmaDC` + `DCSigmaAut`（homo/e/inv）✓ |
+| ⑧ | 核对 | `sigmaDC-homo-check-mixed` 等 `refl` |
+
+### 15.3 ★★ T4 的环 `R_n = GF(3)[x_j]/(x_j³)`：**两处硬缺失** ✗
+
+| # | 要素 | T4 实际 | 判定 |
+|---|---|---|---|
+| ① | 载体 | `CoeffN n = Torus n → Trit` | ✓ |
+| ② | 生成元 | `Trit` + 幂零 `x_j` | ✓ |
+| ③ | 关系 | `x_j³ = 0`、`3 = 0`、交换 | ✓ |
+| ④ | **相位** | **无 C₄ 相位层** —— `x_j³=0` ≠ `x²+1`（GF(9) 的定义多项式）| ❌ **缺** |
+| ⑤ | 时钟 | **`F³ = 0`**（Freshman's dream）—— 3-步幂零钟，非 12-步 | ⚠️ 异类 |
+| ⑥ | 归零 | `x_j³ = 0` + `F³ = 0` | ✓ |
+| ⑦ | **刚性** | **❌ 不存在** | ❌ **缺** |
+| ⑧ | 核对 | `refl` 实例 | ✓ |
+
+### 15.4 ★★★ 第 ⑦ 条为什么**根本缺失**（关键发现）
+
+```
+σ(x_j) = x_j³             （Frobenius 定义）
+x_j³ = 0                  （R_n 的定义关系）
+⇒ σ(x_j) = 0              ✗
+⇒ σ 把生成元打到零 ⇒ 不是单射 ⇒ σ ∉ Aut(R_n)
+```
+
+**根因** ✓：**`R_n` 不是域** ✗ —— 有**幂零元** ✗ ⇒ Frobenius 不可逆 ✗
+（`sigma-equals-cube` 之所以成立 ✓，是因为 `GF(9)` **是域** ✓）
+
+### 15.5 ★ 进一步：`R_n` 甚至**不刚性**（`Aut` 很大）✗
+
+n=1 的暴力分析：`R_1 = GF(3)[x]/(x³)`，自同构形如
+```
+x ↦ a·x + b·x²   （a ≠ 0，b 任意）
+x² ↦ a²·x²
+```
+矩阵 `[[a,0],[b,a²]]` 在 `(x,x²)` 上，`det = a³ = a ≠ 0`（char 3）✓ 可逆 ✓
+⇒ `a ∈ {1,2}` × `b ∈ {0,1,2}` ⇒ **`|Aut(R_1)| = 6`** ✗ ⊋ `S_1 = 1` ✗
+
+⇒ **`Aut(R_n) ⊋ S_n`** ✗ —— 环**远非刚性** ✓
+
+### 15.6 ★★ 结构性结论
+
+| | DC（展示群）| T4 的 `R_n` |
+|---|---|---|
+| 底环 | `GF(3) × GF(9)`（域 ✓）| `GF(3)[x]/(x³)^{⊗n}`（**幂零 thickening** ✗）|
+| Frobenius | **自同构** ✓ | **打到零** ✗ |
+| 相位 C₄ | ✓ | ✗ |
+| 刚性 | ✓ | ✗（`Aut` 大）|
+| **是否在展示群框架内** | ✅ **是** | ❌ **不是** |
+
+⇒ **T4 的 `R_n` 是「幂零 thickening」，不是「展示群/域」** ✗ ✓
+
+**这解释了为什么 9 条路线（全部用域/线性代数语言）全败** ✓ ✓ ——
+**刚性层缺失 ⇒ 没有「不变量理论」可用** ✗ ⇒ 只能靠**组合计数** ✓（而组合计数在中间片不规则 ✗）
+
+### 15.7 方法论入册
+
+**审查任何对象前，先问：它是否在展示群框架内？**
+判据：底环是**域**吗？Frobenius 是**自同构**吗？有**相位层**吗？
+- 三者皆 ✓ ⇒ 可用展示群工具（不变量、刚性、相位）✓
+- 任一 ✗ ⇒ **不在框架内** ✗，必须用**该结构自己的语言**（本对象：幂零环的组合计数）✗
