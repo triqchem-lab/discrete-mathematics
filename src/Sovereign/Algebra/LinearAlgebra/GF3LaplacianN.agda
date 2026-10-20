@@ -258,3 +258,20 @@ annN1-iff f =
   , (λ h → λ { fzero               → trans (lapN1-eq f fzero) h
              ; (fsuc fzero)        → trans (lapN1-eq f (fsuc fzero)) h
              ; (fsuc (fsuc fzero)) → trans (lapN1-eq f (fsuc (fsuc fzero))) h })
+
+--------------------------------------------------------------------------------
+-- §9. 首坐标分裂（③a 的第一步，2026-10-20）
+--
+-- `sumFin {suc n} g = g fzero ⊕ sumFin {n} (λ i → g (fsuc i))`
+-- ⇒ `lapN {suc n}` 在首坐标处分裂成「首坐标的二阶差分」⊕「其余坐标的 lapN」
+--
+-- 关键恒等式（点态成立）：
+--   `diffAt (fsuc i) f (a ∷ rest) = diffAt i (λ r → f (a ∷ r)) rest`
+--------------------------------------------------------------------------------
+
+lapN-suc-split : ∀ {n} (f : ScalarN (suc n)) (a : Fin 3) (rest : Torus n) →
+  lapN {suc n} f (a ∷ rest)
+    ≡ diffAt fzero (diffAt fzero f) (a ∷ rest) ⊕ lapN {n} (λ r → f (a ∷ r)) rest
+lapN-suc-split {n} f a rest =
+  cong (λ z → diffAt fzero (diffAt fzero f) (a ∷ rest) ⊕ z)
+       (sumFin-cong {n = n} (λ i → refl))
