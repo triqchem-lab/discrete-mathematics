@@ -100,3 +100,41 @@ ker2-to-imker {n} {p} k2 = proj₁ (im-ker-eq (sum2 p)) (p , k2 , (λ _ → refl
 -- （即 `ker(F | ker F²) = ker F`，因为 `ker F ⊆ ker F²`）
 restrict-kernel : ∀ {n} {p : CoeffN n} → KerF p → KerF (sum2 p)
 restrict-kernel ker = sum2-zero _ ker
+
+--------------------------------------------------------------------------------
+-- §3. `V-from-Fin` 的单射性（`dim` 良定义的第一步）
+--
+-- 思路：
+--   `V-from-Fin b k = Comb (vecs b) (toFun d k)`
+--   ⇒ 点态相等 ⇒ `comb-inj`（分离族）给出系数相等 ⇒ `fromFun` 相等 ⇒ `fromFun-toFun` 给出 `k ≡ k'`
+--------------------------------------------------------------------------------
+
+open import Sovereign.Algebra.LinearAlgebra.GF3Dim using (Comb; comb-inj; Separated)
+open import Sovereign.Algebra.LinearAlgebra.GF3BasisCount using
+  (Basis; fromCoeff; V-from-Fin; round2; fromFun-cong)
+open import Sovereign.Algebra.LinearAlgebra.GF3Count using (fromFun; toFun; fromFun-toFun)
+
+-- `V-from-Fin` 的点态展开（定义相等）
+V-from-Fin-eq : ∀ {n} {V : CoeffN n → Set} (b : Basis V)
+  (k : Fin (3 ^ Basis.dim b)) (x : Torus n) →
+  V-from-Fin b k x ≡ Comb (Basis.vecs b) (toFun (Basis.dim b) k) x
+V-from-Fin-eq b k x = refl
+
+-- ★ `V-from-Fin` 单射（点态前提）
+V-from-Fin-inj : ∀ {n} {V : CoeffN n → Set} (b : Basis V)
+  (k k' : Fin (3 ^ Basis.dim b)) →
+  (∀ x → V-from-Fin b k x ≡ V-from-Fin b k' x) →
+  k ≡ k'
+V-from-Fin-inj {n} {V} b k k' eq =
+  trans (sym (fromFun-toFun d k))
+        (trans (fromFun-cong d (toFun d k) (toFun d k') coef-eq)
+               (fromFun-toFun d k'))
+  where
+    d : ℕ
+    d = Basis.dim b
+
+    -- 系数相等（由 `comb-inj`）
+    coef-eq : ∀ i → toFun d k i ≡ toFun d k' i
+    coef-eq = comb-inj (Basis.vecs b) (Basis.sep b)
+                       (toFun d k) (toFun d k')
+                       (λ x → trans (sym (V-from-Fin-eq b k x)) (trans (eq x) (V-from-Fin-eq b k' x)))
