@@ -954,3 +954,52 @@ ker F = ann(F)  （ZeroOblivion 那族的归零结构）
 **根因** ✓：查库只搜**概念词**（Koszul/Artinian/annihilator）✗，
 没搜**本库自有术语**（`GF3Func`/`Δ`/`sum3`/`Harmonic`/`Betti`/`Fredholm`/`ZeroOblivion`）✗。
 ⇒ 已写入 `memory/search-discipline.md` §6 补充项 ✅
+
+---
+
+## §22. `ZeroOblivion` 是 n=1 / 12 态，不是 n 维 —— 词汇接得上，定理不接（2026-10-20）
+
+### 22.1 `ZeroOblivion` 的五字段（`DCGroup:140`）
+
+```agda
+addZeroR      : ∀ x → mixedOp x duodec-e ≡ x
+addZeroL      : ∀ x → mixedOp duodec-e x ≡ x
+mulAlphaCycle : mulAlpha (mulAlpha (mulAlpha a1 a1) a1) a1 ≡ a0   -- α⁴ = 1
+tritCycle     : ∀ t → (t ⊕ t) ⊕ t ≡ T₀                            -- = 我的 ⊕-triple-zero ✗
+jointCycle    : ∀ p → mixedOp^12 p ≡ p                            -- 时钟 12
+```
+
+### 22.2 维度对照
+
+| 字段 | 所在空间 | 我们的 n 维类比 |
+|---|---|---|
+| `tritCycle` | `Trit`（1 维）| `diffF6-3`（`x_j³ = 0`）✓ 已有 |
+| `mulAlphaCycle` | `AlphaPower`（C₄ 相位）| 幅度层**无相位** ✗ |
+| `jointCycle` | `Trit × AlphaPower` = **12 态** | 729 态 ✗ **不匹配** |
+| `addZeroR/L` | 单位元 | 平凡 |
+
+⇒ **`ZeroOblivion` 是 12 态空间（DC）的归零结构** ✓
+⇒ 我们的问题是 **729 态（GF(3)⁶ 幅度层）** ✗ ⇒ **不同空间** ✗ ✓
+
+### 22.3 「用 ZeroOblivion 语言重述」的结果
+
+n 维版本会写成：
+
+```agda
+record ZeroOblivionN (n : ℕ) : Set where
+  field
+    tritCycleN : x_j³ = 0                                   -- ✓ 已有
+    annDim     : dim(ann(Σ_j x_j²)) ≡ 3^{n−1} + 2^{n−1}     -- ✗ 正是缺的那条
+```
+
+⇒ **词汇体系能容纳它** ✓，但 `annDim` **就是缺的定理本身** ✗
+⇒ 重述**不产生新证明** ✗，只把缺口**命名得更清楚** ✓
+
+### 22.4 本轮普查的净结论
+
+**所有可能的本地机件都查过了** ✓：
+`ProjectionDifferential` / `DiscreteDE` / `HomologyHarmonic` / `DCGroup` / `DayanCore` /
+`DiscreteGaloisGroupAlgebra` / `UniversalAlgebra.Presentation` / `Polynomials` / `cubical 矩阵库`
+
+**结论** ✓：结构词汇与问题**高度同构** ✓，但**没有一条定理**直接给出 `dim ann(Σx_j²)` ✗ ✓ ——
+**缺的确实是那一条** ✗，不是「工具在别处」✗。
