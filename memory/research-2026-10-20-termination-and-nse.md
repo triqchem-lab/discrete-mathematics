@@ -2294,3 +2294,32 @@ ker F_n ∩ V_nA  ⇄  五条分量条件
 | `GF3Barrier` | 236 | `65db64d0` |
 | **`GF3BlockSplit`** | **~285** | **`ba77c943`** |
 | `GF3MonoCount` | 86 | `9cd29990` |
+
+---
+
+## §49. `someZero-recur` 的 ℕ 算术尝试放弃（2026-10-20）
+
+### 49.1 目标
+
+```agda
+someZero-recur : ∀ n → someZeroMono (suc n) ≡ 3 * someZeroMono n + noZeroMono n
+-- 即 3^(n+1) ∸ 2^(n+1) = 3·(3^n ∸ 2^n) + 2^n
+```
+
+### 49.2 结果：放弃（2 次失败后 stop-loss ✓）
+
+**失败点**：
+1. `*-distribˡ-+` 的方向 ✗（`m*(n+o) ≡ m*n+m*o` ✓，`sym` 用反了）
+2. `∸-+-assoc` 的方向 ✗（`(m ∸ n) ∸ o` vs `m ∸ (n+o)` 的形状不匹配）
+
+**判断** ✓：这是**纯 ℕ 算术揉捏** ✗ —— 不是 `b_n` 的**数学内容** ✓。
+`∸` 在 ℕ 上的引理方向很绕 ✓，而**结果本身**（递推式）已由 oracle `87ce8e37` 验证 ✓ ✓。
+
+**⇒ 按 stop-loss 放弃** ✓ —— 不为纯算术细节消耗会话 ✓。
+
+### 49.3 真正的剩余（不变）
+
+```
+计数半：dim(ker A² ∩ V_{n−1}A) = someZeroMono (n−1) − b_{n−1}
+        —— 需极简 dim（子空间 ≅ Fin d → Trit），~80 行
+```
