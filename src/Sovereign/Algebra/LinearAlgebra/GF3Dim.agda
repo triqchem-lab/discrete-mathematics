@@ -117,7 +117,7 @@ sumFin-zero' {d} = sumFin-zero {d}
 -- §6. ★ 核心引理：δ 组合在 i 处取回 f i
 --------------------------------------------------------------------------------
 
-open import Sovereign.Base.Trit using (⊗-identityˡ; ⊗-zeroˡ; ⊕-identityʳ)
+open import Sovereign.Base.Trit using (⊗-identityˡ; ⊗-identityʳ; ⊗-zeroˡ; ⊗-zeroʳ; ⊕-identityʳ; negate; negate²)
 
 sumFin-δ : ∀ {d} (f : Fin d → Trit) (i : Fin d) →
   sumFin (λ j → δc i j ⊗ f j) ≡ f i
@@ -157,3 +157,37 @@ Separated : ∀ {n d} (v : Fin d → CoeffN n) → Set
 Separated {n} {d} v =
   ∀ (i : Fin d) → Σ (Torus n) (λ x → (v i x ≢ T₀)
     × (∀ (j : Fin d) → j ≢ i → v j x ≡ T₀))
+
+--------------------------------------------------------------------------------
+-- §9. 分离点上的组合只留一项（复用 GF3Barrier 的 `sumFin-single`）
+--------------------------------------------------------------------------------
+
+open import Sovereign.Algebra.LinearAlgebra.GF3Barrier using (sumFin-single; trit-zero; T₁≢T₀; T₂≢T₀)
+comb-sep : ∀ {n d} (v : Fin d → CoeffN n) (sep : Separated v)
+  (c : Fin d → Trit) (i : Fin d) →
+  Comb v c (proj₁ (sep i)) ≡ c i ⊗ v i (proj₁ (sep i))
+comb-sep v sep c i =
+  sumFin-single i (λ j → c j ⊗ v j (proj₁ (sep i)))
+                 (c i ⊗ v i (proj₁ (sep i))) refl
+                 (λ j i≠j → trans (cong (λ z → c j ⊗ z) (proj₂ (proj₂ (sep i)) j (λ e → i≠j (sym e))))
+                                  (⊗-zeroʳ (c j)))
+
+--------------------------------------------------------------------------------
+-- §10. Trit 消去：非零因子可消
+--------------------------------------------------------------------------------
+
+-- T₂ 乘 = 取负（char 3）
+T₂-mul-neg : ∀ a → T₂ ⊗ a ≡ negate a
+T₂-mul-neg T₀ = refl
+T₂-mul-neg T₁ = refl
+T₂-mul-neg T₂ = refl
+
+⊗-cancel : ∀ (t : Trit) → t ≢ T₀ → (a b : Trit) → t ⊗ a ≡ t ⊗ b → a ≡ b
+⊗-cancel T₀ ne _ _ _ = ⊥-elim (ne refl)
+⊗-cancel T₁ _ a b eq = trans (sym (⊗-identityˡ a)) (trans eq (⊗-identityˡ b))
+⊗-cancel T₂ _ a b eq =
+  trans (sym (negate² a))
+        (trans (cong negate eq') (negate² b))
+  where
+    eq' : negate a ≡ negate b
+    eq' = trans (sym (T₂-mul-neg a)) (trans eq (T₂-mul-neg b))
