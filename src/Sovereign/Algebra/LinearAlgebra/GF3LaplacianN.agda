@@ -154,3 +154,86 @@ diffAt-+S : ∀ {n} (i : Fin n) (f g : ScalarN n) (x : Torus n) →
 diffAt-+S i f g x =
   trans (cong (λ z → (f (shiftAt i x) ⊕ g (shiftAt i x)) ⊕ z) (negate-⊕ (f x) (g x)))
         (sum4 (f (shiftAt i x)) (g (shiftAt i x)) (negate (f x)) (negate (g x)))
+
+--------------------------------------------------------------------------------
+-- §7. T-D 探针：n=1 时 `lapN` 是常数（三点之和）
+--
+-- 数学：`x² f (y) = f(y+2) ⊕ f(y+1) ⊕ f(y)`，循环 ⇒ **与 y 无关** ✓
+-- 三个 y 只差**括号顺序** ⇒ 只需 `⊕` 重排，不需要值分类 ✓
+--------------------------------------------------------------------------------
+
+p0 p1 p2 : Torus 1
+p0 = fzero ∷ []
+p1 = fsuc fzero ∷ []
+p2 = fsuc (fsuc fzero) ∷ []
+
+-- `x²` 展开核：`(c ⊕ negate b) ⊕ negate (b ⊕ negate a) ≡ a ⊕ (b ⊕ c)`（27 情形）
+p-lap : ∀ a b c → (c ⊕ negate b) ⊕ negate (b ⊕ negate a) ≡ a ⊕ (b ⊕ c)
+p-lap T₀ T₀ T₀ = refl
+p-lap T₀ T₀ T₁ = refl
+p-lap T₀ T₀ T₂ = refl
+p-lap T₀ T₁ T₀ = refl
+p-lap T₀ T₁ T₁ = refl
+p-lap T₀ T₁ T₂ = refl
+p-lap T₀ T₂ T₀ = refl
+p-lap T₀ T₂ T₁ = refl
+p-lap T₀ T₂ T₂ = refl
+p-lap T₁ T₀ T₀ = refl
+p-lap T₁ T₀ T₁ = refl
+p-lap T₁ T₀ T₂ = refl
+p-lap T₁ T₁ T₀ = refl
+p-lap T₁ T₁ T₁ = refl
+p-lap T₁ T₁ T₂ = refl
+p-lap T₁ T₂ T₀ = refl
+p-lap T₁ T₂ T₁ = refl
+p-lap T₁ T₂ T₂ = refl
+p-lap T₂ T₀ T₀ = refl
+p-lap T₂ T₀ T₁ = refl
+p-lap T₂ T₀ T₂ = refl
+p-lap T₂ T₁ T₀ = refl
+p-lap T₂ T₁ T₁ = refl
+p-lap T₂ T₁ T₂ = refl
+p-lap T₂ T₂ T₀ = refl
+p-lap T₂ T₂ T₁ = refl
+p-lap T₂ T₂ T₂ = refl
+
+-- 三循环旋转：`a ⊕ (b ⊕ c) ≡ c ⊕ (a ⊕ b)`（27 情形）
+rot3 : ∀ a b c → a ⊕ (b ⊕ c) ≡ c ⊕ (a ⊕ b)
+rot3 T₀ T₀ T₀ = refl
+rot3 T₀ T₀ T₁ = refl
+rot3 T₀ T₀ T₂ = refl
+rot3 T₀ T₁ T₀ = refl
+rot3 T₀ T₁ T₁ = refl
+rot3 T₀ T₁ T₂ = refl
+rot3 T₀ T₂ T₀ = refl
+rot3 T₀ T₂ T₁ = refl
+rot3 T₀ T₂ T₂ = refl
+rot3 T₁ T₀ T₀ = refl
+rot3 T₁ T₀ T₁ = refl
+rot3 T₁ T₀ T₂ = refl
+rot3 T₁ T₁ T₀ = refl
+rot3 T₁ T₁ T₁ = refl
+rot3 T₁ T₁ T₂ = refl
+rot3 T₁ T₂ T₀ = refl
+rot3 T₁ T₂ T₁ = refl
+rot3 T₁ T₂ T₂ = refl
+rot3 T₂ T₀ T₀ = refl
+rot3 T₂ T₀ T₁ = refl
+rot3 T₂ T₀ T₂ = refl
+rot3 T₂ T₁ T₀ = refl
+rot3 T₂ T₁ T₁ = refl
+rot3 T₂ T₁ T₂ = refl
+rot3 T₂ T₂ T₀ = refl
+rot3 T₂ T₂ T₁ = refl
+rot3 T₂ T₂ T₂ = refl
+
+-- ⛔ **待补（止损记录，2026-10-20）**：`lapN1-eq`
+--   `lapN1-eq : ∀ (f : ScalarN 1) (a : Fin 3) → lapN f (a ∷ []) ≡ f p0 ⊕ (f p1 ⊕ f p2)`
+--
+--   **三次尝试失败** ✗（∀ a 三分 + `p-lap` + `rot3` 链，第三个情形形状对不上）。
+--   已证可用件 ✓：`p-lap`（27 情形）、`rot3`（27 情形）—— 两者本身正确 ✓。
+--
+--   **下一轮正解**：先用 `proof_goals action:"normalize"` 看 `lapN f (p2 ∷ [])` 的**范式**，
+--   确认它到底是 `p-lap` 的哪种实例（怀疑：`a = p2` 时 `sumFin` 多了一层 `⊕ T₀`，导致
+--   左端不是 `(c ⊕ negate b) ⊕ negate (b ⊕ negate a)` 而是 `((c ⊕ negate b) ⊕ negate (…)) ⊕ T₀`）。
+--   **不要**再盲试 `rot3` 的组合 ✗（组合空间小但已试两次 ✗）。
