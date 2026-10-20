@@ -899,3 +899,58 @@ DiscreteDE             = 只 import 标量 ⊗ ✗
 人类指出：「第 4 步是真正的新数学」✗ **建立在「第 2 步张量化失败」的假设上** ✓。
 查证后：张量化在 `⊗ⁿΔ` 意义上确实不成立 ✗，但**我们本来不需要**它 ✗ ——
 真实缺口在**第 3 步（多重复形核维数）** ✓，而第 4 步很可能被它吸收 ✓。
+
+---
+
+## §21. 综合：我们的复形 = `DCGroup` 的 `δ`；工具链准确形态（2026-10-20）
+
+### 21.1 三层对应（查证确认）
+
+| 我们的记号 | 本库已有 | 位置 |
+|---|---|---|
+| `s`（三循环）| **`δ`（`δ³ = id`）** | `DayanCore` / `DCGroup` |
+| `x = s − 1` | `δ − id` | — |
+| `x³ = 0` | `δ³ = id ⇒ (δ−1)³ = 0`（char 3）| **`homology-vanishes-3`**（`HomologyHarmonic:64`）|
+| `GF(3)[x]/(x³)^{⊗n}` | **`GF(3)[(C₃)ⁿ]` 群代数** | `DCGroup` / `DiscreteGaloisGroupAlgebra` |
+| `Σ x_j²` 的零化子 | `ZeroOblivion` 归零关系（`tritCycle` 等）| `DCGroup:140` |
+
+### 21.2 ★ 一个必须说清的边界
+
+`DiscreteGaloisGroupAlgebra` 的 `σ`（Frobenius）在 **GF(3) 上是恒等** ✓
+（`expD-id : expD t x ≡ x`，模块内明确注释「在 GF(3) 上 σ=id」✓）。
+**有内容的 σ 在 GF(9) 上** ✓（`σ(α) = −α`，周期 2 ✓）。
+
+⇒ 我们的问题在 **GF(3) 上** ⇒ **Frobenius 直接帮不上** ✗
+⇒ 真正起作用的是 **`C₃` 的循环结构（`δ`）** ✓，不是 Frobenius ✗
+
+### 21.3 工具链的准确形态
+
+```
+s  = δ          （C₃ 生成元，DCGroup ✓）
+x  = δ − 1       （幂零，x³ = 0 = homology-vanishes-3 ✓）
+R  = GF(3)[x]/(x³)^{⊗n} = GF(3)[(C₃)ⁿ] 群代数
+F  = Σ x_j²
+ker F = ann(F)  （ZeroOblivion 那族的归零结构）
+```
+
+### 21.4 诚实边界
+
+**「`dim ann(F) = 3^{n−1}+2^{n−1}` 的证明」仍然不在库里** ✗。
+库里有的：`δ³ = id` ✓ · `x³ = 0` ✓ · `Δ² = ι∘sum3` ✓ · **Fredholm 择一（1 维）** ✓ · `ZeroOblivion` 归零关系 ✓
+库里没有的：**`n` 维零化子维数定理** ✗
+
+⇒ 人类说「我们的展示群和形式化早都完成了」✓ —— **对了一半** ✓：
+**结构件**确实全在 ✓；**那个特定的维数定理**还没有 ✗ ✓。
+
+### 21.5 我这一轮的失误（第 5–6 次重推）
+
+| 我重推的 | 本库已有 |
+|---|---|
+| `⊕-triple-zero`（`a⊕a⊕a = 0`）| `ZeroOblivion.tritCycle` |
+| `diffF6-3`（`x³ = 0`）| `homology-vanishes-3` |
+| `annN 1`（`ker Δ` 刻画）| `Δ²-is-const` + `Δ≡0→const` |
+| T3 遗留的 `Σ(Δp) = 0` | `fredholm-compatibility` |
+
+**根因** ✓：查库只搜**概念词**（Koszul/Artinian/annihilator）✗，
+没搜**本库自有术语**（`GF3Func`/`Δ`/`sum3`/`Harmonic`/`Betti`/`Fredholm`/`ZeroOblivion`）✗。
+⇒ 已写入 `memory/search-discipline.md` §6 补充项 ✅
