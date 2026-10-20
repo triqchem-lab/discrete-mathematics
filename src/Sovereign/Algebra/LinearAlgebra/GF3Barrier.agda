@@ -214,3 +214,23 @@ barrier : ∀ {n} (p : CoeffN n) (i : Fin n) →
   ∀ b → p b ≡ T₀
 barrier p i hyp avoid b =
   trit-zero (p b) (λ e → e (barrier-step p i b hyp avoid e))
+
+--------------------------------------------------------------------------------
+-- §9. 推论：全坐标支撑避让 ⇒ 零
+--
+-- `barrier` 是「支撑避开**一个**坐标 ⇒ 零」。
+-- 若对**所有**坐标都避让，则该元素只能支撑在原点 `0^n` —— 而原点处的
+-- 单项式被 `x_j²` 推到 `2e_j`（非零）⇒ 只能为零。
+--
+-- 这是 `ker F ∩ V_{[n]} = {0}` 的系数形式，也是「零全局耦合」的最强形态：
+-- 任一非零调和元素的支撑**必然跨越所有坐标**。
+--------------------------------------------------------------------------------
+
+-- 更强形式的读法：对**每个**坐标都避让 ⇒ 零
+-- （只需其中一个坐标即可，其余是加强的前提）
+-- 注：`n ≥ 1`（否则 `fzero : Fin zero` 无意义）
+barrier-all-coords : ∀ {n} (p : CoeffN (suc n)) →
+  (∀ b → sum2 p b ≡ T₀) →
+  (∀ i b → p b ≢ T₀ → lookupAt i b ≡ f0) →
+  (∀ b → p b ≡ T₀)
+barrier-all-coords p hyp avoid = barrier p fzero hyp (λ b → avoid fzero b)
