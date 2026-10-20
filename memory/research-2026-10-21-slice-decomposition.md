@@ -216,3 +216,47 @@ AgreeOn k p q = ∀ x → wt2 x ≡ k → p x ≡ q x
 ⑥ |S_k| = C(n,k)·2^{n−k}            ✓ 纯算术（真）
 ```
 ⇒ **第 3 次确认：唯一缺口是 `dim`** ✗
+
+---
+
+## 十一、秩-零化度（`GF3RankNullity`，2026-10-21）
+
+### 11.1 §1 `3^`-单射（回执 `f13d1e39`）
+
+```agda
+1<3 : 1 < 3
+3^-mono-< = ^-monoʳ-< 3 1<3              -- ← stdlib Data/Nat/Properties.agda:1128
+★ 3^-inj : 3 ^ a ≡ 3 ^ b → a ≡ b          -- <-cmp 三分 + <-irrefl
+```
+
+### 11.2 §2 `F : ker F² → im F ∩ ker F`（回执 `00708a65`）
+
+```agda
+KerF2 p = ∀ x → sum2 (sum2 p) x ≡ T₀
+sum2-zero : (∀ y → q y ≡ T₀) → ∀ x → sum2 q x ≡ T₀
+★ ker⊆ker2 : KerF p → KerF2 p
+★★ ker2-to-imker : KerF2 p → ImF (sum2 p) × KerF (sum2 p)   -- 由 GF3ImKer 的 proj₁
+★ restrict-kernel : KerF p → KerF (sum2 p)
+```
+
+### 11.3 ★★ **诚实结论：C 不能闭合 `b_n`** ✗（第 4 次同一结论）
+
+完整秩-零化度能给的：
+```
+用在 F : R_n → R_n：       a_n + rank_n = 3^n
+用在需要的映射：            q_n = c_n − a_n          ← 已有 oracle bd06f20b ✓
+```
+⇒ **都不是 `q_n = 3^{n−1}`** ✗ ✓
+
+真正的缺口是 **`a_n`（或 `c_n`）本身** ✗：
+- `a_n = Σ_k ker_k`（分片分解 ✓）
+- **每片 `ker_k` 没有结构公式** ✗（n=5：1, 15, 41, 30, 9, 1；n=6：1, 21, 92, 101, 48, 11, 1 —— 无规律）
+
+### 11.4 C 的价值（诚实标注）
+
+| 能做到 | 做不到 |
+|---|---|
+| 把 `q_n = c_n − a_n` 从 **oracle 事实**升级为 **结构定理** ✓ | 给 `q_n` 的**闭式** ✗ |
+| `3^-inj`、`ker⊆ker2`、满射性（真定理 ✓）| `a_n` / `c_n` 的闭式 ✗ |
+
+⇒ **C 是「把已知的等式证明出来」，不是「闭合缺口」** ✗ —— 必须这样标注 ✓

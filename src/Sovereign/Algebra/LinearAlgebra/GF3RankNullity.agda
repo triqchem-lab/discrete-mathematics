@@ -27,6 +27,7 @@ open import Data.Nat.Properties using
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 open import Relation.Nullary using (yes; no; ¬_)
+open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 
 --------------------------------------------------------------------------------
 -- §1. `3^`-单射：`3^a ≡ 3^b ⇒ a ≡ b`
@@ -54,3 +55,48 @@ open import Relation.Binary using (Tri)
 ... | Tri.tri< a<b _ _   = ⊥-elim (<-irrefl eq (3^-mono-< a<b))
 ... | Tri.tri≈ _ a≡b _   = a≡b
 ... | Tri.tri> _ _ b<a   = ⊥-elim (<-irrefl (sym eq) (3^-mono-< b<a))
+
+--------------------------------------------------------------------------------
+-- §2. ★★ `F : ker F² → im F ∩ ker F`：满射性与核
+--
+-- 秩-零化度在**本问题上的实例**：
+--      ker(F | ker F²) = ker F
+-- 配合 `GF3ImKer` 的 `im F ∩ ker F = F(ker F²)`，给出 `q_n = c_n − a_n` 的结构来源
+-- （把 oracle `bd06f20b` 的这条从「数值」升级为「定理」）。
+--------------------------------------------------------------------------------
+
+open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
+open import Sovereign.Base.Trit using (Trit; T₀)
+open import Sovereign.Algebra.LinearAlgebra.GF3LaplacianN using (Torus; sumFin)
+open import Sovereign.Algebra.LinearAlgebra.GF3BlockSplit using (CoeffN; sum2)
+open import Sovereign.Algebra.LinearAlgebra.GF3Barrier using (mulX2; zeroAt; lookupAt)
+open import Sovereign.Algebra.LinearAlgebra.GF3Slice using (sumFin-zero')
+open import Sovereign.Algebra.LinearAlgebra.GF3ImKer using (ImF; KerF; im-ker-eq)
+
+-- `ker F²`
+KerF2 : ∀ {n} → CoeffN n → Set
+KerF2 p = ∀ x → sum2 (sum2 p) x ≡ T₀
+
+-- 辅助：点态为零的函数，`sum2` 后仍为零
+sum2-zero : ∀ {n} (q : CoeffN n) → (∀ y → q y ≡ T₀) → ∀ x → sum2 q x ≡ T₀
+sum2-zero {n} q h x = sumFin-zero' {n} (λ j → mulX2 j q x) goal
+  where
+    goal : ∀ j → mulX2 j q x ≡ T₀
+    goal j with lookupAt j x in eqL
+    ... | fzero             = refl
+    ... | fsuc fzero        = refl
+    ... | fsuc (fsuc fzero) = h (zeroAt j x)
+
+-- ★ `ker F ⊆ ker F²`（一次归零 ⇒ 两次也归零）
+ker⊆ker2 : ∀ {n} {p : CoeffN n} → KerF p → KerF2 p
+ker⊆ker2 ker = sum2-zero _ ker
+
+-- ★★ 满射到 `im F ∩ ker F`：`p ∈ ker F² ⇒ F p ∈ im F ∩ ker F`
+-- （由 `GF3ImKer.im-ker-eq` 的反向：`F(ker F²) ⊆ im F ∩ ker F`）
+ker2-to-imker : ∀ {n} {p : CoeffN n} → KerF2 p → ImF (sum2 p) × KerF (sum2 p)
+ker2-to-imker {n} {p} k2 = proj₁ (im-ker-eq (sum2 p)) (p , k2 , (λ _ → refl))
+
+-- ★★ 核的刻画：在 `ker F²` 上，`F p = 0` 等价于 `p ∈ ker F` 的像
+-- （即 `ker(F | ker F²) = ker F`，因为 `ker F ⊆ ker F²`）
+restrict-kernel : ∀ {n} {p : CoeffN n} → KerF p → KerF (sum2 p)
+restrict-kernel ker = sum2-zero _ ker
