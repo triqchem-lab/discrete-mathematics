@@ -1,3 +1,4 @@
+- [★ 检索纪律（开工必读）](search-discipline.md) — **禁止猜名字搜再断言「不存在」**；「库里没有 X」前须做三件之一（按形状搜／搜共现符号／列真实导出）；**只用 DSH grep 工具不用 bash grep**；附本地库全量清单 + 已验证构件速查（`n≤0⇒n≡0` / `gcd′` 良基模板 / `<-rec` 用法 / `Fin` 构造子）+ DSH `glob` 路径锚定失效的坑（2026-10-20，用户强制）
 - [双轨制开发与宪法约束](dual_track_constitution.md) — Agda 形式化 + Python 工程验证，宪法级约束必须遵守
 - [四文明密度层级与范畴分离](civilization_categories.md) — 电性12d/磁性24d/中性144d/全息4320d，禁止跨层级混用
 - [Frobenius 构造化范式](frobenius-constructivization.md) — GF(3^n) 有限域: 线性框架 + 基展开替换 3^n 条 refl 穷举 (GF27/81/243/729 已完成)
