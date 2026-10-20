@@ -23,9 +23,11 @@ module Sovereign.Algebra.LinearAlgebra.GF3LaplacianN where
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Vec using (Vec; []; _∷_; replicate)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans; cong; cong₂)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; cong₂)
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
+open import Sovereign.Base.Trit using
+  (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; ⊕-assoc; ⊕-comm)
+open import Sovereign.Base.Trit using () renaming (⊕-identityʳ to ⊕-idʳ)
 
 --------------------------------------------------------------------------------
 -- §1. 载体（T-A1）
@@ -112,3 +114,43 @@ lapN-zero {n} x =
                      {h = λ _ → T₀}
                      (λ j → refl))
         (sumFin-zero {n})
+
+--------------------------------------------------------------------------------
+-- §6. 线性性（T-C）
+--------------------------------------------------------------------------------
+
+-- 标量场逐点加法
+_+S_ : ∀ {n} → ScalarN n → ScalarN n → ScalarN n
+(f +S g) x = f x ⊕ g x
+
+-- `negate` 对 `⊕` 分配（9 情形）
+negate-⊕ : ∀ a b → negate (a ⊕ b) ≡ negate a ⊕ negate b
+negate-⊕ T₀ T₀ = refl
+negate-⊕ T₀ T₁ = refl
+negate-⊕ T₀ T₂ = refl
+negate-⊕ T₁ T₀ = refl
+negate-⊕ T₁ T₁ = refl
+negate-⊕ T₁ T₂ = refl
+negate-⊕ T₂ T₀ = refl
+negate-⊕ T₂ T₁ = refl
+negate-⊕ T₂ T₂ = refl
+
+-- `(a ⊕ b) ⊕ (c ⊕ d) ≡ (a ⊕ c) ⊕ (b ⊕ d)`
+--   **代数链**（5 步）而非 81 情形穷举 —— `⊕-assoc` 方向：`(x ⊕ y) ⊕ z ≡ x ⊕ (y ⊕ z)`
+sum4 : ∀ a b c d → (a ⊕ b) ⊕ (c ⊕ d) ≡ (a ⊕ c) ⊕ (b ⊕ d)
+sum4 a b c d =
+  trans (⊕-assoc a b (c ⊕ d))
+ (trans (cong (a ⊕_) (sym (⊕-assoc b c d)))
+ (trans (cong (λ z → a ⊕ (z ⊕ d)) (⊕-comm b c))
+ (trans (cong (a ⊕_) (⊕-assoc c b d))
+        (sym (⊕-assoc a c (b ⊕ d))))))
+
+-- 单坐标差分线性
+--   `diffAt i (f +S g) x = [f(sx) ⊕ g(sx)] ⊕ negate (f x ⊕ g x)`
+--   `(diffAt i f +S diffAt i g) x = [f(sx) ⊕ negate (f x)] ⊕ [g(sx) ⊕ negate (g x)]`
+--   靠 `negate-⊕` + `sum4` 通；此处只给陈述（下面给出证明）
+diffAt-+S : ∀ {n} (i : Fin n) (f g : ScalarN n) (x : Torus n) →
+  diffAt i (f +S g) x ≡ (diffAt i f +S diffAt i g) x
+diffAt-+S i f g x =
+  trans (cong (λ z → (f (shiftAt i x) ⊕ g (shiftAt i x)) ⊕ z) (negate-⊕ (f x) (g x)))
+        (sum4 (f (shiftAt i x)) (g (shiftAt i x)) (negate (f x)) (negate (g x)))
