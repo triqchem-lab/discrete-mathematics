@@ -2540,3 +2540,72 @@ sum2-cong  : (∀ y → p y ≡ p' y) → sum2 p x ≡ sum2 p' x
 | `GF3MonoCount` | 86 | `9cd29990` |
 | `GF3Dim` | 254 | `91f69051` |
 | **`GF3ImKer`** | **104** | **`2e44228c`** |
+
+---
+
+## §54. ★★★ `GF3BasisCount`：`V` 有基 ⇒ `V ≅ Fin (3^dim)`（2026-10-20，回执 `73e1768b`）
+
+### 54.1 交付
+
+```agda
+record Basis {n} (V : CoeffN n → Set) : Set where
+  field dim : ℕ ; vecs : Fin dim → CoeffN n
+        closed : ∀ c → V (Comb vecs c)          -- ★ 新增：张成空间 ⊆ V
+        covers : ∀ p → V p → Span dim vecs p    -- V ⊆ 张成空间
+        sep    : Separated vecs                 -- 系数唯一
+
+toCoeff / fromCoeff / fromCoeff-closed
+round1 : fromCoeff (toCoeff p) ≡ p（点态）      -- covers
+round2 : toCoeff (fromCoeff c) ≡ c              -- comb-inj
+
+★★ V-to-Fin  : V 的元素 ↦ Fin (3^dim)（经 toCoeff + fromFun）
+★★ V-from-Fin: Fin (3^dim) ↦ V 的元素（经 toFun + fromCoeff）
+V-round-from : V-to-Fin (V-from-Fin k) ≡ k      -- fromFun-toFun
+V-round-to   : V-from-Fin (V-to-Fin p) ≡ p（点态）-- toFun-fromFun
+```
+
+### 54.2 ★ 这是「维数 ↔ 基数」的桥
+
+```
+Basis V  ⇒  V ≅ (Fin dim → Trit) ≅ Fin (3^dim)
+⇒ |V| = 3^(dim V)
+```
+
+**这是秩-零化度的计数侧** ✓ ✓ —— 有了它，维数等式就可化为基数等式 ✓
+
+### 54.3 关键技术点（本轮）
+
+**① `Basis` 必须含「闭性」** ✗ 否则反向映射落不进 `V` ✓
+（`IsBasis` 原来只有 covers + sep ✓，缺 `closed` ✓）
+
+**② 两处「函数参数的改写」需要逐点同余** ✗：
+```agda
+fromFun-cong : (∀ i → f i ≡ g i) → fromFun d f ≡ fromFun d g
+Comb-cong    : (∀ i → c i ≡ c' i) → Comb v c x ≡ Comb v c' x
+```
+（本库无 funext ⇒ `cong` 对函数参数无效 ✗）
+
+### 54.4 本会话模块清单（10 个，全部 0 postulate / 0 hole）
+
+| 模块 | 行数 | 回执 |
+|---|---|---|
+| `GF3RowOps` | 179 | `8c540bd7` |
+| `GF3Rank` | 129 | `17a18ba0` |
+| `GF3LaplacianN` | 421 | `ee2f46a9` |
+| `GF3Barrier` | 236 | `65db64d0` |
+| `GF3BlockSplit` | 292 | `ba77c943` |
+| `GF3MonoCount` | 86 | `9cd29990` |
+| `GF3Dim` | 254 | `91f69051` |
+| `GF3ImKer` | 120 | `2e44228c` |
+| `GF3Count` | ~200 | `18326802` |
+| **`GF3BasisCount`** | **~170** | **`73e1768b`** |
+
+### 54.5 剩余：纤维等大（秩-零化度的最后一步）
+
+```
+需要：线性映射 T : V → W，ker T 有基、im T 有基
+      ⇒ V 有基，且 dim V = dim ker T + dim im T
+```
+**这是唯一剩下的** ✓ —— 有了它就能：
+1. `q_n = dim ker F² − dim ker F`（用 `im F ∩ ker F = F(ker F²)` ✓ 已证）
+2. `b_n` 的递推
