@@ -98,3 +98,38 @@ proof_oracle action:"kit-list"
 # 5. 撞限制才知道查
 prover_limits action:"query" "<报错原文>"
 ```
+
+---
+
+## 6. ★ 跨库主题词搜索（2026-10-20 强化，第 4 次重推后加）
+
+**本会话已 4 次重推已有工作** ✗：`Positional`（逐位算术）→ `negate-⊕`（模内已有）→
+`Data/Nat/GCD.gcd′`（良基模板）→ **cubical 的矩阵初等变换**（`GF3RowOps`）✗。
+
+**根因** ✓：只搜「我以为该在的地方」，**从不搜 cubical** ✗ —— 尽管它就在 Agda include path 里 ✗。
+
+### 规矩：开新模块前，对每个「我要新建的概念」跑这个清单
+
+```
+概念词（不是名字）：rank / matrix / elimination / normal form / row / basis / kernel ...
+搜索根（全部，不是选几个）：
+  /data/work/functional-programming/{agda-stdlib, 1lab, agda-unimath, cubical,
+                                    agda-categories, agda-algebras, TypeTopology}
+  /data/work/leanprover/{mathlib4, NavierStokesAndEuler}
+  /data/work/discrete-mathematics/src
+```
+
+### 已确认的「大件在哪些库」（查表，省得再搜）
+
+| 想要什么 | 在哪儿 | 规模 |
+|---|---|---|
+| **矩阵 / 初等行变换 / 史密斯标准形** | `cubical/Cubical/Algebra/Matrix/{,RowTransformation,Elementaries}` + `IntegerMatrix/Smith` | 353 + **744** + 321 行 |
+| 位值制 / 逐位算术 | `src/Sovereign/Synthesis/Format/Positional.agda` | 279 行 |
+| 良基欧几里得递归 | `agda-stdlib/src/Data/Nat/GCD.agda:46` `gcd′` | — |
+| ℕ 强归纳 | `agda-stdlib/src/Data/Nat/Induction.agda` `<-rec` / `cRec` | — |
+| `n ≤ 0 → n ≡ 0` | `agda-stdlib/src/Data/Nat/Properties.agda:310` `n≤0⇒n≡0` | — |
+
+### 结论口径
+
+- **cubical 用 `Path`，本库主流用 `≡`** ⇒ 两者不直接互换 ✓；
+- 需要**通用**件 ⇒ **用 cubical** ✓；需要**本库 `≡` 风格的最小自足件** ⇒ 才自己写 ✓（并在头注写明与 cubical 的关系 ✓）。
