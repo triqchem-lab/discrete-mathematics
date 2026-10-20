@@ -210,3 +210,13 @@ Vac-block-fwd p v = (go1 , go2)
 
     go2 : Vac (splitAt p (fsuc (fsuc fzero)))
     go2 r h2 all-nz = v (fsuc (fsuc fzero) ∷ r) h2 (λ { fzero → f2v≢f0 ; (fsuc i) → all-nz i })
+
+-- 反向：f1/f2 切片都在 V_{n−1}A ⇒ V_nA
+-- （新坐标为 T₀ 时**自动**满足：新坐标本身就是零）
+Vac-block-bwd : ∀ {n} (p : CoeffN (suc n)) →
+  Vac (splitAt p (fsuc fzero)) → Vac (splitAt p (fsuc (fsuc fzero))) → Vac p
+Vac-block-bwd p v1 v2 (fzero ∷ r) hpx all-nz = all-nz fzero refl
+Vac-block-bwd p v1 v2 (fsuc fzero ∷ r) hpx all-nz =
+  v1 r hpx (λ i → all-nz (fsuc i))
+Vac-block-bwd p v1 v2 (fsuc (fsuc fzero) ∷ r) hpx all-nz =
+  v2 r hpx (λ i → all-nz (fsuc i))
