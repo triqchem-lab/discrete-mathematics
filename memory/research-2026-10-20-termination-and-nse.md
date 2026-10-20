@@ -2323,3 +2323,45 @@ someZero-recur : ∀ n → someZeroMono (suc n) ≡ 3 * someZeroMono n + noZeroM
 计数半：dim(ker A² ∩ V_{n−1}A) = someZeroMono (n−1) − b_{n−1}
         —— 需极简 dim（子空间 ≅ Fin d → Trit），~80 行
 ```
+
+---
+
+## §50. `GF3Dim` 完成 §1–§13（2026-10-20，回执 `91f69051`）
+
+### 50.1 全谱（245 行，20 导出，0 postulate / 0 hole）
+
+| 节 | 内容 |
+|---|---|
+| §1–§3 | `Comb`（点态组合）/ `Span` / `comb-zero` / `zero-in-span` |
+| §4 | `δc` 指示函数 / `δc-self` / `δc-neq` / `sumFin-zero'` |
+| §5 | δ 三分支（`δc-fzero-suc` / `δc-suc-fzero` / ★ `δc-fsuc`）|
+| §6 | ★★ `sumFin-δ`（δ 正交性）|
+| §7 | `gen-in-span` |
+| §8 | `Separated`（分离族）|
+| §9 | ★ `comb-sep`（分离点只留一项）|
+| §10 | `T₂-mul-neg` / ★ `⊗-cancel`（非零因子可消）|
+| §11 | ★★★ `comb-inj`（线性无关）|
+| §12 | ★★ **`IsBasis d v V`** = 生成元在 V + 张成 + 分离 |
+| §13 | ★★★ **`basis-unique`**（基下系数唯一）|
+
+### 50.2 ★ 意义：「维数 = d」的**无 dim 形式**
+
+```
+IsBasis d v V  ⇒  V 与 (Fin d → Trit) 之间存在双射
+   · (∀ p → V p → Span d v p)   给出「满」（每个 V 元素都是组合）
+   · Separated + comb-inj        给出「单」（系数唯一）
+```
+
+⇒ 这是**构造性、无需 funext、无需商空间**的维数陈述 ✓ ✓
+
+### 50.3 查证（fable5 Step 1）
+
+**本地库无现成机件** ✗：
+- `cubical/LinearAlgebra/` **不存在**
+- 全库无 `LinearIndep` / `Basis`（除 `DistLattice/Basis`，与本问题无关）
+⇒ `GF3Dim` 是唯一路径 ✓
+
+### 50.4 剩余（唯一）
+
+给 `ker F_n ∩ V_nA` **显式构造 `IsBasis (someZeroMono (n−1))`** ✗
+—— 即写出 `someZeroMono (n−1)` 个分离的生成元 ✓。
