@@ -26,7 +26,7 @@ open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using
-  (_≡_; refl; cong; cong₂; sym; trans)
+  (_≡_; _≢_; refl; cong; cong₂; sym; trans)
 
 open import Sovereign.Base.Trit using
   (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; ⊗-zeroˡ; ⊗-identityʳ; ⊕-identityˡ)
@@ -66,3 +66,94 @@ zero-in-span v = (λ _ → T₀) , (λ x → sym (comb-zero v x))
 
 -- 注：单个生成元 `v i` 落在张成里需要「δ 组合」，即 `c j = (i ≡ j ? T₁ : T₀)`，
 --     依赖 `Fin d` 的可判定相等（下一步 §4 处理）。
+
+--------------------------------------------------------------------------------
+-- §4. 指示函数（标准基向量）与「取第 i 个系数」
+--------------------------------------------------------------------------------
+
+open import Data.Empty using (⊥; ⊥-elim)
+open import Relation.Nullary using (yes; no; Dec)
+open import Data.Fin.Properties using (_≟_; fsuc-injective)
+
+-- δ 组合：`δc i j = T₁` 当 `i ≡ j`，否则 `T₀`
+δc : ∀ {d} → Fin d → (Fin d → Trit)
+δc i j with i ≟ j
+... | yes _ = T₁
+... | no  _ = T₀
+
+-- 自身取 T₁
+δc-self : ∀ {d} (i : Fin d) → δc i i ≡ T₁
+δc-self i with i ≟ i
+... | yes _ = refl
+... | no ¬p = ⊥-elim (¬p refl)
+
+-- 不同取 T₀
+δc-neq : ∀ {d} (i j : Fin d) → i ≢ j → δc i j ≡ T₀
+δc-neq i j ne with i ≟ j
+... | yes p = ⊥-elim (ne p)
+... | no  _ = refl
+
+-- 零组合的逐点形式（`sumFin` 的零崩溃）
+sumFin-zero' : ∀ {d} → sumFin {d} (λ _ → T₀) ≡ T₀
+sumFin-zero' {d} = sumFin-zero {d}
+
+--------------------------------------------------------------------------------
+-- §5. δ 的三条分支引理
+--------------------------------------------------------------------------------
+
+δc-fzero-suc : ∀ {m} (j : Fin m) → δc {suc m} fzero (fsuc j) ≡ T₀
+δc-fzero-suc j = refl
+
+δc-suc-fzero : ∀ {m} (i : Fin m) → δc {suc m} (fsuc i) fzero ≡ T₀
+δc-suc-fzero i = refl
+
+-- ★ 关键：fsuc 在两侧对齐（stdlib 的 Fin 判定相等按构造子递归）
+δc-fsuc : ∀ {m} (i j : Fin m) → δc {suc m} (fsuc i) (fsuc j) ≡ δc i j
+δc-fsuc i j with i ≟ j
+... | yes _ = refl
+... | no  _ = refl
+
+--------------------------------------------------------------------------------
+-- §6. ★ 核心引理：δ 组合在 i 处取回 f i
+--------------------------------------------------------------------------------
+
+open import Sovereign.Base.Trit using (⊗-identityˡ; ⊗-zeroˡ; ⊕-identityʳ)
+
+sumFin-δ : ∀ {d} (f : Fin d → Trit) (i : Fin d) →
+  sumFin (λ j → δc i j ⊗ f j) ≡ f i
+sumFin-δ {suc m} f fzero =
+  trans (cong₂ _⊕_ (trans (cong (λ z → z ⊗ f fzero) (δc-self {suc m} fzero)) (⊗-identityˡ (f fzero)))
+                   tail-zero)
+        (⊕-identityʳ (f fzero))
+  where
+    tail-zero : sumFin {m} (λ j → δc {suc m} fzero (fsuc j) ⊗ f (fsuc j)) ≡ T₀
+    tail-zero =
+      trans (sumFin-cong {n = m} (λ j → cong (λ z → z ⊗ f (fsuc j)) (δc-fzero-suc j)))
+            (sumFin-zero {m})
+sumFin-δ {suc m} f (fsuc i) =
+  trans (cong₂ _⊕_
+          (trans (cong (λ z → z ⊗ f fzero) (δc-suc-fzero i))
+                 (⊗-zeroˡ (f fzero)))
+          (trans (sumFin-cong {n = m} (λ j → cong (λ z → z ⊗ f (fsuc j)) (δc-fsuc i j)))
+                 (sumFin-δ {m} (λ j → f (fsuc j)) i)))
+        (⊕-identityˡ (f (fsuc i)))
+
+--------------------------------------------------------------------------------
+-- §7. 每个生成元落在自己的张成里（用 §6 的 δ 对偶）
+--------------------------------------------------------------------------------
+
+gen-in-span : ∀ {n d} (v : Fin d → CoeffN n) (i : Fin d) → Span d v (v i)
+gen-in-span v i = δc i , (λ x → sym (sumFin-δ {d = _} (λ j → v j x) i))
+
+--------------------------------------------------------------------------------
+-- §8. ★ 线性无关：组合的「系数」可由取值唯一恢复
+--
+-- 若 `v` 在每个下标处都有「分离点」（其他生成元在该点为零），则
+-- `Comb v c ≡ Comb v c'` 推出 `c i ≡ c' i`。
+--------------------------------------------------------------------------------
+
+-- 分离性：(i 处有 x 使 v i x ≠ T₀，而 j ≠ i 时 v j x ≡ T₀) 的逐点形式
+Separated : ∀ {n d} (v : Fin d → CoeffN n) → Set
+Separated {n} {d} v =
+  ∀ (i : Fin d) → Σ (Torus n) (λ x → (v i x ≢ T₀)
+    × (∀ (j : Fin d) → j ≢ i → v j x ≡ T₀))
