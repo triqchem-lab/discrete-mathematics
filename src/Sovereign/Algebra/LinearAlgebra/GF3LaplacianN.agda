@@ -23,6 +23,7 @@ module Sovereign.Algebra.LinearAlgebra.GF3LaplacianN where
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Vec using (Vec; []; _∷_; replicate)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
+open import Data.Product using (_×_; _,_; _↔_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; cong₂)
 
 open import Sovereign.Base.Trit using
@@ -227,13 +228,33 @@ rot3 T₂ T₂ T₀ = refl
 rot3 T₂ T₂ T₁ = refl
 rot3 T₂ T₂ T₂ = refl
 
--- ⛔ **待补（止损记录，2026-10-20）**：`lapN1-eq`
---   `lapN1-eq : ∀ (f : ScalarN 1) (a : Fin 3) → lapN f (a ∷ []) ≡ f p0 ⊕ (f p1 ⊕ f p2)`
+-- ★ 三点同值：`lapN f` 在 `Torus 1` 上取常数（= 三点之和）
 --
---   **三次尝试失败** ✗（∀ a 三分 + `p-lap` + `rot3` 链，第三个情形形状对不上）。
---   已证可用件 ✓：`p-lap`（27 情形）、`rot3`（27 情形）—— 两者本身正确 ✓。
---
---   **下一轮正解**：先用 `proof_goals action:"normalize"` 看 `lapN f (p2 ∷ [])` 的**范式**，
---   确认它到底是 `p-lap` 的哪种实例（怀疑：`a = p2` 时 `sumFin` 多了一层 `⊕ T₀`，导致
---   左端不是 `(c ⊕ negate b) ⊕ negate (b ⊕ negate a)` 而是 `((c ⊕ negate b) ⊕ negate (…)) ⊕ T₀`）。
---   **不要**再盲试 `rot3` 的组合 ✗（组合空间小但已试两次 ✗）。
+-- 关键：`sumFin {1} g = g fzero ⊕ T₀` ⇒ 左端多一层 `⊕ T₀`，用 `⊕-idʳ` 收掉 ✓
+-- （2026-10-20：先手工展开 `sumFin` 再写证，一次通过）
+lapN1-eq : ∀ (f : ScalarN 1) (a : Fin 3) →
+  lapN f (a ∷ []) ≡ f p0 ⊕ (f p1 ⊕ f p2)
+lapN1-eq f fzero =
+  trans (cong (λ z → z ⊕ T₀) (p-lap (f p0) (f p1) (f p2)))
+        (⊕-idʳ (f p0 ⊕ (f p1 ⊕ f p2)))
+lapN1-eq f (fsuc fzero) =
+  trans (cong (λ z → z ⊕ T₀)
+              (trans (p-lap (f p1) (f p2) (f p0)) (rot3 (f p1) (f p2) (f p0))))
+        (⊕-idʳ (f p0 ⊕ (f p1 ⊕ f p2)))
+lapN1-eq f (fsuc (fsuc fzero)) =
+  trans (cong (λ z → z ⊕ T₀)
+              (trans (p-lap (f p2) (f p0) (f p1))
+                     (trans (rot3 (f p2) (f p0) (f p1))
+                            (rot3 (f p1) (f p2) (f p0)))))
+        (⊕-idʳ (f p0 ⊕ (f p1 ⊕ f p2)))
+
+-- ★ T-D 的 n=1 结论：`annN 1` 由「三点之和为零」完全刻画
+--   （⇒ `annN 1` 是 2 维的，与公式 `3^{n−1}+2^{n−1}` 在 n=1 处 = 2 一致 ✓）
+annN1-iff : ∀ (f : ScalarN 1) →
+  ((∀ a → lapN f (a ∷ []) ≡ T₀) → (f p0 ⊕ (f p1 ⊕ f p2) ≡ T₀))
+  × ((f p0 ⊕ (f p1 ⊕ f p2) ≡ T₀) → (∀ a → lapN f (a ∷ []) ≡ T₀))
+annN1-iff f =
+    (λ h → trans (sym (lapN1-eq f fzero)) (h fzero))
+  , (λ h → λ { fzero               → trans (lapN1-eq f fzero) h
+             ; (fsuc fzero)        → trans (lapN1-eq f (fsuc fzero)) h
+             ; (fsuc (fsuc fzero)) → trans (lapN1-eq f (fsuc (fsuc fzero))) h })
