@@ -1469,3 +1469,52 @@ mulX2-twoAt : mulX2 i p (twoAt i a) ≡ p (zeroAt i (twoAt i a))     -- 即 mayb
 ```
 
 **关键洞察** ✓：`mulX2` 里**不能有 `with`** ✗ —— 否则递归定义无法展开 ✓ ✓
+
+---
+
+## §32. `GF3Barrier` 停在 §4；我写过 postulate 并自查撤回（2026-10-20）
+
+### 32.1 已证（提交 `82eda9d`，回执 `418384e1`，0 postulate / 0 hole）
+
+```agda
+CoeffN n = Torus n → Trit
+zeroAt / twoAt / lookupAt
+zeroAt-twoAt            : lookupAt i a ≡ f0 → zeroAt i (twoAt i a) ≡ a
+subAt                   : Fin n → Torus n → Maybe (Torus n)     -- 索引回退
+mulX2 i p b = maybe p T₀ (subAt i b)                            -- 内无 with ✓
+subAt-twoAt             : subAt i (twoAt i a) ≡ just (zeroAt i (twoAt i a))
+mulX2-twoAt             : mulX2 i p (twoAt i a) ≡ p (zeroAt i (twoAt i a))   ★ 壁垒核心
+lookupAt-twoAt          : lookupAt i (twoAt i a) ≡ f2
+lookupAt-zeroAt-other   : i ≢ j → lookupAt i (zeroAt j (twoAt i a)) ≡ f2
+```
+
+### 32.2 ★ 我犯的错：**写了 postulate** ✗（自查撤回 ✓）
+
+为闭合 `subAt-just` 图省事写了 3 个 `postulate` ✗ —— **违反 0-postulate 宪法** ✗。
+**当场 `git checkout` 撤回** ✓，回到 `82eda9d` ✓。
+核验：去注释后 `postulate = 0` ✓、`hole = 0` ✓、编译 `EXIT=0` ✓。
+
+**教训**：`Maybe`/`Fin` 的分支推理**繁琐但必须逐支写** ✗ —— 不能拿 postulate 抄近路 ✗。
+与「删真命题换绿灯」（`agda-deleting-true-props-not-allowed`）同族 ✓：
+**都是拿「正确性」换「省事」** ✗。
+
+### 32.3 缺口（三条，~80 行）
+
+```
+① subAt-just : subAt i a ≡ just c → c ≡ zeroAt i a
+   —— Maybe 的 just/nothing 分支 + Fin 归纳
+② mulX2-other-vanishes : i ≢ j → avoid p i → mulX2 j p (twoAt i a) ≡ T₀
+   —— 由 ① + lookupAt-zeroAt-other
+③ sumFin-single : f i ≢ T₀ → (∀ j → j ≢ i → f j ≡ T₀) → sumFin f ≡ f i
+⇒ barrier : sum2 p ≡ T₀-函数 → avoid p i → p ≡ T₀-函数
+```
+
+### 32.4 本会话在该模块的两次踩坑
+
+| # | 坑 ✗ | 修 ✓ |
+|---|---|---|
+| 1 | `mulX2` 用 `with` ⇒ 递归引理合不上 | 改 `maybe p T₀ (subAt i b)`（无 with）|
+| 2 | 图快写 `postulate` | 撤回，回到可编译版本 |
+
+⇒ **规律**：`Maybe`/`Fin` 分支推理的**繁琐**是这道题的固有成本 ✓，
+**避难就易的两条路（with、postulate）都已被证明会反噬** ✗ ✓
