@@ -112,3 +112,35 @@ lookupAt-zeroAt-other {n = suc n} fzero (fsuc j) ne (a ∷ as) = refl
 lookupAt-zeroAt-other {n = suc n} (fsuc i) fzero ne (a ∷ as) = lookupAt-twoAt i as
 lookupAt-zeroAt-other {n = suc n} (fsuc i) (fsuc j) ne (a ∷ as) =
   lookupAt-zeroAt-other i j (λ e → ne (cong fsuc e)) as
+
+--------------------------------------------------------------------------------
+-- §5. 壁垒：其余项归零
+--------------------------------------------------------------------------------
+
+nothing≢just : ∀ {A : Set} {a : A} → nothing ≢ just a
+nothing≢just ()
+
+-- `zeroAt j` 不改动 i-坐标（i ≠ j）
+lookupAt-zeroAt-general : ∀ {n} (i j : Fin n) → i ≢ j → (x : Torus n) →
+  lookupAt i (zeroAt j x) ≡ lookupAt i x
+lookupAt-zeroAt-general {n = suc n} fzero fzero ne (x ∷ xs) = ⊥-elim (ne refl)
+lookupAt-zeroAt-general {n = suc n} fzero (fsuc j) ne (x ∷ xs) = refl
+lookupAt-zeroAt-general {n = suc n} (fsuc i) fzero ne (x ∷ xs) = refl
+lookupAt-zeroAt-general {n = suc n} (fsuc i) (fsuc j) ne (x ∷ xs) =
+  lookupAt-zeroAt-general i j (λ e → ne (cong fsuc e)) xs
+
+-- 第 j 坐标为 T₂ 时，`subAt j` 恰好解回 `zeroAt j`
+subAt-eq : ∀ {n} (j : Fin n) (b : Torus n) →
+  lookupAt j b ≡ f2 → subAt j b ≡ just (zeroAt j b)
+f0≢f2 : f0 ≢ f2
+f0≢f2 ()
+
+f1≢f2 : fsuc fzero ≢ f2
+f1≢f2 ()
+
+subAt-eq {n = suc n} fzero (x ∷ xs) eq with x
+... | fzero         = ⊥-elim (f0≢f2 eq)
+... | fsuc fzero    = ⊥-elim (f1≢f2 eq)
+... | fsuc (fsuc _) = refl
+subAt-eq {n = suc n} (fsuc j) (x ∷ xs) eq =
+  trans (cong (maybe (λ ys → just (x ∷ ys)) nothing) (subAt-eq j xs eq)) refl
