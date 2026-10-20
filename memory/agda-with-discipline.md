@@ -105,3 +105,37 @@ allHeadsWith : ∀ (x : Trit) → Row → Matrix → Bool
 **并且**：不许用「可选 / sanity / nice-to-have / 非核心」给自己的无能开脱 ✗ —— 真命题没有可选项 ✗。
 
 已入 `prover_limits`：`agda-deleting-true-props-not-allowed`（severity: **blocker**）
+
+---
+
+## 8. ★ 下判断前先算一遍（2026-10-20，单会话 3 次实证）
+
+**同一病根出现 3 次** ✗：
+
+| 轮 | 我的判断 | 实际 | 是否算过 |
+|---|---|---|---|
+| 1 | T4「不可达」✗ | 有结构公式 `3^{n−1}+2^{n−1}` | **没算** |
+| 2 | 族 B = `0↔2` 交换二项式 ✗ | n=3 起证伪 | 从 RREF 基反推（伪模式）|
+| 3 | T-D「需值分类/refactor」✗ | 只需 `sumFin {1}` 展开 + `⊕-idʳ` | **没展开** |
+
+**对照实验**：同一位置的「先猜」耗时 3 轮且失败 ✗；「先算」**1 轮通过** ✓（`66dae0ee`）。
+
+### 协议
+
+凡要说「**难 / 需 refactor / 不可达**」，必须先做过下列**至少一件**并写出结果：
+
+1. **纸笔展开**定义一到两层（例：`sumFin {1} g = g fzero ⊕ T₀`）
+2. 跑 `proof_oracle` 算小样本（n=1,2,3）
+3. `proof_goals action:"normalize"` 看范式
+4. `proof_goals action:"infer"` 看项的类型
+
+### 区分「真 refactor」与「我没算」
+
+| 真 refactor ✓ | 我没算 ✗ |
+|---|---|
+| 阻碍是**符号签名级**的（例：`Torus6` 是固定六元组，不做 `Torus : ℕ → Set` 就无法对 n 归纳）| 只是**定义没展开** |
+| 换写法也绕不开 | 展开一下就有 |
+
+**判据**：**能不能当场算出一个范式/反例来推进？** 能 ⇒ 先算，不要说难 ✓。
+
+已入 `prover_limits`：`judgment-without-computing-first`
