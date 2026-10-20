@@ -253,3 +253,40 @@ block-construct : ∀ {n} (p0 p1 p2 : CoeffN n) →
 block-construct p0 p1 p2 h0 h1 h2 v1 v2 =
   ker-block-bwd (join p0 p1 p2) h0 h1 h2
     , Vac-block-bwd (join p0 p1 p2) v1 v2
+
+--------------------------------------------------------------------------------
+-- §8. ★ 完整分解定理（结构部分收官）
+--
+-- `p ∈ ker F_n ∩ V_nA` ⇒ 五个分量条件**同时**成立：
+--   ① A p₀ = 0   ② A p₁ = 0   ③ p₀ + A p₂ = 0   ④ Vac p₁   ⑤ Vac p₂
+-- 其中 p_k = splitAt p (第 k 个坐标值)。
+--
+-- 这是 §5（核）与 §6（V_nA）的组装 —— 结构部分到此完整：
+-- 分解（本定理）与构造（`block-construct`）互逆，剩下的只是「计数」。
+--------------------------------------------------------------------------------
+
+decompose : ∀ {n} (p : CoeffN (suc n)) →
+  (∀ x → sum2 p x ≡ T₀) → Vac p →
+  (∀ r → sum2 (splitAt p fzero) r ≡ T₀)
+    × (∀ r → sum2 (splitAt p (fsuc fzero)) r ≡ T₀)
+    × (∀ r → splitAt p fzero r ⊕ sum2 (splitAt p (fsuc (fsuc fzero))) r ≡ T₀)
+    × Vac (splitAt p (fsuc fzero))
+    × Vac (splitAt p (fsuc (fsuc fzero)))
+decompose p h v =
+  let (k0 , (k1 , k2)) = ker-block-fwd p h
+      (v1 , v2) = Vac-block-fwd p v
+  in k0 , (k1 , (k2 , (v1 , v2)))
+
+-- 组装检验：分解出来的五个条件足够重建 `p`（与 `block-construct` 互逆）
+decompose-construct : ∀ {n} (p : CoeffN (suc n)) →
+  (h : ∀ x → sum2 p x ≡ T₀) → (v : Vac p) →
+  (∀ x → sum2 (join (splitAt p fzero)
+                     (splitAt p (fsuc fzero))
+                     (splitAt p (fsuc (fsuc fzero)))) x ≡ T₀)
+    × Vac (join (splitAt p fzero)
+                (splitAt p (fsuc fzero))
+                (splitAt p (fsuc (fsuc fzero))))
+decompose-construct p h v =
+  let (k0 , (k1 , (k2 , (v1 , v2)))) = decompose p h v
+  in block-construct (splitAt p fzero) (splitAt p (fsuc fzero))
+                     (splitAt p (fsuc (fsuc fzero))) k0 k1 k2 v1 v2

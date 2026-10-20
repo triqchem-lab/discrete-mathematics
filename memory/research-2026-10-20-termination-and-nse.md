@@ -2248,3 +2248,49 @@ count-3 = someZeroMono 3 ≡ 19      count-6 = someZeroMono 6 ≡ 665
 | `GF3Barrier` | 236 | `65db64d0` |
 | `GF3BlockSplit` | 255 | `c77c7526` |
 | **`GF3MonoCount`** | **~110** | **`9cd29990`** |
+
+---
+
+## §48. ★ 完整分解定理 —— 结构部分收官（2026-10-20，回执 `ba77c943`）
+
+### 48.1 新增
+
+```agda
+★ decompose : p 调和 → Vac p →
+    (A p₀ = 0) × (A p₁ = 0) × (p₀ + A p₂ = 0) × Vac p₁ × Vac p₂
+
+decompose-construct : decompose 的结果喂给 block-construct ⇒ 重新得到 ker ∩ Vac
+```
+
+**这是 §5 与 §6 的组装** ✓ —— 五条分量条件同时给出 ✓ ✓
+
+### 48.2 结构部分**完整**（互逆对）
+
+```
+      decompose（分解，§8 ✓）
+ker F_n ∩ V_nA  ⇄  五条分量条件
+      block-construct（构造，§7 ✓）
+```
+
+⇒ **双向都形式化了** ✓ ✓ —— 结构层面**已经完整** ✓ ✓
+
+### 48.3 现在 `b_n` 证明的精确状态
+
+| 部分 | 内容 | 状态 |
+|---|---|---|
+| **结构** | 分解 ⇄ 构造（五条分量条件）| ✅ **完成**（§5–§8） |
+| **组合半** | 「至少一个零」的指数向量个数 `= 3^n − 2^n` | ✅ **完成**（`GF3MonoCount`）|
+| **计数半** | 五条条件的「解空间维数」`= someZeroMono (n−1)` | ⬜ **未完成** ✗ |
+
+⇒ **只差计数半** ✗ —— 它需要极简 `dim`（子空间 ≅ `Fin d → Trit`）✓ **~80 行** ✗
+
+### 48.4 本会话模块清单（全部 0 postulate / 0 hole）
+
+| 模块 | 行数 | 回执 |
+|---|---|---|
+| `GF3RowOps` | 138 | `8c540bd7` |
+| `GF3Rank` | 129 | `17a18ba0` |
+| `GF3LaplacianN` | 295 | `ee2f46a9` |
+| `GF3Barrier` | 236 | `65db64d0` |
+| **`GF3BlockSplit`** | **~285** | **`ba77c943`** |
+| `GF3MonoCount` | 86 | `9cd29990` |
