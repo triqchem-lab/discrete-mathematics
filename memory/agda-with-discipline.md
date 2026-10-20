@@ -139,3 +139,31 @@ allHeadsWith : ∀ (x : Trit) → Row → Matrix → Bool
 **判据**：**能不能当场算出一个范式/反例来推进？** 能 ⇒ 先算，不要说难 ✓。
 
 已入 `prover_limits`：`judgment-without-computing-first`
+
+---
+
+## 9. ★ 「说卡点」之前必须把两侧形状写出来（2026-10-20，第 4 次同类误判）
+
+**事故**：`NSEOnT6Bridge` 的 `diffAt2-correspond'` 连续 4 次失败 ✗，
+我判断为「`cong₂` 两臂**形状不同步**」✗ —— 听起来像**结构性困难** ✗。
+
+**写出来之后**：
+```
+左 ≡ [diffF6 i f (vecToTuple (LN.shiftAt i v))] ⊕ negate [diffF6 i f (vecToTuple v)]
+右   [diffF6 i f (NS.shiftAt6 i (vecToTuple v))] ⊕ negate [diffF6 i f (vecToTuple v)]
+                        ↑ 只差这一处 ↑                    ↑ 两边完全相同 ⇒ refl ↑
+```
+⇒ **只有第一臂不同** ✓ —— 一个 `cong` 就补上 ✓，**一次通过** ✓（`978d2875`）。
+
+### 判据（加进 `judgment-without-computing-first` 的延伸）
+
+**说「卡点」之前，必须把两侧/两臂的**具体形状**逐字写出来对照** ✓。
+写不出来 ⇒ 你看到的是「我不会拼」✗，不是「它结构上不行」✗。
+
+| 说法 | 何时才允许 |
+|---|---|
+| 「两臂形状不同步」✗ | **只在**写出两臂形状、并指出**各自**差在哪里之后 |
+| 「需要 refactor」✗ | **只在**写出阻碍是符号签名级的之后 |
+| 「不可达」✗ | **只在**算过小样本、看过范式之后 |
+
+**共同结构**：把「我的信息不足」包装成「对象的困难」✗。
