@@ -27,6 +27,7 @@ open import Data.Nat using (ℕ; zero; suc)
 open import Data.Vec using (Vec; []; _∷_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Maybe using (Maybe; just; nothing)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong; cong₂)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate;
@@ -72,84 +73,24 @@ zeroAt-twoAt {n = suc n} (fsuc i)  (x ∷ xs) eq =
   cong₂ _∷_ refl (zeroAt-twoAt i xs eq)
 
 --------------------------------------------------------------------------------
--- §4. 乘 `x_i²`：用 Maybe 避开 with（关键：`mulX2` 内**不能有 with**）
+-- §4. 乘 `x_i²`（索引回退；第 i 坐标 < 2 时归零 ⇒ 截断自动）
+--
+-- 注：`with` 在这里是安全的 —— 它只在**证明 `mulX2` 自己的递归**时才挡路，
+--     而那种情形改用 `rewrite` 即可（见 `mulX2-twoAt`）。
 --------------------------------------------------------------------------------
-
-open import Data.Maybe using (Maybe; just; nothing; maybe)
-
--- 索引回退：第 i 坐标减 2；不足 2 时 nothing（⇒ 截断自动）
-subAt : ∀ {n} → Fin n → Torus n → Maybe (Torus n)
-subAt {n = suc n} fzero (x ∷ xs) with x
-... | fzero          = nothing
-... | fsuc fzero     = nothing
-... | fsuc (fsuc _)  = just (f0 ∷ xs)
-subAt {n = suc n} (fsuc i) (x ∷ xs) =
-  maybe (λ ys → just (x ∷ ys)) nothing (subAt i xs)
 
 mulX2 : ∀ {n} → Fin n → CoeffN n → CoeffN n
-mulX2 i p b = maybe p T₀ (subAt i b)
-
--- ★ `twoAt i a` 的第 i 坐标是 T₂ ⇒ `subAt` 解回 `zeroAt i (twoAt i a)`
-subAt-twoAt : ∀ {n} (i : Fin n) (a : Torus n) →
-  subAt i (twoAt i a) ≡ just (zeroAt i (twoAt i a))
-subAt-twoAt {n = suc n} fzero (a ∷ as) = refl
-subAt-twoAt {n = suc n} (fsuc i) (a ∷ as) =
-  trans (cong (maybe (λ ys → just (a ∷ ys)) nothing) (subAt-twoAt i as)) refl
-
--- 乘 `x_i²` 在 `twoAt` 处解回 `p`
-mulX2-twoAt : ∀ {n} (i : Fin n) (p : CoeffN n) (a : Torus n) →
-  mulX2 i p (twoAt i a) ≡ p (zeroAt i (twoAt i a))
-mulX2-twoAt i p a = cong (maybe p T₀) (subAt-twoAt i a)
-
--- `twoAt i a` 的第 i 坐标是 T₂
-lookupAt-twoAt : ∀ {n} (i : Fin n) (a : Torus n) → lookupAt i (twoAt i a) ≡ f2
-lookupAt-twoAt {n = suc n} fzero (a ∷ as) = refl
-lookupAt-twoAt {n = suc n} (fsuc i) (a ∷ as) = lookupAt-twoAt i as
-
--- `j ≠ i` 时 `zeroAt j (twoAt i a)` 的第 i 坐标仍是 T₂
-lookupAt-zeroAt-other : ∀ {n} (i j : Fin n) → i ≢ j → (a : Torus n) →
-  lookupAt i (zeroAt j (twoAt i a)) ≡ f2
-lookupAt-zeroAt-other {n = suc n} fzero fzero ne (a ∷ as) = ⊥-elim (ne refl)
-lookupAt-zeroAt-other {n = suc n} fzero (fsuc j) ne (a ∷ as) = refl
-lookupAt-zeroAt-other {n = suc n} (fsuc i) fzero ne (a ∷ as) = lookupAt-twoAt i as
-lookupAt-zeroAt-other {n = suc n} (fsuc i) (fsuc j) ne (a ∷ as) =
-  lookupAt-zeroAt-other i j (λ e → ne (cong fsuc e)) as
+mulX2 i p b with lookupAt i b
+... | fzero               = T₀
+... | fsuc fzero          = T₀
+... | fsuc (fsuc fzero)   = p (zeroAt i b)
 
 --------------------------------------------------------------------------------
--- §5. 壁垒：其余项归零
+-- §5. 基本引理
 --------------------------------------------------------------------------------
 
 nothing≢just : ∀ {A : Set} {a : A} → nothing ≢ just a
 nothing≢just ()
-
--- `zeroAt j` 不改动 i-坐标（i ≠ j）
-lookupAt-zeroAt-general : ∀ {n} (i j : Fin n) → i ≢ j → (x : Torus n) →
-  lookupAt i (zeroAt j x) ≡ lookupAt i x
-lookupAt-zeroAt-general {n = suc n} fzero fzero ne (x ∷ xs) = ⊥-elim (ne refl)
-lookupAt-zeroAt-general {n = suc n} fzero (fsuc j) ne (x ∷ xs) = refl
-lookupAt-zeroAt-general {n = suc n} (fsuc i) fzero ne (x ∷ xs) = refl
-lookupAt-zeroAt-general {n = suc n} (fsuc i) (fsuc j) ne (x ∷ xs) =
-  lookupAt-zeroAt-general i j (λ e → ne (cong fsuc e)) xs
-
--- 第 j 坐标为 T₂ 时，`subAt j` 恰好解回 `zeroAt j`
-subAt-eq : ∀ {n} (j : Fin n) (b : Torus n) →
-  lookupAt j b ≡ f2 → subAt j b ≡ just (zeroAt j b)
-f0≢f2 : f0 ≢ f2
-f0≢f2 ()
-
-f1≢f2 : fsuc fzero ≢ f2
-f1≢f2 ()
-
-subAt-eq {n = suc n} fzero (x ∷ xs) eq with x
-... | fzero         = ⊥-elim (f0≢f2 eq)
-... | fsuc fzero    = ⊥-elim (f1≢f2 eq)
-... | fsuc (fsuc _) = refl
-subAt-eq {n = suc n} (fsuc j) (x ∷ xs) eq =
-  trans (cong (maybe (λ ys → just (x ∷ ys)) nothing) (subAt-eq j xs eq)) refl
-
---------------------------------------------------------------------------------
--- §6. 其余项归零（壁垒的关键一步）
---------------------------------------------------------------------------------
 
 T₁≢T₀ : T₁ ≢ T₀
 T₁≢T₀ ()
@@ -160,28 +101,116 @@ T₂≢T₀ ()
 f2≢f0 : f2 ≢ f0
 f2≢f0 ()
 
+-- `twoAt i a` 的第 i 坐标是 T₂
+lookupAt-twoAt : ∀ {n} (i : Fin n) (a : Torus n) → lookupAt i (twoAt i a) ≡ f2
+lookupAt-twoAt {n = suc n} fzero (a ∷ as) = refl
+lookupAt-twoAt {n = suc n} (fsuc i) (a ∷ as) = lookupAt-twoAt i as
+
+-- `zeroAt j` 不改动 i-坐标（i ≠ j）
+lookupAt-zeroAt-general : ∀ {n} (i j : Fin n) → i ≢ j → (x : Torus n) →
+  lookupAt i (zeroAt j x) ≡ lookupAt i x
+lookupAt-zeroAt-general {n = suc n} fzero fzero ne (x ∷ xs) = ⊥-elim (ne refl)
+lookupAt-zeroAt-general {n = suc n} fzero (fsuc j) ne (x ∷ xs) = refl
+lookupAt-zeroAt-general {n = suc n} (fsuc i) fzero ne (x ∷ xs) = refl
+lookupAt-zeroAt-general {n = suc n} (fsuc i) (fsuc j) ne (x ∷ xs) =
+  lookupAt-zeroAt-general i j (λ e → ne (cong fsuc e)) xs
+
+-- ★ 乘 `x_i²` 在 `twoAt` 处解回 `p`（用 rewrite 避开 with 的抽象）
+mulX2-twoAt : ∀ {n} (i : Fin n) (p : CoeffN n) (a : Torus n) →
+  mulX2 i p (twoAt i a) ≡ p (zeroAt i (twoAt i a))
+mulX2-twoAt i p a rewrite lookupAt-twoAt i a = refl
+
+--------------------------------------------------------------------------------
+-- §6. 壁垒第一步：其余项归零
+--
+-- 数学：`avoid p i` 说「p 非零处第 i 坐标必为 T₀」。
+-- 在 `twoAt i a` 处，`x_j²·p`（j ≠ i）若语出，落在 `zeroAt j (twoAt i a)`，
+-- 其第 i 坐标仍是 T₂（i≠j）⇒ 与 avoid 矛盾 ⇒ 该项为零。
+--------------------------------------------------------------------------------
+
+-- 辅助（顶层，不依赖 where 的子句作用域）
+zw-chain : ∀ {n} (i j : Fin n) → i ≢ j → (a : Torus n) →
+  lookupAt i (zeroAt j (twoAt i a)) ≡ f2
+zw-chain i j ne a =
+  trans (lookupAt-zeroAt-general i j ne (twoAt i a)) (lookupAt-twoAt i a)
+
+-- 三值消去：若「非零」会导出矛盾，则该值必为零（对 Trit 三分，不做 with）
+trit-zero : (v : Trit) → (v ≢ T₀ → ⊥) → v ≡ T₀
+trit-zero T₀ h = refl
+trit-zero T₁ h = ⊥-elim (h T₁≢T₀)
+trit-zero T₂ h = ⊥-elim (h T₂≢T₀)
+
+mulX2-other : ∀ {n} (i j : Fin n) → i ≢ j → (p : CoeffN n) (a : Torus n) →
+  (∀ b → p b ≢ T₀ → lookupAt i b ≡ f0) →
+  mulX2 j p (twoAt i a) ≡ T₀
+mulX2-other i j ne p a avoid with lookupAt j (twoAt i a)
+... | fzero            = refl
+... | fsuc fzero       = refl
+... | fsuc (fsuc fzero) =
+      trit-zero (p (zeroAt j (twoAt i a)))
+        (λ e → f2≢f0 (trans (sym (zw-chain i j ne a))
+                            (avoid (zeroAt j (twoAt i a)) e)))
+
+--------------------------------------------------------------------------------
+-- §7. 单点求和：若 f 只在 i 处非零，则 sumFin f = f i
+--------------------------------------------------------------------------------
+
 fsuc≢fzero : ∀ {n} {i : Fin n} → fsuc i ≢ fzero
 fsuc≢fzero ()
 
 fzero≢fsuc : ∀ {n} {i : Fin n} → fzero ≢ fsuc i
 fzero≢fsuc ()
 
--- `mulX2-other`：j ≠ i 时，在 `twoAt i a` 处 `x_j²·p` 的贡献为零
--- 数学：`twoAt i a` 的第 j 坐标若 < 2 ⇒ `subAt j` = nothing ⇒ 直接为零；
---       若 = 2 ⇒ 得到 `zeroAt j (twoAt i a)`，其第 i 坐标仍是 T₂（i≠j），
---       而 `avoid` 说非零处第 i 坐标必须是 T₀ ⇒ 只能为零
--- 第 j 坐标不是 T₂ ⇒ `subAt j` 返回 nothing
-subAt-nothing : ∀ {n} (j : Fin n) (b : Torus n) →
-  lookupAt j b ≡ f0 → subAt j b ≡ nothing
-subAt-nothing {n = suc n} fzero (x ∷ xs) eq with x
-... | fzero         = refl
-... | fsuc fzero    = refl
-... | fsuc (fsuc _) = ⊥-elim (fsuc≢fzero eq)
-subAt-nothing {n = suc n} (fsuc j) (x ∷ xs) eq =
-  trans (cong (maybe (λ ys → just (x ∷ ys)) nothing) (subAt-nothing j xs eq)) refl
+fsuc-inj : ∀ {n} {i j : Fin n} → fsuc i ≡ fsuc j → i ≡ j
+fsuc-inj refl = refl
 
--- ⬜ 未完成：`mulX2-other`（其余项归零）与 `barrier` 本体。
---    缺一条 `Maybe` 归纳引理 `subAt-lookup`：
---      ∀ (j i) → i ≢ j → (b c) → subAt j b ≡ just c → lookupAt i c ≡ lookupAt i b
---    证法：对 `lookupAt j b` 分三支，用已证的 `subAt-eq`（= f2 时解回）与
---          `subAt-nothing`（< 2 时返 nothing）。
+sumFin-single : ∀ {n} (i : Fin n) (f : Fin n → Trit) (v : Trit) →
+  f i ≡ v → (∀ j → i ≢ j → f j ≡ T₀) → sumFin f ≡ v
+sumFin-single {n = suc n} fzero f v eq h =
+  trans (cong₂ _⊕_ eq tail) (⊕-identityʳ v)
+  where
+    tail : sumFin (λ k → f (fsuc k)) ≡ T₀
+    tail = trans (sumFin-cong {n = n} (λ k → h (fsuc k) fzero≢fsuc)) (sumFin-zero {n})
+sumFin-single {n = suc n} (fsuc i) f v eq h =
+  trans (cong₂ _⊕_ head
+               (sumFin-single i (λ k → f (fsuc k)) v eq
+                                (λ k e → h (fsuc k) (λ p → e (fsuc-inj p)))))
+        (⊕-identityˡ v)
+  where
+    head : f fzero ≡ T₀
+    head = h fzero fsuc≢fzero
+
+--------------------------------------------------------------------------------
+-- §8. ★ 壁垒定理
+--
+-- 若 `p` 满足：
+--   ① `sum2 p ≡ 0`（即 `Σ_j x_j²·p = 0`，调和）
+--   ② `p` 非零处的第 i 坐标必为 T₀（支撑避开坐标 i）
+-- 则 `p ≡ 0`。
+-- 证：若 `p b ≠ 0`，则在 `twoAt i b` 处只有 `j = i` 项存活，其值 = `p b ≠ 0`，
+--     与 ① 矛盾。
+--------------------------------------------------------------------------------
+
+sum2 : ∀ {n} → CoeffN n → CoeffN n
+sum2 p b = sumFin (λ j → mulX2 j p b)
+
+barrier-step : ∀ {n} (p : CoeffN n) (i : Fin n) (b : Torus n) →
+  (∀ b → sum2 p b ≡ T₀) →
+  (∀ b → p b ≢ T₀ → lookupAt i b ≡ f0) →
+  p b ≢ T₀ → p b ≡ T₀
+barrier-step p i b hyp avoid e =
+  trans (sym (sumFin-single i (λ j → mulX2 j p (twoAt i b)) (p b) at-i not-i))
+        (hyp (twoAt i b))
+  where
+    at-i : mulX2 i p (twoAt i b) ≡ p b
+    at-i = trans (mulX2-twoAt i p b) (cong p (zeroAt-twoAt i b (avoid b e)))
+
+    not-i : ∀ j → i ≢ j → mulX2 j p (twoAt i b) ≡ T₀
+    not-i j ne = mulX2-other i j ne p b avoid
+
+barrier : ∀ {n} (p : CoeffN n) (i : Fin n) →
+  (∀ b → sum2 p b ≡ T₀) →
+  (∀ b → p b ≢ T₀ → lookupAt i b ≡ f0) →
+  ∀ b → p b ≡ T₀
+barrier p i hyp avoid b =
+  trit-zero (p b) (λ e → e (barrier-step p i b hyp avoid e))

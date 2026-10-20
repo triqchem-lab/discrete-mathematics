@@ -1570,3 +1570,60 @@ subAt-lookup : ∀ {n} (j i : Fin n) → i ≢ j → (b c : Torus n) →
 ⬜ 1 条 subAt-lookup + 组装（~30 行）
 ✅ 数学完全确定（人类组合证明 ✓ + 实算验证 ✓）
 ```
+
+---
+
+## §34. ★★★ 壁垒定理**形式化完成**（2026-10-20，回执 `9f117cec`）
+
+### 34.1 主定理（216 行，0 postulate / 0 hole）
+
+```agda
+barrier : ∀ {n} (p : CoeffN n) (i : Fin n) →
+  (∀ b → sum2 p b ≡ T₀) →                        -- ① 调和：Σ_j x_j²·p = 0
+  (∀ b → p b ≢ T₀ → lookupAt i b ≡ f0) →         -- ② 支撑避开坐标 i
+  ∀ b → p b ≡ T₀                                 -- ⇒ p = 0
+```
+
+**这就是人类给出的组合证明的完整形式化** ✓ ✓
+
+### 34.2 全部依赖（16 个符号，全部已证）
+
+| 层 | 符号 |
+|---|---|
+| 表示 | `CoeffN` · `zeroAt` · `twoAt` · `lookupAt` |
+| 基本引理 | `zeroAt-twoAt` · `lookupAt-twoAt` · `lookupAt-zeroAt-general` · `fsuc-inj` |
+| 算子 | `mulX2`（`with` 版）· `sum2` · `mulX2-twoAt` · `mulX2-other` |
+| 工具 | `trit-zero`（三值消去）· `sumFin-single` · `nothing≢just`/`f2≢f0`/… |
+| **主定理** | **`barrier`**（+ `barrier-step`）|
+
+### 34.3 ★ 三个关键技术点（本会话踩出来的）
+
+| # | 问题 ✗ | 解法 ✓ |
+|---|---|---|
+| 1 | `mulX2` 的 `with` 挡住**递归引理** `mulX2-twoAt` | **`rewrite lookupAt-twoAt i a = refl`** ✓ |
+| 2 | 内层 `with p (zeroAt j …)` 不替换 ⇒ 矛盾构造失败 | **`trit-zero`**（对 `Trit` 三分，不做 with）✓ |
+| 3 | `where` 只作用于**最后一个子句** | 辅助提到**顶层**带全参数 ✓ |
+
+**核心洞察** ✓：**`with` 不是不能用** ✗ —— 它只在「证明函数自己的递归」时挡路 ✓，
+那种情形 `rewrite` 解决 ✓；而「用函数的定义做分支」时 `with` 是**正确**工具 ✓ ✓。
+
+### 34.4 剩余（诚实）
+
+```
+✅ barrier : 支撑避开 ⇒ 调和元素为零（形式化完成 ✓）
+⬜ b_n = dim(ker F ∩ V_nA) = 3^{n−1} − 2^{n−1}
+   —— 壁垒只给「非零元素不能落在任何 V_S 里」，
+      而 b_n 需要「跨 V_S 组合的计数」✗（人类已指出 ✓）
+```
+
+### 34.5 本会话在该模块的完整踩坑史（5 类）
+
+| # | 坑 | 状态 |
+|---|---|---|
+| 1 | `with` 挡递归 | ✅ `rewrite` 解 |
+| 2 | 写 `postulate` 抄近路（2 次）| ✅ 换真证明 |
+| 3 | `where` 作用域 | ✅ 提顶层 |
+| 4 | 内层 `with` 不替换 | ✅ `trit-zero` 解 |
+| 5 | `Fin 1` 唯一性 / `fsuc-inj` / 不等式方向 | ✅ 补齐 |
+
+**⇒ 全部 5 类都已解决** ✓ —— 模块 0 postulate / 0 hole ✓
