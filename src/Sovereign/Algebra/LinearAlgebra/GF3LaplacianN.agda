@@ -293,3 +293,129 @@ x²-zero-of-invariant : ∀ {n} (i : Fin n) (f : ScalarN n) →
   (∀ x → diffAt i f x ≡ T₀) → (∀ x → diffAt i (diffAt i f) x ≡ T₀)
 x²-zero-of-invariant i f h x =
   trans (cong₂ _⊕_ (h (shiftAt i x)) (cong negate (h x))) refl
+
+--------------------------------------------------------------------------------
+-- §11. 单项式基的 1 维基例（2026-10-20）
+--
+-- 实算（穷举 27 个 g 验证）：基矩阵 B = [[1,2,1],[0,0,1],[0,1,1]]，逆 = [[1,1,1],[0,2,1],[0,1,0]]
+-- 展开系数：c0 = g₀⊕g₁⊕g₂（= sum3 g ✓）、c1 = (g₁⊕g₁)⊕g₂、c2 = g₁
+--
+-- ⚠ 本库无 funext ⇒ g 的三个值必须**参数化**
+--------------------------------------------------------------------------------
+
+q0 q1 q2 : Torus 1
+q0 = fzero ∷ []
+q1 = fsuc fzero ∷ []
+q2 = fsuc (fsuc fzero) ∷ []
+
+delta0 : ScalarN 1
+delta0 (fzero ∷ [])             = T₁
+delta0 (fsuc fzero ∷ [])        = T₀
+delta0 (fsuc (fsuc fzero) ∷ []) = T₀
+
+b0 b1 b2 : ScalarN 1
+b0 = delta0
+b1 = diffAt fzero delta0
+b2 = diffAt fzero (diffAt fzero delta0)
+
+-- 展开系数（实算得出，穷举验证 ✓）
+c0 c1 c2 : Trit → Trit → Trit → Trit
+c0 v0 v1 v2 = v0 ⊕ (v1 ⊕ v2)
+c1 v0 v1 v2 = (v1 ⊕ v1) ⊕ v2
+c2 v0 v1 v2 = v1
+
+-- 组合算子（统一写法）
+comb : Trit → Trit → Trit → Fin 3 → Trit
+comb v0 v1 v2 a =
+  (c0 v0 v1 v2 ⊗ b0 (a ∷ []))
+    ⊕ ((c1 v0 v1 v2 ⊗ b1 (a ∷ [])) ⊕ (c2 v0 v1 v2 ⊗ b2 (a ∷ [])))
+
+-- ★ 三个基点上的分解式（各 27 情形）
+--   在每个点上，LHS 只依赖 v0 v1 v2，且应等于该点对应之值 ✓
+basis1-at-q0 : ∀ (v0 v1 v2 : Trit) → comb v0 v1 v2 fzero ≡ v0
+basis1-at-q0 T₀ T₀ T₀ = refl
+basis1-at-q0 T₀ T₀ T₁ = refl
+basis1-at-q0 T₀ T₀ T₂ = refl
+basis1-at-q0 T₀ T₁ T₀ = refl
+basis1-at-q0 T₀ T₁ T₁ = refl
+basis1-at-q0 T₀ T₁ T₂ = refl
+basis1-at-q0 T₀ T₂ T₀ = refl
+basis1-at-q0 T₀ T₂ T₁ = refl
+basis1-at-q0 T₀ T₂ T₂ = refl
+basis1-at-q0 T₁ T₀ T₀ = refl
+basis1-at-q0 T₁ T₀ T₁ = refl
+basis1-at-q0 T₁ T₀ T₂ = refl
+basis1-at-q0 T₁ T₁ T₀ = refl
+basis1-at-q0 T₁ T₁ T₁ = refl
+basis1-at-q0 T₁ T₁ T₂ = refl
+basis1-at-q0 T₁ T₂ T₀ = refl
+basis1-at-q0 T₁ T₂ T₁ = refl
+basis1-at-q0 T₁ T₂ T₂ = refl
+basis1-at-q0 T₂ T₀ T₀ = refl
+basis1-at-q0 T₂ T₀ T₁ = refl
+basis1-at-q0 T₂ T₀ T₂ = refl
+basis1-at-q0 T₂ T₁ T₀ = refl
+basis1-at-q0 T₂ T₁ T₁ = refl
+basis1-at-q0 T₂ T₁ T₂ = refl
+basis1-at-q0 T₂ T₂ T₀ = refl
+basis1-at-q0 T₂ T₂ T₁ = refl
+basis1-at-q0 T₂ T₂ T₂ = refl
+
+basis1-at-q1 : ∀ (v0 v1 v2 : Trit) → comb v0 v1 v2 (fsuc fzero) ≡ v1
+basis1-at-q1 T₀ T₀ T₀ = refl
+basis1-at-q1 T₀ T₀ T₁ = refl
+basis1-at-q1 T₀ T₀ T₂ = refl
+basis1-at-q1 T₀ T₁ T₀ = refl
+basis1-at-q1 T₀ T₁ T₁ = refl
+basis1-at-q1 T₀ T₁ T₂ = refl
+basis1-at-q1 T₀ T₂ T₀ = refl
+basis1-at-q1 T₀ T₂ T₁ = refl
+basis1-at-q1 T₀ T₂ T₂ = refl
+basis1-at-q1 T₁ T₀ T₀ = refl
+basis1-at-q1 T₁ T₀ T₁ = refl
+basis1-at-q1 T₁ T₀ T₂ = refl
+basis1-at-q1 T₁ T₁ T₀ = refl
+basis1-at-q1 T₁ T₁ T₁ = refl
+basis1-at-q1 T₁ T₁ T₂ = refl
+basis1-at-q1 T₁ T₂ T₀ = refl
+basis1-at-q1 T₁ T₂ T₁ = refl
+basis1-at-q1 T₁ T₂ T₂ = refl
+basis1-at-q1 T₂ T₀ T₀ = refl
+basis1-at-q1 T₂ T₀ T₁ = refl
+basis1-at-q1 T₂ T₀ T₂ = refl
+basis1-at-q1 T₂ T₁ T₀ = refl
+basis1-at-q1 T₂ T₁ T₁ = refl
+basis1-at-q1 T₂ T₁ T₂ = refl
+basis1-at-q1 T₂ T₂ T₀ = refl
+basis1-at-q1 T₂ T₂ T₁ = refl
+basis1-at-q1 T₂ T₂ T₂ = refl
+
+basis1-at-q2 : ∀ (v0 v1 v2 : Trit) → comb v0 v1 v2 (fsuc (fsuc fzero)) ≡ v2
+basis1-at-q2 T₀ T₀ T₀ = refl
+basis1-at-q2 T₀ T₀ T₁ = refl
+basis1-at-q2 T₀ T₀ T₂ = refl
+basis1-at-q2 T₀ T₁ T₀ = refl
+basis1-at-q2 T₀ T₁ T₁ = refl
+basis1-at-q2 T₀ T₁ T₂ = refl
+basis1-at-q2 T₀ T₂ T₀ = refl
+basis1-at-q2 T₀ T₂ T₁ = refl
+basis1-at-q2 T₀ T₂ T₂ = refl
+basis1-at-q2 T₁ T₀ T₀ = refl
+basis1-at-q2 T₁ T₀ T₁ = refl
+basis1-at-q2 T₁ T₀ T₂ = refl
+basis1-at-q2 T₁ T₁ T₀ = refl
+basis1-at-q2 T₁ T₁ T₁ = refl
+basis1-at-q2 T₁ T₁ T₂ = refl
+basis1-at-q2 T₁ T₂ T₀ = refl
+basis1-at-q2 T₁ T₂ T₁ = refl
+basis1-at-q2 T₁ T₂ T₂ = refl
+basis1-at-q2 T₂ T₀ T₀ = refl
+basis1-at-q2 T₂ T₀ T₁ = refl
+basis1-at-q2 T₂ T₀ T₂ = refl
+basis1-at-q2 T₂ T₁ T₀ = refl
+basis1-at-q2 T₂ T₁ T₁ = refl
+basis1-at-q2 T₂ T₁ T₂ = refl
+basis1-at-q2 T₂ T₂ T₀ = refl
+basis1-at-q2 T₂ T₂ T₁ = refl
+basis1-at-q2 T₂ T₂ T₂ = refl
+
