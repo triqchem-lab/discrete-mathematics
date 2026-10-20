@@ -2609,3 +2609,62 @@ Comb-cong    : (∀ i → c i ≡ c' i) → Comb v c x ≡ Comb v c' x
 **这是唯一剩下的** ✓ —— 有了它就能：
 1. `q_n = dim ker F² − dim ker F`（用 `im F ∩ ker F = F(ker F²)` ✓ 已证）
 2. `b_n` 的递推
+
+---
+
+## §55. ★★★ `GF3Fiber`：纤维等大（2026-10-20，回执 `0fa8bb51`）
+
+### 55.1 交付
+
+```agda
+§0  _+C_ / negC / zeroC（点态加法群）
+    +C-assoc / +C-identityˡ / +C-inverse / +C-comm
+§1  record Linear T { add ; neg }        -- 线性性（假设）
+§2  Fiber T y z = ∀ x → T z x ≡ y x
+    Kernel T k  = ∀ x → T k x ≡ T₀
+§3  ★★ fiber→kernel : T x = y ⇒ T(z + (−x)) = 0   （用 add + neg）
+    ★★ kernel→fiber : T k = 0 ⇒ T(x + k) = y      （用 add）
+§4  ★ kernel-fiber-round : x + (z + (−x)) = z（点态）
+```
+
+### 55.2 ★ 这是秩-零化度的**乘法侧**
+
+```
+所有纤维等大  ⇒  |V| = |ker T| · |im T|
+⇒（配合 GF3BasisCount 的 |W| = 3^dim）
+   dim V = dim ker T + dim im T
+```
+
+### 55.3 现在秩-零化度的三块全部到位
+
+| 块 | 模块 | 状态 |
+|---|---|---|
+| 维数判据（张成 + 分离 + 闭性）| `GF3Dim` + `GF3BasisCount` | ✅ |
+| 维数 ↔ 基数（base-3 编码）| `GF3Count` + `GF3BasisCount` | ✅ |
+| 纤维等大（乘法侧）| **`GF3Fiber`** | ✅ **本轮** |
+| **纤维分解（`\|V\| = \|im\|·\|ker\|`）** | — | ⬜ **剩这一步** |
+
+### 55.4 剩余：纤维分解（集合层面）
+
+```
+V ≅ Σ (y : im T) (Fiber y)        （平凡 ✓）
+每个 Fiber y ≅ ker T               （本模块 ✓）
+⇒ |V| = |im T| · |ker T|           （需要「Σ 的基数 = 积」✗）
+```
+**最后一步是有限集合的计数律** ✗ —— 用 `Fin` 层面的 bijection 即可 ✓，~40 行 ✗
+
+### 55.5 本会话模块清单（11 个）
+
+| 模块 | 行数 | 回执 |
+|---|---|---|
+| `GF3RowOps` | 179 | `8c540bd7` |
+| `GF3Rank` | 129 | `17a18ba0` |
+| `GF3LaplacianN` | 421 | `ee2f46a9` |
+| `GF3Barrier` | 236 | `65db64d0` |
+| `GF3BlockSplit` | 292 | `ba77c943` |
+| `GF3MonoCount` | 86 | `9cd29990` |
+| `GF3Dim` | 254 | `91f69051` |
+| `GF3ImKer` | 120 | `2e44228c` |
+| `GF3Count` | ~200 | `18326802` |
+| `GF3BasisCount` | 147 | `73e1768b` |
+| **`GF3Fiber`** | **~130** | **`0fa8bb51`** |
