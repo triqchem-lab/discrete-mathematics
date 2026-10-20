@@ -802,3 +802,53 @@ T4 缺的可能是（均未找到）：
 ```
 
 **这个标注比 "proof_too_hard" 精确，比 "已完成" 准确** ✓。
+
+---
+
+## §19. ★★ 工具早已在本库：`Algebra/Analytic/` 的 1 维调和理论（2026-10-20 人类指出后查证）
+
+### 19.1 本地已有的机件
+
+| 定理 | 位置 | 我的重复实现 ✗ |
+|---|---|---|
+| **`Δ³ ≡ 0`** | `HomologyHarmonic:64` `homology-vanishes-3` | **`diffF6-3`**（`4a9d1cc9`）✗ |
+| **`Δ²-is-const : Δ² f ≡ (sum3 f, sum3 f, sum3 f)`** | `ProjectionDifferential:109` | `lineSum` / `axisLap6-eq-lineSum` ✗ |
+| `Δ-const-zero` | `ProjectionDifferential:101` | — |
+| **`ker Δ = {sum3 = 0}`**（2 维）| 同上推论 | **`annN 1` / `annN1-iff`** ✗ |
+| **`fredholm-compatibility : Δ y ≡ g → sum3 g ≡ T₀`** | `DiscreteDE:198` | ✗（**T3 遗留的正是这个** ✓）|
+| **`ode-solve-verified : sum3 g ≡ T₀ → Δ (ode-solve g h) ≡ g`** | `DiscreteDE:221` | ✗ |
+| `betti-total = 64 = 2⁶`（`Σ C(6,k)`）| `HomologyHarmonic:140` | 族 A 的 `2ⁿ` ✓ |
+
+### 19.2 结构识别（这是人类说的「复形 = 我们的自同构」）
+
+```
+Δ³ = 0                                   （2-步幂零）
+Δ² = ι ∘ sum3        （ι = 常数嵌入）
+sum3 ∘ ι = 3·id = 0  （char 3）
+⇒ Δ² ≠ 0，但 im Δ² ⊆ ker Δ
+⇒ 这是「Δ² = 收缩」模式（Poincaré 引理型），**不是 Koszul 复形** ✗
+```
+
+`DiscreteDE` 的 `ode-solve` **就是收缩算子** ✓（`Δ ∘ solve = id` 限制在 `ker sum3` 上 ✓）。
+
+### 19.3 因此 `n` 重张量才是正确框架
+
+```
+GF3Func^{⊗n} = Torus_n → Trit         （= 我们的 ScalarField ✓）
+⊗^n Δ                                （= 我们的 lapN ✓）
+ker(⊗Δ) 的维数 ← 由 1 维理论 + 张量结构给出
+```
+
+而 `betti-total = 2ⁿ = Σ C(n,k)` ✓ ⇒ **族 A 的 `2ⁿ` 就是 Betti 总数** ✓✓
+
+### 19.4 网络侧
+
+[On the spectral sequence associated to a multicomplex](https://webusers.imj-prg.fr/~muriel.livernet/publications/19_LWZ_JPAA.pdf#2#1)（Livernet–Wang–Zeng）——
+但**我们的不是 multicomplex** ✗（`Δ² ≠ 0`、不反对易）⇒ 谱序列不适用 ✗。
+
+### 19.5 教训（第 5 次重推，与 `Positional`/`negate-⊕`/`GCD`/`cubical 矩阵` 同族）
+
+**查库时我搜的是概念词**（`Koszul`/`Artinian`/`annihilator`/`nilpotent`）✗，
+**没搜本库的自有术语**（`GF3Func`/`Δ`/`sum3`/`Harmonic`/`Betti`/`Fredholm`）✗。
+⇒ **跨库检索清单必须加「本库自有术语」一行** ✗。
+已入 `memory/search-discipline.md` §6 的补充项。
