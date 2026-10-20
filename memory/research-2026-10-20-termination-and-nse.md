@@ -2772,3 +2772,44 @@ F p 在 b 处非零  ⇒  某个 j 使 p (zeroAt j b) 非零（且 lookupAt j b 
 `wt2 a ≡ suc (wt2 (zeroAt i a))` ✓ —— 一次通过 ✓ ✓
 
 **入册**：`∸` 出现在**目标**里时，优先改写成 `suc` 形式 ✗✓
+
+---
+
+## §58. ★★★ `GF3Slice` §3–§4：`F` 升片已形式化（2026-10-20，回执 `c6a9deed`）
+
+### 58.1 交付（148 行，0 postulate / 0 hole）
+
+```agda
+§1  wt2 : Torus n → ℕ
+§2  ★ wt2-zeroAt-suc : lookupAt i a ≡ f2 ⇒ wt2 a ≡ suc (wt2 (zeroAt i a))
+§3  sumFin-zero' : (∀ i → f i ≡ T₀) ⇒ sumFin f ≡ T₀
+    mulX2-nonzero : mulX2 j p b ≠ T₀ ⇒ (lookupAt j b ≡ f2) × (p (zeroAt j b) ≠ T₀)
+§4  Supp P p = ∀ x → p x ≠ T₀ → P x
+    Slice k a = wt2 a ≡ k
+    ★ sum2-zero-off-slice : Supp (Slice k) p ⇒ wt2 b ≠ suc k ⇒ sum2 p b ≡ T₀
+    ★★ sum2-slice : Supp (Slice k) p ⇒ Supp (Slice (suc k)) (sum2 p)
+```
+
+### 58.2 ★★ 这完成了 ③：`F : span(S_k) → span(S_{k+1})`
+
+```
+sum2-slice : p 只在 #2 = k 的片上非零  ⇒  sum2 p 只在 #2 = k+1 的片上非零
+```
+
+### 58.3 关键技术：**逆向陈述**（避开「某项非零」）
+
+原计划：`sumFin f ≠ T₀ ⇒ 某个 f i ≠ T₀` ✗
+—— 撞 `with`-抽象问题 4 次 ✗（`with f fzero in eq` 把 `f fzero` 抽象掉，`sumFin f` 不再归约）
+
+**改为逆向** ✓：
+```agda
+sum2-zero-off-slice : wt2 b ≠ suc k ⇒ sum2 p b ≡ T₀
+```
+✓ —— 正向由**可判定的 ℕ 等式** + `⊥-elim` 给出 ✓，全程无「非零抽取」✓ ✓
+
+### 58.4 入册：`with` 的三条纪律（补充 `agda-with-discipline.md`）
+
+1. **`with f x` 会抽象掉 `f x`** ⇒ 之后 `f x` 不再归约 ✗
+2. **`with ... in eq` 也不解决**（同样抽象 ✓，只是多给一条等式 ✓）
+3. **解法：改写成逆向陈述** ✓（`¬B → ¬A` 在构造性逻辑中与 `A → B` 等价 ✓）
+   —— 或把被 `with` 的值**先提到顶层**（本会话 §43 的做法）

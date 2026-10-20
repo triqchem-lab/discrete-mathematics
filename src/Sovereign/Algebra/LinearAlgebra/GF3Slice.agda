@@ -24,17 +24,17 @@
 
 module Sovereign.Algebra.LinearAlgebra.GF3Slice where
 
-open import Data.Nat using (ℕ; zero; suc; _∸_; _+_)
+open import Data.Nat using (ℕ; zero; suc; _∸_; _+_; _≟_)
 open import Data.Nat.Properties using (∸-+-assoc; +-comm; +-assoc; suc-injective)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Vec using (Vec; []; _∷_)
 open import Data.Product using (_×_; _,_; Σ)
 open import Relation.Binary.PropositionalEquality using
-  (_≡_; refl; cong; cong₂; sym; trans; subst)
+  (_≡_; _≢_; refl; cong; cong₂; sym; trans; subst)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.LinearAlgebra.GF3LaplacianN using (Torus)
-open import Sovereign.Algebra.LinearAlgebra.GF3Barrier using (zeroAt; lookupAt)
+open import Sovereign.Algebra.LinearAlgebra.GF3Barrier using (zeroAt; lookupAt; T₁≢T₀; T₂≢T₀)
 
 --------------------------------------------------------------------------------
 -- §1. 权重 `#2`：指数为 2 的坐标个数
@@ -86,3 +86,64 @@ wt2-zeroAt-suc {n = suc n} (fsuc i) (fsuc fzero ∷ xs) eq =
   wt2-zeroAt-suc i xs eq
 wt2-zeroAt-suc {n = suc n} (fsuc i) (fsuc (fsuc fzero) ∷ xs) eq =
   cong suc (wt2-zeroAt-suc i xs eq)
+
+--------------------------------------------------------------------------------
+-- §3. 非零定位：把「和/乘子非零」退到「某一项非零」
+--------------------------------------------------------------------------------
+
+open import Sovereign.Base.Trit using (_⊕_; ⊕-identityˡ)
+open import Sovereign.Algebra.LinearAlgebra.GF3LaplacianN using (sumFin)
+open import Sovereign.Algebra.LinearAlgebra.GF3BlockSplit using (CoeffN; sum2)
+open import Sovereign.Algebra.LinearAlgebra.GF3Barrier using (mulX2)
+open import Data.Empty using (⊥; ⊥-elim)
+open import Relation.Nullary using (yes; no)
+
+-- `sumFin` 全零 ⇒ 结果为零
+sumFin-zero' : ∀ {n} (f : Fin n → Trit) → (∀ i → f i ≡ T₀) → sumFin f ≡ T₀
+sumFin-zero' {zero} f h = refl
+sumFin-zero' {suc m} f h =
+  trans (cong₂ _⊕_ (h fzero) (sumFin-zero' {m} (λ j → f (fsuc j)) (λ j → h (fsuc j))))
+        (⊕-identityˡ T₀)
+
+-- `mulX2` 非零 ⇒ 该坐标处的指数为 2，且原函数在该点非零
+mulX2-nonzero : ∀ {n} (j : Fin n) (p : CoeffN n) (b : Torus n) →
+  mulX2 j p b ≢ T₀ → (lookupAt j b ≡ fsuc (fsuc fzero)) × (p (zeroAt j b) ≢ T₀)
+mulX2-nonzero j p b ne with lookupAt j b
+... | fzero             = ⊥-elim (ne refl)
+... | fsuc fzero        = ⊥-elim (ne refl)
+... | fsuc (fsuc fzero) = refl , ne
+
+--------------------------------------------------------------------------------
+-- §4. ★★ `F` 升片：支撑在 `#2 = k` 的片上 ⇒ `F p` 支撑在 `#2 = k+1` 的片上
+--------------------------------------------------------------------------------
+
+Supp : ∀ {n} (P : Torus n → Set) (p : CoeffN n) → Set
+Supp {n} P p = ∀ (x : Torus n) → p x ≢ T₀ → P x
+
+-- 切片谓词
+Slice : ∀ {n} → ℕ → Torus n → Set
+Slice {n} k a = wt2 a ≡ k
+
+-- ★ 核心：若 `wt2 b ≠ k+1`，则 `sum2 p b = T₀`（逆向陈述，避开「某项非零」）
+sum2-zero-off-slice : ∀ {n} (p : CoeffN n) (k : ℕ) →
+  Supp (Slice k) p → ∀ (b : Torus n) → wt2 b ≢ suc k → sum2 p b ≡ T₀
+sum2-zero-off-slice {n} p k sp b ne =
+  sumFin-zero' {n} (λ j → mulX2 j p b) goal
+  where
+    open import Sovereign.Algebra.LinearAlgebra.GF3Barrier using (trit-zero)
+
+    goal : ∀ j → mulX2 j p b ≡ T₀
+    goal j with lookupAt j b in eqL
+    ... | fzero             = refl
+    ... | fsuc fzero        = refl
+    ... | fsuc (fsuc fzero) =
+      trit-zero (p (zeroAt j b))
+                (λ pnz → ne (trans (wt2-zeroAt-suc j b eqL)
+                                   (cong suc (sp (zeroAt j b) pnz))))
+
+-- ★★ 主定理（正向）：`F` 把 `#2 = k` 的片升到 `#2 = k+1`
+sum2-slice : ∀ {n} (p : CoeffN n) (k : ℕ) →
+  Supp (Slice k) p → Supp (Slice (suc k)) (sum2 p)
+sum2-slice {n} p k sp b nz with wt2 b ≟ suc k
+... | yes eq = eq
+... | no neq = ⊥-elim (nz (sum2-zero-off-slice p k sp b neq))
