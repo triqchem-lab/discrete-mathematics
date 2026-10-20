@@ -290,3 +290,48 @@ sum2-slice p k sp b nz with wt2 b ≟ suc k
 **`with` 是「用函数的定义做分支」，不是「拿到分支的值当等式」** ✗
 —— 要值当等式，用消去函数或可判定等式 ✓
 —— 要从非零结论抽项，改**逆向陈述** ✓
+
+---
+
+## §12. **先 grep 再写**——stdlib 名字不是猜的（2026-10-21，人类批评后定稿）
+
+### 12.1 人类的批评（原话）
+
+> 「本地的大量 agda, lean4, rocq 的代码库，你每次都是一 base grep 检索不出来，
+>   让你使用 dsh grep 你不听，每次大量已经完成的代码不使用，反复的推理。」
+
+### 12.2 实例：`3^`-单射
+
+**猜名字的代价** ✗：
+```
+3^-grow / 3^-mono-<  —— 自己证，4 次类型错误
+（"3^a ≤ 3^(suc b)" 的 n≤1+n 用法错了、*-monoʳ-< 的参数方向错了……）
+```
+
+**grep 的代价** ✓：
+```agda
+-- DSH grep `^\^-mono` in agda-stdlib/src/Data/Nat/Properties.agda
+-- ⇒ 一行命中：
+^-monoʳ-< : ∀ m → 1 < m → Monotonic₁ _<_ _<_ (m ^_)     -- Properties.agda:1128
+
+3^-mono-< = ^-monoʳ-< 3 1<3      -- 一行完成 ✓
+```
+
+### 12.3 检索清单（本库常用）
+
+| 想找 | grep 模式 | 位置 |
+|---|---|---|
+| ℕ 单调性 | `^\^-mono` `^\*-mono` `^\+-mono` | `Data/Nat/Properties.agda` |
+| ℕ 等式引理 | `^m∸n` `^\*\-identity` `^m\*n≡0` | 同上 |
+| `Fin` 的双射 | `↔` / `remQuot` / `combine` / `\*↔×` | `Data/Fin/Properties.agda` |
+| 有限幂等 | `^\^-` | 同上 |
+| 本库的 Span/Comb/基 | `IsBasis` / `Comb` / `Span` | `src/Sovereign/Algebra/LinearAlgebra/` |
+| 秩/行化简 | `rankOfReduced` / `elimBelow` | `GF3Rank.agda` |
+
+### 12.4 铁律
+
+1. **写任何 `ℕ` 算术引理前，先 grep `Data/Nat/Properties.agda`** ✗✓
+2. **写任何 `Fin`/`Vec` 双射前，先 grep `Data/Fin/Properties.agda`** ✗✓
+3. **写任何「基/张成/维数」前，先 grep `src/Sovereign/Algebra/LinearAlgebra/`** ✗✓
+4. **跨库（Lean/Rocq/Agda）检索**用 DSH `grep` 工具（不是 bash grep）✓
+5. 猜名字 = 浪费 3–4 轮；grep = 1 轮 ✓
