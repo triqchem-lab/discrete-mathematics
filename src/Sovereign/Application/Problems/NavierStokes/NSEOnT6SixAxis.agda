@@ -2,6 +2,13 @@
 
 -- | NSE6Axis — N-S 方程在 T⁶ 上的**六轴**离散微分算子（Q5 缺陷修复版）
 --
+-- ⚠ **载体关系声明（2026-10-20 合并裁决）** —— 模块族里三个不同载体：
+--   · `NSEOnT6`（717 行）**幅度层 3 轴**：`C3 = Fin 3`，Q5 缺陷；**14 个下游**在其上工作，
+--     已审计**无一下游声称六轴** ⇒ 那边结论有效但**范围只是 3 轴** ✓。
+--   · **本模块**（`Axis6 = Fin 6`）**幅度层 6 轴**：修 Q5 ✓。
+--   · `NSEPresentation`（1237 行）**幅度 × 相位**：`PresField` 载体，自带 `adv6`。
+--   ⇒ 三者是**不同载体**，不是重复实现 ✓。跨载体搬运结论前先确认载体 ✗。
+--
 -- 数学背景
 --   连续统 N-S:  ∂_t v + (v·∇)v = νΔv - ∇p,   div v = 0      (ℝ³ 或 ℝ³/ℤ³)
 --   离散基座:    T⁶ = (Z/3)⁶,  |T⁶| = 729 格点
@@ -825,3 +832,65 @@ lineForm6 f x =
   cong6-Trit (axisLap6-eq-lineSum a0 f x) (axisLap6-eq-lineSum a1 f x)
              (axisLap6-eq-lineSum a2 f x) (axisLap6-eq-lineSum a3 f x)
              (axisLap6-eq-lineSum a4 f x) (axisLap6-eq-lineSum a5 f x)
+
+--------------------------------------------------------------------------------
+-- §13. `x_j³ = 0`（T4 路线 A 的关键引理，2026-10-20）
+--
+-- 数学：char 3 下 `(s − 1)³ = s³ − 3s² + 3s − 1 = s³ − 1 = 0`（因 `s³ = id`）。
+-- 算子层：`diffF6 i` = `s − 1`，故**三次前向差分恒为零**。
+--
+-- 证法要点：`D² = axisLap6 = lineSum`（`axisLap6-eq-lineSum` 已证 ✓），
+--   展开 `D³ f x = D²f(sx) ⊕ negate (D²f x)` 后，两项是**同一形状**
+--   （`s²(sx) = s³x = x`），故互为负 ⇒ 和为零。避免 27+ case 穷举。
+--------------------------------------------------------------------------------
+
+-- `a ⊕ negate a ≡ T₀`（GF(3) 三分）
+⊕-negate-self : ∀ a → a ⊕ negate a ≡ T₀
+⊕-negate-self T₀ = refl
+⊕-negate-self T₁ = refl
+⊕-negate-self T₂ = refl
+
+-- 三项重排后的抵消（27 情形）
+--   `(b ⊕ (c ⊕ a)) ⊕ negate (a ⊕ (b ⊕ c)) ≡ T₀`
+d3-cancel : ∀ (a b c : Trit) → (b ⊕ (c ⊕ a)) ⊕ negate (a ⊕ (b ⊕ c)) ≡ T₀
+d3-cancel T₀ T₀ T₀ = refl
+d3-cancel T₀ T₀ T₁ = refl
+d3-cancel T₀ T₀ T₂ = refl
+d3-cancel T₀ T₁ T₀ = refl
+d3-cancel T₀ T₁ T₁ = refl
+d3-cancel T₀ T₁ T₂ = refl
+d3-cancel T₀ T₂ T₀ = refl
+d3-cancel T₀ T₂ T₁ = refl
+d3-cancel T₀ T₂ T₂ = refl
+d3-cancel T₁ T₀ T₀ = refl
+d3-cancel T₁ T₀ T₁ = refl
+d3-cancel T₁ T₀ T₂ = refl
+d3-cancel T₁ T₁ T₀ = refl
+d3-cancel T₁ T₁ T₁ = refl
+d3-cancel T₁ T₁ T₂ = refl
+d3-cancel T₁ T₂ T₀ = refl
+d3-cancel T₁ T₂ T₁ = refl
+d3-cancel T₁ T₂ T₂ = refl
+d3-cancel T₂ T₀ T₀ = refl
+d3-cancel T₂ T₀ T₁ = refl
+d3-cancel T₂ T₀ T₂ = refl
+d3-cancel T₂ T₁ T₀ = refl
+d3-cancel T₂ T₁ T₁ = refl
+d3-cancel T₂ T₁ T₂ = refl
+d3-cancel T₂ T₂ T₀ = refl
+d3-cancel T₂ T₂ T₁ = refl
+d3-cancel T₂ T₂ T₂ = refl
+
+-- ⛔ **待补（止损记录，2026-10-20）**：`diffF6-3`
+--   `diffF6-3 : ∀ i f x → diffF6 i (diffF6 i (diffF6 i f)) x ≡ T₀`
+--   （即 char 3 的 `(s−1)³ = s³ − 1 = 0`；`shiftAt6-3` 已证 ✓、`d3-cancel` 已证 ✓）
+--
+--   **三次尝试失败** ✗（按 `memory/agda-with-discipline.md` 的止损协议，第 3 次即停）：
+--   问题不在数学，在**形状对齐** ✗ —— `rewrite` 把 `f(s³x)` 换成 `f x` 之后，
+--   `lineSum i f (s x)` 变成 `f(sx) ⊕ (f(s²x) ⊕ f x)`，与 `lineSum i f x = f x ⊕ (f(sx) ⊕ f(s²x))`
+--   是**重排**关系（不是同一个项）✗ ⇒ `d3-cancel` 的实例化对不上 ✗。
+--
+--   **下一轮的正解**（按止损协议「提取辅助函数 / 换方案」）：
+--   ① 先证 `lineSum-comm : lineSum i f y ≡ f(s²y) ⊕ (f(sy) ⊕ f y)`（重排版）✓ 只需 ⊕-comm/assoc；
+--   ② 再用 `cong` 把 `D³` 的两项都归到**同一形状**，此时 `⊕-negate-self` 直接闭合 ✓。
+--   **不要**再试 rewrite 方向 ✗（两个方向都试过了 ✗）。
