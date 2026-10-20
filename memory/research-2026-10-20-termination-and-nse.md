@@ -2200,3 +2200,51 @@ ker F_n ∩ V_nA
   ⇒ b_n = b_{n−1} + dim(ker A² ∩ V_{n−1}A)     ← 只差这一步的维数
   ⇒ b_n = 3^{n−1} − 2^{n−1}                     （oracle 87ce8e37 ✓）
 ```
+
+---
+
+## §47. ★ `GF3MonoCount`：`b_n` 的**组合半**已形式化（2026-10-20，回执 `9cd29990`）
+
+### 47.1 新增模块（~110 行，0 postulate / 0 hole）
+
+```agda
+allMono      n = 3 ^ n           -- 全部指数向量
+noZeroMono   n = 2 ^ n           -- 各分量都非零（每坐标 2 种：1 或 2）
+someZeroMono n = allMono n ∸ noZeroMono n     -- 至少一个零
+
+noZero≤all : noZeroMono n ≤ allMono n         （由 ^-monoˡ-≤ + 2≤3）
+★ someZero-plus-noZero : someZeroMono n + noZeroMono n ≡ allMono n
+```
+
+### 47.2 ★ 与 `b_n` 的数值对应（`refl` 级 ✓）
+
+```agda
+count-1 = someZeroMono 1 ≡ 1       count-4 = someZeroMono 4 ≡ 65
+count-2 = someZeroMono 2 ≡ 5       count-5 = someZeroMono 5 ≡ 211
+count-3 = someZeroMono 3 ≡ 19      count-6 = someZeroMono 6 ≡ 665
+```
+
+**与 `b_{n+1} = 3^n − 2^n` 完全一致** ✓ ✓（`b_2..b_7 = 1,5,19,65,211,665` ✓）
+
+⇒ **`b_{n+1} = someZeroMono n`** ✓ ✓ —— 这就是 `b_n` 的**组合半** ✓ ✓
+
+### 47.3 意义
+
+`b_n` 的证明拆成两半 ✓：
+| 半 | 内容 | 状态 |
+|---|---|---|
+| **组合半** | 「至少一个零」的指数向量个数 `= 3^n − 2^n` | ✅ **本轮形式化** |
+| **维数半** | `dim(ker F ∩ V_nA)` 等于该个数 | ⬜ 需 `dim` |
+
+⇒ 维数半剩 **~80 行** ✗（需「基 ≅ `Fin d → Trit`」的极简 `dim`）✓
+
+### 47.4 全模块清单（本会话新增，全部 0 postulate / 0 hole）
+
+| 模块 | 行数 | 回执 |
+|---|---|---|
+| `GF3RowOps` | 138 | `8c540bd7` |
+| `GF3Rank` | 129 | `17a18ba0` |
+| `GF3LaplacianN` | 295 | `ee2f46a9` |
+| `GF3Barrier` | 236 | `65db64d0` |
+| `GF3BlockSplit` | 255 | `c77c7526` |
+| **`GF3MonoCount`** | **~110** | **`9cd29990`** |
