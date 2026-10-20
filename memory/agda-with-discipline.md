@@ -222,3 +222,71 @@ trit-zero T₂ h = ⊥-elim (h T₂≢T₀)
 **问：「我在证这个函数自己的性质，还是在用它的定义分支？」**
 - 前者 ⇒ `rewrite`（或改定义去掉 `with`）
 - 后者 ⇒ `with` 正确；但若要**把分支值当等式用** ⇒ 用 `trit-zero` 类消去函数
+
+---
+
+## §11. `with` 的**抽象陷阱**（2026-10-20，本会话撞 6 次后定稿）
+
+### 11.1 症状
+
+```agda
+sumFin-nonzero : (f : Fin n → Trit) → sumFin f ≢ T₀ → Σ (Fin n) (λ i → f i ≢ T₀)
+sumFin-nonzero {suc m} f ne with f fzero in eq
+... | T₀ = ...
+```
+
+报错：`sumFin (λ j → f (fsuc j)) ≡ f fzero ⊕ sumFin (…)` **不再成立** ✗
+—— 因为 `with f fzero` 把 `f fzero` **抽象成变量** ✗，`sumFin f` 的定义展开被**打断** ✗。
+
+### 11.2 三条纪律
+
+| 写法 | 是否抽象掉 `f x` | 能否用它证明 |
+|---|---|---|
+| `with f x` | ✅ 抽象 | ❌ `f x` 不再归约 |
+| `with f x in eq` | ✅ **照样抽象** ✗ | ⚠️ 多一条等式，但归约仍断 |
+| **不提 `f x`（改陈述）** | ❌ 不抽象 | ✅ **推荐** |
+
+### 11.3 四个可行解法（按优先级）
+
+**① 改写成逆向陈述** ✓（最推荐）
+```agda
+-- 想要： A → B
+-- 改写： ¬B → ¬A          （构造性逻辑中两者等价）
+sum2-zero-off-slice : wt2 b ≠ suc k → sum2 p b ≡ T₀
+```
+原理：**逆向陈述避开「从结论里抽取某一项」** ✗✓ —— 本轮 §58 一次通过 ✓
+
+**② 把被 `with` 的值提到顶层** ✓
+```agda
+-- 不在 proof 内部 with，而是先定义一个顶层函数
+mulX2-slice : ... → mulX2 (fsuc i) p (k ∷ rest) ≡ mulX2 i (splitAt p k) rest
+```
+
+**③ 用消去函数**（`trit-zero` 类）✓
+```agda
+trit-zero : (v : Trit) → (v ≢ T₀ → ⊥) → v ≡ T₀
+```
+
+**④ 用可判定等式 + `⊥-elim`** ✓
+```agda
+sum2-slice p k sp b nz with wt2 b ≟ suc k
+... | yes eq = eq
+... | no neq = ⊥-elim (nz (sum2-zero-off-slice p k sp b neq))
+```
+
+### 11.4 本会话的 6 次实例
+
+| # | 场景 | 解法 |
+|---|---|---|
+| 1 | `mulX2-twoAt`（递归卡住）| `rewrite lookupAt-twoAt i a = refl` |
+| 2 | `mulX2-slice`（两支同一式）| 显式分三支（`fzero`/`fsuc fzero`/`fsuc (fsuc fzero)`）|
+| 3 | `ker-block-fwd` 的 `where` 里 `n` 不在域 | 提顶层 |
+| 4 | `Vac-tail-1` 的 `Fin (suc n)` 索引 | 具名常量 + 显式 `{n = 2}` |
+| 5 | `sumFin-nonzero`（`with ... in` 抽象）| **改逆向陈述** |
+| 6 | `sum2-zero-off-slice` 的 `lookupAt` | `with ... in eqL` + 逆向陈述 |
+
+### 11.5 一句话
+
+**`with` 是「用函数的定义做分支」，不是「拿到分支的值当等式」** ✗
+—— 要值当等式，用消去函数或可判定等式 ✓
+—— 要从非零结论抽项，改**逆向陈述** ✓
