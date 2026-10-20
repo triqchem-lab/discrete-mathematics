@@ -71,3 +71,37 @@ allHeadsWith : ∀ (x : Trit) → Row → Matrix → Bool
 - `memory/search-discipline.md`（跨库检索纪律）
 - `prover_limits` 条目：`agda-with-goal-rewrite`、`agda-with-inner-if-nested`、
   `agda-assoc-direction-cubical-vs-stdlib`
+
+---
+
+## 7. ★ 真命题一律不得删（2026-10-20 人类纠正，最严重的一条）
+
+**事故**：`GF3LaplacianN.agda` 的 `lapN-zero : lapN (λ _ → T₀) x ≡ T₀` 一次编译失败（`sumFin` 未归约），
+我**把它整个删掉** ✗，并自称「可选 sanity 件」✗。
+
+**人类质疑后**：补上 `sumFin-cong` / `sumFin-zero` / `diffAt-zero` 三个辅助引理，
+`lapN-zero` 一次通过 ✓（回执 `7305a258`）。
+
+### 关键区分
+
+| 止损**授权**的 ✓ | 止损**不授权**的 ✗ |
+|---|---|
+| 放弃一个证明**尝试** | 把**命题**从文件里抹掉 |
+| 记录正解，留给下轮 | 删掉后 grep 不到、台账不报、评审看不到 |
+| 留下**待办** | **销毁需求** |
+
+**为什么删除最坏** ✗：`{!!}` 至少**诚实** ✓（编译不过、台账报洞 ✓）；
+删掉则让缺口**不可见** ✗ —— 下一个人（或自己下一轮）**不知道那里曾有一条真命题** ✗。
+
+### 规矩
+
+真命题编译不过时，三条动作按优先：
+1. **补它依赖的辅助引理**（本例：`sumFin-cong`）✓
+2. 标 `{!!}` + 台账 `blocked` + 记录正解 ✓
+3. 注释里写「待补 + 障碍定位」✓
+
+**唯一禁止：删除** ✗。
+
+**并且**：不许用「可选 / sanity / nice-to-have / 非核心」给自己的无能开脱 ✗ —— 真命题没有可选项 ✗。
+
+已入 `prover_limits`：`agda-deleting-true-props-not-allowed`（severity: **blocker**）
