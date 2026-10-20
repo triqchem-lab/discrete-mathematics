@@ -110,12 +110,20 @@ elimBelow p ((x ∷ xs) ∷ rs) with isZeroT x
 ... | true  = (x ∷ xs) ∷ elimBelow p rs
 ... | false = (T₀ ∷ elimRow (negate x) p xs) ∷ elimBelow p rs
 
--- ⛔ **待补**：`elimBelow` 的头部归零不变式
---   `elimBelow-heads : ∀ p rs → allHeads (elimBelow p rs) ≡ true`
---   单行情形已由 `elim-head`（§3）逐点证成 ✓；但**列表层**的组合证明卡在
---   `with isZeroT x` 的**抽象**上：`allHeads` 内部还有一次 `if isZeroT x`，
---   `with` 只抽象了外层那一次，内层的 `if` 不随之归约 ✗（Agda 对 `with` 目标的
---   重写在嵌套 `if` 上不穿透）。
---   **下一轮做法**：① 把 `allHeads` 改成 `allHeads' x xs rs`（首项作为显式参数传入，
---   消掉内层 `if`）；或 ② 用 `inspect`（`Data.Bool.Properties` 的 `≡-dec` 风格）拿到证据。
---   本次先保留 `elimBelow` 定义与 `elim-head`（已证），不留下编译不过的证明 ✓。
+-- ★ 列步不变式：消元后所有非空行的首项都是 T₀
+--
+-- 实现要点（`with` 纪律，见 memory/agda-with-discipline.md）：**不用 `with`**，
+-- 直接对 `Trit` 的 3 个构造子匹配 ⇒ `isZeroT` 在选择时即归约 ⇒ `allHeads` 内层
+-- 的 `if` 随之归约。之前用 `with isZeroT x` 只抽象了外层，内层不归约 ⇒ UnequalTerms。
+
+allHeads : Matrix → Bool
+allHeads []             = true
+allHeads ([] ∷ rs)      = allHeads rs
+allHeads ((x ∷ _) ∷ rs) = if isZeroT x then allHeads rs else false
+
+elimBelow-heads : ∀ p rs → allHeads (elimBelow p rs) ≡ true
+elimBelow-heads p []                     = refl
+elimBelow-heads p ([] ∷ rs)              = elimBelow-heads p rs
+elimBelow-heads p ((T₀ ∷ xs) ∷ rs)       = elimBelow-heads p rs
+elimBelow-heads p ((T₁ ∷ xs) ∷ rs)       = elimBelow-heads p rs
+elimBelow-heads p ((T₂ ∷ xs) ∷ rs)       = elimBelow-heads p rs
