@@ -68,3 +68,47 @@ zeroAt-twoAt : ∀ {n} (i : Fin n) (a : Torus n) →
 zeroAt-twoAt {n = suc n} fzero     (x ∷ xs) eq = cong₂ _∷_ (sym eq) refl
 zeroAt-twoAt {n = suc n} (fsuc i)  (x ∷ xs) eq =
   cong₂ _∷_ refl (zeroAt-twoAt i xs eq)
+
+--------------------------------------------------------------------------------
+-- §4. 乘 `x_i²`：用 Maybe 避开 with（关键：`mulX2` 内**不能有 with**）
+--------------------------------------------------------------------------------
+
+open import Data.Maybe using (Maybe; just; nothing; maybe)
+
+-- 索引回退：第 i 坐标减 2；不足 2 时 nothing（⇒ 截断自动）
+subAt : ∀ {n} → Fin n → Torus n → Maybe (Torus n)
+subAt {n = suc n} fzero (x ∷ xs) with x
+... | fzero          = nothing
+... | fsuc fzero     = nothing
+... | fsuc (fsuc _)  = just (f0 ∷ xs)
+subAt {n = suc n} (fsuc i) (x ∷ xs) =
+  maybe (λ ys → just (x ∷ ys)) nothing (subAt i xs)
+
+mulX2 : ∀ {n} → Fin n → CoeffN n → CoeffN n
+mulX2 i p b = maybe p T₀ (subAt i b)
+
+-- ★ `twoAt i a` 的第 i 坐标是 T₂ ⇒ `subAt` 解回 `zeroAt i (twoAt i a)`
+subAt-twoAt : ∀ {n} (i : Fin n) (a : Torus n) →
+  subAt i (twoAt i a) ≡ just (zeroAt i (twoAt i a))
+subAt-twoAt {n = suc n} fzero (a ∷ as) = refl
+subAt-twoAt {n = suc n} (fsuc i) (a ∷ as) =
+  trans (cong (maybe (λ ys → just (a ∷ ys)) nothing) (subAt-twoAt i as)) refl
+
+-- 乘 `x_i²` 在 `twoAt` 处解回 `p`
+mulX2-twoAt : ∀ {n} (i : Fin n) (p : CoeffN n) (a : Torus n) →
+  mulX2 i p (twoAt i a) ≡ p (zeroAt i (twoAt i a))
+mulX2-twoAt i p a = cong (maybe p T₀) (subAt-twoAt i a)
+
+-- `twoAt i a` 的第 i 坐标是 T₂
+lookupAt-twoAt : ∀ {n} (i : Fin n) (a : Torus n) → lookupAt i (twoAt i a) ≡ f2
+lookupAt-twoAt {n = suc n} fzero (a ∷ as) = refl
+lookupAt-twoAt {n = suc n} (fsuc i) (a ∷ as) = lookupAt-twoAt i as
+
+-- `j ≠ i` 时 `zeroAt j (twoAt i a)` 的第 i 坐标仍是 T₂
+lookupAt-zeroAt-other : ∀ {n} (i j : Fin n) → i ≢ j → (a : Torus n) →
+  lookupAt i (zeroAt j (twoAt i a)) ≡ f2
+lookupAt-zeroAt-other {n = suc n} fzero fzero ne (a ∷ as) = ⊥-elim (ne refl)
+lookupAt-zeroAt-other {n = suc n} fzero (fsuc j) ne (a ∷ as) = refl
+lookupAt-zeroAt-other {n = suc n} (fsuc i) fzero ne (a ∷ as) = lookupAt-twoAt i as
+lookupAt-zeroAt-other {n = suc n} (fsuc i) (fsuc j) ne (a ∷ as) =
+  lookupAt-zeroAt-other i j (λ e → ne (cong fsuc e)) as
