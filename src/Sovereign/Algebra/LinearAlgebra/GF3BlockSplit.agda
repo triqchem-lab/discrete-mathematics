@@ -149,19 +149,64 @@ sum2-block-2 p rest =
               (sumFin-cong (λ i → mulX2-slice i p (fsuc (fsuc fzero)) rest)))
 
 --------------------------------------------------------------------------------
--- §5. ⬜ 未完成：核的块分解 + `V_nA` 块相容
---
--- 已确认的数学（点态，不需维数机制）：
---   ① 核的块分解：由 §4 的三条块恒等式直接得
---   ② `V_nA` 块相容：
---        新坐标 = T₀ ⇒ 自动满足；T₁/T₂ ⇒ 需旧坐标中至少一个为零
---
--- 卡点（4 次尝试，均是同一个 Agda 类型问题）：
---   `Σ (Fin (suc n)) (λ i → lookupAt i (f1v ∷ r) ≡ fzero)` 中的 `n`
---   —— `Fin (suc n)` 与 `r : Torus n` 的 `n` 无法被 Agda 统一
---   （`fsuc fzero` 在索引位被误读为 `Fin (suc n)` 的元素）。
---   已试：显式 `n` 参数 / 具名常量 `f1v` / 构造子模式 —— 均未解决 ✗
---
--- 修法建议：在 `CoeffN` 上先定义「切片取尾」的辅助（`tail`），
---   使 `Σ` 的索引类型与 `Torus n` 直接对齐，而不是从 `Torus (suc n)` 上分模式。
+-- §5. 核的块分解（点态 ⇒ 不需要维数机制）
 --------------------------------------------------------------------------------
+
+open import Data.Product using (_×_; _,_)
+
+-- 由 §4 的三条块恒等式直接得
+ker-block-fwd : ∀ {n} (p : CoeffN (suc n)) →
+  (∀ x → sum2 p x ≡ T₀) →
+  (∀ r → sum2 (splitAt p fzero) r ≡ T₀)
+    × (∀ r → sum2 (splitAt p (fsuc fzero)) r ≡ T₀)
+    × (∀ r → splitAt p fzero r ⊕ sum2 (splitAt p (fsuc (fsuc fzero))) r ≡ T₀)
+ker-block-fwd p h = a , (b , c)
+  where
+    a : ∀ r → sum2 (splitAt p fzero) r ≡ T₀
+    a r = trans (sym (sum2-block-0 p r)) (h (fzero ∷ r))
+    b : ∀ r → sum2 (splitAt p (fsuc fzero)) r ≡ T₀
+    b r = trans (sym (sum2-block-1 p r)) (h (fsuc fzero ∷ r))
+    c : ∀ r → splitAt p fzero r ⊕ sum2 (splitAt p (fsuc (fsuc fzero))) r ≡ T₀
+    c r = trans (sym (sum2-block-2 p r)) (h (fsuc (fsuc fzero) ∷ r))
+
+-- 反向
+ker-block-bwd : ∀ {n} (p : CoeffN (suc n)) →
+  (∀ r → sum2 (splitAt p fzero) r ≡ T₀) →
+  (∀ r → sum2 (splitAt p (fsuc fzero)) r ≡ T₀) →
+  (∀ r → splitAt p fzero r ⊕ sum2 (splitAt p (fsuc (fsuc fzero))) r ≡ T₀) →
+  ∀ x → sum2 p x ≡ T₀
+ker-block-bwd p a b c (fzero ∷ rest) = trans (sum2-block-0 p rest) (a rest)
+ker-block-bwd p a b c (fsuc fzero ∷ rest) = trans (sum2-block-1 p rest) (b rest)
+ker-block-bwd p a b c (fsuc (fsuc fzero) ∷ rest) = trans (sum2-block-2 p rest) (c rest)
+
+--------------------------------------------------------------------------------
+-- §6. `V_nA` 的定义与块相容性（用 ¬ 形式，避开 Σ 的类型坑）
+--
+-- `V_nA(p)`：`p` 的支撑中，每个非零系数对应的指数向量**至少有一个坐标为 0**。
+-- 块相容：新坐标为 T₀ 时自动满足；为 T₁/T₂ 时需旧坐标中至少一个为零。
+--------------------------------------------------------------------------------
+
+open import Sovereign.Algebra.LinearAlgebra.GF3Barrier using (lookupAt)
+open import Data.Empty using (⊥; ⊥-elim)
+
+
+Vac : ∀ {n} → CoeffN n → Set
+Vac {n} p = ∀ (x : Torus n) → p x ≢ T₀ → (∀ (i : Fin n) → lookupAt i x ≢ fzero) → ⊥
+
+-- f1/f2 作为坐标值时不可能等于 f0
+f1v≢f0 : (fsuc {n = 2} fzero) ≢ (fzero {n = 2})
+f1v≢f0 ()
+
+f2v≢f0 : (fsuc {n = 2} (fsuc {n = 1} fzero)) ≢ (fzero {n = 2})
+f2v≢f0 ()
+
+-- ★ 块相容（正向）：f1/f2 切片各自落在 V_{n−1}A
+Vac-block-fwd : ∀ {n} (p : CoeffN (suc n)) → Vac p →
+  Vac (splitAt p (fsuc fzero)) × Vac (splitAt p (fsuc (fsuc fzero)))
+Vac-block-fwd p v = (go1 , go2)
+  where
+    go1 : Vac (splitAt p (fsuc fzero))
+    go1 r h1 all-nz = v (fsuc fzero ∷ r) h1 (λ { fzero → f1v≢f0 ; (fsuc i) → all-nz i })
+
+    go2 : Vac (splitAt p (fsuc (fsuc fzero)))
+    go2 r h2 all-nz = v (fsuc (fsuc fzero) ∷ r) h2 (λ { fzero → f2v≢f0 ; (fsuc i) → all-nz i })

@@ -2058,3 +2058,61 @@ Vac p = ∀ x → p x ≢ T₀ → ¬ (∀ i → lookupAt i x ≢ fzero)
 ⬜ 核块分解 / V_nA 块相容 —— 数学确定 ✓，Agda 表述需改（用 ¬ 形式替代 Σ）✗
 ⬜ 互补性引理（④）—— 实算验证 n=1..5 ✓，形式化需维数机制 ✗
 ```
+
+---
+
+## §44. ★ `GF3BlockSplit` §5+§6 **完成**（2026-10-20，回执 `158a1b2b`）
+
+### 44.1 ③ 核的块分解（点态 ✓ 不用维数）
+
+```agda
+ker-block-fwd : (∀ x → sum2 p x ≡ T₀) →
+  (∀ r → sum2 (splitAt p f0) r ≡ T₀)
+    × (∀ r → sum2 (splitAt p f1) r ≡ T₀)
+    × (∀ r → splitAt p f0 r ⊕ sum2 (splitAt p f2) r ≡ T₀)
+ker-block-bwd : 三条 ⇒ 调和
+```
+
+### 44.2 ② `V_nA` 定义 + 块相容（**`→ ⊥` 形式避开 `Σ` 的类型坑** ✓）
+
+```agda
+Vac : CoeffN n → Set
+Vac p = ∀ x → p x ≢ T₀ → (∀ i → lookupAt i x ≢ f0) → ⊥
+
+★ Vac-block-fwd : Vac p →
+    Vac (splitAt p f1) × Vac (splitAt p f2)      ← f0 切片无条件 ✓
+```
+
+### 44.3 关键突破（第 6 次尝试）
+
+**卡点是 `Fin` 的隐式索引 `n`** ✗ —— 用**显式注解**解决 ✓：
+```agda
+f1v≢f0 : (fsuc {n = 2} fzero) ≢ (fzero {n = 2})      -- Fin 3 ✓
+f2v≢f0 : (fsuc {n = 2} (fsuc {n = 1} fzero)) ≢ (fzero {n = 2})
+```
+
+**教训** ✓：`Fin` 的 `n` 在 `≢` 的两侧必须**显式对齐** ✗，
+否则 Agda 会推出 `0 = _n` / `1 = _n` 的矛盾约束 ✗。
+
+### 44.4 模块状态（回执 `158a1b2b`）
+
+```
+✅ §0 常量 f0v/f1v/f2v
+✅ §1 splitAt / join
+✅ §2 join-split / split-join-0,1,2
+✅ §3 mulX2-slice
+✅ §4 ★ 块恒等式 sum2-block-0/1/2
+✅ §5 ★ 核的块分解 ker-block-fwd / ker-block-bwd
+✅ §6 ★ Vac 定义 + Vac-block-fwd
+⬜ §7+ 互补性引理（④，需 dim）/ 两个递推
+```
+
+### 44.5 ④ 的工具查证（人类要求）
+
+| 工具 | 状态 |
+|---|---|
+| `GF3Rank.rankOfReduced` | ✅ 有（但只对**已化简**矩阵）|
+| 一般 `dim`（子空间维数）| ❌ **无** ✗ |
+| 子空间交维数公式 | ❌ **无** ✗ |
+
+⇒ ④ 需建 `dim` + 交 + 互补性 ✓ **~80–100 行** ✗（人类的估计 ✓）
