@@ -881,16 +881,48 @@ d3-cancel T₂ T₂ T₀ = refl
 d3-cancel T₂ T₂ T₁ = refl
 d3-cancel T₂ T₂ T₂ = refl
 
--- ⛔ **待补（止损记录，2026-10-20）**：`diffF6-3`
---   `diffF6-3 : ∀ i f x → diffF6 i (diffF6 i (diffF6 i f)) x ≡ T₀`
---   （即 char 3 的 `(s−1)³ = s³ − 1 = 0`；`shiftAt6-3` 已证 ✓、`d3-cancel` 已证 ✓）
---
---   **三次尝试失败** ✗（按 `memory/agda-with-discipline.md` 的止损协议，第 3 次即停）：
---   问题不在数学，在**形状对齐** ✗ —— `rewrite` 把 `f(s³x)` 换成 `f x` 之后，
---   `lineSum i f (s x)` 变成 `f(sx) ⊕ (f(s²x) ⊕ f x)`，与 `lineSum i f x = f x ⊕ (f(sx) ⊕ f(s²x))`
---   是**重排**关系（不是同一个项）✗ ⇒ `d3-cancel` 的实例化对不上 ✗。
---
---   **下一轮的正解**（按止损协议「提取辅助函数 / 换方案」）：
---   ① 先证 `lineSum-comm : lineSum i f y ≡ f(s²y) ⊕ (f(sy) ⊕ f y)`（重排版）✓ 只需 ⊕-comm/assoc；
---   ② 再用 `cong` 把 `D³` 的两项都归到**同一形状**，此时 `⊕-negate-self` 直接闭合 ✓。
---   **不要**再试 rewrite 方向 ✗（两个方向都试过了 ✗）。
+-- 三循环旋转：`a ⊕ (b ⊕ c) ≡ c ⊕ (a ⊕ b)`（27 情形，与 `d3-cancel` 同规格）
+rot3 : ∀ a b c → a ⊕ (b ⊕ c) ≡ c ⊕ (a ⊕ b)
+rot3 T₀ T₀ T₀ = refl
+rot3 T₀ T₀ T₁ = refl
+rot3 T₀ T₀ T₂ = refl
+rot3 T₀ T₁ T₀ = refl
+rot3 T₀ T₁ T₁ = refl
+rot3 T₀ T₁ T₂ = refl
+rot3 T₀ T₂ T₀ = refl
+rot3 T₀ T₂ T₁ = refl
+rot3 T₀ T₂ T₂ = refl
+rot3 T₁ T₀ T₀ = refl
+rot3 T₁ T₀ T₁ = refl
+rot3 T₁ T₀ T₂ = refl
+rot3 T₁ T₁ T₀ = refl
+rot3 T₁ T₁ T₁ = refl
+rot3 T₁ T₁ T₂ = refl
+rot3 T₁ T₂ T₀ = refl
+rot3 T₁ T₂ T₁ = refl
+rot3 T₁ T₂ T₂ = refl
+rot3 T₂ T₀ T₀ = refl
+rot3 T₂ T₀ T₁ = refl
+rot3 T₂ T₀ T₂ = refl
+rot3 T₂ T₁ T₀ = refl
+rot3 T₂ T₁ T₁ = refl
+rot3 T₂ T₁ T₂ = refl
+rot3 T₂ T₂ T₀ = refl
+rot3 T₂ T₂ T₁ = refl
+rot3 T₂ T₂ T₂ = refl
+
+-- `lineSum` 在 shift 下不变（移位后按旋转律归位）
+--   这是 `diffF6-3` 的**形状对齐**引理：把 `lineSum i f (s x)` 归到 `lineSum i f x` 的同一形状。
+lineSum-shift : ∀ i f x → lineSum i f (shiftAt6 i x) ≡ lineSum i f x
+lineSum-shift i f x =
+  trans (cong (λ y → f (shiftAt6 i x) ⊕ (f (shiftAt6 i (shiftAt6 i x)) ⊕ f y))
+              (shiftAt6-3 i x))
+        (rot3 (f (shiftAt6 i x)) (f (shiftAt6 i (shiftAt6 i x))) (f x))
+
+-- ★ `(s − 1)³ = 0`：三次前向差分归零（char 3 的 `s³ − 1 = 0`）
+diffF6-3 : ∀ i f x → diffF6 i (diffF6 i (diffF6 i f)) x ≡ T₀
+diffF6-3 i f x =
+  trans (cong₂ _⊕_ (axisLap6-eq-lineSum i f (shiftAt6 i x))
+                 (cong negate (axisLap6-eq-lineSum i f x)))
+        (trans (cong (λ z → z ⊕ negate (lineSum i f x)) (lineSum-shift i f x))
+               (⊕-negate-self (lineSum i f x)))
