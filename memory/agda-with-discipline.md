@@ -167,3 +167,58 @@ allHeadsWith : ∀ (x : Trit) → Row → Matrix → Bool
 | 「不可达」✗ | **只在**算过小样本、看过范式之后 |
 
 **共同结构**：把「我的信息不足」包装成「对象的困难」✗。
+
+---
+
+## 10. ★ `with` 的**正确切分**（2026-10-20，替换此前"一律提取辅助函数"的笼统规则）
+
+### 10.1 两类场景，工具不同
+
+| 场景 | `with` 的状态 | 工具 |
+|---|---|---|
+| **证明函数自己的递归**（如 `mulX2-twoAt`）| **挡路** ✗ | **`rewrite`** ✓ |
+| **用函数的定义做分支**（如 `barrier` 三支）| **正确工具** ✓ | `with` ✓ |
+
+### 10.2 实证
+
+```agda
+-- ✗ 场景 1：with 挡住递归引理
+mulX2 i p b with lookupAt i b
+...
+mulX2-twoAt {n = suc n} (fsuc i) p (a ∷ as) = mulX2-twoAt i (p ∘ (a ∷_)) as
+-- → [UnequalTerms]：with 抽象后两式不再定义相等
+
+-- ✓ 解法：改写为 rewrite
+mulX2-twoAt i p a rewrite lookupAt-twoAt i a = refl
+```
+
+```agda
+-- ✓ 场景 2：with 是正确工具（用定义本身分支）
+mulX2-other i j ne p a avoid with lookupAt j (twoAt i a)
+... | fzero            = refl     -- 定义直接归约 ✓
+... | fsuc fzero       = refl
+... | fsuc (fsuc fzero) = ...      -- 定义直接归约到 p (zeroAt j ...) ✓
+```
+
+### 10.3 ⚠ 仍有一个 `with` 会挡路的子情形
+
+**内层 `with` 不替换子项**：
+```agda
+... | fsuc (fsuc fzero) with p (zeroAt j (twoAt i a))   -- ✗
+...     | T₁ = ⊥-elim (contra T₁≢T₀)   -- contra 要 p (...) ≢ T₀，但得到 T₁ ≢ T₀
+```
+因为 `p (zeroAt j ...)` 出现在 `contra` 的**假设类型**里，`with` 不替换 ✗。
+
+**解法**：改用**三值消去函数** ✓（不做 with ✓）：
+```agda
+trit-zero : (v : Trit) → (v ≢ T₀ → ⊥) → v ≡ T₀
+trit-zero T₀ h = refl
+trit-zero T₁ h = ⊥-elim (h T₁≢T₀)
+trit-zero T₂ h = ⊥-elim (h T₂≢T₀)
+```
+
+### 10.4 判据（一句话）
+
+**问：「我在证这个函数自己的性质，还是在用它的定义分支？」**
+- 前者 ⇒ `rewrite`（或改定义去掉 `with`）
+- 后者 ⇒ `with` 正确；但若要**把分支值当等式用** ⇒ 用 `trit-zero` 类消去函数
