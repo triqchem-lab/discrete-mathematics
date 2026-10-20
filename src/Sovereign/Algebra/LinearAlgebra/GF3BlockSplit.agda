@@ -21,10 +21,19 @@ module Sovereign.Algebra.LinearAlgebra.GF3BlockSplit where
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Vec using (Vec; _∷_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; cong₂; sym; trans)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.LinearAlgebra.GF3LaplacianN using (Torus)
+
+--------------------------------------------------------------------------------
+-- §0. 三个坐标值的具名常量（Fin 3 的类型注解，避免 Agda 把索引类型搞混）
+--------------------------------------------------------------------------------
+
+f0v f1v f2v : Fin 3
+f0v = fzero
+f1v = fsuc fzero
+f2v = fsuc (fsuc fzero)
 
 --------------------------------------------------------------------------------
 -- §1. 三个切片与拼接
@@ -48,7 +57,7 @@ join q0 q1 q2 (fsuc (fsuc fzero) ∷ rest) = q2 rest
 --------------------------------------------------------------------------------
 
 join-split : ∀ {n} (p : CoeffN (suc n)) (x : Torus (suc n)) →
-  join (splitAt p fzero) (splitAt p (fsuc fzero)) (splitAt p (fsuc (fsuc fzero))) x ≡ p x
+  join (splitAt p fzero) (splitAt p f1v) (splitAt p f2v) x ≡ p x
 join-split p (fzero ∷ rest)             = refl
 join-split p (fsuc fzero ∷ rest)        = refl
 join-split p (fsuc (fsuc fzero) ∷ rest) = refl
@@ -122,19 +131,37 @@ sum2-block-0 p rest =
                (⊕-identityˡ (sumFin (λ i → mulX2 i (splitAt p fzero) rest))))
 
 sum2-block-1 : ∀ {n} (p : CoeffN (suc n)) (rest : Torus n) →
-  sum2 p (fsuc fzero ∷ rest) ≡ sum2 (splitAt p (fsuc fzero)) rest
+  sum2 p (fsuc fzero ∷ rest) ≡ sum2 (splitAt p f1v) rest
 sum2-block-1 p rest =
   trans (cong (λ z → z ⊕ sumFin (λ i → mulX2 (fsuc i) p (fsuc fzero ∷ rest)))
               (mulX2-new-1 p rest))
         (trans (cong (λ z → T₀ ⊕ z)
                      (sumFin-cong (λ i → mulX2-slice i p (fsuc fzero) rest)))
-               (⊕-identityˡ (sumFin (λ i → mulX2 i (splitAt p (fsuc fzero)) rest))))
+               (⊕-identityˡ (sumFin (λ i → mulX2 i (splitAt p f1v) rest))))
 
 sum2-block-2 : ∀ {n} (p : CoeffN (suc n)) (rest : Torus n) →
   sum2 p (fsuc (fsuc fzero) ∷ rest)
-    ≡ splitAt p fzero rest ⊕ sum2 (splitAt p (fsuc (fsuc fzero))) rest
+    ≡ splitAt p fzero rest ⊕ sum2 (splitAt p f2v) rest
 sum2-block-2 p rest =
   trans (cong (λ z → z ⊕ sumFin (λ i → mulX2 (fsuc i) p (fsuc (fsuc fzero) ∷ rest)))
               (mulX2-new-2 p rest))
         (cong (λ z → splitAt p fzero rest ⊕ z)
               (sumFin-cong (λ i → mulX2-slice i p (fsuc (fsuc fzero)) rest)))
+
+--------------------------------------------------------------------------------
+-- §5. ⬜ 未完成：核的块分解 + `V_nA` 块相容
+--
+-- 已确认的数学（点态，不需维数机制）：
+--   ① 核的块分解：由 §4 的三条块恒等式直接得
+--   ② `V_nA` 块相容：
+--        新坐标 = T₀ ⇒ 自动满足；T₁/T₂ ⇒ 需旧坐标中至少一个为零
+--
+-- 卡点（4 次尝试，均是同一个 Agda 类型问题）：
+--   `Σ (Fin (suc n)) (λ i → lookupAt i (f1v ∷ r) ≡ fzero)` 中的 `n`
+--   —— `Fin (suc n)` 与 `r : Torus n` 的 `n` 无法被 Agda 统一
+--   （`fsuc fzero` 在索引位被误读为 `Fin (suc n)` 的元素）。
+--   已试：显式 `n` 参数 / 具名常量 `f1v` / 构造子模式 —— 均未解决 ✗
+--
+-- 修法建议：在 `CoeffN` 上先定义「切片取尾」的辅助（`tail`），
+--   使 `Σ` 的索引类型与 `Torus n` 直接对齐，而不是从 `Torus (suc n)` 上分模式。
+--------------------------------------------------------------------------------

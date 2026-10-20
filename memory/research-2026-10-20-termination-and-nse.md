@@ -2002,3 +2002,59 @@ b_n = b_{n−1} + dim(ker A² ∩ V_{n−1}A)
 | ④ **互补性引理** | ⬜（实算已验证 ✓，形式化需维数机制 ✗）|
 | ⑤ `b_n` 递推 | ⬜ |
 | ⑥ `q_n = 3^{n−1}` | ⬜ |
+
+---
+
+## §43. `GF3BlockSplit` §5/§6 回退（2026-10-20，4 次尝试后的 stop-loss）
+
+### 43.1 已交付（回执 `857b70b0`，167 行，0 postulate / 0 hole）
+
+```agda
+f0v / f1v / f2v : Fin 3                       -- 具名常量
+splitAt / join / join-split / split-join-0,1,2
+mulX2-slice : mulX2 (fsuc i) p (k ∷ rest) ≡ mulX2 i (splitAt p k) rest
+
+★ 块恒等式（块矩阵 [[A,0,0],[0,A,0],[I,0,A]]）：
+sum2-block-0 : sum2 p (f0 ∷ rest) ≡ sum2 (splitAt p f0) rest
+sum2-block-1 : sum2 p (f1 ∷ rest) ≡ sum2 (splitAt p f1) rest
+sum2-block-2 : sum2 p (f2 ∷ rest) ≡ splitAt p f0 rest ⊕ sum2 (splitAt p f2) rest
+```
+
+### 43.2 §5/§6 未完成（4 次尝试全败 ✗，已回退）
+
+**目标**：核的块分解 + `V_nA` 块相容 ✓（数学已确定 ✓，点态，不需维数 ✗）
+
+**卡点**（同一个 Agda 类型问题 ✗）：
+```
+Σ (Fin (suc n)) (λ i → lookupAt i (f1v ∷ r) ≡ fzero)
+```
+`Fin (suc n)` 的 `n` 与 `r : Torus n` 的 `n` **无法统一** ✗
+（`fsuc fzero` 在**索引位**被误读为 `Fin (suc n)` 的元素 ✗）
+
+**已试四法**（全败 ✗）：
+1. `where` 内辅助 ✗（`n` 不在作用域）
+2. 显式 `n` 参数 ✗
+3. 具名常量 `f1v : Fin 3` ✗
+4. 构造子模式 ✗
+
+### 43.3 修法建议（下个会话）
+
+**在 `CoeffN` 上先定义「切片取尾」** ✓：
+```agda
+tailOf : ∀ {n} → CoeffN (suc n) → Fin 3 → CoeffN n
+tailOf p k = splitAt p k          -- 已有 ✓
+```
+问题的本质是 **`Σ` 的索引类型**（`Fin (suc n)`）与 **`Torus n`** 不匹配 ✗ ——
+应改为**不引入 `Σ`** ✓：把 `Vac` 定义成**否命题形式** ✓：
+```agda
+Vac p = ∀ x → p x ≢ T₀ → ¬ (∀ i → lookupAt i x ≢ fzero)
+```
+✓ ✓ —— 这样不出现 `Σ` ✓，模式匹配只需在 `∀ i` 上做 ✗ 但那是**函数**不是 `Σ` ✓ ✓。
+
+### 43.4 状态
+
+```
+✅ 块恒等式（§4）已形式化 —— 这是 b_n 证明的**结构核心** ✓
+⬜ 核块分解 / V_nA 块相容 —— 数学确定 ✓，Agda 表述需改（用 ¬ 形式替代 Σ）✗
+⬜ 互补性引理（④）—— 实算验证 n=1..5 ✓，形式化需维数机制 ✗
+```
