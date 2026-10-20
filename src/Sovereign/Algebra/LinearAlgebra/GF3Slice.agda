@@ -92,7 +92,7 @@ wt2-zeroAt-suc {n = suc n} (fsuc i) (fsuc (fsuc fzero) ∷ xs) eq =
 --------------------------------------------------------------------------------
 
 open import Sovereign.Base.Trit using (_⊕_; ⊕-identityˡ)
-open import Sovereign.Algebra.LinearAlgebra.GF3LaplacianN using (sumFin)
+open import Sovereign.Algebra.LinearAlgebra.GF3LaplacianN using (sumFin; sumFin-cong)
 open import Sovereign.Algebra.LinearAlgebra.GF3BlockSplit using (CoeffN; sum2)
 open import Sovereign.Algebra.LinearAlgebra.GF3Barrier using (mulX2)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -147,3 +147,34 @@ sum2-slice : ∀ {n} (p : CoeffN n) (k : ℕ) →
 sum2-slice {n} p k sp b nz with wt2 b ≟ suc k
 ... | yes eq = eq
 ... | no neq = ⊥-elim (nz (sum2-zero-off-slice p k sp b neq))
+
+--------------------------------------------------------------------------------
+-- §5. ★★★ ④ 的内容：`F` 在片 `k+1` 的取值只依赖 `p` 在片 `k` 的取值
+--
+-- 洞察：`sum2 p x = Σ_j mulX2 j p x`，而每个 `mulX2 j p x` 只取 `p (zeroAt j x)`；
+--       由 `wt2-zeroAt-suc`，当 `wt2 x = suc k` 且 `lookupAt j x = f2` 时
+--       `wt2 (zeroAt j x) = k`。
+-- ⇒ `sum2 p x` 只用到 `p` 在**片 `k`** 上的值 ⇒ 片 `k+1` 处的方程只约束片 `k` 的部分。
+--
+-- ⇒ 这就是 `ker F = ⊕_k ker(F|_{S_k})` 的**点态内容**（无需线性性、无需维数）。
+--------------------------------------------------------------------------------
+
+-- 两个系数函数在片 `k` 上一致
+AgreeOn : ∀ {n} → ℕ → CoeffN n → CoeffN n → Set
+AgreeOn {n} k p q = ∀ (x : Torus n) → wt2 x ≡ k → p x ≡ q x
+
+-- 单个 `mulX2` 项的一致性：`wt2 x = suc k` 时，该项只看片 `k` 的值
+mulX2-agree : ∀ {n} (j : Fin n) (p q : CoeffN n) (k : ℕ) →
+  AgreeOn k p q → ∀ (x : Torus n) → wt2 x ≡ suc k →
+  mulX2 j p x ≡ mulX2 j q x
+mulX2-agree j p q k ag x wx with lookupAt j x in eqL
+... | fzero             = refl
+... | fsuc fzero        = refl
+... | fsuc (fsuc fzero) =
+  ag (zeroAt j x) (suc-injective (trans (sym (wt2-zeroAt-suc j x eqL)) wx))
+
+-- ★★★ 主定理
+sum2-agree : ∀ {n} (p q : CoeffN n) (k : ℕ) →
+  AgreeOn k p q → ∀ (x : Torus n) → wt2 x ≡ suc k → sum2 p x ≡ sum2 q x
+sum2-agree {n} p q k ag x wx =
+  sumFin-cong {n = n} (λ j → mulX2-agree j p q k ag x wx)
