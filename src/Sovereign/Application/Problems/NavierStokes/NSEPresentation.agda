@@ -1,6 +1,12 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Application.Problems.NavierStokes.NSEPresentation
+--
+-- ⚠ **载体关系声明（2026-10-20 合并裁决）**：本模块是 `PresField`（**幅度 × 相位**）载体，
+--   与 `NSEOnT6`（幅度层 3 轴）/ `NSEOnT6SixAxis`（幅度层 6 轴）是**三个不同载体** ✓。
+--   本模块 §9 的 `adv1..adv6` 与 `NSEOnT6SixAxis` §8 的 `adv1..adv6` **定义不同载体上的同名算子** ✓，
+--   不是重复实现 ✗；跨载体引用前先确认载体 ✓。
+
 -- 离散 N-S 的**展示群**表述 (无信息丢失)
 --
 -- 定位: 取代 NSEOnT6 的纯 GF(3) 幅度载体。按 `docs/duodecimal/11-type-theory-presentation.md`

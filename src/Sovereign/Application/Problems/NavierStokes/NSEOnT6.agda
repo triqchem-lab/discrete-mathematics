@@ -1,6 +1,22 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Application.Problems.NavierStokes.NSEOnT6
+--
+-- ⚠ **载体关系声明（2026-10-20 合并裁决）** —— 本模块与另外两份实现的定位：
+--
+--   · **本模块（NSEOnT6，717 行）**：`C3 = Fin 3`，**3 轴载体**
+--     （`shiftAt` 只覆盖 x₁,x₂,x₃；`div`/`adv` 的 6 个分量在两两复用轴 0,1,2 —— Q5 缺陷）。
+--     **结论范围**：本模块及其 **14 个下游**（`NSESupportZero`/`NSEIterate`/`NSEIncompressible` …）
+--     的全部定理，都是**这个 3 轴载体上的定理** ✓；已审计：**无一下游声称「六轴」** ✓
+--     （`grep -c "六轴\|Axis6"` 全为 0）。
+--   · **`NSEOnT6SixAxis`（827 行）**：`Axis6 = Fin 6`，**六轴载体**（分量 ↦ 轴 1-1，修 Q5）。
+--     六轴侧的 `div6`/`laplacian6`/`nsStep6`/`adv1..adv6`/`poisson-nonunique` 都在那边 ✓。
+--   · **`NSEPresentation`（1237 行）**：第三个载体（`PresField` = 幅度 × 相位），自带 `adv6`。
+--
+--   **三者不是重复实现，是三个不同载体上的实现** ✓：
+--     幅度层 3 轴（本模块）/ 幅度层 6 轴（SixAxis）/ 幅度 × 相位（Presentation）。
+--   **不要**把本模块的定理当成六轴结论 ✗；需要六轴结论请用 `NSEOnT6SixAxis` ✓。
+--   缺陷的构造性判别见 `NSEOnT6SixAxis` §6（`laplacian6 ≢ laplacian3Replica`）。
 -- N-S 方程在 T⁶ 离散商环面上的构造性形式化 (GF(3) 六维环面, 729 格点)
 --
 -- 数学背景:

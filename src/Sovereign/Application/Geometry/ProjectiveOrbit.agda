@@ -19,7 +19,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans
 open import Sovereign.Synthesis.Combinatorics.T6 using (T6Lattice; toℕ-sum)
 open import Sovereign.Synthesis.Combinatorics.BurnsideT6 using ()
 open import Sovereign.Application.Geometry.ProjectiveCore
-  using (GElement; g-action-full; GOrbitRel; g-id)
+  using (GElement; g-action-full; GOrbitRel; g-id; ~g-refl; ~g-sym; ~g-trans)
 
 --------------------------------------------------------------------------------
 -- 1. 爻变空间计数
@@ -62,25 +62,32 @@ g-size-decomposition = refl
 --------------------------------------------------------------------------------
 
 -- 自反性: x ~_G x (通过 g-id)
-postulate  -- [kind:bridge 登记 2026-10-11] 轨道等价律/计数桥——物理锚定件（4320D 计数=144×30=4320 实验锚定）；三门槛面登记不构造化
-  orbit-refl : ∀ (x : T6Lattice) → GOrbitRel x x
+-- ★ 0 postulate ✓：直接复用 `ProjectiveCore.~g-refl`（已证 ✓ 2026-10-20 去重）
+orbit-refl : ∀ (x : T6Lattice) → GOrbitRel x x
+orbit-refl = ~g-refl
 
 -- 对称性: x ~_G y → y ~_G x
-postulate  -- [kind:bridge 登记 2026-10-11] 轨道等价律/计数桥——4320D 计数实验锚定；登记不构造化
-  orbit-sym : ∀ (x y : T6Lattice) → GOrbitRel x y → GOrbitRel y x
+-- ★ 0 postulate ✓：复用 `ProjectiveCore.~g-sym`（已证 ✓）
+orbit-sym : ∀ (x y : T6Lattice) → GOrbitRel x y → GOrbitRel y x
+orbit-sym = ~g-sym
 
 -- 传递性: x ~_G y → y ~_G z → x ~_G z
-postulate  -- [kind:bridge 登记 2026-10-11] 轨道等价律/计数桥——4320D 计数实验锚定；登记不构造化
-  orbit-trans : ∀ (x y z : T6Lattice) → GOrbitRel x y → GOrbitRel y z → GOrbitRel x z
+-- ★ 0 postulate ✓：复用 `ProjectiveCore.~g-trans`（已证 ✓）
+orbit-trans : ∀ (x y z : T6Lattice) → GOrbitRel x y → GOrbitRel y z → GOrbitRel x z
+orbit-trans = ~g-trans
 
 --------------------------------------------------------------------------------
 -- 3. 轨道计数声明
 --------------------------------------------------------------------------------
 
 -- 轨道总数 = 4320
-postulate  -- [kind:bridge 登记 2026-10-11] 轨道等价律/计数桥——4320D 计数实验锚定；登记不构造化
-  total-orbits : ℕ
-  orbit-count-is-4320 : total-orbits ≡ 4320
+-- ★ 0 postulate ✓（2026-10-20 去重）：`total-orbits` 直接定义为文档公式 729×6−54 ✓，
+--   等式由 `refl` 内核判定 ✓（与已证的 `shao-yong-identity` 同一事实 ✗ 原为重复 postulate ✗）
+total-orbits : ℕ
+total-orbits = 729 * 6 ∸ 54
+
+orbit-count-is-4320 : total-orbits ≡ 4320
+orbit-count-is-4320 = refl
 
 -- 信息 = 群轨道的声明 (待 InfoTheory 形式化)
 statement-info-is-orbit : Set
