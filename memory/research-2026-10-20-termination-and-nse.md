@@ -1306,3 +1306,49 @@ basis1-at-q2 : ∀ v0 v1 v2 → comb v0 v1 v2 (fsuc (fsuc fzero)) ≡ v2 （27 �
 1 维基例完成 ✓ ⇒ 归纳到 `n`：
 - `Torus (suc n) ≅ Torus n × Fin 3` ✓（有 `lapN-suc-split` ✓ 的类似结构）
 - 基 `{x^a δ : a ∈ {0,1,2}^{suc n}}` 由 1 维基 × n 维基给出 ✗（需张量结构 ✗）
+
+---
+
+## §29. ★ 函数张量积 = **嵌套 `Poly`**（2026-10-20，人类提示"先查"后找到）
+
+### 29.1 `Polynomials.agda` 已有的
+
+```agda
+Poly   = List Trit                     -- 系数列表（低位先）✓
+_+p_   : 逐点加（短侧零延拓）
+scale  : Trit → Poly → Poly
+_*p_   : 卷积乘（低位先）
+eval   : Poly → Trit → Trit            -- Horner
+divmodL / root / linear-id-const
+```
+
+`LaurentPolynomialFull.agda`:
+
+```agda
+monomial : ℤ → ℤ → Laurent             -- (系数, 指数) 单点
+```
+
+### 29.2 ⇒ 多元版 = `Poly` 嵌套 `n` 层
+
+```agda
+PolyN : ℕ → Set
+PolyN zero    = Trit
+PolyN (suc n) = List (PolyN n)         -- = Poly^n = ⊗ 的离散形式 ✓
+```
+
+**这就是 §20 说「缺的函数张量积」** ✗✓ —— **它一直是嵌套 `List`** ✓ ✓
+（`List` 的 **free monoid** 结构 ⇔ 张量 ✓）
+
+### 29.3 成本修正（人类判断对 ✓）
+
+| 我原估 ✗ | 实际 ✓ |
+|---|---|
+| 基定理 = 秩-零化度层 ✗ | **外延性 + 截断展开** ✓ |
+| ~100 行 + 新工程 ✗ | **~30–50 行**（嵌套 `Poly` ✓）✓ |
+| 2–3 轮 | **1–2 轮** ✓ |
+
+### 29.4 教训（第 7 次重推）
+
+查库时我搜「monomial / Taylor / exponent」✗ —— 而本库的实现叫 **`Poly` / `Poly = List Trit`** ✗。
+⇒ **必须搜「实现形态」而不只是「概念名」** ✗（`List` 型系数列表 ✗ 不是「monomial」✗）。
+⇒ 已加入 `memory/search-discipline.md` §6 的补充项。
