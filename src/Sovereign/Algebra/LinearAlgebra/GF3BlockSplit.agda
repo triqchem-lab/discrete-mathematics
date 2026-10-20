@@ -220,3 +220,36 @@ Vac-block-bwd p v1 v2 (fsuc fzero ∷ r) hpx all-nz =
   v1 r hpx (λ i → all-nz (fsuc i))
 Vac-block-bwd p v1 v2 (fsuc (fsuc fzero) ∷ r) hpx all-nz =
   v2 r hpx (λ i → all-nz (fsuc i))
+
+--------------------------------------------------------------------------------
+-- §7. 构造性主体：由三个分量造出 `ker F_n ∩ V_nA` 的元素
+--
+-- 不需要 `dim`、不需要线性性 —— 只把 §5/§6 的两条分解**反向使用**：
+--   给定 p₀（A p₀ = 0）、p₁（A p₁ = 0 且 Vac）、p₂（p₀ + A p₂ = 0 且 Vac）
+--   ⇒ `join p₀ p₁ p₂` 在核里，且在 `V_nA` 里。
+--------------------------------------------------------------------------------
+
+-- `join` 的三个切片就是原分量（点态）
+join-f0 : ∀ {n} (p0 p1 p2 : CoeffN n) (r : Torus n) →
+  splitAt (join p0 p1 p2) fzero r ≡ p0 r
+join-f0 p0 p1 p2 r = refl
+
+join-f1 : ∀ {n} (p0 p1 p2 : CoeffN n) (r : Torus n) →
+  splitAt (join p0 p1 p2) (fsuc fzero) r ≡ p1 r
+join-f1 p0 p1 p2 r = refl
+
+join-f2 : ∀ {n} (p0 p1 p2 : CoeffN n) (r : Torus n) →
+  splitAt (join p0 p1 p2) (fsuc (fsuc fzero)) r ≡ p2 r
+join-f2 p0 p1 p2 r = refl
+
+-- ★ 构造性主体（切片就是原分量，定义相等 ⇒ 直接传）
+block-construct : ∀ {n} (p0 p1 p2 : CoeffN n) →
+  (∀ r → sum2 p0 r ≡ T₀) →                    -- A p₀ = 0
+  (∀ r → sum2 p1 r ≡ T₀) →                    -- A p₁ = 0
+  (∀ r → p0 r ⊕ sum2 p2 r ≡ T₀) →             -- p₀ + A p₂ = 0
+  Vac (splitAt (join p0 p1 p2) (fsuc fzero)) →
+  Vac (splitAt (join p0 p1 p2) (fsuc (fsuc fzero))) →
+  (∀ x → sum2 (join p0 p1 p2) x ≡ T₀) × Vac (join p0 p1 p2)
+block-construct p0 p1 p2 h0 h1 h2 v1 v2 =
+  ker-block-bwd (join p0 p1 p2) h0 h1 h2
+    , Vac-block-bwd (join p0 p1 p2) v1 v2

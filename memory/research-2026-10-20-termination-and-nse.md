@@ -2154,3 +2154,49 @@ Vac-block-bwd : Vac (f1 切片) → Vac (f2 切片) → Vac p
 | `GF3Rank.rankOfReduced` | ✅ 有（仅对**已化简**矩阵，不适用）|
 
 ⇒ ④ 需 ~80–100 行 ✓ —— **这是本会话剩余的唯一实质工作** ✗。
+
+---
+
+## §46. `block-construct` 完成 —— 构造性主体（2026-10-20，回执 `c77c7526`）
+
+### 46.1 新增
+
+```agda
+block-construct : (p0 p1 p2 : CoeffN n) →
+  (∀ r → sum2 p0 r ≡ T₀) →               -- A p₀ = 0
+  (∀ r → sum2 p1 r ≡ T₀) →               -- A p₁ = 0
+  (∀ r → p0 r ⊕ sum2 p2 r ≡ T₀) →        -- p₀ + A p₂ = 0
+  Vac (f1 切片) → Vac (f2 切片) →
+  (∀ x → sum2 (join p0 p1 p2) x ≡ T₀) × Vac (join p0 p1 p2)
+```
+
+**证明**：`ker-block-bwd` + `Vac-block-bwd` 直接应用 ✓（**切片就是原分量，定义相等** ✓ ✓）
+
+### 46.2 ★ 关键技术点（本轮）
+
+**不需要 `funext` 也不需要 `subst`** ✓ —— 因为
+`splitAt (join p0 p1 p2) fzero ≡ p0` 是**定义相等**（`refl` 级 ✓），
+而 `join` 的三支定义直接归约 ✓ ✓。
+
+我第一版试图用 `cong`/`subst` 穿过点态等式 ✗ —— 那是**多余的** ✓：
+`join` 的**定义**就让三条切片恒等式成为 `refl` ✓ ✓
+
+### 46.3 模块状态（回执 `c77c7526`）
+
+```
+✅ §0–§6（块恒等式 / 核块分解 / Vac 块相容，均双向）
+✅ §7 ★ block-construct（构造性主体）
+⬜ §8 ④ 互补性引理（需 dim ✗）
+⬜ §9 两个递推的组装
+```
+
+### 46.4 结构完整图
+
+```
+ker F_n ∩ V_nA
+  ↑ block-construct（构造，本轮 ✓）
+  ↓ ker-block-fwd + Vac-block-fwd（分解，§5/§6 ✓）
+(p₀, p₁, p₂) 满足 A p₀ = 0、A p₁ = 0、p₀ + A p₂ = 0、p₁/p₂ ∈ V_{n−1}A
+  ⇒ b_n = b_{n−1} + dim(ker A² ∩ V_{n−1}A)     ← 只差这一步的维数
+  ⇒ b_n = 3^{n−1} − 2^{n−1}                     （oracle 87ce8e37 ✓）
+```
