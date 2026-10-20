@@ -275,3 +275,21 @@ lapN-suc-split : ∀ {n} (f : ScalarN (suc n)) (a : Fin 3) (rest : Torus n) →
 lapN-suc-split {n} f a rest =
   cong (λ z → diffAt fzero (diffAt fzero f) (a ∷ rest) ⊕ z)
        (sumFin-cong {n = n} (λ i → refl))
+
+--------------------------------------------------------------------------------
+-- §10. 壁垒的第一步：不变 ⇒ x_i² 消失（2026-10-20）
+--
+-- 翻译：`x_i = diffAt i`。「g 的所有单项式在 x_i 上指数 = 0」
+--   ⟺ `diffAt i g ≡ 0`（g 不含 x_i，即 g 在坐标 i 上不变）✓
+--
+-- 这是壁垒 `ker F ∩ V_S = {0}` 的第一块：
+--   若 `f` 在坐标 i 上不变，则 `F f` 里 `x_i² f` 项恒为零 ✓
+--------------------------------------------------------------------------------
+
+-- ⚠ 本库**不假设函数外延**（funext）✗ ⇒ 所有陈述必须**点态**（`∀ x → f x ≡ g x`）✓
+
+-- ★ 不变 ⇒ x_i² 消失（点态形式，无外延）
+x²-zero-of-invariant : ∀ {n} (i : Fin n) (f : ScalarN n) →
+  (∀ x → diffAt i f x ≡ T₀) → (∀ x → diffAt i (diffAt i f) x ≡ T₀)
+x²-zero-of-invariant i f h x =
+  trans (cong₂ _⊕_ (h (shiftAt i x)) (cong negate (h x))) refl
