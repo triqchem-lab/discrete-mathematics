@@ -1417,3 +1417,55 @@ sum2 : CoeffN n → CoeffN n                 （Σ_j mulX2 j）
 avoid : CoeffN n → Fin n → Set
 barrier : sum2 p ≡ 0 → avoid p i → p ≡ 0
 ```
+
+---
+
+## §31. `GF3Barrier` 半成品：§1–3 已证，§4 卡在 `with`（2026-10-20）
+
+### 31.1 已完成（回执 `68bb86a9`，0 postulate / 0 hole）
+
+```agda
+CoeffN n = Torus n → Trit              -- 系数表示
+f0 f2 : Fin 3
+zeroAt / twoAt : Fin n → Torus n → Torus n
+lookupAt : Fin n → Torus n → Fin 3
+zeroAt-twoAt : lookupAt i a ≡ f0 → zeroAt i (twoAt i a) ≡ a     ✅ 已证
+```
+
+### 31.2 §4 未完成（`mulX2` + 壁垒本体）
+
+**卡点**：`mulX2` 用 `with lookupAt i b` 定义 ⇒ **阻挡定义展开** ✗
+```
+mulX2 {n} i (λ xs → p (a ∷ xs)) (twoAt i as) | lookupAt i (twoAt i as)
+≠
+mulX2 {suc n} (fsuc i) p (a ∷ twoAt i as) | lookupAt i (twoAt i as)
+```
+⇒ 递归版 `mulX2-twoAt` 无法闭合 ✗
+
+**已知修法** ✓：改用 **`Maybe` 版 `subAt`** ✓，使 `mulX2 i p b = maybe p T₀ (subAt i b)` ✓
+—— 这样 `mulX2 (fsuc i) p (a ∷ b)` 与 `mulX2 i (p ∘ (a ∷_)) b` 在 β 后**定义相等** ✓ ✓
+（本轮尝试该修法时脚本出错插入了 `{!!}` 洞 ✗，已回退到可编译版本 ✓）
+
+### 31.3 纪律纪录
+
+- **未提交任何含 `{!!}` 的版本** ✓（自查发现后立即回退 ✓）
+- 文件头已诚实标注「§4 未完成」✓
+- 编译通过的是 §1–3 ✓，不是整个壁垒 ✗
+
+### 31.4 下一步（明确的修法）
+
+```agda
+subAt : ∀ {n} → Fin n → Torus n → Maybe (Torus n)
+subAt fzero (x ∷ xs) with x
+... | fzero = nothing
+... | fsuc fzero = nothing
+... | fsuc (fsuc _) = just (f0 ∷ xs)
+subAt (fsuc i) (x ∷ xs) = maybe (λ ys → just (x ∷ ys)) nothing (subAt i xs)
+
+mulX2 i p b = maybe p T₀ (subAt i b)      -- 无 with ✓
+
+subAt-twoAt : subAt i (twoAt i a) ≡ just (zeroAt i (twoAt i a))    -- 归纳
+mulX2-twoAt : mulX2 i p (twoAt i a) ≡ p (zeroAt i (twoAt i a))     -- 即 maybe p T₀ (just _) = p _ ⇒ refl
+```
+
+**关键洞察** ✓：`mulX2` 里**不能有 `with`** ✗ —— 否则递归定义无法展开 ✓ ✓
