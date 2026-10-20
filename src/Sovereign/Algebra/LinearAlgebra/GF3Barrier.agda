@@ -26,11 +26,13 @@ module Sovereign.Algebra.LinearAlgebra.GF3Barrier where
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Vec using (Vec; []; _∷_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
-open import Data.Empty using (⊥-elim)
+open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong; cong₂)
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate)
-open import Sovereign.Algebra.LinearAlgebra.GF3LaplacianN using (Torus)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; negate;
+  ⊕-identityˡ; ⊕-identityʳ)
+open import Sovereign.Algebra.LinearAlgebra.GF3LaplacianN using
+  (Torus; sumFin; sumFin-cong; sumFin-zero)
 
 --------------------------------------------------------------------------------
 -- §1. 系数表示
@@ -144,3 +146,42 @@ subAt-eq {n = suc n} fzero (x ∷ xs) eq with x
 ... | fsuc (fsuc _) = refl
 subAt-eq {n = suc n} (fsuc j) (x ∷ xs) eq =
   trans (cong (maybe (λ ys → just (x ∷ ys)) nothing) (subAt-eq j xs eq)) refl
+
+--------------------------------------------------------------------------------
+-- §6. 其余项归零（壁垒的关键一步）
+--------------------------------------------------------------------------------
+
+T₁≢T₀ : T₁ ≢ T₀
+T₁≢T₀ ()
+
+T₂≢T₀ : T₂ ≢ T₀
+T₂≢T₀ ()
+
+f2≢f0 : f2 ≢ f0
+f2≢f0 ()
+
+fsuc≢fzero : ∀ {n} {i : Fin n} → fsuc i ≢ fzero
+fsuc≢fzero ()
+
+fzero≢fsuc : ∀ {n} {i : Fin n} → fzero ≢ fsuc i
+fzero≢fsuc ()
+
+-- `mulX2-other`：j ≠ i 时，在 `twoAt i a` 处 `x_j²·p` 的贡献为零
+-- 数学：`twoAt i a` 的第 j 坐标若 < 2 ⇒ `subAt j` = nothing ⇒ 直接为零；
+--       若 = 2 ⇒ 得到 `zeroAt j (twoAt i a)`，其第 i 坐标仍是 T₂（i≠j），
+--       而 `avoid` 说非零处第 i 坐标必须是 T₀ ⇒ 只能为零
+-- 第 j 坐标不是 T₂ ⇒ `subAt j` 返回 nothing
+subAt-nothing : ∀ {n} (j : Fin n) (b : Torus n) →
+  lookupAt j b ≡ f0 → subAt j b ≡ nothing
+subAt-nothing {n = suc n} fzero (x ∷ xs) eq with x
+... | fzero         = refl
+... | fsuc fzero    = refl
+... | fsuc (fsuc _) = ⊥-elim (fsuc≢fzero eq)
+subAt-nothing {n = suc n} (fsuc j) (x ∷ xs) eq =
+  trans (cong (maybe (λ ys → just (x ∷ ys)) nothing) (subAt-nothing j xs eq)) refl
+
+-- ⬜ 未完成：`mulX2-other`（其余项归零）与 `barrier` 本体。
+--    缺一条 `Maybe` 归纳引理 `subAt-lookup`：
+--      ∀ (j i) → i ≢ j → (b c) → subAt j b ≡ just c → lookupAt i c ≡ lookupAt i b
+--    证法：对 `lookupAt j b` 分三支，用已证的 `subAt-eq`（= f2 时解回）与
+--          `subAt-nothing`（< 2 时返 nothing）。

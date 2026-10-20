@@ -1518,3 +1518,55 @@ lookupAt-zeroAt-other   : i ≢ j → lookupAt i (zeroAt j (twoAt i a)) ≡ f2
 
 ⇒ **规律**：`Maybe`/`Fin` 分支推理的**繁琐**是这道题的固有成本 ✓，
 **避难就易的两条路（with、postulate）都已被证明会反噬** ✗ ✓
+
+---
+
+## §33. `GF3Barrier` 收口：8 条引理已证，剩 1 条 `Maybe` 归纳（2026-10-20）
+
+### 33.1 已证（回执 `e3b5de97`，187 行，0 postulate / 0 hole）
+
+| # | 引理 | 内容 |
+|---|---|---|
+| 1 | `zeroAt` / `twoAt` / `lookupAt` | 坐标改写 |
+| 2 | `zeroAt-twoAt` | `lookupAt i a ≡ f0 → zeroAt i (twoAt i a) ≡ a` |
+| 3 | `subAt` | `Fin n → Torus n → Maybe (Torus n)`（索引回退）|
+| 4 | `mulX2` | `maybe p T₀ (subAt i b)`（**内无 with** ✓）|
+| 5 | `subAt-twoAt` | `subAt i (twoAt i a) ≡ just (zeroAt i (twoAt i a))` |
+| 6 | **`mulX2-twoAt`** ★ | `mulX2 i p (twoAt i a) ≡ p (zeroAt i (twoAt i a))` |
+| 7 | `subAt-eq` | `lookupAt j b ≡ f2 → subAt j b ≡ just (zeroAt j b)` |
+| 8 | `subAt-nothing` | `lookupAt j b ≡ f0 → subAt j b ≡ nothing` |
+| 9 | `lookupAt-twoAt` / `lookupAt-zeroAt-general` / `lookupAt-zeroAt-other` | 坐标保持 |
+
+### 33.2 ⬜ 未完成：`mulX2-other` + `barrier`
+
+**根因** ✗：`lookupAt j b` 出现在 `subAt j b` 的**内部** ⇒ `with` **不替换子项** ✗
+⇒ 缺一条归纳引理：
+
+```agda
+subAt-lookup : ∀ {n} (j i : Fin n) → i ≢ j → (b c : Torus n) →
+  subAt j b ≡ just c → lookupAt i c ≡ lookupAt i b
+```
+
+**证法** ✓：对 `lookupAt j b` 分三支
+- `f0` / `fsuc f0`：`subAt-nothing`（已证 ✓）⇒ `just c ≡ nothing` ⇒ ⊥
+- `f2`：`subAt-eq`（已证 ✓）⇒ `just c ≡ just (zeroAt j b)` ⇒ `c ≡ zeroAt j b`
+  ⇒ `lookupAt i c ≡ lookupAt i (zeroAt j b) ≡ lookupAt i b`（`lookupAt-zeroAt-general` ✓）
+
+⇒ **材料 100% 齐了** ✓，只需把这条归纳写出来 ✓（估计 10–15 行 ✓）
+
+### 33.3 本会话在 `Maybe` 上的四类踩坑（全部记录）
+
+| # | 坑 ✗ | 修 ✓ |
+|---|---|---|
+| 1 | `mulX2` 用 `with` ⇒ 递归合不上 | 改 `maybe p T₀ (subAt …)` |
+| 2 | 写 `postulate` 抄近路（两次）| 换成 `λ ()` / 真证明 |
+| 3 | `where` 只作用于最后一个子句 | 提到顶层 |
+| 4 | `with` 不替换子项 ⇒ 等式传不进引理 | 需 `inspect` 或参数化引理 |
+
+### 33.4 状态
+
+```
+✅ 9 条引理已证（187 行，回执 e3b5de97）
+⬜ 1 条 subAt-lookup + 组装（~30 行）
+✅ 数学完全确定（人类组合证明 ✓ + 实算验证 ✓）
+```
