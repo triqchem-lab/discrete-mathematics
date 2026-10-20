@@ -1003,3 +1003,59 @@ record ZeroOblivionN (n : ℕ) : Set where
 
 **结论** ✓：结构词汇与问题**高度同构** ✓，但**没有一条定理**直接给出 `dim ann(Σx_j²)` ✗ ✓ ——
 **缺的确实是那一条** ✗，不是「工具在别处」✗。
+
+---
+
+## §23. ★★ 壁垒定理 = 本项目的方法论（2026-10-20，人类指路）
+
+### 23.1 `ABCL1` 的壁垒模式（`Application/Problems/ABC/ABCL1.agda`，114 行）
+
+```agda
+mulAlpha-a1a1 : mulAlpha a1 a1 ≡ a2
+mulAlpha-4th  : mulAlpha a2 a2 ≡ a0                    -- ① 具体元素上的计算
+
+hom-collapses : (f : AlphaPower → DuodecUnit) → IsUnitHom f → f a2 ≡ f a0
+                                                        -- ② 塌缩引理（用 ①）
+no-injective-hom : ¬ Σ (AlphaPower → DuodecUnit) (λ f → IsUnitHom f × Inj f)
+                                                        -- ③ 壁垒（负向结论）
+```
+
+**模式** ✓：**「任何满足 X 的映射在某点塌缩」⇒ 否定整个类的存在** ✓
+
+### 23.2 我们的版本（同一模式）
+
+```agda
+-- ② 塌缩引理
+support-collapses : ∀ (g : ScalarN n) (S : 真子集) →
+  (∀ x → lapN g x ≡ T₀) → g ∈ V_S → g ≡ 0
+
+-- ③ 壁垒
+no-supported-harmonic : ¬ Σ (ScalarN n)
+  (λ g → (∀ x → lapN g x ≡ T₀) × g ≢ 0 × 支撑含于真子集)
+```
+
+⇒ **这就是我实测的 `ker F ∩ V_S = {0}`** ✓ ✓
+（我之前叫「零全局耦合」✓，用项目术语就是**壁垒定理** ✓）
+
+### 23.3 ★ `ABCL1` 给的证明策略（关键）
+
+`hom-collapses` 的证明**不需要一般理论** ✗ —— 它在**具体元素**上算 ✓
+（`mulAlpha-a1a1` ✓ + `mulAlpha-4th` ✓ 两个等式 ✓）。
+
+⇒ 我们的 `support-collapses` 同理 ✓：
+可能是**在「支撑最小的反例」上算** ✓ —— 而不是「一般交换代数」✗ ✓。
+
+### 23.4 方法论转变（本轮最重要）
+
+| 我之前的思路 ✗ | 壁垒定理思路 ✓ |
+|---|---|
+| 找「能算出维数的工具」（谱/Koszul/容斥）| 证「任何分解都塌缩」|
+| 正面积分/计数 | **反证 + 具体点塌缩** |
+| 4 条路线失败 | 与本项目已有的 `ABCL1` 同构 |
+
+### 23.5 下一步
+
+按 `ABCL1` 的形态写 `support-collapses`：
+1. 先算「支撑最小的非零调和元素」长什么样（oracle ✓ 先算 ✗）
+2. 找它在某个点上的塌缩（用 `x_j³ = 0` ✓）
+3. 归纳到所有真子集
