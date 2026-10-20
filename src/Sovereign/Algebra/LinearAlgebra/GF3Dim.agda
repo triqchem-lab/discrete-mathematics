@@ -117,7 +117,7 @@ sumFin-zero' {d} = sumFin-zero {d}
 -- §6. ★ 核心引理：δ 组合在 i 处取回 f i
 --------------------------------------------------------------------------------
 
-open import Sovereign.Base.Trit using (⊗-identityˡ; ⊗-identityʳ; ⊗-zeroˡ; ⊗-zeroʳ; ⊕-identityʳ; negate; negate²)
+open import Sovereign.Base.Trit using (⊗-identityˡ; ⊗-identityʳ; ⊗-zeroˡ; ⊗-zeroʳ; ⊗-comm; ⊕-identityʳ; negate; negate²)
 
 sumFin-δ : ∀ {d} (f : Fin d → Trit) (i : Fin d) →
   sumFin (λ j → δc i j ⊗ f j) ≡ f i
@@ -191,3 +191,26 @@ T₂-mul-neg T₂ = refl
   where
     eq' : negate a ≡ negate b
     eq' = trans (sym (T₂-mul-neg a)) (trans eq (T₂-mul-neg b))
+
+--------------------------------------------------------------------------------
+-- §11. ★ 线性无关：分离族的组合系数唯一
+--------------------------------------------------------------------------------
+
+comb-inj : ∀ {n d} (v : Fin d → CoeffN n) (sep : Separated v)
+  (c c' : Fin d → Trit) →
+  (∀ x → Comb v c x ≡ Comb v c' x) → ∀ i → c i ≡ c' i
+comb-inj v sep c c' eq i =
+  ⊗-cancel (v i x) vi≠0 (c i) (c' i) step
+  where
+    x : Torus _
+    x = proj₁ (sep i)
+
+    vi≠0 : v i x ≢ T₀
+    vi≠0 = proj₁ (proj₂ (sep i))
+
+    step : v i x ⊗ c i ≡ v i x ⊗ c' i
+    step = trans (sym (⊗-comm (c i) (v i x)))
+                 (trans (sym (comb-sep v sep c i))
+                        (trans (eq x)
+                               (trans (comb-sep v sep c' i)
+                                      (⊗-comm (c' i) (v i x)))))
