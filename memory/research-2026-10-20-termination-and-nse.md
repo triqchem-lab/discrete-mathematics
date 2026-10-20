@@ -2488,3 +2488,55 @@ im F ∩ ker F = F(ker F²)          （F(q) ∈ ker F ⟺ F²q = 0）
 **块结构是「分解算子」✓，壁垒禁止的是「分解 ker」✗** ——
 `q_n` 作为块内的自然量**合法** ✓；但**给 `q_n` 找坐标结构解释会踩壁垒** ✗ ✓
 （本轮实测证实：`ker ∩ im` 的基确实**跨坐标** ✗，与壁垒预言一致 ✓）
+
+---
+
+## §53. ★★ `GF3ImKer`：`im F ∩ ker F = F(ker F²)` 已形式化（2026-10-20，回执 `2e44228c`）
+
+### 53.1 交付（104 行，0 postulate / 0 hole）
+
+```agda
+§0  mulX2-cong / ★ sum2-cong    -- 点态同余（本库无 funext ⇒ 必须走这条）
+§1  ImF / KerF / ImgKerF2      -- 三个谓词（点态形式）
+§2  ① imgker⊆im    ② imgker⊆ker    ③ im∩ker⊆imgker
+§3  ★ im-ker-eq : ImgKerF2 p ⇔ (ImF p × KerF p)   -- 双向
+§4  im-of-kerF2
+```
+
+### 53.2 ★ 这是 oracle 恒等式 `q_n = c_n − a_n` 的**结构内容**
+
+```
+im F ∩ ker F = F(ker F²)            ← 本模块已证 ✓
+⇒ 取维数：q_n = dim ker F² − dim ker F = c_n − a_n    ← 需秩-零化度 ✗
+```
+
+⇒ **结构部分闭环** ✓，只剩「取维数」那一步 ✗
+
+### 53.3 关键技术：`sum2-cong`（点态同余）
+
+**本库无 funext** ✗ ⇒ 不能 `cong (λ z → sum2 z x) pq` ✗
+（那需要 `pq : p ≡ q` 作**函数**相等 ✗）
+
+⇒ 必须走**逐点同余** ✓：
+```agda
+mulX2-cong : (∀ y → p y ≡ p' y) → mulX2 i p b ≡ mulX2 i p' b
+  -- 三情形：lookupAt i b = f0/f1 ⇒ refl；= f2 ⇒ eq (zeroAt i b)
+sum2-cong  : (∀ y → p y ≡ p' y) → sum2 p x ≡ sum2 p' x
+  -- sumFin-cong + mulX2-cong
+```
+
+**教训入册** ✓：**本库任何「函数参数的改写」都必须先建逐点同余引理** ✗
+（`cong` 只对**非函数**参数有效 ✓）。
+
+### 53.4 模块清单更新（本会话 8 个新模块，全部 0 postulate / 0 hole）
+
+| 模块 | 行数 | 回执 |
+|---|---|---|
+| `GF3RowOps` | 179 | `8c540bd7` |
+| `GF3Rank` | 129 | `17a18ba0` |
+| `GF3LaplacianN` | 421 | `ee2f46a9` |
+| `GF3Barrier` | 236 | `65db64d0` |
+| `GF3BlockSplit` | 292 | `ba77c943` |
+| `GF3MonoCount` | 86 | `9cd29990` |
+| `GF3Dim` | 254 | `91f69051` |
+| **`GF3ImKer`** | **104** | **`2e44228c`** |
