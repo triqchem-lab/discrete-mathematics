@@ -73,4 +73,3 @@ neighbours-not-in {n} x j j∉ =
   nbrsFrom-not-in x (allFinD n) (updAt j x)
     (λ i i∈ → updAt-neq-other  j i x (∉-to-≢ {n} j i j∉ i∈))
     (λ i i∈ → updAt-neq-other2 j i x (∉-to-≢ {n} j i j∉ i∈))
-
