@@ -236,13 +236,21 @@ creduceS-noCancelR : ∀ {n : ℕ} (w : CWalk n) → NoCancelR (creduceS w)
 creduceS-noCancelR w = NoCancel→R (creduceS-noCancel w)
 
 --------------------------------------------------------------------------------
--- §5. ⚠ 本模块**不**声称的（如实标注；这些都不是「顺手就能做」）
+-- §5. 本模块**不**声称的 / 以及后来在别处证成的（如实标注，2026-10-21 更新）
 --
 -- ① **消去律** —— ✅ **已证（见 §3 `creduceA-cancel`）**
--- ② **范式性**：`creduceA` 的输出不含相邻逆对。**未证**。
--- ③ **幂等 / 范式唯一**。**未证**。
--- ④ **语义正确**：`creduceA` 不改变 `foldT`（`T6CayleyCodeWalk`）的终点。**未证**。
+-- ② **范式性**（`creduceA` 的输出不含相邻逆对）—— ✅ **已证，但不在本模块**：
+--      `T6CayleyBool.creduceB-noCancel`（`Bool` 判等器版）
+--      与 `T6CayleyNorm.creduceS-noCancel` / `creduceS-noCancelR`（本模块）
+-- ③ **幂等** —— ✅ **已证，但不在本模块**：`T6CayleyIdem2.creduceB'-idem`，
+--      即 `reverse ∘ creduceB` 的幂等 —— 与 `creduceA` **同一算法**
+--      ⚠ 精确边界：那条用的是 `cdEqB`（`Bool` 判等器），**不是**本模块的 `DecEq-CStep`（`Dec`）；
+--      两者语义一致，但**不是定义性相同** ⇒ 严格说本模块的 `creduceA` 幂等**未在它自己的判等器上证过**。
+-- ④ **语义正确**（`creduceA` 不改变 `foldT` 的终点）—— ✅ **已证，但不在本模块**：
+--      **`T6CayleyNormEnd.creduceA-fold`**（回执 `0679c767`，全称版 `∀ x w → foldT x (creduceA w) ≡ foldT x w`）
+--      + `T6CayleySem.creduceS-fold`（栈序版）
 --
--- ⇒ 本模块的成立事实只有：`cpassA`/`creduceA` **存在、终止、按上述模式展开**
---   （外加 §2 两条 `refl`）。**不**包含任何「它是范式」的断言。
+-- ⇒ 本模块自身包含：`cpassA`/`creduceA` 的**存在、终止、结构展开** + §2 两条 `refl`
+--   + `creduceA-cancel`（消去律）+ `creduceS-noCancel(R)`（② 的栈序版）。
+--   ②③④ 的其余部分在**上述具名模块**里，**不要**因本模块未提及就当成未证。
 --------------------------------------------------------------------------------
