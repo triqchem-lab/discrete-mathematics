@@ -27,7 +27,7 @@
 
 module Sovereign.Algebra.LinearAlgebra.GF3HammingCount where
 
-open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
+open import Data.Fin using (Fin; toℕ) renaming (zero to fzero; suc to fsuc)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; subst)
@@ -647,7 +647,7 @@ r-check : (C0 3 + 3 * C0 1 ≡ 3 * C0 2 + 9 * C0 0)
 r-check = refl , refl , refl , refl , refl
 
 --------------------------------------------------------------------------------
--- ⑭ ★★★★ 真正的完整解：`a_n = Σ_{k≡0(3)} C(n,k)·2^k`
+-- ⑭ 递推同构（`Wsum` 与 `C_r` 递推相同 ⇒ `Nat.rec` 对齐）
 --
 -- **关键洞察**：`W` 与 `C` 有**完全相同**的递推 + 初值
 --   Pascal：C(n+1,k) = C(n,k) + C(n,k−1)
@@ -693,14 +693,50 @@ Wstep (fsuc (fsuc _)) n = refl
   , trans (C2-step n) (trans (cong₂ _+_ e2 (cong (2 *_) e1)) refl) )
 
 --------------------------------------------------------------------------------
--- ⑮ ★★★★ 最终定理：`a_n = Σ_{k ≡ 0 (mod 3)} C(n,k)·2^k`
+-- ⑮ ⚠ **递推同构**（**不是**组合和闭式 ✗ —— 见 §⑯ 的修正）
 --------------------------------------------------------------------------------
 
--- `a_n` 的二项式闭式
-★a-binomial : ∀ n → C0 n ≡ Wsum fzero n
-★a-binomial n = proj₁ (★C-W n)
+-- ⚠ **注意**：`Wsum` 是**递归定义**（与 `C_r` 递推完全相同）
+--   ⇒ 下面这条是**同义反复**，**不是**组合和闭式 ✗
+--   真正的闭式需要 `Wsum r n ≡ S r n`（`S` 是组合和），见 §⑯ 的 ★W-S
+Wsum-recur-ident : ∀ n → C0 n ≡ Wsum fzero n
+Wsum-recur-ident n = proj₁ (★C-W n)
 
--- 三支完整版
-★a-binomial-all : ∀ n → (C0 n ≡ Wsum fzero n) × (C1 n ≡ Wsum (fsuc fzero) n)
-                × (C2 n ≡ Wsum (fsuc (fsuc fzero)) n)
-★a-binomial-all = ★C-W
+-- 三支完整版（同样是递推同构，**非**组合和 ✗）
+Wsum-recur-all : ∀ n → (C0 n ≡ Wsum fzero n) × (C1 n ≡ Wsum (fsuc fzero) n)
+               × (C2 n ≡ Wsum (fsuc (fsuc fzero)) n)
+Wsum-recur-all = ★C-W
+
+--------------------------------------------------------------------------------
+-- ⑯ ★★★★ 组合定义 `S` 与 `Wsum ≡ S`（**这才是真内容**）
+--
+-- ⚠ 诚实修正（2026-10-21，人类审核）：
+--   `Wsum` 是**递归定义**（与 `C_r` 递推完全相同）⇒ `★C-W` 是**同义反复** ✗
+--   必须补：`Wsum r n ≡ S r n`，其中 `S` 是**组合和** `Σ_{k≤n}[k≡r] C(n,k)·2^k` ✗
+--------------------------------------------------------------------------------
+
+-- `mod 3`
+mod3 : ℕ → Fin 3
+mod3 zero          = fzero
+mod3 (suc zero)    = fsuc fzero
+mod3 (suc (suc n)) = mod3 n
+
+-- 命中指示（1 或 0）
+hit : Fin 3 → Fin 3 → ℕ
+hit fzero            fzero            = 1
+hit fzero            (fsuc _)         = 0
+hit (fsuc fzero)     fzero            = 0
+hit (fsuc fzero)     (fsuc fzero)     = 1
+hit (fsuc fzero)     (fsuc (fsuc _))  = 0
+hit (fsuc (fsuc _))  fzero            = 0
+hit (fsuc (fsuc _))  (fsuc fzero)     = 0
+hit (fsuc (fsuc _))  (fsuc (fsuc _))  = 1
+
+-- `ℕ` 求和（Fin 索引）
+sumNat : ∀ {n} → (Fin n → ℕ) → ℕ
+sumNat {zero}  f = 0
+sumNat {suc n} f = f fzero + sumNat (λ i → f (fsuc i))
+
+-- ★ 组合和：`S r n = Σ_{k ≤ n} [k ≡ r (3)] · C(n,k) · 2^k`
+S : Fin 3 → ℕ → ℕ
+S r n = sumNat {suc n} (λ k → hit r (mod3 (toℕ k)) * (Cnk n (toℕ k) * 2 ^ toℕ k))
