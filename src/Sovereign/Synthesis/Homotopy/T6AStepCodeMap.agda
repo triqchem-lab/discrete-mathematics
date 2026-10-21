@@ -41,10 +41,11 @@ open import Relation.Binary.PropositionalEquality using (_≡_; sym; subst)
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CStep; CWalk)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym; T6SymEdge)
-open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; cons; _++w_; AStep)
+open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; cons; _++w_; AStep; slide; expand)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (ctarget; foldT; cEdge; foldT-++)
 open import Sovereign.Synthesis.Homotopy.T6CayleyInterp
   using (interpAt; toStep; interpAt-++-glue)
+open import Sovereign.Synthesis.Homotopy.T6AStepCode using (ADir; dslide; dexpand)
 
 --------------------------------------------------------------------------------
 -- §1. ★ `toStep` 的展开形态：三条边都是 `cEdge`，侧条件是**顶点层**
@@ -80,15 +81,40 @@ srcCode-glue : ∀ {n : ℕ} (u : T6Vec n) (pref : CWalk n) (s1 s2 : CStep n)
 srcCode-glue u pref s1 s2 suff = interpAt-++-glue u pref (s1 ∷ s2 ∷ suff)
 
 --------------------------------------------------------------------------------
--- §3. ⚠ **本模块不重复实现「单射性层」** —— 归 `T6AStepMap` 所有
+-- §3. ★★★ 补 `ASTep` 的另一半：`expand` 方向（`toStep` 只造 `slide`）
 --
--- 我曾在此证过 `updAt-inj` / `ctarget-inj` / `foldT-inj` / `StepSide→StepVertex`，
--- 而并行协作者**同时**在 `T6AStepMap` 里证了同一批（`ctarget-inj` / `foldT-inj` /
--- `StepSide→StepVertex`，回执 `0790d979`）⇒ 我的那份是**重复实现** ✗
--- ⇒ 已回退（依 AGENTS.md：复用优先于重写；同一事实不在两个模块各证一遍）。
--- **`StepSide ⇔ StepVertex` 的权威归宿 = `T6AStepMap`**。
+-- **本批发现的真实缺口**：`T6CayleyInterp.toStep` 的签名**不接收 `ADir`**
+-- ⇒ 它只构造 `slide`，**从不构造 `expand`** ✗
+-- 于是「码 → 步」只覆盖了 `ASTep` 的**一半**。
+--
+-- ⚠ 一个**不可行**的设计（本批实测否决）：想用 `d : ADir` **分派**到一个函数。
+-- 但两个构造子的**结论方向相反**：
+-- ```
+--   slide  … : AStep G (p ++w (cons e1 (cons e2 b))) (p ++w (cons e3 b))
+--   expand … : AStep G (p ++w (cons e3 b)) (p ++w (cons e1 (cons e2 b)))
+-- ```
+-- ⇒ 单一（不依赖 `d` 的）结论类型**不可能**，必须拆成两个函数 ✗
+-- （报错原文：`The terms cons {…s2} _ _ and cons {…s1} (cEdge … s1) _ are not equal`。）
+--
+-- ## 本模块交付：`expand` 侧（与 `toStep` 是镜像）
+--
+-- 同样**只吃顶点层侧条件**（`e3` 的对端由 `h` 对齐）✓
 --------------------------------------------------------------------------------
 
---------------------------------------------------------------------------------
--- §4. ⬜ 剩余：`toStepCode`（走路线 (a)，见模块头）
---------------------------------------------------------------------------------
+toStepExpand :
+  ∀ {n : ℕ} (u : T6Vec n) (pref : CWalk n) (s1 s2 s3 : CStep n) (suff : CWalk n)
+  → (h : ctarget (foldT u pref) s3 ≡ ctarget (ctarget (foldT u pref) s1) s2)
+  → AStep (T6CayleySym n)
+          (interpAt u pref ++w
+            (cons (subst (λ w → T6SymEdge (foldT u pref) w) h
+                         (cEdge (foldT u pref) s3))
+                  (interpAt (ctarget (ctarget (foldT u pref) s1) s2) suff)))
+          (interpAt u pref ++w
+            (cons (cEdge (foldT u pref) s1)
+                  (cons (cEdge (ctarget (foldT u pref) s1) s2)
+                        (interpAt (ctarget (ctarget (foldT u pref) s1) s2) suff))))
+toStepExpand u pref s1 s2 s3 suff h =
+  expand (interpAt u pref) (interpAt (ctarget (ctarget (foldT u pref) s1) s2) suff)
+         (cEdge (foldT u pref) s1) (cEdge (ctarget (foldT u pref) s1) s2)
+         (subst (λ w → T6SymEdge (foldT u pref) w) h (cEdge (foldT u pref) s3))
+
