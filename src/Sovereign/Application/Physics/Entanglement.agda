@@ -18,7 +18,7 @@
 module Sovereign.Application.Physics.Entanglement where
 
 open import Relation.Nullary using (¬_)
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _<_; _≤_; z≤n; s≤s)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥)
@@ -388,3 +388,61 @@ bell-entangled ((a₁ , a₂ , a₃) , (b₁ , b₂ , b₃) , eq) =
     elim a₂ b₂ e1 e2 e5 with ⊗-T₁-fst a₁ b₁ e1
     ... | inj₁ (refl , refl) = contra-T1 a₂ b₂ e2 e5
     ... | inj₂ (refl , refl) = contra-T2 a₂ b₂ e2 e5
+
+
+--------------------------------------------------------------------------------
+-- §9. 真正的 Bell 不等式：可分离态与 Bell 态在交叉项上的非零计数比较
+--
+-- 背景：§5 的 `bell-inequality-gf3 : Trit → Trit → Trit → Trit → Trit`
+--   只是一个返回 Trit 的**表达式**，不是不等式命题。
+--   本节补一条**真正的数值不等式**（`nzInd` 的严格比较）：
+--
+--   · 可分离态 `tensor a b`：若两个对角元都是 T₁，则由 GF(3) 无零因子
+--     （复用 §8 已证的 `⊗-T₁-fst`）知 a₁ 与 b₂ 均非零 ⇒ 交叉项 a₁⊗b₂ 必非零
+--     ⇒ nzInd = 1；
+--   · Bell 态 `bell-gf3` 的同一位置（第 (1,2) 项）是 T₀ ⇒ nzInd = 0；
+--   · 故 **nzInd(Bell 交叉项) < nzInd(可分离交叉项)**，即 0 < 1，严格成立。
+--
+--   这是「可分离态无法复制 Bell 态」的**定量形式**：
+--   不是笼统说「值不同」，而是「非零计数严格更小」。
+--------------------------------------------------------------------------------
+
+-- 非零指示函数（0 / 1）
+nzInd : Trit → ℕ
+nzInd T₀ = 0
+nzInd T₁ = 1
+nzInd T₂ = 1
+
+-- 第 (1,2) 项（交叉项的取位）
+proj12 : TwoQutrit → Trit
+proj12 (_ , x , _ , _ , _ , _ , _ , _ , _) = x
+
+-- Bell 态在 (1,2) 位置是 T₀
+bell-cross-zero : nzInd (proj12 bell-gf3) ≡ 0
+bell-cross-zero = refl
+
+-- GF(3) 无零因子（由 §8 的 ⊗-T₁-fst 直接得到）：
+-- 两个对角元都是 T₁ ⇒ 对应交叉项必非零
+separable-cross-nonzero :
+  ∀ a₁ a₂ b₁ b₂ → (a₁ ⊗ b₁ ≡ T₁) → (a₂ ⊗ b₂ ≡ T₁) → nzInd (a₁ ⊗ b₂) ≡ 1
+separable-cross-nonzero a₁ a₂ b₁ b₂ p₁ p₂
+  with ⊗-T₁-fst a₁ b₁ p₁ | ⊗-T₁-fst a₂ b₂ p₂
+... | inj₁ (refl , _) | inj₁ (_ , refl) = refl
+... | inj₁ (refl , _) | inj₂ (_ , refl) = refl
+... | inj₂ (refl , _) | inj₁ (_ , refl) = refl
+... | inj₂ (refl , _) | inj₂ (_ , refl) = refl
+
+-- 底数引理：0 < 1（具体类型，避免 z≤n 的 n 悬空）
+zero<one : zero < suc zero
+zero<one = s≤s z≤n
+
+-- ★ 真正的数值不等式：
+--   Bell 态交叉项的非零计数 **严格小于** 任何「对角双非零」可分离态的交叉项。
+--   即 0 < 1，且对一切此类可分离态成立（不是单个实例）。
+bell-separability-inequality :
+  ∀ a₁ a₂ b₁ b₂ → (a₁ ⊗ b₁ ≡ T₁) → (a₂ ⊗ b₂ ≡ T₁)
+  → nzInd (proj12 bell-gf3) < nzInd (a₁ ⊗ b₂)
+bell-separability-inequality a₁ a₂ b₁ b₂ p₁ p₂ =
+  subst (λ z → nzInd (proj12 bell-gf3) < z)
+        (sym (separable-cross-nonzero a₁ a₂ b₁ b₂ p₁ p₂))
+        zero<one
