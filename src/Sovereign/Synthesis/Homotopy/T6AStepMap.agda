@@ -43,7 +43,7 @@ open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode
   using (CStep; CWalk; cplus; cminus)
 open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec)
-open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (interpC; ctarget)
+open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (interpC; ctarget; foldT)
 open import Sovereign.Synthesis.Homotopy.T6AStepCode2 using (StepCode; mkStep)
 
 --------------------------------------------------------------------------------
@@ -87,14 +87,42 @@ interpC-++ u []       b = refl
 interpC-++ u (s ∷ a)  b = interpC-++ (ctarget u s) a b
 
 --------------------------------------------------------------------------------
--- §4. ⬜ 下一步（判据明确）
+-- §4. ★★★ `interpC` 的终点就是 `foldT`（端点层的「码 → 顶点」引理）
 --
--- 真正构造 `ASTep` 值：
---   `toStep : (u) (c : StepCode n) (h : StepSide u c)
---           → AStep (T6CayleySym n) (interpC 出的源走) (interpC 出的靶走)`
---   已备：① 码层两条走（`srcCode`/`tgtCode`）；
---         ② 侧条件（`StepSide`）+ **可判定**（`decStepSide`）；
---         ③ 端点层分配律（**本条** `interpC-++`）。
---   待做：把 `proj₂`（走本身）沿 `interpC-++` 运输，再用 `slide` 构造子
---         （三个边由 `cEdge` 给，见证 = `refl`）⇒ **无需搜索、无需 `Maybe`**。
+-- ```
+--   proj₁ (interpC u w) ≡ foldT u w
+-- ```
+-- 对 `w` 归纳，**两情形都是 `refl`** ✓（`interpC` 与 `foldT` 的递归结构完全一致）。
+--
+-- ## 为什么这条关键
+--
+-- 侧条件 `StepSide u c` 说的是两个 `proj₁ (interpC …)` 相等；
+-- 而真正要喂给 `slide` 的是 **`foldT` 形态的等式**（`ctarget` 逐步算出）。
+-- 本引理把两者接起来 ⇒ 侧条件可**直接消费** ✓
+--------------------------------------------------------------------------------
+
+interpC-end : ∀ {n : ℕ} (u : T6Vec n) (w : CWalk n)
+            → proj₁ (interpC u w) ≡ foldT u w
+interpC-end u []       = refl
+interpC-end u (s ∷ ws) = interpC-end (ctarget u s) ws
+
+-- ★ 侧条件的 `foldT` 形态（由 `interpC-end` 直接改写）
+StepSide-fold : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n) → Set
+StepSide-fold u c = foldT u (srcCode c) ≡ foldT u (tgtCode c)
+
+--------------------------------------------------------------------------------
+-- §5. ⬜ 下一步（判据明确，**已定位到唯一的技术关**）
+--
+-- `toStep` 的陈述形状：
+-- ```
+--   toStep : (u) (c : StepCode n) (h : StepSide u c)
+--          → AStep (T6CayleySym n) (proj₂ (interpC u (srcCode c)))
+--                                  (proj₂ (interpC u (tgtCode c)))
+-- ```
+-- **技术关**：`ASTep G p q` 要求 `p q : Walk G U V` **端点相同**；
+-- 而两个 `proj₂` 的端点是 `proj₁` 的形式，只由 `h` 相等
+-- ⇒ 必须 **`subst` on `Walk`**（把靶走的端点索引沿 `h` 运输）。
+--
+-- ⇒ 这就是第 5 步：把 `interpC-++`/`interpC-end` 的**端点层**结论升级到
+--   **走层**（对 `Walk` 做 `subst`）。本批**未做**，如实保留。
 --------------------------------------------------------------------------------
