@@ -27,7 +27,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Product using (_,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Data.Nat.Properties using (≤-trans; ≤-reflexive; +-mono-≤)
+open import Data.Nat.Properties using (≤-trans; ≤-reflexive; +-mono-≤; m+n≡0⇒m≡0; m+n≡0⇒n≡0)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Application.Problems.NavierStokes.NSEOnT6 using
