@@ -35,6 +35,14 @@ SRC = ROOT / "src"
 TOP = re.compile(r"^([A-Za-z_][\w'′\-]*)\s*:", re.M)
 IDENT = re.compile(r"`([A-Za-z_][\w'′\-]*)`")
 CLAIM = ("未证", "未做", "待做", "⬜", "未完成")
+
+# 否定 / 完成语境：这类句子里的「未证」**不是**在声称「还没做」，而是
+#   · 「闭合 X 的未证」= 已证完；
+#   · 「原写『未证』… 已改为」= 就在修这件事；
+#   · 「不再是未证」= 已证。
+# ⇒ 词面匹配 ≠ 语义：含这些词的句子**一律不算可疑**。
+NEGATED = ("闭合", "已证", "已完成", "已过期", "不再是", "原文写", "原写", "改为",
+           "已改为", "已标注", "未验证·路线推测", "[未验证·路线推测]")
 # 太通用的名字不作数（跨模块重名合法/噪声大）
 IGNORE = {"refl", "sym", "trans", "cong", "subst", "nil", "cons", "id", "not"}
 # 这些行是在描述「旧判断已被推翻/注释已更正」或「不重复实现」，不算声称缺失
@@ -59,6 +67,9 @@ def main() -> int:
             if not st.startswith("--"):
                 continue
             if not any(w in line for w in CLAIM):
+                continue
+            # ← 否定/完成语境：词面有「未证」但语义是「已证」或「正在修」
+            if any(w in line for w in NEGATED):
                 continue
             if any(x in line for x in EXCLUDE):
                 continue
