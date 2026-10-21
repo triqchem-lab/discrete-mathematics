@@ -157,7 +157,7 @@ shuffle = solve 3
 --------------------------------------------------------------------------------
 
 open import Data.Nat.Properties using
-  ( +-cancelʳ-≡; +-suc; +-identityʳ; *-identityʳ; *-comm
+  ( +-cancelʳ-≡; +-suc; +-identityʳ; +-assoc; *-identityʳ; *-comm
   ; *-assoc; *-distribˡ-+
   ; ^-distribˡ-+-*; ^-distribʳ-* )
 
@@ -851,3 +851,13 @@ hit-suc3 (fsuc (fsuc fzero)) (fsuc (fsuc fzero)) = refl
 -- ★ 缺口 ③ 完成：`hit r (mod3 (suc j)) ≡ hit (pred3 r) (mod3 j)`
 ★hit-mod : ∀ (r : Fin 3) (j : ℕ) → hit r (mod3 (suc j)) ≡ hit (pred3 r) (mod3 j)
 ★hit-mod r j = trans (cong (hit r) (★mod3-suc j)) (hit-suc3 r (mod3 j))
+
+--------------------------------------------------------------------------------
+-- ㉑ 缺口 ②：`sumTo` 的重索引
+--------------------------------------------------------------------------------
+
+-- `sumTo (suc n) g ≡ g 0 + sumTo n (λ j → g (suc j))`
+-- ❌ **未证**（诚实标注）：
+--   归纳步的形状对不上 —— `sumTo (suc m) (λ j → g (suc j))` 的归约
+--   与 `+-assoc` 的端点不匹配（lambda 的 β-归约与 Agda 的 elaboration 顺序冲突）。
+--   下一步：改用显式 `λ`-free 表述，或引入 `sumTo-cong`（点态相等 ⇒ 和相等）。

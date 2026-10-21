@@ -971,3 +971,51 @@ mod3 (suc (suc (suc n))) = mod3 n          -- ✓ 3-周期
 | `sumTo` 重索引（②）| ❌ 未证 ✗ |
 | `k=0` 边界（⑤）| ❌ 未证 ✗ |
 | `★S'-step` / `★W-S` | ❌ 未证 ✗ |
+
+---
+
+## 二十二、`★S'-step` 缺口进度（2026-10-21 最终）
+
+### 22.1 五条缺口的精确状态
+
+| # | 缺口 | 状态 |
+|---|---|---|
+| ① | `Cnk` Pascal 显式形 | ✅ `★Cnk-pascal`（`refl`）+ `★Cnk-zero` |
+| ② | `sumTo` 重索引 | ❌ **未证** —— 见 22.2 |
+| ③ | 余数相容 | ✅ **`★mod3-suc` + `hit-suc3` + `★hit-mod`**（本轮）|
+| ④ | `2^(j+1) = 2·2^j` | ✅ `★pow2-suc`（`refl`）|
+| ⑤ | `k=0` 边界 | ❌ 未做（② 之后才轮到）|
+
+### 22.2 ② 的具体障碍（诚实记录）
+
+```agda
+sumTo-uncons : ∀ n g → sumTo (suc n) g ≡ g 0 + sumTo n (λ j → g (suc j))
+```
+
+归纳步的形状：
+```
+LHS = (g 0 + sumTo m (λ j → g (suc j))) + g (suc (suc m))     [IH]
+RHS = g 0 + (sumTo m (λ j → g (suc j)) + g (suc (suc m)))     [def]
+```
+⇒ `sym (+-assoc ...)` 应该闭合 ✗ 但 Agda 报端点不匹配 ✗ ——
+根因疑为 `sumTo (suc m) (λ j → g (suc j))` 的 **λ-β-归约** 与 `+-assoc` 的 elaboration 顺序冲突 ✗。
+
+**下一步**：引入 `sumTo-cong`（点态相等 ⇒ 和相等）✓，把 λ 消掉再归约 ✓。
+
+### 22.3 本会话 `GF3HammingCount` 的最终定理清单
+
+| 定理 | 状态 | 回执 |
+|---|---|---|
+| `★C0-3step`（3 项递推）| ✅ | `bab98d0f` |
+| `★C0-odd`（奇数支闭式）| ✅ | `a7cd6770` |
+| `★total` | ✅ | `d3370ca1` |
+| `★odd-sum` | ✅ | `8246ad1e` |
+| `★C0-even-step` | ✅ | `ecb727ff` |
+| `abstract-odd` / `abstract-even` | ✅ | `f227d873` |
+| `F-eq`/`F-suc`/`F-recur`/`F-odd-at`/`F-even-at` | ✅ | `9d0eec44` |
+| `★Cnk-pascal` / `★Cnk-zero` / `★pow2-suc` | ✅ | `72977bc1` |
+| **`★mod3-suc` / `hit-suc3` / `★hit-mod`** | ✅ | **`0571c05c`** |
+| `Wsum-recur-ident`（同义反复，⚠️ 无内容）| ✅ | `a96c77d` 已改名 |
+| `★S'-step` / `★W-S` | ❌ | — |
+
+**854 行，0 postulate / 0 hole** ✓
