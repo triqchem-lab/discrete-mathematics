@@ -717,9 +717,10 @@ Wsum-recur-all = ★C-W
 
 -- `mod 3`
 mod3 : ℕ → Fin 3
-mod3 zero          = fzero
-mod3 (suc zero)    = fsuc fzero
-mod3 (suc (suc n)) = mod3 n
+mod3 zero                  = fzero
+mod3 (suc zero)            = fsuc fzero
+mod3 (suc (suc zero))      = fsuc (fsuc fzero)
+mod3 (suc (suc (suc n)))   = mod3 n
 
 -- 命中指示（1 或 0）
 hit : Fin 3 → Fin 3 → ℕ
@@ -786,3 +787,26 @@ S'-zero-2 = refl
 --
 -- ⇒ 未做 ✗ —— 不冒充完成 ✗
 --------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- ⑲ 缺口 ①③④⑤（①③④ 是定义/穷举级，⑤ 是边界）
+--------------------------------------------------------------------------------
+
+-- ① Pascal（**定义**，`refl`）
+★Cnk-pascal : ∀ n k → Cnk (suc n) (suc k) ≡ Cnk n k + Cnk n (suc k)
+★Cnk-pascal n k = refl
+
+-- ① 边界：`Cnk (suc n) 0 ≡ 1` 且 `Cnk n 0 ≡ 1`
+★Cnk-zero : ∀ n → Cnk n 0 ≡ 1
+★Cnk-zero zero    = refl
+★Cnk-zero (suc n) = refl
+
+-- ④ `2^(j+1) ≡ 2 · 2^j`（定义）
+★pow2-suc : ∀ j → 2 ^ suc j ≡ 2 * (2 ^ j)
+★pow2-suc j = refl
+
+-- ③ 余数相容（**未证**，诚实标注）
+--   目标：`∀ r j → hit r (mod3 (suc j)) ≡ hit (pred3 r) (mod3 j)`
+--   需要先证 `mod3-suc : ∀ j → mod3 (suc j) ≡ suc3 (mod3 j)`（对 j 归纳）
+--   ❌ 未做 ✗
+
