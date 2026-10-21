@@ -866,3 +866,23 @@ hit-suc3 (fsuc (fsuc fzero)) (fsuc (fsuc fzero)) = refl
 --     · 显式三参数 ✗
 --   下一步：引入 `sumTo-cong : (∀ k → f k ≡ g k) → sumTo n f ≡ sumTo n g`
 --   并**先**把 `λ j → g (suc j)` 绑定为命名函数（`let` 或顶层定义），消掉 λ。
+
+--------------------------------------------------------------------------------
+-- ㉒ ★ 右嵌套和 `sumR`（`uncons` 变成**定义相等** ✓）
+--
+-- 左嵌套 `sumTo (suc n) f = sumTo n f + f (suc n)` ⇒ `uncons` 需结合律 ✗
+-- 右嵌套 `sumR  (suc n) f = f 0 + sumR n (λ j → f (suc j))` ⇒ `uncons` 是 `refl` ✓
+--------------------------------------------------------------------------------
+
+sumR : ℕ → (ℕ → ℕ) → ℕ
+sumR zero    f = f 0
+sumR (suc n) f = f 0 + sumR n (λ j → f (suc j))
+
+-- ★ `uncons` 是**定义相等**
+sumR-uncons : ∀ n f → sumR (suc n) f ≡ f 0 + sumR n (λ j → f (suc j))
+sumR-uncons n f = refl
+
+-- 点态相等 ⇒ 和相等（用 `cong₂`，照 `sumFin-cong` 的模式）
+sumR-cong : ∀ n {f g : ℕ → ℕ} → (∀ k → f k ≡ g k) → sumR n f ≡ sumR n g
+sumR-cong zero    h = h 0
+sumR-cong (suc n) h = cong₂ _+_ (h 0) (sumR-cong n (λ k → h (suc k)))

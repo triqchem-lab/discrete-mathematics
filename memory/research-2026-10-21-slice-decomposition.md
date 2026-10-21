@@ -1019,3 +1019,52 @@ RHS = g 0 + (sumTo m (λ j → g (suc j)) + g (suc (suc m)))     [def]
 | `★S'-step` / `★W-S` | ❌ | — |
 
 **854 行，0 postulate / 0 hole** ✓
+
+---
+
+## 二十三、★★ `sumR` 解决了 ② 的嵌套方向问题（2026-10-21）
+
+### 23.1 根因（fable5 Step 1 拓扑扫描发现）
+
+查项目里**已成功**的求和引理：
+```agda
+-- GF3LaplacianN.sumFin-cong（成功 ✓）
+sumFin-cong {suc n} h' = cong₂ _⊕_ (h' fzero) (sumFin-cong (λ i → h' (fsuc i)))
+```
+
+⇒ 发现真正的问题不是 λ-β-归约 ✗，而是 **`sumTo` 的嵌套方向** ✗：
+
+```
+sumTo (suc n) f = sumTo n f + f (suc n)     -- **左嵌套**：((f0+f1)+f2)+f3
+```
+⇒ `uncons : sumTo (suc n) f ≡ f 0 + sumTo n (λ j → f (suc j))` 需要**每步结合律** ✗
+⇒ 端点 elaboration 对不上 ✗（不是 λ 的问题 ✗）
+
+### 23.2 ✅ 解法：换成**右嵌套**
+
+```agda
+sumR zero    f = f 0
+sumR (suc n) f = f 0 + sumR n (λ j → f (suc j))
+
+sumR-uncons : ∀ n f → sumR (suc n) f ≡ f 0 + sumR n (λ j → f (suc j))
+sumR-uncons n f = refl                      ← **定义相等** ✓ 一行
+
+sumR-cong : ∀ n {f g} → (∀ k → f k ≡ g k) → sumR n f ≡ sumR n g
+sumR-cong zero    h = h 0
+sumR-cong (suc n) h = cong₂ _+_ (h 0) (sumR-cong n (λ k → h (suc k)))
+```
+
+### 23.3 教训（入册）
+
+> **求和/累加器的嵌套方向决定引理难度** ✓
+> 左嵌套 ⇒ `uncons` 需要结合律 ✗（端点多，elaboration 易炸）
+> 右嵌套 ⇒ `uncons` 是定义相等 ✓（`refl` 一行）
+> **写求和引理前，先选定「让目标引理变成 refl」的嵌套方向** ✓
+
+### 23.4 缺口进度更新
+
+| # | 缺口 | 状态 |
+|---|---|---|
+| ② | `sumTo` 重索引 | **✅ 用 `sumR` 解决**（`uncons` = `refl`）|
+| ⑤ | `k=0` 边界 | ❌ 未做 |
+| `★S''-step` | 用 `sumR` 版的组合和 | ❌ 未做（结构已清晰）|
