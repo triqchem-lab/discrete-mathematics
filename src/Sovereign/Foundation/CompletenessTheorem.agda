@@ -23,8 +23,23 @@ module Sovereign.Foundation.CompletenessTheorem where
 --   ComplexNumber   → GF9 (9 元素有限域)
 --   LimitEpsilon    → DiscreteLimit (ℕ 上 ε-δ 量词)
 --
--- 未完成的 4 个 (Unit 占位, TODO):
---   HilbertSpace, ODEPDE, MeasureTheory, FunctionalAnalysis
+-- ⚠ 原写「未完成的 4 个 (Unit 占位, TODO)」——**已过期**：这 4 个的载体**早已具体化**
+-- （§2/§3 见：HilbertSpace = `GF3Func × GF3Func`、ODEPDE = `GF3Func`、
+--   MeasureTheory = `ℕ`、FunctionalAnalysis = `GF3Func → Trit`，且各有 `carrierWitness`）。
+-- **真实的剩余差距**（如实标注）：这 4 个缺的是**概念特有的结构定律**——
+--   内积公理 / 差分方程解的存在唯一 / 测度可加性 / 泛函有界性 —— 而不是「载体空着」。
+-- **已完成其一**：`MeasureTheory` 的**计数测度可加性**已在
+--   `Sovereign.Synthesis.Analysis.DiscreteMeasure` 证出
+--   （`count-∪ : Disjoint P Q → count (P ∪ Q) ≡ count P + count Q`，0 postulate）。
+-- **再完成其一**：`ODEPDE` 的**齐次解唯一性**已在
+--   `Sovereign.Synthesis.Analysis.DiscreteODE` 证出
+--   （`Δ-kernel-const : Δ f ≡ 0 ⇒ f` 是常函数 —— `ker Δ` 恰是 3 个常函数，维数 1）。
+-- **再完成其一**：`FunctionalAnalysis` 的**对偶空间分离点**已在
+--   `Sovereign.Synthesis.Analysis.DiscreteFunctional` 证出
+--   （`separating : (∀ φ → φ f ≡ φ g) → f ≡ g`，三个坐标泛函联合分离）。
+-- ⇒ **四个缺口全部定案**（两补定律 / 一否证 / 一补分离性）：
+--   MeasureTheory ✅ 可加性 · ODEPDE ✅ 齐次解唯一 · HilbertSpace ❌ 不正定（只能是正交空间）
+--   · FunctionalAnalysis ✅ 分离性。
 --
 -- 0 postulate — 全部构造性证明
 --------------------------------------------------------------------------------

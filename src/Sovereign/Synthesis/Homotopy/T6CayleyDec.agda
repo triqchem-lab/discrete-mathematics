@@ -48,7 +48,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Data.List.Membership.Propositional using (_∈_)
 open import Data.List.Relation.Unary.Any using (here; there)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans) using (_≡_; refl; cong; sym; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6SymEdge)
@@ -293,5 +293,18 @@ length-neighbours : ∀ {n : ℕ} (x : T6Vec n) → length (neighbours x) ≡ n 
 length-neighbours {n} x = trans (length-nbrsFrom x (allFinD n))
                                 (cong (λ k → k + k) (length-allFinD n))
 -- ⚠ **边界（如实标注）**：表长 `n + n` **不蕴含**「表内无重复」——
---   `Nodup (neighbours x)` **未证**（需 `updAt` 的单射性/不同坐标不相交等引理）。
---   若要断言「无冗余」，必须补 `Nodup`；在此之前只能说**条目数恰为 `n + n`**。
+--   `Nodup (neighbours x)` **未证**。在此之前只能说**条目数恰为 `n + n`**。
+--
+-- ## `Nodup` 的剩余缺口（判据明确；两个前置已在 `T6CayleyVecOther` 证好）
+--
+-- 已有（该模块 §2/§3，注释里就写着「`Nodup (neighbours x)` 的前置 ①/②」）：
+--   · `updAt-neq-two   : updAt j x ≢ updAt j (updAt j x)`         （同坐标两方向不同）
+--   · `updAt-neq-other : j ≢ k → updAt j x ≢ updAt k x`           （不同坐标不同）
+--
+-- 仍缺（本模块未做）：
+--   ① `j ≢ k → updAt j x ≢ updAt k (updAt k x)`（及其 3 个对称/组合变体）——
+--      证法同 `updAt-neq-other`：在坐标 `j` 上取 `lookup`，用 `updAt-other` 把 `k` 侧化掉；
+--   ② `succF3 (succF3 a) ≢ a`（`Fin 3` 三情形；也可由 `updAt-cubed` + `updAt-differs` 导）；
+--   ③ 对 `js` 归纳拼 `Nodup (nbrsFrom x js)`（需 `Nodup js` 与 `j ∉ js`）。
+-- `[未验证·路线推测]` ①②③ 都是既有引理的直接组合，估 ~80–100 行。
+-- **本模块未做**（前置作者正在该线上工作，避免重复实现）。

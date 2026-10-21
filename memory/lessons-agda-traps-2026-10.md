@@ -53,3 +53,38 @@
     证明「前提不可省」比硬凑公理便宜且诚实。
 20. **mod 关系形式**：Bezout `a+k×m≡1` 与 mod `a≡1+k'×m` 数学等价（k'=−k），
     但 terminate-correct 应直接陈述 mod 形式（读者不用自行重写）。
+
+## 六、`subst` 方向与「不可证」判定的教训（2026-10-21 T6Cayley/StepCode 会话）
+
+21. **`subst` 方向是最高频陷阱（本会话连吃 4 次）**：`subst P eq : P x → P y`（`eq : x ≡ y`）。
+    写之前先问「**手上的项落在 x 侧还是 y 侧**」；落在 y 侧就必须 `sym eq`。
+    指纹：报错在**类型签名行**且说「期望类型退化成 `x ≡ x`」或「A 与 B 不相等」而 A/B 正好是该 subst 的两端。
+    实例：`interpAt-++`（必须 `sym (foldT-++ …)`）、`interpC-walk`、`StepVertex→StepSide`、`StepSide→fold`。
+22. **`Dec P` 的正确性：直接 `with` 判定器本身，两向各一行**——
+    `yes p` 支 `TSet (yes p)` 归约为命题 ⇒ `p` 即证据；`no ¬p` 支 `TSet (no ¬p) = ⊥` 而 `¬p` 就是否证。
+    本会话曾为此写 6 层 `with` + 5 条分量自反性引理（~85 行），**全部不必要**，后压缩为 8 行。
+23. **`with` 里的「⊥ 假设」必须把分量引理一起带进来**：只写 `with x ≟ x` 不会细化
+    `⊥` 假设（`T (no ¬p) = ⊥` 需要真的把 `no ¬p` 代入）——要写 `with x ≟ x | 分量引理 x`。
+24. **断言「X 不可证」前先问：我枚举了几条分解/改写路径？所引引理覆盖其中几条？**
+    本会话两次栽在这：① 判「异质相等需 HEq/J」（实际 `slide-subst` 一步 `refl`）；
+    ② 判 `toStepCode` ill-posed（实际可证，漏看了**起点铸造** `cons-dtrans`——`subst-cons` 只覆盖端点铸造）。
+    推翻后必须回头清理**所有引用该判断的地方**（模块注释 / 台账 note / handoff）。
+25. **算术用 `k + k` 而不是 `2 * k`**：stdlib 的 `_*_` 对**第一个**参数递归（`suc m * n = n + m * n`），
+    `2 * suc k` 会卡在 `suc k + …`；`k + k` 与 `suc` 结构定义性对齐，只需一处 `+-suc`。
+26. **引理选址先看依赖方向**：想在模块 A 引用模块 B 的引理，先确认 B 不（直接或传递）import A，
+    否则 `CyclicModuleDependency`。本会话为此白写过一条定理（`findEdge-neighbours`）。
+
+## 七、文档与台账纪律（反向缺陷）
+
+27. **「未证/未做」列表**不是可靠事实源**——本会话实测 **5 处**「文档声称没做，实际早就在别处证完」
+    （`Pi2dFunctionLayer` 右逆 / `T6CayleyDec` 的 Dec 版 / `Omega3Suffix` 的 `suffix-resp` /
+    `Pi2dQuotient` 的转述 / `AStepStdGroup` 的一般走层逆）。
+    判据：看那个函数是否**已全定义**（构造子逐条有子句）+ 模块编译绿 ⇒ 它就已经存在。
+    筛查工具：`python3 engineering/check_stale_claims.py`（默认只报；`--markers` 为高精度模式）。
+28. **工程门禁会因目录重组而静默假失败**：`check_group_chain.sh` 曾指向迁移前的路径，
+    报的是「链断裂」而实际是 `does not exist`。已改为「首选位置 + `find` 全库回退 + 路径预检」，
+    缺文件时 `exit 2` 并明写「门禁脚本自身过期，不是证明错误」。**门禁红 ≠ 证明错**，先区分「读不到文件」与「内核拒绝」。
+29. **台账回执会偶发误报 stale**：实测「md5 未变、两次编译给同一回执 id」仍被判「与源码不符」。
+    遇到先**按 md5 对账**，不要回退成果。
+30. **重复 `open import` 会累积成 `DuplicateUsing` 警告**，且补 `using` 时容易写成两段 `using`——
+    合并时用脚本去重整行，别手工追加。

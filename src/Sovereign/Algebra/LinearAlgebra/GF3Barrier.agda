@@ -13,10 +13,14 @@
 --   证：取 `a` 使 `p a ≠ 0` ⇒ `a_i = 0` ⇒ 在 `twoAt i a` 处只有 `j = i` 项存活，
 --       其值 = `p a ≠ 0` ✓
 --
--- 本模块现状（诚实标注）
---   ✅ §1 系数表示 · §2 坐标改写 · §3 关键引理 `zeroAt-twoAt`
---   ⬜ §4 乘 `x_i²` 与壁垒本体 —— **未完成**（`with` 阻断定义展开，需重构为
---      `Maybe` 版 `subAt`；已在 `memory/` 记录难点）
+-- 本模块现状（**全部完成**；原「⬜ §4 未完成」是过期标注，已更正）
+--   ✅ §1 系数表示 · §2 坐标改写 · §3 `zeroAt-twoAt`
+--   ✅ §4 乘 `x_i²`（`mulX2`）—— 原判断「`with` 阻断定义展开，需重构为 `Maybe` 版」
+--      **不成立**：`with` 只在证明 `mulX2` 自己的递归时挡路，而那种情形改用
+--      **`rewrite`** 即可（见 §5 的 `mulX2-twoAt`，一行 `rewrite lookupAt-twoAt i a`）。
+--   ✅ §5 `mulX2-twoAt` / §6 `mulX2-other` / §7 `sumFin-single`
+--   ✅ §8 **壁垒定理 `barrier`**（支撑避开一个坐标 ⇒ 恒零）
+--   ✅ §9 推论 `barrier-all-coords`（对所有坐标避让 ⇒ 恒零）
 --
 -- 依赖: Sovereign.Algebra.LinearAlgebra.GF3LaplacianN（Torus）
 -- 0 postulate / 0 hole
