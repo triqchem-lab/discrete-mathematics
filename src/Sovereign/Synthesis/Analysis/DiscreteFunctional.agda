@@ -28,7 +28,7 @@
 module Sovereign.Synthesis.Analysis.DiscreteFunctional where
 
 open import Data.Empty using (⊥)
-open import Data.Product using (_,_; ∃₃)
+open import Data.Product using (Σ; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
@@ -80,6 +80,6 @@ check-separates ()
 -- ⇒ 对偶空间的「分离维数 ≤ 3」，与 `GF3Func = Trit³` 的维数一致。
 --------------------------------------------------------------------------------
 
-separating3 : ∃₃ (λ (φ₀ φ₁ φ₂ : Dual) →
-                 ∀ (f g : GF3Func) → φ₀ f ≡ φ₀ g → φ₁ f ≡ φ₁ g → φ₂ f ≡ φ₂ g → f ≡ g)
+separating3 : Σ Dual (λ φ₀ → Σ Dual (λ φ₁ → Σ Dual (λ φ₂ →
+                 ∀ (f g : GF3Func) → φ₀ f ≡ φ₀ g → φ₁ f ≡ φ₁ g → φ₂ f ≡ φ₂ g → f ≡ g)))
 separating3 = coord₀ , coord₁ , coord₂ , λ { (a , b , c) (x , y , z) refl refl refl → refl }
