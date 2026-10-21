@@ -430,3 +430,51 @@ x ^ suc n = x * x ^ n
 ```
 ⇒ `9 ^ suc m ≡ 9 * 9 ^ m` 和 `3 ^ (2m+1) ≡ 3 * 3^(2m)` **都是 `refl`** ✓
 ⇒ **不要**绕道 `^-distribˡ-+-*`（会在 `m + 1` 上卡住 ✗，因为 ℕ 的 `_+_` 递归在第一个参数）✓
+
+---
+
+## §15. ★★ **`solve` 生成的引理不能应用到复合参数**（2026-10-21，`★E-even`/`★E-odd` 的根因）
+
+### 15.1 症状（卡了 4 轮）
+
+```agda
+lin-3B : ∀ B → 9 * B ≡ 3 * (3 * B)
+lin-3B = solve 1 (λ B → con 9 :* B := con 3 :* (con 3 :* B)) refl
+```
+把它应用到 `C0 (2 * (2 * k))`（含 `2 * k`）时：
+```
+The terms  k  and  k + 1 * k  are not equal at type ℕ
+```
+
+### 15.2 根因
+
+`solve` 是 **reflection 宏** ✗ —— 它的证明项内部对表达式做了**规范化**（reify）✓。
+当引理应用到**复合参数**（如 `2 * k`）时，Agda 要 unification 目标与该规范化形式 ✗，
+而 `_*_` 的定义是 `suc m * n = n + (m * n)` ⇒ `2 * k` 展成 `k + (1 * k)` ✗
+⇒ 与目标准形式不匹配 ✗。
+
+### 15.3 ✅ 正确的分层（这是方向）
+
+| 引理的用途 | 该怎么证 |
+|---|---|
+| **只在裸变量上做线性重排**（如 `3(a+3b) ≡ 3a+9b`）| **`solve` 可以** ✓ |
+| **需要应用到复合参数**（如 `9 * C0 (2*(2k))`）| **必须用 `*-assoc`/`*-distrib`** ✓（透明，unification 正常）✗ 不能用 `solve` |
+| **抽象代数引理**（裸变量，如 `A + 3B ≡ 4N → ...`）| `solve` + `cancel` ✓ |
+
+### 15.4 已验证的探针结果
+
+```agda
+test  : 9 ≡ 3 * 3              -- refl ✓
+test2 : ∀ B → 9 * B ≡ (3 * 3) * B   -- refl ✓
+```
+⇒ `9` 与 `3 * 3` **是** definitional 相等 ✓ —— 所以 `*-assoc 3 3 B` 可以直接用 ✓。
+
+### 15.5 该问题的正确解法（下一步，~40 行）
+
+1. `abstract-odd` / `abstract-even` —— **已证** ✓（纯裸变量线性代数）
+2. `lin-3A`/`lin-3B`/`lin-34N` 改用 `*-assoc`/`*-distribˡ-+` 证 ✓（不用 `solve`）
+3. 代入：`★E-odd k = abstract-odd (3·A) (3·B) (9^(2k)) (3^(2k)) ...`
+4. `★E-even (suc k) = abstract-even A B (9^(2k+1)) (3^(2k+1)) ...`
+
+**WIP 文件**：`engineering/artifacts/GF3HammingCount-WIP-2026-10-21.agda.txt`
+（含 `abstract-odd`/`abstract-even` 的完整证明 ✓，只差代入部分）
