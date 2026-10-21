@@ -46,12 +46,16 @@ open import Data.Fin using (Fin)
 import Data.Fin as Fin
 open import Data.Vec using (Vec; []; _∷_)
 open import Data.Empty using (⊥)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans)
+open import Relation.Nullary using (¬_)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans; subst)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyGraph using (succF3)
-open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (updAt; T6CayleyVec)
+open import Sovereign.Synthesis.Homotopy.T6CayleyVec
+  using (updAt; updAt-cubed; T6CayleyVec; T6Vec;
+         cycWalk3-open; cycWalk3Vec)
+open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; AHomotopy)
 open import Sovereign.Synthesis.Homotopy.Pi1dCardinality
-  using (TriangleFree; NoCollapse; no-collapse-iff-triangle-free)
+  using (TriangleFree; NoCollapse; no-collapse-iff-triangle-free; walk-len)
 open import Data.Product using (Σ; proj₂; _,_)
 
 --------------------------------------------------------------------------------
@@ -90,3 +94,30 @@ tf1 {a ∷ []} (Fin.zero , e1) (Fin.zero , e2) (Fin.zero , e3) =
 no-collapse-t1 : NoCollapse (T6CayleyVec 1)
 no-collapse-t1 =
   proj₂ (no-collapse-iff-triangle-free {G = T6CayleyVec 1}) tf1
+
+--------------------------------------------------------------------------------
+-- §5. ★★ 「三步回不到空走」——在裁决指定的 Cayley 载体上直接陈述
+--
+-- `cycWalk3Vec` 是**真闭走**（三步回到顶点）；本节证它与**空走不同伦**。
+-- 这就是「顶点层三步归零」与「走层塌缩」的分离点 ✓
+--------------------------------------------------------------------------------
+
+-- `subst` 不改变走长（沿端点等式搬运）
+subst-len : ∀ {n : ℕ} (x : T6Vec n) {a b : T6Vec n}
+            (eq : a ≡ b) (w : Walk (T6CayleyVec n) x a)
+          → walk-len (subst (Walk (T6CayleyVec n) x) eq w) ≡ walk-len w
+subst-len x refl w = refl
+
+-- 真闭走的长度是 3
+cyc3-len : ∀ (j : Fin 1) (x : T6Vec 1) → walk-len (cycWalk3Vec 1 j x) ≡ 3
+cyc3-len j x =
+  trans (subst-len x (updAt-cubed j x) (cycWalk3-open 1 j x)) refl
+
+3≢0 : 3 ≡ 0 → ⊥
+3≢0 ()
+
+-- ★★ 三步走与空走**不同伦** ⇒ π₁ᵈ 里 g³ ≠ e ⇒ 不是 C₃
+cyc3≢nil : ∀ (j : Fin 1) (x : T6Vec 1)
+         → ¬ (AHomotopy (T6CayleyVec 1) (cycWalk3Vec 1 j x) (nil x))
+cyc3≢nil j x ah =
+  3≢0 (trans (sym (cyc3-len j x)) (cong walk-len (no-collapse-t1 ah)))
