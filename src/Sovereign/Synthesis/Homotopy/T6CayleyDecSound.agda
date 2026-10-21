@@ -59,10 +59,32 @@ decStepCode-sound u c h with decStepCode u c
 ... | no  q = ⊥-elim h
 
 --------------------------------------------------------------------------------
--- §3. ⬜ 未做（如实标注）
+-- §3. ★★ 完备性（相等 ⇒ 判定器说 yes）—— 与可靠性合起来，判定器「完全正确」
+--------------------------------------------------------------------------------
+
+-- 关键：`no q` 支给出的是 **`a ≢ b`**（否命题本身），可直接作用于 `eq`
+-- ⇒ **不需要** stdlib 内部（`map′` / `×?`）的引理 ✓
+
+DecEq-T6Vec-complete : ∀ {n : ℕ} (a b : T6Vec n)
+                     → a ≡ b → TSet (DecEq-T6Vec a b)
+DecEq-T6Vec-complete a b eq with DecEq-T6Vec a b
+... | yes p = p
+... | no  q = ⊥-elim (q eq)
+
+decStepCode-complete : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n)
+                     → StepVertex u c → TSet (decStepCode u c)
+decStepCode-complete u c h with decStepCode u c
+... | yes p = p
+... | no  q = ⊥-elim (q h)
+
+--------------------------------------------------------------------------------
+-- §4. 小结
 --
--- · **完备性** `StepVertex u c → TSet (decStepCode u c)`：需要 `DecEq-T6Vec` 的
---   **完备性**（相等 ⇒ `yes`），而 `≡-dec (Fin._≟_)` 的完备性依赖 stdlib 内部
---   （`map′` / `×?`）的 `T`-引理 —— 比可靠性贵得多，本模块未做。
--- · 「码 → 步的**忠实性**」（不同码 ⇒ 不同步）仍未做。
+-- `DecEq-T6Vec` 与 `decStepCode` 现在 **可靠 + 完备**：
+--   sound    : TSet d → 命题
+--   complete : 命题 → TSet d
+-- ⇒ 判定器不再是「未经校验的 oracle」，`toStepCode` 的前提**算得对**且**算得全**。
+--
+-- ## ⬜ 仍未做（如实标注）
+-- · 「码 → 步的**忠实性**」（不同码 ⇒ 不同步）—— 需码层到步层的单射，尚属独立节点。
 --------------------------------------------------------------------------------
