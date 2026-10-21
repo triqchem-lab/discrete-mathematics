@@ -206,8 +206,8 @@ record Presentation (A : Set) : Set₁ where
     -- ═══ ④/⑤ 动力层耦合（N7–N9，2026-10-21 补）══════════════════
     phase-hom   : ∀ x y → phase (step x y) ≡ step (phase x) y        -- N7 ✓ 单边（双边不成立）
     clock-neq   : phase-order < clock                                 -- N3b ✓ 排除 clock = phase-order
-    -- N8：g 的加法分量非平凡（需分量投影才可表达）
-    -- add-proj : A → Trit ;  g-add : add-proj g ≢ add-proj unit
+    phase-g-comm : ∀ x → phase (step g x) ≡ step g (phase x)         -- N8 ✓（纯函数等式）
+    -- g ≠ unit 由 N1+N2+N3b 自动导出，**不需新字段** ✓
     -- N9：归零机制（G5，本体论级 —— 仍为草案）
     -- oblivion : A → A → A ;  oblivion-cycle : ∀ x → ...
 
@@ -242,7 +242,7 @@ record Presentation (A : Set) : Set₁ where
 | # | 字段 | 解决 | 在 DC 上成立？ |
 |---|---|---|---|
 | **N7** | `phase-hom : ∀ x y → phase (step x y) ≡ step (phase x) y` | **G3 部分**（相位是运算的**左参数自同态**）| ✅ **已验证 True** |
-| **N8** | `add-proj : A → Trit` + `g-add : add-proj g ≢ add-proj unit` | **G4**（`g` 的加法分量非平凡）| 需分量投影才可表达 |
+| **N8** | `phase-g-comm : ∀ x → phase (step g x) ≡ step g (phase x)` | **G4**（`phase` 与 `g` 交换）| ✅ **已验证 True**（纯函数等式，**不需投影**）|
 | **N9** | `oblivion : A → A → A` + 四层归零约束 | **G5**（归零机制）| ⚠ 需设计 |
 | **N3b** | `clock-neq-phase : phase-order < clock` | **N3 不能排除的 `clock = phase-order`** | ✅ `4 < 12` |
 
@@ -260,7 +260,37 @@ phase-hom  : ∀ x y → phase (step x y) ≡ step (phase x) y            -- ✓
 **原因**：`phase` 只动相位分量，`step` 在相位分量上做乘法 —— 两者**交换** ✓；
 但若两边都 `phase`，相位被推进**两次** ✗ ⇒ 双边多了一次 `α` ✗
 
-#### N8：G4 的正确表述（需要分量投影）
+#### N8 修订（2026-10-21 深度研究后）：G4 **不需要 `add-proj`**
+
+**原方案（需投影）✗** —— 深度研究后发现可简化：
+
+| G4 候选 | DC 上 | 形式 |
+|---|---|---|
+| ① `phase (step g x) ≡ step g (phase x)` | ✅ **True** | **纯函数等式** ✓ 无需投影 |
+| ② `phase ≡ (step g)^9` | ✅ True | DC 特定（`9≡0 mod 3`、`9≡1 mod 4` 的 CRT 巧合 ✗）|
+| ③ `phase-proj (phase x) ≡ phase-proj (step g x)` | ✅ True | 需投影 ✗ |
+| ④ `phase ≡ λ x → step g x` | ❌ **False** | 加法分量不同 ✗ |
+
+**⇒ 采用候选 ①** ✓ —— `phase-g-comm : ∀ x → phase (step g x) ≡ step g (phase x)` ✓
+
+#### ★ 更重要的发现：`g ≠ unit` 是**可导出的**，不需要新字段
+
+```
+反证：若 g = unit
+  ⇒ step y g = step y unit = y                    （zeroʳ）
+  ⇒ iterate (λ y → step y g) 1 x = step x g = x   （1 是周期）
+  ⇒ clock ∣ 1  ⇒  clock ≤ 1                       （clock-min）
+  但 N1 + N3b ⇒ 1 < phase-order < clock ⇒ clock ≥ 3
+  矛盾 ⇒ **g ≠ unit** ✓
+```
+
+**⇒ G4 的「`g` 非平凡」部分由 N1 + N2 + N3b 自动导出** ✓
+**⇒ G4 的「`phase` 与 `g` 有关」部分由 `phase-g-comm` 给出** ✓
+**⇒ `add-proj` 不需要** ✓（原方案作废）
+
+---
+
+#### N8 原方案（已作废，保留供对照）
 
 ```agda
 -- ❌ 纯函数等式（DC 上 False）
@@ -415,7 +445,7 @@ clock-neq-phase : phase-order < clock  ⇒  4 < 12 成立  ✓ 可排除
 
 - **N3 不能排除 `clock = phase-order`** ✗（`4 ∣ 4` 成立）⇒ 需单独的 `clock-neq-phase : phase-order < clock` ✓
 - **N7 只能单边**（`phase (step x y) ≡ step (phase x) y` ✓；**双边不成立** ✗，DC 反例 `x=y=(0,0)`）
-- **N8 需分量投影**（`phase ≡ λ x → step g x` 在 DC 上 **False** ✗ —— 差在加法分量）
+- **N8 已简化**（2026-10-21 深度研究）：`phase-g-comm : phase (step g x) ≡ step g (phase x)` ✓ 纯函数等式（无需投影）；`g ≠ unit` 由 N1+N2+N3b 自动导出 ✓
 - **N9（G5）仍为草案** ✗ —— `unit : A` 不表达「虚实对消灭」✗**定义的精确化不是学术洁癖，是透明性的提升** ——
 在有限结构上，每个约束都可穷举验证；这正是特征 3 结构相对连续统的本体论优势。
 
