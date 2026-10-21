@@ -37,16 +37,18 @@
 module Sovereign.Synthesis.Homotopy.T6CayleySem where
 
 open import Data.Nat using (ℕ)
-open import Data.List using ([]; _∷_)
+open import Data.List using ([]; _∷_; reverse; _++_; _∷ʳ_)
+open import Data.List.Properties using (unfold-reverse; ∷ʳ-++; ++-identityʳ)
 open import Relation.Nullary using (yes; no)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; sym; cong; trans; subst)
+  using (_≡_; refl; sym; cong; trans; subst; module ≡-Reasoning)
+open ≡-Reasoning
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode
   using (CStep; CWalk; cstep-inv; DecEq-CStep)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk
-  using (ctarget; ctarget-inv; foldT)
+  using (ctarget; ctarget-inv; foldT; foldT-++)
 open import Sovereign.Synthesis.Homotopy.T6CayleyNorm
   using (cpassS; creduceS)
 
@@ -88,7 +90,39 @@ creduceS-fold x w = cpassS-fold x [] w
 --------------------------------------------------------------------------------
 -- §4. ⚠ 本模块**不**声称的
 --
--- · `foldStack x acc ≡ foldT x (reverse acc)`（栈语义与阅读序的桥）—— **未证**
+-- · ✅ **已证**（本模块 §7 `foldStack-foldT`）：`foldStack x acc ≡ foldT x (reverse acc)`
+--   （栈语义与阅读序的桥；需要 stdlib 的 `unfold-reverse` + `∷ʳ-++` + `++-identityʳ`）
 --   （需要 `reverse` 的性质；本模块的陈述不需要它）
--- · 对 `cpassA` / `creduceA`（含末尾 `reverse` 的版本）的对应陈述 —— **未证**
+-- · ✅ **已证（在别处）**：对 `creduceA`（含末尾 `reverse`）的对应陈述 =
+--   **`T6CayleyNormEnd.creduceA-fold`**（全称版，回执 0679c767）—— 不在本模块。
 --------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- §7. ★ 栈语义与阅读序的桥（§6 自标「未证」的那条）
+--
+-- `foldStack` 从**尾部**往头累积，`foldT` 从**头部**往后推进 —— 两者差的正是 `reverse`。
+--------------------------------------------------------------------------------
+
+foldStack-foldT : ∀ {n : ℕ} (x : T6Vec n) (acc : CWalk n)
+                → foldStack x acc ≡ foldT x (reverse acc)
+foldStack-foldT x [] = refl
+foldStack-foldT x (s ∷ acc) =
+  begin
+    foldStack x (s ∷ acc)
+  ≡⟨ cong (λ v → ctarget v s) (foldStack-foldT x acc) ⟩
+    ctarget (foldT x (reverse acc)) s
+  ≡⟨ refl ⟩
+    foldT (foldT x (reverse acc)) (s ∷ [])
+  ≡⟨ sym (foldT-++ x (reverse acc) (s ∷ [])) ⟩
+    foldT x (reverse acc ++ (s ∷ []))
+  ≡⟨ cong (foldT x) (begin
+        reverse acc ++ (s ∷ [])
+      ≡⟨ sym (∷ʳ-++ (reverse acc) s []) ⟩
+        (reverse acc ∷ʳ s) ++ []
+      ≡⟨ ++-identityʳ (reverse acc ∷ʳ s) ⟩
+        reverse acc ∷ʳ s
+      ≡⟨ sym (unfold-reverse s acc) ⟩
+        reverse (s ∷ acc) ∎) ⟩
+    foldT x (reverse (s ∷ acc))
+  ∎
+
