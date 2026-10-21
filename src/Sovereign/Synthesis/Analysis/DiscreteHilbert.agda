@@ -31,8 +31,9 @@
 
 module Sovereign.Synthesis.Analysis.DiscreteHilbert where
 
-open import Data.Product using (Σ; _,_; proj₁; proj₂)
+open import Data.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; cong₂; sym; trans)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-comm; ⊗-comm; ⊕-identityʳ; ⊗-identityˡ; ⊗-zeroˡ;
@@ -187,3 +188,40 @@ check-self-3 = refl
 -- `(T₂,·,·)` 的坐标同样只贡献 1（`T₂⊗T₂ = T₁`），故非零坐标数决定范数
 check-self-2b : ⟨ (T₂ , T₂ , T₀) , (T₂ , T₂ , T₀) ⟩ ≡ T₂
 check-self-2b = refl
+
+--------------------------------------------------------------------------------
+-- §7. ★★ 零锥的完整形状：`⟨f,f⟩ ≡ T₀` ⟺ `f = 0` 或**三个坐标全非零**
+--
+-- 这是「范数只看非零坐标数」的**定理形态**（§6 的计算表只是三个样本）。
+-- 27 情形：1 个零向量 + 8 个全非零向量给见证，其余 18 个由 `()` 排除。
+--------------------------------------------------------------------------------
+
+Δ-null-zero : ∀ f → ⟨ f , f ⟩ ≡ T₀
+            → (f ≡ zero3) ⊎ ((proj-0 f ≢ T₀) × (proj-1 f ≢ T₀) × (proj-2 f ≢ T₀))
+Δ-null-zero (T₀ , T₀ , T₀) refl = inj₁ refl
+Δ-null-zero (T₀ , T₀ , T₁) ()
+Δ-null-zero (T₀ , T₀ , T₂) ()
+Δ-null-zero (T₀ , T₁ , T₀) ()
+Δ-null-zero (T₀ , T₁ , T₁) ()
+Δ-null-zero (T₀ , T₁ , T₂) ()
+Δ-null-zero (T₀ , T₂ , T₀) ()
+Δ-null-zero (T₀ , T₂ , T₁) ()
+Δ-null-zero (T₀ , T₂ , T₂) ()
+Δ-null-zero (T₁ , T₀ , T₀) ()
+Δ-null-zero (T₁ , T₀ , T₁) ()
+Δ-null-zero (T₁ , T₀ , T₂) ()
+Δ-null-zero (T₁ , T₁ , T₀) ()
+Δ-null-zero (T₁ , T₁ , T₁) refl = inj₂ ((λ ()) , (λ ()) , (λ ()))
+Δ-null-zero (T₁ , T₁ , T₂) refl = inj₂ ((λ ()) , (λ ()) , (λ ()))
+Δ-null-zero (T₁ , T₂ , T₀) ()
+Δ-null-zero (T₁ , T₂ , T₁) refl = inj₂ ((λ ()) , (λ ()) , (λ ()))
+Δ-null-zero (T₁ , T₂ , T₂) refl = inj₂ ((λ ()) , (λ ()) , (λ ()))
+Δ-null-zero (T₂ , T₀ , T₀) ()
+Δ-null-zero (T₂ , T₀ , T₁) ()
+Δ-null-zero (T₂ , T₀ , T₂) ()
+Δ-null-zero (T₂ , T₁ , T₀) ()
+Δ-null-zero (T₂ , T₁ , T₁) refl = inj₂ ((λ ()) , (λ ()) , (λ ()))
+Δ-null-zero (T₂ , T₁ , T₂) refl = inj₂ ((λ ()) , (λ ()) , (λ ()))
+Δ-null-zero (T₂ , T₂ , T₀) ()
+Δ-null-zero (T₂ , T₂ , T₁) refl = inj₂ ((λ ()) , (λ ()) , (λ ()))
+Δ-null-zero (T₂ , T₂ , T₂) refl = inj₂ ((λ ()) , (λ ()) , (λ ()))

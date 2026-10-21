@@ -29,9 +29,9 @@ module Sovereign.Synthesis.Analysis.DiscreteFunctional where
 
 open import Data.Empty using (⊥)
 open import Data.Product using (Σ; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans)
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-assoc; ⊕-comm)
 open import Sovereign.Algebra.Analytic.ProjectionDifferential using (GF3Func)
 
 -- 对偶空间：所有（不限于线性的）泛函
@@ -83,3 +83,29 @@ check-separates ()
 separating3 : Σ Dual (λ φ₀ → Σ Dual (λ φ₁ → Σ Dual (λ φ₂ →
                  ∀ (f g : GF3Func) → φ₀ f ≡ φ₀ g → φ₁ f ≡ φ₁ g → φ₂ f ≡ φ₂ g → f ≡ g)))
 separating3 = coord₀ , coord₁ , coord₂ , λ { (a , b , c) (x , y , z) refl refl refl → refl }
+
+--------------------------------------------------------------------------------
+-- §4. ★ 线性泛函
+--
+-- `Linear φ` = 对 `⊕ₚ` 可加 + 对逐点标量乘齐次。三个坐标泛函都线性（定义性）。
+--------------------------------------------------------------------------------
+
+_⊕ₚ_ : GF3Func → GF3Func → GF3Func
+(a , b , c) ⊕ₚ (x , y , z) = (a ⊕ x) , (b ⊕ y) , (c ⊕ z)
+
+_•_ : Trit → GF3Func → GF3Func
+k • (a , b , c) = (k ⊗ a) , (k ⊗ b) , (k ⊗ c)
+
+Linear : Dual → Set
+Linear φ = (∀ f g → φ (f ⊕ₚ g) ≡ φ f ⊕ φ g)
+         × (∀ (k : Trit) (f : GF3Func) → φ (k • f) ≡ k ⊗ φ f)
+
+-- 三个坐标泛函都线性（两分量均定义性）
+coord₀-linear : Linear coord₀
+coord₀-linear = (λ _ _ → refl) , (λ _ _ → refl)
+
+coord₁-linear : Linear coord₁
+coord₁-linear = (λ _ _ → refl) , (λ _ _ → refl)
+
+coord₂-linear : Linear coord₂
+coord₂-linear = (λ _ _ → refl) , (λ _ _ → refl)
