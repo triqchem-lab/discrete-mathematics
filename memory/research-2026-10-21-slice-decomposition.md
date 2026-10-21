@@ -1657,3 +1657,39 @@ p7 = mixedOp-12-cycle        -- 类型直接匹配 ✓
 `engineering/index_presentations.sh` 期望 `src/Sovereign/Algebra/Presentation.agda` ✗
 —— 实际文件在 `src/Sovereign/Algebra/UniversalAlgebra/Presentation.agda` ✗
 ⇒ 索引工具**无法验证**新实例 ✗ —— 建议后续修正工具路径 ✓
+
+---
+
+## 三十四、⚠ P1 结构性障碍（2026-10-21，待人类裁决）
+
+### 34.1 障碍
+
+```
+T4 环 R_n = Functions((Z/3)^n, GF9)       系数域 GF9 只有 9 元 ✗
+                                            GF9* ≅ C8（8 阶循环）✗
+
+八要素的 step 需要「联合运算」（加法 ⊕ 相位乘）
+  · mixedOp 定义在 DuodecPoint = Trit × AlphaPower（12 元，相位群 ⟨α⟩ ≅ C4）✓
+  · DuodecPoint（12 元）≠ GF9（9 元）✗ ⇒ 无自然双射 ✗
+  ⇒ **无法把 mixedOp 直接提升到 R_n** ✗
+```
+
+### 34.2 两条候选（各有代价）
+
+| 路径 | 载体 | `step` | 与 T4 的关系 |
+|---|---|---|---|
+| **A** | `Torus n → DuodecPoint`（DC-值函数）| 逐点 `mixedOp` ✓ | ⚠️ **不是** T4 的环 ✗（T4 是 GF9-值）|
+| **B** | `Torus n → GF9`（T4 环 ✓）| 需**自定义**联合运算 ✗ | ✓ 是 T4 环，但 `step` **非典范** ✗ |
+
+### 34.3 已提交裁决（`proof_dag` journal，open:true）
+
+> 请裁决走 A 还是 B，或认可「P1 不做、P0 即八要素的完整交付」。
+
+### 34.4 当前确定成果（P1 不影响）
+
+| 项 | 状态 | 回执 |
+|---|---|---|
+| `a_n = Σ_{k≡0(3)} C(n,k)·2^k` | ✅ Agda 定理 | `fd11212a` |
+| `b_n = a_n − [3\|n]·2^n` | ✅ Agda 定理 | `da832222` |
+| **全库第一个 `Presentation` 实例（P0）** | ✅ Agda 定理 | `d09d2f93` |
+| 八要素研究报告 | ✅ 135 行 | `7fbb6a4` |
