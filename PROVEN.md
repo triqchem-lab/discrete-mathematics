@@ -190,8 +190,8 @@ g-ne-unit : ∀ {A} (P : Presentation A)
 | 项 | 说明 |
 |---|---|
 | **范式唯一（汇合性）** | ⬜ 未做。`creduceB'-idem` 只给「再归约不变」，「不同路径到同一范式」未证。 |
-| **④ 的码→步影射 + 单射性** | ⬜ 未做。`AStepCode` 到 `ASTep` 的映射需 `Maybe`（`slide` 自带侧条件：中间边必须存在）；「码相等 ⇒ 步相等」的单射性**不是自动的**。 |
-| **`sym-edge` 的可构造性** | ⬜ 未给实例（`rev-cancel` 里是假设；对 `T6CayleySym` 这类两边对称的图可给，未做）。 |
+| **④ 的码→步影射 + 单射性** | 🟡 **部分完成**：六组件码 + `DecEq`（`92938fa5`）/ 两条走 + 侧条件可判定（`4c84d29a`）/ `interpC-end`（`a958d82c`）/ `interpAt` + `foldT-++`（`38b99f3b`）。**仍卡**：`interpAt-++`（拼接拆解）—— `subst` 与 `cons` 不交换，`[]` 情形报 `UnequalTerms`。⚠ **更正**：原记「需要 `Maybe`」是**错的** —— `slide` 的 `e1,e2,e3` 是**显式参数**，映射无需搜索。 |
+| ~~`sym-edge` 的可构造性~~ | ✅ **已完成**：`T6SymEdgeReverse.sym-edge-T6`（`feee492f`，靠 `updAt-cubed`）+ `rev-cancel-T6`（`rev-cancel` 在 `T6CayleySym` 上**无条件**）。 |
 | **`π₂ᵈ⁺` 的精确刻画** | ⬜ 形状未定。`ASTep` 含见证 ⇒ 一般图不可判定（见下「已知墙」）。 |
 
 ### 8.6 ⚠ 已知墙（**下次别再撞**）
