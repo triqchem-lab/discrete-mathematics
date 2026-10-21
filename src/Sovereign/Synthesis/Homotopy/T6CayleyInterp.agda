@@ -37,25 +37,29 @@ module Sovereign.Synthesis.Homotopy.T6CayleyInterp where
 open import Data.Nat using (ℕ)
 open import Data.List using ([]; _∷_; _++_)
 open import Data.Product using (Σ; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
 open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec)
 open import Axiom.UniquenessOfIdentityProofs using (module Decidable⇒UIP)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CStep; CWalk; cplus; cminus)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym; T6SymEdge)
-open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_; AStep; slide)
+open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (DiGraph; Walk; nil; cons; _++w_; AStep; slide)
+open DiGraph using (V; edge)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk
   using (ctarget; foldT; cEdge; foldT-++)
 
 --------------------------------------------------------------------------------
--- §0. ★★ 前置：`foldT` 的拼接律（**不是 defeq**，必须证）
+-- §0. ★★ 前置：`foldT` 的拼接律 —— **复用**（不自证）
 --
 -- ```
---   foldT u (a ++ b) ≡ foldT (foldT u a) b
+--   foldT u (a ++ b) ≡ foldT (foldT u a) b        （= T6CayleyCodeWalk.foldT-++）
 -- ```
--- 这正是 `interpAt-++` 卡住的根因：两边 `Walk` 的**终点**差这条等式
--- ⇒ 必须显式 `subst`（经验库 `projection-stuck-let` 的误判防护已写明「需要 `subst`」）。
+-- 这是 `interpAt-++` 的根因等式：两边 `Walk` 的**终点**差它
+-- ⇒ 必须显式 `subst`（经验库 `projection-stuck-let` 的误判防护：「需要 `subst`」）。
+--
+-- ⚠ 本模块**不重证**它 —— 由 §import 的 `using (… foldT-++)` 引入。
+--   历史：初版曾在此重复证一遍，经并行协作者指出后删除（见其后的说明段）。
 --------------------------------------------------------------------------------
 
 -- ⚠ **复用**：`foldT-++` 已存在于 `T6CayleyCodeWalk.agda:131`，本模块**不重证**，
@@ -155,6 +159,31 @@ interpAt-++ u (s ∷ a) b =
   cong (λ z → cons (cEdge u s) z) (interpAt-++ (ctarget u s) a b)
 
 --------------------------------------------------------------------------------
+-- §3b. 派生的**消费形态**：把内层 `subst` 提到整式外（下游拼两步时更好用）
+--
+-- 拼接律原始形态把 `subst` 留在**第二个走**里；对消费者而言通常是
+-- 「先各自解释、再 `++w`，最后整体搬端点」。两者等价，见 `interpAt-++-glue`。
+--------------------------------------------------------------------------------
+
+-- `subst` 沿终点与 `++w` 交换（对左 `p` 归纳；`cons` 情形用 §1b 的 `subst-cons`）
+subst-++w : ∀ {n : ℕ} {u m : T6Vec n} (p : Walk (T6CayleySym n) u m)
+            {a b : T6Vec n} (eq : a ≡ b) (q : Walk (T6CayleySym n) m a)
+          → subst (λ v → Walk (T6CayleySym n) u v) eq (p ++w q)
+            ≡ p ++w subst (λ v → Walk (T6CayleySym n) m v) eq q
+subst-++w (nil m) eq q = refl
+subst-++w (cons c p) eq q =
+  trans (subst-cons c (p ++w q) eq) (cong (cons c) (subst-++w p eq q))
+
+interpAt-++-glue : ∀ {n : ℕ} (u : T6Vec n) (a b : CWalk n)
+                 → interpAt u (a ++ b)
+                   ≡ subst (λ v → Walk (T6CayleySym n) u v) (sym (foldT-++ u a b))
+                           (interpAt u a ++w interpAt (foldT u a) b)
+interpAt-++-glue u a b =
+  trans (interpAt-++ u a b)
+        (sym (subst-++w (interpAt u a) (sym (foldT-++ u a b))
+                        (interpAt (foldT u a) b)))
+
+--------------------------------------------------------------------------------
 -- §4. ★★★ 步 7：`toStep` 与侧条件证明**无关**（= 码的忠实性）
 --
 -- ## 为什么这就是「注入性」的内容
@@ -191,32 +220,63 @@ stepE3-irrel {n} u pref s3 h h' =
   subst-irrel {n} (λ w → T6SymEdge (foldT u pref) w) h h' (cEdge (foldT u pref) s3)
 
 --------------------------------------------------------------------------------
--- §6. ⬜ `toStep-irrel`（忠实性）—— **判定：不属归约所需，且本体是异质相等**
+-- §6. ★★★ 步 7：`toStep` 与侧条件证明 `h` **无关**（忠实性 —— 已证）
 --
--- ## 想证什么、为什么 `cong` 不行（已实测 2 次，同一报错）
+-- ## 陈述本身就是异质相等（必须用 `subst` 表述）
 --
--- 想证 `toStep … h ≡ toStep … h'`。但 **`toStep` 的返回类型依赖 `h`**
--- （第二个走里含 `stepE3 … h`）⇒ **依赖余定义域** ⇒
--- `cong` 要求「余定义域与参数无关」，**根本不适用** ✗
---
--- ## 本体的类型学身份（关键判定）
---
--- 正确写法必须先用 `subst` 把 `toStep … h` 的**类型**搬到 `h'` 侧：
+-- `toStep … h` 的**返回类型依赖 `h`**（第二个走里含 `stepE3 … h`）⇒
+-- `cong` 不适用（它要求余定义域与参数无关，已实测 2 次）✓ 这一步的判读是对的。
+-- 正确写法是先搬类型：
 -- ```
 --   subst (λ e → AStep G src (tgt e)) (stepE3-irrel … h h') (toStep … h) ≡ toStep … h'
 -- ```
--- 而 `subst` 沿 `e` 作用在 `slide … e` 上**不归约**（motive 停在复合项）
--- ⇒ 这是 **heterogeneous equality（John Major 等式）** 的标准困难 ✗
--- ⇒ 常规路线是 `HEq` 或 `J`-式运输，**本库不用 `HEq`**。
 --
--- ## ★ 但它**不是归约所需**（这一条是判定，标 `[判断·非定理]`）
+-- ## ★ 更正（`[定理]`：`slide-subst`）：这**不是**「异质相等的标准困难」
 --
--- `reduce` 只需要 **可靠性**：**同一个码 ⇒ 同一步**。
--- 而 `toStep` 本来就是 `(u, pref, s1, s2, s3, suff, h)` 的**函数**
--- ⇒ 同码（含同一个 `h`）给出**同一个项**，可靠性**定义性成立** ✓
--- **忠实性**（不同码 ⇒ 不同步）才需要 §6 的等式，它对「用码代替步做判定」
--- 的**语义保真**有用，但**不是归约正确性的前提** ✓
+-- 先前的判定「`subst` 沿 `e` 作用在 `slide … e` 上**不归约** ⇒ 需 `HEq` / `J`」**不成立**：
+-- 一般 `q` 下确实不归约，但**证明时对 `q` 模式匹配到 `refl`** —— 此时 `e3' := e3` 被强制，
+-- 而 `subst P refl x = x` **定义性**成立 ⇒ 两边一起归约到同一个 `slide` 项 ✓
+-- ⇒ 无需 `HEq`、无需 `J`、也无需额外 UIP（`UIP` 只在 `stepE3-irrel` 那层用到了）。
 --
--- ⇒ **④ 在归约所需的范围内已闭合**（步 1–6 全部有内核回执）；
---   忠实性留作独立课题（前置 `stepE3-irrel` / `subst-irrel` 已证 ✓）。
+-- 一般引理（与具体图形无关；若其他模块也要用，可上提到 `BarceloAHomotopy`）：
+--------------------------------------------------------------------------------
+
+slide-subst : ∀ {G : DiGraph} {u x z v y : V G}
+              (p : Walk G u x) (b : Walk G z v)
+              (e1 : edge G x y) (e2 : edge G y z) {e3 e3' : edge G x z}
+              (q : e3 ≡ e3')
+            → subst (λ e → AStep G (p ++w (cons e1 (cons e2 b))) (p ++w (cons e b)))
+                    q (slide p b e1 e2 e3)
+              ≡ slide p b e1 e2 e3'
+slide-subst p b e1 e2 refl = refl
+
+toStep-irrel : ∀ {n : ℕ} (u : T6Vec n) (pref : CWalk n) (s1 s2 s3 : CStep n)
+               (suff : CWalk n)
+               (h h' : ctarget (foldT u pref) s3
+                       ≡ ctarget (ctarget (foldT u pref) s1) s2)
+             → subst (λ e → AStep (T6CayleySym n)
+                                 (interpAt u pref ++w
+                                   (cons (stepE1 u pref s1)
+                                         (cons (stepE2 u pref s1 s2)
+                                               (interpAt (ctarget (ctarget (foldT u pref) s1) s2) suff))))
+                                 (interpAt u pref ++w
+                                   (cons e (interpAt (ctarget (ctarget (foldT u pref) s1) s2) suff))))
+                     (stepE3-irrel u pref s3 {z = ctarget (ctarget (foldT u pref) s1) s2} h h')
+                     (toStep u pref s1 s2 s3 suff h)
+               ≡ toStep u pref s1 s2 s3 suff h'
+toStep-irrel u pref s1 s2 s3 suff h h' =
+  slide-subst (interpAt u pref)
+              (interpAt (ctarget (ctarget (foldT u pref) s1) s2) suff)
+              (stepE1 u pref s1) (stepE2 u pref s1 s2)
+              (stepE3-irrel u pref s3 h h')
+
+--------------------------------------------------------------------------------
+-- §7. 归约**不需要** §6 的异质相等（这一条是判定，标 `[判断·非定理]`）
+--
+-- `reduce` 只需要 **可靠性**：同一个码 ⇒ 同一步。`toStep` 本来就是
+-- `(u, pref, s1, s2, s3, suff, h)` 的**函数** ⇒ 同码（含同一个 `h`）给出同一个项，
+-- 可靠性**定义性成立** ✓。**忠实性**（不同码 ⇒ 不同步）才用到 §6 的等式，
+-- 而它现在也有了（`toStep-irrel`）✓。
+--
+-- ⇒ 步 1–7 全部有内核回执；`toStep-irrel` 由「未实施」改为**已证**。
 --------------------------------------------------------------------------------
