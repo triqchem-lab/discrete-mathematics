@@ -6,9 +6,14 @@
 
 ---
 
-> **▶ 完备定义**：[42-presentation-group-definition.md](42-presentation-group-definition.md) 把本节八要素
-> 提升为**可判定的 record 定义**（含 7 处精确化缺口 G1–G7 + 6 项加强约束 + DC 逐条核对）。
+> **▶ 完备定义（v2，2026-10-21）**：[42-presentation-group-definition.md](42-presentation-group-definition.md) 把本节八要素
+> 提升为**可判定的 record 定义**（7 处缺口 G1–G7 + **10 条显式约束 N1–N10** + `add` 四件套 + DC 逐条核对）。
 > 本文档是**描述性**定义；42 号文是**可判定**定义。
+>
+> **v2 的三条修正**（相对 v1）：① `rigidity-hom`+`rigidity-invol` **排除不了** `ρ`（交换群上 `ρ=inv`
+> 也是自同构 + 对合）⇒ 唯一判别式是 `add (rigidity x) ≡ add x`；② G1（刚性）与 G5（归零）
+> **共用同一个缺失投影** `add : A → Trit`；③ 四层归零里 `α⁴`/`¹²` **已在模板**（`phase-cycle`/`clock-cycle`），
+> 缺的只是加法层 `⊕³`。**要素数 8 ≠ 元素数 12，永不互推。**
 
 ## 核心结论
 
