@@ -2303,3 +2303,51 @@ Z n = Zr (mod3 n) n                             ← 按 mod3 索引，非递推
 
 > **共同点：都是「本地细节/判据」错，不是「数学」错** ✓
 > ⇒ **每次改动前，用最小探针验证定义** ✓（§31.3 的探针手法）
+
+---
+
+## 四十四、缺口 ②：「先查后动手」的结果（2026-10-21）
+
+### 44.1 查到的现成模板（fable5 Step 1 ✓）
+
+| 模板 | 位置 | 价值 |
+|---|---|---|
+| **`cycle3-period : ∀ n → cycle3 (suc (suc (suc n))) ≡ cycle3 n`** | `DiscreteAnalysis.agda:282` | ✅ **3-周期用 `suc(suc(suc n))` 形式，`refl`** |
+| `mod3-add : ∀ a v → a < 3 → (a + 3*v) % 3 ≡ a` | `Ring3pow11.agda:151` | ✅ |
+| `n-mod3 : ℕ → Trit`（3-周期 case 定义） | `L2Bridge.agda:81` | ✅ 与我 `mod3` 同形 |
+| `[m+kn]%n≡m%n` | `Foundation/Arithmetic.agda:97` | ✅ |
+
+**⇒ 关键收获**：3-周期的**正确形式**是 `suc (suc (suc n))`（不是 `with mod3`）✓ ——
+这直接回答了「`Z` 的 mod3 周期怎么归纳」✗ → **用 `suc(suc(suc n))` 递推** ✓
+
+### 44.2 数学结构已完全确定（数值验证 ✓）
+
+```
+AllH r (suc n) = 2 * AllH (pred3 r) n
+  展开 sumVec {suc n} 的 3 支：
+    v=0 ⇒ hid (T₀⊕h) r * (0 * allNZ) ≡ 0                     [*-zeroʳ]
+    v=1 ⇒ hid (T₁⊕h) r * (1 * allNZ) ≡ hid h (pred3 r) * allNZ  [hid-one + one-*]
+    v=2 ⇒ 同 v=1
+  ⇒ 0 + (A + A) = 2 * A ✓
+```
+
+### 44.3 ❌ 未完成的两个辅助件（精确）
+
+```agda
+① sumVec-zero : ∀ {n} → sumVec {n} (λ _ → 0) ≡ 0        -- ~8 行
+② X + Y + Z 到 0 + (A + A) 的重排                        -- ~15 行
+```
+
+### 44.4 ★ 教训：「先查后动手」**确实省了路**
+
+| 不查（我的原计划）| 查了（实际） |
+|---|---|
+| 用 `with mod3 n` + 显式等式参数 ✗（§31.3 模板）| **`suc (suc (suc n))` 3-周期递推** ✓（库里已有 ✓）|
+| 需处理 `with` 不抽象 β-归约项 ✗ | **避开该问题** ✓ |
+
+⇒ **这次查库直接改变了归纳形式的选择** ✓ —— 不是省几行代码，是**省掉一个已知的坑** ✓
+
+### 44.5 状态
+
+`GF3BnLinearAlgebra.agda`：**编译 ✓，0 postulate / 0 hole** ✓
+（§1 定义 + §2/§3 精确缺口文档化 ✓，未留洞 ✓）

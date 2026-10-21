@@ -76,3 +76,26 @@ AllH r n = sumVec {n} (λ x → hid (hammingT x) r * allNZ x)
 -- 已确切验证的数值事实（Python 真实枚举 n=0..7）：
 --   AllH 0 n = 1, 0, 0, 8, 0, 0, 64, 0
 --   Z n      = 1, 0, 0, 8, 0, 0, 64, 0        ✓ 完全一致
+
+--------------------------------------------------------------------------------
+-- §3. ⚠ `AllH` 的递推：**结构已定，证明未完成**（2026-10-21）
+
+-- **已查到的现成模板**（fable5 Step 1 普查 ✓）：
+--   `DiscreteAnalysis.agda:282`  `cycle3-period : ∀ n → cycle3 (suc (suc (suc n))) ≡ cycle3 n`
+--   `cycle3-period n = refl`   ← 3-周期用 `suc (suc (suc n))` 形式
+--   `Ring3pow11.agda:151`      `mod3-add : ∀ a v → a < 3 → (a + 3*v) % 3 ≡ a`
+--
+-- **数学结构已确定**（数值验证 ✓）：
+--   `AllH r (suc n) = 2 * AllH (pred3 r) n`
+--   展开：`sumVec {suc n}` 的 3 支 =
+--     v=0 ⇒ `hid (T₀⊕h) r * (0 * allNZ)` ≡ 0                （`*-zeroʳ`）
+--     v=1 ⇒ `hid (T₁⊕h) r * (1 * allNZ)` ≡ `hid h (pred3 r) * allNZ`  （`hid-one` + `one-*`）
+--     v=2 ⇒ 同 v=1 ✓
+--   ⇒ `0 + (A + A)` = `2 * A` ✓
+--
+-- ❌ 未完成的辅助件：
+--   ① `sumVec-zero : ∀ {n} → sumVec {n} (λ _ → 0) ≡ 0`
+--   ② `X + Y + Z` 到 `0 + (A + A)` 的重排（`X` 已被 `sumVec-cong` 改写成 `sumVec (λ _ → 0)`）
+--
+-- 下一步：先证 `sumVec-zero`（~8 行），再重排（~15 行）
+--------------------------------------------------------------------------------
