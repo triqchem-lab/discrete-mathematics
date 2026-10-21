@@ -1,0 +1,100 @@
+{-# OPTIONS --rewriting --guardedness #-}
+
+-- | Sovereign.Synthesis.Homotopy.T6AStepMap
+--
+-- **④ 的映射骨架**：码 → 一步所关联的**两条走** + **侧条件**（可判定）
+--
+-- ## 为什么要拆成「数据 + 侧条件」
+--
+-- `slide` 的类型（`BarceloAHomotopy.agda:51-53`）：
+-- ```
+--   slide p b e1 e2 e3 : AStep G (p ++w (cons e1 (cons e2 b)))
+--                              (p ++w (cons e3 b))
+-- ```
+-- ⇒ 一步所关联的**两条走**在码层完全确定：
+--
+-- | 量 | 码层 | 
+-- |---|---|
+-- | 源走 | `pref ++ (s1 ∷ s2 ∷ suff)` |
+-- | 靶走 | `pref ++ (s3 ∷ suff)` |
+-- | **侧条件** | 两者**终点相同**（否则 `e3` 的对端接不上）|
+--
+-- ⇒ 「码 → 步」的**内容**= 这两条走；而**何时成立**= 侧条件。
+-- 本模块只交这两样 + 侧条件的**可判定性**；真正构造 `ASTep` 值留给下一步。
+--
+-- ## 侧条件为什么可判定
+--
+-- 两条走的终点都是 `T6Vec n` 的元素 ⇒ 用 `T6CayleyDec.DecEq-T6Vec` **可判定** ✓
+-- （`Vec (Fin 3) n` 的相等可判定，不需要 `uip`。）
+--
+-- ## 核心原则
+--   · 0 postulate / 0 hole；零 Cubical
+--   · 复用 `T6CayleyCodeWalk.interpC`（码 → 走的终点）+ `T6CayleyDec.DecEq-T6Vec`
+
+module Sovereign.Synthesis.Homotopy.T6AStepMap where
+
+open import Data.Nat using (ℕ)
+open import Data.List using ([]; _∷_; _++_)
+open import Data.Product using (Σ; _,_; proj₁)
+open import Relation.Nullary using (Dec)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+
+open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
+open import Sovereign.Synthesis.Homotopy.T6CayleyCode
+  using (CStep; CWalk; cplus; cminus)
+open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec)
+open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (interpC; ctarget)
+open import Sovereign.Synthesis.Homotopy.T6AStepCode2 using (StepCode; mkStep)
+
+--------------------------------------------------------------------------------
+-- §1. 码层的两条走（`slide` / `expand` 共用同一对数据，只是方向相反）
+--------------------------------------------------------------------------------
+
+srcCode : ∀ {n : ℕ} → StepCode n → CWalk n
+srcCode (mkStep _ pref s1 s2 _ suff) = pref ++ (s1 ∷ s2 ∷ suff)
+
+tgtCode : ∀ {n : ℕ} → StepCode n → CWalk n
+tgtCode (mkStep _ pref _ _ s3 suff) = pref ++ (s3 ∷ suff)
+
+--------------------------------------------------------------------------------
+-- §2. ★★ 侧条件：两条走的**终点相同**
+--------------------------------------------------------------------------------
+
+StepSide : ∀ {n : ℕ} (u : T6Vec n) → StepCode n → Set
+StepSide u c = proj₁ (interpC u (srcCode c)) ≡ proj₁ (interpC u (tgtCode c))
+
+-- ★ 侧条件**可判定**（不需要 uip）
+decStepSide : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n) → Dec (StepSide u c)
+decStepSide u c = DecEq-T6Vec (proj₁ (interpC u (srcCode c)))
+                              (proj₁ (interpC u (tgtCode c)))
+
+--------------------------------------------------------------------------------
+-- §3. ★★ 关键前置：`interpC` 对拼接的分配律（端点层）
+--
+-- ```
+--   proj₁ (interpC u (a ++ b)) ≡ proj₁ (interpC (proj₁ (interpC u a)) b)
+-- ```
+-- 对 `a` 归纳，**两情形都是定义性匹配** ✓（`[]` 情形 refl；`s ∷ a'` 情形交给 IH）。
+--
+-- ⚠ 这里只到**端点**层（`proj₁`）。走本身（`proj₂`）要对 `Walk` 做 `subst` 运输
+--   —— 那一步留给真正构造 `ASTep` 时做。
+--------------------------------------------------------------------------------
+
+interpC-++ : ∀ {n : ℕ} (u : T6Vec n) (a b : CWalk n)
+           → proj₁ (interpC u (a ++ b))
+             ≡ proj₁ (interpC (proj₁ (interpC u a)) b)
+interpC-++ u []       b = refl
+interpC-++ u (s ∷ a)  b = interpC-++ (ctarget u s) a b
+
+--------------------------------------------------------------------------------
+-- §4. ⬜ 下一步（判据明确）
+--
+-- 真正构造 `ASTep` 值：
+--   `toStep : (u) (c : StepCode n) (h : StepSide u c)
+--           → AStep (T6CayleySym n) (interpC 出的源走) (interpC 出的靶走)`
+--   已备：① 码层两条走（`srcCode`/`tgtCode`）；
+--         ② 侧条件（`StepSide`）+ **可判定**（`decStepSide`）；
+--         ③ 端点层分配律（**本条** `interpC-++`）。
+--   待做：把 `proj₂`（走本身）沿 `interpC-++` 运输，再用 `slide` 构造子
+--         （三个边由 `cEdge` 给，见证 = `refl`）⇒ **无需搜索、无需 `Maybe`**。
+--------------------------------------------------------------------------------
