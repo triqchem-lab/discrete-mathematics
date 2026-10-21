@@ -70,7 +70,27 @@ canon c a e (cons e' rest) =
   AH-trans (gen (shorten c e e' rest)) (canon c _ (c _ _) rest)
 
 --------------------------------------------------------------------------------
--- §2. ⚠ 主定理的实际边界（不硬凑）
+-- §2. ★ 出路的实际施工：把 case split 移到**调用点**
+--
+-- without-K 只禁止「对 `Walk G v v` 做构造子 split」。若把走**已分解**地传进来
+-- （`cons e rest`），split 就不需要了 —— 主定理的**实质情形**因此可以证 ✓
+--------------------------------------------------------------------------------
+
+complete-idempotent-cons :
+    ∀ {G : DiGraph} (c : IsComplete G) {v a : V G}
+      (e : edge G v a) (rest : Walk G a v)
+    → AHomotopy G (cons e rest ++w cons e rest) (cons e rest)
+complete-idempotent-cons c {v} e rest =
+  AH-trans (canon c _ e (rest ++w cons e rest))
+           (AH-symm (canon c _ e rest))
+
+-- 空走情形（平凡，且**不需要** split：直接对 `nil v` 陈述）
+complete-idempotent-nil : ∀ {G : DiGraph} {v : V G}
+                        → AHomotopy G (nil v ++w nil v) (nil v)
+complete-idempotent-nil = refl' _
+
+--------------------------------------------------------------------------------
+-- §3. ⚠ 主定理的实际边界（不硬凑）
 --
 -- 想要的陈述：
 -- ```
