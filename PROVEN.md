@@ -155,6 +155,18 @@ g-ne-unit : ∀ {A} (P : Presentation A)
 | `T6CayleyCode.agda` | `CStep`（`cplus`/`cminus`，**无证明分量**）/ `CWalk` / `DecEq-CStep` / `DecEq-CWalk`（平凡，**不用 uip**）/ **`creduce`**（fuel 递归消相邻逆对） | `a3664bd1` |
 | `T6CayleyCodeWalk.agda` | `ctarget` / **`cEdge`（见证 = `refl`，无需搜索）** / `interpC` / `ctarget-inv` / **`ctarget-3`**（每步 3 阶）/ `foldT` / `foldT-++` / `crev` / **`ctarget-rev`**（逆律） | `f07cfdae` |
 | `T6CayleyComm.agda` | **`updAt-comm`**（`updAt i` 与 `updAt j` 交换 ⇒ **`(C₃)ⁿ` 作为群 Abel**） | `4ae7a0a7` |
+| `T6CayleyNorm.agda` | `cpassA`/`creduceA`（无 fuel）；`NoCancel`（3 构造子）；`cpassS`/`creduceS`；`cpassA-eq`（两者差一个 `reverse`，`refl` 级）；**`cpassS-noCancel`**（①范式性）/ `creduceS-noCancel`；**`adj-sym`/`adj-sym'`**（相邻关系对称，4 情形）；`NoCancelR` + `NoCancel→R`/`R→NoCancel`（双向桥）；`creduceS-noCancelR` | `54107092` |
+| `T6CayleySem.agda` | `foldStack`（栈的**右折叠**语义，避开 `reverse`）；**`cpassS-fold`**；**`creduceS-fold`**（③ 归约不改终点） | `b2a04a3a` |
+| `T6CayleyBool.agda` | **`finEqB`**（在 ℕ 上比较，不携带证明）+ `complete`/`sound`；`cdEqB`（判定 `x ≡ cstep-inv y`，4 情形）+ `complete`/`sound`/`cdEqB-¬`（**一行** via `T false = ⊥`）；`cpassB`/`creduceB`；`cpassB-noCancel`/`creduceB-noCancel` | `3c10dc1a` |
+| `T6CayleyIdem.agda` | `NoCancel-head` / `NoCancel-tail₂`（投影小件） | `6e1b5faf` |
+| **`T6CayleyIdem2.agda`** | `pushB` + **`pushB-no-cancel`**（用 `cdEqB-sound` 排空 `true` 分支，**不需反射**）；`cpassApp`（**追加版**，尾部展开）；**`cpassB≡cpassApp`**（桥）；`cpassApp-++`；`reverse-∷`；**`cpassApp-rev`** / **`cpassB-self`**；**★★ `creduceB-idem`** / **★★ `creduceB'-idem`（② 幂等）** | `f6d65f9e` |
+| `T6AStepCode.agda` | ④ 探针：`ADir`（`dslide`/`dexpand`）/ `AStepCode n = ADir × CWalk n × CWalk n` / **`DecEq-AStepCode`**（平凡，**不用 uip**） | `f66e1ac2` |
+
+**⑤ 一阶（PIO-2 线）**
+
+| 模块 | 关键符号 | 回执 |
+|---|---|---|
+| `AStepStdReverse.agda` | **★★ `rev-cancel : ∀ (p : Walk G u v) → AHomotopyStd G (p ++w rev p) (nil u)`**（`sym-edge` 作为假设；一次 `++w-assoc` 运输 + `prefix-cong` + `AHStd-++w` + `rev-cancel-one`） | `d24fbea1` |
 
 ### 8.5 ⚠ 已撤回 / 未验证（**别当成已证复用**）
 
@@ -163,8 +175,43 @@ g-ne-unit : ∀ {A} (P : Presentation A)
 | `π₂ᵈ⁺` **至多两类**（⇒ 或 ≅ C₂） | ❌ **已撤回**。`par2-Walk⁺` 只给「良定义」；**良定义 ≠ 单射**，拿不到上界。 |
 | `Ω2Walk G x w1 w2` 只在 `w1`、`w2` 相等时可居留 | ❌ **已撤回**。`cons2 s (nil2 w2)` 就是 `w1 ≢ w2` 的居留者。 |
 | `π₁ᵈ(T6Cayley n) ≅ (C₃)ⁿ`，「五项前置已齐，只差一项」 | ❌ **路线判断已撤回**：该「差距分析」本身未核实。**已证的只有** 8.4 表里的那些符号。 |
-| `creduce` 的完备性 / 汇合性 | ⬜ **未做**。`creduce` 的 `no` 分支不重查头部 ⇒ 一遍不保证到不动点。 |
-| `π₂ᵈ⁺` 的精确刻画（≅ 自由群？） | ⬜ **未做**，且形状问题未定（需 `DecEq` 或汇合性；`ASTep` 含见证 ⇒ 一般图不可判定）。 |
+
+**现已补上的（原 8.5 里的「未做」项）**：
+
+| 曾未做 | 现状 |
+|---|---|
+| `creduce` **范式性**（一遍不保证到不动点）| ✅ **已证**：`creduceS-noCancel`（`54107092`）/ `creduceB-noCancel`（`3c10dc1a`）|
+| `creduce` **幂等** | ✅ **已证**：`creduceB'-idem`（`f6d65f9e`）—— 注意**正确陈述是 `reverse ∘ creduceB`**（`creduceB` 本身**不**幂等，oracle `0c189883` 给出 4056 反例）|
+| `creduce` **语义正确** | ✅ **已证**：`creduceS-fold`（`b2a04a3a`）|
+| ④ 的可行性探针 | ✅ **通过**：`AStepCode` + `DecEq-AStepCode`（`f66e1ac2`）—— 二级码可判定，**不用 uip** |
+
+**仍未做**（如实标注）：
+
+| 项 | 说明 |
+|---|---|
+| **范式唯一（汇合性）** | ⬜ 未做。`creduceB'-idem` 只给「再归约不变」，「不同路径到同一范式」未证。 |
+| **④ 的码→步影射 + 单射性** | ⬜ 未做。`AStepCode` 到 `ASTep` 的映射需 `Maybe`（`slide` 自带侧条件：中间边必须存在）；「码相等 ⇒ 步相等」的单射性**不是自动的**。 |
+| **`sym-edge` 的可构造性** | ⬜ 未给实例（`rev-cancel` 里是假设；对 `T6CayleySym` 这类两边对称的图可给，未做）。 |
+| **`π₂ᵈ⁺` 的精确刻画** | ⬜ 形状未定。`ASTep` 含见证 ⇒ 一般图不可判定（见下「已知墙」）。 |
+
+### 8.6 ⚠ 已知墙（**下次别再撞**）
+
+| 墙 | 内容 |
+|---|---|
+| **`Dec` 的见证需要无关性** | 证 `DecEq-CStep x y ≡ yes p / no ¬p` 需 `CStep` 的 **UIP**（`yes` 侧）或 **funext**（`no` 侧）；本库纯 PropEq 下都没有。stdlib 的 `≟-≡`/`≟-≢`（`Data/Fin/Properties.agda:111-118`）**存在但不够**（它们给的证明项与我需要的不一定相同）。⇒ **绕过：换 `Bool`**（`T6CayleyBool`）：`finEqB` 在 ℕ 上比较、`T false = ⊥` 一行闭合 —— 已奏效。 |
+| **`T b` ≠ `b ≡ true`** | `T true = ⊤` ⇒ 陈述用 `T`，不要用 `≡ true`。 |
+| **`with … in eq`** | 想拿到「决策 = `false`」作为**见证**，必须写 `in eq`；否则分支里拿不到。 |
+| **`Data.Bool` 的 `true`/`false` 要显式 import** | 否则在模式里成变量（`PatternShadowsConstructor` + `UnreachableClauses`）。 |
+| **`AHStd-++w` 的第一个参数是 `Walk`（后缀）** | 不是 homotopy；`rfl` 也是**函数**（`rfl (nil v)`）。 |
+| **`reverse-∷` 与头部递归方向相反** | `reverse (x ∷ xs) = reverse xs ++ [x]` 把 `x` 推到末尾 ⇒ 对「从头部递归」的函数归纳假设用不上；**改用「追加版」（尾部展开）** 就通（`cpassApp` 一案）。 |
+
+### 8.7 方法（本线验证有效的两条）
+
+1. **先算后验证**：陈述拿不准时，先用 `proof_oracle` **全枚举**（非抽样，`points = domain`）定陈述。
+   实例：`creduceB'` 幂等 0 反例 / `creduceB` 4056 反例（回执 `0c189883`）—— 避免拿错陈述施工。
+2. **换到不带证明的载体**：本线已 6 次靠这一手法过关
+   （码层 → 二级码 → 右折叠 → 阅读序谓词 → `Bool` 决策器 → 追加版）。
+3. 猜 API 两次仍不对时，**直接查源码**（`grep` 定义），别再猜。
 
 **⚠ 层级提醒（已核实）**：`Ω2Walk` 的步是 **`ASTep`（一阶同伦）**，不是图边；
 而 `CStep` 是**图边方向** ⇒ **码层服务 `π₁ᵈ` 层，不是 `π₂ᵈ⁺` 层**。
