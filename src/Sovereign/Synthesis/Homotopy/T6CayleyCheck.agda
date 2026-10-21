@@ -40,6 +40,12 @@ open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CStep; CWalk; cplus
 open import Sovereign.Synthesis.Homotopy.T6CayleyNorm using (creduceA)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (foldT)
 open import Sovereign.Synthesis.Homotopy.T6CayleyInterp using (interpAt; x1)
+open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym)
+open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_)
+open import Sovereign.Synthesis.Homotopy.AStepStd using (AHomotopyStd)
+open import Sovereign.Synthesis.Homotopy.AStepStdGroup using (rev)
+open import Sovereign.Synthesis.Homotopy.T6SymEdgeReverse using (sym-edge-T6; rev-cancel-T6)
+open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (cEdge)
 
 --------------------------------------------------------------------------------
 -- §1. 起点：`n = 1` 的零向量
@@ -97,3 +103,23 @@ check-end = refl
 -- ★ 走一步的终点 = `updAt 0 x`（与 `interpAt` 侧的 `endpoint-1` 同一事实的另一半）
 check-interp : foldT x1 (ep ∷ []) ≡ updAt zero x1
 check-interp = refl
+
+--------------------------------------------------------------------------------
+-- §4. ★★ ⑤ 的具体点验证（此前 ①②③④ 都有，⑤ 独缺）
+--
+-- `rev-cancel-T6` 产出的是 `AHomotopyStd` 的**值**（不是等式）
+-- ⇒ 具体点检验 = **在具体走上实例化**并确认类型对上（同 `step-1` 的手法）。
+-- 再加一条 `refl`：一步走的逆走**算得出来**。
+--------------------------------------------------------------------------------
+
+check-p1 : Walk (T6CayleySym 1) x1 (updAt zero x1)
+check-p1 = cons (cEdge x1 ep) (nil _)
+
+-- ★ `refl`：一步走的逆 = 反向的那一步（`rev` 与 `sym-edge-T6` 的具体计算）
+check-rev-one : rev sym-edge-T6 check-p1 ≡ cons (sym-edge-T6 (cEdge x1 ep)) (nil _)
+check-rev-one = refl
+
+-- ★★ 具体点实例化：`[+e₀] ++ 逆走` A-同伦于空走
+check-rev-cancel : AHomotopyStd (T6CayleySym 1)
+                     (check-p1 ++w rev sym-edge-T6 check-p1) (nil x1)
+check-rev-cancel = rev-cancel-T6 check-p1
