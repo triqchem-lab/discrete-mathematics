@@ -25,7 +25,7 @@ open import Data.Nat using (ℕ; zero; suc; _*_; _^_; _+_; _<_; _≤_; s≤s; z�
 open import Data.Nat.Properties using
   ( <-irrefl; <-trans; <-cmp; *-monoˡ-<; *-monoʳ-<; ^-monoˡ-≤; ≤-refl; ≤-trans; n≤1+n )
 open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans)
 open import Relation.Nullary using (yes; no; ¬_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 
@@ -138,3 +138,45 @@ V-from-Fin-inj {n} {V} b k k' eq =
     coef-eq = comb-inj (Basis.vecs b) (Basis.sep b)
                        (toFun d k) (toFun d k')
                        (λ x → trans (sym (V-from-Fin-eq b k x)) (trans (eq x) (V-from-Fin-eq b k' x)))
+
+--------------------------------------------------------------------------------
+-- §4. 加性基座：`sumFin` 与 `Comb` 的加性
+--
+-- 阶段 2（纤维乘积双射）的前置：需要「`V` 对加法封闭」，
+-- 而 `V` 的封闭性来自 `Basis.closed`，后者需要 `Comb` 的加性。
+--------------------------------------------------------------------------------
+
+open import Sovereign.Base.Trit using (_⊕_; _⊗_; ⊕-assoc; ⊕-comm; ⊕-identityˡ; ⊕-identityʳ; ⊗-distribˡ-⊕; ⊗-distribʳ-⊕)
+open import Sovereign.Algebra.LinearAlgebra.GF3LaplacianN using (sumFin; sumFin-cong)
+
+-- `sumFin` 加性
+sumFin-add : ∀ {n} (f g : Fin n → Trit) →
+  sumFin (λ i → f i ⊕ g i) ≡ sumFin f ⊕ sumFin g
+sumFin-add {zero} f g = refl
+sumFin-add {suc m} f g =
+  trans (cong₂ _⊕_ refl (sumFin-add {m} (λ i → f (fsuc i)) (λ i → g (fsuc i))))
+        (square-shuffle (f fzero) (g fzero)
+                        (sumFin (λ i → f (fsuc i))) (sumFin (λ i → g (fsuc i))))
+  where
+    -- (a ⊕ b) ⊕ (c ⊕ d) ≡ (a ⊕ c) ⊕ (b ⊕ d)
+    square-shuffle : ∀ a b c d → (a ⊕ b) ⊕ (c ⊕ d) ≡ (a ⊕ c) ⊕ (b ⊕ d)
+    square-shuffle a b c d =
+      trans (⊕-assoc a b (c ⊕ d))
+            (trans (cong (a ⊕_) (sym (⊕-assoc b c d)))
+                   (trans (cong (λ z → a ⊕ (z ⊕ d)) (⊕-comm b c))
+                          (trans (cong (a ⊕_) (⊕-assoc c b d))
+                                 (sym (⊕-assoc a c (b ⊕ d))))))
+
+
+-- 系数的逐点加法
+_+D_ : ∀ {d} → (Fin d → Trit) → (Fin d → Trit) → (Fin d → Trit)
+(c +D c') i = c i ⊕ c' i
+
+-- ★ `Comb` 加性
+Comb-add : ∀ {n d} (v : Fin d → CoeffN n) (c c' : Fin d → Trit) (x : Torus n) →
+  Comb v (c +D c') x ≡ Comb v c x ⊕ Comb v c' x
+Comb-add {n} {d} v c c' x =
+  trans (sumFin-cong {n = d} coeff-step) (sumFin-add {d} _ _)
+  where
+    coeff-step : ∀ i → (c i ⊕ c' i) ⊗ v i x ≡ (c i ⊗ v i x) ⊕ (c' i ⊗ v i x)
+    coeff-step i = ⊗-distribʳ-⊕ (c i) (c' i) (v i x)
