@@ -166,3 +166,20 @@ linear-determined φ ψ lφ lψ e0 e1 e2 (a , b , c) =
                       (cong (a ⊗_) e0)
                       (cong₂ (λ p q → p ⊕ q) (cong (b ⊗_) e1) (cong (c ⊗_) e2)))
                (sym (φ-eval ψ lψ a b c)))
+
+--------------------------------------------------------------------------------
+-- §6. 维数定理的两条直接推论
+--------------------------------------------------------------------------------
+
+-- ① 在基上消失 ⇒ 恒为零（基的「非退化性」）
+linear-zero : ∀ (φ : Dual) → Linear φ
+            → φ e₀ ≡ T₀ → φ e₁ ≡ T₀ → φ e₂ ≡ T₀
+            → ∀ f → φ f ≡ T₀
+linear-zero φ lφ e0 e1 e2 f =
+  linear-determined φ (λ _ → T₀) lφ ((λ _ _ → refl) , (λ k _ → sym (⊗-zeroʳ k))) e0 e1 e2 f
+
+-- ② 基值相同 ⇒ 处处相同（求值映射在线性泛函上单射）
+linear-eval-injective : ∀ (φ ψ : Dual) → Linear φ → Linear ψ
+                      → φ e₀ ≡ ψ e₀ → φ e₁ ≡ ψ e₁ → φ e₂ ≡ ψ e₂
+                      → ∀ f → φ f ≡ ψ f
+linear-eval-injective = linear-determined
