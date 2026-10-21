@@ -129,93 +129,31 @@ DecEq-StepCode (mkStep d w a b c f) (mkStep d' w' a' b' c' f')
 --    先 J 到自反参数，再 `StepCode-refl`；各分量判定器的自反性已逐个给出）
 -- （`DecEq-ADir`/`DecEq-CStep`/`DecEq-CWalk` 的完备性），本模块未提供。
 --------------------------------------------------------------------------------
+-- §3b. `Dec` 的反射型（`yes` 时断言命题、`no` 时断言空）—— 两个方向都要用它
+--------------------------------------------------------------------------------
 
 TSet : ∀ {A : Set} → Dec A → Set
 TSet {A = A} (yes _) = A
 TSet (no _)  = ⊥
 
+--------------------------------------------------------------------------------
+-- §4. ★★★ 判定器的**可靠性 + 完备性**（各一行：`with` 判定器本身）
+--
+-- 关键洞察（本会话两次踩过才想明白）：**直接 `with` 判定器的返回值**，
+--   · `yes p` 支：`TSet (yes p)` 归约为命题本身 ⇒ `p` 就是证据；
+--   · `no ¬p` 支：`TSet (no ¬p)` 归约为 `⊥`，而 `¬p` 本身就是「命题不成立」的证明
+--     ⇒ 两个方向都**不需要**任何结构归纳、不需要分量判定器的自反性引理。
+--
+-- 早期版本为此写了 6 层 `with` + `ADir-refl`/`Fin-refl`/`CStep-refl`/`CWalk-refl`/
+-- `StepCode-refl` 共 ~85 行——**全部不必要**，已删除。
+--------------------------------------------------------------------------------
+
 DecEq-StepCode-sound : ∀ {n : ℕ} (s s' : StepCode n) → TSet (DecEq-StepCode s s') → s ≡ s'
-DecEq-StepCode-sound (mkStep d w a b c f) (mkStep d' w' a' b' c' f')
-  with DecEq-ADir d d'
-... | no  ¬p = λ ()
-... | yes p1 with DecEq-CWalk w w'
-...   | no  ¬p = λ ()
-...   | yes p2 with DecEq-CStep a a'
-...     | no  ¬p = λ ()
-...     | yes p3 with DecEq-CStep b b'
-...       | no  ¬p = λ ()
-...       | yes p4 with DecEq-CStep c c'
-...         | no  ¬p = λ ()
-...         | yes p5 with DecEq-CWalk f f'
-...           | no  ¬p = λ ()
-...           | yes p6 = λ _ →
-      trans (cong (λ z → mkStep z w a b c f) p1)
-      (trans (cong (λ z → mkStep d' z a b c f) p2)
-      (trans (cong (λ z → mkStep d' w' z b c f) p3)
-      (trans (cong (λ z → mkStep d' w' a' z c f) p4)
-      (trans (cong (λ z → mkStep d' w' a' b' z f) p5)
-             (cong (λ z → mkStep d' w' a' b' c' z) p6)))))
+DecEq-StepCode-sound s s' h with DecEq-StepCode s s'
+... | yes p  = p
+... | no  ¬p = ⊥-elim h
 
---------------------------------------------------------------------------------
--- §5. ★★★ 判定器的**完备性**：相等 ⇒ 判定器说 `yes`（与 §4 的可靠性配对）
---
--- 目标：`s ≡ s'` 时 `TSet (DecEq-StepCode s s')`。走法：先对等式做 `J`（`s' := s`），
--- 再证**自反参数**上判定器返回 `yes` —— 逐分量做，因为 `Fin` 的 `_≟_` 在自反参数上会卡住：
--- ```
---   ADir-refl   ：两构造子，refl
---   Fin-refl    ：沿 Fin 结构递归（`suc i` 情形要看 `i ≟ i`）
---   CStep-refl  ：两构造子 × 坐标
---   CWalk-refl  ：对列表归纳
---   StepCode-refl：六层 with 与定义逐层对齐
--- ```
--- ⚠ 关键技巧：`with d | 分量引理` —— 把分量引理**一起**带进 `with`，
---   否则 `⊥` 假设不会被细化（`TSet (no ¬p) = ⊥` 需要真的把 `no ¬p` 代入）。
---
--- 结论：`DecEq-StepCode` 现在是**可靠（§4）+ 完备（§5）**的判定器，
--- 不是「未经校验的 oracle」。
---------------------------------------------------------------------------------
-
-ADir-refl : (d : ADir) → TSet (DecEq-ADir d d)
-ADir-refl dslide  = refl
-ADir-refl dexpand = refl
-
-Fin-refl : ∀ {n : ℕ} (j : Fin n) → TSet (j DF.≟ j)
-Fin-refl DF.zero = refl
-Fin-refl (DF.suc i) with i DF.≟ i | Fin-refl i
-... | yes p | _ = refl
-... | no  ¬p | h = ⊥-elim h
-
-CStep-refl : ∀ {n : ℕ} (s : CStep n) → TSet (DecEq-CStep s s)
-CStep-refl (cplus j)  with j DF.≟ j | Fin-refl j
-... | yes p | _ = refl
-... | no  ¬p | h = ⊥-elim h
-CStep-refl (cminus j) with j DF.≟ j | Fin-refl j
-... | yes p | _ = refl
-... | no  ¬p | h = ⊥-elim h
-
-CWalk-refl : ∀ {n : ℕ} (w : CWalk n) → TSet (DecEq-CWalk w w)
-CWalk-refl [] = refl
-CWalk-refl (x ∷ w) with DecEq-CStep x x | CStep-refl x
-... | yes p | _ with DecEq-CWalk w w | CWalk-refl w
-...   | yes q | _ = refl
-...   | no  ¬q | h = ⊥-elim h
-... | no  ¬p | h = ⊥-elim h
-
-StepCode-refl : ∀ {n : ℕ} (s : StepCode n) → TSet (DecEq-StepCode s s)
-StepCode-refl (mkStep d w a b c f) with DecEq-ADir d d | ADir-refl d
-... | yes p1 | _ with DecEq-CWalk w w | CWalk-refl w
-...   | yes p2 | _ with DecEq-CStep a a | CStep-refl a
-...     | yes p3 | _ with DecEq-CStep b b | CStep-refl b
-...       | yes p4 | _ with DecEq-CStep c c | CStep-refl c
-...         | yes p5 | _ with DecEq-CWalk f f | CWalk-refl f
-...           | yes p6 | _ = refl
-...           | no  ¬q | h = ⊥-elim h
-...         | no  ¬p | h = ⊥-elim h
-...       | no  ¬p | h = ⊥-elim h
-...     | no  ¬p | h = ⊥-elim h
-...   | no  ¬p | h = ⊥-elim h
-... | no  ¬p | h = ⊥-elim h
-
--- ★ 完备性主定理
 DecEq-StepCode-complete : ∀ {n : ℕ} (s s' : StepCode n) → s ≡ s' → TSet (DecEq-StepCode s s')
-DecEq-StepCode-complete s .s refl = StepCode-refl s
+DecEq-StepCode-complete s s' h with DecEq-StepCode s s'
+... | yes p  = p
+... | no  ¬p = ⊥-elim (¬p h)
