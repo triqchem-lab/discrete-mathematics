@@ -105,7 +105,9 @@ DecEq-StepCode (mkStep d w a b c f) (mkStep d' w' a' b' c' f')
 --    并已由 `toStep-irrel` 证「与侧条件证明的选取无关」。
 -- ② **若想把映射直接陈述在 `StepCode` 上**：`stepE1/E2/E3` + `StepVertex` 在
 --    `Sovereign.Synthesis.Homotopy.T6AStepMap`（那里也证明了 `StepSide ⇔ StepVertex` 与可判定性）。
--- ③ ⚠ **不要再试「先造 `interpC` 再搬运」的路线**：`T6AStepMap` §6 判定它 **ill-posed**
+-- ③ ✅ **「先造 `interpC` 再搬运」这条路线已经走通**（原注在此写「ill-posed 别再试」，**已作废**）：
+--      `T6AStepCodeMap.toStepCode` 证成了它，关键是 `cons-dtrans` —— 沿**中间顶点**的依赖运输，
+--      而 `subst-cons` 只覆盖端点运输（后者曾被误当成唯一分解）。
 --    （`subst-cons` 只搬走层端点、不动头边索引 ⇒ 自然走头边 `cEdge x s3` 与 `slide` 需要的
 --    顶点铸造边 `e3` **类型就不同**，不存在把它们等同的等式）。要做码→A-同伦请**以 `interpAt` 为载体**。
 -- ④ 单射性（不同码 ⇒ 不同步）仍需 `StepCode` 的可判定相等**可靠性**支撑 —— 见下条待办。
@@ -123,7 +125,8 @@ DecEq-StepCode (mkStep d w a b c f) (mkStep d' w' a' b' c' f')
 -- （**12 个子句**，不是 2⁶=64 案枚举；且避开了 `DecEq-CStep` 的 UIP/funext 墙 ——
 --   见台账 `PN.B4.deceq-reflection-wall`，那是**另一条**性质，本条不需要它。）
 --
--- ⚠ 反方向（相等 ⇒ `yes`，即**完备性**）**未证**：那需要每个分量的判定器完备
+-- ✅ 反方向（相等 ⇒ `yes`，即**完备性**）**已证**：`DecEq-StepCode-complete`（同模块 §5：
+--    先 J 到自反参数，再 `StepCode-refl`；各分量判定器的自反性已逐个给出）
 -- （`DecEq-ADir`/`DecEq-CStep`/`DecEq-CWalk` 的完备性），本模块未提供。
 --------------------------------------------------------------------------------
 
