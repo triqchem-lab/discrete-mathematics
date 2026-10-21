@@ -111,3 +111,38 @@ C2-step n = refl
 oracle-check : (C0 0 + C0 1 + C0 2 + C0 3 ≡ 1 + 1 + 1 + 9)
              × (C0 4 + C0 5 + C0 6 ≡ 33 + 81 + 225)
 oracle-check = refl , refl
+
+--------------------------------------------------------------------------------
+-- §5. ★ 重排（用 stdlib Ring solver，一行）
+--
+-- 归纳步：`((a + 2c) + (b + 2a)) + (c + 2b) ≡ 3·((a+b)+c)`（`+` 左结合）
+-- 手写需 ~80 行 `+-assoc`/`+-comm` 链 ✗；
+-- `Algebra.Solver.Ring.NaturalCoefficients.Default`（ℕ 预实例化）⇒ **一行** ✓
+--------------------------------------------------------------------------------
+
+open import Data.Nat.Properties using (+-*-commutativeSemiring)
+open import Algebra.Solver.Ring.NaturalCoefficients.Default +-*-commutativeSemiring
+
+shuffle : ∀ a b c →
+  ((a + 2 * c) + (b + 2 * a)) + (c + 2 * b) ≡ 3 * ((a + b) + c)
+shuffle = solve 3
+  (λ a b c → ((a :+ con 2 :* c) :+ (b :+ con 2 :* a)) :+ (c :+ con 2 :* b)
+             := con 3 :* ((a :+ b) :+ c))
+  refl
+
+--------------------------------------------------------------------------------
+-- §6. ★★★ total：`(C0 n + C1 n) + C2 n ≡ 3 ^ n`
+--
+-- 归纳步的形状与 `shuffle` **完全吻合**：
+--   `(C0(suc n) + C1(suc n)) + C2(suc n)`
+--   定义展开 ⇒ `((C0 n + 2·C2 n) + (C1 n + 2·C0 n)) + (C2 n + 2·C1 n)`（左结合）
+--   `shuffle` 给出 ⇒ `3·((C0 n + C1 n) + C2 n)`
+--   归纳假设   ⇒ `3·3^n = 3^(suc n)`（定义相等）
+--------------------------------------------------------------------------------
+
+★total : ∀ n → (C0 n + C1 n) + C2 n ≡ 3 ^ n
+★total zero    = refl
+★total (suc n) =
+  trans (cong₂ _+_ (cong₂ _+_ (C0-step n) (C1-step n)) (C2-step n))
+        (trans (shuffle (C0 n) (C1 n) (C2 n))
+               (trans (cong (3 *_) (★total n)) refl))

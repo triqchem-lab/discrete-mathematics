@@ -335,3 +335,51 @@ sum2-slice p k sp b nz with wt2 b ≟ suc k
 3. **写任何「基/张成/维数」前，先 grep `src/Sovereign/Algebra/LinearAlgebra/`** ✗✓
 4. **跨库（Lean/Rocq/Agda）检索**用 DSH `grep` 工具（不是 bash grep）✓
 5. 猜名字 = 浪费 3–4 轮；grep = 1 轮 ✓
+
+---
+
+## §13. **Ring solver 替代手写重排**（2026-10-21，人类指点）
+
+### 13.1 症状
+
+`total : (C0 n + C1 n) + C2 n ≡ 3 ^ n` 的归纳步需要 ℕ 重排：
+```
+((a + 2c) + (b + 2a)) + (c + 2b) ≡ 3·((a+b)+c)
+```
+手写要 ~80 行 `+-assoc`/`+-comm`/`*-distrib` 链 ✗ —— 而且极易错（`2 * x ≡ x + x` **不是** `refl` ✗）。
+
+### 13.2 ★ 解法：stdlib 的 Ring solver（**一行**）
+
+```agda
+open import Data.Nat.Properties using (+-*-commutativeSemiring)
+open import Algebra.Solver.Ring.NaturalCoefficients.Default +-*-commutativeSemiring
+
+shuffle = solve 3
+  (λ a b c → ((a :+ con 2 :* c) :+ (b :+ con 2 :* a)) :+ (c :+ con 2 :* b)
+             := con 3 :* ((a :+ b) :+ c))
+  refl
+```
+
+### 13.3 关键细节（踩过的坑）
+
+| 坑 | 说明 |
+|---|---|
+| **`+` 是左结合** ✗ | `a + b + c` = `(a+b)+c` ✓；写成 `a + (b+c)` 形状 ✗ 不匹配 |
+| **`con` 写常数** ✓ | `con 2`、`con 3`（不是 `2`、`3`）|
+| **变量用 `:+_ :*_`** ✓ | solver 的 `Polynomial` 运算 |
+| **`solve n (λ v₁..vₙ → LHS := RHS) refl`** ✓ | `n` = 自由变量个数；末尾 `refl` 是系数相等证明 |
+| 互递归定义不自动展开 ✗ | 需显式 `C0-step n` / `C1-step n` / `C2-step n` 重写 |
+
+### 13.4 模块路径
+
+| 用途 | 模块 |
+|---|---|
+| **ℕ 的预实例化**（最常用）| `Algebra.Solver.Ring.NaturalCoefficients.Default` |
+| 一般 `CommutativeSemiring` | `Algebra.Solver.Ring.NaturalCoefficients` |
+| 一般 `AlmostCommutativeRing` | `Algebra.Solver.Ring.Simple` |
+| 核心 | `Algebra.Solver.Ring`（导出 `prove`/`solve`，`_⊜_` 重命名为 `_:=_`）|
+
+### 13.5 铁律
+
+**写任何 ℕ 重排引理前，先试 Ring solver** ✓ ——
+80 行手写 vs 1 行 solver ✓；且 solver 不会出错 ✓。
