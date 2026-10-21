@@ -22,7 +22,12 @@
 --  ④ 相位      mulAlpha / alphaInv（C₄ 位置，α⁴ = a0）
 --  ⑤ 时钟      mixedOp-12-cycle（12 步走钟一圈）+ alpha-order-4
 --  ⑥ 归零      duodec-e（单位元）+ addZeroR/L + tritCycle（⊕³ = T₀）
---  ⑦ 刚性      galoisConjugate（Frobenius 从 GF9 诱导）+ rho
+--  ⑦ 刚性      galoisConjugate（Frobenius 从 GF9 诱导）—— 本源层
+--              ⚠ `rho` 属 `D₁₂ = DC ⋊_ρ C₂` 的**投影层**（08-terminology.md 投影表），
+--              **不参与刚性**；本模块导入 `rho` 仅为 `D₁₂` 侧群律使用。
+--              裁决依据：docs/duodecimal/08-terminology.md §7.1b
+--              （rigidity 必须由 Frobenius 诱导；`rho` 把 t ↦ -t，不是 Frobenius 的运输）。
+--              代码落点：`Presentation.agda:144` 的 `dc-presentation.rigidity = mu`。
 --  ⑧ 核对      alpha-order-4 等 refl 确认（不产生结构）
 --
 -- 形状贴合: **八项齐备**（本件是展示群的公认兑现例；命名沿用数学名而非要素名）
