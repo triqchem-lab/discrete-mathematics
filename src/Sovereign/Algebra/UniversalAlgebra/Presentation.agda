@@ -206,37 +206,26 @@ dc-clock-neq-phase : 4 < 12
 dc-clock-neq-phase = s≤s (s≤s (s≤s (s≤s (s≤s z≤n))))
 
 --------------------------------------------------------------------------------
--- §四层归零（2026-10-21）：**两类，不是四个字段** ✓
+-- §四层归零：**已由 `ZeroOblivion` record 形式化** ✓（不重证 ✗）
 --
--- 人类的精确回答（2026-10-21）：
---   · **周期归零**（⊕³ / α⁴ / mixedOp¹²）—— 由 `clock-cycle` 与分量群结构**导出** ✓
---   · **代数归零**（1² + i² = 0²）—— **独立约束** ✗，不是周期归零（不是群的阶）✗
+-- ⚠ 2026-10-21 自查纠错：本节原写了四个"新定理" ✗ —— 其实是**重复实现** ✗
+--   权威定义在 `GroupTheory/DuodecClock.agda:504` 的 `record ZeroOblivion`（五字段）：
 --
--- ⚠ 两者都是 **DC 特有**（不写进通用模板 ✗）：
---   周期归零依赖 DC 的分量群结构；代数归零是 GF(9) 的代数恒等式。
+--     addZeroR / addZeroL   —— 加法零冥（x + 0 = x）
+--     mulAlphaCycle         —— α⁴ = a₀            （= 本处原 dc-oblivion-phase）
+--     tritCycle             —— (x ⊕ x) ⊕ x ≡ T₀   （= 本处原 dc-oblivion-trit）
+--     jointCycle            —— mixedOp¹² p ≡ p     （= 本处原 dc-oblivion-joint）
+--
+--   实例：`DuodecClock.zero-oblivion-instance : ZeroOblivion` ✓
+--   投影：`DuodecClock.zero-oblivion-to-d0 : toDuodec duodec-e ≡ d0` ✓
+--
+-- ⇒ **不再重复** ✗ —— 只用下面两条**引用** ✓
 --------------------------------------------------------------------------------
 
--- ① 周期归零：⊕³ = T₀（Trit 的阶 3）—— 分量群结构导出 ✓
-dc-oblivion-trit : ∀ (x : Trit) → ((x ⊕ x) ⊕ x) ≡ T₀
-dc-oblivion-trit T₀ = refl
-dc-oblivion-trit T₁ = refl
-dc-oblivion-trit T₂ = refl
+-- ① 四层归零的**权威出处**：`ZeroOblivion`（引用，不重证）
+--    （`Presentation.agda` 已 `open import ... DuodecClock using (... zero-oblivion-instance)`）
 
--- ② 周期归零：α⁴ = a₀（AlphaPower 的阶 4）—— = phase-cycle 的单点形
-dc-oblivion-phase : ∀ (x : DuodecPoint) → iterate dc-phase 4 x ≡ x
-dc-oblivion-phase = dc-phase-cycle
-
--- ③ 周期归零：mixedOp¹² = id（联合周期 lcm(3,4)）—— = clock-cycle 的单点形
-dc-oblivion-joint : ∀ (x : DuodecPoint) → iterate (λ y → mixedOp y (T₁ , a1)) 12 x ≡ x
-dc-oblivion-joint = dc-clock-cycle
-
--- ④ ★ 代数归零：1² + i² = 0² —— **独立约束** ✗（不是周期归零）
---
--- 数学位置（人类的精确回答 §2.3）：
---   `1² + i² = 0²` 在 `DuodecPoint` 中对应 **加法分量上 `T₁ ⊕ T₂ = T₀`**
---   （虚实对消灭的投影）✓
---
--- ⚠ `DuodecPoint`（12 元）**不能单射**到 `GF9`（9 元）✗
---   ⇒ 不需要 `embed` ✗ —— 定理直接在 `Trit` 上表达 ✓
+-- ② 代数归零 `1² + i² = 0²` 在 DC 加法分量上的投影
+--    依据：`Trit.agda:277` 的 `verifyZero : T₁ ⊕ T₂ ≡ T₀`（已证，非新增）
 dc-oblivion-algebra : T₁ ⊕ T₂ ≡ T₀
 dc-oblivion-algebra = verifyZero
