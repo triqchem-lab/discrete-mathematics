@@ -36,6 +36,7 @@ module Sovereign.Synthesis.Homotopy.T6CayleyNorm where
 
 open import Data.Nat using (ℕ)
 open import Data.List using ([]; _∷_; reverse; [_])
+open import Relation.Nullary using (¬_)
 open import Relation.Nullary using (yes; no)
 open import Data.Empty using (⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
@@ -92,7 +93,82 @@ creduceA-cancel (cminus j) xs with DecEq-CStep (cminus j) (cminus j)
 ... | no  ¬p = ⊥-elim (¬p refl)
 
 --------------------------------------------------------------------------------
--- §4. ⚠ 本模块**不**声称的（如实标注；这些都不是「顺手就能做」）
+-- §4. ★★★ 范式性（①）：输出不含相邻可消对
+--
+-- ## 为什么另起一个 `cpassS`（返回**栈序**）
+--
+-- `cpassA` 在结束时做 `reverse`，而 `reverse` 会翻转「相邻」关系 ⇒
+-- 直接在 `cpassA` 上陈述不变式要多证一条 `NoCancel-reverse`（需要
+-- 「相邻关系对称」，而对称性要做 2-case 分析才能让 `cstep-inv` 归约）。
+--
+-- `cpassS` **不做末尾的 reverse**（直接返回栈）⇒ 不变式可直接陈述 ✓
+-- 而它与 `cpassA` 的关系是 **`refl` 级**（见 §4.2）—— 代价几乎为零。
+--
+-- ⚠ **陈述的精确形态**：`NoCancel (creduceS w)`，其中 `creduceS w = cpassS [] w`
+--   的**栈序**是「阅读顺序的逆」。**未证**：阅读顺序下的版本
+--   `NoCancel (reverse (creduceS w))`（需 `NoCancel-reverse`）。
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- §4.1 栈序版本
+--------------------------------------------------------------------------------
+
+cpassS : ∀ {n : ℕ} (acc xs : CWalk n) → CWalk n
+cpassS acc       []           = acc
+cpassS []        (x ∷ xs)     = cpassS (x ∷ []) xs
+cpassS (y ∷ acc') (x ∷ xs) with DecEq-CStep x (cstep-inv y)
+... | yes _ = cpassS acc' xs
+... | no  _ = cpassS (x ∷ y ∷ acc') xs
+
+creduceS : ∀ {n : ℕ} (w : CWalk n) → CWalk n
+creduceS = cpassS []
+
+--------------------------------------------------------------------------------
+-- §4.2 `cpassA` 与 `cpassS` 的关系：**`refl` 级**（只差末尾一个 reverse）
+--------------------------------------------------------------------------------
+
+cpassA-eq : ∀ {n : ℕ} (acc xs : CWalk n)
+          → cpassA acc xs ≡ reverse (cpassS acc xs)
+cpassA-eq acc       []      = refl
+cpassA-eq []        (x ∷ xs) = cpassA-eq (x ∷ []) xs
+cpassA-eq (y ∷ acc') (x ∷ xs) with DecEq-CStep x (cstep-inv y)
+... | yes _ = cpassA-eq acc' xs
+... | no  _ = cpassA-eq (x ∷ y ∷ acc') xs
+
+--------------------------------------------------------------------------------
+-- §4.3 ★★ 不变式：`NoCancel`
+--------------------------------------------------------------------------------
+
+data NoCancel {n : ℕ} : CWalk n → Set where
+  nc-nil  : NoCancel []
+  nc-one  : (x : CStep n) → NoCancel (x ∷ [])
+  nc-two  : (x y : CStep n) (xs : CWalk n)
+          → ¬ (x ≡ cstep-inv y) → NoCancel (y ∷ xs) → NoCancel (x ∷ y ∷ xs)
+
+-- 取尾（`nc-two` 的尾；`nc-one` 的尾是空栈）
+NoCancel-tail : ∀ {n : ℕ} (y : CStep n) (acc' : CWalk n)
+              → NoCancel (y ∷ acc') → NoCancel acc'
+NoCancel-tail y []       (nc-one .y)        = nc-nil
+NoCancel-tail y (z ∷ zs) (nc-two .y z zs _ t) = t
+
+--------------------------------------------------------------------------------
+-- §4.4 ★★★ 主定理：栈式归约保持「无可消对」
+--------------------------------------------------------------------------------
+
+cpassS-noCancel : ∀ {n : ℕ} (acc xs : CWalk n)
+                → NoCancel acc → NoCancel (cpassS acc xs)
+cpassS-noCancel acc       []           h = h
+cpassS-noCancel []        (x ∷ xs)     _ = cpassS-noCancel (x ∷ []) xs (nc-one x)
+cpassS-noCancel (y ∷ acc') (x ∷ xs)   h with DecEq-CStep x (cstep-inv y)
+... | yes _ = cpassS-noCancel acc' xs (NoCancel-tail y acc' h)
+... | no  ¬p = cpassS-noCancel (x ∷ y ∷ acc') xs (nc-two x y acc' ¬p h)
+
+-- ★★ ① 范式性：归约结果（栈序）不含相邻可消对
+creduceS-noCancel : ∀ {n : ℕ} (w : CWalk n) → NoCancel (creduceS w)
+creduceS-noCancel w = cpassS-noCancel [] w nc-nil
+
+--------------------------------------------------------------------------------
+-- §5. ⚠ 本模块**不**声称的（如实标注；这些都不是「顺手就能做」）
 --
 -- ① **消去律** —— ✅ **已证（见 §3 `creduceA-cancel`）**
 -- ② **范式性**：`creduceA` 的输出不含相邻逆对。**未证**。
