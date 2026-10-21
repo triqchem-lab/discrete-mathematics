@@ -108,11 +108,11 @@ creduceA-cancel (cminus j) xs with DecEq-CStep (cminus j) (cminus j)
 -- 而它与 `cpassA` 的关系是 **`refl` 级**（见 §4.2）—— 代价几乎为零。
 --
 -- ⚠ **陈述的精确形态**：`NoCancel (creduceS w)`，其中 `creduceS w = cpassS [] w`
---   的**栈序**是「阅读顺序的逆」。**未证**：阅读顺序下的版本
+--   的**栈序**是「阅读顺序的逆」。✅ **阅读顺序下的版本已证**（`T6CayleyNormNC.NoCancel-reverse`；本节原标「未证」已过期）：
 --   `NoCancel (reverse (creduceS w))`（需 `NoCancel-reverse`）。
 --   ⚠ 实测：`NoCancel-reverse` 比预期难 —— `reverse` 与 `nc-two` 的**头序相反**，
 --     需要把消去判据沿 `reverse` 逐位搬（且每步都要 `adj-sym'`）。
---     **本模块未做**；已备 `adj-sym` / `adj-sym'` 作为它的前提。
+--     现已由 `T6CayleyNormNC` 的 `NoCancel-reverse` 证出（`adj-sym` / `adj-sym'` 正是它的前提）。
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
