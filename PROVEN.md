@@ -190,7 +190,8 @@ g-ne-unit : ∀ {A} (P : Presentation A)
 | 项 | 说明 |
 |---|---|
 | **范式唯一（汇合性）** | ⬜ 未做。`creduceB'-idem` 只给「再归约不变」，「不同路径到同一范式」未证。 |
-| **④ 的码→步影射 + 单射性** | 🟡 **部分完成**：六组件码 + `DecEq`（`92938fa5`）/ 两条走 + 侧条件可判定（`4c84d29a`）/ `interpC-end`（`a958d82c`）/ `interpAt` + `foldT-++`（`38b99f3b`）。**仍卡**：`interpAt-++`（拼接拆解）—— `subst` 与 `cons` 不交换，`[]` 情形报 `UnequalTerms`。⚠ **更正**：原记「需要 `Maybe`」是**错的** —— `slide` 的 `e1,e2,e3` 是**显式参数**，映射无需搜索。 |
+| **④ 的码→步影射** | ✅ **步 1–6 全部完成**（归约所需范围内已闭合）：六组件码 + `DecEq`（`92938fa5`）/ 两条走 + 侧条件可判定（`4c84d29a`）/ `interpC-end`（`a958d82c`）/ `interpAt` + `interpAt-++` + **`toStep`**（`5f8d6110`）/ `subst-cons` + `subst-irrel` + `stepE3-irrel`（`fe3075c1` / `fa8be818`）。⚠ 两处**更正**：(i) 原记「需要 `Maybe`」**错** —— `slide` 的 `e1,e2,e3` 是**显式参数**，映射无需搜索；(ii) `interpAt-++` 卡 4 批的**根因是陈述方向错**（`subst P eq : P x → P y`，而 `interpAt (foldT u a) b` 落在 **y 侧** ⇒ 需 `sym`），**不是证明难**。|
+| **④ 的忠实性（`toStep-irrel`）** | ⬜ **未做，且判定不属归约所需**：`toStep` 的**返回类型依赖 `h`** ⇒ 依赖余定义域 ⇒ `cong` 不适用；正确写法需 `subst` 把类型搬到 `h'` 侧，而 `subst` 沿 `e` 作用在 `slide … e` 上不归约 ⇒ 是 **heterogeneous equality（John Major）** 困难，本库不用 `HEq`。**[判断·非定理]** 归约只需**可靠性**（同码 ⇒ 同一步，由「`toStep` 是函数」**定义性成立**），不需要忠实性。 |
 | ~~`sym-edge` 的可构造性~~ | ✅ **已完成**：`T6SymEdgeReverse.sym-edge-T6`（`feee492f`，靠 `updAt-cubed`）+ `rev-cancel-T6`（`rev-cancel` 在 `T6CayleySym` 上**无条件**）。 |
 | **`π₂ᵈ⁺` 的精确刻画** | ⬜ 形状未定。`ASTep` 含见证 ⇒ 一般图不可判定（见下「已知墙」）。 |
 
