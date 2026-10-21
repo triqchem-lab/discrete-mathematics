@@ -2147,3 +2147,61 @@ q-zero : Ker f → Im f → ∀ x → f x ≡ gf9-zero     -- 逐点 ✓
 >
 > **判据**：任何「X = 被建模对象」的断言，必须有一个**具名定理**把 X 与对象的**形式化定义**连起来 ✓
 > 只有注释 + 数值验证 ⇒ **必须标注「未形式化」** ✓
+
+---
+
+## 四十二、★★★★ **缺口 ① 闭合**：`C0` 真的是 Hamming 计数（2026-10-21，回执 `a2d87388`）
+
+### 42.1 模块
+
+`src/Sovereign/Algebra/LinearAlgebra/GF3HammingCountLink.agda`（**158 行，0 postulate / 0 hole** ✓）
+
+### 42.2 为什么不是同义反复（关键设计）
+
+| | 递归结构 |
+|---|---|
+| `sumVec`（**真实枚举**）| **3 支 × 递归**：`f [] ` / `Σ_{v∈Fin 3} sumVec {n} (λ xs → f (v ∷ xs))` |
+| `C0`（**线性递推**）| `C0 n + 2 * C2 n` |
+
+⇒ **两者递归结构不同** ✓ ⇒ 定理 `Cnt r n ≡ C_r n` 有真实内容 ✓ ✓
+
+### 42.3 证明结构
+
+```agda
+sumVec : ∀ {n} → (Torus n → ℕ) → ℕ          -- 真实枚举（3 支）
+sumVec {zero}  f = f []
+sumVec {suc n} f = sumVec {n} (λ xs → f (fzero ∷ xs))
+                 + sumVec {n} (λ xs → f (fsuc fzero ∷ xs))
+                 + sumVec {n} (λ xs → f (fsuc (fsuc fzero) ∷ xs))
+
+Cnt r n = sumVec {n} (λ x → hid (hammingT x) r)   -- 真实计数
+
+★Cnt : ∀ r n → Cnt r n ≡ Cr r n                    -- ★★★★ 主定理
+★C0-is-hamming : ∀ n → Cnt fzero n ≡ C0 n          -- 缺口 ① 闭合
+```
+
+配套：`hid`（9 case 指示函数）、`hid-zero`（`T₀⊕h = h` ⇒ refl）、`hid-one`（9 case）、`sumVec-cong`、`assoc2`（solver）。
+
+### 42.4 独立验证（Python 真实枚举）
+
+```
+n=0..7: Cnt 0 = 1, 1, 1, 9, 33, 81, 225, 729
+        C0    = 1, 1, 1, 9, 33, 81, 225, 729   ✓ 完全一致
+```
+
+### 42.5 缺口状态更新
+
+| # | 缺口 | 状态 |
+|---|---|---|
+| **①** | `C0` ↔ Hamming 计数 | ✅ **闭合**（`a2d87388`）|
+| ② | `b_n` ↔ `dim(ker F ∩ V_nA)` | ❌ 仍未证 |
+| ③ | `q_n` 逐点版 | ✅ 自检接受（逐点确实是数学内容）|
+
+### 42.6 修正后的 T4 声明（再修正）
+
+| 项 | 形式化状态 |
+|---|---|
+| **`a_n` = Hamming 计数 = `Σ_{k≡0(3)} C(n,k)·2^k`** | ✅ **完整闭合**（`a2d87388` + `da832222`）|
+| `b_n = a_n − [3\|n]·2^n` | ⚠️ 公式已证 ✓，但与 `dim(ker F ∩ V_nA)` 的连接未证 ✗ |
+| `q_n = 0`（逐点）| ✅ |
+| `R_n` 八要素实例 | ✅（`3c86c3a5`）|
