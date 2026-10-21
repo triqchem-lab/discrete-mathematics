@@ -35,15 +35,16 @@ module Sovereign.Synthesis.Homotopy.T6AStepMap where
 
 open import Data.Nat using (ℕ)
 open import Data.List using ([]; _∷_; _++_)
-open import Data.Product using (Σ; _,_; proj₁)
+open import Data.Product using (Σ; _,_; proj₁; proj₂)
 open import Relation.Nullary using (Dec)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode
   using (CStep; CWalk; cplus; cminus)
 open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec)
-open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (interpC; ctarget; foldT)
+open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (interpC; ctarget; foldT; cEdge)
+open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_)
 open import Sovereign.Synthesis.Homotopy.T6AStepCode2 using (StepCode; mkStep)
 
 --------------------------------------------------------------------------------
@@ -109,6 +110,33 @@ interpC-end u (s ∷ ws) = interpC-end (ctarget u s) ws
 -- ★ 侧条件的 `foldT` 形态（由 `interpC-end` 直接改写）
 StepSide-fold : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n) → Set
 StepSide-fold u c = foldT u (srcCode c) ≡ foldT u (tgtCode c)
+
+--------------------------------------------------------------------------------
+-- §5. ⬜ 第 5 步（走层拆解）—— **未完成，本批尝试已撤回（如实记录）**
+--
+-- 想要的陈述（对 `a` 归纳）：
+-- ```
+--   proj₂ (interpC u (a ++ b))
+--     ≡ proj₂ (interpC u a) ++w proj₂ (interpC (proj₁ (interpC u a)) b)
+-- ```
+--
+-- ## ⚠ 我判断错了（自纪）：一度以为「不需要 `subst`」
+--
+-- 理由曾是「`interpC` 与 `foldT` 都按 `ctarget` 递归 ⇒ 端点定义性相同」。
+-- **错**：`proj₁ (interpC u a)` 是 **`Σ` 的投影**（stuck 项），
+-- 而 `foldT u a` 会计算 ⇒ 两者**不是定义性相等**
+-- （`interpC-end` 是 `refl` 级只说明「逐点相等」，不说明投影项可归约）。
+--
+-- ⇒ 正确的陈述必须显式携带 `subst`：
+-- ```
+--   Σ (λ (h : proj₁ (interpC u (a ++ b)) ≡ proj₁ (interpC (proj₁ (interpC u a)) b))
+--       → subst (Walk G u) h (proj₂ (interpC u (a ++ b)))
+--         ≡ proj₂ (interpC u a) ++w proj₂ (interpC (proj₁ (interpC u a)) b))
+-- ```
+-- 而 `cons` 情形的归纳要在 `cong` 之外再穿一次 `subst` —— 本批**未写成**。
+--
+-- 已撤回的半成品：不做「编译不绿」的交易；本模块停在上一个绿基线（`a958d82c`）。
+--------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 -- §5. ⬜ 下一步（判据明确，**已定位到唯一的技术关**）
