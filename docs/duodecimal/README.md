@@ -177,3 +177,4 @@
 | [12-rigorous-type-theory.md](12-rigorous-type-theory.md) | 律算框架类型论展示群的严谨定义 | ✅ |
 | [20-dc-type-theory-positioning.md](20-dc-type-theory-positioning.md) | 杜德克时钟本源元理论：生成结构定位 | ✅ |
 | [21-quantum-module-topology-scan.md](21-quantum-module-topology-scan.md) | 量子类代码拓扑扫描与展示群本源对齐缺口 | ✅ |
+| [39-frobenius-vs-group-inversion.md](39-frobenius-vs-group-inversion.md) | **域刚性 vs 群反转**：`μ`（Frobenius 运输）≠ `ρ`（群反转）；刚性必须是 `μ` | ✅ |

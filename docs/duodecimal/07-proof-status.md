@@ -18,6 +18,7 @@
 | L3 | GF(9) 加法群 | 0 | ✅ 完成 |
 | L4 | GF(9)* 乘法群 | 0 | ✅ 完成 |
 | L5 | Frobenius σ | 0 | ✅ 完成 |
+| L5b | **域刚性 vs 群反转的区分** | 0 | ✅ 完成（`39-frobenius-vs-group-inversion.md`）|
 | L6 | Norm N(z) | 0 | ✅ 完成 |
 | L7 | Trace Tr(z) | 0 | ✅ 完成 |
 | L8 | Z/12Z 加法群 | 0 | ✅ 完成 |

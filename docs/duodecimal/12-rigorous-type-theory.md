@@ -124,6 +124,18 @@ galoisConjugate (a , b) = a , negate b
 - DC 通过相位子群 \(\langle\alpha\rangle \subset \mathrm{GF9}^\times\) **继承** Frobenius 作用
 - 这个继承是严格的：\(\sigma_{\mathrm{DC}}\) 是 \(\mathrm{galoisConjugate}\) 在 \(\langle\alpha\rangle\) 上的限制
 
+**⚠ 精确化（2026-10-21，见 [39-frobenius-vs-group-inversion.md](39-frobenius-vs-group-inversion.md)）**：
+
+> 「继承」是**恰好等于** \(\mu\)，**不是**任何复合。
+> `ρ = λ ∘ μ = (t, αᵏ) ↦ (-t, α⁻ᵏ)` 是**群反转** `p ↦ p⁻¹` ✗，**不是** Frobenius ✗。
+>
+> **严格论证**：σ 是域自同构 ⇒ \(\sigma(a+b) = \sigma(a)+\sigma(b)\) 且 \(\sigma(1)=1\)
+> ⇒ \(\sigma(n·1) = n·1\) ⇒ σ **固定素域 GF(3)** ⇒ 在加法分量上 σ = id ✓
+> 而 ρ 把 \(t \mapsto -t\) ✗ ⇒ ρ 不可能是 Frobenius 的运输 ✗
+>
+> **本体论**：刚性要区分连续统，只能靠 char 0 **没有**的东西 ——
+> 群反转 char 0 也有 ✗，只有 Frobenius 是 char p 独有 ✓
+
 ---
 
 ### 定义 2.6（相位维度 — 不可约旋转状态）

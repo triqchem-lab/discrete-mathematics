@@ -103,6 +103,20 @@ galoisConjugate (a , b) = (a , negate b)
 - Frobenius 定义在 **GF9** 上，不是 DC 的生成元
 - 通过 `galoisConjugate` 诱导到 DC 的相位反射 μ
 
+**⚠ 精确化（2026-10-21，见 [39-frobenius-vs-group-inversion.md](39-frobenius-vs-group-inversion.md)）**：
+
+> **「诱导」的精确含义是「恰好等于 `μ`」，不是「可以由 `μ` 加上其他对称性复合得到」。**
+>
+> - `μ (t, αᵏ) = (t, α⁻ᵏ)` —— **域自同构**（Frobenius 的运输）✓
+> - `λ (t, αᵏ) = (-t, αᵏ)` —— 群自同构（加法取反）
+> - `ρ = λ ∘ μ = (t, αᵏ) ↦ (-t, α⁻ᵏ)` —— **群反转 `p ↦ p⁻¹`** ✗ **不是** Frobenius ✗
+>
+> **严格论证**：σ 是域自同构 ⇒ σ 固定素域 GF(3) ⇒ 在加法分量上 σ = id；
+> 而 ρ 把 t ↦ -t ✗ ⇒ ρ 不可能是 Frobenius 的运输 ✗
+>
+> **本体论**：char 0（ℂ/ℝ/ℚ）也有群反转 `x ↦ -x` ✗ ⇒ 刚性若用群反转，
+> 则连续统也有刚性 ⇒ 三重完备性判据失效 ✗ ⇒ 刚性必须用 **Frobenius**（char p 独有）✓
+
 ---
 
 ## 三、与传统群论的对照
@@ -140,7 +154,7 @@ DC 不再是 C₁₂ 的抽象，而是：
 \text{载体: DuodecPoint = Trit × AlphaPower (类型别名)} \\
 \text{生成元: } g_3 = (T_1, a_0)_{\mathbb{F}_3\text{-加法}},\ g_4 = (T_0, a_1)_{\alpha\text{-相位}} \\
 \text{关系: } \oplus^3 = T_0,\ \alpha^4 = a_0,\ g^{12} = e \\
-\text{刚性: } \sigma(t, \alpha^k) = (t, \alpha^{-k})_{\text{Frobenius}} \\
+\text{刚性: } \sigma(t, \alpha^k) = (t, \alpha^{-k})_{\text{Frobenius}} \quad (\text{恰好等于 } \mu\text{, 非 } \rho = \lambda\circ\mu) \\
 \text{相位: } \text{每元素携带 } C_4 \text{ 位置 (0°/90°/180°/270°, 不可约) (2026-09-08)} \\
 \text{时钟: } \mathrm{mixedOp}^{12} p = p = \text{走钟一圈 (12 步联合演化) (2026-09-08)} \\
 \text{归零: } \mathrm{mixedOp}^{12} = id = \text{联合归零 (周期闭合, 与时钟配对) (2026-09-08)} \\
