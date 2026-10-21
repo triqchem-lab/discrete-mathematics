@@ -3779,3 +3779,72 @@ bash grep -n "pat" src/某文件.agda      ← 只查一个文件 ✗
 | **3** | 纪律：任何文件检索先 DSH grep | ✅ 已入册 |
 
 **⇒ 闸门是「减速带不是保险箱」** ✓ —— 最终防线仍是纪律 ✓
+
+---
+
+## 六十五、★★★★ **方案 B 落地：提交前重复符号检测**（2026-10-21 人类批准）
+
+### 65.1 实施
+
+| 件 | 内容 |
+|---|---|
+| **`engineering/check_duplicate.sh`** | 提取 staged 新增顶层签名，查库内**其他模块**是否已定义 |
+| **`.git/hooks/pre-commit`** | 调用上述脚本（不进 git 仓库，只本机）|
+
+### 65.2 实测（两个用例）
+
+**用例 1 —— 重复符号（应拒绝）** ✓
+```
+$ git add src/DupTest.agda     # 内含 dc-phase-step-comm : Set
+$ git commit -m "test dup"
+❌ 重复符号: dc-phase-step-comm
+    已存在: src/Sovereign/Algebra/UniversalAlgebra/Presentation.agda:194:dc-phase-step-comm : ∀ (x y : DuodecPoint) →
+🛑 check_duplicate: 发现 1 个重复符号
+```
+**验证**：`git log | grep "test dup"` → 无 ✓ ⇒ **确实被拦住** ✓
+
+**用例 2 —— 正常提交（应通过）** ✓
+```
+✅ check_duplicate: 通过（1 个新增签名，无重复）
+→ commit da71f01 ✓
+```
+
+### 65.3 设计要点
+
+| 点 | 处理 |
+|---|---|
+| **提取范围** | `git diff --cached --diff-filter=AM -U0` 的 `+` 行 |
+| **签名形式** | `^name :`（行首标识符 + 冒号）|
+| **跳过** | 注释行（`--`）、空行、`module/open/import/data/record/where/postulate/private/abstract/infix` |
+| **白名循** | `assoc/comm/unit/check/field/carrier/step/phase/clock/rigidity` 等通用名 |
+| **同模块不算重复** | 用 `grep -vF -f <(changed files)` 排除本次改动文件 ✓ |
+| **绕过** | `git commit --no-verify`（须在 journal 说明理由）|
+
+### 65.4 边界（诚实声明）
+
+| 覆盖 | 不覆盖 |
+|---|---|
+| ✅ 顶层签名重复（`name :`）| ❌ record 字段 / where 块 / 局部定义 |
+| ✅ 与库内**其他模块**冲突 | ❌ 同一模块内重复（允许更新）|
+| ✅ 不依赖 hook 框架 ✓ | ❌ 声明类重复（如「全库第一个 X」）|
+| ✅ 可 `--no-verify` 绕过（可审计）| ❌ 检索方式本身（仍可能 bash grep 漏查）|
+
+### 65.5 ★ 三层防线现状
+
+| 层 | 措施 | 状态 |
+|---|---|---|
+| **工具层** | `.git/hooks/pre-commit` → `check_duplicate.sh` | ✅ **已生效**（实测拦截 ✓）|
+| **流程层** | `proof_dag search` / `brief`（存在但我没用好 ✗）| ⚠ 需纪律 |
+| **会话层** | `search-dialect-gate.mjs`（PreToolUse）| ❌ **失效**（106 次全放行 ✗，需查 hook 框架）|
+
+**⇒ 工具层已闭合** ✓ —— 这是**唯一不依赖 hook 框架**的兜底 ✓
+
+### 65.6 回溯验证：本会话三次重复能否被拦
+
+| 重复 | 能否拦住 |
+|---|---|
+| `DCPresentation.agda`（13 字段 record）| ✅ **能**（`dc-presentation` 已存在）|
+| `dc-oblivion-trit/-phase/-joint` | ✅ **能**（`ZeroOblivion` 字段已存在）|
+| 「全库第一个 Presentation」声明 | ⚠ 不能（是声明不是符号）|
+
+**⇒ 2/3，且是最关键的两个** ✓
