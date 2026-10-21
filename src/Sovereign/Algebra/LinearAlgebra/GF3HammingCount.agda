@@ -906,3 +906,27 @@ open import Data.Nat.Properties using (≤-refl; ≤-step)
 -- 特例：`Cnk n (suc n) ≡ 0`
 ★Cnk-self : ∀ n → Cnk n (suc n) ≡ 0
 ★Cnk-self n = ★Cnk-above n (suc n) ≤-refl
+
+--------------------------------------------------------------------------------
+-- ㉔ 最终装配 Step A：`sumR` 的加性与齐性
+--------------------------------------------------------------------------------
+
+-- 四元重排（已有 `square-shuffle` 的 Nat 版）
+shuffle4N : ∀ a b c d → (a + b) + (c + d) ≡ (a + c) + (b + d)
+shuffle4N = solve 4 (λ a b c d → (a :+ b) :+ (c :+ d) := (a :+ c) :+ (b :+ d)) refl
+
+-- ★ 加性：`sumR n (λ j → a j + b j) ≡ sumR n a + sumR n b`
+sumR-add : ∀ n (a b : ℕ → ℕ) → sumR n (λ j → a j + b j) ≡ sumR n a + sumR n b
+sumR-add zero    a b = refl
+sumR-add (suc n) a b =
+  trans (cong (λ z → (a 0 + b 0) + z) (sumR-add n (λ j → a (suc j)) (λ j → b (suc j))))
+        (trans (shuffle4N (a 0) (b 0) (sumR n (λ j → a (suc j))) (sumR n (λ j → b (suc j))))
+               refl)
+
+-- `c * (a + b) ≡ c * a + c * b`（`*-distribˡ-+` 的 Nat 版，已有）
+-- ★ 齐性：`sumR n (λ j → c * a j) ≡ c * sumR n a`
+sumR-scale : ∀ n c (a : ℕ → ℕ) → sumR n (λ j → c * a j) ≡ c * sumR n a
+sumR-scale zero    c a = refl
+sumR-scale (suc n) c a =
+  trans (cong (λ z → c * a 0 + z) (sumR-scale n c (λ j → a (suc j))))
+        (sym (*-distribˡ-+ c (a 0) (sumR n (λ j → a (suc j)))))

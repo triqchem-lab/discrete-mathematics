@@ -1098,3 +1098,44 @@ S'' r n     = hit r 0 + Σ_j hit r (mod3 (j+1))·C(n,j+1)·2^{j+1}
 1. **写求和引理前，先选定让目标引理变成 `refl` 的嵌套方向** ✓（右嵌套 `sumR`）
 2. **周期/取模定义必须用 `refl` 核对 `mod3 0..5`** ✓（`mod3` 曾漏掉一支）
 3. **`≤` 形式比 `<` 形式好证** ✓（`suc n ≤ k` 让 `suc/suc` case 直接可用）
+
+---
+
+## 二十五、最终装配 Step A 完成（2026-10-21）
+
+### 25.1 新增引理（编译通过 ✓）
+
+```agda
+shuffle4N  : ∀ a b c d → (a+b)+(c+d) ≡ (a+c)+(b+d)                    -- solver
+sumR-add   : ∀ n a b → sumR n (λ j → a j + b j) ≡ sumR n a + sumR n b  ✓
+sumR-scale : ∀ n c a → sumR n (λ j → c * a j) ≡ c * sumR n a           ✓
+```
+
+### 25.2 剩余 Step B+C（~100 行）
+
+**Step B**：定义 `S''` 并做项级重写
+```agda
+S'' r n = sumR n (λ k → hit r (mod3 k) * (Cnk n k * 2 ^ k))
+```
+项级恒等式（数学已确认 ✓）：
+```
+hit r (mod3 (suc j)) * (Cnk (suc n) (suc j) * 2^(suc j))
+= hit (pred3 r) (mod3 j) * ((Cnk n j + Cnk n (suc j)) * (2 * 2^j))     [③④①]
+= 2·(hit(pred3 r)(mod3 j)·(Cnk n j·2^j)) + 2·(hit(pred3 r)(mod3 j)·(Cnk n (suc j)·2^j))
+```
+
+**Step C**：装配
+```
+S'' r (n+1) = hit r 0 + [2·S''(pred3 r) n + 2·Σ...]     [sumR-add + sumR-scale]
+S'' r n     = hit r 0 + 2·Σ...                           [★hit-mod + sumR-scale]
+⇒ S'' r (n+1) = S'' r n + 2·S''(pred3 r) n               ✓
+```
+
+### 25.3 状态
+
+| 项 | 状态 |
+|---|---|
+| 5 条缺口 | ✅ **全部解决** |
+| `sumR` 工具链（uncons / cong / add / scale）| ✅ **完成** |
+| `★S''-step` | ❌ Step B+C 未做（~100 行）|
+| `★W-S` / `★a-binomial` | ❌ 依赖 `★S''-step` |
