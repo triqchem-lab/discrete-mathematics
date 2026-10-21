@@ -32,8 +32,9 @@ open import Data.Product using (Σ; _,_; _×_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-assoc; ⊕-comm;
-  ⊕-identityʳ; ⊗-identityʳ; ⊗-zeroʳ)
+  ⊕-identityʳ; ⊗-identityʳ; ⊗-zeroʳ; ⊗-identityˡ; ⊗-zeroˡ; ⊗-assoc; ⊗-distribˡ-⊕; ⊗-distribʳ-⊕)
 open import Sovereign.Algebra.Analytic.ProjectionDifferential using (GF3Func)
+open import Sovereign.Synthesis.Analysis.DiscreteHilbert using (transpose2x3)
 
 -- 对偶空间：所有（不限于线性的）泛函
 Dual : Set
@@ -183,3 +184,37 @@ linear-eval-injective : ∀ (φ ψ : Dual) → Linear φ → Linear ψ
                       → φ e₀ ≡ ψ e₀ → φ e₁ ≡ ψ e₁ → φ e₂ ≡ ψ e₂
                       → ∀ f → φ f ≡ ψ f
 linear-eval-injective = linear-determined
+
+--------------------------------------------------------------------------------
+-- §7. ★★ 满射侧：每个三元组都由一个线性泛函实现 ⇒ `LinearDual ≅ Trit³`
+--
+-- §5 的维数定理给了**单射**（基值决定一切）；本节给**满射**（任给三元组都能实现）。
+-- ⇒ 两者合起来：线性泛函与 `Trit³` 一一对应（对偶的维数恰为 3）。
+--------------------------------------------------------------------------------
+
+realize : Trit → Trit → Trit → Dual
+realize p q r (a , b , c) = (a ⊗ p) ⊕ ((b ⊗ q) ⊕ (c ⊗ r))
+
+realize-add : ∀ p q r (f g : GF3Func)
+            → realize p q r (f ⊕ₚ g) ≡ realize p q r f ⊕ realize p q r g
+realize-add p q r (a , b , c) (x , y , z) =
+  trans (cong₂ _⊕_ (⊗-distribʳ-⊕ a x p)
+                   (cong₂ _⊕_ (⊗-distribʳ-⊕ b y q) (⊗-distribʳ-⊕ c z r)))
+        (transpose2x3 (a ⊗ p) (x ⊗ p) (b ⊗ q) (y ⊗ q) (c ⊗ r) (z ⊗ r))
+
+realize-hom : ∀ p q r (k : Trit) (f : GF3Func)
+            → realize p q r (k • f) ≡ k ⊗ realize p q r f
+realize-hom p q r k (a , b , c) =
+  trans (cong₂ _⊕_ (⊗-assoc k a p)
+                   (cong₂ _⊕_ (⊗-assoc k b q) (⊗-assoc k c r)))
+        (sym (trans (⊗-distribˡ-⊕ k (a ⊗ p) ((b ⊗ q) ⊕ (c ⊗ r)))
+                    (cong₂ _⊕_ refl (⊗-distribˡ-⊕ k (b ⊗ q) (c ⊗ r)))))
+
+realize-linear : ∀ p q r → Linear (realize p q r)
+realize-linear p q r = realize-add p q r , realize-hom p q r
+
+-- 在基向量上取回三元组
+realize-e₀ : ∀ p q r → realize p q r e₀ ≡ p
+realize-e₀ p q r =
+  trans (cong₂ _⊕_ (⊗-identityˡ p) (cong₂ _⊕_ (⊗-zeroˡ q) (⊗-zeroˡ r)))
+        (⊕-identityʳ p)

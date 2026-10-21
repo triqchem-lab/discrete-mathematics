@@ -111,3 +111,21 @@ h1-vanishes     : ∀ v → Δ (Δ v) ≡ zero3 → Σ GF3Func (λ f → Δ f �
 ```
 两步各用一条已有定理：`Δ²-is-const`（库内）给「闭 ⇒ 全和为 0」，`Δ-solvable`（§3）给「全和为 0 ⇒ 有原像」。
 ⇒ 与 `DiscreteODE.Δ-kernel-const`（H⁰ = 常数）合起来，`0 → 函数 --Δ--> 函数 --Δ--> 函数 → 0` 的**上同调只有 H⁰**。
+
+## 9. 后续补强（同一会话后段）
+
+| 模块 | 新增 | 手法 |
+|---|---|---|
+| `DiscreteMeasure` | **点质量** `countᵐ (singleton i) ≡ 1` | `singleton i j = if does (i ≟ j) then true else false`；辅助 `fzero≢fsuc` / `singleton-zero-suc` / `countᵐ-zero-tail` / **`suc-dec`（两分支都 `refl`）** |
+| `DiscreteODESolvable` | **正合性 `im Δ = ker Δ²`（双向）** | 正向用 `Δ³≡0`；反向用 `closed-sum-zero` + `Δ-solvable` |
+| `DiscreteFunctional` | **满射侧** `realize`（三元组 → 线性泛函） | `realize-add` **复用 `DiscreteHilbert.transpose2x3`**；`realize-hom` 用 `⊗-assoc`+`⊗-distribˡ-⊕` |
+
+⇒ ODE 线的正合列与对偶的 `≅ Trit³` 都已完整：
+```
+0 → 函数 --Δ--> 函数 --Δ--> 函数 → 0     （ker Δ = 常数, im Δ = ker Δ², H¹ = 0）
+线性泛函 ≅ Trit³                        （单射 = 维数定理, 满射 = realize）
+```
+
+**新增教训**：`suc-dec : does (suc k ≟ suc j) ≡ does (k ≟ j)` **两分支都只需 `refl`**——
+`Fin._≟_` 在 `suc/suc` 上递归到内层判定再映射，`with k ≟ j` 之后两侧定义性一致。
+⇒ 这类「判定器在构造子上的相容性」通常**不用真证**，写 `with` 试一次 `refl` 即可。
