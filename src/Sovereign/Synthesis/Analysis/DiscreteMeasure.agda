@@ -118,19 +118,28 @@ check-加 = countᵐ-∪ᵐ P₂ Q₂ disj-PQ
     disj-PQ (Fin.suc Fin.zero) p q = true≢false (sym p)
 
 --------------------------------------------------------------------------------
--- §6. ★ 单调性：`P ⊆ Q ⇒ count P ≤ count Q`（测度的另一条基本公理）
+-- §6. ★ 单调性：`P ⊆ Q ⇒ countᵐ P ≤ countᵐ Q`（测度的另一条基本公理）
 --------------------------------------------------------------------------------
 
 subset : ∀ {n} → Count n → Count n → Set
 subset {n} P Q = ∀ (i : Fin n) → P i ≡ true → Q i ≡ true
 
-count-mono : ∀ {n} (P Q : Count n) → subset P Q → count P ≤ count Q
-count-mono {n = zero}  P Q _ = z≤n
-count-mono {n = suc m} P Q sub with P Fin.zero | Q Fin.zero
-... | false | false = +-mono-≤ z≤n (count-mono (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i)) sub')
-... | false | true  = ≤-step (+-mono-≤ z≤n (count-mono (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i)) sub'))
-... | true  | false = ⊥-elim (true≢false (sym (sub Fin.zero refl)))
-... | true  | true  = s≤s (+-mono-≤ z≤n (count-mono (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i)) sub'))
-  where
-    sub' : subset (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i))
-    sub' i p = sub (Fin.suc i) p
+-- 尾部保持包含（顶层，避免 where 与 with 的作用域限制）
+subset-tail : ∀ {m} {P Q : Count (suc m)} → subset P Q
+            → subset (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i))
+subset-tail sub i p = sub (Fin.suc i) p
+
+-- 关键一步：对**布尔变量**分情形（不用 with，避免抽象挡住矛盾）
+mono-step-count : ∀ (a b : Bool) → (a ≡ true → b ≡ true)
+          → ∀ X Y → X ≤ Y
+          → (if a then 1 else 0) + X ≤ (if b then 1 else 0) + Y
+mono-step-count false false _ X Y p = p
+mono-step-count false true  _ X Y p = ≤-step p
+mono-step-count true  false h X Y p = ⊥-elim (true≢false (sym (h refl)))
+mono-step-count true  true  _ X Y p = s≤s p
+
+countᵐ-mono : ∀ {n} (P Q : Count n) → subset P Q → countᵐ P ≤ countᵐ Q
+countᵐ-mono {n = zero}  P Q _ = z≤n
+countᵐ-mono {n = suc m} P Q sub =
+  mono-step-count (P Fin.zero) (Q Fin.zero) (sub Fin.zero) _ _
+            (countᵐ-mono (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i)) (subset-tail sub))
