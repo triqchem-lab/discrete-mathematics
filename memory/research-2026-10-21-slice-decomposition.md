@@ -4180,3 +4180,81 @@ cp agent.cordis.yml.bak-20261021-1949 agent.cordis.yml
 | **会话层**（PreToolUse）| `search-dialect-gate.mjs` | ✅ **生效**（本轮实证拦截 ✓）|
 | **工具层**（提交前）| `.git/hooks/pre-commit` → `check_duplicate.sh` | ✅ **生效**（实测拦截 ✓）|
 | **纪律层** | 本 memory 的教训条目 | ✅ 已入册 |
+
+---
+
+## 七十一、★★★ 三件防重复实现基础设施落地（2026-10-21）
+
+### 71.1 完成清单
+
+| # | 件 | 状态 |
+|---|---|---|
+| **①** | **`PROVEN.md`**（仓库根，新建）| ✅ 八章节 |
+| **②** | **`engineering/check_duplicate.sh`** | ✅ **已存在**（上轮写），本轮**修了一处误报** |
+| **③** | **`AGENTS.md` 硬性前置** | ✅ Notes 段新增三节 |
+
+### 71.2 `PROVEN.md` 结构（八章节）
+
+| 章 | 内容 |
+|---|---|
+| 一 | **检索纪律**（硬性前置三条 + 机器挡点） |
+| 二 | **零冥族归零**（`ZeroOblivion` 五字段 + 两实例，**标注「本地早已完成，别重复实现」**） |
+| 三 | Trit 加法归零（`verifyZero` / `verifyMul` / `⊕-inverse`） |
+| 四 | 展示群模板层（`g-ne-unit`，回执 `fe46503a`） |
+| 五 | **DC 特有定理**（`9e2e0966`，**标注「不写进通用模板」**） |
+| 六 | T4 主线（`GF3HammingCount` 家族，四个回执） |
+| 七 | 三个模板实例（含**已撤回**的 `RnPresentation`） |
+| 八 | 维护约定（**撤回不删除**，台账为准） |
+
+### 71.3 ★ 本轮发现并修复：`check_duplicate.sh` 的**误报**
+
+**症状**：提交 `PROVEN.md` 时被拦 ✗
+```
+❌ 重复符号: g-ne-unit
+    已存在: src/.../PresentationTheorems.agda:62:g-ne-unit : ∀ {A : Set} (P : Presentation A)
+```
+**根因**：脚本从 `git diff --cached` 提取签名 ✗ —— **扫了所有 staged 文件** ✗ ——
+`PROVEN.md` 的**代码块**里含 `g-ne-unit : ...` ✗ ⇒ 误判为「新增 Agda 签名」✗
+
+**修复**：两处 `git diff` 加 **pathspec `-- '*.agda'`** ✓
+```bash
+staged) DIFF="$(git diff --cached --diff-filter=AM -U0 -- '*.agda' …)"
+head)   DIFF="$(git diff HEAD~1 HEAD --diff-filter=AM -U0 -- '*.agda' …)"
+```
+
+**验证**：修复后同一 staged 报「无 staged 变更」✓，提交成功 ✓
+
+**⇒ 这是闸门的**第一次误报** ✓ —— 说明它**确实在工作** ✓（之前三次重复实现它都会拦住 ✓）
+
+### 71.4 `AGENTS.md` 新增三节（Notes 段）
+
+1. **写「新」件前的硬性前置**（★ 不是建议）
+   - 触发：三次重复实现的实录
+   - 三条动作：读 `PROVEN.md` → 台账 `search` → **DSH 工具全库查**
+   - 机器挡点 + 边界诚实声明
+2. **检索方言**（`bash grep` 已被机器拦截；管道过滤与 `sed -i` 放行）
+   - ⚠ 闸门对 `git commit -m` **消息文本**也会误判 ✗ ⇒ **用 `write` 落盘 + `commit -F`** ✓
+3. 其他（待补充）
+
+### 71.5 三层防线**全部闭合且实证**
+
+| 层 | 措施 | 实证 |
+|---|---|---|
+| **会话层**（PreToolUse）| `search-dialect-gate.mjs` | ✅ 拦截 `bash grep` ✓ |
+| **工具层**（提交前）| `pre-commit` → `check_duplicate.sh` | ✅ 拦截重复符号 ✓（本轮误报已修 ✓）|
+| **纪律层** | `PROVEN.md` + `AGENTS.md` 硬性前置 | ✅ 已落地 |
+
+### 71.6 待决定（下一轮）
+
+| # | 问题 | 选项 |
+|---|---|---|
+| **1** | G1/G2/G6/G7 是否改 `Presentation` 模板 | A 改模板（波及 `dc-presentation`）/ B 保持注释级 |
+| **2** | 若改模板，`rigidity-hom`/`rigidity-invol`/`clock-min`/`generated` 是否普遍成立 | **需非 DC 实例验证** |
+
+### 71.7 明确不做
+
+| 项 | 原因 |
+|---|---|
+| 重新实现零冥族 | 本地早已完成（`ZeroOblivion`）|
+| 写 `embed : DuodecPoint → GF(9)` | 12 元不能单射到 9 元 |
+| 把 DC 特有定理写进 `Presentation` | 会污染通用模板 |
