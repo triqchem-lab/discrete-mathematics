@@ -203,6 +203,14 @@ record Presentation (A : Set) : Set₁ where
     -- ═══ ② 生成性（g 生成整个载体）═════════════════════════════
     generated   : ∀ x → ∃ (λ n → iterate (λ y → step y g) n unit ≡ x)          -- ★新增
 
+    -- ═══ ④/⑤ 动力层耦合（N7–N9，2026-10-21 补）══════════════════
+    phase-hom   : ∀ x y → phase (step x y) ≡ step (phase x) y        -- N7 ✓ 单边（双边不成立）
+    clock-neq   : phase-order < clock                                 -- N3b ✓ 排除 clock = phase-order
+    -- N8：g 的加法分量非平凡（需分量投影才可表达）
+    -- add-proj : A → Trit ;  g-add : add-proj g ≢ add-proj unit
+    -- N9：归零机制（G5，本体论级 —— 仍为草案）
+    -- oblivion : A → A → A ;  oblivion-cycle : ∀ x → ...
+
     -- ═══ ⑦ 刚性（域自同构的运输）═══════════════════════════════
     rigidity          : A → A
     rigidity-hom      : ∀ x y → rigidity (step x y) ≡ step (rigidity x) (rigidity y)  -- ★新增（自同构）
@@ -221,12 +229,69 @@ record Presentation (A : Set) : Set₁ where
 |---|---|---|
 | **N1** | `phase-nontrivial : 1 < phase-order` | 排除 `phase-order = 1`（相位空洞 ✗）|
 | **N2** | `clock-min` | 排除 `clock = 24, 36, …`（非极小 ✗）|
-| **N3** | `clock-phase : phase-order ∣ clock` | 排除 `clock = phase-order`（**`RnPresentation` 踩的红线** ✗）|
+| **N3** | `clock-phase : phase-order ∣ clock` | 排除 `clock` **不是** `phase-order` 倍数（如 `clock=5, phase-order=4`）✗；**不能**排除 `clock = phase-order`（`4∣4` 也成立）✗ |
 | **N4** | `generated` | 排除「`g` 只生成子群」✗ |
 | **N5** | `rigidity-hom` | 排除「`rigidity` 非自同构」✗ |
 | **N6** | `rigidity-invol` | 排除「`rigidity` 非对合」✗ |
 
-**⇒ N3 正是 `39` 号文确立的红线 `clock ≠ phase-order` 的**类型层**表达** ✓
+**⇒ N3 表达的是「`clock` 是 `phase-order` 的倍数」，**不是**「`clock ≠ phase-order」** ✗
+（`phase-order = 4, clock = 4` 时 `4 ∣ 4` 成立 ✗ —— **不能**排除）
+
+### 4.2 ★ 补充约束 N7–N9（2026-10-21 审核后补，解决 G3/G4/G5）
+
+| # | 字段 | 解决 | 在 DC 上成立？ |
+|---|---|---|---|
+| **N7** | `phase-hom : ∀ x y → phase (step x y) ≡ step (phase x) y` | **G3 部分**（相位是运算的**左参数自同态**）| ✅ **已验证 True** |
+| **N8** | `add-proj : A → Trit` + `g-add : add-proj g ≢ add-proj unit` | **G4**（`g` 的加法分量非平凡）| 需分量投影才可表达 |
+| **N9** | `oblivion : A → A → A` + 四层归零约束 | **G5**（归零机制）| ⚠ 需设计 |
+| **N3b** | `clock-neq-phase : phase-order < clock` | **N3 不能排除的 `clock = phase-order`** | ✅ `4 < 12` |
+
+#### N7 的正确形式（双边是**错的** ✗）
+
+```agda
+-- ❌ 双边（DC 上 False，反例 x = y = unit）
+phase-hom2 : ∀ x y → phase (step x y) ≡ step (phase x) (phase y)   -- ✗ 不成立
+--   反例：phase (step (0,0) (0,0)) = (0,1)   vs   step (phase (0,0)) (phase (0,0)) = (0,2)
+
+-- ✅ 单边（DC 上 True，已验证）
+phase-hom  : ∀ x y → phase (step x y) ≡ step (phase x) y            -- ✓ 成立
+```
+
+**原因**：`phase` 只动相位分量，`step` 在相位分量上做乘法 —— 两者**交换** ✓；
+但若两边都 `phase`，相位被推进**两次** ✗ ⇒ 双边多了一次 `α` ✗
+
+#### N8：G4 的正确表述（需要分量投影）
+
+```agda
+-- ❌ 纯函数等式（DC 上 False）
+phase-eq-g : phase ≡ λ x → step g x                                -- ✗ 不成立
+--   反例：phase (0,0) = (0,1)  vs  step g (0,0) = (1,1)（差在加法分量）
+
+-- ✅ 需要加法分量投影（把「加法分量」显式化）
+add-proj   : A → Trit
+g-add      : add-proj g ≢ add-proj unit          -- g 的加法分量非平凡
+g-phase    : ∀ x → phase x ≡ —— 由 step g 与 add-proj 复合 ——    -- 需设计
+```
+
+**⇒ G4 的本质**：`g` 的**加法分量**必须非平凡 ✗ —— 否则 `g` 只是相位生成元 ✗
+
+#### N9：G5 归零机制（本体论级）
+
+```agda
+-- 归零不是「单位元」，是「周期闭合机制」
+oblivion        : A → A → A                    -- 对消灭操作（如 ⊕ 的合成）
+oblivion-cycle  : ∀ x → step x unit ≡ x         -- 单位元层（现有 zeroʳ）
+-- 四层归零（04-zero-oblivion.md）
+oblivion-add    : ∀ x → step (step x g) g ≡ ...  -- ⊕³ 层
+oblivion-phase  : ∀ x → iterate phase 4 x ≡ x    -- α⁴ 层（= phase-cycle）
+oblivion-joint  : ∀ x → iterate (λ y → step y g) clock x ≡ x  -- mixedOp¹² 层（= clock-cycle）
+```
+
+**⇒ G5 的根源**：`unit : A` 满足 `step unit x ≡ x` ✗，但**不表达**「虚实对消灭」✗
+（`1² + i² = 0²` 的机制 ✗）—— 需要 `oblivion` 字段 ✓
+
+---
+
 **⇒ N5/N6 让 `G1` 从注释级变为类型级** ✓
 
 ---
@@ -266,6 +331,24 @@ k = 4 不满足                   ⇒ phase-order = 4 不是联合周期 ✓
 **`clock-phase` 验证**：`4 ∣ 12` ✓（若 `clock = phase-order = 4` 则丢加法分量 ✗
 —— 正是 `RnPresentation` 踩的红线，见 [39](39-frobenius-vs-group-inversion.md)）
 
+**G3/G4 候选约束的验证**（2026-10-21 审核后补）：
+
+```
+✅ phase (step x y) ≡ step (phase x) y        单边：True（全部 144 对）
+❌ phase (step x y) ≡ step (phase x) (phase y) 双边：False
+   反例 x = y = (0,0)：phase(step) = (0,1)  vs  step(phase,phase) = (0,2)
+❌ phase ≡ λ x → step g x                       False
+   反例 x = (0,0)：phase = (0,1)  vs  step g = (1,1)（差在加法分量）
+⇒ G3 需**单边**形式；G4 需**分量投影**（纯函数等式不可表达）
+```
+
+**N3 的精确性验证**：
+
+```
+phase-order = 4, clock = 4  ⇒  4 ∣ 4 成立  ⇒  N3 **不能**排除 clock = phase-order ✗
+clock-neq-phase : phase-order < clock  ⇒  4 < 12 成立  ✓ 可排除
+```
+
 **CRT 结构**：`g^n` 的 `(n mod 3, n mod 4)` 覆盖全部 12 对 ✓
 ⇒ `generated` 的本质就是 **CRT 双射** `Z/12 ≅ Z/3 × Z/4` ✓
 —— 这不是巧合，是 `12 = lcm(3,4)` 的直接体现。
@@ -281,8 +364,31 @@ k = 4 不满足                   ⇒ phase-order = 4 不是联合周期 ✓
      ④ DC 实例逐条核对通过
 ```
 
-**⇒ 现有定义满足 ①③④，不满足 ②** ✗
-**⇒ 本文档 §四的加强版满足全部四条** ✓
+**逐条对照（2026-10-21 审核后修正）**：
+
+| 判据 | 现有 record | 加强版（N1–N9）|
+|---|---|---|
+| ① 三层齐备 | ✅ | ✅ |
+| ② 每个要素约束**类型层可判** | ❌ | ⚠ **部分**：G1/G2/G3/G6 已可判；**G4/G5 仍不可判** ✗ |
+| ③ 每个约束有反例说明 | ✅ | ✅ |
+| ④ DC 实例逐条核对 | ✅ | ✅（6/8 数值验证，2/8 待形式化）|
+
+**⇒ 加强版满足 ①③④，② **部分**满足** ✗
+
+**⚠ 三个缺口**：
+
+| 缺口 | 被 N1–N9 解决？ | 说明 |
+|---|---|---|
+| **G1** `rigidity` 无约束 | ✅ **部分**（N5/N6）| 「由 `galoisConjugate` 诱导」仍需更精确字段 |
+| **G2** `clock` 无极小性 | ✅ N2 | `clock-min` |
+| **G3** `phase` 与 `step` 无关系 | ⚠ **部分**（N7）| 单边 `phase-hom` ✓；**双边不成立** ✗（DC 反例）|
+| **G4** `g` 与 `phase` 无关系 | ❌ **未解决** | 需 `add-proj` 投影，**纯函数等式不可表达** ✗ |
+| **G5** `unit` ≠ 归零机制 | ❌ **未解决**（N9 仅草案）| `oblivion` 字段需设计 ✗ |
+| **G6** 无「生成」约束 | ✅ N4 | `generated` |
+| **G7** 无统一 record | ⚠ 部分 | 本文档是文档，不是 record 本身 |
+
+**⇒ 「加强版满足全部四条」这个判断**需修正**：G3 部分、G4 与 G5 仍存在** ✗
+**⇒ 其中 G5（归零公理被降格为 `unit`）是**本体论级**缺口** ✗
 
 ---
 
@@ -304,10 +410,13 @@ k = 4 不满足                   ⇒ phase-order = 4 不是联合周期 ✓
 ## 八、一句话
 
 **依赖类型论展示群的完整定义 = 三层八要素 + 类型层可判的约束 + 反例说明 + 实例核对。**
-现有 `Presentation` record 是**弱化版**（7 处约束不足，G1/G6 为本体论级缺口）；
-加强版新增 **6 项约束**（`phase-nontrivial` / `clock-min` / `clock-phase` / `generated` /
-`rigidity-hom` / `rigidity-invol`），其中 `clock-phase` 正是 `39` 号文红线 `clock ≠ phase-order`
-的类型层表达。**定义的精确化不是学术洁癖，是透明性的提升** ——
+现有 `Presentation` record 是**弱化版**（7 处约束不足，G1/G5/G6 为本体论级缺口）；
+加强版新增 **9 项约束**（N1–N9），**但仍未解决 G4（`g`/`phase` 脱节）与 G5（归零机制）** ✗：
+
+- **N3 不能排除 `clock = phase-order`** ✗（`4 ∣ 4` 成立）⇒ 需单独的 `clock-neq-phase : phase-order < clock` ✓
+- **N7 只能单边**（`phase (step x y) ≡ step (phase x) y` ✓；**双边不成立** ✗，DC 反例 `x=y=(0,0)`）
+- **N8 需分量投影**（`phase ≡ λ x → step g x` 在 DC 上 **False** ✗ —— 差在加法分量）
+- **N9（G5）仍为草案** ✗ —— `unit : A` 不表达「虚实对消灭」✗**定义的精确化不是学术洁癖，是透明性的提升** ——
 在有限结构上，每个约束都可穷举验证；这正是特征 3 结构相对连续统的本体论优势。
 
 ---
