@@ -92,4 +92,29 @@ updAt-neq-other2 j k x j≢k h =
            (trans (cong (λ v → lookup v j) h)
                   (trans (updAt-other j k (updAt k x) j≢k)
                          (updAt-other j k x j≢k))))
+--------------------------------------------------------------------------------
+-- §5. ★ 对称变体：`updAt j (updAt j x)` 与 `updAt k x` 不同（`j ≢ k`）
+--
+-- 邻居表里「同一坐标的两个方向」与「其他坐标的一个方向」也会相邻 ⇒ 组装 `Unique`
+-- 时需要的不是 §4 那条，而是它的**对称版**（错位一步）。
+-- 坐标 `j` 上看：左边是 `succF3 (succF3 a)`，右边是 `a`。
+--------------------------------------------------------------------------------
+
+succF3≢id2 : (a : Fin 3) → succF3 (succF3 a) ≢ a
+succF3≢id2 Fin.zero                     ()
+succF3≢id2 (Fin.suc Fin.zero)           ()
+succF3≢id2 (Fin.suc (Fin.suc Fin.zero)) ()
+
+lookup-updAt-same2 : ∀ {n : ℕ} (j : Fin n) (x : T6Vec n)
+                   → lookup (updAt j (updAt j x)) j ≡ succF3 (succF3 (lookup x j))
+lookup-updAt-same2 j x =
+  trans (lookup-updAt-same j (updAt j x)) (cong succF3 (lookup-updAt-same j x))
+
+updAt-neq-other2' : ∀ {n : ℕ} (j k : Fin n) (x : T6Vec n)
+                  → j ≢ k → updAt j (updAt j x) ≢ updAt k x
+updAt-neq-other2' j k x j≢k h =
+  succF3≢id2 (lookup x j)
+    (trans (sym (lookup-updAt-same2 j x))
+           (trans (cong (λ v → lookup v j) h)
+                  (updAt-other j k x j≢k)))
 
