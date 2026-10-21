@@ -30,6 +30,7 @@
 | **Duodec** | \(\mathbb{Z}/12\mathbb{Z}\) | 扁平标签 | 阶 12 |
 | **C₁₂** | \((\mathbb{Z}/12\mathbb{Z}, +)\) | 加法群 | 投影 |
 | **R₁₂** | \((\mathbb{Z}/12\mathbb{Z}, +, \times)\) | 零因子环 | 投影 |
+| **D₁₂** | \(DC \rtimes_\rho C_2\)（24 阶二面体群）| 半直积投影（非交换）| **投影** |
 | **V₄** | \(C_2 \times C_2\) | Klein 四元群 | R₁₂ 的单位群 |
 | **C₄** | \(\langle\alpha\rangle\) | 循环群 | 阶 4 |
 
