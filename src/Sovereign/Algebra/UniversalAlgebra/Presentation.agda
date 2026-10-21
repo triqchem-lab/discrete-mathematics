@@ -92,7 +92,7 @@ open Presentation public
 -- 素材全部取自既有件（DuodecClock / DuodecClockProperties），本实例只做**对接**，
 -- 不新证任何东西 —— 这正是 L3 的目的：把散在具体件里的八要素接到统一接口上。
 --------------------------------------------------------------------------------
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; verifyZero)
 open import Sovereign.Algebra.GroupTheory.DuodecClock using
   (DuodecPoint; AlphaPower; a0; a1; a2; a3;
    mixedOp; duodec-e; mulAlpha; mixedOp-assoc; mixedOp-12-cycle;
@@ -204,3 +204,39 @@ dc-phase-g-comm (t , a) = refl
 -- ★ N3b：`phase-order < clock`（4 < 12）
 dc-clock-neq-phase : 4 < 12
 dc-clock-neq-phase = s≤s (s≤s (s≤s (s≤s (s≤s z≤n))))
+
+--------------------------------------------------------------------------------
+-- §四层归零（2026-10-21）：**两类，不是四个字段** ✓
+--
+-- 人类的精确回答（2026-10-21）：
+--   · **周期归零**（⊕³ / α⁴ / mixedOp¹²）—— 由 `clock-cycle` 与分量群结构**导出** ✓
+--   · **代数归零**（1² + i² = 0²）—— **独立约束** ✗，不是周期归零（不是群的阶）✗
+--
+-- ⚠ 两者都是 **DC 特有**（不写进通用模板 ✗）：
+--   周期归零依赖 DC 的分量群结构；代数归零是 GF(9) 的代数恒等式。
+--------------------------------------------------------------------------------
+
+-- ① 周期归零：⊕³ = T₀（Trit 的阶 3）—— 分量群结构导出 ✓
+dc-oblivion-trit : ∀ (x : Trit) → ((x ⊕ x) ⊕ x) ≡ T₀
+dc-oblivion-trit T₀ = refl
+dc-oblivion-trit T₁ = refl
+dc-oblivion-trit T₂ = refl
+
+-- ② 周期归零：α⁴ = a₀（AlphaPower 的阶 4）—— = phase-cycle 的单点形
+dc-oblivion-phase : ∀ (x : DuodecPoint) → iterate dc-phase 4 x ≡ x
+dc-oblivion-phase = dc-phase-cycle
+
+-- ③ 周期归零：mixedOp¹² = id（联合周期 lcm(3,4)）—— = clock-cycle 的单点形
+dc-oblivion-joint : ∀ (x : DuodecPoint) → iterate (λ y → mixedOp y (T₁ , a1)) 12 x ≡ x
+dc-oblivion-joint = dc-clock-cycle
+
+-- ④ ★ 代数归零：1² + i² = 0² —— **独立约束** ✗（不是周期归零）
+--
+-- 数学位置（人类的精确回答 §2.3）：
+--   `1² + i² = 0²` 在 `DuodecPoint` 中对应 **加法分量上 `T₁ ⊕ T₂ = T₀`**
+--   （虚实对消灭的投影）✓
+--
+-- ⚠ `DuodecPoint`（12 元）**不能单射**到 `GF9`（9 元）✗
+--   ⇒ 不需要 `embed` ✗ —— 定理直接在 `Trit` 上表达 ✓
+dc-oblivion-algebra : T₁ ⊕ T₂ ≡ T₀
+dc-oblivion-algebra = verifyZero
