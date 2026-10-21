@@ -9,7 +9,7 @@
 - [2026-10-21] [工作记录] 离散分析线六模块：把 `CompletenessTheorem` 的四个「未完成」全部定案 — 该模块把 10 个连续概念映射到离散载体，其中 MeasureTheory / ODEPDE / HilbertSpace / FunctionalAnalysis 长期标为「缺概念特有定律」。本轮逐条处置，**不留「未证」尾巴**（除一条已标注者）：
   (1) `Synthesis/Analysis/DiscreteMeasure.agda` — 计数测度**四条公理齐**：空集 0（`countᵐ-empty`）、归一化（`countᵐ-full`，全集 = n）、互不相交可加（`countᵐ-∪`）、单调性（`countᵐ-mono`）。技术要点：**不要在 `with P zero` 上分情形**（`with` 把 `P zero` 抽象成变量 ⇒「它就是 true」只能命题地拿到，`refl` 与矛盾都闭合不了）；把布尔量提成参数的 `step` 引理，四情形全闭合。本会话两次因此得救。
   (2) `DiscreteODE.agda` — `ker Δ` 恰是 3 个常函数（齐次方程解唯一到常数），27 情形。
-  (3) `DiscreteODESolvable.agda` — **离散 Fredholm 替代**：`Δu = v` 可解 ⟺ `sum3 v ≡ T₀`。必要侧望远镜求和；充分侧给「常数为 0 的积分」`f = (T₀ , v₀ , v₀ ⊕ v₁)`。与 (2) 合起来完整刻画 Δ 的线性代数。
+  (3) `DiscreteODESolvable.agda` — **离散 Fredholm 替代**：`Δu = v` 可解 ⟺ `sum3 v ≡ T₀`。必要侧望远镜求和；充分侧给「常数为 0 的积分」`f = (T₀ , v₀ , v₀ ⊕ v₁)`。与 (2) 合起来完整刻画 Δ 的线性代数，并给出**离散上同调**：H⁰ = 常数、**H¹ = 0（闭 = 恰当，`h1-vanishes`）**——与连续统「区间/圆环 H¹=0、H⁰=常数」平行，但这里是有限组合的。
   (4) `DiscreteHilbert.agda` — ★ **否证型结果**：GF(3) 上标准配对**对称 + 双线性（两分量）+ 非退化，但不正定**（`1+1+1 = 0` ⇒ `(T₁,T₁,T₁)` 各向同性）⇒ 它是**正交空间**，不是内积空间。该缺口属**改陈述**而非补证明。另证**零锥完整形状**：`⟨f,f⟩ ≡ T₀ ⟺ f = 0 或三坐标全非零`。
   (5) `DiscreteFunctional.agda` — 对偶空间**分离点**、定量分离（三个坐标泛函就够）、坐标泛函的线性性。**对偶维数定理也已证**（`linear-determined`：两个线性泛函在 `e₀/e₁/e₂` 上相等 ⇒ 处处相等）——经 `φ-eval` + `decomp` + 三条 `•eᵢ≡` 桥引理（`a ⊗ T₁`/`a ⊗ T₀` 非定义性，需 `⊗-identityʳ`/`⊗-zeroʳ`）。**本线六模块今无任何「未证」标注。**
   ⇒ 全库门禁 **915/915 绿**（含并行协作者全部改动）。记忆另见 `memory/discrete-analysis-trio-2026-10.md`（五件套细节）与 `memory/lessons-agda-traps-2026-10.md`（30 条，本会话新增 10 条：`subst` 方向、`Dec` 正确性两行法、`with` 抽象、文档反向缺陷四类等）。
