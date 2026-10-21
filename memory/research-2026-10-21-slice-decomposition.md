@@ -1693,3 +1693,53 @@ T4 环 R_n = Functions((Z/3)^n, GF9)       系数域 GF9 只有 9 元 ✗
 | `b_n = a_n − [3\|n]·2^n` | ✅ Agda 定理 | `da832222` |
 | **全库第一个 `Presentation` 实例（P0）** | ✅ Agda 定理 | `d09d2f93` |
 | 八要素研究报告 | ✅ 135 行 | `7fbb6a4` |
+
+---
+
+## 三十五、T4 成果登记进 `proof_dag`（2026-10-21）
+
+### 35.1 新增 3 个节点
+
+| id | 状态 | 定级 | 回执 |
+|---|---|---|---|
+| `T4.an-binomial` | proven | A | `da832222` |
+| `T4.bn-correct-ring` | proven | A | `da832222` |
+| `T4.eight-elements-dc` | proven | A | `d09d2f93` |
+
+### 35.2 台账状态（登记后）
+
+```
+节点 1034（原 1031）｜边 2196
+proven 772 → 775（A 级 772 → 775）
+内容定级 A/B/C：A 775｜B 0｜C 0 ✅
+环：无 ✅｜悬空依赖：无 ✅｜proven 但无证据：无 ✅
+完成审计：全部到 proves ✅
+对象信息完整度：75/75 ✅
+```
+
+### 35.3 ★ 教训：**回执与源码哈希绑定**
+
+`T4.an-binomial` 首次登记被拒 ✗：
+```
+receipt 无效（回执与当前源码不符（文件已修改））
+```
+⇒ `fd11212a` 是 `a_n` 闭合时的回执 ✗ —— 之后 `b_n` 的改动**已使该文件变化** ✗
+⇒ 必须用**最新**回执 `da832222` ✓ ✓
+
+### 35.4 ★ 教训：**改 deps = 改契约 ⇒ 自动退回 needs_review**
+
+```agda
+proof_dag update { id: "T4.eight-elements-dc", deps: [...] }
+→ 状态: needs_review   ⚠（"改签名 = 改契约 ⇒ 下游一律退回"）
+⇒ 必须再 update { state: "proven", receipt: "..." } 才回到 proven ✓
+```
+
+### 35.5 断链修复
+
+3 条断链（`DCPresentation.agda` import 的模块未登记）：
+```
+Sovereign.Base.Trit
+Sovereign.Algebra.UniversalAlgebra.Presentation
+Sovereign.Algebra.GroupTheory.DuodecClock
+```
+⇒ 已登记 `Sovereign.Base.Trit` ✓（后两个在台账里**不是独立节点** ✗，属"传递依赖"✓）
