@@ -2,6 +2,26 @@
 
 -- | Sovereign.Algebra.UniversalAlgebra.RnPresentation
 --
+-- ⚠⚠ **2026-10-21 审核撤回**：本模块**不是**合法的八要素实例 ✗
+--
+-- 违反 `Presentation.agda:79` 的 DC 红线：
+--   「时钟必须是**联合运算 step 沿生成元 g** 的周期（DC 里 = lcm(3,4) = 12），
+--    **不是** phase 的迭代（那等于把 12 降格为 4 的倍数，丢掉加法分量）」
+--
+-- 本实例的 `clock = 4 = phase-order` ✗ —— `clock` **就是** `phase` 的迭代 ✗
+--
+-- **根因**：`R_n = Vec GF9 (3^n)` 上**不存在**联合运算 ✗
+--   · 八要素的联合运算 = 加法（C₃）⊕ 相位乘（C₄）
+--   · 在 `DuodecPoint = Trit × AlphaPower`（12 元）上 = `mixedOp` ✓
+--   · 在 `GF9 = Trit × Trit`（9 元）上**不存在** ✗（GF9* ≅ C₈，不是 C₄）
+--   ⇒ `R_n` 不是 DC 展示群 ⇒ **不应**强套八要素 ✗
+--
+-- ⇒ **合法的八要素实例只有 `Presentation.agda:131` 的 `dc-presentation`** ✓
+--
+-- 本模块保留仅作「特征 3 + 刚性 + 自同构」的**部分**结构演示 ✓，
+-- 但**clock 字段不合法** ✗ —— 请看 `dc-presentation`。
+
+--
 -- **T4 正确环 `R_n = Functions((Z/3)^n, GF9)` 的八要素 `Presentation` 实例**。
 --
 -- ## 数学背景
