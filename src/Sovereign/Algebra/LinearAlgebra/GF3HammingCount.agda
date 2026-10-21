@@ -30,7 +30,7 @@ module Sovereign.Algebra.LinearAlgebra.GF3HammingCount where
 open import Data.Fin using (Fin; toℕ) renaming (zero to fzero; suc to fsuc)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; subst; inspect)
 
 --------------------------------------------------------------------------------
 -- §1. 三个计数（Hamming 重量模 3 的分布）
@@ -1201,3 +1201,34 @@ onetwice = solve 1 (λ X → con 1 :* (con 1 :* X) := X) refl
 --   sumR-mono : ∀ n f k → k ≤ n → f k ≤ sumR n f     ✓
 --   Cnk-diag  : ∀ n → Cnk n n ≡ 1                    ✓
 --   onetwice  : ∀ X → 1 * (1 * X) ≡ X                ✓
+
+--------------------------------------------------------------------------------
+-- ㉜ `Z≤a`：用 `inspect` + `subst` 解决 with-抽象
+--------------------------------------------------------------------------------
+
+-- `1 * (Cnk n n * 2^n) ≡ 2^n`
+termN : ∀ n → 1 * (Cnk n n * 2 ^ n) ≡ 2 ^ n
+termN n = trans (cong (λ z → 1 * (z * 2 ^ n)) (Cnk-diag n)) (onetwice (2 ^ n))
+
+-- ★ `Z n ≤ S'' fzero n`：**未证**（诚实标注，2026-10-21）
+--
+-- 数学上成立 ✓（n=0..7 数值验证 ✓）
+--
+-- ❌ Agda 障碍（两层，已定位）：
+--   ① `with mod3 n ... | fzero` **只抽象目标里的直接出现** ✗
+--   ② 但 `mod3 n` 的实际位置在 **`sumR-mono` 应用的 β-归约结果里** ✗
+--      （`f n` 其中 `f = λ k → hit fzero (mod3 k) * …`）
+--   ⇒ `with` 拿不到那个出现 ⇒ 目标里的 `hit fzero (mod3 n)` 与 `hit fzero fzero` 对不上 ✗
+--
+-- 下一步（明确）：把 `Z` 改写成**以余数为参数**的形式，
+--   用 `Zr : Fin 3 → ℕ → ℕ` + 显式等式参数 `mod3 n ≡ r`（不经 `with`）✗
+--
+-- 已证的相关件 ✓：
+--   sumR-mono : ∀ n f k → k ≤ n → f k ≤ sumR n f     ✓
+--   Cnk-diag  : ∀ n → Cnk n n ≡ 1                    ✓
+--   onetwice  : ∀ X → 1 * (1 * X) ≡ X                ✓
+--   termN     : ∀ n → 1 * (Cnk n n * 2^n) ≡ 2^n      ✓
+
+-- ★★★ `b_n` 的加法形式：**依赖 `Z≤a`，未证** ✗
+-- ★b-formula : ∀ n → (S'' fzero n ∸ Z n) + Z n ≡ C0 n
+-- 证明只需一行：trans (m∸n+n≡m (Z≤a n)) (★a-binomial n)

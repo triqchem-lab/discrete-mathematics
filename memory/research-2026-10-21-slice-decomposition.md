@@ -1368,3 +1368,52 @@ sumR-mono : ∀ n f k → (∀ j → 0 ≤ f j) → k ≤ n → f k ≤ sumR n f
 但其**几何意义**（支撑避开「全非零」角落）在函数环上完全有意义 ✓，与取值域无关 ✓。
 
 **⇒ 这是 `b_n` 的第一次正确定义** ✓（此前只有错环版本 ✗）
+
+---
+
+## 三十、`Z≤a` 的两层障碍（2026-10-21，精确诊断）
+
+### 30.1 本轮新证 ✓
+
+```agda
+sumR-mono : ∀ n f k → k ≤ n → f k ≤ sumR n f     ✓
+Cnk-diag  : ∀ n → Cnk n n ≡ 1                    ✓
+onetwice  : ∀ X → 1 * (1 * X) ≡ X                ✓
+termN     : ∀ n → 1 * (Cnk n n * 2^n) ≡ 2^n      ✓
+```
+
+### 30.2 ❌ `Z≤a` 的两层障碍（已精确定位）
+
+```agda
+Z≤a : ∀ n → Z n ≤ S'' fzero n     -- 未证
+```
+
+**数学上成立 ✓**（n=0..7 数值验证 ✓）：`n≡0(3)` 时 `Z n = 2^n` 正是 `S''` 的 `k=n` 项。
+
+**障碍 ①**：`with mod3 n ... | fzero` 只抽象**目标里的直接出现** ✗
+
+**障碍 ②**（真正的坑）：`mod3 n` 的实际位置在 **`sumR-mono` 应用的 β-归约结果**里 ✗
+```agda
+sumR-mono n f n ≤-refl : f n ≤ sumR n f
+  where f = λ k → hit fzero (mod3 k) * (Cnk n k * 2^k)
+⇒ f n ≡ hit fzero (mod3 n) * (Cnk n n * 2^n)
+```
+⇒ `with` 拿不到那个出现 ⇒ `hit fzero (mod3 n)` 与 `hit fzero fzero` 对不上 ✗
+
+### 30.3 明确的下一步
+
+把 `Z` 改写成**以余数为参数**的形式：
+```agda
+Zr : Fin 3 → ℕ → ℕ
+Zr fzero n = 2 ^ n
+Zr (fsuc _) n = 0
+
+Z≤a-aux : ∀ (r : Fin 3) n → mod3 n ≡ r → Zr r n ≤ S'' fzero n
+```
+—— **不经 `with`**，用**显式等式参数** `mod3 n ≡ r` ✗
+
+### 30.4 教训（入册）
+
+> **`with` 的抽象范围只覆盖目标中的「字面出现」，不覆盖「应用 β-归约后才出现的项」** ✗
+> 当被抽象的项藏在函数应用的归约结果里时，`with` 无效 ——
+> 必须改用**显式等式参数**（`mod3 n ≡ r`）或 `inspect` + `subst` ✗
