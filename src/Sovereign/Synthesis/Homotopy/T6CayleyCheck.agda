@@ -38,10 +38,12 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CStep; CWalk; cplus; cminus)
 open import Sovereign.Synthesis.Homotopy.T6CayleyNorm using (creduceA)
-open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (foldT)
-open import Sovereign.Synthesis.Homotopy.T6CayleyInterp using (interpAt; x1)
+open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (foldT; ctarget)
+open import Sovereign.Synthesis.Homotopy.T6CayleyInterp
+  using (interpAt; x1; stepE1; stepE2; stepE3; side-ok)
+open import Sovereign.Synthesis.Homotopy.T6AStepCodeMap using (toStepExpand)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym)
-open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_)
+open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_; AStep)
 open import Sovereign.Synthesis.Homotopy.AStepStd using (AHomotopyStd)
 open import Sovereign.Synthesis.Homotopy.AStepStdGroup using (rev)
 open import Sovereign.Synthesis.Homotopy.T6SymEdgeReverse using (sym-edge-T6; rev-cancel-T6)
@@ -123,3 +125,20 @@ check-rev-one = refl
 check-rev-cancel : AHomotopyStd (T6CayleySym 1)
                      (check-p1 ++w rev sym-edge-T6 check-p1) (nil x1)
 check-rev-cancel = rev-cancel-T6 check-p1
+
+--------------------------------------------------------------------------------
+-- §5. ★★ ④ 的 expand 侧具体点（此前 `step-1` 只验了 slide 侧）
+--
+-- 按「逐个核对构造子/分支覆盖率」的教训：`ASTep` 有两个构造子，
+-- 而此前**只有一个**有具体点验证 ✗ ⇒ 本批补上 `expand` 侧。
+--------------------------------------------------------------------------------
+
+step-1e : AStep (T6CayleySym 1)
+            (interpAt x1 [] ++w
+              (cons (stepE3 x1 [] (cminus zero) side-ok)
+                    (interpAt (ctarget (ctarget x1 (cplus zero)) (cplus zero)) [])))
+            (interpAt x1 [] ++w
+              (cons (stepE1 x1 [] (cplus zero))
+                    (cons (stepE2 x1 [] (cplus zero) (cplus zero))
+                          (interpAt (ctarget (ctarget x1 (cplus zero)) (cplus zero)) []))))
+step-1e = toStepExpand x1 [] (cplus zero) (cplus zero) (cminus zero) [] side-ok
