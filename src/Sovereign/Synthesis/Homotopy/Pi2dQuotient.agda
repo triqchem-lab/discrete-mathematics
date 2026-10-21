@@ -49,15 +49,17 @@
 
 module Sovereign.Synthesis.Homotopy.Pi2dQuotient where
 
+open import Cubical.Foundations.Prelude using (_≡_; refl)
 open import Cubical.HITs.SetQuotients using (_/_; [_]; eq/; squash/)
-open import Cubical.HITs.SetQuotients.Properties using (rec)
+open import Cubical.HITs.SetQuotients.Properties using (rec; elimProp)
 
 open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy
   using (DiGraph; Walk)
 open DiGraph using (V)
-open import Sovereign.Synthesis.Homotopy.Omega2 using (Ω2Walk)
+open import Sovereign.Synthesis.Homotopy.Omega2 using (Ω2Walk; nil2; _++2_)
 open import Sovereign.Synthesis.Homotopy.Omega3 using (Ω3Walk)
 open import Sovereign.Synthesis.Homotopy.Omega3Plus using (Ω3Walk⁺; embed3)
+open import Sovereign.Synthesis.Homotopy.Omega3Suffix using (whisk-resp)
 
 --------------------------------------------------------------------------------
 -- §1. 两个商
@@ -92,3 +94,39 @@ open import Sovereign.Synthesis.Homotopy.Omega3Plus using (Ω3Walk⁺; embed3)
 desc : ∀ {G : DiGraph} {x : V G} {w : Walk G x x}
      → π₂ᵈ G x w → π₂ᵈ⁺ G x w
 desc = rec (λ a b → squash/ a b) [_] (λ a b h → eq/ a b (embed3 h))
+
+--------------------------------------------------------------------------------
+-- §4. 同态版（hom）：让**左类作用**在非闭 2-走上也成立
+--
+-- `π₂ᵈ G x w` 只覆盖「圈」；而缘饰 `p ++2 _` 把 `w1 → wm` 的 2-走作用到 `wm → w2`
+-- 上，落到 `w1 → w2`。所以要先有**同态版**（两端自由），作用才有正确的类型。
+--------------------------------------------------------------------------------
+
+π₂ᵈ-hom : (G : DiGraph) (x : V G) (w1 w2 : Walk G x x) → Set
+π₂ᵈ-hom G x w1 w2 = Ω2Walk G x w1 w2 / (λ c c' → Ω3Walk G x c c')
+
+π₂ᵈ⁺-hom : (G : DiGraph) (x : V G) (w1 w2 : Walk G x x) → Set
+π₂ᵈ⁺-hom G x w1 w2 = Ω2Walk G x w1 w2 / (λ c c' → Ω3Walk⁺ G x c c')
+
+desc-hom : ∀ {G : DiGraph} {x : V G} {w1 w2 : Walk G x x}
+         → π₂ᵈ-hom G x w1 w2 → π₂ᵈ⁺-hom G x w1 w2
+desc-hom = rec (λ a b → squash/ a b) [_] (λ a b h → eq/ a b (embed3 h))
+
+--------------------------------------------------------------------------------
+-- §5. ★★ 左类作用（良定义性靠 `whisk-resp`）
+--
+-- `addL p [ c ] = [ p ++2 c ]`；良定义要证
+--   `Ω3Walk⁺ a b ⇒ Ω3Walk⁺ (p ++2 a) (p ++2 b)` —— 正是 `Omega3Suffix.whisk-resp` ✓
+--------------------------------------------------------------------------------
+
+addL : ∀ {G : DiGraph} {x : V G} {w1 wm w2 : Walk G x x}
+       (p : Ω2Walk G x w1 wm)
+     → π₂ᵈ⁺-hom G x wm w2 → π₂ᵈ⁺-hom G x w1 w2
+addL p = rec (λ a b → squash/ a b)
+             (λ c → [ p ++2 c ])
+             (λ a b h → eq/ (p ++2 a) (p ++2 b) (whisk-resp p h))
+
+-- ★ 单位律：`addL (nil2 _)` 是恒等（`elimProp` + `rec`-β）
+addL-nil2 : ∀ {G : DiGraph} {x : V G} {w1 w2 : Walk G x x}
+            (q : π₂ᵈ⁺-hom G x w1 w2) → addL (nil2 w1) q ≡ q
+addL-nil2 = elimProp (λ q → squash/ _ _) (λ c → refl)
