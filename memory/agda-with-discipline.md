@@ -590,3 +590,65 @@ C0 (suc n) = C0 n + 2 * C2 n      -- C0 是**递归函数** ✗
 > **在 Agda 里证递归函数 `f : ℕ → ℕ` 的**闭式**时，如果闭式涉及 `k * n`
 > （`k ≥ 2`）作为 `f` 的**参数**，就会撞上「参数归约引起 `f` 展开」的墙 ✗。**
 > 正确做法：让 `f` 的参数**始终是变量**，把算术留在**结论**侧 ✓。
+
+---
+
+## §18. ★★★ **`cong C0 e` 不触发归约，而 `subst (λ z → C0 z + …)` 会**（2026-10-21，关键突破）
+
+### 18.1 问题（§17 定案的墙）
+
+```agda
+C0 (suc n) = C0 n + 2 * C2 n     -- C0 递归 ⇒ 参数化成 suc-头就展开 ✗
+```
+而 `2 * suc m` 归约成 `suc (m + (1 * suc m))` ⇒ `C0 (2 * suc m)` 必然展开 ✗
+
+### 18.2 ✅ **解法**：用 `cong` 而不是 `subst` 做索引转换
+
+```agda
+-- ✗ subst 会逼 Agda 归约
+★E-recur m = subst (λ z → C0 z + 3 * C0 (2 * m) ≡ …) (sym (idxC m)) (★C0-even-step m)
+
+-- ✓ cong 不会
+abstract
+  F : ℕ → ℕ
+  F m = C0 (2 * m)
+
+  F-suc : ∀ m → F (suc m) ≡ C0 (2 * m + 2)
+  F-suc m = cong C0 (sym (idxC' m))      -- ← 关键：cong 只记等式，不求值 ✓
+```
+
+**原理**：`cong f e : f x ≡ f y` 只需 `e : x ≡ y` ✓，**不需要** `f x`、`f y` 求值 ✗
+而 `subst P e p` 要求 `P` 在 `x`、`y` 处**都能类型检查** ⇒ 逼归约 ✗
+
+### 18.3 已验证可用的组合（全部编译通过 ✓）
+
+```agda
+abstract
+  F : ℕ → ℕ
+  F m = C0 (2 * m)
+
+  F-eq     : ∀ m → F m ≡ C0 (2 * m)                        -- refl
+  F-suc    : ∀ m → F (suc m) ≡ C0 (2 * m + 2)              -- cong C0 ∘ sym idxC'
+  F-recur  : ∀ m → C0 (2m+2) + 3 * F m ≡ 4 * 9 ^ m         -- cong + ★C0-even-step
+  F-odd-at : ∀ k → F (2k+1) ≡ C0 (2·(2k)+2)                -- cong F + F-suc
+  F-even-at: ∀ k → F (2k+2) ≡ C0 (2·(2k+1)+2)              -- cong F + F-suc
+```
+
+⇒ **`F` 在 `abstract` 内 ⇒ 外部 opaque ⇒ `F (2*k)` 不展开** ✓ ✓
+
+### 18.4 仍卡的地方
+
+`pow9-suc (2 * k)` 的**实例化**仍炸 ✗ ——
+`pow9-suc` 本身是代数证明 ✓，但 `j := 2 * k` 时 unification 撞 `2*k` ✗。
+
+⇒ **下一步**：为每个需要的指数单独抽专用引理 ✗
+```agda
+pow9-2k : ∀ k → 9 * (9 ^ (2 * k)) ≡ 9 ^ (2 * k + 1)
+pow9-2k k = pow9-suc (2 * k)      -- ✗ 仍炸
+-- 需直接对 `2 * k` 重证（用 ^-distribˡ-+-* 等代数件）
+```
+
+### 18.5 铁律
+
+> **在 Agda 里做索引转换时，优先 `cong f e`（不求值），避免 `subst P e p`（求值）。**
+> 当 `f` 是递归函数且 `e` 的两端会引不同归约时，`subst` 必炸，`cong` 可活。

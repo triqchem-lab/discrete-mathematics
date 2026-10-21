@@ -276,6 +276,12 @@ cancel a b k = +-cancelʳ-≡ k a b
 a-34 : ∀ N → 3 * (4 * N) ≡ 12 * N
 a-34 N = sym (*-assoc 3 4 N)
 
+a-33 : ∀ X → 3 * (3 * X) ≡ 9 * X
+a-33 X = sym (*-assoc 3 3 X)
+
+a-32 : ∀ X → 3 * (2 * X) ≡ 6 * X
+a-32 X = sym (*-assoc 3 2 X)
+
 a-3A : ∀ A B → 3 * A + 9 * B ≡ 3 * (A + 3 * B)
 a-3A A B =
   sym (trans (*-distribˡ-+ 3 A (3 * B))
@@ -394,4 +400,72 @@ E-two = refl
 --       `★C0-even-step : C0 (2m+2) + 3·C0(2m) ≡ 4·9^m`
 --   出发做**强归纳**，索引始终是 `m`（不是 `2*k`）——
 --   奇偶只在**结论**处拆开，不在**归纳变量**处出现。
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- ⑦ 反馈环 EB：用 `cong C0` 避免归约（proof-engineer 附录 10 let-free 精神）
+--------------------------------------------------------------------------------
+
+-- `2·k + 1 ≡ 2·k + 1`（占位）
+-- `2·k + 2 ≡ 2·suc k`
+idxC' : ∀ k → 2 * k + 2 ≡ 2 * suc k
+idxC' = solve 1 (λ k → con 2 :* k :+ con 2 := con 2 :* (con 1 :+ k)) refl
+
+abstract
+  F : ℕ → ℕ
+  F m = C0 (2 * m)
+
+  F-eq : ∀ m → F m ≡ C0 (2 * m)
+  F-eq m = refl
+
+  -- ★ `F (suc m) ≡ C0 (2·m + 2)`（`cong C0`，**不归约**）
+  F-suc : ∀ m → F (suc m) ≡ C0 (2 * m + 2)
+  F-suc m = cong C0 (sym (idxC' m))
+
+  -- ★ 递推（在 `F` 层面，块内 `F-eq` 只是等式不是归约）
+  F-recur : ∀ m → C0 (2 * m + 2) + 3 * F m ≡ 4 * 9 ^ m
+  F-recur m = trans (cong (λ z → C0 (2 * m + 2) + 3 * z) (sym (F-eq m))) (★C0-even-step m)
+
+-- ⑧ `F (2k+1) ≡ C0 (2·(2k) + 2)`（`cong F`，不归约）
+abstract
+  F-odd-at : ∀ k → F (2 * k + 1) ≡ C0 (2 * (2 * k) + 2)
+  F-odd-at k = trans (cong F (idxA2 k)) (F-suc (2 * k))
+    where
+      idxA2 : ∀ k → 2 * k + 1 ≡ suc (2 * k)
+      idxA2 k = trans (+-suc (2 * k) 0) (cong suc (+-identityʳ (2 * k)))
+
+  -- `F (2k+2) ≡ C0 (2·(2k+1) + 2)`
+  F-even-at : ∀ k → F (2 * k + 2) ≡ C0 (2 * (2 * k + 1) + 2)
+  F-even-at k = trans (cong F (idxB2 k)) (F-suc (2 * k + 1))
+    where
+      idxB2 : ∀ k → 2 * k + 2 ≡ suc (2 * k + 1)
+      idxB2 = solve 1 (λ k → con 2 :* k :+ con 2 := con 1 :+ (con 2 :* k :+ con 1)) refl
+
+  -- `2·suc k ≡ 2·k + 2`
+  idxC2 : ∀ k → 2 * suc k ≡ 2 * k + 2
+  idxC2 = solve 1 (λ k → con 2 :* (con 1 :+ k) := con 2 :* k :+ con 2) refl
+
+
+
+-- ⑨ ⚠ `★F-odd` / `★F-even`：**未完成**（诚实标注）
+--
+-- ✅ 本轮**重大突破**（proof-engineer 附录 10 let-free 精神）：
+--   `cong C0 (eq)` **不会**触发 `C0` 的归约 ✓ —— 而 `subst (λ z → C0 z + …)` 会 ✗
+--   ⇒
+--     F-suc m : F (suc m) ≡ C0 (2·m + 2)      -- `cong C0 (sym idxC')` ✓
+--     F-recur  : C0 (2m+2) + 3·F m ≡ 4·9^m    -- 再连 `★C0-even-step` ✓
+--     F-odd-at k : F (2k+1) ≡ C0 (2·(2k)+2)   -- `cong F` + `F-suc` ✓
+--     F-even-at k : F (2k+2) ≡ C0 (2·(2k+1)+2) ✓
+--   全部**已证** ✓（`F` 在 `abstract` 内，外部 opaque ✓）
+--
+-- ✅ 同时已证：`a-33`/`a-34`/`a-32`（嵌套形 ↔ 数字形转换）
+--
+-- ❌ `★F-odd` 的**最后一步**卡在 `pow9-suc (2 * k)`：
+--     `9 * 9^(2k) ≡ 9^(2k+1)` 的应用触发 `2 * k` 的 unification ✗
+--   —— 与 §16/§17 同一类问题（`2 * k` 雷区）✗
+--
+-- 🔍 遗留诊断：`pow9-suc` 本身是**代数证明**（非 solver）✓，
+--   但它的 `j := 2 * k` 实例化仍然炸 ✗ ⇒ 需再抽一个 `pow9-2k` 专用引理：
+--     pow9-2k : ∀ k → 9 * (9 ^ (2 * k)) ≡ 9 ^ (2 * k + 1)
+--     pow9-2k = pow9-suc  -- 或直接对 2*k 重证
 --------------------------------------------------------------------------------
