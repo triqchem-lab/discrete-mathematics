@@ -157,7 +157,7 @@ shuffle = solve 3
 --------------------------------------------------------------------------------
 
 open import Data.Nat.Properties using
-  ( +-cancelʳ-≡; +-suc; +-identityʳ; +-assoc; *-identityʳ; *-comm
+  ( +-cancelʳ-≡; +-suc; +-identityʳ; +-assoc; *-identityʳ; *-zeroʳ; *-comm
   ; *-assoc; *-distribˡ-+
   ; ^-distribˡ-+-*; ^-distribʳ-* )
 
@@ -996,3 +996,121 @@ sum-rewrite r n =
 ★S-eq1 r n =
   trans (sumR-uncons n (λ k → hit r (mod3 k) * (Cnk (suc n) k * 2 ^ k)))
         (cong₂ _+_ (f0-eq r n) (sum-rewrite r n))
+
+--------------------------------------------------------------------------------
+-- ㉗ `sumR-snoc` + `★B-recur`
+--------------------------------------------------------------------------------
+
+-- ★ `sumR` 的 snoc：`sumR (suc n) f ≡ sumR n f + f (suc n)`
+sumR-snoc : ∀ n (f : ℕ → ℕ) → sumR (suc n) f ≡ sumR n f + f (suc n)
+sumR-snoc zero    f = refl
+sumR-snoc (suc n) f =
+  trans (cong (f 0 +_) (sumR-snoc n (λ j → f (suc j))))
+        (sym (reassoc (f 0) (sumR n (λ j → f (suc j))) (f (suc (suc n)))))
+
+-- 分配（3 原子 solver）
+dist3 : ∀ h a b p → h * ((a + b) * p) ≡ h * (a * p) + h * (b * p)
+dist3 = solve 4 (λ h a b p → h :* ((a :+ b) :* p) := h :* (a :* p) :+ h :* (b :* p)) refl
+
+-- 尾项为零：`A (suc m) ≡ 0`
+zero-tail-A : ∀ (q : Fin 3) m →
+  hit q (mod3 (suc m)) * (Cnk m (suc m) * 2 ^ suc m) ≡ 0
+zero-tail-A q m = trans (cong (λ z → hit q (mod3 (suc m)) * (z * 2 ^ suc m)) (★Cnk-self m)) (*-zeroʳ (hit q (mod3 (suc m))))
+
+-- 尾项为零：`B (suc m) ≡ 0`
+zero-tail-B : ∀ (q : Fin 3) m →
+  hit q (mod3 (suc m)) * (Cnk m (suc (suc m)) * 2 ^ suc m) ≡ 0
+zero-tail-B q m = trans (cong (λ z → hit q (mod3 (suc m)) * (z * 2 ^ suc m)) (★Cnk-above m (suc (suc m)) (≤-step ≤-refl))) (*-zeroʳ (hit q (mod3 (suc m))))
+
+-- ★ `★B-recur : B q (suc m) ≡ S'' q m + B q m`
+★B-recur : ∀ (q : Fin 3) m → B q (suc m) ≡ S'' q m + B q m
+★B-recur q m =
+  trans (sumR-cong (suc m) (λ j → dist3 (hit q (mod3 j)) (Cnk m j) (Cnk m (suc j)) (2 ^ j)))
+        (trans (sumR-add (suc m)
+                         (λ j → hit q (mod3 j) * (Cnk m j * 2 ^ j))
+                         (λ j → hit q (mod3 j) * (Cnk m (suc j) * 2 ^ j)))
+               (trans (cong₂ _+_
+                         (trans (sumR-snoc m (λ j → hit q (mod3 j) * (Cnk m j * 2 ^ j)))
+                                (trans (cong (λ z → sumR m (λ j → hit q (mod3 j) * (Cnk m j * 2 ^ j)) + z) (zero-tail-A q m))
+                                       (+-identityʳ (sumR m (λ j → hit q (mod3 j) * (Cnk m j * 2 ^ j))))))
+                         (trans (sumR-snoc m (λ j → hit q (mod3 j) * (Cnk m (suc j) * 2 ^ j)))
+                                (trans (cong (λ z → sumR m (λ j → hit q (mod3 j) * (Cnk m (suc j) * 2 ^ j)) + z) (zero-tail-B q m))
+                                       (+-identityʳ (sumR m (λ j → hit q (mod3 j) * (Cnk m (suc j) * 2 ^ j)))))))
+                      refl))
+  where
+    -- `Cnk (suc m) (suc j) ≡ Cnk m j + Cnk m (suc j)` —— 需先改写
+    dist3' : ∀ h a b p → h * ((a + b) * p) ≡ h * (a * p) + h * (b * p)
+    dist3' = dist3
+
+--------------------------------------------------------------------------------
+-- ㉘ ★★★ `★S''-step`
+--------------------------------------------------------------------------------
+
+-- 5 原子重排（solver）
+rearr5 : ∀ a x y z → a + (x + 2 * (y + z)) ≡ (a + (2 * y + 2 * z)) + x
+rearr5 = solve 4 (λ a x y z → a :+ (x :+ con 2 :* (y :+ z))
+                    := (a :+ (con 2 :* y :+ con 2 :* z)) :+ x) refl
+
+-- 基础情形（3 个 r，全部归约）
+★S''-step-zero-0 : S'' fzero 1 ≡ S'' fzero 0 + 2 * S'' (pred3 fzero) 0
+★S''-step-zero-0 = refl
+
+★S''-step-zero-1 : S'' (fsuc fzero) 1 ≡ S'' (fsuc fzero) 0 + 2 * S'' (pred3 (fsuc fzero)) 0
+★S''-step-zero-1 = refl
+
+★S''-step-zero-2 : S'' (fsuc (fsuc fzero)) 1 ≡ S'' (fsuc (fsuc fzero)) 0 + 2 * S'' (pred3 (fsuc (fsuc fzero))) 0
+★S''-step-zero-2 = refl
+
+-- ★★★ 主定理
+★S''-step : ∀ (r : Fin 3) n → S'' r (suc n) ≡ S'' r n + 2 * S'' (pred3 r) n
+★S''-step fzero           zero    = ★S''-step-zero-0
+★S''-step (fsuc fzero)    zero    = ★S''-step-zero-1
+★S''-step (fsuc (fsuc fzero)) zero = ★S''-step-zero-2
+★S''-step r (suc m) =
+  trans (★S-eq1 r (suc m))
+        (trans (cong (λ z → hit r fzero + (2 * S'' (pred3 r) (suc m) + 2 * z)) (★B-recur (pred3 r) m))
+               (trans (rearr5 (hit r fzero) (2 * S'' (pred3 r) (suc m))
+                              (S'' (pred3 r) m) (B (pred3 r) m))
+                      (trans (cong (λ z → z + 2 * S'' (pred3 r) (suc m)) (sym (★S-eq1 r m))) refl)))
+
+--------------------------------------------------------------------------------
+-- ㉙ ★★★★ 最终定理：`a_n = Σ_{k≡0(3)} C(n,k)·2^k`
+--------------------------------------------------------------------------------
+
+-- 基础：`Wsum r 0 ≡ S'' r 0`（3 个 r）
+★W-S-zero-0 : Wsum fzero 0 ≡ S'' fzero 0
+★W-S-zero-0 = refl
+
+★W-S-zero-1 : Wsum (fsuc fzero) 0 ≡ S'' (fsuc fzero) 0
+★W-S-zero-1 = refl
+
+★W-S-zero-2 : Wsum (fsuc (fsuc fzero)) 0 ≡ S'' (fsuc (fsuc fzero)) 0
+★W-S-zero-2 = refl
+
+-- ★★ `Wsum ≡ S''`（同递推 + 同初值 ⇒ `Nat.rec`）
+★W-S : ∀ (r : Fin 3) n → Wsum r n ≡ S'' r n
+★W-S fzero            zero    = ★W-S-zero-0
+★W-S (fsuc fzero)     zero    = ★W-S-zero-1
+★W-S (fsuc (fsuc fzero)) zero = ★W-S-zero-2
+★W-S r (suc n) =
+  trans (Wstep-any r n)
+        (trans (cong₂ _+_ (★W-S r n) (cong (2 *_) (★W-S (pred3 r) n)))
+               (sym (★S''-step r n)))
+  where
+    Wstep-any : ∀ (r : Fin 3) n → Wsum r (suc n) ≡ Wsum r n + 2 * Wsum (pred3 r) n
+    Wstep-any fzero            n = refl
+    Wstep-any (fsuc fzero)     n = refl
+    Wstep-any (fsuc (fsuc _))  n = refl
+
+-- ★★★★ 最终：`a_n = Σ_{k≡0(3)} C(n,k)·2^k`
+★a-binomial : ∀ n → C0 n ≡ S'' fzero n
+★a-binomial n with ★C-W n
+... | e0 , _ = trans e0 (★W-S fzero n)
+
+-- 三支完整版
+★a-binomial-all : ∀ n → (C0 n ≡ S'' fzero n) × (C1 n ≡ S'' (fsuc fzero) n)
+                × (C2 n ≡ S'' (fsuc (fsuc fzero)) n)
+★a-binomial-all n with ★C-W n
+... | e0 , e1 , e2 = ( trans e0 (★W-S fzero n)
+                     , trans e1 (★W-S (fsuc fzero) n)
+                     , trans e2 (★W-S (fsuc (fsuc fzero)) n) )

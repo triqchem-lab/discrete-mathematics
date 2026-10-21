@@ -1236,3 +1236,76 @@ S'' r (s m)  = hit r 0 + 2·S''(p3r) m + 2·B(p3r) m            [★S-eq1]
 > 本轮 `★S-eq2` 候选**是假的** ✗（`S'' r n ≢ hit r 0 + 2·B(p3r)(n∸1)`），
 > 若先写证明再编译，会浪费大量轮次 ✗；
 > 而 `★S-eq1` / `★B-recur` 先验证后写，**一次通过** ✓ ✓
+
+---
+
+## 二十八、★★★★ **完整证成**：`a_n = Σ_{k≡0(3)} C(n,k)·2^k`（2026-10-21，回执 `fd11212a`）
+
+### 28.1 最终定理（**真组合和**，非同义反复）
+
+```agda
+S'' : Fin 3 → ℕ → ℕ
+S'' r n = sumR n (λ k → hit r (mod3 k) * (Cnk n k * 2 ^ k))
+          -- Cnk = 二项式系数（Pascal 递归）
+          -- hit/mod3 = 余数过滤
+          -- 2^k = 幂
+
+★a-binomial : ∀ n → C0 n ≡ S'' fzero n
+```
+
+**独立数值验证**（与 Agda 定义逐一对应的 Python 重写）：
+- `S'' 0 n == C0 n`（n=0..11）✓
+- `Wsum r n == S'' r n`（r=0..2, n=0..9）✓
+- `S'' r (n+1) == S'' r n + 2·S''(r-1) n`（r=0..2, n=0..9）✓
+
+### 28.2 完整引理链（全部已证 ✓）
+
+| 引理 | 内容 |
+|---|---|
+| `★Cnk-pascal` | `Cnk (suc n) (suc k) ≡ Cnk n k + Cnk n (suc k)`（**定义**，`refl`）|
+| `★Cnk-zero` | `Cnk n 0 ≡ 1` |
+| `★Cnk-above` | `suc n ≤ k → Cnk n k ≡ 0` |
+| `★Cnk-self` | `Cnk n (suc n) ≡ 0` |
+| `★pow2-suc` | `2 ^ suc j ≡ 2 * (2 ^ j)`（**定义**）|
+| `★mod3-suc` | `mod3 (suc j) ≡ suc3 (mod3 j)`（用 `suc3³ = id`）|
+| `hit-suc3` | `hit r (suc3 q) ≡ hit (pred3 r) q`（9 cases）|
+| `★hit-mod` | `hit r (mod3 (suc j)) ≡ hit (pred3 r) (mod3 j)` |
+| `sumR` | 右嵌套求和（`uncons` = `refl`）|
+| `sumR-cong/add/scale/snoc` | 求和工具链 |
+| `term-eq` / `dist3` / `rearr5` | solver 辅助 |
+| `f0-eq` / `step1` / `sum-rewrite` | 项级改写 |
+| **`★S-eq1`** | `S'' r (suc n) ≡ hit r 0 + (2·S''(p3r) n + 2·B(p3r) n)` |
+| **`★B-recur`** | `B q (suc m) ≡ S'' q m + B q m` |
+| **`★S''-step`** | `S'' r (suc n) ≡ S'' r n + 2·S''(pred3 r) n` |
+| **`★W-S`** | `Wsum r n ≡ S'' r n` |
+| **`★a-binomial`** | **`C0 n ≡ S'' fzero n`** ★★★★ |
+| `★a-binomial-all` | 三支完整版 |
+
+### 28.3 本会话最终定理清单（`GF3HammingCount.agda`，1117 行）
+
+| 定理 | 内容 |
+|---|---|
+| **`★a-binomial`** | **`a_n = Σ_{k≡0(3)} C(n,k)·2^k`** ★★★★ |
+| `★C0-3step` | `a_n` 的 3 项线性递推 |
+| `★C0-odd` | `C0 (2m+1) ≡ 9^m`（奇数支闭式）|
+| `★total` / `★odd-sum` / `★C0-even-step` | 基础恒等式 |
+| `Wsum-recur-ident` | ⚠️ 同义反复（保留作中间件）|
+| 全部基础设施 | 见 28.2 |
+
+### 28.4 方法论总结（本会话最有价值的 6 条）
+
+1. **写求和引理前，先选定让目标引理变成 `refl` 的嵌套方向** ✓（右嵌套 `sumR`）
+2. **周期/取模定义必须用 `refl` 核对 0..5** ✓（`mod3` 曾漏支）
+3. **`≤` 形式比 `<` 形式好证** ✓
+4. **数值验证先于形式化** ✓（`★S-eq2` 候选是假的 ✗；`★S-eq1`/`★B-recur`/`★S''-step` 先验证后写，全一次通过 ✓）
+5. **`cong C0 e` 不触发归约，`subst` 会** ✓
+6. **递归函数的参数若归约成 `suc`-头就会展开** —— 用 `abstract` 或改换表述 ✓
+
+### 28.5 人类审核的两点仍未解决（诚实标注）
+
+| # | 项 | 状态 |
+|---|---|---|
+| ① | `b_n` 在正确环上的定义与值 | ❌ 未做 |
+| ② | 八要素检查（GF(9)-值函数）| ❌ 未做 |
+
+**但 `a_n` 的组合和闭式现在是真定理** ✓ ✓
