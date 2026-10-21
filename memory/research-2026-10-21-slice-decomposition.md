@@ -1530,3 +1530,36 @@ mixedOp-comm : ∀ p q → mixedOp p q ≡ mixedOp q p   -- ~5 行（cong₂ ⊕
 clock-bridge : ∀ x → iterate (λ y → mixedOp y gDC) 12 x ≡ x   -- ~25 行
 ```
 ⇒ **合计 ~50 行**，障碍已精确定位 ✓
+
+### 32.5 ★ 辅助引理**全部现成**（2026-10-21 查证 ✓）
+
+| 需要的引理 | 上游件 | 位置 | 状态 |
+|---|---|---|---|
+| `phaseDC-4` | `mulAlpha-assoc` ✓ | DuodecClock | ✓ |
+| | `mulAlpha-4-a1` ✓ | `:663` | ✓ |
+| | `mulAlpha-identityʳ` ✓ | `:197` | ✓ |
+| `mixedOp-comm` | `⊕-comm` ✓ | Base/Trit | ✓ |
+| | `mulAlpha-comm` ✓ | `:211` | ✓ |
+| `clock-bridge` | `mixedOp-12-cycle` ✓ | `:609` | ✓ |
+
+⇒ **P0 的 4 个引理的**全部**上游依赖都在库里现成** ✓ ——
+**没有一个是新数学** ✓，只有组合工作 ✓
+
+### 32.6 精确的实施方案（~50 行）
+
+```agda
+-- ① 相位四步（15 行）
+α-four : ∀ a → mulAlpha (mulAlpha (mulAlpha (mulAlpha a a1) a1) a1) a1 ≡ a
+-- 策略：mulAlpha-assoc ×3 重排成 a·(((α·α)·α)·α)
+--      → mulAlpha-4-a1 ⇒ a·a0 → mulAlpha-identityʳ ⇒ a
+
+-- ② 相位周期（3 行）
+phaseDC-4 (t , a) = cong (t ,_) (α-four a)
+
+-- ③ mixedOp 交换（5 行）
+mixedOp-comm (x , a) (y , b) = cong₂ _,_ (⊕-comm x y) (mulAlpha-comm a b)
+
+-- ④ 时钟桥接（25 行）
+-- iterate (λ y → mixedOp y g) 12 x ≡ mixedOp^12 x （由 mixedOp-comm 归纳）
+-- → mixedOp-12-cycle ⇒ x
+```
