@@ -179,3 +179,4 @@
 | [21-quantum-module-topology-scan.md](21-quantum-module-topology-scan.md) | 量子类代码拓扑扫描与展示群本源对齐缺口 | ✅ |
 | [39-frobenius-vs-group-inversion.md](39-frobenius-vs-group-inversion.md) | **域刚性 vs 群反转**：`μ`（Frobenius 运输）≠ `ρ`（群反转）；刚性必须是 `μ` | ✅ |
 | [40-transparency-vs-refutation.md](40-transparency-vs-refutation.md) | **透明性 vs 反证法**：刚性 = 自同构**透明**（显式构造 + 穷举验证），不只是「存在」 | ✅ |
+| [41-strength-vs-transparency.md](41-strength-vs-transparency.md) | **判据是「透明」不是「强大」**：学科不构成层级，每个学科横跨本源与投影 | ✅ |
