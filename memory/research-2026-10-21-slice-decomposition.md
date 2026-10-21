@@ -3715,3 +3715,67 @@ dc-oblivion-algebra = verifyZero          -- Trit.agda:277 已证
 
 **⇒ 本会话第 2 次因 `bash grep` 局部查而重复实现** ✗ ——
 **必须用 DSH grep** ✓（`AGENTS.md` 也明确要求 ✓）
+
+---
+
+## 六十四、🔴 **bash grep 问题彻底诊断**（2026-10-21 人类要求）
+
+### 64.1 不是工具缺陷
+
+| 检查 | 结果 |
+|---|---|
+| `grep` 版本 | **只有一个**：GNU grep 3.12（`/usr/bin/grep` = `/bin/grep` 同一文件，`ls -la` 实证）|
+| `rg` | 未安装（DSH grep 工具自带后端）|
+| shell | **两个**：`/bin/bash` 5.3.9 + `/bin/sh → dash`（与 grep 无关）|
+
+**⇒ `bash grep` 本身没有缺陷** ✓
+
+### 64.2 真正的根因（三层）
+
+#### ① 闸门**代码** bug（已修 ✓）
+
+```js
+// 修复前（hooks/search-dialect-gate.mjs:34-37）
+const toolName = String(payload.tool_name ?? '').toLowerCase()
+if (toolName !== 'bash' && toolName !== 'run_command') process.exit(0)
+// harness 传的字段名不是 `tool_name` ⇒ toolName = '' ⇒ 直接 exit 0 ✗
+```
+
+**实证**：会话日志 `PreToolUse` **106 次全部 `exitCode: 0`** ✗
+（`curl` 独立测试同一 payload 给 `exit 2` ✓ ⇒ **字段名对不上** ✗）
+
+**修复**：多字段名兜底 + 不依赖 `tool_name`（有 `command` 就按命令内容判）✓
+备份：`hooks/search-dialect-gate.mjs.bak-20261021` ✓
+
+#### ② 运行中的 dsh **缓存旧 hook 代码** ✗
+
+修复后**本会话实测仍放行** ✗ —— `AGENTS.md` 自己的注记：
+> 改 `plugins/**` / `hooks/**` 的代码**必须重启 dsh 进程**
+
+#### ③ 我自己的用法 ✗
+
+```bash
+bash grep -n "pat" src/某文件.agda      ← 只查一个文件 ✗
+```
+
+**⇒ 即使闸门正常，局部查仍会漏掉全库已有件** ✗
+
+### 64.3 ★ 三次重复实现的共同根因
+
+| # | 重复实现 | 漏掉的已有件 | 检索方式 |
+|---|---|---|---|
+| 1 | `DCPresentation.agda`（119 行）| `Presentation.agda:131` `dc-presentation` | 未查 |
+| 2 | `dc-oblivion-trit/-phase/-joint` | `ZeroOblivion`（`DuodecClock.agda:504`）| **bash grep 只查 `Trit.agda`** ✗ |
+| 3 | （本轮）| — | — |
+
+**⇒ 根源不是工具，是「检索范围」与「闸门失效」的叠加** ✗
+
+### 64.4 彻底解决（三条，缺一不可）
+
+| # | 措施 | 状态 |
+|---|---|---|
+| **1** | 修闸门代码（多字段名兜底）| ✅ **已完成** |
+| **2** | **重启 dsh 进程** | ⚠ **需人类操作**（模型做不到）|
+| **3** | 纪律：任何文件检索先 DSH grep | ✅ 已入册 |
+
+**⇒ 闸门是「减速带不是保险箱」** ✓ —— 最终防线仍是纪律 ✓
