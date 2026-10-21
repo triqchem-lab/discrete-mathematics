@@ -17,6 +17,8 @@
 -- | **`toStepCode`** | **主定理**：码 + 顶点侧条件 ⇒ `ASTep`（`slide` 方向）|
 -- | **`toStepCodeExpand`** | 镜像方向（`expand`）|
 -- | **`toAHomotopy` / `toAHomotopyDir`** | 码 ⇒ `AHomotopy`；按 `ADir` 分派（**只能在对称闭包层**分派）|
+-- | **`decStepCode`** | `Dec (StepVertex u c)`：`toStepCode` 的前提**可算** |
+-- | **`noStepVertex`** | **负向控制**：同向码的侧条件**假** ⇒ `decStepCode` 的 `no` 分支可达 |
 --
 -- ## ★ 两条经实测的修正（先前判断都不成立）
 --
@@ -53,14 +55,17 @@ module Sovereign.Synthesis.Homotopy.T6AStepCodeMap where
 open import Data.Nat using (ℕ)
 open import Data.List using ([]; _∷_; _++_)
 open import Data.Fin using (zero)
-open import Data.Vec.Base using () renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
+open import Data.Vec.Base using (head) renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
 open import Data.Product using (proj₁; proj₂)
-open import Relation.Nullary using (Dec)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
+open import Data.Empty using (⊥)
+import Data.Fin as Fin
+open import Relation.Nullary using (Dec; yes; no)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong; subst)
 
 open import Axiom.UniquenessOfIdentityProofs using (module Decidable⇒UIP)
 
-open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
+open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt)
+open import Sovereign.Synthesis.Homotopy.T6CayleyGraph using (succF3)
 open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CStep; CWalk; cplus; cminus)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym; T6SymEdge)
@@ -479,3 +484,34 @@ ah-1 : AHomotopy (T6CayleySym 1)
                  (subst (Walk (T6CayleySym 1) x1) (sym (StepVertex→StepSide x1 code1 side-code-1))
                         (proj₂ (interpC x1 (tgtCode code1))))
 ah-1 = toAHomotopyDir x1 code1 side-code-1 dexpand
+
+--------------------------------------------------------------------------------
+-- §9. ★ 负向控制（纪律 §0.75 第②档）：`decStepCode` 的 `no` 分支**可达**
+--
+-- 只证「`yes` 分支有值」（§8）是不够的 —— 那只能说明判官会说「是」。
+-- 这里证明某码在该点**确实不可实现**（侧条件假），于是判官**会说「不」**。
+--
+-- 取同上一点 `x1`，但第三步换成 `cplus zero`（同向而非互逆）：
+-- 侧条件退化成 `updAt 0 x1 ≡ updAt 0 (updAt 0 x1)`，
+-- 即 `[1] ≡ [2]`（`succF3` 前两个具体值）⇒ 由 `Fin` 构造子冲突**不成立**。
+--------------------------------------------------------------------------------
+
+-- 同向第三步的码（侧条件**假**）
+code0 : StepCode 1
+code0 = mkStep dslide [] (cplus zero) (cplus zero) (cplus zero) []
+
+-- `succF3` 的两个具体值不同：`0 ↦ 1`、`1 ↦ 2`（`Fin` 构造子冲突，空模式即闭合）
+succF3-0≢2 : succF3 Fin.zero ≢ succF3 (succF3 Fin.zero)
+succF3-0≢2 = λ ()
+
+-- ★ `decStepCode` 的 `no` 分支可达：该码在 `x1` 处**不可实现**
+noStepVertex : StepVertex x1 code0 → ⊥
+noStepVertex e = succF3-0≢2 (cong head e)
+
+-- ★ 判定器**确实在算**（不是 stuck 项）：正例上 `decStepCode` 归约到 `yes`
+decStepCode-yes : decStepCode x1 code1 ≡ yes side-code-1
+decStepCode-yes = refl
+
+-- ★ 负例上归约到 `no`（`Dec` 的两个分支都真的在算）
+decStepCode-no : decStepCode x1 code0 ≡ no noStepVertex
+decStepCode-no = refl
