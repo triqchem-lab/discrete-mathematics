@@ -1,10 +1,11 @@
-# 离散分析四件套（2026-10-21 会话交付）
+# 离散分析五件套（2026-10-21 会话交付）
 
-> 文件名保留 `trio` 以稳定索引链接；实际覆盖 **4** 个模块。
+> 文件名保留 `trio` 以稳定索引链接；实际覆盖 **5** 个模块。
 
 > 对应台账节点：`DISC.measure.count-additive` / `DISC.ode.kernel-const` /
-> `DISC.hilbert.indefinite` / `DISC.functional.separating`
-> 全库门禁实测 **914 通过 / 0 失败 / 共 914**（本会话新增 4 个模块；其余增量为并行协作者所加）。
+> `DISC.hilbert.indefinite` / `DISC.functional.separating` /
+> `DISC.ode.fredholm-alternative`
+> 全库门禁实测 **915 通过 / 0 失败 / 共 915**（本会话新增 5 个模块；其余增量为并行协作者所加）。
 
 ## 背景：`Foundation/CompletenessTheorem` 点名的 4 个缺口
 
@@ -74,3 +75,23 @@ HilbertSpace ❌否证（不正定）· FunctionalAnalysis ✅补分离性。
 
 **判据**：函数是否已全定义（构造子逐条有子句）+ 模块编译绿 ⇒ 它就已经存在。
 筛查器：`python3 engineering/check_stale_claims.py`（`--markers` 为高精度模式）。
+
+## 5. `Synthesis/Analysis/DiscreteODESolvable.agda` —— 离散 Fredholm 替代
+
+```agda
+sum3-Δ     : ∀ f → sum3 (Δ f) ≡ T₀                              -- 必要性（望远镜求和）
+Δ-solvable : ∀ v → sum3 v ≡ T₀ → Σ GF3Func (λ f → Δ f ≡ v)      -- 充分性（构造）
+```
+**可解 ⟺ 全和为 0**：必要侧 27 情形全 `refl`；充分侧给**常数为 0 的积分**
+`f = (T₀ , v₀ , v₀ ⊕ v₁)`，9 个可解情形 `refl`、其余 18 个 `()`
+⇒ 与 `DiscreteODE.Δ-kernel-const`（核 = 常数）合起来完整刻画 `Δ` 的线性代数。
+
+**流程教训**：自动生成的 Agda 文件**必须**带显式 `module ... where`——否则报
+`ModuleNameDoesntMatchFileName`，而**报错行号指向第 1 行的 OPTIONS**，不指向真正缺声明处。
+
+## 6. 补记：`DiscreteMeasure` 的两条公理与命名变化
+
+- **可加性**（§4 `countᵐ-∪`，互不相交）+ **单调性**（§6 `countᵐ-mono`，`P ⊆ Q`）⇒ 计数测度是测度 ✓
+- 两处都靠「**对布尔变量分情形的 step 引理**」，不用 `with`（`with` 的抽象会让
+  「`P zero` 就是 `true`」只能命题地拿到，`refl` 与矛盾都闭合不了）——本模块两次因此得救
+- ⚠ 该模块内 `count` / `_∪_` 已被改名为 **`countᵐ` / `_∪ᵐ_`**（下游引用需同步）
