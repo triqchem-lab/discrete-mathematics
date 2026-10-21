@@ -930,3 +930,25 @@ sumR-scale zero    c a = refl
 sumR-scale (suc n) c a =
   trans (cong (λ z → c * a 0 + z) (sumR-scale n c (λ j → a (suc j))))
         (sym (*-distribˡ-+ c (a 0) (sumR n (λ j → a (suc j)))))
+
+--------------------------------------------------------------------------------
+-- ㉕ 最终装配 Step B：定义 `S''` 与 `B`
+--------------------------------------------------------------------------------
+
+-- `S'' r n = Σ_{k=0}^{n} [k≡r] · C(n,k) · 2^k`（右嵌套）
+S'' : Fin 3 → ℕ → ℕ
+S'' r n = sumR n (λ k → hit r (mod3 k) * (Cnk n k * 2 ^ k))
+
+-- `B q n = Σ_{j=0}^{n} [j≡q] · C(n,j+1) · 2^j`（「位移一格的尾段」）
+B : Fin 3 → ℕ → ℕ
+B q n = sumR n (λ j → hit q (mod3 j) * (Cnk n (suc j) * 2 ^ j))
+
+-- 基础：`S'' r 0` 与 `Wsum r 0` 一致
+S''-base-0 : S'' fzero 0 ≡ 1
+S''-base-0 = refl
+
+S''-base-1 : S'' (fsuc fzero) 0 ≡ 0
+S''-base-1 = refl
+
+S''-base-2 : S'' (fsuc (fsuc fzero)) 0 ≡ 0
+S''-base-2 = refl

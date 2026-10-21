@@ -1139,3 +1139,54 @@ S'' r n     = hit r 0 + 2·Σ...                           [★hit-mod + sumR-sc
 | `sumR` 工具链（uncons / cong / add / scale）| ✅ **完成** |
 | `★S''-step` | ❌ Step B+C 未做（~100 行）|
 | `★W-S` / `★a-binomial` | ❌ 依赖 `★S''-step` |
+
+---
+
+## 二十六、Step B 完成、Step C 结构定稿（2026-10-21）
+
+### 26.1 Step B 已落地（编译通过 ✓）
+
+```agda
+S'' : Fin 3 → ℕ → ℕ
+S'' r n = sumR n (λ k → hit r (mod3 k) * (Cnk n k * 2 ^ k))
+
+B : Fin 3 → ℕ → ℕ
+B q n = sumR n (λ j → hit q (mod3 j) * (Cnk n (suc j) * 2 ^ j))
+
+S''-base-0/1/2 : 与 Wsum 基础一致 ✓（refl）
+```
+
+### 26.2 Step C 的关键推导（已确认 ✓）
+
+```
+S'' r (suc m) = f 0 + sumR m (λ j → f (suc j))                       [sumR-uncons]
+  f (suc j)   = hit(pred3 r)(mod3 j) · ((Cnk m j + Cnk m (suc j)) · (2·2^j))
+                                                                      [★hit-mod, Pascal, ★pow2-suc]
+              = 2·(hit(pred3 r)(mod3 j)·(Cnk m j·2^j))
+              + 2·(hit(pred3 r)(mod3 j)·(Cnk m (suc j)·2^j))
+⇒ sumR m (…) = 2·S'' (pred3 r) m + 2·B (pred3 r) m                    [sumR-add, sumR-scale×2]
+⇒ ★S-eq1 : S'' r (suc m) ≡ hit r fzero + 2·S''(pred3 r) m + 2·B(pred3 r) m   ✓
+```
+
+### 26.3 剩余的微妙点（`★S''-step` 的最后一步）
+
+```
+S'' r (suc n) = hit r 0 + 2·S''(pred3 r) n + 2·B(pred3 r) n          [★S-eq1]
+S'' r n       = ?
+```
+`S'' r n` 需要 `★S-eq2 : S'' r n ≡ hit r 0 + 2·B (pred3 r) (n ∸ 1)` ✗ ——
+**`n = 0` 与 `n = suc m` 必须分开处理** ✗（`∸` 的 ℕ 编码）✗
+
+**⇒ 更干净的路线**：把 `★S''-step` 的 `n` 直接分 `0` / `suc m` 两支 ✗：
+- `n = 0`：`S'' r 1 ≡ S'' r 0 + 2·S''(pred3 r) 0` ✗ — 需 `refl` 级核对
+- `n = suc m`：用 `★S-eq1 (suc m)` + `★S-eq1 m` ✗
+
+### 26.4 当前精确状态
+
+| 项 | 状态 |
+|---|---|
+| 5 条缺口 | ✅ 全部解决 |
+| `sumR` 工具链 | ✅ 完整 |
+| `S''` / `B` 定义 + 基础 | ✅ Step B 完成 |
+| `★S-eq1` | ❌ Step C（结构已定稿）|
+| `★S''-step` / `★W-S` / `★a-binomial` | ❌ 依赖上条 |
