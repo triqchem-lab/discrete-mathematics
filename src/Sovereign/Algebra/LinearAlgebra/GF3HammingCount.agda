@@ -558,3 +558,67 @@ p9-81 k =
 --   共同造成的**结构性障碍** ✗ —— 不是数学问题，不是策略问题。
 --   唯一出路：把 `C0` 改成**非递归**定义（`Fin`/`Vec` 计数或生成函数）✗
 --------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- ⑫ ★★★ `C0` 的 3 项线性递推（ℕ-可证的正规形）
+--
+--   `C0(n+3) + 3·C0(n+1) ≡ 3·C0(n+2) + 9·C0(n)`
+--
+-- 为什么这是「解」：
+--   `C0` 的特征值是 `3, i√3, −i√3` ⇒ 闭式本质含 `(−3)^m` ✗ **在 ℕ 上不可表达** ✗
+--   ⇒ ℕ 上的正规形就是这条 **3 项线性递推**（无减法、无奇偶、无 `2*k`）✓
+--
+-- 推导（纯代数，不需要 `total`）：
+--   C0(n+1) = C0 + 2·C2
+--   C0(n+2) = C0 + 4·C1 + 4·C2
+--   C0(n+3) = 9·C0 + 12·C1 + 6·C2
+--   ⇒ 3·C0(n+2) − 3·C0(n+1) + 9·C0(n) = 9·C0 + 12·C1 + 6·C2 = C0(n+3) ✓
+--------------------------------------------------------------------------------
+
+-- 展开：`C0(n+2) ≡ C0 n + (4·C1 n + 4·C2 n)`
+C0-exp2 : ∀ n → C0 (suc (suc n)) ≡ C0 n + (4 * C1 n + 4 * C2 n)
+C0-exp2 n =
+  trans (C0-step (suc n))
+        (trans (cong₂ _+_ (C0-step n) (cong (2 *_) (C2-step n)))
+               (shuffle3 (C0 n) (C1 n) (C2 n)))
+  where
+    shuffle3 : ∀ a b c → ((a + 2 * c) + 2 * (c + 2 * b)) ≡ a + (4 * b + 4 * c)
+    shuffle3 = solve 3 (λ a b c → (a :+ con 2 :* c) :+ con 2 :* (c :+ con 2 :* b) := a :+ (con 4 :* b :+ con 4 :* c)) refl
+
+-- 展开：`C2(n+2) ≡ C2 n + (4·C1 n + 4·C0 n)`
+C2-exp2 : ∀ n → C2 (suc (suc n)) ≡ C2 n + (4 * C1 n + 4 * C0 n)
+C2-exp2 n =
+  trans (C2-step (suc n))
+        (trans (cong₂ _+_ (C2-step n) (cong (2 *_) (C1-step n)))
+               (shuffle4 (C2 n) (C1 n) (C0 n)))
+  where
+    shuffle4 : ∀ a b c → ((a + 2 * b) + 2 * (b + 2 * c)) ≡ a + (4 * b + 4 * c)
+    shuffle4 = solve 3 (λ a b c → (a :+ con 2 :* b) :+ con 2 :* (b :+ con 2 :* c) := a :+ (con 4 :* b :+ con 4 :* c)) refl
+
+-- 展开：`C0(n+3) ≡ 9·C0 n + (12·C1 n + 6·C2 n)`
+C0-exp3 : ∀ n → C0 (suc (suc (suc n))) ≡ 9 * C0 n + (12 * C1 n + 6 * C2 n)
+C0-exp3 n =
+  trans (C0-step (suc (suc n)))
+        (trans (cong₂ _+_ (C0-exp2 n) (cong (2 *_) (C2-exp2 n)))
+               (shuffle5 (C0 n) (C1 n) (C2 n)))
+  where
+    shuffle5 : ∀ a b c →
+      (a + (4 * b + 4 * c)) + 2 * (c + (4 * b + 4 * a))
+      ≡ 9 * a + (12 * b + 6 * c)
+    shuffle5 = solve 3
+      (λ a b c → (a :+ (con 4 :* b :+ con 4 :* c)) :+ con 2 :* (c :+ (con 4 :* b :+ con 4 :* a))
+                 := con 9 :* a :+ (con 12 :* b :+ con 6 :* c)) refl
+
+-- ★★★ 主定理：3 项线性递推
+★C0-3step : ∀ n → C0 (suc (suc (suc n))) + 3 * C0 (suc n) ≡ 3 * C0 (suc (suc n)) + 9 * C0 n
+★C0-3step n =
+  trans (cong₂ _+_ (C0-exp3 n) (cong (3 *_) (C0-step n)))
+        (trans (shuffle6 (C0 n) (C1 n) (C2 n))
+               (sym (cong₂ _+_ (cong (3 *_) (C0-exp2 n)) refl)))
+  where
+    shuffle6 : ∀ a b c →
+      (9 * a + (12 * b + 6 * c)) + 3 * (a + 2 * c)
+      ≡ 3 * (a + (4 * b + 4 * c)) + 9 * a
+    shuffle6 = solve 3
+      (λ a b c → (con 9 :* a :+ (con 12 :* b :+ con 6 :* c)) :+ con 3 :* (a :+ con 2 :* c)
+                 := con 3 :* (a :+ (con 4 :* b :+ con 4 :* c)) :+ con 9 :* a) refl
