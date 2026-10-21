@@ -161,12 +161,18 @@ g-ne-unit : ∀ {A} (P : Presentation A)
 | `T6CayleyIdem.agda` | `NoCancel-head` / `NoCancel-tail₂`（投影小件） | `6e1b5faf` |
 | **`T6CayleyIdem2.agda`** | `pushB` + **`pushB-no-cancel`**（用 `cdEqB-sound` 排空 `true` 分支，**不需反射**）；`cpassApp`（**追加版**，尾部展开）；**`cpassB≡cpassApp`**（桥）；`cpassApp-++`；`reverse-∷`；**`cpassApp-rev`** / **`cpassB-self`**；**★★ `creduceB-idem`** / **★★ `creduceB'-idem`（② 幂等）** | `f6d65f9e` |
 | `T6AStepCode.agda` | ④ 探针：`ADir`（`dslide`/`dexpand`）/ `AStepCode n = ADir × CWalk n × CWalk n` / **`DecEq-AStepCode`**（平凡，**不用 uip**） | `f66e1ac2` |
+| `T6AStepCode2.agda` | ④ 修正：**六组件**码 `StepCode`（方向+前缀+`e1`+`e2`+`e3`+后缀）+ `DecEq-StepCode`（6 层 `with` + 6 个 `cong` 链，**不用 uip**）—— 因为 `slide` 的 `e1,e2,e3` 是**显式参数** | `92938fa5` |
+| `T6AStepMap.agda` | ④ 骨架 + 走层：`srcCode`/`tgtCode`；**`StepSide`**（走层侧条件）+ `decStepSide`；`interpC-++` / **`interpC-end`**（`refl` 级）；**`StepVertex`**（顶点层侧条件）；**`StepVertex→fold`** / **`StepVertex→StepSide`**；**`ctarget-inj`** / **`foldT-inj`**（每步双射 ⇒ `foldT` 对起点单射）；**`StepSide→StepVertex`**（⇒ **`StepSide ⇔ StepVertex` 等价**）；`interpC-walk` / **`interpC-++-walk`**（走层 `++` 分配律）/ `interpC-walk'`；`subst-sym-inv` | `70b82d86` / `0790d979` |
+| **`T6CayleyInterp.agda`** | `interpAt`（码 → 走，终点 = **可计算**的 `foldT u w`）；**`subst-cons`**（一行）；`stepE1`/`stepE2`/`stepE3`；**★★ `toStep`（构造 `ASTep` 值）**；**`interpAt-++`**（卡 4 批，根因是**陈述方向错** —— 需 `sym`）；`subst-irrel`（Hedberg）/ `stepE3-irrel`；`subst-++w` / `interpAt-++-glue`；**`slide-subst`**（一行）+ **`toStep-irrel`（步 7 忠实性）**；§7 具体点验证 `x1`/`side-ok`/`endpoint-1`/`step-1` | `42f221a8` |
+| `T6CayleyCheck.agda` | **①②③⑤ 的具体点对抗验证**（纪律 §6，9 条全 `refl`）：`check-nil`/`check-one`/**`check-cancel-pair`**/`check-cancel'`/**`check-three`（三步同向不消 —— 顶点层 vs 消去层的分离）**/`check-idem-1`/`check-idem-2`（② 幂等）/`check-end`（③ 语义）/`check-interp`；**`check-rev-one`/`check-rev-cancel`（⑤ 逆律）** | `c78ee4e5` |
+| `T6AStepCodeMap.agda` | ④ 末段：**`toStep-vertex-form`**（把 `toStep` 的 `stepE1/E2/E3` 定义性展开 ⇒ **内核证据：侧条件是顶点层**）+ `srcCode-glue`（码展开）| `7fba6f38` |
 
 **⑤ 一阶（PIO-2 线）**
 
 | 模块 | 关键符号 | 回执 |
 |---|---|---|
 | `AStepStdReverse.agda` | **★★ `rev-cancel : ∀ (p : Walk G u v) → AHomotopyStd G (p ++w rev p) (nil u)`**（`sym-edge` 作为假设；一次 `++w-assoc` 运输 + `prefix-cong` + `AHStd-++w` + `rev-cancel-one`） | `d24fbea1` |
+| `T6SymEdgeReverse.agda` | **★★ `sym-edge-T6`**（`T6SymEdge x y → T6SymEdge y x`，靠 `updAt-cubed`）+ **`rev-cancel-T6`**（`rev-cancel` 在 `T6CayleySym` 上**无条件**） | `feee492f` |
 
 ### 8.5 ⚠ 已撤回 / 未验证（**别当成已证复用**）
 
