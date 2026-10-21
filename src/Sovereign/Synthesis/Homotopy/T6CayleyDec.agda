@@ -40,7 +40,7 @@ import Data.Fin as Fin
 import Data.Fin as Fin
 open import Data.Vec using (Vec)
 open import Data.Vec.Properties using (≡-dec)
-open import Data.List using (List; []; _∷_)
+open import Data.List using (List; []; _∷_; length)
 open import Data.Nat using (zero; suc)
 open import Data.List using (map)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
@@ -228,3 +228,55 @@ findEdgeDec {n} x y = scanDec x y (allFinD n) inv0
 
 -- 可靠性（`findEdgeDec-sound`）放在 `T6CayleyDecSound`（那里已 import `TSet`，
 -- 避免本模块反向依赖 `T6AStepCode2` 造成层序倒置）。
+
+--------------------------------------------------------------------------------
+-- §9. ★★★ 邻居表与**边 ↔ 成员**的双向对应（§3 的 ①②）
+--
+-- `neighbours x` 显式枚举 `n` 个坐标 × 两个方向（`+e_j` / `−e_j`，后者是两次 `updAt`）。
+-- 双向对应：`T6SymEdge x y ⇔ y ∈ neighbours x` —— 这是把 `findEdge` 换成「查表」、
+-- 进而在**无证明分量**的 `List (T6Vec n)` 上做 `reduce` 的前提。
+--------------------------------------------------------------------------------
+
+nbrsFrom : ∀ {n : ℕ} (x : T6Vec n) (js : List (Fin n)) → List (T6Vec n)
+nbrsFrom x []       = []
+nbrsFrom x (j ∷ js) = updAt j x ∷ updAt j (updAt j x) ∷ nbrsFrom x js
+
+neighbours : ∀ {n : ℕ} (x : T6Vec n) → List (T6Vec n)
+neighbours {n} x = nbrsFrom x (allFinD n)
+
+-- ① 表中每个元素**都是**邻居
+nbrsFrom-sound : ∀ {n : ℕ} (x : T6Vec n) (js : List (Fin n)) {y : T6Vec n}
+               → y ∈ nbrsFrom x js → T6SymEdge x y
+nbrsFrom-sound x (j ∷ js) (here refl)         = inj₁ (j , refl)
+nbrsFrom-sound x (j ∷ js) (there (here refl)) = inj₂ (j , refl)
+nbrsFrom-sound x (j ∷ js) (there (there m))   = nbrsFrom-sound x js m
+
+-- ② 每个邻居**都在**表里（给定索引与方向）
+nbrsFrom-complete : ∀ {n : ℕ} (x : T6Vec n) (js : List (Fin n)) (j : Fin n)
+                  → j ∈ js → (y : T6Vec n)
+                  → (y ≡ updAt j x) ⊎ (y ≡ updAt j (updAt j x))
+                  → y ∈ nbrsFrom x js
+nbrsFrom-complete x (k ∷ ks) j (here refl)  y (inj₁ p) = here p
+nbrsFrom-complete x (k ∷ ks) j (here refl)  y (inj₂ q) = there (here q)
+nbrsFrom-complete x (k ∷ ks) j (there m)    y wit     =
+  there (there (nbrsFrom-complete x ks j m y wit))
+
+neighbours-sound : ∀ {n : ℕ} (x : T6Vec n) {y : T6Vec n}
+                 → y ∈ neighbours x → T6SymEdge x y
+neighbours-sound {n} x = nbrsFrom-sound x (allFinD n)
+
+neighbours-complete : ∀ {n : ℕ} (x : T6Vec n) {y : T6Vec n}
+                    → T6SymEdge x y → y ∈ neighbours x
+neighbours-complete {n} x (inj₁ (j , p)) =
+  nbrsFrom-complete x (allFinD n) j (∈-allFinD j) _ (inj₁ p)
+neighbours-complete {n} x (inj₂ (j , q)) =
+  nbrsFrom-complete x (allFinD n) j (∈-allFinD j) _ (inj₂ q)
+-- 计算验证：`n = 1` 的邻居表恰是 `[+e₀, −e₀]`（两个元素），且 `+e₀` 确实在表里
+nx1 : T6Vec 1
+nx1 = Fin.zero ∷ᵥ []ᵥ
+
+nbr-1-len : length (neighbours nx1) ≡ 2
+nbr-1-len = refl
+
+nbr-1-head : updAt Fin.zero nx1 ∈ neighbours nx1
+nbr-1-head = here refl
