@@ -69,10 +69,10 @@
 
 module Sovereign.Synthesis.Homotopy.Pi1dCardinality where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _<_)
-open import Data.Nat.Properties using (+-cancelˡ-≡; +-identityʳ)
+open import Data.Nat using (ℕ; zero; suc; _+_; _<_; _≤_; z≤n; s≤s)
+open import Data.Nat.Properties using (+-cancelˡ-≡; +-identityʳ; m+n≡0⇒m≡0; suc-injective)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Product using (_×_; _,_; ∃)
+open import Data.Product using (_×_; _,_; ∃; proj₁; proj₂)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong; subst)
 
@@ -227,3 +227,81 @@ no-pos-idempotent : ∀ {G : DiGraph} (tf : TriangleFree G) {v : V G}
                   → AHomotopy G (w ++w w) w → ¬ (0 < walk-len w)
 no-pos-idempotent tf w ah =
   subst (λ n → ¬ (0 < n)) (sym (idempotent-len-zero tf w ah)) (λ ())
+
+--------------------------------------------------------------------------------
+-- §8. A-同伦**不保走长**（一般事实，不依赖无三角形）
+--
+-- `slide` 把长度 `|p| + (2 + |b|)` 压成 `|p| + (1 + |b|)` ⇒ **每一步都改长度** ✓
+-- 这是 §8 的反面：只有 `refl'/symm/trans'` 保长，`gen` 一律不保长。
+--------------------------------------------------------------------------------
+
+suc≢ : ∀ n → suc n ≡ n → ⊥
+suc≢ zero    ()
+suc≢ (suc n) p = suc≢ n (suc-injective p)
+
+AStep-changes-len : ∀ {G : DiGraph} {u v : V G} {p q : Walk G u v}
+                  → AStep G p q → ¬ (walk-len p ≡ walk-len q)
+AStep-changes-len (slide p' b e1 e2 e3) h =
+  suc≢ (walk-len b)
+    (suc-injective
+      (+-cancelˡ-≡ (walk-len p')
+                   (suc (suc (walk-len b))) (suc (walk-len b))
+        (trans (sym (walk-len-++w p' (cons e1 (cons e2 b))))
+          (trans h (walk-len-++w p' (cons e3 b))))))
+AStep-changes-len (expand p' b e1 e2 e3) h =
+  suc≢ (walk-len b)
+    (sym (suc-injective
+      (+-cancelˡ-≡ (walk-len p')
+                   (suc (walk-len b)) (suc (suc (walk-len b)))
+        (trans (sym (walk-len-++w p' (cons e3 b)))
+          (trans h (walk-len-++w p' (cons e1 (cons e2 b))))))))
+
+-- 推论：无三角形时 `AHomotopy` 保走长（因为此时它退化为相等）
+ahomotopy-preserves-len : ∀ {G : DiGraph} (tf : TriangleFree G)
+                          {u v : V G} {p q : Walk G u v}
+                        → AHomotopy G p q → walk-len p ≡ walk-len q
+ahomotopy-preserves-len tf ah = cong walk-len (AH→≡ tf ah)
+
+-- 逆否：走长不同 ⇒ 不 A-同伦
+differing-len-not-AH : ∀ {G : DiGraph} (tf : TriangleFree G)
+                       {u v : V G} {p q : Walk G u v}
+                     → ¬ (walk-len p ≡ walk-len q) → ¬ (AHomotopy G p q)
+differing-len-not-AH tf neq ah = neq (ahomotopy-preserves-len tf ah)
+
+--------------------------------------------------------------------------------
+-- §9. ★ 群性判据：无三角形时，正长闭走不可逆
+--
+-- `w · w' ⁓ nil` ⇒ 无三角形时 `|w| + |w'| ≡ 0` ⇒ `|w| ≡ 0`
+-- ⇒ **只要存在正长闭走，`π₁ᵈ(G)` 就不是群** ✓
+--------------------------------------------------------------------------------
+
+-- 自备：`0 < 0` 空（直接 `λ ()` 在 `subst` 之后会留 unsolved meta，2026-10-21 实测）
+¬0<0 : ¬ (0 < zero)
+¬0<0 ()
+
+no-inverse-for-pos : ∀ {G : DiGraph} (tf : TriangleFree G) {v : V G}
+                       (w w' : Walk G v v)
+                     → AHomotopy G (w ++w w') (nil v) → ¬ (0 < walk-len w)
+no-inverse-for-pos tf w w' ah lt =
+  ¬0<0 (subst (λ n → 0 < n) eq lt)
+  where
+    len-sum≡0 : walk-len w + walk-len w' ≡ zero
+    len-sum≡0 = trans (sym (walk-len-++w w w')) (cong walk-len (AH→≡ tf ah))
+    eq : walk-len w ≡ zero
+    -- ⚠ `m+n≡0⇒m≡0 : ∀ m {n} → m + n ≡ 0 → m ≡ 0` —— `n` 是**隐式**参数，
+    --   多传一个参数会把 `walk-len w'` 当成 `m`，报「ℕ 不是 ≡ 的子类型」（2026-10-21 实测）
+    eq = m+n≡0⇒m≡0 (walk-len w) {walk-len w'} len-sum≡0
+
+-- ★ 推论：无三角形时，若 `π₁ᵈ(G)` 是**群**，则所有闭走长度为零（即 π₁ᵈ 平凡）
+group-trivial-when-triangle-free :
+    ∀ {G : DiGraph} (tf : TriangleFree G) {v : V G}
+  → (∀ (w : Walk G v v) → ∃ (λ (w' : Walk G v v) → AHomotopy G (w ++w w') (nil v)))
+  → ∀ (w : Walk G v v) → walk-len w ≡ zero
+-- 自备小引理（避开 `≤-antisym` 的 `{i j}` 命名参数与 metas，2026-10-21 实测）
+¬0<→≡0 : ∀ n → ¬ (0 < n) → n ≡ zero
+¬0<→≡0 zero    h = refl
+¬0<→≡0 (suc n) h = ⊥-elim (h (s≤s z≤n))
+
+group-trivial-when-triangle-free tf {v} inv w =
+  ¬0<→≡0 (walk-len w)
+    (no-inverse-for-pos tf w (proj₁ (inv w)) (proj₂ (inv w)))
