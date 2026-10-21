@@ -45,7 +45,9 @@ open import Data.Empty using (⊥)
 open import Data.Product using (Σ; _,_)
 open import Relation.Nullary using (Dec; yes; no)
 open import Data.Maybe using (Maybe; just; nothing)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Data.List.Membership.Propositional using (_∈_)
+open import Data.List.Relation.Unary.Any using (here; there)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6SymEdge)
@@ -118,11 +120,29 @@ findEdge {n} x y = scan (allFinD n)
     ...   | no  _ = scan js
 
 --------------------------------------------------------------------------------
--- §5. ⬜ 下一级台阶（判据明确）
+-- §5. ★ 穷尽性引理：每个 `Fin n` 都在 `allFinD n` 里
 --
--- ① **`Dec` 版本**需要穷尽性引理：
---      `∈-allFinD : (j : Fin n) → j ∈ allFinD n`
---    再由它把 `scan` 的失败转成「无 `j` 可用」⇒ 才是 `Dec`。
--- ② 有了 `Dec` 才能在 `List (T6Vec n)`（无证明分量）上做 `reduce`（`fuel`）。
--- ③ 然后才是 `Ω3Walk⁺` 与 `reduce` 的双方对应（分类定理）。
+-- 这是 `Dec` 版本的**最后一块前提**：
+-- 扫描到 `[]` 时，要靠它把「枚举完了」转成「真的没有」。
+--
+-- 自带 `∈-map'`（不复用 stdlib 的 `∈-map`，避免签名版本差）。
+--------------------------------------------------------------------------------
+
+∈-map' : ∀ {A B : Set} {f : A → B} {x : A} {xs : List A}
+       → x ∈ xs → f x ∈ map f xs
+∈-map' (here refl) = here refl
+∈-map' (there pf)  = there (∈-map' pf)
+
+∈-allFinD : ∀ {n : ℕ} (j : Fin n) → j ∈ allFinD n
+∈-allFinD {suc n} Fin.zero    = here refl
+∈-allFinD {suc n} (Fin.suc j) = there (∈-map' {f = Fin.suc} (∈-allFinD j))
+
+--------------------------------------------------------------------------------
+-- §6. ⬜ 下一级台阶（判据明确）
+--
+-- 有了 §5，就可以把 `findEdge` 升级成 `Dec` 版：
+--   `scan` 必须**携带失败信息**（`∀ j∈js → ¬ (y ≡ updAt j x) × ¬ (y ≡ updAt j (updAt j x))`），
+--   在 `[]` 处用 `∈-allFinD` 把任意给出的 `T6SymEdge` 的索引代入，得到矛盾。
+-- 然后才能在 `List (T6Vec n)`（**无证明分量**）上做 `reduce`（fuel），
+-- 最后才是 `Ω3Walk⁺` 与 `reduce` 的双方对应（分类定理）。
 --------------------------------------------------------------------------------
