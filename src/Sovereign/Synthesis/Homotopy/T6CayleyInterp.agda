@@ -40,7 +40,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; subs
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CWalk; cplus; cminus)
-open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym)
+open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym; T6SymEdge)
 open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk
   using (ctarget; foldT; cEdge)
@@ -70,19 +70,41 @@ interpAt u []       = nil u
 interpAt u (s ∷ ws) = cons (cEdge u s) (interpAt (ctarget u s) ws)
 
 --------------------------------------------------------------------------------
--- §2. ⬜ 拼接拆解 —— **未完成（本批尝试已撤回）**
+-- §1b. ★★ `subst` 与 `cons` 交换（**一行**：对 `eq` 模式匹配到 `refl` 时两边一起归约）
+--------------------------------------------------------------------------------
+
+subst-cons : ∀ {n : ℕ} {a b : T6Vec n} {w w' : T6Vec n}
+             (e : T6SymEdge a b) (p : Walk (T6CayleySym n) b w) (eq : w ≡ w')
+           → subst (Walk (T6CayleySym n) a) eq (cons e p)
+             ≡ cons e (subst (Walk (T6CayleySym n) b) eq p)
+subst-cons e p refl = refl
+
+--------------------------------------------------------------------------------
+-- §2. ⬜ 拼接拆解 `interpAt-++` —— **未完成（已尝试 3 次，全部同一报错，如实保留）**
 --
--- 想要的陈述（`subst` 放在**拼接位置**，这样 `cons` 情形能整体 `cong`）：
+-- 想要的陈述（`subst` 在**拼接位置**）：
 -- ```
 --   interpAt u (a ++ b)
 --     ≡ interpAt u a ++w subst (Walk G (foldT u a)) (foldT-++ u a b)
 --                              (interpAt (foldT u a) b)
 -- ```
--- ⚠ `[]` 情形报 `UnequalTerms: foldT u a 与 u 不相等` —— 即 `subst` 的**索引**
---   `foldT u (a ++ b)` 在 `a := []` 时没有按预期归约成 `foldT u b`。
---   **待查**（下一步第一件事）：`subst` 的 motive 里 `foldT u (a ++ b)` 是
---   `_++_`-卡住的（`a` 为变量时 `a ++ b` 不归约）⇒ 可能要把 `++` 也改成
---   可计算形态，或先对 `a` 做 `with` 细化再写。
+-- **三次尝试的同一报错**（逐字）：
+-- ```
+-- The terms foldT u a and u are not equal at type Vec (Fin 3) n
+-- when checking that the expression foldT-++ u a b has type
+--       foldT u (a ++ b) ≡ foldT u (a ++ b)
+-- ```
+-- ⇒ 报错说 `foldT-++ u a b` 的**期望类型退化成自反式**，而项里 `a` 仍是变量
+--   —— 即 `subst` 的 motive 里的索引 `foldT u (a ++ b)` 在 `a := []` 时
+--   **没有**按预期归约成 `foldT u b`。
 --
--- 已备零件：**`foldT-++`（§0，本批已证）** —— 这正是缺的那条等式。
+-- **已排除的路线**（都试过，都同一报错）：
+--   ① 陈述无 `subst`；② `subst` 放整式上；③ `subst` 放拼接位置（本文件 §2 原样）。
+--
+-- **下一步最可能的方向**（未验证）：
+--   把 `_++_` 换成**可计算形态**（如先 `with` 细化 `a`，或自写带模式子句的 append
+--   使 `[] ++ b` 与 `s ∷ a ++ b` 都在**类型层**归约）；
+--   或改用「两端都写成 `foldT` 右结合形」的陈述以彻底避开 `subst`。
+--
+-- 已备零件：**`subst-cons`（§1b，一行）+ `foldT-++`（§0）+ `interpAt`（§1）** —— 三者都绿。
 --------------------------------------------------------------------------------
