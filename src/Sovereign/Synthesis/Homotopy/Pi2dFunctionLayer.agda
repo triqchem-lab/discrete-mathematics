@@ -27,10 +27,10 @@
 -- | 右单位 | `Ω3Walk⁺ (c ++2 nil2 _) c` | `≡→Ω3Walk⁺` + `++2-nilR` |
 -- | **乘法同余** | `Ω3Walk⁺ a a' → Ω3Walk⁺ b b' → Ω3Walk⁺ (a ++2 b) (a' ++2 b')` | `suffix-resp` + `whisk-resp` |
 -- | **左逆** | `Ω3Walk⁺ (c ++2 rev2 c) (nil2 _)` | `rev2-cancel`（`inv-left-Ω3`）|
--- | 右逆 | `Ω3Walk⁺ (rev2 c ++2 c) (nil2 _)` | ⬜ **未证**（需 `rev2 (rev2 c) ≡ c`）|
+-- | 右逆 | `Ω3Walk⁺ (rev2 c ++2 c) (nil2 _)` | ✅ **已证**：`Omega2ReverseInvol.inv-right-Ω3`（经 `rev2-invol`）|
 --
--- **⇒ 在函数表示层，`π₂ᵈ⁺` 有：结合 + 双单位 + 同余 + 左逆 = 幺半群 + 左逆。**
---   补上右逆即为**群**（缺口见 §6）。
+-- **⇒ 在函数表示层，`π₂ᵈ⁺` 有：结合 + 双单位 + 同余 + 左逆 + **右逆** = 群。**
+--   （右逆原先标「未证」，现已在 `Omega2ReverseInvol` 证出 —— 见 §6 的更正。）
 --
 -- ## 核心原则
 --   · **0 Cubical 导入**（本模块只依赖 PropEq + `Omega2`/`Omega3*`/`Omega2Reverse`）
