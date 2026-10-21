@@ -810,3 +810,44 @@ S'-zero-2 = refl
 --   需要先证 `mod3-suc : ∀ j → mod3 (suc j) ≡ suc3 (mod3 j)`（对 j 归纳）
 --   ❌ 未做 ✗
 
+
+--------------------------------------------------------------------------------
+-- ⑳ 缺口 ③：`mod3-suc` + `hit-mod`
+--------------------------------------------------------------------------------
+
+-- `suc3`：`0↦1, 1↦2, 2↦0`
+suc3 : Fin 3 → Fin 3
+suc3 fzero            = fsuc fzero
+suc3 (fsuc fzero)     = fsuc (fsuc fzero)
+suc3 (fsuc (fsuc fzero))  = fzero
+
+-- `suc3³ = id`
+suc3-cube : ∀ q → suc3 (suc3 (suc3 q)) ≡ q
+suc3-cube fzero           = refl
+suc3-cube (fsuc fzero)    = refl
+suc3-cube (fsuc (fsuc fzero)) = refl
+
+-- ★ `mod3 (suc j) ≡ suc3 (mod3 j)`
+★mod3-suc : ∀ j → mod3 (suc j) ≡ suc3 (mod3 j)
+★mod3-suc zero            = refl
+★mod3-suc (suc zero)      = refl
+★mod3-suc (suc (suc j))   =
+  trans (sym (suc3-cube (mod3 j)))
+        (trans (cong (λ z → suc3 (suc3 z)) (sym (★mod3-suc j)))
+               (cong suc3 (sym (★mod3-suc (suc j)))))
+
+-- `hit r (suc3 q) ≡ hit (pred3 r) q`（9 个穷举）
+hit-suc3 : ∀ (r q : Fin 3) → hit r (suc3 q) ≡ hit (pred3 r) q
+hit-suc3 fzero           fzero            = refl
+hit-suc3 fzero           (fsuc fzero)     = refl
+hit-suc3 fzero           (fsuc (fsuc fzero)) = refl
+hit-suc3 (fsuc fzero)    fzero            = refl
+hit-suc3 (fsuc fzero)    (fsuc fzero)     = refl
+hit-suc3 (fsuc fzero)    (fsuc (fsuc fzero)) = refl
+hit-suc3 (fsuc (fsuc fzero)) fzero            = refl
+hit-suc3 (fsuc (fsuc fzero)) (fsuc fzero)     = refl
+hit-suc3 (fsuc (fsuc fzero)) (fsuc (fsuc fzero)) = refl
+
+-- ★ 缺口 ③ 完成：`hit r (mod3 (suc j)) ≡ hit (pred3 r) (mod3 j)`
+★hit-mod : ∀ (r : Fin 3) (j : ℕ) → hit r (mod3 (suc j)) ≡ hit (pred3 r) (mod3 j)
+★hit-mod r j = trans (cong (hit r) (★mod3-suc j)) (hit-suc3 r (mod3 j))
