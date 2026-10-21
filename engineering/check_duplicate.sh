@@ -47,9 +47,9 @@ IGNORE_RE='^(assoc|comm|refl|cong|id|zero|suc|unit|check|field|where|module|open
 
 # ── 取 diff ──
 case "$MODE" in
-  staged) DIFF="$(git diff --cached --diff-filter=AM -U0 2>/dev/null || true)"
+  staged) DIFF="$(git diff --cached --diff-filter=AM -U0 -- '*.agda' 2>/dev/null || true)"
           CHANGED="$(git diff --cached --name-only --diff-filter=AM 2>/dev/null | grep '\.agda$' || true)" ;;
-  head)   DIFF="$(git diff HEAD~1 HEAD --diff-filter=AM -U0 2>/dev/null || true)"
+  head)   DIFF="$(git diff HEAD~1 HEAD --diff-filter=AM -U0 -- '*.agda' 2>/dev/null || true)"
           CHANGED="$(git diff HEAD~1 HEAD --name-only --diff-filter=AM 2>/dev/null | grep '\.agda$' || true)" ;;
 esac
 

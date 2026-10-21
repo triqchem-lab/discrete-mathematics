@@ -74,4 +74,38 @@ Agda 形式化证明 + Python 工程验证双轨制。
 - 工作区现状: 目录重组后 `GF9` 位于 `src/Sovereign/Algebra/FieldTower/GF9.agda`；`src/_test_irrelevant.agda` 是未跟踪草稿
 
 ## Notes
+
+### ★★ 写「新」件前的硬性前置（2026-10-21 上闸，**不是建议**）
+
+> **触发**：本会话实测**三次重复实现** ✗ ——
+> ① `DCPresentation.agda`（119 行）漏掉 `Presentation.agda:131` 已有的 `dc-presentation`；
+> ② `dc-oblivion-trit/-phase/-joint` 漏掉 `DuodecClock.agda:504` 已有的 `ZeroOblivion`（五字段）；
+> ③ 「全库第一个 Presentation 实例」的声明（实为重复）。
+>
+> **根因**：`bash grep -n "pat" src/某文件.agda` —— **只查了单个文件** ✗ + 长会话忘记已证清单 ✗
+
+**硬性前置（三条，按序执行，缺一条该提交不算完成）**：
+
+| # | 动作 | 判据 |
+|---|---|---|
+| **0** | **读 `PROVEN.md`**（仓库根） | 里面有「最近 / 最常复用」的已证清单 |
+| **1** | **`proof_dag action:"search" query:"<符号/概念>"`** | 台账里查（含对象层） |
+| **2** | **DSH `grep` 工具全库查 `src/Sovereign`** | **不是** `bash grep` 单文件 ✗ |
+
+**机器挡点**：`.git/hooks/pre-commit` → `engineering/check_duplicate.sh`
+—— 提取 staged 新增的**顶层签名**，若已在**库内其他模块**定义则**拒绝提交** ✓
+（绕过：`git commit --no-verify`，须在 `proof_dag journal` 说明理由）
+
+**边界（诚实声明）**：该脚本只查顶层签名，**不查** record 字段 / where 块 / 局部定义 ✗
+
+### ★ 检索方言（`bash grep` 已被机器拦截）
+
+`PreToolUse` 的 `search-dialect-gate.mjs` 会拦**非管道位的 bash `grep`/`sed` 读文件**（exit 2）✓
+放行：**管道过滤**（`agda … 2>&1 | grep -c error`）、`sed -i` 就地编辑 ✓
+
+⚠ **闸门对 `git commit -m` 的消息文本也会误判** ✗（消息里含 `grep` / 门禁文件名即触发）——
+**规避**：提交消息与 memory 增补走 **`write` 工具落盘 + `git commit -F 文件`** ✓
+
+### 其他
+
 （待补充）
