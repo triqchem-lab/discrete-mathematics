@@ -39,9 +39,9 @@
 
 module Sovereign.Algebra.UniversalAlgebra.Presentation where
 
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc; _<_; s≤s; z≤n)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym)
 
 --------------------------------------------------------------------------------
 -- 迭代算子（相位/时钟的周期语句需要）
@@ -96,7 +96,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.GroupTheory.DuodecClock using
   (DuodecPoint; AlphaPower; a0; a1; a2; a3;
    mixedOp; duodec-e; mulAlpha; mixedOp-assoc; mixedOp-12-cycle;
-   mixedOp-identityˡ; mixedOp-identityʳ; mu; rho)
+   mixedOp-identityˡ; mixedOp-identityʳ; mu; rho; mulAlpha; mulAlpha-assoc)
 open import Sovereign.Algebra.GroupTheory.DuodecClockProperties using (alpha-order-4)
 
 -- 相位算子：只作用相位分量（乘 α），损益分量不动
@@ -181,3 +181,26 @@ dc-presentation = record
 --   要成为通用模板，需要（a）按正源改为一元生成元式，且（b）找到第二个
 --   天然带 GF9 Galois 刚性的对象。
 --------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- §DC 额外定理（2026-10-21）：**DC 特有，不写进通用模板** ✗
+--
+-- ⚠ 这些约束在当前 `Presentation` 模板下**不是普遍成立的** ✗：
+--   模板没有任何字段连接 `phase` 与 `step` ⇒ 它们只能是 DC 的额外定理 ✓
+--   （若将来把「分量直积」写进模板，它们才成为定理 —— 见 42 号文 §4.2）
+--------------------------------------------------------------------------------
+
+-- ★ G3 单边：`phase` 与 `step` 交换（144 对，靠 `mulAlpha-assoc`）
+dc-phase-step-comm : ∀ (x y : DuodecPoint) →
+  dc-phase (mixedOp x y) ≡ mixedOp (dc-phase x) y
+dc-phase-step-comm (t , a) (u , b) =
+  cong₂ _,_ refl (sym (mulAlpha-assoc a1 a b))
+
+-- ★ N8：`phase` 与 `step g` 交换
+dc-phase-g-comm : ∀ (x : DuodecPoint) →
+  dc-phase (mixedOp (T₁ , a1) x) ≡ mixedOp (T₁ , a1) (dc-phase x)
+dc-phase-g-comm (t , a) = refl
+
+-- ★ N3b：`phase-order < clock`（4 < 12）
+dc-clock-neq-phase : 4 < 12
+dc-clock-neq-phase = s≤s (s≤s (s≤s (s≤s (s≤s z≤n))))

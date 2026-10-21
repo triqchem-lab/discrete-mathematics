@@ -3498,3 +3498,73 @@ CRT：      g^n 的 (n mod 3, n mod 4) 覆盖全部 12 对 ✓
 **⇒ G3 单边 + N8 + N3b 三项已全部验证通过，可立即写进 record** ✓
 **⇒ G5 仍需澄清，不跳步** ✓
 **⇒ `add-proj` 前置不必要** ✓（这是深度研究的直接收益）
+
+---
+
+## 六十一、★★★ 普遍约束 vs DC 巧合 —— 关键区分（2026-10-21 人类澄清后执行）
+
+### 61.1 ★ 人类的判据（正确）
+
+> `Presentation` 是**通用模板**，字段必须是**所有**满足八要素的结构都成立的约束。
+> 把 DC 巧合写进 `Presentation`，会让模板**过拟合 DC**。
+
+| 约束 | 普遍？ | 理由 | 放哪 |
+|---|---|---|---|
+| **`g ≠ unit`** | ✅ **普遍** | 只用 `zeroʳ` + `clock-min` + `1 < phase-order` + `phase-order ∣ clock` | `Presentation` 定理 ✓ |
+| **G3 单边** | ❌ **否** | 当前 record **无字段**连接 `phase` 与 `step` ✗ ⇒ 它是**额外公理** ✗ | `dc-presentation` 定理 ✓ |
+| **N8** | ❌ **否** | 同上 | `dc-presentation` 定理 ✓ |
+| **N3b** | ❌ **否** | 抽象 `Presentation` 可以有 `clock = phase-order`（`step` 只动相位）| `dc-presentation` 定理 ✓ |
+
+### 61.2 执行结果
+
+#### Step 1：`g ≠ unit`（普遍定理，**零风险**）
+
+新建 `src/Sovereign/Algebra/UniversalAlgebra/PresentationTheorems.agda`（**回执 `fe46503a`**）
+
+```agda
+g-ne-unit : ∀ {A} (P : Presentation A)
+  (0<clk : 0 < clock)
+  (1<po  : 1 < phase-order)
+  (clock-min : ∀ k → Period (λ y → step y g) k → clock ∣ k)
+  (po∣clk    : phase-order ∣ clock)
+  → g ≢ unit
+```
+
+**证明**：若 `g = unit` ⇒ `step y g = y`（`zeroʳ`）⇒ `1` 是周期 ⇒ `clock ∣ 1` ⇒ `clock ≤ 1` ✗
+但 `1 < phase-order ≤ clock` ⇒ `clock ≥ 2` ✗ 矛盾 ✓
+
+**⇒ 对任意 `Presentation A` 成立，不依赖 DC** ✓ ✓
+
+#### Step 2：DC 特有定理（`dc-presentation` 的额外定理，**不写进模板** ✓）
+
+`Presentation.agda` 末尾追加：
+
+```agda
+-- ★ G3 单边（144 对，靠 mulAlpha-assoc）
+dc-phase-step-comm : ∀ x y → dc-phase (mixedOp x y) ≡ mixedOp (dc-phase x) y
+dc-phase-step-comm (t , a) (u , b) = cong₂ _,_ refl (sym (mulAlpha-assoc a1 a b))
+
+-- ★ N8
+dc-phase-g-comm : ∀ x → dc-phase (mixedOp (T₁ , a1) x) ≡ mixedOp (T₁ , a1) (dc-phase x)
+dc-phase-g-comm (t , a) = refl          -- 定义性相等 ✓
+
+-- ★ N3b
+dc-clock-neq-phase : 4 < 12
+```
+
+### 61.3 三条教训
+
+1. **`g ≠ unit` 需要 `0 < clock`** ✗ —— `phase-order ∣ clock` **不能**排除 `clock = 0`（`phase-order ∣ 0` 恒真 ✗）
+   ⇒ 必须显式加 `0 < clock` 假设 ✓
+2. **`N8` 是 `refl`** ✓ —— 因为 `dc-phase (mixedOp (T₁,a₁) x)` 与 `mixedOp (T₁,a₁) (dc-phase x)` **定义性相等** ✗（都等于 `(T₁⊕t, α·(α·a))`）✓
+3. **`dc-clock-neq-phase` 不是 `refl`** ✗ —— `4 < 12` = `5 ≤ 12` ⇒ 需 5 层 `s≤s` ✓
+
+### 61.4 当前文档分层状态
+
+| 层 | 内容 | 位置 |
+|---|---|---|
+| **通用模板** | `Presentation` (13 字段) + `g ≠ unit` 定理 | `Presentation.agda` + `PresentationTheorems.agda` |
+| **DC 特有** | `dc-phase-step-comm` / `dc-phase-g-comm` / `dc-clock-neq-phase` | `Presentation.agda` 末尾 |
+| **待澄清** | G5（归零机制）、四层归零关系、`1²+i²=0²` 表达 | 42 号文 §4.2 N9 |
+
+**⇒ 模板**未被污染** ✓，DC 巧合**分离**到 DC 模块 ✓ ✓
