@@ -38,11 +38,13 @@ open import Data.Bool using (Bool; true; false; T)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (zero; suc)
 open import Relation.Nullary using (¬_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong)
+open import Data.List using ([]; _∷_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; subst)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode
-  using (CStep; cplus; cminus; cstep-inv)
-open import Sovereign.Synthesis.Homotopy.T6CayleyNorm using (cfin)
+  using (CStep; CWalk; cplus; cminus; cstep-inv)
+open import Sovereign.Synthesis.Homotopy.T6CayleyNorm
+  using (cfin; NoCancel; nc-nil; nc-one; nc-two; NoCancel-tail)
 
 --------------------------------------------------------------------------------
 -- §1. ★ 在 ℕ 上比较 `Fin` 元素（不携带证明）
@@ -92,9 +94,47 @@ cdEqB-sound (cminus j) (cplus k)  h = cong cminus (finEqB-sound j k h)
 cdEqB-sound (cminus j) (cminus k) h = ⊥-elim h
 
 --------------------------------------------------------------------------------
--- §4. ⬜ 下一步（判据明确）
+-- §4. ★ `Bool` 决策器的否定方向：`false` ⇒ 不互逆
 --
--- ① `cpassB`（结构同 `cpassS`，`Dec` 换 `Bool`）；
--- ② 在 `cpassB` 上重证 ①（范式性）/ ③（语义正确）—— 形状相同；
--- ③ **②（幂等）** —— 现在 `≡ true` 是诚实等式，`with` 分支可自由推理。
+-- 这是 `T` 表述的**直接红利**：`T false` **归约到** `⊥` ⇒ 一行闭合
+-- （`Dec` 路线在这里需要 funext，本路线不需要）。
+--------------------------------------------------------------------------------
+
+cdEqB-¬ : ∀ {n : ℕ} (x y : CStep n) → cdEqB x y ≡ false → ¬ (x ≡ cstep-inv y)
+cdEqB-¬ x y h p = subst T h (cdEqB-complete x y p)
+
+--------------------------------------------------------------------------------
+-- §5. ★★ `Bool` 版归约器 + ①（范式性）
+--------------------------------------------------------------------------------
+
+cpassB : ∀ {n : ℕ} (acc xs : CWalk n) → CWalk n
+cpassB acc        []           = acc
+cpassB []         (x ∷ xs)     = cpassB (x ∷ []) xs
+cpassB (y ∷ acc') (x ∷ xs) with cdEqB x y
+... | true  = cpassB acc' xs
+... | false = cpassB (x ∷ y ∷ acc') xs
+
+creduceB : ∀ {n : ℕ} (w : CWalk n) → CWalk n
+creduceB = cpassB []
+
+-- ★★ 栈不变式
+cpassB-noCancel : ∀ {n : ℕ} (acc xs : CWalk n)
+                → NoCancel acc → NoCancel (cpassB acc xs)
+cpassB-noCancel acc        []           h = h
+cpassB-noCancel []         (x ∷ xs)     _ = cpassB-noCancel (x ∷ []) xs (nc-one x)
+cpassB-noCancel (y ∷ acc') (x ∷ xs)     h with cdEqB x y in eq
+... | true  = cpassB-noCancel acc' xs (NoCancel-tail y acc' h)
+... | false = cpassB-noCancel (x ∷ y ∷ acc') xs
+                (nc-two x y acc' (cdEqB-¬ x y eq) h)
+
+-- ★★ ① 范式性（`Bool` 版）
+creduceB-noCancel : ∀ {n : ℕ} (w : CWalk n) → NoCancel (creduceB w)
+creduceB-noCancel w = cpassB-noCancel [] w nc-nil
+
+--------------------------------------------------------------------------------
+-- §6. ⬜ 下一步（判据明确）
+--
+-- ② **幂等**：`creduceB (creduceB w) ≡ creduceB w`。
+--   关键：现在 `with` 的两个分支都有**诚实见证**（`T` 的 `true` 给 `⊤`、
+--   `false` 给 `⊥`），可以对 `cdEqB` 的结果直接分情形推理。
 --------------------------------------------------------------------------------
