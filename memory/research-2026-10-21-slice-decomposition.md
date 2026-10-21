@@ -1563,3 +1563,32 @@ mixedOp-comm (x , a) (y , b) = cong₂ _,_ (⊕-comm x y) (mulAlpha-comm a b)
 -- iterate (λ y → mixedOp y g) 12 x ≡ mixedOp^12 x （由 mixedOp-comm 归纳）
 -- → mixedOp-12-cycle ⇒ x
 ```
+
+### 32.7 ⚠ `α-four` 的 `refl` 意外失败（2026-10-21 实测）
+
+```agda
+α-four a2 = refl
+-- 期望：mulAlpha (mulAlpha (mulAlpha (mulAlpha a2 a1) a1) a1) a1 ≡ a2
+--   a2·a1 = a3 → a3·a1 = a0 → a0·a1 = a1 → a1·a1 = a2  ⇒ 应得 a2 ✓
+-- 实测：Agda 报 `a2` vs `a2`（未归约完全）✗
+```
+
+**推测原因**：`mulAlpha` 的**第一参数**模式匹配（`mulAlpha a0 x = x` 等 13 条），
+深度嵌套 4 层时 Agda 的 `refl` 归约**未触发完全** ✗ —— 与 §17 的 `C0 (suc ...)` 同类问题 ✓
+
+**⇒ 教训（候选）**：
+> **深度嵌套的 `refl` 在 Agda 里不可靠** ✗ ——
+> 应改用**显式 `trans` 链**（每步一个 `mulAlpha aN a1 ≡ aM` 的 `refl` 小步）✓
+
+### 32.8 本会话（auto-continuation）最终状态
+
+| 项 | 状态 | 回执 |
+|---|---|---|
+| **`a_n = Σ_{k≡0(3)} C(n,k)·2^k`** | ✅ **Agda 定理** | `fd11212a` |
+| **`b_n = a_n − [3\|n]·2^n`** | ✅ **Agda 定理** | `da832222` |
+| `a_n` 3 项递推 / 奇数支闭式 | ✅ | `bab98d0f` / `a7cd6770` |
+| 八要素研究报告（135 行）| ✅ | `7fbb6a4` |
+| P0 辅助引理全部现成 | ✅ 查证 | `d5ee3f3` |
+| P0 实施 | ❌ `α-four` 的 `refl` 未通过 ✗ | — |
+
+**主模块 `GF3HammingCount.agda`：1206 行，0 postulate / 0 hole，编译通过 ✓**
