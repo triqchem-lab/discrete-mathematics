@@ -31,7 +31,7 @@
 
 module Sovereign.Synthesis.Homotopy.T6CayleyDec where
 
-open import Data.Nat using (ℕ)
+open import Data.Nat using (ℕ; _+_)
 open import Data.Maybe using (just; nothing)
 open import Data.Product using (_×_; _,_)
 open import Data.Vec using () renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
@@ -40,7 +40,10 @@ import Data.Fin as Fin
 import Data.Fin as Fin
 open import Data.Vec using (Vec)
 open import Data.Vec.Properties using (≡-dec)
-open import Data.List using (List; []; _∷_; length)
+open import Data.List using (List; []; _∷_; length; map)
+open import Data.List.Properties using (length-map)
+open import Data.Nat.Properties using (+-suc)
+open import Function using (_∘_)
 open import Data.Nat using (zero; suc)
 open import Data.List using (map)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
@@ -51,7 +54,7 @@ open import Data.Maybe using (Maybe; just; nothing)
 open import Data.List.Membership.Propositional using (_∈_)
 open import Data.Product using (_×_; proj₁; proj₂)
 open import Data.List.Relation.Unary.Any using (here; there)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans) using (_≡_; refl; cong; sym; trans)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6SymEdge)
@@ -280,3 +283,18 @@ nbr-1-len = refl
 
 nbr-1-head : updAt Fin.zero nx1 ∈ neighbours nx1
 nbr-1-head = here refl
+-- 表长：`neighbours x` 恰有 `n + n` 个条目（与「双向对应」合起来给出表的完整刻画）
+length-nbrsFrom : ∀ {n : ℕ} (x : T6Vec n) (js : List (Fin n))
+                → length (nbrsFrom x js) ≡ length js + length js
+length-nbrsFrom x []       = refl
+length-nbrsFrom x (j ∷ js) =
+  trans (cong (suc ∘ suc) (length-nbrsFrom x js))
+        (sym (cong suc (+-suc (length js) (length js))))
+
+length-allFinD : (n : ℕ) → length (allFinD n) ≡ n
+length-allFinD zero    = refl
+length-allFinD (suc n) = cong suc (trans (length-map Fin.suc (allFinD n)) (length-allFinD n))
+
+length-neighbours : ∀ {n : ℕ} (x : T6Vec n) → length (neighbours x) ≡ n + n
+length-neighbours {n} x = trans (length-nbrsFrom x (allFinD n))
+                                (cong (λ k → k + k) (length-allFinD n))

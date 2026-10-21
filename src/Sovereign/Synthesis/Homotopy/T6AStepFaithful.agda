@@ -118,4 +118,3 @@ no-walks-recover-code pref s1 s2 s3 suff h =
     (mkStep-dir dslide dexpand pref s1 s2 s3 suff
       (h (mkStep dslide  pref s1 s2 s3 suff)
          (mkStep dexpand pref s1 s2 s3 suff) refl refl))
-
