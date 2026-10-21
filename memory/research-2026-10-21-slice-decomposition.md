@@ -3974,3 +3974,69 @@ pluginRoot: /home/yanli/.dsh/.agent-presets/math-proof/
 - **方案 B（pre-commit 重复检测）已生效** ✓ —— 不依赖 hook 框架 ✓
 
 **⇒ 收益**：确认了「不是 hook 代码的问题」✓，给出了 1 行可验证修复 ✓，纠正了 3 次诊断方法失误 ✓
+
+---
+
+## 六十八、修复 `agent.cordis.yml`：`!!js` → 字面绝对路径（2026-10-21）
+
+### 68.1 改动
+
+文件：`~/.dsh/.agent-presets/math-proof/agent.cordis.yml:273-277`（**不在 git 仓库** ✓）
+
+```yaml
+# 修改前（!!js 运行时求值）
+configPath: !!js "process.getBuiltinModule('node:url').fileURLToPath(new URL('hooks/hooks.dsh.json', 'file://' + (process.env.DSH_HOME ?? ...) + '/.agent-presets/math-proof/'))"
+pluginRoot: !!js "process.getBuiltinModule('node:url').fileURLToPath(new URL('.', 'file://' + (process.env.DSH_HOME ?? ...) + '/.agent-presets/math-proof/'))"
+
+# 修改后（字面绝对路径）
+configPath: /home/yanli/.dsh/.agent-presets/math-proof/hooks/hooks.dsh.json
+pluginRoot: /home/yanli/.dsh/.agent-presets/math-proof/
+```
+
+**理由**：方案 D 源码排查结论 —— payload/matcher/pluginRoot 源码层全对 ✓，
+hook 代码直接跑 `exit=2` 正常 ✓，但探针从未生成 ✗ ⇒ 唯一剩余假设是**运行时求值/加载时机** ✗
+⇒ 改字面路径消除该变量 ✓
+
+### 68.2 验证
+
+| 项 | 结果 |
+|---|---|
+| YAML 语法 | ✅ 合法（自定义 `!!js` loader 验证）|
+| `configPath` 文件 | ✅ 2735 字节 |
+| `pluginRoot` 目录 | ✅ |
+| **11 个 hook 文件** | ✅ **全部存在**（session-start / budget-start / fable5-flow / gate-dag / ruler-gate / budget-gate / fable5-gate / search-dialect-gate / budget-tick / continue-gate / budget-settle）|
+| 备份 | ✅ `agent.cordis.yml.bak-20261021-1935` |
+| 文件其余 `!!js` | 4 处（**其他插件**，未动 ✓）|
+
+### 68.3 影响
+
+| 影响 | 说明 |
+|---|---|
+| ✅ 正面 | 消除 `!!js` 求值时机依赖；路径显式可审计 |
+| ⚠ 负面 | 失去 `DSH_HOME` 动态性（改 `DSH_HOME`/换机器需手改这两行）|
+| 范围 | 只本机 preset 配置 ✓，不进 git 仓库 ✓ |
+
+### 68.4 待验证（需人类重启 dsh）
+
+```bash
+grep -n "Trit" src/Sovereign/Base/Trit.agda
+# 预期：🛑 检索方言闸（纪律 §0.95）……
+```
+
+| 结果 | 含义 |
+|---|---|
+| **被拦** ✓ | 修复成功 —— 后续 `bash grep` 读文件会被拦，须用 DSH grep 工具（或 `agda ... \| grep` 管道过滤，那是放行的）|
+| **仍放行** ✗ | 不是 `!!js` 求值问题 ⇒ 剩余可能：`hooks.dsh.json` 的 PreToolUse 解析 / 插件加载顺序 / 其他插件覆盖 ⇒ **建议收手**，方案 B 已覆盖真实风险 ✓ |
+
+### 68.5 本会话诊断方法失误累计（4 次）
+
+| # | 失误 | 教训 |
+|---|---|---|
+| 1 | `node hook \| head` 用 `$?` | 管道后 `$?` 是最后一个命令的 |
+| 2 | `ls 不存在文件` 的 exit 2 当「hook 拦住」| bash 自身退出码冒充拦截信号 |
+| 3 | `unset ...; sh -c "..." \| head -3` 仍看 `exit=0` | 再次被管道掩盖 |
+| 4 | `git commit -m "...$?..."` 双引号展开 | 提交消息用 `-F` 文件或单引号 |
+
+**⇒ 铁律**：
+- **判退出码禁止接管道** ✓（`cmd; echo $?` 或 `cmd > f 2>&1; echo $?`）
+- **提交消息用 `-F 文件`** ✓
