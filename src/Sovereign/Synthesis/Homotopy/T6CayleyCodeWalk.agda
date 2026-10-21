@@ -38,7 +38,7 @@ open import Data.Fin using (Fin)
 open import Data.List using (List; []; _∷_; foldl)
 open import Data.Product using (Σ; _,_; proj₁; proj₂)
 open import Data.Sum using (inj₁; inj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans)
 
 open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons)
@@ -94,10 +94,38 @@ ctarget-inv x (cplus j)  = updAt-cubed j x
 ctarget-inv x (cminus j) = updAt-cubed j x
 
 --------------------------------------------------------------------------------
--- §5. ⬜ 下一步（判据明确）
+-- §5. ★★★ 每个码步在目标层都是 3 阶 —— 与 `(C₃)ⁿ` 一致
 --
--- ① **soundness**：`interpC` 后，`creduce` 的每次消去对应 `Ω3Walk⁺`
---    —— 因为消去的一对 `(s, cstep-inv s)` 恰好是一个 `bub`，
---    而 `bub3` 已证（`Omega3Plus`）⇒ 这一步**应该不难**。
--- ② **完备性 / 汇合性**：迭代到不动点是否唯一 —— 本线最硬的一段（未做）。
+-- `cplus j` 一次一步、`cminus j` 一次两步；但**迭代三次**后：
+-- ```
+--   ctarget (ctarget (ctarget x s) s) s
+--     = updAt j (… (updAt j x))    -- cplus：3 步；cminus：6 步
+--     ≡ x                          -- cplus：一次 cubed；cminus：两次 cubed（6 步 = 2×3）
+-- ```
+-- ⇒ **两个情形归约到同一条 `updAt-cubed`**（特征 3）。
+--
+-- 这是 `π₁ᵈ(T6Cayley n) ≅ (C₃)ⁿ` 的**生成元阶数**一半
+-- （另一半是「不同坐标独立」，未做）。
+--------------------------------------------------------------------------------
+
+ctarget-3 : ∀ {n : ℕ} (x : T6Vec n) (s : CStep n)
+          → ctarget (ctarget (ctarget x s) s) s ≡ x
+ctarget-3 x (cplus j)  = updAt-cubed j x
+ctarget-3 x (cminus j) =
+  trans (updAt-cubed j (updAt j (updAt j (updAt j x))))
+        (updAt-cubed j x)
+
+--------------------------------------------------------------------------------
+-- §6. ⬜ 下一步（**已修正层级**，见 journal lesson）
+--
+-- ⚠ **本码层服务 `π₁ᵈ`，不服务 `π₂ᵈ⁺`**：
+--   `Ω2Walk` 的步是 `ASTep`（一阶同伦 `slide`/`expand`），**不是图边**；
+--   而 `CStep` 是图边方向 ⇒ 两者不在同一层。
+--
+-- 正确目标：`π₁ᵈ(T6Cayley n) ≅ (C₃)ⁿ`
+--   已备：① 每个码步 3 阶（`ctarget-3`）；② 两个方向的逆律（`ctarget-inv`）；
+--         ③ 归约 `creduce`（fuel）。
+--   待做：④ 「不同坐标独立」（需要交换性论证）；
+--         ⑤ `creduce` 的不动点与 `(C₃)ⁿ` 的对应（`CWalk n → (Fin 3)ⁿ` 的群同态，
+--            用 `ctarget-3` 把每步折进 `C₃`）。
 --------------------------------------------------------------------------------
