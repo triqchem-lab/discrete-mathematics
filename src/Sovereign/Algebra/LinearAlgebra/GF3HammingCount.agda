@@ -857,7 +857,12 @@ hit-suc3 (fsuc (fsuc fzero)) (fsuc (fsuc fzero)) = refl
 --------------------------------------------------------------------------------
 
 -- `sumTo (suc n) g ≡ g 0 + sumTo n (λ j → g (suc j))`
--- ❌ **未证**（诚实标注）：
---   归纳步的形状对不上 —— `sumTo (suc m) (λ j → g (suc j))` 的归约
---   与 `+-assoc` 的端点不匹配（lambda 的 β-归约与 Agda 的 elaboration 顺序冲突）。
---   下一步：改用显式 `λ`-free 表述，或引入 `sumTo-cong`（点态相等 ⇒ 和相等）。
+-- `sumTo (suc n) g ≡ g 0 + sumTo n (λ j → g (suc j))`
+-- ❌ **未证**（诚实标注，2026-10-21）：
+--   归纳步卡在 `sumTo (suc m) (λ j → g (suc j))` 的 λ-β-归约与
+--   `reassoc`/`+-assoc` 的端点 elaboration 顺序冲突。已试：
+--     · 裸 `+-assoc` ✗
+--     · solver 版 `reassoc` ✗
+--     · 显式三参数 ✗
+--   下一步：引入 `sumTo-cong : (∀ k → f k ≡ g k) → sumTo n f ≡ sumTo n g`
+--   并**先**把 `λ j → g (suc j)` 绑定为命名函数（`let` 或顶层定义），消掉 λ。
