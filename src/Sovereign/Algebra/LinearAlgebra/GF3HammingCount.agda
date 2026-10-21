@@ -156,7 +156,7 @@ shuffle = solve 3
 --------------------------------------------------------------------------------
 
 open import Data.Nat.Properties using
-  ( suc-injective; +-identityʳ; +-suc; *-identityʳ; *-comm
+  ( +-cancelʳ-≡; +-suc; +-identityʳ; *-identityʳ; *-comm
   ; ^-distribˡ-+-*; ^-distribʳ-* )
 
 -- ①a 显式展开（互递归定义不会自动展开 ⇒ 用 `C0-step` 等重写）
@@ -219,24 +219,24 @@ rhs-eq m =
                       (cong (λ z → z + 3 * 9 ^ m) (sym (★9-suc m)))))
 
 -- 消去引理：`a + k ≡ b + k ⇒ a ≡ b`
+-- ⚠ `+-cancelʳ-≡` 的参数顺序是 `∀ x y z → y + x ≡ z + x → y ≡ z`（x 是被消去的）
 cancel : ∀ a b k → a + k ≡ b + k → a ≡ b
-cancel a b zero    eq = trans (sym (+-identityʳ a)) (trans eq (+-identityʳ b))
-cancel a b (suc k) eq =
-  cancel a b k (suc-injective (trans (sym (+-suc a k)) (trans eq (+-suc b k))))
+cancel a b k = +-cancelʳ-≡ k a b
 
 --------------------------------------------------------------------------------
--- ③ ★★★ 主定理（未完成，诚实标注）
---
--- ★ 已证（本轮用 `Data/Nat/Base.agda:296` 的 **定义归约** `x ^ suc n = x * x ^ n`）：
---   `★9-suc : 9 ^ suc m ≡ 9 * 9 ^ m`             —— `refl` ✓
---   `★3-pow : 3 ^ (2m+1) ≡ 3 * 3^(2m)`            —— `+-suc` + `refl` ✓
---   `★9-pow : 9 ^ m ≡ 3 ^ (2m)`                   ✓
---   `rhs-eq : 4·3^(2m+1) ≡ 9^(m+1) + 3·9^m`       ✓
---   `C0-two-step : C0(n+2) + 3·C0 n ≡ 4·3^n`      ✓
---   `cancel : a + k ≡ b + k → a ≡ b`              ✓
---
--- ❌ `★C0-odd : C0 (2m+1) ≡ 9^m` —— **未完成**
---   缺口：最后一步 `cancel` 的隐式参数推断与目标形状冲突
---         （`a`、`b` 的展示形式与目标不一致；已试 4 次未过）
---   只有 oracle `448d1d14` 验证（n=1..10），**不是** Agda 定理 ✗
+-- ③ ★★★ 主定理
 --------------------------------------------------------------------------------
+
+★C0-odd : ∀ m → C0 (2 * m + 1) ≡ 9 ^ m
+★C0-odd zero    = refl
+★C0-odd (suc n) =
+  cancel (C0 (2 * suc n + 1)) (9 ^ suc n) (3 * C0 (2 * n + 1))
+    (trans (cong (λ z → C0 z + 3 * C0 (2 * n + 1)) (idx n))
+           (trans (C0-two-step (2 * n + 1))
+                  (trans (rhs-eq n)
+                         (cong (λ z → 9 ^ suc n + 3 * z) (sym (★C0-odd n))))))
+  where
+    idx : ∀ k → 2 * suc k + 1 ≡ suc (suc (2 * k + 1))
+    idx = solve 1
+      (λ k → con 2 :* (con 1 :+ k) :+ con 1 := con 1 :+ (con 1 :+ (con 2 :* k :+ con 1)))
+      refl
