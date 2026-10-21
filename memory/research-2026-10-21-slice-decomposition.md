@@ -1800,3 +1800,45 @@ Sovereign.Algebra.UniversalAlgebra.Presentation
 Sovereign.Algebra.GroupTheory.DuodecClock
 ```
 ⇒ 已登记 `Sovereign.Base.Trit` ✓（后两个在台账里**不是独立节点** ✗，属"传递依赖"✓）
+
+---
+
+## 三十六、错环节点清账（2026-10-21）
+
+### 36.1 `T4.bn-block-decomposition` → `abandoned`
+
+原节点基于 **错误环** `GF(3)[x]/(x³)`（nilpotent thickening ✗）：
+- 非域 ✗、Frobenius 杀死生成元 ✗、无相位 ✗、无刚性 ✗
+- 块分解 `[[A,0,0],[0,A,0],[I,0,A]]` 只在那个环上成立 ✗
+
+**正确环** `Functions((Z/3)^n, GF9)` 上：`F` 是**对角算子** ⇒ **无需块分解** ✓
+
+⇒ `b_n` 的正确值已由 `T4.bn-correct-ring` 证出 ✓（回执 `da832222` ✓）
+
+### 36.2 台账中「错环遗留」的完整清单
+
+| 节点/模块 | 状态 | 处置 |
+|---|---|---|
+| `T4.bn-block-decomposition` | blocked → **abandoned** ✓ | 本轮 |
+| `T4.eight-elements-dc` | proven → **abandoned** ✓ | 上轮（重复实现）|
+| `GF3BlockSplit`（292 行，`ba77c943`）| ⚠ 方法可移植、结论作废 | 未处置（模块仍在，文件头有 ⚠ 标记）|
+| `GF3Slice` / `GF3ImKer` / `GF3Barrier` / `GF3Rank` / `GF3RowOps` / `GF3MonoCount` / `GF3LaplacianN` | ⚠ 同上 | 未处置 |
+
+### 36.3 T4 计划 v2 的状态
+
+`docs/plan/T4-构造性秩零化度-更新版-2026-10-21.md` 的 phase 3–7 ✗
+（A1 rank-nullity / A3 quotient / A2 ker-one ✗）——**都是为错误环设计的** ✗
+
+⇒ 正确环上：`a_n`、`b_n` 已证 ✓；`q_n = c_n − a_n = 0`（对角算子，`ker ⊆ im` 不成立但 `q_n = 0` ✓ oracle `448d1d14` ✓）
+⇒ 无需秩-零化度 ✗（对角算子直接可数 ✓）
+
+### 36.4 建议
+
+**T4 在正确环上已闭合** ✓：
+```
+a_n = Σ_{k≡0(3)} C(n,k)·2^k         ✅ Agda（da832222）
+b_n = a_n − [3|n]·2^n                ✅ Agda（da832222）
+q_n = 0（对角算子）                  ⚠ oracle 448d1d14（未形式化）
+八要素                              ✅ 早已存在（dc-presentation，Presentation.agda:131）
+```
+**计划 v2 的 phase 3–7 应作废或重写** ✗
