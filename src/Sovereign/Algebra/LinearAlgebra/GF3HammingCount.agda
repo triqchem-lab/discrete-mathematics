@@ -149,12 +149,15 @@ shuffle = solve 3
 
 --------------------------------------------------------------------------------
 -- §7. ★★★ A：`C0 (2m+1) ≡ 9^m`
+--
+-- 关键：`Data/Nat/Base.agda:296` 给出 **`x ^ suc n = x * x ^ n`（定义）**
+-- ⇒ `9 ^ suc m` / `3 ^ (2m+1) = 3 ^ suc (2m)` **直接定义归约** ⇒ `refl` ✓
+--   （此前绕道 `^-distribˡ-+-*` 反而卡在 `m + 1` 上 ✗）
 --------------------------------------------------------------------------------
 
 open import Data.Nat.Properties using
-  ( suc-injective; +-identityʳ; +-suc; *-identityʳ; *-assoc; *-comm
+  ( suc-injective; +-identityʳ; +-suc; *-identityʳ; *-comm
   ; ^-distribˡ-+-*; ^-distribʳ-* )
-open import Relation.Binary.PropositionalEquality using (subst)
 
 -- ①a 显式展开（互递归定义不会自动展开 ⇒ 用 `C0-step` 等重写）
 C0-2step-rewrite : ∀ n →
@@ -180,8 +183,17 @@ C0-two-step n =
                (cong (4 *_) (★total n)))
 
 --------------------------------------------------------------------------------
--- ② 指数恒等式
+-- ② 指数恒等式（全部定义归约 ⇒ refl）
 --------------------------------------------------------------------------------
+
+-- ★ `9 ^ suc m ≡ 9 * 9 ^ m`（`x ^ suc n = x * x ^ n` 是定义）
+★9-suc : ∀ m → 9 ^ suc m ≡ 9 * 9 ^ m
+★9-suc m = refl
+
+-- ★ `3 ^ (2m+1) ≡ 3 * 3^(2m)`（因 `2m+1` 归约为 `suc (2m)`）
+★3-pow : ∀ m → 3 ^ (2 * m + 1) ≡ 3 * (3 ^ (2 * m))
+★3-pow m =
+  cong (3 ^_) (trans (+-suc (2 * m) 0) (cong suc (+-identityʳ (2 * m))))
 
 -- `2 * m ≡ m + m`
 2m=m+m : ∀ m → 2 * m ≡ m + m
@@ -194,53 +206,37 @@ C0-two-step n =
         (trans (sym (^-distribˡ-+-* 3 m m))
                (cong (3 ^_) (sym (2m=m+m m))))
 
--- ★ `3^(2m+1) ≡ 3 * 3^(2m)`
-★3-pow : ∀ m → 3 ^ (2 * m + 1) ≡ 3 * (3 ^ (2 * m))
-★3-pow m =
-  trans (^-distribˡ-+-* 3 (2 * m) 1)
-        (*-comm (3 ^ (2 * m)) 3)
-
---------------------------------------------------------------------------------
--- ③ ★★★ 主定理：`C0 (2m+1) ≡ 9^m`
---------------------------------------------------------------------------------
-
--- `9^(m+1) ≡ 9 * 9^m`
-★9-suc : ∀ m → 9 ^ (m + 1) ≡ 9 * 9 ^ m
-★9-suc m = trans (trans (^-distribˡ-+-* 9 m 1)
-                          (cong (λ z → 9 ^ m * z) (*-identityʳ 9)))
-                   (*-comm (9 ^ m) 9)
-
 -- `4 * (3 * x) ≡ 9 * x + 3 * x`（把 `9^m` 当原子）
 polysolve : ∀ x → 4 * (3 * x) ≡ 9 * x + 3 * x
 polysolve = solve 1 (λ x → con 4 :* (con 3 :* x) := con 9 :* x :+ con 3 :* x) refl
 
--- ★ 关键等式：`4·3^(2m+1) ≡ 9^(m+1) + 3·9^m`
-rhs-eq : ∀ m → 4 * 3 ^ (2 * m + 1) ≡ 9 ^ (m + 1) + 3 * 9 ^ m
+-- ★ `4·3^(2m+1) ≡ 9^(m+1) + 3·9^m`
+rhs-eq : ∀ m → 4 * 3 ^ (2 * m + 1) ≡ 9 ^ suc m + 3 * 9 ^ m
 rhs-eq m =
   trans (cong (4 *_) (★3-pow m))
         (trans (cong (λ z → 4 * (3 * z)) (sym (★9-pow m)))
-               (trans (poly4 m) (cong (λ z → z + 3 * 9 ^ m) (sym (★9-suc m)))))
-  where
-    -- 把 `9^m` 当原子：`4 * (3 * x) ≡ 9 * x + 3 * x`
-    poly4 : ∀ m → 4 * (3 * 9 ^ m) ≡ 9 * 9 ^ m + 3 * 9 ^ m
-    poly4 m = polysolve (9 ^ m)
+               (trans (polysolve (9 ^ m))
+                      (cong (λ z → z + 3 * 9 ^ m) (sym (★9-suc m)))))
 
--- 消去引理：`a + k ≡ b + k ⇒ a ≡ b`（对 `k` 归纳，`suc` 用单射）
+-- 消去引理：`a + k ≡ b + k ⇒ a ≡ b`
 cancel : ∀ a b k → a + k ≡ b + k → a ≡ b
 cancel a b zero    eq = trans (sym (+-identityʳ a)) (trans eq (+-identityʳ b))
 cancel a b (suc k) eq =
   cancel a b k (suc-injective (trans (sym (+-suc a k)) (trans eq (+-suc b k))))
 
--- ⚠ `★C0-odd : C0 (2m+1) ≡ 9^m` —— **未完成** ✗
+--------------------------------------------------------------------------------
+-- ③ ★★★ 主定理（未完成，诚实标注）
 --
--- 已完成的部分（都在上面）：
---   `C0-two-step : C0(n+2) + 3·C0 n ≡ 4·3^n`     ✓
---   `★9-pow : 9^m ≡ 3^(2m)`                       ✓
---   `★3-pow : 3^(2m+1) ≡ 3·3^(2m)`                ✓
---   `★9-suc : 9^(m+1) ≡ 9·9^m`                    ✓
+-- ★ 已证（本轮用 `Data/Nat/Base.agda:296` 的 **定义归约** `x ^ suc n = x * x ^ n`）：
+--   `★9-suc : 9 ^ suc m ≡ 9 * 9 ^ m`             —— `refl` ✓
+--   `★3-pow : 3 ^ (2m+1) ≡ 3 * 3^(2m)`            —— `+-suc` + `refl` ✓
+--   `★9-pow : 9 ^ m ≡ 3 ^ (2m)`                   ✓
 --   `rhs-eq : 4·3^(2m+1) ≡ 9^(m+1) + 3·9^m`       ✓
+--   `C0-two-step : C0(n+2) + 3·C0 n ≡ 4·3^n`      ✓
 --   `cancel : a + k ≡ b + k → a ≡ b`              ✓
 --
--- 缺口：`suc m` 与 `m + 1` 在 ℕ 上**不是**定义相等
---   （`_+_` 递归在第一个参数）⇒ 最后一步 `subst` 的 motive 形状对不上 ✗
--- 这条**只有 oracle `448d1d14` 验证**（n=1..7 全对），**不是** Agda 定理 ✗
+-- ❌ `★C0-odd : C0 (2m+1) ≡ 9^m` —— **未完成**
+--   缺口：最后一步 `cancel` 的隐式参数推断与目标形状冲突
+--         （`a`、`b` 的展示形式与目标不一致；已试 4 次未过）
+--   只有 oracle `448d1d14` 验证（n=1..10），**不是** Agda 定理 ✗
+--------------------------------------------------------------------------------
