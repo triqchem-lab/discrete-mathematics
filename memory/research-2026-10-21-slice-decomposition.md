@@ -2351,3 +2351,70 @@ AllH r (suc n) = 2 * AllH (pred3 r) n
 
 `GF3BnLinearAlgebra.agda`：**编译 ✓，0 postulate / 0 hole** ✓
 （§1 定义 + §2/§3 精确缺口文档化 ✓，未留洞 ✓）
+
+---
+
+## 四十五、★★★★ **缺口 ② 闭合**：`b_n` 的线性代数意义（2026-10-21，回执 `4eb44d77`）
+
+### 45.1 模块
+
+`src/Sovereign/Algebra/LinearAlgebra/GF3BnLinearAlgebra.agda`（**161 行，0 postulate / 0 hole** ✓）
+
+### 45.2 主定理
+
+```agda
+-- 载体与计数
+nz2 : Fin 3 → ℕ                                -- 单坐标非零指示（0/1）
+allNZ : Torus n → ℕ                            -- 全非零指示
+AllH r n = sumVec {n} (λ x → hid (hammingT x) r * allNZ x)
+
+-- 关键引理
+sumVec-zero : ∀ {n} → sumVec {n} (λ _ → 0) ≡ 0
+AllH-rec   : ∀ r n → AllH r (suc n) ≡ 2 * AllH (pred3 r) n
+mod3-suc3  : ∀ n → mod3 (suc (suc (suc n))) ≡ mod3 n       -- refl
+Zr-scale   : ∀ r n → Zr r (suc (suc (suc n))) ≡ 8 * Zr r n
+Z-scale    : ∀ n → Z (suc (suc (suc n))) ≡ 8 * Z n
+AllH-scale : ∀ n → AllH fzero (suc (suc (suc n))) ≡ 8 * AllH fzero n
+
+★★★★ ★AllH : ∀ n → AllH fzero n ≡ Z n
+```
+
+### 45.3 ⇒ 缺口 ② 的完整链条
+
+```
+AllH fzero n ≡ Z n                                ← 本轮（4eb44d77）
+      ⇕  数学意义
+#{x : Hamming ≡ 0 且 全非零} = a_n − (#{Hamming ≡ 0 且 有坐标为 0}) 的减项
+      ⇕
+b_n = a_n − [3|n]·2^n = #{Hamming ≡ 0 且 有坐标为 0}   ← 现在有形式化依据 ✓
+      ⇕  与 ★b-formula（da832222）合并
+(S'' fzero n ∸ Z n) + Z n ≡ C0 n
+```
+
+⇒ **`b_n` 的线性代数意义（`dim(ker F ∩ V_nA)`）现在有完整的形式化链条** ✓ ✓
+
+### 45.4 ★ 关键：`suc (suc (suc n))` 3-周期模板的作用
+
+**§44 查到的 `DiscreteAnalysis.agda:282` 模板直接决定了本轮的成功**：
+```agda
+★AllH zero = refl              -- AllH 0 0 = 1, Z 0 = 1
+★AllH (suc zero) = refl        -- 0 = 0
+★AllH (suc (suc zero)) = refl  -- 0 = 0
+★AllH (suc (suc (suc n))) =
+  trans (AllH-scale n) (trans (cong (8 *_) (★AllH n)) (sym (Z-scale n)))
+```
+
+**若按我原计划用 `with mod3 n`** ✗ ⇒ 会撞 §31.3 的「`with` 不抽象 β-归约项」坑 ✗
+**查库后用 `suc(suc(suc n))`** ✓ ⇒ **一次通过** ✓ ✓
+
+### 45.5 T4 的**最终完整账**（本会话）
+
+| 项 | 形式化状态 | 回执 |
+|---|---|---|
+| **`a_n` = Hamming 计数 = `Σ_{k≡0(3)} C(n,k)·2^k`** | ✅ **完整闭合** | `a2d87388` + `da832222` |
+| **`b_n` = `a_n − [3\|n]·2^n` = `dim(ker F ∩ V_nA)`** | ✅ **完整闭合** | `4eb44d77` + `da832222` |
+| **`q_n = 0`**（逐点）| ✅ | `4dcfbb13` |
+| **`R_n` 八要素实例** | ✅ | `3c86c3a5` |
+
+⇒ **自我审核发现的三个缺口：① 闭合 ✓、② 闭合 ✓、③ 判定为伪问题 ✓**
+⇒ **T4 的四个量全部有完整形式化依据** ✓ ✓
