@@ -201,6 +201,41 @@ adj-sym' : ∀ {n : ℕ} (x y : CStep n)
 adj-sym' x y ¬p q = ¬p (adj-sym y x q)
 
 --------------------------------------------------------------------------------
+-- §4.6 ★★ 阅读序谓词 `NoCancelR` 与 `NoCancel` 的**双向桥**
+--
+-- 两个谓词形状相同，只差**相邻对的书写次序**：
+--
+-- | 谓词 | 相邻对条件 | 读法 |
+-- |---|---|---|
+-- | `NoCancel`  | `¬ (x ≡ cstep-inv y)` | `x` 比 `y` **新**（栈序）|
+-- | `NoCancelR` | `¬ (y ≡ cstep-inv x)` | `x` 比 `y` **旧**（阅读序）|
+--
+-- ⇒ 桥就是 **`adj-sym'`**（相邻关系对称）✓ —— `§4.5` 已经证好了。
+--------------------------------------------------------------------------------
+
+data NoCancelR {n : ℕ} : CWalk n → Set where
+  nr-nil  : NoCancelR []
+  nr-one  : (x : CStep n) → NoCancelR (x ∷ [])
+  nr-two  : (x y : CStep n) (xs : CWalk n)
+          → ¬ (y ≡ cstep-inv x) → NoCancelR (y ∷ xs) → NoCancelR (x ∷ y ∷ xs)
+
+-- ★ 栈序 ⇒ 阅读序
+NoCancel→R : ∀ {n : ℕ} {w : CWalk n} → NoCancel w → NoCancelR w
+NoCancel→R nc-nil                  = nr-nil
+NoCancel→R (nc-one x)              = nr-one x
+NoCancel→R (nc-two x y xs ¬p t)    = nr-two x y xs (adj-sym' x y ¬p) (NoCancel→R t)
+
+-- ★ 阅读序 ⇒ 栈序（反方向，同样只用 `adj-sym'`）
+R→NoCancel : ∀ {n : ℕ} {w : CWalk n} → NoCancelR w → NoCancel w
+R→NoCancel nr-nil                = nc-nil
+R→NoCancel (nr-one x)            = nc-one x
+R→NoCancel (nr-two x y xs ¬q t)  = nc-two x y xs (adj-sym' y x ¬q) (R→NoCancel t)
+
+-- ★★ 主定理的**阅读序**版本（同一件事的两种写法）
+creduceS-noCancelR : ∀ {n : ℕ} (w : CWalk n) → NoCancelR (creduceS w)
+creduceS-noCancelR w = NoCancel→R (creduceS-noCancel w)
+
+--------------------------------------------------------------------------------
 -- §5. ⚠ 本模块**不**声称的（如实标注；这些都不是「顺手就能做」）
 --
 -- ① **消去律** —— ✅ **已证（见 §3 `creduceA-cancel`）**
