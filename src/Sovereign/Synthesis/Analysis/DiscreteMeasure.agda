@@ -30,6 +30,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
 open import Data.Nat.Properties using (+-suc; ≤-step; +-mono-≤)
 open import Data.Bool using (Bool; true; false; _∨_; if_then_else_)
 open import Data.Fin using (Fin)
+open import Relation.Nullary using (does; yes; no)
 import Data.Fin as Fin
 open import Data.Empty using (⊥; ⊥-elim)
 
@@ -175,3 +176,20 @@ countᵐ-cong {n = suc m} P Q e =
   cong₂ _+_
         (cong (λ b → if b then 1 else 0) (e Fin.zero))
         (countᵐ-cong (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i)) (λ i → e (Fin.suc i)))
+
+--------------------------------------------------------------------------------
+-- §9. ★ 点质量：单点集的测度为 1
+--------------------------------------------------------------------------------
+
+singleton : ∀ {n} → Fin n → Count n
+singleton {n} i j = if does (i Fin.≟ j) then true else false
+
+-- ⬜ **未证**：点质量定理 `countᵐ (singleton i) ≡ 1`——需先证
+--   `singleton i (suc j) ≡ false`（当 `i = zero`）与 `Fin` 上的 `fzero≢fsuc`，约 15 行；
+--   本批只做到「定义 + 自反成员性」，其余如实标注未做。
+
+-- `i ≟ j` 的判定结果与「`j` 处的值」一致（by cases on the decision）
+singleton-self : ∀ {n} (i : Fin n) → singleton i i ≡ true
+singleton-self {n} i with i Fin.≟ i
+... | yes _ = refl
+... | no  p = ⊥-elim (p refl)
