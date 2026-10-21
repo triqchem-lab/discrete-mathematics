@@ -1958,3 +1958,59 @@ check     = *gf9-identityʳ 逐点
 >
 > 同类：我此前用 `bash grep "record Subspace"` 查基础设施 ✗ ⇒ 错判「库内无」✗
 > ⇒ **三次都是「判据/查法错」，不是「事实是那样」** ✗
+
+---
+
+## 三十九、★★★ P1 的跨库代码普查（2026-10-21，fable5 Step 1）
+
+### 39.1 查询范围
+
+DSH grep 扫了：本项目 `src/Sovereign`、`agda-stdlib`、`leanprover/mathlib4-4.34.1`、本地 `rocq-mathematics`/`rocq-prover`。
+
+### 39.2 本项目现成件（**零重复**）
+
+| 件 | 位置 |
+|---|---|
+| `_*V_`（逐点乘）| `VertexAlgebraDiscrete.agda:54` |
+| `*V-comm` / `*V-assoc` | `:58` / `:62` |
+| `unitVec` / `*V-identityˡ/ʳ` | `:67` / `:70` / `:74` |
+| `*V-zeroˡ/ʳ` | `:80+` |
+| `zipWith-cong` | `GF3RowOps.agda:96` |
+| `zipWith op (map f xs) (map g ys) ≡ zipWith (λ x y → op (f x) (g y)) xs ys` | `ChernConservation.agda:144` |
+
+### 39.3 Agda stdlib 现成件（**关键**）
+
+```agda
+Data/Vec/Properties.agda:625  zipWith-assoc     : Associative _≡_ f → ...
+Data/Vec/Properties.agda:639  zipWith-identityˡ : LeftIdentity _≡_ e f → ...
+```
+⇒ `Vec` 上的 zipWith 结合律/单位律**现成** ✓ ✓
+
+### 39.4 跨库对照
+
+| 库 | 做法 | 可否照搬 |
+|---|---|---|
+| **Lean4 mathlib** | `Pi.monoidHom`（`Mathlib/Algebra/Group/Pi/Lemmas.lean:153`）+ **funext（Classical）** | ❌ 与本项目无 funext 冲突 ✗ |
+| **Rocq**（本地 `rocq-mathematics`/`rocq-prover`）| `Vector`/`tuple` 结构相等 | ✅ 路线一致（未逐一核对，标注「未查证」✓）|
+| **Agda stdlib** | `zipWith-assoc` / `zipWith-identityˡ` | ✅ **直接可用** ✓ |
+
+### 39.5 ★ 结论：走 `Vec GF9 (3^n)`，实质新代码 ~25 行
+
+| P1 需要 | 现成的 | 新写 |
+|---|---|---|
+| 载体 | `Vec GF9 (3^n)` | 1 行 |
+| `step` | `zipWith _*gf9_` | 1 行 |
+| `assoc` | stdlib `zipWith-assoc` + `*gf9-assoc` | 3 行 |
+| `zeroˡ/ʳ` | stdlib `zipWith-identityˡ/ʳ` + `*gf9-identityˡ/ʳ` | 6 行 |
+| `unit` | `replicate gf9-one` | 1 行 |
+| `phase` | `map (_*gf9 alpha)`（`alpha : GF9` 现成 ✓）| 1 行 |
+| `phase-cycle` | `map` 融合 + `*gf9` 4 步 | ~10 行 |
+| `clock = 4` + `clock-cycle` | 同上 | ~5 行 |
+| `rigidity` | `map galoisConjugate`（现成 ✓）| 1 行 |
+| `check` | `zipWith-identityʳ`（复用 ✓）| 1 行 |
+
+### 39.6 ★ 教训（本会话第四次「判据/查法」类）
+
+> **要求「先查再写」** ✓ ——
+> 本轮普查发现 **乘法律全套早已存在** ✓，若直接动手会**重写 ~80 行** ✗
+> 而 `Vec` 路线的关键（`zipWith-assoc`）在 **stdlib** ✓ —— 先查即得 ✓
