@@ -1133,11 +1133,13 @@ rearr5 = solve 4 (λ a x y z → a :+ (x :+ con 2 :* (y :+ z))
 --   ⇒ **`b_n = a_n − [3|n]·2^n`**
 --------------------------------------------------------------------------------
 
--- 全非零且 Hamming ≡ 0 的计数
+-- 全非零且 Hamming ≡ 0 的计数（以余数为参数）
+Zr : Fin 3 → ℕ → ℕ
+Zr fzero    n = 2 ^ n
+Zr (fsuc _) n = 0
+
 Z : ℕ → ℕ
-Z n with mod3 n
-... | fzero   = 2 ^ n
-... | fsuc _  = 0
+Z n = Zr (mod3 n) n
 
 -- 基础核对（n=0..5）
 Z-check : (Z 0 ≡ 1) × (Z 1 ≡ 0) × (Z 2 ≡ 0) × (Z 3 ≡ 8) × (Z 4 ≡ 0) × (Z 5 ≡ 0)
@@ -1181,54 +1183,23 @@ Cnk-diag (suc n) =
 onetwice : ∀ X → 1 * (1 * X) ≡ X
 onetwice = solve 1 (λ X → con 1 :* (con 1 :* X) := X) refl
 
--- ★ `Z n ≤ S'' fzero n`：**未证**（诚实标注，2026-10-21）
---
--- 数学上成立 ✓（n=0..7 数值验证 ✓）：
---   n≡0(3) 时 `Z n = 2^n = C(n,n)·2^n` 正是 `S'' fzero n` 的 `k=n` 项 ✓
---   n≢0(3) 时 `Z n = 0` ✓ 平凡
---
--- ❌ Agda 障碍：`with mod3 n ... | fzero` **不会**把 `S'' fzero n` 内部的
---    `mod3 k [k := n]` 也抽象掉 ✗ ⇒ 目标里的 `hit fzero (mod3 n)` 与
---    `hit fzero fzero` 对不上 ✗
---   实测错误：`hit fzero (mod3 n) * (Cnk n n * 2^n)` vs `Cnk n n * 2^n + 0 * ...`
---
--- 下一步（明确）：把 `Z` 改成**以余数为参数** `Zr : Fin 3 → ℕ → ℕ`，
---   并在 `Z≤a` 里用 `subst`（沿 `mod3 n ≡ fzero`）把目标整体搬过去 ✗
---
--- ⇒ `b_n + Z n ≡ a_n`（`★b-formula`）依赖此条 ✗
-
--- 已证的相关件 ✓
---   sumR-mono : ∀ n f k → k ≤ n → f k ≤ sumR n f     ✓
---   Cnk-diag  : ∀ n → Cnk n n ≡ 1                    ✓
---   onetwice  : ∀ X → 1 * (1 * X) ≡ X                ✓
-
---------------------------------------------------------------------------------
--- ㉜ `Z≤a`：用 `inspect` + `subst` 解决 with-抽象
---------------------------------------------------------------------------------
-
 -- `1 * (Cnk n n * 2^n) ≡ 2^n`
 termN : ∀ n → 1 * (Cnk n n * 2 ^ n) ≡ 2 ^ n
 termN n = trans (cong (λ z → 1 * (z * 2 ^ n)) (Cnk-diag n)) (onetwice (2 ^ n))
 
--- ★ `Z n ≤ S'' fzero n`：**未证**（诚实标注，2026-10-21）
---
--- 数学上成立 ✓（n=0..7 数值验证 ✓）
---
--- ❌ Agda 障碍（两层，已定位）：
---   ① `with mod3 n ... | fzero` **只抽象目标里的直接出现** ✗
---   ② 但 `mod3 n` 的实际位置在 **`sumR-mono` 应用的 β-归约结果里** ✗
---      （`f n` 其中 `f = λ k → hit fzero (mod3 k) * …`）
---   ⇒ `with` 拿不到那个出现 ⇒ 目标里的 `hit fzero (mod3 n)` 与 `hit fzero fzero` 对不上 ✗
---
--- 下一步（明确）：把 `Z` 改写成**以余数为参数**的形式，
---   用 `Zr : Fin 3 → ℕ → ℕ` + 显式等式参数 `mod3 n ≡ r`（不经 `with`）✗
---
--- 已证的相关件 ✓：
---   sumR-mono : ∀ n f k → k ≤ n → f k ≤ sumR n f     ✓
---   Cnk-diag  : ∀ n → Cnk n n ≡ 1                    ✓
---   onetwice  : ∀ X → 1 * (1 * X) ≡ X                ✓
---   termN     : ∀ n → 1 * (Cnk n n * 2^n) ≡ 2^n      ✓
+-- ★ `Z n ≤ S'' fzero n`（`Zr` + 显式等式参数，不经 `with`）
+Z≤a-aux : ∀ (r : Fin 3) n → mod3 n ≡ r → Zr r n ≤ S'' fzero n
+Z≤a-aux fzero n eq =
+  ≤-trans (≤-reflexive (sym (termN n)))
+          (≤-trans (subst (λ r → 1 * (Cnk n n * 2 ^ n) ≤ hit fzero r * (Cnk n n * 2 ^ n))
+                          (sym eq) (≤-reflexive refl))
+                   (sumR-mono n (λ k → hit fzero (mod3 k) * (Cnk n k * 2 ^ k)) n ≤-refl))
+Z≤a-aux (fsuc fzero) n eq = z≤n
+Z≤a-aux (fsuc (fsuc fzero)) n eq = z≤n
 
--- ★★★ `b_n` 的加法形式：**依赖 `Z≤a`，未证** ✗
--- ★b-formula : ∀ n → (S'' fzero n ∸ Z n) + Z n ≡ C0 n
--- 证明只需一行：trans (m∸n+n≡m (Z≤a n)) (★a-binomial n)
+Z≤a : ∀ n → Z n ≤ S'' fzero n
+Z≤a n = Z≤a-aux (mod3 n) n refl
+
+-- ★★★ `b_n` 的加法形式：`b_n + Z n ≡ a_n`（`b_n := S'' fzero n ∸ Z n`）
+★b-formula : ∀ n → (S'' fzero n ∸ Z n) + Z n ≡ C0 n
+★b-formula n = trans (m∸n+n≡m (Z≤a n)) (sym (★a-binomial n))
