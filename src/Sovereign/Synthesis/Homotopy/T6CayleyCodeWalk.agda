@@ -35,10 +35,10 @@ module Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk where
 
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin)
-open import Data.List using (List; []; _∷_; foldl)
+open import Data.List using (List; []; _∷_; foldl; reverse; _++_)
 open import Data.Product using (Σ; _,_; proj₁; proj₂)
 open import Data.Sum using (inj₁; inj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; trans)
 
 open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons)
@@ -116,16 +116,46 @@ ctarget-3 x (cminus j) =
         (updAt-cubed j x)
 
 --------------------------------------------------------------------------------
--- §6. ⬜ 下一步（**已修正层级**，见 journal lesson）
+-- §6. ★★★ 码走的逆律：反向后终点回到起点
 --
--- ⚠ **本码层服务 `π₁ᵈ`，不服务 `π₂ᵈ⁺`**：
---   `Ω2Walk` 的步是 `ASTep`（一阶同伦 `slide`/`expand`），**不是图边**；
---   而 `CStep` 是图边方向 ⇒ 两者不在同一层。
+-- 这是 `π₁ᵈ` 的**核心要求**（每条走都有反向走回起点），
+-- 而证明只用 `ctarget-inv`（← `updAt-cubed`，特征 3）。
+--------------------------------------------------------------------------------
+
+-- 逐步折叠（就是「码的右作用」）
+foldT : ∀ {n : ℕ} (x : T6Vec n) (w : CWalk n) → T6Vec n
+foldT x []      = x
+foldT x (s ∷ w) = foldT (ctarget x s) w
+
+-- 作用对拼接可加（自由幺半群作用）
+foldT-++ : ∀ {n : ℕ} (x : T6Vec n) (a b : CWalk n)
+         → foldT x (a ++ b) ≡ foldT (foldT x a) b
+foldT-++ x []      b = refl
+foldT-++ x (s ∷ a) b = foldT-++ (ctarget x s) a b
+
+-- 码的倒转 + 取逆
+crev : ∀ {n : ℕ} → CWalk n → CWalk n
+crev []      = []
+crev (s ∷ w) = crev w ++ (cstep-inv s ∷ [])
+
+-- ★★★ 逆律：反向后回到起点
+ctarget-rev : ∀ {n : ℕ} (x : T6Vec n) (w : CWalk n)
+            → foldT (foldT x w) (crev w) ≡ x
+ctarget-rev x []      = refl
+ctarget-rev x (s ∷ w) =
+  trans (foldT-++ (foldT (ctarget x s) w) (crev w) (cstep-inv s ∷ []))
+        (trans (cong (λ z → foldT z (cstep-inv s ∷ []))
+                     (ctarget-rev (ctarget x s) w))
+               (ctarget-inv x s))
+
+--------------------------------------------------------------------------------
+-- §7. ⬜ 下一步（判据明确）
 --
--- 正确目标：`π₁ᵈ(T6Cayley n) ≅ (C₃)ⁿ`
---   已备：① 每个码步 3 阶（`ctarget-3`）；② 两个方向的逆律（`ctarget-inv`）；
---         ③ 归约 `creduce`（fuel）。
---   待做：④ 「不同坐标独立」（需要交换性论证）；
---         ⑤ `creduce` 的不动点与 `(C₃)ⁿ` 的对应（`CWalk n → (Fin 3)ⁿ` 的群同态，
---            用 `ctarget-3` 把每步折进 `C₃`）。
+-- ⚠ **本码层服务 `π₁ᵈ`，不服务 `π₂ᵈ⁺`**（`Ω2Walk` 的步是 `ASTep`，不是图边）。
+--
+-- 目标：`π₁ᵈ(T6Cayley n) ≅ (C₃)ⁿ`
+--   已备：① 每步 3 阶（`ctarget-3`）；② 逆律（`ctarget-inv` / `ctarget-rev`）；
+--         ③ 归约（`creduce`）；④ 作用可加（`foldT-++`）。
+--   待做：⑤ 「不同坐标独立」（`updAt` 不动别的坐标 —— 需 `Vec` 索引引理）；
+--         ⑥ 由 ⑤ + ① 得 `foldT` 诱导的映射 `CWalk n / ⁓ → (Fin 3)ⁿ` 是同构。
 --------------------------------------------------------------------------------
