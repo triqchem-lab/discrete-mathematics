@@ -34,9 +34,13 @@
 module Sovereign.Synthesis.Homotopy.T6AStepMap where
 
 open import Data.Nat using (ℕ)
+import Data.Nat as Nat
+open import Data.Fin using (Fin; zero; toℕ)
+open import Data.Vec using (lookup)
+import Data.Vec as Vec
 open import Data.List using ([]; _∷_; _++_)
 open import Data.Product using (Σ; _,_; proj₁; proj₂)
-open import Relation.Nullary using (Dec; yes; no)
+open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans; subst)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
@@ -46,8 +50,9 @@ open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (interpC; ctarget; foldT; cEdge; foldT-++; ctarget-inv)
 open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_; AStep)
 open import Sovereign.Synthesis.Homotopy.T6AStepCode2 using (StepCode; mkStep)
+open import Sovereign.Synthesis.Homotopy.T6AStepCode using (ADir)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym)
-open import Sovereign.Synthesis.Homotopy.T6CayleyInterp using (interpAt; subst-cons)
+open import Sovereign.Synthesis.Homotopy.T6CayleyInterp using (x1; interpAt; subst-cons)
 
 --------------------------------------------------------------------------------
 -- §1. 码层的两条走（`slide` / `expand` 共用同一对数据，只是方向相反）
@@ -281,6 +286,38 @@ interpAt-natural : ∀ {n : ℕ} {v v' : T6Vec n} (e : v ≡ v') (w : CWalk n)
 interpAt-natural refl w = refl
 
 --------------------------------------------------------------------------------
+-- §5f. ★★ `StepVertex` 判定的**正负控制**（证据阶梯 ②：没跑过「说不」的闸门 = 没有闸门）
+--
+-- 判定器本体已迁至 `T6AStepCodeMap.decStepCode`（本模块的 `decStepVertex` 已不存在）；
+-- 那边另有**计算级**控制（`decStepCode-yes`/`-no` 均 `refl`，见其 §9）。
+-- 本节的这一对是**语义级**的（直接证 `StepVertex` 成立/不成立），与计算级互补。
+--
+-- 取具体码：`n = 1`、起点全零、`s1 = s2 = s3 = +e₀`。
+-- 两步之后到 `2`（`0 → 1 → 2`），而第三边 `+e₀` 到 `1` ⇒ 顶点侧条件**不成立**。
+--------------------------------------------------------------------------------
+
+-- ⚠ x1 复用 T6CayleyInterp（不重造）
+
+
+codeB : StepCode 1
+codeB = mkStep ADir.dslide [] (cplus zero) (cplus zero) (cplus zero) []
+
+-- ℕ 侧：1 ≢ 2（用 `Nat` 限定，避开 `Data.Fin.suc` 与 `Data.Nat.suc` 的命名冲突）
+one≢two : ¬ (Nat.suc Nat.zero ≡ Nat.suc (Nat.suc Nat.zero))
+one≢two ()
+
+-- ★ 该码的顶点侧条件**可被否定** ⇒ 判定器的 `no` 分支可达（闸门会说「不」）
+neg-StepVertex : ¬ (StepVertex x1 codeB)
+neg-StepVertex h = one≢two (cong (λ v → toℕ (lookup v zero)) h)
+
+-- ★ 正控制（与上面配对）：三角形闭合 —— `(+e₀)(+e₀)` 与 `(−e₀)` 都到 `2` ⇒ 条件成立、`refl`
+codeC : StepCode 1
+codeC = mkStep ADir.dslide [] (cplus zero) (cplus zero) (cminus zero) []
+
+pos-StepVertex : StepVertex x1 codeC
+pos-StepVertex = refl
+
+--------------------------------------------------------------------------------
 -- §6. ✅ `StepCode → AStep`：**已证**（本节曾是「ill-posed 不可证」的错误判断，已更正）
 --
 -- ## 更正（内核裁决，2026-10-21）
@@ -312,11 +349,12 @@ interpAt-natural refl w = refl
 --
 -- - 主定理：`T6AStepCodeMap.toStepCode`（含具体点验证 `step-1`）
 -- - 配套：`cons-dtrans` / `interpAt-subst` / `subst-trans` / `T6Vec-UIP` / `src-eq` / `tgt-eq`
--- - ⚠ `astStep-cast` / `decStepVertex` 曾因上述错误判断被删，现已在 `T6AStepCodeMap` 就地补回。
--- ⇒ 若下游需要「码 ⇒ A-同伦」，应当**直接以 `interpAt` 为载体**（`T6CayleyInterp.interpAt`
--- 已是可计算终点版本），而不是先造 `interpC` 再搬运。
+-- - ⚠ `astStep-cast` / 判定器曾因上述错误判断被删，现已在 `T6AStepCodeMap` 就地补回
+--   （判定器改名为 `decStepCode`，本模块的 `decStepVertex` 已不存在）。
 --
--- 已备零件（若要按 `interpAt` 层重做）：`interpAt-++` / `interpAt-++-glue`（拼接与端点）、
--- `interpAt-natural`（§5e，换起点）、`subst-cons` / `subst-++w`（走层运输）、
--- `T6CayleyInterp.toStep`（步的构造）。
+-- ## 本模块对这条链的贡献（仍有效，按 `interpAt` 层组织）
+--
+-- `interpAt-++` / `interpAt-++-glue`（拼接与端点）、`interpAt-natural`（§5e，换起点）、
+-- `subst-cons` / `subst-++w`（走层运输）、`StepVertex ⇔ StepSide` 与 `foldT-inj`
+-- （§5b/§5c，侧条件两层等价）、`astStep-cast`（端点铸造）、正负控制（§5f）。
 --------------------------------------------------------------------------------
