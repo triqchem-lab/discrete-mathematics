@@ -26,8 +26,8 @@
 
 module Sovereign.Synthesis.Analysis.DiscreteMeasure where
 
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Data.Nat.Properties using (+-suc)
+open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
+open import Data.Nat.Properties using (+-suc; ≤-step; +-mono-≤)
 open import Data.Bool using (Bool; true; false; _∨_; if_then_else_)
 open import Data.Fin using (Fin)
 import Data.Fin as Fin
@@ -116,3 +116,21 @@ check-加 = countᵐ-∪ᵐ P₂ Q₂ disj-PQ
     disj-PQ : Disjoint P₂ Q₂
     disj-PQ Fin.zero          p q = true≢false (sym q)
     disj-PQ (Fin.suc Fin.zero) p q = true≢false (sym p)
+
+--------------------------------------------------------------------------------
+-- §6. ★ 单调性：`P ⊆ Q ⇒ count P ≤ count Q`（测度的另一条基本公理）
+--------------------------------------------------------------------------------
+
+subset : ∀ {n} → Count n → Count n → Set
+subset {n} P Q = ∀ (i : Fin n) → P i ≡ true → Q i ≡ true
+
+count-mono : ∀ {n} (P Q : Count n) → subset P Q → count P ≤ count Q
+count-mono {n = zero}  P Q _ = z≤n
+count-mono {n = suc m} P Q sub with P Fin.zero | Q Fin.zero
+... | false | false = +-mono-≤ z≤n (count-mono (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i)) sub')
+... | false | true  = ≤-step (+-mono-≤ z≤n (count-mono (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i)) sub'))
+... | true  | false = ⊥-elim (true≢false (sym (sub Fin.zero refl)))
+... | true  | true  = s≤s (+-mono-≤ z≤n (count-mono (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i)) sub'))
+  where
+    sub' : subset (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i))
+    sub' i p = sub (Fin.suc i) p
