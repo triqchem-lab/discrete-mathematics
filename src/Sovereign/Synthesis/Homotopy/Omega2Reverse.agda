@@ -88,3 +88,22 @@ rev2-cancel {G} {x} {w1} (cons2 {w1} {wm} {w2} s c) =
 
     step1 : Ω3Walk⁺ G x (c ++2 rev2 (cons2 s c)) e
     step1 = subst₂-Ω3Walk⁺ assocF PPE.refl (suffix-resp e (rev2-cancel c))
+
+--------------------------------------------------------------------------------
+-- §3. ★★ 顶层版：与右端上下文拼接后仍可消
+--
+-- 这条是 `Pi2dQuotient.addL-inv` 的**顶层前提**（刻意不放进 `where` 块：
+-- `where` 内的隐式作用域无法可靠固定索引族端点 —— 实测报错 `Ω2Walk G x w w i`）。
+--
+-- 与 `rev2-cancel` 同层、同依赖（`suffix-resp` + `++2-assoc`），无 Cubical ✓
+--------------------------------------------------------------------------------
+
+suffix-cancel : ∀ {G : DiGraph} {x : V G} {w : Walk G x x}
+                (c c' : Ω2Walk G x w w)
+              → Ω3Walk⁺ G x (c ++2 (rev2 c ++2 c')) c'
+suffix-cancel c c' =
+  -- `suffix-resp` 给出 `((c ++2 rev2 c) ++2 c') ⁓ (nil2 w ++2 c')`，
+  -- 而 `nil2 w ++2 c'` 定义性就是 `c'` ⇒ 右端无需运输；
+  -- 左端沿 `++2-assoc`（**正向**：(A ++2 B) ++2 C ≡ A ++2 (B ++2 C)）运输。
+  subst₂-Ω3Walk⁺ (++2-assoc c (rev2 c) c') PPE.refl
+    (suffix-resp c' (rev2-cancel c))
