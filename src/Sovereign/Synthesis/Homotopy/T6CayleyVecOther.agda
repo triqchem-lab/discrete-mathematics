@@ -27,11 +27,11 @@ open import Data.Nat using (ℕ)
 open import Data.Vec using (Vec; _∷_; lookup)
 open import Data.Fin using (Fin)
 import Data.Fin as Fin
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans)
 open import Relation.Nullary using (¬_)
 open import Data.Empty using (⊥-elim)
 
-open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt)
+open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt; updAt-cubed; updAt-differs)
 
 --------------------------------------------------------------------------------
 -- ★ `updAt j` 不改坐标 `i`（当 `i ≢ j`）
@@ -44,3 +44,14 @@ updAt-other Fin.zero    (Fin.suc j) (a ∷ v) _   = refl
 updAt-other (Fin.suc i) Fin.zero    (a ∷ v) _   = refl
 updAt-other (Fin.suc i) (Fin.suc j) (a ∷ v) i≢j =
   updAt-other i j v (λ i≡j → i≢j (cong Fin.suc i≡j))
+--------------------------------------------------------------------------------
+-- §2. ★ 同一坐标的两个方向不同（`Nodup (neighbours x)` 的前置 ①）
+--
+-- 邻居表把 `updAt j x` 与 `updAt j (updAt j x)` 都收进去 ⇒ 若两者相等，表就有重复。
+-- 本引理排除了这种情形（一行：由 `updAt-cubed` 把假设推成「`x` 等于 `updAt j x`」）。
+--------------------------------------------------------------------------------
+
+updAt-neq-two : ∀ {n : ℕ} (j : Fin n) (x : T6Vec n)
+              → updAt j x ≢ updAt j (updAt j x)
+updAt-neq-two j x h = updAt-differs j (updAt j x) (sym h)
+
