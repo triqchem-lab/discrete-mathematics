@@ -36,12 +36,12 @@ module Sovereign.Synthesis.Homotopy.T6CayleyInterp where
 open import Data.Nat using (ℕ)
 open import Data.List using ([]; _∷_; _++_)
 open import Data.Product using (Σ; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; subst)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
-open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CWalk; cplus; cminus)
+open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CStep; CWalk; cplus; cminus)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym; T6SymEdge)
-open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_)
+open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_; AStep; slide)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk
   using (ctarget; foldT; cEdge)
 
@@ -80,31 +80,72 @@ subst-cons : ∀ {n : ℕ} {a b : T6Vec n} {w w' : T6Vec n}
 subst-cons e p refl = refl
 
 --------------------------------------------------------------------------------
--- §2. ⬜ 拼接拆解 `interpAt-++` —— **未完成（已尝试 3 次，全部同一报错，如实保留）**
+-- §2. ★★★ 步 6：构造 `ASTep` 值（`toStep`）
 --
--- 想要的陈述（`subst` 在**拼接位置**）：
--- ```
---   interpAt u (a ++ b)
---     ≡ interpAt u a ++w subst (Walk G (foldT u a)) (foldT-++ u a b)
---                              (interpAt (foldT u a) b)
--- ```
--- **三次尝试的同一报错**（逐字）：
--- ```
--- The terms foldT u a and u are not equal at type Vec (Fin 3) n
--- when checking that the expression foldT-++ u a b has type
---       foldT u (a ++ b) ≡ foldT u (a ++ b)
--- ```
--- ⇒ 报错说 `foldT-++ u a b` 的**期望类型退化成自反式**，而项里 `a` 仍是变量
---   —— 即 `subst` 的 motive 里的索引 `foldT u (a ++ b)` 在 `a := []` 时
---   **没有**按预期归约成 `foldT u b`。
+-- **关键洞察**：`toStep` **不需要** `interpAt-++`（§3 的拼接拆解）——
+-- 因为 `slide` 的结论**本身就是** `p ++w (cons e1 (cons e2 b))` 形态，
+-- 只要把 `p` / `b` / `e1` / `e2` / `e3` 分别给出即可。
+-- 唯一的 `subst` 在**端点层**（`e3` 的第二个端点由侧条件对齐）✓
 --
--- **已排除的路线**（都试过，都同一报错）：
---   ① 陈述无 `subst`；② `subst` 放整式上；③ `subst` 放拼接位置（本文件 §2 原样）。
---
--- **下一步最可能的方向**（未验证）：
---   把 `_++_` 换成**可计算形态**（如先 `with` 细化 `a`，或自写带模式子句的 append
---   使 `[] ++ b` 与 `s ∷ a ++ b` 都在**类型层**归约）；
---   或改用「两端都写成 `foldT` 右结合形」的陈述以彻底避开 `subst`。
---
--- 已备零件：**`subst-cons`（§1b，一行）+ `foldT-++`（§0）+ `interpAt`（§1）** —— 三者都绿。
+-- ```
+--   slide p b e1 e2 e3 : AStep G (p ++w (cons e1 (cons e2 b))) (p ++w (cons e3 b))
+-- ```
+-- 其中 `e1 : edge x y`、`e2 : edge y z`、`e3 : edge x z`，
+-- 而 `x = foldT u pref`、`y = ctarget x s1`、`z = ctarget y s2` 都是**计算**出来的 ✓
 --------------------------------------------------------------------------------
+
+stepE1 : ∀ {n : ℕ} (u : T6Vec n) (pref : CWalk n) (s1 : CStep n)
+       → T6SymEdge (foldT u pref) (ctarget (foldT u pref) s1)
+stepE1 u pref s1 = cEdge (foldT u pref) s1
+
+stepE2 : ∀ {n : ℕ} (u : T6Vec n) (pref : CWalk n) (s1 s2 : CStep n)
+       → T6SymEdge (ctarget (foldT u pref) s1)
+                   (ctarget (ctarget (foldT u pref) s1) s2)
+stepE2 u pref s1 s2 = cEdge (ctarget (foldT u pref) s1) s2
+
+stepE3 : ∀ {n : ℕ} (u : T6Vec n) (pref : CWalk n) (s3 : CStep n) {z : T6Vec n}
+       → ctarget (foldT u pref) s3 ≡ z
+       → T6SymEdge (foldT u pref) z
+stepE3 u pref s3 h = subst (λ w → T6SymEdge (foldT u pref) w) h (cEdge (foldT u pref) s3)
+
+toStep : ∀ {n : ℕ} (u : T6Vec n) (pref : CWalk n) (s1 s2 s3 : CStep n)
+         (suff : CWalk n)
+       → (h : ctarget (foldT u pref) s3 ≡ ctarget (ctarget (foldT u pref) s1) s2)
+       → AStep (T6CayleySym n)
+               (interpAt u pref ++w
+                 (cons (stepE1 u pref s1)
+                       (cons (stepE2 u pref s1 s2)
+                             (interpAt (ctarget (ctarget (foldT u pref) s1) s2) suff))))
+               (interpAt u pref ++w
+                 (cons (stepE3 u pref s3 {z = ctarget (ctarget (foldT u pref) s1) s2} h)
+                       (interpAt (ctarget (ctarget (foldT u pref) s1) s2) suff)))
+toStep u pref s1 s2 s3 suff h =
+  slide (interpAt u pref) (interpAt (ctarget (ctarget (foldT u pref) s1) s2) suff)
+        (stepE1 u pref s1) (stepE2 u pref s1 s2) (stepE3 u pref s3 h)
+
+--------------------------------------------------------------------------------
+-- §3. ★★★ 拼接拆解 `interpAt-++` —— **方向修正后完成**
+--
+-- ## 根因（由并行协作者用**探针 + 负向对照**定位，非证明难题）
+--
+-- 原陈述用 `foldT-++ u a b`（正向）是**类型不对**的：
+-- ```
+--   subst P eq : P x → P y      （eq : x ≡ y）
+-- ```
+-- 此处 `x = foldT u (a ++ b)`、`y = foldT (foldT u a) b`，
+-- 而 `interpAt (foldT u a) b : P y` —— **落在 y 侧**，正向 `subst` 却要 `P x`。
+-- ⇒ 必须用 **`sym (foldT-++ u a b)`**。
+--
+-- 负向对照实测（探针，报在**类型签名**行）：换成 `foldT-++ u a b` 时报
+-- 「`foldT-++ u a b` 期望类型退化成 `foldT u (a ++ b) ≡ foldT u (a ++ b)`」
+-- —— 那正是 Agda 强统两个索引的证据。
+--------------------------------------------------------------------------------
+
+interpAt-++ : ∀ {n : ℕ} (u : T6Vec n) (a b : CWalk n)
+            → interpAt u (a ++ b)
+              ≡ interpAt u a ++w
+                subst (Walk (T6CayleySym n) (foldT u a)) (sym (foldT-++ u a b))
+                      (interpAt (foldT u a) b)
+interpAt-++ u []      b = refl
+interpAt-++ u (s ∷ a) b =
+  cong (λ z → cons (cEdge u s) z) (interpAt-++ (ctarget u s) a b)
