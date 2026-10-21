@@ -31,7 +31,8 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; con
 open import Relation.Nullary using (¬_)
 open import Data.Empty using (⊥-elim)
 
-open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt; updAt-cubed; updAt-differs)
+open import Sovereign.Synthesis.Homotopy.T6CayleyGraph using (succF3)
+open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt; updAt-cubed; updAt-differs; succF3≢id)
 
 --------------------------------------------------------------------------------
 -- ★ `updAt j` 不改坐标 `i`（当 `i ≢ j`）
@@ -54,4 +55,25 @@ updAt-other (Fin.suc i) (Fin.suc j) (a ∷ v) i≢j =
 updAt-neq-two : ∀ {n : ℕ} (j : Fin n) (x : T6Vec n)
               → updAt j x ≢ updAt j (updAt j x)
 updAt-neq-two j x h = updAt-differs j (updAt j x) (sym h)
+--------------------------------------------------------------------------------
+-- §3. ★ 不同坐标的两个方向不同（`Nodup (neighbours x)` 的前置 ②）
+--
+-- 思路：在坐标 `j` 上看。
+--   · `lookup (updAt j x) j = succF3 (lookup x j)`（本模块 `lookup-updAt-same`）
+--   · `lookup (updAt k x) j = lookup x j`        （§1 的 `updAt-other`，用 `j ≢ k`）
+-- 若两者相等，就得到 `succF3 a ≡ a`，与已有的 `succF3≢id` 矛盾。
+--------------------------------------------------------------------------------
+
+lookup-updAt-same : ∀ {n : ℕ} (j : Fin n) (x : T6Vec n)
+                  → lookup (updAt j x) j ≡ succF3 (lookup x j)
+lookup-updAt-same Fin.zero    (a ∷ v) = refl
+lookup-updAt-same (Fin.suc j) (a ∷ v) = lookup-updAt-same j v
+
+updAt-neq-other : ∀ {n : ℕ} (j k : Fin n) (x : T6Vec n)
+                → j ≢ k → updAt j x ≢ updAt k x
+updAt-neq-other j k x j≢k h =
+  succF3≢id (lookup x j)
+    (trans (sym (lookup-updAt-same j x))
+           (trans (cong (λ v → lookup v j) h)
+                  (updAt-other j k x j≢k)))
 
