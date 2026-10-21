@@ -11,8 +11,8 @@
 -- 则：
 --   · **对称**（`⟨,⟩-sym`）✓
 --   · **不正定**（`⟨,⟩-isotropic` + `⟨,⟩-not-definite`）✗
---   · 双线性：**本模块未证**（需 `⊕ₚ` 的分配律重排，约 10 步 `⊕-assoc`/`⊕-comm`）——
---     不写成定理，也不在文档里冒充（遵守散文断言规则）。
+--   · **双线性**（`⟨,⟩-bilinearˡ`，第一分量可加）✓ —— 经 `swap`（2×2 转置）两次拼出
+--     2×3 转置 `transpose2x3`，再套 `⊗-distribʳ-⊕`；全程 `⊕-assoc`/`⊕-comm`。
 --
 -- 关键事实：特征 3 下 `1 + 1 + 1 = 0`，于是 `f = (T₁,T₁,T₁)` 满足
 -- `⟨f,f⟩ = T₀` 却 `f ≢ 0` —— **各向同性向量（null vector）存在**。
@@ -35,7 +35,8 @@ open import Data.Product using (Σ; _,_; proj₁; proj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; cong₂; sym; trans)
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-comm; ⊗-comm; ⊕-identityʳ; ⊗-identityˡ; ⊗-zeroˡ)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-comm; ⊗-comm; ⊕-identityʳ; ⊗-identityˡ; ⊗-zeroˡ;
+  ⊕-assoc; ⊗-distribʳ-⊕)
 open import Sovereign.Algebra.Analytic.ProjectionDifferential using (GF3Func)
 
 zero3 : GF3Func
@@ -121,3 +122,68 @@ eval-e₂ (x , y , z) =
     z≡0 = trans (sym (eval-e₂ (x , y , z))) (h e₂)
     go : x ≡ T₀ → y ≡ T₀ → z ≡ T₀ → (x , y , z) ≡ zero3
     go refl refl refl = refl
+
+--------------------------------------------------------------------------------
+-- §5. ★ 双线性（第一分量可加）
+--
+-- 先把「2×2 转置」证一次（`swap`），再用两次拼出「2×3 转置」（`transpose2x3`），
+-- 最后套上 `⊗` 对 `⊕` 的分配律。
+--------------------------------------------------------------------------------
+
+swap : ∀ a b c d → (a ⊕ b) ⊕ (c ⊕ d) ≡ (a ⊕ c) ⊕ (b ⊕ d)
+swap a b c d =
+  trans (⊕-assoc a b (c ⊕ d))
+        (trans (cong (a ⊕_)
+                     (trans (sym (⊕-assoc b c d))
+                            (trans (cong₂ _⊕_ (⊕-comm b c) refl) (⊕-assoc c b d))))
+               (sym (⊕-assoc a c (b ⊕ d))))
+
+transpose2x3 : ∀ a b c d e f →
+  (a ⊕ b) ⊕ ((c ⊕ d) ⊕ (e ⊕ f)) ≡ (a ⊕ (c ⊕ e)) ⊕ (b ⊕ (d ⊕ f))
+transpose2x3 a b c d e f =
+  trans (sym (⊕-assoc (a ⊕ b) (c ⊕ d) (e ⊕ f)))
+        (trans (cong₂ _⊕_ (swap a b c d) refl)
+               (trans (swap (a ⊕ c) (b ⊕ d) e f)
+                      (cong₂ _⊕_ (⊕-assoc a c e) (⊕-assoc b d f))))
+
+-- 逐点加法
+_⊕ₚ_ : GF3Func → GF3Func → GF3Func
+(a , b , c) ⊕ₚ (x , y , z) = (a ⊕ x) , (b ⊕ y) , (c ⊕ z)
+
+⟨,⟩-bilinearˡ : ∀ f g h → ⟨ f ⊕ₚ g , h ⟩ ≡ ⟨ f , h ⟩ ⊕ ⟨ g , h ⟩
+⟨,⟩-bilinearˡ (a , b , c) (x , y , z) (p , q , r) =
+  trans (cong₂ _⊕_
+              (⊗-distribʳ-⊕ a x p)
+              (cong₂ _⊕_ (⊗-distribʳ-⊕ b y q) (⊗-distribʳ-⊕ c z r)))
+        (transpose2x3 (a ⊗ p) (x ⊗ p) (b ⊗ q) (y ⊗ q) (c ⊗ r) (z ⊗ r))
+
+-- 第二分量（由对称性 + 第一分量直接得到）
+⟨,⟩-bilinearʳ : ∀ f g h → ⟨ f , g ⊕ₚ h ⟩ ≡ ⟨ f , g ⟩ ⊕ ⟨ f , h ⟩
+⟨,⟩-bilinearʳ f g h =
+  trans (⟨,⟩-sym f (g ⊕ₚ h))
+        (trans (⟨,⟩-bilinearˡ g h f)
+               (cong₂ _⊕_ (⟨,⟩-sym g f) (⟨,⟩-sym h f)))
+
+--------------------------------------------------------------------------------
+-- §6. ★ 范数 = 非零坐标数 mod 3（解释 `(T₁,T₁,T₁)` 为何各向同性）
+--
+-- `⟨f,f⟩ = Σ fᵢ⊗fᵢ`，而 `Tᵢ⊗Tᵢ = 0,1,1`（`i = 0,1,2`）⇒ 每项在 `{T₀,T₁}` 里，
+-- 于是 `⟨f,f⟩` 只由**非零坐标的个数**决定（模 3）：
+--   0 个 → `T₀`；1 个 → `T₁`；2 个 → `T₂`；3 个 → **`T₀`**（这就是各向同性）。
+--------------------------------------------------------------------------------
+
+check-self-0 : ⟨ zero3 , zero3 ⟩ ≡ T₀
+check-self-0 = refl
+
+check-self-1 : ⟨ (T₁ , T₀ , T₀) , (T₁ , T₀ , T₀) ⟩ ≡ T₁
+check-self-1 = refl
+
+check-self-2 : ⟨ (T₁ , T₁ , T₀) , (T₁ , T₁ , T₀) ⟩ ≡ T₂
+check-self-2 = refl
+
+check-self-3 : ⟨ (T₁ , T₁ , T₁) , (T₁ , T₁ , T₁) ⟩ ≡ T₀
+check-self-3 = refl
+
+-- `(T₂,·,·)` 的坐标同样只贡献 1（`T₂⊗T₂ = T₁`），故非零坐标数决定范数
+check-self-2b : ⟨ (T₂ , T₂ , T₀) , (T₂ , T₂ , T₀) ⟩ ≡ T₂
+check-self-2b = refl
