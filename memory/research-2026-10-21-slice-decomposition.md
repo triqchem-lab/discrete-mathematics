@@ -2926,3 +2926,77 @@ R_n = Functions((Z/3)^n, GF9)
 ```
 
 ⇒ **理论不再「落后」，反而是代码需要追赶** ✗ → ✓
+
+---
+
+## 五十四、★★★★ **代码修正执行完成**：`dc-presentation.rigidity = rho → mu`（2026-10-21）
+
+### 54.1 拓扑扫描结果（修正前必做）
+
+| 消费者 | 位置 | 影响 |
+|---|---|---|
+| `dc-presentation` 本身 | `Presentation.agda:131` | ✅ 修正目标 |
+| **`Dihedral/DCTopos.agda:122`** | `reflect-action = rho` | ✅ **保留**（D₁₂ 反射）|
+| **`Dihedral/DihedralD12.agda:77`** | `reflect p ⋆ rotate q = reflect (mixedOp p (rho q))` | ✅ **保留**（半直积作用）|
+| `Dihedral/ElectronCloud.agda:165` | `rho-cloud` | ✅ 保留 |
+| **`DuodecClock.agda:63`** | 注释「⑦ 刚性 rho」✗ | ✅ **修正**（混淆源头）|
+
+**⇒ `rho` 有 43 处引用，全部在 D₁₂ 语境** ✓ —— **只有注释和 `rigidity` 位置是错的** ✗
+
+### 54.2 ★ 关键发现：库里**已经证过** `rho = 群反转`
+
+```agda
+-- DuodecClock.agda:733
+rho-is-inv : ∀ p → rho p ≡ duodec-inv p        -- ✓ 已证！
+-- DuodecClock.agda:728
+rho-mixedOp : ∀ p q → rho (mixedOp p q) ≡ mixedOp (rho p) (rho q)   -- ✓ 自同构
+```
+
+⇒ **`rho` 是 `DC ⋊_ρ C₂` 的反射作用** ✓ —— 在 D₁₂ 里**完全合法** ✓
+⇒ **它只是不该充当「Frobenius 刚性」** ✗ ✓
+
+### 54.3 执行的三处修正
+
+| # | 文件 | 改动 | 回执 |
+|---|---|---|---|
+| ① | `Presentation.agda:144` | `rigidity = rho` → **`rigidity = mu`** + 完整理由注释 | **`bd410ad5`** |
+| ② | `Presentation.agda:126` | 导入加 `mu` | 同上 |
+| ③ | `DuodecClock.agda:63` | 注释「⑦ 刚性 rho」→ **「⑦ 刚性 mu」** + 修正说明 | 编译 ✅ |
+
+### 54.4 回归验证（全部通过）
+
+```
+✅ Presentation.agda
+✅ RnPresentation.agda      （已撤回，仅保留演示）
+✅ RnDCPresentation.agda    （rigidity = map sigmaDC = map mu ✓ 一致）
+✅ DuodecClock.agda         （rho/mu/lambda 原样保留 ✓）
+✅ DihedralD12.agda         （D₁₂ 的 43 处 rho 引用全部保留 ✓）
+✅ DCTopos.agda
+```
+
+**⇒ `rho` 未被删除** ✓ —— 它在 D₁₂ 里的地位不变 ✓
+
+### 54.5 三层理论 → 代码的完整闭环
+
+```
+第 0 层（文档已有）：刚性 = Frobenius（从 GF9 诱导到 DC）
+第 1 层（39 号文）：刚性 = 恰好等于 μ（不是 ρ = λ∘μ 群反转）
+第 2 层（40 号文）：刚性 = 自同构的透明性（显式构造 + 穷举验证）
+        ↓
+代码（本轮）：Presentation.agda:144  rigidity = mu    ✓
+              DuodecClock.agda:63   注释改为 mu       ✓
+              rho 保留在 D₁₂ 语境                     ✓
+```
+
+### 54.6 ★ 本会话的**完整方法论闭环**
+
+| 阶段 | 动作 | 结果 |
+|---|---|---|
+| 1 | 自我审核（fable5 Step 9）| 发现 `C0` 与 Hamming 计数脱节 → 闭合 |
+| 2 | proof-engineer 四问 | 发现 `clock = phase-order` 踩红线 → 换载体修复 |
+| 3 | 第三轮审核 | 发现 `rho ≠ mu` → 探针实证 |
+| 4 | 人类指示查文档 | 确认 `11:104` 明文 μ |
+| 5 | 人类给出理论框架 | 两层文档精确化（39/40 号文）|
+| 6 | 人类指示执行 | **代码修正完成** ✓ |
+
+**⇒ 从「编译绿」到「语义正确」的完整链路已经闭合** ✓ ✓

@@ -96,7 +96,7 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.GroupTheory.DuodecClock using
   (DuodecPoint; AlphaPower; a0; a1; a2; a3;
    mixedOp; duodec-e; mulAlpha; mixedOp-assoc; mixedOp-12-cycle;
-   mixedOp-identityˡ; mixedOp-identityʳ; rho)
+   mixedOp-identityˡ; mixedOp-identityʳ; mu; rho)
 open import Sovereign.Algebra.GroupTheory.DuodecClockProperties using (alpha-order-4)
 
 -- 相位算子：只作用相位分量（乘 α），损益分量不动
@@ -141,7 +141,11 @@ dc-presentation = record
   ; phase-cycle = dc-phase-cycle
   ; clock       = 12          -- **联合**周期 lcm(3,4)，非相位的倍数
   ; clock-cycle = dc-clock-cycle
-  ; rigidity    = rho         -- 约定：由 GF9.galoisConjugate 诱导（rho = lambda ∘ mu）
+  ; rigidity    = mu          -- 约定：由 GF9.galoisConjugate 诱导 —— 恰好等于相位反射 μ
+                              -- （2026-10-21 修正：原为 rho = lambda ∘ mu = 群反转 ✗
+                              --   见 docs/duodecimal/39-frobenius-vs-group-inversion.md
+                              --   σ 是域自同构 ⇒ 固定素域 GF(3) ⇒ 加法分量上 σ = id；
+                              --   而 rho 把 t ↦ -t ⇒ rho 不是 Frobenius 的运输 ✗）
   ; check       = mixedOp-identityʳ
   }
 

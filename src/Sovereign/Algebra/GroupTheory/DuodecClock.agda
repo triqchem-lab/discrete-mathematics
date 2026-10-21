@@ -60,7 +60,13 @@
 --  ④ 相位      alpha / alphaInv / alphaInv-homo（C₄，90° 旋转）
 --  ⑤ 时钟      duodec-clock-roundtrip + rotation-order-4（走钟一圈）
 --  ⑥ 归零      duodec-e + addZeroR/L + tritCycle（三层：加法/相位/联合）
---  ⑦ 刚性      rho（Frobenius 诱导的相位反射；unique 系唯一性）
+--  ⑦ 刚性      **mu**（Frobenius 诱导的相位反射；unique 系唯一性）
+--               ⚠ 2026-10-21 修正：原写 `rho` ✗ —— `rho = lambda ∘ mu` 是**群反转** `p ↦ p⁻¹`
+--                 （本文件 `rho-is-inv` 已证），不是 Frobenius 的运输 ✗
+--                 σ 是域自同构 ⇒ 固定素域 GF(3) ⇒ 加法分量上 σ = id；
+--                 rho 把 t ↦ -t ⇒ rho ≠ σ ✗
+--                 见 docs/duodecimal/39-frobenius-vs-group-inversion.md
+--               `rho` 仍在 D₁₂ 半直积（Dihedral/DihedralD12.agda）中作为**反射作用**使用 ✓
 --  ⑧ 核对      duodec-clock-roundtrip / order-4 的 refl 确认（不产生结构）
 --
 -- 形状贴合: **八项齐备**；record 内已用 `carrier` 字段名（贴合规范最高档）
