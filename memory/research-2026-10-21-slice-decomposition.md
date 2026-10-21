@@ -2530,3 +2530,63 @@ rigidity = map sigmaDC                          -- 由 GF9.galoisConjugate 诱�
 | **`q_n = 0`**（逐点）| ✅ **A 级** | `4dcfbb13` |
 | **八要素实例（`Vec DuodecPoint (3^n)`）** | ✅ **A 级**（`clock = 12` 不踩红线）| **`647efff9`** |
 | `Vec GF9` 版本 | ⚠️ **已撤回**（`needs_review`）| `3c86c3a5` |
+
+---
+
+## 四十八、审核第二轮：六项检查（2026-10-21）
+
+### 48.1 通过的五项
+
+| # | 检查 | 结果 |
+|---|---|---|
+| 1 | `clock = 12 ≠ phase-order = 4` | ✅ 不踩红线 |
+| 2 | `clock-cycle` 用 `step`（`zipWith mixedOp`）+ `g`（`replicate (T₁,a1)`) | ✅ **不是 phase 的迭代** |
+| 3 | `g = (T₁ , a1)` 与 `dc-presentation` 一致 | ✅ 联合生成元 |
+| 4 | `rigidity = map sigmaDC` | ✅ 文档记载的 Frobenius（`DCGroup.agda:118`）|
+| 5 | `assoc/zeroˡ/zeroʳ/check` 全部复用 | ✅ 零重复 |
+
+### 48.2 ⚠ 发现的**既有代码疑点**（不在本轮修复范围）
+
+```agda
+lambda (t , a) = (negate t , a)          -- 加法分量取反
+mu     (t , a) = (t , alphaInv a)        -- 相位分量取逆
+rho       p    = lambda (mu p)           -- **既有 dc-presentation 用它** ✗
+sigmaDC (t ,a) = (t , alphaInv a) = mu   -- **文档记载的 Frobenius** ✓
+```
+
+`DCGroup.agda:118` 原话：「Frobenius 诱导到 DC: **σ_DC(t, αᵏ) = (t, α⁻ᵏ)**」✓
+⇒ `sigmaDC` 是文档记载的运输 ✓
+⇒ `rho` 的 `negate t` 部分**没有文档依据** ⚠
+
+**⇒ 已在 `RnDCPresentation.agda` 的模块头记录该疑点** ✓（供后续裁决 ✓），
+**不擅自改既有代码** ✓（改 `Presentation.agda` 会波及 `dc-presentation` ✗）
+
+### 48.3 三项 `Presentation` 实例的 clock 对比
+
+```
+Presentation.agda:131      phase-order = 4, clock = 12   ✓ 合法
+RnPresentation.agda:135    phase-order = 4, clock = 4    ⚠️ 已撤回（等于 phase-order）
+RnDCPresentation.agda:143  phase-order = 4, clock = 12   ✓ 合法（本轮）
+```
+
+### 48.4 T4 最终账（**定稿**，本会话收尾）
+
+| 项 | 形式化状态 | 回执 |
+|---|---|---|
+| **`a_n` = Hamming 计数 = `Σ_{k≡0(3)} C(n,k)·2^k`** | ✅ **A 级** | `a2d87388` + `da832222` |
+| **`b_n` = `a_n − [3\|n]·2^n` = `dim(ker F ∩ V_nA)`** | ✅ **A 级** | `4eb44d77` + `da832222` |
+| **`q_n = 0`**（逐点）| ✅ **A 级** | `4dcfbb13` |
+| **八要素实例（`Vec DuodecPoint (3^n)`，`clock = 12`）** | ✅ **A 级** | `647efff9` |
+| `Vec GF9` 版本 | ⚠️ 已撤回 | `3c86c3a5` |
+| **既有 `rho` 疑点** | ⚠️ **待人类裁决** | 本轮记录 |
+
+### 48.5 ★ 本会话的**元教训总账**（九次错误）
+
+| # | 错误类型 | 教训 |
+|---|---|---|
+| 1-8 | 判据错 / 查法错 / 定义错 / 形似而非神似 | §46.5 |
+| **9** | **审核既有代码时发现疑点，但**不擅自改** ✗ | **记录 + 待裁决 ✓** |
+
+> **核心原则**：**「形式通过 ≠ 语义正确」** ✓
+> `index_presentations.sh` 报「字段齐全」✗ 但对 `RnPresentation` 也说齐全 ✗
+> ⇒ **语义红线（clock ≠ phase-order、rigidity 来源）必须人工/L0 判** ✓

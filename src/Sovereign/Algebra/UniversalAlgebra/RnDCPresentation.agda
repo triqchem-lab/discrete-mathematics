@@ -23,6 +23,13 @@
 --   ⑤ 时钟      **`clock = 12`**（联合周期 `lcm(3,4)` ✓ —— 不是 phase 的迭代 ✓）
 --   ⑥ 归零      `unit = replicate duodec-e`
 --   ⑦ 刚性      `map sigmaDC`（由 `GF9.galoisConjugate` 诱导 ✓）
+--
+--      ⚠ **刚性选择的说明**（2026-10-21 审核）：
+--        `DCGroup.agda:118` 原话：「Frobenius 诱导到 DC: σ_DC(t, αᵏ) = (t, α⁻ᵏ)」
+--        ⇒ `sigmaDC (t , a) = (t , alphaInv a)` ✓ 是**文档记载的 Frobenius 运输** ✓
+--        ⚠ 既有 `dc-presentation` 用的是 `rho = lambda ∘ mu` ✗ —— 含 `negate t` ✗
+--          （加法分量取反不是 Frobenius 的行为 ✗）—— 这是**既有代码的疑点** ⚠，
+--          不在本模块的修复范围（记录在此供后续裁决）✓
 --   ⑧ 核对      `check`（复用 `zeroʳ`）
 --
 -- ## 核心原则
