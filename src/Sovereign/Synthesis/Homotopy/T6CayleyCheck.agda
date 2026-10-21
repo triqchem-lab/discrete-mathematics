@@ -32,6 +32,8 @@ module Sovereign.Synthesis.Homotopy.T6CayleyCheck where
 
 open import Data.Nat using (ℕ)
 open import Data.List using ([]; _∷_)
+open import Data.Bool using (Bool; true; false)
+open import Relation.Nullary using (Dec; yes; no)
 open import Data.Fin using (zero)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
@@ -43,6 +45,8 @@ open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (foldT; ctarget)
 open import Sovereign.Synthesis.Homotopy.T6CayleyInterp
   using (interpAt; x1; stepE1; stepE2; stepE3; side-ok; toStep)
 open import Sovereign.Synthesis.Homotopy.T6AStepCodeMap using (toStepExpand)
+open import Sovereign.Synthesis.Homotopy.T6AStepCode using (ADir; dslide; dexpand)
+open import Sovereign.Synthesis.Homotopy.T6AStepCode2 using (StepCode; mkStep; DecEq-StepCode)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym)
 open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_; AStep)
 open import Sovereign.Synthesis.Homotopy.AStepStd using (AHomotopyStd)
@@ -179,3 +183,40 @@ step-1m = toStep x1 [] (cminus zero) (cminus zero) (cplus zero) [] side-m
 check-rev-nil : AHomotopyStd (T6CayleySym 1)
                   (nil x1 ++w rev sym-edge-T6 (nil x1)) (nil x1)
 check-rev-nil = rev-cancel-T6 (nil x1)
+
+--------------------------------------------------------------------------------
+-- §8. ★★ `DecEq-StepCode` 的 `yes` / `no` **两分支**各自验一次
+--
+-- ## 障碍与绕法
+--
+-- `Dec` 的值（`yes p` / `no ¬p`）**不能按 `refl` 比较**（`yes` 需 UIP、`no` 需 funext）
+-- —— 这就是本项目记录的「`Dec` 见证墙」✗
+--
+-- ⇒ **绕法**：只看「判定结果是 `yes` 还是 `no`」，**丢掉证明项**：
+-- ```
+--   isYes : Dec A → Bool
+--   isYes (yes _) = true
+--   isYes (no  _) = false
+-- ```
+-- 这样两个分支都能用 `refl` 检验 ✓
+--------------------------------------------------------------------------------
+
+-- ⚠ **复用**：`isYes` 已存在于 `Foundation/LogicDecidable.agda:59`，本模块**不自证**。
+-- （历史留痕：我最初在此重复定义了一遍，被重复符号闸门拦下 ⇒ 改为 import。）
+
+open import Sovereign.Foundation.LogicDecidable using (isYes)
+
+-- 两个只差 `ADir` 的码
+sc1 : StepCode 1
+sc1 = mkStep dslide [] (cplus zero) (cplus zero) (cplus zero) []
+
+sc2 : StepCode 1
+sc2 = mkStep dexpand [] (cplus zero) (cplus zero) (cplus zero) []
+
+-- ★ `yes` 分支：同码
+check-stepcode-same : isYes (DecEq-StepCode sc1 sc1) ≡ true
+check-stepcode-same = refl
+
+-- ★★ `no` 分支：异码（只差第一个分量 `ADir`）
+check-stepcode-diff : isYes (DecEq-StepCode sc1 sc2) ≡ false
+check-stepcode-diff = refl
