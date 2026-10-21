@@ -28,7 +28,7 @@
 module Sovereign.Synthesis.Analysis.DiscreteFunctional where
 
 open import Data.Empty using (⊥)
-open import Data.Product using (_,_)
+open import Data.Product using (_,_; ∃₃)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
@@ -71,3 +71,15 @@ check-coord₀ = refl
 -- 两个不同点确实被区分：`(T₀,T₀,T₀)` 与 `(T₁,T₀,T₀)` 在 `proj₀` 上不同
 check-separates : coord₀ (T₀ , T₀ , T₀) ≡ coord₀ (T₁ , T₀ , T₀) → ⊥
 check-separates ()
+
+--------------------------------------------------------------------------------
+-- §3. ★ 定量的分离：**三个泛函就够了**
+--
+-- `separating` 说「所有泛函能分离点」；这里给出更强的定量形态：
+-- 存在**三个**泛函（就是三个坐标投影），只查它们就能判定相等。
+-- ⇒ 对偶空间的「分离维数 ≤ 3」，与 `GF3Func = Trit³` 的维数一致。
+--------------------------------------------------------------------------------
+
+separating3 : ∃₃ (λ (φ₀ φ₁ φ₂ : Dual) →
+                 ∀ (f g : GF3Func) → φ₀ f ≡ φ₀ g → φ₁ f ≡ φ₁ g → φ₂ f ≡ φ₂ g → f ≡ g)
+separating3 = coord₀ , coord₁ , coord₂ , λ { (a , b , c) (x , y , z) refl refl refl → refl }

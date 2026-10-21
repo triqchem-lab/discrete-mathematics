@@ -33,13 +33,18 @@ module Sovereign.Synthesis.Analysis.DiscreteHilbert where
 
 open import Data.Product using (Σ; _,_; proj₁; proj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong₂)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; cong₂; sym; trans)
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-comm; ⊗-comm)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-comm; ⊗-comm; ⊕-identityʳ; ⊗-identityˡ; ⊗-zeroˡ)
 open import Sovereign.Algebra.Analytic.ProjectionDifferential using (GF3Func)
 
 zero3 : GF3Func
 zero3 = T₀ , T₀ , T₀
+
+proj-0 proj-1 proj-2 : GF3Func → Trit
+proj-0 (a , _ , _) = a
+proj-1 (_ , b , _) = b
+proj-2 (_ , _ , c) = c
 
 --------------------------------------------------------------------------------
 -- §1. 标准配对
@@ -78,3 +83,41 @@ isotropic≢zero ()
 -- ⇒ 更强的表述：存在非零的各向同性向量
 null-vector : Σ GF3Func (λ f → f ≢ zero3)
 null-vector = isotropic , isotropic≢zero
+
+--------------------------------------------------------------------------------
+-- §4. ★ 非退化（配合 §2 对称、§3 不定 ⇒ 这是**正交空间**的完整刻画）
+--
+-- `⟨f , g⟩ ≡ 0` 对所有 `f` 成立 ⇒ `g = 0`。取三个基向量 `e₀/e₁/e₂` 即得三个坐标为零。
+--------------------------------------------------------------------------------
+
+e₀ e₁ e₂ : GF3Func
+e₀ = T₁ , T₀ , T₀
+e₁ = T₀ , T₁ , T₀
+e₂ = T₀ , T₀ , T₁
+
+-- 基向量上的求值 = 对应坐标（`x ⊕ T₀` 非定义性，故需 `⊕-identityʳ`）
+eval-e₀ : ∀ g → ⟨ e₀ , g ⟩ ≡ proj-0 g
+eval-e₀ (x , y , z) =
+  trans (cong₂ _⊕_ (⊗-identityˡ x) (cong₂ _⊕_ (⊗-zeroˡ y) (⊗-zeroˡ z)))
+        (⊕-identityʳ x)
+
+eval-e₁ : ∀ g → ⟨ e₁ , g ⟩ ≡ proj-1 g
+eval-e₁ (x , y , z) =
+  trans (cong₂ _⊕_ (⊗-zeroˡ x) (cong₂ _⊕_ (⊗-identityˡ y) (⊗-zeroˡ z)))
+        (⊕-identityʳ y)
+
+eval-e₂ : ∀ g → ⟨ e₂ , g ⟩ ≡ proj-2 g
+eval-e₂ (x , y , z) =
+  trans (cong₂ _⊕_ (⊗-zeroˡ x) (cong₂ _⊕_ (⊗-zeroˡ y) (⊗-identityˡ z))) refl
+
+⟨,⟩-nondegenerate : ∀ g → (∀ f → ⟨ f , g ⟩ ≡ T₀) → g ≡ zero3
+⟨,⟩-nondegenerate (x , y , z) h = go x≡0 y≡0 z≡0
+  where
+    x≡0 : x ≡ T₀
+    x≡0 = trans (sym (eval-e₀ (x , y , z))) (h e₀)
+    y≡0 : y ≡ T₀
+    y≡0 = trans (sym (eval-e₁ (x , y , z))) (h e₁)
+    z≡0 : z ≡ T₀
+    z≡0 = trans (sym (eval-e₂ (x , y , z))) (h e₂)
+    go : x ≡ T₀ → y ≡ T₀ → z ≡ T₀ → (x , y , z) ≡ zero3
+    go refl refl refl = refl

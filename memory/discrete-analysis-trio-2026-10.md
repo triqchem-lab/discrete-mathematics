@@ -4,7 +4,7 @@
 
 > 对应台账节点：`DISC.measure.count-additive` / `DISC.ode.kernel-const` /
 > `DISC.hilbert.indefinite` / `DISC.functional.separating`
-> 全库门禁实测 **913 通过 / 0 失败 / 共 913**（本会话新增的正是这 4 个模块）。
+> 全库门禁实测 **914 通过 / 0 失败 / 共 914**（本会话新增 4 个模块；其余增量为并行协作者所加）。
 
 ## 背景：`Foundation/CompletenessTheorem` 点名的 4 个缺口
 
