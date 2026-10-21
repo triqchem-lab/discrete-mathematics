@@ -10,3 +10,4 @@
 - [Agda 证明工程陷阱清单 2026-10](lessons-agda-traps-2026-10.md) — **30 条**实战陷阱（含 `subst` 方向、`Dec` 正确性两行法、文档反向缺陷）：*-distribʳ-+ 乘数在前、section 禁用、where 不 convertible、cubical Path 同型、using 分号、⊗-zeroʳ 先全量 grep——2026-10 双泛型线 ~120 模块学费
 - [Handoff：Morse/数论双泛型线收官](handoff-generic-lines-2026-10.md) — M1-M7b + G1'-G5 完全收官快照；PairingLaw 显式前提/div-rel 反转/全 ℤ 域 CRT/线性同伦四决策；遗留 roadmap 与并行在飞文件清单（2026-10）
 - [离散分析三件套 2026-10](discrete-analysis-trio-2026-10.md) — 计数测度可加 / `ker Δ` = 常数 / **GF(3) 配对不正定**（各向同性向量）+ 9 处「文档与代码不符」四类清扫
+- [NSE 零场刻画与并发覆盖事故](nse-support-zero-pending-2026-10.md) — `supportCount ≡ 0 ⇔ 六分量恒零`（双向）；**并发事故处置法**：回执连变两次=有人在写 → 落盘保全 → 等 mtime 稳定 → 一次性重贴 → 立即签回执
