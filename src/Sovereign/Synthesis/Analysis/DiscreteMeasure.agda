@@ -29,7 +29,7 @@ module Sovereign.Synthesis.Analysis.DiscreteMeasure where
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
 open import Data.Nat.Properties using (+-suc; ≤-step; +-mono-≤)
 open import Data.Bool using (Bool; true; false; _∨_; if_then_else_)
-open import Data.Fin using (Fin)
+open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Relation.Nullary using (does; yes; no)
 import Data.Fin as Fin
 open import Data.Empty using (⊥; ⊥-elim)
@@ -184,12 +184,40 @@ countᵐ-cong {n = suc m} P Q e =
 singleton : ∀ {n} → Fin n → Count n
 singleton {n} i j = if does (i Fin.≟ j) then true else false
 
--- ⬜ **未证**：点质量定理 `countᵐ (singleton i) ≡ 1`——需先证
---   `singleton i (suc j) ≡ false`（当 `i = zero`）与 `Fin` 上的 `fzero≢fsuc`，约 15 行；
---   本批只做到「定义 + 自反成员性」，其余如实标注未做。
-
 -- `i ≟ j` 的判定结果与「`j` 处的值」一致（by cases on the decision）
 singleton-self : ∀ {n} (i : Fin n) → singleton i i ≡ true
 singleton-self {n} i with i Fin.≟ i
 ... | yes _ = refl
 ... | no  p = ⊥-elim (p refl)
+
+-- 点质量：辅助
+fzero≢fsuc : ∀ {m} (j : Fin m) → fzero ≢ fsuc j
+fzero≢fsuc j ()
+
+singleton-zero-suc : ∀ {m} (j : Fin m) → singleton {suc m} fzero (fsuc j) ≡ false
+singleton-zero-suc j with fzero Fin.≟ fsuc j
+... | yes p = ⊥-elim (fzero≢fsuc j p)
+... | no  _ = refl
+
+countᵐ-zero-tail : ∀ {m} → countᵐ (λ j → singleton {suc m} fzero (fsuc j)) ≡ 0
+countᵐ-zero-tail {m} =
+  trans (countᵐ-cong (λ j → singleton {suc m} fzero (fsuc j)) (∅ᵐ {m})
+                     (λ j → singleton-zero-suc j))
+        (countᵐ-empty {m})
+
+suc-dec : ∀ {m} (k j : Fin m) → does (fsuc k Fin.≟ fsuc j) ≡ does (k Fin.≟ j)
+suc-dec k j with k Fin.≟ j
+... | yes _ = refl
+... | no  _ = refl
+
+-- ★★ 点质量：单点集的计数测度恰为 1
+countᵐ-singleton : ∀ {n} (i : Fin n) → countᵐ (singleton i) ≡ 1
+countᵐ-singleton {n = zero}  ()
+countᵐ-singleton {n = suc m} fzero =
+  trans (cong₂ _+_ refl (countᵐ-zero-tail {m})) refl
+countᵐ-singleton {n = suc m} (fsuc k) =
+  trans (cong₂ _+_ refl
+           (trans (countᵐ-cong (λ j → singleton (fsuc k) (fsuc j)) (singleton k)
+                             (λ j → cong (λ b → if b then true else false) (suc-dec k j)))
+                  (countᵐ-singleton k)))
+        refl
