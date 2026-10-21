@@ -5,6 +5,21 @@
 > **判据**：回执变化先查 md5/行数——同一文件回执连变两次 = 有人在写它。
 > **触发条件**：该文件 mtime 稳定 ≥ 数分钟后再贴；贴完立即 `proof_compile` + 登记。
 
+
+> ⚠⚠ **2026-10-22 更正（重要，先读这段）**：本文下方「重贴 §5」**是错的处方** ✗。
+> `isNonZero-zero` / `fold1N-zero` / `countOver-zero` / `fold1N-cong` / `countOver-zero←`
+> **全部已存在于兄弟模块 `NSESupportZero.agda` 且签名逐字相同** ⇒ 重贴就是**重复实现** ✗
+> （提交时会被去重闸拦住，理由见 `AGENTS.md`「写新件前的硬性前置」）。
+>
+> **正确做法**：
+> 1. **不重贴 §5**，改为 `open import Sovereign.Application.Problems.NavierStokes.NSESupportZero
+>    using (countOver-zero; countOver-all-zero)`（注意它叫 `countOver-all-zero`，不叫 `countOver-zero←`）；
+> 2. 只新增 **§6/§7（Field 六分量版）** —— 那才是真正的新内容；
+> 3. 本文写的三条必补 import（`_×_` / `cong₂;trans` / `m+n≡0⇒m≡0;n≡0`）**确实需要** ✓；
+> 4. ⚠ **§6 的证明体需要重写** ✗ —— 本文只写了「构造方式」，没给完整代码；
+>    实测失败点：`h1 : (x : Torus6) → v1 v x ≡ T₀` 被当成 `Fin 3`（unpack 写错），
+>    **不是导入问题**。
+
 ## 要贴的内容（追加到 `NSESupportBound.agda` 末尾）
 
 先补两处 import：
