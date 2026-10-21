@@ -168,3 +168,14 @@ step-1m : AStep (T6CayleySym 1)
               (cons (stepE3 x1 [] (cplus zero) side-m)
                     (interpAt (ctarget (ctarget x1 (cminus zero)) (cminus zero)) [])))
 step-1m = toStep x1 [] (cminus zero) (cminus zero) (cplus zero) [] side-m
+
+--------------------------------------------------------------------------------
+-- §7. ⑤ 的 `nil` 分支具体点（此前 check-rev-cancel 只验了 `cons` 分支）
+--
+-- 按「逐个核对构造子覆盖」：`rev-cancel` 有 `nil` / `cons` 两分支，
+-- 而此前只验了 `cons` ✗ ⇒ 本批补 `nil` 分支。
+--------------------------------------------------------------------------------
+
+check-rev-nil : AHomotopyStd (T6CayleySym 1)
+                  (nil x1 ++w rev sym-edge-T6 (nil x1)) (nil x1)
+check-rev-nil = rev-cancel-T6 (nil x1)
