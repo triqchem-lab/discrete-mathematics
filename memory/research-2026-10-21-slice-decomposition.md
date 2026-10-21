@@ -2590,3 +2590,58 @@ RnDCPresentation.agda:143  phase-order = 4, clock = 12   ✓ 合法（本轮）
 > **核心原则**：**「形式通过 ≠ 语义正确」** ✓
 > `index_presentations.sh` 报「字段齐全」✗ 但对 `RnPresentation` 也说齐全 ✗
 > ⇒ **语义红线（clock ≠ phase-order、rigidity 来源）必须人工/L0 判** ✓
+
+---
+
+## 四十九、🔴 第三轮审核：**既有 `dc-presentation` 的 `rigidity` 违反约定**（2026-10-21，探针实证）
+
+### 49.1 探针结果（`src/ProbeRho.agda`，已删）
+
+```agda
+test-rho-add : rho (T₁ , a1) ≡ (T₂ , a3)     -- ✓ refl
+test-mu-add  : mu  (T₁ , a1) ≡ (T₁ , a3)     -- ✓ refl
+test-rho-ne-mu : rho (T₁ , a1) ≢ mu (T₁ , a1) -- ✓ (λ ())
+```
+
+**⇒ `rho (T₁,a1) = (T₂,a3)` ✗ —— 加法分量被取反（`T₁ → T₂`）✗**
+
+### 49.2 与 record 约定的冲突
+
+`Presentation.agda:82` 原话：
+> 「⑦ 刚性（约定：**必须由 `GF9.galoisConjugate` 诱导**）」
+
+而 `galoisConjugate (a , b) = (a , negate b)` ✓ —— **只动乘法分量** ✓，**不动加法分量** ✗
+
+⇒ `rho = lambda ∘ mu` 的 `lambda (t,a) = (negate t, a)` ✗ **不在 `galoisConjugate` 里** ✗
+⇒ **既有 `dc-presentation` 的 `rigidity = rho` 违反它自己的约定** ✗ ✓
+
+（`dc-presentation` 的注释写「约定：由 GF9.galoisConjugate 诱导（rho = lambda ∘ mu）」✗ —— **该注释不成立** ✗）
+
+### 49.3 我的 `RnDCPresentation` 用的是**正确**的 `sigmaDC`
+
+```agda
+DCGroup.agda:118  「Frobenius 诱导到 DC: σ_DC(t, αᵏ) = (t, α⁻ᵏ)」
+sigmaDC (t , a) = (t , alphaInv a) = mu       ✓ 与 galoisConjugate 一致 ✓
+```
+
+### 49.4 处置（不擅自改既有代码）
+
+| 项 | 处置 |
+|---|---|
+| `dc-presentation.rigidity = rho` | ⚠️ **记录疑点**，不擅自改 ✗（改它会波及所有消费者 ✗）|
+| `RnDCPresentation.rigidity = map sigmaDC` | ✅ 正确 ✓（已在模块头记录说明 ✓）|
+| 探针 | ✅ 已删除 ✓ |
+
+**⇒ 该疑点需人类裁决** ✓：`rho` 与 `sigmaDC` 哪个是八要素要求的刚性？
+
+### 49.5 ★ 三轮审核的总账
+
+| 轮 | 发现 | 处置 |
+|---|---|---|
+| 1 | `RnPresentation.clock = 4 = phase-order`（踩红线）| ✅ 撤回 + **换载体修复**（`647efff9`）|
+| 2 | 六项检查 | ✅ 5 通过 + 记录 `rho` 疑点 |
+| **3** | **`rho ≠ mu`，既有 `dc-presentation` 违反自己的 rigidity 约定** | ⚠️ **探针实证 + 记录，待裁决** |
+
+> **方法教训**：**「字段齐全 + 编译绿」不等于语义正确** ✓
+> 第三轮靠**最小探针**（3 条 `refl`）证实了既有代码的约定冲突 ✓
+> —— 这正是 `proof-engineer` 的「独立验证」要求的价值 ✓
