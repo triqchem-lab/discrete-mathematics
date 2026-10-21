@@ -48,10 +48,12 @@ echo "字段模板（来自 $DEF，共 $N_FIELDS 字段）："
 echo "$FIELDS" | tr '\n' ' ' | sed 's/^/  /'
 echo
 
-# ── 找实例：类型标注形式  `X : Presentation A` ──
+# ── 找实例：类型标注形式  `X : Presentation A` **或**  `X : (args) → Presentation A` ──
 # ⚠ 不排除 Presentation.agda —— 实例（dc-presentation）就写在那里；
 #   类型类定义行 `record Presentation (A : Set) : Set₁` 不含 `: Presentation ` 故不会误匹配。
-HITS=$(grep -rnE ':[[:space:]]*Presentation[[:space:]]' "$ROOT" --include=*.agda 2>/dev/null \
+# ⚠ 2026-10-21 修复：原 pattern 只匹配 `: Presentation `，**漏掉带参数的实例**
+#   如 `RnPresentation : (n : ℕ) → Presentation (R n)` ✗ ⇒ 扩展为 `(:|→)` ✓
+HITS=$(grep -rnE '(:|[[:space:]]→)[[:space:]]*Presentation[[:space:]]' "$ROOT" --include=*.agda 2>/dev/null \
        | grep -vE "$WHITELIST_RE" || true)
 
 N_HITS=$(echo "$HITS" | grep -c . || true)

@@ -2014,3 +2014,83 @@ Data/Vec/Properties.agda:639  zipWith-identityˡ : LeftIdentity _≡_ e f → ..
 > **要求「先查再写」** ✓ ——
 > 本轮普查发现 **乘法律全套早已存在** ✓，若直接动手会**重写 ~80 行** ✗
 > 而 `Vec` 路线的关键（`zipWith-assoc`）在 **stdlib** ✓ —— 先查即得 ✓
+
+---
+
+## 四十、★★★★ **P1 完成**：`R_n` 的八要素 `Presentation` 实例（2026-10-21，回执 `3c86c3a5`）
+
+### 40.1 模块
+
+`src/Sovereign/Algebra/UniversalAlgebra/RnPresentation.agda`（**122 行，0 postulate / 0 hole** ✓）
+
+```agda
+R : ℕ → Set
+R n = Vec GF9 (3 ^ n)          -- 与 Torus n → GF9 同构，≡ 是结构相等 ⇒ 无 funext ✓
+
+RnPresentation : (n : ℕ) → Presentation (R n)
+  step        = zipWith _*gf9_          -- ② 逐点乘（特征 3）
+  g           = replicate (3^n) alpha   -- ② α
+  unit        = replicate (3^n) gf9-one -- ⑥
+  assoc       = zipWith-assoc *gf9-assoc
+  zeroˡ/ʳ     = zipWith-identityˡ/ʳ *gf9-identityˡ/ʳ
+  phase       = map (_*gf9 alpha)       -- ④ C₄
+  phase-order = 4
+  phase-cycle = phase-cycle-ax          -- ④ α⁴=1（9 refl）
+  clock       = 4
+  clock-cycle = clock-cycle-ax          -- ⑤
+  rigidity    = map galoisConjugate     -- ⑦ Frobenius 自同构
+  check       = zipWith-identityʳ *gf9-identityʳ
+```
+
+### 40.2 ★ 零重复（§39 普查的红利）
+
+| 字段 | 来源 | 新写 |
+|---|---|---|
+| `assoc` | stdlib `zipWith-assoc` + `*gf9-assoc` | 1 行 |
+| `zeroˡ/ʳ` | stdlib `zipWith-identityˡ/ʳ` + `*gf9-identityˡ/ʳ` | 2 行 |
+| `check` | 复用 `zeroʳ` | 0 行 |
+| `rigidity` | `map galoisConjugate`（现成 ✓）| 1 行 |
+| `α-four` | GF9 的 9 个构造子 | 9 行（全 `refl`）|
+| `phase-cycle` / `clock-cycle` | 直接归纳（避开 funext）| 10 行 |
+
+### 40.3 ★ 关键技术决定：`Vec` 而非函数类型
+
+```
+Presentation.assoc : ∀ x y z → step (step x y) z ≡ step x (step y z)
+  载体若是 `Torus n → GF9` ⇒ 需要函数相等 ⇒ 必须 funext ✗（本项目无 funext ✗）
+  载体取 `Vec GF9 (3^n)` ⇒ ≡ 是结构相等 ⇒ 无 funext ✓
+  两者同构（均 3^n 个 GF9 值）⇒ 数学对象不变 ✓
+```
+
+### 40.4 ⚠ 又发现并修复一个工具 bug
+
+`engineering/index_presentations.sh` 的实例 pattern 是 `: Presentation ` ✗
+⇒ **漏检带参数的实例** ✗（`RnPresentation : (n : ℕ) → Presentation (R n)` ✗）
+
+**修复**：pattern 扩展为 `(:|→) *Presentation *` ✓
+**修复后**：`发现 2 个 Presentation 实例` ✓（两个都「字段齐全 13/13」✓）
+
+### 40.5 T4 最终完整状态
+
+| 项 | 状态 | 回执 |
+|---|---|---|
+| **`a_n = Σ_{k≡0(3)} C(n,k)·2^k`** | ✅ Agda | `da832222` |
+| **`b_n = a_n − [3\|n]·2^n`** | ✅ Agda | `da832222` |
+| **`q_n = 0`（`ker F ∩ im F = 0`）** | ✅ Agda | `4dcfbb13` |
+| **`R_n` 的八要素实例** | ✅ Agda | **`3c86c3a5`** |
+| `a_n` 3 项递推 / 奇数支闭式 | ✅ Agda | `bab98d0f` / `a7cd6770` |
+
+⇒ **T4 的四个量（`a_n`/`b_n`/`q_n`/八要素）全部是 Agda 定理** ✓ ✓
+
+### 40.6 ★ 本会话的方法论总账（五次「判据/查法」类错误与纠正）
+
+| # | 我的错 | 纠正 |
+|---|---|---|
+| 1 | 用「元素个数」当八要素判据 ✗ | **特征 3 + 代数刚性 + 自同构** ✓ |
+| 2 | `bash grep "record Subspace"` 判「库内无」✗ | **DSH grep 查到 `Basis`/`GF3RankNullity`** ✓ |
+| 3 | 以为「全库第一个 Presentation」✗ | **`Presentation.agda:131` 早已有** ✗ |
+| 4 | 索引工具硬编码路径失效 ✗ | 自动定位 ✓ |
+| 5 | 索引工具 pattern 太窄 ✗ | 扩展 `(:|→)` ✓ |
+
+> **教训共同点：先查（用对工具/正确判据）再断言** ✓
+> 一次判据错 ⇒ 整条路线判废 ✗（本会话为此绕了 ~5 轮）
