@@ -496,7 +496,10 @@ open import Sovereign.Algebra.GroupTheory.DayanState
 -- ② 生成元：`dayanN-init`（立天元一于左上）                      ✓ §2
 -- ③ 关系：`dayanN-step`（递互除乘，模加版）                      ✓ §3
 -- ④ 相位：四格轮转（(lt,lb) 与 (rt,rb) 的递互对换）              ✓ §4 注
--- ⑤ 时钟：迭代到 rt ≡ 1；整术终止性（rt 严格递减）**未证**        ⚠ 缺口
+-- ⑤ 时钟：迭代到 rt ≡ 1；整术终止性 —— **已证**（原标「未证 ⚠ 缺口」已过期）：
+--    见 `Sovereign.Algebra.GroupTheory.DayanTermination`（`right-top` 严格递减
+--    `right-top (dayan-step s) = right-bottom s % right-top s < right-top s` + ℕ 良基归纳，
+--    0 postulate）；台账节点 `FORMAL.dayan-halts`。本模块只需引用该结论。
 -- ⑥ 归零：`rt ≡ 1`（奇一而止）⟹ 乘率性质                        ✓ 义务③
 -- ⑦ 刚性：不变量 `Inv`（lt·奇 ≡ rt ∧ lb·奇 ≡ rb）                ✓ 义务②
 -- ⑧ 核对：refl 实例 (3,5) ＋ 定理实例交叉比对                    ✓ §6
