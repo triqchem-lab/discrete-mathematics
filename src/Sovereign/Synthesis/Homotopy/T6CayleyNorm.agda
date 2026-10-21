@@ -37,10 +37,11 @@ module Sovereign.Synthesis.Homotopy.T6CayleyNorm where
 open import Data.Nat using (ℕ)
 open import Data.List using ([]; _∷_; reverse; [_])
 open import Relation.Nullary using (yes; no)
+open import Data.Empty using (⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode
-  using (CStep; CWalk; cstep-inv; DecEq-CStep)
+  using (CStep; CWalk; cplus; cminus; cstep-inv; DecEq-CStep)
 
 --------------------------------------------------------------------------------
 -- §1. ★ 栈式单遍归约（**结构递归**，无 `fuel`）
@@ -71,12 +72,29 @@ creduceA-single : ∀ {n : ℕ} (x : CStep n) → creduceA [ x ] ≡ [ x ]
 creduceA-single x = refl
 
 --------------------------------------------------------------------------------
--- §3. ⚠ 本模块**不**声称的（如实标注；这些都不是「顺手就能做」）
+-- §3. ★★ 消去律：栈顶互逆的一对**确实被消掉**
 --
--- ① **消去律**：`creduceA ((cstep-inv y) ∷ y ∷ xs) ≡ creduceA xs`
---    —— 需要 `DecEq-CStep s s ≡ yes refl`（判定器在自反处的行为），
---       而 `DecEq-CStep` 是经 `Fin._≟_` 定义的 ⇒ 需要 `Fin` 的对应引理。
---    **未证**。
+-- 关键：`cstep-inv` **定义性**地对合（两构造子直接计算）
+-- ⇒ `DecEq-CStep y (cstep-inv (cstep-inv y))` 就是 `DecEq-CStep y y`，
+--   于是 `yes` 分支**定义性**地给出目标，`no` 分支被 `¬p refl` 排空 ✓
+--   （**不需要**「判定器在自反处返回 `yes refl`」这条更强的性质。）
+--------------------------------------------------------------------------------
+
+creduceA-cancel : ∀ {n : ℕ} (y : CStep n) (xs : CWalk n)
+                → creduceA (cstep-inv y ∷ y ∷ xs) ≡ creduceA xs
+-- ⚠ 必须先按构造子分情形：`cstep-inv` 对**变量**卡住（无法归约），
+--   只有对构造子应用才归约出 `cstep-inv (cstep-inv y) = y` ✓
+creduceA-cancel (cplus j) xs with DecEq-CStep (cplus j) (cplus j)
+... | yes _ = refl
+... | no  ¬p = ⊥-elim (¬p refl)
+creduceA-cancel (cminus j) xs with DecEq-CStep (cminus j) (cminus j)
+... | yes _ = refl
+... | no  ¬p = ⊥-elim (¬p refl)
+
+--------------------------------------------------------------------------------
+-- §4. ⚠ 本模块**不**声称的（如实标注；这些都不是「顺手就能做」）
+--
+-- ① **消去律** —— ✅ **已证（见 §3 `creduceA-cancel`）**
 -- ② **范式性**：`creduceA` 的输出不含相邻逆对。**未证**。
 -- ③ **幂等 / 范式唯一**。**未证**。
 -- ④ **语义正确**：`creduceA` 不改变 `foldT`（`T6CayleyCodeWalk`）的终点。**未证**。
