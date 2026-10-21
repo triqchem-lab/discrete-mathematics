@@ -81,7 +81,7 @@ universeSize = 10
 -- §2. 离散替代载体
 --
 -- 每个连续概念映射到一个离散类型 (GF(3) 结构)。
--- 未完成的用 ⊤ 占位。
+-- ⚠ 原写「未完成的用 ⊤ 占位」——**已过期**：10 个载体全部具体化（见 §2/§3 与 §6 的 `completionStatus`）。
 --------------------------------------------------------------------------------
 
 DiscreteCarrier : ContinuousConcept → Set
@@ -173,7 +173,7 @@ completeness-theorem c = record
 
 data CompletionStatus : Set where
   Complete   : CompletionStatus  -- 已有实际离散载体
-  Incomplete : CompletionStatus  -- Unit 占位, 待构造
+  Incomplete : CompletionStatus  -- 状态标记：该概念的载体仍为占位（当前 10 个概念均非此类）
 
 completionStatus : ContinuousConcept → CompletionStatus
 completionStatus Derivative         = Complete
