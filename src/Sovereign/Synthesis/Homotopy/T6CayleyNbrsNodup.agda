@@ -32,10 +32,12 @@ open import Data.List.Membership.Propositional using (_∈_; _∉_)
 open import Data.List.Relation.Unary.Any using (here; there)
 open import Data.Fin using (Fin)
 open import Relation.Nullary using (¬_)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; subst)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt)
-open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (nbrsFrom)
+open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (nbrsFrom; allFinD; neighbours)
+open import Sovereign.Synthesis.Homotopy.T6CayleyVecOther
+  using (updAt-neq-other; updAt-neq-other2)
 
 --------------------------------------------------------------------------------
 -- §1. ★★ 主定理：表里的元素都「与已枚举坐标有关」
@@ -55,3 +57,20 @@ nbrsFrom-not-in x (k ∷ ks) y h1 h2 (there (there q)) =
     (λ j m → h1 j (there m))
     (λ j m → h2 j (there m))
     q
+--------------------------------------------------------------------------------
+-- §2. ★★ 可直接用的推论：`allFinD` 之外的坐标，其邻居**不在**表里
+--
+-- ★ 关键（探针实测）：`∉-to-≢` 的**函数体**必须显式写 `{n}`
+--   （`∉-to-≢ {n} j i …`）—— 否则 `n` 不在作用域（这就是先前连挂 6 次的原因）。
+--------------------------------------------------------------------------------
+
+∉-to-≢ : ∀ {n : ℕ} (j i : Fin n) → j ∉ allFinD n → i ∈ allFinD n → j ≢ i
+∉-to-≢ {n} j i j∉ i∈ j≡i = j∉ (subst (λ z → z ∈ allFinD n) (sym j≡i) i∈)
+
+neighbours-not-in : ∀ {n : ℕ} (x : T6Vec n) (j : Fin n)
+                  → j ∉ allFinD n → updAt j x ∉ neighbours x
+neighbours-not-in {n} x j j∉ =
+  nbrsFrom-not-in x (allFinD n) (updAt j x)
+    (λ i i∈ → updAt-neq-other  j i x (∉-to-≢ {n} j i j∉ i∈))
+    (λ i i∈ → updAt-neq-other2 j i x (∉-to-≢ {n} j i j∉ i∈))
+
