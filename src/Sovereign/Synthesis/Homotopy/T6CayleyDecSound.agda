@@ -29,10 +29,19 @@ module Sovereign.Synthesis.Homotopy.T6CayleyDecSound where
 
 open import Data.Nat using (ℕ)
 open import Data.Empty using (⊥-elim)
-open import Relation.Nullary using (yes; no)
+open import Relation.Nullary using (yes; no; ¬_)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
-open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec; findEdgeDec)
+open import Data.List using (List; []; _∷_)
+open import Data.List.Membership.Propositional using (_∈_)
+open import Data.List.Relation.Unary.Any using (here; there)
+open import Data.Fin using (Fin)
+import Data.Fin as Fin
+open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Data.Nat using (ℕ)
+open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (allFinD; ∈-allFinD)
+open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec; decAt; decAt2; findEdgeDec; scanDec; P1; P2; _∉_; ∉-cons)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6SymEdge)
 open import Sovereign.Synthesis.Homotopy.T6AStepCode2 using (TSet; StepCode)
 open import Sovereign.Synthesis.Homotopy.T6AStepMap using (StepVertex)
@@ -102,3 +111,9 @@ findEdgeDec-sound : ∀ {n : ℕ} (x y : T6Vec n) → TSet (findEdgeDec x y) →
 findEdgeDec-sound x y h with findEdgeDec x y
 ... | yes p = p
 ... | no  _ = ⊥-elim h
+
+-- ★ 完备性（同一个 `with` 技巧）：`no q` 支的 `q` 就是否命题 ⇒ 作用于 `h`
+findEdgeDec-complete : ∀ {n : ℕ} (x y : T6Vec n) → T6SymEdge x y → TSet (findEdgeDec x y)
+findEdgeDec-complete x y h with findEdgeDec x y
+... | yes p = p
+... | no  q = ⊥-elim (q h)

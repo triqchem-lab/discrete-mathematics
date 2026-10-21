@@ -43,7 +43,7 @@ open import Data.Vec.Properties using (≡-dec)
 open import Data.List using (List; []; _∷_)
 open import Data.Nat using (zero; suc)
 open import Data.List using (map)
-open import Data.Sum using (inj₁; inj₂)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product using (Σ; _,_)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
@@ -195,27 +195,33 @@ x ∉ xs = x ∈ xs → ⊥
 ∉-cons x≢y x∉xs (here refl) = x≢y refl
 ∉-cons x≢y x∉xs (there m)   = x∉xs m
 
-findEdgeDec : ∀ {n : ℕ} (x y : T6Vec n) → Dec (T6SymEdge x y)
-findEdgeDec {n} x y = go (allFinD n) inv0
+-- 扫描主体（提到顶层，便于对它做归纳）
+scanDec : ∀ {n : ℕ} (x y : T6Vec n) (rest : List (Fin n))
+        → (∀ j → j ∈ allFinD n → j ∉ rest → (¬ P1 x y j) × (¬ P2 x y j))
+        → Dec (T6SymEdge x y)
+scanDec x y [] inv =
+  no λ { (inj₁ (j , p)) → proj₁ (inv j (∈-allFinD j) (λ ())) p
+       ; (inj₂ (j , q)) → proj₂ (inv j (∈-allFinD j) (λ ())) q }
+scanDec {n} x y (k ∷ ks) inv with decAt k x y | decAt2 k x y
+... | yes p  | _      = yes (inj₁ (k , p))
+... | no ¬p  | yes q  = yes (inj₂ (k , q))
+... | no ¬p  | no ¬q  = scanDec x y ks inv'
   where
-    inv0 : ∀ j → j ∈ allFinD n → j ∉ allFinD n → ¬ (P1 x y j) × ¬ (P2 x y j)
+    inv' : ∀ j → j ∈ allFinD n → j ∉ ks → (¬ P1 x y j) × (¬ P2 x y j)
+    inv' j j∈all j∉ks with j Fin.≟ k
+    ... | yes refl = ¬p , ¬q
+    ... | no  j≢k  = inv j j∈all (∉-cons j≢k j∉ks)
+
+findEdgeDec : ∀ {n : ℕ} (x y : T6Vec n) → Dec (T6SymEdge x y)
+findEdgeDec {n} x y = scanDec x y (allFinD n) inv0
+  where
+    inv0 : ∀ j → j ∈ allFinD n → j ∉ allFinD n → (¬ P1 x y j) × (¬ P2 x y j)
     inv0 j _ j∉ = ⊥-elim (j∉ (∈-allFinD j))
 
-    go : (rest : List (Fin n))
-       → (∀ j → j ∈ allFinD n → j ∉ rest → ¬ (P1 x y j) × ¬ (P2 x y j))
-       → Dec (T6SymEdge x y)
-    go [] inv =
-      no λ { (inj₁ (j , p)) → proj₁ (inv j (∈-allFinD j) (λ ())) p
-           ; (inj₂ (j , q)) → proj₂ (inv j (∈-allFinD j) (λ ())) q }
-    go (k ∷ ks) inv with decAt k x y | decAt2 k x y
-    ... | yes p  | _      = yes (inj₁ (k , p))
-    ... | no ¬p  | yes q  = yes (inj₂ (k , q))
-    ... | no ¬p  | no ¬q  = go ks inv'
-      where
-        inv' : ∀ j → j ∈ allFinD n → j ∉ ks → ¬ (P1 x y j) × ¬ (P2 x y j)
-        inv' j j∈all j∉ks with j Fin.≟ k
-        ... | yes refl = ¬p , ¬q
-        ... | no  j≢k  = inv j j∈all (∉-cons j≢k j∉ks)
+--------------------------------------------------------------------------------
+-- 完备性（**只要存在边，扫描一定说 `yes`**）的证明放在 `T6CayleyDecSound` §5 ——
+-- 那里已经 import 了 `TSet`（`Dec` 的反射型），避免本模块反向依赖 `T6AStepCode2` 造成层序倒置。
+--------------------------------------------------------------------------------
 
 -- 可靠性（`findEdgeDec-sound`）放在 `T6CayleyDecSound`（那里已 import `TSet`，
 -- 避免本模块反向依赖 `T6AStepCode2` 造成层序倒置）。
