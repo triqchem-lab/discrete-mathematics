@@ -35,12 +35,13 @@ open import Data.List using ([]; _∷_)
 open import Data.Fin using (zero)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt)
+open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt; updAt-cubed)
+open import Relation.Binary.PropositionalEquality using (sym; cong)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CStep; CWalk; cplus; cminus)
 open import Sovereign.Synthesis.Homotopy.T6CayleyNorm using (creduceA)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (foldT; ctarget)
 open import Sovereign.Synthesis.Homotopy.T6CayleyInterp
-  using (interpAt; x1; stepE1; stepE2; stepE3; side-ok)
+  using (interpAt; x1; stepE1; stepE2; stepE3; side-ok; toStep)
 open import Sovereign.Synthesis.Homotopy.T6AStepCodeMap using (toStepExpand)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym)
 open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_; AStep)
@@ -142,3 +143,28 @@ step-1e : AStep (T6CayleySym 1)
                     (cons (stepE2 x1 [] (cplus zero) (cplus zero))
                           (interpAt (ctarget (ctarget x1 (cplus zero)) (cplus zero)) []))))
 step-1e = toStepExpand x1 [] (cplus zero) (cplus zero) (cminus zero) [] side-ok
+
+--------------------------------------------------------------------------------
+-- §6. ★★ ④ 的**混合方向**具体点（`s1`/`s2` 取 `cminus`，此前只验过 `cplus`）
+--
+-- 此前 `step-1`/`step-1e` 都取 `s1 = s2 = cplus`、`s3 = cminus`
+-- ⇒ **`cminus` 在 `s1`/`s2` 位置从未被具体点验过** ✗
+--
+-- 本批取 `s1 = s2 = cminus`、`s3 = cplus`：
+--   `y = x−2e`、`z = y−2e = x−4e = x+e`（因 `3e = 0`），而 `ctarget x (cplus 0) = x+e` ✓
+-- ⇒ 侧条件成立，但**不是 `refl`**（要靠 `updAt-cubed` 推），所以单独立一条。
+--------------------------------------------------------------------------------
+
+side-m : ctarget x1 (cplus zero)
+       ≡ ctarget (ctarget x1 (cminus zero)) (cminus zero)
+side-m = sym (cong (updAt zero) (updAt-cubed zero x1))
+
+step-1m : AStep (T6CayleySym 1)
+            (interpAt x1 [] ++w
+              (cons (stepE1 x1 [] (cminus zero))
+                    (cons (stepE2 x1 [] (cminus zero) (cminus zero))
+                          (interpAt (ctarget (ctarget x1 (cminus zero)) (cminus zero)) []))))
+            (interpAt x1 [] ++w
+              (cons (stepE3 x1 [] (cplus zero) side-m)
+                    (interpAt (ctarget (ctarget x1 (cminus zero)) (cminus zero)) [])))
+step-1m = toStep x1 [] (cminus zero) (cminus zero) (cplus zero) [] side-m
