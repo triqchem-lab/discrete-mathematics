@@ -33,7 +33,7 @@ open import Data.Fin using (Fin)
 import Data.Fin as Fin
 open import Data.Empty using (⊥; ⊥-elim)
 
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans; cong₂)
 
 -- `false ≢ true`（本地一行，避开 stdlib 命名差异）
 true≢false : true ≢ false
@@ -161,3 +161,17 @@ countᵐ-empty {n = suc m} = countᵐ-empty {n = m}
 countᵐ-full : ∀ {n} → countᵐ (⊤ᵐ {n}) ≡ n
 countᵐ-full {n = zero}  = refl
 countᵐ-full {n = suc m} = cong suc (countᵐ-full {n = m})
+
+--------------------------------------------------------------------------------
+-- §8. ★ 良定义性：测度只依赖**集合**，不依赖表示
+--
+-- `countᵐ` 是特征函数上的函数；若两个特征函数逐点相等（同一个集合），测度必相等。
+-- 这是「测度是集合的函数」这条最基本的要求。
+--------------------------------------------------------------------------------
+
+countᵐ-cong : ∀ {n} (P Q : Count n) → (∀ i → P i ≡ Q i) → countᵐ P ≡ countᵐ Q
+countᵐ-cong {n = zero}  P Q _ = refl
+countᵐ-cong {n = suc m} P Q e =
+  cong₂ _+_
+        (cong (λ b → if b then 1 else 0) (e Fin.zero))
+        (countᵐ-cong (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i)) (λ i → e (Fin.suc i)))
