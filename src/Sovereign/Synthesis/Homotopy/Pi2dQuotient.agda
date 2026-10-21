@@ -59,7 +59,7 @@ open DiGraph using (V)
 open import Sovereign.Synthesis.Homotopy.Omega2 using (Ω2Walk; nil2; _++2_)
 open import Sovereign.Synthesis.Homotopy.Omega3 using (Ω3Walk)
 open import Sovereign.Synthesis.Homotopy.Omega3Plus using (Ω3Walk⁺; embed3)
-open import Sovereign.Synthesis.Homotopy.Omega3Suffix using (whisk-resp)
+open import Sovereign.Synthesis.Homotopy.Omega3Suffix using (whisk-resp; suffix-resp)
 
 --------------------------------------------------------------------------------
 -- §1. 两个商
@@ -130,3 +130,34 @@ addL p = rec (λ a b → squash/ a b)
 addL-nil2 : ∀ {G : DiGraph} {x : V G} {w1 w2 : Walk G x x}
             (q : π₂ᵈ⁺-hom G x w1 w2) → addL (nil2 w1) q ≡ q
 addL-nil2 = elimProp (λ q → squash/ _ _) (λ c → refl)
+
+--------------------------------------------------------------------------------
+-- §6. ★★ 右类作用（良定义性靠 `suffix-resp`）
+--
+-- `addR e [ c ] = [ c ++2 e ]`；良定义要证
+--   `Ω3Walk⁺ a b ⇒ Ω3Walk⁺ (a ++2 e) (b ++2 e)` —— 正是 `Omega3Suffix.suffix-resp` ✓
+--
+-- 与 `addL` 对偶：**左作用靠左缘饰、右作用靠右缘饰**。
+--------------------------------------------------------------------------------
+
+addR : ∀ {G : DiGraph} {x : V G} {w1 w2 w3 : Walk G x x}
+       (e : Ω2Walk G x w2 w3)
+     → π₂ᵈ⁺-hom G x w1 w2 → π₂ᵈ⁺-hom G x w1 w3
+addR e = rec (λ a b → squash/ a b)
+             (λ c → [ c ++2 e ])
+             (λ a b h → eq/ (a ++2 e) (b ++2 e) (suffix-resp e h))
+
+--------------------------------------------------------------------------------
+-- §7. ⬜ 未做（如实标注）
+--
+-- `addR` 的**单位律** `addR (nil2 _) q ≡ q` **未证**，原因是一个真实的**跨世界摩擦**：
+--   `c ++2 nil2 _ ≡ c` 是 **命题相等**（`Omega2.++2-nilR`，`propEq`），
+--   而商 `π₂ᵈ⁺` 的类相等是 **Cubical 路径**。
+--   要让 `[ c ++2 nil2 _ ] ≡ [ c ]` 成立，需要把 propEq 转成 path ——
+--   库内没有这条桥（`addL-nil2` 能证是因为 `nil2 _ ++2 c = c` 在 `_++2_` 的**定义**里就成立，
+--   是**定义相等**，两边直接是同一个项 ⇒ `refl` ✓）。
+--
+-- ⇒ 这是「`_++2_` 的右单位律是命题的而非定义的」的后果，
+--   要补则需要 `propEq → Cubical path` 的桥（或改 `_++2_` 的定义形状）。
+--   **不是 K 墙，不是 `SetQuotient` 的缺口**，是两种相等世界的接口缺失。
+--------------------------------------------------------------------------------

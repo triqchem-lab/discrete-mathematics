@@ -53,15 +53,16 @@
 
 module Sovereign.Synthesis.Homotopy.Omega3Suffix where
 
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Relation.Binary.PropositionalEquality
+  using (_≡_; refl; sym; cong; trans)
 open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy
   using (DiGraph; Walk; AStep)
 open DiGraph using (V)
 open import Sovereign.Synthesis.Homotopy.Omega2
-  using (Ω2Walk; nil2; cons2; _++2_)
-open import Sovereign.Synthesis.Homotopy.Omega3 using (invAStep)
+  using (Ω2Walk; nil2; cons2; _++2_; ++2-assoc)
+open import Sovereign.Synthesis.Homotopy.Omega3 using (invAStep; fill-tri)
 open import Sovereign.Synthesis.Homotopy.Omega3Plus
-  using (Ω3Step⁺; Ω3Walk⁺; refl3+; symm3+; trans3+; gen3+; whisk3; bub3; bub; embed3)
+  using (Ω3Step⁺; Ω3Walk⁺; refl3+; symm3+; trans3+; gen3+; base3+; whisk3; bub3; bub; embed3)
 
 --------------------------------------------------------------------------------
 -- §1. 尊重性条件（商 `rec` 的前提形 —— 定义，不是定理）
@@ -95,3 +96,55 @@ suffix-base3 : ∀ {G : DiGraph} {x : V G} {w w' w2 : Walk G x x}
                (s : AStep G w w') (c₂ : Ω2Walk G x w w2)
              → Ω3Walk⁺ G x (cons2 s (cons2 (invAStep s) c₂)) c₂
 suffix-base3 s c₂ = gen3+ (bub3 (nil2 _) s c₂)
+
+--------------------------------------------------------------------------------
+-- §4. 索引运输（`++2-assoc` 的命题等式要运输 `Ω3Step⁺` / `Ω3Walk⁺`）
+--------------------------------------------------------------------------------
+
+subst₂-Ω3Step⁺ : ∀ {G : DiGraph} {x : V G} {w1 w2 : Walk G x x}
+                  {a a' b b' : Ω2Walk G x w1 w2}
+               → a ≡ a' → b ≡ b' → Ω3Step⁺ G x a b → Ω3Step⁺ G x a' b'
+subst₂-Ω3Step⁺ refl refl z = z
+
+subst₂-Ω3Walk⁺ : ∀ {G : DiGraph} {x : V G} {w1 w2 : Walk G x x}
+                  {a a' b b' : Ω2Walk G x w1 w2}
+               → a ≡ a' → b ≡ b' → Ω3Walk⁺ G x a b → Ω3Walk⁺ G x a' b'
+subst₂-Ω3Walk⁺ refl refl z = z
+
+--------------------------------------------------------------------------------
+-- §5. ★★ 步层右缘饰：`Ω3Step⁺` 在 `_++2 e` 下稳定
+--
+-- 三情形：
+--   · `base3+` —— **定义性**由 `bub3` 给出（`(nil2 ++2 bub s) ++2 e = bub s ++2 e` ✓）
+--   · `whisk3` —— 归纳 + 两次 `++2-assoc` 运输
+--   · `bub3`   —— 归纳体 `bub3 c₁ s (c₂ ++2 e)` + 两次 `++2-assoc` 运输
+--------------------------------------------------------------------------------
+
+suffix-step : ∀ {G : DiGraph} {x : V G} {w1 w2 w3 : Walk G x x}
+              {c c' : Ω2Walk G x w1 w2} (e : Ω2Walk G x w2 w3)
+            → Ω3Step⁺ G x c c' → Ω3Step⁺ G x (c ++2 e) (c' ++2 e)
+
+suffix-step e (base3+ (fill-tri s)) = bub3 (nil2 _) s e
+
+suffix-step e (whisk3 c₁ {c} {c'} st) =
+  subst₂-Ω3Step⁺ (sym (++2-assoc c₁ c e)) (sym (++2-assoc c₁ c' e))
+                 (whisk3 c₁ (suffix-step e st))
+
+suffix-step e (bub3 c₁ {wm'} s c₂) =
+  subst₂-Ω3Step⁺ (sym (++2-assoc (c₁ ++2 bub s) c₂ e))
+                 (sym (++2-assoc c₁ c₂ e))
+                 (bub3 c₁ s (c₂ ++2 e))
+
+--------------------------------------------------------------------------------
+-- §6. ★★ 闭包层右缘饰：`Ω3Walk⁺` 在 `_++2 e` 下稳定（四情形）
+--
+-- 与 `whisk-resp` 完全同构 —— `gen3+` 情形由 §5 的 `suffix-step` 给出。
+--------------------------------------------------------------------------------
+
+suffix-resp : ∀ {G : DiGraph} {x : V G} {w1 w2 w3 : Walk G x x}
+              {c c' : Ω2Walk G x w1 w2} (e : Ω2Walk G x w2 w3)
+            → Ω3Walk⁺ G x c c' → Ω3Walk⁺ G x (c ++2 e) (c' ++2 e)
+suffix-resp e (refl3+ c)      = refl3+ (c ++2 e)
+suffix-resp e (symm3+ h)      = symm3+ (suffix-resp e h)
+suffix-resp e (trans3+ h1 h2) = trans3+ (suffix-resp e h1) (suffix-resp e h2)
+suffix-resp e (gen3+ st)      = gen3+ (suffix-step e st)
