@@ -305,10 +305,17 @@ aetherChernIs2 = refl
 aetherEnergyGap : ℤ
 aetherEnergyGap = + 1
 
--- [Physical] 能隙 Δ² = 3 在中国剩余定理(CRT)域中成立。
--- 在 ℤ 上 aetherEnergyGap *ℤ aetherEnergyGap ≡ + 3 显然不成立
--- （+1 *ℤ +1 = +1 ≠ +3），但在 CRT 模空间中，值经过模约化后该等式成立。
--- 此处 +1 是 ℤ 上的占位符，真实值需在模 SOVEREIGN_LCM 的剩余类环中解释。
+-- [Physical] 能隙 Δ² = 3 的**物理动机**（实验锚定见下三条注释）。
+--
+-- ⚠⚠ [2026-10-22 内核核验] 下方 postulate **在当前形式下为假**，本模块因此**不一致**：
+--   · `aetherEnergyGap = + 1`，故该 postulate 等价于 `+ 1 ≡ + 3`；
+--   · 内核可证其否定：`(+ 1) ≢ (+ 3)`（`()` 一行，探针 exit 0）。
+--   · **且不存在非平凡模使它成立**：`+1 ≡ +3 (mod n)` ⇔ `n | 2`，
+--     而本库 `SOVEREIGN_LCM = 3^11 × 2^16` **不整除 2** —— 故原注释里
+--     「在 CRT 模空间中值经模约化后成立」这句**也是错的**（已删除）。
+-- ⇒ 处置待人类裁决（proof_dag 流水 1817，候选：改陈述到重新选定的模环 /
+--   删 postulate 并同步 bundle 与 README / 改登记为 gap）。
+--   **不要**把本 postulate 当作「合法的物理桥接公理」引用。
 --
 -- [Experimental] Protocol C.1/C.2 已验证：100W + Q=3000 → FOM=0.3103，
 -- 即 √3 信号在极端条件下持续存在。但此处的 ℤ 编码（+1）是 CRT 占位，
