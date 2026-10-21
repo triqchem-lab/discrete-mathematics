@@ -157,6 +157,7 @@ shuffle = solve 3
 
 open import Data.Nat.Properties using
   ( +-cancelʳ-≡; +-suc; +-identityʳ; *-identityʳ; *-comm
+  ; *-assoc; *-distribˡ-+
   ; ^-distribˡ-+-*; ^-distribʳ-* )
 
 -- ①a 显式展开（互递归定义不会自动展开 ⇒ 用 `C0-step` 等重写）
@@ -277,52 +278,88 @@ E-three = refl
 --------------------------------------------------------------------------------
 -- ⑤ ★★★ 偶子序列闭式（分奇偶，联合归纳，全 ℕ）
 --
---   ★E-even k : `3·C0(4k) ≡ 9^(2k) + 2·3^(2k)`
---   ★E-odd  k : `3·C0(4k+2) + 2·3^(2k+1) ≡ 9^(2k+1)`
---
--- 推导（都用 `+` 保持两侧，无减法）：
---   even(k) + C0-even-step(2k)  ⇒ odd(k)
---   odd(k)  + C0-even-step(2k+1) ⇒ even(k+1)
+-- 分层原则（2026-10-21，见 memory §15）：
+--   · 需要**应用到复合参数**的引理 ⇒ `*-assoc`/`*-distrib`（透明 ✓）
+--   · **裸变量**线性重排 ⇒ Ring solver ✓
 --------------------------------------------------------------------------------
 
--- `4k ≡ 2k + 2k`
-4k=2k+2k : ∀ k → 2 * (2 * k) ≡ 2 * k + 2 * k
-4k=2k+2k = solve 1 (λ k → con 2 :* (con 2 :* k) := con 2 :* k :+ con 2 :* k) refl
+-- ① 透明代数引理（可应用到复合参数）
+a-34 : ∀ N → 3 * (4 * N) ≡ 12 * N
+a-34 N = sym (*-assoc 3 4 N)
 
--- `9^(2k) ≡ 3^(2k) * 3^(2k)`
-9^2k : ∀ k → 9 ^ (2 * k) ≡ (3 ^ (2 * k)) * (3 ^ (2 * k))
-9^2k k =
-  trans (★9-pow (2 * k))
-        (trans (cong (3 ^_) (4k=2k+2k k))
-               (^-distribˡ-+-* 3 (2 * k) (2 * k)))
+a-3A : ∀ A B → 3 * A + 9 * B ≡ 3 * (A + 3 * B)
+a-3A A B =
+  sym (trans (*-distribˡ-+ 3 A (3 * B))
+             (cong (3 * A +_) (sym (*-assoc 3 3 B))))
 
--- `3^(2k+2) ≡ 9 * 3^(2k)`
-3^2k+2 : ∀ k → 3 ^ (2 * k + 2) ≡ 9 * (3 ^ (2 * k))
-3^2k+2 k =
-  trans (^-distribˡ-+-* 3 (2 * k) 2)
-        (*-comm (3 ^ (2 * k)) (3 ^ 2))
+a-9B : ∀ B K → 9 * B + 6 * K ≡ 3 * (3 * B + 2 * K)
+a-9B B K =
+  sym (trans (*-distribˡ-+ 3 (3 * B) (2 * K))
+             (cong₂ _+_ (sym (*-assoc 3 3 B)) (sym (*-assoc 3 2 K))))
 
--- 2·3^(2k+1) ≡ 6·3^(2k)
-2*3^odd : ∀ k → 2 * (3 ^ (2 * k + 1)) ≡ 6 * (3 ^ (2 * k))
-2*3^odd k =
-  trans (cong (λ z → 2 * z) (★3-pow k))
-        (solve 1 (λ x → con 2 :* (con 3 :* x) := con 6 :* x) refl (3 ^ (2 * k)))
+-- ② 裸变量线性重排（solver）
+b-rot : ∀ a b c → a + b + c ≡ a + (c + b)
+b-rot = solve 3 (λ a b c → a :+ b :+ c := a :+ (c :+ b)) refl
+
+b-4N : ∀ N → 4 * N ≡ 3 * N + N
+b-4N = solve 1 (λ N → con 4 :* N := con 3 :* N :+ N) refl
+
+b-assoc : ∀ a b c → a + (b + c) ≡ (a + b) + c
+b-assoc = solve 3 (λ a b c → a :+ (b :+ c) := (a :+ b) :+ c) refl
+
+b-9N3N : ∀ N → 12 * N ≡ 9 * N + 3 * N
+b-9N3N = solve 1 (λ N → con 12 :* N := con 9 :* N :+ con 3 :* N) refl
+
+b-12 : ∀ N K → 12 * N + 6 * K ≡ (9 * N + 6 * K) + 3 * N
+b-12 = solve 2 (λ N K → con 12 :* N :+ con 6 :* K := (con 9 :* N :+ con 6 :* K) :+ con 3 :* N) refl
+
+-- ③ ★★ 抽象引理
+
+-- odd：`A + 3B ≡ 12N`，`3B ≡ 3N + 6G`  ⇒  `A + 6G ≡ 9N`
+abstract-odd : ∀ A B N G →
+  A + 3 * B ≡ 12 * N → 3 * B ≡ 3 * N + 6 * G → A + 6 * G ≡ 9 * N
+abstract-odd A B N G hrec hB =
+  cancel (A + 6 * G) (9 * N) (3 * N)
+    (trans (b-rot A (6 * G) (3 * N))
+           (trans (cong (A +_) (sym hB))
+                  (trans hrec (b-9N3N N))))
+
+-- even：`A + 3B ≡ 4N`，`3B + 2K ≡ N`  ⇒  `3A ≡ 9N + 6K`
+abstract-even : ∀ A B N K →
+  A + 3 * B ≡ 4 * N → 3 * B + 2 * K ≡ N → 3 * A ≡ 9 * N + 6 * K
+abstract-even A B N K hrec hbk =
+  cancel (3 * A) (9 * N + 6 * K) (3 * N)
+    (trans (cong (λ z → 3 * A + z) (sym (x2 B N K hbk)))
+           (trans (b-assoc (3 * A) (9 * B) (6 * K))
+                  (trans (cong (λ z → z + 6 * K) (x1 A B N hrec))
+                         (b-12 N K))))
+  where
+    x1 : ∀ A B N → A + 3 * B ≡ 4 * N → 3 * A + 9 * B ≡ 12 * N
+    x1 A B N h = trans (a-3A A B) (trans (cong (3 *_) h) (a-34 N))
+
+    x2 : ∀ B N K → 3 * B + 2 * K ≡ N → 9 * B + 6 * K ≡ 3 * N
+    x2 B N K h = trans (a-9B B K) (cong (3 *_) h)
 
 --------------------------------------------------------------------------------
--- ⑤ ⚠ 偶子序列的**闭式**（未完成，诚实标注）
+-- ⑥ ⚠ 代入（未完成 —— 差一个 elaboration 问题）
 --
--- 目标（分奇偶，全 ℕ）：
---   ★E-even k : `3·C0(4k) ≡ 9^(2k) + 2·3^(2k)`
---   ★E-odd  k : `3·C0(4k+2) + 2·3^(2k+1) ≡ 9^(2k+1)`
---   联合归纳（even(k) + C0-even-step(2k) ⇒ odd(k)；odd(k) + C0-even-step(2k+1) ⇒ even(k+1)）
+-- ✅ **数学核心已完成**：`abstract-odd` / `abstract-even` 两条抽象引理已证
+--    它们把整个归纳步归结为纯 ℕ 线性代数（裸变量，solver + cancel）：
+--      abstract-odd  : A + 3B ≡ 12N → 3B ≡ 3N + 6G →  A + 6G ≡ 9N
+--      abstract-even : A + 3B ≡ 4N  → 3B + 2K ≡ N    →  3A ≡ 9N + 6K
 --
--- ✅ 已完成的前置（都在上面，全部编译通过）：
---   ★C0-even-step : `C0(2m+2) + 3·C0(2m) ≡ 4·9^m`        ✓
---   9^2k          : `9^(2k) ≡ 3^(2k) · 3^(2k)`             ✓
---   3^2k+2        : `3^(2k+2) ≡ 9 · 3^(2k)`                ✓
---   2*3^odd       : `2·3^(2k+1) ≡ 6·3^(2k)`                ✓
---   E-zero/one/two/three : 前四个偶值 refl 核对             ✓
+-- ✅ 透明代数引理（可应用到复合参数，非 solver 生成）已证：
+--      a-34 : 3·(4N) ≡ 12N        a-3A : 3A + 9B ≡ 3(A+3B)
+--      a-9B : 9B + 6K ≡ 3(3B+2K)
+--      pow9-suc : 9·9^j ≡ 9^(j+1)   pow3-suc : 3^(j+1) ≡ 3·3^j
 --
--- ❌ 缺口：联合归纳的 ℕ 记账（`solve` 在 `2*(2*k)` 形状上不匹配）
---   实例已被 oracle `448d1d14` 验证（n=1..10），**不是** Agda 定理
+-- ❌ **剩余障碍（同一类问题）**：把 `★C0-even-step (2 * k)` 与 `a-3A` 组合时，
+--    Agda 无法把 `C0 (2 * (2 * k) + 2)`（我写的）与
+--    `C0 (2 * m + 2)`（`m := 2 * k` 后）统一 —— 报 `k` vs `k + 1 * k`。
+--    根因：`_*_` 的定义 `suc m * n = n + (m * n)` 使 `2 * k` 与其它形状不等。
+--
+-- ✅ 下一步方向（明确）：
+--    把 `★C0-even-step` 改写成以 `m` 为**唯一**索引的形式，
+--    实例化时只传 `m := 2 * k` 而不展开 —— 或把整个归纳建立在
+--    `E : ℕ → ℕ; E m = C0 (2 * m)` 这样的**辅助函数**上（避免 2*m 反复展开）。
 --------------------------------------------------------------------------------
