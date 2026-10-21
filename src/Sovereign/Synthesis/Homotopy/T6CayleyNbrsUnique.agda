@@ -24,11 +24,14 @@
 
 module Sovereign.Synthesis.Homotopy.T6CayleyNbrsUnique where
 
-open import Data.Nat using (ℕ)
-open import Data.List using (List; []; _∷_)
+open import Data.Nat using (ℕ; zero; suc)
+open import Data.List using (List; []; _∷_; map)
 open import Data.List.Membership.Propositional using (_∈_; _∉_)
 open import Data.List.Relation.Unary.Any using (here; there)
 open import Data.Fin using (Fin)
+import Data.Fin as Fin
+open import Data.Fin.Properties using (suc-injective)
+open import Data.List.Relation.Unary.All.Properties using (map⁺)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; subst)
 import Data.List.Relation.Unary.All as All
 import Data.List.Relation.Unary.AllPairs.Core as AP
@@ -82,3 +85,35 @@ nbrsFrom-Unique x (k ∷ ks) (AP._∷_ kAll ksUniq) =
             (nbrsFrom-not-in x ks (updAt k (updAt k x))
               (λ i i∈ → updAt-neq-other2' k i x (∉-to-≢-gen k i ks k∉ i∈))
               (λ i i∈ → updAt-neq-two-two  k i x (∉-to-≢-gen k i ks k∉ i∈)))
+--------------------------------------------------------------------------------
+-- §3. ★ `allFinD` 自身不重复（邻居表刻画的最后一步）
+--
+-- `allFinD (suc n) = Fin.zero ∷ map Fin.suc (allFinD n)`，所以需要两件：
+--   ① 每个 `map Fin.suc` 出来的元素都**不是** `Fin.zero`（构造子冲突，`λ ()`）
+--   ② `Fin.suc` 保持不重复（`suc-injective`，stdlib 已有）
+--------------------------------------------------------------------------------
+
+suc-neq : ∀ {n : ℕ} {i j : Fin n} → i ≢ j → Fin.suc i ≢ Fin.suc j
+suc-neq i≢j h = i≢j (suc-injective h)
+
+zero≢suc : ∀ {n : ℕ} (xs : List (Fin n)) → All.All (Fin.zero ≢_) (map Fin.suc xs)
+zero≢suc []       = All.[]
+zero≢suc (x ∷ xs) = All._∷_ (λ ()) (zero≢suc xs)
+
+Unique-map-suc : ∀ {n : ℕ} {xs : List (Fin n)}
+               → Unique {A = Fin n} xs → Unique {A = Fin (suc n)} (map Fin.suc xs)
+Unique-map-suc {xs = []}     AP.[]                = AP.[]
+Unique-map-suc {xs = x ∷ xs} (AP._∷_ all rest)    =
+  AP._∷_ (map⁺ (All.map (λ i≢j → suc-neq i≢j) all)) (Unique-map-suc rest)
+
+allFinD-Unique : ∀ (n : ℕ) → Unique {A = Fin n} (allFinD n)
+allFinD-Unique zero    = AP.[]
+allFinD-Unique (suc n) =
+  AP._∷_ (zero≢suc (allFinD n)) (Unique-map-suc (allFinD-Unique n))
+--------------------------------------------------------------------------------
+-- §4. ★★★ 最终形式：**邻居表不重复**
+--------------------------------------------------------------------------------
+
+neighbours-Unique : ∀ {n : ℕ} (x : T6Vec n) → Unique {A = T6Vec n} (neighbours x)
+neighbours-Unique {n} x = nbrsFrom-Unique x (allFinD n) (allFinD-Unique n)
+
