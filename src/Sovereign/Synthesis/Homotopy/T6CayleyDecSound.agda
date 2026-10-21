@@ -40,8 +40,8 @@ import Data.Fin as Fin
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Nat using (ℕ)
-open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (allFinD; ∈-allFinD)
-open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec; decAt; decAt2; findEdgeDec; scanDec; P1; P2; _∉_; ∉-cons)
+open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec; decAt; decAt2; findEdgeDec; scanDec; P1; P2; _∉_; ∉-cons;
+        neighbours; neighbours-sound; neighbours-complete)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6SymEdge)
 open import Sovereign.Synthesis.Homotopy.T6AStepCode2 using (TSet; StepCode)
 open import Sovereign.Synthesis.Homotopy.T6AStepMap using (StepVertex; StepSide; decStepSide)
@@ -141,3 +141,23 @@ decStepSide-complete : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n)
 decStepSide-complete u c h with decStepSide u c
 ... | yes p  = p
 ... | no  ¬p = ⊥-elim (¬p h)
+
+--------------------------------------------------------------------------------
+-- §7. ★★★ 差分核对：**两个独立实现给出同一答案**
+--
+-- `findEdgeDec` 是**扫描实现**（沿 `allFinD` 逐个试边），
+-- `neighbours` 是**查表实现**（显式枚举 `n` 坐标 × 两方向）。
+-- 两者独立，理应一致 —— 这条就是它们的对账：
+-- ```
+--   TSet (findEdgeDec x y)  ⇔  y ∈ neighbours x
+-- ```
+-- 两边各由一条已证定理复合而成，无需新的归纳。
+-- ⇒ 这是「同一个事实两个来源各算一遍」的差分证据（比单条断言强）。
+--------------------------------------------------------------------------------
+
+findEdgeDec-iff-neighbours : ∀ {n : ℕ} (x y : T6Vec n)
+                           → (TSet (findEdgeDec x y) → y ∈ neighbours x)
+                           × (y ∈ neighbours x → TSet (findEdgeDec x y))
+findEdgeDec-iff-neighbours x y =
+  (λ h → neighbours-complete x (findEdgeDec-sound x y h)) ,
+  (λ m → findEdgeDec-complete x y (neighbours-sound x m))
