@@ -1592,3 +1592,68 @@ mixedOp-comm (x , a) (y , b) = cong₂ _,_ (⊕-comm x y) (mulAlpha-comm a b)
 | P0 实施 | ❌ `α-four` 的 `refl` 未通过 ✗ | — |
 
 **主模块 `GF3HammingCount.agda`：1206 行，0 postulate / 0 hole，编译通过 ✓**
+
+---
+
+## 三十三、★★★★ **全库第一个 `Presentation` 实例诞生**（2026-10-21，回执 `d09d2f93`）
+
+### 33.1 模块
+
+`src/Sovereign/Algebra/UniversalAlgebra/DCPresentation.agda`（**119 行，0 postulate / 0 hole** ✓）
+
+```agda
+DCPresentation : Presentation DuodecPoint
+DCPresentation = record
+  { step        = mixedOp                    -- ② 联合生成运算
+  ; g           = (T₁ , a1)                  -- ② 联合生成元（阶 12）
+  ; unit        = duodec-e                   -- ⑥ 归零
+  ; assoc       = mixedOp-assoc              -- ③
+  ; zeroˡ       = mixedOp-identityˡ          -- ③
+  ; zeroʳ       = mixedOp-identityʳ          -- ③
+  ; phase       = phaseDC                    -- ④ λ (t,a) → (t, a·α)
+  ; phase-order = 4                          -- ④ C₄
+  ; phase-cycle = phaseDC-4                  -- ④ α⁴ = 1
+  ; clock       = 12                         -- ⑤ lcm(3,4)
+  ; clock-cycle = clock-bridge               -- ⑤
+  ; rigidity    = sigmaDC                    -- ⑦ 由 GF9.galoisConjugate 诱导
+  ; check       = mixedOp-identityʳ          -- ⑧ refl 层
+  }
+```
+
+### 33.2 ★ 关键教训：**`α-four` 之前的失败是导入缺失，不是归约问题**
+
+**§32.7 的错误推测**（「深度嵌套的 `refl` 不可靠」）**被探针推翻** ✗：
+```agda
+-- 探针实测（全部通过 ✓）
+p1 : mulAlpha a2 a1 ≡ a3                                        = refl ✓
+p2 : mulAlpha (mulAlpha a2 a1) a1 ≡ a0                          = refl ✓
+p3 : mulAlpha (mulAlpha (mulAlpha a2 a1) a1) a1 ≡ a1            = refl ✓
+p4 : mulAlpha (mulAlpha (mulAlpha (mulAlpha a2 a1) a1) a1) a1 ≡ a2 = refl ✓
+```
+
+**真因**：之前 `a2` / `a3` **没有导入** ✗ —— 而 `a0` / `a1` 导入了 ✓
+⇒ Agda 把 `a2` 解析成了别的东西 ✗（或报 NotInScope ✗）⇒ 归约链条断裂 ✗
+
+**⇒ 教训（修正 §32.7）**：
+> **`refl` 失败时，先查「构造子是否全部导入」** ✓
+> 探针是唯一可靠的定位手段 ✓（4 行探针推翻了「归约不可靠」的猜测 ✗）
+
+### 33.3 ★★ 关键技术点：`iterL 12` 与 `mixedOp^12` **定义等价**
+
+```agda
+iterL : ℕ → DuodecPoint → DuodecPoint
+iterL zero    x = x
+iterL (suc n) x = mixedOp gDC (iterL n x)
+
+-- 探针验证：iterL 12 与 mixedOp^12 定义等价 ✓
+p7 : ∀ x → iterL 12 x ≡ x
+p7 = mixedOp-12-cycle        -- 类型直接匹配 ✓
+```
+
+⇒ `clock-bridge` 只需 `right-eq-left`（右乘 ≡ 左乘，由 `mixedOp-comm` 归纳 ✓）
+
+### 33.4 ⚠ 发现工具路径不一致（非本项目缺陷，记录）
+
+`engineering/index_presentations.sh` 期望 `src/Sovereign/Algebra/Presentation.agda` ✗
+—— 实际文件在 `src/Sovereign/Algebra/UniversalAlgebra/Presentation.agda` ✗
+⇒ 索引工具**无法验证**新实例 ✗ —— 建议后续修正工具路径 ✓
