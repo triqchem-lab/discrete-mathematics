@@ -76,4 +76,20 @@ updAt-neq-other j k x j≢k h =
     (trans (sym (lookup-updAt-same j x))
            (trans (cong (λ v → lookup v j) h)
                   (updAt-other j k x j≢k)))
+--------------------------------------------------------------------------------
+-- §4. ★ `updAt j x` 与「`k` 处加两步」不同（当 `j ≢ k`）
+--
+-- 仍在坐标 `j` 上看：左边是 `succF3 (lookup x j)`，右边（经两次 `updAt-other`）
+-- 是 `lookup x j` ⇒ 与 `succF3≢id` 矛盾。
+-- （这条是邻居表 `Nodup` 的跨项前置；与 §2/§3 合起来覆盖三类相邻对。）
+--------------------------------------------------------------------------------
+
+updAt-neq-other2 : ∀ {n : ℕ} (j k : Fin n) (x : T6Vec n)
+                 → j ≢ k → updAt j x ≢ updAt k (updAt k x)
+updAt-neq-other2 j k x j≢k h =
+  succF3≢id (lookup x j)
+    (trans (sym (lookup-updAt-same j x))
+           (trans (cong (λ v → lookup v j) h)
+                  (trans (updAt-other j k (updAt k x) j≢k)
+                         (updAt-other j k x j≢k))))
 
