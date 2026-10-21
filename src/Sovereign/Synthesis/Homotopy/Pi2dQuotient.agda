@@ -56,10 +56,14 @@ open import Cubical.HITs.SetQuotients.Properties using (rec; elimProp)
 open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy
   using (DiGraph; Walk)
 open DiGraph using (V)
-open import Sovereign.Synthesis.Homotopy.Omega2 using (Ω2Walk; nil2; _++2_)
+-- ⚠ 用 `import ... as`（不是 `open import`）：只要限定名 PE.x，不把 PE._≡_ 带进无前缀作用域
+import Relation.Binary.PropositionalEquality as PE
+open import Sovereign.Synthesis.Homotopy.Omega2
+  using (Ω2Walk; nil2; _++2_; ++2-nilR; ++2-assoc)
 open import Sovereign.Synthesis.Homotopy.Omega3 using (Ω3Walk)
 open import Sovereign.Synthesis.Homotopy.Omega3Plus using (Ω3Walk⁺; embed3)
-open import Sovereign.Synthesis.Homotopy.Omega3Suffix using (whisk-resp; suffix-resp)
+open import Sovereign.Synthesis.Homotopy.Omega3Suffix
+  using (whisk-resp; suffix-resp; ≡→Ω3Walk⁺)
 
 --------------------------------------------------------------------------------
 -- §1. 两个商
@@ -161,3 +165,31 @@ addR e = rec (λ a b → squash/ a b)
 --   要补则需要 `propEq → Cubical path` 的桥（或改 `_++2_` 的定义形状）。
 --   **不是 K 墙，不是 `SetQuotient` 的缺口**，是两种相等世界的接口缺失。
 --------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- §8. ★★ 结构律（上一轮记的「propEq vs Cubical」缺口，由 `≡→Ω3Walk⁺` 桥解掉）
+--------------------------------------------------------------------------------
+
+-- ★ 右作用的单位律（上一轮标为未证，现存证）
+addR-nil2 : ∀ {G : DiGraph} {x : V G} {w1 w2 : Walk G x x}
+            (q : π₂ᵈ⁺-hom G x w1 w2) → addR (nil2 w2) q ≡ q
+addR-nil2 = elimProp (λ q → squash/ _ _)
+  (λ c → eq/ (c ++2 nil2 _) c (≡→Ω3Walk⁺ (++2-nilR c)))
+
+-- ★ 左作用的结合律 ⇒ 左作用是**幺半群作用**
+addL-assoc : ∀ {G : DiGraph} {x : V G} {w1 wm wm' w2 : Walk G x x}
+             (p : Ω2Walk G x w1 wm) (q : Ω2Walk G x wm wm')
+             (r : π₂ᵈ⁺-hom G x wm' w2)
+           → addL p (addL q r) ≡ addL (p ++2 q) r
+addL-assoc p q = elimProp (λ r → squash/ _ _)
+  (λ c → eq/ (p ++2 (q ++2 c)) ((p ++2 q) ++2 c)
+             (≡→Ω3Walk⁺ (PE.sym (++2-assoc p q c))))
+
+-- ★ 右作用的结合律（顺序相反：先 `e2` 后 `e1`）
+addR-assoc : ∀ {G : DiGraph} {x : V G} {w1 w2 w3 w4 : Walk G x x}
+             (e1 : Ω2Walk G x w3 w4) (e2 : Ω2Walk G x w2 w3)
+             (q : π₂ᵈ⁺-hom G x w1 w2)
+           → addR e1 (addR e2 q) ≡ addR (e2 ++2 e1) q
+addR-assoc e1 e2 = elimProp (λ q → squash/ _ _)
+  (λ c → eq/ ((c ++2 e2) ++2 e1) (c ++2 (e2 ++2 e1))
+             (≡→Ω3Walk⁺ (++2-assoc c e2 e1)))

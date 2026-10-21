@@ -148,3 +148,21 @@ suffix-resp e (refl3+ c)      = refl3+ (c ++2 e)
 suffix-resp e (symm3+ h)      = symm3+ (suffix-resp e h)
 suffix-resp e (trans3+ h1 h2) = trans3+ (suffix-resp e h1) (suffix-resp e h2)
 suffix-resp e (gen3+ st)      = gen3+ (suffix-step e st)
+
+--------------------------------------------------------------------------------
+-- §7. ★★ 桥：命题相等 ⊆ `Ω3Walk⁺`
+--
+-- `a ≡ b`（命题相等，2-走的**同一性**）⇒ `Ω3Walk⁺ a b`。按 `refl` 归纳即可 ——
+-- 因为 `refl` 情形退化为 `refl3+ a` ✓
+--
+-- **这条桥的用途**：`++2` 的代数律（`++2-nilR`、`++2-assoc`）是**命题**等式，
+-- 而商的类相等是 **Cubical 路径**。有了这条桥，`eq/` 可以直接吃命题等式
+-- ⇒ **不需要 propEq→path 的桥**，也不需要改 `_++2_` 的定义形状。
+--
+-- 数学上无风险：`Ω2Walk` 是语法对象，命题相等就是「同一个 2-走」，
+-- 让关系包含它只是 `refl3+` 沿等式运输 ✓
+--------------------------------------------------------------------------------
+
+≡→Ω3Walk⁺ : ∀ {G : DiGraph} {x : V G} {w1 w2 : Walk G x x}
+            {a b : Ω2Walk G x w1 w2} → a ≡ b → Ω3Walk⁺ G x a b
+≡→Ω3Walk⁺ refl = refl3+ _
