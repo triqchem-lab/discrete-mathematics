@@ -32,7 +32,8 @@ open import Data.Empty using (⊥-elim)
 open import Relation.Nullary using (yes; no)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
-open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec)
+open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec; findEdgeDec)
+open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6SymEdge)
 open import Sovereign.Synthesis.Homotopy.T6AStepCode2 using (TSet; StepCode)
 open import Sovereign.Synthesis.Homotopy.T6AStepMap using (StepVertex)
 open import Sovereign.Synthesis.Homotopy.T6AStepCodeMap using (decStepCode)
@@ -88,3 +89,16 @@ decStepCode-complete u c h with decStepCode u c
 -- ## ⬜ 仍未做（如实标注）
 -- · 「码 → 步的**忠实性**」（不同码 ⇒ 不同步）—— 需码层到步层的单射，尚属独立节点。
 --------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- §4. ★★ `findEdgeDec` 的可靠性（`T6CayleyDec` §8 的 **`Dec` 版**边查找）
+--
+-- `Dec` 版的 `no` 分支携带「真的没有边」的证明（靠 §5 的穷尽性引理），
+-- 于是它比 `Maybe` 版强：`yes` 时给出见证，且**说 `no` 时有底**。
+-- 这里只补 `yes` 方向的可靠性（T-反射，一行）；`no` 方向已包含在 `findEdgeDec` 的构造里。
+--------------------------------------------------------------------------------
+
+findEdgeDec-sound : ∀ {n : ℕ} (x y : T6Vec n) → TSet (findEdgeDec x y) → T6SymEdge x y
+findEdgeDec-sound x y h with findEdgeDec x y
+... | yes p = p
+... | no  _ = ⊥-elim h

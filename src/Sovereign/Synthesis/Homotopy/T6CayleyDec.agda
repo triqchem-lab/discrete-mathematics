@@ -32,6 +32,9 @@
 module Sovereign.Synthesis.Homotopy.T6CayleyDec where
 
 open import Data.Nat using (ℕ)
+open import Data.Maybe using (just; nothing)
+open import Data.Product using (_×_; _,_)
+open import Data.Vec using () renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
 open import Data.Fin using (Fin)
 import Data.Fin as Fin
 import Data.Fin as Fin
@@ -41,11 +44,12 @@ open import Data.List using (List; []; _∷_)
 open import Data.Nat using (zero; suc)
 open import Data.List using (map)
 open import Data.Sum using (inj₁; inj₂)
-open import Data.Empty using (⊥)
+open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product using (Σ; _,_)
-open import Relation.Nullary using (Dec; yes; no)
+open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Data.Maybe using (Maybe; just; nothing)
 open import Data.List.Membership.Propositional using (_∈_)
+open import Data.Product using (_×_; proj₁; proj₂)
 open import Data.List.Relation.Unary.Any using (here; there)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
@@ -146,3 +150,72 @@ findEdge {n} x y = scan (allFinD n)
 -- 然后才能在 `List (T6Vec n)`（**无证明分量**）上做 `reduce`（fuel），
 -- 最后才是 `Ω3Walk⁺` 与 `reduce` 的双方对应（分类定理）。
 --------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- §7. ★★ `findEdge` 的**计算行为**（具体点对抗验证，纪律 §6）
+--
+-- `findEdge` 是 `Maybe` 版：它不证明「没有边」，所以**必须**验证它在具体点上
+-- 真的在算（而不是停在某个 stuck 项上）。两个方向各取一点，都是 `refl`：
+--   · 不是边 ⇒ `nothing`（扫描走到底）
+--   · 是边   ⇒ `just (inj₁ (zero , refl))`（拿到见证）
+--------------------------------------------------------------------------------
+
+vec0 : T6Vec 1
+vec0 = Fin.zero ∷ᵥ []ᵥ
+
+-- ① 非边：`(0)` 不是 `(0)` 的 ±e₀ 邻居 ⇒ `nothing`
+findEdge-nothing : findEdge vec0 vec0 ≡ nothing
+findEdge-nothing = refl
+
+-- ② 是边：`+e₀` 的邻居 ⇒ `just`，见证 `inj₁ (zero , refl)`
+findEdge-just : findEdge vec0 (updAt Fin.zero vec0)
+              ≡ just (inj₁ (Fin.zero , refl))
+findEdge-just = refl
+
+--------------------------------------------------------------------------------
+-- §8. ★★★ `findEdge` 的 **`Dec` 版**（§6 点名的下一级台阶）
+--
+-- `Maybe` 版的 `nothing` 不携带任何信息；这里用 §5 的穷尽性引理把它补成真判定：
+-- 扫描时携带不变式「已查过的索引（`∈ allFinD n` 且 `∉ rest`）两段式谓词都失败」，
+-- 扫到 `[]` 时任一见证 `j` 都有 `j ∈ allFinD n`、且 `j ∉ []` ⇒ 与不变式矛盾 ✓
+-- ⇒ `T6SymEdge x y` 的**存在性可判定**，这是「在无证明分量的 `List (T6Vec n)` 上做
+--   `reduce`」所缺的那块（`Dec` 的 `no` 现在有底了）。
+--------------------------------------------------------------------------------
+
+P1 : ∀ {n : ℕ} (x y : T6Vec n) (j : Fin n) → Set
+P1 x y j = y ≡ updAt j x
+
+P2 : ∀ {n : ℕ} (x y : T6Vec n) (j : Fin n) → Set
+P2 x y j = y ≡ updAt j (updAt j x)
+
+_∉_ : ∀ {A : Set} → A → List A → Set
+x ∉ xs = x ∈ xs → ⊥
+
+∉-cons : ∀ {A : Set} {x y : A} {xs : List A} → ¬ (x ≡ y) → x ∉ xs → x ∉ (y ∷ xs)
+∉-cons x≢y x∉xs (here refl) = x≢y refl
+∉-cons x≢y x∉xs (there m)   = x∉xs m
+
+findEdgeDec : ∀ {n : ℕ} (x y : T6Vec n) → Dec (T6SymEdge x y)
+findEdgeDec {n} x y = go (allFinD n) inv0
+  where
+    inv0 : ∀ j → j ∈ allFinD n → j ∉ allFinD n → ¬ (P1 x y j) × ¬ (P2 x y j)
+    inv0 j _ j∉ = ⊥-elim (j∉ (∈-allFinD j))
+
+    go : (rest : List (Fin n))
+       → (∀ j → j ∈ allFinD n → j ∉ rest → ¬ (P1 x y j) × ¬ (P2 x y j))
+       → Dec (T6SymEdge x y)
+    go [] inv =
+      no λ { (inj₁ (j , p)) → proj₁ (inv j (∈-allFinD j) (λ ())) p
+           ; (inj₂ (j , q)) → proj₂ (inv j (∈-allFinD j) (λ ())) q }
+    go (k ∷ ks) inv with decAt k x y | decAt2 k x y
+    ... | yes p  | _      = yes (inj₁ (k , p))
+    ... | no ¬p  | yes q  = yes (inj₂ (k , q))
+    ... | no ¬p  | no ¬q  = go ks inv'
+      where
+        inv' : ∀ j → j ∈ allFinD n → j ∉ ks → ¬ (P1 x y j) × ¬ (P2 x y j)
+        inv' j j∈all j∉ks with j Fin.≟ k
+        ... | yes refl = ¬p , ¬q
+        ... | no  j≢k  = inv j j∈all (∉-cons j≢k j∉ks)
+
+-- 可靠性（`findEdgeDec-sound`）放在 `T6CayleyDecSound`（那里已 import `TSet`，
+-- 避免本模块反向依赖 `T6AStepCode2` 造成层序倒置）。
