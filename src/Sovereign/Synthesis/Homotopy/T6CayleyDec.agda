@@ -142,9 +142,12 @@ findEdge {n} x y = scan (allFinD n)
 ∈-allFinD {suc n} (Fin.suc j) = there (∈-map' {f = Fin.suc} (∈-allFinD j))
 
 --------------------------------------------------------------------------------
--- §6. ⬜ 下一级台阶（判据明确）
+-- §6. ✅ `Dec` 版的台阶**已在 §8 完成**（本节原标「⬜ 下一级台阶」已过期）
 --
--- 有了 §5，就可以把 `findEdge` 升级成 `Dec` 版：
+-- `findEdgeDec : (x y : T6Vec n) → Dec (T6SymEdge x y)` 见 §8；
+-- 可靠性 `findEdgeDec-sound` / 完备性 `findEdgeDec-complete` 见 `T6CayleyDecSound`。
+--
+-- 原计划文字（保留作设计记录）：有了 §5，就可以把 `findEdge` 升级成 `Dec` 版：
 --   `scan` 必须**携带失败信息**（`∀ j∈js → ¬ (y ≡ updAt j x) × ¬ (y ≡ updAt j (updAt j x))`），
 --   在 `[]` 处用 `∈-allFinD` 把任意给出的 `T6SymEdge` 的索引代入，得到矛盾。
 -- 然后才能在 `List (T6Vec n)`（**无证明分量**）上做 `reduce`（fuel），

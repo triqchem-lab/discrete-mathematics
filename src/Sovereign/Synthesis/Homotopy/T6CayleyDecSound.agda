@@ -44,7 +44,7 @@ open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (allFinD; ∈-allFinD
 open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec; decAt; decAt2; findEdgeDec; scanDec; P1; P2; _∉_; ∉-cons)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6SymEdge)
 open import Sovereign.Synthesis.Homotopy.T6AStepCode2 using (TSet; StepCode)
-open import Sovereign.Synthesis.Homotopy.T6AStepMap using (StepVertex)
+open import Sovereign.Synthesis.Homotopy.T6AStepMap using (StepVertex; StepSide; decStepSide)
 open import Sovereign.Synthesis.Homotopy.T6AStepCodeMap using (decStepCode)
 open import Relation.Binary.PropositionalEquality using (_≡_)
 
@@ -117,3 +117,21 @@ findEdgeDec-complete : ∀ {n : ℕ} (x y : T6Vec n) → T6SymEdge x y → TSet 
 findEdgeDec-complete x y h with findEdgeDec x y
 ... | yes p = p
 ... | no  q = ⊥-elim (q h)
+
+--------------------------------------------------------------------------------
+-- §6. ★★ `decStepSide` 的可靠 + 完备（本链上最后一个未验证的判定器）
+--
+-- `decStepSide u c` 就是 `DecEq-T6Vec (proj₁ (interpC u (srcCode c))) (proj₁ (interpC u (tgtCode c)))`，
+-- 而 `StepSide u c` 正是那两个投影相等 ⇒ 可靠性直接调 `DecEq-T6Vec-sound`；
+-- 完备性用同一套 `with` 判定器写法（`no ¬p` 支的 `¬p` 就是否证）。
+--------------------------------------------------------------------------------
+
+decStepSide-sound : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n)
+                  → TSet (decStepSide u c) → StepSide u c
+decStepSide-sound u c = DecEq-T6Vec-sound _ _
+
+decStepSide-complete : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n)
+                     → StepSide u c → TSet (decStepSide u c)
+decStepSide-complete u c h with decStepSide u c
+... | yes p  = p
+... | no  ¬p = ⊥-elim (¬p h)
