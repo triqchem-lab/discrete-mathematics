@@ -281,31 +281,38 @@ interpAt-natural : ∀ {n : ℕ} {v v' : T6Vec n} (e : v ≡ v') (w : CWalk n)
 interpAt-natural refl w = refl
 
 --------------------------------------------------------------------------------
--- §6. ⬜ `StepCode → AStep`：**原目标陈述是 ill-posed 的**（判定，非「太难」）
+-- §6. ✅ `StepCode → AStep`：**已证**（本节曾是「ill-posed 不可证」的错误判断，已更正）
 --
--- 先前写下的目标形状是
+-- ## 更正（内核裁决，2026-10-21）
+--
+-- 本节原写「`toStepCode` 的 `interpC` 两端版**不可证**」，理由是
+-- `subst-cons` 说「cast 不动头边」⇒ 两条走的头边**类型不同** ⇒ 不可能相等。
+--
+-- **该推理无效** ✗ —— `toStepCode` **已由 `T6AStepCodeMap.toStepCode` 证成**
+-- （0 postulate / 0 hole，回执 `2166490f38aa0a105a9675c6544212736c4f247936a177a62045584a58262af5`）。
+--
+-- ## 错在哪（这是本节最该记住的）
+--
+-- `subst-cons` 只给出「沿端点 cast」的**一种**分解：头边不动。
+-- 但**同一个 `subst` 项还有第二种分解** —— 走 `cons` 的尾走**终点也依赖中间顶点**
+-- ⇒ `cons` 是**依赖**于中间顶点的运算，故还需一条
 -- ```
---   toStepCode : (h : StepSide u c)
---              → AStep G (proj₂ (interpC u (srcCode c)))
---                      (subst (λ v → Walk G u v) (sym h) (proj₂ (interpC u (tgtCode c))))
+--   cons-dtrans : subst (Walk G A) (cong (λ v → foldT v suff) k) (cons e t)
+--               ≡ cons (subst (T6SymEdge A) k e)
+--                      (subst (λ v → Walk G v (foldT v suff)) k t)
 -- ```
--- **它不可证**，理由不是 cast 太多，而是**两端的走确实不同**：
+-- ⇒ 把码层靶树的**中间顶点** `Zc` 搬到 `Z`（与 `toStep` 的靶树对齐）后，
+--   两条走**确实**相等 ✓
 --
--- | 量 | 来自 `interpC` / `interpAt` | `slide` 要求 |
--- |---|---|---|
--- | 第三边 | `cEdge x s3 : T6SymEdge x (ctarget x s3)` | `e3 = subst (T6SymEdge x) hv (cEdge x s3) : T6SymEdge x Z` |
--- | 后续走 | `interpAt (ctarget x s3) suff` | `b = interpAt Z suff` |
+-- **教训**：`subst-cons` 那种「一行引理」描述的是**一条**分解路径；
+-- **不能**由「这一条分解下头边不动」推出「所有分解下头边都不动」✗
+-- （把**某一条**改写规则当成**唯一**改写规则）。
 --
--- 两条走的**类型相同**（都在 `foldT Z suff` 收尾），但 `subst` 只搬**走层端点**
--- （`subst-cons` 明确**不动**头边的索引），所以
--- `subst … (cons (cEdge x s3) b') ≡ cons (cEdge x s3) (subst … b')` ≠ `cons e3 b` ✗
--- —— 两个项头边不同型，不可能相等。
+-- ## 落点
 --
--- ## 诚实结论
---
--- 码 → 步的映射**只能陈述在 `interpAt` 层**（两端都写成 `interpAt` + 顶点层铸造），
--- 而 `interpAt` 层的源/靶与 `interpC` 层的源/靶之间**只差一个端点 cast**，
--- 这个 cast **不与 `cons` 交换** ⇒ 不存在把 `ASTep` 从一层搬到另一层的等式。
+-- - 主定理：`T6AStepCodeMap.toStepCode`（含具体点验证 `step-1`）
+-- - 配套：`cons-dtrans` / `interpAt-subst` / `subst-trans` / `T6Vec-UIP` / `src-eq` / `tgt-eq`
+-- - ⚠ `astStep-cast` / `decStepVertex` 曾因上述错误判断被删，现已在 `T6AStepCodeMap` 就地补回。
 -- ⇒ 若下游需要「码 ⇒ A-同伦」，应当**直接以 `interpAt` 为载体**（`T6CayleyInterp.interpAt`
 -- 已是可计算终点版本），而不是先造 `interpC` 再搬运。
 --
