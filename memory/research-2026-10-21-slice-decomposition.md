@@ -3900,3 +3900,77 @@ ls /tmp/sdg-diag.log   # 文件不存在 ⇒ ls 返回 2 ✗（不是 hook 拦�
 
 **⇒ 判据**：确认「hook 是否拦截」必须看 **hook/result 事件**（`exitCode` + `decision` 字段）✓
 —— **不能靠 bash 的 `$?`** ✗
+
+---
+
+## 六十七、方案 D 终局：配置全对但 hook 不运行（2026-10-21）
+
+### 67.1 逐层排除（源码 `/home/yanli/work/deepseek-harness`）
+
+| 层 | 源码位置 | 结论 |
+|---|---|---|
+| **payload** | `hooks-claude-code/src/index.ts:345` `preToolPayload` → `tool_name: exec.name` | ✅ `exec.name = 'bash'`（`shell/tool-bash-persistent/src/index.ts:415`）|
+| **matcher** | `hook-protocol/src/matcher.ts` `isMatchAll` 含 `'*'` | ✅ 正确 |
+| **pluginRoot** | `agent.cordis.yml:274` `!!js` → `.../math-proof/` | ✅ 已配置 |
+| **configPath** | `agent.cordis.yml:273` | ✅ 已配置 |
+| **hook 代码** | 直接 `node hook < payload.json` | ✅ `exit=2`、diag 写入、payload 正确 |
+| **harness 调用** | 探针 `/tmp/sdg-diag.log` | ❌ **从未生成** ✗ |
+
+### 67.2 源码里的两条关键注释
+
+```ts
+// config.ts:44-47
+/** Substitution variables applied to each `command` string at parse time. */
+// "a token whose variable is unset stays verbatim" ✗
+```
+
+```ts
+// index.ts:106-118
+try {
+  const raw = JSON.parse(readFileSync(config.configPath, 'utf8'))
+  const result = parseClaudeCodeConfig(raw, { ...config.pluginRoot !== undefined ? { pluginRoot: config.pluginRoot } : {} })
+  parsed = result.config
+} catch (error) {
+  ctx.logger.warn(`... could not load hook config ... — no hooks registered`)
+}
+```
+
+**⇒ 验证**：`CLAUDE_PLUGIN_ROOT` 未设 ⇒ `node /hooks/xxx.mjs` ⇒ **Cannot find module** ✗（已实测）
+
+**⇒ 但 preset **已**配置 `pluginRoot`** ✓ ⇒ 路径正确 ✓ ⇒ 仍不运行 ✗
+
+### 67.3 唯一剩余假设
+
+`pluginRoot` 的 `!!js` 表达式在 `agent.cordis.yml` **加载时**求值 ✗ ——
+若 `DSH_HOME` 在求值时尚未设置 ⇒ 回落 `homedir() + '/.dsh'` ⇒ 路径仍正确 ✓
+⇒ **只能是「进程内缓存旧 hook」或「加载时静默失败」** ✗（无法从外部验证）
+
+### 67.4 ★ 建议：一行可验证修复
+
+```yaml
+# ~/.dsh/.agent-presets/math-proof/agent.cordis.yml:273-275
+configPath: /home/yanli/.dsh/.agent-presets/math-proof/hooks/hooks.dsh.json
+pluginRoot: /home/yanli/.dsh/.agent-presets/math-proof/
+```
+
+**影响**：只影响本机 preset 配置 ✓；失去 `!!js` 的动态性（支持 `DSH_HOME` 变更）✗ — 当前机器固定 ✓
+**验证**：改完重启 → `grep -n x y.agda` → 应见 `🛑 检索方言闸`
+
+### 67.5 ★ 本会话诊断方法的**第三次同类失误**
+
+| # | 失误 | 教训 |
+|---|---|---|
+| 1 | `node hook \| head` 用 `$?` 判退出码 ✗ | 管道后 `$?` 是最后一个命令的 |
+| 2 | `ls 不存在文件` 的 exit 2 当「hook 拦住」✗ | bash 自身退出码冒充拦截信号 |
+| **3** | 模拟测试 `unset CLAUDE_PLUGIN_ROOT; sh -c "... \| head -3"` 仍看 `exit=0` ✗ | **再次被管道掩盖** ✗ |
+
+**⇒ 铁律**：**判退出码时禁止接管道** ✗ —— 用 `cmd; echo $?` 或 `cmd > f 2>&1; echo $?` ✓
+
+### 67.6 结论
+
+**方案 D 到此为止** ✗：
+- 源码层全部正确 ✓
+- 问题在**运行时的加载/缓存** ✗，无法从外部定位
+- **方案 B（pre-commit 重复检测）已生效** ✓ —— 不依赖 hook 框架 ✓
+
+**⇒ 收益**：确认了「不是 hook 代码的问题」✓，给出了 1 行可验证修复 ✓，纠正了 3 次诊断方法失误 ✓
