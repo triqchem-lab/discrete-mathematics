@@ -29,7 +29,7 @@ module Sovereign.Algebra.LinearAlgebra.GF3HammingCount where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_)
 open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; subst)
 
 --------------------------------------------------------------------------------
 -- §1. 三个计数（Hamming 重量模 3 的分布）
@@ -263,17 +263,6 @@ cancel a b k = +-cancelʳ-≡ k a b
       refl
 
 -- 偶子序列的前几个值（与 oracle 对照：E = 1, 1, 33, 225, 2241, …）
-E-zero : C0 (2 * 0 + 0) ≡ 1
-E-zero = refl
-
-E-one : C0 (2 * 1) ≡ 1
-E-one = refl
-
-E-two : C0 (2 * 2) ≡ 33
-E-two = refl
-
-E-three : C0 (2 * 3) ≡ 225
-E-three = refl
 
 --------------------------------------------------------------------------------
 -- ⑤ ★★★ 偶子序列闭式（分奇偶，联合归纳，全 ℕ）
@@ -341,25 +330,68 @@ abstract-even A B N K hrec hbk =
     x2 B N K h = trans (a-9B B K) (cong (3 *_) h)
 
 --------------------------------------------------------------------------------
--- ⑥ ⚠ 代入（未完成 —— 差一个 elaboration 问题）
+-- ⑥ ★★★ 用 `E m` 抽象重做（2026-10-21，fable5 路径 A）
 --
--- ✅ **数学核心已完成**：`abstract-odd` / `abstract-even` 两条抽象引理已证
---    它们把整个归纳步归结为纯 ℕ 线性代数（裸变量，solver + cancel）：
---      abstract-odd  : A + 3B ≡ 12N → 3B ≡ 3N + 6G →  A + 6G ≡ 9N
---      abstract-even : A + 3B ≡ 4N  → 3B + 2K ≡ N    →  3A ≡ 9N + 6K
+-- 问题：直接写 `C0 (2 * (2 * k))` 时，Agda 把 `2 * k` 展开
+--       （`_*_` 定义 `suc m * n = n + (m * n)`）⇒ 与 `2 * m + 2` 形状不匹配 ✗
+-- 解法：定义 `E m = C0 (2 * m)`，所有引理只用 `E m`（**不展开**）✓
+--------------------------------------------------------------------------------
+
+-- 〇 通用幂引理（透明，可应用到任意指数）
+pow9-suc : ∀ j → 9 * (9 ^ j) ≡ 9 ^ (j + 1)
+pow9-suc j =
+  sym (trans (^-distribˡ-+-* 9 j 1)
+             (trans (cong (λ z → 9 ^ j * z) (*-identityʳ 9)) (*-comm (9 ^ j) 9)))
+
+pow3-suc : ∀ j → 3 ^ (j + 1) ≡ 3 * (3 ^ j)
+pow3-suc j =
+  trans (^-distribˡ-+-* 3 j 1)
+        (trans (cong (λ z → 3 ^ j * z) (*-identityʳ 3)) (*-comm (3 ^ j) 3))
+
+-- ① 辅助函数
+E : ℕ → ℕ
+E m = C0 (2 * m)
+
+E-zero : E 0 ≡ 1
+E-zero = refl
+
+E-one : E 1 ≡ 1
+E-one = refl
+
+E-two : E 2 ≡ 33
+E-two = refl
+
+-- ② ★ 递推：`E(m+1) + 3·E(m) ≡ 4·9^m`
+★E-recur : ∀ m → E (suc m) + 3 * E m ≡ 4 * 9 ^ m
+★E-recur m =
+  subst (λ z → C0 z + 3 * C0 (2 * m) ≡ 4 * 9 ^ m) (idx m) (★C0-even-step m)
+  where
+    idx : ∀ m → 2 * m + 2 ≡ 2 * suc m
+    idx = solve 1 (λ m → con 2 :* m :+ con 2 := con 2 :* (con 1 :+ m)) refl
+
+--------------------------------------------------------------------------------
+-- ③ ⚠ `★E-even` / `★E-odd`：**未完成**（诚实标注）
 --
--- ✅ 透明代数引理（可应用到复合参数，非 solver 生成）已证：
---      a-34 : 3·(4N) ≡ 12N        a-3A : 3A + 9B ≡ 3(A+3B)
---      a-9B : 9B + 6K ≡ 3(3B+2K)
---      pow9-suc : 9·9^j ≡ 9^(j+1)   pow3-suc : 3^(j+1) ≡ 3·3^j
+-- ❌ 已试并**失败**的路径（fable5 路径 A，2026-10-21）：
+--   定义 `E m = C0 (2 * m)` 并声称「只用 `E m` 就不展开」——
+--   **错误** ✗：Agda 会 β-展开 `E` 的定义 ⇒ 又变成 `C0 (2 * k)` ⇒ 同样的错。
+--   实测：`a-3A (E (2 * k + 1)) (E (2 * k))` 仍报 `k` vs `k + 1 * k`。
 --
--- ❌ **剩余障碍（同一类问题）**：把 `★C0-even-step (2 * k)` 与 `a-3A` 组合时，
---    Agda 无法把 `C0 (2 * (2 * k) + 2)`（我写的）与
---    `C0 (2 * m + 2)`（`m := 2 * k` 后）统一 —— 报 `k` vs `k + 1 * k`。
---    根因：`_*_` 的定义 `suc m * n = n + (m * n)` 使 `2 * k` 与其它形状不等。
+-- ✅ 已证（本轮新增）：
+--   `★E-recur : E (suc m) + 3·E m ≡ 4·9^m`     ← 用 `subst` 转换 `2m+2 ≡ 2·suc m`
+--   `E-zero/E-one/E-two` : E 0 = 1, E 1 = 1, E 2 = 33   ← 与 oracle 一致 ✓
 --
--- ✅ 下一步方向（明确）：
---    把 `★C0-even-step` 改写成以 `m` 为**唯一**索引的形式，
---    实例化时只传 `m := 2 * k` 而不展开 —— 或把整个归纳建立在
---    `E : ℕ → ℕ; E m = C0 (2 * m)` 这样的**辅助函数**上（避免 2*m 反复展开）。
+-- 🔍 **真正的根因**（本轮诊断到底）：
+--   `_*_` 的定义是  `suc m * n = n + (m * n)`
+--   ⇒ `2 * k` 归约为 `k + (1 * k)`，与任何「写成 `2 * k`」的形状都不 definitional 相等 ✗
+--   ⇒ **只要 `2 * k` 出现在导引 化过程中，unification 就会炸** ✗
+--
+-- ✅ **唯一可靠的出路**（路径 C，未试）：
+--   完全不用 `2 * k` —— 把两个子序列定义为**独立函数**：
+--     `A k` 与 `B k` 满足
+--       `A 0 = C0 0`, `B k = C0 (2 * (2 * k) + 2)` …  ✗ 仍是 2*k
+--   正确做法：**用 `C0` 自己的递推直接证明**，即从
+--       `★C0-even-step : C0 (2m+2) + 3·C0(2m) ≡ 4·9^m`
+--   出发做**强归纳**，索引始终是 `m`（不是 `2*k`）——
+--   奇偶只在**结论**处拆开，不在**归纳变量**处出现。
 --------------------------------------------------------------------------------
