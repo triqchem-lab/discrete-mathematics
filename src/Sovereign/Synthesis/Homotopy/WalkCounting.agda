@@ -227,3 +227,46 @@ WCount-split E (suc k) l u v = begin
                       (λ w → E u w * WCount E k w x)) ⟩
   sumFin (λ x → (sumFin (λ w → E u w * WCount E k w x)) * WCount E l x v)
   ∎
+
+--------------------------------------------------------------------------------
+-- §7. 具体点核算（对抗验证）：2 点往返图上手算对账
+--
+-- 图：顶点 {0,1}，边 0→1 与 1→0，**无自环**。
+-- 手算：长度 n 的 0→1 走数 = n 为奇数时 1、偶数时 0；0→0 反之。
+-- 这一节把 WCount 在这些点上算出来，与手算逐条对账 ✓
+--------------------------------------------------------------------------------
+
+module _ where
+
+  E2 : Fin 2 → Fin 2 → ℕ
+  E2 Fin.zero             Fin.zero             = 0
+  E2 Fin.zero             (Fin.suc Fin.zero)   = 1
+  E2 (Fin.suc Fin.zero)   Fin.zero             = 1
+  E2 (Fin.suc Fin.zero)   (Fin.suc Fin.zero)   = 0
+
+  -- 长度 0：只有空走
+  chk-0-00 : WCount E2 0 Fin.zero Fin.zero ≡ 1
+  chk-0-00 = refl
+  chk-0-01 : WCount E2 0 Fin.zero (Fin.suc Fin.zero) ≡ 0
+  chk-0-01 = refl
+
+  -- 长度 1：0→1 恰 1 条
+  chk-1-01 : WCount E2 1 Fin.zero (Fin.suc Fin.zero) ≡ 1
+  chk-1-01 = refl
+  chk-1-00 : WCount E2 1 Fin.zero Fin.zero ≡ 0
+  chk-1-00 = refl
+
+  -- 长度 2：0→0 恰 1 条（0→1→0），0→1 为 0
+  chk-2-00 : WCount E2 2 Fin.zero Fin.zero ≡ 1
+  chk-2-00 = refl
+  chk-2-01 : WCount E2 2 Fin.zero (Fin.suc Fin.zero) ≡ 0
+  chk-2-01 = refl
+
+  -- 长度 3：0→1 恰 1 条（0→1→0→1）
+  chk-3-01 : WCount E2 3 Fin.zero (Fin.suc Fin.zero) ≡ 1
+  chk-3-01 = refl
+
+  -- 半群律的具体点对账：WCount 2 = WCount 1 · WCount 1
+  chk-split : WCount E2 (1 + 1) Fin.zero Fin.zero
+            ≡ sumFin (λ w → WCount E2 1 Fin.zero w * WCount E2 1 w Fin.zero)
+  chk-split = refl
