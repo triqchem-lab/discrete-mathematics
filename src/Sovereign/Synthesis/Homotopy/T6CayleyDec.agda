@@ -31,28 +31,22 @@
 
 module Sovereign.Synthesis.Homotopy.T6CayleyDec where
 
-open import Data.Nat using (ℕ; _+_)
-open import Data.Maybe using (just; nothing)
-open import Data.Product using (_×_; _,_)
-open import Data.Vec using () renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
+open import Data.Nat using (ℕ; _+_; zero; suc)
+open import Data.Maybe using (just; nothing; Maybe)
+open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
+open import Data.Vec using (Vec) renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
 open import Data.Fin using (Fin)
 import Data.Fin as Fin
 import Data.Fin as Fin
-open import Data.Vec using (Vec)
 open import Data.Vec.Properties using (≡-dec)
 open import Data.List using (List; []; _∷_; length; map)
 open import Data.List.Properties using (length-map)
 open import Data.Nat.Properties using (+-suc)
 open import Function using (_∘_)
-open import Data.Nat using (zero; suc)
-open import Data.List using (map)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Product using (Σ; _,_)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
-open import Data.Maybe using (Maybe; just; nothing)
 open import Data.List.Membership.Propositional using (_∈_)
-open import Data.Product using (_×_; proj₁; proj₂)
 open import Data.List.Relation.Unary.Any using (here; there)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans) using (_≡_; refl; cong; sym; trans)
 
@@ -298,3 +292,6 @@ length-allFinD (suc n) = cong suc (trans (length-map Fin.suc (allFinD n)) (lengt
 length-neighbours : ∀ {n : ℕ} (x : T6Vec n) → length (neighbours x) ≡ n + n
 length-neighbours {n} x = trans (length-nbrsFrom x (allFinD n))
                                 (cong (λ k → k + k) (length-allFinD n))
+-- ⚠ **边界（如实标注）**：表长 `n + n` **不蕴含**「表内无重复」——
+--   `Nodup (neighbours x)` **未证**（需 `updAt` 的单射性/不同坐标不相交等引理）。
+--   若要断言「无冗余」，必须补 `Nodup`；在此之前只能说**条目数恰为 `n + n`**。
