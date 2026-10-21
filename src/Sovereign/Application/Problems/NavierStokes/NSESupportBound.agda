@@ -25,8 +25,8 @@ module Sovereign.Application.Problems.NavierStokes.NSESupportBound where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
-open import Data.Product using (_,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Product using (_,_; _×_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; trans)
 open import Data.Nat.Properties using (≤-trans; ≤-reflexive; +-mono-≤; m+n≡0⇒m≡0; m+n≡0⇒n≡0)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
@@ -87,3 +87,93 @@ supportCount-bound v =
 --   ③ 「界 ⇒ 无集中」**不成立**（有界仍允许再分布）;
 --   ④ 连续统 NS 的任何结论。
 --------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- §5. ★ 零场刻画（标量场）：`countOver f ≡ 0 ↔ f` 处处为零
+--------------------------------------------------------------------------------
+
+isNonZero-zero : ∀ t → isNonZero t ≡ 0 → t ≡ T₀
+isNonZero-zero T₀ e = refl
+isNonZero-zero T₁ ()
+isNonZero-zero T₂ ()
+
+fold1N-zero : ∀ (g : C3 → ℕ) → fold1N g ≡ 0 → ∀ y → g y ≡ 0
+fold1N-zero g e fzero = m+n≡0⇒m≡0 (g fzero) e
+fold1N-zero g e (fsuc fzero) = m+n≡0⇒m≡0 (g (fsuc fzero)) (m+n≡0⇒n≡0 (g fzero) e)
+fold1N-zero g e (fsuc (fsuc fzero)) =
+  m+n≡0⇒n≡0 (g (fsuc fzero)) (m+n≡0⇒n≡0 (g fzero) e)
+
+G6 : ScalarField → C3 → C3 → C3 → C3 → C3 → C3 → ℕ
+G6 f y1 y2 y3 y4 y5 y6 = isNonZero (f (y1 , y2 , y3 , y4 , y5 , y6))
+G5 : ScalarField → C3 → C3 → C3 → C3 → C3 → ℕ
+G5 f y1 y2 y3 y4 y5 = fold1N (G6 f y1 y2 y3 y4 y5)
+G4 : ScalarField → C3 → C3 → C3 → C3 → ℕ
+G4 f y1 y2 y3 y4 = fold1N (G5 f y1 y2 y3 y4)
+G3 : ScalarField → C3 → C3 → C3 → ℕ
+G3 f y1 y2 y3 = fold1N (G4 f y1 y2 y3)
+G2 : ScalarField → C3 → C3 → ℕ
+G2 f y1 y2 = fold1N (G3 f y1 y2)
+G1 : ScalarField → C3 → ℕ
+G1 f y1 = fold1N (G2 f y1)
+
+countOver-zero : ∀ (f : ScalarField) → countOver f ≡ 0
+               → ∀ x1 x2 x3 x4 x5 x6 → f (x1 , x2 , x3 , x4 , x5 , x6) ≡ T₀
+countOver-zero f e x1 x2 x3 x4 x5 x6 =
+  isNonZero-zero _
+    (fold1N-zero (G6 f x1 x2 x3 x4 x5)
+      (fold1N-zero (G5 f x1 x2 x3 x4)
+        (fold1N-zero (G4 f x1 x2 x3)
+          (fold1N-zero (G3 f x1 x2)
+            (fold1N-zero (G2 f x1)
+              (fold1N-zero (G1 f) e x1) x2) x3) x4) x5) x6)
+
+fold1N-cong : ∀ {g g' : C3 → ℕ} → (∀ y → g y ≡ g' y) → fold1N g ≡ fold1N g'
+fold1N-cong p = cong₂ _+_ (p fzero) (cong₂ _+_ (p (fsuc fzero)) (p (fsuc (fsuc fzero))))
+
+countOver-zero← : ∀ (f : ScalarField)
+                → (∀ x1 x2 x3 x4 x5 x6 → f (x1 , x2 , x3 , x4 , x5 , x6) ≡ T₀)
+                → countOver f ≡ 0
+countOver-zero← f h =
+  trans (fold1N-cong (λ y1 → fold1N-cong (λ y2 → fold1N-cong (λ y3 →
+          fold1N-cong (λ y4 → fold1N-cong (λ y5 → fold1N-cong (λ y6 →
+            cong isNonZero (h y1 y2 y3 y4 y5 y6)))))))) refl
+
+--------------------------------------------------------------------------------
+-- §6. ★★ Field 六分量：`supportCount v ≡ 0` ⇒ 每个分量场恒零（及反向）
+--------------------------------------------------------------------------------
+
+_SixZero : Field → Set
+_SixZero v = (∀ x1 x2 x3 x4 x5 x6 → v1 v (x1 , x2 , x3 , x4 , x5 , x6) ≡ T₀)
+           × ((∀ x1 x2 x3 x4 x5 x6 → v2 v (x1 , x2 , x3 , x4 , x5 , x6) ≡ T₀)
+           × ((∀ x1 x2 x3 x4 x5 x6 → v3 v (x1 , x2 , x3 , x4 , x5 , x6) ≡ T₀)
+           × ((∀ x1 x2 x3 x4 x5 x6 → v4 v (x1 , x2 , x3 , x4 , x5 , x6) ≡ T₀)
+           × ((∀ x1 x2 x3 x4 x5 x6 → v5 v (x1 , x2 , x3 , x4 , x5 , x6) ≡ T₀)
+           × (∀ x1 x2 x3 x4 x5 x6 → v6 v (x1 , x2 , x3 , x4 , x5 , x6) ≡ T₀)))))
+
+supportCount-zero : ∀ (v : Field) → supportCount v ≡ 0 → _SixZero v
+supportCount-zero v e = z1 , (z2 , (z3 , (z4 , (z5 , z6))))
+  where
+    e1 = m+n≡0⇒m≡0 (countOver (v1 v)) e
+    eR1 = m+n≡0⇒n≡0 (countOver (v1 v)) e
+    e2 = m+n≡0⇒m≡0 (countOver (v2 v)) eR1
+    eR2 = m+n≡0⇒n≡0 (countOver (v2 v)) eR1
+    e3 = m+n≡0⇒m≡0 (countOver (v3 v)) eR2
+    eR3 = m+n≡0⇒n≡0 (countOver (v3 v)) eR2
+    e4 = m+n≡0⇒m≡0 (countOver (v4 v)) eR3
+    eR4 = m+n≡0⇒n≡0 (countOver (v4 v)) eR3
+    e5 = m+n≡0⇒m≡0 (countOver (v5 v)) eR4
+    e6 = m+n≡0⇒n≡0 (countOver (v5 v)) eR4
+    z1 = countOver-zero (v1 v) e1
+    z2 = countOver-zero (v2 v) e2
+    z3 = countOver-zero (v3 v) e3
+    z4 = countOver-zero (v4 v) e4
+    z5 = countOver-zero (v5 v) e5
+    z6 = countOver-zero (v6 v) e6
+
+supportCount-zero← : ∀ (v : Field) → _SixZero v → supportCount v ≡ 0
+supportCount-zero← v (h1 , h2 , h3 , h4 , h5 , h6) =
+  cong₂ _+_ (countOver-zero← (v1 v) h1)
+    (cong₂ _+_ (countOver-zero← (v2 v) h2)
+      (cong₂ _+_ (countOver-zero← (v3 v) h3)
+        (cong₂ _+_ (countOver-zero← (v4 v) h4)
+          (cong₂ _+_ (countOver-zero← (v5 v) h5) (countOver-zero← (v6 v) h6)))))
