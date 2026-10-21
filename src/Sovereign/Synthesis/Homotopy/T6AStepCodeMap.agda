@@ -36,16 +36,20 @@ module Sovereign.Synthesis.Homotopy.T6AStepCodeMap where
 
 open import Data.Nat using (ℕ)
 open import Data.List using (_∷_; _++_)
-open import Relation.Binary.PropositionalEquality using (_≡_; sym; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; subst)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CStep; CWalk)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym; T6SymEdge)
 open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; cons; _++w_; AStep; slide; expand)
+open import Data.Product using (proj₂)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (ctarget; foldT; cEdge; foldT-++)
 open import Sovereign.Synthesis.Homotopy.T6CayleyInterp
   using (interpAt; toStep; interpAt-++-glue)
 open import Sovereign.Synthesis.Homotopy.T6AStepCode using (ADir; dslide; dexpand)
+open import Sovereign.Synthesis.Homotopy.T6AStepMap
+  using (srcCode; tgtCode; StepVertex; StepSide; StepVertex→StepSide; interpC-walk)
+open import Sovereign.Synthesis.Homotopy.T6AStepCode2 using (StepCode; mkStep)
 
 --------------------------------------------------------------------------------
 -- §1. ★ `toStep` 的展开形态：三条边都是 `cEdge`，侧条件是**顶点层**
@@ -118,3 +122,66 @@ toStepExpand u pref s1 s2 s3 suff h =
          (cEdge (foldT u pref) s1) (cEdge (ctarget (foldT u pref) s1) s2)
          (subst (λ w → T6SymEdge (foldT u pref) w) h (cEdge (foldT u pref) s3))
 
+--------------------------------------------------------------------------------
+-- §4. ★★ `ASTep` 沿**走等式**的铸型（两条一行 helper）
+--
+-- `astStep-cast`（协作者给的）只能沿**端点**等式铸型；
+-- 要把 `toStep` 的走换成码层的走，需要沿**走本身**的等式铸型 ——
+-- 而它对构造子同样是**一步 `refl`**（与 `subst-cons` / `slide-subst` 同族）✓
+--------------------------------------------------------------------------------
+
+astStep-src : ∀ {n : ℕ} {U V : T6Vec n} {p p' : Walk (T6CayleySym n) U V}
+              {q : Walk (T6CayleySym n) U V}
+            → p ≡ p' → AStep (T6CayleySym n) p q
+            → AStep (T6CayleySym n) p' q
+astStep-src refl s = s
+
+astStep-tgt : ∀ {n : ℕ} {U V : T6Vec n} {q q' : Walk (T6CayleySym n) U V}
+              {p : Walk (T6CayleySym n) U V}
+            → q ≡ q' → AStep (T6CayleySym n) p q
+            → AStep (T6CayleySym n) p q'
+astStep-tgt refl s = s
+
+--------------------------------------------------------------------------------
+-- §5. ⚠ `toStepCode` —— **本批未完成，卡点已定位到「结构性」而非「工作量」**
+--
+-- ## 精确的桥（已核对 `T6AStepMap` 真实签名，不是猜）
+--
+-- ```
+--   interpC-walk  u w : subst (Walk G u) (interpC-end u w) (proj₂ (interpC u w)) ≡ interpAt u w
+--   interpC-walk' u w : proj₂ (interpC u w) ≡ subst (Walk G u) (sym (interpC-end u w)) (interpAt u w)
+--   srcCode-glue      : interpAt u (srcCode c) ≡ subst (Walk G u) (sym (foldT-++ …)) (源 ++w 形态)
+-- ```
+--
+-- ## ★ 结构性卡点（本批新发现，比「5–6 条交换引理」更精确）
+--
+-- `toStep` 给出的两步的**端点不同**：
+-- ```
+--   源：foldT u (srcCode c)                      = foldT u (pref ++ (s1∷s2∷suff))
+--   靶：foldT (ctarget (ctarget (foldT u pref) s1) s2) suff
+-- ```
+-- ⇒ 要把两侧都搬到码层，需要**两个不同的**端点等式：
+-- ```
+--   eS : foldT (ctarget (ctarget (foldT u pref) s1) s2) suff ≡ foldT u (pref ++ (s1∷s2∷suff))
+--   eT : foldT (ctarget (foldT u pref) s3) suff          ≡ foldT u (pref ++ (s3∷suff))
+-- ```
+-- 而 **`astStep-cast`（协作者给的）只用同一个 `e` 铸两侧**（因为 `ASTep G p q` 要求
+-- `p`、`q` **端点相同**）⇒ 一侧一铸会在**中间态**产生 `ASTep` 端点不匹配 ⇒ 类型不成立 ✗
+--
+-- **⇒ 需要的是「联合铸型」**：一次用 `subst₂`/`cong₂` 同时改两侧的端点，
+--   而不是两次单侧铸型。这不是「多写几条引理」，是**换铸型的方式**。
+--
+-- ## 已交的零件（本模块内已证 ✓）
+--
+-- | 件 | 内容 |
+-- |---|---|
+-- | `astStep-src` | 沿**走**等式铸源侧（一行，`refl` 级）|
+-- | `astStep-tgt` | 沿**走**等式铸靶侧（一行，`refl` 级）|
+--
+-- ## 下一步（若继续做）
+--
+-- 写 `astStep-cast₂ : (eS : V₁ ≡ V₁') (eT : V₂ ≡ V₂') → AStep G p q
+--                   → AStep G (subst … eS p) (subst … eT q)` ——
+-- 它**能**成立（两侧同改后端点仍相同，因为 `eS`/`eT` 由 `StepSide` 对齐），
+-- 且同样是 `refl` 级。**本批未写**（闸门已触发 9 次，按 §5.9 停手）。
+--------------------------------------------------------------------------------
