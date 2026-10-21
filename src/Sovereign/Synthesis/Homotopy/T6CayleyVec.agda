@@ -38,10 +38,11 @@ module Sovereign.Synthesis.Homotopy.T6CayleyVec where
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin)
 import Data.Fin as Fin
-open import Data.Vec using (Vec; []; _∷_)
+open import Data.Vec using (Vec; []; _∷_; head; tail)
+open import Data.Empty using (⊥)
 open import Data.Product using (Σ; _,_)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; cong; subst)
+  using (_≡_; _≢_; refl; cong; subst)
 
 open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons)
@@ -99,3 +100,20 @@ cycWalk3Vec : ∀ (n : ℕ) (j : Fin n) (x : T6Vec n)
             → Walk (T6CayleyVec n) x x
 cycWalk3Vec n j x =
   subst (Walk (T6CayleyVec n) x) (updAt-cubed j x) (cycWalk3-open n j x)
+
+--------------------------------------------------------------------------------
+-- §6. `updAt` 没有不动点（一般 n 三角形成立性的基础砖）
+--------------------------------------------------------------------------------
+
+-- `succF3` 没有不动点（Fin 3 三 case；复用 §2 的 `succF3-cubed` 所在模块的同一事实）
+succF3≢id : ∀ (a : Fin 3) → succF3 a ≡ a → ⊥
+succF3≢id Fin.zero                     ()
+succF3≢id (Fin.suc Fin.zero)           ()
+succF3≢id (Fin.suc (Fin.suc Fin.zero)) ()
+
+updAt-differs : ∀ {n : ℕ} (j : Fin n) (x : T6Vec n) → updAt j x ≢ x
+updAt-differs {n = zero}  () x
+updAt-differs {n = suc m} Fin.zero (a ∷ v) e =
+  succF3≢id a (cong head e)
+updAt-differs {n = suc m} (Fin.suc j) (a ∷ v) e =
+  updAt-differs j v (cong tail e)
