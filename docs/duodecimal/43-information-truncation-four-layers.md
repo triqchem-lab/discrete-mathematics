@@ -169,9 +169,13 @@ Agda 不把两个 `yes` 分支的证明项视为同一项。
 
 ### 8.4 留下的正面结果（人类确认「有价值」）
 
-1. **`AHomotopy ⊊ AHomotopyStd`（严格包含）** —— `cyc3-collapse`（`cyc3 ⁓ nil` 在 `AHomotopyStd` 下成立）
-   与 `Pi1dCycleThree.cyc3w³≢nil`（在 `AHomotopy` 下不成立）合起来给出
-   **`AStepStd` 确实比 `AStep` 强**。这是 `AStepStd.agda` 里 `AH⊆AHStd` 的严格化。
+1. **`AHomotopy ⊊ AHomotopyStd`（严格包含）** —— 已**单独形式化**为
+   `AStepStdStrict.AHomotopy-strictly-weaker`（回执 `85dc00f9`，0 postulate）：
+   见证图是 **2 顶点 2 边图** `G2`（`0→1`、`1→0`，无自环无弦），
+   `cyc2 = (0→1)·(1→0)` 在 `AHomotopyStd` 下由**一条 `bt`** 塌缩到空走，
+   但在 `AHomotopy` 下**不可能**（`G2` 无三角形 ⇒ `AHomotopy = ≡`，而 `cyc2 ≢ nil`）。
+   **⇒ `AStepStd` 确实严格强于 `AStep`**（不是 `π₁ᵈ` 的换名）。
+   （对照：`cyc3-collapse`（回执 `240b1ad2`）+ `cyc3w³≢nil` 是同一断言的另一组见证。）
 2. **C3-b 的精确刻画**：`π₁ᵈ(T¹) ↠ C₃`，满射、非单射、**丢掉圈数** ⇒ 截断②
    （`Pi1dWindMod3`，回执 `8e36eed6`）。
 3. **结构不变量全部保留**：塌缩 ⟺ 有向三角形、`loop-eq`/`shorten`、完全 ⟹ 幂等、
