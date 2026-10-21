@@ -1475,3 +1475,58 @@ Z≤a n = Z≤a-aux (mod3 n) n refl          ← refl 提供等式 ✓
 | 八要素（GF(9)-值）| ❌ 未做（独立项目，~250 行）|
 
 **1206 行，0 postulate / 0 hole** ✓
+
+---
+
+## 三十二、八要素 P0 的障碍（2026-10-21，未完成，骨架已删）
+
+### 32.1 构件全部现成 ✓
+
+| 字段 | 来源 | 状态 |
+|---|---|---|
+| `step = mixedOp` | `DuodecClock` | ✓ |
+| `g = (T₁, a1)` | `DuodecClock:479` 明确记载 | ✓ |
+| `unit = duodec-e` | `DuodecClock:240` | ✓ |
+| `assoc` | `mixedOp-assoc` | ✓ |
+| `zeroˡ/ʳ` | `mixedOp-identityˡ/ʳ` | ✓ |
+| `phase` | `λ (t , a) → (t , mulAlpha a a1)` | ✓ 定义简单 |
+| `phase-order = 4` | `mulAlpha-4-a1` | ✓ |
+| `clock = 12` | `mixedOp-12-cycle` | ⚠️ 需桥接 |
+| `rigidity = sigmaDC` | `DCGroup:120` | ✓ |
+| `check` | `mixedOp-identityʳ` | ✓ |
+
+### 32.2 ❌ 两个真实障碍
+
+**① `phaseDC-4`**：
+```
+iterate phaseDC 4 (t , a) = (t , ((a·α)·α)·α)·α)      -- 左结合
+mulAlpha-4-a1 : ((α·α)·α)·α ≡ a0                     -- 也是左结合但基元不同
+⇒ 需 mulAlpha-assoc 重排 + mulAlpha a a0 ≡ a         ✗ 未证
+```
+
+**② `clock-cycle`**：
+```
+Presentation.clock-cycle : ∀ x → iterate (λ y → step y g) clock x ≡ x
+mixedOp-12-cycle         : ∀ p → mixedOp^12 p ≡ p
+  mixedOp^12 p = mixedOp g (mixedOp g (... (mixedOp g p)))   -- **左**乘 g 12 次
+⇒ clock-cycle 是**右**乘 ⇒ 需 mixedOp-comm 桥接               ✗ 未证
+```
+
+### 32.3 交付
+
+- **研究报告** `docs/plan/T4-八要素-研究报告-2026-10-21.md`（135 行 ✓）
+- 骨架 `DCPresentation.agda` **已删除** ✓（按「未完成代码删除不留洞」纪律 §L0）
+- 两处障碍**精确定位** ✓（上述 ①②）
+
+### 32.4 下一步（明确）
+
+```agda
+-- ① 相位
+mulAlpha-right-unit : ∀ a → mulAlpha a a0 ≡ a      -- ~4 行（4 cases）
+phaseDC-4 : ∀ x → iterate phaseDC 4 x ≡ x          -- ~15 行（assoc 重排）
+
+-- ② 时钟
+mixedOp-comm : ∀ p q → mixedOp p q ≡ mixedOp q p   -- ~5 行（cong₂ ⊕-comm ...）
+clock-bridge : ∀ x → iterate (λ y → mixedOp y gDC) 12 x ≡ x   -- ~25 行
+```
+⇒ **合计 ~50 行**，障碍已精确定位 ✓
