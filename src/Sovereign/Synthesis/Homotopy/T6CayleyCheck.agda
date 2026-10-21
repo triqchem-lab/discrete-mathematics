@@ -40,7 +40,8 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt; updAt-cubed)
 open import Relation.Binary.PropositionalEquality using (sym; cong)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CStep; CWalk; cplus; cminus)
-open import Sovereign.Synthesis.Homotopy.T6CayleyNorm using (creduceA)
+open import Sovereign.Synthesis.Homotopy.T6CayleyNorm using (creduceA; creduceS; creduceS-noCancelR; NoCancel; NoCancelR)
+open import Sovereign.Synthesis.Homotopy.T6CayleyBool using (creduceB; creduceB-noCancel)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (foldT; ctarget)
 open import Sovereign.Synthesis.Homotopy.T6CayleyInterp
   using (interpAt; x1; stepE1; stepE2; stepE3; side-ok; toStep)
@@ -220,3 +221,19 @@ check-stepcode-same = refl
 -- ★★ `no` 分支：异码（只差第一个分量 `ADir`）
 check-stepcode-diff : isYes (DecEq-StepCode sc1 sc2) ≡ false
 check-stepcode-diff = refl
+
+--------------------------------------------------------------------------------
+-- §9. ★★ `Set` 值不变式定理在**具体点的居留**（此前只验过等式形式的检查）
+--
+-- 前八节的检查全是**等式**（`≡`）。但 ①/② 的核心定理是
+-- **`Set` 值**的（`NoCancel w` / `NoCancelR w`）——
+-- 「构造性定理要具体点交叉比对」对它们意味着：**在具体点上实际给出一个居留者** ✓
+--------------------------------------------------------------------------------
+
+-- ① 的范式性：`creduceB` 在互逆对上的结果**确实**满足 `NoCancel`
+check-noCancel : NoCancel (creduceB {n = 1} (ep ∷ em ∷ []))
+check-noCancel = creduceB-noCancel (ep ∷ em ∷ [])
+
+-- ① 的另一版（`NoCancelR` 变体，栈序 + 反向比较）
+check-noCancelR : NoCancelR (creduceS {n = 1} (ep ∷ em ∷ []))
+check-noCancelR = creduceS-noCancelR (ep ∷ em ∷ [])
