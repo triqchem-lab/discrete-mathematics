@@ -32,6 +32,7 @@ open import Data.List.Membership.Propositional using (_∈_; _∉_)
 open import Data.List.Relation.Unary.Any using (here; there)
 open import Data.Fin using (Fin)
 open import Relation.Nullary using (¬_)
+import Data.List.Relation.Unary.All as All
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; subst)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt)
@@ -73,3 +74,14 @@ neighbours-not-in {n} x j j∉ =
   nbrsFrom-not-in x (allFinD n) (updAt j x)
     (λ i i∈ → updAt-neq-other  j i x (∉-to-≢ {n} j i j∉ i∈))
     (λ i i∈ → updAt-neq-other2 j i x (∉-to-≢ {n} j i j∉ i∈))
+--------------------------------------------------------------------------------
+-- §3. ★★ 组装：`js` 不重复 ⇒ 邻居表不重复
+--
+-- stdlib 2.4 里 `Unique = AllPairs _≉_`（propositional 版即 `_≢_`），构造子
+--   `AP.[]` / `AP._∷_ : All (x ≢_) xs → AllPairs xs → AllPairs (x ∷ xs)`
+-- 需要把「∉」转成「All (_≢_)」（stdlib 没有直接给，四行即可）。
+--------------------------------------------------------------------------------
+
+∉→All : ∀ {n : ℕ} (y : T6Vec n) (ys : List (T6Vec n)) → y ∉ ys → All.All (y ≢_) ys
+∉→All y []       _   = All.[]
+∉→All y (z ∷ zs) y∉ = All._∷_ (λ e → y∉ (here e)) (∉→All y zs (λ m → y∉ (there m)))
