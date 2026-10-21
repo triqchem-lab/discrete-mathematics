@@ -1842,3 +1842,44 @@ q_n = 0（对角算子）                  ⚠ oracle 448d1d14（未形式化）
 八要素                              ✅ 早已存在（dc-presentation，Presentation.agda:131）
 ```
 **计划 v2 的 phase 3–7 应作废或重写** ✗
+
+---
+
+## 三十七、`GF3HammingCount` 的库内地位（2026-10-21 最终评估）
+
+### 37.1 事实
+
+```
+谁 import 了 GF3HammingCount：无 ✗
+```
+
+⇒ 这是一份**孤立的数学结果** ✗ —— 无下游消费者、无依赖者 ✓
+
+### 37.2 与全库模式的一致性
+
+`proof_dag check` 报告（2026-10-21）：
+- 未登记模块依赖（目标尚无节点）：**212 条** ✗
+- `duplicateImpls`：**233** ✗
+
+⇒ 这是**全库性**的结构现象 ✗（大量模块孤立 + 重复 ✗），**不是本任务造成的** ✓
+
+### 37.3 本任务的净贡献（诚实账）
+
+| 类别 | 内容 |
+|---|---|
+| **新增真定理** | `a_n = Σ_{k≡0(3)} C(n,k)·2^k`（`da832222`）、`b_n = a_n − [3\|n]·2^n`（同回执）|
+| **新增基础设施** | `sumR` 工具链（uncons/cong/add/scale/snoc）、`★Cnk-*`、`★mod3-suc`/`hit-suc3`/`★hit-mod`、`Z`/`Zr`/`Z≤a`、`termN`/`sumR-mono`/`Cnk-diag`/`onetwice` |
+| **修复的工具** | `index_presentations.sh` 硬编码路径（自 2026-10-19 失效）✓ |
+| **撤回的错误声明** | 「全库第一个 Presentation 实例」（实为重复 ✗）|
+| **作废的节点** | `T4.bn-block-decomposition`（错误环 ✗）、`T4.eight-elements-dc`（重复 ✗）|
+| **诚实标注的未完成** | `q_n = 0`（需线性代数 ✗）、P1（结构性障碍待裁决 ✗）|
+
+### 37.4 T4 的最终定论
+
+**T4 在正确环 `Functions((Z/3)^n, GF9)` 上的核心数学已闭合并形式化** ✓：
+- `a_n`（Hamming ≡ 0 的计数）✅ Agda 定理
+- `b_n`（`ker F ∩ V_nA` 的维数）✅ Agda 定理
+- `q_n`（`ker F ∩ im F`）⚠ oracle 验证为 0，形式化需线性代数 ✗
+- 八要素 ✅ 早已存在（`Presentation.agda:131`）
+
+**模块孤立不影响定理真值** ✓ —— 但若要被后续工作使用，需有消费者 ✗
