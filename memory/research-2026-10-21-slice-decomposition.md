@@ -2472,3 +2472,61 @@ b_n = a_n − [3|n]·2^n = #{Hamming ≡ 0 且 有坐标为 0}   ← 现在有�
 > **共同模式**：**形式通过（编译绿/字段齐全/工具报 OK）≠ 语义正确** ✗
 > ⇒ **八要素这类「记录 13 字段」的结构，字段齐全只保证「形」，语义由 L0 红线判** ✓
 > ⇒ **`index_presentations.sh` 的免责声明正是为此而写**（「字段齐全」不表示结构正确 ✓）
+
+---
+
+## 四十七、★★★★ **修复完成**：`RnDCPresentation`（2026-10-21，回执 `647efff9`）
+
+### 47.1 修复方式：**换载体**
+
+| | 撤回的 `RnPresentation` ✗ | 修复的 `RnDCPresentation` ✓ |
+|---|---|---|
+| 载体 | `Vec GF9 (3^n)` ✗ | **`Vec DuodecPoint (3^n)`** ✓ |
+| `step` | `zipWith _*gf9_`（纯乘）✗ | **`zipWith mixedOp`（联合）** ✓ |
+| `g` | `replicate alpha` ✗ | `replicate (T₁ , a1)` ✓ |
+| `clock` | **`4` = phase-order ✗（踩红线）** | **`12 = lcm(3,4)`** ✓ |
+| `phase-order` | 4 | 4 ✓ |
+| 红线 | ❌ 违反 | ✅ **满足**（`clock ≠ phase-order`）|
+
+### 47.2 为什么换载体是唯一解
+
+```
+八要素要求 clock = 联合周期（lcm(3,4) = 12）
+  ⇒ step 必须**联合**（加法 C₃ ⊕ 相位乘 C₄）
+  ⇒ GF9 = Trit × Trit（9 元）上**不存在**联合运算 ✗（GF9* ≅ C₈）
+  ⇒ 必须用 DuodecPoint = Trit × AlphaPower（12 元）✓
+```
+
+### 47.3 零重复（全部复用）
+
+```agda
+assoc   = zipWith-assoc mixedOp-assoc          -- mixedOp-assoc 正是 Associative ✓
+zeroˡ/ʳ = zipWith-identityˡ/ʳ mixedOp-identityˡ/ʳ
+clock   = clockVec-cycle                        -- 用 mixedOp-12-cycle 逐点提升
+phase   = phaseVec-cycle                        -- α⁴ = 1（4 个构造子 refl）
+rigidity = map sigmaDC                          -- 由 GF9.galoisConjugate 诱导 ✓
+```
+
+**新增辅助件**：`mixedOp-comm`（`cong₂ ⊕-comm mulAlpha-comm` ✓）、`iterL`、`right-eq-left`、`mixedOp-left-12`、`phaseD`、`alpha-four`。
+
+### 47.4 索引工具：现在 3 个实例
+
+```
+摘要：发现 3 个 Presentation 实例
+  Presentation.agda:131        ✓ 字段齐全（13/13）  ← dc-presentation（原名）
+  RnPresentation.agda:126      ✓ 字段齐全（13/13）  ← ⚠️ 已撤回（clock 踩红线）
+  RnDCPresentation.agda:127    ✓ 字段齐全（13/13）  ← ✓ 本轮修复
+```
+
+⚠ **索引工具只看「字段齐全」✗ —— 语义红线要人工/L0 判** ✓
+（`RnPresentation` 字段也齐全 ✗ 但**违反 clock 红线** ✗ —— 这是免责声明说的 ✓）
+
+### 47.5 T4 的**最终账**（第五次修正，本次为定稿）
+
+| 项 | 形式化状态 | 回执 |
+|---|---|---|
+| **`a_n` = Hamming 计数 = `Σ_{k≡0(3)} C(n,k)·2^k`** | ✅ **A 级** | `a2d87388` + `da832222` |
+| **`b_n` = `a_n − [3\|n]·2^n` = `dim(ker F ∩ V_nA)`** | ✅ **A 级** | `4eb44d77` + `da832222` |
+| **`q_n = 0`**（逐点）| ✅ **A 级** | `4dcfbb13` |
+| **八要素实例（`Vec DuodecPoint (3^n)`）** | ✅ **A 级**（`clock = 12` 不踩红线）| **`647efff9`** |
+| `Vec GF9` 版本 | ⚠️ **已撤回**（`needs_review`）| `3c86c3a5` |
