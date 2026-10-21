@@ -17,7 +17,11 @@ set -uo pipefail
 cd "$(dirname "$0")/.." || exit 2
 
 ROOT="${1:-src}"
-DEF="src/Sovereign/Algebra/Presentation.agda"
+# ⚠ 2026-10-21 修复：目录重组（2026-10-19）后 Presentation.agda 移至
+#   src/Sovereign/Algebra/UniversalAlgebra/ —— 原硬编码路径使本工具**一直失效** ✗
+#   改为自动定位（不硬编码，防再次漂移）
+DEF="$(find src -name 'Presentation.agda' -path '*Algebra*' 2>/dev/null | head -1)"
+DEF="${DEF:-src/Sovereign/Algebra/UniversalAlgebra/Presentation.agda}"
 
 if [ ! -d "$ROOT" ]; then
   echo "ROOT 不存在：$ROOT（用法：engineering/index_presentations.sh [ROOT]，默认 src）" >&2

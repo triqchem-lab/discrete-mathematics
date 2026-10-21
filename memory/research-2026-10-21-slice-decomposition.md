@@ -1595,7 +1595,64 @@ mixedOp-comm (x , a) (y , b) = cong₂ _,_ (⊕-comm x y) (mulAlpha-comm a b)
 
 ---
 
-## 三十三、★★★★ **全库第一个 `Presentation` 实例诞生**（2026-10-21，回执 `d09d2f93`）
+## 三十三、❌ **撤回：「全库第一个 Presentation 实例」是假的**（2026-10-21 自查发现）
+
+### 33.0 ⚠️ 严重错误（人类审计纪律 §0.6「复用优先于重写」的违反）
+
+**我在 `DCPresentation.agda` 写了 119 行** ✗ —— 但
+`src/Sovereign/Algebra/UniversalAlgebra/Presentation.agda:131` **早就有了 `dc-presentation`** ✗ ✓
+
+字段对比（几乎完全相同 ✗）：
+
+| 字段 | 已有 `dc-presentation` | 我写的 `DCPresentation` |
+|---|---|---|
+| step | `mixedOp` | `mixedOp` ✓ 同 |
+| g | `(T₁ , a1)` | `gDC = (T₁ , a1)` ✓ 同 |
+| unit | `duodec-e` | `duodec-e` ✓ 同 |
+| assoc/zeroˡ/zeroʳ | 同 | 同 ✓ |
+| phase | `dc-phase` | `phaseDC` ✓ 等价 |
+| phase-order | `4` | `4` ✓ 同 |
+| phase-cycle | `dc-phase-cycle`（12 个 refl case）| `phaseDC-4`（4 个 refl）✓ 等价 |
+| clock | `12` | `12` ✓ 同 |
+| clock-cycle | `dc-clock-cycle`（12 个 refl case）| `clock-bridge`（结构构造 ✓）|
+| rigidity | `rho` | `sigmaDC` ⚠ **唯一差异** |
+| check | `mixedOp-identityʳ` | 同 ✓ |
+
+### 33.0.1 处理
+
+1. **`DCPresentation.agda` 已删除** ✓
+2. 记忆 §33 原有内容**作废** ✓（下方保留作教训）
+3. `proof_dag` 的 `T4.eight-elements-dc` 节点需撤回 ✓
+
+### 33.0.2 ★ 教训（最重要的一条）
+
+> **写新模块前，必须先 `grep` 全库确认是否已存在** ✓
+> 我查了 `Presentation.agda` 的 **record 定义**（确认 13 字段 ✓），
+> 但**没查它的 131 行之后**（那里有 `dc-presentation` 实例 ✓）
+> ⇒ **「grep 一次」不够 —— 要读完整文件，或用索引工具** ✓
+>
+> **`engineering/index_presentations.sh` 才是正确的查重工具** ✓ ——
+> 而它**当时是坏的** ✗（硬编码路径自 2026-10-19 目录重组后失效 ✗）
+> ⇒ **工具坏了 ≠ 没有先例** ✗ ⇒ 修工具本身就是**防重复的关键** ✓
+
+### 33.0.3 修复的工具（有实际价值 ✓）
+
+```bash
+# 原（坏）：DEF="src/Sovereign/Algebra/Presentation.agda"   ← 文件不存在 ✗
+# 新（自动定位）：
+DEF="$(find src -name 'Presentation.agda' -path '*Algebra*' | head -1)"
+```
+修复后索引输出 ✓：
+```
+摘要：发现 2 个 Presentation 实例
+  Presentation.agda:131        ✓ 字段齐全（13/13）    ← 早已存在 ✗
+  DCPresentation.agda:103      ✓ 字段齐全（13/13）    ← 我的重复 ✗
+```
+
+---
+
+## （原 §33 内容作废，保留作教训记录）
+
 
 ### 33.1 模块
 
