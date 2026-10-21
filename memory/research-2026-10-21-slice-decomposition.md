@@ -3848,3 +3848,55 @@ $ git commit -m "test dup"
 | 「全库第一个 Presentation」声明 | ⚠ 不能（是声明不是符号）|
 
 **⇒ 2/3，且是最关键的两个** ✓
+
+---
+
+## 六十六、方案 D 探针结论：hook 代码正常，**harness 未调用**（2026-10-21）
+
+### 66.1 探针结果
+
+```js
+// 在 hooks/search-dialect-gate.mjs 的 JSON.parse 前后加：
+let __raw = ''; try { __raw = readFileSync(0,'utf8') } catch {}
+appendFileSync('/tmp/sdg-diag.log', `RAW=${JSON.stringify(__raw)} ARGV=${...}`)
+```
+
+**直接运行**（`node hooks/search-dialect-gate.mjs < payload.json`）：
+```
+exit=2 ✓
+diag: RAW="{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"grep -n x y.agda\"}}\n" ARGV=[]
+```
+**⇒ hook 代码完全正常** ✓ —— payload 解析 ✓、拦截 ✓、日志写入 ✓
+
+**经 harness 调用**：`/tmp/sdg-diag.log` **不存在** ✗
+**⇒ hook 从未被 harness 调用到（或调用时环境异常）** ✗
+
+### 66.2 一个诊断陷阱（自纠）
+
+途中我误把 **bash 自己的 exit code 2** 当成「hook 拦住了」✗：
+```bash
+ls /tmp/sdg-diag.log   # 文件不存在 ⇒ ls 返回 2 ✗（不是 hook 拦截）
+```
+**⇒ 与之前「`grep | head` 掩盖 `$?`」同类** ✗ —— **管道/命令本身的退出码会冒充拦截信号** ✗
+
+### 66.3 结论与建议
+
+| 层 | 状态 |
+|---|---|
+| **hook 代码** | ✅ 正常（独立测试 exit 2 ✓）|
+| **hook 配置** | ✅ 正常（`matcher: '*'`、`hooks.dsh.json:PreToolUse[4]` ✓）|
+| **harness 调用** | ❌ **未调用 / 调用异常** ✗（diag 日志从未生成）|
+| **修复可行性** | ❌ 需读 `@deepseek-ai/dsh-hooks-claude-code` 插件源码（在 `app.asar` 内，未解包）✗ |
+
+**⇒ 建议停止方案 D** ✗ —— 探索性、低回报 ✓
+**⇒ 方案 B（pre-commit 重复检测）已生效** ✓ —— 不依赖 hook 框架 ✓，覆盖本会话 2/3 事故 ✓
+
+### 66.4 本会话诊断方法的两次同类失误
+
+| # | 失误 | 教训 |
+|---|---|---|
+| 1 | `node hook | head` 用 `$?` 判退出码 ✗ | 管道后 `$?` 是**最后一个命令**的 |
+| 2 | `ls 不存在的文件` 的 exit 2 当成「hook 拦住」✗ | **bash 自身退出码会冒充拦截信号** |
+
+**⇒ 判据**：确认「hook 是否拦截」必须看 **hook/result 事件**（`exitCode` + `decision` 字段）✓
+—— **不能靠 bash 的 `$?`** ✗
