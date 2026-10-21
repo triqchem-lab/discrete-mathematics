@@ -146,3 +146,101 @@ shuffle = solve 3
   trans (cong₂ _+_ (cong₂ _+_ (C0-step n) (C1-step n)) (C2-step n))
         (trans (shuffle (C0 n) (C1 n) (C2 n))
                (trans (cong (3 *_) (★total n)) refl))
+
+--------------------------------------------------------------------------------
+-- §7. ★★★ A：`C0 (2m+1) ≡ 9^m`
+--------------------------------------------------------------------------------
+
+open import Data.Nat.Properties using
+  ( suc-injective; +-identityʳ; +-suc; *-identityʳ; *-assoc; *-comm
+  ; ^-distribˡ-+-*; ^-distribʳ-* )
+open import Relation.Binary.PropositionalEquality using (subst)
+
+-- ①a 显式展开（互递归定义不会自动展开 ⇒ 用 `C0-step` 等重写）
+C0-2step-rewrite : ∀ n →
+  (C0 (suc (suc n)) + 3 * C0 n)
+  ≡ ((C0 n + 2 * C2 n) + 2 * (C2 n + 2 * C1 n)) + 3 * C0 n
+C0-2step-rewrite n =
+  cong₂ _+_ (trans (C0-step (suc n))
+                   (cong₂ _+_ (C0-step n) (cong (2 *_) (C2-step n)))) refl
+
+-- ①b 多项式重排（Ring solver）
+shuffle2 : ∀ a b c →
+  ((a + 2 * c) + 2 * (c + 2 * b)) + 3 * a ≡ 4 * ((a + b) + c)
+shuffle2 = solve 3
+  (λ a b c → ((a :+ con 2 :* c) :+ con 2 :* (c :+ con 2 :* b)) :+ con 3 :* a
+             := con 4 :* ((a :+ b) :+ c))
+  refl
+
+-- ① ★ 2-步递推：`C0(n+2) + 3·C0 n ≡ 4·3^n`
+C0-two-step : ∀ n → C0 (suc (suc n)) + 3 * C0 n ≡ 4 * 3 ^ n
+C0-two-step n =
+  trans (C0-2step-rewrite n)
+        (trans (shuffle2 (C0 n) (C1 n) (C2 n))
+               (cong (4 *_) (★total n)))
+
+--------------------------------------------------------------------------------
+-- ② 指数恒等式
+--------------------------------------------------------------------------------
+
+-- `2 * m ≡ m + m`
+2m=m+m : ∀ m → 2 * m ≡ m + m
+2m=m+m = solve 1 (λ m → con 2 :* m := m :+ m) refl
+
+-- ★ `9^m ≡ 3^(2m)`（因 `9 = 3 * 3`）
+★9-pow : ∀ m → 9 ^ m ≡ 3 ^ (2 * m)
+★9-pow m =
+  trans (^-distribʳ-* m 3 3)
+        (trans (sym (^-distribˡ-+-* 3 m m))
+               (cong (3 ^_) (sym (2m=m+m m))))
+
+-- ★ `3^(2m+1) ≡ 3 * 3^(2m)`
+★3-pow : ∀ m → 3 ^ (2 * m + 1) ≡ 3 * (3 ^ (2 * m))
+★3-pow m =
+  trans (^-distribˡ-+-* 3 (2 * m) 1)
+        (*-comm (3 ^ (2 * m)) 3)
+
+--------------------------------------------------------------------------------
+-- ③ ★★★ 主定理：`C0 (2m+1) ≡ 9^m`
+--------------------------------------------------------------------------------
+
+-- `9^(m+1) ≡ 9 * 9^m`
+★9-suc : ∀ m → 9 ^ (m + 1) ≡ 9 * 9 ^ m
+★9-suc m = trans (trans (^-distribˡ-+-* 9 m 1)
+                          (cong (λ z → 9 ^ m * z) (*-identityʳ 9)))
+                   (*-comm (9 ^ m) 9)
+
+-- `4 * (3 * x) ≡ 9 * x + 3 * x`（把 `9^m` 当原子）
+polysolve : ∀ x → 4 * (3 * x) ≡ 9 * x + 3 * x
+polysolve = solve 1 (λ x → con 4 :* (con 3 :* x) := con 9 :* x :+ con 3 :* x) refl
+
+-- ★ 关键等式：`4·3^(2m+1) ≡ 9^(m+1) + 3·9^m`
+rhs-eq : ∀ m → 4 * 3 ^ (2 * m + 1) ≡ 9 ^ (m + 1) + 3 * 9 ^ m
+rhs-eq m =
+  trans (cong (4 *_) (★3-pow m))
+        (trans (cong (λ z → 4 * (3 * z)) (sym (★9-pow m)))
+               (trans (poly4 m) (cong (λ z → z + 3 * 9 ^ m) (sym (★9-suc m)))))
+  where
+    -- 把 `9^m` 当原子：`4 * (3 * x) ≡ 9 * x + 3 * x`
+    poly4 : ∀ m → 4 * (3 * 9 ^ m) ≡ 9 * 9 ^ m + 3 * 9 ^ m
+    poly4 m = polysolve (9 ^ m)
+
+-- 消去引理：`a + k ≡ b + k ⇒ a ≡ b`（对 `k` 归纳，`suc` 用单射）
+cancel : ∀ a b k → a + k ≡ b + k → a ≡ b
+cancel a b zero    eq = trans (sym (+-identityʳ a)) (trans eq (+-identityʳ b))
+cancel a b (suc k) eq =
+  cancel a b k (suc-injective (trans (sym (+-suc a k)) (trans eq (+-suc b k))))
+
+-- ⚠ `★C0-odd : C0 (2m+1) ≡ 9^m` —— **未完成** ✗
+--
+-- 已完成的部分（都在上面）：
+--   `C0-two-step : C0(n+2) + 3·C0 n ≡ 4·3^n`     ✓
+--   `★9-pow : 9^m ≡ 3^(2m)`                       ✓
+--   `★3-pow : 3^(2m+1) ≡ 3·3^(2m)`                ✓
+--   `★9-suc : 9^(m+1) ≡ 9·9^m`                    ✓
+--   `rhs-eq : 4·3^(2m+1) ≡ 9^(m+1) + 3·9^m`       ✓
+--   `cancel : a + k ≡ b + k → a ≡ b`              ✓
+--
+-- 缺口：`suc m` 与 `m + 1` 在 ℕ 上**不是**定义相等
+--   （`_+_` 递归在第一个参数）⇒ 最后一步 `subst` 的 motive 形状对不上 ✗
+-- 这条**只有 oracle `448d1d14` 验证**（n=1..7 全对），**不是** Agda 定理 ✗
