@@ -952,3 +952,47 @@ S''-base-1 = refl
 
 S''-base-2 : S'' (fsuc (fsuc fzero)) 0 ≡ 0
 S''-base-2 = refl
+
+--------------------------------------------------------------------------------
+-- ㉖ Step C：`★S-eq1`
+--------------------------------------------------------------------------------
+
+-- `f 0 ≡ hit r fzero`（全部定义归约 + `*-identityʳ`）
+f0-eq : ∀ (r : Fin 3) n → hit r (mod3 0) * (Cnk (suc n) 0 * 2 ^ 0) ≡ hit r fzero
+f0-eq r n = *-identityʳ (hit r fzero)
+
+-- 项级恒等式（4 个原子，solver）
+term-eq : ∀ h a b p → h * ((a + b) * (2 * p)) ≡ 2 * (h * (a * p)) + 2 * (h * (b * p))
+term-eq = solve 4
+  (λ h a b p → h :* ((a :+ b) :* (con 2 :* p))
+             := con 2 :* (h :* (a :* p)) :+ con 2 :* (h :* (b :* p))) refl
+
+-- 三步改写
+step1 : ∀ (r : Fin 3) n j →
+  hit r (mod3 (suc j)) * (Cnk (suc n) (suc j) * 2 ^ suc j)
+  ≡ hit (pred3 r) (mod3 j) * ((Cnk n j + Cnk n (suc j)) * (2 * (2 ^ j)))
+step1 r n j =
+  trans (cong (λ z → z * (Cnk (suc n) (suc j) * 2 ^ suc j)) (★hit-mod r j))
+        (trans (cong (λ z → hit (pred3 r) (mod3 j) * (z * 2 ^ suc j)) (★Cnk-pascal n j))
+               (cong (λ z → hit (pred3 r) (mod3 j) * ((Cnk n j + Cnk n (suc j)) * z)) (★pow2-suc j)))
+
+-- 尾段和的重写
+sum-rewrite : ∀ (r : Fin 3) n →
+  sumR n (λ j → hit r (mod3 (suc j)) * (Cnk (suc n) (suc j) * 2 ^ suc j))
+  ≡ 2 * S'' (pred3 r) n + 2 * B (pred3 r) n
+sum-rewrite r n =
+  trans (sumR-cong n (λ j → step1 r n j))
+        (trans (sumR-cong n (λ j → term-eq (hit (pred3 r) (mod3 j)) (Cnk n j) (Cnk n (suc j)) (2 ^ j)))
+               (trans (sumR-add n
+                              (λ j → 2 * (hit (pred3 r) (mod3 j) * (Cnk n j * 2 ^ j)))
+                              (λ j → 2 * (hit (pred3 r) (mod3 j) * (Cnk n (suc j) * 2 ^ j))))
+                      (cong₂ _+_
+                        (sumR-scale n 2 (λ j → hit (pred3 r) (mod3 j) * (Cnk n j * 2 ^ j)))
+                        (sumR-scale n 2 (λ j → hit (pred3 r) (mod3 j) * (Cnk n (suc j) * 2 ^ j))))))
+
+-- ★★★ `★S-eq1`
+★S-eq1 : ∀ (r : Fin 3) n →
+  S'' r (suc n) ≡ hit r fzero + (2 * S'' (pred3 r) n + 2 * B (pred3 r) n)
+★S-eq1 r n =
+  trans (sumR-uncons n (λ k → hit r (mod3 k) * (Cnk (suc n) k * 2 ^ k)))
+        (cong₂ _+_ (f0-eq r n) (sum-rewrite r n))
