@@ -107,10 +107,51 @@ complete-idempotent-nil = refl' _
 --   （实测 2026-10-21，见 prover_limits `agda-without-k-reflexive-index-split`）
 --
 -- **可行的三条出路**（未择一，需人类定）：
---   1. 把顶点类型具体化（如 `V = Fin n`），先按顶点穷举再 split —— `Pi1dCycleThree` 就是这么做的 ✓
+--   1. 把顶点类型具体化（如 `V = Fin n`），先按顶点穷举再 split
+--      —— ⚠ 实测**只对零元构造子有效**（见 §4 ③）；`Pi1dCycleThree` 并未用过此法
+--      （它只是**显式构造** `cyc3w`，从未对任意闭走做 split）
 --   2. 给定理加一个**显式的「非空/空」见证参数**（`⊎` 型），把 case split 移到调用点；
 --   3. 放弃闭走形态，只对「首边 + 尾走」陈述（即 `canon` 的形态）—— 已证 ✓
 --
 -- 本模块因此**只交付 `canon`**；主定理登记为台账 `PIO-1.thm.complete-idempotent` 的
 -- blocked 理由，不缩陈述、不假装完成。
+
+--------------------------------------------------------------------------------
+-- §4. 两条**实测失败**的绕法（机器证据；避免后来者重走）
+--
+-- ① 直接两子句 `complete-idempotent c (nil x) = …` / `(cons e rest) = …` ✗
+-- ② Σ 打包（让顶点成为模式变量）：`(p : Σ (V G) (λ v → Walk G v v))` 上分情形 ✗
+--
+-- 两条报**同一个**错（2026-10-21 实测，探针已删）：
+-- ```
+-- SplitError.UnificationStuck: I'm not sure if there should be a case for
+-- the constructor nil, because I get stuck when trying to solve
+--   x ≟ v ／ x ≟ v
+-- Possible reason: Cannot eliminate reflexive equation v = v of type V G
+--   because K has been disabled.
+-- ```
+-- ⇒ Σ 打包**不能**把 `v` 变成可统一的口径（`Walk G v v` 的自反索引仍在类型里）。
+--
+-- ③ 顶点具体化（`V = Fin n`）+ 先按顶点穷举：**部分有效** ⚠
+--    在 `FinGraph n E`（顶点**定义性**是 `Fin n`）上实测：
+--      · `v = zero`   ⇒ split 通过 ✓（`x ≟ zero` 直接统一）
+--      · `v = suc i`  ⇒ **仍失败** ✗，报
+--        `x ≟ suc i`（两次）／「Cannot eliminate reflexive equation `i = i`
+--        of type `Fin n`」—— `suc` 的单射性把问题拉回 `i = i`。
+--    ⇒ 「穷举顶点」只在顶点被**零元构造子**头住时奏效；`Fin n`（n ≥ 2）不满足。
+--
+-- ④ 端点一般化 + 显式等式（**最接近成功**的一条）：把主定理改成
+--    `(w : Walk G u v) (eq : u ≡ v) → AHomotopy G (w ++w subst (λ z → Walk G z v) (sym eq) w) w`
+--    ⇒ split 发生在 `Walk G u v`（两端是**不同变量**）上，`cons` 情形可直接用 `canon` ✓；
+--    **但 `nil` 情形挂**：此时 `u`、`v` 都实例化为 `x`，`eq : x ≡ x` 是**变量**，
+--    `subst P eq (nil x)` **不归约**，而对 `eq : x ≡ x` 做 `J` 正是同一个自反索引墙 ✗
+--    （实测报 `eq` 类型期望 `v ≡ _` 与 `u ≡ v` 不符）。
+--
+-- ## 对「三条出路」的修正
+--
+-- 上表第 2 条（显式「非空/空」见证 `⊎`/`Decomp`）**并不能**给出一般定理 ——
+-- `Decomp w` 对任意 `w : Walk G v v` **本身不可构造**（同一个 split 墙），
+-- 它只是把问题移到调用点。⇒ 只有第 1 条（顶点类型具体化，先按顶点穷举）能真正
+-- 给出「一般图」级别的定理；第 3 条（`canon` 形态）已证 ✓。
+--------------------------------------------------------------------------------
 --------------------------------------------------------------------------------

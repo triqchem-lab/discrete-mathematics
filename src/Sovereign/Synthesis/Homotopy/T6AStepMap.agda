@@ -36,15 +36,15 @@ module Sovereign.Synthesis.Homotopy.T6AStepMap where
 open import Data.Nat using (ℕ)
 open import Data.List using ([]; _∷_; _++_)
 open import Data.Product using (Σ; _,_; proj₁; proj₂)
-open import Relation.Nullary using (Dec)
+open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans; subst)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode
-  using (CStep; CWalk; cplus; cminus)
+  using (CStep; CWalk; cplus; cminus; cstep-inv)
 open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec)
-open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (interpC; ctarget; foldT; cEdge)
-open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_)
+open import Sovereign.Synthesis.Homotopy.T6CayleyCodeWalk using (interpC; ctarget; foldT; cEdge; foldT-++; ctarget-inv)
+open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy using (Walk; nil; cons; _++w_; AStep)
 open import Sovereign.Synthesis.Homotopy.T6AStepCode2 using (StepCode; mkStep)
 open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6CayleySym)
 open import Sovereign.Synthesis.Homotopy.T6CayleyInterp using (interpAt; subst-cons)
@@ -113,6 +113,14 @@ interpC-end u (s ∷ ws) = interpC-end (ctarget u s) ws
 StepSide-fold : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n) → Set
 StepSide-fold u c = foldT u (srcCode c) ≡ foldT u (tgtCode c)
 
+-- ★ §4 声称「把两者接起来」，但此前只证了 `interpC-end`；这里补上**等价的一侧**
+-- （另一侧 `StepSide→fold` 在 §5c）。合起来 `StepSide u c ⇔ StepSide-fold u c`。
+StepSide-fold→StepSide : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n)
+                       → StepSide-fold u c → StepSide u c
+StepSide-fold→StepSide u c h =
+  trans (interpC-end u (srcCode c))
+        (trans h (sym (interpC-end u (tgtCode c))))
+
 --------------------------------------------------------------------------------
 -- §5. ★★★ 走层拆解（**已证**）：`Σ` 投影 ↔ 可计算端点
 --
@@ -135,6 +143,22 @@ interpC-walk u (s ∷ ws) =
                     (interpC-end (ctarget u s) ws))
         (cong (cons (cEdge u s)) (interpC-walk (ctarget u s) ws))
 
+-- `subst` 的逆：沿 `sym e` 把沿 `e` 的运输原样剥掉（对 `e` 匹配到 `refl` 即 `refl`）
+subst-sym-inv : ∀ {A : Set} (P : A → Set) {x y : A} (e : x ≡ y) (X : P x)
+              → subst P (sym e) (subst P e X) ≡ X
+subst-sym-inv P refl X = refl
+
+-- `interpC-walk` 的**反向形态**：直接给出 `proj₂ (interpC u w)` 的 `interpAt` 表达式
+interpC-walk' : ∀ {n : ℕ} (u : T6Vec n) (w : CWalk n)
+              → proj₂ (interpC u w)
+                ≡ subst (λ v → Walk (T6CayleySym n) u v) (sym (interpC-end u w))
+                        (interpAt u w)
+interpC-walk' {n} u w =
+  trans (sym (subst-sym-inv (λ v → Walk (T6CayleySym n) u v)
+                            (interpC-end u w) (proj₂ (interpC u w))))
+        (cong (subst (λ v → Walk (T6CayleySym n) u v) (sym (interpC-end u w)))
+              (interpC-walk u w))
+
 --------------------------------------------------------------------------------
 -- ## 桥二：走层的 `++` 分配律（本模块原 §5 想要的陈述，**已证**）
 --
@@ -153,21 +177,139 @@ interpC-++-walk u []      b = refl
 interpC-++-walk u (s ∷ a) b = cong (cons (cEdge u s)) (interpC-++-walk (ctarget u s) a b)
 
 --------------------------------------------------------------------------------
--- §6. ⬜ 下一个节点：`StepCode → AStep`（判据明确，前置已齐）
+-- §5b. ★★★ 侧条件的**层级**校正：`slide` 要的是**顶点**条件，不是「走端点」条件
 --
--- 目标形状（`h` 把靶走的端点搬到源走端点，`ASTep` 才允许居留）：
+-- `slide` 的第三边要求 `e3 : edge G x z`，其中 `z` 是 `b` 的**起点** ——
+-- 在本编码里恰是「两步之后那个顶点」`Z = ctarget (ctarget x s1) s2`（**顶点层**）。
+-- 而原 `StepSide` 说的是两条**完整走**的末端相等（走层，中间隔着 `suff`）。
+--
+-- **已证**：顶点条件 ⇒ 端点条件（`StepVertex→StepSide`，下面两条）。
+-- **未证**（`[未验证·路线推测]`）：反方向需要「`foldT (·) suff` 单射」——
+-- 每步 `ctarget (·) s` 都是双射（`updAt j` 或 `updAt j ∘ updAt j`），故应当成立，
+-- 但本模块尚未证，是 `toStepCode` 之外的**独立节点**（不是 `toStepCode` 的前置，
+-- 因为 `toStepCode` 直接取顶点条件即可）。
+--------------------------------------------------------------------------------
+
+StepVertex : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n) → Set
+StepVertex u (mkStep _ pref s1 s2 s3 suff) =
+  ctarget (foldT u pref) s3 ≡ ctarget (ctarget (foldT u pref) s1) s2
+
+-- 源码走的 `foldT` 终点（沿 `foldT-++` 三步归约到 `Z` 之后的 `suff`）
+foldT-src : ∀ {n : ℕ} (u : T6Vec n) (pref : CWalk n) (s1 s2 : CStep n) (suff : CWalk n)
+          → foldT u (pref ++ (s1 ∷ s2 ∷ suff))
+            ≡ foldT (ctarget (ctarget (foldT u pref) s1) s2) suff
+foldT-src u pref s1 s2 suff =
+  trans (foldT-++ u pref (s1 ∷ s2 ∷ suff))
+        (trans (foldT-++ (foldT u pref) (s1 ∷ []) (s2 ∷ suff))
+               (foldT-++ (ctarget (foldT u pref) s1) (s2 ∷ []) suff))
+
+-- 靶码走的 `foldT` 终点（同理两步）
+foldT-tgt : ∀ {n : ℕ} (u : T6Vec n) (pref : CWalk n) (s3 : CStep n) (suff : CWalk n)
+          → foldT u (pref ++ (s3 ∷ suff)) ≡ foldT (ctarget (foldT u pref) s3) suff
+foldT-tgt u pref s3 suff =
+  trans (foldT-++ u pref (s3 ∷ suff)) (foldT-++ (foldT u pref) (s3 ∷ []) suff)
+
+-- 顶点条件 ⇒ 两条走的 `foldT` 终点相等（复用上面两条：源侧归约、把 `h` 送到 `suff` 之后、靶侧归约）
+StepVertex→fold : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n) → StepVertex u c
+                → foldT u (srcCode c) ≡ foldT u (tgtCode c)
+StepVertex→fold u (mkStep d pref s1 s2 s3 suff) h =
+  trans (foldT-src u pref s1 s2 suff)
+        (trans (cong (λ v → foldT v suff) (sym h))
+               (sym (foldT-tgt u pref s3 suff)))
+
+-- 从而 ⇒ 原有的走端点侧条件
+StepVertex→StepSide : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n) → StepVertex u c
+                    → StepSide u c
+StepVertex→StepSide u c h =
+  trans (interpC-end u (srcCode c))
+        (trans (StepVertex→fold u c h) (sym (interpC-end u (tgtCode c))))
+
+--------------------------------------------------------------------------------
+-- §5c. ★★★ 反方向：`StepSide ⇒ StepVertex`（§5b 里标 `[未验证·路线推测]` 的那条，**已证**）
+--
+-- 关键零件：**每步 `ctarget (·) s` 是双射** —— `T6CayleyCodeWalk.ctarget-inv` 正是它的左逆
+-- （`ctarget (ctarget x s) (cstep-inv s) ≡ x`，即 GF(3) 三步归零的直接推论）。
+-- ⇒ `foldT (·) w` 单射（沿 `w` 归纳）⇒ **走端点相等 ⇒ 顶点相等**。
+--
+-- 于是 `StepSide ⇔ StepVertex`：原侧条件**并不弱**，只是绕了 `suff` 一圈表达的。
+-- 这两个方向合起来也解释了 §5b 的「层级」现象：在同一套定义下两者等价，
+-- 但**能直接喂给 `slide` 的是 `StepVertex`**（顶点层），所以 §6 先用 `StepSide→StepVertex` 换层。
+--------------------------------------------------------------------------------
+
+-- 每步 `ctarget (·) s` 单射
+ctarget-inj : ∀ {n : ℕ} {v v' : T6Vec n} (s : CStep n)
+            → ctarget v s ≡ ctarget v' s → v ≡ v'
+ctarget-inj {v = v} {v'} s e =
+  trans (sym (ctarget-inv v s))
+        (trans (cong (λ w → ctarget w (cstep-inv s)) e) (ctarget-inv v' s))
+
+-- 故 `foldT (·) w` 单射
+foldT-inj : ∀ {n : ℕ} (w : CWalk n) {v v' : T6Vec n}
+          → foldT v w ≡ foldT v' w → v ≡ v'
+foldT-inj []       e = e
+foldT-inj (s ∷ ws) e = ctarget-inj s (foldT-inj ws e)
+
+-- `StepSide`（走端点）⇒ `foldT` 终点等式
+StepSide→fold : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n) → StepSide u c
+              → foldT u (srcCode c) ≡ foldT u (tgtCode c)
+StepSide→fold u c h =
+  trans (sym (interpC-end u (srcCode c))) (trans h (interpC-end u (tgtCode c)))
+
+-- ★ 走端点相等 ⇒ 顶点条件（用 `foldT (·) suff` 单射，两侧先化成同一形态）
+StepSide→StepVertex : ∀ {n : ℕ} (u : T6Vec n) (c : StepCode n)
+                    → StepSide u c → StepVertex u c
+StepSide→StepVertex u (mkStep d pref s1 s2 s3 suff) h =
+  sym (foldT-inj suff
+        (trans (sym (foldT-src u pref s1 s2 suff))
+               (trans (StepSide→fold u (mkStep d pref s1 s2 s3 suff) h)
+                      (foldT-tgt u pref s3 suff))))
+
+--------------------------------------------------------------------------------
+-- §5e. ★★ `interpAt` 对**起点顶点**的自然性（§6 点名的最后一块前置，**已证**）
+--
+-- 换起点 `v → v'` 时，只要把**同一处** `z` 在两个端点上都运一次，`interpAt` 就跟着换：
 -- ```
---   toStepCode : (u : T6Vec n) (c : StepCode n) (h : StepSide u c)
---              → AStep (T6CayleySym n) (proj₂ (interpC u (srcCode c)))
---                                      (subst (λ v → Walk (T6CayleySym n) _ v) h
---                                             (proj₂ (interpC u (tgtCode c))))
+--   subst (λ z → Walk G z (foldT z w)) e (interpAt v w) ≡ interpAt v' w
 -- ```
--- **已有前置**：`interpC-walk`（把两条走搬到 `interpAt` 形态）、
--- `T6CayleyInterp.toStep`（`interpAt` 形态的 `ASTep` 构造，参数为 `pref`/`s1`/`s2`/`s3`/`suff` + 侧条件）、
--- `subst-cons` / `subst-++w`（端点运输）。
--- **剩余技术点（`[未验证·路线推测]`）**：把 `StepSide`（`proj₁` 形态）改写为
--- `T6CayleyInterp.toStep` 需要的 `ctarget` 形态 —— 需先用 `foldT-++` /
--- `interpC-end` 把 `foldT u (pref ++ (s1 ∷ s2 ∷ suff))` 归约成
--- `foldT (ctarget (ctarget (foldT u pref) s1) s2) suff`，再与 `toStep` 的侧条件对齐。
--- 本批**未做**（本批只交 §5 的两条桥，均已编译通过）。
+-- 证明只需对 `e` 做 `J`：`e := refl` 时 `subst P refl X = X`，两边同归约到 `interpAt v w` ✓
+-- （注意 `e : v ≡ v'` 的两端是**不同变量**，不是自反等式 ⇒ `J` 合法）。
+--------------------------------------------------------------------------------
+
+interpAt-natural : ∀ {n : ℕ} {v v' : T6Vec n} (e : v ≡ v') (w : CWalk n)
+                 → subst (λ z → Walk (T6CayleySym n) z (foldT z w)) e (interpAt v w)
+                   ≡ interpAt v' w
+interpAt-natural refl w = refl
+
+--------------------------------------------------------------------------------
+-- §6. ⬜ `StepCode → AStep`：**原目标陈述是 ill-posed 的**（判定，非「太难」）
+--
+-- 先前写下的目标形状是
+-- ```
+--   toStepCode : (h : StepSide u c)
+--              → AStep G (proj₂ (interpC u (srcCode c)))
+--                      (subst (λ v → Walk G u v) (sym h) (proj₂ (interpC u (tgtCode c))))
+-- ```
+-- **它不可证**，理由不是 cast 太多，而是**两端的走确实不同**：
+--
+-- | 量 | 来自 `interpC` / `interpAt` | `slide` 要求 |
+-- |---|---|---|
+-- | 第三边 | `cEdge x s3 : T6SymEdge x (ctarget x s3)` | `e3 = subst (T6SymEdge x) hv (cEdge x s3) : T6SymEdge x Z` |
+-- | 后续走 | `interpAt (ctarget x s3) suff` | `b = interpAt Z suff` |
+--
+-- 两条走的**类型相同**（都在 `foldT Z suff` 收尾），但 `subst` 只搬**走层端点**
+-- （`subst-cons` 明确**不动**头边的索引），所以
+-- `subst … (cons (cEdge x s3) b') ≡ cons (cEdge x s3) (subst … b')` ≠ `cons e3 b` ✗
+-- —— 两个项头边不同型，不可能相等。
+--
+-- ## 诚实结论
+--
+-- 码 → 步的映射**只能陈述在 `interpAt` 层**（两端都写成 `interpAt` + 顶点层铸造），
+-- 而 `interpAt` 层的源/靶与 `interpC` 层的源/靶之间**只差一个端点 cast**，
+-- 这个 cast **不与 `cons` 交换** ⇒ 不存在把 `ASTep` 从一层搬到另一层的等式。
+-- ⇒ 若下游需要「码 ⇒ A-同伦」，应当**直接以 `interpAt` 为载体**（`T6CayleyInterp.interpAt`
+-- 已是可计算终点版本），而不是先造 `interpC` 再搬运。
+--
+-- 已备零件（若要按 `interpAt` 层重做）：`interpAt-++` / `interpAt-++-glue`（拼接与端点）、
+-- `interpAt-natural`（§5e，换起点）、`subst-cons` / `subst-++w`（走层运输）、
+-- `T6CayleyInterp.toStep`（步的构造）。
 --------------------------------------------------------------------------------
