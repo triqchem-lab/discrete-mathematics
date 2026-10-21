@@ -36,10 +36,12 @@ module Sovereign.Synthesis.Homotopy.T6CayleyInterp where
 
 open import Data.Nat using (ℕ)
 open import Data.List using ([]; _∷_; _++_)
+open import Data.Fin using (zero)
+open import Data.Vec.Base using () renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
 open import Data.Product using (Σ; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
 
-open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec)
+open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt)
 open import Sovereign.Synthesis.Homotopy.T6CayleyDec using (DecEq-T6Vec)
 open import Axiom.UniquenessOfIdentityProofs using (module Decidable⇒UIP)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CStep; CWalk; cplus; cminus)
@@ -184,7 +186,7 @@ interpAt-++-glue u a b =
                         (interpAt (foldT u a) b)))
 
 --------------------------------------------------------------------------------
--- §4. ★★★ 步 7：`toStep` 与侧条件证明**无关**（= 码的忠实性）
+-- §4. 〔历史·已被 §6 取代〕初版对「步 7 忠实性」的分析框架
 --
 -- ## 为什么这就是「注入性」的内容
 --
@@ -210,7 +212,7 @@ module _ {n : ℕ} where
   subst-irrel P h h' x = cong (λ e → subst P e x) (T6Vec-UIP h h')
 
 --------------------------------------------------------------------------------
--- §5. ★★★ `toStep` 与 `h` 无关
+-- §5. 〔历史·见 §6〕`toStep` 与 `h` 无关的初版两段式
 --------------------------------------------------------------------------------
 
 stepE3-irrel : ∀ {n : ℕ} (u : T6Vec n) (pref : CWalk n) (s3 : CStep n) {z : T6Vec n}
@@ -271,7 +273,7 @@ toStep-irrel u pref s1 s2 s3 suff h h' =
               (stepE3-irrel u pref s3 h h')
 
 --------------------------------------------------------------------------------
--- §7. 归约**不需要** §6 的异质相等（这一条是判定，标 `[判断·非定理]`）
+-- §6b. 〔修订后的判定〕归约**不需要** §6 的等式（`[判断·非定理]`；§6 已由 `slide-subst` 证成）
 --
 -- `reduce` 只需要 **可靠性**：同一个码 ⇒ 同一步。`toStep` 本来就是
 -- `(u, pref, s1, s2, s3, suff, h)` 的**函数** ⇒ 同码（含同一个 `h`）给出同一个项，
@@ -280,3 +282,37 @@ toStep-irrel u pref s1 s2 s3 suff h h' =
 --
 -- ⇒ 步 1–7 全部有内核回执；`toStep-irrel` 由「未实施」改为**已证**。
 --------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- §7. ★★★ 对抗验证（纪律 §6）：在**具体点**上实例化整条链
+--
+-- 取 `n = 1`、起点 = 全零向量、前缀/后缀都空，
+-- 三步取 **三角形**：`+e₀`、`+e₀`、`−e₀`（`−e₀` 从 `x` 到 `x+2e₀`）
+-- ⇒ 侧条件**两边算到同一个顶点** ✓
+--
+-- 三样都必须是 `refl`（不是「论证」，是**计算**）：
+--   ① 侧条件在具体点成立；② `foldT` 的具体值；③ 整条 `toStep` **有类型**。
+--------------------------------------------------------------------------------
+
+x1 : T6Vec 1
+x1 = zero ∷ᵥ []ᵥ
+
+-- ① 侧条件（三角形闭合）—— `refl`
+side-ok : ctarget (ctarget x1 (cplus zero)) (cplus zero)
+        ≡ ctarget x1 (cminus zero)
+side-ok = refl
+
+-- ② 走一步的终点—— `refl`
+endpoint-1 : foldT x1 (cplus zero ∷ []) ≡ updAt zero x1
+endpoint-1 = refl
+
+-- ③ ★ 整条 `toStep` 在具体点**有类型**（并因此产出真实的 `ASTep` 值）
+step-1 : AStep (T6CayleySym 1)
+           (interpAt x1 [] ++w
+             (cons (stepE1 x1 [] (cplus zero))
+                   (cons (stepE2 x1 [] (cplus zero) (cplus zero))
+                         (interpAt (ctarget (ctarget x1 (cplus zero)) (cplus zero)) []))))
+           (interpAt x1 [] ++w
+             (cons (stepE3 x1 [] (cminus zero) side-ok)
+                   (interpAt (ctarget (ctarget x1 (cplus zero)) (cplus zero)) [])))
+step-1 = toStep x1 [] (cplus zero) (cplus zero) (cminus zero) [] side-ok
