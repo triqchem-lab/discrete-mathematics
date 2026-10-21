@@ -391,3 +391,52 @@ Horsewill / Goh / Rols / Ollivier / Johnson / **Levitt** / Carravetta / Mamone /
 ### 11.7 尚未做
 
 `DiscreteMaxwellGF9` 的 90 个签名中，只验了核心代数；`DiscreteEMCore` 只抽了 4 条。**剩余未逐条验。**
+
+---
+
+## 十二、IceCube（南极冰立方）中微子数据：**不支持，也不矛盾**
+
+### 12.1 库里有没有 IceCube？→ **零**
+
+用 `IceCube|icecube|天体.*中微子|astrophysical.*neutrino|GRB.*neutrino|blazar` 扫：
+- 全库 `src/**/*.agda`：**命中 0** ✗
+- `/data/work/docs/**/*.md`：**命中 0** ✗
+
+### 12.2 本库的中微子数据锚点（`DataAnchors.agda`，18 签名）
+
+`KATRIN_MNU_UPPER` · `MICROBOONE_CL` · `KATRIN_NEUTRINO4_CL` · `ACT_DELTA_NEFF_UPPER` ·
+`ELECTRON_MASS_EV` · `H2O_C60_SPLITTING` · `C60_FUNDAMENTAL_MODES` · `TRAPPIST_RATIO`
+
+**⇒ 全是地表实验（KATRIN / MicroBooNE / ACT）—— 完全没有天体物理中微子** ✗
+（该模块头自声明：「数据锚是桥接级声明，**不作定理**」）
+
+### 12.3 本库的中微子主张（只有两条线，都是手性/代数）
+
+| 模块 | 行数 | 内容 |
+|---|---|---|
+| `RightHandedNeutrinoTheorem` | 107 · 13 签名 · **0/0** | `νL = α`、`νR = −α`（GF(9) 共轭对）；`rightNeutrino-invisible` · `leftNeutrino-visible` · **`frobenius-swaps`** |
+| `ParityViolation` | 248 | **`neutrinoLeftHandedOnly`** · `parityViolationTheorem` |
+
+### 12.4 IceCube 测了什么而本库完全没预言
+
+| IceCube 结果 | 来源 |
+|---|---|
+| **能谱破缺/曲率：5 TeV – 10 PeV** | NSF PAR 10679354 |
+| **三味成分（νe:νμ:ντ）** | ICRC 2025 |
+| **味道比表征** | IceCube 新闻 2025-12 |
+| ντ 重建 · 银河系中微子发射 | 同上 |
+
+**⇒ 这四个量（能谱指数、破缺能量、三味比、ντ 出现）本库一个也没预言** ✗
+
+### 12.5 ⇒ 结论（三层，必须分清）
+
+| # | 判断 |
+|---|---|
+| **① 不支持** ✗ | 本库没有任何 IceCube 相关的预言/数据锚 —— 既不能算通量，也不能算能谱 |
+| **② 不矛盾** ✓ | 本库唯一相关的预言（只有左旋可观测）与 IceCube 观测相容 |
+| **③ 但「相容」≠「支持」** ✗ | 任何只主张左旋的模型都与 IceCube 相容（含标准模型本身）⇒ **不能当作本框架的验证** |
+
+### 12.6 若要真支持 IceCube，本库缺什么
+
+1. 从 T⁶/GF(9) 出发的**通量预言**（`E² dΦ/dE`）或**三味比预言**
+2. 与 IceCube 的 **5 TeV–10 PeV 破缺**对账的**能量标度桥**
