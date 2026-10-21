@@ -314,3 +314,80 @@ Horsewill / Goh / Rols / Ollivier / Johnson / **Levitt** / Carravetta / Mamone /
 
 1. **`0.2 meV` 的归属** —— 只有 Royal Society 页面片段，**未读全文**
 2. **Muon g-2 的最终数值** —— 摘要页未给
+
+---
+
+## 十一、★★ 补审 `Application/Physics`（82 个模块）—— 框架最硬的成果在这里
+
+> ⚠ 我在前十节只审了 `Synthesis/Physics/`（16 个）与 4 个 C60/H₂O 模块。
+> **漏掉了 `Application/Physics/` 的 82 个** —— 而它们才是「本地形式化的电磁学/量子理论」。
+
+### 11.1 规模与质量
+
+| 指标 | 值 |
+|---|---|
+| 模块数 | **82** |
+| **0 postulate & 0 hole** | **81** |
+| 唯一有 postulate 的 | `QuartzPhonon.agda`（3 个）|
+
+### 11.2 ★★ 电磁学的代数核心（`DiscreteMaxwellGF9.agda`，**1129 行 · 90 签名 · 0/0**）
+
+**头注原文**：
+> 「电场 E 与磁场 B 是一个 **GF(9) 场 `F = E + Bα` 的实部与虚部**。
+> `GF(9) = GF(3)[x]/(x²+1)`，`α² = −1`。
+> **Frobenius 共轭 `σ(a+bα) = a−bα` 在代数上实现「90° 相位差」**」
+
+**我的独立验算**（精确整数，全部 9 元素 / 9 组 `(E,B)`）：
+
+| 检查 | 结果 |
+|---|---|
+| `α² = −1` | ✅ |
+| `σ(z) = z³` | ✅（真 Frobenius 自同构）|
+| **`F · σ(F) = (E² + B², 0)`** | ✅ —— **`F` 的范数 = 电磁能量密度** |
+| **⚠ 「σ 实现 90°」** | ✗ **不准确** —— `σ` 是 **2 阶**（`σ² = id`）⇒ **180° 反射**；**90° 是「乘以 `α`」** |
+
+**⇒ 建议（未自行改）**：头注里 `σ` 改成 `α`：「乘以 α（`α² = −1`）实现 90° 相位差；Frobenius σ = 共轭 = 180° 反射」。
+
+### 11.3 Maxwell 四律的**推导**（不是假设）
+
+**`MaxwellFromLagrangian.agda`**（233 行 · 15 签名 · 0/0）：
+> 「给定 `L = ½|E|² − ½|B|²`，变分 `δS/δφ = 0` 给出 Gauss 定律，`δS/δA = 0` 给出 Ampère 定律；
+> 结合 `div(curl A) = 0` 与 `curl(grad φ) = 0`，得到全部四律」
+
+签名：`gauss-law` / `maxwell-four-laws-dynamic` / `maxwell-four-laws-static`
+
+### 11.4 ★ 抽验 `DiscreteEMCore`（327 行）—— **真证明**
+
+| 定理 | 证明形态 |
+|---|---|
+| **`div-curl-zero`** | 完整 `begin/≡⟨⟩/∎` 链，`dx-add`/`dy-add`/`dz-add` 逐步归约 |
+| **`curl-linear`** | `curl-linear-x/y/z` + `cong₂` |
+| **`gauge-invariance`** | **完整四步**：`curl-linear` → `curl-grad-zero` → `addVec3-right-unit` → `∎` |
+| `zero-monopole-flux` | `refl`（平凡）|
+
+**⇒ 不是 `refl` 吐定义自洽，而是真正的代数推导** ✅
+**⇒ `gauge-invariance` 这种物理核心命题真被证了** ✅
+
+**★ 作者的诚实边界**（模块内原文）：
+> 「磁单极非平凡构型（通量 = 陈数）需要非平凡 U(1) 主丛，对接 `DiscreteKTheory` —— **诚实边界，不写虚假证明**」
+
+### 11.5 量子化学 / 中微子 / 精细结构 / 宇宙学
+
+| 模块 | 行数 | 核心主张 |
+|---|---|---|
+| **`QuantumChemistry`** | 225 | 「**不是薛定谔方程求解**，而是 T⁶ 上 GF(9) 矢量场的构型优化；原子/分子 = GF(9) **共轭对**构成的 729 格点**离散驻波模式**」|
+| **`RightHandedNeutrinoTheorem`** | 107 | `νL = α` / `νR = −α`；**`frobenius-swaps : σ(νL) ≡ νR`** |
+| **`FineStructureMapping`** | 91 | 「**环面单值化定理** `α_电 = α_律算 × (π_欧/π_全息) × 1/8`」· **注释自标「数值断言是工程占位非证明」** |
+| **`CosmologyDiscrete`** | 119 | `4320 = 729×6 − 54` · `729 = 3⁶` |
+
+### 11.6 ⇒ **审核硬度排序（修正）**
+
+| # | 成果 |
+|---|---|
+| **①** | **GF(9) 电磁学** —— 1129 行 + `gauge-invariance` 真证明 + Maxwell 从作用量推出 |
+| **②** | **`freq-46`** —— 双硬 |
+| **③** | **`6D`** —— 物理硬、形式化弱（`refl : 6 ≡ 6`） |
+
+### 11.7 尚未做
+
+`DiscreteMaxwellGF9` 的 90 个签名中，只验了核心代数；`DiscreteEMCore` 只抽了 4 条。**剩余未逐条验。**
