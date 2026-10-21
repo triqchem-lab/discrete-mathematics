@@ -34,12 +34,21 @@ module Sovereign.Synthesis.Homotopy.T6CayleyDec where
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin)
 import Data.Fin as Fin
+import Data.Fin as Fin
 open import Data.Vec using (Vec)
 open import Data.Vec.Properties using (≡-dec)
-open import Relation.Nullary using (Dec)
+open import Data.List using (List; []; _∷_)
+open import Data.Nat using (zero; suc)
+open import Data.List using (map)
+open import Data.Sum using (inj₁; inj₂)
+open import Data.Empty using (⊥)
+open import Data.Product using (Σ; _,_)
+open import Relation.Nullary using (Dec; yes; no)
+open import Data.Maybe using (Maybe; just; nothing)
 open import Relation.Binary.PropositionalEquality using (_≡_)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyVec using (T6Vec; updAt)
+open import Sovereign.Synthesis.Homotopy.T6CayleySym using (T6SymEdge)
 
 --------------------------------------------------------------------------------
 -- §1. `T6Vec n = Vec (Fin 3) n` 的可判定相等
@@ -76,4 +85,44 @@ decAt2 j x y = DecEq-T6Vec y (updAt j (updAt j x))
 --
 -- ⇒ 这三步都在 `--without-K` 下**可做**（因为 `Vec (Fin 3) n` 相等可判定），
 --   而「一般图」的版本**不可做** —— 这就是台账记的那个真边界。
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- §4. ★★ 带**见证**的边查找：`Maybe (T6SymEdge x y)`
+--
+-- ⚠ 为什么用 `Maybe` 而**不用** `Dec`：
+--   `Dec` 的 `no` 分支要**证明不存在**，而扫描到 `[]` 只意味着「枚举完了」，
+--   并不在类型上意味着 `Fin n` 为空 ⇒ 需要额外的**穷尽性引理**
+--   （`∀ j → j ∈ allFinD n`）才能闭 `no`。那是另一步。
+--   `Maybe` 的 `nothing` **无需任何证明** ✓ 且对归约**操作上足够**
+--   （有边就拿到见证，没边就停）。
+--
+-- ⚠ 与「判定两个 `T6SymEdge` 元素是否相等」的区别（关键）：
+--   本函数**构造**见证 —— 容易；判定 `e ≡ e'` 要**比较证明分量** ⇒ 需 uip，不可用。
+--------------------------------------------------------------------------------
+
+-- 自带的索引枚举（不依赖 stdlib 的 `allFin` —— 本 stdlib 版本的 `Data.Fin`/`Data.Fin.Base` 都不导出它）
+allFinD : (n : ℕ) → List (Fin n)
+allFinD zero    = []
+allFinD (suc n) = Fin.zero ∷ map Fin.suc (allFinD n)
+
+findEdge : ∀ {n : ℕ} (x y : T6Vec n) → Maybe (T6SymEdge x y)
+findEdge {n} x y = scan (allFinD n)
+  where
+    scan : List (Fin n) → Maybe (T6SymEdge x y)
+    scan []        = nothing
+    scan (j ∷ js) with decAt j x y
+    ... | yes p = just (inj₁ (j , p))
+    ... | no  _ with decAt2 j x y
+    ...   | yes q = just (inj₂ (j , q))
+    ...   | no  _ = scan js
+
+--------------------------------------------------------------------------------
+-- §5. ⬜ 下一级台阶（判据明确）
+--
+-- ① **`Dec` 版本**需要穷尽性引理：
+--      `∈-allFinD : (j : Fin n) → j ∈ allFinD n`
+--    再由它把 `scan` 的失败转成「无 `j` 可用」⇒ 才是 `Dec`。
+-- ② 有了 `Dec` 才能在 `List (T6Vec n)`（无证明分量）上做 `reduce`（`fuel`）。
+-- ③ 然后才是 `Ω3Walk⁺` 与 `reduce` 的双方对应（分类定理）。
 --------------------------------------------------------------------------------
