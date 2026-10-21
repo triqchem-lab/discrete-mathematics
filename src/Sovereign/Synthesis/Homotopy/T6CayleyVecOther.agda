@@ -117,4 +117,13 @@ updAt-neq-other2' j k x j≢k h =
     (trans (sym (lookup-updAt-same2 j x))
            (trans (cong (λ v → lookup v j) h)
                   (updAt-other j k x j≢k)))
+-- (2,2) 跨坐标：两个坐标各走两步也不同（`Unique` 组装的最后一块）
+updAt-neq-two-two : ∀ {n : ℕ} (j k : Fin n) (x : T6Vec n) → j ≢ k
+                  → updAt j (updAt j x) ≢ updAt k (updAt k x)
+updAt-neq-two-two j k x j≢k h =
+  succF3≢id2 (lookup x j)
+    (trans (sym (lookup-updAt-same2 j x))
+           (trans (cong (λ v → lookup v j) h)
+                  (trans (updAt-other j k (updAt k x) j≢k)
+                         (updAt-other j k x j≢k))))
 
