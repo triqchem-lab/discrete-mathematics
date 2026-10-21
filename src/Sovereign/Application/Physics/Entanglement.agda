@@ -24,7 +24,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans; subst)
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate; ⊕-comm)
 open import Sovereign.Algebra.FieldTower.GF9 using (GF9; gf9-one; gf9-zero; alpha; alpha-squared; alpha-powers-4; _*gf9_; galoisConjugate; galoisConjugate²)
 
 --------------------------------------------------------------------------------
@@ -446,3 +446,41 @@ bell-separability-inequality a₁ a₂ b₁ b₂ p₁ p₂ =
   subst (λ z → nzInd (proj12 bell-gf3) < z)
         (sym (separable-cross-nonzero a₁ a₂ b₁ b₂ p₁ p₂))
         zero<one
+
+
+--------------------------------------------------------------------------------
+-- §10. 把 §5 的两处「命名大于内容」补成真定理
+--
+-- 原状：
+--   · `bell-state-correlation : Trit → Trit → Trit` 只是 `bell-state-E` 的**别名**；
+--   · `bell-inequality-gf3` 只是**表达式**（§9 已补其数值不等式）。
+--
+-- 本节给出两条**全称量化**的定理（不是别名、不是实例）：
+--   ① 关联函数对称：`E A B ≡ E B A`（9 case refl）；
+--   ② CHSH 表达式对「交换两对测量设置」不变（用 GF(3) 加法交换律）。
+--------------------------------------------------------------------------------
+
+-- ① Bell 关联函数对称（9 case，逐项 refl）
+correlation-symmetric : ∀ A B → bell-state-E A B ≡ bell-state-E B A
+correlation-symmetric T₀ T₀ = refl
+correlation-symmetric T₀ T₁ = refl
+correlation-symmetric T₀ T₂ = refl
+correlation-symmetric T₁ T₀ = refl
+correlation-symmetric T₁ T₁ = refl
+correlation-symmetric T₁ T₂ = refl
+correlation-symmetric T₂ T₀ = refl
+correlation-symmetric T₂ T₁ = refl
+correlation-symmetric T₂ T₂ = refl
+
+-- ①' 对角元恒为 T₂（3 case，逐项 refl）—— 「同设置相关最强」
+correlation-diagonal : ∀ A → bell-state-E A A ≡ T₂
+correlation-diagonal T₀ = refl
+correlation-diagonal T₁ = refl
+correlation-diagonal T₂ = refl
+
+-- ② CHSH 表达式在「交换两对设置」下不变：
+--    S(a,b,c,d) = (a⊕b) ⊕ (c⊕d) = (c⊕d) ⊕ (a⊕b) = S(c,d,a,b)
+--    这一步正是 GF(3) 加法交换律；非平凡之处在于它**对一切 a b c d 成立**。
+chsh-symmetric : ∀ a b c d →
+  bell-inequality-gf3 a b c d ≡ bell-inequality-gf3 c d a b
+chsh-symmetric a b c d = ⊕-comm (a ⊕ b) (c ⊕ d)
