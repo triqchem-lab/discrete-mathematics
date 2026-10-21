@@ -11,3 +11,8 @@
 - [Handoff：Morse/数论双泛型线收官](handoff-generic-lines-2026-10.md) — M1-M7b + G1'-G5 完全收官快照；PairingLaw 显式前提/div-rel 反转/全 ℤ 域 CRT/线性同伦四决策；遗留 roadmap 与并行在飞文件清单（2026-10）
 - [离散分析三件套 2026-10](discrete-analysis-trio-2026-10.md) — 计数测度可加 / `ker Δ` = 常数 / **GF(3) 配对不正定**（各向同性向量）+ 9 处「文档与代码不符」四类清扫
 - [NSE 零场刻画与并发覆盖事故](nse-support-zero-pending-2026-10.md) — `supportCount ≡ 0 ⇔ 六分量恒零`（双向）；**并发事故处置法**：回执连变两次=有人在写 → 落盘保全 → 等 mtime 稳定 → 一次性重贴 → 立即签回执
+
+1. **光谱物理审核（2026-10-22）** — `memory/spectral-physics-audit-2026-10.md`（201 行）
+    · `freq-46` / `6D TR` **硬**（主流文献「all 46 fundamentals」+ 平动模 110 cm⁻¹ 实测）
+    · `0.6 meV` 分裂的公认解释是**电四极矩-晶场**（arXiv:2102.06389），**不是 Δ/2**
+    · `3:1 比值` 无判别力（刚性转子就有）；`0.45 eV` 已被 DESI 的 `0.064 eV` 上限排除
