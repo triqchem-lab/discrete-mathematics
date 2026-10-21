@@ -28,7 +28,7 @@
 module Sovereign.Synthesis.Analysis.DiscreteFunctional where
 
 open import Data.Empty using (⊥)
-open import Data.Product using (Σ; _,_)
+open import Data.Product using (Σ; _,_; _×_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-assoc; ⊕-comm)

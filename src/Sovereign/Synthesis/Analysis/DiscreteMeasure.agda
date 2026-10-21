@@ -143,3 +143,21 @@ countᵐ-mono {n = zero}  P Q _ = z≤n
 countᵐ-mono {n = suc m} P Q sub =
   mono-step-count (P Fin.zero) (Q Fin.zero) (sub Fin.zero) _ _
             (countᵐ-mono (λ i → P (Fin.suc i)) (λ i → Q (Fin.suc i)) (subset-tail sub))
+
+--------------------------------------------------------------------------------
+-- §7. ★ 其余测度公理：空集测度 0、全集测度 n（归一化）
+--------------------------------------------------------------------------------
+
+∅ᵐ : ∀ {n} → Count n
+∅ᵐ _ = false
+
+⊤ᵐ : ∀ {n} → Count n
+⊤ᵐ _ = true
+
+countᵐ-empty : ∀ {n} → countᵐ (∅ᵐ {n}) ≡ 0
+countᵐ-empty {n = zero}  = refl
+countᵐ-empty {n = suc m} = countᵐ-empty {n = m}
+
+countᵐ-full : ∀ {n} → countᵐ (⊤ᵐ {n}) ≡ n
+countᵐ-full {n = zero}  = refl
+countᵐ-full {n = suc m} = cong suc (countᵐ-full {n = m})
