@@ -91,5 +91,8 @@ data PostulateClass : Set where
 
 -- 计数锚点（2026-08-15 P0 轮实测）: 全库 postulate 块 101 处,
 --   其中机械约束 (REWRITE 系列) + 物理锚定 = 主体（合法）,
---   可闭合待办 = holonomyLemma (ZhonglvPhaseSync, 真但未证, 需 LCM 引理),
+--   ~~可闭合待办 = holonomyLemma (ZhonglvPhaseSync, 真但未证, 需 LCM 引理)~~
+--   ⇒ **已过期**（2026-10-21 核）：`holonomyToIdentity` / `holonomyLemma` 已是
+--     **构造性证明（0 postulate）**——`m%n≡0⇒n∣m` ×2 + `lcm-least` + `n∣m⇒m%n≡0`，
+--     见 `Synthesis/CRT/ZhonglvPhaseSync.agda:280-299`（该模块注释自述 2026-08 P0 轨道 C 已闭合）。
 --   已知假/空 = 0。
