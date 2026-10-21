@@ -116,6 +116,11 @@ galoisConjugate (a , b) = (a , negate b)
 >
 > **本体论**：char 0（ℂ/ℝ/ℚ）也有群反转 `x ↦ -x` ✗ ⇒ 刚性若用群反转，
 > 则连续统也有刚性 ⇒ 三重完备性判据失效 ✗ ⇒ 刚性必须用 **Frobenius**（char p 独有）✓
+>
+> **▶ 第二层精确（见 [40-transparency-vs-refutation.md](40-transparency-vs-refutation.md)）**：
+> 刚性不仅是「Frobenius **存在**」，更是「Frobenius **透明**」——
+> `μ` 逐元素显式构造（`(t, αᵏ) ↦ (t, α⁻ᵏ)`），可在 ≤12 个元素上穷举 `refl` 验证。
+> 连续统即使有域自同构（ℂ），也**不能显式构造** ✗ ⇒ 刚性 = **自同构的透明性** ✓
 
 ---
 

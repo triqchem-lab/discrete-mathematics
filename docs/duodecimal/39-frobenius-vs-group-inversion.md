@@ -3,6 +3,9 @@
 > **2026-10-21 理论精确化**（触发：`dc-presentation.rigidity = rho` 的审核发现）
 > 本文档把「八要素 ⑦ 刚性」的定义精确到可判定的程度，并揭示一个**概念混淆**：
 > 群论意义的「共轭」（反转 `g ↦ g⁻¹`）≠ 域论意义的「共轭」（Frobenius `x ↦ xᵖ`）。
+>
+> **▶ 第二层**：[40-transparency-vs-refutation.md](40-transparency-vs-refutation.md) 把判据再推进一层——
+> 刚性不仅是「Frobenius **存在**」，更是「Frobenius **透明**」（可显式构造 + 可穷举验证）。
 
 ---
 

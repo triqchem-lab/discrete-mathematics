@@ -91,6 +91,12 @@ galoisNorm (a , b) = (a ⊗ a) ⊕ (b ⊗ b)
 3. **Frobenius 存在**：σ(x)=x³ 是自同构，ℂ 没有对应物
 4. **α²=-1≡2**：在 char 3 下 -1=2，不是「虚数单位」
 
+**⚠ 补充（2026-10-21，见 [40-transparency-vs-refutation.md](40-transparency-vs-refutation.md)）**：
+
+5. **Frobenius 透明**：σ 逐元素显式构造，可在 9 个元素上穷举验证 `σ(a+b)=σ(a)+σ(b)`（81 种组合全部 `refl`）。
+   **ℂ 即使有域自同构，也不能显式构造** ✗（依赖 AC）
+   ⇒ **连续统的点被无穷逼近遮挡**；特征 3 的有限结构**透明** ✓
+
 ---
 
 ## 三、Gaussian 整数 Z[i]
