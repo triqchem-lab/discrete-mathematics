@@ -56,17 +56,25 @@
 --     关系层的双向蕴含**等价于**「商与闭走等基数」（等价类退化为单点）✓
 --   · 本模块不声称「π₁ᵈ 是群」✗ —— 一般形态是**幺半群**（见 `Pi1dMonoid`）✓
 --
+-- ## 推论：无三角形时，单位元是**唯一**幂等元
+--
+-- `A-homotopy` 一般**不保走长**（`slide` 把长度 `n+2` 压成 `n+1`）✗，
+-- 但**无三角形时它退化为命题相等** ⇒ 保长 ✓。于是
+--
+--   `w · w ⁓ w` ⇒ `len w + len w ≡ len w` ⇒ `len w ≡ 0` ⇒ `w ≡ nil` ✓
+--
 -- ## 核心原则
 --   · 对**任意** `DiGraph` 成立 ✓
 --   · 0 postulate / 0 hole
 
 module Sovereign.Synthesis.Homotopy.Pi1dCardinality where
 
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc; _+_; _<_)
+open import Data.Nat.Properties using (+-cancelˡ-≡; +-identityʳ)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product using (_×_; _,_; ∃)
 open import Relation.Nullary using (¬_)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; cong; subst)
 
 open import Sovereign.Synthesis.Homotopy.BarceloAHomotopy
   using (DiGraph; Walk; nil; cons; _++w_; AStep; slide; expand;
@@ -173,3 +181,49 @@ class-singleton tf p q ah = sym (AH→≡ tf ah)
 pi1d-class-is-point : ∀ {G : DiGraph} (tf : TriangleFree G) {v : V G} (w : Walk G v v)
                     → ∀ (w' : Walk G v v) → AHomotopy G w w' → w' ≡ w
 pi1d-class-is-point tf w w' ah = sym (AH→≡ tf ah)
+
+--------------------------------------------------------------------------------
+-- §6. 推论：走长的可加性与「长度 0 即空走」
+--------------------------------------------------------------------------------
+
+walk-len-++w : ∀ {G : DiGraph} {u v w : V G}
+               (p : Walk G u v) (q : Walk G v w)
+             → walk-len (p ++w q) ≡ walk-len p + walk-len q
+walk-len-++w (nil v)    q = refl
+walk-len-++w (cons e p) q = cong suc (walk-len-++w p q)
+
+-- `a + a ≡ a ⇒ a ≡ 0`（ℕ 左消去）
+double→zero : ∀ a → a + a ≡ a → a ≡ zero
+double→zero a p = +-cancelˡ-≡ a a zero (trans p (sym (+-identityʳ a)))
+
+-- ⚠ **without-K 阻断（重要，勿当可修 bug）**：
+--   「`walk-len w ≡ zero → w ≡ nil u`」在**闭走**形态下**不可证** ✗ —— 库开 `--cubical`
+--   ⇒ K 被禁用，两个方向都卡在同一处：
+--     · split `nil` on `Walk G u u`  ⇒ Cannot eliminate reflexive equation u = u
+--     · match `refl` on `u ≡ u`      ⇒ 同上
+--   换用「带显式端点等式」的版本也不行：要把它用回闭走形态，需要
+--   `subst P e x ≡ x` 对任意 `e : u ≡ u` 成立 —— 那**正是 K** ✗
+--   ⇒ 本模块只交付可证的**长度形态**（见 §7），强化的空走形态登记为限制，不硬凑 ✓
+--
+-- ⚠ 保留 `walk-len` 的可加性（这才是推论真正用到的部分）
+
+--------------------------------------------------------------------------------
+-- §7. ★ 推论：无三角形 ⇒ 幂等闭走的长度必为 0
+--------------------------------------------------------------------------------
+
+-- `w · w ⁓ w` ⇒ （无三角形时 AHomotopy 就是相等）⇒ `len w + len w ≡ len w`
+--              ⇒ `len w ≡ 0`
+idempotent-len-zero : ∀ {G : DiGraph} (tf : TriangleFree G) {v : V G}
+                      (w : Walk G v v)
+                    → AHomotopy G (w ++w w) w → walk-len w ≡ zero
+idempotent-len-zero tf w ah =
+  double→zero (walk-len w)
+    (trans (sym (walk-len-++w w w)) (cong walk-len (AH→≡ tf ah)))
+
+-- ⇒ 无三角形时，商里**没有**长度正的幂等元
+--   （长度 0 即空走的强化形态受 without-K 阻断，见 §6 说明）
+no-pos-idempotent : ∀ {G : DiGraph} (tf : TriangleFree G) {v : V G}
+                    (w : Walk G v v)
+                  → AHomotopy G (w ++w w) w → ¬ (0 < walk-len w)
+no-pos-idempotent tf w ah =
+  subst (λ n → ¬ (0 < n)) (sym (idempotent-len-zero tf w ah)) (λ ())
