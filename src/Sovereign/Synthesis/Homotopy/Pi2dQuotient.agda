@@ -41,7 +41,8 @@
 --     见 `_PEH5:151` 的边界记录）；
 --   · `π₂ᵈ` 的群结构或任何计算；
 --   · 类运算（`addL`/`addR`）—— 需 `whisk-resp`/`suffix-resp` 的完整版
---     （`Omega3Suffix` 的 `suffix-resp` 只做到 `base3+` 情形）。
+--     （⚠ 此注已过期：`Omega3Suffix.suffix-resp` **已是全定义**——`suffix-step`
+--      覆盖 `base3+`/`whisk3`/`bub3`，见该模块 §5）。
 --
 -- ## 核心原则
 --   · 0 postulate / 0 hole

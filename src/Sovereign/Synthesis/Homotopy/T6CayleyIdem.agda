@@ -63,14 +63,19 @@ NoCancel-tail₂ : ∀ {n : ℕ} (x y : CStep n) (xs : CWalk n)
 NoCancel-tail₂ x y xs (nc-two .x .y .xs _ t) = t
 
 --------------------------------------------------------------------------------
--- §3. ⬜ 未完成（**如实保留**，不伪装）
+-- §3. ✅ **已完成（在 `T6CayleyIdem2`）** —— 本节原写「⬜ 未完成」，现已过期
 --
--- 待证：
---   `cpassB-self : ∀ v → NoCancel v → cpassB [] (reverse v) ≡ v`
---   `creduceB'-idem : ∀ w → reverse (creduceB (reverse (creduceB w))) ≡ reverse (creduceB w)`
+-- 原待证两条 **都已在 `T6CayleyIdem2` 证出** ✓（本模块只做前半：`NoCancel` 的尾部）：
+--   · `cpassB-self`   : ∀ v → NoCancel v → cpassB [] (reverse v) ≡ v     （`T6CayleyIdem2:133`）
+--   · `creduceB-idem` : 纯 `creduceB` 的幂等                            （`T6CayleyIdem2:145`）
+--   · `creduceB'-idem`: ∀ w → reverse (creduceB (reverse (creduceB w)))
+--                            ≡ reverse (creduceB w)                     （`T6CayleyIdem2:150`）
 --
--- 已定位的难点：对 `v` 归纳时，`reverse (x ∷ xs) = reverse xs ++ [x]`
--- 把「最后一个元素」推到**末尾**，而 `cpassB` 是**从头部**递归的
--- ⇒ 归纳假设作用在 `reverse xs` 上，而 `x` 却出现在**最后**
--- ⇒ 需要一条「把元素追加到已处理部分」的辅助递归（而不是 `cpassB` 的头部递归）。
+-- ★ 下面这段「已定位的难点」**仍然是真的、且有历史价值**：
+--   对 `v` 归纳时 `reverse (x ∷ xs) = reverse xs ++ [x]` 把末元素推到**末尾**，
+--   而 `cpassB` 从**头部**递归 ⇒ 归纳假设作用在 `reverse xs` 上、`x` 却出现在最后
+--   ⇒ 需要「把元素追加到已处理部分」的辅助递归。
+--   **`T6CayleyIdem2` 的解法正是绕开它**：不去直接归纳 `reverse`，
+--   而是证 `cpassB ≡ cpassApp`（`cpassB≡cpassApp`）+ `cpassApp-rev`，
+--   让「追加」这一步发生在 `cpassApp` 上（它本来就是追加式递归）。
 --------------------------------------------------------------------------------

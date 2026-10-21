@@ -22,7 +22,7 @@
 -- | `Resp2` | 尊重性条件（商 `rec` 的前提形）—— 定义 | ✅ |
 -- | **`whisk-resp`** | 左缘饰稳定，**四情形全证**（`gen3+` 情形恰由 `whisk3` 构造子给出）| ✅ |
 -- | **`suffix-base3`** | ★ **右缘饰的 `base3+` 情形**，**恰好由 `bub3` 给出** | ✅ |
--- | `suffix-resp`（全）| `whisk3`/`bub3` 两情形需 `++2-assoc` 运输 | ⬜ 待做 |
+-- | **`suffix-resp`（全）** | `whisk3`/`bub3` 两情形用 `++2-assoc` 运输 | ✅ **已证**（§5 的 `suffix-step`，见 `Omega3Suffix.agda:123-136`）|
 --
 -- ## ★ `suffix-base3` 的意义：**这就是 `bub3` 存在的理由**
 --
@@ -43,7 +43,8 @@
 --
 -- ## ⚠ 本模块**不**包含
 --
---   · 完整的 `suffix-resp`（`whisk3`/`bub3` 两情形要 `++2-assoc` 的命题运输）；
+--   · ~~完整的 `suffix-resp`~~ —— **已做**（`suffix-step` 覆盖 `base3+`/`whisk3`/`bub3`，
+--     `whisk3`/`bub3` 两情形经 `++2-assoc` + `subst₂-Ω3Step⁺` 运输）；此条原标「不做」已过期。
 --   · 商 `π₂ᵈ` / `π₂ᵈ⁺` —— 提升批 4，**需裁** `src/Homotopy/` 是否允许 cubical `_/_`；
 --   · 任何**计算**（`π₂ᵈ` 的群结构、非平凡实例）。
 --

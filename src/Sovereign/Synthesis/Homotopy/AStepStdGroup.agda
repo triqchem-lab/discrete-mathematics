@@ -17,12 +17,14 @@
 -- | `rev` | 把走倒过来：`Walk G u v → Walk G v u` ✓ |
 -- | `rev-cancel-one` | **长度 1 的走层逆**：`(x→y) ++ (x→y)⁻¹ ⁓ nil`（一条 `bt`）✓ |
 --
--- ## ⬜ 未证（如实标注，不冒充）
+-- ## ✅ 一般走层逆 —— **已在 `AStepStdReverse` 证出**（本节原标「⬜ 未证」已过期）
 --
 -- `rev-cancel`（**一般**的走层逆）：
--- `∀ (p : Walk G u v) → AHomotopyStd G (p ++w rev p) (nil u)`
+-- `∀ {u v} (p : Walk G u v) → AHomotopyStd G (p ++w rev p) (nil u)`
+-- ⇒ 见 `Sovereign.Synthesis.Homotopy.AStepStdReverse.rev-cancel`（该模块 50–56 行，
+--   全程只需**一次** `++w-assoc` 运输 + `prefix-cong` + 右同余 + 本模块的 `rev-cancel-one`）。
 --
--- 证明草图（我用归纳推过，结构清楚但传输较多，本轮未写完）：
+-- 原证明草图（保留作设计记录）：
 -- 对 `p` 归纳。`p = cons e' p'` 时，
 -- `p' ++w (rev (cons e' p') ++w cons (sym-edge e) nil)`
 --   ≡ `p' ++w ((rev p' ++w cons (sym-edge e') nil) ++w cons (sym-edge e) nil)`
