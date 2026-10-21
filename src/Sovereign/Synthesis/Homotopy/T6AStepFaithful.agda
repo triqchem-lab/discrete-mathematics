@@ -30,9 +30,10 @@
 module Sovereign.Synthesis.Homotopy.T6AStepFaithful where
 
 open import Data.Nat using (ℕ)
-open import Data.List using (List)
+open import Data.List using (List; []; _∷_)
 open import Data.Product using (_,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong₂)
+open import Relation.Nullary using (¬_)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; cong₂)
 
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode using (CStep; CWalk)
 open import Sovereign.Synthesis.Homotopy.T6AStepCode using (ADir; dslide; dexpand)
@@ -86,3 +87,35 @@ same-walks pref s1 s2 s3 suff =
 -- ⬜ 未做：`suff` 与 `s1 s2 s3` 的可恢复性（需先证 `++` 的消去，且 `suff` 本身
 --        在 `pref ++ [s1,s2] ++ suff` 里**不可唯一恢复** ⇒ 那条也更可能是假的）。
 --------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- §3. ★★ 「码不能由走对恢复」—— 从判断升级为**已证命题**
+--
+-- §2 只是结构观察；本节把它写成**否定命题**并证。
+-- 做法：**参数化**（不需要具体 `CStep` 值）——给任意 `pref / s1 s2 s3 / suff`，
+-- 都能造出两个只差 `ADir` 的码，它们走对相同但码不同。
+--------------------------------------------------------------------------------
+
+-- 两种方向标记不同（构造子互异 ⇒ 一行）
+dslide≢dexpand : dslide ≢ dexpand
+dslide≢dexpand ()
+
+-- `mkStep` 是**同一个构造子**（不是互异构造子）⇒ 从参数分出来：取其第一个参数
+mkStep-dir : ∀ {n : ℕ} (d d' : ADir) (pref : CWalk n)
+             (s1 s2 s3 : CStep n) (suff : CWalk n)
+           → mkStep d  pref s1 s2 s3 suff ≡ mkStep d' pref s1 s2 s3 suff
+           → d ≡ d'
+mkStep-dir d d' pref s1 s2 s3 suff p =
+  cong (λ { (mkStep e _ _ _ _ _) → e }) p
+
+-- ★★ 主定理：**不存在**「由走对恢复码」的函数
+--    （等价说法：`(srcCode, tgtCode)` 对 `StepCode` **不是单射**）
+no-walks-recover-code :
+  ∀ {n : ℕ} (pref : CWalk n) (s1 s2 s3 : CStep n) (suff : CWalk n)
+  → ¬ (∀ (c c' : StepCode n)
+       → srcCode c ≡ srcCode c' → tgtCode c ≡ tgtCode c' → c ≡ c')
+no-walks-recover-code pref s1 s2 s3 suff h =
+  dslide≢dexpand
+    (mkStep-dir dslide dexpand pref s1 s2 s3 suff
+      (h (mkStep dslide  pref s1 s2 s3 suff)
+         (mkStep dexpand pref s1 s2 s3 suff) refl refl))
+
