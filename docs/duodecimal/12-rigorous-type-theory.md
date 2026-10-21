@@ -6,6 +6,10 @@
 
 ---
 
+> **▶ 完备定义**：[42-presentation-group-definition.md](42-presentation-group-definition.md)
+> 把定义 2.1–2.7 合成**单一 record**，并补 6 项类型层约束（`clock-min` / `clock-phase` /
+> `generated` / `rigidity-hom` / `rigidity-invol` / `phase-nontrivial`）。
+
 ## 一、严谨性的标准
 
 严谨意味着：

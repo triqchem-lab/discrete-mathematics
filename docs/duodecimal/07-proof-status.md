@@ -21,6 +21,7 @@
 | L5b | **域刚性 vs 群反转的区分** | 0 | ✅ 完成（`39-frobenius-vs-group-inversion.md`）|
 | L5c | **刚性 = 自同构透明性（显式构造 + 穷举验证）** | 0 | ✅ 完成（`40-transparency-vs-refutation.md`）|
 | L5d | **判据是「透明」不是「强大」；学科不构成层级** | 0 | ✅ 完成（`41-strength-vs-transparency.md`）|
+| L6 | **展示群完备定义（三层八要素 + 6 加强约束）** | 0 | ✅ 完成（`42-presentation-group-definition.md`）|
 | L6 | Norm N(z) | 0 | ✅ 完成 |
 | L7 | Trace Tr(z) | 0 | ✅ 完成 |
 | L8 | Z/12Z 加法群 | 0 | ✅ 完成 |

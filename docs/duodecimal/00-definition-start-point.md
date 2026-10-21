@@ -6,6 +6,7 @@
 
 「结构是什么」由**怎么生成**决定：载体 → 生成元 → 关系 → 相位 → 时钟 → 归零 → 刚性 → 核对。
 （八要素 DC 实例表 + 代码锚点：`11-type-theory-presentation.md`；严格版：`12-rigorous-type-theory.md`）
+（**完备可判定版**：`42-presentation-group-definition.md` —— 三层八要素 + 7 缺口 + 6 加强约束）
 
 ## 二、数学基础 = 依赖类型论展示群（Curry-Howard + Agda 唯一裁决）
 

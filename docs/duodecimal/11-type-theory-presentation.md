@@ -6,6 +6,10 @@
 
 ---
 
+> **▶ 完备定义**：[42-presentation-group-definition.md](42-presentation-group-definition.md) 把本节八要素
+> 提升为**可判定的 record 定义**（含 7 处精确化缺口 G1–G7 + 6 项加强约束 + DC 逐条核对）。
+> 本文档是**描述性**定义；42 号文是**可判定**定义。
+
 ## 核心结论
 
 > **律算框架的群论是类型论展示群，不是集合论群。**
