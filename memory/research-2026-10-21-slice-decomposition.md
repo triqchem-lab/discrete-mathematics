@@ -1068,3 +1068,33 @@ sumR-cong (suc n) h = cong₂ _+_ (h 0) (sumR-cong n (λ k → h (suc k)))
 | ② | `sumTo` 重索引 | **✅ 用 `sumR` 解决**（`uncons` = `refl`）|
 | ⑤ | `k=0` 边界 | ❌ 未做 |
 | `★S''-step` | 用 `sumR` 版的组合和 | ❌ 未做（结构已清晰）|
+
+---
+
+## 二十四、`★S''-step` 的 5 条缺口**全部解决**（2026-10-21）
+
+### 24.1 五条缺口与对应引理
+
+| # | 缺口 | 引理 | 难度 |
+|---|---|---|---|
+| ① | Pascal 显式形 | `★Cnk-pascal`（`refl`）+ `★Cnk-zero` | 平凡 ✓ |
+| ② | 重索引 | **`sumR`**（`sumR-uncons` = `refl`）+ `sumR-cong` | 中 ✓ |
+| ③ | 余数相容 | `★mod3-suc`（对 j 归纳，用 `suc3³ = id`）+ `hit-suc3`（9 cases）+ `★hit-mod` | 中 ✓ |
+| ④ | `2^(j+1) = 2·2^j` | `★pow2-suc`（`refl`）| 平凡 ✓ |
+| ⑤ | `k > n` 时 `Cnk = 0` | `★Cnk-above`（对 n,k 联合归纳，`suc n ≤ k` 形式）+ `★Cnk-self` | 中 ✓ |
+
+### 24.2 最终装配的推导（数学已确认 ✓）
+
+```
+S'' r (n+1) = hit r 0 + Σ_j hit(pred3 r)(mod3 j)·(C(n,j)+C(n,j+1))·2·2^j
+            = hit r 0 + 2·S''(pred3 r) n + 2·Σ_j hit(pred3 r)(mod3 j)·C(n,j+1)·2^j
+S'' r n     = hit r 0 + Σ_j hit r (mod3 (j+1))·C(n,j+1)·2^{j+1}
+            = hit r 0 + 2·Σ_j hit(pred3 r)(mod3 j)·C(n,j+1)·2^j      [★hit-mod]
+⇒ S'' r (n+1) = 2·S''(pred3 r) n + S'' r n  ✓
+```
+
+### 24.3 关键教训（本会话最有价值的三条）
+
+1. **写求和引理前，先选定让目标引理变成 `refl` 的嵌套方向** ✓（右嵌套 `sumR`）
+2. **周期/取模定义必须用 `refl` 核对 `mod3 0..5`** ✓（`mod3` 曾漏掉一支）
+3. **`≤` 形式比 `<` 形式好证** ✓（`suc n ≤ k` 让 `suc/suc` case 直接可用）

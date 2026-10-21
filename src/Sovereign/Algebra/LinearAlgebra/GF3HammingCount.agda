@@ -886,3 +886,23 @@ sumR-uncons n f = refl
 sumR-cong : ∀ n {f g : ℕ → ℕ} → (∀ k → f k ≡ g k) → sumR n f ≡ sumR n g
 sumR-cong zero    h = h 0
 sumR-cong (suc n) h = cong₂ _+_ (h 0) (sumR-cong n (λ k → h (suc k)))
+
+--------------------------------------------------------------------------------
+-- ㉓ 缺口 ⑤：`Cnk n k ≡ 0`（当 k > n）
+--------------------------------------------------------------------------------
+
+open import Data.Nat using (_≤_; s≤s; z≤n)
+open import Data.Nat.Properties using (≤-refl; ≤-step)
+
+-- `suc n ≤ k ⇒ Cnk n k ≡ 0`
+★Cnk-above : ∀ n k → suc n ≤ k → Cnk n k ≡ 0
+★Cnk-above zero    zero    ()
+★Cnk-above zero    (suc k) _                   = refl
+★Cnk-above (suc n) zero    ()
+★Cnk-above (suc n) (suc k) (s≤s sn≤k)         =
+  trans (cong₂ _+_ (★Cnk-above n k sn≤k)
+                   (★Cnk-above n (suc k) (≤-step sn≤k))) refl
+
+-- 特例：`Cnk n (suc n) ≡ 0`
+★Cnk-self : ∀ n → Cnk n (suc n) ≡ 0
+★Cnk-self n = ★Cnk-above n (suc n) ≤-refl
