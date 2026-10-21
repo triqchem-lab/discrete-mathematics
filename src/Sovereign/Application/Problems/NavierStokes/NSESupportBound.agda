@@ -25,13 +25,13 @@ module Sovereign.Application.Problems.NavierStokes.NSESupportBound where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
-open import Data.Product using (_,_; _×_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; trans)
+open import Data.Product using (_,_; _×_; Σ)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; cong₂; trans)
 open import Data.Nat.Properties using (≤-trans; ≤-reflexive; +-mono-≤; m+n≡0⇒m≡0; m+n≡0⇒n≡0)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Application.Problems.NavierStokes.NSEOnT6 using
-  (C3; Torus6; ScalarField; Field; v1; v2; v3; v4; v5; v6)
+  (C3; Torus6; ScalarField; Field; mkField; v1; v2; v3; v4; v5; v6)
 open import Sovereign.Application.Problems.NavierStokes.NSEFixedPointStrict using
   (isNonZero; fold1N; countOver; supportCount)
 
@@ -84,7 +84,7 @@ supportCount-bound v =
 -- ✗ 不声称（O3 通道 ⑤ **仍开放的部分**）:
 --   ① supportCount 在 `nsStep` 下的**单调性/非单调性**（集中度定理本体）;
 --   ② supportCount 的**下界**与零场刻画（supportCount v ≡ 0 ↔ v ≈ 0）——未证;
---   ③ 「界 ⇒ 无集中」**不成立**（有界仍允许再分布）;
+--   ③ 「界 ⇒ 无集中」**不成立** —— **已给形式反例**（§7：两个场 `supportCount` 同为 729 却不同）;
 --   ④ 连续统 NS 的任何结论。
 --------------------------------------------------------------------------------
 
@@ -177,3 +177,47 @@ supportCount-zero← v (h1 , h2 , h3 , h4 , h5 , h6) =
       (cong₂ _+_ (countOver-zero← (v3 v) h3)
         (cong₂ _+_ (countOver-zero← (v4 v) h4)
           (cong₂ _+_ (countOver-zero← (v5 v) h5) (countOver-zero← (v6 v) h6)))))
+
+-- 下界：`0 ≤ supportCount v`（`supportCount` 取 `ℕ` 值，这是平凡但常被漏掉的一半）
+supportCount-nonneg : ∀ (v : Field) → 0 ≤ supportCount v
+supportCount-nonneg v = z≤n
+
+-- ⇒ `supportCount` 的**双界完整**：`0 ≤ supportCount v ≤ 4374`
+supportCount-bounds : ∀ (v : Field) → (0 ≤ supportCount v) × (supportCount v ≤ 4374)
+supportCount-bounds v = supportCount-nonneg v , supportCount-bound v
+
+--------------------------------------------------------------------------------
+-- §7. ★★ 反例：**「有界 ⇒ 无集中」不成立**（把 §4 ③ 的断言变成定理）
+--
+-- 两个场 `supportCount` 同为 729（都满支撑），但取值不同 ⇒ 界不决定分布。
+--------------------------------------------------------------------------------
+
+zS : ScalarField
+zS _ = T₀
+
+all₁ all₂ : ScalarField
+all₁ _ = T₁
+all₂ _ = T₂
+
+conc-v conc-w : Field
+conc-v = mkField all₁ zS zS zS zS zS
+conc-w = mkField all₂ zS zS zS zS zS
+
+origin6 : Torus6
+origin6 = fzero , fzero , fzero , fzero , fzero , fzero
+
+T₁≢T₂ : T₁ ≢ T₂
+T₁≢T₂ ()
+
+-- ① 非零分量数相同
+conc-same-count : supportCount conc-v ≡ supportCount conc-w
+conc-same-count = refl
+
+-- ② 但两个场不同
+conc-different : conc-v ≢ conc-w
+conc-different e = T₁≢T₂ (cong (λ f → v1 f origin6) e)
+
+-- ★ 形式反例：「有界 ⇒ 无集中」不成立
+concentration-counterexample :
+  Σ (Field × Field) (λ (v , w) → (supportCount v ≡ supportCount w) × (v ≢ w))
+concentration-counterexample = (conc-v , conc-w) , (conc-same-count , conc-different)

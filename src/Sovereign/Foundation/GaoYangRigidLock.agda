@@ -35,7 +35,8 @@ module Sovereign.Foundation.GaoYangRigidLock where
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Product using (Σ; _×_; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Nullary using (¬_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; _≢_)
 open import Sovereign.Foundation.FiniteDynamics
   using (orbit; orbit-eventually-periodic; orbit-period-bound; EventuallyPeriodic)
 
@@ -114,3 +115,23 @@ rot3-lock (fsuc (fsuc fzero)) = refl
 -- 定理实例与具体点互证：rot3 的返回步数 p 还满足 p ≤ 3
 rot3-lock-bound : Σ ℕ (λ p → (orbit rot3 fzero p ≡ fzero) × (p ≤ 3))
 rot3-lock-bound = gao-yang-rigid-lock-bound 2 rot3 rot3-inj fzero
+
+--------------------------------------------------------------------------------
+-- §9. ★ 反例：「每点返回」对一般（非单射）映射**不成立**
+--
+-- 头注 §陈述范围 2 写了「常值映射反例：ρᵖ x ≢ x」但一直没有定理。本节补上形式见证。
+--------------------------------------------------------------------------------
+
+constMap2 : Fin 2 → Fin 2
+constMap2 _ = fzero
+
+fzero≢fsuc : ∀ {n : ℕ} {j : Fin n} → fzero ≢ fsuc j
+fzero≢fsuc ()
+
+-- ★ 「每点都返回」的**全称版**在常值映射上失败
+not-every-point-returns : ¬ (∀ (x : Fin 2) (p : ℕ) → orbit constMap2 x p ≡ x)
+not-every-point-returns h = fzero≢fsuc (h (fsuc fzero) 1)
+
+-- 形式反例（存在形态）
+const-counterexample : Σ (Fin 2) (λ x → Σ ℕ (λ p → orbit constMap2 x p ≢ x))
+const-counterexample = fsuc fzero , (1 , λ e → fzero≢fsuc e)

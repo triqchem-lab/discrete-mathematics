@@ -15,6 +15,7 @@ open import Data.Nat.Properties using (*-comm; *-assoc; +-identityʳ; +-identity
 open import Data.Nat.DivMod using (%-distribˡ-+; %-distribˡ-*; m%n%n≡m%n; m*n%n≡0; m≡m%n+[m/n]*n)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
 open import Data.Unit using (⊤)
+open import Data.Empty using (⊥)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
 open import Cubical.Foundations.Prelude using () renaming (_≡_ to _≡ᶜ_)
 open import Cubical.Data.Equality.Conversion using (eqToPath)
@@ -287,3 +288,18 @@ private
     (ΣPathP (cong proj₂ (crtSec a b a<2 b<3) , isProp→PathP (λ i → <-irrelevant _ _) _ _)))
 -}
 -- 备注: 无界 ℕ 上 crtIso 不成立（模运算本征限制）
+
+--------------------------------------------------------------------------------
+-- §末. ★ 反例：无界 ℕ 上 `crtProject` **不是单射**（故无同构）
+--
+-- `crtProject x = (x % POW2 , x % POW3)`；`0` 与 `POW2*POW3` 投影相同却不同。
+--------------------------------------------------------------------------------
+
+crt-collapse : crtProject 0 ≡ crtProject (POW2 * POW3)
+crt-collapse = refl
+
+six-zero-absurd : POW2 * POW3 ≡ 0 → ⊥
+six-zero-absurd ()
+
+crt-not-injective : (∀ (x y : ℕ) → crtProject x ≡ crtProject y → x ≡ y) → ⊥
+crt-not-injective h = six-zero-absurd (h (POW2 * POW3) 0 crt-collapse)

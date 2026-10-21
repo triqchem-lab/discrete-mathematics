@@ -40,6 +40,7 @@ open import Data.Nat.DivMod using (
          _/_; m%n<n; m<n⇒m%n≡m; n%n≡0; m*n%n≡0; %-distribˡ-+; %-distribˡ-*;
          m≡m%n+[m/n]*n)
 open import Data.Nat.Divisibility.Core using (_∣_; divides)
+open import Data.Nat.Divisibility using (∣-refl)
 open import Data.Nat.Properties using (+-identityʳ; +-assoc; +-comm; *-zeroʳ; *-mono-≤;
          ≮⇒≥; ≤-antisym; ≤-trans; s≤s; z≤n; _≟_; _<?_)
 open import Data.Empty using (⊥-elim)
@@ -448,3 +449,15 @@ classicRoot-mul m n = begin
   ≡⟨ abiRoot≡classicRoot (classicRoot m * classicRoot n) ⟩
     classicRoot (classicRoot m * classicRoot n)
   ∎
+
+--------------------------------------------------------------------------------
+-- ★ 反例：周期律在 `n = 0` 处**失效**（`classicRoot (0 + 9) ≢ classicRoot 0`）
+-- 头注 ③ 说「n = 0 时为假，已附反例」——本节点把这个反例写成定理。
+--------------------------------------------------------------------------------
+
+nine≢zero : 9 ≢ 0
+nine≢zero ()
+
+period-9-fails-at-zero : classicRoot (0 + 9) ≢ classicRoot 0
+period-9-fails-at-zero e =
+  nine≢zero (trans (classicRoot-nine 9 (s≤s z≤n) ∣-refl) (trans e classicRoot-zero))
