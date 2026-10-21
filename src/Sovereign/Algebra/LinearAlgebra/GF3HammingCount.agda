@@ -1154,3 +1154,50 @@ Z-check = refl , refl , refl , refl , refl , refl
 --    ~30 行，未做 ✗
 --
 -- ⇒ `b_n = a_n ∸ Z n` 的**加法形式** `b_n + Z n ≡ a_n` 依赖此引理 ✗
+
+--------------------------------------------------------------------------------
+-- ㉛ `sumR-mono` + `Cnk` 对角 + `Z≤a`
+--------------------------------------------------------------------------------
+
+open import Data.Nat using (z≤n; s≤s; _∸_)
+open import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-reflexive; m≤m+n; m≤n+m; m∸n+n≡m)
+
+-- ★ 被加项 ≤ 和
+sumR-mono : ∀ n (f : ℕ → ℕ) (k : ℕ) → k ≤ n → f k ≤ sumR n f
+sumR-mono zero    f zero    _       = ≤-refl
+sumR-mono zero    f (suc k) ()
+sumR-mono (suc n) f zero    _       = m≤m+n (f 0) (sumR n (λ j → f (suc j)))
+sumR-mono (suc n) f (suc k) (s≤s k≤n) =
+  ≤-trans (sumR-mono n (λ j → f (suc j)) k k≤n)
+          (m≤n+m (sumR n (λ j → f (suc j))) (f 0))
+
+-- ★ 对角：`Cnk n n ≡ 1`
+Cnk-diag : ∀ n → Cnk n n ≡ 1
+Cnk-diag zero    = refl
+Cnk-diag (suc n) =
+  trans (cong₂ _+_ (Cnk-diag n) (★Cnk-self n)) (+-identityʳ 1)
+
+-- `1 * (1 * X) ≡ X`
+onetwice : ∀ X → 1 * (1 * X) ≡ X
+onetwice = solve 1 (λ X → con 1 :* (con 1 :* X) := X) refl
+
+-- ★ `Z n ≤ S'' fzero n`：**未证**（诚实标注，2026-10-21）
+--
+-- 数学上成立 ✓（n=0..7 数值验证 ✓）：
+--   n≡0(3) 时 `Z n = 2^n = C(n,n)·2^n` 正是 `S'' fzero n` 的 `k=n` 项 ✓
+--   n≢0(3) 时 `Z n = 0` ✓ 平凡
+--
+-- ❌ Agda 障碍：`with mod3 n ... | fzero` **不会**把 `S'' fzero n` 内部的
+--    `mod3 k [k := n]` 也抽象掉 ✗ ⇒ 目标里的 `hit fzero (mod3 n)` 与
+--    `hit fzero fzero` 对不上 ✗
+--   实测错误：`hit fzero (mod3 n) * (Cnk n n * 2^n)` vs `Cnk n n * 2^n + 0 * ...`
+--
+-- 下一步（明确）：把 `Z` 改成**以余数为参数** `Zr : Fin 3 → ℕ → ℕ`，
+--   并在 `Z≤a` 里用 `subst`（沿 `mod3 n ≡ fzero`）把目标整体搬过去 ✗
+--
+-- ⇒ `b_n + Z n ≡ a_n`（`★b-formula`）依赖此条 ✗
+
+-- 已证的相关件 ✓
+--   sumR-mono : ∀ n f k → k ≤ n → f k ≤ sumR n f     ✓
+--   Cnk-diag  : ∀ n → Cnk n n ≡ 1                    ✓
+--   onetwice  : ∀ X → 1 * (1 * X) ≡ X                ✓
