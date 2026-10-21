@@ -36,11 +36,14 @@ module Sovereign.Synthesis.Homotopy.T6CayleyNorm where
 
 open import Data.Nat using (ℕ)
 open import Data.List using ([]; _∷_; reverse; [_])
+open import Data.Fin using (Fin)
+open import Data.Bool using (Bool; true; false)
 open import Relation.Nullary using (¬_)
 open import Relation.Nullary using (yes; no)
-open import Data.Empty using (⊥-elim)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Empty using (⊥; ⊥-elim)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; trans; subst)
 
+open import Sovereign.Synthesis.Homotopy.Pi2dParity using (false≢true)
 open import Sovereign.Synthesis.Homotopy.T6CayleyCode
   using (CStep; CWalk; cplus; cminus; cstep-inv; DecEq-CStep)
 
@@ -107,6 +110,9 @@ creduceA-cancel (cminus j) xs with DecEq-CStep (cminus j) (cminus j)
 -- ⚠ **陈述的精确形态**：`NoCancel (creduceS w)`，其中 `creduceS w = cpassS [] w`
 --   的**栈序**是「阅读顺序的逆」。**未证**：阅读顺序下的版本
 --   `NoCancel (reverse (creduceS w))`（需 `NoCancel-reverse`）。
+--   ⚠ 实测：`NoCancel-reverse` 比预期难 —— `reverse` 与 `nc-two` 的**头序相反**，
+--     需要把消去判据沿 `reverse` 逐位搬（且每步都要 `adj-sym'`）。
+--     **本模块未做**；已备 `adj-sym` / `adj-sym'` 作为它的前提。
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
@@ -166,6 +172,33 @@ cpassS-noCancel (y ∷ acc') (x ∷ xs)   h with DecEq-CStep x (cstep-inv y)
 -- ★★ ① 范式性：归约结果（栈序）不含相邻可消对
 creduceS-noCancel : ∀ {n : ℕ} (w : CWalk n) → NoCancel (creduceS w)
 creduceS-noCancel w = cpassS-noCancel [] w nc-nil
+
+--------------------------------------------------------------------------------
+-- §4.5 ★★ 相邻关系对称（`cstep-inv` 对合 ⇒ 可翻转）
+--
+-- 用途：`NoCancel` 在 `reverse` 下不变、以及 `creduceA` 幂等，**都**以它为共同前提。
+-- ⚠ 必须**按 `x` 的构造子分情形** —— 变量上 `cstep-inv (cstep-inv x)` 卡住。
+--------------------------------------------------------------------------------
+
+-- 两个投影：取索引与取方向（用来从「构造子相等」里提取信息 / 区分方向）
+cfin : ∀ {n : ℕ} → CStep n → Fin n
+cfin (cplus j)  = j
+cfin (cminus j) = j
+
+cdir : ∀ {n : ℕ} → CStep n → Bool
+cdir (cplus _)  = true
+cdir (cminus _) = false
+
+adj-sym : ∀ {n : ℕ} (x y : CStep n)
+        → x ≡ cstep-inv y → y ≡ cstep-inv x
+adj-sym (cplus j)  (cplus k)  e = ⊥-elim (false≢true (sym (cong cdir e)))
+adj-sym (cplus j)  (cminus k) e = sym (cong cminus (cong cfin e))
+adj-sym (cminus j) (cplus k)  e = sym (cong cplus (cong cfin e))
+adj-sym (cminus j) (cminus k) e = ⊥-elim (false≢true (cong cdir e))
+
+adj-sym' : ∀ {n : ℕ} (x y : CStep n)
+         → ¬ (x ≡ cstep-inv y) → ¬ (y ≡ cstep-inv x)
+adj-sym' x y ¬p q = ¬p (adj-sym y x q)
 
 --------------------------------------------------------------------------------
 -- §5. ⚠ 本模块**不**声称的（如实标注；这些都不是「顺手就能做」）
