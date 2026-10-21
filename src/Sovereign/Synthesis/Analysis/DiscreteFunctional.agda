@@ -31,7 +31,8 @@ open import Data.Empty using (⊥)
 open import Data.Product using (Σ; _,_; _×_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans)
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-assoc; ⊕-comm)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; ⊕-assoc; ⊕-comm;
+  ⊕-identityʳ; ⊗-identityʳ; ⊗-zeroʳ)
 open import Sovereign.Algebra.Analytic.ProjectionDifferential using (GF3Func)
 
 -- 对偶空间：所有（不限于线性的）泛函
@@ -109,3 +110,59 @@ coord₁-linear = (λ _ _ → refl) , (λ _ _ → refl)
 
 coord₂-linear : Linear coord₂
 coord₂-linear = (λ _ _ → refl) , (λ _ _ → refl)
+
+--------------------------------------------------------------------------------
+-- §5. ★★ 对偶维数定理：线性泛函**由三个基值决定**
+--
+-- `φ (a,b,c) = a⊗φe₀ ⊕ (b⊗φe₁ ⊕ c⊗φe₂)` —— 两个线性泛函在 `e₀/e₁/e₂` 上相等即处处相等。
+-- 桥引理不可省：`a • e₀` 与 `(a,T₀,T₀)` 只是**命题**相等
+--   （`a ⊗ T₁` / `a ⊗ T₀` 非定义性——`⊗` 按第一参数匹配）。
+--------------------------------------------------------------------------------
+
+-- 三个基向量（本模块自备，避免跨模块依赖）
+e₀ e₁ e₂ : GF3Func
+e₀ = T₁ , T₀ , T₀
+e₁ = T₀ , T₁ , T₀
+e₂ = T₀ , T₀ , T₁
+
+decomp-f3 : ∀ a b c → (a , b , c) ≡ (a , T₀ , T₀) ⊕ₚ ((T₀ , b , T₀) ⊕ₚ (T₀ , T₀ , c))
+decomp-f3 a b c =
+  cong₂ (λ x y → (x , y , c)) (sym (⊕-identityʳ a)) (sym (⊕-identityʳ b))
+
+•e₀≡ : ∀ a → a • e₀ ≡ (a , T₀ , T₀)
+•e₀≡ a =
+  trans (cong (λ z → (a ⊗ T₁ , a ⊗ T₀ , z)) (⊗-zeroʳ a))
+        (cong₂ (λ x y → (x , y , T₀)) (⊗-identityʳ a) (⊗-zeroʳ a))
+
+•e₁≡ : ∀ b → b • e₁ ≡ (T₀ , b , T₀)
+•e₁≡ b =
+  trans (cong (λ z → (z , b ⊗ T₁ , b ⊗ T₀)) (⊗-zeroʳ b))
+        (cong₂ (λ x y → (T₀ , x , y)) (⊗-identityʳ b) (⊗-zeroʳ b))
+
+•e₂≡ : ∀ c → c • e₂ ≡ (T₀ , T₀ , c)
+•e₂≡ c =
+  trans (cong (λ z → (z , c ⊗ T₀ , c ⊗ T₁)) (⊗-zeroʳ c))
+        (trans (cong (λ z → (T₀ , z , c ⊗ T₁)) (⊗-zeroʳ c))
+               (cong (λ z → (T₀ , T₀ , z)) (⊗-identityʳ c)))
+
+-- 求值公式：`φ (a,b,c)` 由三个基值决定
+φ-eval : ∀ (φ : Dual) → Linear φ → ∀ a b c
+       → φ (a , b , c) ≡ ((a ⊗ φ e₀) ⊕ ((b ⊗ φ e₁) ⊕ (c ⊗ φ e₂)))
+φ-eval φ (add , hom) a b c =
+  trans (cong φ (decomp-f3 a b c))
+        (trans (add (a , T₀ , T₀) ((T₀ , b , T₀) ⊕ₚ (T₀ , T₀ , c)))
+               (cong₂ _⊕_ (trans (cong φ (sym (•e₀≡ a))) (hom a e₀))
+                           (trans (add (T₀ , b , T₀) (T₀ , T₀ , c))
+                                  (cong₂ _⊕_
+                                         (trans (cong φ (sym (•e₁≡ b))) (hom b e₁))
+                                         (trans (cong φ (sym (•e₂≡ c))) (hom c e₂))))))
+
+linear-determined : ∀ (φ ψ : Dual) → Linear φ → Linear ψ
+                  → φ e₀ ≡ ψ e₀ → φ e₁ ≡ ψ e₁ → φ e₂ ≡ ψ e₂
+                  → ∀ f → φ f ≡ ψ f
+linear-determined φ ψ lφ lψ e0 e1 e2 (a , b , c) =
+  trans (φ-eval φ lφ a b c)
+        (trans (cong₂ (λ p q → p ⊕ q)
+                      (cong (a ⊗_) e0)
+                      (cong₂ (λ p q → p ⊕ q) (cong (b ⊗_) e1) (cong (c ⊗_) e2)))
+               (sym (φ-eval ψ lψ a b c)))
