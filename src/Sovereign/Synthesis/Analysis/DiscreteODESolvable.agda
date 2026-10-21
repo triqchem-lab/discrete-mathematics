@@ -4,10 +4,10 @@
 
 module Sovereign.Synthesis.Analysis.DiscreteODESolvable where
 
-open import Data.Product using (Σ; _,_; proj₁)
+open import Data.Product using (Σ; _,_; _×_; proj₁)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym; trans)
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
-open import Sovereign.Algebra.Analytic.ProjectionDifferential using (GF3Func; Δ; sum3; Δ²-is-const)
+open import Sovereign.Algebra.Analytic.ProjectionDifferential using (GF3Func; Δ; sum3; Δ²-is-const; Δ³≡0)
 
 --------------------------------------------------------------------------------
 -- §3. ★★ 离散 Fredholm 替代：`Δu = v` **可解 ⟺ `sum3 v ≡ T₀`**
@@ -105,3 +105,18 @@ closed-sum-zero v e with v
 -- ★ H¹ = 0：闭形式必恰当（必是某个 f 的 Δ）
 h1-vanishes : ∀ v → Δ (Δ v) ≡ zero3 → Σ GF3Func (λ f → Δ f ≡ Δ v)
 h1-vanishes v e = Δ-solvable (Δ v) (sum3-Δ v)
+
+--------------------------------------------------------------------------------
+-- §6. ★★ 正合性：`im Δ = ker Δ²`（离散 de Rham 复形在中间项正合）
+--------------------------------------------------------------------------------
+
+-- 反向：`sum3 v ≡ T₀ ⇒ Δ² v ≡ 0`
+open-sum-zero : ∀ v → sum3 v ≡ T₀ → Δ (Δ v) ≡ zero3
+open-sum-zero (a , b , c) e = trans (Δ²-is-const (a , b , c)) (cong (λ s → (s , s , s)) e)
+
+-- ★ 双向刻画：`v` 在 `Δ` 的像里 ⟺ `v` 是闭的（`Δ² v ≡ 0`）
+exact-mid : ∀ v → (Σ GF3Func (λ f → Δ f ≡ v) → Δ (Δ v) ≡ zero3)
+                 × (Δ (Δ v) ≡ zero3 → Σ GF3Func (λ f → Δ f ≡ v))
+exact-mid v =
+  (λ { (f , p) → trans (sym (cong (λ w → Δ (Δ w)) p)) (Δ³≡0 f) })
+  , (λ closed → Δ-solvable v (closed-sum-zero v closed))
