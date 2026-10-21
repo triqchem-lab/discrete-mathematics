@@ -235,6 +235,26 @@
 
 ---
 
+
+### 9.7 ★ 补充：`6D` 的**第二个独立体系证据**（本轮新增的确证）
+
+**文献**：Phil. Trans. R. Soc. A **371**(1998), 20110627（`rsta.2011.0627`），
+Horsewill / Goh / Rols / Ollivier / Johnson / **Levitt** / Carravetta / Mamone / **Murata** / … / **Turro**（2013）
+[Southampton ePrints 记录](https://eprints.soton.ac.uk/356265/)
+
+**标题**：「**Quantum rotation and translation of hydrogen molecules encapsulated inside C₆₀**」
+
+**摘要原文**：
+> 「The **hydrogen endofullerene** system is highly quantum mechanical, exhibiting
+> **both translational and rotational quantization**」
+
+**⇒ 这是 `H₂@C₆₀` 也存在「平动 + 转动双重量子化」的直接陈述** ✅
+**⇒ 加上 `H₂O@C₆₀` 的平动模 `110 cm⁻¹`（arXiv:2102.06389），`6D TR` 现在有**两个独立体系**的物理证据。*
+
+**⚠ 诚实边界**：该记录的 `0.2 meV` **不在摘要里**，且写「no associated files available for download」；
+`0.2 meV` 来自搜索引擎索引的**正文片段**（用了专业记号 `ΔE_fs`），归属 `H₂@C₆₀` 的可能性高，
+但**不能完全排除**它指另一个分裂。**引用前须核正文。**
+
 ## 十、本轮补充的完整数据清单（22 条，2025–2026 联网检索）
 
 > 全部标注来源；**⚠ 标记的是未读全文 / 未拿到数值的**。
