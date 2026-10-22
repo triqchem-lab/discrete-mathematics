@@ -247,6 +247,11 @@ data EnergyTransfer : Set where
 -- NayinStandingWaveHarmonicFiltering 的别名，resonanceLegal = refl。
 -- 原「双 data + postulate 断言相异类型相等」与本文件「相异类型判空」风格
 -- （noEnergyLevelTransition 系空模式）构成一致性地雷——别名形消除之。
+-- ⚠ [2026-10-22 补记] 上句引用的 `noEnergyLevelTransition` / `noEnergyTransfer`
+--   那两条「相异类型判空」断言**已移除**：它们对两个相异且有构造子的 `data`
+--   在标准 Agda 中不可证（报 `Is empty: Resonance ≡ EnergyTransfer (stuck)`），
+--   只靠本地补丁内核。现由本文件末的文档标注（[防止误用] 段）承载该区分。
+--   本条历史说明保留，用于回溯 2026-10-11 的别名化决策。
 data NayinStandingWaveHarmonicFiltering : Set where
   mkNSWHF : NayinStandingWaveHarmonicFiltering
 

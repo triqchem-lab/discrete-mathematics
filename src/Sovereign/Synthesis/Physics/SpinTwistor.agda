@@ -407,7 +407,11 @@ TwistorDefinition = T6ComplexCoordinateProjection
 twistorLegal : TwistorDefinition ≡ T6ComplexCoordinateProjection
 twistorLegal = refl
 
--- 禁止表述 (标记类型, 数据型不等 λ ())
+-- 禁止表述的标记类型（**仅为文档/命名用途**）
+--   ⚠ [2026-10-22] 原注释写「标记类型, 数据型不等 λ ()」—— 那三条证明已移除：
+--   两侧是相异且都有构造子的类型，标准 Agda 判不出（`Is empty: … (stuck)`），
+--   只靠本地补丁内核。现在这三个 `data` 声明**保留**（供其它定义/文档引用），
+--   但**不再有**「它们互不相等」的类型层证明；区分由文件末的文档标注承载。
 data Electron : Set where
   electron : Electron
 
