@@ -255,12 +255,26 @@ ResonanceDefinition = NayinStandingWaveHarmonicFiltering
 
 pattern mkRD = mkNSWHF
 
--- 禁止表述（已证明：Resonance、EnergyLevelTransition、EnergyTransfer 为互异 data 类型）
-noEnergyLevelTransition : ¬ (Resonance ≡ EnergyLevelTransition)
-noEnergyLevelTransition ()
-
-noEnergyTransfer : ¬ (Resonance ≡ EnergyTransfer)
-noEnergyTransfer ()
+-- ⚠⚠ [2026-10-22 澄清轮：以下两条类型层断言已移除，改为本段文档标注]
+--
+-- 原先在 Resonance.agda:258-263 写的三条内容（原文留档，便于回溯）：
+--   -- 禁止表述（已证明：Resonance、EnergyLevelTransition、EnergyTransfer 为互异 data 类型）
+--   noEnergyLevelTransition : ¬ (Resonance ≡ EnergyLevelTransition)   = ()
+--   noEnergyTransfer        : ¬ (Resonance ≡ EnergyTransfer)          = ()
+--
+-- 【证据：标准 Agda 2.9.0-rc1 对该处报错】
+--   `Is empty: Resonance ≡ EnergyTransfer (stuck)`
+--   `Is empty: Resonance ≡ EnergyLevelTransition (stuck)`
+--   ⇒ 原注释里的「已证明」在标准内核下**不成立**（散文断言规则违规）。
+--
+-- 【澄清结论】这两条属**防止误用**（宪法禁令：共振 ≠ 能级跃迁 ≠ 能量传递），
+--   不是数学定理。三者都是各有一个构造子的 data ⇒ 都有居民；
+--   标准 Agda 无法证明「相异且有居民的类型构造子互不相等」；
+--   两条改写路径已穷尽排除：①空类型搬运不行（两侧都有居民）；
+--   ②矛盾锚点不行（本模块无可挂的冲突定理）。
+--   ⇒ 正确表述是**文档标注**：三者是三个不同的物理范畴，禁止互相替代使用。
+--   ⇒ 若要变成数学定理：须先定义只对离散共振结构成立的客观不变量，
+--     再证另两类无法满足它 —— 那需要新增定义与定理。
 
 -- [分类: 宪法公理] [状态: 定义性声明]
 -- 共振定义 = 纳音驻波谐波滤波。非数学定理——是框架的概念绑定。
