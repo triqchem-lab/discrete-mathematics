@@ -14,7 +14,7 @@
 
 module Sovereign.Foundation.EnergyGap where
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; subst)
 open import Data.Empty using (⊥)
 open import Data.Nat using (ℕ; suc; _≤_; _<ᵇ_) renaming (_*_ to _*ℕ_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _>_)
@@ -303,15 +303,43 @@ EnergyGapDefinition = Sqrt3
 C3GeneratorComplexAmplitudeJump : Set
 C3GeneratorComplexAmplitudeJump = Sqrt3
 
--- 定理：能隙 ≠ 连续统能量差（通过空类型消除）
+-- 三条「不相容」定理（方案 ②：改写为不依赖任何内核补丁的数学论证）
+--
+-- 原写法是 `notX ()` —— 直接对 `EnergyGapDefinition ≡ ContinuousEnergyDiff` 做空匹配。
+-- 那要求内核把「两个相异类型构造子的等式」判空；实测**标准 Agda 2.9.0-rc1 判不出**
+-- （报 `Is empty: EnergyGapDefinition ≡ ContinuousEnergyDiff (stuck)`），
+-- 只有本地补丁版接受 ⇒ 它不是数学论证，而是依内核行为。
+--
+-- 现改为**真实的搬运论证**（标准 Agda 完全可证）：
+--   ① `EnergyGapDefinition = Sqrt3` 是**有居民**的类型（居民 `sqrt3`，构造子 `_+s3_`）；
+--   ② `ContinuousEnergyDiff` / `AcousticImpedance` / `QuantumFluctuation` 是
+--      **无构造子**的空 `data` —— 对它们做空匹配是标准 Agda 的合法消去（空类型无居民）；
+--   ③ 若 `EnergyGapDefinition ≡ ContinuousEnergyDiff`，则 `subst` 把 `sqrt3` 搬运过去
+--      ⇒ 得到空类型的元素 ⇒ 由 ② 得 ⊥。
+--   ⇒ 「把能隙等同于连续统范畴」这一混淆的数学后果就是矛盾 —— 这正是要证的东西。
+
+-- 空类型的消去（标准 Agda：无构造子的 data 类型没有居民）
+absurd-ContinuousEnergyDiff : ContinuousEnergyDiff → ⊥
+absurd-ContinuousEnergyDiff ()
+
+absurd-AcousticImpedance : AcousticImpedance → ⊥
+absurd-AcousticImpedance ()
+
+absurd-QuantumFluctuation : QuantumFluctuation → ⊥
+absurd-QuantumFluctuation ()
+
+-- 定理：能隙 ≠ 连续统能量差
 notEnergyDifference : EnergyGapDefinition ≡ ContinuousEnergyDiff → ⊥
-notEnergyDifference ()
+notEnergyDifference eq =
+  absurd-ContinuousEnergyDiff (subst (λ T → T) eq sqrt3)
 
 notAcousticImpedance : EnergyGapDefinition ≡ AcousticImpedance → ⊥
-notAcousticImpedance ()
+notAcousticImpedance eq =
+  absurd-AcousticImpedance (subst (λ T → T) eq sqrt3)
 
 notQuantumFluctuation : EnergyGapDefinition ≡ QuantumFluctuation → ⊥
-notQuantumFluctuation ()
+notQuantumFluctuation eq =
+  absurd-QuantumFluctuation (subst (λ T → T) eq sqrt3)
 
 -- 合法表述：能隙定义 ≡ C3 生成元复振幅跃迁
 energyGapLegal : EnergyGapDefinition ≡ C3GeneratorComplexAmplitudeJump
