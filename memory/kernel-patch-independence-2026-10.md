@@ -8,22 +8,49 @@
 
 ## 1. 最终状态（可复跑）
 
-| 检查器 | 结果 |
-|---|---|
-| 纯净版 `/data/work/functional-programming/Agda-v2.9.0-rc1/agda`（**无补丁**） | **915 / 0 / 915** |
-| 补丁版 `/opt/agda/2.9.0/bin/agda`（项目默认） | **915 / 0 / 915** |
+> ⚠⚠ **2026-10-22 更正**：本节初版写「纯净版 915/0/915」是**假结果** ——
+> 因为两个二进制**都报版本 `2.9.0`**，共用同一个接口目录 `_build/2.9.0/agda/`，
+> 纯净版**复用了补丁版编译的 `.agdai`**，根本没做类型检查。
+>
+> **证据（可复现）**：`PatchedTypeChecker.agda` 在 `.agdai` 存在时纯净版 exit=0；
+> **删掉 `_build/2.9.0/agda/src/Sovereign/Infrastructure/PatchedTypeChecker.agdai` 后**
+> 同一二进制 exit=42，报 `UnsolvedConstraints: Is empty: R1 ≡ R2 (stuck)`。
 
-对照实验（修复前）：纯净版 903/915，**12 FAIL** ⇒ 现在 **0 FAIL**。
-
-> **主库已不再需要内核补丁。** 补丁可以保留，但它已不是任何单模块编译的必要条件。
-
-复跑命令：
+**正确的复跑方式（必须隔离缓存）**：
 
 ```bash
 cd /data/work/discrete-mathematics
+mkdir -p /data/tmp/agda_build_swap
+mv _build /data/tmp/agda_build_swap/patched        # ← 移开（不是删），让纯净版从零建接口
 AGDA=/data/work/functional-programming/Agda-v2.9.0-rc1/agda HEAP=8G \
-  bash engineering/check_all_modules_parallel.sh 4      # 并发上限 4（内存安全线）
+  bash engineering/check_all_modules_parallel.sh 4
+mv _build /data/tmp/agda_build_swap/clean
+mv /data/tmp/agda_build_swap/patched _build        # ← 恢复补丁版派生目录
 ```
+
+**真结果：913 通过 / 2 失败 / 共 915**
+
+| 结果 | 说明 |
+|---|---|
+| **913 个数学/应用模块** | **全部在纯净内核下通过** ✅ |
+| `Infrastructure/PatchedTypeChecker.agda` | **失败——设计如此**（它就是补丁见证件）|
+| `Infrastructure/KernelWitness.agda` | **失败——设计如此**（同上）|
+
+这两个模块自己写着：
+
+> 「若换回上游 Agda（或只带 PR #8611 分支、不带 eb1251683f 的 Agda），
+> 本模块**应当编译失败**（`Is empty: R1 ≡ R2 (stuck)`）——**那正是它的判据价值**：
+> 它区分『有 eb1251683f』与『没有』。」
+
+⇒ 它们在纯净内核下报 `UnsolvedConstraints / Is empty: R1 ≡ R2 (stuck)`
+⇒ **它们正确地检测到了「补丁不在」** ✓ —— 失败是**正确行为**，不是缺陷。
+
+对照实验（修复前）：纯净版 903/915（**12 FAIL**）⇒ 现在 **2 FAIL，且两个都是设计使然**。
+
+> **结论：913 个数学模块已不需要内核补丁；补丁依赖只剩 2 个见证件，
+> 而它们的失败正是它们的用途。**
+
+补丁版（项目默认 `/opt/agda/2.9.0/bin/agda`）仍为 **915/915**。
 
 ---
 
