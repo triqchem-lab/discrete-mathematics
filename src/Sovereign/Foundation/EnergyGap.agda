@@ -5,7 +5,15 @@
 --
 -- 本质：T⁶ 复三维离散环面上 C3 循环群生成元作用下的复振幅跃迁
 --       相生 (+1) 与相克 (ω) 格点间的最小不可分间距
--- 注意：非连续统能量差、声学阻抗或量子涨落
+-- ⚠ [epistemic status of the three `notXxx` theorems]（2026-10-22 精确化）
+--   它们证明的是**模型层**结论：本形式化**没有**给
+--   「连续统能量差 / 声学阻抗 / 量子涨落」建模（三者都是无构造子的空 `data`），
+--   因此若把 `EnergyGapDefinition = Sqrt3` 与它们判为同一类型，
+--   `subst` 会把 `sqrt3` 搬进空类型 ⇒ ⊥（标准 Agda 可证，实测纯净内核 exit 0）。
+--   **它不证明**「物理上能隙不是这三类东西」—— 那属**建模立场**，不是定理。
+--   ⇒ 空类型只编码「本形式化里没有项」，**不**编码「世界里没有东西」。
+--   ⇒ 若要把它升级成数学定理：须先定义一个只在离散缠绕结构上成立的客观不变量，
+--     再证明三类连续统表示无法满足它（需要数组与定理，不是注释改动）。
 --
 -- 宪法合规：
 -- - 零 postulate（2026-10-11 构造化达成：8 postulate 全消——3 消解/2 关系入定义/2 值修正/1 实现）
@@ -328,7 +336,8 @@ absurd-AcousticImpedance ()
 absurd-QuantumFluctuation : QuantumFluctuation → ⊥
 absurd-QuantumFluctuation ()
 
--- 定理：能隙 ≠ 连续统能量差
+-- 定理（**模型层**）：本形式化里，「能隙载体」与「被建成空类型的连续统范畴」不同一
+--   ⚠ 读法纪律：不要读成「物理上能隙 ≠ 连续统能量差」——见上方 epistemic status 段。
 notEnergyDifference : EnergyGapDefinition ≡ ContinuousEnergyDiff → ⊥
 notEnergyDifference eq =
   absurd-ContinuousEnergyDiff (subst (λ T → T) eq sqrt3)
