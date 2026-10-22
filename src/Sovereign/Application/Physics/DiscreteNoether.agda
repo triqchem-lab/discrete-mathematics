@@ -1,14 +1,33 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Application.Physics.DiscreteNoether
--- 离散 Noether 定理 — 从规范对称性导出电荷守恒 (0 postulate)
+-- 离散 Noether —— 规范变换的定义 + GF(3) 代数恒等式 (0 postulate)
 --
--- 核心证明链:
---   §1 规范变换: A → A + ∇χ, φ → φ - Δtχ
---   §2 拉格朗日密度在规范变换下不变 (引用已证 gauge-invariance)
---   §3 源项耦合: L_source = A·J - φρ
---   §4 Noether 恒等式: δS/δχ = 0 → ∂ρ/∂t + ∇·J = 0
---   §5 与已有 charge-conservation 的对接
+-- ⚠ [散文断言规则 · 2026-10-22 内核核对] 原头部写「从规范对称性导出电荷守恒」，
+--   但**本模块的类型里没有电荷守恒定理**：
+--     · 顶层签名共 11 条：2 条规范变换的**定义**、5 条 GF(3) 加减法**恒等式**、
+--       3 条 `noether-1d-point0/1/2`；
+--     · 这三个「Noether」定理的证明体都是 `sym (neg-add-identity …)`
+--       —— 即**代数恒等式的重述**，不是守恒律；
+--     · 全模块**没有** `div J ≡ 0`，也**没有** `∂ρ/∂t + ∇·J ≡ 0`
+--       （`continuity` 一词在文件里出现 0 次，且本模块没有 ρ 的类型）。
+--
+-- [直觉·未验证] 「δS/δχ = 0 → ∂ρ/∂t + ∇·J = 0」：缺三样才能证 ——
+--   ① 离散作用量 S 及其变分 δS/δχ 的形式化；
+--   ② 电荷密度 ρ 的类型与定义（本模块目前没有）；
+--   ③ 从「S 在规范变换下不变」到「Noether 恒等式」的一般推导
+--      （现状只是逐点重述 `neg-add-identity`）。
+--
+-- 已确证的部分 ✓：规范变换 `A ↦ A + ∇χ`、`φ ↦ φ − Δtχ` 是**定义**（§1），
+--   且 5 条 GF(3) 代数恒等式（`neg-add-identity` / `add-neg-zero` /
+--   `neg-add-distrib` / `add3-swap` / `diff-comm`）是**真证明**。
+--
+-- 核心证明链（**原计划**，其中 §4/§5 尚未形式化）:
+--   §1 规范变换: A → A + ∇χ, φ → φ - Δtχ                       ✅ 已定义
+--   §2 拉格朗日密度在规范变换下不变 (引用已证 gauge-invariance)   ⚠ 见 DiscreteEMCore
+--   §3 源项耦合: L_source = A·J - φρ                            [直觉·未验证]
+--   §4 Noether 恒等式: δS/δχ = 0 → ∂ρ/∂t + ∇·J = 0              [直觉·未验证]
+--   §5 与已有 charge-conservation 的对接                        [直觉·未验证]
 --
 -- 全部 0 postulate。
 
@@ -310,17 +329,16 @@ noether-1d-point2 : (Jx : Fin 3 → GF3) →
     ≡ neg3 (add3 (Jx (fs (fs fz))) (neg3 (Jx (fs fz))))
 noether-1d-point2 Jx = sym (neg-add-identity (Jx (fs (fs fz))) (Jx (fs fz)))
 
--- 电荷守恒推论 (1D):
--- 如果 ΔL = 0 (规范不变性), 则 δ(ΔL)/δε₀ = 0
--- 所以 neg3(backward_dx(Jx)(0)) = 0 → backward_dx(Jx)(0) = 0
--- 即: Jx(0) = Jx(2) (电流在点 0 处守恒)
+-- [直觉·未验证] 电荷守恒推论 (1D)：以下整段是**推导意图**，本模块**没有**对应定理。
+--   计划中的链条：若 ΔL = 0（规范不变性），则 δ(ΔL)/δε₀ = 0
+--   ⇒ neg3(backward_dx(Jx)(0)) = 0 ⇒ backward_dx(Jx)(0) = 0 ⇒ Jx(0) = Jx(2)；同理各点。
+--   缺：backward_dx 的离散定义、ΔL 的形式化、以及「δ(ΔL)/δε₀ = 0」这一步的定理。
+--   注：上面 `noether-1d-point0/1/2` 证明的是 `sym (neg-add-identity …)`，
+--   **不蕴含**此处任何一条推论。
 
--- 类似地: backward_dx(Jx)(1) = 0 → Jx(1) = Jx(0)
---          backward_dx(Jx)(2) = 0 → Jx(2) = Jx(1)
--- 所以: Jx(0) = Jx(1) = Jx(2) (电流处处相等, 即守恒)
+-- [直觉·未验证] 推广到 3D: dy(Jy) = 0, dz(Jz) = 0；总和 div J = 0（无源），
+--   有源情况 div J + Δt ρ = 0（电荷守恒）。
+--   缺：3D 的 div / Δt 算子（本模块无）、ρ 的类型、以及上述一般定理。
+--   ⇒ 现状：**该守恒律尚未形式化**，不得当作已证结论引用。
 
--- 推广到 3D: 类似地, dy(Jy) = 0, dz(Jz) = 0
--- 总和: div J = 0 (无源情况)
--- 有源情况: div J + Δt ρ = 0 (电荷守恒)
-
--- 0 postulate.
+-- 0 postulate（已确证的只有 §1 的定义与 5 条 GF(3) 代数恒等式）。
