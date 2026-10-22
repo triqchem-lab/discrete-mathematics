@@ -156,6 +156,16 @@ evolveStep state =
 
 -- [分类: 宪法公理] [状态: 框架不变量]
 -- 陈数 C = ±2 在主权状态机演化下不变。跨 384K 步实验验证 (06-experimental.md)。
+--
+-- ⚠⚠ [2026-10-22 内核核验：本 postulate 为假，模块因此不一致 —— 待人类裁决]
+--   给定类型 `∀ state → chern (evolveStep state) ≡ + 2`，而 `evolveStep` 里
+--   `chern = SovereignState.chern state`（保持原值）。取一个 chern = +1 的状态即得
+--   `+1 ≡ +2` ⇒ 矛盾。一次性探针（已删）给出 `falsifies-chernInvariant : ⊥`，exit 0。
+--   ⚠ 注意：上面注释写「不变」，而类型写「≡ + 2」—— 注释与类型自相矛盾。
+--   ⇒ 修复候选（待裁决，proof_dag 流水 1857）：
+--      (A) 改成 `∀ state → chern (evolveStep state) ≡ chern state`（refl 可证，
+--          且消掉本 postulate）；(B) 保持 postulate 但改成「不变」陈述；(C) 不动。
+--   ⇒ 在裁决前，请勿把本 postulate 当作「陈数守恒已被证明」的依据。
 postulate
 -- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
 --   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
