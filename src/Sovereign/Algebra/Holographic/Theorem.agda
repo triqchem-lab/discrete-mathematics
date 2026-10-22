@@ -1,7 +1,18 @@
 {-# OPTIONS --rewriting --guardedness #-}
 
 -- | Sovereign.Algebra.Holographic.Theorem
--- Phase 6: 离散雅可比定理 — 最终陈述
+-- Phase 6: 离散雅可比定理 — **综述文件（非定理件）**
+--
+-- ⚠⚠ [散文断言规则 · 2026-10-22 内核核对] **本文件共有 85 行，其中 0 行是代码** ——
+--   只有模块头与两条 import，**没有任何顶层签名、没有任何定理**。
+--   文件里写的「定理 / 推论 1–4 / 实验验证摘要」**全部是散文**。
+--
+--   ⇒ 本文件的性质：**路线图 / 综述**，不是定理的载体。
+--   ⇒ 真正的内核定理在 **`Sovereign.Application.Algebra.DiscreteJC`**（325 行，0 postulate）：
+--       · `DiscreteJacobiTheorem-GF3²`
+--       · `DiscreteJacobiTheorem-GF3²-converse`
+--       · `DiscreteJacobiEquiv-GF3²`
+--     ⇒ 引用「离散雅可比定理」时请引那三个名字，**不要引本文件**。
 --
 -- 在离散环面 GF(3)⁶/G (4320D 全息空间) 上:
 --   det(M_F) ≠ 0 ⟺ F 是双射
