@@ -5,7 +5,19 @@
 --
 -- 本质：T⁶ 离散环面上极向缠绕 144 与环向缠绕 46 的原子配对
 --       主权状态机平行移动和乐归零的拓扑签名
--- 注意：非连续统 π ≈ 3.14159，禁止约分、禁止十进制展开
+-- ⚠ [epistemic status]（2026-10-22 精确化）本模块里「全息 π 与连续统表示不同」这一区分，
+--   **不是类型层定理** —— 原来的三条 `¬ (HolographicPi ≡ RationalApproximation / EuclideanPi /
+--   DecimalExpansion)` 用的是空模式 `λ ()`，标准 Agda 判不出
+--   （实测 2.9.0-rc1：`Is empty: HolographicPi ≡ DecimalExpansion (stuck)`），
+--   只有本地补丁内核接受 ⇒ 已按方案③移除，改为本段文档标注。
+--
+--   本模块**真正证到**的是：`holoPiNumeratorIs144 : HoloPiNumerator ≡ 144`
+--   与 `holoPiDenominatorIs46 : HoloPiDenominator ≡ 46`（分子/分母被钉死）。
+--   **不证明**「物理上全息 π 不是欧氏圆周长比」——那属建模立场，不是定理。
+--   ⇒ 注意：这也**不排除**有理逼近取 `num = 144`、`den = 46`，
+--     所以「全息 π 不是有理逼近」在数值层面本来就无矛盾可导出。
+--   ⇒ 若要升级成数学定理：须先定义一个只在离散缠绕结构上成立的客观不变量，
+--     再证明连续统表示无法满足它（需要数组与定理，不是注释改动）。
 -- 范畴纪律：PolarRep/ToroidalRep 为不透明原子类型——"约分"在类型层不可表达
 
 module Sovereign.Synthesis.Geometry.HolographicPi where

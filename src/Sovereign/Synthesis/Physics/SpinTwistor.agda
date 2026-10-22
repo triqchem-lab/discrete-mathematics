@@ -16,7 +16,13 @@
 --   4 个洞 → (λ () , refl) / 显式见证; 非法标识符 RequiresResetToDis本源 → 删除;
 --   DiscreteComplex 导入源 EnergyGap → CartanTorsion (本地定义处);
 --   SovereignState 由 postulate → 引用 Zhonglv 真实定义;
---   范畴分离: 标记类型 + λ () 类型不等 (数据型不等, 附录 8 模式 4)。
+--   ⚠ [2026-10-22 更正] 原写「范畴分离: 标记类型 + `λ ()` 类型不等 (数据型不等)」——
+--     那三条 `¬ (Electron ≡ SpinLabel)` / `¬ (TwistorPoint ≡ FundamentalSpacetime)` /
+--     `¬ (SpinNetwork ≡ QuantumGeometry)` 已**移除**：两侧是相异且都有构造子的类型，
+--     标准 Agda 判不出（实测 `Is empty: SpinNetwork ≡ QuantumGeometry (stuck)`），
+--     只有本地补丁内核接受 ⇒ 改为**文档标注**（见文件末 §范畴分离 段）。
+--     **仍保留**的是同文件的 9 条 `¬ (构造子 ≡ 构造子)`（同一 data 类型的不同构造子），
+--     那些是标准 Agda 直接可证的。
 
 module Sovereign.Synthesis.Physics.SpinTwistor where
 
