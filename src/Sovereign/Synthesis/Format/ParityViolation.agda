@@ -29,7 +29,7 @@ module Sovereign.Synthesis.Format.ParityViolation where
 open import Data.Nat using (ℕ; zero; suc; _≥_; _^_; s≤s)
 open import Data.Integer using (ℤ; +_; -[1+_]; _>_; -<+)
 open import Data.Bool using (Bool; true; false)
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Relation.Nullary using (¬_)
@@ -235,9 +235,27 @@ data ForbiddenExpr : Set where
 data LegalExpr : Set where
   chiralSymmetryBreakingByToroidalWinding : LegalExpr
 
--- 两种表述不相容 (不同数据类型, 构造子不匹配)
-noSpatialReflection : ¬ (ForbiddenExpr ≡ LegalExpr)
-noSpatialReflection = λ ()
+-- ⚠ [2026-10-22 方案 ② 改写] 原为
+--     noSpatialReflection : ¬ (ForbiddenExpr ≡ LegalExpr)
+--     noSpatialReflection = λ ()
+--   它断言**两个类型不相等**。标准 Agda 2.9.0-rc1 判不出相异类型常量的不等
+--   （报 UnsolvedConstraints / `Is empty: ForbiddenExpr ≡ LegalExpr (stuck)`），
+--   只有本地补丁内核接受 ⇒ 那不是数学论证，而是依内核行为。
+--
+--   ⇒ 改为**模型层的真实排除**：把「非法表述」翻译成它实际断言的那个命题，
+--     再用本模块已证的 `parityViolationTheorem` 直接否证它。
+--     非法表述的数学内容 = 「存在某 a ≥ 3 使宇称仍守恒 (PairedConserved)」。
+
+-- 非法表述所断言的命题
+ForbiddenClaim : Set
+ForbiddenClaim =
+  Σ ToroidalPower (λ tp → ToroidalPower.exponent tp ≥ 3 × parityStatus tp ≡ PairedConserved)
+
+-- 定理：该表述在本模型中**不成立**（由 parityViolationTheorem 直接否证）
+--   矛盾推导：假设成立 ⇒ parityStatus tp ≡ PairedConserved，
+--   而 `parityViolationTheorem tp ge : parityStatus tp ≢ PairedConserved` ⇒ ⊥。
+noSpatialReflection : ¬ ForbiddenClaim
+noSpatialReflection (tp , ge , eq) = parityViolationTheorem tp ge eq
 
 -- 合法表述的内容 = 本模块已证定理: a≥3 ⟹ 宇称不守恒
 parityViolationLegal : ∀ (tp : ToroidalPower) →
