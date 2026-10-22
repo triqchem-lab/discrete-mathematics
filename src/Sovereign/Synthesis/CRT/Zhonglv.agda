@@ -128,6 +128,12 @@ record DiscreteBerryCurvature : Set where
 
 -- 陈数 = Berry 曲率全局和 / 2π
 -- 在主权状态机中，陈数恒为 2
+--
+-- [命名即定义·非定理] `chernConservation` 是一个**记录值定义**（DiscreteBerryCurvature
+--   常量的赋值），**不是守恒律**。名字里的 Conservation 指「陈数守恒的那个常量」，
+--   不代表本行给出了守恒定理。
+--   ⇒ 真正的「守恒」陈述在 `chernInvariant`（本模块 §4 的 postulate，已登记为 bridge）。
+--   ⇒ 引用时请勿把 `chernConservation` 当作「陈数守恒已被证明」的依据。
 chernConservation : DiscreteBerryCurvature
 chernConservation = record
   { curvatureSum = + 2  -- 归一化后陈数为 2
