@@ -1,43 +1,14 @@
 #!/usr/bin/env bash
-# 全库模块独立编译验证 (去聚合化后的健康检查) — 串行版
-#
-# 适用场景: 资源受限 CI (如 GitHub Actions 2 核 / 8GB) — 串行编译内存峰值低
-#   (单进程 ≤ HEAP), 无 .agdai 并发写竞争, 行为可预测.
-#   多核本地机全量验证请用 check_all_modules_parallel.sh (快 ~10 倍).
-#
-# 用法:
-#   ./engineering/check_all_modules.sh                    # 默认堆上限 6G
-#   HEAP=6G ./engineering/check_all_modules.sh            # 调堆上限 (≤ 容器内存)
-#   AGDA=agda ./engineering/check_all_modules.sh
-#
-# 退出码: 0 = 全绿; 1 = 有失败
-set -u
-cd "$(dirname "$0")/.."
-AGDA="${AGDA:-$HOME/.local/bin/agda}"
-HEAP="${HEAP:-6G}"          # 每进程堆上限 (经验常数: 全库模块在此上限内通过)
-SRC="src/Sovereign"
-pass=0
-fail=0
-fail_list=""
-mapfile -t files < <(find "$SRC" -name "*.agda" | sort)
-total=${#files[@]}
-for f in "${files[@]}"; do
-  if timeout 300 $AGDA +RTS -M"$HEAP" -RTS --guardedness "$f" >/dev/null 2>&1; then
-    pass=$((pass+1))
-  else
-    fail=$((fail+1))
-    fail_list="$fail_list $f"
-  fi
-  # 进度
-  done_count=$((pass+fail))
-  if [ $((done_count % 50)) -eq 0 ]; then
-    echo "进度: $done_count/$total"
-  fi
-done
-echo "=== 全库独立编译: $pass 通过 / $fail 失败 / 共 $total ==="
-if [ -n "$fail_list" ]; then
-  echo "--- 失败模块 ---"
-  for f in $fail_list; do echo "$f"; done
-  exit 1
+# 薄壳（2026-10-22 迁移）：真实现 → math-proof preset scripts/gates.mjs incremental --all
+# 全库串行独立编译验证（资源受限 CI 用；HEAP/AGDA 环境变量兼容）。
+# 用法: HEAP=6G ./engineering/check_all_modules.sh
+set -uo pipefail
+PRESET="${MATH_PROOF_PRESET:-${DSH_HOME:-$HOME/.dsh}/.agent-presets/math-proof}"
+GATES="$PRESET/scripts/gates.mjs"
+if [ ! -f "$GATES" ]; then
+  echo "找不到系统门禁实现 $GATES（math-proof preset 未部署？）" >&2
+  exit 2
 fi
-exit 0
+ROOT="$(cd "$(dirname "$0")/.." && pwd)" || exit 2
+cd "$ROOT" || exit 2
+exec node "$GATES" incremental --all --jobs 1 --heap "${HEAP:-6G}"
