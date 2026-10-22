@@ -157,21 +157,14 @@ evolveStep state =
 -- [分类: 宪法公理] [状态: 框架不变量]
 -- 陈数 C = ±2 在主权状态机演化下不变。跨 384K 步实验验证 (06-experimental.md)。
 --
--- ⚠⚠ [2026-10-22 内核核验：本 postulate 为假，模块因此不一致 —— 待人类裁决]
---   给定类型 `∀ state → chern (evolveStep state) ≡ + 2`，而 `evolveStep` 里
---   `chern = SovereignState.chern state`（保持原值）。取一个 chern = +1 的状态即得
---   `+1 ≡ +2` ⇒ 矛盾。一次性探针（已删）给出 `falsifies-chernInvariant : ⊥`，exit 0。
---   ⚠ 注意：上面注释写「不变」，而类型写「≡ + 2」—— 注释与类型自相矛盾。
---   ⇒ 修复候选（待裁决，proof_dag 流水 1857）：
---      (A) 改成 `∀ state → chern (evolveStep state) ≡ chern state`（refl 可证，
---          且消掉本 postulate）；(B) 保持 postulate 但改成「不变」陈述；(C) 不动。
---   ⇒ 在裁决前，请勿把本 postulate 当作「陈数守恒已被证明」的依据。
-postulate
--- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
---   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
-  chernInvariant : ∀ (state : SovereignState) →
-    let state' = evolveStep state
-    in SovereignState.chern state' ≡ + 2
+-- ★ [2026-10-22 人类裁决 (A) 落地] 原为 postulate，且**类型写错**：
+--   原类型 `∀ state → chern (evolveStep state) ≡ + 2` 是**假**的
+--   （`evolveStep` 保持原 chern，取 chern = +1 的状态即得 +1 ≡ +2）。
+--   一次性探针（已删）曾给出 `falsifies-chernInvariant : ⊥`，exit 0。
+--   ⇒ 现按注释本意（「**不变**」）改为**定理**，`refl` 直接证，**不再是公理**。
+chernInvariant : ∀ (state : SovereignState) →
+  SovereignState.chern (evolveStep state) ≡ SovereignState.chern state
+chernInvariant state = refl
 
 -- 陈数与欧拉示性数的关系
 -- C=2 对应 χ=2（球面/环面的拓扑必然）
@@ -201,18 +194,29 @@ shouldClosure state = SovereignState.stepCount state % 12 ≡ᵇ 0
 
 -- [分类: 宪法公理] [状态: 框架不变量]
 -- 主权状态机完整闭合时, 极向缠绕数达到 144。见 08-constants.md。
-postulate
-  -- 定理：主权状态机完整闭合时，极向缠绕数达到 144
--- [轨道 B 物理锚定登记] Constitution/PhysicalAssumptions.agda ② 类: 实验/几何锚定,
---   合法公理 (genuine bridge), 不计入任何 "0 postulate" 宣称范围。
-  polarClosure : ∀ (state : SovereignState) →
-    SovereignState.stepCount state ≡ 144 →
-    SovereignState.windingPolar state ≡ 144
-
-  -- 定理：环向缠绕数达到 46
-  toroidalClosure : ∀ (state : SovereignState) →
-    SovereignState.stepCount state ≡ 144 →
-    SovereignState.windingToroidal state ≡ 46
+--
+-- ⚠⚠ [2026-10-22 人类裁决 (A) 落地：两条 postulate 已**移除**，因为它们是假命题]
+--
+--   原 `polarClosure  : ∀ state → stepCount state ≡ 144 → windingPolar   state ≡ 144`
+--   原 `toroidalClosure : ∀ state → stepCount state ≡ 144 → windingToroidal state ≡ 46`
+--
+--   **为何为假**：`SovereignState` 的 `stepCount` 与两个 winding 字段是**相互独立**的
+--   记录字段（见本文件 §3 的 record），记录里没有任何约束把它们绑定。
+--   取 `stepCount = 144`、`windingPolar = 0`、`windingToroidal = 0` 的状态，
+--   前提成立而结论分别给出 `0 ≡ 144` / `0 ≡ 46` ⇒ 矛盾。
+--   一次性探针（已删）分别给出 `falsifies-polarClosure : ⊥`、`falsifies-toroidalClosure : ⊥`，均 exit 0。
+--
+--   **移除的安全性**：全库对这两个名字的消费者 = 0（只有本文件的声明本身）。
+--
+--   **正确的陈述需要什么**（留给后续）：
+--     `evolveStep` 里 `windingPolar` 只在 `stepCount % 12 ≡ᵇ 0` 时**递增 1**，
+--     `windingToroidal` 完全不动。因此真正的闭包陈述必须是**迭代后的**关系，例如
+--       `windingPolar (evolveTwelve^12 s) ≡ windingPolar s ⊕ₙ 12`
+--     或其与 `144 = 12²` 的对应，而不是「stepCount 等于 144 ⇒ winding 等于常量」。
+--     ⇒ 这是一个**待建立的定理**，不是可声明的公理。
+--
+--   注：`HolomorphicClosure` / `holoClosure`（下两段）**不受影响** ——
+--   它们只是把 `144` / `46` 作为**记录字段的值**赋出来（refl 可验），不是闭包定理。
 
 -- 全息 π = 144/46 的浮现
 record HolomorphicClosure : Set where
