@@ -187,8 +187,17 @@ data EuclideanCircle : Set where
   mkEuclideanCircle : EuclideanCircle
 
 -- 禁止欧氏几何
-noEuclidean : ¬ (T6Torus ≡ EuclideanCircle)
-noEuclidean = λ ()
+-- ⚠⚠ [2026-10-22 方案③/澄清轮落地] 原为
+--     noEuclidean : ¬ (T6Torus ≡ EuclideanCircle)   = λ ()
+--   **已删除类型层断言，改为本条文档标注**。
+--   澄清结论：本模块头部已自述「宪法对齐层声明件 / 声明面如实标注，**不作定理声称**」；
+--   本组断言属**防止误用**（宪法禁令），不是数学定理 —— 按类型论，`¬ (A ≡ B)`
+--   对两个相异且有居民的类型常量在标准 Agda 中不可证（实测 2.9.0-rc1：
+--   `Is empty: T6Torus ≡ EuclideanCircle (stuck)`），原证明依本地补丁内核行为。
+--   ⇒ 正确表述是**文档标注**：T⁶ 环面是离散环面，欧氏圆是连续统对象，
+--     **禁止把二者当作同一对象使用**。这是使用约束，不需要（也不应伪装成）类型层证明。
+-- 如需把它变成数学定理：须先定义一个只在离散环面上定义的客观不变量，
+--   再证明欧氏圆无法满足它 —— 那需要新增定义与定理，不是注释改动。
 
 -- 五行闭环与卡拉比-丘紧化类型
 data WuXingClosure : Set where
@@ -198,8 +207,9 @@ data CalabiYauCompact : Set where
   mkCYC : CalabiYauCompact
 
 -- 禁止紧化
-noCompactification : ¬ (WuXingClosure ≡ CalabiYauCompact)
-noCompactification = λ ()
+-- ⚠⚠ [2026-10-22 澄清轮] 原为 `noCompactification : ¬ (WuXingClosure ≡ CalabiYauCompact) = λ ()`，
+--   **已删除类型层断言**（同类 D：两侧各一个构造子、都有居民 ⇒ 标准 Agda 不可证）。
+--   澄清结论同前：属**防止误用**（五行闭环 ≠ 卡拉比-丘紧化），以文档标注承载。
 
 -- 第三类：物理与声学污染
 data PhysicsAcousticsViolation : Set where
@@ -229,8 +239,9 @@ data GradientDescentBP : Set where
   mkGD : GradientDescentBP
 
 -- 禁止梯度下降
-noGradientDescent : ¬ (OptimizationMethod ≡ GradientDescentBP)
-noGradientDescent = λ ()
+-- ⚠⚠ [2026-10-22 澄清轮] 原为 `noGradientDescent : ¬ (OptimizationMethod ≡ GradientDescentBP) = λ ()`，
+--   **已删除类型层断言**（同类 D：两侧各一个构造子、都有居民 ⇒ 标准 Agda 不可证）。
+--   澄清结论同前：属**防止误用**（律算优化方法 ≠ 梯度下降/反向传播），以文档标注承载。
 
 --------------------------------------------------------------------------------
 -- 第三章 合法操作路径

@@ -379,15 +379,35 @@ record DecimalExpansion : Set where
 -- - noDecimalExpansion: Protocol C.2 的 √3 energy gap 在 GF(3) 格点上
 --   以模运算形式出现；十进制展开依赖实数连续统，与离散格点拓扑不兼容。
 
--- 不同构造子/记录类型，不可等同
-noRationalApproximation : ¬ (HolographicPi ≡ RationalApproximation)
-noRationalApproximation = λ ()
+-- ⚠⚠ [2026-10-22 方案 ③ 落地：以下三条断言已**删除**]
+--
+-- 原为：
+--   noRationalApproximation : ¬ (HolographicPi ≡ RationalApproximation)   = λ ()
+--   noEuclideanPi          : ¬ (HolographicPi ≡ EuclideanPi)              = λ ()
+--   noDecimalExpansion     : ¬ (HolographicPi ≡ DecimalExpansion)         = λ ()
+--
+-- 【为何删】它们不是数学命题，而是本体论/范畴断言：
+--   · `HolographicPi`（record，3 字段，有居民 `standardHoloPi`）、
+--     `RationalApproximation`（record，2 字段）、`DecimalExpansion`（record，2 字段）、
+--     `EuclideanPi`（data，1 构造子 `ePi`）—— **四者全部有居民**；
+--   · 标准 Agda 无法证明「两个相异且有居民的类型构造子互不相等」
+--     （实测 2.9.0-rc1：`Is empty: HolographicPi ≡ DecimalExpansion (stuck)`），
+--     本地补丁内核把这种等式判空 ⇒ 原证明是**依内核行为**，不是数学论证；
+--   · 两条改写路径均已穷尽排除：①空类型搬运不行（两侧都有居民）；
+--     ②矛盾锚点不行（见下：本模块可证的命题与该断言并无冲突）。
+--
+-- 【本模块真正可证的内容（保留）】
+--   · `holoPiNumeratorIs144 : HoloPiNumerator ≡ 144`
+--   · `holoPiDenominatorIs46 : HoloPiDenominator ≡ 46`
+--   ⇒ 全息 π 的数学内容 = 「分子/分母被钉死在 144/46」，由上面两条定理承担。
+--   ⇒ 注意：这**不排除**有理逼近取 `num = 144`、`den = 46` —— 所以
+--     「全息 π 不是有理逼近」在数值层面本来就无矛盾可导出。这正说明原断言
+--     是关于**表示范畴**的元层次判断，而非可形式化的数学命题。
+--
+-- 【如需重新承载这一区分】应在模型层面表述，例如给出一个只对离散缠绕结构定义的
+--   客观不变量，并证明连续统表示无法满足它 —— 那需要新增定义与定理，不是注释改动。
 
-noEuclideanPi : ¬ (HolographicPi ≡ EuclideanPi)
-noEuclideanPi = λ ()
-
-noDecimalExpansion : ¬ (HolographicPi ≡ DecimalExpansion)
-noDecimalExpansion = λ ()
+-- （三条断言已按方案 ③ 删除；上方的类型声明保留，因为它们仍被其它定义引用）
 
 -- 合法表述
 -- 环向缠绕比拓扑曲率：T⁶ 环面上极向/环向缠绕比作为拓扑不变量

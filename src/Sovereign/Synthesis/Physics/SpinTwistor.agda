@@ -414,13 +414,28 @@ data SpinNetwork : Set where
 data QuantumGeometry : Set where
   quantumGeom : QuantumGeometry
 
-notElectronSpin12 : ¬ (Electron ≡ SpinLabel)
-notElectronSpin12 = λ ()
+-- ⚠⚠ [2026-10-22 方案 ③ 落地：以下三条断言已**删除**]
+--
+-- 原为：
+--   notElectronSpin12         : ¬ (Electron ≡ SpinLabel)                    = λ ()
+--   notTwistorSpacetime       : ¬ (TwistorPoint ≡ FundamentalSpacetime)     = λ ()
+--   notSpinNetworkQuantumGeom : ¬ (SpinNetwork ≡ QuantumGeometry)           = λ ()
+--
+-- 【为何删】它们是本体论/范畴断言，不是数学命题：
+--   · 两侧都是**相异且都有构造子**的类型声明
+--     （`Electron` 1 构造子 / `SpinLabel` 3 构造子 / `TwistorPoint` record /
+--       `FundamentalSpacetime` `SpinNetwork` `QuantumGeometry` 各 1 构造子）
+--     ⇒ **双方都有居民**，无矛盾可导出；
+--   · 标准 Agda 无法证明「相异且有居民的类型构造子互不相等」
+--     （实测 2.9.0-rc1：`Is empty: SpinNetwork ≡ QuantumGeometry (stuck)`），
+--     本地补丁内核把这种等式判空 ⇒ 原证明是**依内核行为**；
+--   · 两条改写路径均穷尽排除：①空类型搬运不行（两侧都有居民）；
+--     ②矛盾锚点不行（本模块 39 条命题型签名中无一条与这三组断言冲突）。
+--
+-- 【注意：本模块另有 9 条 `¬ (构造子 ≡ 构造子)` 是**保留**的】
+--   `notSinglePaired` / `notBreakingPaired` / … / `notCompleteSingle`
+--   它们比较的是**同一个 data 类型 `ChiralSymmetry` 的不同构造子** ——
+--   那是标准 Agda 直接可证的（`λ ()` 对同类型不同构造子是合法消去），与补丁无关，
+--   实测纯净内核 exit=0 通过。
 
-notTwistorSpacetime : ¬ (TwistorPoint ≡ FundamentalSpacetime)
-notTwistorSpacetime = λ ()
-
-notSpinNetworkQuantumGeom : ¬ (SpinNetwork ≡ QuantumGeometry)
-notSpinNetworkQuantumGeom = λ ()
-
--- 0 postulate.
+-- （三条断言已按方案 ③ 删除；上方的类型声明保留，供其它定义/文档引用）
