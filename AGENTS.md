@@ -4,7 +4,7 @@
 Agda 形式化证明 + Python 工程验证双轨制。
 
 ## Project
-- 技术栈: Agda 2.9.0-nightly（默认环境 `/opt/agda/2.9.0`；`~/.local/bin/agda` 为 stack 构建副本、既有回执 `checkerBin` 口径，两者结果一致）, standard-library-2.4, cubical-0.9, agda-categories, agda-algebras
+- 技术栈: Agda 2.9.0-nightly（**唯一默认 = `/opt/agda/2.9.0/bin/agda`**——系统层配置在 `math-proof` preset 的 `impl/local-paths.json` 的 `agdaBin`，env `SOVEREIGN_AGDA` 可覆盖；`~/.local/bin/agda` 与 `/usr/local/bin/agda` 都是指向它的**软链/alternatives 别名**（同一二进制 sha256 `649e2888…`，不是第二份）；`/opt/agda/2.8.0.2` 是官方 2.8.0.2 版，**仅**用于内核判据的负控制（判据在其上必须失败 exit 42））, standard-library-2.4, cubical-0.9, agda-categories, agda-algebras
 - 库注册: `sovereign.agda-lib` (flags: `--guardedness --cubical -WnoUnsupportedIndexedMatch`, include: `src`) — **2026-10-02 收编**：`--cubical` 上收为全库默认（承重：44 个文件级 cubical 模块 + 73 个依赖者），原同名 `src/Sovereign.agda-lib` 已删；文件级 `--rewriting` 纪律不变（REWRITE 传染性照旧）
 - 入口: ~~`src/Sovereign/All.agda`~~ 已取消 (2026-09-07 去聚合化, 模块独立编译); 全库 **823** 个 `.agda`（`src/Sovereign` 实测 2026-10-19；迁移结案时记为 803，之后有新增）
 - Python 轨道: `engineering/software/sovereign_core/` (零外部依赖)
