@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # 薄壳（2026-10-22 迁移）：真实现 → math-proof preset scripts/gates.mjs incremental --all
-# 全库并行独立编译验证（等价旧版；并发=旧第一参数，默认 12；HEAP/AGDA 环境变量兼容）。
-# 用法: ./engineering/check_all_modules_parallel.sh [并发数]（默认 12）
+# 全库并行独立编译验证（等价旧版；并发=旧第一参数，默认 8；HEAP/AGDA 环境变量兼容）。
+# ⚠ 并发默认 8 是**内存安全线**（单 agda 实测 ~5G；61G 机器 12 并发会打穿内存——2026-10-22 OOM 事故）。
+# 用法: ./engineering/check_all_modules_parallel.sh [并发数]（默认 8）
 set -uo pipefail
 PRESET="${MATH_PROOF_PRESET:-${DSH_HOME:-$HOME/.dsh}/.agent-presets/math-proof}"
 GATES="$PRESET/scripts/gates.mjs"
@@ -11,5 +12,5 @@ if [ ! -f "$GATES" ]; then
 fi
 ROOT="$(cd "$(dirname "$0")/.." && pwd)" || exit 2
 cd "$ROOT" || exit 2
-JOBS="${1:-12}"
+JOBS="${1:-8}"
 exec node "$GATES" incremental --all --jobs "$JOBS" --heap "${HEAP:-6G}"
