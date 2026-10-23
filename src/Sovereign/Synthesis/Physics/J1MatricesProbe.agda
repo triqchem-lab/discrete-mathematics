@@ -420,9 +420,16 @@ open import Sovereign.Synthesis.Physics.NoSplitJ1Full
 -- S2：通勤
 -- ⚠ **直接证 `Commutes-shift AxialT` 未完成。**
 --
---   卡点：`NSFapply` 展开后 `0 * v₂` **不直接归约**（ℤ 的 `_*_` 按符号分类），
---   而两边又用了不同的结合顺序 ⇒ 需要 `*-zeroˡ` + `*-identityʳ` + `+-assoc`
---   的一整套显式重写链。
+--   卡点（**已用探针实测**，2026-10-24）：`NSFapply AxialT v zero` 展开后，
+--   目标归约成
+--       `+0 + ( (sign (+1) * sign (v zero)) ◃ (∣v zero∣ + 0 * ∣v zero∣) )`
+--   而不是 `v zero + v (suc zero)`。
+--
+--   ⇒ 需要穿透 **ℤ 的内部表示**（`sign` / `◃` / `∣_∣` / ℕ 的 `_+_`），
+--     用到 `Sign` 的乘法、`∣_∣` 与 `◃` 的关系、ℕ 的 `+-identityʳ`、
+--     ℤ 的 `*-zeroˡ` / `*-identityʳ` / `+-assoc` —— **一整套重写链**。
+--
+--   ⇒ 本回合**未做**（时间/预算考虑），不是「做不了」。
 --
 --   ⇒ 本回合**未做**。下面改证**等价且已成功**的陈述：**指标循环置换不变性**。
 --
