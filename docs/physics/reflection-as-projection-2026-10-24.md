@@ -60,6 +60,8 @@
 | **§1–§4** | `A-zero`, `A-one`…`A-seven`, `projection-is-delta` | **Huygens 求和** `A(k) = Σ_{j=0}^{7} ω^{jk}`（`ω = gen = 1+α`，GF(9)，阶 8）满足 `A(0)=2`、`A(1..7)=0` ⇒ **delta 投影** |
 | **§7** | `fresnel-core` | **代数核** `(a+b)² = (a−b)² + 4ab`（ℤ，ring solver） |
 | **§8** | `fresnel-energy` | **物理 R+T=1** 的通分形式 `n₁(n₁+n₂)² = n₁(n₁−n₂)² + n₂(2n₁)²` |
+| **§10** | `CompProj` record | **互补正交投影对**的代数骨架（幂等 idem₁/idem₂ + 完备 complete + 正交 orth₁₂/orth₂₁） |
+| **§11** | `sp-projection` | **s/p 偏振分解**在 `Trit × Trit` 上的实例（六个字段全部证完） |
 
 **⇒ 反射定律没有被当作公设 —— 它是 `A(k)` 在 `k=0` 处的唯一非零分量。**
 
@@ -107,7 +109,22 @@
 | Fresnel 代数核 | ✅ **内核已证** |
 | 物理 R+T=1 的通分形式 | ✅ **内核已证** |
 | 从通分形式到「R 和 T 的具体有理数值」 | ⚠ **未做**（需 `ℚ` 层除法规范化） |
-| 偏振（s/p）的完整 Fresnel 系数 | ⚠ **未形式化**（只验证了法向入射的代数核） |
+| **s/p 的投影结构** | ✅ **内核已证**（§10–§11，`CompProj` + `sp-projection`） |
+| 斜入射 s/p 的**具体系数**（含 cos θ） | ⚠ **未形式化**（涉及连续角度） |
 | 全反射（θ>θc） | ⚠ **未形式化**（数值上确认 R=1） |
 
 **⇒ 「反射/折射是投影」的**结构性**部分已内核化；**定量**部分目前是数值验证 + 未证。**
+
+---
+
+## 六、`CompProj` 是否与库里已有结构重复（查过）
+
+**库里已有 20+ 个名为 `*Projection*` 的 record**（`LossyProjection`、`AnalysisProjection`、
+`UnifiedProjection`、`RealAnalysisProjection`、`IsElectricProjection` 等），但**没有**一个是
+「互补正交投影对」（幂等 + 完备 + 正交三性质同时有）。
+
+**⇒ `CompProj` 是新的结构，不是重复。**
+
+**⚠ 但它现在住在 `Synthesis/Physics/`（L3），而它是个**一般代数结构** —— 按分层规范应属
+`Algebra/`（L2）。本回合未移动（只有一处使用，移动需改 import）；后续若要复用，
+建议上提到 `Algebra/` 并改名（如 `ComplementaryProjectionPair`）。
