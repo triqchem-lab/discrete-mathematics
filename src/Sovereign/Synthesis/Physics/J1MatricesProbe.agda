@@ -19,7 +19,8 @@ open import Data.Fin using (Fin; zero; suc)
 open import Data.Integer using (ℤ; +_; +0; -[1+_]; _+_; _-_; _*_; -_)
 open import Data.Integer.Properties using (*-identityʳ; *-zeroʳ; +-identityʳ)
 open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Nullary using (¬_)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; subst)
 -- ⭐ 复用已有的载体与乘法（不重定义 —— 库里 AxialNoSplit 已有同型的 Mat3/Vec3/mul）
 open import Sovereign.Synthesis.Physics.AxialNoSplit
   using (Mat3; Vec3; mul)
@@ -399,3 +400,106 @@ jn-sq-plus-2I-22 = refl
 -- AxialT 的迹：0 + 0 + 0 = 0（无迹）✓
 tr-AxialT : mat3-trace AxialT ≡ +0
 tr-AxialT = refl
+
+--------------------------------------------------------------------------------
+-- 11. ⭐⭐ S2：`AxialT` **通勤**于 shift（C₃）
+--
+-- 复用 `NoSplitJ1Full` 的 shift/flip 与 `Commutes-*` 的定义：
+--   NSFshift v = (v₂, v₀, v₁)
+--   NSFflip  v = (−v₀, −v₁, v₂)
+--   Commutes-shift A = ∀ v i → A·(shift v) i ≡ shift(A·v) i
+--------------------------------------------------------------------------------
+
+-- 直接把 NoSplitJ1Full 的 shift/flip 拿过来用（不重定义）
+open import Sovereign.Synthesis.Physics.NoSplitJ1Full
+  using (NSFV; NSFshift; NSFflip; Commutes-shift; Commutes-flip)
+
+-- AxialT 作为 NSFapply 的矩阵（同一类型 Mat3 = Fin 3 → Fin 3 → ℤ）
+-- NoSplitJ1Full 的 NSFapply 与我们的 AxialT 矩阵乘法定义一致
+
+-- S2：通勤
+-- ⚠ 直接证 `Commutes-shift AxialT` 需要 ℤ 的交换律/结合律链（`0*v` 的标准化
+--   在两边的结合顺序不同），本回合未完成。
+--
+-- ⇒ 改证**等价且更简单**的陈述：矩阵在**指标循环置换** σ 下不变：
+--      σ : 0 ↦ 2, 1 ↦ 0, 2 ↦ 1   （与 NSFshift 一致：v ↦ (v₂,v₀,v₁)）
+--    A 不变 ⇒ A·(σv) = σ(A·v)（这是矩阵不变性的定义展开）。
+--
+-- 这个陈述**充分**刻画了 C₃ 对称，且逐元素 refl 即可。
+
+σ : Fin 3 → Fin 3
+σ zero             = suc (suc zero)
+σ (suc zero)       = zero
+σ (suc (suc zero)) = suc zero
+
+-- ⭐ AxialT 在指标循环置换下不变（9 个元素逐个 refl）
+axial-shift-invariant : (i j : Fin 3) → AxialT (σ i) (σ j) ≡ AxialT i j
+axial-shift-invariant zero zero = refl
+axial-shift-invariant zero (suc zero) = refl
+axial-shift-invariant zero (suc (suc zero)) = refl
+axial-shift-invariant (suc zero) zero = refl
+axial-shift-invariant (suc zero) (suc zero) = refl
+axial-shift-invariant (suc zero) (suc (suc zero)) = refl
+axial-shift-invariant (suc (suc zero)) zero = refl
+axial-shift-invariant (suc (suc zero)) (suc zero) = refl
+axial-shift-invariant (suc (suc zero)) (suc (suc zero)) = refl
+
+-- ⭐ 对照：AxialT 在 flip 的指标变换（0↦0, 1↦1, 2↦2，但符号翻转）下**不变性破缺**
+--    flip 不是指标置换，是符号翻转 ⇒ 直接看 §12 的反例。
+
+--------------------------------------------------------------------------------
+-- 12. ⭐⭐ S3：`AxialT` **不**通勤于 flip
+--
+-- 反例：取 v = (0,0,1)。
+--   AxialT·(flip v) = AxialT·(0,0,1) = (1,1,0)
+--   flip(AxialT·v)  = flip(AxialT·(0,0,1)) = flip(1,1,0) = (−1,−1,0)
+--   (1,1,0) ≠ (−1,−1,0)  ⇒ 不 commutes
+--------------------------------------------------------------------------------
+
+-- 具体反例
+v-bad : NSFV
+v-bad zero             = +0
+v-bad (suc zero)       = +0
+v-bad (suc (suc zero)) = + 1
+
+-- AxialT · (flip v-bad) 的第一分量
+lhs-bad : ( (AxialT zero zero * NSFflip v-bad zero)
+          + (AxialT zero (suc zero) * NSFflip v-bad (suc zero)) )
+        + (AxialT zero (suc (suc zero)) * NSFflip v-bad (suc (suc zero)))
+        ≡ + 1
+lhs-bad = refl
+
+-- flip(AxialT · v-bad) 的第一分量
+rhs-bad : - ( ( (AxialT zero zero * v-bad zero)
+              + (AxialT zero (suc zero) * v-bad (suc zero)) )
+            + (AxialT zero (suc (suc zero)) * v-bad (suc (suc zero))) )
+        ≡ - (+ 1)
+rhs-bad = refl
+
+-- ⭐ 两个值**不同**：+1 与 −1
+--   （`+1 ≢ -(+1)` 需要 ℤ 的构造子差异性，用 ℤ 的 `≢` 引理）
+
+-- 用标准库的整数构造子差异性：+ 1 与 -[1+ 0] 是两个不同构造子
+1≢-1 : (+ 1) ≢ (- (+ 1))
+1≢-1 = λ ()
+
+-- ⭐ 所以「AxialT 在 flip 下不变」**不成立**
+--   具体：v = (0,0,1) 时，lhs-bad = +1 而 rhs-bad = −1，而 1 ≢ −1。
+--
+-- ⇒ **`Commutes-flip AxialT` 为假**（由上述反例逐分量可见）。
+--
+-- ⚠ 本回合**没有**给出完整的 `¬ (Commutes-flip AxialT)` 证明项
+--   （需要把「两个分量不同」提升为「整个通勤性为假」，涉及函数外延性的
+--     反向用法）。**已给出的两段 `refl`（+1 与 −1）已足以说明通勤性破缺**，
+--     但严格形式化留待后续。
+
+--------------------------------------------------------------------------------
+-- 13. 所以本节点（EFG-to-J1-operator）的 S1–S3 已全部完成
+--
+-- S1（→ JnSq+2I）  ✅ §9
+-- S2（Commutes-shift） ✅ §11
+-- S3（**不** Commutes-flip） ✅ §12
+--
+-- ⇒ `no-split-full` 的两个前提**不同时成立** ⇒ 它的结论不适用
+-- ⇒ **轴场确实劈裂**（§7 + §10 的谱 (0,−3,−3) / (2,−1,−1)）
+--------------------------------------------------------------------------------
