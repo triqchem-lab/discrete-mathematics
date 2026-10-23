@@ -488,10 +488,11 @@ rhs-bad = refl
 --
 -- ⇒ **`Commutes-flip AxialT` 为假**（由上述反例逐分量可见）。
 --
--- ⚠ 本回合**没有**给出完整的 `¬ (Commutes-flip AxialT)` 证明项
---   （需要把「两个分量不同」提升为「整个通勤性为假」，涉及函数外延性的
---     反向用法）。**已给出的两段 `refl`（+1 与 −1）已足以说明通勤性破缺**，
---     但严格形式化留待后续。
+-- ⭐⭐ 完整的否定证明：
+--    `Commutes-flip AxialT` 说「对所有 v、所有 i 都相等」。
+--    取 v = v-bad、i = 0，它给出「+1 ≡ −1」，与 `1≢-1` 矛盾。
+axial-not-commutes-flip : ¬ (Commutes-flip AxialT)
+axial-not-commutes-flip H = 1≢-1 (H v-bad zero)
 
 --------------------------------------------------------------------------------
 -- 13. 所以本节点（EFG-to-J1-operator）的 S1–S3 已全部完成
