@@ -29,12 +29,10 @@
 module Sovereign.Synthesis.Physics.S6EFGAxial where
 
 open import Data.Fin using (Fin; zero; suc)
-open import Data.Integer using (ℤ; +_; +0; +[1+_]; -[1+_]; _+_; _*_; -_)
-open import Data.Integer.Properties
-  using (*-identityʳ; +-identityʳ; +-identityˡ; +-assoc; *-comm; +-comm)
+open import Data.Integer using (ℤ; +0; +[1+_]; -[1+_]; _+_)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; sym; trans; cong; subst)
+  using (_≡_; refl; sym; trans; cong)
 
 -- 3×3 张量（对称性作为假设给出）
 Tensor : Set
