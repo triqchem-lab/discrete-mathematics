@@ -20,7 +20,7 @@ open import Data.Integer using (ℤ; +_; +0; -[1+_]; _+_; _-_; _*_; -_)
 open import Data.Integer.Properties using (*-identityʳ; *-zeroʳ; +-identityʳ)
 open import Data.Product using (_×_; _,_)
 open import Relation.Nullary using (¬_)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; subst)
 -- ⭐ 复用已有的载体与乘法（不重定义 —— 库里 AxialNoSplit 已有同型的 Mat3/Vec3/mul）
 open import Sovereign.Synthesis.Physics.AxialNoSplit
   using (Mat3; Vec3; mul)
@@ -418,8 +418,13 @@ open import Sovereign.Synthesis.Physics.NoSplitJ1Full
 -- NoSplitJ1Full 的 NSFapply 与我们的 AxialT 矩阵乘法定义一致
 
 -- S2：通勤
--- ⚠ 直接证 `Commutes-shift AxialT` 需要 ℤ 的交换律/结合律链（`0*v` 的标准化
---   在两边的结合顺序不同），本回合未完成。
+-- ⚠ **直接证 `Commutes-shift AxialT` 未完成。**
+--
+--   卡点：`NSFapply` 展开后 `0 * v₂` **不直接归约**（ℤ 的 `_*_` 按符号分类），
+--   而两边又用了不同的结合顺序 ⇒ 需要 `*-zeroˡ` + `*-identityʳ` + `+-assoc`
+--   的一整套显式重写链。
+--
+--   ⇒ 本回合**未做**。下面改证**等价且已成功**的陈述：**指标循环置换不变性**。
 --
 -- ⇒ 改证**等价且更简单**的陈述：矩阵在**指标循环置换** σ 下不变：
 --      σ : 0 ↦ 2, 1 ↦ 0, 2 ↦ 1   （与 NSFshift 一致：v ↦ (v₂,v₀,v₁)）
