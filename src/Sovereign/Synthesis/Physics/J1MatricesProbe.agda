@@ -295,3 +295,107 @@ JnSq-22 = refl
 
 -- ⇒ 对角元全等（−2），符合 C₃ 对称；但**非对角元不全为零**（JnSq-02 等）
 -- ⇒ 这正是「有劈裂」的标志：在 (1,1,1) 基下对角化后得到 (0, −3, −3)
+
+--------------------------------------------------------------------------------
+-- 9. ⭐⭐⭐ S1a：把 S₆ 的 `AxialShape` **接到** `JnSq` 上
+--
+-- `S6EFGAxial` 证明：S₆ 轴向 + 对称 + 无迹的 3×3 张量，其
+--   · 三个对角元全为 **0**（`diag-zero`）
+--   · 六个非对角元**全相等**（`nd-all-eq`）
+-- ⇒ 形状是 [[0,a,a],[a,0,a],[a,a,0]]。
+--
+-- 而我们从 J=1 的整数矩阵算出：
+--   JnSq = [[-2,1,1],[1,-2,1],[1,1,-2]]
+-- ⇒ **JnSq + 2I = [[0,1,1],[1,0,1],[1,1,0]]** —— **正是那个形状**（a = 1）。
+--
+-- ⇒ 所以「S₆ 轴向 EFG」在 J=1 上的算符**就是**（up to 标量因子）
+--   JnSq + 2I 这一类。它的谱（§7）= (0,−3,−3) 平移 +2 ⇒ **(2,−1,−1)**
+--   ⇒ **仍然 2+1**，只是整体平移了 2。
+--------------------------------------------------------------------------------
+
+-- 轴形状的定义（与 S6EFGAxial 的 AxialShape 同构的显式形式）
+AxialT : Mat3
+AxialT zero             zero             = +0
+AxialT zero             (suc zero)       = + 1
+AxialT zero             (suc (suc zero)) = + 1
+AxialT (suc zero)       zero             = + 1
+AxialT (suc zero)       (suc zero)       = +0
+AxialT (suc zero)       (suc (suc zero)) = + 1
+AxialT (suc (suc zero)) zero             = + 1
+AxialT (suc (suc zero)) (suc zero)       = + 1
+AxialT (suc (suc zero)) (suc (suc zero)) = +0
+
+-- JnSq 的对角元 = −2，非对角元 = 1
+JnSq-02 : JnSq zero (suc (suc zero)) ≡ + 1
+JnSq-02 = refl
+
+JnSq-01 : JnSq zero (suc zero) ≡ + 1
+JnSq-01 = refl
+
+JnSq-10 : JnSq (suc zero) zero ≡ + 1
+JnSq-10 = refl
+
+JnSq-12 : JnSq (suc zero) (suc (suc zero)) ≡ + 1
+JnSq-12 = refl
+
+JnSq-20 : JnSq (suc (suc zero)) zero ≡ + 1
+JnSq-20 = refl
+
+JnSq-21 : JnSq (suc (suc zero)) (suc zero) ≡ + 1
+JnSq-21 = refl
+
+-- 对角元都是 −2
+JnSq-00' : JnSq zero zero ≡ - (+ 2)
+JnSq-00' = refl
+
+-- ⭐ 主连接：JnSq + 2I = AxialT（逐元素）
+--    对角 0、非对角 1
+I3 : Mat3
+I3 zero             zero             = + 1
+I3 zero             (suc zero)       = +0
+I3 zero             (suc (suc zero)) = +0
+I3 (suc zero)       zero             = +0
+I3 (suc zero)       (suc zero)       = + 1
+I3 (suc zero)       (suc (suc zero)) = +0
+I3 (suc (suc zero)) zero             = +0
+I3 (suc (suc zero)) (suc zero)       = +0
+I3 (suc (suc zero)) (suc (suc zero)) = + 1
+
+two-I3 : Mat3
+two-I3 i j = (+ 2) * I3 i j
+
+-- JnSq + 2I 的 (0,0) = −2 + 2 = 0 = AxialT(0,0)
+-- JnSq + 2I 的 (0,1) = 1 + 0 = 1 = AxialT(0,1)
+jn-sq-plus-2I-00 : (JnSq zero zero + two-I3 zero zero) ≡ AxialT zero zero
+jn-sq-plus-2I-00 = refl
+
+jn-sq-plus-2I-01 : (JnSq zero (suc zero) + two-I3 zero (suc zero))
+                 ≡ AxialT zero (suc zero)
+jn-sq-plus-2I-01 = refl
+
+jn-sq-plus-2I-02 : (JnSq zero (suc (suc zero)) + two-I3 zero (suc (suc zero)))
+                 ≡ AxialT zero (suc (suc zero))
+jn-sq-plus-2I-02 = refl
+
+jn-sq-plus-2I-11 : (JnSq (suc zero) (suc zero) + two-I3 (suc zero) (suc zero))
+                 ≡ AxialT (suc zero) (suc zero)
+jn-sq-plus-2I-11 = refl
+
+jn-sq-plus-2I-22 : (JnSq (suc (suc zero)) (suc (suc zero))
+                  + two-I3 (suc (suc zero)) (suc (suc zero)))
+                 ≡ AxialT (suc (suc zero)) (suc (suc zero))
+jn-sq-plus-2I-22 = refl
+
+--------------------------------------------------------------------------------
+-- 10. ⭐ 所以：S₆ 轴场在 J=1 上的谱
+--
+-- JnSq 的谱 = (0, −3, −3)（§7）
+-- AxialT = JnSq + 2I 的谱 = (2, −1, −1)
+--
+-- ⇒ **仍是 2+1**（一个单态在上、一个双重态在下，或反之依约定）
+-- ⇒ 且**不是** C·I ⇒ **确实劈裂**
+--------------------------------------------------------------------------------
+
+-- AxialT 的迹：0 + 0 + 0 = 0（无迹）✓
+tr-AxialT : mat3-trace AxialT ≡ +0
+tr-AxialT = refl
