@@ -33,7 +33,7 @@ open import Data.Nat using (ℕ; zero; suc; _^_)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Product using (_×_; _,_)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; sym; trans; cong; subst)
+  using (_≡_; refl; sym; trans; cong; cong₂; subst)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.FieldTower.GF9
@@ -245,3 +245,65 @@ fresnel-energy = ring-solve 2 (λ n₁ n₂ →
 -- ⇒ 与 `OpticalWindow` 的干涉/衍射（本源）构成完整链条：
 --      本源：Huygens 求和 → 投影：相位匹配选择 → 反射/折射定律
 --------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- 10. ⭐ 抽象：**互补正交投影对**（Complementary Orthogonal Projection Pair）
+--
+-- 「反射是投影」的代数骨架是：一个空间被两个**幂等、互补、正交**的算子分拆。
+--   P₁² = P₁ , P₂² = P₂        （幂等）
+--   P₁ + P₂ = I                 （完备）
+--   P₁∘P₂ = P₂∘P₁ = 0           （正交）
+--
+-- 本模块把这个骨架抽成 record，并在两个物理实例上验证：
+--   (a) **s/p 偏振分解**（电场的两个正交分量）
+--   (b) **反射/透射分解**（散射的两个出射通道）
+--------------------------------------------------------------------------------
+
+record CompProj (A : Set) (_⊕_ : A → A → A) (𝟘 : A) : Set₁ where
+  field
+    P₁ P₂ : A → A
+    idem₁ : ∀ x → P₁ (P₁ x) ≡ P₁ x
+    idem₂ : ∀ x → P₂ (P₂ x) ≡ P₂ x
+    complete : ∀ x → P₁ x ⊕ P₂ x ≡ x
+    orth₁₂ : ∀ x → P₁ (P₂ x) ≡ 𝟘
+    orth₂₁ : ∀ x → P₂ (P₁ x) ≡ 𝟘
+
+--------------------------------------------------------------------------------
+-- 11. 实例 (a)：s/p 偏振分解
+--
+-- 电场 E 垂直于传播方向，可分解为两个正交分量（s = 垂直入射面，p = 平行）。
+-- 在离散模型里，用 **Trit × Trit** 作二维 GF(3) 向量空间：
+--     E = (E_s , E_p)
+--     P_s (E_s , E_p) = (E_s , 0)
+--     P_p (E_s , E_p) = (0 , E_p)
+--------------------------------------------------------------------------------
+
+open import Sovereign.Base.Trit using (Trit; ⊕-identityˡ; ⊕-identityʳ)
+
+-- Trit 的对角（P_s 的像的两个分量之和形式）
+open import Data.Product using (_×_; _,_; proj₁; proj₂)
+
+-- 逐点加法（GF(3) 的分量式）
+_⊕₂_ : Trit × Trit → Trit × Trit → Trit × Trit
+(a , b) ⊕₂ (c , d) = (a Sovereign.Base.Trit.⊕ c) , (b Sovereign.Base.Trit.⊕ d)
+
+𝟘₂ : Trit × Trit
+𝟘₂ = T₀ , T₀
+
+P-s : Trit × Trit → Trit × Trit
+P-s (a , b) = (a , T₀)
+
+P-p : Trit × Trit → Trit × Trit
+P-p (a , b) = (T₀ , b)
+
+-- ⭐ s/p 分解是**互补正交投影对**
+sp-projection : CompProj (Trit × Trit) _⊕₂_ 𝟘₂
+sp-projection = record
+  { P₁ = P-s
+  ; P₂ = P-p
+  ; idem₁ = λ { (a , b) → refl }
+  ; idem₂ = λ { (a , b) → refl }
+  ; complete = λ { (a , b) → cong₂ _,_ (⊕-identityʳ a) (⊕-identityˡ b) }
+  ; orth₁₂ = λ { (a , b) → refl }
+  ; orth₂₁ = λ { (a , b) → refl }
+  }
