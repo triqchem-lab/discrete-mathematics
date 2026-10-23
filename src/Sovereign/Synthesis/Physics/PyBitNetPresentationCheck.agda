@@ -42,6 +42,20 @@ frobenius-trivial-on-gf3 :
   ((0 * 0 * 0) % 3 ≡ 0) × ((1 * 1 * 1) % 3 ≡ 1) × ((2 * 2 * 2) % 3 ≡ 2)
 frobenius-trivial-on-gf3 = frob-0 , frob-1 , frob-2
 
+-- ⚠ 精确化（2026-10-23 二查后）：
+--   Tryte 是 6 trits ⇒ **729 态 = 9³**，故存在一个**自然的 GF(9)³ 解读**：
+--   把 6 trits 按两位一组配成 3 个 GF(9) 元素（t0 + t1·i，i²=−1）。
+--   在该解读下 σ(ψ) = ψ³ 是**阶 2 的非平凡映射** ⇒ ⑦ 可以满足。
+--
+--   但 `gf3_embedding.py` 的实现把权重存成**6 个独立的 GF(3) 值**
+--   （float32 + STE 三值化，推理时 5 trits/byte 打包），**没有做 GF(9) 分组**。
+--   ⇒ **按实现判定：σ = id，⑦ 不满足**；
+--   ⇒ **按 729=9³ 的结构可能性：修复路径明确**（6 trits → 3 个 GF(9) 对）。
+
+-- 729 = 9³（内核可证）：这是修复路径的依据
+tryte-counts-gf9-cubed : 9 * 9 * 9 ≡ 729
+tryte-counts-gf9-cubed = refl
+
 -- 推论（文字）：σ = id ⇒ 在 trit 值域上**没有非平凡刚性**。
 -- 八要素之⑦要求 rigidity 由 GF9.galoisConjugate（阶 2、非平凡）诱导；
 -- 而 pyBitNet 的 prototype 取值 round().clamp(0,2) ⊂ {0,1,2} = GF(3)，
