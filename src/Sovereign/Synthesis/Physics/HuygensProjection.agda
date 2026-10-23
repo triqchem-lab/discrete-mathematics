@@ -189,6 +189,8 @@ projection-is-delta =
 open import Data.Integer using (ℤ; +_; _+_; _-_; _*_) renaming ()
 open import Data.Integer.Properties using (+-*-commutativeRing; _≟_)
 open import Algebra.Solver.Ring.AlmostCommutativeRing using (fromCommutativeRing)
+-- ⚠ 这行是**模块实例化**（位置参数 + renaming），不是 `using` 导入 ——
+--    `proof_audit` 的「未用 using」启发式会误判它为缺 using。属误报。
 open import Algebra.Solver.Ring.Simple (fromCommutativeRing +-*-commutativeRing) _≟_ renaming (solve to ring-solve)
 
 --------------------------------------------------------------------------------
@@ -278,6 +280,9 @@ record CompProj (A : Set) (_⊕_ : A → A → A) (𝟘 : A) : Set₁ where
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 
 -- 逐点加法（GF(3) 的分量式）
+-- ⚠ `Base/Trit.agda` 本身没有 fixity 声明（全库问题），此处本地补一条，
+--    与库内惯例（`infixl 6` 用于 ⊕ 类可交换运算）一致。
+infixl 6 _⊕_
 infixl 6 _⊕₂_
 
 _⊕₂_ : Trit × Trit → Trit × Trit → Trit × Trit
