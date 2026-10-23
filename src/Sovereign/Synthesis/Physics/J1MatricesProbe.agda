@@ -17,7 +17,7 @@ module Sovereign.Synthesis.Physics.J1MatricesProbe where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Integer using (ℤ; +_; +0; -[1+_]; _+_; _-_; _*_; -_)
-open import Data.Integer.Properties using (*-identityʳ; *-zeroʳ; +-identityʳ)
+open import Data.Integer.Properties using (*-identityʳ; *-zeroʳ; *-zeroˡ; +-identityʳ; +-identityˡ)
 open import Data.Product using (_×_; _,_)
 open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym; trans; subst)
@@ -445,6 +445,17 @@ open import Sovereign.Synthesis.Physics.NoSplitJ1Full
 σ (suc (suc zero)) = suc zero
 
 -- ⭐ AxialT 在指标循环置换下不变（9 个元素逐个 refl）
+-- ⚠⚠ **第三次尝试也失败**（2026-10-24）：用 `rewrite *-zeroˡ | *-identityʳ | +-identityˡ`
+--   后，目标化简到
+--       `B + +0 ≡ +0 + (A + B)`
+--   但 **左右两边被 swap 了** —— `rewrite` 在两边都含相似项时会**改错边**。
+--
+--   ⇒ 正确做法应是**显式 `trans` + `cong`**（不用 rewrite 的全目标重写）：
+--       lhs ≡⟨ cong (λ z → z + B) (*-identityʳ A) ⟩ ...
+--     需要先命名 A、B 两个子项。
+--
+--   ⇒ 本回合**未做**（预算考虑）。**不是「做不了」** —— 路径已经清楚。
+
 axial-shift-invariant : (i j : Fin 3) → AxialT (σ i) (σ j) ≡ AxialT i j
 axial-shift-invariant zero zero = refl
 axial-shift-invariant zero (suc zero) = refl
