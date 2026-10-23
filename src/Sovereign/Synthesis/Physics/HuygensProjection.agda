@@ -280,10 +280,12 @@ record CompProj (A : Set) (_⊕_ : A → A → A) (𝟘 : A) : Set₁ where
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 
 -- 逐点加法（GF(3) 的分量式）
--- ⚠ `Base/Trit.agda` 本身没有 fixity 声明（全库问题），此处本地补一条，
---    与库内惯例（`infixl 6` 用于 ⊕ 类可交换运算）一致。
-infixl 6 _⊕_
 infixl 6 _⊕₂_
+-- ⚠ `proof_audit` 会报「缺失: infixl 6 _⊕_」。**这是误报，无法在本模块修**：
+--    `_⊕_` 是从 `Base/Trit.agda` 导入的，Agda 明确拒绝为导入名声明 fixity
+--    （"not declared in the same scope as their syntax or fixity declaration"）。
+--    要修只能在 `Base/Trit.agda` 里加 —— 那是被 300+ 模块依赖的底层件，
+--    需单独任务 + 全量重编。
 
 _⊕₂_ : Trit × Trit → Trit × Trit → Trit × Trit
 (a , b) ⊕₂ (c , d) = (a Sovereign.Base.Trit.⊕ c) , (b Sovereign.Base.Trit.⊕ d)
