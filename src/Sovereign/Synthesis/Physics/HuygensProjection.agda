@@ -32,13 +32,10 @@ open import Data.Nat using (ℕ; zero; suc; _^_)
   renaming (_+_ to _+ℕ_; _*_ to _*ℕ_)
 open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
 open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; sym; trans; cong; cong₂; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; cong₂; subst)
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Algebra.FieldTower.GF9
-  using (GF9; GF9Star; _+gf9_; gen; _^s_; _*s_;
-         s1; s2; sα; s2α; s1α; s12α; s21α; s22α; toGF9; fromGF9)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; ⊕-identityˡ; ⊕-identityʳ)
+open import Sovereign.Algebra.FieldTower.GF9 using (GF9; GF9Star; _+gf9_; gen; _^s_; _*s_; s1; s2; sα; s2α; s1α; s12α; s21α; s22α; toGF9; fromGF9)
 
 --------------------------------------------------------------------------------
 -- 1. 8 个次级源的相位因子
@@ -192,9 +189,7 @@ projection-is-delta =
 open import Data.Integer using (ℤ; +_; _+_; _-_; _*_) renaming ()
 open import Data.Integer.Properties using (+-*-commutativeRing; _≟_)
 open import Algebra.Solver.Ring.AlmostCommutativeRing using (fromCommutativeRing)
-open import Algebra.Solver.Ring.Simple
-  (fromCommutativeRing +-*-commutativeRing) _≟_
-  renaming (solve to ring-solve)
+open import Algebra.Solver.Ring.Simple (fromCommutativeRing +-*-commutativeRing) _≟_ renaming (solve to ring-solve)
 
 --------------------------------------------------------------------------------
 -- ⭐ 主定理
@@ -278,12 +273,13 @@ record CompProj (A : Set) (_⊕_ : A → A → A) (𝟘 : A) : Set₁ where
 --     P_p (E_s , E_p) = (0 , E_p)
 --------------------------------------------------------------------------------
 
-open import Sovereign.Base.Trit using (Trit; ⊕-identityˡ; ⊕-identityʳ)
 
 -- Trit 的对角（P_s 的像的两个分量之和形式）
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 
 -- 逐点加法（GF(3) 的分量式）
+infixl 6 _⊕₂_
+
 _⊕₂_ : Trit × Trit → Trit × Trit → Trit × Trit
 (a , b) ⊕₂ (c , d) = (a Sovereign.Base.Trit.⊕ c) , (b Sovereign.Base.Trit.⊕ d)
 
