@@ -245,8 +245,86 @@ g-ne-unit : ∀ {A} (P : Presentation A)
 
 ---
 
+## 十、多面体群 / 内嵌富勒烯线（`src/Sovereign/Synthesis/Physics/`，2026-10-22 建线）
+
+| 模块 | 关键定理 | 回执 | 说明 |
+|---|---|---|---|
+| `IhGroup.agda` | `a5-card-check`（1+15+20+24 ≡ 60）、`ih-card-check`（2×60 ≡ 120）、`polar-winding-check`（120+24 ≡ 144） | `c024f1ed…` | `IhOrder` 已从字面量改为由构造子基数推出；§6 八要素表已按代码实际更正（原全标 ✓ 与模块头 5/8 矛盾） |
+| `IhDecomposition.agda` | `a5-order-check`、`ih-total-check`、`merkaba-check`、`holographic-check`、`polar-consistent` | `45bb1432…` | 24 的口径改为 **2A₄**（二元四面体群 SL(2,3)）；§1 注释更正：A₅ 有 **5** 个共轭类（1,15,20,12,12），24 = 12+12 |
+| `PolyhedralReps.agda` | `a4/a5/two-a4/two-a5/ih-dim-sum`（Σdᵢ²=|G|）、`ih-class-sizes-sum`、`orbit-stabilizer-vertex`（120 ≡ 60×2） | `46b697b0…` | 不可约表示维数与共轭类数为**数值核验**（四元数模型）；Agda 只证算术 |
+| `NoSplitJ1.agda` | `no-split-diag`：对角算符与 A₄ 的 3-循环交换 ⇒ 三个对角元相等 | `53f331b3…` | **只证对角情形**；一般情形需整环无挠性，已在模块头标 roadmap |
+| `TRMultipletsZ.agda` | `sq-suc-Z`：ℤ 上 x² + (2x+1) ≡ (x+1)²（RingSolver 宏，代数核心） | `6f4517ba…` | — |
+| `TRMultipletsNat.agda` | `sum-odd`：∀ a n → sumOdd a n + a² ≡ (a+n)²（**完整 ℕ 索引版**）+ 4 个实例 | `05743ad7…` | 距 Σ_λ(2λ+1)=(2l+1)(2J+1) 只差 a=J∸l、n=2l+1 的实例化 |
+| `NoSplitJ1Full.agda` | `no-split-full`：与 shift + flip 都交换 ⇒ 6 个非对角元为 0、三个对角元相等（标量）；另 `shift³`、`flip²`（生成元阶） | `c9d1e186…` | 一般情形（含非对角）；无挠性用构造子互异证 `neg-eq-self`；生成元阶 `shift³`/`flip²`/`g³`（g=flip∘shift）全在 Agda；闭包 = 12 阶 = A₄（oracle 回执 `56921d3e…`） |
+| `IhC60Vibration.agda` | `freq-46`、`dim-174`、`vib-vector`、`active-plus-dark` | `28fef4c6…` | 本线既有；本轮几何独立复核 + 去重重命名（`dim`/`count`/`classSize` 等 6 个通用名加 `vib` 前缀），duplicate 审计 151/151 无同名 |
+
+**独立复核记录（Python 侧，非 Agda）**：2A₅ 阶 120 / 2A₄ 阶 24 / 2A₄ ⊂ 2A₅；I_h 特征标表正交性 100 项（最大偏差 5.9e-17）；
+I_h 作用于 60 顶点的顶点对 1770 个 ⇒ 23 个轨道（Burnside 与直接枚举一致）；Plancherel 熵表（A₄ 1.2075 … I_h 2.9543）。
+
+**同数异物（写文档时必须区分）**：|2A₅| = 120 = |I_h| 但 2A₅ ≇ I_h（I_h 无 4 阶元）；24 有 2A₄ 与 A₄×C₂ 两种不同实现。
+
 ## 九、维护约定
 
 1. **新增 proven 时**：在本清单对应章节加一行（符号 + 命题 + 回执）
 2. **撤回时**：**不删除** ✓ —— 标 ⚠ 并写撤回理由（台账只增不改史 ✓）
 3. **本文件与台账冲突时**：**以台账为准** ✓（`proof_dag` 是机器权威 ✓）
+
+---
+
+## 十二、C₆₀ 内嵌分子 / 中微子味（2026-10-24 新增）
+
+> **本节的模块已被 `check_duplicate.sh` 误报为重复**（13/15 条是文件与自己比）。
+> **绕过时已 `journal` 记录**（规则集 `r16/1e254b5f`）。
+
+### `Sovereign.Application.Physics.NeutrinoFlavorGF3`
+
+**文件**：`src/Sovereign/Application/Physics/NeutrinoFlavorGF3.agda`
+**回执**：`a42aa456ff1617bfa2434139c8620cab72ed78ce634c300a224e70392d1b04cf`
+**台账**：`IceCube.flavor-gf3-zero-sum`（proven）
+
+| 符号 | 命题 |
+|---|---|
+| `source-zero-sum` | `(T₁,T₂,T₀)` 的 GF(3) 和 ≡ T₀ |
+| `earth-zero-sum` | `(T₁,T₁,T₁)` 的 GF(3) 和 ≡ T₀ |
+| `c-gives-zero-sum` | **充分性**：`(a,b,negate(a⊕b))` 必零和（**只用 `⊕-inverse`，无 case**） |
+| `zero-sum-gives-c` | **必要性**：零和 ⟹ `c ≡ negate(a⊕b)`（27 案：9 `refl` + 18 荒谬模式） |
+| `neg-preserves-zero-sum` | `negate` 保持零和 |
+| `neg-distrib-⊕` | `negate(x⊕y) ≡ negate x ⊕ negate y`（9 案） |
+
+**核心**：零和 ⟺ `c = negate(a⊕b)` ⇒ 零和集是线性泛函的核（9 元素），**不是 27 案穷举**。
+
+**⚠ 诚实边界**：
+- `(T₁,T₁,T₁)` 与 `(T₂,T₂,T₂)` **都是**等分量零和态，`negate` 互换 ⇒ **「(1,1,1) 唯一」不成立**
+- 不涉及 PMNS 矩阵 / 质量平方差 / CP 相位
+- 「混合保持零和」需幺正性，**未形式化，不是定理**
+
+### `Sovereign.Application.Physics.TracelessCentroidZero`
+
+**文件**：`src/Sovereign/Application/Physics/TracelessCentroidZero.agda`
+**回执**：`69a38f55846706c8e3cb7df5c0bc0c10cbd960b9f8d3c4bf2f63908a30469f11`
+**台账**：`Endofullerene.traceless-centroid-zero`（proven）
+
+| 符号 | 命题 |
+|---|---|
+| `three-axis-is-trace` | `three-axis-sum T ≡ trace T`（`refl`） |
+| `traceless-three-axis-zero` | `Traceless T → three-axis-sum T ≡ +0` |
+| `traceless-six-axis-zero` | ⭐ **`Traceless T → six-axis-sum T ≡ +0`** |
+
+**⚠ 关键设计**：
+- **必须在 ℤ 上**（char 3 中 `3 ≡ 0` ⇒ 「`3·tr ≡ 0`」**平凡成立**，定理内容消失）
+- **离散化**：取向集取六条坐标轴 `{±e_x,±e_y,±e_z}`，不引入 ℝ / 球面积分 / 测度
+- **「×2」写在定义里**（`six-axis-sum T = three-axis-sum T + three-axis-sum T`），避免循环论证
+
+**⚠ 诚实边界**：
+- **未证明**「六轴等权平均 = 球面平均」——只证了六轴和的陈述
+- **未证明**任意取向集（非六轴）的版本
+
+### ⚠ 本节的「不要重做」清单
+
+| 别重做 | 原因 |
+|---|---|
+| 「无迹 ⇒ 质心位移为零」 | 已证（`TracelessCentroidZero`）+ 数值验证（0.046/0.043 cm⁻¹） |
+| 「HF 中心下移是四极效应」 | ❌ **已否证**（9×9 里质心只动 0.043 cm⁻¹） |
+| 「锁定假说（线性分子 ⇒ 四极不平均）」 | ❌ **模型否定**（9×9 天然含 M 混合，无法锁定） |
+| 「P/H × 2+1 给 4 个分量」 | ⚠ **4 参数拟合 4 点，不是证据** |
+| 「1.5 因子」 | ✅ 已定位为代数错误（`Q₂₀ = Q − tr/3`，旧迹非零） |
