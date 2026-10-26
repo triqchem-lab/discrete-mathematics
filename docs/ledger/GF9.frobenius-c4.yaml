@@ -1,0 +1,21 @@
+id: GF9.frobenius-c4
+module: Sovereign.Algebra.GF9FrobeniusC4
+statement: >-
+  frob9-is-cube : ∀ x → galoisConjugate x ≡ x *gf9 (x *gf9 x)；
+  frob9-c4-action : ∀ k → galoisConjugate (alphaPow k) ≡ alphaPow (inv4 k)；
+  frob9-c4-inverse : ∀ k → alphaPow k *gf9 galoisConjugate (alphaPow k) ≡ gf9-one
+level: B
+evidence:
+  compile_receipt: ""            # 待填：dsh math-proof 会话的 proof_compile 回执 id
+  receipt_status: pending
+  cross_check: >-
+    全部 9-case / 4-case 具名 refl；另有一条否证式核对（sigma-alpha-not-id）。
+    与 FieldTower/GF9 既有 frobenius-alpha-is-cube（仅 α）一致，本件推广到一般元素。
+dependencies: []
+proof_strategy: 穷举(9 case / 4 case) + 复用(FieldTower.GF9 的 galoisConjugate²/alpha-powers-4)
+human_notes: |
+  八要素贴合 6/8（① ② ③ ④ ⑦ ⑧）；⑤ 时钟、⑥ 归零不在本件（属 DC 层，刻意不塞）。
+  ⚠ σ 是**域自同构**（加法分量不动），不是群反转 ρ = λ∘μ（见 39-frobenius-vs-group-inversion.md）。
+  ⚠ 本件不重定义 GF9/α/C₈ 生成元——全部复用 FieldTower/GF9 与 NormExactSequence 的已证件。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

@@ -29,4 +29,22 @@ test:
 	$(AGDA) src/Sovereign/Format/DigitField.agda
 	$(AGDA) src/Sovereign/Format/DigitRealization.agda
 	$(AGDA) src/Sovereign/Problem/ABC/ABCL1.agda
+	$(AGDA) src/Sovereign/Algebra/GF9FrobeniusC4.agda
+	$(AGDA) src/Sovereign/Algebra/GroupTheory/BraidGroup.agda
+	$(AGDA) src/Sovereign/Algebra/GroupTheory/Word.agda
+	$(AGDA) src/Sovereign/Algebra/GroupTheory/BraidCongruence.agda
+	$(AGDA) src/Sovereign/Algebra/GroupTheory/BraidToSL23.agda
+	$(AGDA) src/Sovereign/Algebra/GroupTheory/BraidQuotient.agda
+	$(AGDA) src/Sovereign/Algebra/LinearAlgebra/Matrix2Laws.agda
+	$(AGDA) src/Sovereign/Synthesis/Representation/Fin3Semiring.agda
+	$(AGDA) src/Sovereign/Synthesis/Representation/Matrix2Inverse.agda
+	$(AGDA) src/Sovereign/Synthesis/Representation/Matrix2DetMul.agda
+	$(AGDA) src/Sovereign/Synthesis/Representation/SL2SetoidGroup.agda
+	$(AGDA) src/Sovereign/Synthesis/Representation/SetoidFreeGroupUniversal.agda
+	$(AGDA) src/Sovereign/Synthesis/Representation/SL2Bridge.agda
+	$(AGDA) src/Sovereign/Synthesis/Representation/BraidGroupSetoid.agda
+	$(AGDA) src/Sovereign/Synthesis/Representation/BraidQuotientRec.agda
+	$(AGDA) src/Sovereign/Synthesis/Representation/BraidQuotientCubical.agda
+	$(AGDA) src/Sovereign/Synthesis/Representation/BraidQuotientCubicalEval.agda
+	$(AGDA) src/Sovereign/Synthesis/Representation/BraidQuotientCubicalGroup.agda
 	@echo "ALL_PASS"

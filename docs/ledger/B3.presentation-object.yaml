@@ -1,9 +1,37 @@
 id: B3.presentation-object
-module: Sovereign.Algebra.BraidGroup
-statement: B₃ 展示定义 record 化（唯一 presentation 关系 braid-rel + 群结构字段 + 逆律导出）
-level: A
+module: Sovereign.Algebra.GroupTheory.BraidGroup
+statement: >-
+  B₃ 展示定义 record 化（唯一 presentation 关系 braid-rel + 群结构字段 + 逆律导出
+  + 单位元唯一 e-unique + **中心性 (σ₁σ₂)³ 与两生成元交换**）
+level: B
 evidence:
   compile_receipt: fbfae13f76c6f45860c1d22b5f419cd13ec6685348ba7c9b9771d273fb6a7af6
+  receipt_status: >-
+    ⚠ **已失效**（台账 README 规则 3：改源码 ⇒ 回执失效）。2026-10-26 本模块加入
+    e-unique / Δ / σ₁-Δ / σ₂-Δ / Δ²-central-* / Δ²-is-W / W-central-*，
+    源码变更后旧回执不再绑定当前内容 ⇒ 本条降 B，待 proof_dag 重签后恢复 A。
   cross_check: 裁决 B2 驳回后关系入定义：3 postulate → 0；核实 2 超定收敛（逆律降导出定理）；零消费者 grep 实证
-proof_strategy: 展示群八要素 record（对象级）
-updated: 2026-10-11
+  recheck_2026-10-26: >-
+    agda src/Sovereign/Algebra/GroupTheory/BraidGroup.agda → EXIT=0；
+    去注释后 grep 'postulate|{!' 命中 0；
+    头部曾写「2 个 postulate」属陈旧声明（2026-10-11 已消除，注释未同步），本次已改正。
+    新增：e-unique（单位元唯一）、Δ = σ₁σ₂σ₁、σ₁-Δ / σ₂-Δ、
+    Δ²-central-σ₁/σ₂、Δ²-is-W、**W-central-σ₁/σ₂**（W = (σ₁σ₂)³）。
+  numeric_oracle: >-
+    Burau 像数值交叉（t ∈ {2,3,5,-2}，矩阵与 BurauRep.agda 同形）：
+    (σ₁σ₂)³ = t³·I，且与 σ₁,σ₂ 逐点交换 ⇒ 中心性在忠实/半忠实模型上复现。
+    ⚠ 口径桥（t ≡ -1 mod 3）：t=2 时 W=8I ≡ -I (mod 3)，而 t≡-1 的 Burau 矩阵
+    正是 SL(2,F₃)≅2A₄ 的 [[1,1],[0,1]]/[[1,0],[-1,1]] —— 即本文件证的是
+    「源侧（B₃ 展示）W 中心」，其**像侧**已由 Synthesis/A4/BinaryTetrahedral.agda
+    的 q8-neg1-central（−1 在 Q₈ 中心，8-case refl）证毕。两侧此前未接线。
+  corrected_2026-10-26: >-
+    本轮曾据 `grep -rl central` 的 4 个文件名断言「全库无中心性、命中的都不相关」——
+    **错误**。用 harness grep（带行上下文）复核得 50 处命中，其中
+    Synthesis/A4/BinaryTetrahedral.agda 的 q8-neg1-central 正是中心性定理，
+    且被该模块列为 ⑦ 刚性。故正确表述是：**像侧早有，源侧此前缺**。
+  boundary: >-
+    本模块是**规范**不是**构造**：未构造 B₃ 的具体模型，未证唯一性（泛性质）；
+    Burau 表示与忠实性（Bigelow 1999, n≥5）仍是 roadmap，不在本节点。
+    「W 中心」只证与两个生成元交换，未证与**任意词**交换（需自由词归纳，未做）。
+proof_strategy: 展示群八要素 record（对象级）+ 等式链（assoc + braid-rel，不用逆元）
+updated: 2026-10-26

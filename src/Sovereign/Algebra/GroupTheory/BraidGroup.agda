@@ -8,8 +8,12 @@
 --   ① σᵢσⱼ = σⱼσᵢ (|i-j| ≥ 2)
 --   ② σᵢσᵢ₊₁σᵢ = σᵢ₊₁σᵢσᵢ₊₁
 --
--- 本模块：B_3 的最小形式化（2 个生成元 + 关系声明）
--- ⚠ 2 个 postulate（关系声明，kind 待裁：见台账 BraidGroup 节点；诚实边界：非 0 postulate）
+-- 本模块：B_3 的**展示 record**（2 个生成元 + 唯一关系 braid-rel）
+-- ✅ 0 postulate / 0 hole（2026-10-26 复核：去注释后 `grep postulate` 无命中；agda EXIT=0）。
+--   此前头部写「⚠ 2 个 postulate」是**陈旧声明**（2026-10-11 已由 record 字段化消除，注释未同步）。
+-- ⚠ 诚实边界（这不是 postulate 问题，是另一件事）：本模块是**规范**不是**构造** ——
+--   它陈述「凡满足这些字段的群即 B₃ 的候选模型」，既未构造出 B₃，也未证唯一性（泛性质）。
+--   具体模型与 Burau 忠实性见文末 roadmap。
 --
 -- 核心原则：
 --   1. 数学内容优先（背景→定义→引理→定理），证明每步可读；
@@ -20,7 +24,7 @@
 
 module Sovereign.Algebra.GroupTheory.BraidGroup where
 
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Relation.Binary.PropositionalEquality using (_≡_; sym; trans; cong)
 
 -- B₃ = ⟨σ₁, σ₂ | σ₁σ₂σ₁ = σ₂σ₁σ₂⟩ 的**展示定义**
 -- 数学背景：presentation 的关系**只有辫关系一条**（自由群上单关系）；逆元是群结构的
@@ -56,6 +60,86 @@ module _ (G : B3) where
   σ₁-inv = inverseʳ σ₁
   σ₂-inv : σ₂ · inv σ₂ ≡ e
   σ₂-inv = inverseʳ σ₂
+
+  -- 单位元唯一：由字段推出的**定理**（不是字段访问），用以说明 record 不是空壳。
+  -- 证：x ≡ x·e（identityʳ 的对称）≡ e（把 x·y≡y 用 y:=e）。
+  e-unique : ∀ (x : carrier) → (∀ y → x · y ≡ y) → x ≡ e
+  e-unique x left = trans (sym (identityʳ x)) (left e)
+
+  -- ──────────────────────────────────────────────────────────────────────
+  -- ⑥ 中心性：Δ² = (σ₁σ₂)³ 与两个生成元交换
+  --
+  -- 这是 B₃ 的第一个**非平凡定理**（不是字段访问，只用 assoc + braid-rel，
+  -- **不用逆元**）。数学内容：Δ = σ₁σ₂σ₁ 是半扭转（half-twist），
+  -- Δ² 生成 B₃ 的中心 Z(B₃) ≅ ℤ；在 2A₄ ≅ SL(2,F₃) 的像里 Δ² ↦ −I。
+  -- 推导（a=σ₁, b=σ₂, 并置右结合；R: aba ≡ bab）：
+  --   aΔ = a·(a·(b·a)) ≡ a·(b·(a·b))        [cong (a ·_) R]
+  --   Δb = (a·(b·a))·b ≡ a·((b·a)·b) ≡ a·(b·(a·b))   [assoc]
+  --   ⇒ aΔ ≡ Δb；同法 bΔ ≡ Δa。
+  --   a·Δ² ≡ (aΔ)Δ ≡ (Δb)Δ ≡ Δ(bΔ) ≡ Δ(Δa) ≡ Δ²a。
+  -- ──────────────────────────────────────────────────────────────────────
+  Δ : carrier
+  Δ = σ₁ · (σ₂ · σ₁)
+
+  -- σ₁·Δ ≡ Δ·σ₂（左乘 σ₁ 换成右乘 σ₂）
+  σ₁-Δ : σ₁ · Δ ≡ Δ · σ₂
+  σ₁-Δ =
+    trans (cong (σ₁ ·_) braid-rel)
+      (sym (trans (assoc σ₁ (σ₂ · σ₁) σ₂)
+                  (cong (σ₁ ·_) (assoc σ₂ σ₁ σ₂))))
+
+  -- σ₂·Δ ≡ Δ·σ₁（反向交换）
+  σ₂-Δ : σ₂ · Δ ≡ Δ · σ₁
+  σ₂-Δ =
+    sym (trans (cong (_· σ₁) braid-rel)
+          (trans (assoc σ₂ (σ₁ · σ₂) σ₁)
+                 (cong (σ₂ ·_) (assoc σ₁ σ₂ σ₁))))
+
+  -- Δ² 与 σ₁ 交换
+  Δ²-central-σ₁ : σ₁ · (Δ · Δ) ≡ (Δ · Δ) · σ₁
+  Δ²-central-σ₁ =
+    trans (sym (assoc σ₁ Δ Δ))
+      (trans (cong (_· Δ) σ₁-Δ)
+        (trans (assoc Δ σ₂ Δ)
+          (trans (cong (Δ ·_) σ₂-Δ)
+                 (sym (assoc Δ Δ σ₁)))))
+
+  -- Δ² 与 σ₂ 交换
+  Δ²-central-σ₂ : σ₂ · (Δ · Δ) ≡ (Δ · Δ) · σ₂
+  Δ²-central-σ₂ =
+    trans (sym (assoc σ₂ Δ Δ))
+      (trans (cong (_· Δ) σ₂-Δ)
+        (trans (assoc Δ σ₁ Δ)
+          (trans (cong (Δ ·_) σ₁-Δ)
+                 (sym (assoc Δ Δ σ₂)))))
+
+  -- ── 与用户口径对齐：(σ₁σ₂)³ 的中心性 ─────────────────────────────
+  -- Δ² = (σ₁σ₂)³ 是两个**不同的词**（aba·aba vs ababab），其等式需单独证；
+  -- 否则「Δ² 中心」不等于「(σ₁σ₂)³ 中心」。下面的桥接是关键一步。
+
+  W : carrier          -- (σ₁σ₂)³
+  W = σ₁ · (σ₂ · (σ₁ · (σ₂ · (σ₁ · σ₂))))
+
+  -- Δ·Δ ≡ W：由 braid-rel 把右因子 a·(b·a) 换成 b·(a·b)，再重新结合
+  Δ²-is-W : (Δ · Δ) ≡ W
+  Δ²-is-W =
+    trans (cong (Δ ·_) braid-rel)
+      (trans (assoc σ₁ (σ₂ · σ₁) (σ₂ · (σ₁ · σ₂)))
+             (cong (σ₁ ·_) (assoc σ₂ σ₁ (σ₂ · (σ₁ · σ₂)))))
+
+  -- **主定理**：(σ₁σ₂)³ 与 σ₁ 交换
+  W-central-σ₁ : σ₁ · W ≡ W · σ₁
+  W-central-σ₁ =
+    trans (cong (σ₁ ·_) (sym Δ²-is-W))
+      (trans Δ²-central-σ₁ (cong (_· σ₁) Δ²-is-W))
+
+  -- **主定理**：(σ₁σ₂)³ 与 σ₂ 交换
+  W-central-σ₂ : σ₂ · W ≡ W · σ₂
+  W-central-σ₂ =
+    trans (cong (σ₂ ·_) (sym Δ²-is-W))
+      (trans Δ²-central-σ₂ (cong (_· σ₂) Δ²-is-W))
+
+
 
 -- 诚实边界：B₃ 唯一性（泛性质：任意群 + 满足辫关系的两元素 → 唯一同态）与
 --   Burau 表示实例留 roadmap。本模块交付：关系入定义的展示形态（3 postulate → 0）。

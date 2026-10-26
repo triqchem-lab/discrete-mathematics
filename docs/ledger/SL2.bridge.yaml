@@ -1,0 +1,28 @@
+id: SL2.bridge
+module: Sovereign.Synthesis.Representation.SL2Bridge
+statement: >-
+  det-eval : ∀ w → det3 (eval w) ≡ 1（eval 的像落在 SL2 内）；
+  eval-coherence : ∀ w → eval (toWalk w) ≈ (eval w , det-eval w)（词层求值与 setoid 泛性质的求值一致）；
+  SL2-uniqueness : φ 在 nil/生成元/逆/乘法上与标准指派一致 ⇒ ∀ p → φ p ≈ eval p
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    det-eval 五分支归纳（ε 分支 refl；四分支 det-mul3 + 生成元 det=1）；
+    eval-coherence 五分支（·a/·b 用 refl，·ai/·bi 用 adj-σ₁/adj-σ₂ 两条 refl）。
+dependencies: [BraidToSL23.eval, SL2.setoid-group, FreeGroup.setoid-universal, Matrix2.det-mul-3]
+proof_strategy: 结构递归 + 引用 setoid 泛性质（SL2-uniqueness 一行实例化）
+human_notes: |
+  ⚠ **边界（不要过度声称）**：本件证的是「在**走层** Walk B(Bool) 上，任何满足
+  生成元/同态约束的 φ 与 eval 一致」。它**不等于**「存在从 B₃ 商群到 SL2 的群同态」——
+  后者需要**商群的泛性质**（把关系 aba ≈ bab 生成的同余取商），库里尚无该件
+  （_PN15 只有自由群；SetQuotients 机制在 _PN5..8，未为 B₃ 实例化）。
+  已证到的是：给定「φ 在生成元上与 eval 相同」，则 φ 与 eval 处处相同——
+  即把 B₃ 的表示「识别为」eval，扣掉商的那一半。
+  踩坑 ①：参数化模块不能 `using`，只能 `open SetoidUniversal sg gen`；
+  且 `open` 必须在 `gen` 定义**之后**（Agda 顺序作用域，前向引用即 NotInScope）。
+  踩坑 ②：setoid 组合子（trans≈/⋆-cong）的隐式 `{y}` 在中性项上无法确定
+  → UnsolvedMetaVariables；解法是在 `_≡_` 层写 trans/cong₂（`_≈_` 定义上就是 proj₁ 相等）。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

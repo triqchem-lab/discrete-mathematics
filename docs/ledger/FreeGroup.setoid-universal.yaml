@@ -1,0 +1,25 @@
+id: FreeGroup.setoid-universal
+module: Sovereign.Synthesis.Representation.SetoidFreeGroupUniversal
+statement: >-
+  SetoidUniversal.eval : Walk (BA A) tt tt → Carrier；
+  eval-gen : ∀ a → eval (cons (fwd a) (nil tt)) ≈ f a；
+  eval-++w : ∀ p q → eval (p ++w q) ≈ eval p ⋆ eval q；
+  uniqueness : φ 满足生成元/乘法约束 ⇒ ∀ p → φ p ≈ eval p
+  （参数：sg : SetoidGroupData，f : A → Carrier）
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    与 pn-proofs/_PN15 的**严格版**（GroupData X）逐条平行，唯一差异是替换规则：
+    cong→⋆-cong、refl/sym/trans→refl≈/sym≈/trans≈。两条独立实现，可交叉阅读。
+dependencies: []
+proof_strategy: 结构递归 + setoid 替换（每项 ≤3 步）
+human_notes: |
+  为什么需要 setoid 版：_PN15 的泛性质参数化在严格 GroupData 上，
+  而 SL(2,F₃) 这类载体必然带证明字段（det≡1），严格相等证不出结合律。
+  定义域是**未商的原始走**：不需要先在语法层商掉消去，因为 eval 落在群里，
+  `fwd a` 接 `bwd a` 自然算出 `f a ⋆ ι (f a) ≈ e₀`。
+  本批已由 SL2.bridge 实例化（不再是零消费者）。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

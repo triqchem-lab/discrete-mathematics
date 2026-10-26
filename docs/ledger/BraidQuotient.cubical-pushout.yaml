@@ -1,0 +1,35 @@
+id: BraidQuotient.cubical-pushout
+module: Sovereign.Synthesis.Representation.BraidQuotientCubical + Sovereign.Synthesis.Representation.BraidQuotientCubicalEval
+statement: >-
+  【类型层】B3 : Type = Word / _≈b_（cubical 商类型）；
+  B3-rec : (sX : isSet X) → (f : Word → X) → (∀ {a b} → a ≈b b → f a ≡ f b) → B3 → X，
+  B3-uniq : 给定的两个映射若在代表词上同值则相等（elimProp）。
+  【下降】eval-B3 : B3 → Mat2（isSetMat2 := 沿 Fin↔FinData retract 搬 h-level），
+  eval-B3-β : ∀ w → eval-B3 [ w ] ≡ eval w（refl），
+  eval-B3-W : eval-B3 [ wWord ] ≡ negI。
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    E1 桥：Mat2 的字段是 stdlib Data.Fin.Fin 3，cubical 只提供
+    Cubical.Data.FinData.Properties.isSetFin；两者构型不同（索引族 vs 归纳副本），
+    故先造 toFD/fromFD/retract 再经 isSetRetract 传输 h-level。
+    与 BraidQuotient.recursion 的分工：resp 是「φ 逐点尊重 ≈b」的点式命题，
+    eval-B3 是**从商类型出发的函数**——商在类型层，泛性质才能陈述在类型层。
+dependencies: [BraidQuotient.congruence, BraidQuotient.recursion, SL2.bridge, BraidToSL23.eval]
+proof_strategy: cubical SetQuotients.rec + isSetRetract 传输 h-level + 区间消去
+human_notes: |
+  关键实测（探针，已删除）：
+  1. 在参数化记录 `Mat2 F` 在场时，PathP 的族端点打印成 `Mat2 (Fin 3) i`（i 为区间变量）
+     —— 报错 "Mat2 (Fin 3) i ≢ Mat2 (Fin 3)" 的真实含义是
+     **cubical Path 与 PropositionalEquality 的 _≡_ 不可混用**，不是类型不匹配。
+     故 eval-B3-β（Path）与 eval-W-word（PE）之间必须过 toPath。
+  2. 在索引族上按索引写模式 `{n = StdFin.suc n}` 会把 Fin 构造子当 Nat 构造子用，
+     报 ConstructorPatternInWrongDatatype；在 Fin 参数上匹配让 Agda 自己细化索引即可。
+  3. 本模块同时开 --cubical 与 --rewriting：导入锥含 Trit（声明 --rewriting 但无规则），
+     经逐模块点数全锥无真规则，故 --cubical 下「静默丢规则」的风险不触发。
+  未覆盖：B3 作为**群对象**（商群结构、eval-B3 为群同态）——需要 B3 上的
+  运算与结合律下降，属于下一步；Garside 正规形仍未做。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

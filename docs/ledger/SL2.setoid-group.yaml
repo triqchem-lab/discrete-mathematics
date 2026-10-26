@@ -1,0 +1,28 @@
+id: SL2.setoid-group
+kind: object
+module: Sovereign.Synthesis.Representation.SL2SetoidGroup
+statement: >-
+  SL2-setoid-group : SetoidGroupData，其中
+  Carrier = Σ Mat2 (λ M → det3 M ≡ 1)、_≈_ = 首分量相等、
+  _⋆_ = sl2-mul、e₀ = I2、ι = adj（det=1 时即逆）
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    五条群律全部落在首分量：assoc←mat-assoc、unitˡ/ʳ←mat-idˡ/ʳ、
+    invˡ←det-one-adj、invʳ←det-one-mul；⋆-cong←cong₂ mulMat2。
+dependencies: [Matrix2.inverse-adj, Matrix2.det-mul-3, Matrix2Laws.monoid]
+proof_strategy: 对象级装配（record 实例）+ 复用（矩阵幺半群律与双侧逆）
+human_notes: |
+  **为什么不是严格 GroupData**：SL2 必然带证明字段 det≡1；Agda 记录相等要求所有字段相等，
+  两个不同来源的 det≡1 证明并不定义性相等（无 proof irrelevance），
+  于是 assoc 因证明分量不同而证不出。把等价取成「首分量相等」即绕过。
+  载体/等价/运算/laws 打包进 _PN15 的 SetoidGroupData——**不另造同构 record**
+  （两份同名 record 会造成两套不可互证的 API）。
+  踩坑 ①：`_≈s_` 不能用 Σ 模式匹配定义（`_≈s_ a c` 在中性变量上不归约，
+  导致 sl2-cong 的假设类型卡住 → UnsolvedMetaVariables），必须用投影 `proj₁ g ≡ proj₁ h`。
+  踩坑 ②：record literal 里 ⋆-cong 必须写成带参数子句
+  （`SetoidGroupData.⋆-cong … {a}{b}{c}{d} h1 h2 = …`），裸项会留下未解元变量。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

@@ -1,0 +1,28 @@
+id: BraidQuotient.congruence
+module: Sovereign.Algebra.GroupTheory.BraidQuotient
+statement: >-
+  _≈b_ : Word → Word → Set（refl/sym/trans + 单边替换 b-appendˡ/ʳ + b-same
+  + 四条消去 + braid）；eval-resp : w ≈b v → eval w ≡ eval v；
+  ≈b-cong（⋆ 相容）；++W-assoc/idˡ/idʳ；unitˡ/unitʳ/assoc≈；
+  ι（前插逆）与 invʳ / idem / invˡ
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    eval-resp 是 11 个构造子的结构归纳（b-cancel-* 分支直接落到已证的 eval-cancel-*）；
+    invʳ 由 step-a/b/ai/bi 归纳；invˡ 走「y 幂等 ⇒ y 有右逆 ⇒ y ≈ ε」的经典链。
+dependencies: [BraidToSL23.eval]
+proof_strategy: 结构归纳（同余 11 构造子）+ 前插逆 + 幂等消去
+human_notes: |
+  ⚠ 两次模型纠错（都留在注释里）：
+  ① 初版用单条 b-context (p q) : w≈v → (p++w)++q ≈ (p++v)++q。**不可组合**——
+     `ε ++W p` 不定义性等于 `p`（`_++W_` 递归在第二元），`⋆-cong` 推不出来。
+     改为两条单边规则 b-appendˡ/ʳ，一复合即任意位置替换。
+  ② 逆一开始写成右接 ι(w·a) = (ι w)·ai。**错了**——`(w·a) ++W q` 不拆左因子，
+     `a` 与 `a⁻¹` 被中间词隔开，消去规则用不上。正解是**前插**：
+     ι(w·a) = preai (ι w)，于是 step-a 归纳到最后恰好给出 `((w·a)·ai)`。
+  边界：这是**词层的同余与下降条件**；商类型 Word/≈b 是 setoid 形态
+  （见 BraidGroupSetoid.word-setoid-group），不是 HIT。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

@@ -1,0 +1,21 @@
+id: Fin3.semiring
+module: Sovereign.Synthesis.Representation.Fin3Semiring
+statement: >-
+  fin3CS : CommSemiring (Fin 3)（14 条环律）；neg3-invol / neg3-inv / neg3-add /
+  neg3-mulˡ / neg3-mulʳ；I2 与矩阵幺半群律的实例
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    14 条律逐条经 tritToFin3/fin3ToTrit 双射搬运自 Base/Trit 的已证律；
+    两条兼容引理 f2t-add / f2t-mul 各 9-case refl。
+dependencies: [Matrix2Laws.monoid]
+proof_strategy: 代数链（每条 1–5 步，落回 Trit 的穷举律）+ 双射搬运
+human_notes: |
+  ⚠ 关键事实：`Mat2` 的系数是 **Fin 3**，而 Base/Trit 的环律建在 **Trit** 这个独立归纳类型上。
+  两者同基数且有互逆双射，故搬运；否则要重做约 144 条 case。
+  ⚠ `T₁ ⊗ z` 对**中性** z 不归约（`_ ⊗ T₀` 子句使判定树先分裂第二元）⇒ f2t-mul 的 T₁ 分支
+  必须用已证的 ⊗-identityˡ，不能写 refl。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

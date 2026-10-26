@@ -1,0 +1,25 @@
+id: BraidQuotient.recursion
+module: Sovereign.Synthesis.Representation.BraidQuotientRec
+statement: >-
+  QuotientRec.Inner.resp : ∀ {w v} → w ≈b v → φ w ≈ φ v，
+  其中 sg : SetoidGroupData、f : Bool → Carrier、φ : Word → Carrier 满足
+  同态 φ-hom、四生成元指派 φ-a/φ-b/φ-ai/φ-bi、以及 φ-braid : φ aba ≈ φ bab
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    8 个构造子（含 b-same 的 subst 分支）逐条归纳；两条吸收引理
+    absorb/absorbˡ 只由 invʳ/invˡ + unitʳ 构成，与目标群无关。
+dependencies: [BraidQuotient.congruence, SL2.setoid-group]
+proof_strategy: 结构归纳 + setoid 替换（⋆-cong / assoc / invʳ / unitʳ）
+human_notes: |
+  数学内容：**按 ≈b 的类定义映射的良定义性**——任何同态只要在生成元上一致、
+  且把辫关系送到目标群的 ≈，就必须尊重整个同余。这是商群泛性质的
+  「下降 + 递归式」那一半。
+  未覆盖：商类型作为**对象**（Word/≈b 的泛性质陈述需要一个商类型；本库用 setoid
+  形态给出，见 BraidGroupSetoid.word-setoid-group，而非 HIT）。
+  踩坑：模块参数列表里 `≈` 尚未进作用域（Agda 顺序作用域），
+  故拆两层——外层取 sg 并 open，内层取 φ 与六条约束。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

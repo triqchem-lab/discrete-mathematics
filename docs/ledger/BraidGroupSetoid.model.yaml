@@ -1,0 +1,25 @@
+id: BraidGroupSetoid.model
+kind: object
+module: Sovereign.Synthesis.Representation.BraidGroupSetoid
+statement: >-
+  record B3Setoid（SetoidGroupData + σ₁ σ₂ + braid-rel 至 ≈）；
+  SL2-B3Setoid : B3Setoid（具体模型：SL(2,F₃)）；model-σ₁ / model-σ₂
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    braid-rel 在模型里是**具体矩阵等式**（两侧算到同一 SL(2,F₃) 元素）⇒ refl；
+    与 BraidToSL23.eval-braid（词层的同一关系）互为独立证据。
+dependencies: [SL2.setoid-group, SL2.bridge, BraidQuotient.congruence]
+proof_strategy: 对象级装配（record 实例）+ 具体计算（refl）
+human_notes: |
+  ⚠ 这是 B₃ 的 **setoid 模型**，不是 `Algebra/GroupTheory/BraidGroup.B3`（严格 record）的实例。
+  **为什么不改严格版**：`B3` 的 `≡` 承载 `W-central-σ₁/σ₂`（60 行真内容）；
+  把 `≡` 改成 `≈` 会让那些证明作废——那是裁剪成果凑形式。正解是**泛化**：
+  setoid 版是严格版的推广（取 `_≈_ := _≡_` 即严格版），严格版定理仍成立且更强。
+  `strict→setoid` 的强制转换**未做**：需要先从「右逆 + 双单位」导出左逆（经典群论练习，
+  约 30 行的结合律重排）；见 Q1 原子表。
+  严格实例（若将来要）：载体 = 24 元 SL23 + toMat 单射（576 例）+ assoc，约 700 行。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

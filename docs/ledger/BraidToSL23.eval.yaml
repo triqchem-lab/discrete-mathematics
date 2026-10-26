@@ -1,0 +1,25 @@
+id: BraidToSL23.eval
+module: Sovereign.Algebra.GroupTheory.BraidToSL23
+statement: >-
+  eval-braid : eval aba ≡ eval bab（定义关系在像中保持）；
+  eval-W : wValue ≡ negI（(σ₁σ₂)³ ↦ −I）；
+  eval-++W : ∀ p q → eval (p ++W q) ≡ mulMat2 (eval p) (eval q)（幺半群同态）；
+  四条 eval-cancel-*（消去律）；negI-central（−I 在 24 元素上逐点中心）
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    数值锚：Burau 像在 t ∈ {2,3,5,−2} 处 (σ₁σ₂)³ = t³·I，且与 σ₁,σ₂ 逐点交换；
+    t=2 ≡ −1 (mod 3) 时 8I ≡ −I。
+    四个逆律全 refl（手算逆元若错一格 Agda 当场失败）。
+dependencies: [Fin3.semiring, Matrix2.inverse-adj, Matrix2Laws.monoid]
+proof_strategy: 穷举（具体矩阵 refl）+ 代数链（同态/消去 ≤3 步）+ 具体点交叉验证
+human_notes: |
+  取值来源不是新发明：Burau 表示 σ₁↦[[−t,1],[0,1]]、σ₂↦[[1,0],[t,−t]] 在 t ≡ −1 (mod 3) 处取值，
+  正是 SL(2,F₃) 的两个标准生成元。
+  ⚠ eval 定义在 **Word**（含逆构造子）上，但那是**自由群的词层求值**，
+  不等于 B₃ 的商表示——见 SL2.bridge 的边界说明。
+  踩坑：`mulMat2` 在 SL23Cayley 里已绑定 add3/mul3（二元），会遮蔽 Matrix2 的同名函数，须重命名。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

@@ -1,0 +1,20 @@
+id: Matrix2.det-mul-3
+module: Sovereign.Synthesis.Representation.Matrix2DetMul
+statement: >-
+  det-mul3 : ∀ M N → det3 (mulMat2 M N) ≡ mul3 (det3 M) (det3 N)
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    复用链：det3-toT（行列式经搬运保持）+ mul-toT（乘法经搬运保持）+ Trit 侧 det-mul；
+    最后经 f2t-inj 落回 Fin 3。三个引理各自独立可验。
+dependencies: [Matrix2.inverse-adj, Fin3.semiring]
+proof_strategy: 复用（不重证）+ 代数链（主定理 5 步）
+human_notes: |
+  为什么搬运：Algebra/Jacobian/Matrix.agda:319 的 det-mul-core（8 变元版）已把历史上的
+  6561 条 with/refl 收成一行；重证等于开倒车。
+  踩坑：`negate-⊗` 在 FieldTower/GF27.agda:52 的方向是 `negate (x⊗y) ≡ (negate x)⊗y`，
+  det3-toT 需要它的 **sym**，写反会报 UnequalTerms。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

@@ -1,0 +1,20 @@
+id: Matrix2Laws.monoid
+module: Sovereign.Algebra.LinearAlgebra.Matrix2Laws
+statement: >-
+  mulMat2-assoc : ∀ (X Y Z : Mat2 A) → (X·Y)·Z ≡ X·(Y·Z)；
+  mulMat2-idˡ / mulMat2-idʳ（对任意 CommSemiring A）
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    GF(3) 实例三条（mat-assoc-3 / mat-idˡ-3 / mat-idʳ-3）由 tritCS 实例化即得；
+    `key` 把 2×2 的四个分量归约到同一个 8 变元形状，故四条证明是同一份推导。
+dependencies: []
+proof_strategy: 代数链（swap-middle 四元换位 + 分配律/结合律），泛型一次
+human_notes: |
+  为什么不穷举：Fin 3 上 (AB)C = A(BC) 朴素穷举是 3¹² = 531441 例。
+  泛型证（对 CommSemiring 抽象）+ 实例化，是库策略「穷举优于归纳」的边界内选择。
+  下游：SL2 的 setoid 群（assoc/unit 直接引用）、以及 A4ThreeDimRep 曾自述缺失的 mulMat-assoc。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

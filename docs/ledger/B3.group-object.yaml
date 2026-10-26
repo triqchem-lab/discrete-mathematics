@@ -1,0 +1,37 @@
+id: B3.group-object
+module: Sovereign.Synthesis.Representation.BraidQuotientCubicalGroup
+statement: >-
+  B3 := Word / _≈b_ 是集合（isSetB3 = squash/），且带
+  ·B3（rec2 over _++W_，相容于 b-appendˡ/ʳ）、eB3 = [ ε ]、ιB3（B3-rec over ι），
+  满足 assocB3 / idˡB3 / idʳB3 / invˡB3 / invʳB3（全部为 Path），
+  并由 β（·B3-β、ιB3-β 均为 refl）在代表词上可算；
+  另有 braidB3 : [aba] ≡ [bab]（商确实识别辫关系）
+  与 eval-B3-hom / eval-B3-unit / eval-B3-invˡ（eval 下降后是群同态）。
+  装配为 B3-setoid-group : SetoidGroupData，其中 _≈_ := Path。
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    ι-cong 无一处构造子分析：由 w·ιv ≈ v·ιv ≈ ε 与 w·ιw ≈ ε 得 w·ιv ≈ w·ιw，
+    再用 left-cancel（只由 invˡ + assoc≈ + unitˡ 构成）得 ιv ≈ ιw。
+    这避开了 b-braid 的逆辫情形（(σ₁⁻¹σ₂⁻¹σ₁⁻¹) vs (σ₂⁻¹σ₁⁻¹σ₂⁻¹) 本身要靠群结构）。
+dependencies: [BraidQuotient.congruence, BraidQuotient.cubical-pushout, BraidToSL23.eval, SL2.bridge]
+proof_strategy: cubical rec2/elimProp/elimProp2/elimProp3 + ε/结合/逆律经 eq/ 抬升；ι 相容性经左消去
+human_notes: |
+  为什么不用 `_PN15.GroupData (X : Set)`：其七律陈述在 **PE 的 `_≡_`** 上，
+  而 cubical HIT 只给 Path；Path → 归纳式 `_≡_` 无通路（需端点定义相等）。
+  故落成 `SetoidGroupData` 且 `_≈_ := Path`——B3 是集合，故 Path 就是相等，
+  这是 `Set` 范畴里的群对象，不是"模某个关系"的近似。
+  踩坑：
+  1. `rec2` 的 f 是 `A → B → C`，C 为商类型 ⇒ 必须传 `λ p q → [ p ++W q ]`，
+     不能直接传 `_++W_`（类型 Word ≢ B3）。
+  2. `braidB3` 两侧都是裸 `[_]`，没有别的约束能定出 `_/_` 的 A/R ⇒
+     需把类型钉成 `_≡_ {A = B3}`，否则 UnsolvedConstraints。
+  3. cubical `cong₂` 的隐式 `{u v}` 在 p 与 q 之间；不能写成
+     `cong₂ f {x = a} …`（WrongHidingInApplication）。
+  未覆盖：ι 的对合性（需词层 `ι (ι w) ≈b w`）；Garside 正规形；
+  B3 的泛性质（把 `BraidQuotientRec.resp` 与 `B3-rec` 合成，
+  目标群仍为 SetoidGroupData）——运算已就位，合成是下一步。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26

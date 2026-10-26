@@ -1,0 +1,25 @@
+id: Matrix2.inverse-adj
+module: Sovereign.Synthesis.Representation.Matrix2Inverse
+statement: >-
+  mul-adj : ∀ M → mulMat2 M (adj M) ≡ det3 M *s I2；
+  adj-mul : ∀ M → mulMat2 (adj M) M ≡ det3 M *s I2；
+  det-adj : ∀ M → det3 (adj M) ≡ det3 M；
+  det-one-mul / det-one-adj : det3 M ≡ 1 → mulMat2 M (adj M) ≡ I2 ∧ mulMat2 (adj M) M ≡ I2
+level: B
+evidence:
+  compile_receipt: ""            # 待填
+  receipt_status: pending
+  cross_check: >-
+    两侧恒等式各自独立展开四个分量（e00..e11 与 f00..f11），不是互推；
+    det=1 推论经 scale-one 落到 I2。
+dependencies: [Fin3.semiring, Matrix2Laws.monoid]
+proof_strategy: 代数链（每条分量 ≤4 步）+ 9-case 穷举（neg3 与 mul3 的相容律）
+human_notes: |
+  数学内容：2×2 的 Cayley–Hamilton（特征多项式 x² − tr·x + det）。
+  逆**不需要除法**：det=1 时 adj 直接是逆——这对 GF(3) 是关键（det 只取 0/1/2，无可除之有理数）。
+  与 Algebra/Jacobian/Matrix 的关系：那边是 **Trit 嵌套对** 上的**一般可逆判定**
+  （invertible / det≠0→invertible / det≠0→rank2）；本件是 **Fin 3 记录** 上 **det=1** 的两侧逆。
+  交集只是「2×2 伴随恒等式」这一片段，**不构成同一命题的重复**；
+  经权衡（66 行四条目计算 vs 约 50–70 行表示搬运）**不做并线**——搬运动会把简单代码换成难代码。
+git_witness: uncommitted (2026-10-26)
+updated: 2026-10-26
