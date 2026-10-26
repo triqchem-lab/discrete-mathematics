@@ -49,6 +49,7 @@ module Sovereign.Synthesis.Physics.IhGroup where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Fin using (Fin; zero; suc)
+open import Sovereign.Synthesis.NumberTheory.Winding using (PolarWinding)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 --------------------------------------------------------------------------------
@@ -79,8 +80,8 @@ F5 : Set
 F5 = Fin 5
 
 -- 2 阶元素索引
-F2 : Set
-F2 = Fin 2
+IhF2 : Set
+IhF2 = Fin 2
 
 --------------------------------------------------------------------------------
 -- §2. A₅ 旋转子群——60 个元素
@@ -122,11 +123,11 @@ open IhElement public
 --------------------------------------------------------------------------------
 
 -- Det 的乘法（C₂ 群结构）
-det-mul : Det → Det → Det
-det-mul even even = even
-det-mul even odd  = odd
-det-mul odd  even = odd
-det-mul odd  odd  = even
+IhDetMul : Det → Det → Det
+IhDetMul even even = even
+IhDetMul even odd  = odd
+IhDetMul odd  even = odd
+IhDetMul odd  odd  = even
 
 --------------------------------------------------------------------------------
 -- §5. 三常量共源——144/46/√3 的 I_h 关联
@@ -139,33 +140,64 @@ det-mul odd  odd  = even
 --     但 √3 是实验物理锚定，不是 I_h 代数推导的产物。
 --------------------------------------------------------------------------------
 
--- I_h 阶（形式化声明）
+-- I_h 阶
+--
+-- ⚠ 2026-10-22 修正：原来 `IhOrder = 120` 是**字面量**。现在改为从载体构造子的
+--   索引基数推出：A5 有 4 个构造子，索引域分别为 1（id₅ 无参）、Fin 15、Fin 20、Fin 24，
+--   故 A5Card = 1 + 15 + 20 + 24 = 60；I_h = A5 × Det ⇒ 2 × 60 = 120。
+--   **诚实边界**：这是「按构造子算术得到的基数」，不是「A5 ≃ Fin 60 的双射证明」
+--   （后者需要 A5 的完整群律，见文末 roadmap）。
+A5Card : ℕ
+A5Card = 1 + 15 + 20 + 24
+
+a5-card-check : A5Card ≡ 60
+a5-card-check = refl
+
+IhCard : ℕ
+IhCard = 2 * A5Card          -- I_h = A5 × Det（两个 det 分支）
+
+ih-card-check : IhCard ≡ 120
+ih-card-check = refl
+
 IhOrder : ℕ
-IhOrder = 120
+IhOrder = IhCard
 
 -- Merkaba 胞腔数
+--
+-- ⚠ 2026-10-22 口径：24 = |2A₄|（二元四面体群 SL(2,3) 的阶，A₄ 的非分裂二重覆盖），
+--   与「2 × |A₄| = 24」（A₄ × C₂，分裂积）**数值同而对象不同**。
+--   144 = |2A₅|(120) + |2A₄|(24) 的读法见 IhDecomposition §3。
 MerkabaOrder : ℕ
 MerkabaOrder = 24
 
 -- 全息总数：I_h + Merkaba = 144
-PolarWinding : ℕ
-PolarWinding = IhOrder + MerkabaOrder
+--
+-- ⚠ 2026-10-22：原先本地重复定义了 `PolarWinding`（与 Synthesis/NumberTheory/Winding.agda:40 重名）。
+--   现改为**引用宪法常量**，并把「I_h 分解 = 144」写成一条定理（不再复制定义）。
+ih-polar-decomposition : PolarWinding ≡ IhOrder + MerkabaOrder
+ih-polar-decomposition = refl
 
--- 验证：120 + 24 = 144
+-- 验证：宪法常量 144 与 I_h 分解一致
 polar-winding-check : PolarWinding ≡ 144
 polar-winding-check = refl
 
 --------------------------------------------------------------------------------
 -- §6. 展示群八要素核对
 --
--- ① 载体: IhElement record（A5 × Det）                           ✓
--- ② 生成元: rot2/rot3/rot5 + det 翻转                             ✓
--- ③ 关系: det-mul（C₂ 结构）+ A₅ 共轭类                            ✓
--- ④ 相位: Det = even/odd = C₂ 相位                                ✓
--- ⑤ 时钟: 群元素的阶（2阶/3阶/5阶）                                ✓
--- ⑥ 归零: 单位元 id₅ × even                                       ✓
--- ⑦ 刚性: 三常量共源 I_h（144/46/√3 实验锚定）                     ✓
--- ⑧ 核对: polar-winding-check refl                                ✓
+-- ⚠ 2026-10-22 更正：本表原先把 8 项全部标 ✓，与模块头（39-46 行）的「5/8」自相矛盾。
+--   按代码实际内容核对如下（以代码为准）：
+--
+-- ① 载体: IhElement record（A5 × Det）                            ✓
+-- ② 生成元: 只有构造子索引（rot2/rot3/rot5 + det）；无生成元与关系    △ 仅计数框架
+-- ③ 关系: det-mul 是 C₂ 乘法表；A₅ 群律（结合/逆元）**未给出**        △ 部分
+-- ④ 相位: Det = even/odd 只是 det 符号，不是 C₄ 相位                  ✗
+-- ⑤ 时钟: 群元素的阶（2/3/5 阶）只出现在注释里，未形式化              △ 注释级
+-- ⑥ 归零: record 里无单位元/逆元字段，无归零机制                      ✗
+-- ⑦ 刚性: 无 Frobenius 诱导                                           ✗
+-- ⑧ 核对: a5-card-check / ih-card-check / polar-winding-check 皆 refl ✓（只确认算术，不产生结构）
+--
+--   ⇒ 与模块头一致：**3 项完备 + 3 项部分/注释级 + 3 项缺**，按八要素口径（严）算 5/8 也未达成，
+--     如实写作「载体/核对到位，其余为框架」。
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------

@@ -50,6 +50,7 @@
 --   §5  ns-step6-preserves-incompressible-conditional                    (条件式)
 --   §5  ns-step6-preserves-incompressible                                (可用式：逐场前提)
 --   §6  laplacian6 ≢ laplacian3Replica / div6 ≢ div3Replica              (判别引理)
+--   §12 laplacian6-nonunique : 任一解都有另一个解 ≢ 它（核含非零常值场 ⇒ 解不唯一）
 --
 -- 诚实边界（不得越过）
 --   ✗ 本模块是 GF(3) **幅度层**的算子层，不含 DC 的 C₄ 相位层
@@ -59,7 +60,8 @@
 --   ✗ 六个轴的定义性修复**不**蕴含「离散 Δ 可逆」：Δ₆ 的核维数 275（真六轴）而非 0，
 --     故离散 Leray 投影仍是条件存在（`PoissonSolvable` 那类前提不可省）。
 --   ✓ 已证: 六轴 div∘grad = laplacian（定义性）、div 线性、nsStep6 的条件不可压保持、
---           六轴 ≢ 三轴复刻（构造性反例）、**对流项 adv1..adv6 / advField6**（§8，2026-10-20）。
+--           六轴 ≢ 三轴复刻（构造性反例）、**对流项 adv1..adv6 / advField6**（§8，2026-10-20）、
+--           **Leray 解不唯一**（§12，2026-10-22：核含非零常值场 ⇒ 任一解可平移成另一解）。
 --   ✗ 未证: 无条件不可压保持（前提 `laplacian6 f x ≡ T₀` 全局成立**是假的**，见 §7）。
 --
 -- 依赖: Sovereign.Base.Trit （GF(3) 环公理）。为使「六轴 vs 三轴」的判别引理
@@ -926,3 +928,179 @@ diffF6-3 i f x =
                  (cong negate (axisLap6-eq-lineSum i f x)))
         (trans (cong (λ z → z ⊕ negate (lineSum i f x)) (lineSum-shift i f x))
                (⊕-negate-self (lineSum i f x)))
+
+--------------------------------------------------------------------------------
+-- §? GF(3) 上二阶差分 = 整条轴求和（三系数全为 1）
+--
+-- 关键：GF(3) 中 −2 ≡ +1，故 f(x+2h) − 2f(x+h) + f(x) = f(x+2h) + f(x+h) + f(x)。
+-- 这条是「秩 = 454」路线上的第一块砖（其余两块：线求和算子的像结构、秩-零化度）。
+--------------------------------------------------------------------------------
+
+-- −2a = a（GF(3) 特征 3）
+neg2 : ∀ a → negate a ⊕ negate a ≡ a
+neg2 T₀ = refl
+neg2 T₁ = refl
+neg2 T₂ = refl
+
+axisLap6-lineSum : ∀ i f x →
+  axisLap6 i f x ≡ f (shiftAt6 i (shiftAt6 i x)) ⊕ (f (shiftAt6 i x) ⊕ f x)
+axisLap6-lineSum i f x =
+  begin
+    axisLap6 i f x
+  ≡⟨ refl ⟩
+    (f (shiftAt6 i (shiftAt6 i x)) ⊕ negate (f (shiftAt6 i x)))
+      ⊕ negate (f (shiftAt6 i x) ⊕ negate (f x))
+  ≡⟨ cong (λ z → (f (shiftAt6 i (shiftAt6 i x)) ⊕ negate (f (shiftAt6 i x))) ⊕ z)
+          (negate-⊕ (f (shiftAt6 i x)) (negate (f x))) ⟩
+    (f (shiftAt6 i (shiftAt6 i x)) ⊕ negate (f (shiftAt6 i x)))
+      ⊕ (negate (f (shiftAt6 i x)) ⊕ negate (negate (f x)))
+  ≡⟨ cong (λ z → (f (shiftAt6 i (shiftAt6 i x)) ⊕ negate (f (shiftAt6 i x))) ⊕ z)
+          (cong (λ z → negate (f (shiftAt6 i x)) ⊕ z) (negate² (f x))) ⟩
+    (f (shiftAt6 i (shiftAt6 i x)) ⊕ negate (f (shiftAt6 i x)))
+      ⊕ (negate (f (shiftAt6 i x)) ⊕ f x)
+  ≡⟨ ⊕-assoc (f (shiftAt6 i (shiftAt6 i x))) (negate (f (shiftAt6 i x)))
+             (negate (f (shiftAt6 i x)) ⊕ f x) ⟩
+    f (shiftAt6 i (shiftAt6 i x))
+      ⊕ (negate (f (shiftAt6 i x)) ⊕ (negate (f (shiftAt6 i x)) ⊕ f x))
+  ≡⟨ cong (λ z → f (shiftAt6 i (shiftAt6 i x)) ⊕ z)
+          (sym (⊕-assoc (negate (f (shiftAt6 i x))) (negate (f (shiftAt6 i x))) (f x))) ⟩
+    f (shiftAt6 i (shiftAt6 i x))
+      ⊕ ((negate (f (shiftAt6 i x)) ⊕ negate (f (shiftAt6 i x))) ⊕ f x)
+  ≡⟨ cong (λ z → f (shiftAt6 i (shiftAt6 i x)) ⊕ z)
+          (cong (λ z → z ⊕ f x) (neg2 (f (shiftAt6 i x)))) ⟩
+    f (shiftAt6 i (shiftAt6 i x)) ⊕ (f (shiftAt6 i x) ⊕ f x)
+  ∎
+  where
+    open ≡-Reasoning
+
+-- 三项 3-循环旋转：a ⊕ (b ⊕ c) ≡ b ⊕ (c ⊕ a)
+sum3-rot : ∀ a b c → a ⊕ (b ⊕ c) ≡ b ⊕ (c ⊕ a)
+sum3-rot a b c =
+  begin
+    a ⊕ (b ⊕ c)
+  ≡⟨ sym (⊕-assoc a b c) ⟩
+    (a ⊕ b) ⊕ c
+  ≡⟨ cong (λ z → z ⊕ c) (⊕-comm a b) ⟩
+    (b ⊕ a) ⊕ c
+  ≡⟨ ⊕-assoc b a c ⟩
+    b ⊕ (a ⊕ c)
+  ≡⟨ cong (λ z → b ⊕ z) (⊕-comm a c) ⟩
+    b ⊕ (c ⊕ a)
+  ∎
+  where
+    open ≡-Reasoning
+
+-- 线求和算子的像**沿该轴常值**：Lᵢf 在第 i 轴方向不变
+axisLap6-shift-invariant : ∀ i f x → axisLap6 i f (shiftAt6 i x) ≡ axisLap6 i f x
+axisLap6-shift-invariant i f x =
+  begin
+    axisLap6 i f (shiftAt6 i x)
+  ≡⟨ axisLap6-lineSum i f (shiftAt6 i x) ⟩
+    f (shiftAt6 i (shiftAt6 i (shiftAt6 i x)))
+      ⊕ (f (shiftAt6 i (shiftAt6 i x)) ⊕ f (shiftAt6 i x))
+  ≡⟨ cong (λ z → f z ⊕ (f (shiftAt6 i (shiftAt6 i x)) ⊕ f (shiftAt6 i x)))
+          (shiftAt6-cubed i x) ⟩
+    f x ⊕ (f (shiftAt6 i (shiftAt6 i x)) ⊕ f (shiftAt6 i x))
+  ≡⟨ sum3-rot (f x) (f (shiftAt6 i (shiftAt6 i x))) (f (shiftAt6 i x)) ⟩
+    f (shiftAt6 i (shiftAt6 i x)) ⊕ (f (shiftAt6 i x) ⊕ f x)
+  ≡⟨ sym (axisLap6-lineSum i f x) ⟩
+    axisLap6 i f x
+  ∎
+  where
+    open ≡-Reasoning
+
+-- 三个值的九项和恒为 0（3a+3b+3c = 0，特征 3）；27 个构造子组合逐一 refl
+nine-zero : ∀ a b c →
+  (b ⊕ (a ⊕ c)) ⊕ ((a ⊕ (c ⊕ b)) ⊕ (c ⊕ (b ⊕ a))) ≡ T₀
+nine-zero T₀ T₀ T₀ = refl
+nine-zero T₀ T₀ T₁ = refl
+nine-zero T₀ T₀ T₂ = refl
+nine-zero T₀ T₁ T₀ = refl
+nine-zero T₀ T₁ T₁ = refl
+nine-zero T₀ T₁ T₂ = refl
+nine-zero T₀ T₂ T₀ = refl
+nine-zero T₀ T₂ T₁ = refl
+nine-zero T₀ T₂ T₂ = refl
+nine-zero T₁ T₀ T₀ = refl
+nine-zero T₁ T₀ T₁ = refl
+nine-zero T₁ T₀ T₂ = refl
+nine-zero T₁ T₁ T₀ = refl
+nine-zero T₁ T₁ T₁ = refl
+nine-zero T₁ T₁ T₂ = refl
+nine-zero T₁ T₂ T₀ = refl
+nine-zero T₁ T₂ T₁ = refl
+nine-zero T₁ T₂ T₂ = refl
+nine-zero T₂ T₀ T₀ = refl
+nine-zero T₂ T₀ T₁ = refl
+nine-zero T₂ T₀ T₂ = refl
+nine-zero T₂ T₁ T₀ = refl
+nine-zero T₂ T₁ T₁ = refl
+nine-zero T₂ T₁ T₂ = refl
+nine-zero T₂ T₂ T₀ = refl
+nine-zero T₂ T₂ T₁ = refl
+nine-zero T₂ T₂ T₂ = refl
+
+-- 线求和算子在 GF(3) 上**平方为零**：Lᵢ(Lᵢ f) = 3·(线求和) = 0
+axisLap6-square-zero : ∀ i f x → axisLap6 i (axisLap6 i f) x ≡ T₀
+axisLap6-square-zero i f x
+  rewrite axisLap6-lineSum i (axisLap6 i f) x
+        | axisLap6-lineSum i f (shiftAt6 i (shiftAt6 i x))
+        | axisLap6-lineSum i f (shiftAt6 i x)
+        | axisLap6-lineSum i f x
+        | shiftAt6-cubed i x
+  = nine-zero (f x) (f (shiftAt6 i x)) (f (shiftAt6 i (shiftAt6 i x)))
+
+-- 常数函数在 laplacian6 的核中：Lᵢ(const) = 3c = 0
+laplacian6-const-zero : ∀ c x → laplacian6 (λ _ → c) x ≡ T₀
+laplacian6-const-zero T₀ x = refl
+laplacian6-const-zero T₁ x = refl
+laplacian6-const-zero T₂ x = refl
+
+--------------------------------------------------------------------------------
+-- §12. Leray 投影的**非唯一性**（2026-10-22）
+--
+-- 对应台账节点 `NSE.leray-nonunique`：六轴上 Poisson 方程的解**不唯一**。
+--
+-- 证法：取非零常值场 c = λ _ → T₁，由 `laplacian6-const-zero` 它在 laplacian6 的核里；
+--   由线性 `laplacian6-+S`，若 p 是任一解，则 p +S c 也是**同一右端**的解；
+--   而 p +S c ≢ p（逐点差一个 T₁）。
+--   这与连续统直觉一致：核非平凡 ⇒ 解只在「模核」意义下确定。
+--------------------------------------------------------------------------------
+
+-- 逐点：加 T₁ 必然改变值（GF(3) 中 T₁ 非零元）
+shift≠id : ∀ (a : Trit) → a ⊕ T₁ ≢ a
+shift≠id T₀ ()
+shift≠id T₁ ()
+shift≠id T₂ ()
+
+constT₁ : ScalarField
+constT₁ = λ _ → T₁
+
+-- 平移一个**非零核元素**后右端不变
+laplacian6-translate-invariant :
+  ∀ (p : ScalarField) → laplacian6 (p +S constT₁) ≈ laplacian6 p
+laplacian6-translate-invariant p x = begin
+    laplacian6 (p +S constT₁) x
+  ≡⟨ laplacian6-+S p constT₁ x ⟩
+    (laplacian6 p +S laplacian6 constT₁) x
+  ≡⟨ cong (laplacian6 p x ⊕_) (laplacian6-const-zero T₁ x) ⟩
+    laplacian6 p x ⊕ T₀
+  ≡⟨ ⊕-identityʳ (laplacian6 p x) ⟩
+    laplacian6 p x
+  ∎
+  where
+    open ≡-Reasoning
+
+-- 该平移确实给出**不同**的场
+constT₁-shifts : ∀ (p : ScalarField) → (p +S constT₁) ≢ p
+constT₁-shifts p h = shift≠id (p pt) (cong (λ f → f pt) h)
+  where
+    pt : Torus6
+    pt = fzero , fzero , fzero , fzero , fzero , fzero
+
+-- **主定理**：给定任一解，存在另一个不相等的解
+laplacian6-nonunique :
+  ∀ (p : ScalarField)
+  → Σ ScalarField (λ q → (laplacian6 q ≈ laplacian6 p) × (q ≢ p))
+laplacian6-nonunique p =
+  (p +S constT₁) , laplacian6-translate-invariant p , constT₁-shifts p

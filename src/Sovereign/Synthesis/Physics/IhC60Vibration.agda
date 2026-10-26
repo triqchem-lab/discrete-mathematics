@@ -42,8 +42,8 @@ Golden = ℤ × ℤ          -- (a, b) = a + b·τ
 τ : Golden
 τ = (+ 0 , + 1)
 
-g1 : Golden
-g1 = (+ 1 , + 0)        -- 1
+vibG1 : Golden
+vibG1 = (+ 1 , + 0)        -- 1
 
 _+G_ : Golden → Golden → Golden
 (a , b) +G (c , d) = (a + c , b + d)
@@ -68,13 +68,13 @@ data Class : Set where
 -- 特征标表（100 项, τ 值: C5/S10 类取 τ, C52/S103 类取 1−τ）
 charTable : Irrep → Class → Golden
 -- A_g: 全 1
-charTable Ag _ = g1
+charTable Ag _ = vibG1
 -- A_u: g 类 1, u 类 −1
-charTable Au CE  = g1
-charTable Au CC5 = g1
-charTable Au CC52 = g1
-charTable Au CC3 = g1
-charTable Au CC2 = g1
+charTable Au CE  = vibG1
+charTable Au CC5 = vibG1
+charTable Au CC52 = vibG1
+charTable Au CC3 = vibG1
+charTable Au CC2 = vibG1
 charTable Au Ci  = (-[1+ 0 ] , + 0)
 charTable Au CS10 = (-[1+ 0 ] , + 0)
 charTable Au CS103 = (-[1+ 0 ] , + 0)
@@ -170,9 +170,9 @@ charTable Hu CS6 = (+ 1 , + 0)
 charTable Hu Csig = (-[1+ 0 ] , + 0)
 
 -- 维数
-dim : Irrep → ℕ
-dim Ag = 1; dim Au = 1; dim T1g = 3; dim T1u = 3; dim T2g = 3
-dim T2u = 3; dim Gg = 4; dim Gu = 4; dim Hg = 5; dim Hu = 5
+vibDim : Irrep → ℕ
+vibDim Ag = 1; vibDim Au = 1; vibDim T1g = 3; vibDim T1u = 3; vibDim T2g = 3
+vibDim T2u = 3; vibDim Gg = 4; vibDim Gu = 4; vibDim Hg = 5; vibDim Hu = 5
 
 -- Γ_perm: 60 顶点置换表示（仅 E:60, σ:4 非零）
 chiPerm : Class → Golden
@@ -487,14 +487,14 @@ removeOne R (x ∷ xs) | no _  = x ∷ removeOne R xs
 vibList : List Irrep
 vibList = removeOne T1g (removeOne T1u permVibRaw)
 
-count : Irrep → List Irrep → ℕ
-count R [] = 0
-count R (x ∷ xs) with irrep-dec R x
-count R (x ∷ xs) | yes _ = suc (count R xs)
-count R (x ∷ xs) | no _  = count R xs
+vibCount : Irrep → List Irrep → ℕ
+vibCount R [] = 0
+vibCount R (x ∷ xs) with irrep-dec R x
+vibCount R (x ∷ xs) | yes _ = suc (vibCount R xs)
+vibCount R (x ∷ xs) | no _  = vibCount R xs
 
 vibMult : Irrep → ℕ
-vibMult R = count R vibList
+vibMult R = vibCount R vibList
 
 -- 主定理: Γ_vib = 2A_g + A_u + 3T₁g + 4T₁u + 4T₂g + 5T₂u + 6G_g + 6G_u + 8H_g + 7H_u
 vib-vector :
@@ -513,11 +513,11 @@ freq-46 = refl
 -- §6. 维数守恒: Σ m_R · d_R = 174 = 3·60 − 6
 ------------------------------------------------------------------------------
 
-dim-174 : vibMult Ag *ℕ dim Ag +ℕ vibMult Au *ℕ dim Au
-        +ℕ vibMult T1g *ℕ dim T1g +ℕ vibMult T1u *ℕ dim T1u
-        +ℕ vibMult T2g *ℕ dim T2g +ℕ vibMult T2u *ℕ dim T2u
-        +ℕ vibMult Gg *ℕ dim Gg +ℕ vibMult Gu *ℕ dim Gu
-        +ℕ vibMult Hg *ℕ dim Hg +ℕ vibMult Hu *ℕ dim Hu ≡ 174
+dim-174 : vibMult Ag *ℕ vibDim Ag +ℕ vibMult Au *ℕ vibDim Au
+        +ℕ vibMult T1g *ℕ vibDim T1g +ℕ vibMult T1u *ℕ vibDim T1u
+        +ℕ vibMult T2g *ℕ vibDim T2g +ℕ vibMult T2u *ℕ vibDim T2u
+        +ℕ vibMult Gg *ℕ vibDim Gg +ℕ vibMult Gu *ℕ vibDim Gu
+        +ℕ vibMult Hg *ℕ vibDim Hg +ℕ vibMult Hu *ℕ vibDim Hu ≡ 174
 dim-174 = refl
 
 -- 174 = 3×60 − 6（平动+转动自由度排除）
@@ -528,23 +528,23 @@ dof-check = refl
 ------------------------------------------------------------------------------
 
 -- 共轭类大小 (|I_h| = 120): E, 12C5, 12C5², 20C3, 15C2, i, 12S10, 12S10³, 20S6, 15σ
-classSize : Class → ℕ
-classSize CE = 1
-classSize CC5 = 12
-classSize CC52 = 12
-classSize CC3 = 20
-classSize CC2 = 15
-classSize Ci = 1
-classSize CS10 = 12
-classSize CS103 = 12
-classSize CS6 = 20
-classSize Csig = 15
+vibClassSize : Class → ℕ
+vibClassSize CE = 1
+vibClassSize CC5 = 12
+vibClassSize CC52 = 12
+vibClassSize CC3 = 20
+vibClassSize CC2 = 15
+vibClassSize Ci = 1
+vibClassSize CS10 = 12
+vibClassSize CS103 = 12
+vibClassSize CS6 = 20
+vibClassSize Csig = 15
 
 -- |I_h| = Σ |C| = 120
-classSizeSum :
-  classSize CE +ℕ classSize CC5 +ℕ classSize CC52 +ℕ classSize CC3 +ℕ classSize CC2
-  +ℕ classSize Ci +ℕ classSize CS10 +ℕ classSize CS103 +ℕ classSize CS6 +ℕ classSize Csig ≡ 120
-classSizeSum = refl
+vibClassSizeSum :
+  vibClassSize CE +ℕ vibClassSize CC5 +ℕ vibClassSize CC52 +ℕ vibClassSize CC3 +ℕ vibClassSize CC2
+  +ℕ vibClassSize Ci +ℕ vibClassSize CS10 +ℕ vibClassSize CS103 +ℕ vibClassSize CS6 +ℕ vibClassSize Csig ≡ 120
+vibClassSizeSum = refl
 
 -- ℕ 缩放: n·(a+bτ) = (na, nb)
 scaleG : ℕ → Golden → Golden
@@ -552,7 +552,7 @@ scaleG n (a , b) = (+ n * a , + n * b)
 
 -- 单项: |C|·χᵢ(C)·χⱼ(C)
 orthoTerm : Irrep → Irrep → Class → Golden
-orthoTerm R S C = scaleG (classSize C) (charTable R C *G charTable S C)
+orthoTerm R S C = scaleG (vibClassSize C) (charTable R C *G charTable S C)
 
 -- 缩放内积: ⟨χᵢ, χⱼ⟩·120 = Σ_C |C|·χᵢ(C)·χⱼ(C) = 120·δᵢⱼ
 -- (I_h 特征标全为实数且在 ℤ[τ], 无需共轭; 乘 120 消除分母, 全整数 refl)
@@ -882,7 +882,7 @@ observed-lines = refl
 
 -- 简并加权跃迁态: 4·d(T₁u) + 2·d(A_g) + 8·d(H_g) = 4·3 + 2·1 + 8·5 = 54
 weighted-states :
-  vibMult T1u *ℕ dim T1u +ℕ vibMult Ag *ℕ dim Ag +ℕ vibMult Hg *ℕ dim Hg ≡ 54
+  vibMult T1u *ℕ vibDim T1u +ℕ vibMult Ag *ℕ vibDim Ag +ℕ vibMult Hg *ℕ vibDim Hg ≡ 54
 weighted-states = refl
 
 -- 选择定则与 46 定理的关系: 46 个独立基频中, 14 个光谱可观测 (IR+Raman),
@@ -903,16 +903,16 @@ freq-46-structural = freq-46
 
 -- L2: 174 = 3×60 - 6 (结构关系)
 dim-174-structural :
-  vibMult Ag *ℕ dim Ag +ℕ vibMult Au *ℕ dim Au
-  +ℕ vibMult T1g *ℕ dim T1g +ℕ vibMult T1u *ℕ dim T1u
-  +ℕ vibMult T2g *ℕ dim T2g +ℕ vibMult T2u *ℕ dim T2u
-  +ℕ vibMult Gg *ℕ dim Gg +ℕ vibMult Gu *ℕ dim Gu
-  +ℕ vibMult Hg *ℕ dim Hg +ℕ vibMult Hu *ℕ dim Hu ≡ 174
+  vibMult Ag *ℕ vibDim Ag +ℕ vibMult Au *ℕ vibDim Au
+  +ℕ vibMult T1g *ℕ vibDim T1g +ℕ vibMult T1u *ℕ vibDim T1u
+  +ℕ vibMult T2g *ℕ vibDim T2g +ℕ vibMult T2u *ℕ vibDim T2u
+  +ℕ vibMult Gg *ℕ vibDim Gg +ℕ vibMult Gu *ℕ vibDim Gu
+  +ℕ vibMult Hg *ℕ vibDim Hg +ℕ vibMult Hu *ℕ vibDim Hu ≡ 174
 dim-174-structural = dim-174
 
 -- L2: 174 = 3×60 - 6 (代数验证)
-dim-formula : 3 *ℕ 60 ∸ℕ 6 ≡ 174
-dim-formula = refl
+vibDimFormula : 3 *ℕ 60 ∸ℕ 6 ≡ 174
+vibDimFormula = refl
 
 -- L2: 可观测 + 暗模 = 总数 (结构关系)
 observed-dark-total : vibMult T1u +ℕ vibMult Ag +ℕ vibMult Hg +ℕ 32 ≡ 46
@@ -928,5 +928,5 @@ raman-active-count = raman-active
 
 -- L2: 简并加权跃迁态数
 weighted-states-count :
-  vibMult T1u *ℕ dim T1u +ℕ vibMult Ag *ℕ dim Ag +ℕ vibMult Hg *ℕ dim Hg ≡ 54
+  vibMult T1u *ℕ vibDim T1u +ℕ vibMult Ag *ℕ vibDim Ag +ℕ vibMult Hg *ℕ vibDim Hg ≡ 54
 weighted-states-count = weighted-states
