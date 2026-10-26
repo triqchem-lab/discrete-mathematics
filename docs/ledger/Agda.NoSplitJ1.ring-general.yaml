@@ -1,0 +1,39 @@
+id: Agda.NoSplitJ1.ring-general
+module: Sovereign.Synthesis.Physics.NoSplitJ1Ring
+statement: >-
+  设 R 为无挠交换环（TorsionFree = ∀ x → - x ≈ x → x ≈ 0#）。若 3×3 矩阵
+  A : Fin 3 → Fin 3 → R 与 A₄ 的两个生成元（3-循环 shift 与反演型 180° 旋转 flip）
+  都交换，则 A 的六个非对角元全为 0#，且三个对角元相等（即 A 是标量矩阵）。
+level: A
+evidence:
+  compile_receipt: 7890fd1c63816f18a23ea29cf53c2d3661acd94f7b6669297f729177d19138fe
+  oracle: >-
+    engineering/oracle_nosplit_ring_general.py（回执
+    fea7e790e0697b5d863cfcd92d6cd6a0fc30afc66f96cfa8c8669c94d9ab3f93；
+    domain/points = 19683/19683，GF(3)^9 全空间穷举 + GF(p)(p=5,7,11,13,101) 与 ℚ
+    精确消元（交换子空间维数 = 1，完整解）+ GF(2) 非标量反例）
+  cross_check: >-
+    §9b 内核核验「推广没有变弱」：把 NoSplitJ1Full 的两条交换性假设逐点转换成本模块的
+    假设后，本模块的 ℤ 实例蕴含 no-split-full 的陈述（类型检查器接受；两模块的
+    apply/shift 是不同定义，作为函数不定义相等，故必须逐点展开）。§9 无挠性一环复用
+    NoSplitJ1Full.neg-eq-self。
+dependencies: [Endofullerene.NoSplitJ1-full]
+proof_strategy: >-
+  环公理 + setoid equational reasoning（stdlib CommutativeRing，等式取 _≈_，不引入
+  可判定相等）；无挠性由整数构造子互异（ℤ 版）提升为**假设**；证明结构与 NoSplitJ1Full
+  逐条对应（lin-100/010/001/neg100/neg010 → apply-e0/e1/e2、apply-flip-e0/e1 →
+  c01-20…c20-12 → n20/n21 → 主定理）。
+human_notes: |
+  数学背景：A₄ 不变微扰不能劈裂 J=1 三重态。ℤ 版（NoSplitJ1Full）只覆盖整矩阵，
+  而物理耦合常数可取任意无挠交换环（ℚ / ℝ / GF(p) p≠2）；本模块把结论提升到环层。
+  诚实边界：
+    · 环等式是 setoid 等式 _≈_（CommutativeRing 不保证命题等式），命题里的 ≡ 读作 ≈；
+    · 无挠性是**唯一**额外假设；特征 2 的非平凡环不满足它（-x ≈ x 对一切 x 成立），
+      且结论在该情形确实失效（GF(2) 上 A = S 是非标量反例）——此反例只有数值 oracle
+      验证，本库无 GF(2) 环实例的形式化 [未验证·非内核]；
+    · 生成元阶 §8（shift³ / flip² / g³）与载体无关，已同批证成。
+  踩坑沉淀：`open CommutativeRing R public` 会把 `zero`（Zero record）带进作用域，
+  与 `Data.Fin.zero` 歧义 —— 用 `hiding (zero)` 解决；`-0` 不能作标识符（Agda 当负数字面量），
+  改名 `neg-0`；`_⊔_` 需显式 `open import Agda.Primitive using (_⊔_)`。
+git_witness: 台账见证提交（proof_dag 第 3967 次）
+updated: 2026-10-26

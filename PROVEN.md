@@ -256,6 +256,7 @@ g-ne-unit : ∀ {A} (P : Presentation A)
 | `TRMultipletsZ.agda` | `sq-suc-Z`：ℤ 上 x² + (2x+1) ≡ (x+1)²（RingSolver 宏，代数核心） | `6f4517ba…` | — |
 | `TRMultipletsNat.agda` | `sum-odd`：∀ a n → sumOdd a n + a² ≡ (a+n)²（**完整 ℕ 索引版**）+ 4 个实例 | `05743ad7…` | 距 Σ_λ(2λ+1)=(2l+1)(2J+1) 只差 a=J∸l、n=2l+1 的实例化 |
 | `NoSplitJ1Full.agda` | `no-split-full`：与 shift + flip 都交换 ⇒ 6 个非对角元为 0、三个对角元相等（标量）；另 `shift³`、`flip²`（生成元阶） | `c9d1e186…` | 一般情形（含非对角）；无挠性用构造子互异证 `neg-eq-self`；生成元阶 `shift³`/`flip²`/`g³`（g=flip∘shift）全在 Agda；闭包 = 12 阶 = A₄（oracle 回执 `56921d3e…`） |
+| `NoSplitJ1Ring.agda` | `no-split-ring-general`：**无挠交换环** R 上，与 shift、flip 都交换的 3×3 矩阵 ⇒ 六个非对角元为 0、三个对角元相等（标量）。`TorsionFree = ∀ x → - x ≈ x → x ≈ 0#` 是唯一额外假设 | `7890fd1c…` | **从 ℤ 提升到任意无挠交换环**（stdlib `CommutativeRing`，等式取 setoid `_≈_`，不引入可判定相等）；证明结构与 NoSplitJ1Full 逐条对应；§9 实例化到 ℤ（复用 `neg-eq-self`）+ §9b **内核核验推广蕴含 ℤ 版** `no-split-full`（逐点转换后类型检查器接受）；oracle `fea7e790…`：GF(3)^9 全穷举 19683 + GF(p)/ℚ 精确消元维数 1 + GF(2) 非标量反例（无挠性不可去） |
 | `IhC60Vibration.agda` | `freq-46`、`dim-174`、`vib-vector`、`active-plus-dark` | `28fef4c6…` | 本线既有；本轮几何独立复核 + 去重重命名（`dim`/`count`/`classSize` 等 6 个通用名加 `vib` 前缀），duplicate 审计 151/151 无同名 |
 
 **独立复核记录（Python 侧，非 Agda）**：2A₅ 阶 120 / 2A₄ 阶 24 / 2A₄ ⊂ 2A₅；I_h 特征标表正交性 100 项（最大偏差 5.9e-17）；
