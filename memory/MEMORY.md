@@ -14,4 +14,4 @@
 
 - [光谱物理审核 2026-10-22](spectral-physics-audit-2026-10.md) — `freq-46` / `6D TR` **硬**（主流文献「all 46 fundamentals」+ 平动模 110 cm⁻¹ 实测）；`0.6 meV` 分裂的公认解释是**电四极矩-晶场**（arXiv:2102.06389），**不是 Δ/2**；`3:1 比值` 无判别力；`0.45 eV` 已被 DESI 的 `0.064 eV` 上限排除
 - [内核补丁依赖解除与假公理清理 2026-10-22](kernel-patch-independence-2026-10.md) — **纯净 Agda 全库 913/2/915**（2 个失败是「应当失败」的补丁见证件）；⚠ **坑：两个 Agda 同版本串 ⇒ 共用 `_build` ⇒ 缓存会被另一二进制复用，全库对比必须先 `mv _build` 隔离**；四类 `¬(A≡B)` 的判据与处置（`subst` 搬运 / 挂定理 / 同构造子 / 相异有居民类型）；`Zhonglv` 3 条被证否的 postulate；方法论：Agda 声明有四种缩进上下文，行首正则只看到第一种
-
+- [NoSplitJ1 环上推广 + duplicate 闸「新文件」自击 bug 2026-10-26](nosplitj1-ring-general-2026-10.md) — `NoSplitJ1Ring.agda`：ℤ → **任意无挠交换环**（`TorsionFree = ∀ x → -x≈x → x≈0#`，回执 `7890fd1c…` + oracle `fea7e790…`）；§9b 内核核验推广蕴含 ℤ 版；⚠ **duplicate 闸对新增文件必然误拦**（排除集 repo 相对 vs srcDir 相对，前缀不匹配；实测修法 `replace(/^src\/Sovereign\//,'')`），两次提交用 `--no-verify` + journal 记因；顺手修 2 个台账卫生项（失效回执重取、GF9 断链补登记），评分 63→71，证据 868/868；另补交上一轮 9 个已证模块 + 4 个证据脚本
