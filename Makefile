@@ -54,7 +54,8 @@ MODULES = \
 	src/Sovereign/Synthesis/Representation/BraidQuotientCubical.agda \
 	src/Sovereign/Synthesis/Representation/BraidQuotientCubicalEval.agda \
 	src/Sovereign/Synthesis/Representation/BraidQuotientCubicalGroup.agda \
-	src/Sovereign/Synthesis/A4/CoverA4.agda
+	src/Sovereign/Synthesis/A4/CoverA4.agda \
+	src/Sovereign/Synthesis/A4/BilinearSchur2A4.agda
 
 # 快速门：吃缓存。Agda 2.9 对 up-to-date 模块静默跳过（不打印 Skipping），
 # 故本目标成功的含义是「路径可解析 + 接口与源码一致」，不等于「现在能过」。
