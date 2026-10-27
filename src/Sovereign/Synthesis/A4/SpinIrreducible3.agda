@@ -30,7 +30,7 @@ open ≡-Reasoning
 open import Sovereign.Synthesis.A4.A4Representation
   using (Zω; zeroZω; addZω; mulZω)
 open import Sovereign.Algebra.FieldTower.Zomega
-  using (mulZω-assoc; mulZω-comm; mulZω-distribˡ)
+  using (mulZω-assoc; mulZω-comm; mulZω-distribˡ; addZω-identityʳ)
 open import Sovereign.Synthesis.FieldTower.MatrixZω using (Mat; dot)
 open import Sovereign.Synthesis.A4.SpinIrreducible using (interchange)
 
@@ -72,3 +72,85 @@ scaleV3-assoc c d v =
 scaleV3-cong : ∀ {c d : Zω} → c ≡ d → ∀ (v : Vec3) → scaleV3 c v ≡ scaleV3 d v
 scaleV3-cong {c} {d} h v = map-cong (λ x → cong (λ t → mulZω t x) h) v
 
+--------------------------------------------------------------------------------
+-- ③ dot-scale：内积对标量线性（注意 dot 的三项形状带一个尾零）
+--
+--   dot 的定义是 addZω (x·y) (dot xs ys)，dot [] [] = zeroZω，
+--   所以三项的展开是  a + (b + (d + 0))  —— 末尾那个 0 不能省；
+--   这也是先前"符号中间形对不上"的真正原因（不是 ℤ 的符号括号）。
+--------------------------------------------------------------------------------
+
+dot-scale : ∀ (r v : Vec3) (c : Zω)
+          → dot r (map (mulZω c) v) ≡ mulZω c (dot r v)
+dot-scale (a ∷ b ∷ d ∷ []) (x ∷ y ∷ z ∷ []) c = begin
+    addZω (mulZω a (mulZω c x))
+          (addZω (mulZω b (mulZω c y)) (addZω (mulZω d (mulZω c z)) zeroZω))
+  ≡⟨ cong (λ t → addZω (mulZω a (mulZω c x))
+                       (addZω (mulZω b (mulZω c y)) t))
+          (addZω-identityʳ (mulZω d (mulZω c z))) ⟩
+    addZω (mulZω a (mulZω c x))
+          (addZω (mulZω b (mulZω c y)) (mulZω d (mulZω c z)))
+  ≡⟨ cong (λ t → addZω (mulZω a (mulZω c x))
+                       (addZω (mulZω b (mulZω c y)) t))
+          (interchange d c z) ⟩
+    addZω (mulZω a (mulZω c x))
+          (addZω (mulZω b (mulZω c y)) (mulZω c (mulZω d z)))
+  ≡⟨ cong (λ t → addZω (mulZω a (mulZω c x))
+                       (addZω t (mulZω c (mulZω d z))))
+          (interchange b c y) ⟩
+    addZω (mulZω a (mulZω c x))
+          (addZω (mulZω c (mulZω b y)) (mulZω c (mulZω d z)))
+  ≡⟨ cong (λ t → addZω t
+                       (addZω (mulZω c (mulZω b y)) (mulZω c (mulZω d z))))
+          (interchange a c x) ⟩
+    addZω (mulZω c (mulZω a x))
+          (addZω (mulZω c (mulZω b y)) (mulZω c (mulZω d z)))
+  ≡⟨ cong (λ t → addZω (mulZω c (mulZω a x)) t)
+          (sym (mulZω-distribˡ c (mulZω b y) (mulZω d z))) ⟩
+    addZω (mulZω c (mulZω a x))
+          (mulZω c (addZω (mulZω b y) (mulZω d z)))
+  ≡⟨ sym (mulZω-distribˡ c (mulZω a x) (addZω (mulZω b y) (mulZω d z))) ⟩
+    mulZω c (addZω (mulZω a x) (addZω (mulZω b y) (mulZω d z)))
+  ≡⟨ sym (cong (mulZω c)
+               (cong (λ t → addZω (mulZω a x) (addZω (mulZω b y) t))
+                     (addZω-identityʳ (mulZω d z)))) ⟩
+    mulZω c (addZω (mulZω a x) (addZω (mulZω b y) (addZω (mulZω d z) zeroZω)))
+  ∎
+
+--------------------------------------------------------------------------------
+-- ④ 标量可提出矩阵、关键交换引理
+--------------------------------------------------------------------------------
+
+mulMV3-scale : ∀ (M : Mat 3 3) (c : Zω) (v : Vec3)
+             → mulMV3 M (scaleV3 c v) ≡ scaleV3 c (mulMV3 M v)
+mulMV3-scale M c v =
+  trans (map-cong (λ row → dot-scale row v c) M)
+        (map-∘ (mulZω c) (λ row → dot row v) M)
+
+AB3-form : ∀ (A B : Mat 3 3) (v : Vec3) (c d : Zω)
+         → mulMV3 A v ≡ scaleV3 c v
+         → mulMV3 B v ≡ scaleV3 d v
+         → mulMV3 A (mulMV3 B v) ≡ scaleV3 (mulZω d c) v
+AB3-form A B v c d Av Bv =
+  trans (cong (mulMV3 A) Bv)
+    (trans (mulMV3-scale A d v)
+      (trans (cong (scaleV3 d) Av) (scaleV3-assoc d c v)))
+
+BA3-form : ∀ (A B : Mat 3 3) (v : Vec3) (c d : Zω)
+         → mulMV3 A v ≡ scaleV3 c v
+         → mulMV3 B v ≡ scaleV3 d v
+         → mulMV3 B (mulMV3 A v) ≡ scaleV3 (mulZω c d) v
+BA3-form A B v c d Av Bv =
+  trans (cong (mulMV3 B) Av)
+    (trans (mulMV3-scale B c v)
+      (trans (cong (scaleV3 c) Bv) (scaleV3-assoc c d v)))
+
+-- | 公共特征向量 ⇒ 两算子交换（3 维）
+commute3 : ∀ (A B : Mat 3 3) (v : Vec3) (c d : Zω)
+         → mulMV3 A v ≡ scaleV3 c v
+         → mulMV3 B v ≡ scaleV3 d v
+         → mulMV3 A (mulMV3 B v) ≡ mulMV3 B (mulMV3 A v)
+commute3 A B v c d Av Bv =
+  trans (AB3-form A B v c d Av Bv)
+    (trans (cong (λ t → scaleV3 t v) (mulZω-comm d c))
+           (sym (BA3-form A B v c d Av Bv)))

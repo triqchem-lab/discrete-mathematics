@@ -30,7 +30,8 @@
 module Sovereign.Algebra.FieldTower.Zomega where
 
 open import Data.Integer.Base using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)
-open import Data.Integer.Properties using (*-zeroˡ; *-zeroʳ; neg-involutive)
+open import Data.Integer.Properties
+  using (*-zeroˡ; *-zeroʳ; neg-involutive; neg-distribˡ-*; neg-distrib-+)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; cong₂; sym; trans)
 
@@ -168,5 +169,43 @@ omega-cubed-check = refl
 -- ω² = -1 - ω 在 mulZω 下闭合 (与 A4Representation.omega-squared-form 同源)
 omega-squared-check : mulZω ω ω ≡ addZω (negZω oneZω) (negZω ω)
 omega-squared-check = refl
+
+--------------------------------------------------------------------------------
+-- §5. 负元与乘法、加法（补 ℤ 在负数处不 refl 归约的那两条）
+--
+--   背景：ℤ 的 `_*_` 是 `sign ◃ (|_| * |_|)`，`_+_` 在混合符号处也不按字面归约。
+--   于是 (−a)·(−b) ≡ a·b、a(c − d) 这类式子虽然是"显然"的，Agda 却要显式引理。
+--   这两条（ˡ 与 ʳ）正是下游（A₄ 表示的交换子、消元里的负数乘积）唯一需要的形态。
+--------------------------------------------------------------------------------
+
+-- | 负元是加法的同态：−(x + y) ≡ (−x) + (−y)
+negZω-add : ∀ x y → negZω (addZω x y) ≡ addZω (negZω x) (negZω y)
+negZω-add (mkZω a b) (mkZω c d) =
+  cong₂ mkZω (neg-distrib-+ a c) (neg-distrib-+ b d)
+
+-- | (−x)·y ≡ −(x·y)
+negZω-mulˡ : ∀ x y → mulZω (negZω x) y ≡ negZω (mulZω x y)
+negZω-mulˡ (mkZω a b) (mkZω c d) = cong₂ mkZω c1 c2
+  where
+    -- 坐标 1：(−a)c − (−b)d ≡ −(ac − bd)
+    c1 : (- a) * c - (- b) * d ≡ - (a * c - b * d)
+    c1 = trans (cong₂ _-_ (sym (neg-distribˡ-* a c)) (sym (neg-distribˡ-* b d)))
+               (sym (neg-distrib-+ (a * c) (- (b * d))))
+
+    -- 坐标 2：(−a)d + (−b)c − (−b)d ≡ −(ad + bc − bd)
+    c2 : (- a) * d + (- b) * c - (- b) * d ≡ - (a * d + b * c - b * d)
+    c2 = trans
+           (cong₂ _-_
+             (cong₂ _+_ (sym (neg-distribˡ-* a d)) (sym (neg-distribˡ-* b c)))
+             (sym (neg-distribˡ-* b d)))
+           (trans (cong (λ t → t + (- (- (b * d))))
+                        (sym (neg-distrib-+ (a * d) (b * c))))
+                  (sym (neg-distrib-+ (a * d + b * c) (- (b * d)))))
+
+-- | x·(−y) ≡ −(x·y)（由 ˡ + 交换律导出，不再重证分量）
+negZω-mulʳ : ∀ x y → mulZω x (negZω y) ≡ negZω (mulZω x y)
+negZω-mulʳ x y =
+  trans (mulZω-comm x (negZω y))
+    (trans (negZω-mulˡ y x) (cong negZω (mulZω-comm y x)))
 
 -- 0 postulate.
