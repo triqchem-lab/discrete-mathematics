@@ -68,6 +68,24 @@ twoZ-mul z =
   trans (mulZω-distribʳ oneZω oneZω z)
         (cong₂ addZω (mulZω-identityˡ z) (mulZω-identityˡ z))
 
+two-zero : ∀ (z : Zω) → mulZω twoZ z ≡ zeroZω → z ≡ zeroZω
+two-zero z h = self-zero z (trans (sym (twoZ-mul z)) h)
+
+fourZ : Zω
+fourZ = mkZω (+ 4) (+ 0)
+
+-- | 2·2 ≡ 4（闭的正数乘积，refl 级）
+fourZ-mul : mulZω twoZ twoZ ≡ fourZ
+fourZ-mul = refl
+
+-- | 4·z ≡ 0 ⇒ z ≡ 0（两次 two-zero；3 维的 det = 4 子式要用）
+four-zero : ∀ (z : Zω) → mulZω fourZ z ≡ zeroZω → z ≡ zeroZω
+four-zero z h =
+  two-zero z
+    (two-zero (mulZω twoZ z)
+      (trans (sym (trans (cong (λ t → mulZω t z) (sym fourZ-mul))
+                         (mulZω-assoc twoZ twoZ z))) h))
+
 -- | (−1) ⊕ 1 ≡ 0（ℤ 的对加逆）
 cm1-plus-c1 : addZω cm1 c1 ≡ zeroZω
 cm1-plus-c1 = cong₂ mkZω (+-inverseˡ (+ 1)) refl
@@ -75,9 +93,6 @@ cm1-plus-c1 = cong₂ mkZω (+-inverseˡ (+ 1)) refl
 -- | 1 ⊕ (−1) ≡ 0
 c1-plus-cm1 : addZω c1 cm1 ≡ zeroZω
 c1-plus-cm1 = cong₂ mkZω (+-inverseʳ (+ 1)) refl
-
-two-zero : ∀ (z : Zω) → mulZω twoZ z ≡ zeroZω → z ≡ zeroZω
-two-zero z h = self-zero z (trans (sym (twoZ-mul z)) h)
 
 --------------------------------------------------------------------------------
 -- ② 加法换位与右消去
