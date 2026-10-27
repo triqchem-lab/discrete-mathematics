@@ -18,6 +18,14 @@
 --   四行矩阵（模块 × 内核）里「第二行通过、第四行失败」，才是「差分测的是补丁，
 --   而不是环境噪声」的有效证据。只有正控制、没有负控制的差分是无信息的。
 --
+-- ⚠ 2026-10-27 停用：工具链已撤销该补丁（agda 树 HEAD `0dba92aa46`
+--   "revert empty-type patch only (keep 8611): remove instantiateFull + failure
+--   UnifyConflict" 删掉 Empty.hs 的 instantiateFull 与 Unify.hs 的
+--   Def d ≢ Def d' → UnifyConflict）⇒ `KernelWitness` 的 K1 正控制
+--   （`¬R1w≡R2w`/`R1w≢R2w`/`K1w-witness`）已注释停用。故上述四行矩阵中
+--   「第一行（KernelWitness × 2.9.0 通过）」与「第四行（× 2.8.0.1 失败）」不再是
+--   可复跑判据；本模块（负控制臂）与 K2 的同头对照仍然有效。
+--
 -- 补丁本体（git numstat 实测，非转述）：**2 个文件 / 净 +9 −1**
 --   · Empty.hs +1/−0： checkEmptyType 中 `splitLast` 前加 `tel <- instantiateFull tel`
 --   · Unify.hs +8/−1： failure 在「零消去(es=[])、相异 Def(d≠d')」时返回
@@ -95,6 +103,8 @@ crt12-distinct {a} {a′} {b} neq =
 --------------------------------------------------------------------------------
 --
 -- K1 相异刚性头冲突（Unify.hs `failure` 分支）——**正控制已移至 `KernelWitness`**
+--   ⚠ 该正控制已于 2026-10-27 随补丁撤销而注释停用（见文件头）；以下陈述与其
+--     Agda 见证保留为历史记录，不再作为可复跑判据。
 --   陈述: 两侧均为**零消去**的 `Def` 头且名字相异 ⇒ 必须 `NoUnify (UnifyConflict …)`
 --   Agda: `KernelWitness.¬R1w≡R2w`（2.9.0 通过 / 2.8.0.1 失败）、
 --         `KernelWitness.K2w-same-def-inhabited`（同头非空，两版都过）
