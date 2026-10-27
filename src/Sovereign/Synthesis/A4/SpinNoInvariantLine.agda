@@ -24,11 +24,12 @@
 module Sovereign.Synthesis.A4.SpinNoInvariantLine where
 
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)
-open import Data.Integer.Properties using (neg-distribʳ-*; neg-involutive)
+open import Data.Integer.Properties using (neg-distribˡ-*; neg-distribʳ-*; neg-involutive; +-inverseˡ; +-inverseʳ)
 open import Data.Nat using (zero; suc)
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
+open import Relation.Nullary using (¬_)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; sym; trans; cong; cong₂; module ≡-Reasoning)
+  using (_≡_; _≢_; refl; sym; trans; cong; cong₂; module ≡-Reasoning)
 
 open ≡-Reasoning
 
@@ -42,7 +43,7 @@ open import Sovereign.Algebra.FieldTower.Zomega
 
 open import Sovereign.Synthesis.A4.BilinearSchur2A4
   using (M2E; m2e; mulME; toME; c0; c1; cm1; cw; cw2; c1w; cmw)
-open import Sovereign.Synthesis.A4.BinaryTetrahedralDefiningRep using (g0; g9)
+open import Sovereign.Synthesis.A4.BinaryTetrahedralDefiningRep using (SL23; g0; g9)
 open import Sovereign.Synthesis.A4.SpinIrreducible
   using (Pair; zeroV; mulMV; scaleV; commute-on-eigenvector)
 
@@ -66,6 +67,14 @@ twoZ-mul : ∀ (z : Zω) → mulZω twoZ z ≡ addZω z z
 twoZ-mul z =
   trans (mulZω-distribʳ oneZω oneZω z)
         (cong₂ addZω (mulZω-identityˡ z) (mulZω-identityˡ z))
+
+-- | (−1) ⊕ 1 ≡ 0（ℤ 的对加逆）
+cm1-plus-c1 : addZω cm1 c1 ≡ zeroZω
+cm1-plus-c1 = cong₂ mkZω (+-inverseˡ (+ 1)) refl
+
+-- | 1 ⊕ (−1) ≡ 0
+c1-plus-cm1 : addZω c1 cm1 ≡ zeroZω
+c1-plus-cm1 = cong₂ mkZω (+-inverseʳ (+ 1)) refl
 
 two-zero : ∀ (z : Zω) → mulZω twoZ z ≡ zeroZω → z ≡ zeroZω
 two-zero z h = self-zero z (trans (sym (twoZ-mul z)) h)
@@ -311,3 +320,189 @@ E2 x y c d Av Bv =
   trans (sym (ABv-snd x y))
     (trans (cong proj₂ (commute-on-eigenvector (toME g0) (toME g9) (x , y) c d Av Bv))
            (BAv-snd x y))
+
+--------------------------------------------------------------------------------
+-- ⑦ 消元：由 E1、E2 得 2·y ≡ 0、2·x ≡ 0
+--
+--   记 A = 1−ω、B = ω²−1、D = (−1)·B（= 1−ω²）。三步：
+--     (i)  E2 两边加 (1·x)      ⇒ A·x ⊕ (−1)·y ≡ 0
+--     (ii) E1 两边加 (−1)·y     ⇒ B·y ≡ (−1)·x
+--     (iii) (ii) 乘 (−1)        ⇒ D·y ≡ x
+--   把 (iii) 代入 (i)：A·D·y ⊕ (−1)·y ≡ 0，而 A·D = 3
+--     ⇒ (3 + (−1))·y ≡ 2·y ≡ 0 ⇒ `two-zero` 得 y = 0；
+--   再由 (iii) 得 x = 0。
+--------------------------------------------------------------------------------
+
+A₁ B₁ D₁ threeZ : Zω
+A₁ = addZω cmw c1            -- 1 − ω
+B₁ = addZω cw2 cm1           -- ω² − 1
+D₁ = mulZω cm1 B₁            -- 1 − ω²
+threeZ = mkZω (+ 3) (+ 0)
+
+-- ℤ 层：负数乘法的两个方向（把 stdlib 的 neg-distrib* 转成"乘负数"形态）
+neg-mulˡ-ℤ : ∀ (i j : ℤ) → (- i) * j ≡ - (i * j)
+neg-mulˡ-ℤ i j = sym (neg-distribˡ-* i j)
+
+neg-mulʳ-ℤ : ∀ (i j : ℤ) → i * (- j) ≡ - (i * j)
+neg-mulʳ-ℤ i j = sym (neg-distribʳ-* i j)
+
+-- 具体的负数乘积事实（各三/四步，末项是字面量故可归约）
+neg1-neg1 : (- (+ 1)) * (- (+ 1)) ≡ (+ 1)
+neg1-neg1 =
+  trans (neg-mulˡ-ℤ (+ 1) (- (+ 1)))
+    (trans (cong -_ (neg-mulʳ-ℤ (+ 1) (+ 1))) (neg-involutive ((+ 1) * (+ 1))))
+
+neg1-neg2 : (- (+ 1)) * (- (+ 2)) ≡ (+ 2)
+neg1-neg2 =
+  trans (neg-mulˡ-ℤ (+ 1) (- (+ 2)))
+    (trans (cong -_ (neg-mulʳ-ℤ (+ 1) (+ 2))) (neg-involutive ((+ 1) * (+ 2))))
+
+neg1-pos1 : (- (+ 1)) * (+ 1) ≡ (- (+ 1))
+neg1-pos1 = neg-mulˡ-ℤ (+ 1) (+ 1)
+
+neg1-pos2 : (- (+ 1)) * (+ 2) ≡ (- (+ 2))
+neg1-pos2 = neg-mulˡ-ℤ (+ 1) (+ 2)
+
+-- | (−1)·(−1) ≡ 1
+cm1-cm1 : mulZω cm1 cm1 ≡ c1
+cm1-cm1 = cong₂ mkZω
+  (trans (cong (λ t → t - (+ 0) * (+ 0)) neg1-neg1) refl)
+  refl
+
+-- | D₁ = 1−ω² 的坐标：(−1,0)·(−2,−1) = (2,1)
+D₁-val : D₁ ≡ mkZω (+ 2) (+ 1)
+D₁-val = cong₂ mkZω
+  (trans (cong (λ t → t - (+ 0) * (-[1+ 0 ])) neg1-neg2) refl)
+  (trans (cong (λ t → t + (+ 0) * (-[1+ 1 ]) - (+ 0) * (-[1+ 0 ])) neg1-neg1) refl)
+
+-- | A₁·D₁ ≡ 3（A₁ = (1,−1)，D₁ = (2,1)）
+AD-three : mulZω A₁ D₁ ≡ threeZ
+AD-three = trans (cong (mulZω A₁) D₁-val)
+  (cong₂ mkZω
+    (trans (cong (λ v → (+ 1) * (+ 2) - v) neg1-pos1) refl)
+    (trans (cong (λ v → (+ 1) * (+ 1) + v - (- (+ 1)) * (+ 1)) neg1-pos2)
+           (trans (cong (λ v → (+ 1) * (+ 1) + (- (+ 2)) - v) neg1-pos1) refl)))
+
+-- | 3 + (−1) ≡ 2
+three-plus-cm1 : addZω threeZ cm1 ≡ twoZ
+three-plus-cm1 = refl
+
+-- | (i) A₁·x ⊕ (−1)·y ≡ 0（把 E2 的 x 系数补成 1−ω）
+shift-E2 : ∀ (x y : Zω)
+         → addZω (mulZω cmw x) (mulZω cm1 y) ≡ mulZω cm1 x
+         → addZω (mulZω A₁ x) (mulZω cm1 y) ≡ zeroZω
+shift-E2 x y E2h = trans (sym L2) (trans (sym L1) (trans E2' (trans R1 R2)))
+  where
+    E2' : addZω (addZω (mulZω cmw x) (mulZω cm1 y)) (mulZω c1 x)
+        ≡ addZω (mulZω cm1 x) (mulZω c1 x)
+    E2' = cong (λ t → addZω t (mulZω c1 x)) E2h
+
+    L1 : addZω (addZω (mulZω cmw x) (mulZω cm1 y)) (mulZω c1 x)
+       ≡ addZω (addZω (mulZω cmw x) (mulZω c1 x)) (mulZω cm1 y)
+    L1 = add-swap (mulZω cmw x) (mulZω cm1 y) (mulZω c1 x)
+
+    L2 : addZω (addZω (mulZω cmw x) (mulZω c1 x)) (mulZω cm1 y)
+       ≡ addZω (mulZω A₁ x) (mulZω cm1 y)
+    L2 = cong (λ t → addZω t (mulZω cm1 y)) (sym (mulZω-distribʳ cmw c1 x))
+
+    R1 : addZω (mulZω cm1 x) (mulZω c1 x) ≡ mulZω (addZω cm1 c1) x
+    R1 = sym (mulZω-distribʳ cm1 c1 x)
+
+    R2 : mulZω (addZω cm1 c1) x ≡ zeroZω
+    R2 = trans (cong (λ t → mulZω t x) cm1-plus-c1) (mulZω-zeroˡ x)
+
+-- | (ii) B₁·y ≡ (−1)·x（把 E1 的 y 系数补成 ω²−1）
+shift-E1 : ∀ (x y : Zω)
+         → mulZω cw2 y ≡ addZω y (mulZω cm1 x)
+         → mulZω B₁ y ≡ mulZω cm1 x
+shift-E1 x y E1h = trans (sym M1) (trans E1' M3)
+  where
+    E1' : addZω (mulZω cw2 y) (mulZω cm1 y)
+        ≡ addZω (addZω y (mulZω cm1 x)) (mulZω cm1 y)
+    E1' = cong (λ t → addZω t (mulZω cm1 y)) E1h
+
+    M1 : addZω (mulZω cw2 y) (mulZω cm1 y) ≡ mulZω B₁ y
+    M1 = sym (mulZω-distribʳ cw2 cm1 y)
+
+    M2a : addZω y (mulZω cm1 y) ≡ zeroZω
+    M2a = trans (cong (λ t → addZω t (mulZω cm1 y)) (sym (mulZω-identityˡ y)))
+                (trans (sym (mulZω-distribʳ c1 cm1 y))
+                       (trans (cong (λ t → mulZω t y) c1-plus-cm1)
+                              (mulZω-zeroˡ y)))
+
+    M3 : addZω (addZω y (mulZω cm1 x)) (mulZω cm1 y) ≡ mulZω cm1 x
+    M3 = trans (add-swap y (mulZω cm1 x) (mulZω cm1 y))
+               (trans (cong (λ t → addZω t (mulZω cm1 x)) M2a)
+                      (addZω-identityˡ (mulZω cm1 x)))
+
+-- | (iii) D₁·y ≡ x（把 (ii) 两边乘 (−1)）
+x-from-y : ∀ (x y : Zω)
+         → mulZω B₁ y ≡ mulZω cm1 x
+         → mulZω D₁ y ≡ x
+x-from-y x y h = trans (sym L) (trans (cong (mulZω cm1) h) R)
+  where
+    L : mulZω cm1 (mulZω B₁ y) ≡ mulZω D₁ y
+    L = sym (mulZω-assoc cm1 B₁ y)
+
+    R : mulZω cm1 (mulZω cm1 x) ≡ x
+    R = trans (sym (mulZω-assoc cm1 cm1 x))
+              (trans (cong (λ t → mulZω t x) cm1-cm1) (mulZω-identityˡ x))
+
+-- | **2·y ≡ 0**
+two-y : ∀ (x y : Zω)
+      → addZω (mulZω cmw x) (mulZω cm1 y) ≡ mulZω cm1 x
+      → mulZω cw2 y ≡ addZω y (mulZω cm1 x)
+      → mulZω twoZ y ≡ zeroZω
+two-y x y E2h E1h =
+  trans (sym s5)
+    (trans (mulZω-distribʳ threeZ cm1 y)
+      (trans (sym s3)
+        (trans (cong (λ t → addZω t (mulZω cm1 y)) (mulZω-assoc A₁ D₁ y))
+          (trans (cong (λ t → addZω (mulZω A₁ t) (mulZω cm1 y))
+                       (x-from-y x y (shift-E1 x y E1h)))
+                 (shift-E2 x y E2h)))))
+  where
+    s5 : mulZω twoZ y ≡ mulZω (addZω threeZ cm1) y
+    s5 = cong (λ t → mulZω t y) three-plus-cm1
+
+    s3 : addZω (mulZω (mulZω A₁ D₁) y) (mulZω cm1 y)
+       ≡ addZω (mulZω threeZ y) (mulZω cm1 y)
+    s3 = cong (λ t → addZω (mulZω t y) (mulZω cm1 y)) AD-three
+
+-- | **2·x ≡ 0**
+two-x : ∀ (x y : Zω)
+      → mulZω B₁ y ≡ mulZω cm1 x
+      → y ≡ zeroZω
+      → mulZω twoZ x ≡ zeroZω
+two-x x y h y0 =
+  trans (cong (λ t → mulZω twoZ t) (sym (x-from-y x y h)))
+    (trans (sym (mulZω-assoc twoZ D₁ y))
+      (trans (cong (λ t → mulZω (mulZω twoZ D₁) t) y0)
+             (mulZω-zeroʳ (mulZω twoZ D₁))))
+
+--------------------------------------------------------------------------------
+-- ⑧ 主定理：2 维旋量表示没有不变直线
+--
+--   不变线 = Σ[ v ] (v ≠ 0) × (∀ g, ∃ c, ρ(g)·v = c·v)
+--   由 E1、E2 消元得 2·x = 2·y = 0，无挠 ⇒ x = y = 0 ⇒ v = 0，矛盾。
+--------------------------------------------------------------------------------
+
+no-invariant-line :
+    ¬ (Σ Pair (λ v →
+         (v ≢ zeroV) ×
+         (∀ (g : SL23) → Σ Zω (λ c → mulMV (toME g) v ≡ scaleV c v))))
+no-invariant-line ((x , y) , vnz , inv) = vnz (cong₂ _,_ x0 y0)
+  where
+    E1h : mulZω cw2 y ≡ addZω y (mulZω cm1 x)
+    E1h = E1 x y (proj₁ (inv g0)) (proj₁ (inv g9))
+                 (proj₂ (inv g0)) (proj₂ (inv g9))
+
+    E2h : addZω (mulZω cmw x) (mulZω cm1 y) ≡ mulZω cm1 x
+    E2h = E2 x y (proj₁ (inv g0)) (proj₁ (inv g9))
+                 (proj₂ (inv g0)) (proj₂ (inv g9))
+
+    y0 : y ≡ zeroZω
+    y0 = two-zero y (two-y x y E2h E1h)
+
+    x0 : x ≡ zeroZω
+    x0 = two-zero x (two-x x y (shift-E1 x y E1h) y0)
