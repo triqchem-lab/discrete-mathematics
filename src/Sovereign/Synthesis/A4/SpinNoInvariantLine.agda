@@ -41,7 +41,7 @@ open import Sovereign.Algebra.FieldTower.Zomega
         ; mulZω-zeroˡ )
 
 open import Sovereign.Synthesis.A4.BilinearSchur2A4
-  using (M2E; m2e; toME; c0; c1; cm1; cw; cw2; c1w; cmw)
+  using (M2E; m2e; mulME; toME; c0; c1; cm1; cw; cw2; c1w; cmw)
 open import Sovereign.Synthesis.A4.BinaryTetrahedralDefiningRep using (g0; g9)
 open import Sovereign.Synthesis.A4.SpinIrreducible
   using (Pair; zeroV; mulMV; scaleV; commute-on-eigenvector)
@@ -160,3 +160,62 @@ c1w-cw2 = cong₂ mkZω q1 q2
 -- | (1+ω)·ω ≡ −1
 c1w-cw : mulZω c1w cw ≡ cm1
 c1w-cw = refl
+
+--------------------------------------------------------------------------------
+-- ④ 矩阵乘法与矩阵-向量作用相容：ρ(A·B)·v ≡ ρ(A)·(ρ(B)·v)
+--
+--   这条把"复合作用"换成"复合矩阵的作用"，从而可以把 ρ(g0)·ρ(g9) 这类
+--   **闭矩阵**先算成一个具体矩阵，再作用到 v 上（否则闭系数会让 Agda 一路
+--   归约到 ℤ 坐标层，符号化的化简步骤无法展开。
+--
+--   系数全部为变量，故所有步骤都是结构性的（distrib / assoc / 4 项换位）。
+--------------------------------------------------------------------------------
+
+-- | 四项换位：(A ⊕ B) ⊕ (C ⊕ D) ≡ (A ⊕ C) ⊕ (B ⊕ D)
+add-swap4 : ∀ (a b c d : Zω)
+          → addZω (addZω a b) (addZω c d) ≡ addZω (addZω a c) (addZω b d)
+add-swap4 a b c d = begin
+    addZω (addZω a b) (addZω c d)
+  ≡⟨ addZω-assoc a b (addZω c d) ⟩
+    addZω a (addZω b (addZω c d))
+  ≡⟨ cong (addZω a) (sym (addZω-assoc b c d)) ⟩
+    addZω a (addZω (addZω b c) d)
+  ≡⟨ cong (λ t → addZω a (addZω t d)) (addZω-comm b c) ⟩
+    addZω a (addZω (addZω c b) d)
+  ≡⟨ cong (addZω a) (addZω-assoc c b d) ⟩
+    addZω a (addZω c (addZω b d))
+  ≡⟨ sym (addZω-assoc a c (addZω b d)) ⟩
+    addZω (addZω a c) (addZω b d) ∎
+
+-- | 一行：(ae ⊕ bg)·x ⊕ (af ⊕ bh)·y ≡ a·(ex ⊕ fy) ⊕ b·(gx ⊕ hy)
+row-mix : ∀ (a b e f g h x y : Zω)
+        → addZω (mulZω (addZω (mulZω a e) (mulZω b g)) x)
+                 (mulZω (addZω (mulZω a f) (mulZω b h)) y)
+        ≡ addZω (mulZω a (addZω (mulZω e x) (mulZω f y)))
+                (mulZω b (addZω (mulZω g x) (mulZω h y)))
+row-mix a b e f g h x y = begin
+    addZω (mulZω (addZω (mulZω a e) (mulZω b g)) x)
+          (mulZω (addZω (mulZω a f) (mulZω b h)) y)
+  ≡⟨ cong₂ addZω (mulZω-distribʳ (mulZω a e) (mulZω b g) x)
+                  (mulZω-distribʳ (mulZω a f) (mulZω b h) y) ⟩
+    addZω (addZω (mulZω (mulZω a e) x) (mulZω (mulZω b g) x))
+          (addZω (mulZω (mulZω a f) y) (mulZω (mulZω b h) y))
+  ≡⟨ add-swap4 (mulZω (mulZω a e) x) (mulZω (mulZω b g) x)
+               (mulZω (mulZω a f) y) (mulZω (mulZω b h) y) ⟩
+    addZω (addZω (mulZω (mulZω a e) x) (mulZω (mulZω a f) y))
+          (addZω (mulZω (mulZω b g) x) (mulZω (mulZω b h) y))
+  ≡⟨ cong₂ addZω
+        (cong₂ addZω (mulZω-assoc a e x) (mulZω-assoc a f y))
+        (cong₂ addZω (mulZω-assoc b g x) (mulZω-assoc b h y)) ⟩
+    addZω (addZω (mulZω a (mulZω e x)) (mulZω a (mulZω f y)))
+          (addZω (mulZω b (mulZω g x)) (mulZω b (mulZω h y)))
+  ≡⟨ cong₂ addZω
+        (sym (mulZω-distribˡ a (mulZω e x) (mulZω f y)))
+        (sym (mulZω-distribˡ b (mulZω g x) (mulZω h y))) ⟩
+    addZω (mulZω a (addZω (mulZω e x) (mulZω f y)))
+          (mulZω b (addZω (mulZω g x) (mulZω h y))) ∎
+
+-- | 矩阵乘法与作用相容：ρ(A·B)·v ≡ ρ(A)·(ρ(B)·v)
+mulMV-mulME : ∀ (A B : M2E) (v : Pair) → mulMV (mulME A B) v ≡ mulMV A (mulMV B v)
+mulMV-mulME (m2e a b c d) (m2e e f g h) (x , y) =
+  cong₂ _,_ (row-mix a b e f g h x y) (row-mix c d e f g h x y)
