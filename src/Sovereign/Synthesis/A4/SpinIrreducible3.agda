@@ -30,7 +30,7 @@ open ≡-Reasoning
 open import Sovereign.Synthesis.A4.A4Representation
   using (Zω; zeroZω; addZω; mulZω)
 open import Sovereign.Algebra.FieldTower.Zomega
-  using (mulZω-assoc; mulZω-comm; mulZω-distribˡ; addZω-identityʳ)
+  using (mulZω-assoc; mulZω-comm; mulZω-distribˡ; mulZω-distribʳ; addZω-identityʳ)
 open import Sovereign.Synthesis.FieldTower.MatrixZω using (Mat; dot)
 open import Sovereign.Synthesis.A4.SpinIrreducible using (interchange)
 
@@ -154,3 +154,30 @@ commute3 A B v c d Av Bv =
   trans (AB3-form A B v c d Av Bv)
     (trans (cong (λ t → scaleV3 t v) (mulZω-comm d c))
            (sym (BA3-form A B v c d Av Bv)))
+
+--------------------------------------------------------------------------------
+-- ⑤ 3 项求和引理（mulMV3-mulMat 的通用垫脚）
+--
+--   mulMat 的一行是「列的 3 个内积」，而作用到 v 上要变成「v 的 3 个分量加权」。
+--   需要的通用件只有三条：
+--     distrib3ʳ : (c₀ ⊕ (c₁ ⊕ c₂))·v ≡ c₀v ⊕ (c₁v ⊕ c₂v)
+--     distrib3ˡ : a·(p ⊕ (q ⊕ r))   ≡ ap ⊕ (aq ⊕ ar)
+--     row3-action : ((a₀b₀ ⊕ (a₁b₁ ⊕ a₂b₂)))·v ≡ a₀(b₀v) ⊕ (a₁(b₁v) ⊕ a₂(b₂v))
+--   第三条 = 第一条 + 三次结合律（(aᵢbᵢ)v ⟶ aᵢ(bᵢv)）。
+--------------------------------------------------------------------------------
+
+-- | 三项右分配
+distrib3ʳ : ∀ (c₀ c₁ c₂ v : Zω)
+          → mulZω (addZω c₀ (addZω c₁ c₂)) v
+          ≡ addZω (mulZω c₀ v) (addZω (mulZω c₁ v) (mulZω c₂ v))
+distrib3ʳ c₀ c₁ c₂ v =
+  trans (mulZω-distribʳ c₀ (addZω c₁ c₂) v)
+        (cong (addZω (mulZω c₀ v)) (mulZω-distribʳ c₁ c₂ v))
+
+-- | 三项左分配
+distrib3ˡ : ∀ (a p q r : Zω)
+          → mulZω a (addZω p (addZω q r))
+          ≡ addZω (mulZω a p) (addZω (mulZω a q) (mulZω a r))
+distrib3ˡ a p q r =
+  trans (mulZω-distribˡ a p (addZω q r))
+        (cong (addZω (mulZω a p)) (mulZω-distribˡ a q r))
