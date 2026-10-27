@@ -96,6 +96,9 @@ ab (Flip k) = zero                                      -- 双对换 → 1 (在 
 ρ1' : A4 → Zω
 ρ1' g = powerω (ab g)
 
+-- ⚠ 注意：`ρ1''` 的 ab2 表**不是同态** —— 存在 a b 使
+--   ρ1'' (a ⊗ b) ≢ ρ1'' a · ρ1'' b（反证见 Synthesis/A4/CharProvenance.ρ1''-not-multiplicative）。
+--   因此它不能当 1 维表示用；真正的第二个 1 维表示是 ψb = powerω ∘ neg3 ∘ ab。
 ρ1'' : A4 → Zω
 ρ1'' g = powerω (ab2 g) where
   ab2 : A4 → Fin 3
