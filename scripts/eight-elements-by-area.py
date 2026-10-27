@@ -105,13 +105,34 @@ def signals(path):
     if any(FIELD.match(ln) and re.search(r'zero', ln, re.I) for ln in lines) \
             or re.search(r'^\s+e\s*:', text, re.M) or re.search(r'tritCycle|ZeroOblivion', text):
         hit.add('⑥')
-    # ⑦ 刚性：引用 galoisConjugate（§五 强信号）
-    if 'galoisConjugate' in text:
+    # ⑦ 刚性：§五 原文只认 galoisConjugate（强信号）。
+    #   本脚本另给「扩展信号」（⚠ 超出 §五 原文，仅作定位，不作判据）：
+    #     sigmaDC / phaseConjugate / `rigidity = mu` / 头部 ⑦ 行含 mu
+    #   —— 这三者都是 σ 在子载体上的限制或同一 Frobenius 作用的别名，
+    #      见 docs/duodecimal/39-frobenius-vs-group-inversion.md §3.1。
+    # 口径：一律用**代码行**（排除 `--` 注释行），避免"仅注释提及"被算成实现。
+    code = '\n'.join(ln for ln in lines if not ln.lstrip().startswith('--'))
+    base7 = 'galoisConjugate' in code
+    head7mu = any(re.match(r'^\s*--\s*⑦\s*刚性', ln) and re.search(r'\bmu\b', ln)
+                  for ln in lines[:120])
+    alts = []
+    if base7:
+        alts.append('galoisConjugate')
+    if re.search(r'\bsigmaDC\b', code):
+        alts.append('sigmaDC')
+    if 'phaseConjugate' in code:
+        alts.append('phaseConjugate')
+    if re.search(r'rigidity\s*=\s*mu\b', code):
+        alts.append('rigidity=mu')
+    if head7mu:
+        alts.append('头部⑦含mu')
+    ext7 = bool(alts)
+    if ext7:
         hit.add('⑦')
     # ⑧ 核对：roundtrip / check-* / reconstruct（弱信号；裸 refl 不作数）
     if re.search(r'roundtrip|-roundtrip|check-|\bcheck[A-Z]|reconstruct', text):
         hit.add('⑧')
-    return hit
+    return hit, base7, ext7, alts
 
 
 def main():
@@ -122,7 +143,11 @@ def main():
     files = tracked()
     decl = {f: declared(f) for f in files}
     decl = {f: e for f, e in decl.items() if e}
-    sig = {f: signals(f) for f in files} if not args.selftest else {}
+    res = {f: signals(f) for f in files} if not args.selftest else {}
+    sig = {f: r[0] for f, r in res.items()}
+    strict7 = {f for f, r in res.items() if r[1]}
+    ext7 = {f for f, r in res.items() if r[2]}
+    alt_of = {f: r[3] for f, r in res.items() if r[3] and not r[1]}
 
     if args.selftest:
         print('§六 五件真值校验（声明层 vs 2026-10-14 表）')
@@ -153,6 +178,10 @@ def main():
     w('> **两层判据分开列**：A = 模块头部自述索引（文件自己说）；B = §五 机检正则（候选器）。')
     w('> §五 原文即声明「机检是候选器不是判官」（M8 §5）——B 表**不是**判据，只作定位用。')
     w('>')
+    w('> **⑦ 例外（超出 §五 原文）**：B 表的 ⑦ 用**扩展信号**——除 `galoisConjugate` 外，')
+    w('> 另收 `sigmaDC` / `phaseConjugate` / `rigidity = mu` / 头部 ⑦ 行含 `mu`。')
+    w('> §五 原文口径（仅 `galoisConjugate`）单列在 §3.1，跨版本比较请回到该口径。')
+    w('>')
     w('> 生成脚本：`scripts/eight-elements-by-area.py`')
     w('> 重新生成：`python3 scripts/eight-elements-by-area.py`')
     w('>')
@@ -168,7 +197,7 @@ def main():
     w(r'| ④ | 相位 | 字段名含 `phase`/`rot`，或有 `-order-N` 定理 | 中 | 字段行含 `phase\|rot` 或 `order-\d+` |')
     w(r'| ⑤ | 时钟 | 字段名含 `clock`/`cycle`，或 `^n p ≡ p` 形式 | 中 | 字段行含 `clock\|cycle` 或 `mixedOp-\d+-cycle` |')
     w(r'| ⑥ | 归零 | 字段名含 `zero`/`e :`，或零冥族定理 | 中 | 字段行含 `zero`、`^\s+e\s*:`、`tritCycle\|ZeroOblivion` |')
-    w(r'| ⑦ | 刚性 | **引用** `galoisConjugate`（或等价 Galois 作用） | 强 | `galoisConjugate`（等价形态如 `mu`/`phaseConjugate` **不计**，见 §5） |')
+    w(r'| ⑦ | 刚性 | **引用** `galoisConjugate`（或等价 Galois 作用） | 强 | **§五 原文**：`galoisConjugate`；**本文档扩展**：另收 `\bsigmaDC\b` / `phaseConjugate` / `rigidity\s*=\s*mu` / 头部 ⑦ 行含 `mu`（⚠ 超出 §五，见 §3.1） |')
     w(r'| ⑧ | 核对 | `refl` 证明 / `*-roundtrip` / `check*` | 弱 | `roundtrip\|check-\|check[A-Z]\|reconstruct`（裸 `refl` 不计） |')
     w('')
     w('## 2. 表 A：声明层（模块头部自述索引）')
@@ -217,6 +246,29 @@ def main():
         w(f'| {e} {ENAME[e]} | ' + ' | '.join(
             f'{B[a][e]*100//max(area_n[a],1)}%' for a in AREAS) + ' |')
     w('')
+    w('### 3.1 ⑦ 的双口径（扩展信号 **超出 §五 原文**）')
+    w('')
+    w('| 口径 | 命中模块数 | 含哪些形态 |')
+    w('|---|---:|---|')
+    w(f'| **§五 原文**（判据口径） | {len(strict7)} | 仅 `galoisConjugate`（代码行） |')
+    w(f'| **本文档 B 表**（扩展信号，定位用） | {len(ext7)} | + `sigmaDC` / `phaseConjugate` / `rigidity = mu` / 头部 ⑦ 行含 `mu` |')
+    w(f'| 净增 | {len(ext7 - strict7)} | 见下表 |')
+    w('')
+    w('⚠ 扩展的**理由**：这些都是 σ（`galoisConjugate`）在子载体上的限制或同一 Frobenius 作用的别名，')
+    w('见 `docs/duodecimal/39-frobenius-vs-group-inversion.md` §3.1（`mu` = σ 在 ⟨α⟩ 上的限制、`rho` 是群反转）。')
+    w('⚠ 两列都按**代码行**口径（排除 `--` 注释行）：仅注释提及 `galoisConjugate` 的模块不计。')
+    w('  若把注释提及也算（本文件 2026-10-27 首版口径），两列分别为 80 / 88；改口径后为 %d / %d。'
+      % (len(strict7), len(ext7)))
+    w('⚠ 扩展的**边界**：它**不是** §五 的判据；对外报数或跨版本比较必须回到「§五 原文」列。')
+    w('')
+    if ext7 - strict7:
+        w('净增模块（仅扩展信号命中）：')
+        w('')
+        w('| 模块 | 命中的替代形态 |')
+        w('|---|---|')
+        for f in sorted(ext7 - strict7):
+            w(f'| `{f}` | {", ".join(alt_of.get(f, []))} |')
+    w('')
     w('## 4. 每个要素主要落在哪个区（表 B 的 argmax）')
     w('')
     w('| 要素 | 命中最多的区 | 该区命中 | 占该要素命中 | 次多 |')
@@ -247,8 +299,9 @@ def main():
     w('')
     w('- **误报**：`Techniques/Pgm1-2` 这类工具件会被词面命中（§五 明示，须白名单排除；本表未排除）。')
     w('- **漏报**：`DCGroup` 的核对以 `alpha-order-4` 形式存在，纯正则易漏（§五 原文）。')
-    w('- **⑦ 的等价形态**：`mu`（DuodecClock）、`phaseConjugate`（NSEPresentation）是 Galois 作用的等价物，')
-    w('  但 §五 的强信号只认 `galoisConjugate` ⇒ 表 B 会**低估**这两个件的 ⑦；表 A 不受影响。')
+    w('- **⑦ 的等价形态（已补偿，但超出 §五）**：`mu`（DuodecClock）、`phaseConjugate`（NSEPresentation）、')
+    w('  `sigmaDC`（DCSigmaAut）都是 Galois 作用的等价物/限制，§五 强信号只认 `galoisConjugate`。')
+    w('  表 B 采用扩展信号（§3.1），因此与「§五 原文口径」的数字不同；跨版本比较须回到原文口径。')
     w('- **① 的乘积别名**：只认「`X : Set` 后 3 行内出现 `×`」，跨行别名会漏。')
     w('')
     w('## 7. 复现')
