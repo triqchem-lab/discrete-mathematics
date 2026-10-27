@@ -30,7 +30,9 @@ open ≡-Reasoning
 open import Sovereign.Synthesis.A4.A4Representation
   using (Zω; zeroZω; addZω; mulZω)
 open import Sovereign.Algebra.FieldTower.Zomega
-  using (mulZω-assoc; mulZω-comm; mulZω-distribˡ; mulZω-distribʳ; addZω-identityʳ)
+  using ( mulZω-assoc; mulZω-comm; mulZω-distribˡ; mulZω-distribʳ; mulZω-zeroʳ
+        ; addZω-assoc; addZω-identityʳ
+        ; add-swap; add-swap4; add-transpose-23 )
 open import Sovereign.Synthesis.FieldTower.MatrixZω using (Mat; dot)
 open import Sovereign.Synthesis.A4.SpinIrreducible using (interchange)
 
@@ -202,3 +204,137 @@ row3-action a₀ a₁ a₂ b₀ b₁ b₂ v =
              (cong (λ t → addZω (mulZω a₀ (mulZω b₀ v))
                               (addZω (mulZω a₁ (mulZω b₁ v)) t))
                    (mulZω-assoc a₂ b₂ v))))
+
+--------------------------------------------------------------------------------
+-- ⑥ 矩阵乘法与作用相容：ρ(A·B)·v ≡ ρ(A)·(ρ(B)·v)
+--
+--   `mulMM3` 取**行组合**形式：第 i 行 = aᵢ₀·b₀ ⊕ (aᵢ₁·b₁ ⊕ aᵢ₂·b₂)，其中 bₖ 是 B 的第 k 行。
+--   它与「行·列」定义逐条相同（(A·B)ᵢⱼ = Σₖ aᵢₖ·bₖⱼ），但**只**需要 2×3 加法转置
+--   （`add-transpose-23`）：第 i 行只依赖 A 的第 i 行，故不会出现 3×3 的整体转置。
+--
+--   两条分量化前提：
+--     dot-scale-left：内积对**第一**个因子线性   dot (c·p) v ≡ c·(dot p v)
+--     dot-add      ：内积对第一因子的加法线性   dot (p ⊕ q) v ≡ dot p v ⊕ dot q v
+--------------------------------------------------------------------------------
+
+-- | 三分量相等（Vec 的 `cong₂ _∷_` 隐式参数易歧义，用一条专门引理）
+vec3-cong : ∀ {a b c a' b' c' : Zω}
+          → a ≡ a' → b ≡ b' → c ≡ c'
+          → (a ∷ b ∷ c ∷ []) ≡ (a' ∷ b' ∷ c' ∷ [])
+vec3-cong refl refl refl = refl
+
+-- | 逐分量相加
+addV3 : Vec3 → Vec3 → Vec3
+addV3 (a ∷ b ∷ d ∷ []) (x ∷ y ∷ z ∷ []) = addZω a x ∷ addZω b y ∷ addZω d z ∷ []
+
+-- | dot 对**第一**个因子的加法线性（展开到分量）：
+--   (p₀⊕q₀)x ⊕ ((p₁⊕q₁)y ⊕ ((p₂⊕q₂)z ⊕ 0))
+--     ≡ ((p₀x ⊕ (p₁y ⊕ (p₂z ⊕ 0))) ⊕ (q₀x ⊕ (q₁y ⊕ (q₂z ⊕ 0)))
+dot-add3 : ∀ (p₀ p₁ p₂ q₀ q₁ q₂ x y z : Zω)
+         → addZω (mulZω (addZω p₀ q₀) x)
+                  (addZω (mulZω (addZω p₁ q₁) y)
+                         (addZω (mulZω (addZω p₂ q₂) z) zeroZω))
+         ≡ addZω (addZω (mulZω p₀ x)
+                        (addZω (mulZω p₁ y) (addZω (mulZω p₂ z) zeroZω)))
+                  (addZω (mulZω q₀ x)
+                         (addZω (mulZω q₁ y) (addZω (mulZω q₂ z) zeroZω)))
+dot-add3 p₀ p₁ p₂ q₀ q₁ q₂ x y z = begin
+    addZω (mulZω (addZω p₀ q₀) x)
+          (addZω (mulZω (addZω p₁ q₁) y) (addZω (mulZω (addZω p₂ q₂) z) zeroZω))
+  ≡⟨ cong (λ t → addZω (mulZω (addZω p₀ q₀) x)
+                       (addZω (mulZω (addZω p₁ q₁) y) t))
+          (addZω-identityʳ (mulZω (addZω p₂ q₂) z)) ⟩
+    addZω (mulZω (addZω p₀ q₀) x)
+          (addZω (mulZω (addZω p₁ q₁) y) (mulZω (addZω p₂ q₂) z))
+  ≡⟨ cong₂ addZω (mulZω-distribʳ p₀ q₀ x)
+        (cong₂ addZω (mulZω-distribʳ p₁ q₁ y) (mulZω-distribʳ p₂ q₂ z)) ⟩
+    addZω (addZω (mulZω p₀ x) (mulZω q₀ x))
+          (addZω (addZω (mulZω p₁ y) (mulZω q₁ y))
+                 (addZω (mulZω p₂ z) (mulZω q₂ z)))
+  ≡⟨ add-transpose-23 (mulZω p₀ x) (mulZω p₁ y) (mulZω p₂ z)
+                      (mulZω q₀ x) (mulZω q₁ y) (mulZω q₂ z) ⟩
+    addZω (addZω (mulZω p₀ x) (addZω (mulZω p₁ y) (mulZω p₂ z)))
+          (addZω (mulZω q₀ x) (addZω (mulZω q₁ y) (mulZω q₂ z)))
+  ≡⟨ cong₂ addZω
+        (sym (cong (λ t → addZω (mulZω p₀ x) (addZω (mulZω p₁ y) t))
+                   (addZω-identityʳ (mulZω p₂ z))))
+        (sym (cong (λ t → addZω (mulZω q₀ x) (addZω (mulZω q₁ y) t))
+                   (addZω-identityʳ (mulZω q₂ z)))) ⟩
+    addZω (addZω (mulZω p₀ x)
+                 (addZω (mulZω p₁ y) (addZω (mulZω p₂ z) zeroZω)))
+          (addZω (mulZω q₀ x)
+                 (addZω (mulZω q₁ y) (addZω (mulZω q₂ z) zeroZω)))
+  ∎
+
+dot-add : ∀ (p q v : Vec3) → dot (addV3 p q) v ≡ addZω (dot p v) (dot q v)
+dot-add (p₀ ∷ p₁ ∷ p₂ ∷ []) (q₀ ∷ q₁ ∷ q₂ ∷ []) (x ∷ y ∷ z ∷ []) =
+  dot-add3 p₀ p₁ p₂ q₀ q₁ q₂ x y z
+
+-- | 尾零吸收：c·(x ⊕ 0) ≡ (c·x) ⊕ 0
+mul-zero-tail : ∀ (c x : Zω) → mulZω c (addZω x zeroZω) ≡ addZω (mulZω c x) zeroZω
+mul-zero-tail c x =
+  trans (mulZω-distribˡ c x zeroZω)
+        (cong (addZω (mulZω c x)) (mulZω-zeroʳ c))
+
+-- | dot 对**第一**个因子的标量线性：dot (c·p) v ≡ c·(dot p v)
+--
+--   ⚠ `dot` 的三项展开带尾零，故 `distrib3ˡ` 的最内一项是 `p₂z ⊕ 0`（不是 `p₂z`）；
+--   中间用 `mul-zero-tail` 把 `c·(p₂z ⊕ 0)` 与 `(c·p₂z) ⊕ 0` 对齐。
+dot-scale-left : ∀ (c : Zω) (p v : Vec3)
+               → dot (scaleV3 c p) v ≡ mulZω c (dot p v)
+dot-scale-left c (p₀ ∷ p₁ ∷ p₂ ∷ []) (x ∷ y ∷ z ∷ []) = begin
+    addZω (mulZω (mulZω c p₀) x)
+          (addZω (mulZω (mulZω c p₁) y) (addZω (mulZω (mulZω c p₂) z) zeroZω))
+  ≡⟨ cong₂ addZω (mulZω-assoc c p₀ x)
+        (cong₂ addZω (mulZω-assoc c p₁ y)
+          (cong (λ t → addZω t zeroZω) (mulZω-assoc c p₂ z))) ⟩
+    addZω (mulZω c (mulZω p₀ x))
+          (addZω (mulZω c (mulZω p₁ y)) (addZω (mulZω c (mulZω p₂ z)) zeroZω))
+  ≡⟨ cong (λ t → addZω (mulZω c (mulZω p₀ x))
+                       (addZω (mulZω c (mulZω p₁ y)) t))
+          (sym (mul-zero-tail c (mulZω p₂ z))) ⟩
+    addZω (mulZω c (mulZω p₀ x))
+          (addZω (mulZω c (mulZω p₁ y)) (mulZω c (addZω (mulZω p₂ z) zeroZω)))
+  ≡⟨ sym (distrib3ˡ c (mulZω p₀ x) (mulZω p₁ y)
+                     (addZω (mulZω p₂ z) zeroZω)) ⟩
+    mulZω c (addZω (mulZω p₀ x)
+                   (addZω (mulZω p₁ y) (addZω (mulZω p₂ z) zeroZω)))
+  ∎
+
+-- | 行组合：a₀·b₀ ⊕ (a₁·b₁ ⊕ a₂·b₂)（向量层面）
+combRow : Vec3 → Mat 3 3 → Vec3
+combRow (a₀ ∷ a₁ ∷ a₂ ∷ []) (b₀ ∷ b₁ ∷ b₂ ∷ []) =
+  addV3 (scaleV3 a₀ b₀) (addV3 (scaleV3 a₁ b₁) (scaleV3 a₂ b₂))
+
+-- | 3×3 矩阵乘法（行组合形式；与 Σₖ aᵢₖ·bₖⱼ 逐条相同）
+--
+--   ⚠ 名不用 `mulM3`：`Sov.Algebra.GroupTheory.PhaseMatrixBridge` 已有同名的
+--   GF(3)/`Trit` 版（`Mat3` 记录），载体不同、不可复用；这里按 `mulMV3` 同族取 `mulMM3`。
+mulMM3 : Mat 3 3 → Mat 3 3 → Mat 3 3
+mulMM3 (a ∷ b ∷ d ∷ []) B = combRow a B ∷ combRow b B ∷ combRow d B ∷ []
+
+-- | 单行相容：dot (combRow a B) v ≡ dot a (mulMV3 B v)
+row3-comb : ∀ (a : Vec3) (B : Mat 3 3) (v : Vec3)
+          → dot (combRow a B) v ≡ dot a (mulMV3 B v)
+row3-comb (a₀ ∷ a₁ ∷ a₂ ∷ []) (b₀ ∷ b₁ ∷ b₂ ∷ []) v = begin
+    dot (addV3 (scaleV3 a₀ b₀) (addV3 (scaleV3 a₁ b₁) (scaleV3 a₂ b₂))) v
+  ≡⟨ dot-add (scaleV3 a₀ b₀) (addV3 (scaleV3 a₁ b₁) (scaleV3 a₂ b₂)) v ⟩
+    addZω (dot (scaleV3 a₀ b₀) v)
+          (dot (addV3 (scaleV3 a₁ b₁) (scaleV3 a₂ b₂)) v)
+  ≡⟨ cong₂ addZω (dot-scale-left a₀ b₀ v)
+        (trans (dot-add (scaleV3 a₁ b₁) (scaleV3 a₂ b₂) v)
+               (cong₂ addZω (dot-scale-left a₁ b₁ v) (dot-scale-left a₂ b₂ v))) ⟩
+    addZω (mulZω a₀ (dot b₀ v))
+          (addZω (mulZω a₁ (dot b₁ v)) (mulZω a₂ (dot b₂ v)))
+  ≡⟨ sym (cong (λ t → addZω (mulZω a₀ (dot b₀ v))
+                            (addZω (mulZω a₁ (dot b₁ v)) t))
+               (addZω-identityʳ (mulZω a₂ (dot b₂ v)))) ⟩
+    dot (a₀ ∷ a₁ ∷ a₂ ∷ []) (mulMV3 (b₀ ∷ b₁ ∷ b₂ ∷ []) v)
+  ∎
+
+-- | 矩阵乘法与作用相容：ρ(A·B)·v ≡ ρ(A)·(ρ(B)·v)
+mulMV3-mulMM3 : ∀ (A B : Mat 3 3) (v : Vec3)
+              → mulMV3 (mulMM3 A B) v ≡ mulMV3 A (mulMV3 B v)
+mulMV3-mulMM3 (a ∷ b ∷ d ∷ []) B v =
+  vec3-cong (row3-comb a B v) (row3-comb b B v) (row3-comb d B v)
+

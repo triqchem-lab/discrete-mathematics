@@ -38,6 +38,7 @@ open import Sovereign.Synthesis.A4.A4Representation
 open import Sovereign.Algebra.FieldTower.Zomega
   using ( addZω-assoc; addZω-comm; addZω-identityˡ; addZω-identityʳ
         ; addZω-inverseʳ
+        ; add-swap; add-swap4
         ; mulZω-assoc; mulZω-distribʳ; mulZω-distribˡ; mulZω-identityˡ
         ; mulZω-zeroˡ; mulZω-zeroʳ )
 
@@ -97,17 +98,6 @@ c1-plus-cm1 = cong₂ mkZω (+-inverseʳ (+ 1)) refl
 --------------------------------------------------------------------------------
 -- ② 加法换位与右消去
 --------------------------------------------------------------------------------
-
--- | (a ⊕ b) ⊕ c ≡ (a ⊕ c) ⊕ b
-add-swap : ∀ (a b c : Zω) → addZω (addZω a b) c ≡ addZω (addZω a c) b
-add-swap a b c = begin
-    addZω (addZω a b) c
-  ≡⟨ addZω-assoc a b c ⟩
-    addZω a (addZω b c)
-  ≡⟨ cong (addZω a) (addZω-comm b c) ⟩
-    addZω a (addZω c b)
-  ≡⟨ sym (addZω-assoc a c b) ⟩
-    addZω (addZω a c) b ∎
 
 -- | 右消去：p ⊕ r ≡ q ⊕ r ⇒ p ≡ q
 add-cancelʳ : ∀ (p q r : Zω) → addZω p r ≡ addZω q r → p ≡ q
@@ -193,23 +183,9 @@ c1w-cw = refl
 --   归约到 ℤ 坐标层，符号化的化简步骤无法展开。
 --
 --   系数全部为变量，故所有步骤都是结构性的（distrib / assoc / 4 项换位）。
+--   4 项换位 `add-swap4` 与 3 项换位 `add-swap` 是纯加法事实，已上提到
+--   `Sov.Algebra.FieldTower.Zomega` §1.5（3 维路同用）。
 --------------------------------------------------------------------------------
-
--- | 四项换位：(A ⊕ B) ⊕ (C ⊕ D) ≡ (A ⊕ C) ⊕ (B ⊕ D)
-add-swap4 : ∀ (a b c d : Zω)
-          → addZω (addZω a b) (addZω c d) ≡ addZω (addZω a c) (addZω b d)
-add-swap4 a b c d = begin
-    addZω (addZω a b) (addZω c d)
-  ≡⟨ addZω-assoc a b (addZω c d) ⟩
-    addZω a (addZω b (addZω c d))
-  ≡⟨ cong (addZω a) (sym (addZω-assoc b c d)) ⟩
-    addZω a (addZω (addZω b c) d)
-  ≡⟨ cong (λ t → addZω a (addZω t d)) (addZω-comm b c) ⟩
-    addZω a (addZω (addZω c b) d)
-  ≡⟨ cong (addZω a) (addZω-assoc c b d) ⟩
-    addZω a (addZω c (addZω b d))
-  ≡⟨ sym (addZω-assoc a c (addZω b d)) ⟩
-    addZω (addZω a c) (addZω b d) ∎
 
 -- | 一行：(ae ⊕ bg)·x ⊕ (af ⊕ bh)·y ≡ a·(ex ⊕ fy) ⊕ b·(gx ⊕ hy)
 row-mix : ∀ (a b e f g h x y : Zω)

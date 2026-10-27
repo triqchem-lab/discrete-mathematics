@@ -33,7 +33,9 @@ open import Data.Integer.Base using (ℤ; +_; -[1+_]; _+_; _-_; _*_; -_)
 open import Data.Integer.Properties
   using (*-zeroˡ; *-zeroʳ; neg-involutive; neg-distribˡ-*; neg-distrib-+)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; cong; cong₂; sym; trans)
+  using (_≡_; refl; cong; cong₂; sym; trans; module ≡-Reasoning)
+
+open ≡-Reasoning
 
 open import Sovereign.Synthesis.A4.A4Representation
   using (Zω; mkZω; addZω; negZω; mulZω; zeroZω; oneZω; ω; ω²)
@@ -82,6 +84,55 @@ addZω-inverseʳ (mkZω a b) = liftEis (+ᵉ-inverseʳ (eis a b))
 
 negZω-involutive : ∀ x → negZω (negZω x) ≡ x
 negZω-involutive (mkZω a b) = cong₂ mkZω (neg-involutive a) (neg-involutive b)
+
+--------------------------------------------------------------------------------
+-- §1.5 加法重排: 与乘法无关的纯交换群事实
+--   矩阵乘法相容性（`mulMV·mulM`）要把「按列分组」的加法树改写成「按行分组」，
+--   即对加法做转置。这里只放与 Zω 具体系数无关的通用换位，供 2/3 维两条路共用。
+--------------------------------------------------------------------------------
+
+-- | 三项换位：(a ⊕ b) ⊕ c ≡ (a ⊕ c) ⊕ b
+add-swap : ∀ a b c → addZω (addZω a b) c ≡ addZω (addZω a c) b
+add-swap a b c = begin
+    addZω (addZω a b) c
+  ≡⟨ addZω-assoc a b c ⟩
+    addZω a (addZω b c)
+  ≡⟨ cong (addZω a) (addZω-comm b c) ⟩
+    addZω a (addZω c b)
+  ≡⟨ sym (addZω-assoc a c b) ⟩
+    addZω (addZω a c) b ∎
+
+-- | 四项换位（2×2 加法转置）：(a ⊕ b) ⊕ (c ⊕ d) ≡ (a ⊕ c) ⊕ (b ⊕ d)
+add-swap4 : ∀ a b c d
+          → addZω (addZω a b) (addZω c d) ≡ addZω (addZω a c) (addZω b d)
+add-swap4 a b c d = begin
+    addZω (addZω a b) (addZω c d)
+  ≡⟨ addZω-assoc a b (addZω c d) ⟩
+    addZω a (addZω b (addZω c d))
+  ≡⟨ cong (addZω a) (sym (addZω-assoc b c d)) ⟩
+    addZω a (addZω (addZω b c) d)
+  ≡⟨ cong (λ t → addZω a (addZω t d)) (addZω-comm b c) ⟩
+    addZω a (addZω (addZω c b) d)
+  ≡⟨ cong (addZω a) (addZω-assoc c b d) ⟩
+    addZω a (addZω c (addZω b d))
+  ≡⟨ sym (addZω-assoc a c (addZω b d)) ⟩
+    addZω (addZω a c) (addZω b d) ∎
+
+-- | 2×3 加法转置：
+--   (a₀⊕b₀) ⊕ ((a₁⊕b₁) ⊕ (a₂⊕b₂)) ≡ (a₀⊕(a₁⊕a₂)) ⊕ (b₀⊕(b₁⊕b₂))
+add-transpose-23 : ∀ a₀ a₁ a₂ b₀ b₁ b₂
+                 → addZω (addZω a₀ b₀) (addZω (addZω a₁ b₁) (addZω a₂ b₂))
+                 ≡ addZω (addZω a₀ (addZω a₁ a₂)) (addZω b₀ (addZω b₁ b₂))
+add-transpose-23 a₀ a₁ a₂ b₀ b₁ b₂ = begin
+    addZω (addZω a₀ b₀) (addZω (addZω a₁ b₁) (addZω a₂ b₂))
+  ≡⟨ cong (addZω (addZω a₀ b₀)) (add-swap4 a₁ b₁ a₂ b₂) ⟩
+    addZω (addZω a₀ b₀) (addZω (addZω a₁ a₂) (addZω b₁ b₂))
+  ≡⟨ sym (addZω-assoc (addZω a₀ b₀) (addZω a₁ a₂) (addZω b₁ b₂)) ⟩
+    addZω (addZω (addZω a₀ b₀) (addZω a₁ a₂)) (addZω b₁ b₂)
+  ≡⟨ cong (λ t → addZω t (addZω b₁ b₂)) (add-swap a₀ b₀ (addZω a₁ a₂)) ⟩
+    addZω (addZω (addZω a₀ (addZω a₁ a₂)) b₀) (addZω b₁ b₂)
+  ≡⟨ addZω-assoc (addZω a₀ (addZω a₁ a₂)) b₀ (addZω b₁ b₂) ⟩
+    addZω (addZω a₀ (addZω a₁ a₂)) (addZω b₀ (addZω b₁ b₂)) ∎
 
 --------------------------------------------------------------------------------
 -- §2. 乘法: 交换幺半群 (mulZω / oneZω) —— 核心: 结合律
