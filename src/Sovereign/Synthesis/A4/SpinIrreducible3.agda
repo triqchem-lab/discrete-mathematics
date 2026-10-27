@@ -181,3 +181,24 @@ distrib3ˡ : ∀ (a p q r : Zω)
 distrib3ˡ a p q r =
   trans (mulZω-distribˡ a p (addZω q r))
         (cong (addZω (mulZω a p)) (mulZω-distribˡ a q r))
+
+-- | 一行 × 一列：((a₀b₀ ⊕ (a₁b₁ ⊕ a₂b₂)))·v ≡ a₀(b₀v) ⊕ (a₁(b₁v) ⊕ a₂(b₂v))
+--
+--   ⚠ 方向：`mulZω-assoc : (x·y)·z ≡ x·(y·z)`，从 (aᵢbᵢ)v 拉成 aᵢ(bᵢv) 要用**正向**，
+--   不是 `sym`。先前写成 `sym` 时报的却是"sign ◃ 括号不等"（Agda 把归一化后的
+--   ℤ 形态打印出来），极易误认为形状问题——实测 probeC（形状）通过、probeD（方向）失败。
+row3-action : ∀ (a₀ a₁ a₂ b₀ b₁ b₂ v : Zω)
+            → mulZω (addZω (mulZω a₀ b₀) (addZω (mulZω a₁ b₁) (mulZω a₂ b₂))) v
+            ≡ addZω (mulZω a₀ (mulZω b₀ v))
+                    (addZω (mulZω a₁ (mulZω b₁ v)) (mulZω a₂ (mulZω b₂ v)))
+row3-action a₀ a₁ a₂ b₀ b₁ b₂ v =
+  trans (distrib3ʳ (mulZω a₀ b₀) (mulZω a₁ b₁) (mulZω a₂ b₂) v)
+    (trans (cong (λ t → addZω t (addZω (mulZω (mulZω a₁ b₁) v)
+                                        (mulZω (mulZω a₂ b₂) v)))
+                 (mulZω-assoc a₀ b₀ v))
+      (trans (cong (λ t → addZω (mulZω a₀ (mulZω b₀ v))
+                              (addZω t (mulZω (mulZω a₂ b₂) v)))
+                   (mulZω-assoc a₁ b₁ v))
+             (cong (λ t → addZω (mulZω a₀ (mulZω b₀ v))
+                              (addZω (mulZω a₁ (mulZω b₁ v)) t))
+                   (mulZω-assoc a₂ b₂ v))))
