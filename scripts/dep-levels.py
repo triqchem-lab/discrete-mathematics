@@ -126,6 +126,9 @@ def write_doc(d):
       '（互相 import 不算逆序）→ `Algebra`(L2) → `Synthesis`(L3) → `Application`(L4)；'
       '`Infrastructure` 是跨切带，声明上豁免 import 单调性。')
     w('>')
+    w('> 语义侧（展示群 / 八要素 / 本源-投影）不在本文范围，权威件见 '
+      '`docs/maps/八要素统一形状-2026-10-14.md` 与 `docs/课题依赖DAG.md`。')
+    w('>')
     w(f'> 统计范围：`src/` 下**受版本控制**的 {len(mod_of)} 个模块；`pn-proofs/`、`probes/` 是 gitignore 草稿，不计。')
     w('')
     w('## 0. 三种「层级」不要混用')
@@ -149,8 +152,18 @@ def write_doc(d):
     w(' → '.join(area_of(mod_of[m]) for m in chain))
     w('```')
     w('')
-    w('  整条链**只在 Algebra 内部绕**（Burnside 一族 6 文件、Coset 2 文件、Jacobian 2 文件），')
-    w('  最后一跳才落到 `Base.Trit`。这就是「%d 层」的全部来源。' % maxlv)
+    # 链的子专题构成（按 src/<area>/<subdir> 聚合，避免"一个专题拆成 N 文件"的错觉）
+    groups = collections.Counter()
+    for m in chain:
+        parts = mod_of[m].split('/')
+        key = '/'.join(parts[:4]) if len(parts) > 4 else parts[2]
+        groups[key] += 1
+    detail = '、'.join(f'`{k}` {v}' for k, v in groups.most_common())
+    w('  链的构成（按子专题）：%s。' % detail)
+    w('')
+    w('  即：这条链**跨 %d 个子专题**串起来，每个子专题自己又被拆成若干文件' % len(groups))
+    w('  （Burnside 一族 6 个、Coset 2 个、Jacobian 2 个），末跳才落到 `Base.Trit`。')
+    w('  ⇒ 深度来自「同区文件拆分 × 跨子专题串联」，不是 %d 阶数学抽象。' % maxlv)
     w('')
     w('## 2. 每层模块数 + 抽象层构成')
     w('')
