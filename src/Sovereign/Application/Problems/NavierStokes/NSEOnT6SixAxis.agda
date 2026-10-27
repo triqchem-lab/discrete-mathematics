@@ -1068,10 +1068,10 @@ laplacian6-const-zero T₂ x = refl
 --------------------------------------------------------------------------------
 
 -- 逐点：加 T₁ 必然改变值（GF(3) 中 T₁ 非零元）
-shift≠id : ∀ (a : Trit) → a ⊕ T₁ ≢ a
-shift≠id T₀ ()
-shift≠id T₁ ()
-shift≠id T₂ ()
+shift-neq-id : ∀ (a : Trit) → a ⊕ T₁ ≢ a
+shift-neq-id T₀ ()
+shift-neq-id T₁ ()
+shift-neq-id T₂ ()
 
 constT₁ : ScalarField
 constT₁ = λ _ → T₁
@@ -1093,7 +1093,7 @@ laplacian6-translate-invariant p x = begin
 
 -- 该平移确实给出**不同**的场
 constT₁-shifts : ∀ (p : ScalarField) → (p +S constT₁) ≢ p
-constT₁-shifts p h = shift≠id (p pt) (cong (λ f → f pt) h)
+constT₁-shifts p h = shift-neq-id (p pt) (cong (λ f → f pt) h)
   where
     pt : Torus6
     pt = fzero , fzero , fzero , fzero , fzero , fzero

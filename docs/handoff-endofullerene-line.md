@@ -20,7 +20,7 @@
 | `Synthesis/Physics/NoSplitJ1Full.agda` | 一般情形不劈裂（`no-split-full`）+ 生成元阶 `shift³`/`flip²`/`g³` | `c9d1e186…` |
 | `Synthesis/Physics/NoSplitJ1Ring.agda` | **任意无挠交换环**上的一般情形不劈裂（`no-split-ring-general`）+ 生成元阶；§9b 内核核验「推广蕴含 ℤ 版 `no-split-full`」 | `7890fd1c…` |
 | `Synthesis/Physics/TRMultipletsZ.agda` | `sq-suc-Z`：ℤ 上 `x²+(2x+1)=(x+1)²`（TR 维数恒等式的代数核心） | `6f4517ba…` |
-| `Synthesis/Physics/TRMultipletsNat.agda` | `sum-odd`：**完整 ℕ 索引版** `sumOdd a n + a² ≡ (a+n)²` + 4 实例 | `05743ad7…` |
+| `Synthesis/Physics/TRMultipletsNat.agda` | `sum-odd`：**完整 ℕ 索引版** `sumOdd a n + a² ≡ (a+n)²` + 4 实例 | `262bbfb8…` |
 
 **核心物理结论**：A₄ 不变的微扰只能是标量 ⇒ **劈不开 J=1 三重态**（Agda 定理，非数值；ℤ 版 `no-split-full` 与**任意无挠交换环**版 `no-split-ring-general` 都已证，后者覆盖 ℚ/ℝ/GF(p≠2) 系数）。
 
@@ -67,7 +67,7 @@ python3 -m engines.h2o_c60.fit_v6 --j3 <J=3 笼致分裂 (cm^-1)>
 ## 七、明确的未完成项
 
 1. **TR 维数恒等式**：✅ **已完成** —— `TRMultipletsNat.sum-odd : ∀ (a : ℤ) (n : ℕ) →
-   sumOdd a n + a² ≡ (a+n)²`（回执 `05743ad7…`），含 4 个 l/J 实例（9/25/35/49，均 refl）。
+   sumOdd a n + a² ≡ (a+n)²`（回执 `262bbfb8…`），含 4 个 l/J 实例（9/25/35/49，均 refl）。
    距最终形式 `Σ_λ(2λ+1)=(2l+1)(2J+1)` 只差 `a = J∸l`、`n = 2l+1` 的实例化（需 monus 与 l≤J）。
 2. **闭包 = 12 元素**未在 Agda 形式化（由 oracle 承担）。
 3. **本征值 → 能级**的线性代数环节未形式化。
