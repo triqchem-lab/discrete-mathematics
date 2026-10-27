@@ -58,7 +58,8 @@ MODULES = \
 	src/Sovereign/Synthesis/A4/BilinearSchur2A4.agda \
 	src/Sovereign/Synthesis/A4/CharTable2A4.agda \
 	src/Sovereign/Synthesis/A4/ToA4Hom.agda \
-	src/Sovereign/Synthesis/A4/CharProvenance.agda
+	src/Sovereign/Synthesis/A4/CharProvenance.agda \
+	src/Sovereign/Synthesis/A4/SL23Inverse.agda
 
 # 快速门：吃缓存。Agda 2.9 对 up-to-date 模块静默跳过（不打印 Skipping），
 # 故本目标成功的含义是「路径可解析 + 接口与源码一致」，不等于「现在能过」。
