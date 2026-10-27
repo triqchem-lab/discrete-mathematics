@@ -38,7 +38,7 @@ open import Sovereign.Algebra.FieldTower.Zomega
   using ( addZω-assoc; addZω-comm; addZω-identityˡ; addZω-identityʳ
         ; addZω-inverseʳ
         ; mulZω-assoc; mulZω-distribʳ; mulZω-distribˡ; mulZω-identityˡ
-        ; mulZω-zeroˡ )
+        ; mulZω-zeroˡ; mulZω-zeroʳ )
 
 open import Sovereign.Synthesis.A4.BilinearSchur2A4
   using (M2E; m2e; mulME; toME; c0; c1; cm1; cw; cw2; c1w; cmw)
@@ -219,3 +219,95 @@ row-mix a b e f g h x y = begin
 mulMV-mulME : ∀ (A B : M2E) (v : Pair) → mulMV (mulME A B) v ≡ mulMV A (mulMV B v)
 mulMV-mulME (m2e a b c d) (m2e e f g h) (x , y) =
   cong₂ _,_ (row-mix a b e f g h x y) (row-mix c d e f g h x y)
+
+--------------------------------------------------------------------------------
+-- ⑤ 两个闭乘积矩阵与四个分量化简
+--
+--   ρ(g0) = [[0, ω], [1+ω, 0]]，ρ(g9) = [[ω², ω], [0, ω]]
+--   ρ(g0)·ρ(g9) = [[0, ω²], [−ω, −1]]      ρ(g9)·ρ(g0) = [[−1, 1], [−1, 0]]
+--   （数值已复核；每个条目都只用 ④ 里已证的系数事实 + 零元/单位律）
+--------------------------------------------------------------------------------
+
+-- | 0·x ⊕ b ≡ b（单 cong，避免 cong₂ + refl 的隐式参数歧义）
+addZω-zero-mulˡ : ∀ (x b : Zω) → addZω (mulZω c0 x) b ≡ b
+addZω-zero-mulˡ x b =
+  trans (cong (λ t → addZω t b) (mulZω-zeroˡ x)) (addZω-identityˡ b)
+
+-- | a ⊕ 0·y ≡ a
+addZω-mul-zeroʳ : ∀ (a y : Zω) → addZω a (mulZω c0 y) ≡ a
+addZω-mul-zeroʳ a y =
+  trans (cong (addZω a) (mulZω-zeroˡ y)) (addZω-identityʳ a)
+
+m2e-cong : ∀ {a b c d a' b' c' d' : Zω}
+         → a ≡ a' → b ≡ b' → c ≡ c' → d ≡ d' → m2e a b c d ≡ m2e a' b' c' d'
+m2e-cong refl refl refl refl = refl
+
+AB-mat : mulME (toME g0) (toME g9) ≡ m2e c0 cw2 cmw cm1
+AB-mat = m2e-cong
+  (trans (cong₂ addZω (mulZω-zeroˡ cw2) cw-c0) (addZω-identityˡ zeroZω))
+  (trans (cong₂ addZω (mulZω-zeroˡ cw) cw-cw) (addZω-identityˡ cw2))
+  (trans (cong₂ addZω c1w-cw2 (mulZω-zeroˡ c0)) (addZω-identityʳ cmw))
+  (trans (cong₂ addZω c1w-cw (mulZω-zeroˡ cw)) (addZω-identityʳ cm1))
+
+BA-mat : mulME (toME g9) (toME g0) ≡ m2e cm1 c1 cm1 c0
+BA-mat = m2e-cong
+  (trans (cong₂ addZω (mulZω-zeroʳ cw2) cw-c1w) (addZω-identityˡ cm1))
+  (trans (cong₂ addZω cw2-cw cw-c0) (addZω-identityʳ c1))
+  (trans (cong₂ addZω (mulZω-zeroˡ c0) cw-c1w) (addZω-identityˡ cm1))
+  (trans (cong₂ addZω (mulZω-zeroˡ cw) cw-c0) (addZω-identityˡ zeroZω))
+
+-- | A(Bv)₁ ≡ ω²·y
+ABv-fst : ∀ (x y : Zω)
+        → proj₁ (mulMV (toME g0) (mulMV (toME g9) (x , y))) ≡ mulZω cw2 y
+ABv-fst x y =
+  trans (cong proj₁ (sym (mulMV-mulME (toME g0) (toME g9) (x , y))))
+    (trans (cong (λ M → proj₁ (mulMV M (x , y))) AB-mat)
+      (addZω-zero-mulˡ x (mulZω cw2 y)))
+
+-- | B(Av)₁ ≡ y ⊕ (−1)·x
+BAv-fst : ∀ (x y : Zω)
+        → proj₁ (mulMV (toME g9) (mulMV (toME g0) (x , y)))
+        ≡ addZω y (mulZω cm1 x)
+BAv-fst x y =
+  trans (cong proj₁ (sym (mulMV-mulME (toME g9) (toME g0) (x , y))))
+    (trans (cong (λ M → proj₁ (mulMV M (x , y))) BA-mat)
+      (trans (cong (addZω (mulZω cm1 x)) (mulZω-identityˡ y))
+             (addZω-comm (mulZω cm1 x) y)))
+
+-- | A(Bv)₂ ≡ (−ω)·x ⊕ (−1)·y
+ABv-snd : ∀ (x y : Zω)
+        → proj₂ (mulMV (toME g0) (mulMV (toME g9) (x , y)))
+        ≡ addZω (mulZω cmw x) (mulZω cm1 y)
+ABv-snd x y =
+  trans (cong proj₂ (sym (mulMV-mulME (toME g0) (toME g9) (x , y))))
+    (cong (λ M → proj₂ (mulMV M (x , y))) AB-mat)
+
+-- | B(Av)₂ ≡ (−1)·x
+BAv-snd : ∀ (x y : Zω)
+        → proj₂ (mulMV (toME g9) (mulMV (toME g0) (x , y))) ≡ mulZω cm1 x
+BAv-snd x y =
+  trans (cong proj₂ (sym (mulMV-mulME (toME g9) (toME g0) (x , y))))
+    (trans (cong (λ M → proj₂ (mulMV M (x , y))) BA-mat)
+      (addZω-mul-zeroʳ (mulZω cm1 x) y))
+
+--------------------------------------------------------------------------------
+-- ⑥ 两条线性方程
+--------------------------------------------------------------------------------
+
+E1 : ∀ (x y c d : Zω)
+   → mulMV (toME g0) (x , y) ≡ scaleV c (x , y)
+   → mulMV (toME g9) (x , y) ≡ scaleV d (x , y)
+   → mulZω cw2 y ≡ addZω y (mulZω cm1 x)
+E1 x y c d Av Bv =
+  trans (sym (ABv-fst x y))
+    (trans (cong proj₁ (commute-on-eigenvector (toME g0) (toME g9) (x , y) c d Av Bv))
+           (BAv-fst x y))
+
+E2 : ∀ (x y c d : Zω)
+   → mulMV (toME g0) (x , y) ≡ scaleV c (x , y)
+   → mulMV (toME g9) (x , y) ≡ scaleV d (x , y)
+   → addZω (mulZω cmw x) (mulZω cm1 y) ≡ mulZω cm1 x
+E2 x y c d Av Bv =
+  trans (sym (ABv-snd x y))
+    (trans (cong proj₂ (commute-on-eigenvector (toME g0) (toME g9) (x , y) c d Av Bv))
+           (BAv-snd x y))
