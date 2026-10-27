@@ -82,12 +82,23 @@ record R1 : Set where
 record R2 : Set where
   field b : ℕ
 
--- |元理论变更的行为见证。
+-- |元理论变更的行为见证 —— 【2026-10-27 停用，见下】
+--
+-- ⚠ 停用依据：工具链已撤销 eb1251683f。`/opt/agda/2.9.0/bin/agda` 的源码树 HEAD
+--   `0dba92aa46`（2026-10-22 12:30）提交信息为 "revert empty-type patch only
+--   (keep 8611): remove instantiateFull + failure UnifyConflict"，
+--   diff 删除了 `src/full/Agda/TypeChecking/Empty.hs` 的 `instantiateFull tel`
+--   与 `Rules/LHS/Unify.hs` 中 `Def d / Def d'`（d ≢ d'、两边无 elims）→ `UnifyConflict`
+--   的判定。于是「相异 Def 的等式判为空」不存在，本见证随之失去前提：
+--   全库门实测报 `Is empty: R1 ≡ R2 (stuck)`（90.28-30）。
+--   下面这一件**按原样保留为记录**，不再参与编译；`same-record-is-inhabited`
+--   与补丁无关（同头自反），仍然有效。
 --
 -- 类型 `R1 ≡ R2` 在补丁下被判为**空类型**，故 `λ()` 空模式匹配合法，本项成立。
 -- 在上游 Agda 上，同一项会因 `Is empty: R1 ≡ R2 (stuck)` 而无法构造。
-distinct-records-are-empty : (R1 ≡ R2) → ℕ
-distinct-records-are-empty ()
+--
+-- distinct-records-are-empty : (R1 ≡ R2) → ℕ
+-- distinct-records-are-empty ()
 
 -- |同型自反的对照：同一类型名的等式**不是**空的，走 refl 分支。
 -- 两者并置说明补丁判的是「不同 Def 节点」，而不是「等式一律为空」。

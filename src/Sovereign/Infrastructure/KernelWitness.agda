@@ -61,23 +61,33 @@ record R2w : Set where
   field f2w : ℕ
 
 --------------------------------------------------------------------------------
--- §2 K1 正控制（补丁相关）：相异刚性头的 ≡ 判为空
+-- §2 K1 正控制（补丁相关）—— 【2026-10-27 停用，见下】
 --------------------------------------------------------------------------------
-
--- | K1 正控制：`R1w ≡ R2w` 判为空。
---   本机 2.9.0（补丁版）通过；官方 2.8.0.1 在此行报
---   `Is empty: R1w ≡ R2w (stuck)`（blocked on 未解决的相异刚性头）而失败。
---   ⇒ 这一行就是「补丁带来能力扩展」的**可机检判据**。
-¬R1w≡R2w : (R1w ≡ R2w) → ⊥
-¬R1w≡R2w ()
-
--- | ≢ 形态（供 Haskell 侧正控制引用，与 `PatchedTypeChecker.DistinctRecordsAreEmpty` 对称）
-R1w≢R2w : R1w ≢ R2w
-R1w≢R2w = ¬R1w≡R2w
-
--- | 空类型消去子：与 `KernelSpec` §3 的 `K1-witness` 同形，但基于本模块自足定义。
-K1w-witness : (R1w ≡ R2w) → ℕ
-K1w-witness ()
+--
+-- ⚠ 停用依据：工具链已撤销该补丁。`/opt/agda/2.9.0/bin/agda` 的源码树 HEAD
+--   `0dba92aa46`（2026-10-22 12:30）提交信息为 "revert empty-type patch only
+--   (keep 8611): remove instantiateFull + failure UnifyConflict"，
+--   其 diff 删除了 `src/full/Agda/TypeChecking/Empty.hs`（instantiateFull 调用）
+--   与 `Rules/LHS/Unify.hs`（Def d / Def d' 且 d ≢ d' 时的 UnifyConflict 判定）。
+--   于是「相异刚性头的等式判为空」这一能力不存在了，本节的 K1 正控制随之失去前提：
+--   在全库门上实测报 `Is empty: R1w ≡ R2w (stuck)`（两处：72.10-80.15）。
+--   下面三件**按原样保留为记录**（补丁存在时的判据形状），不再参与编译；
+--   §3 的 K2 负控制与补丁无关，仍然有效。
+--
+-- -- | K1 正控制：`R1w ≡ R2w` 判为空。
+-- --   本机 2.9.0（补丁版）通过；官方 2.8.0.1 在此行报
+-- --   `Is empty: R1w ≡ R2w (stuck)`（blocked on 未解决的相异刚性头）而失败。
+-- --   ⇒ 这一行就是「补丁带来能力扩展」的**可机检判据**。
+-- ¬R1w≡R2w : (R1w ≡ R2w) → ⊥
+-- ¬R1w≡R2w ()
+--
+-- -- | ≢ 形态（供 Haskell 侧正控制引用，与 `PatchedTypeChecker.DistinctRecordsAreEmpty` 对称）
+-- R1w≢R2w : R1w ≢ R2w
+-- R1w≢R2w = ¬R1w≡R2w
+--
+-- -- | 空类型消去子：与 `KernelSpec` §3 的 `K1-witness` 同形，但基于本模块自足定义。
+-- K1w-witness : (R1w ≡ R2w) → ℕ
+-- K1w-witness ()
 
 --------------------------------------------------------------------------------
 -- §3 K2 负控制（补丁无关）：**同一**刚性头的等式**不是**空的
