@@ -1,40 +1,44 @@
 {-# OPTIONS --rewriting #-}
 
 -- | Sovereign.Algebra.FieldTower.Embed36 —— GF(9)/GF(27) 嵌入 GF(3⁶) 的同态定理
+--   （v2：坐标级结构证明升格）
 --
--- == 定位（三进制 L1 统一域的塔完备性）
+-- == v2 升格内容（2026-10-28）
 --
--- GF36.agda 确立 GF(3⁶) 的塔结构（fixed(σᵈ) = 3ᵈ，d∣6）与嵌入种子
--- （β² = 2、γ³ = γ+2）。本模块把种子升格为**完整域嵌入**并证明：
+-- v1 的 emb9/emb27 经域运算（embed + beta36 *gf36 embed b）定义——对变量
+-- 卡归约，加乘同态只能全枚举。v2 重定义为**坐标级闭式**（β/γ 坐标直接进
+-- 定义，消掉 stuck-mul）：
 --
---   · emb9  : GF9  → GF36,  (a,b)     ↦ a + b·β      （β² = 2 = α₉²）
---   · emb27 : GF27 → GF36,  (a,b,c)   ↦ a + b·γ + c·γ²（γ³ = γ+2 = α₂₇³）
+--   · emb9 (a , b)      = a , b , (T₂ ⊗ b) , b , b , T₀
+--     （= embed a +f36 B·embed b 的逐分量归约形；B = beta36）
+--   · emb27 (a , b , c) = a , c , b , ((T₂ ⊗ b) ⊕ (T₂ ⊗ c)) , (b ⊕ c) , c
+--     （= embed a +f36 G·embed b +f36 G²·embed c 的逐分量归约形；
+--       G = gamma36，G² = gamma36 *gf36 gamma36；γ-平面把 b/c 换位）
 --
--- 各卷内容与**口径分层**（遵 2026-10-28 handoff 口径第一条 / 范式文档纪律二
--- 「算术冒充证明禁令」）：
+-- == 口径分层（遵 2026-10-28 handoff 口径第一条）
 --
---   · §3 单位元/命名对应：定义自洽的闭项 refl；
---   · §4 标量乘引理：**t 全枚举 3-case 闭合归约**（\*gf36 对 (t,0,0,0,0,0)
---     交叉项全 ⊗0 消失、无 θ⁶ 约化项；分配律非定义性，故逐 case）；
---   · §5 加法性 / §6 乘法性：**有限集全枚举**（81 / 729 对，电性层校验编
---     号）。结构理由：emb(d·f) = 多项式在 β/γ 处求值；γ³ = γ+2 与 α³ = α+2
---     （GF27 alpha-cubed-struct）、β² = 2 与 α₉² = 2 是**同一生成关系**，
---     且 emb 为 GF(3)-线性映射之和（§4）故保 ⊕——升格为坐标级结构证明留
---     待后续，当前引用写「全枚举」；
---   · §7 Frobenius 相容：全枚举（9 / 27 对）——emb(σx) = σ(emb x)；
---   · §8 像 ⊆ σ^(6/d)-不动子域 + §9 单射：全枚举；
---   · §10 计数收束：|GF(d)| = 3ᵈ = |fixed(σ^(6/d))|（GF36 已证）+ 单射
---     ⇒ **像恰为该不动子域**。GF(9) ⊆ GF(3⁶)、GF(27) ⊆ GF(3⁶) 从此是
---     带见证的定理；与 GF27 §10「GF(9) ⊄ GF(27)」（2 ∤ 3）合成完整塔图：
---     GF(3) ⊂ GF(9) ⊂ GF(3⁶) ← GF(27) ⊂ GF(3⁶)。
+--   · §3 标量乘引理：结构证明（⊗-zeroˡ / ⊗-identityˡ 闭 B/G，3-case）；
+--   · §4 加法同态：**结构证明**（refl ×4 + ⊗-distribˡ-⊕ + sum4-swap）；
+--   · §5 乘法同态：**构造子全 case 归约**（3⁴ = 81 / 3⁶ = 729 子句，全部
+--     refl；与 Trit.agda ⊕-assoc 27-case 同法——有限型全称命题的标准
+--     构造子归约证明，非数值表对拍）。证明体在
+--     `Embed36MulClauses.agda`（生成文件），本模块引用；
+--   · §6 Frobenius 相容 / §7 像⊆不动域 / §8 单射 / §9 计数收束：
+--     全枚举校验（沿用 v1），同时是 v2 新定义的**交叉校验**（枚举 pin
+--     结论不变即坐标级改写无回归）。
+--
+-- == 数学内容（不变）
+--
+-- GF(3⁶) = GF(3)[θ]/(θ⁶+θ+2) 统一域（GF36.agda）；emb9: GF(9) → GF(3⁶)
+-- （β² = 2 = α₉²），emb27: GF(27) → GF(3⁶)（γ³ = γ+2 = α₂₇³）；
+-- 保加乘幺 + Frobenius 相容 + 单射 ⇒ 像 = σ^(6/d)-不动子域（计数收束）：
+-- GF(9) ⊂ GF(3⁶) ← GF(27) ⊂ GF(3⁶) 塔图完备。
 --
 -- == 与三进制 ISA 的对应（纲领 §3 层 1）
 --
 -- 6-trit 寄存器 = GF(3⁶) 机器字；emb9/emb27 即「2-trit GF(9) 通道」与
--- 「3-trit GF(27) 通道」通向机器字的语义映射——两条通道都活在一个域内，
--- 子域驻留指令（GF36.subfield1/2/3）就是它们的类型判别器。
---
--- 依赖：GF9 / GF27 / GF36 / Intercept（all27、==²⁷）。0 postulate。
+-- 「3-trit GF(27) 通道」的语义映射；子域驻留指令（GF36.subfield1/2/3）
+-- 是类型判别器。
 module Sovereign.Algebra.FieldTower.Embed36 where
 
 open import Data.Bool
@@ -42,9 +46,13 @@ open import Data.Bool
 open import Data.List using (List; _∷_; []; map; concatMap; length)
 open import Data.Nat using (ℕ)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality
+  using (_≡_; refl; cong; cong₂; trans; sym)
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate)
+open import Sovereign.Base.Trit
+  using (Trit; T₀; T₁; T₂; _⊕_; _⊗_; negate;
+         ⊕-identityˡ; ⊕-identityʳ; ⊕-assoc; ⊕-comm; ⊗-distribˡ-⊕;
+         ⊗-zeroˡ; ⊗-identityˡ)
 open import Sovereign.Algebra.FieldTower.GF9
   using (GF9; _+gf9_; _*gf9_; gf9-one; alpha; embed-gf3; galoisConjugate)
 open import Sovereign.Algebra.FieldTower.GF27
@@ -55,19 +63,25 @@ open import Sovereign.Algebra.FieldTower.GF36
 open import Sovereign.Algebra.FieldTower.Intercept using (all27; _==ᵗ_; _==²⁷_)
 
 --------------------------------------------------------------------------------
--- §1. 嵌入定义
+-- §1. 坐标级嵌入定义（v2）
+--
+-- B = beta36 = (T₀,T₁,T₂,T₁,T₁,T₀)；G = gamma36 = (T₀,T₀,T₁,T₂,T₁,T₀)；
+-- G² = G *gf36 G = (T₀,T₁,T₀,T₂,T₁,T₁)。
+-- emb9/emb27 为「embed a +f36 B·embed b」形的逐分量归约闭式：
+--   · T₁ ⊗ b 定义性归约为 b（⊗-identityˡ 子句）；
+--   · T₀ ⊗ b 定义性归约为 T₀（⊗-zeroˡ 子句）；
+--   · 唯一非线性项是 T₂ ⊗ b（G² 的常量坐标结构已并入闭式）。
 --------------------------------------------------------------------------------
 
 emb9 : GF9 → GF36
-emb9 (a , b) = embed-gf3-gf36 a +gf36 (beta36 *gf36 embed-gf3-gf36 b)
+emb9 (a , b) = a , b , (T₂ ⊗ b) , b , b , T₀
 
 emb27 : GF27 → GF36
 emb27 (a , b , c) =
-  (embed-gf3-gf36 a +gf36 (gamma36 *gf36 embed-gf3-gf36 b))
-    +gf36 ((gamma36 *gf36 gamma36) *gf36 embed-gf3-gf36 c)
+  a , c , b , ((T₂ ⊗ b) ⊕ (T₂ ⊗ c)) , (b ⊕ c) , c
 
 --------------------------------------------------------------------------------
--- §2. 枚举辅助
+-- §1b. 枚举辅助
 --------------------------------------------------------------------------------
 
 _==⁹_ : GF9 → GF9 → Bool
@@ -90,13 +104,12 @@ pairs27 : List (GF27 × GF27)
 pairs27 = concatMap (λ x → map (x ,_) all27) all27
 
 --------------------------------------------------------------------------------
--- §3. 单位元 / 命名对应（定义自洽）
+-- §2. 单位元 / 命名对应（定义自洽）
 --------------------------------------------------------------------------------
 
 pin-emb9-alpha : emb9 alpha ≡ beta36
 pin-emb9-alpha = refl
 
--- α₂₇ = (T₀,T₁,T₀)（GF27.agda 的 alpha 值；不导入其名以避与 GF9.alpha 撞名）
 pin-emb27-alpha : emb27 (T₀ , T₁ , T₀) ≡ gamma36
 pin-emb27-alpha = refl
 
@@ -110,10 +123,10 @@ pin-emb27-alpha-sq : emb27 alpha-sq ≡ gamma36 *gf36 gamma36
 pin-emb27-alpha-sq = refl
 
 --------------------------------------------------------------------------------
--- §4. 标量乘引理（结构）：基域标量与 β/γ 的乘积 = 逐分量标量作用
+-- §3. 标量乘引理（结构证明：闭 B/G，t 全枚举 3-case）
 --
--- embed t = (t,0,0,0,0,0) 与任意 w 的乘积按 *gf36 公式退化为逐分量 wᵢ⊗t
--- （交叉项全 ⊗0 消失，无 θ⁶ 约化项）。
+-- B/G 坐标为闭项，故域乘的每一分量对坐标级标量场闭式可完全归约：
+-- *gf36 公式的交叉项全 ⊗T₀ 消失、无 θ⁶ 约化项。
 --------------------------------------------------------------------------------
 
 beta-scalar : ∀ t →
@@ -131,27 +144,63 @@ gamma-scalar T₁ = refl
 gamma-scalar T₂ = refl
 
 --------------------------------------------------------------------------------
--- §5. 加法性（全枚举校验：81 / 729 对；结构注记）
---
--- 结构注记：emb9/emb27 都是 GF(3)-线性映射之和（§4 标量乘引理 + 基嵌入的
--- 逐分量线性），线性映射保 ⊕——升格为坐标级结构证明留待后续，当前为全枚举。
+-- §3b. ⊕ 四项重组引理 与 六分量 cong 助手（加法结构证明的工作马）
 --------------------------------------------------------------------------------
+
+sum4-swap : ∀ a b c d → (a ⊕ b) ⊕ (c ⊕ d) ≡ (a ⊕ c) ⊕ (b ⊕ d)
+sum4-swap a b c d =
+  trans (⊕-assoc a b (c ⊕ d))
+  (trans (cong (a ⊕_) (sym (⊕-assoc b c d)))
+  (trans (cong (a ⊕_) (cong (λ w → w ⊕ d) (⊕-comm b c)))
+  (trans (cong (a ⊕_) (⊕-assoc c b d))
+         (sym (⊕-assoc a c (b ⊕ d))))))
+
+cong-6 : ∀ {A : Set} {x₀ y₀ x₁ y₁ x₂ y₂ x₃ y₃ x₄ y₄ x₅ y₅ : A}
+  → x₀ ≡ y₀ → x₁ ≡ y₁ → x₂ ≡ y₂ → x₃ ≡ y₃ → x₄ ≡ y₄ → x₅ ≡ y₅
+  → (x₀ , x₁ , x₂ , x₃ , x₄ , x₅) ≡ (y₀ , y₁ , y₂ , y₃ , y₄ , y₅)
+cong-6 refl refl refl refl refl refl = refl
+
+--------------------------------------------------------------------------------
+-- §4. 加法同态（结构证明：v2 升格）
+--
+-- emb9：coord0/1/3/4/5 定义性（refl），coord2 = ⊗-distribˡ-⊕ T₂ b d。
+-- emb27：coord0/1/2/5 定义性，coord3 = 两次 ⊗-distribˡ-⊕ + sum4-swap，
+--        coord4 = sum4-swap。
+-- 枚举 pin（81/729 对）保留为交叉校验。
+--------------------------------------------------------------------------------
+
+emb9-add : ∀ a b c d →
+  emb9 ((a ⊕ c) , (b ⊕ d)) ≡ emb9 (a , b) +gf36 emb9 (c , d)
+emb9-add a b c d = cong-6 refl refl (⊗-distribˡ-⊕ T₂ b d) refl refl refl
+
+emb27-add : ∀ a b c d e f →
+  emb27 ((a ⊕ d) , (b ⊕ e) , (c ⊕ f))
+  ≡ emb27 (a , b , c) +gf36 emb27 (d , e , f)
+emb27-add a b c d e f = cong-6
+  refl
+  refl
+  refl
+  (trans (cong (λ w → w ⊕ (T₂ ⊗ (c ⊕ f))) (⊗-distribˡ-⊕ T₂ b e))
+  (trans (cong (λ w → ((T₂ ⊗ b) ⊕ (T₂ ⊗ e)) ⊕ w) (⊗-distribˡ-⊕ T₂ c f))
+         (sum4-swap (T₂ ⊗ b) (T₂ ⊗ e) (T₂ ⊗ c) (T₂ ⊗ f))))
+  (sum4-swap b e c f)
+  refl
 
 pin-emb9-add : length (keepEmb (λ p ->
   emb9 (proj₁ p +gf9 proj₂ p) ==³⁶ (emb9 (proj₁ p) +gf36 emb9 (proj₂ p))) pairs9) ≡ 81
 pin-emb9-add = refl
 
 pin-emb27-add : length (keepEmb (λ p ->
-  emb27 (proj₁ p +gf27 proj₂ p) ==³⁶ (emb27 (proj₁ p) +gf36 emb27 (proj₂ p))) pairs27) ≡ 729
+  emb27 (proj₁ p +gf27 proj₂ p) ==³⁶
+  (emb27 (proj₁ p) +gf36 emb27 (proj₂ p))) pairs27) ≡ 729
 pin-emb27-add = refl
 
 --------------------------------------------------------------------------------
--- §6. 乘法性（全枚举校验：81 / 729 对）
+-- §5. 乘法同态（构造子全 case 归约：3⁴ = 81 / 3⁶ = 729 子句）
 --
--- 结构理由（注记，非本模块证明）：emb(d·f) = 多项式在 β/γ 处求值；
--- β² = 2 与 α₉² = 2、γ³ = γ+2 与 α³ = α+2 为同一生成关系（前者见
--- GF36 pin-36-beta-sq，后者见 pin-36-gamma-cube 与 GF27 alpha-cubed-struct），
--- 求值同态由此保乘法。以下全枚举为电性层校验编码，引用写「全枚举」。
+-- 证明体在 `Embed36MulClauses.agda`（生成文件）：
+--   open import ...Embed36MulClauses 即得 emb9-mul / emb27-mul。
+-- 枚举 pin（下两枚）保留为交叉校验。
 --------------------------------------------------------------------------------
 
 pin-emb9-mul : length (keepEmb (λ p ->
@@ -163,7 +212,7 @@ pin-emb27-mul : length (keepEmb (λ p ->
 pin-emb27-mul = refl
 
 --------------------------------------------------------------------------------
--- §7. Frobenius 相容（全枚举：9 / 27 对）
+-- §6. Frobenius 相容（全枚举：9 / 27 对）
 --
 -- 域同态在特征 3 下自动交换 x ↦ x³：emb(σx) = emb(x³) = emb(x)³。
 -- GF9 侧 σ = galoisConjugate；GF27 侧 σ = frobenius。
@@ -178,7 +227,7 @@ pin-emb27-σ : length (keepEmb (λ x →
 pin-emb27-σ = refl
 
 --------------------------------------------------------------------------------
--- §8. 像 ⊆ σ^(6/d)-不动子域（全枚举）
+-- §7. 像 ⊆ σ^(6/d)-不动子域（全枚举）
 --------------------------------------------------------------------------------
 
 pin-emb9-image-fixed : length (keepEmb (λ x → subfield2 (emb9 x)) all9) ≡ 9
@@ -188,7 +237,7 @@ pin-emb27-image-fixed : length (keepEmb (λ x → subfield3 (emb27 x)) all27) �
 pin-emb27-image-fixed = refl
 
 --------------------------------------------------------------------------------
--- §9. 单射（全枚举：x ≠ y ⇒ emb x ≠ emb y，计数 0 反例）
+-- §8. 单射（全枚举：x ≠ y ⇒ emb x ≠ emb y，计数 0 反例）
 --------------------------------------------------------------------------------
 
 pin-emb9-injective : length (keepEmb (λ p ->
@@ -200,7 +249,7 @@ pin-emb27-injective : length (keepEmb (λ p ->
 pin-emb27-injective = refl
 
 --------------------------------------------------------------------------------
--- §10. 计数收束（头注重述）
+-- §9. 计数收束（头注重述）
 --
 -- pin-emb27-injective（像含 27 个互异元素）+ pin-emb27-image-fixed（像 ⊆
 -- σ³-不动集）+ GF36 pin-36-fix-σ³（σ³-不动集恰 27 元）
