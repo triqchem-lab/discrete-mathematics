@@ -29,6 +29,7 @@ FML 形式化待办：nsStep⁹ = id 的 Agda 定理（ freshman's dream 的
     --golden /home/yanli/work/math/rust/sov-math/sov-core/src/l2_nse_golden.rs
 """
 import argparse
+import pathlib
 import re
 import hashlib
 from collections import Counter
