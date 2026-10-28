@@ -15,8 +15,11 @@
 --       diffF-≈（差分传输）→ grad-≈-pt（grad 分量传输）→
 --       vk-grad-add（grad 分量加法）→ nsStep-add-comp（组装）。
 --     地基：NSEOnT6 §3 现成的 div-+F（div 加法性）+ diffF-+S（差分线性）。
---   · 卷二：散度流定律 div (nsStep v) = div v ⊕ 2·Δ(div v)
---     （div∘grad = 2·lap₃ 引理 + 卷一；数值 729/729 已验）。
+--   · 卷二（本模块）：**散度流定律** div (nsStep v) x = div v x ⊕ 2·Δ(div v) x：
+--       dyn-six-zero（6z ≡ 0）→ dyn-axisLap-3pt（单轴三点展开）→
+--       dyn-div-grad（div∘grad 倍增，卷二主引理）→ dyn-flow-law（组装）。
+--     地基：NSEOnT6 §4c axisLap-formula（negate² 相消已完成的三点展开）
+--     + §2/§3 sum6/sum6-+/cong6'。数值 729/729 已验，本卷给结构证明。
 --   · 卷三：lap₃ 零幂性 lap₃² 相关零化链（mod 3）。
 --   · 卷四：freshman's dream——(I + GD)⁹ = I + (GD)⁹（C(9,k) ≡ 0，
 --     线性性的九步推论）。
@@ -41,7 +44,8 @@ open import Sovereign.Base.Trit
   using (Trit; T₀; T₁; T₂; _⊕_; negate; ⊕-identityʳ; ⊕-assoc; ⊕-comm)
 open import Sovereign.Application.Problems.NavierStokes.NSEOnT6
   using (C3; Torus6; ScalarField; Field; v1; v2; v3; v4; v5; v6;
-         _+S_; _+F_; diffF; div; grad; nsStep; div-+F; shiftAt; diffF-+S)
+         _+S_; _+F_; diffF; div; grad; nsStep; div-+F; shiftAt; diffF-+S;
+         axisLap; axisLap-formula; sum6; sum6-+; cong6')
 
 --------------------------------------------------------------------------------
 -- §0. ⊕ 四项重组（工作马；与 Embed36.sum4-swap 同构，独立命名避撞车）
@@ -174,10 +178,104 @@ nsStep-add-v6 v w x =
                   (grad-comp-add v6 (suc (suc zero)) (λ f x → refl) (div v) (div w) x)
 
 --------------------------------------------------------------------------------
--- §5. 后续卷预告（nsStep⁹ = id 组装件）
+-- §5. 卷二 · 基件：六重相同项求和归零（6·z ≡ 0 (mod 3)）
 --
--- 卷二：散度流定律 div (nsStep v) = div v ⊕ 2·Δ(div v)
---       （div∘grad = 2·lap₃ 引理；数值 729/729 已验）。
+-- 口径：全枚举校验（Trit 3-case，各支定义性 refl；与 Trit.agda 环公理同风格）。
+--------------------------------------------------------------------------------
+
+dyn-six-zero : ∀ z → sum6 z z z z z z ≡ T₀
+dyn-six-zero T₀ = refl
+dyn-six-zero T₁ = refl
+dyn-six-zero T₂ = refl
+
+--------------------------------------------------------------------------------
+-- §6. 卷二 · 单轴二阶差分三点展开（w-优先形式，供 §7 的 sum6-+ 拆分直接咬合）
+--
+--   axisLap i f x = diffF i (diffF i f) x ≡ f(x+2eᵢ) ⊕ (f(x+eᵢ) ⊕ f x)
+--
+-- 数学内容：特征 3 下 D² 的三点系数全为 +1（−2 ≡ 1 (mod 3)）。
+-- 证明：NSEOnT6 §4c axisLap-formula 已完成 negate² 相消，给出 u ⊕ (w ⊕ z)
+-- （u = f(x+eᵢ)，w = f(x+2eᵢ)，z = f(x)）；此处仅做
+-- (u⊕w)⊕z ↔ w⊕(u⊕z) 的结合/交换重排。口径：结构证明。
+--------------------------------------------------------------------------------
+
+dyn-axisLap-3pt : ∀ (i : C3) (f : ScalarField) (x : Torus6)
+  → diffF i (diffF i f) x ≡ f (shiftAt i (shiftAt i x)) ⊕ (f (shiftAt i x) ⊕ f x)
+dyn-axisLap-3pt i f x =
+  trans (axisLap-formula i f x)
+  (trans (sym (⊕-assoc (f (shiftAt i x)) (f (shiftAt i (shiftAt i x))) (f x)))
+  (trans (cong (_⊕ f x)
+           (⊕-comm (f (shiftAt i x)) (f (shiftAt i (shiftAt i x)))))
+         (⊕-assoc (f (shiftAt i (shiftAt i x))) (f (shiftAt i x)) (f x))))
+
+--------------------------------------------------------------------------------
+-- §7. 卷二主引理：div∘grad 倍增——div (grad f) x ≡ 2·Δ f x
+--
+-- 右端「2·Δ f x」取展开形式 sum6 A₀ A₁ A₂ A₀ A₁ A₂，Aᵢ = f(x+eᵢ) ⊕ f(x+2eᵢ)
+-- （NSEOnT6 头部记录的 Δ 精确公式；f(x) 项系数 6 ≡ 0 故不出现；
+--   与 NSEOnT6 §5 div-grad：div (grad f) x ≡ laplacian f x 定义性同一）。
+--
+-- 证明组织（结构证明）：
+--   ① div (grad f) x 定义性 = sum6 L₀ L₁ L₂ L₀ L₁ L₂（Lᵢ = axisLap i f x）；
+--   ② cong6' 逐轴实例化 dyn-axisLap-3pt：Lᵢ ↝ wᵢ ⊕ (uᵢ ⊕ z)；
+--   ③ sum6-+ 两次拆分：↝ Sw ⊕ (Su ⊕ Sz)，Sz = sum6 z ⋯ z = 6·z ≡ T₀
+--     （dyn-six-zero）——这一步正是「f(x) 项共 6 个 ≡ 0 消去」的代数内容；
+--   ④ 单位元 + ⊕-comm 收尾，sum6-+ 逆用重装成 Aᵢ = uᵢ ⊕ wᵢ 的双份形式。
+--------------------------------------------------------------------------------
+
+dyn-div-grad : ∀ (f : ScalarField) (x : Torus6) → div (grad f) x ≡ sum6
+  ((f (shiftAt zero x) ⊕ f (shiftAt zero (shiftAt zero x))))
+  ((f (shiftAt (suc zero) x) ⊕ f (shiftAt (suc zero) (shiftAt (suc zero) x))))
+  ((f (shiftAt (suc (suc zero)) x) ⊕ f (shiftAt (suc (suc zero)) (shiftAt (suc (suc zero)) x))))
+  ((f (shiftAt zero x) ⊕ f (shiftAt zero (shiftAt zero x))))
+  ((f (shiftAt (suc zero) x) ⊕ f (shiftAt (suc zero) (shiftAt (suc zero) x))))
+  ((f (shiftAt (suc (suc zero)) x) ⊕ f (shiftAt (suc (suc zero)) (shiftAt (suc (suc zero)) x))))
+dyn-div-grad f x =
+  trans (cong6' (dyn-axisLap-3pt zero f x)
+                (dyn-axisLap-3pt (suc zero) f x)
+                (dyn-axisLap-3pt (suc (suc zero)) f x)
+                (dyn-axisLap-3pt zero f x)
+                (dyn-axisLap-3pt (suc zero) f x)
+                (dyn-axisLap-3pt (suc (suc zero)) f x))
+  (trans (sum6-+ w0 (u0 ⊕ z) w1 (u1 ⊕ z) w2 (u2 ⊕ z)
+                 w0 (u0 ⊕ z) w1 (u1 ⊕ z) w2 (u2 ⊕ z))
+  (trans (cong (Sw ⊕_) (sum6-+ u0 z u1 z u2 z u0 z u1 z u2 z))
+  (trans (cong (Sw ⊕_) (cong (Su ⊕_) (dyn-six-zero z)))
+  (trans (cong (Sw ⊕_) (⊕-identityʳ Su))
+         (trans (⊕-comm Sw Su)
+                (sym (sum6-+ u0 w0 u1 w1 u2 w2 u0 w0 u1 w1 u2 w2)))))))
+  where
+    u0 = f (shiftAt zero x)
+    u1 = f (shiftAt (suc zero) x)
+    u2 = f (shiftAt (suc (suc zero)) x)
+    w0 = f (shiftAt zero (shiftAt zero x))
+    w1 = f (shiftAt (suc zero) (shiftAt (suc zero) x))
+    w2 = f (shiftAt (suc (suc zero)) (shiftAt (suc (suc zero)) x))
+    z  = f x
+    Su = sum6 u0 u1 u2 u0 u1 u2
+    Sw = sum6 w0 w1 w2 w0 w1 w2
+
+--------------------------------------------------------------------------------
+-- §8. 卷二组装：散度流定律 div (nsStep v) x ≡ div v x ⊕ 2·Δ(div v) x
+--
+-- nsStep v = v +F grad (div v)（定义性）→ div-+F（NSEOnT6 §3）
+-- → dyn-div-grad 实例化于 f := div v。口径：结构证明。
+--------------------------------------------------------------------------------
+
+dyn-flow-law : ∀ (v : Field) (x : Torus6) → div (nsStep v) x ≡ div v x ⊕ sum6
+  ((div v (shiftAt zero x) ⊕ div v (shiftAt zero (shiftAt zero x))))
+  ((div v (shiftAt (suc zero) x) ⊕ div v (shiftAt (suc zero) (shiftAt (suc zero) x))))
+  ((div v (shiftAt (suc (suc zero)) x) ⊕ div v (shiftAt (suc (suc zero)) (shiftAt (suc (suc zero)) x))))
+  ((div v (shiftAt zero x) ⊕ div v (shiftAt zero (shiftAt zero x))))
+  ((div v (shiftAt (suc zero) x) ⊕ div v (shiftAt (suc zero) (shiftAt (suc zero) x))))
+  ((div v (shiftAt (suc (suc zero)) x) ⊕ div v (shiftAt (suc (suc zero)) (shiftAt (suc (suc zero)) x))))
+dyn-flow-law v x =
+  trans (div-+F v (grad (div v)) x)
+        (cong (div v x ⊕_) (dyn-div-grad (div v) x))
+
+--------------------------------------------------------------------------------
+-- §9. 后续卷预告（nsStep⁹ = id 组装件）
+--
 -- 卷三：lap₃ 零幂链（mod 3）。
 -- 卷四：freshman's dream——(I + GD)⁹ = I + (GD)⁹。
 -- 卷五：组装 nsStep⁹ = I。
