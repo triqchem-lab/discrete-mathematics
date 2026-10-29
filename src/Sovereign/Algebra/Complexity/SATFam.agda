@@ -3,8 +3,9 @@
 -- | Sovereign.Algebra.Complexity.SATFam
 -- SAT 渐近族——变元池随 n 增长的 log₃ 位宽编码（F7 核心件，WIP 分批交付）
 --
--- ⚠ WIP 声明（分批交付纪律）：本件已闭合 解码器/位宽函数/往返核，
---   **Mono/Pos 与族装配（SATMember 立界 (i) 的完整闭合）待续**——
+-- ⚠ WIP 声明（分批交付纪律）：本件已闭合 解码器/位宽函数/往返核/
+--   **third 单调 + fuel 双单调 + wlog3 Mono（§5 (i)(ii)）**；
+--   位宽语义 3^w ≥ m（(iii)）/族装配（(iv)）/roundtrip（(v)）待续——
 --   头注即 journal，未完成部分不留洞、以本声明承载。
 --
 -- 数学背景：SATMember 的变元池是「独热 suc m 宽」——m 固定时可行，
@@ -26,7 +27,8 @@
 
 module Sovereign.Algebra.Complexity.SATFam where
 
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc; _≤_; s≤s; z≤n)
+open import Data.Nat.Properties using (≤-refl; ≤-trans)
 open import Data.List using (List; []; _∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
@@ -94,13 +96,69 @@ SF-check-third4 : SF-third (suc (suc (suc zero))) ≡ suc zero
 SF-check-third4 = refl
 
 -- ────────────────────────────────────────────────────────────────────
--- §5 待续立界（WIP 分批交付的剩余清单——头注 WIP 声明的明细）
+-- §5.1 SF-third 单调（§5 (i) 闭合）〔结构归纳 4 案 + s≤s 簿记〕
 -- ────────────────────────────────────────────────────────────────────
--- (i)  SF-third 单调：m ≤ n → SF-third m ≤ SF-third n（4 案 + n≤m+n 簿记）
--- (ii) SF-wlog3-fuel 的 Mono（依赖 (i) 的逐 fuel 归纳）
--- (iii) 位宽语义 3^w ≥ m 的精确形式与 ⌈log₃⌉ 立界收口
--- (iv) 族装配：变元号定宽编码 + L-SAT 渐近族（SATMember 立界 (i) 收口）
--- (v)  roundtrip：dec ∘ 位编码 于 Fin m 的恒等（依赖 (i)）
+
+SF-third-monotone : ∀ m n → m ≤ n → SF-third m ≤ SF-third n
+SF-third-monotone zero n m≤n = z≤n
+SF-third-monotone (suc zero) n m≤n = z≤n
+SF-third-monotone (suc (suc zero)) n m≤n = z≤n
+SF-third-monotone (suc (suc (suc m))) zero ()
+SF-third-monotone (suc (suc (suc m))) (suc zero) (s≤s ())
+SF-third-monotone (suc (suc (suc m))) (suc (suc zero)) (s≤s (s≤s ()))
+SF-third-monotone (suc (suc (suc m))) (suc (suc (suc n)))
+  (s≤s (s≤s (s≤s m≤n))) = s≤s (SF-third-monotone m n m≤n)
+
+-- ────────────────────────────────────────────────────────────────────
+-- §5.2 燃料双单调（§5 (ii) 前置）〔k-单调：fuel 结构递增；m-单调：依赖
+--      (i) 的 third 单调逐层搬运〕
+-- ────────────────────────────────────────────────────────────────────
+
+SF-wlog3-fuel-mono-k : ∀ k₁ k₂ m → k₁ ≤ k₂
+  → SF-wlog3-fuel k₁ m ≤ SF-wlog3-fuel k₂ m
+SF-wlog3-fuel-mono-k zero k₂ m k₁≤k₂ = z≤n
+SF-wlog3-fuel-mono-k (suc k₁) zero m ()
+SF-wlog3-fuel-mono-k (suc k₁) (suc k₂) zero k₁≤k₂ = z≤n
+SF-wlog3-fuel-mono-k (suc k₁) (suc k₂) (suc m) (s≤s k₁≤k₂) =
+  s≤s (SF-wlog3-fuel-mono-k k₁ k₂ (SF-third (suc m)) k₁≤k₂)
+
+SF-wlog3-fuel-mono-m : ∀ k m n → m ≤ n
+  → SF-wlog3-fuel k m ≤ SF-wlog3-fuel k n
+SF-wlog3-fuel-mono-m zero m n m≤n = z≤n
+SF-wlog3-fuel-mono-m (suc k) zero n m≤n = z≤n
+SF-wlog3-fuel-mono-m (suc k) (suc m) zero ()
+SF-wlog3-fuel-mono-m (suc k) (suc m) (suc n) (s≤s m≤n) =
+  s≤s (SF-wlog3-fuel-mono-m k (SF-third (suc m)) (SF-third (suc n))
+             (SF-third-monotone (suc m) (suc n) (s≤s m≤n)))
+
+-- ────────────────────────────────────────────────────────────────────
+-- §5.3 SF-wlog3 单调（§5 (ii) 闭合）
+-- ────────────────────────────────────────────────────────────────────
+
+SF-wlog3-mono : ∀ m n → m ≤ n → SF-wlog3 m ≤ SF-wlog3 n
+SF-wlog3-mono m n m≤n =
+  ≤-trans (SF-wlog3-fuel-mono-m m m n m≤n)
+          (SF-wlog3-fuel-mono-k m n n m≤n)
+
+-- ────────────────────────────────────────────────────────────────────
+-- §5.4 核对层补充（单调性小值 + w(3)=2 位宽小值）
+-- ────────────────────────────────────────────────────────────────────
+
+SF-check-w3-2 : SF-wlog3 (suc (suc (suc zero))) ≡ suc (suc zero)
+SF-check-w3-2 = refl
+
+SF-check-mono2 : SF-wlog3 (suc (suc zero)) ≤ SF-wlog3 (suc (suc (suc zero)))
+SF-check-mono2 = SF-wlog3-mono (suc (suc zero)) (suc (suc (suc zero)))
+  (s≤s (s≤s z≤n))
+
+-- ────────────────────────────────────────────────────────────────────
+-- §5.5 待续立界（分批交付的剩余清单——头注 WIP 声明的明细）
+-- ────────────────────────────────────────────────────────────────────
+-- (iii) 位宽语义 3^w ≥ m 的精确形式与 ⌈log₃⌉ 立界收口——归纳结构已勘定：
+--       强归纳 + third 下界引理（z ≤ suc (suc (3 * third z))，4 案）+
+--       fuel k-单调（§5.2 已备）。簿记量 ~150 行，另件交付。
+-- (iv)  族装配：变元号定宽编码 + L-SAT 渐近族（SATMember 立界 (i) 收口）。
+-- (v)   roundtrip：dec ∘ 位编码 于 Fin m 的恒等（依赖定宽编码定义）。
 
 -- 0 postulate / 0 hole。
--- WIP：待补 §5 (i)-(v)。可编译部分原样保留。
+-- WIP：待补 §5 (iii)-(v)。可编译部分原样保留。
