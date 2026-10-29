@@ -350,6 +350,46 @@ LK-l2-0 sg (suc m) (T₂ v∷ os) (b v∷ as) acc l₁ h₁ r₂ =
   LK-l2-0 sg m os as (LK-t b ∷ acc) (LK-t T₂ ∷ l₁) (hdOf LK-b (LK-cells os)) r₂
 
 -- ────────────────────────────────────────────────────────────────────
+-- §4d full-config 锁步引理：目标形（未来态锚点）+ 已备规范件
+-- ────────────────────────────────────────────────────────────────────
+-- 目标态：从 (qScan sg b v)、两带同时在格首出发，走 |o| = m+1 步后
+--   带 1：左带 = 反向累积的 onehot 格，头/余带回空白与 []
+--   带 2：左带 = 反向累积的见证格，头/余带回空白与 []
+--   状态：LK-scanned sg b v（本节的规范函数）
+-- 于是「符号步 + 锁步 + 回走」三段都能以**整幅格局**为接口用 runB-+ 拼接。
+--
+-- ⚠ 本轮未闭合（诊断见尾注 §6(v)）：两个**必须先解决的形状问题**已定位——
+--   ① `b`、`v` 作为变量时 δ 不可归约（`lk-δ (qScan s false v) …` 的 false 是
+--      子句里的构造子），故 b 必须逐真值分案；false→true 的迁移只在 T₁ 分支；
+--   ② 分案后「已找到」变体必须对 v **全泛型**，否则 T₁ 之后的值会被重写成
+--      剩余见证的首格（我把 v 写成 `LK-v (hdOf …)` 时就是这里失配）。
+--   这两点已改对；剩下的是结论里「带 1 左带」的实例对齐（`LK-rc (LK-cells o) l₁`
+--   与一步之后 `LK-rc (LK-cells (tl …)) (… ∷ l₁)` 的可转换性），未清。
+
+-- 格级反向累积（带 1 左带的增长序）
+LK-rc : List LK-Σ → List LK-Σ → List LK-Σ
+LK-rc []       acc = acc
+LK-rc (x ∷ xs) acc = LK-rc xs (x ∷ acc)
+
+-- 见证侧的一格消费
+LK-drop1 : List Trit → List Trit
+LK-drop1 []       = []
+LK-drop1 (b ∷ bs) = bs
+
+-- 锁步扫描的规范终态（(已找到, 值) 全泛型 ⟹ 一条函数覆盖两变体）。
+-- 关键语义：T₁ 在「未找到」时把值置为该格见证；在「已找到」时**不覆盖**。
+LK-scanned : (sg : Sign) (b : Bool) (v : Trit)
+             (os : List LK-Σ) (ws : List Trit) → LK-Q
+LK-scanned sg b v [] ws = qScan sg b v
+LK-scanned sg false v (LK-t T₁ ∷ os) (w ∷ ws) = LK-scanned sg true w os ws
+LK-scanned sg false v (LK-t T₁ ∷ os) [] = LK-scanned sg true (LK-v LK-b) os []
+LK-scanned sg true  v (LK-t T₁ ∷ os) ws = LK-scanned sg true v os (LK-drop1 ws)
+LK-scanned sg b v (LK-t T₀ ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
+LK-scanned sg b v (LK-t T₂ ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
+LK-scanned sg b v (LK-b ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
+LK-scanned sg b v (LK-m ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
+
+-- ────────────────────────────────────────────────────────────────────
 -- §5 核对层（refl 枚举）
 -- ────────────────────────────────────────────────────────────────────
 
