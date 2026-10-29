@@ -625,3 +625,48 @@ nTarget = nOld + nctel - 1     -- Delta 的大小（未来态）← 正确锚点
 **仍缺**：把「符号步 + 锁步 + 回走」拼成单个 `runB` 的整机引理——需要一条
 **full-config 锁步引理**（同时跟踪 state / 两带），三段燃料已各自钉死
 （1 / |os| / |cs|+2）。这是拼接工作，不是新的方法论问题。
+---
+
+## 附录 8：`tlOf` 遇到变量参数不归约 —— 余带要用「配对标 + 头尾分离」(v8, 2026-10-29)
+
+**现象（2026-10-29，SATLook 的 `r₁` 贯穿）**：把 `LK-lock` 的带 1 余带写成
+`tlOf (LK-cells o) ++ r₁` 后，步进子句里
+
+```
+tlOf (LK-t x ∷ (LK-cells os ++ r₁))   ⟶  LK-cells os ++ r₁      -- 可归约
+tlOf (LK-cells os) ++ r₁              ⟵  递归调用的陈述形        -- 卡住
+```
+
+两者只在 `LK-cells os` 已知非空时相等，而 `os : Vec Trit (suc m)` 是**变量**
+⟹ `LK-cells os` 卡死 ⟹ `tlOf` 拱不进去。**这不是漏改，是陈述形的错。**
+
+**规矩**：凡「余带 + 后缀」出现在陈述里，**不要让 `tlOf` 作用在变量参数上**。
+三种写法按优先级：
+
+1. **头尾分离（推荐）**：陈述直接取 `(x : A) (xs : List A)`，右带写 `xs ++ r₁`。
+   `tlOf` 完全消失，`++ r₁` 的归约是纯结构性的。
+2. **配对标**：两条带长度必须相等时（如 onehot ↔ 见证锁步），取
+   `List (Σ × Trit)`（或 `List (A × B)`）作为唯一的驱动列表，两条带各自
+   `map` 投影 —— 长度相等**由类型保证**，且步进/递归都只在一个列表上归纳，
+   顺带消灭「一条带耗尽另一条没耗尽」的分支（本件正是死在那个分支上：
+   加相迁移子句后 `ws = []` 的全性补丁失真）。
+3. 不得已用 `Vec`：则**只能把 `tlOf` 作用在子句里已经展开的构造子上**，
+   不能出现在递归调用的陈述里。
+
+**已定的开工形（下一轮）**：
+
+```agda
+LK-lock : ∀ (sg : Sign) (ps : List (LK-Σ × Trit)) (acc l₁ : List LK-Σ)
+            (h₁ : LK-Σ) (r₁ : List LK-Σ)
+        → runB tm-look LK-b (length ps)
+            (mk2 l₁ (qScan sg false T₀) (hdOf LK-b (LK-cellsP ps))
+                 (tlOf (LK-cellsP ps) ++ r₁)      -- 子句里 ps 展开后即可归约
+                 acc (hdOf LK-b (LK-cellsQ ps)) (tlOf (LK-cellsQ ps)))
+          ≡ mk2 (LK-rc (LK-cellsP ps) l₁)
+                (LK-scannedQ sg false T₀ ps) (hdOf LK-b r₁) (tlOf r₁)
+                (LK-rw (LK-cellsQ ps) acc) LK-b []
+```
+
+其中 `LK-cellsP ps = map (LK-t ∘ proj₁) ps`、`LK-cellsQ ps = map (LK-t ∘ proj₂) ps`，
+`LK-scannedQ` 是 `LK-scanned` 的配对版（`LK-scanned` 的两列表版本可由它投影出来）。
+`LK-cycle` 传 `ps = zip (LK-cells o) (LK-vl a)`（等长由 `Vec` 保证）。
