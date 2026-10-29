@@ -558,6 +558,25 @@ LK-back-m sg v m a l₁ =
         (cong suc (cong suc (LK-rewind-fuel m a)))
         (LK-back sg v (LK-revT (LK-vl a)) [] l₁ LK-b [] [])
 
+-- ══ A3 回走的**整幅格局**版（多文字循环的前置：循环边界必须知道两带的完整形）
+LK-walkF : ∀ (sg : Sign) (v : Trit) (h : Trit) (cs : List Trit) (l₂ : List LK-Σ)
+             (l₁ : List LK-Σ) (h₁ : LK-Σ) (r₁ r₂ : List LK-Σ)
+         → runB tm-look LK-b (suc (suc (length cs)))
+             (mk2 l₁ (qBack sg v) h₁ r₁ (LK-wl cs ++ (LK-m ∷ l₂)) (LK-t h) r₂)
+           ≡ mk2 l₁ (qDone sg v) h₁ r₁ l₂ LK-m (LK-rw cs (LK-t h ∷ r₂))
+LK-walkF sg v h [] l₂ l₁ h₁ r₁ r₂ = refl
+LK-walkF sg v h (b ∷ cs) l₂ l₁ h₁ r₁ r₂ =
+  LK-walkF sg v b cs l₂ l₁ h₁ r₁ (LK-t h ∷ r₂)
+
+LK-backF : ∀ (sg : Sign) (v : Trit) (cs : List Trit) (l₂ : List LK-Σ)
+             (l₁ : List LK-Σ) (h₁ : LK-Σ) (r₁ r₂ : List LK-Σ)
+         → runB tm-look LK-b (suc (suc (length cs)))
+             (mk2 l₁ (qBack sg v) h₁ r₁ (LK-wl cs ++ (LK-m ∷ l₂)) LK-b r₂)
+           ≡ mk2 l₁ (qDone sg v) h₁ r₁ l₂ LK-m (LK-rw cs (LK-b ∷ r₂))
+LK-backF sg v [] l₂ l₁ h₁ r₁ r₂ = refl
+LK-backF sg v (b ∷ cs) l₂ l₁ h₁ r₁ r₂ =
+  LK-walkF sg v b cs l₂ l₁ h₁ r₁ (LK-b ∷ r₂)
+
 -- ★ 主定理：一次文字 = 1（符号）+ (m+1)（锁步）+ 1（相迁移）+ (m+3)（回走）
 -- = 2m+6 步；终态携带 (符号, a[v])，带 2 由回走相复原。
 LK-cycle : ∀ (sg : Trit) (m : ℕ) (o a : Vec Trit (suc m)) (l₁ : List LK-Σ)
@@ -681,6 +700,45 @@ LK-cycleR sg m o a l₁ r₁ h =
                                (LK-seamR sg m o a l₁ r₁ h)))))
         (LK-back-mR (signOf sg) (lookup a (fromOneHot m o)) m a
                     (LK-rc (LK-cells o) (LK-t sg ∷ l₁)) (hdOf LK-b r₁) (tlOf r₁))
+
+-- 回走的 m 索引整幅格局版（燃料与 length 中性项对齐，subst 只做一次）
+LK-backFR : ∀ (sg : Sign) (v : Trit) (m : ℕ) (a : Vec Trit (suc m))
+              (l₁ : List LK-Σ) (h₁ : LK-Σ) (r₁ : List LK-Σ)
+          → runB tm-look LK-b (suc (suc (suc m)))
+              (mk2 l₁ (qBack sg v) h₁ r₁
+                   (LK-wl (LK-revT (LK-vl a)) ++ (LK-m ∷ [])) LK-b [])
+            ≡ mk2 l₁ (qDone sg v) h₁ r₁ [] LK-m (LK-rw (LK-revT (LK-vl a)) (LK-b ∷ []))
+LK-backFR sg v m a l₁ h₁ r₁ =
+  subst (λ k → runB tm-look LK-b k
+                 (mk2 l₁ (qBack sg v) h₁ r₁
+                      (LK-wl (LK-revT (LK-vl a)) ++ (LK-m ∷ [])) LK-b [])
+               ≡ mk2 l₁ (qDone sg v) h₁ r₁ [] LK-m (LK-rw (LK-revT (LK-vl a)) (LK-b ∷ [])))
+        (cong suc (cong suc (LK-rewind-fuel m a)))
+        (LK-backF sg v (LK-revT (LK-vl a)) [] l₁ h₁ r₁ [])
+
+-- ★ 整幅格局的单文字循环（循环边界可续：带 1 头/余带与带 2 全形都给出）
+LK-cycleF : ∀ (sg : Trit) (m : ℕ) (o a : Vec Trit (suc m)) (l₁ : List LK-Σ)
+              (r₁ : List LK-Σ)
+          → Σ (Fin (suc m)) (λ i → lookup o i ≡ T₁)
+          → runB tm-look LK-b (suc (suc m + suc (suc (suc (suc m)))))
+              (mk2 l₁ qLit (LK-t sg) (LK-cells o ++ r₁) [] LK-m (LK-wl (LK-vl a)))
+            ≡ mk2 (LK-rc (LK-cells o) (LK-t sg ∷ l₁))
+                  (qDone (signOf sg) (lookup a (fromOneHot m o)))
+                  (hdOf LK-b r₁) (tlOf r₁) [] LK-m
+                  (LK-rw (LK-revT (LK-vl a)) (LK-b ∷ []))
+LK-cycleF sg m o a l₁ r₁ h =
+  trans (trans (runB-+ tm-look LK-b (suc m) (suc (suc (suc (suc m))))
+                          (mk2 (LK-t sg ∷ l₁) (qScan (signOf sg) false T₀)
+                               (hdOf LK-b (LK-cells o ++ r₁)) (tlOf (LK-cells o ++ r₁))
+                               (LK-m ∷ []) (hdOf LK-b (LK-wl (LK-vl a)))
+                               (tlOf (LK-wl (LK-vl a)))))
+               (trans (cong (runB tm-look LK-b (suc (suc (suc (suc m)))))
+                            (LK-lockR (signOf sg) m o a (LK-m ∷ [])
+                                      (LK-t sg ∷ l₁) r₁))
+                      (cong (runB tm-look LK-b (suc (suc (suc (suc m)))))
+                            (LK-seamR sg m o a l₁ r₁ h))))
+        (LK-backFR (signOf sg) (lookup a (fromOneHot m o)) m a
+                   (LK-rc (LK-cells o) (LK-t sg ∷ l₁)) (hdOf LK-b r₁) (tlOf r₁))
 
 -- ────────────────────────────────────────────────────────────────────
 -- §5 核对层（refl 枚举）
