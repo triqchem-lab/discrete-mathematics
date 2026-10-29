@@ -324,6 +324,46 @@ LK-scannedQ sg false v ((LK-t T₁ , w) ∷ ps) = LK-scannedQ sg true w ps
 LK-scannedQ sg false v ((q , w) ∷ ps) = LK-scannedQ sg false v ps
 LK-scannedQ sg true v ((q , w) ∷ ps) = LK-scannedQ sg true v ps
 
+-- 配对版见证反序累积
+LK-rwQ : List (LK-Σ × Trit) → List LK-Σ → List LK-Σ
+LK-rwQ [] acc = acc
+LK-rwQ ((q , w) ∷ ps) acc = LK-rwQ ps (LK-t w ∷ acc)
+
+-- ★ 配对版锁步引理（自相似陈述：两端一律写 hdOf/tlOf of (LK-cellsP ps ++ r₁)
+--   与 (LK-cellsQ ps)，于是 ps 在子句里是构造子 ⟹ δ 每次可归约；ps = [] 由 0 步
+--   base 覆盖，不需要「见证耗尽」的特殊分支）
+LK-lockP-true : ∀ (sg : Sign) (v : Trit) (ps : List (LK-Σ × Trit))
+                  (acc l₁ : List LK-Σ) (r₁ : List LK-Σ)
+              → runB tm-look LK-b (length ps)
+                  (mk2 l₁ (qScan sg true v)
+                       (hdOf LK-b (LK-cellsP ps ++ r₁)) (tlOf (LK-cellsP ps ++ r₁))
+                       acc (hdOf LK-b (LK-cellsQ ps)) (tlOf (LK-cellsQ ps)))
+                ≡ mk2 (LK-rc (LK-cellsP ps) l₁) (LK-scannedQ sg true v ps)
+                      (hdOf LK-b r₁) (tlOf r₁) (LK-rwQ ps acc) LK-b []
+LK-lockP-true sg v [] acc l₁ r₁ = refl
+LK-lockP-true sg v ((q , w) ∷ ps) acc l₁ r₁ =
+  LK-lockP-true sg v ps (LK-t w ∷ acc) (q ∷ l₁) r₁
+
+LK-lockP : ∀ (sg : Sign) (ps : List (LK-Σ × Trit))
+             (acc l₁ : List LK-Σ) (r₁ : List LK-Σ)
+         → runB tm-look LK-b (length ps)
+             (mk2 l₁ (qScan sg false T₀)
+                  (hdOf LK-b (LK-cellsP ps ++ r₁)) (tlOf (LK-cellsP ps ++ r₁))
+                  acc (hdOf LK-b (LK-cellsQ ps)) (tlOf (LK-cellsQ ps)))
+           ≡ mk2 (LK-rc (LK-cellsP ps) l₁) (LK-scannedQ sg false T₀ ps)
+                 (hdOf LK-b r₁) (tlOf r₁) (LK-rwQ ps acc) LK-b []
+LK-lockP sg [] acc l₁ r₁ = refl
+LK-lockP sg ((LK-t T₁ , w) ∷ ps) acc l₁ r₁ =
+  LK-lockP-true sg w ps (LK-t w ∷ acc) (LK-t T₁ ∷ l₁) r₁
+LK-lockP sg ((LK-t T₀ , w) ∷ ps) acc l₁ r₁ =
+  LK-lockP sg ps (LK-t w ∷ acc) (LK-t T₀ ∷ l₁) r₁
+LK-lockP sg ((LK-t T₂ , w) ∷ ps) acc l₁ r₁ =
+  LK-lockP sg ps (LK-t w ∷ acc) (LK-t T₂ ∷ l₁) r₁
+LK-lockP sg ((LK-b , w) ∷ ps) acc l₁ r₁ =
+  LK-lockP sg ps (LK-t w ∷ acc) (LK-b ∷ l₁) r₁
+LK-lockP sg ((LK-m , w) ∷ ps) acc l₁ r₁ =
+  LK-lockP sg ps (LK-t w ∷ acc) (LK-m ∷ l₁) r₁
+
 -- 规范的投影律（§4e）：LK-scanned 与「有没有 T₁ / 首个 T₁ 处的值」对齐
 --   LK-scanned-true：已找到后不再变（对 v 全泛型）
 --   LK-scanned-spec：未找到起步 ⟹ (anyT₁, pick)
