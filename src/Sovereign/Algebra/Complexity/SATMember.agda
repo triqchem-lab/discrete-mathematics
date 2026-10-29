@@ -285,7 +285,10 @@ check-verifier-value = refl
 --       （L-SAT 只经 decFormula），完备性不依赖 encode；encode/decode
 --       往返（decode (encode φ) ≡ φ）独立小件。
 -- (iii) SAT NP-完备性（Cook-Levin 型归约）= W2（Fagin）范围，立界不排期。
--- (iv)  验证器可由 TM 实现——同 PClass/NPClass 的函数层 → TM 桥立界。
+-- (iv)  验证器可由 TM 实现：SAT 验证器实例已闭合（SATMBridge）——配对单元
+--       （符号 + 见证值）编码下 tm-sat 逐文字 1 步、逐子句 3 步、终止符 1 步，
+--       燃料 = 本件账目 + 1；仍未做的是含寻址的整机（a[v] 读取的 O(m) 移头）
+--       与通用桥（任意 Counted 验证器 → TM，维持 PClass §6(i) 立界）。
 -- (v)   3-SAT 的「每子句恰 3 文字、无重文字化简」——本件子句恒 3 文字
 --       （含重复文字，经典等价：重复文字不影响满足性，refl 可见）。
 

@@ -129,7 +129,8 @@ check-witlen n = refl
 --       「非线性下界 + 对角化」世界级深件，L15 纪律：立界不冒充）。
 -- (ii)  inNP-rebound 的**见证集放大**（长 wq n 见证截断为 witLen n）需
 --       Vec 截断/重填 API，忠实 cast 独立小件；代价放大版已闭合。
--- (iii) 「验证器可由 TM 实现」同 PClass §6(i) 桥立界。
+-- (iii) 「验证器可由 TM 实现」：通用形式同 PClass §6(i) 桥立界（本 record
+--       不断言）；SAT 验证器（含族池 w(n) 形）的实例桥已由 SATMBridge 闭合。
 -- (iv)  NP 完备性（SAT 归约族、Cook-Levin 型）= W2 立界（路线图不排期）。
 
 -- 0 postulate / 0 hole。

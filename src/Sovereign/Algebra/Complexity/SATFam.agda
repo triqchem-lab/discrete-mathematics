@@ -22,6 +22,7 @@
 --   §5.11 L-SAT 渐近族 SF-LSAT-fam（池 = w(n)）+ 池单调 + 池容量 (iv)
 --   §6 族一致性（(iii) 闭合）：SF-fam-in-NP : InNP (λ n x → SF-LSAT-fam n x)
 --        ——同一台验证器，池由 w(n) 计算；见证长多项式 SF-fam-wit-poly
+--   （(iv) 验证器→TM 桥见同层件 SATMBridge：族实例 SVM-fam-bridge）
 --
 -- 已知边界（诚实）：
 --   (i)  SF-third 与 ⌊_/3⌋ 的逐点恒等：已由 SF-div3
@@ -33,8 +34,10 @@
 --        **∀ n 的单一总函数**（不是每家 n 一台机器）⟹ 池换成 n 的可计算
 --        函数 w(n) 即得族成员性；代价界 p(n) = suc (3n) 与池参数无关
 --        （div-le 对一切池成立），见证长多项式由 SF-fam-wit-poly 收口。
---   (iv) 「验证器 → TM 实现」桥未证（与 NPClass §5(iii) 同一立界）：
---        本件的验证器是函数层总函数，机器可执行性不在范围。
+--   (iv) 「验证器 → TM 实现」桥：已闭合（同层件 SATMBridge）——配对单元
+--        编码下逐文字 1 步、逐子句 3 步、终止符 1 步，燃料 = 账目 + 1
+--        （精确等式）。仍未做的是「含寻址的整机」（a[v] 读取的 O(m) 移头，
+--        需 multi-tape 或自含头）与通用桥（任意 Counted 验证器 → TM）。
 --   (v)  族的 NP-完备性 / 归约族未证（W2 Fagin 范围）。
 --
 -- 0 postulate / 0 hole。
