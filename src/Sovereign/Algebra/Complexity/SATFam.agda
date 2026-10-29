@@ -157,6 +157,11 @@ SF-check-mono2 = SF-wlog3-mono (suc (suc zero)) (suc (suc (suc zero)))
 -- (iii) 位宽语义 3^w ≥ m 的精确形式与 ⌈log₃⌉ 立界收口——归纳结构已勘定：
 --       强归纳 + third 下界引理（z ≤ suc (suc (3 * third z))，4 案）+
 --       fuel k-单调（§5.2 已备）。簿记量 ~150 行，另件交付。
+--       2026-10-29 深夜试闭实测障碍：主引理链的 third (suc m) ≤ suc (third m)
+--       一环在 cubical 模式下 third (suc m) 对变元 m 无子句匹配（卡死项），
+--       third-mono/m≤m+n 两条桥均不 defeq 闭合——需先建 third 专用算术层
+--       （third (suc k) ≤ suc (third m) 型引理族 + third 单调的 suc 分配），
+--       与 DuodecClock 的 tritCycle/jointCycle 同层。立界不降级，另件交付。
 -- (iv)  族装配：变元号定宽编码 + L-SAT 渐近族（SATMember 立界 (i) 收口）。
 -- (v)   roundtrip：dec ∘ 位编码 于 Fin m 的恒等（依赖定宽编码定义）。
 
