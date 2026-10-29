@@ -64,8 +64,7 @@ data LK-Σ : Set where
 
 -- 控制相辅助：Bool ↔ 格、相位推进、closing 判定
 LK-ofB : Bool → LK-Σ
-LK-ofB true = LK-t T₁
-LK-ofB false = LK-t T₀
+LK-ofB b = LK-t (if b then T₁ else T₀)
 
 LK-boolOf : LK-Σ → Bool
 LK-boolOf (LK-t t) = isT₁ t
@@ -954,13 +953,13 @@ LK-cycleS sg m o a l₁ r₁ l₂ h =
 --   pos′ = next pos；closing = (pos = T₂)
 --   ck′ = if closing then T₀ else (ck ∨ lit)        -- 收子句时清零
 --   fk′ = if closing then (fk ∧ (ck ∨ lit)) else fk  -- 收子句时并入公式
-LK-newCk : Trit → Trit → Bool → LK-Σ
-LK-newCk ck T₂ lit = LK-t T₀
-LK-newCk ck pos lit = LK-ofB (isT₁ ck ∨ lit)
+LK-newCk : Trit → Trit → Bool → Trit
+LK-newCk ck T₂ lit = T₀
+LK-newCk ck pos lit = if (isT₁ ck ∨ lit) then T₁ else T₀
 
-LK-newFk : Trit → Trit → Trit → Bool → LK-Σ
-LK-newFk fk ck T₂ lit = LK-ofB (isT₁ fk ∧ (isT₁ ck ∨ lit))
-LK-newFk fk ck pos lit = LK-ofB (isT₁ fk)
+LK-newFk : Trit → Trit → Trit → Bool → Trit
+LK-newFk fk ck T₂ lit = if (isT₁ fk ∧ (isT₁ ck ∨ lit)) then T₁ else T₀
+LK-newFk fk ck pos lit = if isT₁ fk then T₁ else T₀
 
 LK-ctl : ∀ (sg₀ : Sign) (v₀ : Trit) (sg : Trit) (l₁ g : List LK-Σ)
            (r₁ r₂ : List LK-Σ) (fk ck pos : Trit)
@@ -968,8 +967,8 @@ LK-ctl : ∀ (sg₀ : Sign) (v₀ : Trit) (sg : Trit) (l₁ g : List LK-Σ)
            (mk2 l₁ (qDone sg₀ v₀) (LK-t sg) r₁
                 (LK-t fk ∷ LK-t ck ∷ LK-t pos ∷ g) LK-m r₂)
          ≡ mk2 l₁ qLit (LK-t sg) r₁
-               (LK-newFk fk ck pos (isT₁ v₀)
-                ∷ LK-newCk ck pos (isT₁ v₀)
+               (LK-t (LK-newFk fk ck pos (isT₁ v₀))
+                ∷ LK-t (LK-newCk ck pos (isT₁ v₀))
                 ∷ LK-t (LK-nextT pos) ∷ g) LK-m r₂
 
 LK-ctl sg₀ v₀ sg l₁ g r₁ r₂ T₀ T₀ T₀ = refl
@@ -1005,6 +1004,33 @@ LK-ctl sg₀ v₀ sg l₁ g r₁ r₂ T₂ T₂ T₂ = refl
 --   ① 让控制相**直接返回 Trit**（LK-newFk/newCk 出 Trit 而非 cell），使 flag 可投影；
 --   ② 或把 LK-ctl 的结论写成「格形式」并让循环以**格**为参（避免 Trit↔cell 转换）。
 -- 现保留：控制相 δ（8 步）+ LK-ctl（27 案，已闭合）。
+
+-- ★ 从「上一字已收口」起跑：控制相 8 步 + 循环 2m+6 步（flag 为 Trit 值，可投影续用）
+LK-cycleS' : ∀ (sg : Trit) (m : ℕ) (o a : Vec Trit (suc m)) (l₁ g : List LK-Σ)
+               (r₁ : List LK-Σ) (sg₀ : Sign) (v₀ : Trit) (fk ck pos : Trit)
+           → Σ (Fin (suc m)) (λ i → lookup o i ≡ T₁)
+           → runB tm-look LK-b (8 + suc (suc m + suc (suc (suc (suc m)))))
+               (mk2 l₁ (qDone sg₀ v₀) (LK-t sg) (LK-cells o ++ r₁)
+                    (LK-t fk ∷ LK-t ck ∷ LK-t pos ∷ g) LK-m
+                    (LK-wl (LK-vl a) ++ (LK-e ∷ [])))
+             ≡ mk2 (LK-rc (LK-cells o) (LK-t sg ∷ l₁))
+                   (qDone (signOf sg) (lookup a (fromOneHot m o)))
+                   (hdOf LK-b r₁) (tlOf r₁)
+                   (LK-t (LK-newFk fk ck pos (isT₁ v₀))
+                    ∷ LK-t (LK-newCk ck pos (isT₁ v₀))
+                    ∷ LK-t (LK-nextT pos) ∷ g)
+                   LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ []))
+LK-cycleS' sg m o a l₁ g r₁ sg₀ v₀ fk ck pos h =
+  trans (runB-+ tm-look LK-b 8 (suc (suc m + suc (suc (suc (suc m)))))
+                  (mk2 l₁ (qDone sg₀ v₀) (LK-t sg) (LK-cells o ++ r₁)
+                       (LK-t fk ∷ LK-t ck ∷ LK-t pos ∷ g) LK-m
+                       (LK-wl (LK-vl a) ++ (LK-e ∷ []))))
+        (trans (cong (runB tm-look LK-b (suc (suc m + suc (suc (suc (suc m))))))
+                     (LK-ctl sg₀ v₀ sg l₁ g r₁ (LK-wl (LK-vl a) ++ (LK-e ∷ [])) fk ck pos))
+               (LK-cycleS sg m o a l₁ r₁
+                          (LK-t (LK-newFk fk ck pos (isT₁ v₀))
+                           ∷ LK-t (LK-newCk ck pos (isT₁ v₀))
+                           ∷ LK-t (LK-nextT pos) ∷ g) h))
 
 -- ────────────────────────────────────────────────────────────────────
 -- §5 核对层（refl 枚举）
