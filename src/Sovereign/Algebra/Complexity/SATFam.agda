@@ -20,6 +20,8 @@
 --   §5.9 定宽往返 SF-undigits3-digits3（n < 3^w ⟹ 解码∘编码 = id）(iv)
 --   §5.10 变元号编码于 Fin m（SF-enc-var / SF-dec-enc 恒等）(v)
 --   §5.11 L-SAT 渐近族 SF-LSAT-fam（池 = w(n)）+ 池单调 + 池容量 (iv)
+--   §6 族一致性（(iii) 闭合）：SF-fam-in-NP : InNP (λ n x → SF-LSAT-fam n x)
+--        ——同一台验证器，池由 w(n) 计算；见证长多项式 SF-fam-wit-poly
 --
 -- 已知边界（诚实）：
 --   (i)  SF-third 与 ⌊_/3⌋ 的逐点恒等：已由 SF-div3
@@ -27,27 +29,39 @@
 --        唯一性未单独证（divmod 唯一性属 DivMod 引理层，未取用）。
 --   (ii) 精确 ⌈log₃⌉ 立界（w 的最小性）未证——本件只以上界口径使用
 --        「3^w ≥ m」（SF-wlog3-ge），这对编码充分性够用。
---   (iii) 族的**一致性**（uniformity）未证：SF-LSAT-fam 把池换成 w(n)
---        并给出池单调/容量，但「m 随 n 变化时验证器/公式族的一致生成
---        与代价界搬运」不在本件——SATMember 的 sat-in-NP 只对固定 m。
+--   (iii) 族**一致性**：已闭合（§6）。依据是 InNP 的 np-verifier 本就是
+--        **∀ n 的单一总函数**（不是每家 n 一台机器）⟹ 池换成 n 的可计算
+--        函数 w(n) 即得族成员性；代价界 p(n) = suc (3n) 与池参数无关
+--        （div-le 对一切池成立），见证长多项式由 SF-fam-wit-poly 收口。
+--   (iv) 「验证器 → TM 实现」桥未证（与 NPClass §5(iii) 同一立界）：
+--        本件的验证器是函数层总函数，机器可执行性不在范围。
+--   (v)  族的 NP-完备性 / 归约族未证（W2 Fagin 范围）。
 --
 -- 0 postulate / 0 hole。
 
 module Sovereign.Algebra.Complexity.SATFam where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; _<_; s≤s; z≤n)
+open import Data.Nat.DivMod using (_/_)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-reflexive;
   m≤n⇒m≤1+n; m≤m+n; *-suc; +-assoc; +-comm; <-≤-trans)
+open import Data.Bool using (Bool)
 open import Data.List using (List; []; _∷_; length)
 open import Data.Vec.Base using (Vec)
+import Data.Vec.Base as VecB
 open import Data.Fin using (Fin; toℕ)
+open import Data.Product using (Σ; _,_)
 open import Data.Fin.Properties using (toℕ<n)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong;
   trans; subst; module ≡-Reasoning)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
-open import Sovereign.Algebra.Complexity.TimeBound using (mono-*ˡ)
-open import Sovereign.Algebra.Complexity.SATMember using (L-SAT; clauseW)
+open import Sovereign.Algebra.Complexity.TimeBound
+  using (Counted; value; steps; mono-*ˡ)
+open import Sovereign.Algebra.Complexity.NPClass using (InNP)
+open import Sovereign.Algebra.Complexity.SATMember
+  using (L-SAT; clauseW; Formula; decFormula; sat-verifier; value-satFormulaC;
+         div-le; polySAT; polySAT-mono; polySAT-pos)
 
 open ≡-Reasoning
 
@@ -443,5 +457,77 @@ SF-check-fam-cap-8 : suc (suc (suc (suc (suc (suc (suc (suc zero)))))))
   ≤ SF-pow3 (SF-wlog3 (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))
 SF-check-fam-cap-8 = SF-fam-pool-cap (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))
 
+-- ────────────────────────────────────────────────────────────────────
+-- §6 族一致性（(iii) 闭合）：验证器随 n 一致生成
+-- ────────────────────────────────────────────────────────────────────
+-- 关键：InNP 的 np-verifier 是 **∀ n 的单一总函数**，不是每家 n 一台机器。
+-- 故族一致性 = 把池从常数 m 换成 n 的可计算函数 w(n)，其余逐字继承；
+-- 代价界 p(n) = suc (3·n) 与 m 无关（div-le 对一切 m 成立），这正是族能
+-- 在同一台验证器上闭合的原因。
+
+-- 燃料界：wlog3 的燃料消耗不超过预算（每层剥一个 suc）
+SF-fuel-le : ∀ k m → SF-wlog3-fuel k m ≤ k
+SF-fuel-le zero m = z≤n
+SF-fuel-le (suc k) zero = z≤n
+SF-fuel-le (suc k) (suc m) = s≤s (SF-fuel-le k (SF-third (suc m)))
+
+SF-wlog3-≤ : ∀ n → SF-wlog3 n ≤ n
+SF-wlog3-≤ n = SF-fuel-le n n
+
+-- 见证长度是多项式的：suc (w(n)) ≤ p(n) = suc (3·n)
+-- （3 * n 定义性 = n + 2·n，故 m≤m+n 直取）
+SF-fam-wit-poly : ∀ n → suc (SF-wlog3 n) ≤ polySAT n
+SF-fam-wit-poly n = s≤s (≤-trans (SF-wlog3-≤ n) (m≤m+n n (2 * n)))
+
+-- 族解码器：只吃串，池由 length 计算——无外部族索引
+SF-decFormula-fam : (n : ℕ) → Vec Trit n
+  → Formula (SF-wlog3 n) (n / clauseW (SF-wlog3 n))
+SF-decFormula-fam n x = decFormula (SF-wlog3 n) n x
+
+-- 池是算出来的，不是硬编码：族解码与显式实例逐字同一项
+SF-fam-dec-agrees : ∀ n x → SF-decFormula-fam n x ≡ decFormula (SF-wlog3 n) n x
+SF-fam-dec-agrees n x = refl
+
+-- 族验证器：单一函数，池 = w(n)（见证 = Vec Trit (suc (w n)) = Asg (w n)）
+SF-fam-verifier : (n : ℕ) → Vec Trit n → Vec Trit (suc (SF-wlog3 n)) → Counted Bool
+SF-fam-verifier n x a = sat-verifier (SF-wlog3 n) n x a
+
+-- ★ 族一致性主定理：L-SAT 渐近族 ∈ NP（同一台验证器，池随 n 生成）
+-- 完备性/正确性逐字继承 SATMember（decFormula 的 m 换成 w n）；
+-- 代价界与 m 无关（div-le 对任意池成立）；见证界由 SF-fam-wit-poly 收口。
+SF-fam-in-NP : InNP (λ n x → SF-LSAT-fam n x)
+SF-fam-in-NP = record
+  { np-p = polySAT
+  ; np-p-mono = polySAT-mono
+  ; np-p-pos = polySAT-pos
+  ; np-witLen = λ n → suc (SF-wlog3 n)
+  ; np-w-mono = λ {a} {b} a≤b → s≤s (SF-wlog3-mono a b a≤b)
+  ; np-verifier = SF-fam-verifier
+  ; np-complete = λ n x (a , eq) →
+      a , trans (value-satFormulaC a (decFormula (SF-wlog3 n) n x)) eq
+  ; np-sound = λ n x a v →
+      a , trans (sym (value-satFormulaC a (decFormula (SF-wlog3 n) n x))) v
+  ; np-cost = λ n x a →
+      ≤-trans (mono-*ˡ 3 (div-le (SF-wlog3 n) n)) (m≤n⇒m≤1+n ≤-refl) }
+
+-- 核对层：w(9) = 3（9→3→1→0）；n=15 的池 3 恰好装 1 个子句；
+-- 见证宽度 = suc (w n)；n=9 时池 3 的 clauseW = 12 > 9 ⟹ 0 子句 ⟹ 空公式平凡可满足
+SF-check-w3-9 : SF-wlog3 (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))
+  ≡ suc (suc (suc zero))
+SF-check-w3-9 = refl
+
+SF-check-w3-15 : SF-wlog3 (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (zero))))))))))))))))
+  ≡ suc (suc (suc zero))
+SF-check-w3-15 = refl
+
+SF-check-fam-clause-15 : 15 / clauseW (suc (suc (suc zero))) ≡ 1
+SF-check-fam-clause-15 = refl
+
+SF-check-fam-wit-9 : InNP.np-witLen SF-fam-in-NP 9 ≡ 4
+SF-check-fam-wit-9 = refl
+
+SF-check-fam-9 : (x : Vec Trit 9) → SF-LSAT-fam 9 x
+SF-check-fam-9 x =
+  (T₀ VecB.∷ T₀ VecB.∷ T₀ VecB.∷ T₀ VecB.∷ VecB.[]) , refl
 
 -- 0 postulate / 0 hole。
