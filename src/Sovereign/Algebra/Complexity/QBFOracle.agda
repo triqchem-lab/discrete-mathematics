@@ -126,6 +126,11 @@ QO-le≤ done k = m≤m+n done k
 QO-eq≤ : (done k pool : ℕ) → done + k ≡ pool → done ≤ pool
 QO-eq≤ done k pool eq rewrite sym eq = QO-le≤ done k
 
+-- 扫描当位下标（与 QO-scan 体内 where-ix 同一表达式，定义性展开对齐）
+QO-scan-ix : (pool done k : ℕ) (eq : done + suc k ≡ pool) → Fin pool
+QO-scan-ix pool done k eq =
+  QO-finAt pool done (subst (suc done ≤_) eq (QO-lt≤ done k))
+
 -- ∃/∀ 共用的倒计时扫描（comb = _∨_ 为 ∃-语义 / _∧_ 为 ∀-语义）
 QO-scan : (comb : Bool → Bool → Bool) (pool done k : ℕ)
            → done + k ≡ pool
@@ -181,53 +186,112 @@ QO-lookup-vecOf : ∀ pool (f : Fin pool → Trit) (i : Fin pool)
 QO-lookup-vecOf (suc pool) f zero = refl
 QO-lookup-vecOf (suc pool) f (suc i) = QO-lookup-vecOf pool (f ∘ suc) i
 
--- 逐步件：扫描分支取 a 的当位值；命中支由递归引理闭合，其余由 Bool 或吸收。
-QO-wex-branch : ∀ (pool done k : ℕ) (eq : done + k ≡ pool)
-  (body : QO-BF pool) (a : Vec Trit pool)
-  → QO-meval (QO-funOf a) body ≡ true
-  → (v : Trit)
+-- ∨ 吸收件三件：某支命中 ⟹ 整树 true。eq' 统一取 trans (sym (+-suc done k)) eq
+-- （与 QO-scan 体内递归调用同一证明项，使吸收件推理的扫描项与目标展开的
+-- 扫描项逐点对齐）；下标取 QO-scan-ix（与 QO-scan 体内 where-ix 同项）。
+QO-absT₀ : ∀ (pool done k : ℕ) (eq : done + suc k ≡ pool)
+  (body : QO-BF pool) (f : Fin pool → Trit)
   → QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
-      (QO-upd (QO-funOf a) (QO-finAt pool done (QO-eq≤ done k pool eq)) v) ≡ true
-  → QO-scan _∨_ pool done (suc k) eq body (QO-funOf a) ≡ true
-QO-wex-branch pool done k eq body a hmt v hsuc =
-  trans (cong (λ b → b ∨ (QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
-    (QO-upd (QO-funOf a) (QO-finAt pool done (QO-eq≤ done k pool eq)) T₁)
-    ∨ QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
-      (QO-upd (QO-funOf a) (QO-finAt pool done (QO-eq≤ done k pool eq)) T₂))) hsuc)
-  (QO-∨-idˡ (QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
-    (QO-upd (QO-funOf a) (QO-finAt pool done (QO-eq≤ done k pool eq)) T₁)
-    ∨ QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
-      (QO-upd (QO-funOf a) (QO-finAt pool done (QO-eq≤ done k pool eq)) T₂)))
+      (QO-upd f (QO-scan-ix pool done k eq) T₀) ≡ true
+  → QO-scan _∨_ pool done (suc k) eq body f ≡ true
+QO-absT₀ pool done k eq body f h₀ =
+  trans (cong (λ b → b ∨ rest) h₀)   -- T₀ 支 = true 传入
+        (QO-∨-idˡ rest)              -- true ∨ rest ≡ true
+  where
+  rest : Bool
+  rest = QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+           (QO-upd f (QO-scan-ix pool done k eq) T₁)
+         ∨ QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+           (QO-upd f (QO-scan-ix pool done k eq) T₂)
 
--- hit 引理子调用的逐点一致：i ≟ ix 两案（same / other-defeq）
+QO-absT₁ : ∀ (pool done k : ℕ) (eq : done + suc k ≡ pool)
+  (body : QO-BF pool) (f : Fin pool → Trit)
+  → QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+      (QO-upd f (QO-scan-ix pool done k eq) T₁) ≡ true
+  → QO-scan _∨_ pool done (suc k) eq body f ≡ true
+QO-absT₁ pool done k eq body f h₁ =
+  trans (cong (λ b → s₀ ∨ (b ∨ s₂)) h₁)
+    (trans (cong (s₀ ∨_) (QO-∨-idˡ s₂))   -- s₀ ∨ (true ∨ s₂) ≡ s₀ ∨ true
+           (QO-∨-idʳ s₀))                  -- s₀ ∨ true ≡ true
+  where
+  s₀ : Bool
+  s₀ = QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+         (QO-upd f (QO-scan-ix pool done k eq) T₀)
+  s₂ : Bool
+  s₂ = QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+         (QO-upd f (QO-scan-ix pool done k eq) T₂)
+
+QO-absT₂ : ∀ (pool done k : ℕ) (eq : done + suc k ≡ pool)
+  (body : QO-BF pool) (f : Fin pool → Trit)
+  → QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+      (QO-upd f (QO-scan-ix pool done k eq) T₂) ≡ true
+  → QO-scan _∨_ pool done (suc k) eq body f ≡ true
+QO-absT₂ pool done k eq body f h₂ =
+  trans (cong (λ b → s₀ ∨ (s₁ ∨ b)) h₂)
+    (trans (cong (s₀ ∨_) (QO-∨-idʳ s₁))   -- s₀ ∨ (s₁ ∨ true) ≡ s₀ ∨ true
+           (QO-∨-idʳ s₀))                  -- s₀ ∨ true ≡ true
+  where
+  s₀ : Bool
+  s₀ = QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+         (QO-upd f (QO-scan-ix pool done k eq) T₀)
+  s₁ : Bool
+  s₁ = QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+         (QO-upd f (QO-scan-ix pool done k eq) T₁)
+
+-- 更新函数与原赋值的逐点一致：i ≟ ix 两案。same 支需 v* 取当位值
+-- （假设 v* ≡ lookup a ix），other 支走 upd-other 定义性等价。
 QO-hit-point : ∀ (pool done k : ℕ) (eq : done + k ≡ pool)
   (body : QO-BF pool) (a : Vec Trit pool)
   (ix : Fin pool) (v* : Trit) (i : Fin pool)
   → suc done ≤ toℕ i
+  → v* ≡ lookup a ix
   → QO-upd (QO-funOf a) ix v* i ≡ lookup a i
-QO-hit-point pool done k eq body a ix v* i p with i ≟ ix
-... | yes e = trans (cong (λ j → QO-upd (QO-funOf a) ix v* j) (sym e))
-  (trans (QO-upd-same (QO-funOf a) ix v*)
-         (cong (lookup a) (sym e)))
-... | no np = QO-upd-other (QO-funOf a) ix i v* (λ ee → np (sym ee))
+QO-hit-point pool done k eq body a ix v* i p hv with i ≟ ix
+... | yes e = trans hv (cong (lookup a) (sym e))
+... | no _  = refl                             -- other 支：标记下 LHS ≡ lookup a i
 
--- hit 引理（_∨_ 扫描）：赋值 a 使矩阵真 ⟹ 扫描（从 funOf a 出发）≡ true。
--- 对 countdown k 归纳；a-分支取当位值，其余两支由 Bool 或吸收。
+-- hit 引理（_∨_ 扫描，函数层归纳）：f 使矩阵真 ⟹ 扫描（从 f 出发）≡ true。
+-- 对 countdown k 归纳（telescope 与 QO-scan 同取裸形 done + k ≡ pool，
+-- 递归 eq' 取 trans (sym (+-suc done k)) eq 与 QO-scan 体内同项）；
+-- 命中支按赋值当位值 f ix 三案分派（带方程 br 分派，更新函数经
+-- 逐点一致 + meval-cong 搬运后递归）。
+QO-hit-f : ∀ (pool done k : ℕ) (eq : done + k ≡ pool)
+  (body : QO-BF pool) (f : Fin pool → Trit)
+  → QO-meval f body ≡ true
+  → QO-scan _∨_ pool done k eq body f ≡ true
+QO-hit-f pool done zero eq body f hmt = hmt
+QO-hit-f pool done (suc k) eq body f hmt =
+  br (f (QO-scan-ix pool done k eq)) refl
+  where
+  eq' : suc done + k ≡ pool
+  eq' = trans (sym (+-suc done k)) eq
+  pte : (w : Trit) → w ≡ f (QO-scan-ix pool done k eq)
+        → ∀ i → QO-upd f (QO-scan-ix pool done k eq) w i ≡ f i
+  pte w hw i with i ≟ QO-scan-ix pool done k eq
+  ... | yes e = trans hw (cong f (sym e))    -- same 支：w ≡ f i
+  ... | no _  = refl                         -- other 支：标记下 LHS ≡ f i
+  hupd-eq : (w : Trit) → w ≡ f (QO-scan-ix pool done k eq)
+            → QO-meval (QO-upd f (QO-scan-ix pool done k eq) w) body ≡ true
+  hupd-eq w hw = trans (QO-meval-cong (QO-upd f (QO-scan-ix pool done k eq) w)
+                         f body (pte w hw)) hmt
+  hit-eq : (w : Trit) → w ≡ f (QO-scan-ix pool done k eq)
+           → QO-scan _∨_ pool (suc done) k eq' body
+               (QO-upd f (QO-scan-ix pool done k eq) w) ≡ true
+  hit-eq w hw = QO-hit-f pool (suc done) k eq' body
+                  (QO-upd f (QO-scan-ix pool done k eq) w) (hupd-eq w hw)
+  br : (w : Trit) → w ≡ f (QO-scan-ix pool done k eq)
+       → QO-scan _∨_ pool done (suc k) eq body f ≡ true
+  br T₀ hw = QO-absT₀ pool done k eq body f (hit-eq T₀ hw)
+  br T₁ hw = QO-absT₁ pool done k eq body f (hit-eq T₁ hw)
+  br T₂ hw = QO-absT₂ pool done k eq body f (hit-eq T₂ hw)
+
+-- hit 引理公开形（Vec 载体）：赋值 a 使矩阵真 ⟹ 扫描（从 funOf a 出发）≡ true。
 QO-scan-hit-∨ : ∀ (pool done k : ℕ) (eq : done + k ≡ pool)
   (body : QO-BF pool) (a : Vec Trit pool)
   → QO-meval (QO-funOf a) body ≡ true
   → QO-scan _∨_ pool done k eq body (QO-funOf a) ≡ true
-QO-scan-hit-∨ pool done zero eq body a hmt = hmt
-QO-scan-hit-∨ pool done (suc k) eq body a hmt =
-  QO-wex-branch pool done k (trans (sym (+-suc done k)) eq) body a
-    (QO-scan-hit-∨ pool (suc done) k (trans (sym (+-suc done k)) eq) body
-      (QO-upd (QO-funOf a) ix v*) a
-      (λ i p → QO-hit-point pool done k eq body a ix v* i p))
-    (lookup a ix)
-    hmt
-  where
-  ix = QO-finAt pool done (subst (suc done ≤_) eq (QO-lt≤ done k))
-  v* = lookup a ix
+QO-scan-hit-∨ pool done k eq body a hmt =
+  QO-hit-f pool done k eq body (QO-funOf a) hmt
 
 -- 引理一（complete 方向）：全 ∃ 前缀 + 指定赋值使矩阵真 ⟹ 求值 ≡ true。
 data QO-AllEx : (n : ℕ) → Vec QO-Qal n → Set where
@@ -240,7 +304,7 @@ QO-walk-true : ∀ (pool : ℕ) (qs : Vec QO-Qal pool) (body : QO-BF pool)
   → QO-AllEx pool qs
   → QO-meval (QO-funOf a) body ≡ true
   → QO-geval pool qs body (QO-funOf a) ≡ true
-QO-walk-true zero .[] body .[] QO-alex0 h = h
+QO-walk-true zero .[] body a QO-alex0 h = h
 QO-walk-true (suc pool) .(QO-qex ∷ qs) body a
   (QO-alexS {qs = qs} ax) h =
   QO-scan-hit-∨ (suc pool) zero (suc pool) refl body a h
@@ -249,31 +313,73 @@ QO-exVec : (pool : ℕ) → Vec QO-Qal pool
 QO-exVec zero = []
 QO-exVec (suc pool) = QO-qex ∷ QO-exVec pool
 
--- 引理二（sound 方向）：任意前缀 walk ≡ true ⟹ ∃ 指定赋值使矩阵真
--- （∀-层：∧-扫描三分全真，各支赋值皆可——sound 对前缀形状无限制）。
+-- 引理二（sound 方向）：任意前缀 walk ≡ true ⟹ ∃ 指定赋值使矩阵真。
+-- 归纳在扫描层做（geval 一层即一次扫描）：三分支 Bool 裁决取真支递归；
+-- 全假支由具体组合子归约出 false ≡ true 矛盾（∨/∧ 各自定义性归约）。
+QO-f≢t : false ≡ true → ⊥
+QO-f≢t ()
+
+QO-scan-sound-∨ : ∀ (pool done k : ℕ) (eq : done + k ≡ pool)
+  (body : QO-BF pool) (f : Fin pool → Trit)
+  → QO-scan _∨_ pool done k eq body f ≡ true
+  → Σ (Vec Trit pool) (λ a → QO-meval (QO-funOf a) body ≡ true)
+QO-scan-sound-∨ pool done zero eq body f h = QO-vecOf pool f ,
+  trans (QO-meval-cong (QO-funOf (QO-vecOf pool f)) f body
+    (λ i → QO-lookup-vecOf pool f i)) h
+QO-scan-sound-∨ pool done (suc k) eq body f h
+  with QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+         (QO-upd f (QO-scan-ix pool done k eq) T₀) in eq₀
+     | QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+         (QO-upd f (QO-scan-ix pool done k eq) T₁) in eq₁
+     | QO-scan _∨_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+         (QO-upd f (QO-scan-ix pool done k eq) T₂) in eq₂
+... | true  | _     | _     =
+  QO-scan-sound-∨ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+    (QO-upd f (QO-scan-ix pool done k eq) T₀) eq₀
+... | false | true  | _     =
+  QO-scan-sound-∨ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+    (QO-upd f (QO-scan-ix pool done k eq) T₁) eq₁
+... | false | false | true  =
+  QO-scan-sound-∨ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+    (QO-upd f (QO-scan-ix pool done k eq) T₂) eq₂
+... | false | false | false = ⊥-elim (QO-f≢t h)   -- false ∨ (false ∨ false)
+
+QO-scan-sound-∧ : ∀ (pool done k : ℕ) (eq : done + k ≡ pool)
+  (body : QO-BF pool) (f : Fin pool → Trit)
+  → QO-scan _∧_ pool done k eq body f ≡ true
+  → Σ (Vec Trit pool) (λ a → QO-meval (QO-funOf a) body ≡ true)
+QO-scan-sound-∧ pool done zero eq body f h = QO-vecOf pool f ,
+  trans (QO-meval-cong (QO-funOf (QO-vecOf pool f)) f body
+    (λ i → QO-lookup-vecOf pool f i)) h
+QO-scan-sound-∧ pool done (suc k) eq body f h
+  with QO-scan _∧_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+         (QO-upd f (QO-scan-ix pool done k eq) T₀) in eq₀
+     | QO-scan _∧_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+         (QO-upd f (QO-scan-ix pool done k eq) T₁) in eq₁
+     | QO-scan _∧_ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+         (QO-upd f (QO-scan-ix pool done k eq) T₂) in eq₂
+... | true  | _     | _     =
+  QO-scan-sound-∧ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+    (QO-upd f (QO-scan-ix pool done k eq) T₀) eq₀
+... | false | true  | _     =
+  QO-scan-sound-∧ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+    (QO-upd f (QO-scan-ix pool done k eq) T₁) eq₁
+... | false | false | true  =
+  QO-scan-sound-∧ pool (suc done) k (trans (sym (+-suc done k)) eq) body
+    (QO-upd f (QO-scan-ix pool done k eq) T₂) eq₂
+... | false | false | false = ⊥-elim (QO-f≢t h)   -- false ∧ (false ∧ false)
+
+-- 装配：geval 的每层恰是一次扫描（头层组合子定 ∨/∧），逐层委托。
 QO-walk-sound : ∀ (pool : ℕ) (qs : Vec QO-Qal pool) (body : QO-BF pool)
   (f : Fin pool → Trit)
   → QO-geval pool qs body f ≡ true
   → Σ (Vec Trit pool) (λ a → QO-meval (QO-funOf a) body ≡ true)
-QO-walk-sound zero [] body f h = QO-vecOf zero f ,
-  QO-meval-cong (QO-funOf (QO-vecOf zero f)) f body
-    (λ i → sym (QO-lookup-vecOf zero f i))
-QO-walk-sound (suc pool) (QO-qex ∷ qs) body f h
-  with QO-geval pool qs body (QO-upd f zero T₀)
-     | QO-geval pool qs body (QO-upd f zero T₁)
-     | QO-geval pool qs body (QO-upd f zero T₂)
-... | true | _     | _     = QO-walk-sound pool qs body (QO-upd f zero T₀) refl
-... | _     | true | _     = QO-walk-sound pool qs body (QO-upd f zero T₁) refl
-... | _     | _     | true = QO-walk-sound pool qs body (QO-upd f zero T₂) refl
-... | false | false | false = ⊥-elim (h)
-QO-walk-sound (suc pool) (QO-qall ∷ qs) body f h
-  with QO-geval pool qs body (QO-upd f zero T₀)
-     | QO-geval pool qs body (QO-upd f zero T₁)
-     | QO-geval pool qs body (QO-upd f zero T₂)
-... | true | _     | _     = QO-walk-sound pool qs body (QO-upd f zero T₀) refl
-... | _     | true | _     = QO-walk-sound pool qs body (QO-upd f zero T₁) refl
-... | _     | _     | true = QO-walk-sound pool qs body (QO-upd f zero T₂) refl
-... | false | false | false = ⊥-elim (h)
+QO-walk-sound zero [] body f h =
+  QO-scan-sound-∨ zero zero zero refl body f h
+QO-walk-sound (suc pool) (QO-qex ∷ qs) body f h =
+  QO-scan-sound-∨ (suc pool) zero (suc pool) refl body f h
+QO-walk-sound (suc pool) (QO-qall ∷ qs) body f h =
+  QO-scan-sound-∧ (suc pool) zero (suc pool) refl body f h
 
 -- ────────────────────────────────────────────────────────────────────
 -- §4 编码〔结构定义〕
@@ -332,7 +438,10 @@ QO-count1 (suc n) (_ ∷ s′) = zero , s′
 QO-decodeBF : (fuel d : ℕ) → List Trit → QO-BF d × List Trit
 QO-decodeBF zero d s = QO-fals , s
 QO-decodeBF (suc fuel) d [] = QO-fals , []
-QO-decodeBF (suc fuel) d (T₀ ∷ s) =
+QO-decodeBF (suc fuel) zero (T₀ ∷ s) =
+  let n , rest = QO-count1 (suc fuel) s
+  in  QO-fals , rest                       -- d=0 无变元：原子垃圾容错归 fals
+QO-decodeBF (suc fuel) (suc d) (T₀ ∷ s) =
   let n , rest = QO-count1 (suc fuel) s
   in  QO-att (QO-clamp d n) , rest
 QO-decodeBF (suc fuel) d (T₁ ∷ T₁ ∷ s) =
@@ -343,7 +452,10 @@ QO-decodeBF (suc fuel) d (T₁ ∷ T₂ ∷ s) =
   let p , s₁ = QO-decodeBF fuel d s
       q , s₂ = QO-decodeBF fuel d s₁
   in  QO-or p q , s₂
-QO-decodeBF (suc fuel) d (T₁ ∷ T₀ ∷ s) =
+QO-decodeBF (suc fuel) zero (T₁ ∷ T₀ ∷ s) =
+  let n , rest = QO-count1 (suc fuel) s
+  in  QO-fals , rest                       -- d=0 无变元：原子垃圾容错归 fals
+QO-decodeBF (suc fuel) (suc d) (T₁ ∷ T₀ ∷ s) =
   let n , rest = QO-count1 (suc fuel) s
   in  QO-natt (QO-clamp d n) , rest
 QO-decodeBF (suc fuel) d (T₂ ∷ T₀ ∷ s) = QO-tru , s
