@@ -5,9 +5,10 @@
 --
 -- ⚠ WIP 声明（分批交付纪律）：本件已闭合 解码器/位宽函数/往返核/
 --   third 单调 + fuel 双单调 + wlog3 Mono（§5 (i)(ii)）/
---   **third 层四件（四案展开：suc-≤1/skip2/skip/suc-le）+ pow3 基础件**；
---   位宽语义主定理（(iii) 剩余段：命题算术桥）/族装配（(iv)）/roundtrip（(v)）
---   待续——头注即 journal，未完成部分不留洞、以本声明承载。
+--   **third 层四件（四案展开）+ pow3 基础件 + 位宽语义主定理（§5 (iii)：
+--   命题算术桥 SF-mul3-suc + SF-m≤3J + SF-fuel-ge + SF-wlog3-ge 全闭合）**；
+--   族装配（(iv)）/roundtrip（(v)）待续——
+--   头注即 journal，未完成部分不留洞、以本声明承载。
 --
 -- 数学背景：SATMember 的变元池是「独热 suc m 宽」——m 固定时可行，
 -- 渐近族需要变元号以 ⌈log₃⌉ 位宽的三进制编码（池随 n 增长）。
@@ -29,10 +30,11 @@
 module Sovereign.Algebra.Complexity.SATFam where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; s≤s; z≤n)
-open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤n⇒m≤1+n;
-  m≤m+n)
+open import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-reflexive;
+  m≤n⇒m≤1+n; m≤m+n; *-suc)
 open import Data.List using (List; []; _∷_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong;
+  trans)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.Complexity.TimeBound using (mono-*ˡ)
@@ -223,20 +225,47 @@ SF-third-suc-le (suc (suc (suc m))) =
 -- 目标 defeq suc (third (suc m)) ≤ suc² (suc m)；s≤s 一层剥后：
 -- IH（third (suc m) ≤ m）≤ suc² m（m≤n⇒m≤1+n × 2）。
 
--- §5.5′ 剩余立界（(iii) 主定理段）——2026-10-30 深夜试闭实测结论：
---   ① **方案 D 已确认**：third 层的四件（SF-third-suc-≤1 / SF-third-skip2 /
---      SF-third-skip / SF-third-suc-le）四案展开全部编译通过 ✓——
---      「third (suc m) 对变元 m 无子句匹配」的正解 = 对 m 四案展开，
---      非第三算术层（~30 行，非 ~100 行）。
---   ② **原 P-陈述为假**：m ≤ pow3 (fuel k (third (suc m))) 在 (k,m)=(4,4)
---      反例为假（4 ≰ 3）；正确形 = **suc m ≤ pow3 (fuel k m)**（suc 形留
---      +1 余量，fuel 直接吃 m）。
---   ③ **剩余障碍（精确）**：suc-归纳步的链在 J = third (suc m′) 卡死形下
---      需要 `3 * suc J`（goal-RHS 的展开形 J + 2·suc J）与 `suc² (3J)`
---      （s≤s² 链产物）之间的命题算术桥——两者数值相等（3J+3）但在 J 卡死
---      时非 defeq，需 +-suc / 分配律重写的专用小层（估 ~40 行）。
---   ④ SF-m≤3J（m ≤ suc (3·third (suc m))）四案前两案已闭合，suc³ 案
---      受同一算术桥阻塞。
+-- §5.5′ 命题算术桥：3 * suc J ≡ suc³ (3 * J)（J 卡死形下的 ≡ 桥，
+--   J 任意）——{*-suc 3 J} 把首参展开为 3 + 3 * J，{3 + X} 对 X 定义性
+--   归约为 suc³ X（3 = suc³ zero，+ 首参递归）。
+SF-mul3-suc : ∀ J → 3 * suc J ≡ suc (suc (suc (3 * J)))
+SF-mul3-suc J = trans (*-suc 3 J) refl
+
+-- m ≤ suc (3 * third (suc m))（⌈m/3⌉ 三倍覆盖 + 1 余量）——四案归纳
+SF-m≤3J : ∀ m → m ≤ suc (3 * SF-third (suc m))
+SF-m≤3J zero = z≤n
+SF-m≤3J (suc zero) = ≤-refl
+SF-m≤3J (suc (suc zero)) = s≤s (s≤s z≤n)
+SF-m≤3J (suc (suc (suc m″))) =
+  ≤-trans (s≤s (s≤s (s≤s (SF-m≤3J m″))))
+          (≤-reflexive (sym (cong suc (SF-mul3-suc (SF-third (suc m″))))))
+-- suc³ 案：s≤s³ (IH)：suc³ m″ ≤ suc³ (suc (3J)) = suc⁴ (3J)；
+--   桥（sym (cong suc (SF-mul3-suc J))）：suc⁴ (3J) ≡ suc (3 * suc J) —— goal RHS。
+
+-- ★ 主引理（suc 形留 +1 余量）：m ≤ k → suc m ≤ pow3 (fuel k m)
+SF-fuel-ge : ∀ k m → m ≤ k → suc m ≤ SF-pow3 (SF-wlog3-fuel k m)
+SF-fuel-ge zero zero m≤k = ≤-refl
+SF-fuel-ge zero (suc m′) ()
+SF-fuel-ge (suc k′) zero m≤k = ≤-refl
+SF-fuel-ge (suc k′) (suc m′) (s≤s m′≤k′) =
+  ≤-trans (≤-trans (s≤s (s≤s (SF-m≤3J m′)))
+                   (≤-reflexive (sym (SF-mul3-suc (SF-third (suc m′))))))
+          (mono-*ˡ 3 (SF-fuel-ge k′ (SF-third (suc m′))
+                        (≤-trans (SF-third-suc-le m′) m′≤k′)))
+-- fuel (suc k′) (suc m′) 定义性 = suc (fuel k′ J)，J = third (suc m′)
+-- → goal RHS = 3 * pow3 (fuel k′ J)。
+--   第一段：s≤s² (SF-m≤3J m′)：suc² m′ ≤ suc³ (3J)；桥：suc³ (3J) ≡ 3 * suc J。
+--   第二段：mono-*ˡ 3（IH (k′, J)：suc J ≤ pow3 (fuel k′ J)）——J ≤ m′（third-suc-le）
+--   且 m′ ≤ k′。
+
+-- ★ 主定理：m ≤ 3^w(wlog3 m)——位宽语义收口（§5 (iii)）
+SF-wlog3-ge : ∀ m → m ≤ SF-pow3 (SF-wlog3 m)
+SF-wlog3-ge zero = z≤n
+SF-wlog3-ge (suc m′) =
+  ≤-trans (s≤s (m≤n⇒m≤1+n ≤-refl))
+          (SF-fuel-ge (suc m′) (suc m′) ≤-refl)
+-- wlog3 (suc m′) = fuel (suc m′) (suc m′)；m′ ≤ suc² m′（m≤n⇒m≤1+n × 2），
+-- SF-fuel-ge (suc m′) (suc m′)：suc² m′ ≤ pow3 (fuel (suc m′) (suc m′))。
 -- (iv)  族装配：变元号定宽编码 + L-SAT 渐近族（SATMember 立界 (i) 收口）。
 -- (v)   roundtrip：dec ∘ 位编码 于 Fin m 的恒等（依赖定宽编码定义）。
 
@@ -253,6 +282,15 @@ SF-check-pow3-2 = refl
 SF-check-third-skip2-2 : SF-third (suc (suc (suc (suc zero)))) ≤ suc (SF-third (suc zero))
 SF-check-third-skip2-2 = SF-third-skip2 (suc zero)
 -- third 4 = 1 ≤ suc (third 2) = 1 ✓（skip2 小值交叉）
+
+-- 位宽语义小值端到端：8 ≤ 3^w(8)（w(8)=2 → 9 ≥ 8）
+SF-check-ge-8 : suc (suc (suc (suc (suc (suc (suc (suc zero)))))))
+  ≤ SF-pow3 (SF-wlog3 (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))
+SF-check-ge-8 = SF-wlog3-ge (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))
+
+-- 桥引理小值：3 * suc 0 = 3 ≡ suc³ (3 * 0) = 3
+SF-check-mul3-suc-0 : 3 * suc zero ≡ suc (suc (suc (3 * zero)))
+SF-check-mul3-suc-0 = SF-mul3-suc zero
 
 -- ────────────────────────────────────────────────────────────────────
 -- §5.7 待续立界（分批交付的剩余清单——头注 WIP 声明的明细）
