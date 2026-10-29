@@ -17,9 +17,11 @@
 -- 计账：每文字 1（符号步）+ (m+1)（锁步）= m+2 步（LK-look，精确等式）。
 --
 -- 【诚实边界（尾注 §6）】
---   (i)  带 2 的**逐文字副本**仍是编码（空间 O(m·#literals)）。不复制就得
---        每文字后回走 O(m) 格重新对齐；回走相可用 MultiTape.runB-+ 与锁步相
---        拼接，本件未做（下一步）。
+--   (i)  带 2 的**逐文字副本**仍是编码（空间 O(m·#L)）。无复制的回走相已
+--        落地（§4b LK-walk/LK-back），但**代价是二次的**：单个 ⊢ 标记共享时，
+--        第 j 个文字必须回走 j(m+1) 格 ⟹ 总代价 Θ(m·L²)。因此「线性账目
+--        3 步/子句」与副本是绑定的——这是 space-time trade-off 的定量表述，
+--        不是缺陷；无复制的整机拼装（j 索引燃料）未做。
 --   (ii) 本引擎是**相**（halt 恒假）：公式层 OR/AND 控制器与终止符收口已在
 --        SATMBridge（tm-sat）闭合；两件拼成整机（引擎 × 控制器）未做。
 --   (iii) 带 1 的「每文字 m+2 格无重叠」是本机输入格式；库内 decLit 的 stride
@@ -31,7 +33,7 @@ module Sovereign.Algebra.Complexity.SATLook where
 
 open import Data.Bool using (Bool; true; false)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
-open import Data.List using (List; []; _∷_; length)
+open import Data.List using (List; []; _∷_; _++_; length)
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.Vec using (Vec; lookup) renaming ([] to vNil; _∷_ to _v∷_)
@@ -58,11 +60,12 @@ LK-v : LK-Σ → Trit
 LK-v (LK-t t) = t
 LK-v _        = T₀
 
--- 三态：待读符号 / 锁步扫 onehot（符号, 已找到, 值）/ 收口
+-- 状态：待读符号 / 锁步扫 onehot（符号, 已找到, 值）/ 回走 / 收口（携带结果）
 data LK-Q : Set where
   qLit  : LK-Q
   qScan : Sign → Bool → Trit → LK-Q
-  qNext : Sign → Trit → LK-Q
+  qBack : Sign → Trit → LK-Q            -- 回走：把带 2 的头走回 ⊢ 标记
+  qDone : Sign → Trit → LK-Q            -- 一个文字收口（携带 (符号, a[v])）
 
 -- δ：符号步读 (sign, ⊢) 双右移；锁步每格读 (oᵢ, aᵢ) 双右移；见到首个 T₁
 --     即记下该处的见证值且此后不再覆盖（对见证格不作要求：耗尽时读空白 ⟹ T₀，
@@ -70,12 +73,16 @@ data LK-Q : Set where
 lk-δ : LK-Q → LK-Σ → LK-Σ → LK-Q × (LK-Σ × Dir3) × (LK-Σ × Dir3)
 lk-δ qLit (LK-t sg) LK-m =
   qScan (signOf sg) false T₀ , (LK-t sg , dR) , (LK-m , dR)
-lk-δ qLit x y = qNext (signOf T₀) T₀ , (x , dN) , (y , dN)      -- 形状外（不可达）
+lk-δ qLit x y = qDone (signOf T₀) T₀ , (x , dN) , (y , dN)      -- 形状外（不可达）
 lk-δ (qScan s false v) (LK-t T₁) y =
   qScan s true (LK-v y) , (LK-t T₁ , dR) , (y , dR)
 lk-δ (qScan s false v) x y = qScan s false v , (x , dR) , (y , dR)
 lk-δ (qScan s true  v) x y = qScan s true  v , (x , dR) , (y , dR)
-lk-δ (qNext s v) x y = qNext s v , (x , dN) , (y , dN)
+-- 回走相：带 1 不动（头 1 已停在下一文字的 sign 上）；带 2 左移，
+-- 见到 ⊢ 标记即收口（dN 停在该标记上——下一次文字的符号步要读的就是它）
+lk-δ (qBack s v) x LK-m = qDone s v , (x , dN) , (LK-m , dN)
+lk-δ (qBack s v) x y = qBack s v , (x , dN) , (y , dL)
+lk-δ (qDone s v) x y = qDone s v , (x , dN) , (y , dN)
 
 tm-look : TM2 LK-Q LK-Σ
 tm-look = record { δ = lk-δ ; q₀ = qLit ; halt = λ _ → false }
@@ -223,6 +230,32 @@ LK-look-sem m sg o a h =
         (cong (qScan (signOf sg) true) (LK-pick-cells m o a h))
 
 -- ────────────────────────────────────────────────────────────────────
+-- §4b 回走相（无复制时的对齐回收）〔结构归纳于左带〕
+-- ────────────────────────────────────────────────────────────────────
+-- 锁步扫完，带 2 的头停在见证块之后；要回到 ⊢ 才能开始下一文字。
+-- 左带 = cs（已消费见证格的逆序）++ (⊢ ∷ l₂)：移动左时消费左带的头，
+-- 故 cs 用 trit 列表给出 ⟹ 归纳是结构的（无需 list-reverse 引理）。
+-- 计账：LK-walk = |cs| + 2 步；LK-back = |cs| + 2 步（首步从空白跨到首格）。
+
+LK-walk : ∀ (sg : Sign) (v : Trit) (h : Trit) (cs : List Trit) (l₂ : List LK-Σ)
+            (l₁ : List LK-Σ) (h₁ : LK-Σ) (r₁ r₂ : List LK-Σ)
+        → C2.st (runB tm-look LK-b (suc (suc (length cs)))
+            (mk2 l₁ (qBack sg v) h₁ r₁ (LK-wl cs ++ (LK-m ∷ l₂)) (LK-t h) r₂))
+          ≡ qDone sg v
+LK-walk sg v h [] l₂ l₁ h₁ r₁ r₂ = refl
+LK-walk sg v h (b ∷ cs) l₂ l₁ h₁ r₁ r₂ =
+  LK-walk sg v b cs l₂ l₁ h₁ r₁ (LK-t h ∷ r₂)
+
+LK-back : ∀ (sg : Sign) (v : Trit) (cs : List Trit) (l₂ : List LK-Σ)
+            (l₁ : List LK-Σ) (h₁ : LK-Σ) (r₁ r₂ : List LK-Σ)
+        → C2.st (runB tm-look LK-b (suc (suc (length cs)))
+            (mk2 l₁ (qBack sg v) h₁ r₁ (LK-wl cs ++ (LK-m ∷ l₂)) LK-b r₂))
+          ≡ qDone sg v
+LK-back sg v [] l₂ l₁ h₁ r₁ r₂ = refl
+LK-back sg v (b ∷ cs) l₂ l₁ h₁ r₁ r₂ =
+  LK-walk sg v b cs l₂ l₁ h₁ r₁ (LK-b ∷ r₂)
+
+-- ────────────────────────────────────────────────────────────────────
 -- §5 核对层（refl 枚举）
 -- ────────────────────────────────────────────────────────────────────
 
@@ -256,6 +289,19 @@ check-look-1 :
          (LK-t T₁ ∷ LK-t T₀ ∷ [])))
   ≡ qScan σ₊ true T₀
 check-look-1 = refl
+
+-- 回走端到端：左带只有 ⊢ ⟹ 2 步收口
+check-back-0 :
+  C2.st (runB tm-look LK-b 2 (mk2 [] (qBack σ₊ T₂) LK-b [] (LK-m ∷ []) LK-b []))
+  ≡ qDone σ₊ T₂
+check-back-0 = refl
+
+-- 回走端到端：左带 = [a₀, ⊢] ⟹ 3 步收口
+check-back-1 :
+  C2.st (runB tm-look LK-b 3
+    (mk2 [] (qBack σ₋ T₁) LK-b [] (LK-t T₀ ∷ LK-m ∷ []) LK-b []))
+  ≡ qDone σ₋ T₁
+check-back-1 = refl
 
 -- ────────────────────────────────────────────────────────────────────
 -- §6 尾注立界（诚实边界——不设空壳签名）
