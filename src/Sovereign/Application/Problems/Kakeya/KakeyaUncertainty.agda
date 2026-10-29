@@ -19,6 +19,9 @@
 --      （§3，9 案 f̂ 值表逐案 refl）。T⁶ 一般陈述（≥ 729 = 3⁶）立界：完全证明
 --      需 6 层 Fubini 重排 + 3⁶ 案支集枚举，超本件预算；其原子 —— 特征标
 --      正交性的几何级数引理 Σ_{t∈GF(3)} ω^{r·t} ∈ {3, 0} —— §5 已闭合
+--   §6. 值域两分账本（F2）：本源/投影区分先于好/坏区分——账本 A（Z[ω]
+--      3-分圆投影，原理成立）与账本 B（GF(3) 本征特征，失败=本征机制非
+--      病态）+ 大衍本源层（DuodecClock C₄/时钟 12）三分结构逐项形式化
 --      （3 案 refl），即 T⁶ Fubini 展开逐层消耗的内和。
 -- 0 postulate / 0 hole.
 
@@ -34,6 +37,10 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊕_)
 open import Sovereign.Synthesis.A4.A4Representation
   using (Zω; mkZω; addZω; mulZω; zeroZω; oneZω; ω; ω²;
          omega-sum-zero; omega-cubed)
+open import Sovereign.Algebra.FieldTower.ZomegaMod3
+  using (redF3; embF3; Zωm3-red-rel; Zωm3-emb-add-fails)
+open import Sovereign.Algebra.GroupTheory.DuodecClock
+  using (mulAlpha; a1; a0; mulAlpha-4-a1)
 
 --------------------------------------------------------------------------------
 -- §1. 特征标：χ_r(x) = ω^{r·x}（ℤ[ω] 值；ω 幂透明归约，ω³ = 1 自动吸收）
@@ -219,3 +226,86 @@ KK-geo-omega2 = refl
 -- 数值对齐：等号案例 9 = 3² 与 T⁶ 界 729 = 3⁶ 同构缩放（2 层 vs 6 层）
 KK-scale : KK-card-T⁶ ≡ KK-card-T² * 81
 KK-scale = refl
+
+--------------------------------------------------------------------------------
+-- §6. 值域两分账本（F2）：本源/投影区分先于好/坏区分
+--------------------------------------------------------------------------------
+-- 三分结构（先问「哪个账本」，再问「好/坏」）：
+--   (0) 大衍本源层：C₄ 相位（⟨α⟩ 4 阶 90° 旋转）+ 时钟 12（crt12/π3/π4）
+--       ——DuodecClock 已证；不确定原理的「正确载体」应携带此层，
+--       而账本 A 与账本 B 均不携带（丢失清单见 ZomegaMod3 §E）。
+--   (1) 账本 A：Z[ω] 3-分圆投影——特征标值域账本（§1-§3、§5 的家）。
+--       身份：表示论投影，非本源非大衍投影（ZomegaMod3 §E 八要素 3/8：
+--       ✓载体/生成元/关系；✗C₄ 相位/时钟 12/Frobenius/核对/归零不等价）。
+--       状态：Meshulam 不确定原理成立（T² 等号 3·3=9 + 几何级数原子）。
+--   (2) 账本 B：GF(3) 本征特征——f̂₃ 值域账本（§4 的家）。
+--       机制：特征 3 单根塌缩 x³−1 = (x−1)³（与 ZomegaMod3 §D 的 mod-3
+--       退化同源：ω ↦ 1，1+ω+ω² ↦ 0）⟹ 唯一特征标 χ ≡ 1 ⟹ f̂₃ ≡ 0。
+--       判定：失败 = 本征机制，非原理缺陷。
+--
+-- 两分的形式钉死：两账本的值函数【类型级不可通约】——
+--   账本 A 的 f̂ : KK-T² → Zω（§2），账本 B 的 f̂₃ : KK-T² → Trit（§4）；
+--   不存在保加法嵌入 GF(3) ↪ Z[ω]（ZomegaMod3 Zωm3-emb-add-fails：
+--   T₁⊕T₁ 的 σ 像 −1 遭 1+1 = 2 ≢ −1 证伪）⟹ 账本 B 的值不能整体
+--   搬进账本 A 比好坏。
+
+-- §6.1 账本 A 条目（Z[ω] 3-分圆投影）
+KK-AcctA-val : KK-T² → Zω
+KK-AcctA-val = KK-fhat
+
+KK-AcctA-unc : KK-supp-f * KK-supp-fhat ≡ KK-card-T²
+KK-AcctA-unc = KK-unc2
+
+KK-AcctA-nz-off : KK-fhat (T₁ , T₀) ≢ zeroZω → ⊥
+KK-AcctA-nz-off h = h KK-fhat-off1
+-- 非零频率处 f̂ 恒零（正交性）——账本 A 的原理内容
+
+KK-AcctA-geo-zero : KK-geo T₀ ≡ mkZω (+ 3) (+ 0)
+KK-AcctA-geo-zero = KK-geo-zero
+
+KK-AcctA-geo-nz : KK-geo T₁ ≡ zeroZω
+KK-AcctA-geo-nz = KK-geo-omega
+-- 几何级数两态（3 / 0）——正交性原子，§5 闭合
+
+-- §6.2 账本 B 条目（GF(3) 本征特征）
+KK-AcctB-val : KK-T² → Trit
+KK-AcctB-val = KK-fhat3
+
+KK-AcctB-degenerate : ∀ r → KK-fhat3 r ≡ T₀
+KK-AcctB-degenerate = KK-fhat3-degenerate
+
+KK-AcctB-failure : KK-supp-f * KK-gf3-supphat ≡ 0
+KK-AcctB-failure = KK-gf3-failure
+
+-- 机制锚（引用 ZomegaMod3 的 mod-3 点态归约）：账本 B 中 1+ω+ω² 的像
+-- 恒零、三个 3 次单位根的像全同于 1——单根塌缩的点态形式。
+KK-AcctB-rel-collapse : redF3 (addZω (addZω oneZω ω) ω²) ≡ T₀
+KK-AcctB-rel-collapse = Zωm3-red-rel
+
+KK-AcctB-root-collapse : redF3 ω ≡ redF3 oneZω
+KK-AcctB-root-collapse = refl
+
+-- §6.3 两分钉死：类型级不可通约 + 嵌入证伪引用
+-- 任何「把 B 的值搬进 A」的保加法嵌入被 ZomegaMod3 证伪（σ(T₁⊕T₁) = −1
+-- 遭 σT₁+σT₁ = 2 ≢ −1）——两账本只能并列对照，不能合并排名。
+KK-AcctB-emb-fails :
+  (H : (u v : Trit) → addZω (embF3 u) (embF3 v) ≡ embF3 (u ⊕ v)) → ⊥
+KK-AcctB-emb-fails = Zωm3-emb-add-fails
+
+-- 本源侧存在锚（引用 DuodecClock，不重定义）：大衍本源层携带 C₄ 相位
+-- （⟨α⟩ 4 阶：α 四步回位）与混合时钟 12（crt12/π3/π4 CRT 正交分解已证）
+-- ——两账本均不携带此层（ZomegaMod3 §E 丢失清单）。
+KK-Acct-src-C4 : mulAlpha (mulAlpha (mulAlpha a1 a1) a1) a1 ≡ a0
+KK-Acct-src-C4 = mulAlpha-4-a1
+
+-- §6.4 判定定理（形式锚组装）
+-- 不确定原理的成立域 = 账本 A（Z[ω] 3-分圆投影）；账本 B 的失败是特征 3
+-- 本征机制（§4 恒零 + §6.2 单根塌缩点态锚，与 ZomegaMod3 §D mod-3 退化
+-- 同源），非原理缺陷。「好/坏」区分让位于「本源/投影」区分：
+--   T⁶ 一般陈述（|supp f|·|supp f̂| ≥ 729）在账本 A 内立界（§5）；
+--   账本 B 无此陈述（§4 失败即其本征内容）。
+KK-ledger-verdict : KK-supp-f * KK-supp-fhat ≡ KK-card-T²
+KK-ledger-verdict = KK-AcctA-unc
+
+KK-ledger-B-verdict : KK-supp-f * KK-gf3-supphat ≡ 0
+KK-ledger-B-verdict = KK-AcctB-failure
