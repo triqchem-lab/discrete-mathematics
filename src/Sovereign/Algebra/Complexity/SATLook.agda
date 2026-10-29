@@ -17,11 +17,15 @@
 -- 计账：每文字 1（符号步）+ (m+1)（锁步）= m+2 步（LK-look，精确等式）。
 --
 -- 【诚实边界（尾注 §6）】
---   (i)  带 2 的**逐文字副本**仍是编码（空间 O(m·#L)）。无复制的回走相已
---        落地（§4b LK-walk/LK-back），但**代价是二次的**：单个 ⊢ 标记共享时，
---        第 j 个文字必须回走 j(m+1) 格 ⟹ 总代价 Θ(m·L²)。因此「线性账目
---        3 步/子句」与副本是绑定的——这是 space-time trade-off 的定量表述，
---        不是缺陷；无复制的整机拼装（j 索引燃料）未做。
+--   (i)  带 2 的**逐文字副本**是编码（空间 O(m·#L)）。无复制的回走相已落地
+--        （§4b LK-walk/LK-back + §4c 带形不变式 LK-lw/LK-rw-wl）：回走**把带 2
+--        完全复原**（头回 ⊢、左带回 l₂），故每个文字只付自己那一块 (m+1) 格，
+--        单文字总代价 2m+5（1 符号 + (m+1) 锁步 + (m+3) 回走）= **线性**，
+--        整体 L·(2m+5)。
+--        ⚠ 更正：此前写的「第 j 个文字回走 j(m+1) ⟹ Θ(m·L²)」是**错的**——
+--        那只有在不回填（见证被单调消费）时才成立；回走相回填后不累积。
+--        仍缺的是把「符号步 + 锁步 + 回走」拼成单个 runB 的整机引理
+--        （需一条 full-config 锁步引理；三段燃料已各自钉死）。
 --   (ii) 本引擎是**相**（halt 恒假）：公式层 OR/AND 控制器与终止符收口已在
 --        SATMBridge（tm-sat）闭合；两件拼成整机（引擎 × 控制器）未做。
 --   (iii) 带 1 的「每文字 m+2 格无重叠」是本机输入格式；库内 decLit 的 stride
@@ -34,7 +38,9 @@ module Sovereign.Algebra.Complexity.SATLook where
 open import Data.Bool using (Bool; true; false)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.List using (List; []; _∷_; _++_; length)
+open import Data.List.Properties using (++-assoc)
 open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Data.Nat.Properties using (+-suc; +-identityʳ)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.Vec using (Vec; lookup) renaming ([] to vNil; _∷_ to _v∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
@@ -254,6 +260,94 @@ LK-back : ∀ (sg : Sign) (v : Trit) (cs : List Trit) (l₂ : List LK-Σ)
 LK-back sg v [] l₂ l₁ h₁ r₁ r₂ = refl
 LK-back sg v (b ∷ cs) l₂ l₁ h₁ r₁ r₂ =
   LK-walk sg v b cs l₂ l₁ h₁ r₁ (LK-b ∷ r₂)
+
+-- ────────────────────────────────────────────────────────────────────
+-- §4c 无复制整机：带形不变式 + 一次文字的完整循环〔结构归纳〕
+-- ────────────────────────────────────────────────────────────────────
+-- 未来态（先把目标形钉死）：一次文字 = 1（符号步）+ (m+1)（锁步）+ (m+3)（回走）
+-- = 2m+5 步；结束时带 2 **完全复原**（头回 ⊢、左带回 l₂），所以每个文字只付
+-- 自己那一块（m+1 格）——整体是 **线性** L·(2m+5)，不是 Θ(m·L²)。
+
+-- 反向累积（带 2 左带的实际增长顺序：每消费一格就 prepend）
+LK-rw : List Trit → List LK-Σ → List LK-Σ
+LK-rw []       acc = acc
+LK-rw (b ∷ bs) acc = LK-rw bs (LK-t b ∷ acc)
+
+-- trit 列表反转（累加器版）
+LK-revA : List Trit → List Trit → List Trit
+LK-revA []       acc = acc
+LK-revA (b ∷ bs) acc = LK-revA bs (b ∷ acc)
+
+LK-revT : List Trit → List Trit
+LK-revT ws = LK-revA ws []
+
+LK-len-revA : ∀ (ws acc : List Trit) → length (LK-revA ws acc) ≡ length ws + length acc
+LK-len-revA []       acc = refl
+LK-len-revA (b ∷ bs) acc =
+  trans (LK-len-revA bs (b ∷ acc)) (+-suc (length bs) (length acc))
+
+LK-len-revT : ∀ (ws : List Trit) → length (LK-revT ws) ≡ length ws
+LK-len-revT ws = trans (LK-len-revA ws []) (+-identityʳ (length ws))
+
+LK-len-cells : ∀ {k} (v : Vec Trit k) → length (LK-vl v) ≡ k
+LK-len-cells vNil = refl
+LK-len-cells (x v∷ xs) = cong suc (LK-len-cells xs)
+
+-- LK-wl 与 ++ 的分配
+LK-wl-++ : ∀ (xs ys : List Trit) → LK-wl (xs ++ ys) ≡ LK-wl xs ++ LK-wl ys
+LK-wl-++ []       ys = refl
+LK-wl-++ (x ∷ xs) ys = cong (LK-t x ∷_) (LK-wl-++ xs ys)
+
+-- 累加器版的分配律：LK-revA ws acc ≡ LK-revT ws ++ acc
+LK-revA-wl : ∀ (ws acc : List Trit) → LK-revA ws acc ≡ LK-revT ws ++ acc
+LK-revA-wl []       acc = refl
+LK-revA-wl (b ∷ bs) acc =
+  trans (LK-revA-wl bs (b ∷ acc))
+        (sym (trans (cong (λ z → z ++ acc) (LK-revA-wl bs (b ∷ [])))
+                    (++-assoc (LK-revT bs) (b ∷ []) acc)))
+
+-- 反转的 snoc 形
+LK-revT-snoc : ∀ (bs : List Trit) (b : Trit) → LK-revT (b ∷ bs) ≡ LK-revT bs ++ (b ∷ [])
+LK-revT-snoc bs b = LK-revA-wl bs (b ∷ [])
+
+-- ★ 接缝：反向累积 = 反序映射再拼上底带（回走相正是消费这个形态）
+LK-rw-wl : ∀ (ws : List Trit) (acc : List LK-Σ)
+         → LK-rw ws acc ≡ LK-wl (LK-revT ws) ++ acc
+LK-rw-wl []       acc = refl
+LK-rw-wl (b ∷ bs) acc =
+  trans (LK-rw-wl bs (LK-t b ∷ acc))
+        (sym (trans (cong (λ z → LK-wl z ++ acc) (LK-revT-snoc bs b))
+                    (trans (cong (λ z → z ++ acc) (LK-wl-++ (LK-revT bs) (b ∷ [])))
+                           (++-assoc (LK-wl (LK-revT bs)) (LK-t b ∷ []) acc))))
+
+-- 锁步相（已找到变体）的带形：走完 todo 后左带 = 反向累积
+LK-l2-1 : ∀ (sg : Sign) (v : Trit) (m : ℕ) (o a : Vec Trit (suc m))
+            (acc : List LK-Σ) (l₁ : List LK-Σ) (h₁ : LK-Σ) (r₂ : List LK-Σ)
+        → C2.l₂ (runB tm-look LK-b (suc m)
+            (mk2 l₁ (qScan sg true v) (hdOf LK-b (LK-cells o)) (tlOf (LK-cells o))
+                 acc (hdOf LK-b (LK-wl (LK-vl a))) (tlOf (LK-wl (LK-vl a)))))
+          ≡ LK-rw (LK-vl a) acc
+LK-l2-1 sg v zero (x v∷ vNil) (b v∷ vNil) acc l₁ h₁ r₂ = refl
+LK-l2-1 sg v (suc m) (x v∷ os) (b v∷ as) acc l₁ h₁ r₂ =
+  LK-l2-1 sg v m os as (LK-t b ∷ acc) (LK-t x ∷ l₁) (hdOf LK-b (LK-cells os)) r₂
+
+-- 锁步相（未找到变体）的带形
+LK-l2-0 : ∀ (sg : Sign) (m : ℕ) (o a : Vec Trit (suc m))
+            (acc : List LK-Σ) (l₁ : List LK-Σ) (h₁ : LK-Σ) (r₂ : List LK-Σ)
+        → C2.l₂ (runB tm-look LK-b (suc m)
+            (mk2 l₁ (qScan sg false T₀) (hdOf LK-b (LK-cells o)) (tlOf (LK-cells o))
+                 acc (hdOf LK-b (LK-wl (LK-vl a))) (tlOf (LK-wl (LK-vl a)))))
+          ≡ LK-rw (LK-vl a) acc
+LK-l2-0 sg zero (T₁ v∷ vNil) (b v∷ vNil) acc l₁ h₁ r₂ = refl
+LK-l2-0 sg zero (T₀ v∷ vNil) (b v∷ vNil) acc l₁ h₁ r₂ = refl
+LK-l2-0 sg zero (T₂ v∷ vNil) (b v∷ vNil) acc l₁ h₁ r₂ = refl
+LK-l2-0 sg (suc m) (T₁ v∷ os) (b v∷ as) acc l₁ h₁ r₂ =
+  LK-l2-1 sg (LK-v (hdOf LK-b (LK-wl (LK-vl (b v∷ as))))) m os as (LK-t b ∷ acc)
+            (LK-t T₁ ∷ l₁) (hdOf LK-b (LK-cells os)) r₂
+LK-l2-0 sg (suc m) (T₀ v∷ os) (b v∷ as) acc l₁ h₁ r₂ =
+  LK-l2-0 sg m os as (LK-t b ∷ acc) (LK-t T₀ ∷ l₁) (hdOf LK-b (LK-cells os)) r₂
+LK-l2-0 sg (suc m) (T₂ v∷ os) (b v∷ as) acc l₁ h₁ r₂ =
+  LK-l2-0 sg m os as (LK-t b ∷ acc) (LK-t T₂ ∷ l₁) (hdOf LK-b (LK-cells os)) r₂
 
 -- ────────────────────────────────────────────────────────────────────
 -- §5 核对层（refl 枚举）
