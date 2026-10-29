@@ -20,8 +20,8 @@
 --   (i)  带 2 的**逐文字副本**是编码（空间 O(m·#L)）。无复制的回走相已落地
 --        （§4b LK-walk/LK-back + §4c 带形不变式 LK-lw/LK-rw-wl）：回走**把带 2
 --        完全复原**（头回 ⊢、左带回 l₂），故每个文字只付自己那一块 (m+1) 格，
---        单文字总代价 2m+5（1 符号 + (m+1) 锁步 + (m+3) 回走）= **线性**，
---        整体 L·(2m+5)。
+--        单文字总代价 **2m+6**（1 符号 + (m+1) 锁步 + 1 相迁移 + (m+3) 回走）
+--        = **线性**，整体 L·(2m+6)。⚠ 此前写 2m+5 漏算了相迁移一步（见 §4f）。
 --        ⚠ 更正：此前写的「第 j 个文字回走 j(m+1) ⟹ Θ(m·L²)」是**错的**——
 --        那只有在不回填（见证被单调消费）时才成立；回走相回填后不累积。
 --        仍缺的是把「符号步 + 锁步 + 回走」拼成单个 runB 的整机引理
@@ -43,7 +43,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Nat.Properties using (+-suc; +-identityʳ)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.Vec using (Vec; lookup) renaming ([] to vNil; _∷_ to _v∷_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
 open import Sovereign.Algebra.Automata.MultiTape
@@ -265,8 +265,8 @@ LK-back sg v (b ∷ cs) l₂ l₁ h₁ r₁ r₂ =
 -- §4c 无复制整机：带形不变式 + 一次文字的完整循环〔结构归纳〕
 -- ────────────────────────────────────────────────────────────────────
 -- 未来态（先把目标形钉死）：一次文字 = 1（符号步）+ (m+1)（锁步）+ (m+3)（回走）
--- = 2m+5 步；结束时带 2 **完全复原**（头回 ⊢、左带回 l₂），所以每个文字只付
--- 自己那一块（m+1 格）——整体是 **线性** L·(2m+5)，不是 Θ(m·L²)。
+-- = 2m+6 步（含 1 步相迁移）；结束时带 2 **完全复原**（头回 ⊢、左带回 l₂），
+-- 所以每个文字只付自己那一块（m+1 格）——整体 **线性** L·(2m+6)，不是 Θ(m·L²)。
 
 -- 反向累积（带 2 左带的实际增长顺序：每消费一格就 prepend）
 LK-rw : List Trit → List LK-Σ → List LK-Σ
@@ -408,6 +408,42 @@ LK-scanned sg b v (LK-t T₂ ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
 LK-scanned sg b v (LK-b ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
 LK-scanned sg b v (LK-m ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
 
+-- 规范的投影律（§4e）：LK-scanned 与「有没有 T₁ / 首个 T₁ 处的值」对齐
+--   LK-scanned-true：已找到后不再变（对 v 全泛型）
+--   LK-scanned-spec：未找到起步 ⟹ (anyT₁, pick)
+LK-scanned-true : ∀ (sg : Sign) (v : Trit) (os : List LK-Σ) (ws : List Trit)
+                → LK-scanned sg true v os ws ≡ qScan sg true v
+LK-scanned-true sg v [] ws = refl
+LK-scanned-true sg v (LK-t T₁ ∷ os) ws = LK-scanned-true sg v os (LK-drop1 ws)
+LK-scanned-true sg v (LK-t T₀ ∷ os) ws = LK-scanned-true sg v os (LK-drop1 ws)
+LK-scanned-true sg v (LK-t T₂ ∷ os) ws = LK-scanned-true sg v os (LK-drop1 ws)
+LK-scanned-true sg v (LK-b ∷ os) ws = LK-scanned-true sg v os (LK-drop1 ws)
+LK-scanned-true sg v (LK-m ∷ os) ws = LK-scanned-true sg v os (LK-drop1 ws)
+
+LK-scanned-spec : ∀ (sg : Sign) (os : List LK-Σ) (ws : List Trit)
+                → LK-scanned sg false T₀ os ws
+                  ≡ qScan sg (LK-anyT₁ os) (LK-pick os ws)
+LK-scanned-spec sg [] ws = refl
+LK-scanned-spec sg (LK-t T₁ ∷ os) (w ∷ ws) = LK-scanned-true sg w os ws
+LK-scanned-spec sg (LK-t T₁ ∷ os) [] =
+  trans (LK-scanned-true sg (LK-v LK-b) os []) refl
+LK-scanned-spec sg (LK-t T₀ ∷ os) [] =
+  trans (LK-scanned-spec sg os [])
+        (cong (λ t → qScan sg (LK-anyT₁ os) t) (LK-pick-nil os))
+LK-scanned-spec sg (LK-t T₀ ∷ os) (w ∷ ws) = LK-scanned-spec sg os ws
+LK-scanned-spec sg (LK-t T₂ ∷ os) [] =
+  trans (LK-scanned-spec sg os [])
+        (cong (λ t → qScan sg (LK-anyT₁ os) t) (LK-pick-nil os))
+LK-scanned-spec sg (LK-t T₂ ∷ os) (w ∷ ws) = LK-scanned-spec sg os ws
+LK-scanned-spec sg (LK-b ∷ os) [] =
+  trans (LK-scanned-spec sg os [])
+        (cong (λ t → qScan sg (LK-anyT₁ os) t) (LK-pick-nil os))
+LK-scanned-spec sg (LK-b ∷ os) (w ∷ ws) = LK-scanned-spec sg os ws
+LK-scanned-spec sg (LK-m ∷ os) [] =
+  trans (LK-scanned-spec sg os [])
+        (cong (λ t → qScan sg (LK-anyT₁ os) t) (LK-pick-nil os))
+LK-scanned-spec sg (LK-m ∷ os) (w ∷ ws) = LK-scanned-spec sg os ws
+
 -- ★ full-config 锁步引理（结论形 = 未来态：state 与两带同时给出）
 -- 形状要点（上一轮的诊断）：b、v 为变量时 δ 不可归约 ⟹ b 逐真值分案；
 -- 分案后「已找到」变体必须对 v 全泛型（否则 T₁ 之后的值会被重写）。
@@ -451,6 +487,63 @@ LK-lock sg (suc m) (T₀ v∷ os) (w v∷ as) acc l₁ h₁ =
   LK-lock sg m os as (LK-t w ∷ acc) (LK-t T₀ ∷ l₁) (hdOf LK-b (LK-cells os))
 LK-lock sg (suc m) (T₂ v∷ os) (w v∷ as) acc l₁ h₁ =
   LK-lock sg m os as (LK-t w ∷ acc) (LK-t T₂ ∷ l₁) (hdOf LK-b (LK-cells os))
+
+-- ────────────────────────────────────────────────────────────────────
+-- §4f ★ 单文字循环（无复制）：符号步 + 锁步 + 相迁移 + 回走 = 2m+6 步
+-- ────────────────────────────────────────────────────────────────────
+
+-- 回走燃料对齐：cs = LK-revT (LK-vl a) 的长度恰为 suc m
+LK-rewind-fuel : ∀ (m : ℕ) (a : Vec Trit (suc m))
+               → length (LK-revT (LK-vl a)) ≡ suc m
+LK-rewind-fuel m a = trans (LK-len-revT (LK-vl a)) (LK-len-cells a)
+
+-- 接缝：锁步终态 ⟹ 回走起点（整幅格局等式）
+LK-seam : ∀ (sg : Trit) (m : ℕ) (o a : Vec Trit (suc m)) (l₁ : List LK-Σ)
+        → Σ (Fin (suc m)) (λ i → lookup o i ≡ T₁)
+        → mk2 (LK-rc (LK-cells o) (LK-t sg ∷ l₁))
+              (LK-scanned (signOf sg) false T₀ (LK-cells o) (LK-vl a)) LK-b []
+              (LK-rw (LK-vl a) (LK-m ∷ [])) LK-b []
+          ≡ mk2 (LK-rc (LK-cells o) (LK-t sg ∷ l₁))
+                (qScan (signOf sg) true (lookup a (fromOneHot m o))) LK-b []
+                (LK-wl (LK-revT (LK-vl a)) ++ (LK-m ∷ [])) LK-b []
+LK-seam sg m o a l₁ h =
+  trans (cong (λ st → mk2 (LK-rc (LK-cells o) (LK-t sg ∷ l₁)) st LK-b []
+                             (LK-rw (LK-vl a) (LK-m ∷ [])) LK-b [])
+              (trans (LK-scanned-spec (signOf sg) (LK-cells o) (LK-vl a))
+                     (trans (cong (λ z → qScan (signOf sg) z
+                                      (LK-pick (LK-cells o) (LK-vl a)))
+                                  (LK-anyT₁-cells m o h))
+                            (cong (qScan (signOf sg) true) (LK-pick-cells m o a h)))))
+        (cong (λ l → mk2 (LK-rc (LK-cells o) (LK-t sg ∷ l₁))
+                          (qScan (signOf sg) true (lookup a (fromOneHot m o))) LK-b []
+                          l LK-b [])
+              (LK-rw-wl (LK-vl a) (LK-m ∷ [])))
+
+-- 回走的 m 索引版（燃料写成 suc³ m，避免 length 中性项与「展开后三步」
+-- 两种范式在拼接处打架；subst 只在**本条**里做一次）
+LK-back-m : ∀ (sg : Sign) (v : Trit) (m : ℕ) (a : Vec Trit (suc m)) (l₁ : List LK-Σ)
+          → C2.st (runB tm-look LK-b (suc (suc (suc m)))
+              (mk2 l₁ (qBack sg v) LK-b []
+                   (LK-wl (LK-revT (LK-vl a)) ++ (LK-m ∷ [])) LK-b []))
+            ≡ qDone sg v
+LK-back-m sg v m a l₁ =
+  subst (λ k → C2.st (runB tm-look LK-b k
+                 (mk2 l₁ (qBack sg v) LK-b []
+                      (LK-wl (LK-revT (LK-vl a)) ++ (LK-m ∷ [])) LK-b []))
+               ≡ qDone sg v)
+        (cong suc (cong suc (LK-rewind-fuel m a)))
+        (LK-back sg v (LK-revT (LK-vl a)) [] l₁ LK-b [] [])
+
+-- ⚠ LK-cycle（单文字整循环）本轮未闭合，且有**一处真实的建模缺口**：
+--   tm-look 的 δ 里没有「锁步相 → 回走相」的迁移子句——`qScan` 读到见证块后的
+--   空白（LK-b）时仍按 `(qScan s true v) x y` 继续右移，永远进不了 `qBack`。
+--   所以要闭合整循环，必须先加一子句
+--       lk-δ (qScan s v) x LK-b = qBack s v , (x , dN) , (LK-b , dN)
+--   （带 1 不动、带 2 停在空白上，交给 LK-back 的首步跨到首格）。
+--   加上它之后单文字步数是 **2m+6**，不是此前写的 2m+5：
+--       1（符号）+ (m+1)（锁步）+ 1（相迁移）+ (m+3)（回走）
+--   ——此前把相迁移漏算了。这一点也同时更正 §6(i) 与技能附录 7 的计账。
+--   （本轮的接缝件 LK-seam / LK-back-m / LK-rewind-fuel 已备，且都不依赖该子句。）
 
 -- ────────────────────────────────────────────────────────────────────
 -- §5 核对层（refl 枚举）
