@@ -367,8 +367,10 @@ SVM-check-run-half = refl
 
 -- 尾注立界（诚实边界——不设空壳签名）
 -- (i)   配对 SVM-cellOf 是输入编码，不计机内步数：单带上一次 a[v] 读取需
---       onehot 解码 + 移头 O(m)——故「1 步/文字」是**控制结构**口径，整机
---       口径需 multi-tape 或自含头（承 SATMember §7(i)）。
+--       onehot 解码 + 移头 O(m)——故「1 步/文字」是**控制结构**口径。
+--       机器侧的寻址已由同层件 SATLook 落地（双带模型 Automata/MultiTape：
+--       onehot 与见证 lockstep，LK-look 精确 m+2 步解出 a[v]）；仍缺的是
+--       无复制的回走相与「引擎 × 控制器」的整机拼装（SATLook §6(i)(ii)）。
 -- (ii)  通用桥（任意 Counted 验证器 → TM）= Church-Turing 型深件，维持
 --       PClass §6(i) / NPClass §5(iii) / TMBridge §5(i) 立界，本件不冒充。
 -- (iii) 半截子句（终止符落在 qP1/qP2）不可达于整块 tape；δ 给保守 qRej，
