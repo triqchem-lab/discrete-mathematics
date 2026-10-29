@@ -376,6 +376,25 @@ LK-drop1 : List Trit → List Trit
 LK-drop1 []       = []
 LK-drop1 (b ∷ bs) = bs
 
+-- LK-rc 的累加器律（三条）：
+--   ① LK-revS = 反向映射（LK-rc 的零底形）；
+--   ② LK-rc-wl：LK-rc os acc ≡ LK-revS os ++ acc（分配律，接缝用）；
+--   ③ LK-rc-++：LK-rc (xs ++ ys) acc ≡ LK-rc ys (LK-rc xs acc)（分段拼接用）。
+LK-revS : List LK-Σ → List LK-Σ
+LK-revS os = LK-rc os []
+
+LK-rc-wl : ∀ (os : List LK-Σ) (acc : List LK-Σ) → LK-rc os acc ≡ LK-revS os ++ acc
+LK-rc-wl []       acc = refl
+LK-rc-wl (x ∷ xs) acc =
+  trans (LK-rc-wl xs (x ∷ acc))
+        (sym (trans (cong (λ z → z ++ acc) (LK-rc-wl xs (x ∷ [])))
+                    (++-assoc (LK-revS xs) (x ∷ []) acc)))
+
+LK-rc-++ : ∀ (xs ys : List LK-Σ) (acc : List LK-Σ)
+         → LK-rc (xs ++ ys) acc ≡ LK-rc ys (LK-rc xs acc)
+LK-rc-++ []       ys acc = refl
+LK-rc-++ (x ∷ xs) ys acc = LK-rc-++ xs ys (x ∷ acc)
+
 -- 锁步扫描的规范终态（(已找到, 值) 全泛型 ⟹ 一条函数覆盖两变体）。
 -- 关键语义：T₁ 在「未找到」时把值置为该格见证；在「已找到」时**不覆盖**。
 LK-scanned : (sg : Sign) (b : Bool) (v : Trit)
@@ -388,6 +407,50 @@ LK-scanned sg b v (LK-t T₀ ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
 LK-scanned sg b v (LK-t T₂ ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
 LK-scanned sg b v (LK-b ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
 LK-scanned sg b v (LK-m ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
+
+-- ★ full-config 锁步引理（结论形 = 未来态：state 与两带同时给出）
+-- 形状要点（上一轮的诊断）：b、v 为变量时 δ 不可归约 ⟹ b 逐真值分案；
+-- 分案后「已找到」变体必须对 v 全泛型（否则 T₁ 之后的值会被重写）。
+
+-- 已找到变体：值不再覆盖
+LK-lock-true : ∀ (sg : Sign) (v : Trit) (m : ℕ) (o a : Vec Trit (suc m))
+                 (acc l₁ : List LK-Σ) (h₁ : LK-Σ)
+             → runB tm-look LK-b (suc m)
+                 (mk2 l₁ (qScan sg true v)
+                      (hdOf LK-b (LK-cells o)) (tlOf (LK-cells o))
+                      acc (hdOf LK-b (LK-wl (LK-vl a))) (tlOf (LK-wl (LK-vl a))))
+               ≡ mk2 (LK-rc (LK-cells o) l₁)
+                     (LK-scanned sg true v (LK-cells o) (LK-vl a)) LK-b []
+                     (LK-rw (LK-vl a) acc) LK-b []
+LK-lock-true sg v zero (T₁ v∷ vNil) (w v∷ vNil) acc l₁ h₁ = refl
+LK-lock-true sg v zero (T₀ v∷ vNil) (w v∷ vNil) acc l₁ h₁ = refl
+LK-lock-true sg v zero (T₂ v∷ vNil) (w v∷ vNil) acc l₁ h₁ = refl
+LK-lock-true sg v (suc m) (T₁ v∷ os) (w v∷ as) acc l₁ h₁ =
+  LK-lock-true sg v m os as (LK-t w ∷ acc) (LK-t T₁ ∷ l₁) (hdOf LK-b (LK-cells os))
+LK-lock-true sg v (suc m) (T₀ v∷ os) (w v∷ as) acc l₁ h₁ =
+  LK-lock-true sg v m os as (LK-t w ∷ acc) (LK-t T₀ ∷ l₁) (hdOf LK-b (LK-cells os))
+LK-lock-true sg v (suc m) (T₂ v∷ os) (w v∷ as) acc l₁ h₁ =
+  LK-lock-true sg v m os as (LK-t w ∷ acc) (LK-t T₂ ∷ l₁) (hdOf LK-b (LK-cells os))
+
+-- 未找到变体（b = false 固定）
+LK-lock : ∀ (sg : Sign) (m : ℕ) (o a : Vec Trit (suc m))
+            (acc l₁ : List LK-Σ) (h₁ : LK-Σ)
+        → runB tm-look LK-b (suc m)
+            (mk2 l₁ (qScan sg false T₀)
+                 (hdOf LK-b (LK-cells o)) (tlOf (LK-cells o))
+                 acc (hdOf LK-b (LK-wl (LK-vl a))) (tlOf (LK-wl (LK-vl a))))
+          ≡ mk2 (LK-rc (LK-cells o) l₁)
+                (LK-scanned sg false T₀ (LK-cells o) (LK-vl a)) LK-b []
+                (LK-rw (LK-vl a) acc) LK-b []
+LK-lock sg zero (T₁ v∷ vNil) (w v∷ vNil) acc l₁ h₁ = refl
+LK-lock sg zero (T₀ v∷ vNil) (w v∷ vNil) acc l₁ h₁ = refl
+LK-lock sg zero (T₂ v∷ vNil) (w v∷ vNil) acc l₁ h₁ = refl
+LK-lock sg (suc m) (T₁ v∷ os) (w v∷ as) acc l₁ h₁ =
+  LK-lock-true sg w m os as (LK-t w ∷ acc) (LK-t T₁ ∷ l₁) (hdOf LK-b (LK-cells os))
+LK-lock sg (suc m) (T₀ v∷ os) (w v∷ as) acc l₁ h₁ =
+  LK-lock sg m os as (LK-t w ∷ acc) (LK-t T₀ ∷ l₁) (hdOf LK-b (LK-cells os))
+LK-lock sg (suc m) (T₂ v∷ os) (w v∷ as) acc l₁ h₁ =
+  LK-lock sg m os as (LK-t w ∷ acc) (LK-t T₂ ∷ l₁) (hdOf LK-b (LK-cells os))
 
 -- ────────────────────────────────────────────────────────────────────
 -- §5 核对层（refl 枚举）
