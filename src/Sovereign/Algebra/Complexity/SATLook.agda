@@ -306,6 +306,24 @@ LK-scanned sg b v (LK-t T₂ ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
 LK-scanned sg b v (LK-b ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
 LK-scanned sg b v (LK-m ∷ os) ws = LK-scanned sg b v os (LK-drop1 ws)
 
+-- §4d′ 配对标件（附录 8 的开工形）：两条带由**一个** List (LK-Σ × Trit) 驱动，
+-- 长度相等由类型保证，于是「一条带耗尽」的分支根本不存在（也避开 tlOf 落在
+-- 变量参数上不归约的坑）。
+LK-cellsP : List (LK-Σ × Trit) → List LK-Σ
+LK-cellsP [] = []
+LK-cellsP ((q , w) ∷ ps) = q ∷ LK-cellsP ps
+
+LK-cellsQ : List (LK-Σ × Trit) → List LK-Σ
+LK-cellsQ [] = []
+LK-cellsQ ((q , w) ∷ ps) = LK-t w ∷ LK-cellsQ ps
+
+-- 配对版的「锁步扫描规范终态」：语义与 LK-scanned 相同，只是驱动列表成对
+LK-scannedQ : (sg : Sign) (b : Bool) (v : Trit) → List (LK-Σ × Trit) → LK-Q
+LK-scannedQ sg b v [] = qScan sg b v
+LK-scannedQ sg false v ((LK-t T₁ , w) ∷ ps) = LK-scannedQ sg true w ps
+LK-scannedQ sg false v ((q , w) ∷ ps) = LK-scannedQ sg false v ps
+LK-scannedQ sg true v ((q , w) ∷ ps) = LK-scannedQ sg true v ps
+
 -- 规范的投影律（§4e）：LK-scanned 与「有没有 T₁ / 首个 T₁ 处的值」对齐
 --   LK-scanned-true：已找到后不再变（对 v 全泛型）
 --   LK-scanned-spec：未找到起步 ⟹ (anyT₁, pick)
