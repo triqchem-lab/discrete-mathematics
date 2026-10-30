@@ -33,7 +33,7 @@
 
 module Sovereign.Algebra.Complexity.Tableau-Clauses where
 
-open import Data.Nat using (ℕ; zero; suc; _≤_; _+_; z≤n; s≤s⁻¹)
+open import Data.Nat using (ℕ; zero; suc; _≤_; _<_; _+_; z≤n; z<s; s<s; s≤s⁻¹)
 open import Data.Nat.Properties using (≤-trans; m≤m+n)
 open import Data.Fin using (Fin; toℕ; fromℕ; inject₁)
   renaming (zero to fzero; suc to fsuc)
@@ -43,13 +43,15 @@ open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.Unit using (tt)
 open import Data.Empty using (⊥)
 open import Data.Bool using (Bool; true; false)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; subst)
 
 open import Sovereign.Algebra.Complexity.SATMember using (Sign; σ₊; σ₋)
 open import Sovereign.Algebra.Complexity.Tableau
   using (ALit; TEnv; oneHot; satAFormula)
 open import Sovereign.Algebra.Complexity.Tableau-Tape
-  using (TOff; tH; tL; tR; InOff)
+  using (TOff; tH; tL; tR; InOff;
+         tShiftR; tShiftL; tShiftLN;
+         InOff-shiftR; InOff-shiftL; InOff-shiftLN)
 open import Sovereign.Algebra.Complexity.Tableau-Pool using (poolSize; poolEnc)
 open import Sovereign.Algebra.Automata.TuringMachine using (Dir; L; R)
 
@@ -76,12 +78,15 @@ fin-le k = s≤s⁻¹ (toℕ<n k)
 OffW : (len t : ℕ) → Set
 OffW len t = Σ TOff (InOff len t)
 
--- 时刻 t 的窗口全枚举：头格 + 左 k ≤ t + 右 k ≤ len + t + t
-allOffW : (len t : ℕ) → List (OffW len t)
-allOffW len t =
-  (tH , tt)
-  ∷ map (λ k → tL (toℕ k) , fin-le k) (allFin (suc t))
+-- 时刻 t 的窗口枚举：非头偏移（左 k ≤ t、右 k ≤ len + t + t）
+nonHeadOffW : (len t : ℕ) → List (OffW len t)
+nonHeadOffW len t =
+  map (λ k → tL (toℕ k) , fin-le k) (allFin (suc t))
   ++ map (λ k → tR (toℕ k) , fin-le k) (allFin (suc (len + t + t)))
+
+-- 含头格的全窗口
+allOffW : (len t : ℕ) → List (OffW len t)
+allOffW len t = (tH , tt) ∷ nonHeadOffW len t
 
 -- `p` 的后继（封顶于 T），语义 `min (p+1) T`。封顶支在实际运行里不可达
 -- （`p ≤ t < T` 时不封顶），其子句被 C2 的 oneHot 逼成空真。
@@ -89,6 +94,26 @@ pSuc : ∀ (T : ℕ) → Fin (suc T) → Fin (suc T)
 pSuc zero    p        = p
 pSuc (suc T) fzero    = fsuc fzero
 pSuc (suc T) (fsuc p) = fsuc (pSuc T p)
+
+-- 【为什么不用 `inject₁`】`toℕ (inject₁ t)` **不是**定义性等于 `toℕ t`（探针实测），
+-- 于是 `InOff len (toℕ (inject₁ t)) o` 与 `InOff len (toℕ t) o` 不可互换，处处要 `subst`。
+-- 这里改用结构递归的后继行索引 `succRow`（`toℕ` 的等式见 `succRow-toℕ`），把 `subst`
+-- 一次性封在三个 Fin 级平移引理里（§4b 的 `InOff-shift*-fin`），子句构造处不再见到它。
+succRow : ∀ (T : ℕ) (t : Fin (suc T)) → toℕ t < T → Fin (suc T)
+succRow zero    t        ()
+succRow (suc T) fzero    h  = fsuc fzero
+succRow (suc T) (fsuc t) h  = fsuc (succRow T t (s≤s⁻¹ h))
+
+succRow-toℕ : ∀ (T : ℕ) (t : Fin (suc T)) (h : toℕ t < T)
+            → toℕ (succRow T t h) ≡ suc (toℕ t)
+succRow-toℕ zero    t        ()
+succRow-toℕ (suc T) fzero    h = refl
+succRow-toℕ (suc T) (fsuc t) h = cong suc (succRow-toℕ T t (s≤s⁻¹ h))
+
+-- 一步的枚举：当前行 `t`（`Fin (suc T)`，且不是末日行）连同它「存在下一行」的证明
+allStep : (T : ℕ) → List (Σ (Fin (suc T)) (λ t → toℕ t < T))
+allStep zero    = []
+allStep (suc T) = (fzero , z<s) ∷ map (λ x → fsuc (proj₁ x) , s<s (proj₂ x)) (allStep T)
 
 -- 原子：符号格（池号）+ 状态格（时刻 · 状态 · |left|）
 data TabAtom (len T Q V : ℕ) : Set where
@@ -140,28 +165,38 @@ headSym : ∀ (len T Q V : ℕ) (t : Fin (suc T)) (a : Fin V) → TabAtom len T 
 headSym len T Q V t a = atSym (poolEnc len T V t tH tt a)
 
 transClauses : ∀ (len T Q V : ℕ) (δ : Fin Q → Fin V → Fin Q × Fin V × Dir)
-                 (t : Fin T) (s : Fin Q) (a : Fin V) (p : Fin (suc T))
+                 (t : Fin (suc T)) (hT : toℕ t < T)
+                 (s : Fin Q) (a : Fin V) (p : Fin (suc T))
              → List (List (ALit (TabAtom len T Q V)))
-transClauses len T Q V δ t s a p with δ s a
+transClauses len T Q V δ t hT s a p with δ s a
 ... | (q′ , w′ , R) =
-  imp (atSt (inject₁ t) s p) (headSym len T Q V (inject₁ t) a)
-      (atSt (fsuc t) q′ (pSuc T p))
-  ∷ imp (atSt (inject₁ t) s p) (headSym len T Q V (inject₁ t) a)
-        (atSym (poolEnc len T V (fsuc t) (tL zero) z≤n w′))
+  imp (atSt t s p) (headSym len T Q V t a)
+      (atSt (succRow T t hT) q′ (pSuc T p))
+  ∷ imp (atSt t s p) (headSym len T Q V t a)
+        (atSym (poolEnc len T V (succRow T t hT) (tL zero)
+                        (subst (λ d → InOff len d (tL zero)) (sym (succRow-toℕ T t hT)) z≤n) w′))
   ∷ []
 ... | (q′ , w′ , L) with p
 ...   | fzero =
-  imp (atSt (inject₁ t) s fzero) (headSym len T Q V (inject₁ t) a)
-      (atSt (fsuc t) q′ fzero)
-  ∷ imp (atSt (inject₁ t) s fzero) (headSym len T Q V (inject₁ t) a)
-        (atSym (poolEnc len T V (fsuc t) tH tt w′))
+  imp (atSt t s fzero) (headSym len T Q V t a)
+      (atSt (succRow T t hT) q′ fzero)
+  ∷ imp (atSt t s fzero) (headSym len T Q V t a)
+        (atSym (poolEnc len T V (succRow T t hT) tH
+                        (subst (λ d → InOff len d tH) (sym (succRow-toℕ T t hT)) tt) w′))
   ∷ []
 ...   | fsuc n =
-  imp (atSt (inject₁ t) s (fsuc n)) (headSym len T Q V (inject₁ t) a)
-      (atSt (fsuc t) q′ (inject₁ n))
-  ∷ imp (atSt (inject₁ t) s (fsuc n)) (headSym len T Q V (inject₁ t) a)
-        (atSym (poolEnc len T V (fsuc t) (tR zero) z≤n w′))
+  imp (atSt t s (fsuc n)) (headSym len T Q V t a)
+      (atSt (succRow T t hT) q′ (inject₁ n))
+  ∷ imp (atSt t s (fsuc n)) (headSym len T Q V t a)
+        (atSym (poolEnc len T V (succRow T t hT) (tR zero)
+                        (subst (λ d → InOff len d (tR zero)) (sym (succRow-toℕ T t hT)) z≤n) w′))
   ∷ []
+
+-- 后继行的符号原子：深度搬运只在这里出现一次
+nextSym : ∀ (len T Q V : ℕ) (t : Fin (suc T)) (hT : toℕ t < T)
+            (o : TOff) (h : InOff len (toℕ (succRow T t hT)) o) (b : Fin V)
+        → TabAtom len T Q V
+nextSym len T Q V t hT o h b = atSym (poolEnc len T V (succRow T t hT) o h b)
 
 -- ────────────────────────────────────────────────────────────────────
 -- §4 C6：初始（t = 0）与终止（t = T）
@@ -200,7 +235,122 @@ finalClauses len T Q V acc =
   ∷ []
 
 -- ────────────────────────────────────────────────────────────────────
--- §5 核对层〔refl 枚举〕
+-- §4b C5：一步平移（其余格子按同一条平移原语搬运）
+-- ────────────────────────────────────────────────────────────────────
+-- 每条子句 `¬St(t,s,p) ∨ ¬Sym(t,tH,a) ∨ ¬Sym(t,o,b) ∨ Sym(t+1, shift o, b)`。
+-- 【例外点只有 R 支】`tShiftR tH = tL 0` 正好是**被写入覆盖**的新格，故 R 支枚举
+-- **非头**偏移；而 L 两支的 `tH ↦ tR 1` / `tH ↦ tR 0` 是**真映射**（旧头符号被搬到
+-- 新格），必须枚举**全部**偏移。M3b 的 `tstep-L-cons-pt` 当年排除 `tH` 是保守的
+-- （那条引理对 `tH` 也成立），此处不能照抄 —— 否则旧头符号在新行里无人约束。
+-- 目标格的界内性由 A8（`InOff-shiftR/L/LN`）给出。
+
+nInv : ∀ {A : Set} (u v w z : A) → List (ALit A)
+nInv u v w z = (σ₋ , u) ∷ ((σ₋ , v) ∷ ((σ₋ , w) ∷ ((σ₊ , z) ∷ [])))
+
+-- Fin 级平移引理：把 `subst`（深度 `suc (toℕ t)` → `toℕ (succRow …)`）封在这里
+InOff-shiftR-fin : ∀ (len T : ℕ) (t : Fin (suc T)) (hT : toℕ t < T) (o : TOff)
+                 → InOff len (toℕ t) o → InOff len (toℕ (succRow T t hT)) (tShiftR o)
+InOff-shiftR-fin len T t hT o h =
+  subst (λ d → InOff len d (tShiftR o)) (sym (succRow-toℕ T t hT))
+        (InOff-shiftR len (toℕ t) o h)
+
+InOff-shiftL-fin : ∀ (len T : ℕ) (t : Fin (suc T)) (hT : toℕ t < T) (o : TOff)
+                 → InOff len (toℕ t) o → InOff len (toℕ (succRow T t hT)) (tShiftL o)
+InOff-shiftL-fin len T t hT o h =
+  subst (λ d → InOff len d (tShiftL o)) (sym (succRow-toℕ T t hT))
+        (InOff-shiftL len (toℕ t) o h)
+
+InOff-shiftLN-fin : ∀ (len T : ℕ) (t : Fin (suc T)) (hT : toℕ t < T) (o : TOff)
+                  → InOff len (toℕ t) o → InOff len (toℕ (succRow T t hT)) (tShiftLN o)
+InOff-shiftLN-fin len T t hT o h =
+  subst (λ d → InOff len d (tShiftLN o)) (sym (succRow-toℕ T t hT))
+        (InOff-shiftLN len (toℕ t) o h)
+
+-- 单个偏移上的一条平移子句族（每个符号 b 一条）
+clShiftAt : ∀ (len T Q V : ℕ) (t : Fin (suc T)) (hT : toℕ t < T)
+            (s : Fin Q) (a : Fin V) (p : Fin (suc T))
+            (sh : TOff → TOff)
+            (hsh : ∀ (o : TOff) → InOff len (toℕ t) o
+                                → InOff len (toℕ (succRow T t hT)) (sh o))
+            (o : TOff) (h : InOff len (toℕ t) o)
+        → List (List (ALit (TabAtom len T Q V)))
+clShiftAt len T Q V t hT s a p sh hsh o h =
+  map (λ b → nInv (atSt t s p) (headSym len T Q V t a)
+                 (atSym (poolEnc len T V t o h b))
+                 (nextSym len T Q V t hT (sh o) (hsh o h) b))
+      (allFin V)
+
+shiftClauses : ∀ (len T Q V : ℕ) (δ : Fin Q → Fin V → Fin Q × Fin V × Dir)
+                 (t : Fin (suc T)) (hT : toℕ t < T)
+                 (s : Fin Q) (a : Fin V) (p : Fin (suc T))
+             → List (List (ALit (TabAtom len T Q V)))
+shiftClauses len T Q V δ t hT s a p with δ s a
+... | (_ , _ , R) =
+  concat (map (λ x → clShiftAt len T Q V t hT s a p tShiftR
+                       (λ o h → InOff-shiftR-fin len T t hT o h)
+                       (proj₁ x) (proj₂ x))
+              (nonHeadOffW len (toℕ t)))
+... | (_ , _ , L) with p
+...   | fzero =
+  concat (map (λ x → clShiftAt len T Q V t hT s a fzero tShiftLN
+                       (λ o h → InOff-shiftLN-fin len T t hT o h)
+                       (proj₁ x) (proj₂ x))
+              (allOffW len (toℕ t)))
+...   | fsuc n =
+  concat (map (λ x → clShiftAt len T Q V t hT s a (fsuc n) tShiftL
+                       (λ o h → InOff-shiftL-fin len T t hT o h)
+                       (proj₁ x) (proj₂ x))
+              (allOffW len (toℕ t)))
+
+-- ────────────────────────────────────────────────────────────────────
+-- §5 C7：`tableauOf` —— 各族全展开后的 `++` 链（六族）
+-- ────────────────────────────────────────────────────────────────────
+-- 全展开（不做 C3′ 的裁剪）：C1 逐 `(t,o)`、C2 逐 `t`、C4/C5 逐 `(t,s,a,p)`。
+-- 规模仍是多项式（C1 的成对子句是 V² 量级），只是常数大；规模优化留给 C3′。
+
+symAll : ∀ (len T Q V : ℕ) → List (List (ALit (TabAtom len T Q V)))
+symAll len T Q V =
+  concat (map (λ t → concat (map (λ where (o , h) → symOneHot len T Q V t o h)
+                                       (allOffW len (toℕ t))))
+              (allFin (suc T)))
+
+stAll : ∀ (len T Q V : ℕ) → List (List (ALit (TabAtom len T Q V)))
+stAll len T Q V = concat (map (λ t → stOneHot len T Q V t) (allFin (suc T)))
+
+transAll : ∀ (len T Q V : ℕ) (δ : Fin Q → Fin V → Fin Q × Fin V × Dir)
+         → List (List (ALit (TabAtom len T Q V)))
+transAll len T Q V δ =
+  concat (map (λ x → concat (map (λ s → concat (map (λ a →
+            concat (map (λ p → transClauses len T Q V δ (proj₁ x) (proj₂ x) s a p)
+                        (allFin (suc T))))
+            (allFin V)))
+            (allFin Q)))
+          (allStep T))
+
+shiftAll : ∀ (len T Q V : ℕ) (δ : Fin Q → Fin V → Fin Q × Fin V × Dir)
+         → List (List (ALit (TabAtom len T Q V)))
+shiftAll len T Q V δ =
+  concat (map (λ x → concat (map (λ s → concat (map (λ a →
+            concat (map (λ p → shiftClauses len T Q V δ (proj₁ x) (proj₂ x) s a p)
+                        (allFin (suc T))))
+            (allFin V)))
+            (allFin Q)))
+          (allStep T))
+
+tableauOf : ∀ (len T Q V : ℕ) (δ : Fin Q → Fin V → Fin Q × Fin V × Dir)
+              (q₀ : Fin Q) (inp : Fin (suc len) → Fin V) (blk : Fin V)
+              (acc : Fin Q → Bool)
+          → List (List (ALit (TabAtom len T Q V)))
+tableauOf len T Q V δ q₀ inp blk acc =
+  symAll len T Q V
+  ++ stAll len T Q V
+  ++ transAll len T Q V δ
+  ++ shiftAll len T Q V δ
+  ++ initClauses len T Q V q₀ inp blk
+  ++ finalClauses len T Q V acc
+
+-- ────────────────────────────────────────────────────────────────────
+-- §6 核对层〔refl 枚举〕
 -- ────────────────────────────────────────────────────────────────────
 
 Cl-check-allFin-2 : allFin 2 ≡ fzero ∷ fsuc fzero ∷ []
@@ -235,18 +385,18 @@ Cl-check-stOneHot-len = refl
 
 -- C4：右移支 2 条子句
 Cl-check-trans-R-len :
-  length (transClauses 1 1 2 2 (λ _ _ → (fzero , fzero , R)) fzero fzero fzero fzero)
+  length (transClauses 1 1 2 2 (λ _ _ → (fzero , fzero , R)) fzero z<s fzero fzero fzero)
   ≡ 2
 Cl-check-trans-R-len = refl
 
 -- C4：左移两支都给 2 条子句，但目标不同（p=0 写新 tH；p=suc n 写新 tR 0）
 Cl-check-trans-Lp0-len :
-  length (transClauses 1 1 2 2 (λ _ _ → (fzero , fzero , L)) fzero fzero fzero fzero)
+  length (transClauses 1 1 2 2 (λ _ _ → (fzero , fzero , L)) fzero z<s fzero fzero fzero)
   ≡ 2
 Cl-check-trans-Lp0-len = refl
 
 Cl-check-trans-Lsuc-len :
-  length (transClauses 1 1 2 2 (λ _ _ → (fzero , fzero , L)) fzero fzero fzero
+  length (transClauses 1 1 2 2 (λ _ _ → (fzero , fzero , L)) fzero z<s fzero fzero
                        (fsuc fzero))
   ≡ 2
 Cl-check-trans-Lsuc-len = refl
@@ -260,5 +410,38 @@ Cl-check-init-len = refl
 Cl-check-final-len :
   length (listHead [] (finalClauses 1 1 2 2 (λ _ → true))) ≡ 4
 Cl-check-final-len = refl
+
+-- C5：R 支排除头格 ⟹ (非头偏移 2 个) × V(1) = 2 条
+Cl-check-shift-R-len :
+  length (shiftClauses 0 1 1 1 (λ _ _ → (fzero , fzero , R)) fzero z<s fzero fzero fzero)
+  ≡ 2
+Cl-check-shift-R-len = refl
+
+-- C5：L·p = 0 用**全窗口**（含头格）⟹ 3 个偏移 × 1 = 3 条
+Cl-check-shift-Lp0-len :
+  length (shiftClauses 0 1 1 1 (λ _ _ → (fzero , fzero , L)) fzero z<s fzero fzero fzero)
+  ≡ 3
+Cl-check-shift-Lp0-len = refl
+
+-- C5：L·p = suc n 同样用全窗口 ⟹ 3 条（旧头符号 `tH ↦ tR 1` 必须被约束）
+Cl-check-shift-Lsuc-len :
+  length (shiftClauses 0 1 1 1 (λ _ _ → (fzero , fzero , L)) fzero z<s fzero fzero
+                       (fsuc fzero))
+  ≡ 3
+Cl-check-shift-Lsuc-len = refl
+
+-- C7：T = 0（无转移）时 = C1(3 格) + C2(1 槽) + init(3) + final(1) = 8
+Cl-check-tableauOf-T0 :
+  length (tableauOf 0 0 1 1 (λ _ _ → (fzero , fzero , R)) fzero
+                   (λ _ → fzero) fzero (λ _ → true))
+  ≡ 8
+Cl-check-tableauOf-T0 = refl
+
+-- C7：len = 0、T = 1、Q = V = 1 ⟹ C1(9) + C2(4) + C4(4) + C5(4) + init(3) + final(1) = 25
+Cl-check-tableauOf-T1 :
+  length (tableauOf 0 1 1 1 (λ _ _ → (fzero , fzero , R)) fzero
+                   (λ _ → fzero) fzero (λ _ → true))
+  ≡ 25
+Cl-check-tableauOf-T1 = refl
 
 -- 0 postulate / 0 hole。
