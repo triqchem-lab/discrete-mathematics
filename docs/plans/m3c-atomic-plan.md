@@ -117,8 +117,8 @@ G1–G4 不可砍（地基 + 方向一）
 
 | # | 任务 | 产物 | 验证 | 状态 |
 |---|---|---|---|---|
-| C0 | 枚举件：`allFin`/`fin-le`/`OffW`（带界内性见证的偏移）/`allOffW`/`listHead` | 5 定义 | `EXIT=0` | ✅ `TODO-HASH` |
-| C1 | 符号 oneHot（逐 `(t,o)`，套 M3a `oneHot`）：`symCells` + `symOneHot` + 3 条形状核对 | 2 定义 + 3 `refl` | `EXIT=0` | ✅ `TODO-HASH` |
+| C0 | 枚举件：`allFin`/`fin-le`/`OffW`（带界内性见证的偏移）/`allOffW`/`listHead` | 5 定义 | `EXIT=0` | ✅ `ba92e44` |
+| C1 | 符号 oneHot（逐 `(t,o)`，套 M3a `oneHot`）：`symCells` + `symOneHot` + 3 条形状核对 | 2 定义 + 3 `refl` | `EXIT=0` | ✅ `ba92e44` |
 | C2 | 状态 oneHot（逐 `t`） | 1 定义 | 1 `refl` | ⛔ 待裁决（见下） |
 | C3 | ~~头 oneHot（逐 `t`）~~ **路线 (B) 下为空**：每行的头恒为 `tH`，头的移动体现在 C4 的平移子句里 | — | — | ❌ 删除（理由见决策书 §5） |
 | C4 | 转移族三支（右移 / 左移·左空 / 左移·左非空） | 3 定义 | 3 `refl` | ⛔ **阻塞**：左边界分叉 |
