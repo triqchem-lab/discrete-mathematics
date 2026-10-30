@@ -24,6 +24,7 @@ module Sovereign.Algebra.Complexity.Tableau-Tape where
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.List using (List; []; _∷_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Bool using (Bool; true; false)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong)
@@ -224,3 +225,82 @@ Tp-check-hdOf = refl
 --       保证（`stepH M b true c = c`），故不在本件重复陈述。
 
 -- 0 postulate / 0 hole。
+
+-- ────────────────────────────────────────────────────────────────────
+-- §2b 行对齐原语：偏移平移〔结构定义 + 结构证明〕
+-- ────────────────────────────────────────────────────────────────────
+-- 相对行方案（路线 B）把 tableau 的行按**相对头的偏移**索引，于是「时刻 t 与 t+1 的
+-- 同一格」正是**偏移平移**：
+--   · 头右移一格 ⟹ 旧 `tR k` 变新 `tR (k−1)`、旧 `tH` 变新 `tL 0`、旧 `tL k` 变新 `tL (k+1)`；
+--   · 头左移一格（左非空）⟹ 镜像；
+--   · 头左移而左带为空 ⟹ 头**没真动**（`leftLof` 的 `[]` 支原地写入）⟹ 平移是**恒等**。
+-- 平移在 `TOff` 上是**全函数、零算术**（只有 `suc` 与「零/后继」两支）。
+--
+-- 逐点形式把 §2 的四/五个分量收成**一条等式**：除「被写入的旧头格」(`o = tH`) 之外，
+-- 每个格子的符号都等于它在新一行对应偏移上的符号。转移子句族（M3c）用的正是这条。
+
+tShiftR : TOff → TOff
+tShiftR tH            = tL zero
+tShiftR (tL k)        = tL (suc k)
+tShiftR (tR zero)     = tH
+tShiftR (tR (suc k))  = tR k
+
+tShiftL : TOff → TOff
+tShiftL tH            = tR (suc zero)
+tShiftL (tL zero)     = tH
+tShiftL (tL (suc k))  = tL k
+tShiftL (tR k)        = tR (suc (suc k))
+
+-- 右移：`o ≠ tH` 的格子逐点对齐
+tstep-R-pt : ∀ {Q A : Set} (blk : A) (M : TM Q A) (q′ : Q) (w′ : A)
+               (l : List A) (s : Q) (a : A) (r : List A)
+           → TM.δ M s a ≡ (q′ , w′ , R) → TM.halt M s ≡ false
+           → ∀ (o : TOff) → (o ≡ tH → ⊥)
+           → tSym blk (step M blk (mkTC l s a r)) (tShiftR o)
+             ≡ tSym blk (mkTC l s a r) o
+tstep-R-pt blk M q′ w′ l s a r hδ hhalt (tL k) h =
+  cong (λ c → tSym blk c (tL (suc k))) stp
+  where
+  stp : step M blk (mkTC l s a r) ≡ mkTC (w′ ∷ l) q′ (hdOf blk r) (tlOf r)
+  stp = trans (cong (λ h → stepH M blk h (mkTC l s a r)) hhalt)
+              (trans (cong (λ d → moveH blk d l a r) hδ) refl)
+tstep-R-pt blk M q′ w′ l s a r hδ hhalt (tR zero) h =
+  trans (cong (λ c → tSym blk c tH) stp) (hdOf-nth blk r)
+  where
+  stp : step M blk (mkTC l s a r) ≡ mkTC (w′ ∷ l) q′ (hdOf blk r) (tlOf r)
+  stp = trans (cong (λ h → stepH M blk h (mkTC l s a r)) hhalt)
+              (trans (cong (λ d → moveH blk d l a r) hδ) refl)
+tstep-R-pt blk M q′ w′ l s a r hδ hhalt (tR (suc k)) h =
+  trans (cong (λ c → tSym blk c (tR k)) stp) (nth-tlOf blk r k)
+  where
+  stp : step M blk (mkTC l s a r) ≡ mkTC (w′ ∷ l) q′ (hdOf blk r) (tlOf r)
+  stp = trans (cong (λ h → stepH M blk h (mkTC l s a r)) hhalt)
+              (trans (cong (λ d → moveH blk d l a r) hδ) refl)
+tstep-R-pt blk M q′ w′ l s a r hδ hhalt tH h = ⊥-elim (h refl)
+
+-- 左移（左非空）：同一形式，平移换成 `tShiftL`
+tstep-L-cons-pt : ∀ {Q A : Set} (blk : A) (M : TM Q A) (q′ : Q) (w′ : A)
+                    (x : A) (xs : List A) (s : Q) (a : A) (r : List A)
+                → TM.δ M s a ≡ (q′ , w′ , L) → TM.halt M s ≡ false
+                → ∀ (o : TOff) → (o ≡ tH → ⊥)
+                → tSym blk (step M blk (mkTC (x ∷ xs) s a r)) (tShiftL o)
+                  ≡ tSym blk (mkTC (x ∷ xs) s a r) o
+tstep-L-cons-pt blk M q′ w′ x xs s a r hδ hhalt (tL zero) h =
+  cong (λ c → tSym blk c tH) stp
+  where
+  stp : step M blk (mkTC (x ∷ xs) s a r) ≡ mkTC xs q′ x (w′ ∷ a ∷ r)
+  stp = trans (cong (λ h → stepH M blk h (mkTC (x ∷ xs) s a r)) hhalt)
+              (trans (cong (λ d → moveH blk d (x ∷ xs) a r) hδ) refl)
+tstep-L-cons-pt blk M q′ w′ x xs s a r hδ hhalt (tL (suc j)) h =
+  cong (λ c → tSym blk c (tL j)) stp
+  where
+  stp : step M blk (mkTC (x ∷ xs) s a r) ≡ mkTC xs q′ x (w′ ∷ a ∷ r)
+  stp = trans (cong (λ h → stepH M blk h (mkTC (x ∷ xs) s a r)) hhalt)
+              (trans (cong (λ d → moveH blk d (x ∷ xs) a r) hδ) refl)
+tstep-L-cons-pt blk M q′ w′ x xs s a r hδ hhalt (tR k) h =
+  cong (λ c → tSym blk c (tR (suc (suc k)))) stp
+  where
+  stp : step M blk (mkTC (x ∷ xs) s a r) ≡ mkTC xs q′ x (w′ ∷ a ∷ r)
+  stp = trans (cong (λ h → stepH M blk h (mkTC (x ∷ xs) s a r)) hhalt)
+              (trans (cong (λ d → moveH blk d (x ∷ xs) a r) hδ) refl)
+tstep-L-cons-pt blk M q′ w′ x xs s a r hδ hhalt tH h = ⊥-elim (h refl)
