@@ -706,14 +706,42 @@ SVM-δ (qP2 ck fk) (SVM-c cell) = qP0 false (fk ∧ (ck ∨ SVM-litOk cell)) , S
 
 δ **3 条**、`SVM-run` 结构归纳、0 枚举、编译秒过。
 
-### 迁移口径（同一模式搬到 `SATLook`）
+### 迁移口径（已落地：`SATLook` 5fe8097 + be4f870，实测）
 
-- 引擎态加三字段：`qScan pos ck fk sign found val`、`qBack pos ck fk sign val`
-  → `qDone pos ck fk sign val`；入口 `qLit pos ck fk`；
-- `qDone` 加**一条** fold 子句（1 步）：`ck' = ck ∨ lit`、
-  `fk' = if (pos = T₂) then (fk ∧ ck') else fk`、`pos' = next pos` → `qLit pos' ck'' false`；
-- 引擎既有引理**全部只是参数透传**（仍 `refl` 级），**没有新证明**；
-- 于是「每字 = 2m+6（引擎）+ 1（fold）= 2m+7」，循环按文字表归纳，**零枚举**。
+- 相位作为**一个**字段 `LK-Ph = Trit × Bool × Bool`（pos, ck, fk），四个构造子各带
+  `ph : LK-Ph`（`qLit ph` / `qScan ph s b v` / `qBack ph s v` / `qDone ph s v`）；
+- `qDone` 收口只加**一条**子句，更新用两个函数表达而不是分案：
+
+  ```agda
+  LK-foldCk (pos , ck , _)  v = if LK-closing pos then false else (ck ∨ isT₁ v)
+  LK-foldFk (pos , ck , fk) v = if LK-closing pos then (fk ∧ (ck ∨ isT₁ v)) else fk
+  LK-phStep ph@(pos , ck , fk) v = LK-nextT pos , LK-foldCk ph v , LK-foldFk ph v
+
+  lk-δ (qDone ph s v) (LK-t sg) LK-m =
+    qLit (LK-phStep ph (LK-litVal s v)) , (LK-t sg , dN) , (LK-m , dN)
+  ```
+
+- 引擎既有 30 条引理**纯参数透传**（`ph` 作显式首参）：证明体一字未改，全 `refl`
+  级，**没有新证明**；机械迁移用脚本 + 逐处 `assert count == 1`，一次过编译；
+- **符号必须在 fold 之前施加**：`LK-litVal σ₊ v = v`、`LK-litVal σ₋ v = negate v`
+  （与 `SATMember.evalLit` 同口径）。漏了它，负文字全部判反——这类**语义缺陷**
+  编译期查不出来，只能靠「和语义层的定义对齐」当作 typeclass 级别的检查；
+- 整公式 `LK-runL`：每字 = 2m+6（引擎）+ 1（fold）= **2m+7**，沿文字表结构归纳
+  （`[]` / `l ∷ []` / `l ∷ l' ∷ rest` 三款，最后一款的 fold 触发靠「带 1 头仍是
+  `LK-t`」这个可归约条件），**零枚举**；
+- 带 2 只需**一份**见证块（回走相每字完全复原）⟹ 空间 O(m)。
+
+### 收口拼接的两个坑（2026-10-30 实录，一次编译一轮定位）
+
+1. **`_+_` 与 `_*_` 都递归在第一参上**：`suc (LK-cycleSteps m)` 与
+   `LK-cycleSteps m + 1` 只在**具体数**下相等；`length ls * K` 展开为 `K + n * K`，
+   末格留下 `K + 0`，在变量 `m` 处不可转换 ⟹ `runB-+` 的拼接处必须用**逐字拼接**
+   的燃料函数（`LK-fuelL`），乘法形另立一条 `LK-fuelL-len` 引理给。
+2. **让归纳与定义在定义层重合**：把「逐文字格串 / 左带累积 / 相位 fold」三件都写成
+   **尾累积形**（`LK-cellsL ls r = sign ∷ (onehot ++ LK-cellsL ls r)`、
+   `LK-rcL`、`LK-foldL`），则 `runB-+` 拼接时 `r₁` 的实例是**定义性**给出的 ⟹
+   证明里没有一处 `++-assoc`、也没有一处 `subst`（对照：写成 `concat` 再拼就需要
+   反复 assoc + `subst` 改配置）。
 
 ### 教训
 
