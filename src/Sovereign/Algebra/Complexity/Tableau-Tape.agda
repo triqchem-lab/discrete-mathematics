@@ -24,7 +24,8 @@ module Sovereign.Algebra.Complexity.Tableau-Tape where
 open import Data.Nat using (ℕ; zero; suc; _≤_; _<_; s≤s; z≤n; _+_; s<s⁻¹)
 open import Data.Fin using (Fin; fromℕ<; toℕ) renaming (zero to fzero; suc to fsuc)
 open import Data.Unit using (⊤; tt)
-open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m+n; m≤n+m; m≤n⇒m≤1+n; +-mono-≤)
+open import Data.Nat.Properties
+  using (≤-refl; ≤-trans; ≤-reflexive; m≤m+n; m≤n+m; m≤n⇒m≤1+n; +-mono-≤; +-suc)
 open import Data.List using (List; []; _∷_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -599,3 +600,61 @@ offEnc-inj : ∀ (len T t : ℕ) (o o′ : TOff)
 offEnc-inj len T t o o′ h h′ hT p =
   trans (sym (offDec-enc len T t o h hT))
         (trans (cong (offDec len T) p) (offDec-enc len T t o′ h′ hT))
+
+-- ────────────────────────────────────────────────────────────────────
+-- §3i A8：平移**保持界内性**（目标深度是 `suc t`，因为窗口随步数增长）
+-- ────────────────────────────────────────────────────────────────────
+-- 消费者是转移子句族：在窗口 `InOff len t o` 上断言「`(t+1, tShiftX o)` 与 `(t, o)` 同值」，
+-- 于是必须知道 `(t+1, tShiftX o)` 本身**在界内**——否则那个变量在公式里根本不存在。
+-- 逐支核对（`InOff len (suc t) …` 换成 `k ≤ len + suc t + suc t` 看右界）：
+--   · `tShiftR`：`tH ↦ tL 0`（`z≤n`）、`tL k ↦ tL (suc k)`（`s≤s`）、
+--                `tR 0 ↦ tH`（`⊤`）、`tR (suc k) ↦ tR k`（右索引**变小**，垫一步 `off-depth-mono`）；
+--   · `tShiftL`：`tH ↦ tR 1`（左界那一支要「`1 ≤ 右界`」）、`tL 0 ↦ tH`、
+--                `tL (suc k) ↦ tL k`（左索引变小）、
+--                `tR k ↦ tR (suc (suc k))` —— **紧支**：右窗恰好长两格，`≤` 恰好取等；
+--   · `tShiftLN`：`tH ↦ tR 0`、`tL k ↦ tL k`（深度涨一格 ⟹ 垫 `off-le-suc`）、
+--                `tR k ↦ tR (suc k)`（垫 `off-depth-mono-suc`）。
+--
+-- ⚠ 计划里给 A8 预置了「带 `k+1 < L` 前提」的退路，实测**不需要**：归一化的深度界
+--   `len + t + t` 本身随 `t` 增长（这正是 A0 选 (b) 相对行换来的），三支只差一层 `suc`。
+
+-- 深度增长：`len + t + t ≤ len + suc t + suc t`（逐项 `+-mono-≤`，不碰 `+-suc`）
+off-depth-mono : ∀ (len t : ℕ) → len + t + t ≤ len + suc t + suc t
+off-depth-mono len t =
+  +-mono-≤ (+-mono-≤ ≤-refl (m≤n⇒m≤1+n ≤-refl)) (m≤n⇒m≤1+n ≤-refl)
+
+-- 紧支的**等式**：`suc (suc (len + t + t))` 与 `len + suc t + suc t` 同值。
+-- `_+_` 递归在首参上而 `len` 是变量 ⟹ 两式不是**定义**相等，必须借 `+-suc` 搬运
+-- （这正是「`X + 2` 对 stuck 的 `X` 不等于 `suc (suc X)`」那条老坑的复发点）。
+off-depth-suc : ∀ (len t : ℕ) → suc (suc (len + t + t)) ≤ len + suc t + suc t
+off-depth-suc len t = ≤-reflexive (sym eqn)
+  where
+  eqn : len + suc t + suc t ≡ suc (suc (len + t + t))
+  eqn = trans (cong (λ z → z + suc t) (+-suc len t))
+              (cong suc (+-suc (len + t) t))
+
+-- 再垫一层 `suc`（给 `tShiftLN` 的右支：旧索引涨一格后仍要落在右界内）
+off-depth-mono-suc : ∀ (len t : ℕ) → suc (len + t + t) ≤ len + suc t + suc t
+off-depth-mono-suc len t = ≤-trans (m≤n⇒m≤1+n ≤-refl) (off-depth-suc len t)
+
+-- 严格减一：`suc k ≤ b ⟹ k ≤ b`
+off-pred-le : ∀ {k b : ℕ} → suc k ≤ b → k ≤ b
+off-pred-le h = ≤-trans (m≤n⇒m≤1+n ≤-refl) h
+
+InOff-shiftR : ∀ (len t : ℕ) (o : TOff) → InOff len t o → InOff len (suc t) (tShiftR o)
+InOff-shiftR len t tH            h = z≤n
+InOff-shiftR len t (tL k)        h = s≤s h
+InOff-shiftR len t (tR zero)     h = tt
+InOff-shiftR len t (tR (suc k))  h = ≤-trans (off-pred-le h) (off-depth-mono len t)
+
+InOff-shiftL : ∀ (len t : ℕ) (o : TOff) → InOff len t o → InOff len (suc t) (tShiftL o)
+InOff-shiftL len t tH h =
+  ≤-trans (s≤s z≤n) (≤-trans (m≤n+m (suc t) len) (m≤m+n (len + suc t) (suc t)))
+InOff-shiftL len t (tL zero)     h = tt
+InOff-shiftL len t (tL (suc k))  h = ≤-trans (m≤n⇒m≤1+n ≤-refl) (off-le-suc h)
+InOff-shiftL len t (tR k)        h = ≤-trans (s≤s (s≤s h)) (off-depth-suc len t)
+
+InOff-shiftLN : ∀ (len t : ℕ) (o : TOff) → InOff len t o → InOff len (suc t) (tShiftLN o)
+InOff-shiftLN len t tH           h = z≤n
+InOff-shiftLN len t (tL k)       h = off-le-suc h
+InOff-shiftLN len t (tR k)       h = ≤-trans (s≤s h) (off-depth-mono-suc len t)
