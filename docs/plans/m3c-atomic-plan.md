@@ -28,7 +28,7 @@
 
 | 闸门 | 内容 | 闭合定义 | 检查 | 失败处置 |
 |---|---|---|---|---|
-| **G0** 设计冻结 | 界参数化 = (b) `InOff (t : ℕ) (o : TOff)`；帧宽 `L = len + T + 1` | 头注含 `len + T + 1`，`2T+3` 零命中 | `grep_search "2T\+3"` → 0 | 反复即定 (b)，不再讨论 |
+| **G0** 设计冻结 | 界参数化 = (b) `InOff (len t : ℕ) (o : TOff)`；帧宽 `L = suc (suc (len + T + T))`（原稿 `len + T + 1` 偏差一格，`ab3cdb0` 起修正） | 头注含修正后的帧宽，`2T+3` 零命中 | `grep_search "2T\+3"` → 0 | 反复即定 (b)，不再讨论 |
 | **G1** 编号层 A1–A8 | `offTag`/`offIdx`/`InOff`/`offEnc`/`offDec`/往返/单射/界内保持 | 8 签名齐 + `EXIT=0` | `agda … Tableau-Tape.agda` | 仅 A8 卡：界内保持改为**逐支显式前提**（`k+1 < L`），不算失败 |
 | **G2** 池 B1–B5 | `poolSize`/两层 `combine`/`poolDec`/往返/接 `Lit` | `poolDec-enc` 成立（stdlib `remQuot-combine`） | 文件 `EXIT=0` | `combine` 卡：退回手写 `toℕ` 编号（**仅一次**，须写为何 stdlib 不够） |
 | **G3** 子句族 C1–C7 | 符号/状态/头 oneHot + 转移三支 + 非头不变 + 初始终止 + `tableauOf` | 七族齐；`tableauOf` 是 `++` 链；**不含语义** | 文件 `EXIT=0` + 每族 1 条形状核对 | 族太多：先做 C1/C4/C6（符号+转移+初始终止），其余记 G3b |
@@ -73,7 +73,7 @@ G1–G4 不可砍（地基 + 方向一）
 
 ## 4. 已知算术义务（只两处）
 
-1. **A8 界内保持**：`tShiftR (tL k) = tL (suc k)`、`tShiftL (tR k) = tR (suc (suc k))` ⟹ 平移使索引增长，固定界对边界格不成立 —— 这是 A0 必须选 (b) 的原因。
+1. **A8 界内保持**：`tShiftR (tL k) = tL (suc k)`、`tShiftL (tR k) = tR (suc (suc k))` ⟹ 平移使索引增长，而**深度界 `len + t + t` 本身随 `t` 增长**，所以固定界的边界问题不出现 —— 这是 A0 必须选 (b) 的原因。**实测结论（`62a9a1b`）**：三支全部在 `InOff len t o → InOff len (suc t) (tShiftX o)` 的形状下直接成立，无需任何附加前提；唯一的技术点是 `tShiftL` 的 `tR` 支**恰好取等**（右窗每步长两格），要让 `suc (suc (len + t + t))` 与 `len + suc t + suc t` 对上，需借 stdlib `+-suc` 搬一次（`_+_` 递归在首参上，`len` 是变量，两式非定义相等）。
 2. **A6 编号往返**：`toℕ-fromℕ<` / `fromℕ<`；池层由 stdlib `remQuot-combine`（`Data/Fin/Properties.agda:694`）与 `combine-remQuot`（:699）承担，**不手搓 `*` 边界**。
 
 ---
@@ -90,15 +90,15 @@ G1–G4 不可砍（地基 + 方向一）
 
 | # | 任务 | 产物 | 验证 | 失败处置 | 状态 |
 |---|---|---|---|---|---|
-| A0 | 定 (b)：`InOff (t : ℕ) (o : TOff)`，帧宽 `L = len + T + 1` | 头注 + `InOff` | `2T+3` 零命中 | 立即定 (b) | ⬜ |
-| A1 | `offTag : TOff → Fin 3` | 3 行 | 3 `refl` | 枚举 | ⬜ |
-| A2 | `offIdx : TOff → ℕ` | 3 行 | 3 `refl` | 枚举 | ⬜ |
-| A3 | `InOff t o`（左界 `≤ t`、右界 `≤ len−1+t`） | 1 定义 | 类型 | 改单侧+余量并注明 | ⬜ |
-| A4 | `offEnc : InOff t o → Fin 3 × Fin L` | 1 定义 | `EXIT=0` | `fromℕ<` | ⬜ |
-| A5 | `offDec : Fin 3 × Fin L → TOff` | 1 定义 | 3 `refl` | 枚举 | ⬜ |
-| A6 | `offDec-enc : offDec (offEnc o h) ≡ o` | 1 引理 | `EXIT=0` | `toℕ-fromℕ<` | ⬜ |
-| A7 | `offEnc-inj` | 1 行 | `EXIT=0` | 由 A6 | ⬜ |
-| A8 | `InOff-shift*` 三支（带 `k+1 < L` 前提） | 3 引理 | `EXIT=0` | 见 G1 | ⬜ |
+| A0 | 定 (b)：`InOff (len t : ℕ) (o : TOff)`，帧宽 `L = suc (suc (len + T + T))` | 头注 + `InOff` | `2T+3` 零命中 | 立即定 (b) | ✅ `ab3cdb0` |
+| A1 | `offTag : TOff → Fin 3` | 3 行 | 3 `refl` | 枚举 | ✅ `d608e78` |
+| A2 | `offIdx : TOff → ℕ` | 3 行 | 3 `refl` | 枚举 | ✅ `d608e78` |
+| A3 | `InOff len t o`（左界 `≤ t`、右界 `≤ len + t + t`） | 1 定义 | 类型 | 改单侧+余量并注明 | ✅ `92c6ff1` |
+| A4 | `offEnc : InOff t o → Fin 3 × Fin L` | 1 定义 | `EXIT=0` | `fromℕ<` | ✅ `d2cb92e` |
+| A5 | `offDec : Fin 3 × Fin L → TOff` | 1 定义 | 3 `refl` | 枚举 | ✅ `1d88bcc` |
+| A6 | `offDec-enc : offDec (offEnc o h) ≡ o` | 1 引理 | `EXIT=0` | `toℕ-fromℕ<` | ✅ `f803f2a` |
+| A7 | `offEnc-inj` | 1 行 | `EXIT=0` | 由 A6 | ✅ `8a12b83` |
+| A8 | `InOff-shift*` 三支 | 3 引理（+4 备件） | `EXIT=0` | 见 G1 | ✅ `62a9a1b`（**无需** `k+1 < L` 前提） |
 
 ### 层 B：池（新文件 `Tableau-Pool.agda`）
 
@@ -164,3 +164,4 @@ G1–G4 不可砍（地基 + 方向一）
 | 闸门 | 回执 | 结论 |
 |---|---|---|
 | M1/M2/M3a/M3b（前置） | 5 文件 1657 行，lib 口径 5/5 `EXIT=0`，0 postulate | ✅ |
+| **G1** 编号层 | `Tableau-Tape.agda` 660 行，`agda -i src --cubical --guardedness -WnoUnsupportedIndexedMatch …` → `EXIT=0`；A1–A8 八签名齐（合计新增顶层签名：A1/A2 = 3，A3/A4a = 5，A4b = 4，A5 = 1，A6 = 2，A7 = 1，A8 = 7）；7 个分段提交 `d608e78`→`62a9a1b`；0 postulate / 0 hole；A8 三次预置前提未用到，修复轮数为 0（A6 例外：3 轮，导入位置／模式变量遮蔽／证明参数不可推断） | ✅ |
