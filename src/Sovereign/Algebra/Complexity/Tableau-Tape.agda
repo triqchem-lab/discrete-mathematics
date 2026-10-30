@@ -21,7 +21,7 @@
 
 module Sovereign.Algebra.Complexity.Tableau-Tape where
 
-open import Data.Nat using (ℕ; zero; suc; _≤_; _<_; s≤s; z≤n; _+_)
+open import Data.Nat using (ℕ; zero; suc; _≤_; _<_; s≤s; z≤n; _+_; s<s⁻¹)
 open import Data.Fin using (Fin; fromℕ<; toℕ) renaming (zero to fzero; suc to fsuc)
 open import Data.Unit using (⊤; tt)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m+n; m≤n+m; m≤n⇒m≤1+n; +-mono-≤)
@@ -559,3 +559,30 @@ Tp-check-offDec-tH = refl
 
 Tp-check-offDec-roundtrip-tH : offDec 3 2 (offEnc 3 2 1 tH tt (s≤s z≤n)) ≡ tH
 Tp-check-offDec-roundtrip-tH = refl
+
+-- ────────────────────────────────────────────────────────────────────
+-- §3g A6：`offDec ∘ offEnc = id`（在界内）
+-- ────────────────────────────────────────────────────────────────────
+-- 先探明 `fromℕ<` 的定义（Data/Fin/Base:81-83）：
+--   fromℕ< : .(m < n) → Fin n                 -- 界证明 **irrelevant**（`.` 前缀）
+--   fromℕ< {zero}  {suc _} _   = zero
+--   fromℕ< {suc m} {suc _} m<n = suc (fromℕ< (s<s⁻¹ m<n))
+-- ⟹ 对 `suc` 形参数**透明** ⟹ 直接对 k 归纳自证取值引理。
+-- ⚠ 两处踩坑：(1) 模式变量不能叫 `L`——`L` 是 `Dir` 的构造子（TuringMachine 导入），
+--   会报 "L is not a constructor of the datatype ℕ"；(2) 界内性证明必须显式给出
+--   （`_` 推不出来），直接用 `off-tL-lt-L` / `off-tR-lt-L` 这两个已证的项。
+
+off-toℕ-fromℕ< : ∀ (k : ℕ) {n : ℕ} (h : k < n) → toℕ (fromℕ< h) ≡ k
+off-toℕ-fromℕ< zero    {zero}  ()
+off-toℕ-fromℕ< zero    {suc n} h = refl
+off-toℕ-fromℕ< (suc k) {zero}  ()
+off-toℕ-fromℕ< (suc k) {suc n} h = cong suc (off-toℕ-fromℕ< k (s<s⁻¹ h))
+
+-- ★ A6 主引理：编码-解码在界内互逆（tH 支 refl；tL/tR 支取值引理 + cong）
+offDec-enc : ∀ (len T t : ℕ) (o : TOff) (h : InOff len t o) (hT : t ≤ T)
+           → offDec len T (offEnc len T t o h hT) ≡ o
+offDec-enc len T t tH     h hT = refl
+offDec-enc len T t (tL k) h hT =
+  cong tL (off-toℕ-fromℕ< k {n = off-L len T} (off-tL-lt-L len T t k h hT))
+offDec-enc len T t (tR k) h hT =
+  cong tR (off-toℕ-fromℕ< k {n = off-L len T} (off-tR-lt-L len T t k h hT))
