@@ -5,9 +5,12 @@
 > `SATRed §6(i)`、`SATMember §6(iii)`、`SATFam §6` 的「W2 立界不排期」注记为「已排期（M1–M4）」。
 > **前置事实**：`docs/PNP/Cook-Levin-资产普查-2026-10-30.md`（实测行数与缺口清单）。
 >
-> **执行状态（2026-10-30）**：人类已批准 **M1** 并开工；**M1 已完成**
-> （`6884e65` CNF.agda 253 行 / `4f41962` CNF-Tseitin.agda 439 行 /
-> `eccae49` 三处 W2 立界注记同步）。M2–M4 未开工。
+> **执行状态（2026-10-30）**：人类已批准并开工；**M1、M2 已完成**。
+> · M1：`6884e65` CNF.agda 253 行 / `4f41962` CNF-Tseitin.agda 439 行 /
+>   `eccae49` 三处 W2 立界注记同步；
+> · M2：`1945cdc` NPClass-TM.agda 260 行（`InNP-TM` + `InNP-TM→InNP` + 实例
+>   `head-NP-TM`，0 postulate、5 条 refl 核对）。
+> M3–M4 未开工。
 
 ## 一、提案
 
@@ -44,7 +47,7 @@
 | 级 | 内容 | 估（行） | 交付判据 |
 |---|---|---|---|
 | **M1（公共前置）✅ 完成** | `Complexity/CNF.agda`（253 行）：`Clause' = List (Lit m)`、`Formula' = List (Clause')`、`satClause'`/`satFormula'` + 计账版 + 拼接三条 + 3-CNF 嵌入 `formulaOf3` 与保真 `formulaOf3-sat`；`CNF-Tseitin.agda`（439 行）：`tseitin-split` + 等可满足**双向**（`tseitin-split-sound` / `-complete` / `-sat-elim` / `-sat-intro` / `-unsat`）+ 计数上界 | 350–500 | ✅ `EXIT=0`、0 postulate/hole、16 条 `refl` 核对、3-CNF 逐点一致（`formulaOf3-sat`） |
-| **M2** | `NPClass` 旁加 `InNP-TM`（`TM` + 步数界多项式 + 见证 = 输入/猜测的拼接）+ `InNP-TM ⟹ InNP`（验证器 = `runN` 的计账包装） | 250–400 | 同 M1；至少一个具体 TM 的实例（可直接用 `tm-head`/`tmc`） |
+| **M2 ✅ 完成** | `Complexity/NPClass-TM.agda`（260 行）：`record InNP-TM`（转移表 + `tm-acc` 接受判据 + 冻结前提 `acc⟹halt` + 多项式界 + 猜测界 + 完备/正确）+ `NPT-run` / `NPT-verdict` / `NPT-verifier`（值/账两条精确等式）+ `InNP-TM→InNP` + 实例 `head-NP-TM : InNP-TM L-Head₁` | 250–400 | ✅ `EXIT=0`、0 postulate、5 条 refl 核对（p=1 / wLen=0 / 三条输入上的验证器值） |
 | **M3** | tableau 构造：变量编号 `(t,i) ↦ Fin`（`/`,`%` 引理）+ 六个子句族 + 初始/终止格局 | 700–1200 | 同 M1；size 界 `O(p²)` 显式陈述 |
 | **M4** | 提取引理（满足 ⟹ 运行存在）+ 组装 `∀L ∈ InNP-TM, L ≤ₚ SAT-3` + 与 `SATRed.Reduces` 对接 | 400–700 | 同 M1；`Reduces` 实例（非单点，参数化于池） |
 
