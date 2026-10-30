@@ -21,6 +21,8 @@
 --               （LK-runL，沿文字表结构归纳；线性计账推论 LK-runL-steps）
 --   整机：      c 个子句 = 3c 个文字 = **3c·(2m+7)** 步
 --               （LK-run-formula / LK-run-formula-steps；原始 trit 串入 = LK-run-stream）
+--   对齐：      = 抽象验证器账目 steps(satFormulaC) × (2m+7)（LK-cost）
+--               ⟹ 常数因子模拟；差额全在「每个文字独立付一次寻址」
 --
 -- 【OR/AND 累计在状态里（skill 附录 9 ①）】
 --   相位 LK-Ph = (pos, ck, fk) 是状态的一部分：pos 为子句内位置（T₂ 收口），
@@ -44,9 +46,13 @@
 --        `LK-run-stream` 再把 SATMember.decFormula 接上 ⟹ **原始 trit 串入、SAT
 --        判决出**。未做的是「直接吃 decLit 的 stride-3 重叠格、不重新编码」的
 --        布局桥——那是可选的省步优化，不是接口缺口（Formula 才是接口）。
---   (iv) 引擎 halt 恒假（纯相），故只用 runB；判决从**状态**读出（fk），不从停机
---        态读出。换 runN2 需 runN2-blind（MultiTape 已备）；与 SATMBridge 的
---        整机拼装（把本机的 3c·(2m+7) 与 tm-sat 的账目对齐）未做。
+--   (iv) 引擎 halt 恒假（纯相），故只用 runB；判决从**第 L·(2m+7) 步的状态**读出
+--        （fk），不从停机态读出。此后 sentinel 被当成下一个文字的 sign ⟹ 机器走
+--        一个幽灵文字；实例（c=1/m=0）实测 22 步进幽灵、27 步停在 qDone、28 步
+--        不动（§5d 三条 refl），一般性停驻定理未证、判决亦不依赖（停驻后 fk 仍在
+--        状态里）。换 runN2 要证「相内恒不停机」的封闭性（δ 的状态×双符号 ~75 案，
+--        或改布局加终止符），故未做。账目对齐用常数因子形式给出：LK-cost
+--        （本机步数 = 抽象账目 × (2m+7)）。
 
 -- 0 postulate / 0 hole。
 
@@ -73,7 +79,8 @@ open import Sovereign.Algebra.Automata.TuringMachine using (hdOf; tlOf)
 open import Sovereign.Algebra.Complexity.SATMember
   using (Sign; σ₊; σ₋; signOf; fromOneHot; isT₁
        ; Lit; Clause; Formula; Asg; evalLit; satClause; satFormula
-       ; clauseW; decFormula)
+       ; clauseW; decFormula; satFormulaC; steps-satFormulaC)
+open import Sovereign.Algebra.Complexity.TimeBound using (steps)
 
 -- ────────────────────────────────────────────────────────────────────
 -- §1 字母表 / 状态 / δ 表〔结构定义〕
@@ -976,9 +983,14 @@ LK-cycleS ph sg m o a l₁ r₁ l₂ h =
 -- §4h 整公式：沿文字表归纳（每字 2m+7 = 锁步循环 2m+6 + 收口 fold 1）
 -- ────────────────────────────────────────────────────────────────────
 -- 带 1：每字一格 sign + (m+1) 格 onehot，末尾留**一个** sentinel 格 LK-t sg₀
---       —— 收口 fold 的触发条件就是「带 1 头仍是 LK-t」（= 还有下一个文字），
---       没有 sentinel 时最后一个文字的 fold 不触发（机器停在 qDone，这是
---       「输入耗尽」的正确行为）。
+--       —— 收口 fold 的触发条件就是「带 1 头仍是 LK-t」（= 还有下一个文字）。
+--       有 sentinel ⟹ 最后一个文字的 fold 也触发（相位因此是**整公式**的终值）；
+--       没有 sentinel ⟹ 最后一个 fold 不触发（相位少折一次，still qDone）。
+--       ⚠ 判决读第 L·(2m+7) 步的那个状态：此后 sentinel 会被当作「下一个文字」的
+--       sign，机器再走一个**幽灵文字**。实测（§5d 三条 refl 钉住，c=1/m=0）：
+--       第 22 步进入幽灵文字（qScan σ₋ false T₀）、第 27 步停在 qDone、第 28 步
+--       不动。停驻后 fk 仍在状态里 ⟹ 判决事后照样可读。一般性停驻定理**未证**
+--       （要对带 1 尾部全空白 + 固定距离回走作归纳），判决不依赖它。
 -- 带 2：**只放一份**见证块（⊢ a₀…a_m ⊣）。LK-cycleS 的结论里带 2 与起点同形
 --       ⟹ 每个文字复用同一块（空间 O(m)，不是 O(m·L)）——「无复制」的机器侧。
 -- 相位：fold 用 δ 的**同一个** LK-phStep ⟹ 归纳结论与机器状态在定义层重合。
@@ -1353,6 +1365,15 @@ LK-run-formula-steps m φ a l₁ sg₀ r₁ l₂ =
                (cong (_* LK-litSteps m) (LK-length-flatV φ)))
         (LK-run-formula m φ a l₁ sg₀ r₁ l₂)
 
+-- 账目对齐（与 SATMember 的抽象验证器 satFormulaC）：本机步数 = 抽象账目 × (2m+7)
+--   ⟹ 这是**常数因子**模拟（不是「多项式的多项式」），差距全在这个常数：
+--   抽象账目把 a[v] 的读取当免费（配对单元编码），本机每个文字独立付一次寻址
+--   （1 符号 + (m+1) 锁步 + 1 相迁移 + (m+3) 回走 + 1 收口）。
+--   证明只用一次 cong：steps-satFormulaC 的逆向代入，**零算术**。
+LK-cost : ∀ (m : ℕ) {c : ℕ} (φ : Formula m c) (a : Asg m)
+        → (3 * c) * LK-litSteps m ≡ steps (satFormulaC a φ) * LK-litSteps m
+LK-cost m φ a = cong (_* LK-litSteps m) (sym (steps-satFormulaC a φ))
+
 -- ★★★ 整机接口：原始 trit 串 → 解码（SATMember.decFormula）→ §4j 编码 → 跑 3c·(2m+7) 步
 --   → qLit (T₀ , false , satFormula a (decFormula m n x))
 -- （本件不再有新证明：LK-run-formula-steps 在 φ := decFormula m n x 上的实例）
@@ -1628,6 +1649,28 @@ check-run-formula-2-refl :
          [] LK-m (LK-wl (LK-vl (T₁ v∷ vNil)) ++ (LK-e ∷ []))))
   ≡ qLit (T₀ , false , true)
 check-run-formula-2-refl = refl
+
+-- 账目对齐：3c·(2m+7) = 抽象账目 steps(satFormulaC) × (2m+7)（c=1、m=0 ⟹ 21）
+check-cost-1 :
+  (3 * 1) * LK-litSteps 0
+    ≡ steps (satFormulaC (T₁ v∷ vNil) (check-lc v∷ vNil)) * LK-litSteps 0
+check-cost-1 = LK-cost 0 (check-lc v∷ vNil) (T₁ v∷ vNil)
+
+-- 判决之后机器并不停：第 22 步把 sentinel 当成「下一个文字」的 sign（幽灵文字）
+-- ⟹ 判决必须从第 21 步的状态读（§4h 的 ⚠）
+check-after-verdict :
+  C2.st (runB tm-look LK-b 22 (check-cfg3 T₁)) ≡ qScan (T₀ , false , true) σ₋ false T₀
+check-after-verdict = refl
+
+-- 幽灵文字的代价：+1（扫到 ⊣）+1（相迁移）+3（回走）⟹ 第 27 步停在 qDone
+check-settles :
+  C2.st (runB tm-look LK-b 27 (check-cfg3 T₁)) ≡ qDone (T₀ , false , true) σ₋ T₀
+check-settles = refl
+
+-- 停驻：再走一步不动（带 1 头已是空白 ⟹ 收口 fold 不触发，落在兜底子句）
+check-settles-2 :
+  C2.st (runB tm-look LK-b 28 (check-cfg3 T₁)) ≡ qDone (T₀ , false , true) σ₋ T₀
+check-settles-2 = refl
 
 -- ────────────────────────────────────────────────────────────────────
 -- §6 尾注立界（诚实边界——不设空壳签名）
