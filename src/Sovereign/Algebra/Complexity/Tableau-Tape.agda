@@ -22,6 +22,7 @@
 module Sovereign.Algebra.Complexity.Tableau-Tape where
 
 open import Data.Nat using (ℕ; zero; suc)
+open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.List using (List; []; _∷_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -412,3 +413,46 @@ Tp-check-shiftLN = refl
 
 Tp-check-roundtrip : tUnshiftL (tShiftL (tL (suc zero))) ≡ tL (suc zero)
 Tp-check-roundtrip = refl
+
+-- ────────────────────────────────────────────────────────────────────
+-- §3 偏移编号层〔结构定义〕（闸门 G1；路线 B 的最后一处算术）
+-- ────────────────────────────────────────────────────────────────────
+-- 【A0 设计冻结（(b) 按时间参数化的双侧界）】
+--   · 第 t 行覆盖的偏移区间是 **[−t, len−1+t]**（左界 = 已左漂步数、右界 =
+--     输入整条 + 已右漂步数）——**不对称**：头起于输入首格，输入整体在头右侧。
+--     帧宽参数取 `L = len + T + 1`（T 步左漂 + 输入 len + 余量 1）。
+--     ⚠ 错的写法是对称居中 `2T+3`：它只在「输入很短、T 很大」时碰巧够用。
+--   · 编码 = 三元 tag（`tH` / `tL` / `tR`）× 有界索引；tag 用 `Fin 3`、索引用 `Fin L`。
+--   · `tShiftR (tL k) = tL (suc k)`、`tShiftL (tR k) = tR (suc (suc k))` 使索引**增长**
+--     ⟹ 「平移保持界内」（A8）必须带显式不等式前提，固定界下对边界格不成立。
+
+-- A1：偏移的三元 tag
+offTag : TOff → Fin 3
+offTag tH       = fzero
+offTag (tL k)   = fsuc fzero
+offTag (tR k)   = fsuc (fsuc fzero)
+
+-- A2：偏移的有界索引（`tH` 用占位 0；`tL`/`tR` 取距头的格数）
+offIdx : TOff → ℕ
+offIdx tH       = zero
+offIdx (tL k)   = k
+offIdx (tR k)   = k
+
+-- ────────────────────────────────────────────────────────────────────
+-- §3b 编号层核对〔refl 枚举〕
+-- ────────────────────────────────────────────────────────────────────
+
+Tp-check-offTag-tH : offTag tH ≡ fzero
+Tp-check-offTag-tH = refl
+
+Tp-check-offTag-tL : offTag (tL (suc zero)) ≡ fsuc fzero
+Tp-check-offTag-tL = refl
+
+Tp-check-offTag-tR : offTag (tR zero) ≡ fsuc (fsuc fzero)
+Tp-check-offTag-tR = refl
+
+Tp-check-offIdx-tL : offIdx (tL (suc (suc zero))) ≡ suc (suc zero)
+Tp-check-offIdx-tL = refl
+
+Tp-check-offIdx-tH : offIdx tH ≡ zero
+Tp-check-offIdx-tH = refl
