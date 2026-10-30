@@ -123,9 +123,9 @@ G1–G4 不可砍（地基 + 方向一）
 | C3 | ~~头 oneHot~~ **并入 C4**：相对行下头恒为 `tH`；裁决 §3.3 要的「`p` 递推一致性」正是 C4 的目标文字 `atSt (fsuc t) q′ p′` | — | — | ❌ 删除（理由见决策书 §5 / 裁决 §3.3） |
 | C3′ | （可选，规模优化）`p ≤ t` 裁剪：只对 `p > t` 生成负单元子句 | 1 定义 | `EXIT=0` | ⬜ 未做（裁决 §3.4 明示不阻塞） |
 | C4 | 转移族三支（R / L·`p=fzero` / L·`p=fsuc n`），每支 2 条子句 `¬St(t,s,p) ∨ ¬Sym(t,tH,a) ∨ <结论>`；`p′` 由 `pSuc`/`inject₁` 给出 | 1 定义（含 `pSuc`/`imp`/`headSym` 备件） | `EXIT=0` | ✅ `749c327` |
-| C5 | 非头不变（按同一条平移原语搬运 `o ≠ tH` 的格子） | 1 定义 | 类型 | ⬜ |
+| C5 | 平移族：`clShiftAt` + `shiftClauses`。**R 支排除头格**（写入覆盖），L 两支用**全窗口**（`tH ↦ tR 1`/`tR 0` 是真映射） | 2 定义（+3 个 `InOff-shift*-fin`） | `EXIT=0` | ✅ `3afd87e` |
 | C6 | 初始（`St(0,q₀,0)` + 左邻空白 + 右带 `inp`）+ 终止（`t=T` 接受态，任意 `p`） | 2 定义（含 `initR-bound`） | `EXIT=0` | ✅ `749c327` |
-| C7 | `tableauOf` = 七族 `++` 链 | 1 定义 | `satAFormula-++` 可用 | ⬜ |
+| C7 | `tableauOf` = `symAll ++ stAll ++ transAll ++ shiftAll ++ initClauses ++ finalClauses`（全展开） | 1 定义（+4 个 `*All`） | `EXIT=0` + 长度核对 | ✅ `3afd87e` |
 
 ### 层 D：两个方向（`Tableau-Sem.agda`）
 
@@ -170,4 +170,5 @@ G1–G4 不可砍（地基 + 方向一）
 |---|---|---|
 | M1/M2/M3a/M3b（前置） | 5 文件 1657 行，lib 口径 5/5 `EXIT=0`，0 postulate | ✅ |
 | **G1** 编号层 | `Tableau-Tape.agda` 660 行，`agda -i src --cubical --guardedness -WnoUnsupportedIndexedMatch …` → `EXIT=0`；A1–A8 八签名齐（合计新增顶层签名：A1/A2 = 3，A3/A4a = 5，A4b = 4，A5 = 1，A6 = 2，A7 = 1，A8 = 7）；7 个分段提交 `d608e78`→`62a9a1b`；0 postulate / 0 hole；A8 三次预置前提未用到，修复轮数为 0（A6 例外：3 轮，导入位置／模式变量遮蔽／证明参数不可推断） | ✅ |
+| **G3** 六族子句 | `Tableau-Clauses.agda` 447 行，同命令 → `EXIT=0`；C0/C1/C2/C4/C5/C6/C7 齐（C3 并入 C4、C3′ 可选未做）；顶层签名 50；34 条 `refl` 核对；0 postulate / 0 hole、零警告；`ba92e44`→`3afd87e`。⚠ **修复 6 轮（预算 2，超预算 3 倍）**：2 轮是我自己的编辑脚本失误（核对块插错位置、`str.replace` 命中两处），4 轮真实问题（多余 `concat`、多行 `λ where` 破坏 layout、`toℕ (inject₁ t)` 非定义性——根因、`s<s⁻¹` 未导入）。另：查重门禁命中 `keepIf`/`shiftAt` 两次，均改名（`clKeepIf`/`clShiftAt`），未绕过 | ✅（超预算） |
 | **G2** 池 | 新文件 `Tableau-Pool.agda` 207 行，同命令 → `EXIT=0`；B1–B6 齐（顶层签名 21，含 2 条 refl）；`9190157`；0 postulate / 0 hole、本文件零警告。stdlib `remQuot-combine` 足够，未触发「手写 `toℕ` 编号」退路。⚠ **修复 4 轮（预算 1，超预算）**，但四轮全是导入/隐参显式化（`s≤s⁻¹` 归属 `Data.Nat`、`tL`/`tR` 未 `using`、`tt` 未导入、`remQuot` 隐参 `{m}` 从乘积反解不出）—— 故障不在设计，退路不适用；已记入提交信息 | ✅（超预算） |
