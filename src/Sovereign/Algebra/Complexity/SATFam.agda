@@ -42,6 +42,8 @@
 --        归约框架 + NP 对归约封闭 + 真归约实例 L-Head₁ ≤ₚ L-SAT 3 落进族
 --        成员 n = 24）；**NP-难（∀ L ∈ NP）仍立界**，缺口 = 任意验证器 →
 --        CNF 的 tableau 编码（Cook–Levin，W2），理由见 SATRed §6(i)。
+--        【2026-10-30 更新】W2 已排期：前置 M1（一般 CNF + Tseitin 等可满足拆分）
+--        已就位（CNF.agda / CNF-Tseitin.agda），tableau 本体 M2–M4 未做。
 --
 -- 0 postulate / 0 hole。
 

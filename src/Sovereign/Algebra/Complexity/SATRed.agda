@@ -357,6 +357,11 @@ SVR-check-NP-p = refl
 --           一致性）——库内 TM 无通用机（TuringMachine §5(iii) 立界），
 --           故需先建编码/解释器；
 --       (b) Fagin 路线（ESO 描述 ⟹ 多项式层级台面）——同样依赖机器编码。
+--       【2026-10-30 更新】W2 已排期（M1–M4），且**路线 (a) 的公共前置 M1 已就位**：
+--       一般 CNF 层 `CNF.agda`（Clause' = List、语义与拼接引理、3-CNF 嵌入保真）
+--       + Tseitin 拆分 `CNF-Tseitin.agda`（长子句 ⟹ 等可满足 ≤3-子句，双向已证）。
+--       M2 = `InNP-TM` + `InNP-TM ⟹ InNP`；M3 = tableau 六族子句 + (t,i)↦Fin 编号；
+--       M4 = 提取引理 + `Reduces` 实例。见 docs/decisions/Cook-Levin-路线提案-2026-10-30.md。
 -- (ii)  归约输出长取 n-only（r-out : ℕ → ℕ）：length-respecting。输出长随
 --       内容变的归约需要见证集 cast（Vec 截断/重填），NPClass §5(ii) 同立。
 -- (iii) 归约映射的代价只看「记账」r-cost（steps ≤ r-bound n）；机器可执行性

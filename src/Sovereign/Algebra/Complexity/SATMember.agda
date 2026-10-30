@@ -284,7 +284,10 @@ check-verifier-value = refl
 -- (ii)  encode 方向（公式 → 串）未闭合：本件语言以「解码即语义」定义
 --       （L-SAT 只经 decFormula），完备性不依赖 encode；encode/decode
 --       往返（decode (encode φ) ≡ φ）独立小件。
--- (iii) SAT NP-完备性（Cook-Levin 型归约）= W2（Fagin）范围，立界不排期。
+-- (iii) SAT NP-完备性（Cook-Levin 型归约）= W2。**2026-10-30 更新：已排期（M1–M4）**，
+--       且公共前置 M1 已就位——一般 CNF 层 `CNF.agda`（本件的 3-CNF 经
+--       `formulaOf3-sat` 嵌入其中）+ Tseitin 拆分 `CNF-Tseitin.agda`（等可满足双向）。
+--       tableau 本体（M2–M4）未做，本件不据此声称 NP-完备。
 -- (iv)  验证器可由 TM 实现：SAT 验证器实例已闭合（SATMBridge）——配对单元
 --       （符号 + 见证值）编码下 tm-sat 逐文字 1 步、逐子句 3 步、终止符 1 步，
 --       燃料 = 本件账目 + 1；仍未做的是含寻址的整机（a[v] 读取的 O(m) 移头）
