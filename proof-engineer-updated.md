@@ -771,6 +771,42 @@ SVM-δ (qP2 ck fk) (SVM-c cell) = qP0 false (fk ∧ (ck ∨ SVM-litOk cell)) , S
 处理。语义桥只证「机器读出的 = 库内算出的」，编码器另立一节；把两者混在一起会因为
 编码引理的算术把语义证明拖成算术坑。
 
+### 编码器：往返按「索引结构」递归定义，别用 tabulate + ≟
+
+2026-10-30 实测（`SATLook` §4j）：把库内 `Fin (suc m)` 编成 one-hot 向量（`LK-hot`），
+三种写法的工作量差一个数量级：
+
+| 写法 | 往返引理（`fromOneHot ∘ enc = id`） |
+|---|---|
+| `tabulate (λ j → if i ≟ j then T₁ else T₀)`（stdlib 风格） | 要 `≟` 的两侧分支、`toℕ`、`lookup∘tabulate`、成员/首个命中引理 —— 一整片 |
+| **按索引结构递归**（`fzero` / `fsuc i` 两案，长度也按 `m` 分案） | **3 案，全 `refl` 或 `cong fsuc`** |
+
+```agda
+LK-hot zero    fzero    = T₁ ∷ []
+LK-hot (suc m) fzero    = T₁ ∷ replicate (suc m) T₀
+LK-hot (suc m) (fsuc i) = T₀ ∷ LK-hot m i
+```
+
+配套两条同形引理（同样 3 案）：`lookup (LK-hot m i) i ≡ T₁`（= 良构前提的见证）、
+`fromOneHot m (LK-hot m i) ≡ i`。**结论**：`Fin` 上的编码不要在 `≟` 上做文章，
+在构造子上做；`lookup` 在 stdlib 2.4 是按**索引**递归的（`lookup (x∷xs) zero = x`），
+所以索引分案的证明与它逐案对齐。
+
+### 把「布局」从「接口」里分出来
+
+同一件事的两个说法要分清：
+
+- **接口**（该证）：库内 `Formula m c` → 机器带格式 → 判决 `satFormula a φ`。
+  本库以 `Formula` 为接口，编码用 `LK-encClause`/`LK-flatV` 重新排格。
+- **布局**（可省）：库内 `decLit` 的 stride-3 **重叠**格（每文字 3 格、m>1 时重叠）
+  与本机「每文字 m+2 格无重叠 + 末格 sentinel」是两种排法。想省掉重排就要写布局桥
+  ——那是**优化**，不是接口缺口。把布局桥塞进接口定理，会把接口钉死在某一种排法上，
+  以后换布局就得推翻定理。
+
+计账一路也照此办理：长度/步数用**结构归纳 + stdlib 的 `*-suc`**（`c 子句 = 3c 文字`），
+不要手写 `+-assoc`/`+-comm` 链；燃料函数若已经写成逐字拼接形（见上一节），
+乘法形另立一条引理，两者用 `subst` 接一次即可。
+
 ### 教训
 
 - 先查本地同构件的做法（`tm-sat` 就在同目录），再决定数据放在哪；
