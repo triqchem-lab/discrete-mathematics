@@ -542,3 +542,20 @@ offEnc len T t (tR k) h hT = fsuc (fsuc fzero) , fromℕ< (off-tR-lt-L len T t k
 
 Tp-check-offEnc-tH : offEnc 3 2 1 tH tt (s≤s z≤n) ≡ (fzero , fzero)
 Tp-check-offEnc-tH = refl
+
+-- ────────────────────────────────────────────────────────────────────
+-- §3f 解码（A5）：`Fin 3 × Fin (off-L len T)` → `TOff`
+-- ────────────────────────────────────────────────────────────────────
+-- 与 `offEnc` 互为反：tag 0 ↦ `tH`（索引忽略）、tag 1 ↦ `tL (toℕ k)`、
+-- tag 2 ↦ `tR (toℕ k)`。全函数（不检查界内——界内是 `InOff` 的事）。
+
+offDec : ∀ (len T : ℕ) → Fin 3 × Fin (off-L len T) → TOff
+offDec len T (fzero , _)           = tH
+offDec len T (fsuc fzero , k)      = tL (toℕ k)
+offDec len T (fsuc (fsuc _) , k)   = tR (toℕ k)
+
+Tp-check-offDec-tH : offDec 3 2 (fzero , fzero) ≡ tH
+Tp-check-offDec-tH = refl
+
+Tp-check-offDec-roundtrip-tH : offDec 3 2 (offEnc 3 2 1 tH tt (s≤s z≤n)) ≡ tH
+Tp-check-offDec-roundtrip-tH = refl
