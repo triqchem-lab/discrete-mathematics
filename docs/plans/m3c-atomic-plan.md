@@ -115,3 +115,19 @@
 ## 与「不要搞简化」的对照
 
 本表刻意**不合并**任务：例如 A1/A2 只是两个 3 行定义，也各列一行；C1–C3 三族 oneHot 看起来同形，但各自的池维度不同（逐 `(t,o)` / 逐 `t` / 逐 `t` × 偏移），合并会把「维度搞错」这类错误藏进去。
+
+---
+
+## 层 F：查重发现的冗余（自查，非用户报告）
+
+| # | 任务 | 证据 | 处置 | 状态 |
+|---|---|---|---|---|
+| F1 | `Tableau-Tape.agda` 的 `tstep-R` / `tstep-L-nil` / `tstep-L-cons`（4–5 分量合取）与 §2b 的 `tstep-R-pt` / `tstep-L-cons-pt` / §2b 的 `tstep-L-nil-pt`（逐点等式）**表达同一事实** | 逐点形 + `tShift*` 可推出分量形；分量形是逐点形的展开 | 分量形保留为「一步方程 + 分量」的文档性陈述，或在 §2b 完成后删去——**待裁决**（删会减少 ~90 行重复，但 M3c 的 C5 族引用的正是分量形；先不动，等 C5 落地再判） | ⬜ |
+
+> **另两处「重复」不是本会话引入**：①`isT₁` 在库内有两份（`SATMember` 与 `PClass`），属既有状况，本会话撞到并绕开（统一用 `SATMember` 那份）；②`Tableau.agda` 的抽象原子 CNF（`satAClause`/`satAFormula`）与 `CNF.agda` 的 `satClause'`/`satFormula'` **形状平行**——这是**有意**的（原子类型不同：`A` vs `Fin (suc m)`），桥是 `AtoCNF-sat`，不合并。
+
+## 验证口径（实测补充）
+
+`sovereign.agda-lib` 的 `include: src pn-proofs probes` ⟹ `src/` 下所有模块自动属于该 lib；`flags: --guardedness --cubical -WnoUnsupportedIndexedMatch`。
+**本表 5 个新文件在 lib 的真实口径下 5/5 `EXIT=0`**（2026-10-30 实测，非仅 `-i src` 口径）。
+`Makefile` 的 `MODULES` 是**精选 46 条**（不是全量遍历），故不登记新文件符合本仓约定，但意思是 **`make` 不覆盖它们**——要覆盖得显式加入 `MODULES`（本表暂不加入，理由：M3c 未完结，加入会让 `make` 在中途红）。
