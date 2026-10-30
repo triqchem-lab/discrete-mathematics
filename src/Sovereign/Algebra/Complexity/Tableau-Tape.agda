@@ -586,3 +586,16 @@ offDec-enc len T t (tL k) h hT =
   cong tL (off-toℕ-fromℕ< k {n = off-L len T} (off-tL-lt-L len T t k h hT))
 offDec-enc len T t (tR k) h hT =
   cong tR (off-toℕ-fromℕ< k {n = off-L len T} (off-tR-lt-L len T t k h hT))
+
+-- ────────────────────────────────────────────────────────────────────
+-- §3h A7：编码**单射**（同 `len`/`T`/`t`，界内性证明各带各的）
+-- ────────────────────────────────────────────────────────────────────
+-- 消费者：池层要把 `(时刻, 偏移, 符号)` 压成一个 `Fin`，若两个不同偏移编到同一格，
+-- 池里就会撞变量。单射由 A6 一行导出：两边各自解回原偏移，中间用 `cong offDec` 过桥。
+offEnc-inj : ∀ (len T t : ℕ) (o o′ : TOff)
+               (h : InOff len t o) (h′ : InOff len t o′)
+               (hT : t ≤ T)
+           → offEnc len T t o h hT ≡ offEnc len T t o′ h′ hT → o ≡ o′
+offEnc-inj len T t o o′ h h′ hT p =
+  trans (sym (offDec-enc len T t o h hT))
+        (trans (cong (offDec len T) p) (offDec-enc len T t o′ h′ hT))
