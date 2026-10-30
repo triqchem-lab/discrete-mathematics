@@ -670,3 +670,53 @@ LK-lock : ∀ (sg : Sign) (ps : List (LK-Σ × Trit)) (acc l₁ : List LK-Σ)
 其中 `LK-cellsP ps = map (LK-t ∘ proj₁) ps`、`LK-cellsQ ps = map (LK-t ∘ proj₂) ps`，
 `LK-scannedQ` 是 `LK-scanned` 的配对版（`LK-scanned` 的两列表版本可由它投影出来）。
 `LK-cycle` 传 `ps = zip (LK-cells o) (LK-vl a)`（等长由 `Vec` 保证）。
+---
+
+## 附录 9：有限域事实**先别穷举** —— 「状态携带」与本地先例 (v9, 2026-10-30)
+
+### 症状（2026-10-30 实录）
+
+`SATLook` 的 OR/AND 累计最初做成「flag 放在带上 + 8 步读改写往返」，于是必须对
+`(fk, ck, pos) ∈ Trit³` 做 **27 案 `refl` 穷举**（`LK-ctl`）。虽在本文档的穷举边界
+内（≤27 允许），但代价是：**首次全量类型检查 RSS 9.3 GB、CPU 17 分钟**，表现为
+「编译像挂死」。`abstract` 封装 `LK-ctl` 亦未解决（因为上层 `cong` 仍要展开 `runB`）。
+
+### 判据：穷举是**最后**手段
+
+有限域事实按下列优先级选手段（与 §策略 A 的「穷举优于归纳」并不冲突——那是
+**有限论域且无更好结构**时的口径；此处有更好结构）：
+
+1. **状态携带（首选）**：把判别量放进**状态字段**，δ 用 `∨`/`∧`/`if` 直接算。
+   ⟹ δ 只有「相位数」条子句，run 定理是**结构归纳**，**零 case**。
+2. **Bool 代数引理**：`∨-assoc`/`∧-assoc`/`∧-identityʳ`/`∨-identityˡ` 等替代分案。
+3. **收窄值域**：能 Bool 就不要 Trit；必须 Trit 时按「相位 3 案」而不是 `3×3×3`。
+4. 确需分案：≤27 可写，但要先答「为什么不能让值域/位置本身不需要判」。
+
+### 本地先例（可直接照抄）
+
+`Algebra/Complexity/SATMBridge.agda` 的 `tm-sat`——同样的 OR/AND 累计：
+
+```agda
+data SVM-Q : Set where
+  qP0 qP1 qP2 : Bool → Bool → SVM-Q        -- 相位 + (子句累计, 公式累计)
+  qAcc qRej   : SVM-Q
+SVM-δ (qP0 ck fk) (SVM-c cell) = qP1 (ck ∨ SVM-litOk cell) fk , SVM-c cell , R
+SVM-δ (qP2 ck fk) (SVM-c cell) = qP0 false (fk ∧ (ck ∨ SVM-litOk cell)) , SVM-c cell , R
+```
+
+δ **3 条**、`SVM-run` 结构归纳、0 枚举、编译秒过。
+
+### 迁移口径（同一模式搬到 `SATLook`）
+
+- 引擎态加三字段：`qScan pos ck fk sign found val`、`qBack pos ck fk sign val`
+  → `qDone pos ck fk sign val`；入口 `qLit pos ck fk`；
+- `qDone` 加**一条** fold 子句（1 步）：`ck' = ck ∨ lit`、
+  `fk' = if (pos = T₂) then (fk ∧ ck') else fk`、`pos' = next pos` → `qLit pos' ck'' false`；
+- 引擎既有引理**全部只是参数透传**（仍 `refl` 级），**没有新证明**；
+- 于是「每字 = 2m+6（引擎）+ 1（fold）= 2m+7」，循环按文字表归纳，**零枚举**。
+
+### 教训
+
+- 先查本地同构件的做法（`tm-sat` 就在同目录），再决定数据放在哪；
+- 「带上编码 + 往返读改写」是**多带/shuttle** 的思路，单带里代价高且逼出穷举；
+- **27 案能过门禁不代表该写**：爆炸的是后续每一层用它的人。
