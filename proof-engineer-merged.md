@@ -749,6 +749,34 @@ SVM-δ (qP2 ck fk) (SVM-c cell) = qP0 false (fk ∧ (ck ∨ SVM-litOk cell)) , S
    证明里没有一处 `++-assoc`、也没有一处 `subst`（对照：写成 `concat` 再拼就需要
    反复 assoc + `subst` 改配置）。
 
+### 语义桥（机器 ↔ 库内语义）只要两层，**不要**对文字数/子句数分案
+
+2026-10-30 实测（`SATLook` §4i，一次编译通过）：把「机器终态的标志位」接到库内
+`satClause`/`satFormula` 上，全部工作只有两件：
+
+1. **库内取值与机器取值只差一层解码**：`evalLit a (signOf sg , i)` 与机器读到的
+   `LK-litVal (signOf sg) (lookup a i)` 是同一个函数 ⟹ 2 条子句全 `refl`
+   （σ₊ 取原值 / σ₋ 取 negate）。这 2 案是**固有**的（`evalLit` 自身按 Sign 分案），
+   不是穷举；不要因为「要分案」就改去按 3 个 trit 值分（那会变成 3 案）。
+2. **折向差异恰好一步 assoc**：机器在状态里累积是**左折** `((b₁∨b₂)∨b₃)`，而库内
+   `satClause` 是**右折** `b₁∨(b₂∨b₃)` ⟹ 一步 `∨-assoc`；跨子句是
+   `(fk ∧ cl) ∧ rest` vs `fk ∧ (cl ∧ rest)` ⟹ 一步 `∧-assoc`；空公式 base 是
+   `∧-identityʳ`。全部取自 `Data.Bool.Properties`，**不分文字数、子句数、相位值**。
+
+两条陈述形上的捷径（省掉整层算术与转换引理）：
+
+- **让库内一侧在定义层归约**：机器侧公式写成 `Vec (LK-Clause m) c`（长度由类型给出，
+  直接对上库内 `Formula m c = Vec (Clause m) c`），库内一侧写
+  `satFormula a (map 解码器 cs)`。`Vec.map` 的方程是定义性的 ⟹ `satFormula` 逐子句
+  归约，**不需要** `List↔Vec` 转换、也不需要任何 `length`/乘法引理。
+- **`Vec` 的 cons 与自己重命名的 cons 别混**：库内 `_∷_` 若被 `renaming` 成 `v∷`，
+  写实例时手滑用成 List 的 `∷` 会报「List 不是 Vec 的子类型」——一次编译即定位。
+
+**反方向才是编码器，别混进语义桥**：把库内 `Formula` 编成带上的格串需要
+`fin ⟹ one-hot 向量`（即 `fromOneHot ∘ tabulate = id` 的往返引理）外加 stride 布局
+处理。语义桥只证「机器读出的 = 库内算出的」，编码器另立一节；把两者混在一起会因为
+编码引理的算术把语义证明拖成算术坑。
+
 ### 教训
 
 - 先查本地同构件的做法（`tm-sat` 就在同目录），再决定数据放在哪；
