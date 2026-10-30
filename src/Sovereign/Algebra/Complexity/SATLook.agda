@@ -19,6 +19,8 @@
 --               （LK-cycle / LK-cycleR / LK-cycleF / LK-cycleS）
 --   整公式：    每文字再付 1 步收口 fold ⟹ **2m+7**/文字，L 个文字 = L·(2m+7)
 --               （LK-runL，沿文字表结构归纳；线性计账推论 LK-runL-steps）
+--   整机：      c 个子句 = 3c 个文字 = **3c·(2m+7)** 步
+--               （LK-run-formula / LK-run-formula-steps；原始 trit 串入 = LK-run-stream）
 --
 -- 【OR/AND 累计在状态里（skill 附录 9 ①）】
 --   相位 LK-Ph = (pos, ck, fk) 是状态的一部分：pos 为子句内位置（T₂ 收口），
@@ -37,10 +39,14 @@
 --        ——机器终态的 fk 就是库内 SAT 真值。桥只用两件事：`evalLit` 与机器取值
 --        只差一层 Sign 解码（2 案 refl），以及 ck 左折 vs satClause 右折的一步
 --        `∨-assoc`＋跨子句的 `∧-assoc`（Bool 代数，不分案）。
---   (iii) 带 1 的「每文字 m+2 格无重叠」是本机输入格式；库内 decLit 的 stride
---        3（m > 1 时重叠）到本格式的转换属编码层，未做。
---   (iv) 引擎 halt 恒假（纯相），故只用 runB；换 runN2 需 runN2-blind
---        （MultiTape 已备），与 SATMBridge 的整机拼装未做。
+--   (iii) **编码器也闭合**（§4j）：`LK-run-formula` 对任意库内 `Formula m c` 成立
+--        （`LK-hot` 按索引结构递归 ⟹ 往返 3 案 refl/cong，不需要 ≟/toℕ）；
+--        `LK-run-stream` 再把 SATMember.decFormula 接上 ⟹ **原始 trit 串入、SAT
+--        判决出**。未做的是「直接吃 decLit 的 stride-3 重叠格、不重新编码」的
+--        布局桥——那是可选的省步优化，不是接口缺口（Formula 才是接口）。
+--   (iv) 引擎 halt 恒假（纯相），故只用 runB；判决从**状态**读出（fk），不从停机
+--        态读出。换 runN2 需 runN2-blind（MultiTape 已备）；与 SATMBridge 的
+--        整机拼装（把本机的 3c·(2m+7) 与 tm-sat 的账目对齐）未做。
 
 -- 0 postulate / 0 hole。
 
@@ -52,11 +58,13 @@ open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.List using (List; []; _∷_; _++_; length)
 open import Data.List.Properties using (++-assoc; ++-identityʳ)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.Nat.Properties using (+-suc; +-identityʳ)
+open import Data.Nat.Properties using (+-suc; +-identityʳ; *-suc)
+open import Data.Nat.DivMod using (_/_)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.Unit using (⊤; tt)
-open import Data.Vec using (Vec; lookup; map) renaming ([] to vNil; _∷_ to _v∷_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
+open import Data.Vec using (Vec; lookup; map; replicate) renaming ([] to vNil; _∷_ to _v∷_)
+open import Relation.Binary.PropositionalEquality
+  using (_≡_; refl; sym; trans; cong; cong₂; subst)
 
 open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; negate)
 open import Sovereign.Algebra.Automata.MultiTape
@@ -64,7 +72,8 @@ open import Sovereign.Algebra.Automata.MultiTape
 open import Sovereign.Algebra.Automata.TuringMachine using (hdOf; tlOf)
 open import Sovereign.Algebra.Complexity.SATMember
   using (Sign; σ₊; σ₋; signOf; fromOneHot; isT₁
-       ; Lit; Clause; Asg; evalLit; satClause; satFormula)
+       ; Lit; Clause; Formula; Asg; evalLit; satClause; satFormula
+       ; clauseW; decFormula)
 
 -- ────────────────────────────────────────────────────────────────────
 -- §1 字母表 / 状态 / δ 表〔结构定义〕
@@ -1228,6 +1237,140 @@ LK-look-sat m cs a l₁ sg₀ r₁ l₂ h =
         (cong qLit (LK-foldV a cs true))
 
 -- ────────────────────────────────────────────────────────────────────
+-- §4j 编码器：库内公式 ⟹ 带 1 的格串（§4i 的反方向）
+-- ────────────────────────────────────────────────────────────────────
+-- 只有一件新东西：库内的变元号 Fin (suc m) → one-hot 向量。定义**按索引结构
+-- 递归**（不用 tabulate + 可判定相等）：于是「读回来是原索引」3 案全 refl/cong，
+-- 既不需要 ≟、也不需要 toℕ 或 Vec 的成员引理——这是「有限域事实先别穷举」
+-- 的同一条口径：先找结构，找不到结构才分案。
+
+-- Sign 的 trit 签位（signOf 是它的左逆）
+LK-encSign : Sign → Trit
+LK-encSign σ₊ = T₁
+LK-encSign σ₋ = T₀
+
+LK-signOf-encSign : ∀ (s : Sign) → signOf (LK-encSign s) ≡ s
+LK-signOf-encSign σ₊ = refl
+LK-signOf-encSign σ₋ = refl
+
+-- one-hot：长度 suc m 的向量，第 i 位 T₁、其余 T₀
+LK-hot : ∀ (m : ℕ) → Fin (suc m) → Vec Trit (suc m)
+LK-hot zero    fzero    = T₁ v∷ vNil
+LK-hot (suc m) fzero    = T₁ v∷ replicate (suc m) T₀
+LK-hot (suc m) (fsuc i) = T₀ v∷ LK-hot m i
+
+-- 独热位读出来恰是 T₁（= 良构前提的见证）
+LK-hot-lookup : ∀ (m : ℕ) (i : Fin (suc m)) → lookup (LK-hot m i) i ≡ T₁
+LK-hot-lookup zero    fzero    = refl
+LK-hot-lookup (suc m) fzero    = refl
+LK-hot-lookup (suc m) (fsuc i) = LK-hot-lookup m i
+
+-- 往返：fromOneHot 解回来还是原索引
+LK-fromOneHot-hot : ∀ (m : ℕ) (i : Fin (suc m)) → fromOneHot m (LK-hot m i) ≡ i
+LK-fromOneHot-hot zero    fzero    = refl
+LK-fromOneHot-hot (suc m) fzero    = refl
+LK-fromOneHot-hot (suc m) (fsuc i) = cong fsuc (LK-fromOneHot-hot m i)
+
+-- 文字 → 机器文字（签位 + 独热）
+LK-encLit : ∀ {m} → Lit m → LK-Lit m
+LK-encLit {m} (s , i) = LK-encSign s , LK-hot m i
+
+-- 解码 ∘ 编码 = id
+LK-dec-enc : ∀ {m} (l : Lit m) → LK-libLit (LK-encLit l) ≡ l
+LK-dec-enc {m} (s , i) = cong₂ _,_ (LK-signOf-encSign s) (LK-fromOneHot-hot m i)
+
+-- 子句 / 子句表 → 机器侧
+LK-encClause : ∀ {m} → Clause m → LK-Clause m
+LK-encClause (l₁ , l₂ , l₃) = LK-encLit l₁ , LK-encLit l₂ , LK-encLit l₃
+
+LK-clause-dec-enc : ∀ {m} (cl : Clause m) → LK-clause→lib (LK-encClause cl) ≡ cl
+LK-clause-dec-enc (l₁ , l₂ , l₃) =
+  trans (cong (λ z → z , LK-libLit (LK-encLit l₂) , LK-libLit (LK-encLit l₃))
+              (LK-dec-enc l₁))
+        (trans (cong (λ z → l₁ , z , LK-libLit (LK-encLit l₃)) (LK-dec-enc l₂))
+               (cong (λ z → l₁ , l₂ , z) (LK-dec-enc l₃)))
+
+-- 编码后的输入**自动**满足良构前提（第 i 个文字的独热位就在 i 上）
+LK-AllT₁-enc : ∀ {m c} (φ : Formula m c) → LK-AllT₁ m (LK-flatV (map LK-encClause φ))
+LK-AllT₁-enc vNil = tt
+LK-AllT₁-enc {m} (((s₁ , i₁) , (s₂ , i₂) , (s₃ , i₃)) v∷ φ) =
+  (i₁ , LK-hot-lookup m i₁) , (i₂ , LK-hot-lookup m i₂) , (i₃ , LK-hot-lookup m i₃)
+    , LK-AllT₁-enc φ
+
+-- 解码回来的公式与原公式同真值
+LK-satF-enc : ∀ {m c} (a : Asg m) (φ : Formula m c)
+            → satFormula a (map LK-clause→lib (map LK-encClause φ)) ≡ satFormula a φ
+LK-satF-enc a vNil = refl
+LK-satF-enc a (cl v∷ φ) =
+  trans (cong (λ z → satClause a z
+                     ∧ satFormula a (map LK-clause→lib (map LK-encClause φ)))
+              (LK-clause-dec-enc cl))
+        (cong (satClause a cl ∧_) (LK-satF-enc a φ))
+
+-- 带 1 的长度：c 个子句 = 3c 个文字（结构归纳 + 一次 *-suc）
+LK-length-flatV : ∀ {m c} (φ : Formula m c)
+                → length (LK-flatV (map LK-encClause φ)) ≡ 3 * c
+LK-length-flatV vNil = refl
+LK-length-flatV (cl v∷ φ) =
+  trans (cong suc (cong suc (cong suc (LK-length-flatV φ)))) (sym (*-suc 3 _))
+
+-- ★★ 端到端（编码路径）：库内公式 φ 编成带格式 ⟹ 机器跑完 ⟹ qLit (T₀,false, satFormula a φ)
+LK-run-formula : ∀ (m : ℕ) {c : ℕ} (φ : Formula m c) (a : Asg m)
+                   (l₁ : List LK-Σ) (sg₀ : Trit) (r₁ l₂ : List LK-Σ)
+               → C2.st (runB tm-look LK-b (LK-fuelL (LK-flatV (map LK-encClause φ)))
+                          (mk2 l₁ (qLit LK-ph₀)
+                               (hdOf LK-b (LK-cellsL (LK-flatV (map LK-encClause φ))
+                                                     (LK-t sg₀ ∷ r₁)))
+                               (tlOf (LK-cellsL (LK-flatV (map LK-encClause φ))
+                                                (LK-t sg₀ ∷ r₁)))
+                               l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ []))))
+                 ≡ qLit (T₀ , false , satFormula a φ)
+LK-run-formula m φ a l₁ sg₀ r₁ l₂ =
+  trans (LK-look-sat m (map LK-encClause φ) a l₁ sg₀ r₁ l₂ (LK-AllT₁-enc φ))
+        (cong qLit (cong (λ z → T₀ , false , z) (LK-satF-enc a φ)))
+
+-- 计账形：c 个子句 = 3c 个文字 = 3c·(2m+7) 步
+LK-run-formula-steps : ∀ (m : ℕ) {c : ℕ} (φ : Formula m c) (a : Asg m)
+                         (l₁ : List LK-Σ) (sg₀ : Trit) (r₁ l₂ : List LK-Σ)
+                     → C2.st (runB tm-look LK-b ((3 * c) * LK-litSteps m)
+                                (mk2 l₁ (qLit LK-ph₀)
+                                     (hdOf LK-b (LK-cellsL (LK-flatV (map LK-encClause φ))
+                                                           (LK-t sg₀ ∷ r₁)))
+                                     (tlOf (LK-cellsL (LK-flatV (map LK-encClause φ))
+                                                      (LK-t sg₀ ∷ r₁)))
+                                     l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ []))))
+                       ≡ qLit (T₀ , false , satFormula a φ)
+LK-run-formula-steps m φ a l₁ sg₀ r₁ l₂ =
+  subst (λ k → C2.st (runB tm-look LK-b k
+                        (mk2 l₁ (qLit LK-ph₀)
+                             (hdOf LK-b (LK-cellsL (LK-flatV (map LK-encClause φ))
+                                                   (LK-t sg₀ ∷ r₁)))
+                             (tlOf (LK-cellsL (LK-flatV (map LK-encClause φ))
+                                              (LK-t sg₀ ∷ r₁)))
+                             l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ []))))
+                 ≡ qLit (T₀ , false , satFormula a φ))
+        (trans (LK-fuelL-len (LK-flatV (map LK-encClause φ)))
+               (cong (_* LK-litSteps m) (LK-length-flatV φ)))
+        (LK-run-formula m φ a l₁ sg₀ r₁ l₂)
+
+-- ★★★ 整机接口：原始 trit 串 → 解码（SATMember.decFormula）→ §4j 编码 → 跑 3c·(2m+7) 步
+--   → qLit (T₀ , false , satFormula a (decFormula m n x))
+-- （本件不再有新证明：LK-run-formula-steps 在 φ := decFormula m n x 上的实例）
+LK-run-stream : ∀ (m n : ℕ) (x : Vec Trit n) (a : Asg m)
+                  (l₁ : List LK-Σ) (sg₀ : Trit) (r₁ l₂ : List LK-Σ)
+              → C2.st (runB tm-look LK-b ((3 * (n / clauseW m)) * LK-litSteps m)
+                         (mk2 l₁ (qLit LK-ph₀)
+                              (hdOf LK-b
+                                  (LK-cellsL (LK-flatV (map LK-encClause (decFormula m n x)))
+                                             (LK-t sg₀ ∷ r₁)))
+                              (tlOf (LK-cellsL (LK-flatV (map LK-encClause (decFormula m n x)))
+                                               (LK-t sg₀ ∷ r₁)))
+                              l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ []))))
+                ≡ qLit (T₀ , false , satFormula a (decFormula m n x))
+LK-run-stream m n x a l₁ sg₀ r₁ l₂ =
+  LK-run-formula-steps m (decFormula m n x) a l₁ sg₀ r₁ l₂
+
+-- ────────────────────────────────────────────────────────────────────
 -- §5 核对层（refl 枚举）
 -- ────────────────────────────────────────────────────────────────────
 
@@ -1428,18 +1571,77 @@ check-bridge-2 = LK-look-sat 0 (check-lmc v∷ check-lmc2 v∷ vNil) (T₁ v∷ 
                               [] T₂ [] [] check-all-2
 
 -- ────────────────────────────────────────────────────────────────────
+-- §5d 编码器核对：编码口径、独热往返、计账、端到端（编码路径）
+-- ────────────────────────────────────────────────────────────────────
+check-lc : Clause 0
+check-lc = (σ₊ , fzero) , (σ₊ , fzero) , (σ₊ , fzero)
+
+-- 正文字 (σ₊ , fzero) 编成 (T₁ , [T₁]) —— 正是 §5b 的 check-lit
+check-enc-lit : LK-encLit (σ₊ , fzero) ≡ check-lit
+check-enc-lit = refl
+
+-- 负文字：签位换 T₀、独热不变 —— 正是 check-litNeg
+check-enc-lit-neg : LK-encLit (σ₋ , fzero) ≡ check-litNeg
+check-enc-lit-neg = refl
+
+-- 整子句编码 = §5b/§5c 手搓的 check-lmc
+check-enc-clause : LK-encClause check-lc ≡ check-lmc
+check-enc-clause = refl
+
+-- 独热（m = 1，两个变元各查一遍）
+check-hot-0 : LK-hot 1 fzero ≡ T₁ v∷ (T₀ v∷ vNil)
+check-hot-0 = refl
+
+check-hot-1 : LK-hot 1 (fsuc fzero) ≡ T₀ v∷ (T₁ v∷ vNil)
+check-hot-1 = refl
+
+check-fromOneHot-1 : fromOneHot 1 (LK-hot 1 (fsuc fzero)) ≡ fsuc fzero
+check-fromOneHot-1 = refl
+
+-- 编码路径的燃料：1 子句 = 3 字 = 21 步（与 §5b 写死的 21 对照）
+check-fuel-enc-1 : LK-fuelL (LK-flatV (map LK-encClause (check-lc v∷ vNil))) ≡ 21
+check-fuel-enc-1 = refl
+
+-- 计账形自证：3c·(2m+7)，c=1、m=0 ⟹ 21
+check-steps-enc-1 : (3 * 1) * LK-litSteps 0 ≡ 21
+check-steps-enc-1 = refl
+
+-- 端到端（编码路径）：两个子句都真 ⟹ 42 步 ⟹ 真（这个判决此前没有）
+check-φ2 : Formula 0 2
+check-φ2 = check-lc v∷ check-lc v∷ vNil
+
+check-run-formula-2 :
+  C2.st (runB tm-look LK-b ((3 * 2) * LK-litSteps 0)
+    (mk2 [] (qLit LK-ph₀)
+         (hdOf LK-b (LK-cellsL (LK-flatV (map LK-encClause check-φ2)) (LK-t T₂ ∷ [])))
+         (tlOf (LK-cellsL (LK-flatV (map LK-encClause check-φ2)) (LK-t T₂ ∷ [])))
+         [] LK-m (LK-wl (LK-vl (T₁ v∷ vNil)) ++ (LK-e ∷ []))))
+  ≡ qLit (T₀ , false , true)
+check-run-formula-2 = LK-run-formula-steps 0 check-φ2 (T₁ v∷ vNil) [] T₂ [] []
+
+-- 独立复核：同一局面用 refl 暴力跑 42 步（与上式互证：一条走证明、一条走定义）
+check-run-formula-2-refl :
+  C2.st (runB tm-look LK-b 42
+    (mk2 [] (qLit LK-ph₀)
+         (hdOf LK-b (LK-cellsL (LK-flatV (map LK-encClause check-φ2)) (LK-t T₂ ∷ [])))
+         (tlOf (LK-cellsL (LK-flatV (map LK-encClause check-φ2)) (LK-t T₂ ∷ [])))
+         [] LK-m (LK-wl (LK-vl (T₁ v∷ vNil)) ++ (LK-e ∷ []))))
+  ≡ qLit (T₀ , false , true)
+check-run-formula-2-refl = refl
+
+-- ────────────────────────────────────────────────────────────────────
 -- §6 尾注立界（诚实边界——不设空壳签名）
 -- ────────────────────────────────────────────────────────────────────
 -- (i)   带 2 只有一份见证块（空间 O(m)）：LK-cycleS 的结论与起点同形 ⟹ 每个
 --       文字复用同一块，不复制、不增长。带 1 是每文字 m+2 格无重叠 + 末格
---       sentinel；整体代价 **L·(2m+7)**，线性（LK-runL / LK-runL-steps）。
--- (ii)  语义桥已闭合（§4i LK-look-sat）：带格式把每个文字解成 (signOf, fromOneHot)
---       后，机器 fk ≡ satFormula。**仍未做**的是反方向：把库内 Formula 编码成带
---       1 的格串（Fin 号 ⟹ one-hot 向量，需 fromOneHot∘tabulate = id 的往返引理，
---       且 decLit 的 stride-3 会重叠），即"给定公式 ⟹ 机器输入"的编码器。
--- (iii) 上述编码器（含 stride-3 重叠格式）未做；输入格式的良构前提
---       LK-AllT₁（每文字独热位存在）目前作为定理假设传入。
--- (iv)  引擎 halt 恒假（纯相），故只用 runB；换 runN2 需 runN2-blind
---       （MultiTape 已备），与 SATMBridge 的整机拼装未做。
+--       sentinel；整体代价 **3c·(2m+7)**（LK-run-formula-steps），线性。
+-- (ii)  语义闭合：§4i LK-look-sat（fk ≡ satFormula，2 案 Sign 解码 + 一步 assoc）。
+-- (iii) 编码闭合：§4j LK-hot/LK-fromOneHot-hot/LK-AllT₁-enc ⟹ LK-run-formula；
+--       LK-run-stream 接 SATMember.decFormula ⟹ 原始串入、判决出。
+--       **未做**：直接消费 decLit 的 stride-3 重叠格（不重编码）的布局桥；
+--       这是省步优化，接口层面已由 Formula 覆盖。
+-- (iv)  判决从状态读出（halt 恒假，纯相）：要「停机即判决」需把 qLit 的 fk 出口
+--       改成 qAcc/qRej 两态（那会破坏「末端形 = 起点形」的可续跑性，故不做）；
+--       与 SATMBridge 的账目对齐（3c·(2m+7) vs tm-sat 的 3/子句）未做。
 
 -- 0 postulate / 0 hole。
