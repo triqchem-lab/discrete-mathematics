@@ -304,3 +304,33 @@ tstep-L-cons-pt blk M q′ w′ x xs s a r hδ hhalt (tR k) h =
   stp = trans (cong (λ h → stepH M blk h (mkTC (x ∷ xs) s a r)) hhalt)
               (trans (cong (λ d → moveH blk d (x ∷ xs) a r) hδ) refl)
 tstep-L-cons-pt blk M q′ w′ x xs s a r hδ hhalt tH h = ⊥-elim (h refl)
+
+-- 左移·左空：头进入空白区（真左移一格），旧头格落到新 `tR 0`；被写入的 `w′` 落在
+-- **新出现**的格（它没有旧偏移）⟹ 本支**没有例外点**：逐点对齐是**全**的。
+tShiftLN : TOff → TOff
+tShiftLN tH         = tR zero
+tShiftLN (tL k)     = tL k
+tShiftLN (tR k)     = tR (suc k)
+
+-- 一步方程（本支专用；右移/左非空两支的方程已内联在 §2 与 §2b）
+tstep-L-nil-eq : ∀ {Q A : Set} (blk : A) (M : TM Q A) (q′ : Q) (w′ : A)
+                   (s : Q) (a : A) (r : List A)
+               → TM.δ M s a ≡ (q′ , w′ , L) → TM.halt M s ≡ false
+               → step M blk (mkTC [] s a r) ≡ mkTC [] q′ w′ (a ∷ r)
+tstep-L-nil-eq blk M q′ w′ s a r hδ hhalt =
+  trans (cong (λ h → stepH M blk h (mkTC [] s a r)) hhalt)
+        (trans (cong (λ d → moveH blk d [] a r) hδ) refl)
+
+-- 逐点对齐（全，无 `o ≡ tH` 例外）
+tstep-L-nil-pt : ∀ {Q A : Set} (blk : A) (M : TM Q A) (q′ : Q) (w′ : A)
+                   (s : Q) (a : A) (r : List A)
+               → TM.δ M s a ≡ (q′ , w′ , L) → TM.halt M s ≡ false
+               → ∀ (o : TOff)
+               → tSym blk (step M blk (mkTC [] s a r)) (tShiftLN o)
+                 ≡ tSym blk (mkTC [] s a r) o
+tstep-L-nil-pt blk M q′ w′ s a r hδ hhalt tH =
+  cong (λ c → tSym blk c (tR zero)) (tstep-L-nil-eq blk M q′ w′ s a r hδ hhalt)
+tstep-L-nil-pt blk M q′ w′ s a r hδ hhalt (tL k) =
+  cong (λ c → tSym blk c (tL k)) (tstep-L-nil-eq blk M q′ w′ s a r hδ hhalt)
+tstep-L-nil-pt blk M q′ w′ s a r hδ hhalt (tR k) =
+  cong (λ c → tSym blk c (tR (suc k))) (tstep-L-nil-eq blk M q′ w′ s a r hδ hhalt)
