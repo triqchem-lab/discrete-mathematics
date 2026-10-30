@@ -334,3 +334,81 @@ tstep-L-nil-pt blk M q′ w′ s a r hδ hhalt (tL k) =
   cong (λ c → tSym blk c (tL k)) (tstep-L-nil-eq blk M q′ w′ s a r hδ hhalt)
 tstep-L-nil-pt blk M q′ w′ s a r hδ hhalt (tR k) =
   cong (λ c → tSym blk c (tR (suc k))) (tstep-L-nil-eq blk M q′ w′ s a r hδ hhalt)
+
+-- ────────────────────────────────────────────────────────────────────
+-- §2c 单射性：给逆函数（提取方向本就要它）
+-- ────────────────────────────────────────────────────────────────────
+-- 提取方向要问「新一行的这个偏移，来自旧一行的哪个偏移」——即 `tShift*` 的**原像**。
+-- 与其对 16 格分类证单射，不如把原像写成**全函数**再证往返（4 案全定义性）：
+-- 单射性随即是一行推论（`cong` + 两次往返）。
+
+tUnshiftR : TOff → TOff
+tUnshiftR (tL zero)     = tH
+tUnshiftR (tL (suc k))  = tL k
+tUnshiftR tH            = tR zero
+tUnshiftR (tR k)        = tR (suc k)
+
+tUnshiftL : TOff → TOff
+tUnshiftL (tR (suc zero))     = tH
+tUnshiftL (tR (suc (suc k)))  = tR k
+tUnshiftL tH                  = tL zero
+tUnshiftL (tL k)              = tL (suc k)
+tUnshiftL (tR zero)           = tR zero          -- 不在像里（占位，保持全函数）
+
+tUnshiftLN : TOff → TOff
+tUnshiftLN (tR zero)     = tH
+tUnshiftLN (tR (suc k))  = tR k
+tUnshiftLN (tL k)        = tL k
+tUnshiftLN tH            = tH                    -- 不在像里（占位）
+
+tUnshiftR-tShiftR : ∀ (o : TOff) → tUnshiftR (tShiftR o) ≡ o
+tUnshiftR-tShiftR tH           = refl
+tUnshiftR-tShiftR (tL k)       = refl
+tUnshiftR-tShiftR (tR zero)    = refl
+tUnshiftR-tShiftR (tR (suc k)) = refl
+
+tUnshiftL-tShiftL : ∀ (o : TOff) → tUnshiftL (tShiftL o) ≡ o
+tUnshiftL-tShiftL tH           = refl
+tUnshiftL-tShiftL (tL zero)    = refl
+tUnshiftL-tShiftL (tL (suc k)) = refl
+tUnshiftL-tShiftL (tR k)       = refl
+
+tUnshiftLN-tShiftLN : ∀ (o : TOff) → tUnshiftLN (tShiftLN o) ≡ o
+tUnshiftLN-tShiftLN tH         = refl
+tUnshiftLN-tShiftLN (tL k)     = refl
+tUnshiftLN-tShiftLN (tR k)     = refl
+
+-- 单射性（提取方向：新偏移唯一确定旧偏移）
+tShiftR-inj : ∀ {o o′ : TOff} → tShiftR o ≡ tShiftR o′ → o ≡ o′
+tShiftR-inj {o} {o′} p =
+  trans (sym (tUnshiftR-tShiftR o))
+        (trans (cong tUnshiftR p) (tUnshiftR-tShiftR o′))
+
+tShiftL-inj : ∀ {o o′ : TOff} → tShiftL o ≡ tShiftL o′ → o ≡ o′
+tShiftL-inj {o} {o′} p =
+  trans (sym (tUnshiftL-tShiftL o))
+        (trans (cong tUnshiftL p) (tUnshiftL-tShiftL o′))
+
+tShiftLN-inj : ∀ {o o′ : TOff} → tShiftLN o ≡ tShiftLN o′ → o ≡ o′
+tShiftLN-inj {o} {o′} p =
+  trans (sym (tUnshiftLN-tShiftLN o))
+        (trans (cong tUnshiftLN p) (tUnshiftLN-tShiftLN o′))
+
+-- ────────────────────────────────────────────────────────────────────
+-- §2d 核对层〔refl 枚举〕
+-- ────────────────────────────────────────────────────────────────────
+
+Tp-check-shiftR : tShiftR (tH) ≡ tL zero
+Tp-check-shiftR = refl
+
+Tp-check-unshiftR : tUnshiftR (tL zero) ≡ tH
+Tp-check-unshiftR = refl
+
+Tp-check-shiftL-two : tShiftL (tR zero) ≡ tR (suc (suc zero))
+Tp-check-shiftL-two = refl
+
+Tp-check-shiftLN : tShiftLN (tR zero) ≡ tR (suc zero)
+Tp-check-shiftLN = refl
+
+Tp-check-roundtrip : tUnshiftL (tShiftL (tL (suc zero))) ≡ tL (suc zero)
+Tp-check-roundtrip = refl
