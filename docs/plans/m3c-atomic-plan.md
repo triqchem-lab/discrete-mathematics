@@ -104,11 +104,14 @@ G1–G4 不可砍（地基 + 方向一）
 
 | # | 任务 | 产物 | 验证 | 状态 |
 |---|---|---|---|---|
-| B1 | `poolSize` = `(T+1) · L · V` | 1 定义 | `EXIT=0` | ⬜ |
-| B2 | `poolEnc`（两层 `combine`） | 1 定义 | `EXIT=0` | ⬜ |
-| B3 | `poolDec`（两层 `remQuot`） | 1 定义 | `EXIT=0` | ⬜ |
-| B4 | `poolDec-enc` 往返 | 1 引理 | `EXIT=0` | ⬜ |
-| B5 | 接线到 `CNF.Lit`/`Formula'` | 1 定义 | `EXIT=0` | ⬜ |
+| B1 | `poolSize` = `suc T · ((3 · L) · V)`（`3` = 偏移 tag 位；`Lit m` 是 m+1 槽，故最高槽空置） | 1 定义 | `EXIT=0` | ✅ `9190157` |
+| B1b | `pool-fin-le : toℕ t ≤ T`（`t : Fin (suc T)`，由 `s≤s⁻¹ ∘ toℕ<n`） | 1 引理 | `EXIT=0` | ✅ `9190157` |
+| B2 | `poolOffFin`（`combine (offTag o) (proj₂ (offEnc …))` → `Fin (3·L)`）+ `poolEnc`（两层 `combine`） | 2 定义 | `EXIT=0` | ✅ `9190157` |
+| B3 | `poolDec` + 四个投影步 `poolTime`/`poolCell`/`poolCode`/`poolSym`（拆开是为了让 `remQuot-combine` 能直接改写；不拆则要在一整个嵌套投影项上做 `cong` 链） | 1+4 定义 | `EXIT=0` | ✅ `9190157` |
+| B4a | `poolOffFin-spec : remQuot L (poolOffFin …) ≡ offEnc …`（三支各一条 `remQuot-combine`，无需 `cong`） | 1 引理 | `EXIT=0` | ✅ `9190157` |
+| B4b | 五个中间 `*-enc`（时间/格位层/格位码/符号/格位码→TOff）+ `poolDec-enc` 往返（`cong₂ _,_` 组装） | 6 引理 | `EXIT=0` | ✅ `9190157` |
+| B5 | `poolLit : Sign → Fin (poolSize) → Lit (poolSize)` + `PoolClause`/`PoolFormula` 别名 | 3 定义 | `EXIT=0` | ✅ `9190157` |
+| B6 | 核对层：`poolSize 2 3 2 ≡ 240`、`poolDec-enc` 一个具体点 | 2 `refl` | `EXIT=0` | ✅ `9190157` |
 
 ### 层 C：六族子句（`Tableau-Clauses.agda`）
 
@@ -165,3 +168,4 @@ G1–G4 不可砍（地基 + 方向一）
 |---|---|---|
 | M1/M2/M3a/M3b（前置） | 5 文件 1657 行，lib 口径 5/5 `EXIT=0`，0 postulate | ✅ |
 | **G1** 编号层 | `Tableau-Tape.agda` 660 行，`agda -i src --cubical --guardedness -WnoUnsupportedIndexedMatch …` → `EXIT=0`；A1–A8 八签名齐（合计新增顶层签名：A1/A2 = 3，A3/A4a = 5，A4b = 4，A5 = 1，A6 = 2，A7 = 1，A8 = 7）；7 个分段提交 `d608e78`→`62a9a1b`；0 postulate / 0 hole；A8 三次预置前提未用到，修复轮数为 0（A6 例外：3 轮，导入位置／模式变量遮蔽／证明参数不可推断） | ✅ |
+| **G2** 池 | 新文件 `Tableau-Pool.agda` 207 行，同命令 → `EXIT=0`；B1–B6 齐（顶层签名 21，含 2 条 refl）；`9190157`；0 postulate / 0 hole、本文件零警告。stdlib `remQuot-combine` 足够，未触发「手写 `toℕ` 编号」退路。⚠ **修复 4 轮（预算 1，超预算）**，但四轮全是导入/隐参显式化（`s≤s⁻¹` 归属 `Data.Nat`、`tL`/`tR` 未 `using`、`tt` 未导入、`remQuot` 隐参 `{m}` 从乘积反解不出）—— 故障不在设计，退路不适用；已记入提交信息 | ✅（超预算） |
