@@ -22,9 +22,9 @@
 module Sovereign.Algebra.Complexity.Tableau-Tape where
 
 open import Data.Nat using (ℕ; zero; suc; _≤_; _<_; s≤s; z≤n; _+_)
-open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
+open import Data.Fin using (Fin; fromℕ<; toℕ) renaming (zero to fzero; suc to fsuc)
 open import Data.Unit using (⊤; tt)
-open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m+n; m≤n+m; m≤n⇒m≤1+n)
+open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m+n; m≤n+m; m≤n⇒m≤1+n; +-mono-≤)
 open import Data.List using (List; []; _∷_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -514,3 +514,31 @@ Tp-check-off-lt-suc = off-lt-suc 4
 
 Tp-check-off-T-lt-L : 2 < suc (suc (3 + 2 + 2))
 Tp-check-off-T-lt-L = off-T-lt-L 3 2
+
+-- ────────────────────────────────────────────────────────────────────
+-- §3e 编号（A4b）：`InOff` → `Fin 3 × Fin (off-L len T)`
+-- ────────────────────────────────────────────────────────────────────
+-- 设计点（已裁决）：`t ≤ T` **不进** `InOff`——前者是「该行在时域内」，后者是
+-- 「该行的偏移界」，两件事分开，由调用方显式给出。
+
+off-L : (len T : ℕ) → ℕ
+off-L len T = suc (suc (len + T + T))
+
+-- tL 支：k ≤ t ≤ T < L ⟹ k < L
+off-tL-lt-L : ∀ (len T t k : ℕ) → k ≤ t → t ≤ T → k < off-L len T
+off-tL-lt-L len T t k h hT = ≤-trans (s≤s (≤-trans h hT)) (off-T-lt-L len T)
+
+-- tR 支：k ≤ len+t+t ≤ len+T+T < L ⟹ k < L
+off-tR-lt-L : ∀ (len T t k : ℕ) → k ≤ len + t + t → t ≤ T → k < off-L len T
+off-tR-lt-L len T t k h hT = s≤s (off-le-suc (≤-trans h mono))
+  where
+  mono : len + t + t ≤ len + T + T
+  mono = +-mono-≤ (+-mono-≤ ≤-refl hT) hT
+
+offEnc : ∀ (len T t : ℕ) (o : TOff) → InOff len t o → t ≤ T → Fin 3 × Fin (off-L len T)
+offEnc len T t tH     h hT = fzero , fzero
+offEnc len T t (tL k) h hT = fsuc fzero , fromℕ< (off-tL-lt-L len T t k h hT)
+offEnc len T t (tR k) h hT = fsuc (fsuc fzero) , fromℕ< (off-tR-lt-L len T t k h hT)
+
+Tp-check-offEnc-tH : offEnc 3 2 1 tH tt (s≤s z≤n) ≡ (fzero , fzero)
+Tp-check-offEnc-tH = refl
