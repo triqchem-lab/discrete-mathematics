@@ -21,8 +21,10 @@
 
 module Sovereign.Algebra.Complexity.Tableau-Tape where
 
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc; _≤_; _<_; s≤s; z≤n; _+_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
+open import Data.Unit using (⊤; tt)
+open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m+n; m≤n+m; m≤n⇒m≤1+n)
 open import Data.List using (List; []; _∷_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -460,3 +462,55 @@ Tp-check-offIdx-tL = refl
 
 Tp-check-offIdx-tH : offIdx tH ≡ zero
 Tp-check-offIdx-tH = refl
+
+-- ────────────────────────────────────────────────────────────────────
+-- §3c 界内谓词（A3）与它的算术备件（A4a）
+-- ────────────────────────────────────────────────────────────────────
+-- 第 t 行的偏移界（**双侧、不对称**，见 §3 头注）：
+--   左侧 `tL k` —— 头左第 k 格，最多右漂 t 步 ⟹ `k ≤ t`；
+--   右侧 `tR k` —— 头右第 k 格，输入 len−1 + 左漂贡献 2t ⟹ `k ≤ len + t + t`。
+-- 帧宽 `L = suc (suc (len + T + T))`——**必须写成 `suc` 形**：`_+_` 递归在首参，
+-- `len + T + T + 2` 的首参 stuck ⟹ 不归约成 `suc (suc …)`（`suc` 形才可转换）。
+InOff : (len t : ℕ) → TOff → Set
+InOff len t tH      = ⊤
+InOff len t (tL k)  = k ≤ t
+InOff len t (tR k)  = k ≤ len + t + t
+
+-- A4a-1：`n < suc n`（即 `suc n ≤ suc n`，一个 `≤-refl`）
+off-lt-suc : ∀ (n : ℕ) → n < suc n
+off-lt-suc n = ≤-refl
+
+-- A4a-2：上界可以加余量
+off-le-add : ∀ {a b c : ℕ} → a ≤ b → a ≤ b + c
+off-le-add {a} {b} {c} h = ≤-trans h (m≤m+n b c)
+
+-- A4a-3：`a ≤ b ⟹ a ≤ suc b`（不引入 `_+_`，避开首参递归的 stuck）
+off-le-suc : ∀ {a b : ℕ} → a ≤ b → a ≤ suc b
+off-le-suc h = m≤n⇒m≤1+n h
+
+-- A4a-4：时间上界落在帧宽内（`T < suc (suc (len + T + T))`）
+--   链：T ≤ len+T（m≤n+m）→ ≤ (len+T)+T → ≤ suc((len+T)+T) → 再 suc 成严格
+off-T-lt-L : ∀ (len T : ℕ) → T < suc (suc (len + T + T))
+off-T-lt-L len T =
+  s≤s (≤-trans (≤-trans (m≤n+m T len)
+                        (off-le-add {a = len + T} {b = len + T} {c = T} ≤-refl))
+               (off-le-suc ≤-refl))
+
+-- ────────────────────────────────────────────────────────────────────
+-- §3d A3/A4a 核对〔refl 枚举 + 结构证明〕
+-- ────────────────────────────────────────────────────────────────────
+
+Tp-check-InOff-tH : InOff 3 1 tH
+Tp-check-InOff-tH = tt
+
+Tp-check-InOff-tL : InOff 3 1 (tL (suc zero))
+Tp-check-InOff-tL = s≤s z≤n
+
+Tp-check-InOff-tR : InOff 3 1 (tR (suc (suc zero)))
+Tp-check-InOff-tR = s≤s (s≤s z≤n)
+
+Tp-check-off-lt-suc : 4 < suc 4
+Tp-check-off-lt-suc = off-lt-suc 4
+
+Tp-check-off-T-lt-L : 2 < suc (suc (3 + 2 + 2))
+Tp-check-off-T-lt-L = off-T-lt-L 3 2
