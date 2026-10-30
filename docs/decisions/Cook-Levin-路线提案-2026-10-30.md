@@ -4,6 +4,10 @@
 > **效力**：若人类批准，则按本文件的里程碑执行；并按现行纪律同步更新
 > `SATRed §6(i)`、`SATMember §6(iii)`、`SATFam §6` 的「W2 立界不排期」注记为「已排期（M1–M4）」。
 > **前置事实**：`docs/PNP/Cook-Levin-资产普查-2026-10-30.md`（实测行数与缺口清单）。
+>
+> **执行状态（2026-10-30）**：人类已批准 **M1** 并开工；**M1 已完成**
+> （`6884e65` CNF.agda 253 行 / `4f41962` CNF-Tseitin.agda 439 行 /
+> `eccae49` 三处 W2 立界注记同步）。M2–M4 未开工。
 
 ## 一、提案
 
@@ -39,7 +43,7 @@
 
 | 级 | 内容 | 估（行） | 交付判据 |
 |---|---|---|---|
-| **M1（公共前置）** | `Complexity/CNF.agda`：`Clause' = List (Lit m)`、`Formula' = List (Clause')`、`satClause'`/`satFormula'`（+ 计账版）、3-CNF 嵌入 `cnfOf3` 与语义一致；`CNF-Tseitin.agda`：长子句 3CNF 化 + 等可满足双向 + 规模线性界 | 350–500 | `EXIT=0`；0 postulate/hole；≥ 6 条 `refl` 核对；与 `SATMember.satClause` 在 3-CNF 上逐点一致 |
+| **M1（公共前置）✅ 完成** | `Complexity/CNF.agda`（253 行）：`Clause' = List (Lit m)`、`Formula' = List (Clause')`、`satClause'`/`satFormula'` + 计账版 + 拼接三条 + 3-CNF 嵌入 `formulaOf3` 与保真 `formulaOf3-sat`；`CNF-Tseitin.agda`（439 行）：`tseitin-split` + 等可满足**双向**（`tseitin-split-sound` / `-complete` / `-sat-elim` / `-sat-intro` / `-unsat`）+ 计数上界 | 350–500 | ✅ `EXIT=0`、0 postulate/hole、16 条 `refl` 核对、3-CNF 逐点一致（`formulaOf3-sat`） |
 | **M2** | `NPClass` 旁加 `InNP-TM`（`TM` + 步数界多项式 + 见证 = 输入/猜测的拼接）+ `InNP-TM ⟹ InNP`（验证器 = `runN` 的计账包装） | 250–400 | 同 M1；至少一个具体 TM 的实例（可直接用 `tm-head`/`tmc`） |
 | **M3** | tableau 构造：变量编号 `(t,i) ↦ Fin`（`/`,`%` 引理）+ 六个子句族 + 初始/终止格局 | 700–1200 | 同 M1；size 界 `O(p²)` 显式陈述 |
 | **M4** | 提取引理（满足 ⟹ 运行存在）+ 组装 `∀L ∈ InNP-TM, L ≤ₚ SAT-3` + 与 `SATRed.Reduces` 对接 | 400–700 | 同 M1；`Reduces` 实例（非单点，参数化于池） |

@@ -15,6 +15,10 @@
 | **按需求构造公式**（`Formula` 可拼接） | **没有先例**。`Formula m c = Vec (Clause m) c` 是长度索引；库内唯一的「公式」来源是**解码**（`decFormula`，固定 stride） | `SATMember.agda:66`、`:170` |
 | **机器级 NP 定义**（转移表 + 步数界） | **没有**。`InNP.np-verifier` 是**任意 Agda 总函数**，无转移表 | `NPClass.agda:48` |
 
+**2026-10-30 更新**：第 1、2 两件缺口**已由 M1 补上**（`CNF.agda` + `CNF-Tseitin.agda`，
+见 §六 与 `docs/decisions/Cook-Levin-路线提案-2026-10-30.md`）；第 3 件（机器级 NP）
+留待 M2。下表为普查当时（HEAD `5b87180`）的实测快照，保留以便对照。
+
 ⟹ Cook–Levin 在库内的成本**几乎全部落在「三件缺失的前置」**上，而不在 tableau 的数学硬核上。
 这是本次普查最重要的结论：**先补前置，再谈 tableau；否则会在 `Vec` 长度算术与 3-CNF 表达力上撞墙。**
 
