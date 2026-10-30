@@ -6,31 +6,40 @@
 -- 【本件闭合什么】SATMBridge 的验证器用「配对单元」编码：a[v] 的读取被编码层
 -- 预先合成、不计机内步数。本件把这一步搬进机器：
 --
---   带 1：逐文字放 [sign, o₀ … o_m]（onehot 变元号原样，§3 的 os）
---   带 2：逐文字放 [⊢, a₀ … a_m]（见证的逐文字副本，§3 的 ws）
+--   带 1：逐文字放 [sign, o₀ … o_m]（onehot 变元号原样，§3 的 os），末格 sentinel
+--   带 2：**一份**见证块 [⊢, a₀ … a_m, ⊣]（全公式共用，回走相每字把它完全复原）
 --
 -- 机器从 (sign, ⊢) 出发读符号，然后把带 1 的 onehot 与带 2 的见证**锁步**
 -- 前移：见到首个 T₁ 就把该处见证值抄进状态，此后不再覆盖（= fromOneHot 的
 -- 「首个 T₁」语义；LK-pick-cells 把两处钉死）。于是「解变元号 + 取 a[v]」
 -- 由机器完成，不再是编码层的免费午餐。
 --
--- 计账：每文字 1（符号步）+ (m+1)（锁步）= m+2 步（LK-look，精确等式）。
+-- 【计账（精确等式，非 O 记法）】
+--   单文字引擎：1（符号步）+ (m+1)（锁步）+ 1（相迁移）+ (m+3)（回走）= **2m+6**
+--               （LK-cycle / LK-cycleR / LK-cycleF / LK-cycleS）
+--   整公式：    每文字再付 1 步收口 fold ⟹ **2m+7**/文字，L 个文字 = L·(2m+7)
+--               （LK-runL，沿文字表结构归纳；线性计账推论 LK-runL-steps）
+--
+-- 【OR/AND 累计在状态里（skill 附录 9 ①）】
+--   相位 LK-Ph = (pos, ck, fk) 是状态的一部分：pos 为子句内位置（T₂ 收口），
+--   ck 为本子句已满足，fk 为此前各子句全满足。收口只**一条** fold 子句
+--   （LK-phStep，用 ∨/∧/if 表达）——不需要对 27 个 (pos, ck, fk) 组合分案，
+--   也不需要另开一条 flag 带 + 相往返（本地先例：SATMBridge.tm-sat 的
+--   qP0/qP1/qP2 : Bool → Bool → Q）。
 --
 -- 【诚实边界（尾注 §6）】
---   (i)  带 2 的**逐文字副本**是编码（空间 O(m·#L)）。无复制的回走相已落地
---        （§4b LK-walk/LK-back + §4c 带形不变式 LK-lw/LK-rw-wl）：回走**把带 2
---        完全复原**（头回 ⊢、左带回 l₂），故每个文字只付自己那一块 (m+1) 格，
---        单文字总代价 **2m+6**（1 符号 + (m+1) 锁步 + 1 相迁移 + (m+3) 回走）
---        = **线性**，整体 L·(2m+6)。⚠ 此前写 2m+5 漏算了相迁移一步（见 §4f）。
---        ⚠ 更正：此前写的「第 j 个文字回走 j(m+1) ⟹ Θ(m·L²)」是**错的**——
---        那只有在不回填（见证被单调消费）时才成立；回走相回填后不累积。
---        仍缺的是把「符号步 + 锁步 + 回走」拼成单个 runB 的整机引理
---        （需一条 full-config 锁步引理；三段燃料已各自钉死）。
---   (ii) 本引擎是**相**（halt 恒假）：公式层 OR/AND 控制器与终止符收口已在
---        SATMBridge（tm-sat）闭合；两件拼成整机（引擎 × 控制器）未做。
+--   (i)  带 2 只有**一份**见证块（空间 O(m)，不是 O(m·L)）：回走相把带 2 完全
+--        复原（头回 ⊢、左带回 l₂、⊣ 压回同位置）⟹ 每个文字只付自己那一块
+--        (m+1) 格 ⟹ 整体**线性**。⚠ 此前写的「第 j 个字回走 j(m+1) ⟹ Θ(m·L²)」
+--        是错的（只有不回填时才成立）。
+--   (ii) OR/AND 累计已进状态并沿文字表闭合（LK-runL + §5b 的 21/18 步核对），
+--        但 **fk 与 satFormula 的语义等式未做**：需先把「每文字 m+2 格」的带
+--        格式与库内 Lit/Clause 编码接上（见 (iii)），属编码层桥。
 --   (iii) 带 1 的「每文字 m+2 格无重叠」是本机输入格式；库内 decLit 的 stride
 --        3（m > 1 时重叠）到本格式的转换属编码层，未做。
---
+--   (iv) 引擎 halt 恒假（纯相），故只用 runB；换 runN2 需 runN2-blind
+--        （MultiTape 已备），与 SATMBridge 的整机拼装未做。
+
 -- 0 postulate / 0 hole。
 
 module Sovereign.Algebra.Complexity.SATLook where
@@ -39,13 +48,14 @@ open import Data.Bool using (Bool; true; false; _∨_; _∧_; if_then_else_)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.List using (List; []; _∷_; _++_; length)
 open import Data.List.Properties using (++-assoc; ++-identityʳ)
-open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Nat.Properties using (+-suc; +-identityʳ)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
+open import Data.Unit using (⊤; tt)
 open import Data.Vec using (Vec; lookup) renaming ([] to vNil; _∷_ to _v∷_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
 
-open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂)
+open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; negate)
 open import Sovereign.Algebra.Automata.MultiTape
   using (Dir3; dL; dR; dN; C2; mk2; TM2; mt-stepH; runB; runB-step; runB-+)
 open import Sovereign.Algebra.Automata.TuringMachine using (hdOf; tlOf)
@@ -102,6 +112,17 @@ LK-foldCk (pos , ck , _) v = if LK-closing pos then false else (ck ∨ isT₁ v)
 LK-foldFk : LK-Ph → Trit → Bool
 LK-foldFk (pos , ck , fk) v = if LK-closing pos then (fk ∧ (ck ∨ isT₁ v)) else fk
 
+-- 文字取值：正文字取原值，负文字取 negate（与 SATMember.evalLit 同口径——
+-- 相位 fold 的输入必须已是「本文字的真值载体」，否则 σ₋ 文字会判反）
+LK-litVal : Sign → Trit → Trit
+LK-litVal σ₊ v = v
+LK-litVal σ₋ v = negate v
+
+-- 一步 fold 后的相位（δ 的收口子句与整公式归纳共用**同一个**函数
+-- ⟹ 归纳结论里不出现第二套「语义相位」，全部在定义层对齐，零枚举）
+LK-phStep : LK-Ph → Trit → LK-Ph
+LK-phStep ph@(pos , ck , fk) v = LK-nextT pos , LK-foldCk ph v , LK-foldFk ph v
+
 data LK-Q : Set where
   qLit  : LK-Ph → LK-Q
   qScan : LK-Ph → Sign → Bool → Trit → LK-Q
@@ -132,9 +153,8 @@ lk-δ (qBack ph s v) x y = qBack ph s v , (x , dN) , (y , dL)
 -- ★ 收口 fold（每个文字恰好一步，零枚举）：把「本文字是否让本子句满足」并进相位，
 --   若是子句末文字则清零 ck 并与 fk 合取；带 1 头是下一文字的 sign、带 2 头是 ⊢
 --   ⟹ 直接回 qLit 续跑（末端形与起点同形，可无限串联）。
-lk-δ (qDone ph@(pos , ck , fk) s v) (LK-t sg) LK-m =
-  qLit (LK-nextT pos , LK-foldCk ph v , LK-foldFk ph v)
-       , (LK-t sg , dN) , (LK-m , dN)
+lk-δ (qDone ph s v) (LK-t sg) LK-m =
+  qLit (LK-phStep ph (LK-litVal s v)) , (LK-t sg , dN) , (LK-m , dN)
 lk-δ (qDone ph s v) x y = qDone ph s v , (x , dN) , (y , dN)
 tm-look : TM2 LK-Q LK-Σ
 tm-look = record { δ = lk-δ ; q₀ = qLit LK-ph₀ ; halt = λ _ → false }
@@ -939,13 +959,135 @@ LK-cycleS ph sg m o a l₁ r₁ l₂ h =
                                   (hdOf LK-b r₁) (tlOf r₁) l₂ LK-m z)
                      (LK-rw-rev (LK-vl a) (LK-e ∷ []))))
 
--- 注：LK-cycleS'（从 qDone 起跑）与 LK-cycle2 在控制相介入后需重推——
--- 续跑不再是 1 步 qLit，而是 7 步控制相（读写 fk/ck/pos 三格）。
--- 重推所需的件：LK-ctl（控制相 7 步的整幅格局等式，按 (fk,ck,pos) 27 案穷举）。
+-- ────────────────────────────────────────────────────────────────────
+-- §4h 整公式：沿文字表归纳（每字 2m+7 = 锁步循环 2m+6 + 收口 fold 1）
+-- ────────────────────────────────────────────────────────────────────
+-- 带 1：每字一格 sign + (m+1) 格 onehot，末尾留**一个** sentinel 格 LK-t sg₀
+--       —— 收口 fold 的触发条件就是「带 1 头仍是 LK-t」（= 还有下一个文字），
+--       没有 sentinel 时最后一个文字的 fold 不触发（机器停在 qDone，这是
+--       「输入耗尽」的正确行为）。
+-- 带 2：**只放一份**见证块（⊢ a₀…a_m ⊣）。LK-cycleS 的结论里带 2 与起点同形
+--       ⟹ 每个文字复用同一块（空间 O(m)，不是 O(m·L)）——「无复制」的机器侧。
+-- 相位：fold 用 δ 的**同一个** LK-phStep ⟹ 归纳结论与机器状态在定义层重合。
+-- 计账：逐字拼接的 LK-fuelL（= 3 个字时 3·7 = 21，§5b 有 refl 自证），
+--       乘法形由 LK-fuelL-len / LK-runL-steps 给出：L·(2m+7)。
+-- 零枚举：不分 pos/ck/fk 的 27 案，也不对文字数做任何分案。
 
--- 注（附录 9 口径，下一步）：OR/AND 累计改用「flag 在状态里」（同 SATMBridge.tm-sat 的
--- qP0/qP1/qP2 : Bool → Bool → Q）：删掉 tape-flag + 8 步往返 + 27 案 LK-ctl，
--- 引擎态加 (pos, ck, fk) 三字段、qDone 一条 fold 子句、既有引理纯参数透传、零枚举。
+LK-Lit : ℕ → Set
+LK-Lit m = Trit × Vec Trit (suc m)
+
+-- 带 1 的逐文字格串（尾累积形：LK-cellsL (l ∷ ls) r = sign ∷ (onehot ++ LK-cellsL ls r)）
+LK-cellsL : ∀ {m} → List (LK-Lit m) → List LK-Σ → List LK-Σ
+LK-cellsL []              r = r
+LK-cellsL ((sg , o) ∷ ls) r = LK-t sg ∷ (LK-cells o ++ LK-cellsL ls r)
+
+-- 带 1 左带的逐文字累积（LK-rc 串起来）
+LK-rcL : ∀ {m} → List (LK-Lit m) → List LK-Σ → List LK-Σ
+LK-rcL []              acc = acc
+LK-rcL ((sg , o) ∷ ls) acc = LK-rcL ls (LK-rc (LK-cells o) (LK-t sg ∷ acc))
+
+-- 整公式的相位 fold：与 δ 的收口子句同一函数
+LK-foldL : ∀ (m : ℕ) → LK-Ph → List (LK-Lit m) → Vec Trit (suc m) → LK-Ph
+LK-foldL m ph []             a = ph
+LK-foldL m ph ((sg , o) ∷ ls) a =
+  LK-foldL m (LK-phStep ph (LK-litVal (signOf sg) (lookup a (fromOneHot m o)))) ls a
+
+-- 每个文字都要有独热位（真实输入保证；全 T₀ 的 onehot 是伪输入）
+LK-AllT₁ : ∀ (m : ℕ) → List (LK-Lit m) → Set
+LK-AllT₁ m []              = ⊤
+LK-AllT₁ m ((_ , o) ∷ ls)  = Σ (Fin (suc m)) (λ i → lookup o i ≡ T₁) × LK-AllT₁ m ls
+
+-- 一段文字的锁步循环 = 2m+6（LK-cycleS 的燃料）；加收口 fold 一条 = 2m+7。
+-- 写成 (LK-cycleSteps m) + 1 而**不是** suc (LK-cycleSteps m)：`_+_` 与 `_*_`
+-- 都递归在首参上，两种写法只在具体数下相等、在变量 m 处不可转换。
+LK-cycleSteps : ℕ → ℕ
+LK-cycleSteps m = suc (suc m + suc (suc (suc (suc m))))
+
+LK-litSteps : ℕ → ℕ
+LK-litSteps m = LK-cycleSteps m + 1
+
+-- 燃料沿文字表逐字拼接（**不**写成 length ls * LK-litSteps m：`suc n * K` 展开为
+-- `K + n * K`，末格会留下 `K + 0`，在变量 m 处不可转换 ⟹ 拼接处必须用本形；
+-- 线性计账由 LK-fuelL-len 另行给出）
+LK-fuelL : ∀ {m} → List (LK-Lit m) → ℕ
+LK-fuelL {m} []       = 0
+LK-fuelL {m} (_ ∷ ls) = LK-litSteps m + LK-fuelL ls
+
+-- 计账：逐字拼接 = L·(2m+7)（+ 子句末 fold 一步已含在 LK-litSteps 里）
+LK-fuelL-len : ∀ {m} (ls : List (LK-Lit m)) → LK-fuelL ls ≡ length ls * LK-litSteps m
+LK-fuelL-len []           = refl
+LK-fuelL-len {m} (_ ∷ ls) = cong (LK-litSteps m +_) (LK-fuelL-len ls)
+
+-- 收口一步（fold）：两带不动，只有相位推进（δ 的收口子句 + dN ⟹ refl）
+LK-fold-step : ∀ (ph : LK-Ph) (s : Sign) (v : Trit) (sg : Trit)
+                 (l₁ r₁ l₂ r₂ : List LK-Σ)
+             → runB tm-look LK-b 1 (mk2 l₁ (qDone ph s v) (LK-t sg) r₁ l₂ LK-m r₂)
+               ≡ mk2 l₁ (qLit (LK-phStep ph (LK-litVal s v))) (LK-t sg) r₁ l₂ LK-m r₂
+LK-fold-step ph s v sg l₁ r₁ l₂ r₂ = refl
+
+-- ★ 整公式定理：逐文字消费带 1、复用带 2 的同一块见证，
+--   终态 qLit 携带整公式的相位（fk = 所有子句皆满足），步数 L·(2m+7)。
+LK-runL : ∀ (ph : LK-Ph) (m : ℕ) (ls : List (LK-Lit m))
+            (l₁ : List LK-Σ) (sg₀ : Trit) (r₁ l₂ : List LK-Σ) (a : Vec Trit (suc m))
+        → LK-AllT₁ m ls
+        → runB tm-look LK-b (LK-fuelL ls)
+            (mk2 l₁ (qLit ph)
+                 (hdOf LK-b (LK-cellsL ls (LK-t sg₀ ∷ r₁)))
+                 (tlOf (LK-cellsL ls (LK-t sg₀ ∷ r₁)))
+                 l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ [])))
+          ≡ mk2 (LK-rcL ls l₁) (qLit (LK-foldL m ph ls a)) (LK-t sg₀) r₁
+                l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ []))
+LK-runL ph m [] l₁ sg₀ r₁ l₂ a tt = refl
+LK-runL ph m ((sg , o) ∷ []) l₁ sg₀ r₁ l₂ a (h , tt) =
+  trans (runB-+ tm-look LK-b (LK-litSteps m) (LK-fuelL {m} [])
+                (mk2 l₁ (qLit ph)
+                     (hdOf LK-b (LK-t sg ∷ (LK-cells o ++ (LK-t sg₀ ∷ r₁))))
+                     (tlOf (LK-t sg ∷ (LK-cells o ++ (LK-t sg₀ ∷ r₁))))
+                     l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ []))))
+        (cong (runB tm-look LK-b (LK-fuelL {m} []))
+              (trans (runB-+ tm-look LK-b (LK-cycleSteps m) 1
+                             (mk2 l₁ (qLit ph)
+                                  (hdOf LK-b (LK-t sg ∷ (LK-cells o ++ (LK-t sg₀ ∷ r₁))))
+                                  (tlOf (LK-t sg ∷ (LK-cells o ++ (LK-t sg₀ ∷ r₁))))
+                                  l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ []))))
+                     (trans (cong (runB tm-look LK-b 1)
+                                  (LK-cycleS ph sg m o a l₁ (LK-t sg₀ ∷ r₁) l₂ h))
+                            (LK-fold-step ph (signOf sg) (lookup a (fromOneHot m o)) sg₀
+                                            (LK-rc (LK-cells o) (LK-t sg ∷ l₁)) r₁ l₂
+                                            (LK-wl (LK-vl a) ++ (LK-e ∷ []))))))
+LK-runL ph m ((sg , o) ∷ ((sg₁ , o₁) ∷ rest)) l₁ sg₀ r₁ l₂ a (h , hrest) =
+  trans (runB-+ tm-look LK-b (LK-litSteps m) (LK-fuelL ((sg₁ , o₁) ∷ rest))
+                (mk2 l₁ (qLit ph)
+                     (hdOf LK-b (LK-t sg
+                                    ∷ (LK-cells o ++ (LK-t sg₁
+                                        ∷ (LK-cells o₁ ++ LK-cellsL rest (LK-t sg₀ ∷ r₁))))))
+                     (tlOf (LK-t sg
+                                    ∷ (LK-cells o ++ (LK-t sg₁
+                                        ∷ (LK-cells o₁ ++ LK-cellsL rest (LK-t sg₀ ∷ r₁))))))
+                     l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ []))))
+        (trans (cong (runB tm-look LK-b (LK-fuelL ((sg₁ , o₁) ∷ rest)))
+                     (trans (runB-+ tm-look LK-b (LK-cycleSteps m) 1
+                                    (mk2 l₁ (qLit ph)
+                                         (hdOf LK-b (LK-t sg
+                                            ∷ (LK-cells o ++ (LK-t sg₁
+                                                ∷ (LK-cells o₁ ++ LK-cellsL rest (LK-t sg₀ ∷ r₁))))))
+                                         (tlOf (LK-t sg
+                                            ∷ (LK-cells o ++ (LK-t sg₁
+                                                ∷ (LK-cells o₁ ++ LK-cellsL rest (LK-t sg₀ ∷ r₁))))))
+                                         l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ []))))
+                            (trans (cong (runB tm-look LK-b 1)
+                                         (LK-cycleS ph sg m o a l₁
+                                                     (LK-t sg₁ ∷ (LK-cells o₁
+                                                         ++ LK-cellsL rest (LK-t sg₀ ∷ r₁)))
+                                                     l₂ h))
+                                   (LK-fold-step ph (signOf sg)
+                                                  (lookup a (fromOneHot m o)) sg₁
+                                                  (LK-rc (LK-cells o) (LK-t sg ∷ l₁))
+                                                  (LK-cells o₁ ++ LK-cellsL rest (LK-t sg₀ ∷ r₁))
+                                                  l₂ (LK-wl (LK-vl a) ++ (LK-e ∷ []))))))
+               (LK-runL (LK-phStep ph (LK-litVal (signOf sg) (lookup a (fromOneHot m o)))) m
+                        ((sg₁ , o₁) ∷ rest)
+                        (LK-rc (LK-cells o) (LK-t sg ∷ l₁)) sg₀ r₁ l₂ a hrest))
 
 -- ────────────────────────────────────────────────────────────────────
 -- §5 核对层（refl 枚举）
@@ -1002,16 +1144,117 @@ check-back-1 :
   ≡ qDone LK-ph₀ σ₋ T₁
 check-back-1 = refl
 
+-- ★ 线性计账推论：L 个文字 = L·(2m+7) 步（LK-runL 用逐字拼接燃料，本条件换回乘法形）
+LK-runL-steps : ∀ (ph : LK-Ph) (m : ℕ) (ls : List (LK-Lit m))
+                  (l₁ : List LK-Σ) (sg₀ : Trit) (r₁ l₂ : List LK-Σ)
+                  (a : Vec Trit (suc m))
+              → LK-AllT₁ m ls
+              → runB tm-look LK-b (length ls * LK-litSteps m)
+                  (mk2 l₁ (qLit ph)
+                       (hdOf LK-b (LK-cellsL ls (LK-t sg₀ ∷ r₁)))
+                       (tlOf (LK-cellsL ls (LK-t sg₀ ∷ r₁)))
+                       l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ [])))
+                ≡ mk2 (LK-rcL ls l₁) (qLit (LK-foldL m ph ls a)) (LK-t sg₀) r₁
+                      l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ []))
+LK-runL-steps ph m ls l₁ sg₀ r₁ l₂ a h =
+  subst (λ k → runB tm-look LK-b k
+                 (mk2 l₁ (qLit ph)
+                      (hdOf LK-b (LK-cellsL ls (LK-t sg₀ ∷ r₁)))
+                      (tlOf (LK-cellsL ls (LK-t sg₀ ∷ r₁)))
+                      l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ [])))
+               ≡ mk2 (LK-rcL ls l₁) (qLit (LK-foldL m ph ls a)) (LK-t sg₀) r₁
+                     l₂ LK-m (LK-wl (LK-vl a) ++ (LK-e ∷ [])))
+        (LK-fuelL-len ls)
+        (LK-runL ph m ls l₁ sg₀ r₁ l₂ a h)
+
+-- ────────────────────────────────────────────────────────────────────
+-- §5b 核对层：整公式（m = 0，每字 2·0+7 = 7 步；3 字 = 21 步）
+-- ────────────────────────────────────────────────────────────────────
+
+check-lit : LK-Lit 0
+check-lit = T₁ , (T₁ v∷ vNil)
+
+check-ls3 : List (LK-Lit 0)
+check-ls3 = check-lit ∷ check-lit ∷ check-lit ∷ []
+
+check-all3 : LK-AllT₁ 0 check-ls3
+check-all3 = (fzero , refl) , (fzero , refl) , (fzero , refl) , tt
+
+-- 计账自证：3 字 × 7 步 = 21（与下面写死的 21 对照）
+check-fuel3 : LK-fuelL check-ls3 ≡ 21
+check-fuel3 = refl
+
+check-cfg3 : Trit → C2 LK-Q LK-Σ
+check-cfg3 v = mk2 [] (qLit LK-ph₀)
+                   (hdOf LK-b (LK-cellsL check-ls3 (LK-t T₂ ∷ [])))
+                   (tlOf (LK-cellsL check-ls3 (LK-t T₂ ∷ [])))
+                   [] LK-m (LK-wl (LK-vl (v v∷ vNil)) ++ (LK-e ∷ []))
+
+-- 一个子句三个文字、见证值全 T₀ ⟹ 子句不满足 ⟹ fk = false（pos 回卷到 T₀、ck 清零）
+check-run3-allfalse :
+  C2.st (runB tm-look LK-b 21 (check-cfg3 T₀)) ≡ qLit (T₀ , false , false)
+check-run3-allfalse = refl
+
+-- 见证值 = T₁（三个文字都真）⟹ 子句满足 ⟹ fk 保持 true、ck 清零
+check-run3-hit :
+  C2.st (runB tm-look LK-b 21 (check-cfg3 T₁)) ≡ qLit (T₀ , false , true)
+check-run3-hit = refl
+
+-- 负文字（sign T₀ = σ₋）⟹ 取 negate：a[v] = T₁ 但 negate T₁ = T₂ ⟹ 三个文字全假
+check-litNeg : LK-Lit 0
+check-litNeg = T₀ , (T₁ v∷ vNil)
+
+check-lsNeg : List (LK-Lit 0)
+check-lsNeg = check-litNeg ∷ check-litNeg ∷ check-litNeg ∷ []
+
+check-allNeg : LK-AllT₁ 0 check-lsNeg
+check-allNeg = (fzero , refl) , (fzero , refl) , (fzero , refl) , tt
+
+check-run3-neg :
+  C2.st (runB tm-look LK-b 21
+    (mk2 [] (qLit LK-ph₀)
+         (hdOf LK-b (LK-cellsL check-lsNeg (LK-t T₂ ∷ [])))
+         (tlOf (LK-cellsL check-lsNeg (LK-t T₂ ∷ [])))
+         [] LK-m (LK-wl (LK-vl (T₁ v∷ vNil)) ++ (LK-e ∷ []))))
+  ≡ qLit (T₀ , false , false)
+check-run3-neg = refl
+
+-- 两个不同变元的文字共用**同一份**见证块：a = (T₀, T₁) ⟹ x₀ 文字假、x₁ 文字真
+check-litA : LK-Lit 1
+check-litA = T₁ , (T₁ v∷ T₀ v∷ vNil)
+
+check-litB : LK-Lit 1
+check-litB = T₁ , (T₀ v∷ T₁ v∷ vNil)
+
+check-lsAB : List (LK-Lit 1)
+check-lsAB = check-litA ∷ check-litB ∷ []
+
+check-allAB : LK-AllT₁ 1 check-lsAB
+check-allAB = (fzero , refl) , (fsuc fzero , refl) , tt
+
+check-fuelAB : LK-fuelL check-lsAB ≡ 18
+check-fuelAB = refl
+
+check-runAB :
+  C2.st (runB tm-look LK-b 18
+    (mk2 [] (qLit LK-ph₀)
+         (hdOf LK-b (LK-cellsL check-lsAB (LK-t T₂ ∷ [])))
+         (tlOf (LK-cellsL check-lsAB (LK-t T₂ ∷ [])))
+         [] LK-m (LK-wl (LK-vl (T₀ v∷ T₁ v∷ vNil)) ++ (LK-e ∷ []))))
+  ≡ qLit (T₂ , true , true)
+check-runAB = refl
+
 -- ────────────────────────────────────────────────────────────────────
 -- §6 尾注立界（诚实边界——不设空壳签名）
 -- ────────────────────────────────────────────────────────────────────
--- (i)   带 2 逐文字副本是编码（空间 O(m·#literals)）；不复制需回走相，
---       回走相 + 锁步相的拼接靠 MultiTape.runB-+（下一步）。
--- (ii)  公式层 OR/AND 控制器 + 终止符收口已在 SATMBridge(tm-sat)；引擎 ×
---       控制器的**整机拼装**未做。
--- (iii) 本机带 1 格式（每文字 m+2 格、无重叠）与库内 decLit 的 stride-3
---       重叠格式之间的转换属编码层，未做。
+-- (i)   带 2 只有一份见证块（空间 O(m)）：LK-cycleS 的结论与起点同形 ⟹ 每个
+--       文字复用同一块，不复制、不增长。带 1 是每文字 m+2 格无重叠 + 末格
+--       sentinel；整体代价 **L·(2m+7)**，线性（LK-runL / LK-runL-steps）。
+-- (ii)  fk 与 satFormula 的**语义等式未做**：需要「本机带格式 ↔ 库内
+--       Lit/Clause 编码」的桥（每个文字的 onehot 是 m+1 格含首个 T₁，
+--       decLit 的 stride-3 会重叠），属编码层，不属机器层。
+-- (iii) 上述 stride-3 格式转换未做（同上）。
 -- (iv)  引擎 halt 恒假（纯相），故只用 runB；换 runN2 需 runN2-blind
---       （MultiTape 已备），拼装时再用。
+--       （MultiTape 已备），与 SATMBridge 的整机拼装未做。
 
 -- 0 postulate / 0 hole。
