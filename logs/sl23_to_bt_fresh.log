@@ -1,0 +1,98 @@
+Checking Sovereign.Synthesis.A4.SL23ToBT (/data/work/discrete-mathematics/src/Sovereign/Synthesis/A4/SL23ToBT.agda).
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Unary.agda:139.10-21: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator Satisfiable
+when scope checking the declaration
+  open import Relation.Unary using (∁; Pred)
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Unary.agda:139.22-31: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator Universal
+when scope checking the declaration
+  open import Relation.Unary using (∁; Pred)
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Unary.agda:139.32-42: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator IUniversal
+when scope checking the declaration
+  open import Relation.Unary using (∁; Pred)
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Binary/Reasoning/Syntax.agda:269.16-22: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator step-≈
+when scope checking the declaration
+  module ≈-syntax where
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Binary/Reasoning/Syntax.agda:293.16-22: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator step-≋
+when scope checking the declaration
+  module ≋-syntax where
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Binary/Reasoning/Syntax.agda:325.16-22: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator step-#
+when scope checking the declaration
+  module #-syntax where
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Binary/Reasoning/Syntax.agda:367.16-22: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator step-↭
+when scope checking the declaration
+  module ↭-syntax where
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Binary/Reasoning/Syntax.agda:407.12-18: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator step-≡
+when scope checking the declaration
+  module ≡-syntax (R : REL A B ℓ₁) (step : Trans _≡_ R R) where
+
+———— All done; warnings encountered ————————————————————————
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Binary/Reasoning/Syntax.agda:269.16-22: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator step-≈
+when scope checking the declaration
+  module ≈-syntax where
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Binary/Reasoning/Syntax.agda:293.16-22: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator step-≋
+when scope checking the declaration
+  module ≋-syntax where
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Binary/Reasoning/Syntax.agda:325.16-22: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator step-#
+when scope checking the declaration
+  module #-syntax where
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Binary/Reasoning/Syntax.agda:367.16-22: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator step-↭
+when scope checking the declaration
+  module ↭-syntax where
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Binary/Reasoning/Syntax.agda:407.12-18: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator step-≡
+when scope checking the declaration
+  module ≡-syntax (R : REL A B ℓ₁) (step : Trans _≡_ R R) where
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Unary.agda:139.10-21: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator Satisfiable
+when scope checking the declaration
+  open import Relation.Unary using (Pred)
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Unary.agda:139.10-21: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator Satisfiable
+when scope checking the declaration
+  open import Relation.Unary using (∁; Pred)
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Unary.agda:139.22-31: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator Universal
+when scope checking the declaration
+  open import Relation.Unary using (Pred)
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Unary.agda:139.22-31: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator Universal
+when scope checking the declaration
+  open import Relation.Unary using (∁; Pred)
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Unary.agda:139.32-42: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator IUniversal
+when scope checking the declaration
+  open import Relation.Unary using (Pred)
+
+/data/work/functional-programming/agda-stdlib/src/Relation/Unary.agda:139.32-42: warning: -W[no]FixityDeclarationForNonOperator
+Deprecated: fixity declaration for non-operator IUniversal
+when scope checking the declaration
+  open import Relation.Unary using (∁; Pred)
