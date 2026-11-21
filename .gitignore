@@ -18,3 +18,4 @@ pn-proofs/
 _build.bak-*/
 probes/
 engineering/artifacts/
+.workbuddy/
