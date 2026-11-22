@@ -22,11 +22,16 @@
 | [RH-GRH-宣言全卷编排与发布蓝图.md](RH-GRH-宣言全卷编排与发布蓝图.md) | 四卷宣言大纲：序章+三部+终章，存证与发布流程 |
 | [RH-GRH-数学极值相变宣言-正文定稿.md](RH-GRH-数学极值相变宣言-正文定稿.md) | ⭐ 宣言正文定稿（五卷）：公理标尺→尸检→预判→相变石碑→元法则 |
 | [RH-GRH-Alpoge对勘与本地模块盘点-2026-11-21.md](RH-GRH-Alpoge对勘与本地模块盘点-2026-11-21.md) | 2026-11-21 调研快照：Alpöge Lean 证明六段替换链对勘 + 本地自守/算术几何模块三层盘点 + Agda 环境勘查 |
+| [RH-GRH-三重完备性与离散闭合.md](RH-GRH-三重完备性与离散闭合.md) | 理论框架主文档（2026-11-22 自 src/.../Riemann/doc/ 迁入） |
+| [RH-GRH-合成Frobenius与代数刚性对译.md](RH-GRH-合成Frobenius与代数刚性对译.md) | Alpöge 有限域→特征 0 六段替换链 + 条件二三层升级 ⭐ |
+| [Frobenius迭代与Theta-lift链的离散对译.md](Frobenius迭代与Theta-lift链的离散对译.md) | √X 链 vs σⁿ 迭代逐项字典 ⭐ |
+| [Sovereign-RH-Constructive-Path.md](Sovereign-RH-Constructive-Path.md) | 四阶段构造主义 Roadmap + 难度排序 ⭐ |
+| [Weil刚性路径可行性审计-九项清单.md](Weil刚性路径可行性审计-九项清单.md) | 九项 Yes/No 审计：基座超预期齐全，缺口=Waterhouse+反例引理 ⭐ |
 
 ## 关联
 
 - **形式化模块**：`src/Sovereign/Arithmetic/Riemann/`（Agda 证明，规划中）
-- **理论框架**：`src/Sovereign/Arithmetic/Riemann/doc/RH-GRH-三重完备性与离散闭合.md`
+- **理论框架**：`RH-GRH-三重完备性与离散闭合.md`（本目录，2026-11-22 迁入）
 - **方法论来源**：`src/Sovereign/Algebra/Jacobian/README.md`（雅可比三重防火墙）
 - **宪法依据**：`docs/数学大厦底层更新-离散连续界面规范-v7.0.md`
 

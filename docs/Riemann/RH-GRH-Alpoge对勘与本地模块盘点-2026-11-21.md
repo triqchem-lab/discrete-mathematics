@@ -3,7 +3,7 @@
 > 2026-11-21 集中调研的汇总。三块内容：① Alpöge RH/GRH Lean 证明与我们路径的对勘结论；
 > ② 本仓库自守形式与算术几何相关模块的实际现状；③ 本机 Agda 编译环境的真实状态。
 > 本文是**调研快照**，不是新定理；深度技术论证见已有的
-> `src/Sovereign/Arithmetic/Riemann/doc/RH-GRH-合成Frobenius与代数刚性对译.md`（366 行）。
+> `RH-GRH-合成Frobenius与代数刚性对译.md`（366 行，本目录）。
 
 ---
 

@@ -10,19 +10,22 @@
 ## 目录结构
 
 ```
-src/Sovereign/Arithmetic/Riemann/       # Agda 形式化模块（规划中）
-├── README.md                            # 本文件（研究索引）
-└── doc/
-    ├── RH-GRH-三重完备性与离散闭合.md    # 理论框架主文档
-    ├── RH-GRH-合成Frobenius与代数刚性对译.md  # Alpöge 有限域补全工程对译 + 路线下一步 ⭐
-    ├── Frobenius迭代与Theta-lift链的离散对译.md  # √X 链 vs σⁿ 迭代的技术字典 ⭐
-    ├── Sovereign-RH-Constructive-Path.md  # 四阶段构造主义 Roadmap + 难度排序 ⭐
-    ├── RH-GRH-五大路线失败机制映射.md    # 连续路线断层 → 离散对应（规划中）
-    └── discrete-RH-statement.md          # 离散 RH/GRH 命题陈述（规划中）
+src/Sovereign/Arithmetic/Riemann/
+└── README.md                            # 本文件（研究索引）
 
-docs/Riemann/                             # 理论文档
-├── RH-GRH-文献检索与元理论断层诊断.md     # 权威文献（485 行，五大路线完整诊断）
-└── README.md                             # 文档索引
+docs/Riemann/                             # 理论文档（2026-11-22 起统一文档区，含下列迁入件）
+├── README.md                             # 文档索引
+├── RH-GRH-三重完备性与离散闭合.md          # 理论框架主文档
+├── RH-GRH-合成Frobenius与代数刚性对译.md   # Alpöge 有限域补全工程对译 + 路线下一步 ⭐
+├── Frobenius迭代与Theta-lift链的离散对译.md # √X 链 vs σⁿ 迭代的技术字典 ⭐
+├── Sovereign-RH-Constructive-Path.md     # 四阶段构造主义 Roadmap + 难度排序 ⭐
+├── Weil刚性路径可行性审计-九项清单.md      # 九项 Yes/No 审计 ⭐
+├── RH-GRH-Alpoge对勘与本地模块盘点-2026-11-21.md
+├── RH-GRH-文献检索与元理论断层诊断.md      # 权威文献（485 行，五大路线完整诊断）
+├── RH-GRH-五大路线失败机制映射.md          # 连续路线断层 → 离散对应（规划中）
+└── discrete-RH-statement.md              # 离散 RH/GRH 命题陈述（规划中）
+
+（注：原 doc/ 子目录已撤销——Arithmetic/ 为纯参考目录，研究文档统一归 docs/）
 ```
 
 ---
@@ -110,10 +113,11 @@ Riemann/（规划）
 | RH-GRH 知识图谱 v5.5 | `docs/Riemann/RH-GRH-大衍框架完整知识图谱-v5.5.md` | 完整对话结构化备份 |
 | RH-GRH 宣言发布蓝图 | `docs/Riemann/RH-GRH-宣言全卷编排与发布蓝图.md` | 四卷宣言大纲 + 发布流程 |
 | RH-GRH 宣言正文定稿 ⭐ | `docs/Riemann/RH-GRH-数学极值相变宣言-正文定稿.md` | 宣言五卷正式文本 |
-| 三重完备性与离散闭合 | `doc/RH-GRH-三重完备性与离散闭合.md` | 理论框架主文档 |
-| 合成 Frobenius 与代数刚性对译 ⭐ | `doc/RH-GRH-合成Frobenius与代数刚性对译.md` | Alpöge 有限域→无限域六段转换链、病态诊断、条件二三层升级、路线下一步 |
-| Frobenius 迭代与 θ-lift 链离散对译 ⭐ | `doc/Frobenius迭代与Theta-lift链的离散对译.md` | √X 链 vs σⁿ 迭代的逐项字典、t-rec 已参数化的核查、三件搬不过来的东西 |
-| Sovereign RH 构造主义路线 ⭐ | `doc/Sovereign-RH-Constructive-Path.md` | 四阶段 Roadmap、阶段三命题审查与弱版本、全局难度排序（阶段二最难） |
+| 三重完备性与离散闭合 | `docs/Riemann/RH-GRH-三重完备性与离散闭合.md` | 理论框架主文档 |
+| 合成 Frobenius 与代数刚性对译 ⭐ | `docs/Riemann/RH-GRH-合成Frobenius与代数刚性对译.md` | Alpöge 有限域→无限域六段转换链、病态诊断、条件二三层升级、路线下一步 |
+| Frobenius 迭代与 θ-lift 链离散对译 ⭐ | `docs/Riemann/Frobenius迭代与Theta-lift链的离散对译.md` | √X 链 vs σⁿ 迭代的逐项字典、t-rec 已参数化的核查、三件搬不过来的东西 |
+| Sovereign RH 构造主义路线 ⭐ | `docs/Riemann/Sovereign-RH-Constructive-Path.md` | 四阶段 Roadmap、阶段三命题审查与弱版本、全局难度排序（阶段二最难） |
+| Weil 刚性路径可行性审计 ⭐ | `docs/Riemann/Weil刚性路径可行性审计-九项清单.md` | 九项 Yes/No 审计：基座超预期齐全，缺口=Waterhouse+反例引理 |
 | 雅可比项目 README | `src/Sovereign/Algebra/Jacobian/README.md` | 三重防火墙范式来源 |
 
 ## 创建日期
