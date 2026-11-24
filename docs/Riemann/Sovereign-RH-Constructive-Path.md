@@ -24,6 +24,60 @@
 
 ---
 
+## 零·补、Alpöge Lean 仓库 `anyGeometry` 一手核验（2026-11-24 追加）
+
+> **来源**：本机镜像 `/Users/zesheng/work/riemann-hypothesis-lean`（remote `CocoSgt/riemann-hypothesis-lean`，commit `7cbf7a0c3`）。
+> 每条附文件与行号，可直接复核。**本节只记录一手事实，不改变「零」中的红线。**
+> 外部转述（Nielsen 稿件、社交平台讨论）未读原文，不作依据。公开的验证记录见 F6，引文为抓取工具返回的逐字片段。
+
+### 1. 事实
+
+| # | 事实 | 位置 |
+|---|---|---|
+| F1 | `abbrev GeoP : Type 1 := ∀ D : D7, Core D → DivX D → Prop`。全库 `GeoP` 值的定义只有三个：实质性谓词 `geoOf`（`IsGeoOf` ∧ `HasTrueSurf`）、恒真谓词 `anyGeometry : GeoP := fun _ _ _ => True`、复合子 `geoCl` | `Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/OverIx.lean:14,16-17,19`；同目录 `NotGeoClFalse.lean:26`；全库正则枚举 |
+| F2 | `Main.lean` 的 import 传递闭包共 122,579 个模块；24 个使用 `anyGeometry` 的文件中 10 个在闭包内，最近的距 `Main` 为 6 跳 | 读各文件头部 `import` 行求传递闭包（未解析 `.olean`）；脚本 `import_closure.py`，2026-11-24 留存于 `/tmp/rh-audit/` |
+| F3 | 几何谓词在闭包内有**两类**使用位置。族 / 包一侧用的是实质谓词：`AlgPkg (geoOf C K R)`、`ShimU D (geoOf C K R)`、`FormsPkg D (geoOf C K R)`、`ShimFam D (geoOf C K R)`（结构名照录，语义未逐一审读）。**除子一侧**（`OAt.geo` / `OX` / `geoCl`）的闭合实参只命中 `anyGeometry`（50 / 3 / 1 处）；`geoOf` 作 `OAt` 实参只出现在 `oAt_geoOf`，而它以 `IsGeoOf` 为前提 | `…/Definitions/AutomorphicMembership/FormsOver.lean:57,94,101,105`；`…/Definitions/AutomorphicMembership/NotLamAreShift.lean:152-161`；闭包内正则计数 |
+| F4 | `divEx_prov (𝒮) (hOx : 𝒮.Ox = OX anyGeometry) : DivEx 𝒮`：除子 Y 由 `exists_divT` 构造，Y 的 `geo` 字段用 `trivial` 填 | `…/Proofs/IwasawaDecomposition/TupPinsOfMuIsW.lean:204-209` |
+| F5 | `riemannHypothesis : RiemannHypothesis := rhOfAll` 无前提；仓库内无 `RiemannHypothesis` / `riemannZeta` 的重定义；Mathlib pin 为官方仓库 `0df444a3` | `src/Main.lean:4`；全库正则搜索；`lake-manifest.json` |
+| F6 | **形式证明已通过多重独立验证**：全部 175,187 个模块零错误编译；沙箱内独立 `lake build`「exit 0, zero errors」，导出「byte-identical to the published one」；五条主定理只依赖「propext, Classical.choice, Quot.sound only」；Lean 官方内核、con-leche / con-ron、nanoda、lean4lean 等接受全部导出或全部模块；两件比较工具确认所证命题「is exactly Mathlib's statement of the Riemann Hypothesis」 | Lean FRO 与 Mathlib Initiative 联合声明（2026-11-21）：`leanprover-community.github.io/blog/posts/riemann-hypothesis`；A. Sutherland 验证日志（更新于 2026-11-24）：`math.mit.edu/~drew/grh` |
+| F7 | 本库静态扫描：`axiom` / `sorry` / `sorryAx` / `native_decide` / `skipKernelTC` 均 0 命中；仅 2 处 `partial def`（元编程辅助，`MetaM` / `Environment` 层）与 2 处 `addDecl`（复制既有声明，仍过内核） | 全库正则扫描；`Formalism/HermitianCurvature/HermitianCurvatureProofs/CutCptCopy.lean:41,78,82`；`Formalism/LocalToGlobal/NumberFieldFamilies/OwnStruct.lean:18` |
+| F8 | 本机曾有一次 `lake build`（2026-11-22 17:06 至 11-24 12:36，由另一工具的会话启动），至停止时约 29,900 个 `.olean`，`Main.olean` 从未生成。它是冗余重建，已于 2026-11-24 停止，`.lake/build` 已删除（释放约 210 GB）；`.lake/packages` 与源码保留。判断 lake 构建是否完成只看 `Main.olean` 是否存在与日志末尾的 `EXIT=` 标记——`[done/total]` 只统计已排队任务，不是完成度（本次该比值一度显示 99.7%，实际完成 2%） | 进程表；`df` |
+
+### 2. 这组事实意味着什么、不意味着什么
+
+- **意味着**：除子一侧名为「几何」的槽位没有实质内容。F4 里 `trivial` 填的是除子的几何来源证书，不是除子本身。它是审稿时追问「除子的正性究竟从哪里来」的线索。
+- **不意味着实质几何在主链上缺席**。F3 前半句恰相反：族 / 包一侧用的是 `geoOf`。
+- **不意味着主定理空真或不成立**。按 F6，形式证明已通过多重独立验证：Mathlib 定义的 `RiemannHypothesis` 是 Lean 类型论加三条标准公理的定理，`anyGeometry` 改变不了这一点。空真来自假前提，`True` 作前提不产生空真。它去掉一项要求，而不是预设一项前提：全库 0 处 `axiom`、0 处 `sorry`（F7），主定理签名无假设。
+- **不意味着动机**。代码里没有注释解释 `anyGeometry`。「特征 0 几何正性不可判定所以被迫设 `True`」是推测，且代数数的正性本就可判定。
+- **import 距离不等于证明依赖**。F2 / F3 只说明文件在依赖闭包内，未确认每条使用 `anyGeometry` 的定理都出现在最终证明项里；主定理对除子一侧是否需要实质几何，未判定。[未验证·路线推测]
+- **不等于「坐实 Nielsen」**。Nielsen 稿件的论证内容未读原文；成立的只有 F1–F6。
+
+### 3. 结论与仍然开放的问题
+
+- 「零」中那条红线的前提**已经满足**（F6）：`lake build` 完成且公理干净。**Mathlib 官方陈述的 RH 算形式证明成立。** 任何「Alpöge 的证明空真 / 循环 / 不合法」的表述与本节事实相抵触，不得写入本目录文档。
+- 仍然开放的是**理解**，不是真假。联合声明把「explain the new ideas in this proof」列为对社区的期待。`anyGeometry` 是一条具体线索：除子一侧为何不需要实质几何。[未验证·路线推测]
+- 验证日志自述的边界（逐字片段）：「A passing check shows that the formal statements, as written in Lean against Mathlib's definitions, follow from the three standard axioms」——即结论依赖所用内核，以及 Mathlib 定义符合其本意。所核对的 GRH 只限 Dirichlet L 函数（据页面摘要）。
+- 本机那次重建（F8）不影响上述结论，已于 2026-11-24 停止并删除 `.lake/build`。
+
+### 4. Agda 侧对照（同一把尺子）
+
+2026-11-24 本机（`~/.local/bin/agda`，Agda 2.9.0）逐模块类型检查：
+
+| 模块 | 结果 | 证明的内容 |
+|---|---|---|
+| `WeilRigidity` / `RH` / `WeilRH` / `ZetaDiscrete` / `ZetaFunctional` / `FrobeniusBlind` | exit=0 | E₁ / E₂ / E₆ 在 F₃、F₉ 的实例数值、递推序列与常量；**不是一般定理** |
+| `NoNormT0Even`（未提交） | 修复后 exit=0（重名重构后复检仍为 0） | `∀ m s → s·s ≢ 4·3^(2m+1)` 与 `∀ m s:ℤ → 3s² ≠ 4·3^(2m+2)`。相邻的可解情形（n 奇、t=0、s=±6）在同一套定义下由 `refl` 成立，故「偶指数无解」是数论事实而非定义缺陷 |
+
+- 仓库内没有 `witness` 函数、超奇异、Waterhouse 分类、自同态环（后三项见 `Weil刚性路径可行性审计-九项清单.md` 第 8 项）。
+- **类型检查通过只说明项是良构的，不说明内容实质**。同一条线上存在「名称多于内容」的项，引用时**不得当作定理**（按散文断言规则属 (b)，无对应定理）：
+  `BSD/BSD.agda:91` `hasse-ok : 0 ≡ 0`、`RH/FrobeniusBlind.agda:67` `det-J-formal-frob : ∀ p → T₁ ≡ T₁`、`RH/RH.agda:70` `func-sig : N₀ * q3 ≡ N₂`（即 1·3 ≡ 3）。
+- `RH/ZetaDiscrete.agda:55,61` 头注「编译器的判决：连续 RH 不可证」：模块体只有常量，该断言无任何定理支撑，属 (b)。[直觉·未验证] 且与 F6 直接相抵触——Mathlib 的 ℂ 上已有通过多重独立验证的 RH 形式证明——**应撤回**（2026-11-24 尚未改动该文件）。
+- `RH/WeilRigidity.agda` 头注与尾部注释曾称 ℤ[ω] 的共轭与 GF(9) 的 Frobenius σ(x)=x³「同构」：无对应定理，且与下述手算矛盾 [未形式化]：特征 3 下 x²+x+1=(x−1)²，故 ℤ[ω]⊗𝔽₃ ≅ 𝔽₃[ε]/ε² 不是域；约化后得到 GF(9) 的是 ℤ[i]。**2026-11-24 已在该文件内勘误**（头部、尾部两处，仅改注释，exit=0）。
+- `NoNormT0Even` 的重名处理：其 44 个顶层声明中原有 23 个与库内其他模块同名（`⊥` / `¬` / `cong` / `sym` / `trans` / `+-comm` / `*-comm` / `pow3` / `tri` 等）。2026-11-24 已把辅助层整体移入子模块 `NoNormPrelude` 且不重导出，顶层只剩三条主定理与 ℤ 层；标识符未改，仅加缩进。外部探针确认：只 import 时 `cong` 为 `NotInScope`。重复检查门禁是否接受这种结构 [未验证·路线推测：本机无法运行该门禁；核实动作 = 在部署了 math-proof preset 的机器上 `git add` 后运行 `engineering/check_duplicate.sh`]
+- 阶段四「22 万行从未经过类型检查」是 2026-11-21 的状态。2026-11-24 本机已能逐模块检查（见上表）；**全库门禁未在本机重跑**：`~/.dsh`（`proof_dag`、`gates.mjs`）与 `.git/hooks/pre-commit` 在本机不存在。
+
+---
+
 ## 阶段一：纵向延伸 —— 从特例到有限域塔的全称量化
 
 **现状核查**：递推层已参数化（`BSD_L3.agda` 的 `t-rec : ℤ → ℤ → ℕ → ℤ`），
