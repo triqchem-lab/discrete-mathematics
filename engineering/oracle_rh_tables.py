@@ -590,8 +590,147 @@ def group():
         total += n * n
         print(f"  {CURVE(*c)}: {n} 点 -> 加法表 {n}^2 = {n*n} 格")
     print(f"  8 类合计加法表格数: {total}")
+    return reps
+
+
+# ---------- emit-group (M6·B5/G1): 表驱动群模块（逐字生成 Agda）----------
+REPS = {0: (0, 1, 0), 1: (1, 0, 1), 2: (1, 0, 2), 3: (2, 0, 1),
+        4: (2, 0, 2), 5: (0, 2, 0), 6: (0, 2, 1), 7: (0, 2, 2)}
+TVALS = {0: 0, 1: -2, 2: 1, 3: -1, 4: 2, 5: 0, 6: -3, 7: 3}
+
+
+def emit_group(k, with_assoc):
+    c = REPS[k]
+    t = TVALS[k]
+    pts = e9pts(c)
+    n = len(pts)
+    names = ["ptInf"] + [f"pt{i}" for i in range(1, n)]
+
+    def pname(P):
+        return "ptInf" if P is None else names[pts.index(P)]
+
+    sig = [None if P is None else (f9conj(P[0]), f9conj(P[1])) for P in pts]
+    neg = [e9neg(c, P) for P in pts]
+    add = [[e9add(c, P, Q) for Q in pts] for P in pts]
+    assert sorted(pname(P) for P in sig) == sorted(names), "sig 非双射"
+    assert sorted(pname(P) for P in neg) == sorted(names), "neg 非双射"
+
+    L = []
+    A = L.append
+    assoc_tag = "试点（含结合律）" if with_assoc else "铺开（结合律 oracle 侧, 量级取舍未收录）"
+    A('{-# OPTIONS --rewriting --guardedness #-}')
+    A('')
+    A(f'-- | Sovereign.Application.Problems.RH.GroupCls{k}')
+    A(f'-- E(F9) 群律表驱动: cls{k} 代表元 {CURVE(*c)} 的 {n} 点群（M6 · B5/G1 ' + assoc_tag + '）')
+    A('--')
+    A(f'-- TraceTable: t = {t:+d}（{"超奇异" if t % 3 == 0 else "普通"}）; 同构类 = CurveIsoF3.cls{k}')
+    A('--   （iso-class 与 (Fix, pairs) 组合不变量逐类一致, oracle iso/frob 交叉核对）')
+    A('--   点集 = E(F9) 全点（含无穷远 ptInf; 坐标见 §0 注释, oracle group 公式枚举承载）')
+    A('--   全部表格由 oracle emit-group 逐字生成（先算后验）; G0 已核对:')
+    A('--   群公理/σ 群自同/特征方程 [4]P=[t]·σP 全点 ✓')
+    A('--')
+    A('-- 诚实边界:')
+    A('--   · Agda 侧承载表内性质（单位/逆/交换' + ("/结合" if with_assoc else "") + '/σ-自同/特征方程);')
+    A('--     表的坐标语义由 oracle 公式枚举承载（G0）')
+    A('--   · σ 的群自同 = 点级置换等式; End(E) 环论意义（Deuring ρ^2=-3）需群律公式层, 未排期')
+    A('--   · 数值子句全部 emit-group 生成（先算后验纪律）')
+    A('')
+    A(f'module Sovereign.Application.Problems.RH.GroupCls{k} where')
+    A('')
+    A('open import Relation.Binary.PropositionalEquality using (_≡_; refl)')
+    A('')
+    A('--------------------------------------------------------------------------------')
+    A('-- §0. 点表（oracle group 冻结; ptInf = 无穷远点）')
+    A('--------------------------------------------------------------------------------')
+    A('')
+    for i, P in enumerate(pts):
+        co = "∞" if P is None else f"({P[0]}, {P[1]})"
+        A(f'-- {names[i]} = {co}')
+    A('')
+    A(f'data Pt{k} : Set where')
+    A('  ' + ' '.join(names) + f' : Pt{k}')
+    A('')
+    A('-- σ 置换（f9conj 点级像; B0 冻结）')
+    A(f'sig : Pt{k} → Pt{k}')
+    for i in range(n):
+        A(f'sig {names[i]} = {pname(sig[i])}')
+    A('')
+    A('-- neg 置换（-(x,y) = (x,−y)）')
+    A(f'negp : Pt{k} → Pt{k}')
+    for i in range(n):
+        A(f'negp {names[i]} = {pname(neg[i])}')
+    A('')
+    A('-- 加法表（前置两条捕获子句: 单位行/列; 主体格 (n-1)^2 --')
+    A('--   前置捕获让 unit-l/unit-r 的抽象 p 子句可归约, 免 nightly 坑#5 类卡死）')
+    A(f'addE : Pt{k} → Pt{k} → Pt{k}')
+    A('addE ptInf q = q')
+    A('addE p ptInf = p')
+    for i in range(1, n):
+        for j in range(1, n):
+            A(f'addE {names[i]} {names[j]} = {pname(add[i][j])}')
+    A('')
+    A('-- 单位元/逆元（具体 n 条子句形态; ∀ 抽象 p 上 addE 卡死 —— 实测, 同坑#5 家族）')
+    A('unit-l : ∀ p → addE ptInf p ≡ p')
+    for i in range(n):
+        A(f'unit-l {names[i]} = refl')
+    A('unit-r : ∀ p → addE p ptInf ≡ p')
+    for i in range(n):
+        A(f'unit-r {names[i]} = refl')
+    A('')
+    A('inv-r : ∀ p → addE p (negp p) ≡ ptInf')
+    for i in range(n):
+        A(f'inv-r {names[i]} = refl')
+    A('')
+    A('-- 交换律（n^2 条）')
+    A('commE : ∀ p q → addE p q ≡ addE q p')
+    for i in range(n):
+        for j in range(n):
+            A(f'commE {names[i]} {names[j]} = refl')
+    A('')
+    if with_assoc:
+        A(f'-- 结合律（{n}^3 条; 签名与子句零间隔 —— 坑#5）')
+        A('assocE : ∀ p q r → addE (addE p q) r ≡ addE p (addE q r)')
+        for i in range(n):
+            for j in range(n):
+                for w in range(n):
+                    A(f'assocE {names[i]} {names[j]} {names[w]} = refl')
+        A('')
+    A('-- σ 群自同（n^2 条; G0 全点核对 ✓ 的 Agda 承载）')
+    A('sig-hom : ∀ p q → sig (addE p q) ≡ addE (sig p) (sig q)')
+    for i in range(n):
+        for j in range(n):
+            A(f'sig-hom {names[i]} {names[j]} = refl')
+    A('')
+    A(f'-- 特征方程点级: [4]p = [t]·σp（t = {t:+d}; G0 全点核对 ✓ 的 Agda 承载）')
+    A(f'mul2 mul3 mul4 : Pt{k} → Pt{k}')
+    A('mul2 p = addE p p')
+    A('mul3 p = addE (addE p p) p')
+    A('mul4 p = addE (addE (addE p p) p) p')
+    if t == 0:
+        A('charEq : ∀ p → mul4 p ≡ ptInf  -- [0]σp = ptInf')
+    elif t == 1:
+        A('charEq : ∀ p → mul4 p ≡ sig p  -- [+1]σp = σp')
+    elif t == -1:
+        A('charEq : ∀ p → mul4 p ≡ negp (sig p)')
+    elif t == 2:
+        A('charEq : ∀ p → mul4 p ≡ mul2 (sig p)')
+    elif t == -2:
+        A('charEq : ∀ p → mul4 p ≡ mul2 (negp (sig p))')
+    elif t == 3:
+        A('charEq : ∀ p → mul4 p ≡ mul3 (sig p)')
+    elif t == -3:
+        A('charEq : ∀ p → mul4 p ≡ mul3 (negp (sig p))')
+    for i in range(n):
+        A(f'charEq {names[i]} = refl')
+    return "\n".join(L) + "\n"
+
 
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
+    if cmd == "emit-group":
+        k = int(sys.argv[2]) if len(sys.argv) > 2 else 6
+        with_assoc = (len(sys.argv) > 3 and sys.argv[3] == "assoc")
+        print(emit_group(k, with_assoc))
+        raise SystemExit
     {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group}.get(cmd, check)()

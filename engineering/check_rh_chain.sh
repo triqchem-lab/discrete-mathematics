@@ -8,6 +8,7 @@
 #   Witness (范数见证)
 #   CurveF3 → CountF3 → {CurveIsoF3, CountF9All → WeilRecurrenceAll → FrobF9 → FrobFix,
 #                        HasseAllF3, TraceTableF3}  (计数线: F₃/F₉ + Frobenius σ)
+#   FrobFix → GroupCls0..7 (E(F9) 群律表驱动: 8 同构类, 试点 cls6 含结合律)
 #   SupersingularF3 → SupersingularDiv3 (p∣t 算术表述桥)
 #   TraceTableF3 → SupersingularF3 → WaterhouseF3             (分类线)
 #   Eisenstein → WeilRigidity → ZetaFrame → ZetaFunctional    (zeta 线)
@@ -25,7 +26,7 @@ cd "$(dirname "$0")/.."   # 仓库根
 
 AGDA="${RH_AGDA:-$HOME/.local/bin/agda}"
 RH_DIR="src/Sovereign/Application/Problems/RH"
-CHAIN="NoNormT0Even Mod3Core NormClassify NoNormT0General Witness CurveF3 CountF3 CurveIsoF3 CountF9All WeilRecurrenceAll FrobF9 FrobFix HasseAllF3 TraceTableF3 SupersingularF3 SupersingularDiv3 WaterhouseF3 Eisenstein WeilRigidity ZetaFrame ZetaFunctional ZetaAllF3"
+CHAIN="NoNormT0Even Mod3Core NormClassify NoNormT0General Witness CurveF3 CountF3 CurveIsoF3 CountF9All WeilRecurrenceAll FrobF9 FrobFix GroupCls0 GroupCls1 GroupCls2 GroupCls3 GroupCls4 GroupCls5 GroupCls6 GroupCls7 HasseAllF3 TraceTableF3 SupersingularF3 SupersingularDiv3 WaterhouseF3 Eisenstein WeilRigidity ZetaFrame ZetaFunctional ZetaAllF3"
 
 declare -a FILES
 for m in $CHAIN; do

@@ -1,0 +1,243 @@
+{-# OPTIONS --rewriting --guardedness #-}
+
+-- | Sovereign.Application.Problems.RH.GroupCls7
+-- E(F9) 群律表驱动: cls7 代表元 c022 的 7 点群（M6 · B5/G1 铺开（结合律 oracle 侧, 量级取舍未收录））
+--
+-- TraceTable: t = +3（超奇异）; 同构类 = CurveIsoF3.cls7
+--   （iso-class 与 (Fix, pairs) 组合不变量逐类一致, oracle iso/frob 交叉核对）
+--   点集 = E(F9) 全点（含无穷远 ptInf; 坐标见 §0 注释, oracle group 公式枚举承载）
+--   全部表格由 oracle emit-group 逐字生成（先算后验）; G0 已核对:
+--   群公理/σ 群自同/特征方程 [4]P=[t]·σP 全点 ✓
+--
+-- 诚实边界:
+--   · Agda 侧承载表内性质（单位/逆/交换/σ-自同/特征方程);
+--     表的坐标语义由 oracle 公式枚举承载（G0）
+--   · σ 的群自同 = 点级置换等式; End(E) 环论意义（Deuring ρ^2=-3）需群律公式层, 未排期
+--   · 数值子句全部 emit-group 生成（先算后验纪律）
+
+module Sovereign.Application.Problems.RH.GroupCls7 where
+
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+
+--------------------------------------------------------------------------------
+-- §0. 点表（oracle group 冻结; ptInf = 无穷远点）
+--------------------------------------------------------------------------------
+
+-- ptInf = ∞
+-- pt1 = ((0, 0), (0, 1))
+-- pt2 = ((0, 0), (0, 2))
+-- pt3 = ((1, 0), (0, 1))
+-- pt4 = ((1, 0), (0, 2))
+-- pt5 = ((2, 0), (0, 1))
+-- pt6 = ((2, 0), (0, 2))
+
+data Pt7 : Set where
+  ptInf pt1 pt2 pt3 pt4 pt5 pt6 : Pt7
+
+-- σ 置换（f9conj 点级像; B0 冻结）
+sig : Pt7 → Pt7
+sig ptInf = ptInf
+sig pt1 = pt2
+sig pt2 = pt1
+sig pt3 = pt4
+sig pt4 = pt3
+sig pt5 = pt6
+sig pt6 = pt5
+
+-- neg 置换（-(x,y) = (x,−y)）
+negp : Pt7 → Pt7
+negp ptInf = ptInf
+negp pt1 = pt2
+negp pt2 = pt1
+negp pt3 = pt4
+negp pt4 = pt3
+negp pt5 = pt6
+negp pt6 = pt5
+
+-- 加法表（前置两条捕获子句: 单位行/列; 主体格 (n-1)^2 --
+--   前置捕获让 unit-l/unit-r 的抽象 p 子句可归约, 免 nightly 坑#5 类卡死）
+addE : Pt7 → Pt7 → Pt7
+addE ptInf q = q
+addE p ptInf = p
+addE pt1 pt1 = pt5
+addE pt1 pt2 = ptInf
+addE pt1 pt3 = pt6
+addE pt1 pt4 = pt3
+addE pt1 pt5 = pt4
+addE pt1 pt6 = pt2
+addE pt2 pt1 = ptInf
+addE pt2 pt2 = pt6
+addE pt2 pt3 = pt4
+addE pt2 pt4 = pt5
+addE pt2 pt5 = pt1
+addE pt2 pt6 = pt3
+addE pt3 pt1 = pt6
+addE pt3 pt2 = pt4
+addE pt3 pt3 = pt1
+addE pt3 pt4 = ptInf
+addE pt3 pt5 = pt2
+addE pt3 pt6 = pt5
+addE pt4 pt1 = pt3
+addE pt4 pt2 = pt5
+addE pt4 pt3 = ptInf
+addE pt4 pt4 = pt2
+addE pt4 pt5 = pt6
+addE pt4 pt6 = pt1
+addE pt5 pt1 = pt4
+addE pt5 pt2 = pt1
+addE pt5 pt3 = pt2
+addE pt5 pt4 = pt6
+addE pt5 pt5 = pt3
+addE pt5 pt6 = ptInf
+addE pt6 pt1 = pt2
+addE pt6 pt2 = pt3
+addE pt6 pt3 = pt5
+addE pt6 pt4 = pt1
+addE pt6 pt5 = ptInf
+addE pt6 pt6 = pt4
+
+-- 单位元/逆元（具体 n 条子句形态; ∀ 抽象 p 上 addE 卡死 —— 实测, 同坑#5 家族）
+unit-l : ∀ p → addE ptInf p ≡ p
+unit-l ptInf = refl
+unit-l pt1 = refl
+unit-l pt2 = refl
+unit-l pt3 = refl
+unit-l pt4 = refl
+unit-l pt5 = refl
+unit-l pt6 = refl
+unit-r : ∀ p → addE p ptInf ≡ p
+unit-r ptInf = refl
+unit-r pt1 = refl
+unit-r pt2 = refl
+unit-r pt3 = refl
+unit-r pt4 = refl
+unit-r pt5 = refl
+unit-r pt6 = refl
+
+inv-r : ∀ p → addE p (negp p) ≡ ptInf
+inv-r ptInf = refl
+inv-r pt1 = refl
+inv-r pt2 = refl
+inv-r pt3 = refl
+inv-r pt4 = refl
+inv-r pt5 = refl
+inv-r pt6 = refl
+
+-- 交换律（n^2 条）
+commE : ∀ p q → addE p q ≡ addE q p
+commE ptInf ptInf = refl
+commE ptInf pt1 = refl
+commE ptInf pt2 = refl
+commE ptInf pt3 = refl
+commE ptInf pt4 = refl
+commE ptInf pt5 = refl
+commE ptInf pt6 = refl
+commE pt1 ptInf = refl
+commE pt1 pt1 = refl
+commE pt1 pt2 = refl
+commE pt1 pt3 = refl
+commE pt1 pt4 = refl
+commE pt1 pt5 = refl
+commE pt1 pt6 = refl
+commE pt2 ptInf = refl
+commE pt2 pt1 = refl
+commE pt2 pt2 = refl
+commE pt2 pt3 = refl
+commE pt2 pt4 = refl
+commE pt2 pt5 = refl
+commE pt2 pt6 = refl
+commE pt3 ptInf = refl
+commE pt3 pt1 = refl
+commE pt3 pt2 = refl
+commE pt3 pt3 = refl
+commE pt3 pt4 = refl
+commE pt3 pt5 = refl
+commE pt3 pt6 = refl
+commE pt4 ptInf = refl
+commE pt4 pt1 = refl
+commE pt4 pt2 = refl
+commE pt4 pt3 = refl
+commE pt4 pt4 = refl
+commE pt4 pt5 = refl
+commE pt4 pt6 = refl
+commE pt5 ptInf = refl
+commE pt5 pt1 = refl
+commE pt5 pt2 = refl
+commE pt5 pt3 = refl
+commE pt5 pt4 = refl
+commE pt5 pt5 = refl
+commE pt5 pt6 = refl
+commE pt6 ptInf = refl
+commE pt6 pt1 = refl
+commE pt6 pt2 = refl
+commE pt6 pt3 = refl
+commE pt6 pt4 = refl
+commE pt6 pt5 = refl
+commE pt6 pt6 = refl
+
+-- σ 群自同（n^2 条; G0 全点核对 ✓ 的 Agda 承载）
+sig-hom : ∀ p q → sig (addE p q) ≡ addE (sig p) (sig q)
+sig-hom ptInf ptInf = refl
+sig-hom ptInf pt1 = refl
+sig-hom ptInf pt2 = refl
+sig-hom ptInf pt3 = refl
+sig-hom ptInf pt4 = refl
+sig-hom ptInf pt5 = refl
+sig-hom ptInf pt6 = refl
+sig-hom pt1 ptInf = refl
+sig-hom pt1 pt1 = refl
+sig-hom pt1 pt2 = refl
+sig-hom pt1 pt3 = refl
+sig-hom pt1 pt4 = refl
+sig-hom pt1 pt5 = refl
+sig-hom pt1 pt6 = refl
+sig-hom pt2 ptInf = refl
+sig-hom pt2 pt1 = refl
+sig-hom pt2 pt2 = refl
+sig-hom pt2 pt3 = refl
+sig-hom pt2 pt4 = refl
+sig-hom pt2 pt5 = refl
+sig-hom pt2 pt6 = refl
+sig-hom pt3 ptInf = refl
+sig-hom pt3 pt1 = refl
+sig-hom pt3 pt2 = refl
+sig-hom pt3 pt3 = refl
+sig-hom pt3 pt4 = refl
+sig-hom pt3 pt5 = refl
+sig-hom pt3 pt6 = refl
+sig-hom pt4 ptInf = refl
+sig-hom pt4 pt1 = refl
+sig-hom pt4 pt2 = refl
+sig-hom pt4 pt3 = refl
+sig-hom pt4 pt4 = refl
+sig-hom pt4 pt5 = refl
+sig-hom pt4 pt6 = refl
+sig-hom pt5 ptInf = refl
+sig-hom pt5 pt1 = refl
+sig-hom pt5 pt2 = refl
+sig-hom pt5 pt3 = refl
+sig-hom pt5 pt4 = refl
+sig-hom pt5 pt5 = refl
+sig-hom pt5 pt6 = refl
+sig-hom pt6 ptInf = refl
+sig-hom pt6 pt1 = refl
+sig-hom pt6 pt2 = refl
+sig-hom pt6 pt3 = refl
+sig-hom pt6 pt4 = refl
+sig-hom pt6 pt5 = refl
+sig-hom pt6 pt6 = refl
+
+-- 特征方程点级: [4]p = [t]·σp（t = +3; G0 全点核对 ✓ 的 Agda 承载）
+mul2 mul3 mul4 : Pt7 → Pt7
+mul2 p = addE p p
+mul3 p = addE (addE p p) p
+mul4 p = addE (addE (addE p p) p) p
+charEq : ∀ p → mul4 p ≡ mul3 (sig p)
+charEq ptInf = refl
+charEq pt1 = refl
+charEq pt2 = refl
+charEq pt3 = refl
+charEq pt4 = refl
+charEq pt5 = refl
+charEq pt6 = refl
+

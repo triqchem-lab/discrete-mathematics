@@ -535,6 +535,17 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `split-*`（18） | 同上 | #E(F₉) = Fix + 2·pairs（σ²=id ⟹ 非不动点成 2-cycles） |
 | `div3V-sup` / `sup-div3V` | `SupersingularDiv3.agda` | **「p∣t」表述 ⟺ 迹集表述 双向**（值层桥） |
 
+### M6 · B5 群律线（2026-11-25, G0+G1）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `e9add`/`e9neg`/`e9mulint` | `oracle_rh_tables.py`（group 模式） | char 3 一般形加法公式（oracle 侧; 群公理全点核对 ✓） |
+| `addE`（1348 格）/`sig`/`negp` | `GroupCls0..7.agda` | E(F₉) 群律表驱动（8 同构类, 代表元 = rep-of） |
+| `commE`（1348）/`unit-*`/`inv-r` | 同上 | 交换律/单位/逆元（表内性质 Agda 承载） |
+| `assocE`（343） | `GroupCls6.agda`（试点） | 结合律（cls6 全量; 其余 7 类 oracle 侧已核, Agda 未收录——量级取舍） |
+| `sig-hom`（1348） | `GroupCls0..7.agda` | **σ 群自同** σ(P+Q) = σP+σQ（G0 全点核对 ✓ 的 Agda 承载） |
+| `charEq`（~99） | 同上 | **特征方程点级** [4]P = [t]·σP（π 满足 x²−tx+3=0 的点级承载） |
+
 ### F₃ 同构分类（A5.2①, 2026-11-25）
 
 | 符号 | 位置 | 命题 |
