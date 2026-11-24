@@ -4,8 +4,9 @@
 # 对标 check_fermat_chain.sh 纪律: "单模块 exit=0 + 零 postulate/hole" 作整链健康信号。
 #
 # 链（import 拓扑序, 依赖先于被依赖者）:
-#   NoNormT0Even → {NormClassify, Witness}                    (范数方程线)
-#   CurveF3 → CountF3 → HasseAllF3 / TraceTableF3             (计数线)
+#   NoNormT0Even → Mod3Core → NormClassify → NoNormT0General   (范数方程线: ∀② 全称分类)
+#   Witness (范数见证)
+#   CurveF3 → CountF3 → {CountF9All → WeilRecurrenceAll, HasseAllF3, TraceTableF3}  (计数线: F₃/F₉)
 #   TraceTableF3 → SupersingularF3 → WaterhouseF3             (分类线)
 #   Eisenstein → WeilRigidity → ZetaFrame → ZetaFunctional    (zeta 线)
 #   ZetaAllF3 (汇合: CurveF3+CountF3+ZetaFrame+TraceTableF3+SupersingularF3+WeilRigidity)
@@ -22,7 +23,7 @@ cd "$(dirname "$0")/.."   # 仓库根
 
 AGDA="${RH_AGDA:-$HOME/.local/bin/agda}"
 RH_DIR="src/Sovereign/Application/Problems/RH"
-CHAIN="NoNormT0Even NormClassify Witness CurveF3 CountF3 HasseAllF3 TraceTableF3 SupersingularF3 WaterhouseF3 Eisenstein WeilRigidity ZetaFrame ZetaFunctional ZetaAllF3"
+CHAIN="NoNormT0Even Mod3Core NormClassify NoNormT0General Witness CurveF3 CountF3 CountF9All WeilRecurrenceAll HasseAllF3 TraceTableF3 SupersingularF3 WaterhouseF3 Eisenstein WeilRigidity ZetaFrame ZetaFunctional ZetaAllF3"
 
 declare -a FILES
 for m in $CHAIN; do

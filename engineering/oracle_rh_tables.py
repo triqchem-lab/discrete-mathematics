@@ -162,15 +162,25 @@ def emit():
         tag = "⊤" if sup else "⊥"
         print(f"sup-trace (mkC {TRI[a2]} {TRI[a4]} {TRI[a6]}) s = {body}  -- #{n}, t={t:+d}, trV={v} {tag}")
 
-    print("\n=== §CountF9All: 18 条 pe9 子句 ===")
+    emit9()
+    return
+
+
+def emit9():
+    t3map = {}
+    for a2, a4, a6, d, n, t, ok in table_f3():
+        if ok:
+            t3map[CURVE(a2, a4, a6)] = t
+    print("=== §CountF9All: F₉ 枚举序（f9at, 与 oracle F9 = [(a,b) for a in F3 for b in F3] 同序）===")
+    print("-- 0:(T₀,T₀) 1:(T₀,T₁) 2:(T₀,T₂) 3:(T₁,T₀) 4:(T₁,T₁) 5:(T₁,T₂) 6:(T₂,T₀) 7:(T₂,T₁) 8:(T₂,T₂)")
+    print("\n=== §CountF9All: 18 条 pe9 子句（非奇异）===")
     for a2, a4, a6, n9, t9 in table_f9():
         print(f"pe9-{CURVE(a2,a4,a6)} : pointsE9 {CURVE(a2,a4,a6)} ≡ {n9}")
         print(f"pe9-{CURVE(a2,a4,a6)} = refl")
-
-    print("\n=== §WeilRecurrenceAll: 18 条 t₂ 子句 ===")
+    print("\n=== §WeilRecurrenceAll: 18 条 (t₁,t₂) 验收对照 ===")
     for a2, a4, a6, n9, t9 in table_f9():
-        print(f"t9-{CURVE(a2,a4,a6)} : t2ℤ {CURVE(a2,a4,a6)} ≡ {zlit(t9)}")
-        print(f"t9-{CURVE(a2,a4,a6)} = refl")
+        c = CURVE(a2, a4, a6)
+        print(f"-- {c}: t1={t3map[c]:+d}, t2={t9:+d}  (校验 t2 = t1²-6: {(t3map[c]**2 - 6) == t9})")
 
 
 # ---------- check: 对账已写 .agda ----------
@@ -224,7 +234,19 @@ def check():
             print(f"  ✗ sup-trace c{a2}{a4}{a6}: .agda={body!r} oracle={want!r}"); bad2 += 1
     print(f"SupersingularF3 sup-trace 对账: {'一致' if bad2 == 0 else str(bad2) + ' 处不一致'} (27)")
 
-    total = bad + bad2
+    # CountF9All pe9（存在才对账; 18 条）
+    import os
+    f9path = "src/Sovereign/Application/Problems/RH/CountF9All.agda"
+    bad3 = 0
+    if os.path.exists(f9path):
+        got = parse_claims(f9path, r"pointsE9 (c\d\d\d) ≡ (\d+)")
+        for a2, a4, a6, n9, t9 in table_f9():
+            have = got.get(CURVE(a2, a4, a6))
+            if have != str(n9):
+                print(f"  ✗ pe9 {CURVE(a2,a4,a6)}: .agda={have} oracle={n9}"); bad3 += 1
+        print(f"CountF9All pe9 对账: {'一致' if bad3 == 0 else str(bad3) + ' 处不一致'} (18)")
+
+    total = bad + bad2 + bad3
     print(f"\n对账总结: {'全部一致 ✓' if total == 0 else f'{total} 处不一致 ✗'}")
     return total
 
@@ -260,4 +282,4 @@ def norm():
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
-    {"check": check, "emit": emit, "norm": norm}.get(cmd, check)()
+    {"check": check, "emit": emit, "emit9": emit9, "norm": norm}.get(cmd, check)()

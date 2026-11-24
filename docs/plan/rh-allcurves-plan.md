@@ -100,12 +100,19 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
 | A0.1 | ✅ `NoNormT0Even` 修复（NoNormPrelude 子模块化，44→3 顶层声明）+ WeilRigidity 头注勘误（ℤ[ω]⊗𝔽₃≅𝔽₃[ε]/ε² 非域；GF(9) 载体是 ℤ[i]）。exit=0 |
 | A2.1 | ✅ `engineering/oracle_rh_tables.py`（check/emit/norm 三模式，零依赖；v2 有限值形式冻结，v1 整除式被 n=7 反例否证） |
 | A2.2 | ✅ `RH/Witness.agda`：wt/ws 两步递归 + `two-ind` + `witness-sat`（∀n 方程）。exit=0 |
-| A2.3 | ◐ base0 全称分类 ✅ exit=0（16 格全覆盖）；base1/base2 + 递降核 pending（§五） |
+| A2.3 | ✅ **全称分类 classify 完成**（2026-11-24）：base0 16 格 + base1 17 格 + base2 36 格全覆盖 +
+  递降核（Mod3Core: tri3-split 右乘三分/no-suc-mult3 互递归/sq3ʳ；sol-next 剥层 + r1/r2 反证 +
+  descent1）+ BSol 族 + BSol×3 提升 + 两步归纳合成。exit=0，0 postulate。|
 | A3.1 | ✅ `RH/SupersingularF3.agda`：**∀③** sup-trace 27 分派 + 6 超奇异见证 + IsSup 可判定定义。exit=0 |
 | A3.2 | ✅ `RH/WaterhouseF3.agda`：`water-iff`（双向）+ `water-surj`（存在性别名）+ 值层 `val3→sup`（21 全覆盖）+ 12+6 互斥 ⊥ 引理。exit=0 |
 | A3.3 | ✅ `docs/Riemann/ProjectionMismatch-t0-pi-Qi-NoNorm-注记-2026-11-24.md`（本源/投影三层判据标注） |
 | 门禁 | ✅ `engineering/check_rh_chain.sh`：14 模块拓扑序 + postulate/hole 词法扫描，2026-11-24 全绿（含 WeilRigidity/ZetaFunctional/ZetaAllF3 回归） |
-| A4.1 / A4.2 / A2.4 / A2.3-续 | pending，按 §二顺序 |
+| A4.1 | ✅ `RH/CountF9All.agda`：F9 = GF(3)[α]/(α²+1) 算术（f9add/f9mul/tritEq）+ 9×9 全枚举计数 + 18 条 pe9（oracle emit9 逐字）。
+  Agda 独立实现与 Python 全枚举 18/18 对上；E₁/E₂/E₆ 与 WeilRigidity 旧件交叉一致（16/7/7）。exit=0 |
+| A4.2 | ✅ `RH/WeilRecurrenceAll.agda`：**∀⑤** recurrence-all（t₂ = t₁²−2q, 27 分派 ×18 refl）+ ∀BSD9（bsd9-all）。
+  数值与 oracle emit9 (t₁,t₂) 表 18/18 校验一致。exit=0 |
+| §五基建 | ✅ `RH/Mod3Core.agda`：tri3-split（**右乘形式**三分, +3 平移=纯 cong）/no-suc-mult3（互递归）/mult3-inj（stdlib *-cancelˡ-≡）/sq-suc/sq3ʳ。递降核落点见 §四 A2.3 行 |
+| 门禁 | ✅ 18 模块拓扑序全绿（2026-11-24 二跑, 含 NoNormT0General/Mod3Core/CountF9All/WeilRecurrenceAll 新件）|
 
 命名记录：判别式函数定名 `discF3`——`disc` 已被 `DiscreteKTheory.agda:573`（Witt 判别式）占用。迹函数定名 `tℤ`（ℤ 层；ℕ 的 `_∸_` 对负迹会钳 0，不可用）。
 
@@ -121,5 +128,19 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
 | 3s² ≡ 0 (mod 3) 分离 | 平凡 | 可由加法/乘法定义性处理 |
 | 9(t'²+3s'²) = 4·3ⁿ ⇔ t'²+3s'² = 4·3^(n−2) | ℕ 除法/约去 | 可用两步归纳（Witness 的 two-ind 风格） |
 
-核实动作（供下会话直接执行）：① rg 全库 `mod.*3\|_≡3_\|tri-inj`（NoNormPrelude 已有 tri/tri-inj，差「平方≡0⇒3∣」方向）；
-② 若无，先建 `RH/Mod3Extract.agda`（三案枚举，约 30 行 refl/absurd），再写递降核。
+执行回执（2026-11-24）：基建以 `RH/Mod3Core.agda` 落地——三案枚举取「右乘形式」t ≡ q·3
+（+3 平移 = cong suc∘suc∘suc，零算术链）；「平方≡0⇒3∣」由 tri3-split + no-suc-mult3
+（suc (3·A) ≢ 3·q 互递归归纳）合成；3 消去直接用 stdlib *-cancelˡ-≡。递降核与 classify 见 §四 A2.3 行。
+
+---
+
+## 六、Agda 2.9.0-nightly 工程事实（2026-11-24 会话四坑, 供后续避让）
+
+| # | 坑 | 症状 | 绕行 |
+|---|---|---|---|
+| 1 | --cubical 下 absurd 只看**顶层**构造子 | `9 ≤ 4 → ⊥` 用 `()` 报 ShouldBeEmpty（顶层 s≤s 合法） | `≤1↓` 显式降层到 `suc _ ≤ zero` 再 `()` |
+| 2 | 签名级**未使用显式参数** | UnsolvedMetaVariables 卡在 binder（探针二分实证; 子句级未使用 h 不触发） | 所有签名参数必须在体内出现 |
+| 3 | stuck ≡ 型的 absurd | `pow3 (suc k) ≡ zero` 用 `()` 报 "Is empty (stuck)" | 归约到 `c * suc x ≡ zero`（+ 递归落构造子 ⇒ suc 头）再 `()` |
+| 4 | **对 telescope 函数参数施应用**（domain 为 ≤ 型, --cubical） | `cap : X ≤ Y → ⊥` 在体内 `cap (…)` 报 CannotApply「cap 非函数」——codomain 被吞（变量作参数/整体传递正常, domain 为 ℕ 正常） | 助手引理**返回 ≤ 证据**，调用方对**具名**空型引理施应用 |
+
+另: NoNormPrelude 的 `*-distribˡ` 是**右分配**形式 `(a+b)*c ≡ a*c+b*c`（Witness.distribʳ 同款）；左分配需 comm 绕行（NormClassify.ldistr）。`⊥`/`_≢_` 有两套（Data.Empty vs NoNormPrelude 自带），不可混用。
