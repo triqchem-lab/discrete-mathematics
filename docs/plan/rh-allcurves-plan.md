@@ -118,7 +118,7 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
 | **M6 · B1** | ✅ `RH/FrobF9.agda`：f9conj（σ=a+bα↦a−bα）+ σ²=id + 环自同（neg 分配 27 格）+ rhs9-conj（σ-等变）+ frob-closed（σ 置换载体）。exit=0 |
 | **M6 · B2/B3** | ✅ `RH/FrobFix.agda`：conj-fix-im 点级嵌入判据 + **fe 18 条 Fix(σ)=#E(F₃)** + **split 18 条 #E(F₉)=Fix+2·pairs**（pairs emit-frob 冻结）。exit=0 |
 | **M6 · B4** | ✅ `RH/SupersingularDiv3.agda`：Div3V 层 + **div3V-sup/sup-div3V 双向**（「p∣t」算术表述 ⟺ 迹集表述）——「定义选择」升级为两等价表述互推。exit=0 |
-| **M6 · B5** | 环论载体（E(F₉) 群律 + Deuring ρ²=−3）登记未排期（A5.2 注记 §三; 量级 ≫ M6 全部） |
+| **M6 · B5** | 环论载体开工（A5.2 注记 §四）: **G0 ✅ oracle group 模式**——群公理全点核对 + σ 群自同 + 特征方程点级 [4]P=[t]σP 全部通过（18 曲线）; G1 量级冻结 1348 格（8 类代表元）; G1-G3 待做（试点 cls6 49 格先行） |
 | 门禁 | ✅ 22 模块拓扑序全绿（2026-11-25, 含 M6 四件 + CurveIsoF3） |
 
 命名记录：判别式函数定名 `discF3`——`disc` 已被 `DiscreteKTheory.agda:573`（Witt 判别式）占用。迹函数定名 `tℤ`（ℤ 层；ℕ 的 `_∸_` 对负迹会钳 0，不可用）。

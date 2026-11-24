@@ -466,6 +466,132 @@ def frob():
     return rows
 
 
+# ---------- group (M6·B5/G0): E(F9) 群律（char 3 一般 Weierstrass）----------
+F9ZERO = (0, 0)
+F9ONE = (1, 0)
+
+
+def f9inv(u):
+    for v in F9:
+        if f9mul(u, v) == F9ONE:
+            return v
+    raise ValueError(f"no inverse for {u}")
+
+
+F9INV_TAB = {u: f9inv(u) for u in F9 if u != F9ZERO}
+
+
+def e9pts(c):
+    # E(F9) 全点: None = 无穷远点 + 仿射点
+    a2, a4, a6 = c
+    pts = [None]
+    for x in F9:
+        x2 = f9mul(x, x)
+        x3 = f9mul(x2, x)
+        rhs = f9add(f9add(f9add(x3, f9mul((a2, 0), x2)), f9mul((a4, 0), x)), (a6, 0))
+        for y in F9:
+            if f9mul(y, y) == rhs:
+                pts.append((x, y))
+    return pts
+
+
+def f9neg(u):
+    return ((-u[0]) % 3, (-u[1]) % 3)  # 全分量求负（共轭只负 α 分量, 二者不同 —— 实测坑）
+
+
+def e9neg(c, P):
+    if P is None:
+        return None
+    return (P[0], f9neg(P[1]))  # -(x,y) = (x,-y); x 不变
+
+
+def e9add(c, P, Q):
+    if P is None:
+        return Q
+    if Q is None:
+        return P
+    xP, yP = P
+    xQ, yQ = Q
+    a2, a4, a6 = c
+    if xP == xQ and f9add(yP, yQ) == F9ZERO:
+        return None  # P = -Q: yP + yQ = 0（含 y=0 的 2-挠; 减法判据是 P=Q 的, 实测坑）
+    if P == Q:
+        num = f9add(f9mul((2, 0), f9mul((a2, 0), xP)), (a4, 0))  # char 3: 3x^2 = 0
+        den = f9add(yP, yP)
+        lam = f9mul(num, F9INV_TAB[den])
+    else:
+        lam = f9mul(f9add(yQ, f9neg(yP)), F9INV_TAB[f9add(xQ, f9neg(xP))])
+    x3 = f9add(f9add(f9mul(lam, lam), f9neg((a2, 0))), f9add(f9neg(xP), f9neg(xQ)))
+    y3 = f9add(f9mul(lam, f9add(xP, f9neg(x3))), f9neg(yP))
+    return (x3, y3)
+
+
+def e9mulint(c, n, P):
+    # [n]P 逐次加法（n 可负; 0 -> 无穷远）
+    R = None
+    for _ in range(abs(n)):
+        R = e9add(c, R, P if n > 0 else e9neg(c, P))
+    return R
+
+
+def group():
+    print("=== M6·B5/G0: E(F9) 群律（char 3 一般形; oracle 全枚举核对）===")
+    ns = [(a2, a4, a6) for a2, a4, a6, d, n, t, ok in table_f3() if ok]
+    t3map = {(a2, a4, a6): t for a2, a4, a6, d, n, t, ok in table_f3() if ok}
+    bad = 0
+    for c in ns:
+        pts = e9pts(c)
+        t = t3map[c]
+        sset = set(pts)
+        # 单位/逆/封闭
+        for P in pts:
+            if e9add(c, P, None) != P or e9add(c, None, P) != P:
+                print(f"  ✗ {CURVE(*c)}: 单位元失败"); bad += 1
+            N = e9neg(c, P)
+            if N not in sset or e9add(c, P, N) is not None:
+                print(f"  ✗ {CURVE(*c)}: 逆元失败 at {P}"); bad += 1
+        # 交换律 + 结合律（全点）
+        for P in pts:
+            for Q in pts:
+                if e9add(c, P, Q) != e9add(c, Q, P):
+                    print(f"  ✗ {CURVE(*c)}: 交换律失败 {P},{Q}"); bad += 1
+        for P in pts:
+            for Q in pts:
+                for R in pts:
+                    if e9add(c, e9add(c, P, Q), R) != e9add(c, P, e9add(c, Q, R)):
+                        print(f"  ✗ {CURVE(*c)}: 结合律失败 {P},{Q},{R}"); bad += 1
+        # sigma 群自同: sigma(P+Q) = sigma P + sigma Q（全对）
+        for P in pts:
+            for Q in pts:
+                S = e9add(c, P, Q)
+                lhs = None if S is None else (f9conj(S[0]), f9conj(S[1]))
+                sP = None if P is None else (f9conj(P[0]), f9conj(P[1]))
+                sQ = None if Q is None else (f9conj(Q[0]), f9conj(Q[1]))
+                rhs = e9add(c, sP, sQ)
+                if lhs != rhs:
+                    print(f"  ✗ {CURVE(*c)}: sigma 群自同失败 {P},{Q}"); bad += 1
+        # 特征方程点级: [4]P = [t].sigma P（全点; sigma 不动点与 2-cycles 都覆盖）
+        for P in pts:
+            SP = None if P is None else (f9conj(P[0]), f9conj(P[1]))
+            lhs = e9mulint(c, 4, P)
+            rhs = e9mulint(c, t, SP)
+            if lhs != rhs:
+                print(f"  ✗ {CURVE(*c)}: 特征方程失败 [4]{P} != [{t}]sigma({P})"); bad += 1
+        if bad > 40:
+            break
+    print(f"  群公理(单位/逆/交换/结合全点) + sigma 群自同 + 特征方程 [4]P=[t].sigma P:"
+          f" {'18 曲线全部通过 ✓' if bad == 0 else str(bad) + ' 处失败 ✗'}")
+    # 各类点数速览（供 G1 量级评估: 代表元曲线的点数 x 点数 = 加法表格数）
+    reps = [(0, 1, 0), (1, 0, 1), (1, 0, 2), (2, 0, 1), (2, 0, 2), (0, 2, 0), (0, 2, 1), (0, 2, 2)]
+    total = 0
+    print("\n  8 类代表元点数（G1 表格量级 = n^2）:")
+    for c in reps:
+        n = len(e9pts(c))
+        total += n * n
+        print(f"  {CURVE(*c)}: {n} 点 -> 加法表 {n}^2 = {n*n} 格")
+    print(f"  8 类合计加法表格数: {total}")
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
-    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob}.get(cmd, check)()
+    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group}.get(cmd, check)()
