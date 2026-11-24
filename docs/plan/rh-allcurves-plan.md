@@ -144,4 +144,6 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
 | 3 | stuck ≡ 型的 absurd | `pow3 (suc k) ≡ zero` 用 `()` 报 "Is empty (stuck)" | 归约到 `c * suc x ≡ zero`（+ 递归落构造子 ⇒ suc 头）再 `()` |
 | 4 | **对 telescope 函数参数施应用**（domain 为 ≤ 型, --cubical） | `cap : X ≤ Y → ⊥` 在体内 `cap (…)` 报 CannotApply「cap 非函数」——codomain 被吞（变量作参数/整体传递正常, domain 为 ℕ 正常） | 助手引理**返回 ≤ 证据**，调用方对**具名**空型引理施应用 |
 
-另: NoNormPrelude 的 `*-distribˡ` 是**右分配**形式 `(a+b)*c ≡ a*c+b*c`（Witness.distribʳ 同款）；左分配需 comm 绕行（NormClassify.ldistr）。`⊥`/`_≢_` 有两套（Data.Empty vs NoNormPrelude 自带），不可混用。
+| 5 | **分派子句块之前悬置其他「已声明未定义」签名**（--cubical） | 后续子句的 refl 检查被污染（CannotApply/UnequalTerms; 同一内容改独立具名引理形态则通过——M1-M4 二分实证, CurveIsoF3） | 全件独立具名引理形态; 必须保持函数形态的（如 cls-of）令签名与子句块**零间隔** |
+
+另: NoNormPrelude 的 `*-distribˡ` 是**右分配**形式 `(a+b)*c ≡ a*c+b*c`（Witness.distribʳ 同款）；左分配需 comm 绕行（NormClassify.ldistr）。`⊥`/`_≢_` 有两套（Data.Empty vs NoNormPrelude 自带），不可混用。Trit 乘法在抽象首参处卡死——涉及具体 r 的展开一律**字面量先行**（CurveIsoF3.xshift 范式）。
