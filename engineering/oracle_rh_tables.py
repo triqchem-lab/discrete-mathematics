@@ -726,6 +726,66 @@ def emit_group(k, with_assoc):
 
 
 
+# ---------- e3 (M7·E0): 每类 [3]P 全点枚举 —— E[3](F9) 破灭判据 ----------
+def e3():
+    print("=== M7·E0: 每类 [3]P 全点枚举（E[3](F9) 破灭判据; mul3 = addE o addE o addE）===")
+    sup = {0, 5, 6, 7}  # t ∈ {0, ±3}
+    bad = 0
+    for k in range(8):
+        c = REPS[k]
+        pts = e9pts(c)
+        t = TVALS[k]
+
+        def mul3i(i):
+            R = None
+            for _ in range(3):
+                R = e9add(c, R, pts[i])
+            return R  # [3]P = ∞ 起加三次（首版从 P 起加实为 [4]P, 被判据交叉核对拦截）
+
+        tor = [i for i in range(len(pts)) if mul3i(i) is None]
+        tag = "超奇异" if k in sup else "普通"
+        names = ["ptInf"] + [f"pt{i}" for i in range(1, len(pts))]
+        is_triv = tor == [0]
+        flag = "✓ 破灭" if (k in sup) == is_triv else "✗ 与超奇异性不符"
+        if (k in sup) != is_triv:
+            bad += 1
+        wit = [names[i] for i in tor if i != 0]
+        print(f"  cls{k} ({CURVE(*c)}, t={t:+d}, {tag}): 3-挠 = {{ {', '.join(names[i] for i in tor)} }} "
+              f"(共 {len(tor)}) {flag}" + (f"  见证: {', '.join(wit)}" if wit else ""))
+    print(f"  判据核验: 超奇异 4 类 3-挠破灭 + 普通 4 类 3-挠非平凡: {'全部一致 ✓' if bad == 0 else str(bad) + ' 处不符 ✗'}")
+    print("\n=== §E3Tor: 子句发射（e3-triv / e3w）===")
+    for k in range(8):
+        c = REPS[k]
+        pts = e9pts(c)
+        names = ["ptInf"] + [f"pt{i}" for i in range(1, len(pts))]
+
+        def mul3i(i):
+            R = None
+            for _ in range(3):
+                R = e9add(c, R, pts[i])
+            return R
+
+        tor = [i for i in range(len(pts)) if mul3i(i) is None]
+        if k in sup:
+            print(f"-- cls{k} 超奇异: e3-triv（{len(pts)} 条; 非无穷点假设 mul3=ptInf 为空, () 拦截）")
+            for i in range(len(pts)):
+                if i == 0:
+                    print(f"e3-triv ptInf he = refl")
+                else:
+                    print(f"e3-triv {names[i]} ()")
+        else:
+            w = [i for i in tor if i != 0]
+            assert len(w) == 2, f"cls{k} 3-挠非平凡见证数异常: {w}"
+            print(f"-- cls{k} 普通: 非平凡 3-挠见证 2 个（{names[w[0]]}, {names[w[1]]}）")
+            for j, i in enumerate(w):
+                print(f"e3w{k}-{j} : Pt{k}")
+                print(f"e3w{k}-{j} = {names[i]}")
+                print(f"e3w-ne{k}-{j} : e3w{k}-{j} ≢ ptInf")
+                print(f"e3w-ne{k}-{j} ()")
+                print(f"e3w-tor{k}-{j} : mul3 e3w{k}-{j} ≡ ptInf")
+                print(f"e3w-tor{k}-{j} = refl")
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
     if cmd == "emit-group":
@@ -733,4 +793,4 @@ if __name__ == "__main__":
         with_assoc = (len(sys.argv) > 3 and sys.argv[3] == "assoc")
         print(emit_group(k, with_assoc))
         raise SystemExit
-    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group}.get(cmd, check)()
+    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group, "e3": e3}.get(cmd, check)()

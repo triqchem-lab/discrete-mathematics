@@ -119,6 +119,7 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
 | **M6 · B2/B3** | ✅ `RH/FrobFix.agda`：conj-fix-im 点级嵌入判据 + **fe 18 条 Fix(σ)=#E(F₃)** + **split 18 条 #E(F₉)=Fix+2·pairs**（pairs emit-frob 冻结）。exit=0 |
 | **M6 · B4** | ✅ `RH/SupersingularDiv3.agda`：Div3V 层 + **div3V-sup/sup-div3V 双向**（「p∣t」算术表述 ⟺ 迹集表述）——「定义选择」升级为两等价表述互推。exit=0 |
 | **M6 · B5** | **G0 ✅**（oracle group: 群公理/σ 自同/特征方程全点 ✓）+ **G1-G3 ✅**（`GroupCls0..7.agda` 8 模块, 243–909 行, 全部 exit=0——`addE` 1348 格 + **σ 群自同 sig-hom 1348 条** + commE/unit/inv + **charEq 特征方程点级**; 试点 cls6 另含结合律 343 条全量）——门禁 30 模块全绿。剩余: End(E) 环论层（π 特征多项式于 End、E[3] 破灭）需群律公式层, 未排期（A5.2 注记 §三/§四） |
+| **M7 · E[3] 破灭** | ✅ `RH/E3Tor.agda`（exit=0）——超奇异 4 类 e3-triv（3-挠破灭）+ 普通 4 类非平凡 C₃ 见证 + notsup 桥——「p∣t 超奇异 ⟺ E[3](F₉) 破灭」逐类成立（Deuring 代数侧表驱动承载; 与 B4 合流为三表述等价） |
 | 门禁 | ✅ 22 模块拓扑序全绿（2026-11-25, 含 M6 四件 + CurveIsoF3） |
 
 命名记录：判别式函数定名 `discF3`——`disc` 已被 `DiscreteKTheory.agda:573`（Witt 判别式）占用。迹函数定名 `tℤ`（ℤ 层；ℕ 的 `_∸_` 对负迹会钳 0，不可用）。
@@ -153,5 +154,6 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
 | 5 | **分派子句块之前悬置其他「已声明未定义」签名**（--cubical） | 后续子句的 refl 检查被污染（CannotApply/UnequalTerms; 同一内容改独立具名引理形态则通过——M1-M4 二分实证, CurveIsoF3） | 全件独立具名引理形态; 必须保持函数形态的（如 cls-of）令签名与子句块**零间隔** |
 
 | 6 | 表驱动函数的 ∀ 命题在抽象变元上卡死 | `∀ p → addE p ptInf ≡ p` 的 refl 报 UnequalTerms（归约需首参构造子） | 命题改具体 n 条子句形态（unit/inv 范式）; 乘法字面量先行同源（xshift 范式） |
+| 7 | [n]P 枚举从 P 起加 n 次 = [n+1]P | 「超奇异 ⟺ 3-挠破灭」判据首跑 4 处不符（实为 4-挠表） | 从 ∞ 起加; 判据交叉核对当场拦截（先算后验活例） |
 
 另: NoNormPrelude 的 `*-distribˡ` 是**右分配**形式 `(a+b)*c ≡ a*c+b*c`（Witness.distribʳ 同款）；左分配需 comm 绕行（NormClassify.ldistr）。`⊥`/`_≢_` 有两套（Data.Empty vs NoNormPrelude 自带），不可混用。Trit 乘法在抽象首参处卡死——涉及具体 r 的展开一律**字面量先行**（CurveIsoF3.xshift 范式）。
