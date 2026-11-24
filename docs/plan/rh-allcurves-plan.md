@@ -114,6 +114,12 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
   数值与 oracle emit9 (t₁,t₂) 表 18/18 校验一致。exit=0 |
 | §五基建 | ✅ `RH/Mod3Core.agda`：tri3-split（**右乘形式**三分, +3 平移=纯 cong）/no-suc-mult3（互递归）/mult3-inj（stdlib *-cancelˡ-≡）/sq-suc/sq3ʳ。递降核落点见 §四 A2.3 行 |
 | 门禁 | ✅ 18 模块拓扑序全绿（2026-11-24 二跑, 含 NoNormT0General/Mod3Core/CountF9All/WeilRecurrenceAll 新件）|
+| **M6 · B0** | ✅ oracle `frob`/`emit-frob`：σ 全枚举（封闭/σ²=id/pe9 对账 ✓; Fix=#E(F₃) 18/18 ✓; #E9=Fix+2·pairs ✓; 首跑漏 ∞ 被 B0 自核对拦截修正） |
+| **M6 · B1** | ✅ `RH/FrobF9.agda`：f9conj（σ=a+bα↦a−bα）+ σ²=id + 环自同（neg 分配 27 格）+ rhs9-conj（σ-等变）+ frob-closed（σ 置换载体）。exit=0 |
+| **M6 · B2/B3** | ✅ `RH/FrobFix.agda`：conj-fix-im 点级嵌入判据 + **fe 18 条 Fix(σ)=#E(F₃)** + **split 18 条 #E(F₉)=Fix+2·pairs**（pairs emit-frob 冻结）。exit=0 |
+| **M6 · B4** | ✅ `RH/SupersingularDiv3.agda`：Div3V 层 + **div3V-sup/sup-div3V 双向**（「p∣t」算术表述 ⟺ 迹集表述）——「定义选择」升级为两等价表述互推。exit=0 |
+| **M6 · B5** | 环论载体（E(F₉) 群律 + Deuring ρ²=−3）登记未排期（A5.2 注记 §三; 量级 ≫ M6 全部） |
+| 门禁 | ✅ 22 模块拓扑序全绿（2026-11-25, 含 M6 四件 + CurveIsoF3） |
 
 命名记录：判别式函数定名 `discF3`——`disc` 已被 `DiscreteKTheory.agda:573`（Witt 判别式）占用。迹函数定名 `tℤ`（ℤ 层；ℕ 的 `_∸_` 对负迹会钳 0，不可用）。
 

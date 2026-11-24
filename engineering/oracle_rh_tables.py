@@ -399,6 +399,73 @@ def table_f3_names():
     return [(a2, a4, a6) for a2 in F3 for a4 in F3 for a6 in F3]
 
 
+# ---------- frob (M6·B0): Frobenius sigma 于 E(F9) 的作用 ----------
+def f9conj(u):
+    # sigma(a + b*alpha) = a + b*alpha^3 = a - b*alpha (alpha^3 = alpha*alpha^2 = -alpha)
+    return (u[0], (-u[1]) % 3)
+
+
+def frob():
+    print("=== M6·B0: Frobenius sigma 于 E(F9)（(x,y) ↦ (x̄,ȳ)）===")
+    ns = [(a2, a4, a6) for a2, a4, a6, d, n, t, ok in table_f3() if ok]
+    n9 = {c: pts9(*c) for c in ns}
+    rows = []
+    bad = 0
+    for c in ns:
+        pts = []
+        for x in F9:
+            x2 = f9mul(x, x)
+            x3 = f9mul(x2, x)
+            rhs = f9add(f9add(f9add(x3, f9mul((c[0], 0), x2)), f9mul((c[1], 0), x)), (c[2], 0))
+            for y in F9:
+                if f9mul(y, y) == rhs:
+                    pts.append((x, y))
+        # sigma 封闭 + sigma^2 = id + Fix 计数（仿射点; 无穷远点单独计, σ-不动）
+        sset = set(pts)
+        fix = [P for P in pts if f9conj(P[0]) == P[0] and f9conj(P[1]) == P[1]]
+        for P in pts:
+            sP = (f9conj(P[0]), f9conj(P[1]))
+            if sP not in sset:
+                print(f"  ✗ {CURVE(*c)}: sigma 不封闭 at {P}"); bad += 1
+            s2P = (f9conj(sP[0]), f9conj(sP[1]))
+            if s2P != P:
+                print(f"  ✗ {CURVE(*c)}: sigma^2 ≠ id at {P}"); bad += 1
+        # 总点数 = 1(∞, σ-不动) + 仿射; Fix 总 = 1 + Fix仿射
+        total = 1 + len(pts)
+        fix_total = 1 + len(fix)
+        if total != n9[c]:
+            print(f"  ✗ {CURVE(*c)}: 总点数 {total} ≠ pe9 {n9[c]}"); bad += 1
+        pairs = (len(pts) - len(fix)) // 2
+        rows.append((c, total, fix_total, pairs))
+    print(f"  sigma 封闭/σ²=id/总点数=pe9: {'全部一致 ✓' if bad == 0 else str(bad) + ' 处破坏'}")
+    print(f"  {'曲线':<6} {'#E9':>4} {'Fix':>4} {'2-cycles':>9}   #E9 = Fix + 2·pairs")
+    for c, e9, f, pr in rows:
+        print(f"  {CURVE(*c):<6} {e9:>4} {f:>4} {pr:>9}   {e9} = {f} + 2·{pr} {'✓' if e9 == f + 2*pr else '✗'}")
+    # Fix 与 #E(F3) 的关系: Fix = E(F3) 嵌入 ⟺ Fix 计数 = #E(F3)
+    t3map = {(a2, a4, a6): n for a2, a4, a6, d, n, t, ok in table_f3() if ok}
+    print("\n  Fix(σ) 与 #E(F₃)（嵌入判据: 坐标虚部 ≡ T₀）:")
+    ok2 = True
+    for c, e9, f, pr in rows:
+        e3 = t3map[c]
+        if f != e3:
+            print(f"  ✗ {CURVE(*c)}: Fix {f} ≠ #E(F3) {e3}"); ok2 = False
+    print(f"  Fix(σ) = #E(F₃): {'18/18 一致 ✓' if ok2 else '存在不一致 ✗'}")
+
+    print("\n=== §FrobFix: pairs 常量 + split/fe 子句（emit-frob 逐字）===")
+    for c, e9, f, pr in rows:
+        print(f"pairs-{CURVE(*c)} : ℕ")
+        print(f"pairs-{CURVE(*c)} = {pr}")
+    print()
+    for c, e9, f, pr in rows:
+        print(f"split-{CURVE(*c)} : pointsE9 {CURVE(*c)} ≡ fixcnt {CURVE(*c)} + 2 * pairs-{CURVE(*c)}")
+        print(f"split-{CURVE(*c)} = refl")
+    print()
+    for c, e9, f, pr in rows:
+        print(f"fe-{CURVE(*c)} : fixcnt {CURVE(*c)} ≡ pointsE {CURVE(*c)}")
+        print(f"fe-{CURVE(*c)} = refl")
+    return rows
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
-    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso}.get(cmd, check)()
+    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob}.get(cmd, check)()

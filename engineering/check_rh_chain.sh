@@ -6,7 +6,9 @@
 # 链（import 拓扑序, 依赖先于被依赖者）:
 #   NoNormT0Even → Mod3Core → NormClassify → NoNormT0General   (范数方程线: ∀② 全称分类)
 #   Witness (范数见证)
-#   CurveF3 → CountF3 → {CountF9All → WeilRecurrenceAll, HasseAllF3, TraceTableF3}  (计数线: F₃/F₉)
+#   CurveF3 → CountF3 → {CurveIsoF3, CountF9All → WeilRecurrenceAll → FrobF9 → FrobFix,
+#                        HasseAllF3, TraceTableF3}  (计数线: F₃/F₉ + Frobenius σ)
+#   SupersingularF3 → SupersingularDiv3 (p∣t 算术表述桥)
 #   TraceTableF3 → SupersingularF3 → WaterhouseF3             (分类线)
 #   Eisenstein → WeilRigidity → ZetaFrame → ZetaFunctional    (zeta 线)
 #   ZetaAllF3 (汇合: CurveF3+CountF3+ZetaFrame+TraceTableF3+SupersingularF3+WeilRigidity)
@@ -23,7 +25,7 @@ cd "$(dirname "$0")/.."   # 仓库根
 
 AGDA="${RH_AGDA:-$HOME/.local/bin/agda}"
 RH_DIR="src/Sovereign/Application/Problems/RH"
-CHAIN="NoNormT0Even Mod3Core NormClassify NoNormT0General Witness CurveF3 CountF3 CurveIsoF3 CountF9All WeilRecurrenceAll HasseAllF3 TraceTableF3 SupersingularF3 WaterhouseF3 Eisenstein WeilRigidity ZetaFrame ZetaFunctional ZetaAllF3"
+CHAIN="NoNormT0Even Mod3Core NormClassify NoNormT0General Witness CurveF3 CountF3 CurveIsoF3 CountF9All WeilRecurrenceAll FrobF9 FrobFix HasseAllF3 TraceTableF3 SupersingularF3 SupersingularDiv3 WaterhouseF3 Eisenstein WeilRigidity ZetaFrame ZetaFunctional ZetaAllF3"
 
 declare -a FILES
 for m in $CHAIN; do

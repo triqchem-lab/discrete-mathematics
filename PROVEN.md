@@ -522,6 +522,19 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `recurrence-all` | `WeilRecurrenceAll.agda` | **∀⑤** `t₂ = t₁² − 2q`（q=3; 27 分派 ×18 refl） |
 | `bsd9-all` | `WeilRecurrenceAll.agda` | ∀BSD9 `#E(F₉) = 10 − t₂`（WeilRigidity 三例全称化） |
 
+### M6 · Frobenius/Deuring 线（2026-11-25）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `f9conj` / `f9conj2` | `FrobF9.agda` | σ(a,b)=(a,−b); σ²=id |
+| `f9add-conj` / `f9mul-conj` | 同上 | σ 环自同（neg-⊕/⊗ 分配 27 格承载） |
+| `rhs9-conj` | 同上 | σ(rhs(x)) ≡ rhs(σx)（系数 F₃-嵌入 σ-不动） |
+| `frob-closed` | 同上 | y²=rhs(x) ⟹ (σy)²=rhs(σx)（σ 置换载体） |
+| `conj-fix-im` | `FrobFix.agda` | σP≡P ⟹ P 虚部≡T₀（F₃-嵌入判据, 点级） |
+| `fe-*`（18） | 同上 | **Fix(σ) = #E(F₃)**（口径含 ∞） |
+| `split-*`（18） | 同上 | #E(F₉) = Fix + 2·pairs（σ²=id ⟹ 非不动点成 2-cycles） |
+| `div3V-sup` / `sup-div3V` | `SupersingularDiv3.agda` | **「p∣t」表述 ⟺ 迹集表述 双向**（值层桥） |
+
 ### F₃ 同构分类（A5.2①, 2026-11-25）
 
 | 符号 | 位置 | 命题 |

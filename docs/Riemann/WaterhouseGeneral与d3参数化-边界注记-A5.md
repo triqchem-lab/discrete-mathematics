@@ -29,7 +29,39 @@
   修正一处预估：8 类而非预估的「5 个」（预估把 t=0 双类 c020 与 c010-012 合并了——
   实枚举 c020（a₄=2）平移不动点自成一类）。与经典「F₃ 上恰 8 个同构类」计数一致
   [未形式化·经典对照]。
-  剩余缺口：Deuring 正常元（②, 未动）。
+  剩余缺口：Deuring 正常元（②）—— **M6 已开工**（2026-11-25, 见下）。
+
+## 三、M6 · Deuring/Frobenius 线（②的原子分解与执行回执, 2026-11-25）
+
+**原子分解**：B0 oracle `frob`/`emit-frob` 模式 ｜ B1 `FrobF9.agda` 载体层 ｜
+B2/B3 `FrobFix.agda` 计数定理 ｜ B4 `SupersingularDiv3.agda` 算术表述桥 ｜
+B5 环论载体（本节登记, 未排期）。
+
+**已交付（全部 exit=0, 0 postulate, 门禁 22 模块全绿）**：
+- **B0**：σ = 共轭 (a,b) ↦ (a,−b) 全枚举——σ 封闭/σ²=id/总点数=pe9 ✓；
+  **Fix(σ) = #E(F₃) 18/18 ✓**（口径含无穷远点——首跑漏 ∞ 被 B0 自交叉核对拦截,
+  修正后一致, 先算后验纪律的活例）；`#E(F₉) = Fix + 2·pairs` 全 ✓。
+  组合不变量 (Fix, pairs) 与 CurveIsoF3 的 8 类逐类一致。
+  两个超奇异极端：c021（t=−3）σ = id（7 点全固定, pairs=0）；
+  c022（t=+3）仅 ∞ 固定（Fix=1, 3 对 2-cycles）。
+- **B1 `FrobF9`**：f9conj（σ）+ f9conj2（σ²=id）+ 环自同（neg-⊕/⊗-distr 27 格 +
+  f9add/f9mul-conj）+ t2f9-conj（系数 σ-不动）+ rhs9-conj（σ-等变, conj-add3/4
+  结构引理）+ **frob-closed**（y²=rhs(x) ⟹ (σy)²=rhs(σx) —— σ 置换载体）。
+- **B2/B3 `FrobFix`**：嵌入判据（虚部 ≡ T₀；conj-fix-im 点级定理, 免分派）+
+  **fix-e3：Fix(σ) = #E(F₃) 18 条**（口径含 ∞）+ **split 18 条：#E(F₉) = Fix + 2·pairs**
+  （pairs 常量 oracle emit-frob 冻结）。
+- **B4 `SupersingularDiv3`**：Div3V 迹值整除层 + div3V-cls（⟺ {trM3,trZ,trP3}）+
+  **div3V-sup / sup-div3V 双向**（water-bwd / sup-trace + val-inj）+
+  div3V-supΣ / sup-div3VΣ（Σ 包装, trace-in-Tr3 全覆盖）——
+  **「p∣t」算术表述 ⟺ 迹集表述双向可证**：「定义选择」升级为「两等价表述互推」。
+
+**B5 · 真正的 Deuring 正常元（登记未排期）**：
+- ρ² = −3 于 End(E) 需要 E(F₉) 群律（加法公式 + 群公理）+ σ 的群自同性
+  （π(P+Q) = π(P)+π(Q)）——库内 0 命中; σ 目前是点集置换（B1 载体）。
+- 有了群律后的续作路径：σ 群自同 → π 特征多项式 x²−tx+3 于 End →
+  p∣t ⟹ π 純不可分/幂零 ⟹ E[3] 破灭（Deuring）。
+- 环论载体的最小起步：E(F₉) 点集上的加法公式逐类枚举（每曲线 ≤16 点,
+  oracle 可全枚举冻结运算表——同 pe9 范式）, 但证明量级 ≫ M6 全部, 需独立排期。
 - nightly 坑 #5 新增（emit-iso 头注与 M1-M4 二分记录）：分派子句块（∀ 函数 + 多子句）
   前悬置其他已声明未定义签名会污染子句 refl 检查——本件全件改独立具名引理形态，
   唯 cls-of 保持函数形态（签名与子句零间隔）。
