@@ -23,7 +23,7 @@ cd "$(dirname "$0")/.."   # 仓库根
 
 AGDA="${RH_AGDA:-$HOME/.local/bin/agda}"
 RH_DIR="src/Sovereign/Application/Problems/RH"
-CHAIN="NoNormT0Even Mod3Core NormClassify NoNormT0General Witness CurveF3 CountF3 CountF9All WeilRecurrenceAll HasseAllF3 TraceTableF3 SupersingularF3 WaterhouseF3 Eisenstein WeilRigidity ZetaFrame ZetaFunctional ZetaAllF3"
+CHAIN="NoNormT0Even Mod3Core NormClassify NoNormT0General Witness CurveF3 CountF3 CurveIsoF3 CountF9All WeilRecurrenceAll HasseAllF3 TraceTableF3 SupersingularF3 WaterhouseF3 Eisenstein WeilRigidity ZetaFrame ZetaFunctional ZetaAllF3"
 
 declare -a FILES
 for m in $CHAIN; do

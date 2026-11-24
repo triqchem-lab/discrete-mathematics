@@ -482,3 +482,59 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 > **⑫ 分析任何「特征」前，先验证它的**归属**（哪个体系的哪个跃迁）。**
 > **⑬ 拿到全文后，先**通读关键数值**（坐标约定、张量值）再推导。**
 > **⑮ 两个数字「看起来正好相等」时，先检查是否描述**同一个物理量**；跨模/跨体系的数值碰巧相等，是最常见的假连接。**
+
+---
+
+## 十三、RH 全称化线（F₃/F₉ Weil 离散 RH，2026-11-24 建线）
+
+> 目录：`src/Sovereign/Application/Problems/RH/`（18 模块，`check_rh_chain.sh` 全绿 ×2）。
+> 数值权威：`engineering/oracle_rh_tables.py`（check/emit/emit9/norm 四模式）。
+> 台账登记待 Linux 机（本机无 proof_dag），符号+命题先行入册防重复。
+
+### 范数方程线（M2）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `classify` | `NormClassify.agda`（§8 末） | **∀② 全称分类**：`∀ n t s → sol n t s → BSol n t s`（v2 冻结：n=2k ↔ (3^k,3^k)/(2·3^k,0)；n=2k+1 ↔ (0,2·3^k)/(3^{k+1},3^k)，ℕ 正部） |
+| `descent1` | `NormClassify.agda` §7 | `sol (suc m) t s → Σ t₀, t ≡ t₀·3 × sol m s t₀`（mod-3 三案剥层, 角色互换） |
+| `no-suc-mult3` | `Mod3Core.agda` | `suc (3·A) ≢ 3·q`（互递归归纳; r=1/2 反证核） |
+| `no-suc4-mult3` | `NormClassify.agda` §7 | `suc⁴ (3·A) ≢ 3·q`（RHS 经 `3suc` 归位后剥三层） |
+| `tri3-split` | `Mod3Core.agda` | `∀ t, t ∈ {q·3, suc(q·3), suc(suc(q·3))}`（**右乘形式**: +3 平移 = 纯 cong） |
+| `t0-odd` | `NoNormT0General.agda` | **t=0 唯一性**: `sol n 0 s → ∃k, n = 2k+1 ∧ s = 2·3^k` |
+| `witness-sat` | `Witness.agda` | `∀ n, wt n² + 3·ws n² ≡ 4·3ⁿ`（两步归纳; 正部见证可解方向） |
+| `no-norm-t0-even` | `NoNormT0Even.agda:411` | `∀ m → ¬ Σ ℤ s, 3s² ≡ 4·3^{2m+2}`（t=0 偶指数无解, ℤ 层） |
+
+### F₃ 曲线线（M1/M3）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `hasse-all` | `HasseAllF3.agda` | **∀①** `∀ c → IsNonSing c → 1 ≤ #E ≤ 7`（⟺ t ∈ {−3..3}） |
+| `trace-in-Tr3` / `trace-witness` / `val-inj` | `TraceTableF3.agda` | 迹集恰 7 值三件套（全覆盖 / 7 值见证 / 49 案单射） |
+| `sup-trace` | `SupersingularF3.agda` | **∀③** `IsSup c → t ∈ {−3,0,+3}`（27 分派） |
+| `water-iff` | `WaterhouseF3.agda` | `IsSup c ↔ t ∈ {−3,0,+3}`（⟸ `water-bwd` 27 分派; ⟹ 复用 sup-trace） |
+| `water-surj` | `WaterhouseF3.agda` | **∀④** 界内每迹可实现（trace-witness 别名） |
+
+### F₉ 线（M4）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `pe9-*`（18 条） | `CountF9All.agda` §5 | 18 条 #E(F₉)（oracle emit9 逐字; Agda 与 Python 独立枚举 18/18 一致） |
+| `recurrence-all` | `WeilRecurrenceAll.agda` | **∀⑤** `t₂ = t₁² − 2q`（q=3; 27 分派 ×18 refl） |
+| `bsd9-all` | `WeilRecurrenceAll.agda` | ∀BSD9 `#E(F₉) = 10 − t₂`（WeilRigidity 三例全称化） |
+
+### F₃ 同构分类（A5.2①, 2026-11-25）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `xshift` | `CurveIsoF3.agda` §1 | 平移作用（a₄ → 2a₂r+a₄; a₆ → r³+a₂r²+a₄r+a₆; 乘法字面量先行） |
+| `ds-*`（81）/ `ps-*`（81） | 同上 §3/§4 | disc / #E 平移不变（oracle 27×3 ✓ + Agda refl） |
+| `cls-of`（27 分派, mkC 模式） | 同上 §2c | 18 非奇异 → 8 类（cls0..cls7; 9 奇异 absurd） |
+| `sic-*`（54）/ `ns-ds-*`（54） | 同上 §2d/§2e | 轨道封闭（平移不离类）+ 平移目标非奇异见证 |
+| `ct-*`（18） | 同上 §2f | 类内迹一致（同构 ⟹ 同 #E 的分轨承载） |
+| `ne-cls*`（28） | 同上 §2g | 8 构造子互斥 |
+
+### ⚠ 别重复实现
+- `descent1` 的 r=1/2 分支**不可**直接 `suc-injective` 剥层（RHS 3·q 非 suc 头）——须 `3suc` 归位（`no-suc4-mult3` 范式）。
+- 递降三分**必须用右乘形式** `t ≡ q·3`（左乘的 +3 平移要多付 +-suc×3 + mul3-suc 链）。
+- **F₃ 同构分类已定**：8 类（cls0..cls7）——别再建第二套分类（t=0 双类：c020 自成一类 ≠ c010-012 类）。
+- nightly 坑 #5（分派子句块前悬置未定义签名污染 refl）+ 四坑见 `docs/plan/rh-allcurves-plan.md` §六。

@@ -280,6 +280,125 @@ def norm():
     print("  即: 解集 = 3·解集(n−2)（n≥3 递降），基 n=1: {(0,±2),(±3,±1)}; n=2: {(±3,±3),(±6,0)}")
 
 
+# ---------- iso (A5.2 续作①): F₃ 同构分类 = x-平移轨道 ----------
+def xshift(a2, a4, a6, r):
+    # y² = (x+r)³ + a2(x+r)² + a4(x+r) + a6 于 char 3 展开
+    # (x+r)³ = x³ + r³;  (x+r)² = x² + 2rx + r²  (3r·x² ≡ 0)
+    a4n = (2 * a2 * r + a4) % 3
+    a6n = (r**3 + a2 * r * r + a4 * r + a6) % 3
+    return (a2, a4n, a6n)
+
+
+def iso():
+    print("=== A5.2①: F₃ 同构分类（x-平移轨道; u-缩放 mod 3 平凡: u⁴≡u⁶≡1）===")
+    ns = [(a2, a4, a6) for a2, a4, a6, d, n, t, ok in table_f3() if ok]
+    # 不变性交叉核对: disc 与 #E 在平移下不动
+    bad = 0
+    for c in ns:
+        for r in F3:
+            c2 = xshift(*c, r)
+            if disc3(*c2) != disc3(*c) or pts3(*c2) != pts3(*c):
+                print(f"  ✗ 平移不变性破坏: {c} --r={r}--> {c2}"); bad += 1
+    print(f"  平移不变性（disc/#E）: {'27×3 全部保持 ✓' if bad == 0 else str(bad) + ' 处破坏 ✗'}")
+    # 轨道（限制在 18 条非奇异内; 不动点: 2·a2·r ≡ 0 且 r³+a2r²+a4r ≡ 0 的 r）
+    seen = set()
+    orbits = []
+    for c in ns:
+        if c in seen:
+            continue
+        orb = sorted({xshift(*c, r) for r in F3} & set(ns))
+        orbits.append(orb)
+        seen |= set(orb)
+    orbits.sort(key=lambda o: (-len(o), o[0]))
+    print(f"  18 条非奇异 → {len(orbits)} 个平移轨道:")
+    tr3map = {}
+    for a2, a4, a6, d, n, t, ok in table_f3():
+        if ok:
+            tr3map[(a2, a4, a6)] = t
+    for i, orb in enumerate(orbits):
+        ts = {tr3map[c] for c in orb}
+        names = " ".join(CURVE(*c) for c in orb)
+        flag = "✓" if len(ts) == 1 else "✗ 迹不一致!"
+        print(f"  class{i}: [{names}]  t={sorted(ts)} {flag}")
+    print()
+    print("=== §CurveIsoF3: xshift 逐组公式 ===")
+    print("xshift (mkC a2 a4 a6) r = mkC a2 (((T2 * a2) * r) + a4)")
+    print("       ((((r * r) * r) + (a2 * (r * r))) + ((a4 * r) + a6)))")
+
+    # ---- 机械子句块（emit-iso: 供 CurveIsoF3.agda 逐字粘贴/比对）----
+    TRI3 = {0: "T₀", 1: "T₁", 2: "T₂"}
+    cls_of = {}
+    for i, orb in enumerate(orbits):
+        for c in orb:
+            cls_of[c] = i
+    rep = {i: orb[0] for i, orb in enumerate(orbits)}
+
+    print("\n=== §CurveIsoF3: disc-shift 81 条（disc 平移不变）===")
+    for c in table_f3_names():
+        for r in F3:
+            print(f"ds-{CURVE(*c)}-{r} : discF3 (xshift {CURVE(*c)} {TRI3[r]}) ≡ discF3 {CURVE(*c)}")
+            print(f"ds-{CURVE(*c)}-{r} = refl")
+
+    print("\n=== §CurveIsoF3: pts-shift 81 条（#E 平移不变）===")
+    for c in table_f3_names():
+        for r in F3:
+            print(f"ps-{CURVE(*c)}-{r} : pointsE (xshift {CURVE(*c)} {TRI3[r]}) ≡ pointsE {CURVE(*c)}")
+            print(f"ps-{CURVE(*c)}-{r} = refl")
+
+    print("\n=== §CurveIsoF3: cls-of 27 条（9 奇异 absurd + 18 分派; mkC 模式形态）===")
+    allc = [(a2, a4, a6) for a2 in F3 for a4 in F3 for a6 in F3]
+    for c in allc:
+        pat = f"(mkC {TRI3[c[0]]} {TRI3[c[1]]} {TRI3[c[2]]})"
+        if c not in cls_of:
+            print(f"cls-of {pat} h = ⊥-elim (h refl)")
+        else:
+            print(f"cls-of {pat} h = cls{cls_of[c]}")
+
+    print("\n=== §CurveIsoF3: ns-ds 54 条（平移目标的非奇异见证 = 目标曲线的 ns-*）===")
+    for c in ns:
+        for r in F3:
+            tgt = xshift(*c, r)
+            print(f"ns-ds-{CURVE(*c)}-{r} : IsNonSing {CURVE(*tgt)}")
+            print(f"ns-ds-{CURVE(*c)}-{r} = ns-{CURVE(*tgt)}")
+
+    print("\n=== §CurveIsoF3: sic 54 条（独立引理形态 —— nightly 坑#5: 分派子句块前")
+    print("    悬置其他已声明未定义签名会污染 refl 检查, 故全件用独立具名引理）===")
+    for c in ns:
+        for r in F3:
+            tgt = xshift(*c, r)
+            print(f"sic-{CURVE(*c)}-{r} : cls-of {CURVE(*tgt)} ns-ds-{CURVE(*c)}-{r} ≡ cls-of {CURVE(*c)} ns-{CURVE(*c)}")
+            print(f"sic-{CURVE(*c)}-{r} = refl  -- {CURVE(*c)} --r={r}--> {CURVE(*tgt)}")
+
+    print("\n=== §CurveIsoF3: cls-trace 18 条（独立引理形态）===")
+    for c in ns:
+        i = cls_of[c]
+        print(f"ct-{CURVE(*c)} : tℤ {CURVE(*c)} ≡ tℤ (rep-of cls{ i })")
+        print(f"ct-{CURVE(*c)} = refl")
+
+    print("\n=== §CurveIsoF3: 轨道成员等式（每轨道内部 xshift 关系, 供 shift-in-cls 反射核）===")
+    for i, orb in enumerate(orbits):
+        members = " ".join(CURVE(*c) for c in orb)
+        print(f"-- cls{i}: {members}")
+        for c in orb:
+            for r in F3:
+                tgt = xshift(*c, r)
+                if tgt in set(orb) and tgt != c:
+                    print(f"--   {CURVE(*c)} --{TRI3[r]}--> {CURVE(*tgt)}")
+
+    print("\n=== §CurveIsoF3: cls 互斥 28 条（8 取 2; 构造子相异 → ≡ 空）===")
+    for i in range(len(orbits)):
+        for j in range(i + 1, len(orbits)):
+            print(f"ne-cls{i}-{j} : cls{i} ≡ cls{j} → ⊥")
+            print(f"ne-cls{i}-{j} ()")
+
+    print(f"\n=== 类代表: {{{', '.join('cls%d: %s' % (i, CURVE(*rep[i])) for i in range(len(orbits)))}}} ===")
+    return orbits
+
+
+def table_f3_names():
+    return [(a2, a4, a6) for a2 in F3 for a4 in F3 for a6 in F3]
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
-    {"check": check, "emit": emit, "emit9": emit9, "norm": norm}.get(cmd, check)()
+    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso}.get(cmd, check)()
