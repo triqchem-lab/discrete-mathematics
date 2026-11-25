@@ -522,6 +522,15 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `recurrence-all` | `WeilRecurrenceAll.agda` | **∀⑤** `t₂ = t₁² − 2q`（q=3; 27 分派 ×18 refl） |
 | `bsd9-all` | `WeilRecurrenceAll.agda` | ∀BSD9 `#E(F₉) = 10 − t₂`（WeilRigidity 三例全称化） |
 
+### M9 · G3 挠率-自旋耦合（2026-11-25, EC 谱系离散类比）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `spinImbalance`/`chiralCharge` | `SpinTorsionCoupling.agda` | 手征串源场（左 +1/右 −1 电荷和） |
+| ★ `coupling` | 同上 | **EC 耦合离散形态**: 挠率值定义性等于自旋密度差（κ=1, refl） |
+| `coupling-closed` | 同上 | 平衡配置闭合归零（镜像 P0-3） |
+| ★ `zhonglv-spin-bridge` | 同上 | repL 11 挠率 ≡ +11 ≡ zhonglvTorsion 挠率——「仲吕不交」获得自旋源解释 |
+
 ### M9 · A₄ 绝对平行试点（2026-11-25, Synthesis/Geometry 线）
 
 | 符号 | 位置 | 命题 |

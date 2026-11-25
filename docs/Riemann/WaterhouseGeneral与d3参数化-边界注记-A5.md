@@ -152,3 +152,22 @@ B5 环论载体（本节登记, 未排期）。
 G3 挠率-自旋耦合的离散类比（手征×仲吕相位, WuXing 载体已有）；
 G4 「相位相干放大」的离散类比（C₈/C₁₂ 相位累加）——每个的答案无论正反都是结构性洞察,
 不对物理实在性作裁决。
+
+## 七、G3 ✅ 挠率-自旋耦合离散类比（2026-11-25, EC 谱系）
+
+**`Synthesis/Geometry/SpinTorsionCoupling.agda`**（exit=0, 0 postulate）——
+EC「挠率的源 = 物质自旋密度」的离散形态，三层构造：
+
+| 层 | 构件 | 内容 |
+|---|---|---|
+| 源场 | `SpinConfig` = List Chirality + `spinImbalance` | 手征电荷和（左 +1 / 右 −1） |
+| 耦合（κ=1） | `spinTorsion cfg nz` + ★ **`coupling`** | 挠率值**定义性等于**失衡（refl 即得——EC 方程离散形态） |
+| 闭合 | `spinTorsionClosed` + `coupling-closed` | 平衡配置闭合归零（镜像 CartanTorsion P0-3 修复; 不走 DiscreteTorsion——那里需要 torsionNonzero, 平衡配置给不出, 正是 P0-3 矛盾同款） |
+
+**★ 仲吕桥 `zhonglv-spin-bridge`**：repL 11（11 个净左手的自旋配置）的挠率值
+≡ + 11 ≡ `zhonglvTorsion.torsionValue`——**CartanTorsion 的「仲吕不交」+11 挠率
+获得自旋源解释**（12 步闭环中 11 净左手 + 1 闭合）。
+语义标注：这是 EC 耦合的**离散构造类比**（κ=1 选择性）,
+不对俄系物理主张作承载（[物理假说·未验证] 隔离不变）。
+
+G4（相位相干放大的离散类比：C₈/C₁₂ 相位累加）候选待做。
