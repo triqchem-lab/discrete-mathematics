@@ -17,6 +17,8 @@
 --   · 这是 **F₉ 有理 3-挠**的破灭; 完整代数侧 E[3](F̄₃) = 0 需代闭点集（库内无;
 --     B5 环论层同源, 未排期）。
 --   · 全件独立具名引理形态（nightly 坑#5/#6 防患）; 表格 oracle e3/emit 逐字生成。
+--   · 术语: 「超奇异」的「奇异」非几何奇点——分类域 18 条全部 disc ≢ 0（光滑）,
+--     9 条 disc ≡ 0 奇异曲线在分类域外; 详见 docs/Riemann/挠结构与超奇异-术语注记。
 
 module Sovereign.Application.Problems.RH.E3Tor where
 
