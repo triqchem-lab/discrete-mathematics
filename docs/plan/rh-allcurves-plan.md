@@ -119,17 +119,20 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
 | **M6 · B2/B3** | ✅ `RH/FrobFix.agda`：conj-fix-im 点级嵌入判据 + **fe 18 条 Fix(σ)=#E(F₃)** + **split 18 条 #E(F₉)=Fix+2·pairs**（pairs emit-frob 冻结）。exit=0 |
 | **M6 · B4** | ✅ `RH/SupersingularDiv3.agda`：Div3V 层 + **div3V-sup/sup-div3V 双向**（「p∣t」算术表述 ⟺ 迹集表述）——「定义选择」升级为两等价表述互推。exit=0 |
 | **M6 · B5** | **G0 ✅**（oracle group: 群公理/σ 自同/特征方程全点 ✓）+ **G1-G3 ✅**（`GroupCls0..7.agda` 8 模块, 243–909 行, 全部 exit=0——`addE` 1348 格 + **σ 群自同 sig-hom 1348 条** + commE/unit/inv + **charEq 特征方程点级**; 试点 cls6 另含结合律 343 条全量）——门禁 30 模块全绿。剩余: End(E) 环论层（π 特征多项式于 End、E[3] 破灭）需群律公式层, 未排期（A5.2 注记 §三/§四） |
-| **A1 · D0/D1 d=1 范数线基案** | ✅ oracle `norm-d1`（n≤12 全枚举: 可解⟺n 偶 ✓）+ `RH/NormD1.agda`（exit=0）——base0 9 格（(0,2)/(2,0) 见证）+ **base1 n=1 无解定理**（16 格 + catch-all）+ 系数-1 上界链; **D2 递降核已设计待执行**（探针骨架 /tmp/rh-audit/nc/D2probe.agda + 本行架构注记, 2026-11-25）:
-  ① 镜像引理 `nm3s2 : suc²(3·A) ≢ 3·q`（q 分派 + A 归纳——与 Mod3Core.no-suc-mult3 镜像成对;
-    q=zero 情形靠「RHS 3·zero = zero 闭合 vs LHS suc² 头」直接 ();
-    q=suc 情形经 *-comm 3 (suc q) 归 suc³(q·3) 后剥二层再递归 A-1）;
-  ② r=1 平方 = suc¹(3·K₁)（sq-suc + shape1）; r=2 平方 = **suc⁴(3·K₂)** 形
-    （sq-suc(suc(q·3)) + 内层归约; 数值验证 q=0: suc⁴(0)=4=x² ✓——初版误推 suc³ 形
-    被数值当场否证）——矛盾核复用 no-suc-mult3 / **no-suc4-mult3**（NormClassify 现成）;
-  ③ 混合和式（x-r1 × y-r1/2）落 suc² 形 → nm3s2; 剥层目标: 双坐标 ÷3 后
-    9(qq+rr) = 4·3^(m+2) → cancel-9 → solD1 m q r（cancel 经 mult3-inj ×2）;
-  ④ 执行注意: trans/cong 链的 +-suc 剥层方向与 distr-sym 合并次序在探针中已迭代两轮,
-    余下为机械收敛（无未知困难）。 |
+| **A1 · D0–D3 d=1 范数线全称分类** | ✅ **收口（2026-11-25）**: oracle `norm-d1`（n≤12 全枚举: 可解⟺n 偶 ✓）+ `RH/NormD1.agda`（exit=0, 0 postulate, 门禁 35 模块收录）。
+  §4/§5 基案（base0 9 格 + base1 n=1 无解定理）✅（D0/D1 行）;
+  **§6 递降形状件**（D2）✅: `nm3s2` suc²(3·A) ≢ 3·q —— 定案形态为「剥两层 suc 后
+    sym 落入 no-suc-mult3」（3 行; 原「A 归纳重写」设计被否定——no-suc-mult3 直接复用更短）;
+  `x1-shape`（r=1: x² ≡ suc(3·K₁), ≡-Reasoning 形态——内联 trans 链撞 UnequalTerms, 分步显项后过）;
+  `x2-shape`（r=2: x² ≡ **suc(3·suc J)** —— suc⁴ 经 `sym (cong suc (3suc J))` 一行归一,
+    免去原设计 suc⁴ 载体与 no-suc4-mult3 复用; r2 全链 inner1/2/3 镜像自 NormClassify.r2-absurd）;
+  `s1s0`/`s0s1`/`s1s1` 和式件 ⇒ 六个非零 mod-3 组合全部化归 no-suc-mult3/nm3s2 两核;
+  **§7 递降核**（D2）✅: `descentD1` tri3-split 双坐标 9 案 = 8 矛盾 + `sol-nextD1` 双剥层
+    （9·(t₀²+s₀²) ≡ 4·3^(m+2) ⟹ t₀²+s₀² ≡ 4·3^m, mul4-3out ×2 + mult3-inj ×2）;
+  **§8 全称分类**（D3）✅: `pow3-dub`（3^(2k) = (3^k)²）+ `witness-satD1`（(2·3^k)² + 0 = 4·3^(2k)）
+    + `liftD1`（索引 k ↦ suc k, dub-suc 归位——初版忘升层被类型器当场拦截）
+    ⇒ ★ `classifyD1`（∀② d=1 镜像, two-ind 两步归纳; 边界同 NormClassify §8: 正向分类,
+    逆向不作陈述）。**A1 阵列全部完工**。 |
 | **M9 · G4 相干放大二分** | ✅ `Synthesis/Geometry/CoherentPhase.agda`（exit=0）——AmplificationDichotomy record inhabited：自由 ℤ 载体忠实线性放大（coherent-linear/coherent-inj posInj）× 有限阶截断（trunc3/trunc8/C₁₂ 引用 DuodecClock）——「相干放大」离散类比存在性判据 = 载体含自由部分；物理层 [物理假说·未验证] 隔离不变。**M9 全线收官**（G1-G4 + A₄ 试点） |
 | **M9 · G3 挠率-自旋耦合** | ✅ `Synthesis/Geometry/SpinTorsionCoupling.agda`（exit=0）——EC 离散形态：源场 = 手征串失衡 + ★ coupling（挠率值定义性 = 失衡, κ=1）+ 平衡闭合归零 + ★ **zhonglv-spin-bridge**（repL 11 挠率 ≡ +11 ≡ zhonglvTorsion——「仲吕不交」获得自旋源解释） |
 | **M9 · A₄ 绝对平行** | ✅ `Synthesis/Geometry/TeleparallelA4.agda` 试点（exit=0）——Shipov 数学骨架离散化：零曲率定理 plaquette-collapse（六步含逆 = 2×换位 + 2×三次归零）+ A₄ 共存 record inhabited（flat × zhonglvTorsion +11）——对 Shipov 自洽性给离散正面数据点；物理诠释 [物理假说·未验证] 严格隔离（A5.2 注记 §六） |

@@ -529,7 +529,23 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `norm-d1` | `oracle_rh_tables.py` | x²+y²=4·3ⁿ n≤12 全枚举: **可解 ⟺ n 偶**（±2·3^k,0)/(0,±2·3^k); n 奇无解 ✓ |
 | `solD1`/`BSolD1` | `NormD1.agda` | 系数-1 范数载体 + 偶-only 冻结族 |
 | `xCap-le`/`yCap-le`/`9≤4-empty` | 同上 | 系数-1 上界链 + 新封闭空型 |
-| `base0-thm`（9 格）/★ `base1-thm`（n=1 **无解定理**, 16 格） | 同上 | 奇指数镜面（与 d=3 t=0 谱系互为镜像）; 递降核待续（双坐标剥层） |
+| `base0-thm`（9 格）/★ `base1-thm`（n=1 **无解定理**, 16 格） | 同上 | 奇指数镜面（与 d=3 t=0 谱系互为镜像） |
+
+### A1 · D2/D3 d=1 递降核 + 全称分类（2026-11-25, RH 线——d=1 线收口）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| ★ `nm3s2` | `NormD1.agda` §6a | suc²(3·A) ≢ 3·q —— 剥两层 suc 后**归约到 no-suc-mult3**（3 行; 非 A-归纳重写） |
+| ★ `x1-shape` | 同上 §6b | x ≡ 3q+1 ⇒ x² ≡ suc(3·K₁)（sq-suc + shape1 镜像, ≡-Reasoning 形态） |
+| ★ `x2-shape` | 同上 §6c | x ≡ 3q+2 ⇒ x² ≡ suc(3·suc J) —— **suc⁴ 经 sym(cong suc (3suc J)) 一行归一**, 免去 r2 全链的 suc⁴ 载体 |
+| `s1s0`/`s0s1`/`s1s1` | 同上 §6d | 和式形状件 —— 六个非零 mod-3 组合全部化归 no-suc-mult3 / nm3s2 两核（**无需 no-suc4/5/8-mult3**） |
+| `xnz1`/`xnz2`/`ynz1`/`ynz2` | 同上 §6e/f | x≢0（对 y 三案）/ y≢0（x 已定）矛盾（S 步先 `cong (z+y·y) xx` 定位重写再形状件——探针实测教训） |
+| `sol-nextD1` | 同上 §7 | **双剥层**: 9·(t₀²+s₀²) ≡ 4·3^(m+2) ⟹ t₀²+s₀² ≡ 4·3^m（mul4-3out 双次 + mult3-inj 双次） |
+| ★ `descentD1` | 同上 §7 | tri3-split **双坐标 9 案** = 8 矛盾 + 1 剥层（d=3 的 descent1 双坐标推广） |
+| `pow3-dub` | 同上 §8 | 3^(2k) = (3^k)²（dub-suc + Witness sq3 归纳） |
+| `witness-satD1` | 同上 §8 | (2·3^k)² + 0 ≡ 4·3^(2k)（*-assoc 链; NoNormPrelude *-assoc 方向 = (m·n)·o ≡ m·(n·o)） |
+| `liftD1` | 同上 §8 | BSolD1 m (t₀,s₀) ⇒ BSolD1 (m+2) (3t₀,3s₀)（**索引 k ↦ suc k**; dub-suc 归位——NormClassify:429 同款） |
+| ★ `classifyD1` | 同上 §8 | **∀② 的 d=1 镜像**: solD1 n x y ⇒ BSolD1 n x y（two-ind 两步归纳; 边界同 NormClassify §8——逆向不作陈述, 见证满足性由 witness-satD1 承载） |
 
 ### M9 · G4 相干放大二分判据（2026-11-25）
 
@@ -618,3 +634,9 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 - 递降三分**必须用右乘形式** `t ≡ q·3`（左乘的 +3 平移要多付 +-suc×3 + mul3-suc 链）。
 - **F₃ 同构分类已定**：8 类（cls0..cls7）——别再建第二套分类（t=0 双类：c020 自成一类 ≠ c010-012 类）。
 - nightly 坑 #5（分派子句块前悬置未定义签名污染 refl）+ 四坑见 `docs/plan/rh-allcurves-plan.md` §六。
+- **d=1 双坐标递降已定**（`descentD1`）: tri3-split 须对 x、y **各跑一次**（9 案）——别套用 d=3 单坐标 descent1。
+- **suc⁴ 平方形状别重开新矛盾核**: d=1 线 r=2 案已归一 `suc(3·suc J)`（`x2-shape` 经 3suc）,
+  和式件三件齐（s1s0/s0s1/s1s1）⇒ 六组合只用 no-suc-mult3/nm3s2 两核——no-suc4/5/8-mult3 在 d=1 无用武之地。
+- **形状步先定位再形状**: 和式 `x*x + y*y` 的 S 步必须先 `cong (λ z → z + y*y) xx`（x² 是命题等价非定义等价）,
+  再对 y² 重写、最后上形状件——探针实测三轮教训。
+- **NoNormPrelude `*-assoc` 方向 = (m·n)·o ≡ m·(n·o)**（与 stdlib 相反）——2·(2·X) ≡ 4·X 要 `sym`。
