@@ -168,6 +168,12 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
   ⟹ **核 = 恰为「零作用元素」全体**（64 元作用环结构定案; 4096 合成全表不作——
   合成封闭已 oracle 抽样冻结, 「商环 ≅ Mat₂(ℤ/4) 子环」的环同构表述亦不作）。
   **M11 全线收口（N0–N5）**。 |
+| **M12 · W-筛网形式化（WitneSieve）** | ✅ 部分（2026-11-25, 门禁 41 模块）: 五路线诊断文档（7e8c5fe8）的筛网 record 化——`Coincidence`（W1·双结构同格; 实例 F₉: f9add 交换/单位 + c8pow 8 步回卷 + 幂 0≠1 承 dist-g0-1）+ `RigidityCert`（W2·共轭可承证; 实例 Pt0/sig: sig-sq-id 对合 + sig-hom 256 条逐对群自同）+ `SeparationCert`（W4·非循环分离; 实例 cls0 rho-vs-零作用, 直接承 rho-ne-act1）。exit=0, 0 postulate。
+  **W3 缺口登记 [构造性缺席·候选级]**: 范数型配方恒等式 4N = (2a+tb)² + c·b² 的 ℤ 总装 trans 链
+  卡 nightly elaborator meta（25+ 迭代; 复现件 /tmp/rh-audit/w3-repro/ 四件 mini + 失败稿;
+  根因 = 坑 #2 未用望远镜变量 + 算子 section + 三层和重排组合; 承件方向离线验证绿——
+  sq+/M0-lemma 形/sq-reassoc/S-partW 泛化 W 形均绿——总装待 ≡-Reasoning 逐行重写; 复现件勿删）。 |
+| **M11 · 野同构判词入册** | ✅（73ba0c59, 对勘文档补充 [未验证·路线推测]）: σᵗσ = q 是对应层恒等式——特征 p 的 σ 图恰为自同构（本体）; 特征 0 刚性自同构不在货架（Spec ℤ 仅恒等; Aut(ℂ) 2^beth 野元依赖选择公理, 边界外）——五路线「寻找自同构」= 范畴找错; Alpöge 造重数 = 对应层投影（成立非本体）。 |
 | **M9 · G4 相干放大二分** | ✅ `Synthesis/Geometry/CoherentPhase.agda`（exit=0）——AmplificationDichotomy record inhabited：自由 ℤ 载体忠实线性放大（coherent-linear/coherent-inj posInj）× 有限阶截断（trunc3/trunc8/C₁₂ 引用 DuodecClock）——「相干放大」离散类比存在性判据 = 载体含自由部分；物理层 [物理假说·未验证] 隔离不变。**M9 全线收官**（G1-G4 + A₄ 试点） |
 | **M9 · G3 挠率-自旋耦合** | ✅ `Synthesis/Geometry/SpinTorsionCoupling.agda`（exit=0）——EC 离散形态：源场 = 手征串失衡 + ★ coupling（挠率值定义性 = 失衡, κ=1）+ 平衡闭合归零 + ★ **zhonglv-spin-bridge**（repL 11 挠率 ≡ +11 ≡ zhonglvTorsion——「仲吕不交」获得自旋源解释） |
 | **M9 · A₄ 绝对平行** | ✅ `Synthesis/Geometry/TeleparallelA4.agda` 试点（exit=0）——Shipov 数学骨架离散化：零曲率定理 plaquette-collapse（六步含逆 = 2×换位 + 2×三次归零）+ A₄ 共存 record inhabited（flat × zhonglvTorsion +11）——对 Shipov 自洽性给离散正面数据点；物理诠释 [物理假说·未验证] 严格隔离（A5.2 注记 §六） |

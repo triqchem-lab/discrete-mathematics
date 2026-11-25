@@ -547,6 +547,15 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `liftD1` | 同上 §8 | BSolD1 m (t₀,s₀) ⇒ BSolD1 (m+2) (3t₀,3s₀)（**索引 k ↦ suc k**; dub-suc 归位——NormClassify:429 同款） |
 | ★ `classifyD1` | 同上 §8 | **∀② 的 d=1 镜像**: solD1 n x y ⇒ BSolD1 n x y（two-ind 两步归纳; 边界同 NormClassify §8——逆向不作陈述, 见证满足性由 witness-satD1 承载） |
 
+### M12 · W-筛网形式化（2026-11-25, RH 线）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `Coincidence` + `F9-coincidence` | `WitneSieve.agda` | **W1·双结构同格 record**: 同一载体加法交换/单位 × 乘法相位 8 步回卷/幂 0≠1; 实例 F₉（f9add/c8pow/dist-g0-1 承件） |
+| `RigidityCert` + `pt0-rigidity` | 同上 | **W2·共轭可承证 record**: 对合 σ + 逐对群自同; 实例 Pt0（sig-sq-id + sig-hom 256 条承件） |
+| `SeparationCert` + `pt0-separation` | 同上 | **W4·非循环分离 record**: 见证点 + 构造子冲突; 实例 cls0 rho-vs-零作用（rho-ne-act1 直接承） |
+| W3 缺口 [构造性缺席·候选级] | plan 文档 M12 行 | 范数型配方恒等式 ℤ 总装卡 nightly meta; 复现件留存 /tmp/rh-audit/w3-repro/（勿删）; 承件方向离线绿 |
+
 ### M11 · End(E) 公式层第一砖：Deuring 失真映射（2026-11-25, RH 线）
 
 | 符号 | 位置 | 命题 |
