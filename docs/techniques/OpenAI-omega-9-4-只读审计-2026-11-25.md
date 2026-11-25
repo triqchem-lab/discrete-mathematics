@@ -39,8 +39,15 @@
 | **等式 ω(F;1,1,1) = 9/4（每域, 含下界）+ α(F)=1/2 + 矩形闭公式** | 对照件 F1（sorried） | ⏳ 内部交付位置未定位（F4）——**若内部库无 ω ≥ 9/4, 则「精确指数/Θ(n^2.25)/驳 ω=2」的宣传口径未被形式化承载** |
 | 「Lean verification passes」 | 内部审查 | ✅ 但对照件含 3 sorry（lakefile 将对照件入构建）——「通过」指内部库可编译 + 对照挑战由比较器另行核验, **非零 sorry 口径**（与 Alpöge 仓库 0-sorry 形态不同, 不可混比） |
 
-[未验证·路线推测]: 下界 ω ≥ 9/4 的内部交付可能在 AuxiliarySeparation/Spectrum/Obstruction.lean
-（谱障碍 → 分离 → 下界的形态）或 Duality/——待网络恢复取余 440 件后复查。
+**[F4 已结案 2026-11-25 续, 代理恢复后 509/509 全量出料]**: 内部库**不含 ω ≥ 9/4 下界定理**——
+全子树 rg: `nine_quarters`/`ge` 方向零命中（仅 `≤` 链）; `AuxiliarySeparation/Main.lean` 头注自述
+「Theorem 1.1 … **complex** square matrix multiplication … consequently an **upper bound** of 9/4」
+（复杂域 + 上界, 显式自限）; Obstruction.lean 头注亦显式免责「do not assert the existence of a
+tensor spectrum or the separation argument」。全库亦无 `2.3710548`（docs/107 所称每域
+ω(F) < 2.371054886006746 的 Lean 交付不在本子树）。**对照件的三条 sorried 挑战（每域等式 9/4 /
+α=1/2 / 矩形闭公式）= 内部库未交付的欠账**——宣传口径（Θ(n^2.25)/驳倒 ω=2）超出 Lean 承载。
+另: 交付链骨架与本仓库 NormFormPositive 同构（展开引理 → 段名化 → prem 乘入 → sInf 收口）,
+两库独立收敛（同构发现 #2）。
 
 ## 四、W-筛网四网应用（对 ω=9/4 结果本身）
 
