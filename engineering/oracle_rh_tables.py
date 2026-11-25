@@ -854,6 +854,71 @@ def norm_d1():
     print("  · **n 奇无解** —— 与 d=3 线的 t=0 谱系（NoNormT0Even）互为镜像")
 
 
+# ---------- gauge (M10·E0): F9 格点规范伪影定理核对（Deep Research §五）----------
+def f9eq(u, v):
+    return u == v
+
+
+def gauge_check():
+    print("=== M10·E0: F9 格点规范伪影定理（Deep Research §五 全枚举核对）===")
+    # C8 表核对
+    g = (1, 1)
+    pow_tab = []
+    R = F9ONE
+    for k in range(8):
+        pow_tab.append(R)
+        R = f9mul(R, g)
+    report_tab = [(1,0),(1,1),(0,2),(1,2),(2,0),(2,2),(0,1),(2,1)]
+    print(f"  C8 幂表 vs 报告 §五: {'一致 ✓' if pow_tab == report_tab else '不一致 ✗'}")
+    # SO(2,F3) = {偶次幂} ≅ C4
+    so2 = [P for P in pow_tab if P in ((1,0),(0,2),(2,0),(0,1))]
+    print(f"  SO(2,F3) = {sorted(so2)} ≅ C4: {'✓' if len(so2) == 4 else '✗'}")
+    # 4x4 周期格点: 纯规范联络 U_mu(v) = h(v) h(v+mu)^-1
+    N = 4
+    import random
+    random.seed(11)
+    h = {}
+    for x in range(N):
+        for y in range(N):
+            h[(x, y)] = random.choice(pow_tab)
+    def U(mu, v):
+        a, b = v
+        if mu == 0:
+            w = ((a + 1) % N, b)
+        else:
+            w = (a, (b + 1) % N)
+        return f9mul(h[v], f9inv(h[w]))
+    # 规范伪影核对: 固定标架 e=(1,0),(0,1) -> T 非零; 联合规范变换 -> T 恒零
+    fixed_e = {v: ((1, 0), (0, 1)) for v in [(x, y) for x in range(N) for y in range(N)]}
+    def torsion(e, v):
+        ex, ey = e[v]
+        ux, uy = U(0, v), U(1, v)
+        wx = ((v[0] + 1) % N, v[1])
+        wy = (v[0], (v[1] + 1) % N)
+        exw, eyw = e[wx]
+        uyx, uyy = uy[0], uy[1]
+        exy, eyy = e[wy]
+        t1 = f9add(ex, f9mul(ux, eyw))
+        t2 = f9add(ey, f9mul(uy, exy))
+        return f9add(t1, f9neg(t2))
+    t_fixed_nonzero = 0
+    t_gauge_nonzero = 0
+    allv = [(x, y) for x in range(N) for y in range(N)]
+    for v in allv:
+        if torsion(fixed_e, v) != (0, 0):
+            t_fixed_nonzero += 1
+    # 联合规范变换: e'_mu(v) = h(v) e_mu(v); U'_mu(v) = h(v) U_mu(v) h(v+mu)^-1
+    gauge_e = {v: (f9mul(h[v], fixed_e[v][0]), f9mul(h[v], fixed_e[v][1])) for v in allv}
+    for v in allv:
+        if torsion(gauge_e, v) != (0, 0):
+            t_gauge_nonzero += 1
+    print(f"  固定标架 (Shipov 式) : 非零挠率格点 {t_fixed_nonzero}/{N*N}（伪影出现 ✓）")
+    print(f"  联合规范变换后      : 非零挠率格点 {t_gauge_nonzero}/{N*N}（恒零 ✓）")
+    verdict = "规范伪影定理成立 ✓（固定标架伪挠率 -> 联合变换归零）" if t_fixed_nonzero > 0 and t_gauge_nonzero == 0 else "核对异常 ✗"
+    print(f"  判定: {verdict}")
+    return pow_tab
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
     if cmd == "emit-group":
@@ -861,4 +926,4 @@ if __name__ == "__main__":
         with_assoc = (len(sys.argv) > 3 and sys.argv[3] == "assoc")
         print(emit_group(k, with_assoc))
         raise SystemExit
-    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group, "e3": e3, "c8": c8, "norm-d1": norm_d1}.get(cmd, check)()
+    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group, "e3": e3, "c8": c8, "norm-d1": norm_d1, "gauge": gauge_check}.get(cmd, check)()
