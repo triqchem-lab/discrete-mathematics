@@ -57,11 +57,13 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
 - **A2.3** `RH/NormClassify.agda`：**∀②** 解分类（无穷递降，复用 NoNormPrelude 全套 3-adic 引理）。
   **base0 全称分类已完成**（2026-11-24，exit=0）：16 格全覆盖——12 格枚举（10 absurd + 2 冻结解见证 (1,1)/(2,0)）
   + 4 格 catch-all 反证核（t≥3 / s≥3，全显式签名引理 t3-absurd/hi3s/lo3s/s3-absurd + 9≤4/27≤4 空型）。
-  待续：base1/base2 枚举 + 递降核（递降需 mod-3 整除抽取基建，见 §五）。
+  （✅ 已收口 2026-11-24/25: base1/base2 枚举 + 递降核 descent1 全部完成——Mod3Core 基建
+  （tri3-split/no-suc-mult3/sq-suc 等）落地后机械收敛; 现状见 §四 A2.3 行。）
   工程勘误入档：2.9.0-nightly 下 ① --cubical absurd 只看顶层构造子（9≤4 须 ≤1↓ 降层到 suc _ ≤ zero）；
   ② 签名级未使用显式参数触发 UnsolvedMetaVariables（探针二分实证；子句级未使用 h 不触发）。
 - **A2.4** `RH/NoNormT0General.agda`：t=0 无解谱系并入。现状：偶侧已证 `no-norm-t0-even`/`no-sq-4pow3-odd`，
-  奇侧可解已证 `witness-sat`（Witness），**差唯一性方向**（奇 n 时 s=±2·3^k 之外无解——需同款 mod-3 递降基建）[未验证·路线推测]。
+  奇侧可解已证 `witness-sat`（Witness），**唯一性方向 ✅ 已证**（`t0-odd`: sol n 0 s ⟹ n=2k+1 ∧ s=2·3^k,
+  2026-11-25 提交 4379eb6c; Mod3Core 基建承载）。
 
 ### M3 分类定理
 - **A3.1** `RH/SupersingularF3.agda`：定义（3∣t，标注为定义选择）+ **∀③** 超奇异迹集 = {−3,0,3}。
