@@ -171,3 +171,25 @@ EC「挠率的源 = 物质自旋密度」的离散形态，三层构造：
 不对俄系物理主张作承载（[物理假说·未验证] 隔离不变）。
 
 G4（相位相干放大的离散类比：C₈/C₁₂ 相位累加）候选待做。
+
+## 八、G4 ✅ 相位相干放大离散类比判据（2026-11-25, M9 收官）
+
+**`Synthesis/Geometry/CoherentPhase.agda`**（exit=0, 0 postulate）——
+「相位相干放大」的**结构性判据 = 载体自由度**（AmplificationDichotomy record,
+构造实例 inhabited）:
+
+| 载体 | 判据 | 承载 |
+|---|---|---|
+| **自由 ℤ（自旋失衡场）** | **线性无界** coherent-linear（repL k ≡ +k）+ **忠实** coherent-inj（失衡相等 ⟹ 步数相等, posInj 归约）——放大不失真 | SpinTorsionCoupling |
+| **有限阶 C₃（T⁶ 步进）** | 三步归零 trunc3（= updAt-cubed, M6） | T6CayleyVec |
+| **有限阶 C₈（F₉ 相位）** | 八步回卷 trunc8（c8pow 8 ≡ c8pow 0） | F9MultC8 |
+| **有限阶 C₁₂（仲吕）** | 十二步归零（DuodecClock ZeroOblivion.jointCycle, PROVEN 登记引用） | DuodecClock |
+
+**结构洞察（讨论定案: 正反皆价值, 不裁决物理实在性）**:
+「相位相干放大」机制的离散类比存在性由载体自由度决定——
+自由 ℤ 载体忠实线性放大（不失真）; 有限阶载体周期截断。
+即: 放大机制的数学条件 = **载体含自由（非挠）部分**。
+物理层主张维持 [物理假说·未验证] 隔离。
+
+**M9 全线收官**: G1 群律表 8 类 + G2 σ 群自同 + G3 挠率-自旋耦合（仲吕桥）+
+G4 放大二分判据 + A₄ 绝对平行试点 —— 全部 exit=0, 0 postulate。

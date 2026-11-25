@@ -522,6 +522,15 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `recurrence-all` | `WeilRecurrenceAll.agda` | **∀⑤** `t₂ = t₁² − 2q`（q=3; 27 分派 ×18 refl） |
 | `bsd9-all` | `WeilRecurrenceAll.agda` | ∀BSD9 `#E(F₉) = 10 − t₂`（WeilRigidity 三例全称化） |
 
+### M9 · G4 相干放大二分判据（2026-11-25）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `coherent-linear` | `CoherentPhase.agda` | 自由 ℤ 载体相干累加线性（repL k ≡ +k） |
+| ★ `coherent-inj` | 同上 | **忠实性**: 失衡相等 ⟹ 步数相等（posInj 归约; 放大不失真） |
+| `trunc3`/`trunc8` | 同上 | 有限阶截断: C₃ 三步归零（updAt-cubed）/ C₈ 八步回卷 |
+| `AmplificationDichotomy` + `dichotomy-instance` | 同上 | **放大二分定理**: 放大机制存在条件 = 载体含自由（非挠）部分 |
+
 ### M9 · G3 挠率-自旋耦合（2026-11-25, EC 谱系离散类比）
 
 | 符号 | 位置 | 命题 |
