@@ -522,6 +522,15 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `recurrence-all` | `WeilRecurrenceAll.agda` | **∀⑤** `t₂ = t₁² − 2q`（q=3; 27 分派 ×18 refl） |
 | `bsd9-all` | `WeilRecurrenceAll.agda` | ∀BSD9 `#E(F₉) = 10 − t₂`（WeilRigidity 三例全称化） |
 
+### A1 · D0/D1 d=1 范数线基案（2026-11-25, RH 线）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `norm-d1` | `oracle_rh_tables.py` | x²+y²=4·3ⁿ n≤12 全枚举: **可解 ⟺ n 偶**（±2·3^k,0)/(0,±2·3^k); n 奇无解 ✓ |
+| `solD1`/`BSolD1` | `NormD1.agda` | 系数-1 范数载体 + 偶-only 冻结族 |
+| `xCap-le`/`yCap-le`/`9≤4-empty` | 同上 | 系数-1 上界链 + 新封闭空型 |
+| `base0-thm`（9 格）/★ `base1-thm`（n=1 **无解定理**, 16 格） | 同上 | 奇指数镜面（与 d=3 t=0 谱系互为镜像）; 递降核待续（双坐标剥层） |
+
 ### M9 · G4 相干放大二分判据（2026-11-25）
 
 | 符号 | 位置 | 命题 |

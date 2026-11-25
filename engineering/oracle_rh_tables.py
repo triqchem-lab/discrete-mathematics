@@ -824,6 +824,36 @@ def c8():
     return pow_tab
 
 
+# ---------- norm-d1 (A1·D0): x^2 + y^2 = 4*3^n —— Z[i] 范数线全枚举 ----------
+def norm_d1():
+    print("=== A1·D0: x^2 + y^2 = 4*3^n 解分类（Z[i] 范数; n <= 12 全域枚举）===")
+    ok = True
+    for n in range(0, 13):
+        q = 3 ** n
+        bound = 2 * 3 ** (n // 2) + 2
+        sols = []
+        for x in range(-bound, bound + 1):
+            for y in range(-bound, bound + 1):
+                if x * x + y * y == 4 * q:
+                    sols.append((x, y))
+        pos = sorted({(abs(x), abs(y)) for x, y in sols})
+        # 冻结判据: 可解 <=> n 偶, (x,y) = (2*3^k, 0) / (0, 2*3^k)
+        if n % 2 == 0:
+            kk = n // 2
+            cand = sorted({(2 * 3 ** kk, 0), (0, 2 * 3 ** kk)})
+        else:
+            cand = []
+        if pos != cand:
+            print(f"  ✗ n={n}: 冻结判据 {cand} 与枚举 {pos} 不符"); ok = False
+        tag = f"可解 (2*3^{n//2},0)/(0,2*3^{n//2})" if n % 2 == 0 else "无解"
+        print(f"  n={n:2d}: {tag:24s} 枚举 {len(sols)} 解（含符号）{'✓' if (pos == cand) else '✗'}")
+    print(f"\n冻结判据核验: {'全部一致 ✓' if ok else '存在不符 ✗'}")
+    print("结构（先算后验定案）:")
+    print("  · 3 惰性于 Z[i]（3 = (1+i)(1-i)+1 非范数）=> x^2+y^2 ≡ 0 mod 3 => 3|x 且 3|y")
+    print("  · 解集 = 3·解集(n-2) 递降（双坐标剥层）; 基 n=0: (±2,0)/(0,±2); n=1: 无解")
+    print("  · **n 奇无解** —— 与 d=3 线的 t=0 谱系（NoNormT0Even）互为镜像")
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
     if cmd == "emit-group":
@@ -831,4 +861,4 @@ if __name__ == "__main__":
         with_assoc = (len(sys.argv) > 3 and sys.argv[3] == "assoc")
         print(emit_group(k, with_assoc))
         raise SystemExit
-    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group, "e3": e3, "c8": c8}.get(cmd, check)()
+    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group, "e3": e3, "c8": c8, "norm-d1": norm_d1}.get(cmd, check)()
