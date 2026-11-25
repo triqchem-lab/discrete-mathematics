@@ -554,7 +554,8 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `Coincidence` + `F9-coincidence` | `WitneSieve.agda` | **W1·双结构同格 record**: 同一载体加法交换/单位 × 乘法相位 8 步回卷/幂 0≠1; 实例 F₉（f9add/c8pow/dist-g0-1 承件） |
 | `RigidityCert` + `pt0-rigidity` | 同上 | **W2·共轭可承证 record**: 对合 σ + 逐对群自同; 实例 Pt0（sig-sq-id + sig-hom 256 条承件） |
 | `SeparationCert` + `pt0-separation` | 同上 | **W4·非循环分离 record**: 见证点 + 构造子冲突; 实例 cls0 rho-vs-零作用（rho-ne-act1 直接承） |
-| W3 缺口 [构造性缺席·候选级] | plan 文档 M12 行 | 范数型配方恒等式 ℤ 总装卡 nightly meta; 复现件留存 /tmp/rh-audit/w3-repro/（勿删）; 承件方向离线绿 |
+| ★ `W3-skeleton` + 七实例 | `NormFormPositive.agda` | **W3·正性可定位 ℤ 承证**: 配方恒等式 RHS ≡ P1form + (M4form + ((+4)*(+q))·b²)（prem : t²+c ≡ 4q 乘入; 4N 的 + 形由两个平方项承证——Schwarz 型）+ 八类 prem 全 refl; 泛化 W 形态（免坑 #2/#8） |
+| `sq+`/`M0-lemma`/`sq-reassoc`/`S-partW` | 同上 §1 | 总装四承件（平方 + 形析取 / distribʳ+reassoc / 平方再结合 / prem 乘入泛化 W） |
 
 ### M11 · End(E) 公式层第一砖：Deuring 失真映射（2026-11-25, RH 线）
 
