@@ -951,6 +951,157 @@ def gauge_check():
     return pow_tab
 
 
+
+# ---------- distortion (M11·N0): Deuring 失真映射 rho:(x,y)↦(-x,α·y) 于超奇异 a6=0 类 ----------
+# 数学背景: y²=x³+a₄x（a₆=0, j=1728 扭曲）上 rho 是 F̄₃-有理自同态（rho²=[-1], CM by Z[i]）。
+# 离散承载: E(F₉) 16 点（t=0 类）; 逐点封闭 + 256 对 hom + rho²=neg + rhoσ=σρ +
+#           对 Z[σ]-作用全部映射（P↦[a]P+[b]σP, a,b∈{0..3} 去重后 ≤16 个）逐个分离 => End ⊋ Z[σ]-作用。
+def mul_alpha(u):
+    # α·(c,d) = (2d, c) mod 3（α²=−1: α·α·d = −d）
+    return ((2 * u[1]) % 3, u[0])
+
+def rho_map(P):
+    if P is None:
+        return None
+    return (f9neg(P[0]), mul_alpha(P[1]))
+
+def sig_pt(P):
+    if P is None:
+        return None
+    return (f9conj(P[0]), f9conj(P[1]))
+
+def act_map(c, a, b, P):
+    # P ↦ [a]P + [b]·σ(P)（Z[σ]-作用的点级形态）
+    return e9add(c, e9mulint(c, a, P), e9mulint(c, b, sig_pt(P)))
+
+def distortion(ks=(0, 5), emit_k=0):
+    print("=== M11·N0: Deuring 失真映射 rho:(x,y)↦(-x,α·y)（超奇异 a₆=0 类全枚举核对）===")
+    all_ok = True
+    data = {}
+    for k in ks:
+        c = REPS[k]
+        pts = e9pts(c)
+        n = len(pts)
+        closed = all(rho_map(P) in pts for P in pts)
+        sq = all(rho_map(rho_map(P)) == e9neg(c, P) for P in pts)
+        # σρ = −ρσ（反交换; Galois 共轭作用于 CM: σρσ = −ρ —— rho 含 α ∉ F₃, 手算 σρ=ρρ 被枚举否证）
+        anticomm = all(sig_pt(rho_map(P)) == e9neg(c, rho_map(sig_pt(P))) for P in pts)
+        hom_fail = sum(1 for P in pts for Q in pts
+                       if rho_map(e9add(c, P, Q)) != e9add(c, rho_map(P), rho_map(Q)))
+        # sigma^2 = id 与 [4]=0 点级核对（作用映射去重的合法域）
+        sig2 = all(sig_pt(sig_pt(P)) == P for P in pts)
+        mul4z = all(e9mulint(c, 4, P) is None for P in pts)
+        # Z[σ]-作用映射: (a,b) ∈ {0,1,2,3}²; 去重
+        acts = {}
+        for a in range(4):
+            for b in range(4):
+                tab = tuple(act_map(c, a, b, P) for P in pts)
+                acts.setdefault(tab, (a, b))
+        ne_wit = {}
+        for tab, (a, b) in acts.items():
+            wit = next((P for P in pts if rho_map(P) != act_map(c, a, b, P)), None)
+            ne_wit[(a, b)] = wit
+        sep = all(w is not None for w in ne_wit.values())
+        ok = closed and sq and anticomm and hom_fail == 0 and sig2 and mul4z and sep
+        all_ok = all_ok and ok
+        print(f"  cls{k} {CURVE(*c)} t={TVALS[k]:+d}: {n}点 | 封闭{'✓' if closed else '✗'} "
+              f"| hom失败对 {hom_fail}{'✓' if hom_fail == 0 else '✗'} "
+              f"| rho²=neg{'✓' if sq else '✗'} | σρ=−ρσ{'✓' if anticomm else '✗'} "
+              f"| σ²=id{'✓' if sig2 else '✗'} | [4]=0{'✓' if mul4z else '✗'}")
+        print(f"    Z[σ]-作用映射去重: {len(acts)} 个; rho 与每个都有分离点: {'✓' if sep else '✗'}")
+        data[k] = (pts, acts, ne_wit)
+    print(f"  判定: {'Deuring 第一砖成立 ✓（End ⊋ Z[σ]-作用的构造性离散见证）' if all_ok else '核对异常 ✗'}")
+    # ---- emit: cls{emit_k} 的 Agda 模块（表驱动逐字）----
+    pts, acts, ne_wit = data[emit_k]
+    c = REPS[emit_k]
+    n = len(pts)
+    names = ["ptInf"] + [f"pt{i}" for i in range(1, n)]
+    def pname(P):
+        return "ptInf" if P is None else names[pts.index(P)]
+    def fA_name(a):
+        return {0: "act0", 1: "act1", 2: "mul2", 3: "mul3"}[a]
+    L = []
+    A = L.append
+    A('{-# OPTIONS --rewriting --guardedness #-}')
+    A('')
+    A('-- | Sovereign.Application.Problems.RH.EndDistortion0')
+    A(f'-- Deuring 失真映射 rho 于 cls{emit_k}（{CURVE(*c)}, 超奇异 t=0）—— End(E) ⊋ Z[σ]-作用的第一砖')
+    A('--')
+    A('-- 数学背景（oracle distortion 冻结, 先算后验）:')
+    A('--   · rho : (x,y) ↦ (-x, α·y)（α² = -1 ∈ F₉）; 经典 Deuring 失真映射（CM by Z[i] 谱系）')
+    A('--   · 曲线封闭 + rho(P+Q) = rho P + rho Q（**256 对 hom**）+ rho² = neg')
+    A('--   · **σρ = −ρσ**（反交换; Galois 共轭作用于 CM: σρσ = −ρ —— 手算 σρ=ρσ 被枚举否证）')
+    A('--   · **rho ∉ Z[σ]-作用**: 作用映射 P ↦ [a]P + [b]·σP（a,b ∈ {0..3}; σ²=id, [4]=0 点级')
+    A('--     定案合法域）去重后逐个与 rho 有分离点 —— 超奇异 ⟹ End(E) 超出 Z[π]-作用的')
+    A('--     **构造性离散见证**（End(E) 环论层首件; 完整四元序分类不作陈述）')
+    A('--')
+    A('-- 诚实边界:')
+    A('--   · 本件是点级映射层的分离定理; 「End(E) 是四元代数序」的完整环论表述不作陈述')
+    A('--   · 数值子句全部 oracle distortion 生成（先算后验纪律）')
+    A('')
+    A('module Sovereign.Application.Problems.RH.EndDistortion0 where')
+    A('')
+    A('open import Data.Empty using (⊥; ⊥-elim)')
+    A('open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)')
+    A('open import Sovereign.Application.Problems.RH.GroupCls0')
+    A('')
+    A('--------------------------------------------------------------------------------')
+    A('-- §1. rho 表（oracle 逐字; 16 点）')
+    A('--------------------------------------------------------------------------------')
+    A('')
+    A('rho : Pt0 → Pt0')
+    for P in pts:
+        A(f'rho {pname(P)} = {pname(rho_map(P))}')
+    A('')
+    A('--------------------------------------------------------------------------------')
+    A('-- §2. 作用映射承件: act0/act1 具名（[0]=ptInf, [1]=id; mul2/mul3 复用 GroupCls0）')
+    A('--------------------------------------------------------------------------------')
+    A('')
+    A('act0 : Pt0 → Pt0')
+    A('act0 _ = ptInf')
+    A('')
+    A('act1 : Pt0 → Pt0')
+    A('act1 p = p')
+    A('')
+    A('--------------------------------------------------------------------------------')
+    A('-- §3. rho² = neg 与 rhoσ = σρ（16 + 16 条）')
+    A('--------------------------------------------------------------------------------')
+    A('')
+    A('rho-sq-neg : ∀ p → rho (rho p) ≡ negp p')
+    for P in pts:
+        A(f'rho-sq-neg {pname(P)} = refl')
+    A('')
+    A('rho-sig-anticomm : ∀ p → sig (rho p) ≡ negp (rho (sig p))')
+    for P in pts:
+        A(f'rho-sig-anticomm {pname(P)} = refl')
+    A('')
+    A('--------------------------------------------------------------------------------')
+    A('-- §4. ★ 256 对 hom: rho (p + q) ≡ rho p + rho q（End(E) 成员判据）')
+    A('--------------------------------------------------------------------------------')
+    A('')
+    A('rho-hom : ∀ p q → rho (addE p q) ≡ addE (rho p) (rho q)')
+    for P in pts:
+        for Q in pts:
+            A(f'rho-hom {pname(P)} {pname(Q)} = refl')
+    A('')
+    A('--------------------------------------------------------------------------------')
+    A('-- §5. ★ rho ∉ Z[σ]-作用（去重作用映射逐个分离见证）')
+    A('--------------------------------------------------------------------------------')
+    A('')
+    A('-- 作用映射 P ↦ [a]P + [b]·σP 即 addE (fA p) (fB (sig p)); fA ∈ {ptInf, id, mul2, mul3}')
+    idx = 0
+    for (a, b), wit in sorted(ne_wit.items()):
+        idx += 1
+        A(f'-- act({a},{b}) 分离点: {pname(wit)}')
+        A(f'rho-ne-act{idx} : rho {pname(wit)} ≡ addE ({fA_name(a)} {pname(wit)}) '
+          f'({fA_name(b)} (sig {pname(wit)})) → ⊥')
+        A(f'rho-ne-act{idx} ()')
+    A('')
+    A(f'-- 分离见证 {idx} 条（Z[σ]-作用映射去重 {len(acts)} 个全覆盖）')
+    print("\n=== §M11: Agda 表已生成（emit-distortion 逐字; 见上方结构）===")
+    return "\n".join(L)
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
     if cmd == "emit-group":
@@ -958,4 +1109,11 @@ if __name__ == "__main__":
         with_assoc = (len(sys.argv) > 3 and sys.argv[3] == "assoc")
         print(emit_group(k, with_assoc))
         raise SystemExit
-    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group, "e3": e3, "c8": c8, "norm-d1": norm_d1, "gauge": gauge_check}.get(cmd, check)()
+    if cmd == "emit-distortion":
+        import io, contextlib
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            txt = distortion(ks=(0, 5), emit_k=int(sys.argv[2]) if len(sys.argv) > 2 else 0)
+        print(txt)
+        raise SystemExit
+    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group, "e3": e3, "c8": c8, "norm-d1": norm_d1, "gauge": gauge_check, "distortion": distortion}.get(cmd, check)()

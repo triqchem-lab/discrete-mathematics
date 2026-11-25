@@ -547,6 +547,17 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `liftD1` | 同上 §8 | BSolD1 m (t₀,s₀) ⇒ BSolD1 (m+2) (3t₀,3s₀)（**索引 k ↦ suc k**; dub-suc 归位——NormClassify:429 同款） |
 | ★ `classifyD1` | 同上 §8 | **∀② 的 d=1 镜像**: solD1 n x y ⇒ BSolD1 n x y（two-ind 两步归纳; 边界同 NormClassify §8——逆向不作陈述, 见证满足性由 witness-satD1 承载） |
 
+### M11 · End(E) 公式层第一砖：Deuring 失真映射（2026-11-25, RH 线）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `distortion`（新 oracle 模式） | `oracle_rh_tables.py` | cls0/cls5（a₆=0 超奇异）全枚举: 封闭 + 256 对 hom 零失败 + ρ²=neg + σρ=−ρσ + Z[σ]-作用（去重 16/8 个）逐个分离 ✓ |
+| `rho`（16 条） | `EndDistortion0.agda` | (x,y) ↦ (−x, α·y)——经典 Deuring 失真映射的 F₉ 离散承载 |
+| ★ `rho-hom`（256 条 refl） | 同上 | **rho(P+Q) ≡ rho P + rho Q 全对** —— End(E) 成员判据 |
+| `rho-sq-neg`（16） | 同上 | ρ² = negp（ρ²=[−1], CM by ℤ[i] 谱系） |
+| `rho-sig-anticomm`（16） | 同上 | **σρ = −ρσ**（Galois 共轭作用于 CM: σρσ = −ρ; 手算 σρ=ρσ 被枚举否证入档） |
+| ★ `rho-ne-act1..16` | 同上 | **rho ∉ ℤ[σ]-作用**: 作用映射 P↦[a]P+[b]·σP（去重 16 个）逐个有分离点——超奇异 ⟹ End ⊋ ℤ[π]-作用的构造性离散见证（第一砖; 完整四元序不作陈述） |
+
 ### M9 · G4 相干放大二分判据（2026-11-25）
 
 | 符号 | 位置 | 命题 |
@@ -640,3 +651,5 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 - **形状步先定位再形状**: 和式 `x*x + y*y` 的 S 步必须先 `cong (λ z → z + y*y) xx`（x² 是命题等价非定义等价）,
   再对 y² 重写、最后上形状件——探针实测三轮教训。
 - **NoNormPrelude `*-assoc` 方向 = (m·n)·o ≡ m·(n·o)**（与 stdlib 相反）——2·(2·X) ≡ 4·X 要 `sym`。
+- **σρ ≠ ρσ（cls0 失真映射）**: 正确关系 σρ = −ρσ（ρ 含 α∉F₃, Galois 共轭反交换）——手算「交换」被 oracle 否证, 勿凭直觉写。
+- **语句里别用裸 λ 应用**（nightly 实测: `(λ _ → ptInf) pw` 触发 UnsolvedMetaVariables）——具名零映射（act0）替代。

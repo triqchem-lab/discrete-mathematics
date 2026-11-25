@@ -135,6 +135,21 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
     + `liftD1`（索引 k ↦ suc k, dub-suc 归位——初版忘升层被类型器当场拦截）
     ⇒ ★ `classifyD1`（∀② d=1 镜像, two-ind 两步归纳; 边界同 NormClassify §8: 正向分类,
     逆向不作陈述）。**A1 阵列全部完工**。 |
+| **M11 · N0/N1 End(E) 公式层第一砖（Deuring 失真映射）** | ✅（2026-11-25）oracle `distortion` 模式（新增）+ `RH/EndDistortion0.agda`（exit=0, 0 postulate, 门禁 36 模块收录）:
+  **N0 全枚举核对**（cls0=c010 y²=x³+x 与 cls5=c020 y²=x³−x, 两个 a₆=0 超奇异类）:
+  封闭 ✓ + **256 对 hom 零失败** + ρ²=neg ✓ + σ²=id ✓ + [4]=0 ✓（Z[σ]-作用合法域定案）
+  + Z[σ]-作用映射 P↦[a]P+[b]·σP（a,b∈{0..3}）去重: cls0 16 个 / cls5 8 个, ρ 与每个都有分离点 ✓。
+  **手算勘误入档**: σρ=ρσ 被 oracle 当场否证——正确关系是 **σρ = −ρσ**（反交换; Galois 共轭
+  作用于 CM: σρσ = −ρ, 因 ρ 含 α ∉ F₃）——先算后验纪律又一次兜底。
+  **N1 Agda**（表驱动, 全部 oracle distortion 逐字）: `rho` 16 条 + ★ `rho-hom`（**256 条 refl,
+  End(E) 成员判据**）+ `rho-sq-neg`（16, ρ²=[−1] 即 CM by ℤ[i] 谱系）+ `rho-sig-anticomm`
+  （16, σρ=−ρσ）+ ★ **`rho-ne-act1..16`**（Z[σ]-作用去重映射逐个分离见证, () 归约构造子冲突）。
+  工程坑: ①语句里的裸 λ 应用 `(λ _ → ptInf) pw` 触发 UnsolvedMetaVariables——改具名 `act0/act1`;
+  ②emit 复用 GroupCls0 的 mul2/mul3（不重造）; ③emit 时 check 打印须静音（否则混入模块头前）。
+  **诚实边界**: 本件是点级映射层的分离定理（End(E) ⊋ ℤ[σ]-作用 的构造性离散见证）;
+  「End(E) 是 F₃-四元代数序」的完整环论表述不作陈述。
+  **后续原子件（未排期）**: N2 cls5 镜像（emit-distortion 5, 模块名参数化）; N3 ℤ[σ,ρ] 作用的
+  合成表封闭性（rank-4 种子）; N4 普通类侧（End(F₉-有理)=ℤ[π] 的单调性对照——缺席型陈述）。 |
 | **M9 · G4 相干放大二分** | ✅ `Synthesis/Geometry/CoherentPhase.agda`（exit=0）——AmplificationDichotomy record inhabited：自由 ℤ 载体忠实线性放大（coherent-linear/coherent-inj posInj）× 有限阶截断（trunc3/trunc8/C₁₂ 引用 DuodecClock）——「相干放大」离散类比存在性判据 = 载体含自由部分；物理层 [物理假说·未验证] 隔离不变。**M9 全线收官**（G1-G4 + A₄ 试点） |
 | **M9 · G3 挠率-自旋耦合** | ✅ `Synthesis/Geometry/SpinTorsionCoupling.agda`（exit=0）——EC 离散形态：源场 = 手征串失衡 + ★ coupling（挠率值定义性 = 失衡, κ=1）+ 平衡闭合归零 + ★ **zhonglv-spin-bridge**（repL 11 挠率 ≡ +11 ≡ zhonglvTorsion——「仲吕不交」获得自旋源解释） |
 | **M9 · A₄ 绝对平行** | ✅ `Synthesis/Geometry/TeleparallelA4.agda` 试点（exit=0）——Shipov 数学骨架离散化：零曲率定理 plaquette-collapse（六步含逆 = 2×换位 + 2×三次归零）+ A₄ 共存 record inhabited（flat × zhonglvTorsion +11）——对 Shipov 自洽性给离散正面数据点；物理诠释 [物理假说·未验证] 严格隔离（A5.2 注记 §六） |
