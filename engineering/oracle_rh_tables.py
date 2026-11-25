@@ -977,6 +977,119 @@ def act_map(c, a, b, P):
 
 # ---------- endact (M11·N3): Z[σ,ρ] 秩-4 作用环 —— 忠实性 + 乘法性（σρ=−ρσ 关系系） ----------
 
+
+# ---------- emit-ring (M11·N5): 作用环核特征化 —— actK 核引理 + 商忠实性分离见证 ----------
+def sig_pt2(P):
+    return None if P is None else (f9conj(P[0]), f9conj(P[1]))
+
+def act4_map(c, a, b, cc, dd, P):
+    # ((aP + b·σP) + c·ρP) + d·σρP（左结合; 与 Agda emit 体逐字对应）
+    t = e9add(c, e9mulint(c, a, P), e9mulint(c, b, sig_pt2(P)))
+    t = e9add(c, t, e9mulint(c, cc, rho_map(P)))
+    return e9add(c, t, e9mulint(c, dd, sig_pt2(rho_map(P))))
+
+def emit_ring(emit_k=0):
+    k = emit_k
+    c = REPS[k]
+    pts = e9pts(c)
+    n = len(pts)
+    names = ["ptInf"] + [f"pt{i}" for i in range(1, n)]
+    def pname(P):
+        return "ptInf" if P is None else names[pts.index(P)]
+    # 作用核: 全点取 ptInf 的 (a,b,c,d)
+    kern = [(a, b, cc, dd) for a in range(4) for b in range(4) for cc in range(4) for dd in range(4)
+            if all(act4_map(c, a, b, cc, dd, P) is None for P in pts)]
+    # 典范代表: 去重后每表首现 (a,b,c,d), 按 (a,b,c,d) 排序
+    tabs = {}
+    for a in range(4):
+        for b in range(4):
+            for cc in range(4):
+                for dd in range(4):
+                    tab = tuple(act4_map(c, a, b, cc, dd, P) for P in pts)
+                    tabs.setdefault(tab, (a, b, cc, dd))
+    reps = sorted(tabs.values())
+    zero_tab = tuple(None for _ in pts)
+    zero_rep = tabs[zero_tab]
+    nonzero_reps = [r for r in reps if r != zero_rep]
+    # 每个非零代表: 零分离见证点
+    sep = {}
+    for r in nonzero_reps:
+        wit = next(P for P in pts if act4_map(c, *r, P) is not None)
+        sep[r] = wit
+    def fN(x):
+        return {0: "act0", 1: "act1", 2: "mul2", 3: "mul3"}[x]
+    def body(u):
+        a, b, cc, dd = u
+        return (f'addE (addE (addE ({fN(a)} p) ({fN(b)} (sig p))) '
+                f'({fN(cc)} (rho p))) ({fN(dd)} (sig (rho p)))')
+    L = []
+    A = L.append
+    A('{-# OPTIONS --rewriting --guardedness #-}')
+    A('')
+    A(f'-- | Sovereign.Application.Problems.RH.EndRing{k}')
+    A(f'-- M11·N5: ℤ[σ,ρ]-作用环核特征化（cls{k} {CURVE(*c)}）—— 核三引理 + 商忠实性分离见证')
+    A('--')
+    A('-- 数学背景（oracle emit-ring 冻结, 先算后验; 256 候选 → 去重 64）:')
+    A('--   · 作用映射 act(a,b,c,d) : p ↦ ([a]p + [b]·σp) + ([c]·ρp + [d]·σρp)')
+    A(f'--   · **核 = {len(kern)} 元**: ' +
+      ' '.join(f'({a},{b},{cc},{dd})' for (a, b, cc, dd) in kern) +
+      ' —— actK* 三引理: 非平凡核元素逐点作用恒 ptInf')
+    A(f'--   · **商忠实性**: 其余 {len(nonzero_reps)} 个典范代表逐个有零分离点（act ≠ 零映射）')
+    A('--     ⟹ 核 = 恰为「零作用元素」全体（64 元作用环的结构定案; 4096 合成全表不作——')
+    A('--       合成封闭已 oracle 抽样冻结, Agda 承载取结构事实优先）')
+    A('--')
+    A('-- 诚实边界:')
+    A('--   · 映射逐点等价层面; 「商环 ≅ Mat₂(ℤ/4) 的子环」的环同构表述不作')
+    A('--   · 数值子句全部 oracle emit-ring 生成（先算后验纪律）')
+    A('')
+    A(f'module Sovereign.Application.Problems.RH.EndRing{k} where')
+    A('')
+    A('open import Data.Empty using (⊥)')
+    A('open import Relation.Binary.PropositionalEquality using (_≡_; refl)')
+    A(f'open import Sovereign.Application.Problems.RH.GroupCls{k}')
+    A(f'open import Sovereign.Application.Problems.RH.EndDistortion{k}')
+    A('')
+    A('-- act0/act1 复用 EndDistortion（[0]=ptInf, [1]=id）')
+    A('')
+    A('--------------------------------------------------------------------------------')
+    A('-- §K. 核引理: 非平凡核元素逐点作用恒 ptInf')
+    A('--------------------------------------------------------------------------------')
+    A('')
+    idx = 0
+    for (a, b, cc, dd) in kern:
+        if (a, b, cc, dd) == (0, 0, 0, 0):
+            continue
+        idx += 1
+        A(f'-- 核元素 ({a},{b},{cc},{dd})')
+        A(f'actK{idx} : Pt{emit_k} → Pt{emit_k}')
+        A(f'actK{idx} p = {body((a, b, cc, dd))}')
+        A(f'actK{idx}-zero : ∀ p → actK{idx} p ≡ ptInf')
+        for P in pts:
+            A(f'actK{idx}-zero {pname(P)} = refl')
+        A('')
+    A('--------------------------------------------------------------------------------')
+    A('-- §R. 作用环典范代表（去重 64; act00 = 零映射）')
+    A('--------------------------------------------------------------------------------')
+    A('')
+    for j, r in enumerate(reps):
+        A(f'act{r[0]}{r[1]}{r[2]}{r[3]} : Pt{emit_k} → Pt{emit_k}')
+        A(f'act{r[0]}{r[1]}{r[2]}{r[3]} p = {body(r)}')
+    A('')
+    A('--------------------------------------------------------------------------------')
+    A('-- §S. ★ 商忠实性: 非零代表逐个有零分离点')
+    A('--------------------------------------------------------------------------------')
+    A('')
+    for j, r in enumerate(nonzero_reps):
+        wit = sep[r]
+        A(f'-- act({r[0]},{r[1]},{r[2]},{r[3]}) 分离点: {pname(wit)}（作用值 {pname(act4_map(c, *r, wit))}）')
+        A(f'act{r[0]}{r[1]}{r[2]}{r[3]}-ne-zero : act{r[0]}{r[1]}{r[2]}{r[3]} {pname(wit)} ≡ ptInf → ⊥')
+        A(f'act{r[0]}{r[1]}{r[2]}{r[3]}-ne-zero ()')
+    A('')
+    A(f'-- 核 {len(kern)} 元（actK{idx}-zero ×{idx}）+ 商忠实性分离 {len(nonzero_reps)} 条 ——')
+    A(f'-- 64 元作用环 = 256 候选 / {len(kern)} 核; 核特征化完成')
+    return chr(10).join(L)
+
+
 # ---------- endordinary (M11·N4): 普通类侧 rho-候选缺席（a6≠0 ⟹ 曲线封闭即失败） ----------
 def rhs_f9(c, u):
     a2, a4, a6 = c
@@ -1263,6 +1376,13 @@ if __name__ == "__main__":
         k = int(sys.argv[2]) if len(sys.argv) > 2 else 6
         with_assoc = (len(sys.argv) > 3 and sys.argv[3] == "assoc")
         print(emit_group(k, with_assoc))
+        raise SystemExit
+    if cmd == "emit-ring":
+        import io, contextlib
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            txt = emit_ring(emit_k=int(sys.argv[2]) if len(sys.argv) > 2 else 0)
+        print(txt)
         raise SystemExit
     if cmd == "emit-absent":
         import io, contextlib
