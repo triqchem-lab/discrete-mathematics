@@ -119,6 +119,7 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
 | **M6 · B2/B3** | ✅ `RH/FrobFix.agda`：conj-fix-im 点级嵌入判据 + **fe 18 条 Fix(σ)=#E(F₃)** + **split 18 条 #E(F₉)=Fix+2·pairs**（pairs emit-frob 冻结）。exit=0 |
 | **M6 · B4** | ✅ `RH/SupersingularDiv3.agda`：Div3V 层 + **div3V-sup/sup-div3V 双向**（「p∣t」算术表述 ⟺ 迹集表述）——「定义选择」升级为两等价表述互推。exit=0 |
 | **M6 · B5** | **G0 ✅**（oracle group: 群公理/σ 自同/特征方程全点 ✓）+ **G1-G3 ✅**（`GroupCls0..7.agda` 8 模块, 243–909 行, 全部 exit=0——`addE` 1348 格 + **σ 群自同 sig-hom 1348 条** + commE/unit/inv + **charEq 特征方程点级**; 试点 cls6 另含结合律 343 条全量）——门禁 30 模块全绿。剩余: End(E) 环论层（π 特征多项式于 End、E[3] 破灭）需群律公式层, 未排期（A5.2 注记 §三/§四） |
+| **M9 · A₄ 绝对平行** | ✅ `Synthesis/Geometry/TeleparallelA4.agda` 试点（exit=0）——Shipov 数学骨架离散化：零曲率定理 plaquette-collapse（六步含逆 = 2×换位 + 2×三次归零）+ A₄ 共存 record inhabited（flat × zhonglvTorsion +11）——对 Shipov 自洽性给离散正面数据点；物理诠释 [物理假说·未验证] 严格隔离（A5.2 注记 §六） |
 | **M8 · F₉\*≅C₈** | ✅ `RH/F9MultC8.agda`（exit=0）——原生共轭性乘法群来源形式化：g=1+α 生成 C₈（dist 28 条）+ σ=k↦3k（8 条）+ **Norm∈F₃*={±1}**（8 条; 修正「α⁴=q=9」初版陈述——枚举否证）; 注记 docs/Riemann/原生共轭性代数来源-注记 |
 | **M7 · E[3] 破灭** | ✅ `RH/E3Tor.agda`（exit=0）——超奇异 4 类 e3-triv（3-挠破灭）+ 普通 4 类非平凡 C₃ 见证 + notsup 桥——「p∣t 超奇异 ⟺ E[3](F₉) 破灭」逐类成立（Deuring 代数侧表驱动承载; 与 B4 合流为三表述等价） |
 | 门禁 | ✅ 22 模块拓扑序全绿（2026-11-25, 含 M6 四件 + CurveIsoF3） |

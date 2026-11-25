@@ -522,6 +522,15 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `recurrence-all` | `WeilRecurrenceAll.agda` | **∀⑤** `t₂ = t₁² − 2q`（q=3; 27 分派 ×18 refl） |
 | `bsd9-all` | `WeilRecurrenceAll.agda` | ∀BSD9 `#E(F₉) = 10 − t₂`（WeilRigidity 三例全称化） |
 
+### M9 · A₄ 绝对平行试点（2026-11-25, Synthesis/Geometry 线）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `plaquette-collapse` | `TeleparallelA4.agda` | 环绕平行四边形六步（含逆）净位移 ≡ v —— **零曲率**（2×updAt-comm + 2×updAt-cubed, 零新引理） |
+| `flat` | 同上 | 传输可交换（绝对平行 = updAt-comm 别名承载） |
+| `TeleparallelA4` record + `a4-instance` | 同上 | **A₄ 共存**: 零曲率 ∧ 挠率非零（zhonglvTorsion +11）inhabited |
+| `a4-coexist` | 同上 | 共存判据字面展开（updat-comm × torsionNonzero） |
+
 ### M6 · Frobenius/Deuring 线（2026-11-25）
 
 | 符号 | 位置 | 命题 |
