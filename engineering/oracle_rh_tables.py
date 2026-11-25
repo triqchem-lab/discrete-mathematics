@@ -786,6 +786,44 @@ def e3():
                 print(f"e3w-tor{k}-{j} = refl")
 
 
+# ---------- c8 (M8): F9* = C8 循环群 —— 原生共轭性的乘法群来源 ----------
+def c8():
+    print("=== M8: F9* = C8 —— 离散对数 = 相位; σ = k↦3k; Norm 落在 F3* = {±1} ===")
+    g = (1, 1)
+    pow_tab = []
+    R = F9ONE
+    for k in range(8):
+        pow_tab.append(R)
+        R = f9mul(R, g)
+    assert R == F9ONE, "g^8 != 1"
+    distinct = len({tuple(P) for P in pow_tab}) == 8
+    print(f"  生成元 g = (1,1): g^8 = 1 ✓, 8 个幂两两不同（C8）: {'✓' if distinct else '✗'}")
+    # 离散对数表 + sigma 作用
+    dlog = {tuple(P): k for k, P in enumerate(pow_tab)}
+    ok_sig = True
+    for k in range(8):
+        sP = f9conj(pow_tab[k])
+        kk = dlog[tuple(sP)]
+        if kk != (3 * k) % 8:
+            print(f"  ✗ σ(g^{k}) = g^{kk} ≠ g^{3*k%8}"); ok_sig = False
+    print(f"  σ 作用 = k ↦ 3k (mod 8): {'全部一致 ✓' if ok_sig else '存在不一致 ✗'}; σ² = k ↦ 9k ≡ k（2 阶）✓")
+    # Norm: N(g^k) = g^(4k) ∈ F3* = {±1} —— 修正「α^4 = 9」: 域元素层 Norm 落在 F3*
+    ok_n = True
+    for k in range(8):
+        N = f9mul(pow_tab[k], f9conj(pow_tab[k]))
+        exp = pow_tab[(4 * k) % 8]
+        if N != exp:
+            print(f"  ✗ N(g^{k}) ≠ g^(4k)"); ok_n = False
+        if N not in ((1, 0), (2, 0)):
+            print(f"  ✗ N(g^{k}) = {N} ∉ F3*"); ok_n = False
+    print(f"  Norm(g^k) = g^(4k) ∈ F3* = {{±1}}（非 9! —— 曲线 Frobenius 本征值层才有 α·ᾱ=q）:")
+    for k in range(8):
+        N = f9mul(pow_tab[k], f9conj(pow_tab[k]))
+        print(f"    g^{k} -> N = {N}  {'(+1)' if N == (1, 0) else '(−1)'}")
+    print(f"  {'Norm 全部落 F3* ✓' if ok_n else 'Norm 检查失败 ✗'}")
+    return pow_tab
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
     if cmd == "emit-group":
@@ -793,4 +831,4 @@ if __name__ == "__main__":
         with_assoc = (len(sys.argv) > 3 and sys.argv[3] == "assoc")
         print(emit_group(k, with_assoc))
         raise SystemExit
-    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group, "e3": e3}.get(cmd, check)()
+    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group, "e3": e3, "c8": c8}.get(cmd, check)()
