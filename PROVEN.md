@@ -560,6 +560,7 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `EndDistortion5`（N2 镜像） | 同上（cls5 = c020 y²=x³−x） | 与 cls0 全镜像: rho-hom 256 + ρ²=neg + σρ=−ρσ + sig-sq-id + 16 分离见证, exit=0 |
 | ★ `sig-sq-id`（16×2） | `EndDistortion0/5` | σ²=id —— 生成关系三件套 {σ²=1, ρ²=−1, σρ=−ρσ} 的 Agda 承载齐 |
 | `endact`（新 oracle 模式, N3） | `oracle_rh_tables.py` | ℤ[σ,ρ] 秩-4 作用: 256 候选 → **去重 64**（两类一致）; 核 = ⟨2(σ+ρ)⟩ / ⟨2ρ(1+σ)⟩ 4 元; 合成封闭抽样零失败; 群阶分布 ⟹ **E(F₉) ≅ ℤ/4×ℤ/4** |
+| `DistortionAbsent`（N4） | `DistortionAbsent.agda` | **rho-候选于普通 4 类缺席**（[构造性缺席·候选级]）: a₆≠0 ⟹ 封闭恒等式 (α·y)² = rhs(−x) 即失败, 逐类 absurd（fneg/mula/rhs9 全归约构造子冲突）; ℤ[σ]-作用去重 12/15/15/12 数据冻结 |
 
 ### M9 · G4 相干放大二分判据（2026-11-25）
 

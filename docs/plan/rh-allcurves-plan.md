@@ -155,8 +155,12 @@ c200:0 c201:1 c202:2 c210:0 c211:1 c212:2 c220:2 c221:0 c222:1
   cls5 ⟨2ρ(1+σ)⟩; 合成封闭抽样 8×256 零失败 ✓; 群阶分布 {1, 3×2, 12×4} ⟹ **E(F₉) ≅ ℤ/4×ℤ/4**
   （End(群) = Mat₂(ℤ/4) 256 元, 作用环 64 元 = 商掉 2(σ+ρ) 的非交换子环——rank-4 种子含一部压缩）。
   生成关系 Agda 承载齐: `sig-sq-id`（16, 补齐 {σ²=1, ρ²=−1, σρ=−ρσ} 三关系）。
-  **后续原子件（未排期）**: N4 普通类侧（End(F₉-有理)=ℤ[π] 的单调性对照——缺席型陈述）;
-  N5 作用环 64 元的完整合成表 Agda 承载（量级取舍待定）。 |
+  **N4 ✅ 普通类侧缺席**（oracle `endordinary`/`emit-absent` + `DistortionAbsent.agda` exit=0, 门禁 38 模块）:
+  普通 4 类代表元全部 a₆≠0 ⟹ rho-候选**曲线封闭恒等式 (α·y)² = rhs(−x) 即失败**
+  （逐类 absurd 见证: cls1 7/11 失败点、cls2/3 10/14、cls4 7/11; ℤ[σ]-作用去重数据 12/15/15/12 冻结）——
+  Deuring 对照的第二半: 超奇异 ⟹ rho ∈ End ∖ ℤ[σ]-作用（N0-N3）, 普通 ⟹ 同一候选连曲线映射都不是。
+  **[构造性缺席·候选级]**: 只证 rho-候选缺席, 「End 的 F₉-有理部分 = ℤ[π]」全域陈述不作。
+  **后续原子件（未排期）**: N5 作用环 64 元的完整合成表 Agda 承载（量级取舍待定）。 |
 | **M9 · G4 相干放大二分** | ✅ `Synthesis/Geometry/CoherentPhase.agda`（exit=0）——AmplificationDichotomy record inhabited：自由 ℤ 载体忠实线性放大（coherent-linear/coherent-inj posInj）× 有限阶截断（trunc3/trunc8/C₁₂ 引用 DuodecClock）——「相干放大」离散类比存在性判据 = 载体含自由部分；物理层 [物理假说·未验证] 隔离不变。**M9 全线收官**（G1-G4 + A₄ 试点） |
 | **M9 · G3 挠率-自旋耦合** | ✅ `Synthesis/Geometry/SpinTorsionCoupling.agda`（exit=0）——EC 离散形态：源场 = 手征串失衡 + ★ coupling（挠率值定义性 = 失衡, κ=1）+ 平衡闭合归零 + ★ **zhonglv-spin-bridge**（repL 11 挠率 ≡ +11 ≡ zhonglvTorsion——「仲吕不交」获得自旋源解释） |
 | **M9 · A₄ 绝对平行** | ✅ `Synthesis/Geometry/TeleparallelA4.agda` 试点（exit=0）——Shipov 数学骨架离散化：零曲率定理 plaquette-collapse（六步含逆 = 2×换位 + 2×三次归零）+ A₄ 共存 record inhabited（flat × zhonglvTorsion +11）——对 Shipov 自洽性给离散正面数据点；物理诠释 [物理假说·未验证] 严格隔离（A5.2 注记 §六） |

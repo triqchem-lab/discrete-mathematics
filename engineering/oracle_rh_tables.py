@@ -976,6 +976,100 @@ def act_map(c, a, b, P):
 
 
 # ---------- endact (M11·N3): Z[σ,ρ] 秩-4 作用环 —— 忠实性 + 乘法性（σρ=−ρσ 关系系） ----------
+
+# ---------- endordinary (M11·N4): 普通类侧 rho-候选缺席（a6≠0 ⟹ 曲线封闭即失败） ----------
+def rhs_f9(c, u):
+    a2, a4, a6 = c
+    x2 = f9mul(u, u)
+    x3 = f9mul(x2, u)
+    return f9add(f9add(f9add(x3, f9mul((a2, 0), x2)), f9mul((a4, 0), u)), (a6, 0))
+
+def endordinary(ks=(1, 2, 3, 4), emit=False):
+    print("=== M11·N4: 普通类侧 rho-候选缺席（y²=x³+a₂x²+a₄x+a₆, a₆≠0）===")
+    out = []
+    for k in ks:
+        c = REPS[k]
+        pts = e9pts(c)
+        fails = []
+        for P in pts:
+            if P is None:
+                continue
+            (x, y) = P
+            lhs = f9mul(mul_alpha(y), mul_alpha(y))
+            rhs = rhs_f9(c, f9neg(x))
+            if lhs != rhs:
+                fails.append((P, lhs, rhs))
+        wit = fails[0]
+        # sigma-作用数据（普通类; (a,b) ∈ {0..11}² 去重）
+        def sig2(P):
+            return None if P is None else (f9conj(P[0]), f9conj(P[1]))
+        acts = set()
+        for a in range(12):
+            for b in range(12):
+                acts.add(tuple(e9add(c, e9mulint(c, a, P), e9mulint(c, b, sig2(P))) for P in pts))
+        print(f"  cls{k} {CURVE(*c)} t={TVALS[k]:+d}: 失败点 {len(fails)}/{len(pts)-1} "
+              f"| 首见证 {wit[0]}: (α·y)²={wit[1]} vs rhs(−x)={wit[2]} "
+              f"| ℤ[σ]-作用去重(a,b∈0..11): {len(acts)}")
+        out.append((k, c, wit, len(acts), len(fails)))
+    print("  判定: rho-候选于普通 4 类曲线封闭即失败（缺席·候选级见证）✓ "
+          "[诚实边界: 本件只证该候选映射缺席, 非 End 全域缺席]")
+    if not emit:
+        return
+    L = []
+    A = L.append
+    A('{-# OPTIONS --rewriting --guardedness #-}')
+    A('')
+    A('-- | Sovereign.Application.Problems.RH.DistortionAbsent')
+    A('-- M11·N4: rho-候选 (x,y) ↦ (−x, α·y) 于普通 4 类缺席（候选级构造性见证）')
+    A('--')
+    A('-- 数学背景（oracle endordinary 冻结, 先算后验）:')
+    A('--   · 超奇异侧（EndDistortion0/5）: rho 是真自同态（a₆=0 类）')
+    A('--   · 普通侧: 代表元全部 a₆ ≠ 0 ⟹ 封闭恒等式 (α·y)² = rhs(−x) 即失败 ——')
+    A('--     Deuring 对照的第二半: 普通类上「同一候选」连曲线映射都不是')
+    A('--   · 每类一条 absurd: LHS = f9mul (mula y) (mula y) 归约字面 ≠ RHS = rhs9 c (fneg x) 归约字面')
+    A('--')
+    A('-- 诚实边界 [构造性缺席·候选级]:')
+    A('--   · 本件只证 rho-候选映射于普通类缺席; 「End(E) 的 F₉-有理部分 = ℤ[π]」的')
+    A('--     全域陈述不作（需要对全体候选映射的量化, 未形式化）')
+    A('--   · 数值子句全部 oracle endordinary 生成（先算后验纪律）')
+    A('')
+    A('module Sovereign.Application.Problems.RH.DistortionAbsent where')
+    A('')
+    A('open import Data.Empty using (⊥)')
+    A('open import Relation.Binary.PropositionalEquality using (_≡_)')
+    A('open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; negate)')
+    A('open import Sovereign.Application.Problems.RH.CurveF3')
+    A('  using (CurveF3; mkC; c101; c102; c201; c202)')
+    A('open import Sovereign.Application.Problems.RH.CountF9All')
+    A('  using (F9; mkF9; f9add; f9mul; rhs9)')
+    A('')
+    A('--------------------------------------------------------------------------------')
+    A('-- §0. rho-候选的坐标层件（fneg 全分量求负; mula = α·_）')
+    A('--------------------------------------------------------------------------------')
+    A('')
+    A('fneg : F9 → F9')
+    A('fneg (mkF9 a b) = mkF9 (negate a) (negate b)')
+    A('')
+    A('mula : F9 → F9')
+    A('mula (mkF9 c d) = mkF9 (negate d) c')
+    A('')
+    TRI = {0: "T₀", 1: "T₁", 2: "T₂"}
+    def f9n(u):
+        return f"mkF9 {TRI[u[0]]} {TRI[u[1]]}"
+    CLS = {1: "c101", 2: "c102", 3: "c201", 4: "c202"}
+    for (k, c, (P, lhs, rhs), nacts, nfail) in out:
+        (x, y) = P
+        A('--------------------------------------------------------------------------------')
+        A(f'-- §{k}. cls{k}（{CURVE(*c)}, t={TVALS[k]:+d}）: 见证点 ({f9n(x)}, {f9n(y)}) —— 全域 {nfail} 点封闭失败, 此为首见')
+        A('--------------------------------------------------------------------------------')
+        A('')
+        A(f'rho-abs-cls{k} : f9mul (mula ({f9n(y)})) (mula ({f9n(y)})) '
+          f'≡ rhs9 {CLS[k]} (fneg ({f9n(x)})) → ⊥')
+        A(f'rho-abs-cls{k} ()')
+        A('')
+    return chr(10).join(L)
+
+
 def endact(ks=(0, 5)):
     print("=== M11·N3: Z[σ,ρ] 作用环（basis {1,σ,ρ,σρ}, a,b,c,d ∈ {0..3}, 256 候选）===")
     for k in ks:
@@ -1170,6 +1264,13 @@ if __name__ == "__main__":
         with_assoc = (len(sys.argv) > 3 and sys.argv[3] == "assoc")
         print(emit_group(k, with_assoc))
         raise SystemExit
+    if cmd == "emit-absent":
+        import io, contextlib
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            txt = endordinary(ks=(1, 2, 3, 4), emit=True)
+        print(txt)
+        raise SystemExit
     if cmd == "endact":
         endact(ks=(0, 5))
         raise SystemExit
@@ -1180,4 +1281,4 @@ if __name__ == "__main__":
             txt = distortion(ks=(0, 5), emit_k=int(sys.argv[2]) if len(sys.argv) > 2 else 0)
         print(txt)
         raise SystemExit
-    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group, "e3": e3, "c8": c8, "norm-d1": norm_d1, "gauge": gauge_check, "distortion": distortion}.get(cmd, check)()
+    {"check": check, "emit": emit, "emit9": emit9, "norm": norm, "iso": iso, "emit-iso": iso, "frob": frob, "emit-frob": frob, "group": group, "e3": e3, "c8": c8, "norm-d1": norm_d1, "gauge": gauge_check, "distortion": distortion, "endordinary": endordinary}.get(cmd, check)()
