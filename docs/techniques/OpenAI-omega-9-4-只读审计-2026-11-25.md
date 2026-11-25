@@ -34,6 +34,16 @@
 > 正确表述: **OpenAI 仓库对「每个域上 ω = 9/4、α = 1/2、矩形闭公式」给出了完整陈述与解模块映射;
 > 我此前的一切负面判断撤回; 忠实性审计未完成。**
 >
+> 接口定理（`lean/OAI/LinearAlgebra/MatrixExponent.lean` 聚合文件; **只读了陈述, 证明与被引用的定义未读**）:
+> - `square_iff_prime_ranks : (∀ F [Field F], omega F = 9/4) ↔ ∀ (p : ℕ) [Fact p.Prime] (n r : ℕ), 2 ≤ n → RankLE (ZMod p) n r → n ^ 9 ≤ r ^ 4`
+> - `square_of_prime_ranks (h : 同上) (F) : omega F = 9/4`
+> - `square_of_network_bounds`（ManyList 硬度 + Compression）、`square_of_tag_and_arity`（Tagged.Hard + Lookup.ShortTag/ArityReduction）—— 同为「素域上的假设 ⇒ 每域 ω = 9/4」。
+>
+> 这对本仓库路径的意义: 「每域 ω = 9/4」等价于一族**有限**命题——每个素域 ZMod p 上 n×n 矩阵乘法的秩 ≥ n^(9/4)。
+> GF(3) = ZMod 3 就是 p = 3 的情形, 这是离散寄存器与该问题准确的接点。实例: n=2 要求 r ≥ 5（已知恰 7）; n=3 要求 r ≥ 12;
+> n=12 要求 r ≥ 269（Hopcroft–Kerr 的 2n²−1 = 287 已更强）。n^(9/4) 要到 n 很大时才超过经典的 ~2–3n² 界,
+> 所以有限实例只能**反驳**、不能**确立**这个下界。
+>
 > 另: 第四节「Alpöge 的 anyGeometry 隐性空真」的措辞违反 `Sovereign-RH-Constructive-Path.md`
 > 零节红线, 撤回该措辞。
 
