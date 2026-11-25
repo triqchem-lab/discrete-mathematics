@@ -24,7 +24,15 @@
 >     (formalOmega_square_eq_omega F).trans (MatrixExponent.omega_eq F)`
 >  同文件 `dual_exponent : formalAlpha F = 1/2`、`rectangular_exponent`。该文件 sorry / axiom / native_decide 均为 0。
 > - 核心等式 `MatrixExponent.omega_eq F` 在 `OAI.LinearAlgebra.MatrixExponent.*`（555 件）——**未读**。
-> - `SpectralBooks` 取回 495/840 件时扫描: sorry 0、axiom 0（部分覆盖）。
+> - **`SpectralBooks` 840/840 全量**、**`MatrixMultiplication` 509/509 全量**两个子树, 文本扫描全部 0 命中:
+>  `sorry` / `admit`（作策略; 6 处命中均为文档注释里的英文动词）/ `sorryAx` / `skipKernelTC` / `native_decide` /
+>  `axiom` 声明 / `opaque` / `implemented_by` / `unsafe` / `partial def` / `@[extern]`。这是文本扫描, 不等于构建。
+> - 桥接引理（`SpectralBooks/SquareRankModel.lean:43`, 只读陈述）:
+>  `theorem formalOmega_square_eq_omega (F : Type*) [Field F] : formalOmega F 1 1 1 = MatrixExponent.omega F`。
+>  库里同时存在三个指数定义: 挑战件自带的 `formalOmega`（用挑战件内自定义的 `MatrixAlgorithm`/`FormalCorrect`/`wireDimension`）、
+>  `SpectralBooks/ArithmeticExponent.lean:29` 的同名 `formalOmega`、`MatrixMultiplication/Model.lean:95` 的
+>  `omega F := sInf {τ | AdmissibleExponent F τ}`; `MatrixExponent.omega F` 的定义在未读的子树里。
+>  这几个定义是否指同一个对象, 是忠实性审计的核心, 未完成。
 > - `MatrixFields.json` → 解 `OAI.LinearAlgebra.MatrixFields.Main`, 定理
 >  `OAI.MatrixAllFields.MatrixMultiplication.AllFieldMain.omega_lt_source_constant`（每域上界; 未读）。
 >
