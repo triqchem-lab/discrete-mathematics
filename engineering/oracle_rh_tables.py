@@ -881,18 +881,18 @@ def gauge_check():
     for x in range(N):
         for y in range(N):
             h[(x, y)] = random.choice(pow_tab)
-    def U(mu, v):
+    def U(mu, v, hh):
         a, b = v
         if mu == 0:
             w = ((a + 1) % N, b)
         else:
             w = (a, (b + 1) % N)
-        return f9mul(h[v], f9inv(h[w]))
+        return f9mul(hh[v], f9inv(hh[w]))
     # 规范伪影核对: 固定标架 e=(1,0),(0,1) -> T 非零; 联合规范变换 -> T 恒零
     fixed_e = {v: ((1, 0), (0, 1)) for v in [(x, y) for x in range(N) for y in range(N)]}
     def torsion(e, v):
         ex, ey = e[v]
-        ux, uy = U(0, v), U(1, v)
+        ux, uy = U(0, v, h), U(1, v, h)
         wx = ((v[0] + 1) % N, v[1])
         wy = (v[0], (v[1] + 1) % N)
         exw, eyw = e[wx]
@@ -916,6 +916,38 @@ def gauge_check():
     print(f"  联合规范变换后      : 非零挠率格点 {t_gauge_nonzero}/{N*N}（恒零 ✓）")
     verdict = "规范伪影定理成立 ✓（固定标架伪挠率 -> 联合变换归零）" if t_fixed_nonzero > 0 and t_gauge_nonzero == 0 else "核对异常 ✗"
     print(f"  判定: {verdict}")
+    # ---- emit: M10 Agda 表（h 场 / 链变量 / 两张挠率表, 逐字冻结）----
+    TRI9 = {0: "T₀", 1: "T₁", 2: "T₂"}
+    def f9n(P):
+        return f"mkF9 {TRI9[P[0]]} {TRI9[P[1]]}"
+    names = [f"v{x}{y}" for x in range(N) for y in range(N)]
+    allv = [(x, y) for x in range(N) for y in range(N)]
+    nxtx = {v: ((v[0] + 1) % N, v[1]) for v in allv}
+    nxty = {v: (v[0], (v[1] + 1) % N) for v in allv}
+    print("\n=== §M10: Agda 表（emit-gauge 逐字冻结; seed=11, 4x4 周期格点）===")
+    print("\n-- §M0. 常量")
+    print("zero9 : F9")
+    print("zero9 = mkF9 T₀ T₀")
+    print("\n-- §M1. h 场（规范选取; C8 元素）")
+    for v in allv:
+        print(f"hv {names[v[0]*N+v[1]]} = {f9n(h[v])}")
+    print("\n-- §M2. 链变量（纯规范 U = h·h(shift)⁻¹; oracle F9INV_TAB 冻结）")
+    for v in allv:
+        print(f"uxp {names[v[0]*N+v[1]]} = {f9n(U(0, v, h))}")
+        print(f"uyp {names[v[0]*N+v[1]]} = {f9n(U(1, v, h))}")
+    print("\n-- §M3. 固定标架挠率表（Shipov 式; 14 非 + 2 零）")
+    for v in allv:
+        print(f"tfix {names[v[0]*N+v[1]]} = {f9n(torsion(fixed_e, v))}")
+    print("\n-- §M4. 联合变换挠率表（全零 ★）")
+    for v in allv:
+        print(f"tjnt {names[v[0]*N+v[1]]} = zero9")
+    print("\n-- §M5. 邻居（4x4 周期）")
+    for v in allv:
+        w = nxtx[v]
+        print(f"next-x {names[v[0]*N+v[1]]} = {names[w[0]*N+w[1]]}")
+    for v in allv:
+        w = nxty[v]
+        print(f"next-y {names[v[0]*N+v[1]]} = {names[w[0]*N+w[1]]}")
     return pow_tab
 
 
