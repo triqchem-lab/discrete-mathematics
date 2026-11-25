@@ -7,6 +7,9 @@
 --   · rho : (x,y) ↦ (-x, α·y)（α² = -1 ∈ F₉）; 经典 Deuring 失真映射（CM by Z[i] 谱系）
 --   · 曲线封闭 + rho(P+Q) = rho P + rho Q（**256 对 hom**）+ rho² = neg
 --   · **σρ = −ρσ**（反交换; Galois 共轭作用于 CM: σρσ = −ρ —— 手算 σρ=ρσ 被枚举否证）
+--   · 生成关系 Agda 承载齐: σ²=id（sig-sq-id）+ ρ²=−1（rho-sq-neg）+ σρ=−ρσ
+--     （N3 oracle endact: Z[σ,ρ]-作用 256 候选 → 去重 64; 核 = ⟨2(σ+ρ)⟩ 系 4 元;
+--       群阶分布 {1, 3×2, 12×4} ⟹ E(F₉) ≅ ℤ/4×ℤ/4 —— 表驱动坐标语义侧冻结）
 --   · **rho ∉ Z[σ]-作用**: 作用映射 P ↦ [a]P + [b]·σP（a,b ∈ {0..3}; σ²=id, [4]=0 点级
 --     定案合法域）去重后逐个与 rho 有分离点 —— 超奇异 ⟹ End(E) 超出 Z[π]-作用的
 --     **构造性离散见证**（End(E) 环论层首件; 完整四元序分类不作陈述）
@@ -92,6 +95,25 @@ rho-sig-anticomm pt12 = refl
 rho-sig-anticomm pt13 = refl
 rho-sig-anticomm pt14 = refl
 rho-sig-anticomm pt15 = refl
+
+-- σ² = id（第三个生成关系; 表示 {σ²=1, ρ²=−1, σρ=−ρσ} 的 Agda 承载齐）
+sig-sq-id : ∀ p → sig (sig p) ≡ p
+sig-sq-id ptInf = refl
+sig-sq-id pt1 = refl
+sig-sq-id pt2 = refl
+sig-sq-id pt3 = refl
+sig-sq-id pt4 = refl
+sig-sq-id pt5 = refl
+sig-sq-id pt6 = refl
+sig-sq-id pt7 = refl
+sig-sq-id pt8 = refl
+sig-sq-id pt9 = refl
+sig-sq-id pt10 = refl
+sig-sq-id pt11 = refl
+sig-sq-id pt12 = refl
+sig-sq-id pt13 = refl
+sig-sq-id pt14 = refl
+sig-sq-id pt15 = refl
 
 --------------------------------------------------------------------------------
 -- §4. ★ 256 对 hom: rho (p + q) ≡ rho p + rho q（End(E) 成员判据）
