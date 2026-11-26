@@ -312,3 +312,31 @@ Lean 陈述强于论文；Lean 的硬度走对角化、与论文的两情形路�
 - 因此「把 Lean 构造改造成表」这条路线**封存**: 显式化的空间在（a）小尺寸见证搜索（M17 已做 3×3; r ≤ 21 是公开问题级）、（b）五定律的 GF(3) 有限化核对（可做, 产数据点不产表）。
 
 **阅读覆盖（本轮）**: `UpperBound.lean` 全文 44 行、`Coefficients.lean` 全文 69 行、`Rectangle/CharacterRank.lean` 全文 115 行、`Rectangle/Poly.lean` 全文 124 行、`Spectrum/Comparison.lean` 全文 260 行、`FieldExtension.lean:37-60`（`exponent_lt_of_rank`/`absorb_overhead` 证明体）、`Rectangle/Support.lean:65-80`（`price_gap` 证明体）、`Upper/Tensor/Rank.lean` 关键定义（`rank`/`rank_le_iff`/`TensorClass` 商结构）。**未读**: `Sparse/Degree.lean`、`Folding/Swap.lean`、`Profile/Pairing.lean` 的定价细节与 `Upper/Character/*` 内部——全部在 `exponent_le_of_characters` 上游（定价层, 非构造层）, 不改变本判定 [边界标注]。
+
+#### K.1 追记（同日）: 定价层域依赖点已定位——修正「五定律 GF(3) 有限化核对可做」的推测
+
+把 §K 标注「未读」的定价层读了关键部分（`Sparse/Degree.lean` 的 `price_le_rank`/`combine`/`density_price` 全文、
+`Sparse/Law.lean` 的 `DegreeBound` 定义、`Weights.lean`/`Mask.lean` 定义件、`Folding/Swap.lean:800-839`
+`coeff_binary` 证明、`Upper/Character/{Tag,PolynomialValues,PolynomialDegeneration}.lean` 核心定理、
+全定价件 `Infinite`/`IsAlgClosed`/`Vandermonde` 扫描）。结论（每条有 file:line 核对动作）:
+
+1. **方形 ω 线的五定律是域泛型组合学**: `density_price`（Sparse/Degree.lean:461）= 支撑计数 +
+   `combine`（均值 tag 引理）+ 特征公理（`one_le_of_tensor_ne_zero`）——零域依赖;
+   `shared_tag_optimized`（Tag.lean:24）= tag-fiber 计数——零域依赖;
+   `determinant_graded_le`/`tripling_graded_le`（PolynomialDegeneration.lean:31/48）= graded 退化 +
+   `polynomial_constant_le`——零 `[Infinite K]`/`[IsAlgClosed]`（全文件 grep 为空）。
+   五定律的定理陈述虽写在 Coeff, 证明对域泛型 ⇒ 在 Lean 里 GF(3) 实例化是机械换域。
+2. **「五定律 GF(3) 有限化核对」的提法不成立, 原文作废**: 五定律是关于抽象指数与全部特征的
+   泛量化命题, **没有可枚举的有限核对内容**; 对 GF(3) 的正确动作是（a）Lean 侧换域实例化
+   （机械但我们要重跑）或（b）本库镜像 exponent/特征机制（大工程）。数值枚举无对象。
+3. **[Infinite K] 的真实边界在矩形线**: `polynomial_rank [Infinite K]`（Profile/Pairing.lean:64,
+   Vandermonde 插值 + Infinite.natEmbedding）与 `grade_price [Infinite K]`（:233）只被
+   `Rectangle/Multi/Radial.lean`（:87/:220）与 Pairing:402/422 消费——即**矩形指数 α（对偶 1/2）机器**。
+   方形 ω 线不碰它。⇒ 对有限域: ω 上界机器可平移（经泛点/闭包）, **α = 1/2 的对偶机器原样不平移**
+   （插值在有限域上没有自由落点）——这是挑战件里 `dual_exponent` 口径对有限域的软肋 [阅读判断]。
+4. Bilinearize 头注自述「Work at the generic point … avoids polarization in characteristic two」
+   ——与第 3 条互证: 机器作者自己也在用泛点绕插值。
+
+**§K 主判定（路线封存）不变**; 本追记把「定价层未读」的边界缩小到叶子（tag-fiber 计数的内部细节、
+`Upper/Character/Dots*`/`Permutation*`、`Multi/` 全部——叶子在 `exponent_le_of_characters` 上游,
+不改变 1/3 两条; 第 2 条已把 K 里「可做」的误判作废并给出正确提法）。
