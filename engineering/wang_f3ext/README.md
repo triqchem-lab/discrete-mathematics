@@ -12,14 +12,15 @@
 
 | 路径 | 内容 |
 |---|---|
-| `f3_extension.patch` | 对上游的补丁：`problems/matrix/symmetry.h`（新增 `SymmetryGroupFq` + 分发）、`problem.h`（注释、`kN0..kN2`）、`BUILD` |
+| `f3_extension.patch` | 对上游的补丁：`problems/matrix/symmetry.h`（新增 `SymmetryGroupFq` + 分发）、`problem.h`（注释、`kN0..kN2`）、`BUILD`；**外加 core 的两处 F₃ 快路径挂钩**（`dynamic_matrix.cc`、`rank_lower_bound_flatten.h`，见 §5） |
 | `fq_matrix.h` | 新文件：base-P 数位打包的小矩阵（`FqMatrix<P,N0,N1>`，转置 / 乘积 / 求逆 / 秩） |
 | `fq_matrix_tables.h` | 新文件：GL 表、逆表、按行查表乘积表（`FqMatrixTables<P,N0,N1>`） |
 | `fq_matrix_test.cc` | 新文件：上游 gtest 风格的扩展单元测试（bazel 下跑） |
+| `rank_f3_fast.h` | 新文件（放进上游 `core/`）：F₃ 求秩 / 展平秩快路径（性能专用，语义不变，见 §5） |
 | `shim/` | 手工构建用的垫片头文件树（`ng-log`、`gflags`、`tbb`、`boost/{unordered,iostreams}`、`google/protobuf`、`core/certificate.pb.h`），共 16 个文件 |
 | `build.sh` | clang++ 直编脚本（不依赖 bazel / Xcode） |
 | `shim_test/` | 垫片分块的回归测试（`run.sh` 对 `SHIM_THREADS=1..8` 各跑一遍） |
-| `standalone/` | 不编译整个框架也能跑的 F₃ 扩展自检（`fq_matrix_test_main.cc`、`f3_problem_check.cc` + 一份极简串行 tbb 垫片） |
+| `standalone/` | 不编译整个框架也能跑的自检：`fq_matrix_test_main.cc`、`f3_problem_check.cc`（F₃ 扩展）+ `rank_f3_fast_check.cc`（快路径对拍）+ 一份极简串行 tbb 垫片 |
 | `offline/` | 离线 bazel 路线的脚本（BCR 快照镜像、模块闭包抓取、distdir 预取）；**本机构建阶段不可用**，见 §3 |
 
 配套的独立核对器在上两级目录：`engineering/wang_cert_check.py`（F₂）、`engineering/wang_cert_check_fq.py`（素域，含 GF(3)）、`engineering/forced_fq_c/forced_fq.c`（forced product 的独立 C 实现）。
@@ -33,9 +34,10 @@ git -C /tmp/wang-tensor-rank checkout 9db3d21
 HERE=/Users/zesheng/work/discrete-mathematics/engineering/wang_f3ext
 git -C /tmp/wang-tensor-rank apply "$HERE/f3_extension.patch"
 cp "$HERE/fq_matrix.h" "$HERE/fq_matrix_tables.h" "$HERE/fq_matrix_test.cc" /tmp/wang-tensor-rank/problems/matrix/
+cp "$HERE/rank_f3_fast.h" /tmp/wang-tensor-rank/core/
 ```
 
-**实测（2026-11-27）**：从 `git archive 9db3d21` 得到的干净副本出发执行上面四步，
+**实测（2026-11-27）**：从 `git archive 9db3d21` 得到的干净副本出发执行上面几步，
 用本目录 `build.sh` 构建出的 `verifier_f3`、`enumerator_f3` 与工作副本构建的二进制**逐字节相同**（`cmp` 无差异）。
 
 ## 3. 为什么不走 bazel
@@ -101,6 +103,23 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
   而 F₂ 分支对 P = 3 会触发 `static_assert`。
 - **上限**：见证打包要求 P^(N0·N0) ≤ 2^16，所以 P = 3 只到 GL(3,3)（|GL(3,3)| = 11232）。
 
+### 5.1 F₃ 快路径（性能专用，语义不变）
+
+上游的 forced product 对每个组合都要算三次展平秩（9×81 的矩阵）。F₂ 有位打包快路径，**F₃ 走的是通用 F_q 路径**：
+
+- `DynamicMatrix<3,1>::Rank()`：每次调用把矩阵拷进 `std::vector<std::vector<>>`（堆分配），做**完整** Gauss–Jordan（求秩只需前向消元，上面一半是多余的），内层每个元素走带分支的 GF 运算；
+- `RankLowerBoundFlatten`：先做两次 `CyclicTranspose`（各 729 字节的分散写），再三次构造 `DynamicMatrix`（各一次堆分配）。
+
+实测合计**每次迭代约 20 µs**，3^18 = 3.87 亿次枚举要 **16 分钟 / 投影位**（8 线程）。
+所以 `rank_f3_fast.h` 给这两处各加了快路径，由补丁里的两个 `if constexpr (P == 3 && M == 1)` 挂钩调用：
+
+- 求秩：栈上平铺 `uint8` 数组、只消下方行、不归一化主元行（把主元的逆并进消元系数）、取模写成「比较-减法」；
+- 展平秩：直接按跨度从张量读出三个循环位的展平矩阵，不做转置、不堆分配；次序与短路条件和通用实现相同。
+
+**只对 (P, M) = (3, 1) 生效**；其余域、以及超出缓冲尺寸（行 > 16 或列 > 128，返回 −1）的矩阵走通用实现。
+实测（空闲 8 核，2026-11-27）：9×9×9 张量的展平秩 1118 ns（独立参考实现 5237 ns），9×81 求秩 469 ns。
+等价性见 §6。
+
 ## 6. 验证证据（2026-11-27）
 
 | 检查 | 做法 | 结果 |
@@ -110,7 +129,12 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
 | F₃ 群作用 | 框架 `store.Apply` / `query.Apply` / `ApplyInverse` / 单位元 vs **独立朴素实现**（直接按 X·R、L·τᵗ(X) 循环），全部 3⁹ 个向量 × 全部群元 | 0 个不匹配 |
 | F₃ 枚举**完整性** | 轨道大小守恒：对每条代表 c 数 (Q,S) 对中满足 Q·c ≡ S·c 的对数 → \|Stab\| → \|orbit\| = \|H\|/\|Stab\|，各维求和对比高斯二项系数 | 10 个维度**全部精确相等**（见下表） |
 | 垫片分块 | `shim_test/run.sh` | 1–8 线程全过；对旧垫片的负控制报错 |
+| F₃ 求秩快路径 | `standalone/rank_f3_fast_check.cc`：与**独立写的**通用 Gauss–Jordan 随机对拍，8 种形状（9×81、9×9、16×128、…）× 均匀 / 低秩 / 全零 | 20 万次 **0 不匹配**；直方图显示每种形状的各秩都被采到 |
+| F₃ 展平秩快路径 | 同一件：随机张量 × 随机阈值，形状 (9,9,9) / (2,3,4) / (5,4,6) | 9 万次 **0 不匹配**；返回值覆盖 0–9 |
+| 快路径后的回归 | F₂ verifier / F₂ 枚举 / F₃ verifier / F₃ 枚举 | 20 / OK；496 条逐条一致；OK；736 条不变 |
 | 复现性 | 干净上游 + 补丁 + 新文件 + 本目录垫片 | 二进制逐字节相同 |
+
+`engineering/tests/test_wang_f3ext_fastpath.py` 是上面两行快路径对拍的 unittest 版（4000 次；上游副本缺失时跳过）。
 
 轨道大小守恒（`Σ|orbit|` 与 `[9 choose d]₃`）：
 
@@ -151,6 +175,12 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
    `Cancel Forced Product … exceeds 2^24`；正式参数用 32。
 5. **`verifier` 需要 `.btp` 旁车**：证书与旁车必须同名同目录（`x.pb.txt` + `x.btp`），
    只拷 `.pb.txt` 会在打开旁车时 `CHECK failed`。
+6. **速度边界**：F₃ 没有位打包快路径，forced product 的代价由枚举量 q^(r2p·r1) 决定——
+   默认 `--forced_product_max_iterations_log2=24` 会把 dim ≤ 7 的大多数轨道直接
+   `Cancel Forced Product … exceeds 2^24`。加大预算能改进界（实测 log2 = 32 把 dim 7 的三条轨道
+   从 10–11 提到 12），但 3^18 的枚举在没有快路径时是 16 分钟 / 投影位。所以跑法是**分阶段**：
+   先用中等预算拿一份完整可验证的证书，再用大预算只对高维做改进、然后向低维传播
+   （上游对大格式也是这么做的：`run.py` 里 `dim_min` / `dim_max` 分两遍）。
 
 ## 9. 垫片的边界（诚实声明）
 

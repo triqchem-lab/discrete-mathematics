@@ -1,3 +1,59 @@
+diff --git a/core/dynamic_matrix.cc b/core/dynamic_matrix.cc
+index 98863d1..ddeabd2 100644
+--- a/core/dynamic_matrix.cc
++++ b/core/dynamic_matrix.cc
+@@ -2,6 +2,7 @@
+ 
+ #include <sstream>
+ 
++#include "core/rank_f3_fast.h"
+ #include "ng-log/logging.h"
+ 
+ template <int P, int M>
+@@ -64,6 +65,15 @@ template <int P, int M> int DynamicMatrix<P, M>::Rank() const {
+   if (n0_ == 0 || n1_ == 0) {
+     return 0;
+   }
++  // F₃ 快路径（前向消元 + 平铺数组, 见 core/rank_f3_fast.h）。结果与下面的通用实现相同;
++  // 其余域、以及超出缓冲尺寸的矩阵（fast < 0）走通用实现。
++  if constexpr (P == 3 && M == 1) {
++    const int fast = sovereign_f3::RankF3Fast(
++        reinterpret_cast<const uint8_t *>(data_.data()), n0_, n1_);
++    if (fast >= 0) {
++      return fast;
++    }
++  }
+   // Copy to row-major 2D structure for Gauss-Jordan elimination.
+   std::vector<std::vector<Field>> rows(n0_,
+                                        std::vector<Field>(n1_, Field::Zero()));
+diff --git a/core/rank_lower_bound_flatten.h b/core/rank_lower_bound_flatten.h
+index dfb1be2..d90c5cc 100644
+--- a/core/rank_lower_bound_flatten.h
++++ b/core/rank_lower_bound_flatten.h
+@@ -17,6 +17,7 @@
+ #include <cstddef>
+ 
+ #include "core/dynamic_matrix.h"
++#include "core/rank_f3_fast.h"
+ #include "core/tensor.h"
+ 
+ // Rotate the three tensor axes: result[j][k][i] = tensor[i][j][k].
+@@ -56,6 +57,15 @@ DynamicMatrix<P, M> FlattenTensorA(const Tensor<P, M, NA, NB, NC> &tensor) {
+ template <int P, int M, std::size_t NA, std::size_t NB, std::size_t NC>
+ int RankLowerBoundFlatten(const Tensor<P, M, NA, NB, NC> &tensor,
+                           int target_rank = std::numeric_limits<int>::max()) {
++  // F₃ 快路径（不做转置、不堆分配; 次序与短路同下, 见 core/rank_f3_fast.h）。
++  // 其余域、以及尺寸超出缓冲（fast < 0）时走通用实现。
++  if constexpr (P == 3 && M == 1) {
++    const int fast = sovereign_f3::RankLowerBoundFlattenF3Fast<NA, NB, NC>(
++        reinterpret_cast<const uint8_t *>(&tensor[0][0][0]), target_rank);
++    if (fast >= 0) {
++      return fast;
++    }
++  }
+   Tensor<P, M, NB, NC, NA> tensor1 = CyclicTranspose<P, M, NA, NB, NC>(tensor);
+   int rank1 = FlattenTensorA<P, M, NB, NC, NA>(tensor1).Rank();
+   if (rank1 >= target_rank) {
 diff --git a/problems/matrix/BUILD b/problems/matrix/BUILD
 index e3597b3..08d2809 100644
 --- a/problems/matrix/BUILD

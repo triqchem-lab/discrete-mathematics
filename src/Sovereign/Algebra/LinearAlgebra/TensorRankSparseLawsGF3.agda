@@ -28,6 +28,7 @@
 --   §4 衔接定理: ★ lower-slope-boundary（下半 ⟹ 方格式的下斜率 3/4）、
 --      ★ upper-slope-strassen（Strassen ⟹ (2,2,2) 的上斜率 15/16）、
 --      ★ upper-lower-slope（同格式的上斜率 ≥ 下斜率）、
+--      ★★ saving→upper-slope（Saving₃ 的单尺寸见证 ⟹ 方格式的上斜率 p/(3q)）、
 --      ★★ degree-law-boundary（DegreeBound₃ + 下半 ⟹ 支撑数⁴·n⁹ ≤ (432·n³·r)⁴）
 --
 -- 诚实边界
@@ -50,9 +51,9 @@ module Sovereign.Algebra.LinearAlgebra.TensorRankSparseLawsGF3 where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _≤_; _<_; _≤?_; z≤n; s≤s)
 open import Data.Nat.Properties
-  using (≤-trans; ≤-refl; ≤-reflexive; ≰⇒>; ≤⇒≯; <-≤-trans; ≤-<-trans; m≤n⇒m≤1+n; m≤m+n; m<n+m
+  using (≤-trans; ≤-refl; ≤-reflexive; ≰⇒>; ≤⇒≯; <⇒≤; <-≤-trans; ≤-<-trans; m≤n⇒m≤1+n; m≤m+n; m<n+m
        ; *-comm; *-assoc; *-identityʳ; *-monoˡ-≤; *-monoʳ-≤; +-monoˡ-≤; +-monoʳ-≤
-       ; +-identityʳ; ^-monoˡ-≤; ^-*-assoc)
+       ; +-identityʳ; *-zeroʳ; ^-monoˡ-≤; ^-*-assoc)
 open import Data.Bool using (Bool; true; false)
 open import Data.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
 open import Data.Product using (_×_; _,_; Σ; proj₁; proj₂)
@@ -64,11 +65,11 @@ open import Sovereign.Base.Trit using (Trit; T₀; T₁; T₂; _⊗_; ⊗-identi
 open import Sovereign.Algebra.LinearAlgebra.GF3LaplacianN using (sumFin)
 open import Sovereign.Algebra.LinearAlgebra.TensorRankCircuitGF3
   using (RankLERect; mmRect; rankLE₃→rect; sumℕ)
-open import Sovereign.Algebra.LinearAlgebra.TensorRankGF3 using (RankLE₃; ω₃-boundary)
+open import Sovereign.Algebra.LinearAlgebra.TensorRankGF3 using (RankLE₃; ω₃-boundary; rank-strassen)
 open import Sovereign.Algebra.LinearAlgebra.TensorRankSparseGF3
   using (WeightedRankLE₃; suppInd; supportSize₃)
-open import Sovereign.Algebra.LinearAlgebra.TensorRankPowGF3 using (rank-strassen-pow)
-open import Sovereign.Algebra.LinearAlgebra.TensorRankUpperGF3 using (pow-exp-mono; 1≤pow)
+open import Sovereign.Algebra.LinearAlgebra.TensorRankPowGF3 using (rank-strassen-pow; rank-pow)
+open import Sovereign.Algebra.LinearAlgebra.TensorRankUpperGF3 using (pow-exp-mono; 1≤pow; pow-base-<; cert-strict)
 
 --------------------------------------------------------------------------------
 -- §1 矩形加权词汇
@@ -315,6 +316,57 @@ upper-lower-slope I J K p q p′ q′ hV U L =
   e3 : ρ ^ (q * q′) ≤ (I * J * K) ^ (p * q′)
   e3 = ≤-trans (≤-reflexive (sym (^-*-assoc ρ q q′)))
          (≤-trans (^-monoˡ-≤ q′ up′) (≤-reflexive (^-*-assoc (I * J * K) p q′)))
+
+-- ★★ Saving₃ 的单尺寸见证 ⟹ 方格式的上斜率: r^q < n^p（RankLE₃ n r）给出
+--   (n,n,n) 格式的上斜率 p/(3q)。这是 B-T4 要的「与 Saving₃ 衔接」:
+--   Saving₃ p q = Σ n r, 2 ≤ n × RankLE₃ n r × r^q < n^p, 取出见证后代入即得。
+--   注意指数的换底: Saving₃ 的 p/q 是以 n 为底的指数, 格式体积是 n·n·n, 所以斜率是 p/(3q)。
+saving→upper-slope : ∀ n r p q → RankLE₃ n r → r ^ q < n ^ p → UpperSlopeᵣ n n n p (3 * q)
+-- 1 ^ k = 1（stdlib 没有现成的; k 是变元时 1 ^ k 不归约）
+1^k≡1 : ∀ k → 1 ^ k ≡ 1
+1^k≡1 zero = refl
+1^k≡1 (suc k) = trans (cong (λ t → t + 0) (1^k≡1 k)) (+-identityʳ 1)
+
+-- m = 0: 两边都是 1（p · 0 = 0 要用 *-zeroʳ, p 是变元时不归约）
+saving→upper-slope n r p q R lt zero =
+  (r ^ zero) , rankLE₃→rect (n ^ zero) (r ^ zero) (rank-pow R zero) , ≤-reflexive e0
+  where
+  e0 : (r ^ zero) ^ (3 * q) ≡ (n * n * n) ^ (p * zero)
+  e0 = trans (1^k≡1 (3 * q)) (sym (cong ((n * n * n) ^_) (*-zeroʳ p)))
+saving→upper-slope n r p q R lt (suc m) =
+  (r ^ suc m) , rankLE₃→rect (n ^ suc m) (r ^ suc m) (rank-pow R (suc m)) , le
+  where
+  x1 : suc m * (3 * q) ≡ q * (3 * suc m)
+  x1 = trans (sym (*-assoc (suc m) 3 q))
+         (trans (cong (λ t → t * q) (*-comm (suc m) 3)) (*-comm (3 * suc m) q))
+
+  eL : (r ^ suc m) ^ (3 * q) ≡ (r ^ q) ^ (3 * suc m)
+  eL = trans (^-*-assoc r (suc m) (3 * q))
+         (trans (cong (r ^_) x1) (sym (^-*-assoc r q (3 * suc m))))
+
+  x2 : 3 * (p * suc m) ≡ p * (3 * suc m)
+  x2 = trans (sym (*-assoc 3 p (suc m)))
+         (trans (cong (λ t → t * suc m) (*-comm 3 p)) (*-assoc p 3 (suc m)))
+
+  eR : (n * n * n) ^ (p * suc m) ≡ (n ^ p) ^ (3 * suc m)
+  eR = trans (cong (λ t → t ^ (p * suc m)) (cubeₙ n))
+         (trans (^-*-assoc n 3 (p * suc m))
+         (trans (cong (n ^_) x2) (sym (^-*-assoc n p (3 * suc m)))))
+
+  hpos : 0 < 3 * suc m
+  hpos = s≤s z≤n
+
+  lt′ : (r ^ q) ^ (3 * suc m) ≤ (n ^ p) ^ (3 * suc m)
+  lt′ = <⇒≤ (pow-base-< (3 * suc m) (r ^ q) (n ^ p) hpos lt)
+
+  le : (r ^ suc m) ^ (3 * q) ≤ (n * n * n) ^ (p * suc m)
+  le = ≤-trans (≤-reflexive eL) (≤-trans lt′ (≤-reflexive (sym eR)))
+
+-- 可读实例: Strassen 在 (2,7) 的严格节省 7^6 < 2^17 给出 (2,2,2) 格式的上斜率 17/18
+--   （专门的 upper-slope-strassen 给出更紧的 15/16; 这里只演示 Saving₃ ⟹ 上斜率的换底）。
+--   数值 7^6 + 1 + 13422 = 2^17 直接复用 TensorRankUpperGF3.cert-strict, 不重算。
+saving-2-7 : UpperSlopeᵣ 2 2 2 17 18
+saving-2-7 = saving→upper-slope 2 7 17 6 rank-strassen cert-strict
 
 -- 支撑的布尔指示与格数
 suppB : Trit → Bool
