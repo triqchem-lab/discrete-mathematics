@@ -877,3 +877,20 @@ r = 22 也行（首个 (p,q) = (31,11), 31/11 ≈ 2.818）; r = 23 不行（`lad
 
 **验证**: standalone exit=0（0 postulate / 0 REWRITE / 0 洞）; 独立检查件 6 签名 exit=0;
 顶层名查重唯一（`eval` 与 `CyclicGF27.eval` 同名不同型, 门禁判据按类型比对通过）。
+
+## 十八、矩阵乘法指数线 M19——稀疏加权层 + 文献检索（2026-11-26，用户定案「检索论文 + 镜像」）
+
+> 下界（rank ≥ …）不走表，走**约束**：加权张量的支撑结构约束一切分解形态。
+> M19 镜像 Lean `Rectangle/Weights.lean` 的谓词层——Bläser 2003 的 2n²+n−2、
+> 2603.07280/2609.06725 的自动化下界都以它为承重结构。
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `wmm` / `WeightedRankLE₃` | `TensorRankSparseGF3.agda:51` / `:55` | 加权结构常数（条件处取 w，其余 T₀）+ 加权矩阵张量的 r 项分解（镜像 Lean WeightedRankLE） |
+| `suppInd` / `supportSize₃` | `:68` / `:74` | 支撑指示 + 支撑数（嵌套 ℕ 和；镜像 Lean supportSize） |
+| `rankLE₃→weighted` | `:82` | 桥：RankLE₃ n r → WeightedRankLE₃ n r (λ _ _ _ → T₁)（mm = 全 T₁ 加权特例；经 ⊗-identityˡ） |
+| 哨兵 | `:95` / `:99` / `:103` | 支撑数 1、8（n=1,2）；1×1 加权结构常数 = T₁ |
+
+验证：standalone exit=0（0 postulate / 0 REWRITE / 0 洞）；独立检查件 7 签名 exit=0。
+诚实边界：只有谓词层；三条稀疏定律是抽象指数的泛量化命题（K.1：域泛型组合学，无可枚举的
+有限核对对象），其有限形态等 exponent 机制镜像口径；限制界词汇（rows/cols/inner、陪集）未镜像。
