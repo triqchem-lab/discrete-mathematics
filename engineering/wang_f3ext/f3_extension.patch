@@ -359,3 +359,30 @@ index 130e709..0f31d86 100644
 +using SymmetryGroup = typename SymmetryGroupDispatch<P, M, N0, N1, N2>::Type;
 +
  } // namespace matrix
+diff --git a/search/rank_lower_bound_degenerate.h b/search/rank_lower_bound_degenerate.h
+index 9375696..bfc580b 100644
+--- a/search/rank_lower_bound_degenerate.h
++++ b/search/rank_lower_bound_degenerate.h
+@@ -22,6 +22,7 @@
+ #include "core/constraints.h"
+ #include "core/gf.h"
+ #include "core/gf_vec.h"
++#include "core/rank_f3_fast.h"
+ #include "search/orbit_map.h"
+ 
+ template <class Problem>
+@@ -47,6 +48,14 @@ std::pair<int, pb::DegenerateProof> RankLowerBoundDegenerate(
+     if (constraint.LeadingNonzero() != GF<P, M>::One()) {
+       continue;
+     }
++    // F₃ 剪枝（见 core/rank_f3_fast.h 的 MinimalWrtBase）: 只访问关于基极小的候选行。
++    // 每个候选行 c 与它的极小代表张成同一个超空间, 极小代表互不相同——所以每个超空间仍恰好
++    // 访问一次, max 不变; 平局时记录的见证可能不同。F₂ 保持上游原样（回归要逐字对得上公开证书）。
++    if constexpr (P == 3 && M == 1) {
++      if (!sovereign_f3::MinimalWrtBase(constraints, constraint)) {
++        continue;
++      }
++    }
+     constraints.push_back(constraint);
+     if (IsLinearIndependentRREF<P, M, NA>(constraints)) {
+       QueryElem query_elem{};

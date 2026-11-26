@@ -12,7 +12,7 @@
 
 | 路径 | 内容 |
 |---|---|
-| `f3_extension.patch` | 对上游的补丁：`problems/matrix/symmetry.h`（新增 `SymmetryGroupFq` + 分发）、`problem.h`（注释、`kN0..kN2`）、`BUILD`；**外加 core 的三处 F₃ 快路径挂钩**（`dynamic_matrix.cc`、`rank_lower_bound_flatten.h`、`rank_lower_bound_forced_product.h`，见 §5.1） |
+| `f3_extension.patch` | 对上游的补丁：`problems/matrix/symmetry.h`（新增 `SymmetryGroupFq` + 分发）、`problem.h`（注释、`kN0..kN2`）、`BUILD`；**外加 core / search 的四处 F₃ 挂钩**（`dynamic_matrix.cc`、`rank_lower_bound_flatten.h`、`rank_lower_bound_forced_product.h`、`search/rank_lower_bound_degenerate.h`，见 §5.1） |
 | `fq_matrix.h` | 新文件：base-P 数位打包的小矩阵（`FqMatrix<P,N0,N1>`，转置 / 乘积 / 求逆 / 秩） |
 | `fq_matrix_tables.h` | 新文件：GL 表、逆表、按行查表乘积表（`FqMatrixTables<P,N0,N1>`） |
 | `fq_matrix_test.cc` | 新文件：上游 gtest 风格的扩展单元测试（bazel 下跑） |
@@ -117,6 +117,17 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
 - 展平秩：直接按跨度从张量读出三个循环位的展平矩阵，不做转置、不堆分配；次序与短路条件和通用实现相同；
 - forced product 的「组合叠加」步（把被选中的强制行按系数 1 或 2 叠进张量）：从带分支的 GF 运算改成无分支取模。
   这一步没有单独的对拍件，验证方式是新旧二进制在 dim 9–7 上的结果（证明类型 / 投影位 / 界值）**逐项相同**。
+
+第四处不是算术层面的，是**搜索层面的剪枝**（只对 F₃ 开启，F₂ 保持上游原样以便回归逐字对上公开证书）：
+
+- 退化归约对每个候选额外行做一次 `OrbitMap::Get`（约 7500 次探针 × 1.3 µs ≈ 10 ms）。但候选行只要相差一个基向量，
+  张成的就是同一个 (d+1) 维超空间——dim 5 时 9841 个候选里只有 40 个不同的超空间，却查了约 9700 次。
+  F₂ 的查找只有 336 个探针所以上游没觉得慢。剪枝 = 只访问「关于基极小」的候选行（在基的每个主元位置为 0），
+  每个超空间恰好访问一次，max 不变；平局时记录的见证可能不同（不影响证明有效性）。
+- 验证：① `rank_f3_fast_check.cc` 的「极小扫描 = 全扫」一节——25 个随机基（dim 0–8）× 候选行全枚举，
+  两种扫描访问的超空间集合相同、极小候选数 = (3^(9−d) − 1)/2，0 不匹配；
+  ② 新旧二进制在 dim 9–6 上 736 条轨道的结果（证明类型 / 界值）**完全相同**；
+  实测 dim 7: 5.0 s → 0.1 s，dim 6: 251 s → 92 s（且是在与另两个运行抢 CPU 时测的）。
 
 **只对 (P, M) = (3, 1) 生效**；其余域、以及超出缓冲尺寸（行 > 16 或列 > 128，返回 −1）的矩阵走通用实现。
 实测（空闲 8 核，2026-11-27）：9×9×9 张量的展平秩 1118 ns（独立参考实现 5237 ns），9×81 求秩 469 ns。

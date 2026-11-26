@@ -8,6 +8,8 @@
 // 编译（需要上游副本 WANG_REPO 已打补丁, 以及本目录上一级的 shim/）:
 //   clang++ -std=c++23 -O3 -I<shim> -I<WANG_REPO> rank_f3_fast_check.cc \
 //            <WANG_REPO>/core/dynamic_matrix.cc -o rank_f3_fast_check
+// 另有一节核对退化归约的 F₃ 剪枝: 「只扫关于基极小的候选行」访问的超空间集合
+//   == 「扫全部候选行」访问的超空间集合（对 dim 0..8 的随机基, 候选行全枚举）。
 // 运行: ./rank_f3_fast_check [试验数, 缺省 200000]   —— 全部相等则 exit 0
 #include <algorithm>
 #include <chrono>
@@ -15,9 +17,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <random>
+#include <set>
 #include <vector>
 
+#include "core/constraints.h"
 #include "core/dynamic_matrix.h"
+#include "core/gf_vec.h"
 #include "core/rank_f3_fast.h"
 #include "core/rank_lower_bound_flatten.h"
 
@@ -177,6 +182,82 @@ void CheckFlattenShape(std::mt19937_64 &rng, long trials, int *hist, int hist_si
   }
 }
 
+// 退化归约剪枝的等价性: 对随机基（各维）, 比较两种扫描访问到的超空间集合。
+//   全扫: 每个首项为 1 且与基无关的候选行 c;
+//   极小扫: 每个关于基极小的候选行（MinimalWrtBase）。
+// 超空间用规范 RREF（基向量组）作键。两种集合必须相等, 且极小候选数 = (3^(9−d) − 1) / 2。
+using Vec9 = GFVec<3, 1, 9>;
+using Cons9 = Constraints<3, 1, 9>;
+
+std::vector<std::uint64_t> CanonKey(Cons9 rows) {
+  const int rank = GaussJordanRREF<3, 1, 9>(&rows);
+  rows.erase(rows.begin(), rows.end() - rank);
+  std::vector<std::uint64_t> key;
+  for (const Vec9 &v : rows) key.push_back(EncodeGFVec<3, 1, 9>(v));
+  return key;
+}
+
+long CheckDegeneratePruning(std::mt19937_64 &rng) {
+  long bad = 0, superspaces_full = 0, superspaces_minimal = 0;
+  for (int d = 0; d <= 8; ++d) {
+    const int reps = d == 0 ? 1 : 3;
+    for (int rep = 0; rep < reps; ++rep) {
+      // 随机基: d 个随机向量的规范 RREF
+      Cons9 base;
+      if (d > 0) {
+        Cons9 rand;
+        for (int i = 0; i < d; ++i) {
+          Vec9 v{};
+          for (int k = 0; k < 9; ++k) v.Set(k, GF<3, 1>{static_cast<std::uint8_t>(rng() % 3)});
+          rand.push_back(v);
+        }
+        if (GaussJordanRREF<3, 1, 9>(&rand) != d) {
+          --rep;
+          continue;
+        }
+        base = rand;
+        base.erase(base.begin(), base.end() - d);
+      }
+      std::vector<std::vector<std::uint64_t>> full, minimal;
+      for (std::uint64_t r = 1; r < 3 * 3 * 3 * 3 * 3 * 3 * 3 * 3 * 3; ++r) {
+        const Vec9 c = DecodeGFVec<3, 1, 9>(r);
+        if (c.LeadingNonzero() != GF<3, 1>::One()) continue;
+        const bool minimal_row = sovereign_f3::MinimalWrtBase(base, c);
+        Cons9 ext = base;
+        ext.push_back(c);
+        const int rank = GaussJordanRREF<3, 1, 9>(&ext);
+        if (rank != d + 1) {
+          if (minimal_row) {
+            std::printf("PRUNING BUG: minimal candidate dependent on base (d=%d)\n", d);
+            ++bad;
+          }
+          continue;
+        }
+        if (minimal_row) minimal.push_back(CanonKey(ext));
+        full.push_back(CanonKey(ext));
+      }
+      // full 里同一个超空间会出现多次（每个张成它的候选行一次）, 所以比较的是**集合**。
+      const std::set<std::vector<std::uint64_t>> full_set(full.begin(), full.end());
+      const std::set<std::vector<std::uint64_t>> minimal_set(minimal.begin(), minimal.end());
+      std::uint64_t pow3 = 1;
+      for (int i = 0; i < 9 - d; ++i) pow3 *= 3;
+      const std::size_t expect_minimal = static_cast<std::size_t>((pow3 - 1) / 2);
+      const bool ok = full_set == minimal_set && minimal.size() == expect_minimal &&
+                      minimal_set.size() == expect_minimal;
+      if (!ok) {
+        std::printf("PRUNING MISMATCH d=%d: full distinct=%zu minimal=%zu (distinct %zu) expect=%zu\n", d,
+                    full_set.size(), minimal.size(), minimal_set.size(), expect_minimal);
+        ++bad;
+      }
+      superspaces_full += static_cast<long>(full.size());
+      superspaces_minimal += static_cast<long>(minimal.size());
+    }
+  }
+  std::printf("degenerate pruning: bases checked=%d mismatches=%ld full-visits(with duplicates)=%ld minimal-visits=%ld\n",
+              1 + 8 * 3, bad, superspaces_full, superspaces_minimal);
+  return bad;
+}
+
 } // namespace
 
 int main(int argc, char **argv) {
@@ -232,6 +313,10 @@ int main(int argc, char **argv) {
       std::printf("flatten result %2d: (9,9,9) %6d   (2,3,4) %5d   (5,4,6) %5d\n", v, h9[v], h234[v], h546[v]);
     }
   }
+  // 退化归约剪枝的等价性（随机基 × 候选行全枚举）
+  const long pruned_bad = CheckDegeneratePruning(rng);
+  std::printf("degenerate pruning mismatches=%ld\n", pruned_bad);
+
   // 计时: 9×9×9 随机张量上的展平秩, 以及 9×81 矩阵的秩
   {
     const Tensor3 ref = RandomTensor(rng, 9, 9, 9, 0);
@@ -264,5 +349,5 @@ int main(int argc, char **argv) {
                 std::chrono::duration<double, std::nano>(t3 - t2).count() / kIters,
                 std::chrono::duration<double, std::nano>(t4 - t3).count() / (kIters / 10), sink);
   }
-  return g_mismatches == 0 ? 0 : 1;
+  return (g_mismatches == 0 && pruned_bad == 0) ? 0 : 1;
 }

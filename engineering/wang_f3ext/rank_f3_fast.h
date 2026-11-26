@@ -113,6 +113,22 @@ inline void AddScaledRowF3(uint8_t *dst, const uint8_t *src, int n, int digit) {
   }
 }
 
+// 行 c 关于基（规范 RREF 的行向量组）是否「极小」: c 在基的每个主元位置上都是 0。
+// 退化归约（search/rank_lower_bound_degenerate.h）用它在 F₃ 上只枚举极小候选:
+//   每个与基线性无关的行 c 都对应唯一的极小代表 m = (c 减去基向量的适当组合) 归一化到首项 1,
+//   且 span(基 ∪ {c}) = span(基 ∪ {m}); 不同的极小代表张成**不同**的超空间。
+// 所以只扫极小候选恰好把每个 (d+1) 维超空间访问一次, 取到的 max 与全扫相同
+// （区别只在平局时记录哪一个见证, 不影响证明的有效性）。
+// 等价性由 engineering/wang_f3ext/standalone/rank_f3_fast_check.cc 的「极小扫描 = 全扫」一节核对。
+template <class Vec> bool MinimalWrtBase(const std::vector<Vec> &base, const Vec &c) {
+  for (const Vec &b : base) {
+    if (c[b.LeadingNonzeroIdx()] != Vec::Field::Zero()) {
+      return false;
+    }
+  }
+  return true;
+}
+
 // 行跨度 = 列数的便捷重载。
 inline int RankF3Fast(const uint8_t *data, int n0, int n1) {
   return RankF3Fast(data, n0, n1, n1);
