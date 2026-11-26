@@ -274,3 +274,40 @@ Lean 陈述强于论文；Lean 的硬度走对角化、与论文的两情形路�
 **本批更正**: `TensorRankGF3` 头注与 oracle 文档曾写「oracle 逐字发射 / 贴用 64 条子句」——实际组织是 `mm-basis` 16 条 × 4 个输出位置, 已按代码改正。
 
 已登记: `PROVEN.md` §十五 M16、§十六 M17（三条机器轨互证: oracle ALL_PASS / Agda 内核 exit=0 / TriRV 三进制 VM 正件 exit=0 负控 exit=66 与预言一致）。
+
+### K. 上界机器的构造链——已通读到「分解生产点」, 非构造性定位（2026-11-26, M17 之后「选项 3 入口」）
+
+问题: Lean 的 9/4 构造能否在 GF(3) 上变成显式分解表? 动作: 把从「域」到「秩分解」的**每一条链环**通读一遍
+（区别于 §F 的陈述层通读——这次读的是证明体）。以下每一环都有 file:line 核对动作:
+
+```
+域 F ──small_field(UpperBound.lean:9-20)──▶ K = ZMod p 或 ℚ
+    ──exponent_extension(FieldExtension.lean:89, 标量扩张不改指数)──▶ 代数闭包 K̄
+    ──closed_fulfills(UpperBound.lean:22-28): closed_laws 喂五个组件──▶ Fulfills K̄
+    ──五定律(character_bound 等, 全部汇入 exponent_le_of_characters)──▶ 指数 ≤ s
+                                     │
+    反证: exponent > s ──price_gap(Rectangle/Support.lean:65, r = ⌈9·n^s⌉₊)──▶ n, r 有价差
+    ──price_dots(CharacterRank.lean:84-104, side n a ≤ 2·n^a 的「取顶每配对至多两倍」)──▶
+        一切单调 NNReal-特征 f: f(dots) < f(r)
+    ──Spectrum.strictComparison(Spectrum/Comparison.lean:215)──▶ ∃ C: ∀ p, dots^p ≤ (C·r^p : TensorClass)
+    ──rank_of_dots(CharacterRank.lean:60-76)──▶ RankLE Coeff (side^p) (r^p·C)
+    ──exponent_lt_of_rank(FieldExtension.lean:37)──▶ 与 exponent > s 矛盾
+```
+
+**分解的唯一生产点** = `rank_of_dots` + `CoefficientTensor.rank_le_iff`（`Upper/Tensor/Rank.lean:150`:
+`rank T = Nat.find (rankAtMost_finite T)` 的经典最小数）。这一环本身是有限可提取形态——**但半环比较从哪来**:
+`strictComparison` 的证明 = 商掉「y ≤ x」的 RingCon（等式层, 域无关）+ **紧性/分离**
+（`Spectrum/Comparison.lean:52-104` `closed_points`/`compact_points`/`separated`: **无穷积紧性**
+`isCompact_pi_infinite` + 极小元存在 + 有限子覆盖）——常数 C 只以 `∃ C` 给出, 无算法。
+
+**判定: 不能直接变成 GF(3) 上的显式分解表。** 非构造性有三层, 每层都是原则性的:
+1. **紧性层**（原则性最强）: strictComparison 的 C 来自无穷积空间上的紧性论证（Tychonoff 级）, 没有 C 的任何界;
+2. **ε-slack 层**: `price_gap` 的 n 来自实数发散论证, `absorb_overhead`（FieldExtension.lean:49）的 k 是 `tendsto` 的纯存在;
+3. **基域层**: `Coeff = Classical.epsilon …`（Coefficients.lean:43）。GF(3) 只经 `exponent_extension` 绕道代数闭包被覆盖——**构造从不发生在 GF(3) 上**; 机器内部还要求无穷域（`exists_nonzero_nodes`, Coefficients.lean:56 需要 `Infinite F`）与多项式插值/分离一族（`Upper/SeparationInterpolation`、`Upper/PolynomialValues`）, 这些是有限域上的真障碍。
+
+**对我们路径的可迁移件（读出的正面产出）**:
+- 「半环比较 ⟹ RankLE」的框架与 `RankLE₃` 同构——我们的 M16/M17 走的是**反方向**（具体表 ⟹ RankLE₃ ⟹ Saving₃）, 恰好是 Lean 机器不可构造化那一环的显式替代;
+- 五定律是有限可核对的组合命题（`character_bound`: 4(pX·BC + pY·AC + pZ·AB) ≤ (A+B+C)² 等）——它们的 GF(3) 版本可以逐条机器核对, 但即便全成立, 「定律 ⟹ 分解」的桥（紧性）在 GF(3) 上没有显式版本, **定律不产表**;
+- 因此「把 Lean 构造改造成表」这条路线**封存**: 显式化的空间在（a）小尺寸见证搜索（M17 已做 3×3; r ≤ 21 是公开问题级）、（b）五定律的 GF(3) 有限化核对（可做, 产数据点不产表）。
+
+**阅读覆盖（本轮）**: `UpperBound.lean` 全文 44 行、`Coefficients.lean` 全文 69 行、`Rectangle/CharacterRank.lean` 全文 115 行、`Rectangle/Poly.lean` 全文 124 行、`Spectrum/Comparison.lean` 全文 260 行、`FieldExtension.lean:37-60`（`exponent_lt_of_rank`/`absorb_overhead` 证明体）、`Rectangle/Support.lean:65-80`（`price_gap` 证明体）、`Upper/Tensor/Rank.lean` 关键定义（`rank`/`rank_le_iff`/`TensorClass` 商结构）。**未读**: `Sparse/Degree.lean`、`Folding/Swap.lean`、`Profile/Pairing.lean` 的定价细节与 `Upper/Character/*` 内部——全部在 `exponent_le_of_characters` 上游（定价层, 非构造层）, 不改变本判定 [边界标注]。
