@@ -669,3 +669,57 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 - **NoNormPrelude `*-assoc` 方向 = (m·n)·o ≡ m·(n·o)**（与 stdlib 相反）——2·(2·X) ≡ 4·X 要 `sym`。
 - **σρ ≠ ρσ（cls0 失真映射）**: 正确关系 σρ = −ρσ（ρ 含 α∉F₃, Galois 共轭反交换）——手算「交换」被 oracle 否证, 勿凭直觉写。
 - **语句里别用裸 λ 应用**（nightly 实测: `(λ _ → ptInf) pw` 触发 UnsolvedMetaVariables）——具名零映射（act0）替代。
+
+---
+
+## 十五、矩阵乘法指数线（`Algebra/LinearAlgebra/`，2026-11-26 登记）
+
+> 与 GF(3)/三进制主线的接口只有两处: M13 的 GF(3) 七乘方案（Trit 上的 2×2）、M14 的 12×12 展示群寄存器。
+> M15（ListBounds）与域无关——只用标准库 ℕ。
+
+### M13 · Strassen GF(3) 七乘方案全枚举（`StrassenGF3.agda`，6621 行，回执 `4ca2f1d3`）
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `strassen` / `mul₃` / `m1`…`m7` | `StrassenGF3.agda:42–50` | 七乘方案与朴素乘法（⊗ 7 次 vs 8 次; 加/减另计） |
+| ★ `strassen-correct` | 同上 §3（6561 条 `refl`, oracle 逐字发射） | ∀ a…h : Trit → `strassen (mkMat2 a b c d) (mkMat2 e f g h) ≡ mul₃ (…)`; 3⁸ 全枚举, `engineering/oracle_strassen_gf3.py` 6561 对零失败 |
+
+### M14 · 12×12 寄存器（⚠ 界已撤回; 回执 `dc35eea3` / `c0655afe`, 撤回 `668ecab4`）
+
+| 符号 | 位置 | 命题 / 状态 |
+|---|---|---|
+| `record Matmul12Bounds`（字段 `output-positions = 144` 等） | `Matrix12Bounds.agda:39` | 只是**存三个登记数的 record**, 不证明任何界 |
+| `E-at` / `E-inj` / `mulEii-*`（288 条） | `Matrix12LowerWitness.agda:54/105` | 基矩阵两两不同 + 144 条 `E_ii·E_ik = E_ik` 的全枚举 `refl` |
+| ⚠「144 ≤ 秩 ≤ 1728」 | — | **不是已证结论, 勿引用**（「两两不同 ⇒ 秩 ≥ 144」是无效推理; 1728 只是 `12*12*12` 的算术恒等式; 库内无形式代价模型）。见 `docs/techniques/M14-12x12矩阵指数上下界-2026-11-26.md` 顶部勘误 |
+
+### M15 · ListBounds——软核的不用实数镜像（`ListBounds.agda`，1222 行，回执 `6982c9a1`）
+
+镜像对象: openai/math `OAI/LinearAlgebra/MatrixExponent/ListBounds.lean`（Seed / ManyList / Compression）+ `Iteration.lean:76–77` `incompatible`。
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| ★ `lb-incompatible` | `ListBounds.agda` §8 | `lb-Grow N H → lb-Seed P N → lb-Many P N → lb-Comp P N H → ⊥`（n、h 抽象为满足增长条件的函数 N、H） |
+| ★ `lb-incompatible-lists` | 同上 §10 | 上条取 N := `lb-listBits`、H := λ w → w * w（Lean `incompatible` 的 ℕ 形态） |
+| ★ `lb-wk≤2w` | 同上 §9 | `2 ^ (k + 4) ≤ w → w ^ k ≤ 2 ^ w`（归纳于 k; 取半 `lb-half` + `lb-lin-exp` 线性·常数 ≤ 指数） |
+| `lb-step-Y` / `lb-step` / `lb-copy` / `lb-size` / `lb-iter` / `lb-final` | 同上 §2–§5 | 迭代压缩 J 步的全部算术引理（不变式 `lb-Inv`） |
+| `lb-seed-at` / `lb-many-at` / `lb-comp-at` / `lb-rn-pkg` | 同上 §3/§5/§6 | 三条性质搬到 w = W^N0 上; 衰减率 rn 的选取 |
+| `lb-Ev` / `lb-Seed` / `lb-Many` / `lb-Grow` / `lb-Comp` | 同上 §7 | 四条性质的 ℕ 表述（分数次幂 → 整数不等式; 「最终」→ `lb-Ev`） |
+
+**边界（引用时必带）**:
+- 「Lean 的实数陈述 ⟹ 本 ℕ 陈述」这座桥**未形式化** [手工论证·未验证]; 桥的左端要实指数幂（要 ℝ）, 本库宪法禁无理数, 写不出。
+  本文件是软核在 ℕ 上的一条**独立**定理, 不是 Lean 那条定理的形式化推论。
+- 只镜像软核; 不是任何域上任何矩阵乘法下界的证明; 不改变 ω = 9/4 的审计状态。
+- 旁证: `engineering/oracle_list_bounds.py`（10 项 ALL_PASS, 整数/分数精确）+ `engineering/tests/test_oracle_list_bounds.py`（11 个 unittest）。
+  ⚠ 本件顺序与「先算后验」**相反**: Agda 先行（逐段过内核）, oracle 事后核对陈述与桥接。
+
+### ⚠ 别重复实现 / 别再踩（本线）
+
+- **stdlib `^-distribʳ-*` 首参是指数**: `∀ m n o → (n * o) ^ m ≡ n ^ m * o ^ m`（写成「底、底、指数」会得到莫名其妙的 UnequalTerms）。
+- **`*-monoˡ-≤ k h : a·k ≤ b·k`（第二因子固定）; 第一因子固定用 `*-monoʳ-≤ k h : k·a ≤ k·b`**; `+-monoˡ-≤` / `+-monoʳ-≤` 同理。
+- **环形求解器（`Data.Nat.Solver`）的多项式必须逐字镜像目标的括号结构**（转换检查是语法优先; `2 * (8 * G) * p` 与 `2 * (8 * G * p)` 合不上）。
+  求解器调用只能出现在**带类型的具名绑定**里——不能嵌在 `cong` 的参数位或 ≤ 链的元变量位置。
+- **`x + 0` 与 `x` 不是定义等价**; `k + 3` 与 `k + 1 + 2` 不是, 与 `suc (suc (k + 1))` 是; `2 * x` 与 `x + x` 不是。
+  ≤ 链、≡ 链的中间项一律写成带类型的绑定。
+- **`m≤n+m m n : m ≤ n + m`**（右端是 `n + m`）; `lb-1≤ k : 1 ≤ suc k`（不是 `k ≤ k + 1`）。
+- **oracle 必须打印「前提成立数」**: 迭代一步那项首版 fires = 0（m 取样范围太小, 整项空转）——打印出来才看得见。
+- **`ListBounds` 的 ℕ 表述已定**（`lb-Seed` / `lb-Many` / `lb-Comp` / `lb-Grow`）——别为同一件事再设计第二套表述。

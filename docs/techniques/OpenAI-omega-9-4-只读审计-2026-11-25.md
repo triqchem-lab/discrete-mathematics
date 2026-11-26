@@ -187,4 +187,37 @@ tensor spectrum or the separation argument」。全库亦无 `2.3710548`（docs/
 
 - `square_iff_prime_ranks`: 每域 ω = 9/4 等价于「每个素域上 rank(⟨n,n,n⟩) ≥ n^(9/4)」这族有限命题; GF(3) = ZMod 3 是其中一个素域。有限实例只能**反驳**、不能**确立**这个下界。
 - `Tagged.Hard (ZMod 3)` 与 `ManyList (Realizes (ZMod 3))` 是关于 GF(3) 的定理——离散寄存器在这个问题上的准确位置是「有限素域上的秩与网络实例」, 不是渐近指数本身。
-- 下界里唯一与域无关、不需要枚举的一环是 `ListBounds.incompatible`（对一切 w 成立的软论证）。若要在本库做一件事, 镜像它是最有界的; 但它用到实指数与「最终」量词, 需要先设计一个不用实数的表述（宪法禁无理数）。**未开始。**
+- 下界里唯一与域无关、不需要枚举的一环是 `ListBounds.incompatible`（对一切 w 成立的软论证）。若要在本库做一件事, 镜像它是最有界的; 但它用到实指数与「最终」量词, 需要先设计一个不用实数的表述（宪法禁无理数）。~~**未开始。**~~ → 2026-11-26 已做完, 见 §H。
+
+### H. 软核的 ℕ 镜像——已形式化（2026-11-26, 回执 `6982c9a1`）
+
+§G 第三条说的「镜像 `ListBounds.incompatible`」已做完: `src/Sovereign/Algebra/LinearAlgebra/ListBounds.agda`
+（1222 行, exit=0, 0 postulate, 0 REWRITE 规则, 只依赖标准库）。
+
+| Lean（原文行号, 2026-11-26 读到） | Agda（ℕ） |
+|---|---|
+| `listBits w = 2 * w * 2 ^ w`（:14） | `lb-listBits` |
+| `Seed P`（:16） | `lb-Seed P lb-listBits` |
+| `ManyList P`（:20） | `lb-Many P lb-listBits` |
+| `Compression P`（:25） | `lb-Comp P lb-listBits (λ w → w * w)` |
+| `incompatible : Seed P → ManyList P → Compression P → False`（`Iteration.lean:76–77`） | ★ `lb-incompatible-lists` |
+
+**怎么不用实数**（[设计说明]）:
+- 分数次幂只出现在不等式里 → 两边乘方成整数不等式: σ = p/q 时 `t·n·w^σ < 3m` 写成 `(t·n)^q · w^p < (3m)^q`;
+  `d ≤ n^(1/D)` 写成 `d^D ≤ n`; `m ≤ n^(21/20)` 写成 `m^20 ≤ n^21`。
+- 压缩里 h 的分数次幂写成「对一切满足 `u^G ≤ h^g`、`h^e ≤ v^E` 的自然数 u、v」。
+- 证明把 w 取在子序列 w = W^N0 上（N0 = 16·q·G）, w 的幂全是 W 的整数次幂; n、h 抽象成满足增长条件的函数。
+- Lean 原文的量词结构逐条对上了: 压缩是 ∀η>0 ∃γ>0 ∀δ>0（γ 不依赖 δ）[对照原文读出]; 压缩**不带** `t ≤ listBits` 前提。
+
+**边界（必带）**:
+1. 「Lean 的实数陈述 ⟹ 本 ℕ 陈述」这座桥**未形式化** [手工论证·未验证]。桥的左端要实指数幂（要 ℝ）,
+   本库宪法禁无理数, 写不出; 只能在 Lean 一侧补一条引理（本仓库不做）。
+   所以它是软核在 ℕ 上的一条**独立**定理, 不是 Lean 那条定理的形式化推论。
+2. 证明是独立重构, 与 Lean 的证明无关（Lean 证明只读了陈述与开头）; 两边不约而同在 η = σ/4 处调用压缩。
+3. 只镜像软核。硬度与压缩本身不在这里; 这不是任何域上任何矩阵乘法下界的证明; 不改变 ω = 9/4 的审计状态。
+
+**旁证（是证据不是证明）**: `engineering/oracle_list_bounds.py` 10 项 ALL_PASS（整数/分数精确, 禁浮点）——
+含桥接的随机抽样 G1–G3 与 h 桥 H（`w ≤ clog 2 (listBits w) ≤ w²` 自 w = 2 起, 核到 3000）;
+`engineering/tests/test_oracle_list_bounds.py` 11 个 unittest。
+⚠ 本件顺序与「先算后验」相反: Agda 先行, oracle 事后核对（首版迭代一步那项空转, 靠打印触发数发现并修正）。
+已登记: `PROVEN.md` §十五 M15。
