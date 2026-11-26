@@ -8,13 +8,16 @@
              ★ rank-strassen : RankLE₃ 2 7（M13 的七门 = 7 项秩分解）
              src/Sovereign/Algebra/LinearAlgebra/TensorRankFlattenGF3.agda   (M16-B)
              ★ rank-lower : ∀ n r → RankLE₃ n r → n * n ≤ r（计数证法）
+             src/Sovereign/Algebra/LinearAlgebra/TensorRankPowGF3.agda       (M16-C)
+             ★ rank-mul / ★ rank-pow / rank-strassen-pow / strassen-certificate
   · Lean   : OAI/LinearAlgebra/MatrixExponent/RationalCircuits.lean `RankLE`
              OAI/LinearAlgebra/MatrixExponent/Flattening.lean:6 `rank_lower`
+             OAI/LinearAlgebra/MatrixExponent/RankPower.lean `rank_mul` / `rank_pow`
 
 本测试不重证任何定理（裁决在 Agda 内核）; 它守住四件事:
   1. oracle 的核对函数全部通过, 且**非空转**（触发计数 > 0）;
-  2. oracle 有区分力: 弄坏一个系数, 判据一必须报错（负控制）;
-  3. Agda 件在盘上、两条主定理的签名原样在、零 postulate、零 REWRITE 规则、零洞;
+  2. oracle 有区分力: 弄坏一个系数, 判据一 / 判据二 / 判据四必须报错（负控制）;
+  3. Agda 件在盘上、主定理的签名原样在、零 postulate、零 REWRITE 规则、零洞;
   4. 两轨的「项数」一致: oracle 的 ALPHA/BETA/C 都是 7 行, Agda 主定理写的是 RankLE₃ 2 7。
 """
 
@@ -31,6 +34,8 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 ORACLE = os.path.join(ROOT, "engineering", "oracle_tensor_rank_gf3.py")
 AGDA_A = os.path.join(ROOT, "src", "Sovereign", "Algebra", "LinearAlgebra", "TensorRankGF3.agda")
 AGDA_B = os.path.join(ROOT, "src", "Sovereign", "Algebra", "LinearAlgebra", "TensorRankFlattenGF3.agda")
+AGDA_C = os.path.join(ROOT, "src", "Sovereign", "Algebra", "LinearAlgebra", "TensorRankPowGF3.agda")
+AGDA_ALL = (AGDA_A, AGDA_B, AGDA_C)
 
 
 def load_oracle():
@@ -94,6 +99,32 @@ class OracleTensorRankGF3(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertIn("ALL_PASS", buf.getvalue())
 
+    # ---- 1b. M16-C: 张量积 / 取幂 / 证书 ---------------------------------------
+
+    def test_tensor_product(self):
+        tested = self.mod.check_tensor_product()
+        self.assertEqual(tested, 16 * 16 * 16)   # ⟨4,4,4⟩ 有 16 个位置
+
+    def test_tensor_product_matrices(self):
+        tested = self.mod.check_tensor_product_matrices(trials=100)
+        self.assertEqual(tested, 100 * 16)
+
+    def test_rank_one_and_certificate(self):
+        tested = self.mod.check_rank_one_and_certificate()
+        self.assertEqual(tested, 12)
+
+    def test_negative_control_tensor_product(self):
+        """弄坏 Strassen 的一个系数, 张量积判据（判据四）必须失败"""
+        alpha = self.mod.ALPHA
+        old = alpha[0][0]
+        alpha[0][0] = (old + 1) % 3
+        try:
+            with self.assertRaises(AssertionError):
+                self.mod.check_tensor_product()
+        finally:
+            alpha[0][0] = old
+        self.assertEqual(self.mod.check_tensor_product(), 4096)
+
     # ---- 2. 负控制: oracle 有区分力 ------------------------------------------
 
     def test_negative_control_corrupted_beta(self):
@@ -123,19 +154,28 @@ class OracleTensorRankGF3(unittest.TestCase):
     # ---- 3. Agda 件: 在盘、签名原样、零红线 -----------------------------------
 
     def test_agda_files_present(self):
-        for p in (AGDA_A, AGDA_B):
+        for p in AGDA_ALL:
             self.assertTrue(os.path.isfile(p), p)
 
     def test_agda_main_signatures(self):
         a = read(AGDA_A)
         b = read(AGDA_B)
+        c = read(AGDA_C)
         self.assertIn("rank-strassen : RankLE₃ 2 7", a)
         self.assertIn("ω₃-boundary : Set", a)
         self.assertIn("rank-lower : ∀ n r → RankLE₃ n r → n * n ≤ r", b)
         self.assertIn("check-lower-strassen : 2 * 2 ≤ 7", b)
+        self.assertIn("rank-mul : ∀ {n r m s} → RankLE₃ n r → RankLE₃ m s → RankLE₃ (n * m) (r * s)", c)
+        self.assertIn("rank-pow : ∀ {n r} → RankLE₃ n r → ∀ k → RankLE₃ (n ^ k) (r ^ k)", c)
+        self.assertIn("rank-strassen-pow : ∀ k → RankLE₃ (2 ^ k) (7 ^ k)", c)
+        self.assertIn("rank-strassen² : RankLE₃ 4 49", c)
+        self.assertIn("strassen-certificate : ∀ k → (7 ^ k) ^ 6 ≤ (2 ^ k) ^ 17", c)
+        self.assertIn("rank-one : RankLE₃ 1 1", c)
+        self.assertIn("rank-lower-pow : ∀ k → (2 ^ k) * (2 ^ k) ≤ 7 ^ k", c)
+        self.assertIn("rank-lower-strassen² : 4 * 4 ≤ 49", c)
 
     def test_agda_no_postulate_no_rewrite_no_hole(self):
-        for p in (AGDA_A, AGDA_B):
+        for p in AGDA_ALL:
             code = strip_comments(read(p))
             self.assertIsNone(re.search(r"^\s*postulate\b", code, re.M), p)
             self.assertNotIn("{-# REWRITE", code, p)

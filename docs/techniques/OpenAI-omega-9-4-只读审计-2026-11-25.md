@@ -185,7 +185,7 @@ tensor spectrum or the separation argument」。全库亦无 `2.3710548`（docs/
 
 ### G. 对本仓库路径的意义
 
-- `square_iff_prime_ranks`: 每域 ω = 9/4 等价于「每个素域上 rank(⟨n,n,n⟩) ≥ n^(9/4)」这族有限命题; GF(3) = ZMod 3 是其中一个素域。有限实例只能**反驳**、不能**确立**这个下界。
+- `square_iff_prime_ranks`: 每域 ω = 9/4 等价于「每个素域上 rank(⟨n,n,n⟩) ≥ n^(9/4)」这族有限命题; GF(3) = ZMod 3 是其中一个素域。有限实例只能**反驳**、不能**确立**这个下界。→ 2026-11-26: 这族命题的陈述层已可在本库写出, 见 §J。
 - `Tagged.Hard (ZMod 3)` 与 `ManyList (Realizes (ZMod 3))` 是关于 GF(3) 的定理——离散寄存器在这个问题上的准确位置是「有限素域上的秩与网络实例」, 不是渐近指数本身。
 - 下界里唯一与域无关、不需要枚举的一环是 `ListBounds.incompatible`（对一切 w 成立的软论证）。若要在本库做一件事, 镜像它是最有界的; 但它用到实指数与「最终」量词, 需要先设计一个不用实数的表述（宪法禁无理数）。~~**未开始。**~~ → 2026-11-26 已做完, 见 §H。
 
@@ -235,3 +235,28 @@ tensor spectrum or the separation argument」。全库亦无 `2.3710548`（docs/
 要点: 论文 ↔ Lean 对照表（每行标注核对深度）；挑战件 15 个定义与库内原件逐字相同（15/15）；
 Lean 陈述强于论文；Lean 的硬度走对角化、与论文的两情形路线不同；CAT(0) 比较不等式在 Lean 里是定理；
 `MatrixExponent/` 555 件 263,011 行逃生口扫描为 0。**没有运行构建，没有运行 Comparator。**
+
+### J. GF(3) 的陈述层与离散组合层——已形式化（2026-11-26, A/B 回执 `f18cdc4f`, C 与本节同批提交）
+
+§G 第一条说的那族有限命题, 此前在本库**连陈述都写不出**（没有秩分解谓词）。M16 把陈述层与离散组合层镜像过来,
+全部在 `src/Sovereign/Algebra/LinearAlgebra/`, 三件都 exit=0、0 postulate、0 REWRITE 规则:
+
+| Lean | Agda（GF(3)） | 说明 |
+|---|---|---|
+| `RationalCircuits.lean:48 RankLE` | `record RankLE₃`（`TensorRankGF3.agda:87`） | 结构常数形式: Σ_k a k x ⊗ b k y ⊗ c k z ≡ T(x,y,z) |
+| （M13 的接桥） | ★ `strassen-is-rank-form` / ★ `rank-strassen : RankLE₃ 2 7` | Strassen 七乘方案就是一个 7 项秩分解 |
+| `Flattening.lean:6 rank_lower : n ^ 2 ≤ r` | ★ `rank-lower`（`TensorRankFlattenGF3.agda:272`） | Lean 走展平后矩阵的秩; 本库走计数（标准基落在张成里 ⟹ 单射 `Fin (3^(n²)) → Fin (3^r)`） |
+| `RankPower.lean:12 rank_mul` / `:15 rank_pow` | ★ `rank-mul` / ★ `rank-pow`（`TensorRankPowGF3.agda:290` / `:310`） | 张量积与取幂; ★ `rank-strassen-pow : ∀ k → RankLE₃ (2 ^ k) (7 ^ k)` |
+| `key/MatrixExponent.lean:45 square_iff_prime_ranks`（p = 3） | `ω₃-boundary`（`TensorRankGF3.agda:296`, **无居民**） | 外部定理的陈述; 本库不证、未推进 |
+
+**路径上还差什么**（三层; 第 1 层是已核对的, 第 2、3 层是 [阅读判断]）:
+1. 陈述层——已齐: 谓词、接桥、下界方向（展平）、上界方向（张量幂见证）、外部边界类型。
+2. 见证层——每个尺寸 2^k 有内核检查过的见证（项数 7^k）。n = 2 处库内 4 ≤ r ≤ 7, 外部定理给 r ≥ 5, 「秩恰为 7」[直觉·未验证]。
+   **未做**: 下一尺寸（3×3）的 GF(3) 分解及其最优性; 双线性归约（Lean `Bilinearize.lean:111`: q 个非标量门 ⟹ 秩 ≤ 2q）——要先定义电路模型 [未验证·路线推测]。
+3. 证明层——外部下界的引擎是解析的、非构造的（谱点、价格几何、排序网络）; 宪法禁无理数。
+   9/4 这个点在我们的话语里落在树上（离散骨架）, 但它只靠极限论证存在; 缺的是那个谱点的**有限证书形态**
+   [未验证·路线推测: 核对动作 = 读 Lean `Upper/`、`Integral/Upper/` 与 `MatrixMultiplication` 的证书形态, 判断能否写成整数不等式]。
+
+**本批更正**: `TensorRankGF3` 头注与 oracle 文档曾写「oracle 逐字发射 / 贴用 64 条子句」——实际组织是 `mm-basis` 16 条 × 4 个输出位置, 已按代码改正。
+
+已登记: `PROVEN.md` §十五 M16。

@@ -18,6 +18,11 @@ M16-B（展平下界 n² ≤ r 的计数证法）的数值检验:
     对随机 λ 逐点核对 Φ(t_λ) ≡ λ —— 即「标准基落在张成里 ⟹ 一切函数都在张成里」的构造。
   · 随机生成元 a（r < n²）时, 张成里装不下全部标准基（n = 2, r = 3 随机抽样无一成功）;
     r ≥ n² 时存在装得下的 a（标准基本身）。
+M16-C（秩相乘 / 取幂, 镜像 Lean RankPower.lean）的数值检验:
+  · 两个秩分解的张量积仍是秩分解: 取 Strassen ⊗ Strassen, 得 ⟨4,4,4⟩ 的 49 项分解
+    (指标编码 combine i j = i·m + j)。判据四: 全部 16³ = 4096 个结构常数三元组;
+    判据五(独立路径): 随机 4×4 矩阵上走普通 4×4 矩阵乘法。
+  · ⟨1⟩ 的 1 项分解(rank-one), 以及有限证书 7^6 ≤ 2^17(即 (7^k)^6 ≤ (2^k)^17 对一切 k)。
 禁浮点; 全部是 GF(3) 上的整数运算。
 """
 import sys
@@ -243,6 +248,110 @@ def check_span_capacity(samples=2000, seed=20261127):
     return tested, samples, cap_ok
 
 
+def kronecker(u, v):
+    """两个 2×2 线性型(位置 → 系数)的张量积: 4×4 线性型(位置 → 系数), 位置 = 2·高 + 低"""
+    out = {}
+    for (p1, q1), c1 in zip(POS, u):
+        for (p2, q2), c2 in zip(POS, v):
+            out[(2 * p1 + p2, 2 * q1 + q2)] = mul(c1, c2)
+    return out
+
+
+def pos4():
+    return [(p, q) for p in range(4) for q in range(4)]
+
+
+def lo(x):
+    """4×4 位置 → 低位 2×2 位置"""
+    return (x[0] % 2, x[1] % 2)
+
+
+def hi(x):
+    """4×4 位置 → 高位 2×2 位置"""
+    return (x[0] // 2, x[1] // 2)
+
+
+def tensor4(x, y, z):
+    """⟨4,4,4⟩ 的结构常数: [x.行 = z.行][x.列 = y.行][y.列 = z.列]"""
+    return 1 if (x[0] == z[0] and x[1] == y[0] and y[1] == z[1]) else 0
+
+
+def prod_tables():
+    """Strassen ⊗ Strassen 的 49 项分解: 项 t = 7·i₁ + i₂; 三张表(项 × 位置)"""
+    P4 = pos4()
+    AA = [[mul(ALPHA[t // 7][POS.index(hi(x))], ALPHA[t % 7][POS.index(lo(x))]) for x in P4] for t in range(49)]
+    BB = [[mul(BETA[t // 7][POS.index(hi(y))], BETA[t % 7][POS.index(lo(y))]) for y in P4] for t in range(49)]
+    CC = [[mul(C[t // 7][POS.index(hi(z))], C[t % 7][POS.index(lo(z))]) for z in P4] for t in range(49)]
+    return AA, BB, CC
+
+
+def check_tensor_product():
+    """M16-C 判据四: ⟨4,4,4⟩ 有 16 个位置, 全部 16³ = 4096 个结构常数三元组上
+       Σ_t A t x · B t y · C t z ≡ T₂(x₁,y₁,z₁)·T₂(x₂,y₂,z₂) ≡ T₄(x,y,z)"""
+    AA, BB, CC = prod_tables()
+    P4 = pos4()
+    idx = {x: i for i, x in enumerate(P4)}
+    tested = fires = 0
+    for x in P4:
+        for y in P4:
+            v = [mul(AA[t][idx[x]], BB[t][idx[y]]) for t in range(49)]
+            for z in P4:
+                lhs = sum(mul(v[t], CC[t][idx[z]]) for t in range(49)) % 3
+                t2 = mul(tensor(hi(x), hi(y), hi(z)), tensor(lo(x), lo(y), lo(z)))
+                t4 = tensor4(x, y, z)
+                tested += 1
+                if lhs == t2 == t4:
+                    fires += 1
+                else:
+                    raise AssertionError(("张量积分解失败", x, y, z, lhs, t2, t4))
+    assert tested == 16 * 16 * 16 and fires == tested, (tested, fires)
+    return tested
+
+
+def matmul4(a, b, z):
+    """4×4 普通矩阵乘法的一个输出; a、b 为位置 → 值"""
+    return sum(mul(a[(z[0], k)], b[(k, z[1])]) for k in range(4)) % 3
+
+
+def check_tensor_product_matrices(trials=300, seed=20261129):
+    """M16-C 判据五(独立路径): 随机 4×4 矩阵上, 49 项算法 ≡ 普通 4×4 矩阵乘法"""
+    rng = random.Random(seed)
+    P4 = pos4()
+    forms = [kronecker(ALPHA[t // 7], ALPHA[t % 7]) for t in range(49)]
+    formsB = [kronecker(BETA[t // 7], BETA[t % 7]) for t in range(49)]
+    outs = [kronecker(C[t // 7], C[t % 7]) for t in range(49)]
+    tested = 0
+    for _ in range(trials):
+        a = {x: rng.randint(0, 2) for x in P4}
+        b = {x: rng.randint(0, 2) for x in P4}
+        u = [sum(mul(forms[t][x], a[x]) for x in P4) % 3 for t in range(49)]
+        w = [sum(mul(formsB[t][y], b[y]) for y in P4) % 3 for t in range(49)]
+        for z in P4:
+            tested += 1
+            lhs = sum(mul(mul(u[t], w[t]), outs[t][z]) for t in range(49)) % 3
+            assert lhs == matmul4(a, b, z), (a, b, z)
+    assert tested == trials * 16
+    return tested
+
+
+def check_rank_one_and_certificate():
+    """M16-C: ⟨1⟩ 的 1 项分解(全 1 系数); 有限证书 7^6 ≤ 2^17 及其各次幂"""
+    tested = 0
+    # ⟨1⟩: a = b = c = 1, Σ = 1·(1·1) = T(·,·,·) = 1
+    assert tensor((0, 0), (0, 0), (0, 0)) == 1 == 1 * (1 * 1) % 3
+    tested += 1
+    assert 7 ** 6 == 117649 and 2 ** 17 == 131072
+    assert 7 ** 6 <= 2 ** 17
+    tested += 2
+    for k in range(0, 8):
+        tested += 1
+        assert (7 ** k) ** 6 <= (2 ** k) ** 17, k
+    # 对照: 更紧的 7^5 ≤ 2^14 是**假**的(16807 > 16384)——证书的分母 6 不能换成 5
+    assert 7 ** 5 > 2 ** 14
+    tested += 1
+    return tested
+
+
 def main():
     n1 = check_structure_constants()
     n2 = check_matrices()
@@ -255,6 +364,12 @@ def main():
     print("M16-B 张成构造 (Strassen 分解): 标准基落在张成里 %d/16; 原像复原 %d/1600" % (basis4, fires4))
     print("M16-B 张成容量 (r = 3 的 %d 组随机生成元无一张出全部标准基; 对照 r = 4: 标准基 %d/4 在张成里; 计数判据): %d 次核对"
           % (cap_fires, cap_ok, tested5))
+    n6 = check_tensor_product()
+    n7 = check_tensor_product_matrices()
+    n8 = check_rank_one_and_certificate()
+    print("M16-C 张量积分解 (Strassen⊗Strassen = ⟨4,4,4⟩ 49 项): 结构常数 %d/4096; 随机 4×4 矩阵独立路径 %d/%d"
+          % (n6, n7, 300 * 16))
+    print("M16-C rank-one + 有限证书 7^6 ≤ 2^17 (及 (7^k)^6 ≤ (2^k)^17, k ≤ 7): %d 次核对" % n8)
     # 与 M13 头注一致的账本: 恰 7 项
     assert len(ALPHA) == len(BETA) == len(C) == 7
     if len(sys.argv) > 1:
