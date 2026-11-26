@@ -94,6 +94,25 @@ inline int RankF3Fast(const uint8_t *data, int n0, int n1, int stride) {
   return rank;
 }
 
+// dst := dst + digit · src（mod 3, 逐字节; digit ∈ {1, 2}）。forced product 把被选中的强制行叠进张量时用,
+// 与通用实现的 `tensor_t[i][j][k] + digit * r1_val` 同义, 只是写成无分支取模以便自动向量化。
+inline void AddScaledRowF3(uint8_t *dst, const uint8_t *src, int n, int digit) {
+  if (digit == 1) {
+    for (int c = 0; c < n; ++c) {
+      int t = dst[c] + src[c];
+      t -= (t >= 3) ? 3 : 0;
+      dst[c] = static_cast<uint8_t>(t);
+    }
+  } else if (digit == 2) {
+    for (int c = 0; c < n; ++c) {
+      int t = dst[c] + src[c] + src[c];
+      t -= (t >= 3) ? 3 : 0;
+      t -= (t >= 3) ? 3 : 0;
+      dst[c] = static_cast<uint8_t>(t);
+    }
+  }
+}
+
 // 行跨度 = 列数的便捷重载。
 inline int RankF3Fast(const uint8_t *data, int n0, int n1) {
   return RankF3Fast(data, n0, n1, n1);
