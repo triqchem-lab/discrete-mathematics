@@ -23,6 +23,10 @@ M16-C（秩相乘 / 取幂, 镜像 Lean RankPower.lean）的数值检验:
     (指标编码 combine i j = i·m + j)。判据四: 全部 16³ = 4096 个结构常数三元组;
     判据五(独立路径): 随机 4×4 矩阵上走普通 4×4 矩阵乘法。
   · ⟨1⟩ 的 1 项分解(rank-one), 以及有限证书 7^6 ≤ 2^17(即 (7^k)^6 ≤ (2^k)^17 对一切 k)。
+M16-D（「ω = 9/4」两半的有限语言, 镜像 Lean FieldExtension.lean:72 exponent_lt_iff_rank）的数值检验:
+  · Strassen 覆盖: q ≥ 1 且 17q ≤ 6p ⟹ (7^(6q))^q < (2^(6q))^p（Agda: strassen-saving）
+  · 两半不重叠: n ≥ 2、n^9 ≤ r^4（下半）且 r^q < n^p（节省）⟹ 9q < 4p（Agda: saving-above）
+    负对照: 去掉「n^9 ≤ r^4」后该蕴含不成立（n=2, r=1, q=1, p=1）。
 禁浮点; 全部是 GF(3) 上的整数运算。
 """
 import sys
@@ -352,6 +356,43 @@ def check_rank_one_and_certificate():
     return tested
 
 
+def check_savings(pmax=12, samples=3000, seed=20261130):
+    """M16-D: 严格节省的两条算术（整数幂, Python 大整数）"""
+    rng = random.Random(seed)
+    tested = 0
+    # (1) Strassen 覆盖 p/q >= 17/6
+    for q in range(1, pmax + 1):
+        p0 = (17 * q + 5) // 6                      # ceil(17q / 6)
+        for p in range(p0, p0 + 30):
+            tested += 1
+            assert (7 ** (6 * q)) ** q < (2 ** (6 * q)) ** p, (p, q)
+    # (1b) 对照: 17/6 之下（p = p0 - 1 且 17(q+1)… 取 9/4 < p/q < 17/6 的比值）不成立——证书的 17/6 不能再降
+    for (p, q) in ((13, 5), (14, 5), (19, 7), (24, 9)):      # 都严格落在 9/4 与 17/6 之间
+        assert 9 * q < 4 * p and 17 * q > 6 * p, (p, q)
+        tested += 1
+        assert not (7 ** (6 * q)) ** q < (2 ** (6 * q)) ** p, (p, q)
+    # (2) 不重叠: 下半 + 节省 ⟹ 9q < 4p
+    fires = 0
+    for _ in range(samples):
+        n = rng.randint(2, 40)
+        lo = 1
+        while lo ** 4 < n ** 9:
+            lo += 1
+        r = rng.randint(lo, lo + 200)               # n^9 <= r^4
+        assert n ** 9 <= r ** 4
+        tested += 1
+        for q in range(1, 7):
+            for p in range(1, 14):
+                if r ** q < n ** p:
+                    fires += 1
+                    assert 9 * q < 4 * p, (n, r, p, q)
+    assert fires > 0, fires
+    # 负对照: 去掉下半前提, 蕴含不成立
+    tested += 1
+    assert 2 ** 9 > 1 ** 4 and 1 ** 1 < 2 ** 1 and not (9 * 1 < 4 * 1)
+    return tested, fires
+
+
 def main():
     n1 = check_structure_constants()
     n2 = check_matrices()
@@ -370,6 +411,8 @@ def main():
     print("M16-C 张量积分解 (Strassen⊗Strassen = ⟨4,4,4⟩ 49 项): 结构常数 %d/4096; 随机 4×4 矩阵独立路径 %d/%d"
           % (n6, n7, 300 * 16))
     print("M16-C rank-one + 有限证书 7^6 ≤ 2^17 (及 (7^k)^6 ≤ (2^k)^17, k ≤ 7): %d 次核对" % n8)
+    n9, f9 = check_savings()
+    print("M16-D 严格节省: %d 次核对; 其中「下半 + 节省 ⟹ 9q < 4p」的蕴含实际触发 %d 次" % (n9, f9))
     # 与 M13 头注一致的账本: 恰 7 项
     assert len(ALPHA) == len(BETA) == len(C) == 7
     if len(sys.argv) > 1:

@@ -236,10 +236,10 @@ tensor spectrum or the separation argument」。全库亦无 `2.3710548`（docs/
 Lean 陈述强于论文；Lean 的硬度走对角化、与论文的两情形路线不同；CAT(0) 比较不等式在 Lean 里是定理；
 `MatrixExponent/` 555 件 263,011 行逃生口扫描为 0。**没有运行构建，没有运行 Comparator。**
 
-### J. GF(3) 的陈述层与离散组合层——已形式化（2026-11-26, A/B 回执 `f18cdc4f`, C 与本节同批提交）
+### J. GF(3) 的陈述层与离散组合层——已形式化（2026-11-26, A/B 回执 `f18cdc4f`, C 回执 `cf06d543`, D 与本节同批提交）
 
 §G 第一条说的那族有限命题, 此前在本库**连陈述都写不出**（没有秩分解谓词）。M16 把陈述层与离散组合层镜像过来,
-全部在 `src/Sovereign/Algebra/LinearAlgebra/`, 三件都 exit=0、0 postulate、0 REWRITE 规则:
+全部在 `src/Sovereign/Algebra/LinearAlgebra/`, 四件都 exit=0、0 postulate、0 REWRITE 规则:
 
 | Lean | Agda（GF(3)） | 说明 |
 |---|---|---|
@@ -247,15 +247,23 @@ Lean 陈述强于论文；Lean 的硬度走对角化、与论文的两情形路�
 | （M13 的接桥） | ★ `strassen-is-rank-form` / ★ `rank-strassen : RankLE₃ 2 7` | Strassen 七乘方案就是一个 7 项秩分解 |
 | `Flattening.lean:6 rank_lower : n ^ 2 ≤ r` | ★ `rank-lower`（`TensorRankFlattenGF3.agda:272`） | Lean 走展平后矩阵的秩; 本库走计数（标准基落在张成里 ⟹ 单射 `Fin (3^(n²)) → Fin (3^r)`） |
 | `RankPower.lean:12 rank_mul` / `:15 rank_pow` | ★ `rank-mul` / ★ `rank-pow`（`TensorRankPowGF3.agda:290` / `:310`） | 张量积与取幂; ★ `rank-strassen-pow : ∀ k → RankLE₃ (2 ^ k) (7 ^ k)` |
-| `key/MatrixExponent.lean:45 square_iff_prime_ranks`（p = 3） | `ω₃-boundary`（`TensorRankGF3.agda:296`, **无居民**） | 外部定理的陈述; 本库不证、未推进 |
+| `key/MatrixExponent.lean:45 square_iff_prime_ranks`（p = 3） | `ω₃-boundary`（`TensorRankGF3.agda:298`, **无居民**） | 外部下半的陈述; 本库不证、未推进 |
+| `FieldExtension.lean:72 exponent_lt_iff_rank`（取形状 (1,1,1): `Rectangle/Bounds.lean:15 square`） | `Saving₃` / `ω₃-upper`（`TensorRankUpperGF3.agda:94` / `:98`, 上半**无居民**） | 上半的有限形态: ∀ p q, 9q < 4p → ∃ n r, 2 ≤ n ∧ RankLE₃ n r ∧ r^q < n^p |
+| （Strassen 的覆盖范围） | ★ `strassen-saving`（`:110`）: `∀ p q → 0 < q → 17 * q ≤ 6 * p → Saving₃ p q` | n = 2^(6q)、r = 7^(6q); 离 9/4 还有空档 |
+| （两半的关系） | ★ `saving-above` / ★ `exactness₃`（`:166` / `:194`） | 有下半时任何节省满足 9q < 4p; 两半一旦成立, 节省恰好是比值在 9/4 之上的 (p, q) |
 
-**路径上还差什么**（三层; 第 1 层是已核对的, 第 2、3 层是 [阅读判断]）:
-1. 陈述层——已齐: 谓词、接桥、下界方向（展平）、上界方向（张量幂见证）、外部边界类型。
+**路径上还差什么**（三层; 第 1 层与第 3 层的前半是已核对的, 其余是 [阅读判断]）:
+1. 陈述层——已齐: 谓词、接桥、下界方向（展平）、上界方向（张量幂见证）、两半的有限陈述（`ω₃-boundary` / `ω₃-upper`）。
 2. 见证层——每个尺寸 2^k 有内核检查过的见证（项数 7^k）。n = 2 处库内 4 ≤ r ≤ 7, 外部定理给 r ≥ 5, 「秩恰为 7」[直觉·未验证]。
    **未做**: 下一尺寸（3×3）的 GF(3) 分解及其最优性; 双线性归约（Lean `Bilinearize.lean:111`: q 个非标量门 ⟹ 秩 ≤ 2q）——要先定义电路模型 [未验证·路线推测]。
-3. 证明层——外部下界的引擎是解析的、非构造的（谱点、价格几何、排序网络）; 宪法禁无理数。
-   9/4 这个点在我们的话语里落在树上（离散骨架）, 但它只靠极限论证存在; 缺的是那个谱点的**有限证书形态**
-   [未验证·路线推测: 核对动作 = 读 Lean `Upper/`、`Integral/Upper/` 与 `MatrixMultiplication` 的证书形态, 判断能否写成整数不等式]。
+3. 证明层——**陈述层已核对**（本轮读了 `UpperBound.lean` 全文、`Coefficients.lean` 全文、`Rectangle.lean` 全文、`FieldExtension.lean:17–97`）:
+   上界也有有限的秩分解形态（`exponent_lt_iff_rank`）; 但 Lean 那边靠 9/4 的见证不是显式的——
+   `Coefficients.lean:43 candidate := Classical.epsilon (fun k => ¬ Fulfills k.carrier)`: 上界机器在一个用选择公理挑出的代数闭域上工作
+   （同文件头注: The tensor argument only uses the field axioms and algebraic closure）, 再由 `closed_laws`（`:48`）反证式地推广到一切代数闭域;
+   实数只出现在 `(A : ℝ) * B ≥ 0` 这类位置（`UpperBound.lean:31–38`）。
+   所以缺的东西可以说准了: **不是陈述, 是 9/4 与 17/6 之间的见证**（GF(3) 上 r < n^(p/q) 的分解, 9/4 < p/q < 17/6）,
+   外加把 Lean 的实数陈述接到分数形态的那座桥 [手工论证·未验证]。
+   `Upper/`（32 件 5106 行）与 `Integral/Upper/`（33 件 4828 行）的证明本身没有读。
 
 **本批更正**: `TensorRankGF3` 头注与 oracle 文档曾写「oracle 逐字发射 / 贴用 64 条子句」——实际组织是 `mm-basis` 16 条 × 4 个输出位置, 已按代码改正。
 

@@ -715,10 +715,11 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 - 旁证: `engineering/oracle_list_bounds.py`（10 项 ALL_PASS, 整数/分数精确）+ `engineering/tests/test_oracle_list_bounds.py`（11 个 unittest）。
   ⚠ 本件顺序与「先算后验」**相反**: Agda 先行（逐段过内核）, oracle 事后核对陈述与桥接。
 
-### M16 · 秩分解谓词 + M13 接桥 + 展平下界 + 秩相乘/取幂（`TensorRankGF3.agda` 297 行 / `TensorRankFlattenGF3.agda` 281 行 / `TensorRankPowGF3.agda` 354 行，2026-11-26）
+### M16 · 秩分解谓词 + M13 接桥 + 展平下界 + 秩相乘/取幂 + 两半的有限语言（`TensorRankGF3.agda` 299 行 / `TensorRankFlattenGF3.agda` 281 行 / `TensorRankPowGF3.agda` 354 行 / `TensorRankUpperGF3.agda` 200 行，2026-11-26）
 
 镜像对象: openai/math `OAI/LinearAlgebra/MatrixExponent/RationalCircuits.lean:48 RankLE`（谓词）、
-`Flattening.lean:6 rank_lower`（展平下界）、`RankPower.lean:12 rank_mul` / `:15 rank_pow`（张量积与取幂）。
+`Flattening.lean:6 rank_lower`（展平下界）、`RankPower.lean:12 rank_mul` / `:15 rank_pow`（张量积与取幂）、
+`FieldExtension.lean:72 exponent_lt_iff_rank`（指数 < s ⟺ ∃ 分解 + 增长条件; 取形状 (1,1,1) 与 s = p/q）。
 证明**独立重构**: Lean 走展平后矩阵的秩（`Rectangle.RankLE.area`）,
 本库没有矩阵秩的不变性理论, 改走有限域上的计数（基数比较代替维数比较）。
 
@@ -742,6 +743,11 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `strassen-certificate` / `strassen-upper` / `cert-base` | 同上 `:327` / `:338` / `:323` | `∀ k → (7 ^ k) ^ 6 ≤ (2 ^ k) ^ 17`（由 `7 ^ 6 ≤ 2 ^ 17` 两边取 k 次幂）; `strassen-upper k` = 分解 × 证书 |
 | `rank-eq×` / `mm-split` / `oneIf-combine` | 同上 `:276` / `:258` / `:116`（`module TensorProd`） | 张量积满足结构常数方程: T_{nm}((x₁,x₂),(y₁,y₂),(z₁,z₂)) ≡ T_n(x₁,y₁,z₁) ⊗ T_m(x₂,y₂,z₂)（位置按 `combine` 拆开） |
 | `rank-lower-pow` / `rank-lower-strassen²` | 同上 `:349` / `:353` | 与展平下界的组合: `∀ k → (2 ^ k) * (2 ^ k) ≤ 7 ^ k`; `4 * 4 ≤ 49` |
+| `Saving₃` / `ω₃-upper` | `TensorRankUpperGF3.agda:94` / `:98` | `Saving₃ p q = ∃ n r, 2 ≤ n × RankLE₃ n r × (r ^ q < n ^ p)`; 外部上半的陈述 `∀ p q → 9 * q < 4 * p → Saving₃ p q`——**无居民** |
+| ★ `strassen-saving` | 同上 `:110` | `∀ p q → 0 < q → 17 * q ≤ 6 * p → Saving₃ p q`（n = 2^(6q)、r = 7^(6q); 实例 `Saving₃ 17 6`、`Saving₃ 3 1`、`Saving₃ 23 8` 由内核裁决前提） |
+| ★ `saving-above` / ★ `exactness₃` | 同上 `:166` / `:194` | 有下半时任何节省满足 `9 * q < 4 * p`（n^(9q) ≤ r^(4q) < n^(4p) ≤ n^(9q) 矛盾）; 两半一旦成立, 节省恰好是比值在 9/4 之上的 (p, q) |
+| `boundary-strassen` / `cert-strict` | 同上 `:199` / `:86` | 下半在 (2, 7) 处的实例 `2 ^ 9 ≤ 7 ^ 4`; `7 ^ 6 < 2 ^ 17` |
+| `pow-exp-mono` / `pow-base-<` / `mul-<` | 同上 `:61` / `:72` / `:66` | 幂对指数单调（底 ≥ 1）/ 底严格增（不走类型类实例）/ u < v、w > 0 ⟹ u·w < v·w |
 | `sumFin-↑` / `sumFin-combine` / `sumFin-⊗ˡ` / `sumFin-⊗ʳ` / `⊗-tensor` | 同上 `:82` / `:92` / `:61` / `:69` / `:129` | `Fin (a + b)` 上的和拆成低段 ⊕ 高段 / `Fin (a · b)` 上的和按 `combine` 重排成双重和 / 左右缩放 / 六因子重排（只用库内 `⊗-4swap` + 结合律） |
 
 **边界（引用时必带）**:
@@ -752,7 +758,11 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
   「n = 2 时秩恰为 7」[直觉·未验证], 库内没有（要证它得有 r ≤ 6 时的排除论证）。
 - 旁证: `engineering/oracle_tensor_rank_gf3.py`（结构常数 64 / 矩阵乘法 26244 / 两路会合 64 / 张成构造 1616 / 张成容量 2061 /
   张量积 4096 + 随机 4×4 矩阵 4800 / rank-one 与证书 12 次核对, ALL_PASS）
-  + `engineering/tests/test_oracle_tensor_rank_gf3.py`（16 个 unittest, 含 3 个负控制: 弄坏一个系数, 对应判据必须报错）。
+  + `engineering/tests/test_oracle_tensor_rank_gf3.py`（18 个 unittest, 含 4 个负控制: 弄坏一个系数, 对应判据必须报错; 去掉下半前提, 蕴含不成立）。
+  M16-D 旁证: oracle `check_savings`（3365 次核对; 「下半 + 节省 ⟹ 9q < 4p」实际触发 92638 次; 对照 13/5、14/5、19/7、24/9 落在 9/4 与 17/6 之间, Strassen 的 n = 2^(6q) 不满足）。
+- M16-D 的边界: 「Lean 的实数陈述 ⟹ 本处的分数形态」是 [手工论证·未验证]（s = p/q 时 r < n^(p/q) ⟺ r ^ q < n ^ p; 形状 (1,1,1) 对应 `Rectangle/Bounds.lean:15 square`）。
+  `exactness₃` 把两半都当**假设**。本件能证的上半只有 17/6 那一段; 靠 9/4 的见证 Lean 那边也不是显式的
+  （`Coefficients.lean:43 candidate := Classical.epsilon …`, 上界机器在用选择公理挑出的代数闭域上工作, 再由 `closed_laws` 推广）。
 - M16-C 的边界: `strassen-certificate` 只是算术不等式; 读成「GF(3) 上 ω ≤ 17/6」是 [手工论证·未验证]
   （本库没有 Lean `formalOmega` 那套定义）。`rank_map`（沿环同态搬运）未做——本库的谓词只在 GF(3) 上, 没有可搬运的目标域。
   与 M16-B 的组合是库内具名定理: `rank-lower-pow : ∀ k → (2 ^ k) * (2 ^ k) ≤ 7 ^ k`（`TensorRankPowGF3.agda:349`）、`rank-lower-strassen² : 4 * 4 ≤ 49`（`:353`）。
@@ -786,4 +796,9 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 - **`uncurry combine p` 在中性 `p` 上不归约**（stdlib `combine-remQuot` 用 uncurry 写）→ `uncurry-combine-proj : ∀ p → uncurry combine p ≡ combine (proj₁ p) (proj₂ p)`（`TensorRankPowGF3.agda:76`）。
 - **Trit ⊗ 的现成引理**: `⊗-4swap`（`Algebra/Jacobian/Matrix.agda:311`, 四因子交换）; 本库 `sumFin` **没有**通用的「单射重排」引理,
   按 `combine` 的重排是 `TensorRankPowGF3.agda:92 sumFin-combine`。
+- **stdlib 的 `_*_` 是左结合**（`a * b * c` = `(a * b) * c`; M16-D 我先记成右结合, 改坏了一组本来正确的等式）: `*-assoc a b c : (a * b) * c ≡ a * (b * c)`。
+- **`0 < n` 就是 `s≤s z≤n`**（`s≤s` 两边同加一; 我把 `0 < 4` 数成四层 `s≤s` 两次）; `m ≤ suc m` 是 `m≤n⇒m≤1+n ≤-refl`（`≤-step` 自 stdlib 2.0 起弃用, 会告警）, 不是 `s≤s ≤-refl`。
+- **`<-irrefl refl h`**（stdlib 的 `<-irrefl : Irreflexive _≡_ _<_`, 首参是等式）; ≡ 链里夹严格不等式要用 `≤-<-trans` / `<-≤-trans` + `≤-reflexive`, 不能用 `trans`。
+- **`Σ[ x ∈ A ] B` 语法在 `open import Data.Product using (Σ)` 下不可用** → 写 `Σ ℕ (λ n → …)`。
+- **严格单调的 stdlib 引理带类型类实例参数**（`*-monoˡ-<`、`^-monoˡ-<` 的 `{{NonZero …}}`）: 变元位置解析不出实例 → 自己写（`TensorRankUpperGF3.agda:66 mul-<`、`:72 pow-base-<`）, 非严格的 `*-monoˡ-≤` / `^-monoˡ-≤` 不需要实例。
 - **顶层名查重脚本别把连字符排除在名字字符集外**（否则带 `-` 的名字全漏——首版扫描漏掉了几乎全部引理名）; 查重要扫**陈述**里的类型是否相同, 不只是名字。

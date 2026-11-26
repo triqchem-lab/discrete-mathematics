@@ -10,9 +10,12 @@
              ★ rank-lower : ∀ n r → RankLE₃ n r → n * n ≤ r（计数证法）
              src/Sovereign/Algebra/LinearAlgebra/TensorRankPowGF3.agda       (M16-C)
              ★ rank-mul / ★ rank-pow / rank-strassen-pow / strassen-certificate
+             src/Sovereign/Algebra/LinearAlgebra/TensorRankUpperGF3.agda      (M16-D)
+             ★ strassen-saving（p/q ≥ 17/6 的严格节省）/ ★ saving-above / ★ exactness₃（两半不重叠）
   · Lean   : OAI/LinearAlgebra/MatrixExponent/RationalCircuits.lean `RankLE`
              OAI/LinearAlgebra/MatrixExponent/Flattening.lean:6 `rank_lower`
              OAI/LinearAlgebra/MatrixExponent/RankPower.lean `rank_mul` / `rank_pow`
+             OAI/LinearAlgebra/MatrixExponent/FieldExtension.lean:72 `exponent_lt_iff_rank`
 
 本测试不重证任何定理（裁决在 Agda 内核）; 它守住四件事:
   1. oracle 的核对函数全部通过, 且**非空转**（触发计数 > 0）;
@@ -35,7 +38,8 @@ ORACLE = os.path.join(ROOT, "engineering", "oracle_tensor_rank_gf3.py")
 AGDA_A = os.path.join(ROOT, "src", "Sovereign", "Algebra", "LinearAlgebra", "TensorRankGF3.agda")
 AGDA_B = os.path.join(ROOT, "src", "Sovereign", "Algebra", "LinearAlgebra", "TensorRankFlattenGF3.agda")
 AGDA_C = os.path.join(ROOT, "src", "Sovereign", "Algebra", "LinearAlgebra", "TensorRankPowGF3.agda")
-AGDA_ALL = (AGDA_A, AGDA_B, AGDA_C)
+AGDA_D = os.path.join(ROOT, "src", "Sovereign", "Algebra", "LinearAlgebra", "TensorRankUpperGF3.agda")
+AGDA_ALL = (AGDA_A, AGDA_B, AGDA_C, AGDA_D)
 
 
 def load_oracle():
@@ -125,6 +129,20 @@ class OracleTensorRankGF3(unittest.TestCase):
             alpha[0][0] = old
         self.assertEqual(self.mod.check_tensor_product(), 4096)
 
+    # ---- 1c. M16-D: 严格节省 ---------------------------------------------------
+
+    def test_savings(self):
+        tested, fires = self.mod.check_savings(pmax=6, samples=300)
+        self.assertGreater(tested, 0)
+        self.assertGreater(fires, 0)        # 「下半 + 节省 ⟹ 9q < 4p」实际触发, 不是空转
+
+    def test_savings_negative_control(self):
+        """去掉「n^9 <= r^4」后蕴含不成立——前提缺一不可"""
+        n, r, p, q = 2, 1, 1, 1
+        self.assertFalse(n ** 9 <= r ** 4)
+        self.assertTrue(r ** q < n ** p)
+        self.assertFalse(9 * q < 4 * p)
+
     # ---- 2. 负控制: oracle 有区分力 ------------------------------------------
 
     def test_negative_control_corrupted_beta(self):
@@ -173,6 +191,10 @@ class OracleTensorRankGF3(unittest.TestCase):
         self.assertIn("rank-one : RankLE₃ 1 1", c)
         self.assertIn("rank-lower-pow : ∀ k → (2 ^ k) * (2 ^ k) ≤ 7 ^ k", c)
         self.assertIn("rank-lower-strassen² : 4 * 4 ≤ 49", c)
+        d = read(AGDA_D)
+        self.assertIn("strassen-saving : ∀ p q → 0 < q → 17 * q ≤ 6 * p → Saving₃ p q", d)
+        self.assertIn("saving-above : ω₃-boundary → ∀ p q → Saving₃ p q → 9 * q < 4 * p", d)
+        self.assertIn("ω₃-upper = ∀ p q → 9 * q < 4 * p → Saving₃ p q", d)
 
     def test_agda_no_postulate_no_rewrite_no_hole(self):
         for p in AGDA_ALL:

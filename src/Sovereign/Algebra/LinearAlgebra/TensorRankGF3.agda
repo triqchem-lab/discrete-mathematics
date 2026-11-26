@@ -26,7 +26,7 @@
 --   §2 M13 接桥: 七门拆成 α_k ⊗ β_k 与输出系数 c_k
 --      ★ strassen-is-rank-form : 对任意矩阵, 秩分解的和就是 Strassen 的输出
 --      ★ rank-strassen       : RankLE₃ 2 7
---   §3 外部边界（无居民）: ω₃-boundary
+--   §3 外部边界（无居民）: ω₃-boundary（下半; 上半的陈述与两半的关系在 TensorRankUpperGF3）
 --
 -- 诚实边界
 --   · 本件**不证** n^9 ≤ r^4。那是外部定理（Lean 里有证明; 本库未导入、未复现）。
@@ -293,5 +293,7 @@ rank-strassen = record
 --         用来把「我们这边还欠什么」写成一句可核对的话。
 --   n = 2 时它说的是 r ≥ 5（4^4 = 256 < 512 ≤ 5^4）; 库内两个方向: 展平下界 r ≥ 4
 --   （TensorRankFlattenGF3.rank-lower）, §2 的见证给 r ≤ 7。
+--   这是「每域 ω = 9/4」的下半; 上半（每个比值 > 9/4 都有一个严格节省）的陈述是
+--   TensorRankUpperGF3.ω₃-upper, 库内能证的部分是 ★ strassen-saving（比值 ≥ 17/6）。
 ω₃-boundary : Set
 ω₃-boundary = ∀ n r → 2 ≤ n → RankLE₃ n r → n ^ 9 ≤ r ^ 4
