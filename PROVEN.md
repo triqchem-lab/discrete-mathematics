@@ -926,3 +926,46 @@ arXiv:2603.07280 的机器可查证书; LFS 真身 115KB 文本 + 33MB .btp 回�
   （T1 打包的跨步展平提取、query 群作用方向 Apply vs ApplyInverse）——移植 bug, 非证书问题;
 - 意义: 我们的 GF(3) 下界路线（立项 A-T3 = F₃ 实例化自跑）的核对器范式已通（同一框架、同一格式）,
   A-T3 跑出 F₃ 证书后可直接入本核对管线。
+
+## 二十、矩阵乘法指数线 M21——稀疏定律的有限口径（`TensorRankSparseLawsGF3.agda`，393 行，2026-11-27 登记）
+
+> 立项 B-T3（陈述层）+ B-T4 的代理定义。Lean 上界机器的三条定律
+> （`Rectangle/Weights.lean:19` DensityBound、`Rectangle/Mask.lean:17` CellBound、
+> `Rectangle/Sparse/Law.lean:332` DegreeBound）都以 `exp(exponent F (log I)(log J)(log K))` 的形式出现,
+> 那是实数。本件不用 ℝ: 把 `|U|·E ≤ C` 写成「对每个下斜率 p/q 的纯 ℕ 不等式」`|U|^q·(IJK)^p ≤ C^q`。
+
+| 符号 | 位置 | 命题 / 状态 |
+|---|---|---|
+| `wmmRect` / `WeightedRankLERect` | `TensorRankSparseLawsGF3.agda:78` / `:83` | 矩形加权结构常数 + 加权矩形积的 r 项分解（镜像 Lean `Weights.lean:8`）; M19 的 `WeightedRankLE₃` 是 (n,n,n) 实例 |
+| `supportSizeᵣ` / `suppRowsᵣ` / `suppColsᵣ` / `suppInnerᵣ` | `:108`–`:118` | 支撑数与三个完成集计数的矩形版（M19/M20 的方形版定义性相同, 独立检查件 `refl` 核对） |
+| `LowerSlopeᵣ` / `UpperSlopeᵣ` | `:151` / `:156` | **指数的离散代理**: 格式 (I,J,K) 的下斜率（每个幂的每个分解都满足 体积^{(p/q)·幂} ≤ 项数）与上斜率（每个幂存在分解 ≤ 体积^{(p/q)·幂}） |
+| `DensityBound₃` / `DegreeBound₃` | `:167` / `:176` | ★★ 定律的有限口径, **陈述, 无居民** |
+| `CellBound₃` | `:189` | ★★ CellBound 的有限口径——**只有平方输出集实例**（见诚实边界）, 无居民 |
+| ★ `lower-slope-boundary` | `:226` | ω₃-boundary ⟹ 方格式 (n,n,n) 的下斜率 3/4: `(n·n·n)^(3m) = (n^m)⁹ ≤ ρ⁴` |
+| ★ `upper-slope-strassen` | `:244` | Strassen ⟹ (2,2,2) 格式的上斜率 15/16: `(7^m)^16 = (7^16)^m ≤ (8^15)^m` |
+| `pow-exp-strict` / `pow-cancel` | `:266` / `:283` | 底 ≥ 2 时幂对指数严格单调、可约指数（自写, 不走类型类实例） |
+| ★ `upper-lower-slope` | `:289` | 同格式的上斜率 ≥ 下斜率: `p′·q ≤ p·q′`（在 m = 1 处对拍） |
+| ★★ `degree-law-boundary` | `:382` | **应用示范**: DegreeBound₃ + ω₃-boundary ⟹ `支撑数⁴·(n·n·n)³ ≤ (432·n³·r)⁴`（U = 整个支撑, I = J = K = n, 下斜率 3/4） |
+
+**数值子句的来源**: `cert-7¹⁶≤8¹⁵ = m≤m+n (7^16) 1951441519231`——7^16 = 33232930569601、
+8^15 = 35184372088832 由 Python oracle 整数核对; 同一组里 7^15 ≤ 8^14 **不**成立, 所以 15/16 是这组分母下最紧的见证。
+
+**验证**: standalone exit=0（0 postulate / 0 REWRITE / 0 洞）; 独立检查件 `/tmp/m21chk/CheckM21.agda`
+14 条主签名逐字核对 exit=0; 顶层名全库扫描无重复（首版 `cube` 与三处同名, 已改 `cubeₙ`）。
+
+**诚实边界**:
+- CellBound₃ 不是完整的 CellBound: Lean 的 `short i j |u| = min(log i, log j, log|u|/2)` 在一般 |u| 下给出
+  实数边长, 格式不是整数格式; 其证明核心 `width`（`Sparse/Degree.lean:562`）是熵型实数量。
+  本件只覆盖 |u| = A·A 且 A ≤ i、A ≤ j 的情形——此时 short = log A 精确成立 [边界标注]。
+- 三条定律**不证**: 它们在 Lean 里是定理（`coeff_density` / `coeff_cells` / `coeff_degrees`）, 证明走
+  Character 定价层（`exponent_le_of_characters`）, 本库没有 Character 对象。
+- 斜率代理与 Lean 的 `exponent` 之间的等价（E = inf 上斜率 = sup 下斜率）是外部事实, 需要 ℝ 上的稠密性论证
+  [阅读判断·外部]——本件**不陈述也不证明**它, 只保证有限形式自身成立、并与库内两半衔接。
+- 上斜率的无条件非空性（schoolbook ⟹ 斜率 1 对一切格式可容）未做: 需要一般格式的 schoolbook 矩形分解, 库内没有。
+
+**本轮踩坑（别再踩）**:
+- **三层嵌套的 `sumℕ-cong` 不要手写括号**: 首版最后多关 3 层; 改成带类型的具名绑定（fb / gb / hb）才对。
+  编译前跑括号深度自检（逐行累计深度, 负深度即多关）一次抓出两处。
+- **单调性引理的「哪个因子固定」**又错了一次: `2 * V^a ≤ V * V^a` 是左因子变, 要 `*-monoˡ-≤`;
+  已在 §「别重复实现」记过, 这次仍先写成了 `*-monoʳ-≤`。
+- `cong (λ t → t * V) (*-comm V x)` 是把已经是乘积等式的东西又套一层——`*-comm V x` 本身就是 `V * x ≡ x * V`。
