@@ -227,3 +227,11 @@ tensor spectrum or the separation argument」。全库亦无 `2.3710548`（docs/
 配合主定理得 `lb-necessary-C`/`M`/`S`/`G`——四条缺一不可。
 
 已登记: `PROVEN.md` §十五 M15。
+
+### I. 证明阅读（2026-11-26）
+
+用户指示「读证明」。论文正文 24 个证明性 tex（7,214 行）逐行读完；Lean 主干逐环读到底。
+完整台账见 [`OpenAI-omega-9-4-证明阅读-2026-11-26.md`](OpenAI-omega-9-4-证明阅读-2026-11-26.md)。
+要点: 论文 ↔ Lean 对照表（每行标注核对深度）；挑战件 15 个定义与库内原件逐字相同（15/15）；
+Lean 陈述强于论文；Lean 的硬度走对角化、与论文的两情形路线不同；CAT(0) 比较不等式在 Lean 里是定理；
+`MatrixExponent/` 555 件 263,011 行逃生口扫描为 0。**没有运行构建，没有运行 Comparator。**
