@@ -695,6 +695,7 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 ### M15 · ListBounds——软核的不用实数镜像（`ListBounds.agda`，1222 行，回执 `6982c9a1`）
 
 镜像对象: openai/math `OAI/LinearAlgebra/MatrixExponent/ListBounds.lean`（Seed / ManyList / Compression）+ `Iteration.lean:76–77` `incompatible`。
+证明: 独立重构, 事后通读 `Iteration.lean`（164 行）确认同构（`lb-step-Y` ↔ `absorb`, `lb-Inv` ↔ `iterate`）。
 
 | 符号 | 位置 | 命题 |
 |---|---|---|
