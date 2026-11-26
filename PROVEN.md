@@ -912,3 +912,17 @@ r = 22 也行（首个 (p,q) = (31,11), 31/11 ≈ 2.818）; r = 23 不行（`lad
 验证：standalone exit=0（0 postulate / 0 REWRITE / 0 洞）；独立检查件 6 签名 exit=0。
 诚实边界：陪集/子空间分析未镜像（2609.06725 的第二半）；条件熵词汇（conditional/premium）
 要 ℝ 对数，有限口径属立项 B-T3/B-T4。
+
+### 立项 A-T2 执行记录（2026-11-26/27）：Wang 框架 F₂ ⟨3,3,3⟩ ≥ 20 证书的独立复验
+
+`engineering/wang_cert_check.py` + `engineering/tests/test_wang_cert_check.py`（立项书 A-T2/A-T4 的
+Python 轨）。复验对象 = `wcgbg/tensor-rank-lower-bound` 的 `cert_matrix_q02_n333`（F₂ ⟨3,3,3⟩ ≥ 20,
+arXiv:2603.07280 的机器可查证书; LFS 真身 115KB 文本 + 33MB .btp 回溯档案）。
+
+- **全量 496/496 轨道独立核对通过**（两次全量套件独立 OK: 4133s + 4139s）: 结构规范 RREF 495/496
+  （终轨道无约束）+ flatten 14 + forced 14 + degenerate 230 + backtracking 238（含终轨道 ≥ 20）;
+- **负控制精确转红**: 篡改 orbit-300 声明 +7 → `claim 24 > proved 17` 在该轨道精确失败 ✓;
+- 调试手段: C++ probe（ng-log/tbb shim 编译信任基）逐组合打印对拍, 定位两个移植 bug
+  （T1 打包的跨步展平提取、query 群作用方向 Apply vs ApplyInverse）——移植 bug, 非证书问题;
+- 意义: 我们的 GF(3) 下界路线（立项 A-T3 = F₃ 实例化自跑）的核对器范式已通（同一框架、同一格式）,
+  A-T3 跑出 F₃ 证书后可直接入本核对管线。
