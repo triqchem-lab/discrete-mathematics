@@ -251,6 +251,7 @@ Lean 陈述强于论文；Lean 的硬度走对角化、与论文的两情形路�
 | `FieldExtension.lean:72 exponent_lt_iff_rank`（取形状 (1,1,1): `Rectangle/Bounds.lean:15 square`） | `Saving₃` / `ω₃-upper`（`TensorRankUpperGF3.agda:94` / `:98`, 上半**无居民**） | 上半的有限形态: ∀ p q, 9q < 4p → ∃ n r, 2 ≤ n ∧ RankLE₃ n r ∧ r^q < n^p |
 | （Strassen 的覆盖范围） | ★ `strassen-saving`（`:110`）: `∀ p q → 0 < q → 17 * q ≤ 6 * p → Saving₃ p q` | n = 2^(6q)、r = 7^(6q); 离 9/4 还有空档 |
 | （两半的关系） | ★ `saving-above` / ★ `exactness₃`（`:166` / `:194`） | 有下半时任何节省满足 9q < 4p; 两半一旦成立, 节省恰好是比值在 9/4 之上的 (p, q) |
+| （算法 ⟹ 秩的桥; `Bilinearize.lean:111 bilinearize`: 泛点 Rat F 上 Computes ⟹ RankLE I J K (2m), mixed_mul 每门两 cross 项） | `bilinearize`（陈述, 无居民; `TensorRankCircuitGF3.agda:136`, M18）+ 电路模型 `Cir`/`Computes`/矩形 `RankLERect` + 方阵桥 `rankLE₃→rect` | 陈述层镜像; GF(3) 原生形态未证 [直觉·未验证]（Fermat 别名潜在障碍） |
 | （尺寸 3 的见证; Lean 侧无对应——Lean 的 9/4 见证非显式, `Coefficients.lean:43 candidate := Classical.epsilon …`） | ★ `rank-laderman : RankLE₃ 3 23` / `rank-eqL`（`TensorRankLadermanGF3.agda:781` / `:691`, 729 条 refl, M17 回执见 §J 末） | Laderman 1976 的 23 门（证书: GitHub `RakTikoo/matmul-333-tensor-rank`, 系数 ∈ {-1,0,1}, ℤ 恒等式 ⟹ GF(3)）; 配 ★ `laderman-saving`（p/q ≥ 20/7）与 ★ `laderman-not-below`（(3,23) 从不越过 17/6） |
 
 **路径上还差什么**（三层; 第 1 层与第 3 层的前半是已核对的, 其余是 [阅读判断]）:

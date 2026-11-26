@@ -850,3 +850,30 @@ r = 22 也行（首个 (p,q) = (31,11), 31/11 ≈ 2.818）; r = 23 不行（`lad
 - **独立检查件的旗标放文件头 OPTIONS, 不放命令行**——命令行 `--rewriting` 会连动 `--safe` 检查, 撞 stdlib 的 `SafeFlagPragma`。
 - **TriRV 全局数据区 16K**: 621 个 int 装不下 → 系数按 9 trit/int 打包（69 字）, 运行时解包;
   **初始化器不能有尾逗号**（`parse_primary: bad '}'`）。
+
+## 十七、矩阵乘法指数线 M18——电路模型与双线性归约的陈述层（`TensorRankCircuitGF3.agda`，172 行，2026-11-26 登记）
+
+> M16/M17 的见证都是**作为表**给出的; Lean 那边秩分解还能从**算法**生产——`Bilinearize.lean:111`
+> bilinearize: 算出矩阵乘法的电路, 乘法门数 m, 给出 2m 项秩分解（在泛点 Rat F 上）。
+> M18 把这一环的**陈述层**镜像进库（用户 2026-11-26 定案的「选项 2」: 补陈述层）。
+
+| 符号 | 位置 | 命题 / 状态 |
+|---|---|---|
+| `Cir` / `mulCount` / `eval` | `TensorRankCircuitGF3.agda:56` / `:65` / `:74` | 电路模型（表达式树, 无除法门: inA/inB/const/add/sub/mul; 只数乘法门——镜像 Lean 的代价口径） |
+| `Computes` | `:91` | 正确性: 输出线族在一切输入处取值 = (A·B) 条目（sumFin 形式） |
+| `mmRect` / `RankLERect` | `:101` / `:105` | **矩形**秩谓词（镜像 Lean Rectangle 的 RankLE I J K; 本库此前只有方形 RankLE₃） |
+| `rankLE₃→rect` | `:113` | 方阵桥: RankLE₃ n r 就是矩形版 (n,n,n) 实例（mm 与 mmRect 逐字同构, record 映射直证） |
+| ★ `bilinearize` / `bilinearize-square` | `:136` / `:141` | **陈述, 无居民**: Computes E ⟹ RankLERect I J K (2·gateTotal E)——镜像 Bilinearize.lean:111 的形状 |
+| `schoolbook` / `schoolbook-computes` / 两个哨兵 | `:149` / `:167` / `:155`/`:159` | 1×1 schoolbook 的 Computes 居民（⊕-identityʳ 收 sumFin{1} 的 ⊕T₀ 尾）+ mulCount/gateTotal ≡ 1 哨兵 |
+
+**诚实边界（与 Lean 原件的系数环差距, 逐条标注）**:
+- Lean 原件的秩落在 **Rat F**（泛点——免极化、免 char-2 问题; `mixed_mul` 每门两个 cross 项、
+  `mixed_output` 输出端是矩阵单位）。本件的 `bilinearize` 把秩落在 **GF(3)（Trit 原生）**上;
+  这一步在 Lean 里不存在, 真伪未证 [直觉·未验证]——有限域上「函数恒等 ⟹ 多项式恒等」失效
+  （Fermat: A³ = A）是潜在障碍。类型无居民, 无害。
+- Lean 的 Build 是 DAG 序列且带除法门（泛点处理）; 本件是表达式树、无除法门（GF(3) 矩阵乘法不需要）;
+  树口径的 gateTotal 计入共享子表达式 [边界标注]。
+- 机制细节见审计 §K/本节: 泛点追混合偏导 ⟹ 每门至多两外积 ⟹ 张成 ⟹ 秩。
+
+**验证**: standalone exit=0（0 postulate / 0 REWRITE / 0 洞）; 独立检查件 6 签名 exit=0;
+顶层名查重唯一（`eval` 与 `CyclicGF27.eval` 同名不同型, 门禁判据按类型比对通过）。
