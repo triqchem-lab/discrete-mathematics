@@ -251,11 +251,17 @@ Lean 陈述强于论文；Lean 的硬度走对角化、与论文的两情形路�
 | `FieldExtension.lean:72 exponent_lt_iff_rank`（取形状 (1,1,1): `Rectangle/Bounds.lean:15 square`） | `Saving₃` / `ω₃-upper`（`TensorRankUpperGF3.agda:94` / `:98`, 上半**无居民**） | 上半的有限形态: ∀ p q, 9q < 4p → ∃ n r, 2 ≤ n ∧ RankLE₃ n r ∧ r^q < n^p |
 | （Strassen 的覆盖范围） | ★ `strassen-saving`（`:110`）: `∀ p q → 0 < q → 17 * q ≤ 6 * p → Saving₃ p q` | n = 2^(6q)、r = 7^(6q); 离 9/4 还有空档 |
 | （两半的关系） | ★ `saving-above` / ★ `exactness₃`（`:166` / `:194`） | 有下半时任何节省满足 9q < 4p; 两半一旦成立, 节省恰好是比值在 9/4 之上的 (p, q) |
+| （尺寸 3 的见证; Lean 侧无对应——Lean 的 9/4 见证非显式, `Coefficients.lean:43 candidate := Classical.epsilon …`） | ★ `rank-laderman : RankLE₃ 3 23` / `rank-eqL`（`TensorRankLadermanGF3.agda:781` / `:691`, 729 条 refl, M17 回执见 §J 末） | Laderman 1976 的 23 门（证书: GitHub `RakTikoo/matmul-333-tensor-rank`, 系数 ∈ {-1,0,1}, ℤ 恒等式 ⟹ GF(3)）; 配 ★ `laderman-saving`（p/q ≥ 20/7）与 ★ `laderman-not-below`（(3,23) 从不越过 17/6） |
 
 **路径上还差什么**（三层; 第 1 层与第 3 层的前半是已核对的, 其余是 [阅读判断]）:
 1. 陈述层——已齐: 谓词、接桥、下界方向（展平）、上界方向（张量幂见证）、两半的有限陈述（`ω₃-boundary` / `ω₃-upper`）。
 2. 见证层——每个尺寸 2^k 有内核检查过的见证（项数 7^k）。n = 2 处库内 4 ≤ r ≤ 7, 外部定理给 r ≥ 5, 「秩恰为 7」[直觉·未验证]。
-   **未做**: 下一尺寸（3×3）的 GF(3) 分解及其最优性; 双线性归约（Lean `Bilinearize.lean:111`: q 个非标量门 ⟹ 秩 ≤ 2q）——要先定义电路模型 [未验证·路线推测]。
+   → **2026-11-26 更新（M17, 用户定案「选项 1 小规模版」）**: 尺寸 3 的 GF(3) 分解已到手——★ `rank-laderman : RankLE₃ 3 23`
+   （Laderman 23 门; n=3 处库内两方向 9 ≤ r ≤ 23）。但它**不进空档**: 比值 20/7 ≈ 2.857 差于 17/6 ≈ 2.833
+   （★ `laderman-not-below` 内核核验 (3,23) 从不越过 17/6）。空档的精确化（oracle 判据 7, 纯整数核对）:
+   n=3 上 r=21 即可进（21^5 < 3^14, 84 < 85）、r=22 也可（首个 (31,11) ≈ 2.818）、r=23 不行;
+   有界爬山（6×12000 步, 最优失配 215/729）只是有界尝试, 「rank ≤ 22」存在性是公开问题 [阅读层·未验证]。
+   **仍未做**: 双线性归约（Lean `Bilinearize.lean:111`: q 个非标量门 ⟹ 秩 ≤ 2q）——要先定义电路模型 [未验证·路线推测]。
 3. 证明层——**陈述层已核对**（本轮读了 `UpperBound.lean` 全文、`Coefficients.lean` 全文、`Rectangle.lean` 全文、`FieldExtension.lean:17–97`）:
    上界也有有限的秩分解形态（`exponent_lt_iff_rank`）; 但 Lean 那边靠 9/4 的见证不是显式的——
    `Coefficients.lean:43 candidate := Classical.epsilon (fun k => ¬ Fulfills k.carrier)`: 上界机器在一个用选择公理挑出的代数闭域上工作
@@ -267,4 +273,4 @@ Lean 陈述强于论文；Lean 的硬度走对角化、与论文的两情形路�
 
 **本批更正**: `TensorRankGF3` 头注与 oracle 文档曾写「oracle 逐字发射 / 贴用 64 条子句」——实际组织是 `mm-basis` 16 条 × 4 个输出位置, 已按代码改正。
 
-已登记: `PROVEN.md` §十五 M16。
+已登记: `PROVEN.md` §十五 M16、§十六 M17（三条机器轨互证: oracle ALL_PASS / Agda 内核 exit=0 / TriRV 三进制 VM 正件 exit=0 负控 exit=66 与预言一致）。

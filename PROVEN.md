@@ -802,3 +802,51 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 - **`Σ[ x ∈ A ] B` 语法在 `open import Data.Product using (Σ)` 下不可用** → 写 `Σ ℕ (λ n → …)`。
 - **严格单调的 stdlib 引理带类型类实例参数**（`*-monoˡ-<`、`^-monoˡ-<` 的 `{{NonZero …}}`）: 变元位置解析不出实例 → 自己写（`TensorRankUpperGF3.agda:66 mul-<`、`:72 pow-base-<`）, 非严格的 `*-monoˡ-≤` / `^-monoˡ-≤` 不需要实例。
 - **顶层名查重脚本别把连字符排除在名字字符集外**（否则带 `-` 的名字全漏——首版扫描漏掉了几乎全部引理名）; 查重要扫**陈述**里的类型是否相同, 不只是名字。
+
+## 十六、矩阵乘法指数线 M17——3×3 的 23 项秩分解（`TensorRankLadermanGF3.agda`，893 行，2026-11-26 登记）
+
+> M16 把「ω = 9/4 在 GF(3) 上」写成了关于 `RankLE₃` 的两半有限命题; M17 给出尺寸 3 的第一个见证。
+> 证书来源: GitHub `RakTikoo/matmul-333-tensor-rank`（2026-11-26 经代理取回）的 Laderman 1976 23 门方案
+> 机器可读件（`laderman_r23_Q.json`）; 系数全 ∈ {-1,0,1}, ℤ 恒等式 ⟹ 任意交换环（GF(3) 是实例）。
+> 同仓库 Perminov CN-122 第二份方案在 oracle 判据 4 逐点核验通过（未入库, 只作稳健性数据点）。
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `raL` / `rbL` / `rcL` | `TensorRankLadermanGF3.agda:66`（各 207 条子句, oracle 发射） | 23 门 × 9 位置的系数表 |
+| `rank-eqL` | 同上 `:691`（81 条子句 × 9 分支 = 729 条 `refl`, oracle 发射） | Σ_k raL⊗(rbL⊗rcL) ≡ `mm 3`——9×9×9 全枚举 |
+| ★ `rank-laderman` | `:781` | **`RankLE₃ 3 23`**——尺寸 3 的内核检查过秩分解见证（此前只有 n=2 的七门） |
+| `rank-lower-laderman` | `:790` | `3 * 3 ≤ 23`——展平下界（M16-B）与见证配对: n=3 处库内两方向 9 ≤ r ≤ 23 |
+| `cert-laderman` / `cert-laderman-strict` | `:800` / `:803` | `3^17 ≤ 23^6`、`23^7 < 3^20`（数值由 oracle 发射, 不手算） |
+| ★ `laderman-saving` | `:812` | `∀ p q → 0 < q → 20 * q ≤ 7 * p → Saving₃ p q`（结构与 `strassen-saving` 相同, 换一组证书） |
+| `saving-laderman-20-7` | `:860` | 可读实例: ω₃ ≤ 20/7 |
+| ★ `laderman-not-below` | `:865` | `6 * p < 17 * q → 23^q < 3^p → ⊥`——(3,23) 见证**从不越过 17/6**（否则 23^(6q) < 3^(6p) ≤ 3^(17q) ≤ (23^6)^q = 23^(6q) 矛盾） |
+| `rank-mixed` | `:894` | `RankLE₃ 6 161`——`rank-mul rank-strassen rank-laderman`（M16-C 的张量积机制） |
+
+**诚实边界**: 这是**上界见证**（秩 ≤ 23）, 不是「秩恰为 23」。（3,23）的比值 20/7 ≈ 2.857 **不改进**
+(2,7) 的 17/6 ≈ 2.833——M16-D 的缺口（9/4 与 17/6 之间的见证）**没有**被这一件填上。
+尺寸 3 上要进入空档: r = 21 即可（21^5 < 3^14 且 6·14 = 84 < 85 = 17·5, oracle 判据 7 整数核对）;
+r = 22 也行（首个 (p,q) = (31,11), 31/11 ≈ 2.818）; r = 23 不行（`laderman-not-below` 内核核验）。
+「rank(⟨3,3,3⟩) ≤ 22」是公开问题 [阅读层·未验证, 文献状态]; 本件 23 门经 oracle 判据 6 核验为
+**删除封闭**（23 个秩一贡献在 GF(3) 上线性无关, 丢任何一门都不再是分解; 库内无对应定理, 只有 oracle 事实）。
+
+**验证链（先算后验, 三条机器轨互证）**:
+1. oracle `engineering/oracle_rank3_witness_gf3.py` ALL_PASS——判据 1 结构常数 27、判据 2 GF(3) 729/729、
+   判据 3 ℤ 729/729、判据 4 Perminov、判据 5 负控制 207/207 全转红、判据 6 贡献秩 = 23、
+   判据 7 阈值整数扫描、判据 8 有界爬山（6×12000 步最优失配 215/729, 只是有界尝试不下结论）、判据 9 发射;
+2. Agda 内核: `TensorRankLadermanGF3.agda` exit=0, 0 postulate / 0 REWRITE / 0 洞;
+   独立检查件（/tmp/m17chk/CheckM17.agda）8 个主签名逐字核对 exit=0;
+3. TriRV 三进制 VM: `engineering/trirv/laderman23_gf3.c`（打包系数 69 字, 运行时解包）
+   `cc/trirv_cc` → `trirv_vm` 100 万步 **exit=0**; 负控制件（PK[12] 最低位 2→0）**exit=66**,
+   与 oracle 侧模拟预言逐字一致（bad=16, hits=26）。
+回归: `engineering/tests/test_oracle_rank3_witness_gf3.py` 16 项（表逐字核对 / 签名 / PK 同源 / 双侧预言）; 全套 129 项 OK。
+
+**新坑（别再踩）**:
+- **发射 Fin 构造子模式要套外层括号**: `raL (fsuc (fsuc fzero)) (i , j) = …`——写成 `raL fsuc (fzero) …`
+  会被解析成三个参数（`WrongNumberOfConstructorArguments`）。M16-A 的先例 `L (fsuc fzero) A` 就是带外层括号的。
+- **（3,b）见证的 `2 ≤ 3^(7q)` 不能直接 `pow-exp-mono 3 1 …`**——它给 `3 ≤ …`（Strassen 那边底是 2 所以恰好行）;
+  补一步 `2 ≤ 3`。
+- **Σ 第二分量取幂要用 `rank-pow`**: `rank-laderman : RankLE₃ 3 23` 的类型不定义等价于
+  `RankLE₃ (3 ^ (7q)) (23 ^ (7q))`——用 `rank-pow rank-laderman (7 * suc q′)`。
+- **独立检查件的旗标放文件头 OPTIONS, 不放命令行**——命令行 `--rewriting` 会连动 `--safe` 检查, 撞 stdlib 的 `SafeFlagPragma`。
+- **TriRV 全局数据区 16K**: 621 个 int 装不下 → 系数按 9 trit/int 打包（69 字）, 运行时解包;
+  **初始化器不能有尾逗号**（`parse_primary: bad '}'`）。
