@@ -1,5 +1,7 @@
 # OpenAI ω ≤ 9/4 形式化 · 只读审计注记（2026-11-25）
 
+> **最新状态见文末《读完记录（2026-11-26）》。第一至六节是 11-25 的原始记录, 其中带作废标记的部分不要引用。**
+
 > ## ⚠ 勘误与撤回（2026-11-26）—— 第三节与 F3/F4 作废
 >
 > 我在 11-25 据本注记向用户报告: 「Lean 只承载 ω(ℂ) ≤ 9/4 上界」「下界连形式化都没有」
@@ -36,7 +38,7 @@
 > - `MatrixFields.json` → 解 `OAI.LinearAlgebra.MatrixFields.Main`, 定理
 >  `OAI.MatrixAllFields.MatrixMultiplication.AllFieldMain.omega_lt_source_constant`（每域上界; 未读）。
 >
-> 仍未做: 四个子树依赖闭包的完整 sorry/axiom 扫描; 桥接引理与库内定义的忠实性审计
+> 【已被文末《读完记录》取代】仍未做: 四个子树依赖闭包的完整 sorry/axiom 扫描; 桥接引理与库内定义的忠实性审计
 > （`formalOmega_square_eq_omega` 把挑战件的 `formalOmega` 接到库内 `omega`, 是否同一对象）;
 > Comparator 是否通过（按指示不运行）。
 > 正确表述: **OpenAI 仓库对「每个域上 ω = 9/4、α = 1/2、矩形闭公式」给出了完整陈述与解模块映射;
@@ -127,3 +129,62 @@ tensor spectrum or the separation argument」。全库亦无 `2.3710548`（docs/
 1. 网络恢复: 稀疏取余 ~440 件 → rg 查 ω ≥ 9/4 下界的内部交付（`AuxiliarySeparation/Spectrum/Obstruction.lean`、`Duality/ExponentBound.lean` 优先）→ F4 升级或结案。
 2. 蕴含校验器形态确认: 「Comparator checks」的工具是哪个、对照件与内部定理的蕴含如何机检。
 3. (可选) 509 文件 + Mathlib 缓存本地编译复核（用户已豁免, 记为可选）。
+
+
+---
+
+## 读完记录（2026-11-26, 按用户指示「先读完再决定」）
+
+### A. 覆盖面——做到了什么、没做到什么
+
+| 对象 | 规模 | 做到的 |
+|---|---|---|
+| 挑战件 `ComparatorChallenges/MatrixExponent.lean` | 136 行 | 全文逐行 |
+| `SpectralBooks` | 840 件 / 84,747 行 | 全量文本扫描; 逐行读 `ExactExponent`、`SquareRankModel`、`DualExponent`; 陈述级读 `ArithmeticExponent`、`SquareExponent`、`Elongated`、`RectangularCircuitModel`、`Rank` 等; 模块说明读了几乎全部顶层文件与各子目录样例（838/840 件有模块说明） |
+| `MatrixExponent` | 555 件 / 262,456 行 | 全量文本扫描; **逐行读主链 14 个文件**（见 B）; 定义级读 `SharedPrice`、`ArityReduction`、`Propagation`、`Rigidity`、`benchmark`/`U`、`Installable`、`Net`; 读 `contact_of_not_shared`、`shared_of_saving`、`propagation_of_*` 的陈述与骨架; 模块说明读了顶层与 8 个子目录（Valued/Prices/Routing/Shaving/Tagged/BatchDescent/Rounds） |
+| `MatrixFields` | 354 件 / 181,751 行 | 全量文本扫描; 逐行读 `Main`、`Conclusions/AllFieldsBound`; **无模块说明**（18 万行里 1 条 docstring）, 文件名形如 `CapA1_1_14I0`; 其余未读 |
+| 外部依赖闭包 | 直接依赖 47 个; 传递闭包开放规模 | 取回 1,013 件 / 142,957 行并扫描; 读 39/47 个直接依赖的模块说明; **队列里还有 870+ 个未取** |
+| 合计 | **3,271 件 / 约 755,000 行** | 文本扫描 |
+
+**没有做**: 读证明本身（绝大多数行）; 运行构建或 Comparator（按指示默认通过）; 读 `MatrixExponent` 里 Sphere（74 件）、Assembly（69）、Rectangle 内部（53）、Integral（39）、Transcript（20）等子目录的模块说明; 读 `MatrixFields` 的内容; 取完外部闭包。
+
+### B. 主定理的陈述链（每一环读了原文, 没有发现空转的定义）
+
+逐行读过的 14 个文件: `RationalCircuits`、`FieldFormula`、`Obstruction`、`UpperBound`、`PrimeFields`、`RankCriterion`、`Realization`、`Rectangle`、`ListBounds`、`Network`、`Tagged/Hard`、`BatchDescent/Hard`、`Rounds/Installation`、`Iteration`（后者读了 `incompatible` 的证明）, 以及聚合文件 `MatrixExponent.lean`。
+
+1. `SpectralBooks/ExactExponent.lean:11` `square_exponent (F) [Field F] : formalOmega F 1 1 1 = 9/4 := (formalOmega_square_eq_omega F).trans (MatrixExponent.omega_eq F)`。
+2. 挑战件自带的模型（`MatrixExponent.lean:13-102`）: 无除法直线程序, 加/减/乘各计 1; `FormalCorrect` 是 `MvPolynomial` 上的恒等式（有限域上也成立）。
+3. `SquareRankModel.lean:43` `formalOmega F 1 1 1 = MatrixExponent.omega F`; 其中 `square_rank_iff` 把库内 `RankLE F n r` 等同于真实矩阵乘法张量 `matrixTensor F n n n` 的秩 ≤ r。
+4. `MatrixExponent/RationalCircuits.lean`: `omega F := sInf {s | Admissible F s}`, 模型是**允许除法**的有理电路; `RankLE F n r := ∃ a b c : Fin r → Pos n → F, ∀ x y z, ∑ i, a i x * b i y * c i z = if x.1 = z.1 ∧ x.2 = y.1 ∧ y.2 = z.2 then 1 else 0`——标准张量秩分解。
+5. `FieldFormula.lean:8` `omega_eq_and_rigidity (F) : omega F = 9/4 ∧ Rectangle.Rigidity F := contact_of_installations (fun p _ => Rounds.installable (ZMod p)) F`。
+6. `Realization.lean` / `Obstruction.lean`: 有限域上的二选一——无共享价格则 `contact_of_not_shared`; 有共享价格则 `Rounds.installable` 给出压缩, 与 `ManyList (Realizes F)` 矛盾。
+7. `Rectangle.of_prime_fields` + `PrimeFields.lean` 的 `prime_specialization`: 素域 ⟹ 所有域。
+8. `UpperBound.lean:44` `upper_bound (F) : omega F ≤ 9/4`（经 `Rectangle.discrete_bound`、`closed_fulfills`, 输入是 `coeff_*` 证书）。
+9. `MatrixFields/Conclusions/AllFieldsBound.lean`: `omega_lt_source_constant (F) : Arithmetic.omega F < 2.371054886006746`（每域无条件上界, 另一篇论文）。
+
+### C. 下界的证明结构（据陈述与作者模块说明）
+
+- 上界对所有形状成立: `Rectangle.upper : exponent F a b c ≤ U a b c`; `flat` 给出 c ≤ ab/(a+b) 时指数 = a+b（平凡紧）。
+- 硬度: `Tagged.Hard F`: 存在 σ > 0, 对足够大的 w, 任何计算「带标签置换验证」核的 `Net`（**三价位网络**: 顶点是至多 3 个比特索引的 F 值表, `comp` 对中间线求和, `trace` 缩并）顶点数 ≥ 2^w·w·w^σ。这是受限模型里的无条件超线性下界, 不是一般电路下界。
+- `ListBounds.lean`（只依赖 Mathlib）: `Seed`、`ManyList`、`Compression` 三个纯自然数谓词; `Iteration.lean:76` `incompatible : Seed P → ManyList P → Compression P → False`（证明逐行读过: 取 η = σ/4, b = min γ (σ/2)/2, J·b > 3, 迭代压缩 J 次）。
+- 有限域 F: `omega F < 9/4 ⟹ SharedPrice (AlgebraicClosure F)`（`shared_of_saving`, 平凡地由 `contact_of_not_shared` 得到）⟹ `Compression (Realizes F)` ⟹ 矛盾。真正的内容在 `Valued/Shared.lean` 的 `contact_of_not_shared`（「同步或接触」）。
+- 几何输入: `Propagation (Prices K)`（`Rectangle/Face/Contact.lean` 的 `propagation_of_tripod` / `propagation_of_potential`）; `Rigidity F` 是二选一（处处等于 U, 或在所有活跃形状严格小于 U）。
+
+### D. 这个定理依赖仓库里的其他结果
+
+四个子树 import 了 47 个子树之外的库内模块, 主要是 `Geometry.HyperbolicGroups`（组合式 CAT(0): 圆盘移动、切锥、Euler 势）、`Computability.BorderVNP`、`Computability.VPVNP`、`Hierarchy.PrimeFlats`（模块说明标题: 「Arithmetic class separations and square matrix multiplication over every field」）、`LinearAlgebra.TensorSpectrum`, 以及共享工具（`QuantumFactoring` 的布尔网络、`Perceptron.Sphere.GaussianPolar`、`SpanningForest.CauchyBinet`、`AffineBernstein.SphereIsometry`）。它的可信度与整个仓库绑在一起。
+
+### E. 文本扫描（3,271 件）
+
+`sorry` / `admit` 作策略 / `sorryAx` / `skipKernelTC` / `native_decide` / `axiom` 声明 / `opaque` 声明 / `implemented_by` / `unsafe` / `@[extern]`: **全部 0**。
+非零且逐条看过的: `admit` 字样（散文, 外加 `BorderVNP` 里一个名为 `admit` 的 `local notation`）; `opaque` 字样 2 处（在文档注释内）; `partial def` 2 处（`BorderVNP/DiagonalOriginalStoredReportShape.lean`, 类型为 `MetaM Expr` 的元编程辅助）。非 OAI、非 Mathlib 的 import 只有 `Lean.Elab.Tactic.Omega`。
+
+### F. 结论（限陈述层）
+
+陈述链从 `square_exponent` 到 `Net` 的每一环都是具体、标准的定义, 没有发现定义漂移或空真; 证明结构可理解。**我没有读证明本身, 也没有运行构建**——所以这是「陈述层与结构层读完、未发现可疑之处」, 不是「我验证了这个证明」。若构建与 Comparator 通过（按指示默认如此）, 则结论是: 每个域上 ω = 9/4, α = 1/2, 矩形指数等于闭式; ω = 2 猜想为假。
+
+### G. 对本仓库路径的意义
+
+- `square_iff_prime_ranks`: 每域 ω = 9/4 等价于「每个素域上 rank(⟨n,n,n⟩) ≥ n^(9/4)」这族有限命题; GF(3) = ZMod 3 是其中一个素域。有限实例只能**反驳**、不能**确立**这个下界。
+- `Tagged.Hard (ZMod 3)` 与 `ManyList (Realizes (ZMod 3))` 是关于 GF(3) 的定理——离散寄存器在这个问题上的准确位置是「有限素域上的秩与网络实例」, 不是渐近指数本身。
+- 下界里唯一与域无关、不需要枚举的一环是 `ListBounds.incompatible`（对一切 w 成立的软论证）。若要在本库做一件事, 镜像它是最有界的; 但它用到实指数与「最终」量词, 需要先设计一个不用实数的表述（宪法禁无理数）。**未开始。**
