@@ -82,6 +82,10 @@ class OracleListBounds(unittest.TestCase):
         w0, _ = self.o.check_h_bridge(w_max=400)
         self.assertLessEqual(w0, 3)
 
+    def test_I_nonvacuity(self):
+        tested = self.o.check_nonvacuity(w_max=10)
+        self.assertGreater(tested, 0)
+
     # ---- 2. Agda 件的完整性（源级） -----------------------------------------
     def test_agda_file_present_and_clean(self):
         self.assertIn("module Sovereign.Algebra.LinearAlgebra.ListBounds where", self.src)
@@ -97,6 +101,12 @@ class OracleListBounds(unittest.TestCase):
         sig = re.search(r"lb-incompatible :[\s\S]*?→ ⊥", self.src).group(0)
         for name in ("lb-Grow N H", "lb-Seed P N", "lb-Many P N", "lb-Comp P N H"):
             self.assertIn(name, sig)
+
+    def test_agda_nonvacuity_witnesses_present(self):
+        # 四个一致性见证 + 四条「缺一不可」
+        for name in ("lb-consistent-SMG", "lb-consistent-SCG", "lb-consistent-MCG", "lb-consistent-SMC",
+                     "lb-necessary-C", "lb-necessary-M", "lb-necessary-S", "lb-necessary-G"):
+            self.assertRegex(self.src, r"(?m)^%s :" % name, name)
 
     # ---- 3. 两轨的参数配方一致（防漂移） -------------------------------------
     def test_recipe_matches_agda_text(self):

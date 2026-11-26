@@ -29,6 +29,8 @@
         G3 Compression m′ ≤ d·(m·h^(−γ) + t·n·h^η) ⟹ ∀u v,
                        u^G ≤ h^g ∧ h^e ≤ v^E ⟹ m′·u ≤ d·(m + t·n·v·u)   (g/G ≤ γ, e/E = η)
   H h 桥       w ≤ ⌈log₂(listBits w)⌉ ≤ w²（Lean 的 h := Nat.clog 2 (listBits w) 落在 H = w² 之内）
+  I 非空真     四个一致性见证的数值回声: 去掉任一条假设, 其余三条对一个具体的 P 同时成立
+        （Agda §11 lb-consistent-SMG/SCG/MCG/SMC 是裁决; 这里只核对见证的算术）
 
 用法: python3 engineering/oracle_list_bounds.py
 """
@@ -330,6 +332,52 @@ def check_h_bridge(w_max=3000):
 
 
 # ---------------------------------------------------------------
+# I. 非空真: 四个一致性见证的数值回声（Agda §11）
+# ---------------------------------------------------------------
+def check_nonvacuity(w_max=14):
+    tested = 0
+    # ① 去掉 Compression: P_hard w t m := t·L·w + 1 ≤ 3m —— Seed ∧ Many 成立
+    for w in range(1, w_max + 1):
+        L = list_bits(w)
+        m0 = L * w
+        assert 1 * L * w + 1 <= 3 * m0, w            # P_hard w 1 m₀
+        assert m0 * 1 <= 1 * (L * (w * w)), w        # Seed 的规模界
+        for t in (1, 2, 3, 5):
+            for m in range(1, 2 * L * w + 2):
+                tested += 1
+                if t * L * w + 1 <= 3 * m:            # P_hard 持有者
+                    assert t * L * w < 3 * m, (w, t, m)   # 硬度（σ = 1）
+    # ② 去掉 ManyList: P_ne w t m := 1 ≤ m —— 压缩取 d = 1、m′ = 1
+    for w in range(1, w_max + 1):
+        L = list_bits(w)
+        for t in (1, 2, 5):
+            for m in (1, 2, 7):
+                for u in (1, 2, 9):
+                    for v in (1, 3):
+                        tested += 1
+                        assert 1 * u <= 1 * (m + t * L * v * u), (w, t, m, u, v)
+                        assert 1 ** 4 <= L                          # d = 1 的侧条件（D = 4）
+    # ③ 去掉 Seed: P_big w t m := L·L·w ≤ m —— 压缩的前提 m^20 ≤ L^21 无实例
+    for w in range(1, w_max + 1):
+        L = list_bits(w)
+        lo = L * L * w
+        assert lo ** 20 > L ** 21, w                  # 任何持有者都不满足规模前提
+        for t in (1, 2, L):                            # Many: t ≤ L
+            tested += 1
+            assert t * L * w < 3 * lo, (w, t)
+    # ④ 去掉 Grow（n ≡ 1、h ≡ 1）: P_w w t m := t·w + 1 ≤ 3m; 侧条件 u^1 ≤ 1^1 ⟹ u = 1
+    for t in (1, 2, 5):
+        for m in (1, 3):
+            for u in range(1, 5):
+                if u ** 1 <= 1 ** 1:                   # 侧条件成立
+                    assert u == 1
+                    for v in (1, 2, 9):
+                        tested += 1
+                        assert m * u <= 1 * (m + t * 1 * v * u), (t, m, v)
+    return tested
+
+
+# ---------------------------------------------------------------
 def main():
     rows = []
     ok = True
@@ -353,6 +401,7 @@ def main():
     run("G2 桥接 Seed", check_bridge_seed)
     run("G3 桥接 Compression", check_bridge_comp)
     run("H h 桥 w ≤ clog 2 (listBits w) ≤ w²", check_h_bridge)
+    run("I 非空真（四个一致性见证的数值回声）", check_nonvacuity)
 
     for tag, status, res in rows:
         print(f"[{status}] {tag}")

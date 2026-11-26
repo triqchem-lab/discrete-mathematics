@@ -222,4 +222,8 @@ tensor spectrum or the separation argument」。全库亦无 `2.3710548`（docs/
 含桥接的随机抽样 G1–G3 与 h 桥 H（`w ≤ clog 2 (listBits w) ≤ w²` 自 w = 2 起, 核到 3000）;
 `engineering/tests/test_oracle_list_bounds.py` 11 个 unittest。
 ⚠ 本件顺序与「先算后验」相反: Agda 先行, oracle 事后核对（首版迭代一步那项空转, 靠打印触发数发现并修正）。
+**非空真（同文件 §11）**: 主定理是「四条假设 ⟹ ⊥」, 可能靠某条假设不可能成立而空真。§11 给出四个内核检查过的见证 P,
+说明去掉任意一条假设后其余三条同时成立（`lb-consistent-SMG`/`SCG`/`MCG`/`SMC`）,
+配合主定理得 `lb-necessary-C`/`M`/`S`/`G`——四条缺一不可。
+
 已登记: `PROVEN.md` §十五 M15。

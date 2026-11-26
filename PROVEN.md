@@ -692,7 +692,7 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `E-at` / `E-inj` / `mulEii-*`（288 条） | `Matrix12LowerWitness.agda:54/105` | 基矩阵两两不同 + 144 条 `E_ii·E_ik = E_ik` 的全枚举 `refl` |
 | ⚠「144 ≤ 秩 ≤ 1728」 | — | **不是已证结论, 勿引用**（「两两不同 ⇒ 秩 ≥ 144」是无效推理; 1728 只是 `12*12*12` 的算术恒等式; 库内无形式代价模型）。见 `docs/techniques/M14-12x12矩阵指数上下界-2026-11-26.md` 顶部勘误 |
 
-### M15 · ListBounds——软核的不用实数镜像（`ListBounds.agda`，1222 行，回执 `6982c9a1`）
+### M15 · ListBounds——软核的不用实数镜像（`ListBounds.agda`，1533 行，回执 `6982c9a1` + 非空真见证见本节末）
 
 镜像对象: openai/math `OAI/LinearAlgebra/MatrixExponent/ListBounds.lean`（Seed / ManyList / Compression）+ `Iteration.lean:76–77` `incompatible`。
 证明: 独立重构, 事后通读 `Iteration.lean`（164 行）确认同构（`lb-step-Y` ↔ `absorb`, `lb-Inv` ↔ `iterate`）。
@@ -705,6 +705,8 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 | `lb-step-Y` / `lb-step` / `lb-copy` / `lb-size` / `lb-iter` / `lb-final` | 同上 §2–§5 | 迭代压缩 J 步的全部算术引理（不变式 `lb-Inv`） |
 | `lb-seed-at` / `lb-many-at` / `lb-comp-at` / `lb-rn-pkg` | 同上 §3/§5/§6 | 三条性质搬到 w = W^N0 上; 衰减率 rn 的选取 |
 | `lb-Ev` / `lb-Seed` / `lb-Many` / `lb-Grow` / `lb-Comp` | 同上 §7 | 四条性质的 ℕ 表述（分数次幂 → 整数不等式; 「最终」→ `lb-Ev`） |
+| ★ `lb-consistent-SMG` / `lb-consistent-SCG` / `lb-consistent-MCG` / `lb-consistent-SMC` | 同上 §11 | **非空真**: 去掉任意一条假设, 其余三条对某个具体的 P 同时成立（P_hard: `t·listBits·w + 1 ≤ 3m` / P_ne: `1 ≤ m` / P_big: `listBits²·w ≤ m` / P_w 配 n ≡ 1、h ≡ 1） |
+| ★ `lb-necessary-C` / `lb-necessary-M` / `lb-necessary-S` / `lb-necessary-G` | 同上 §11 | 配合主定理: 被去掉的那一条对同一个 P 不成立 ⟹ **四条缺一不可** |
 
 **边界（引用时必带）**:
 - 「Lean 的实数陈述 ⟹ 本 ℕ 陈述」这座桥**未形式化** [手工论证·未验证]; 桥的左端要实指数幂（要 ℝ）, 本库宪法禁无理数, 写不出。

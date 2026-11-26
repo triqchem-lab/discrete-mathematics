@@ -24,6 +24,10 @@
 --   ★ lb-wk≤2w              : 2 ^ (k + 4) ≤ w → w ^ k ≤ 2 ^ w
 --     （增长条件 lb-Grow 第一个分量的内容, 经 lb-listBits-grow 接入;
 --       另两个分量对 H = w² 是 lb-w≤ww 与 ≤-refl）
+--   ★ 非空真（§11）: 去掉任意一条假设, 其余三条对某个具体的 P 同时成立——
+--       lb-consistent-SMG / lb-consistent-SCG / lb-consistent-MCG / lb-consistent-SMC;
+--       配合主定理得 lb-necessary-C / M / S / G（四条缺一不可, 定理不是靠某条假设
+--       不可能成立而空真）。
 --   证明是独立重构: 写成时只读过 Lean 证明的开头。事后（2026-11-26）通读 `Iteration.lean`（164 行）,
 --   确认两边同构: 步引理 lb-step-Y ↔ `absorb`; 迭代不变式 lb-Inv ↔ `iterate`;
 --   副本界 t ≤ n^(j·δ), δ = 1/(40·J) ↔ `copies`; 终局矛盾 ↔ 末段; 都在 η = σ/4 处调用压缩
@@ -73,13 +77,14 @@ open import Data.Nat.Properties
   using (≤-trans; ≤-refl; ≤-reflexive; m≤n⇒m≤1+n; <⇒≤; <-≤-trans; ≤-<-trans; <-asym; ≰⇒>; ≮⇒≥
         ; *-monoʳ-≤; *-monoˡ-≤; *-mono-≤; *-assoc; *-comm; *-identityˡ; *-identityʳ
         ; *-distribʳ-+; +-suc; +-comm; +-assoc; +-identityʳ; +-mono-≤; +-monoˡ-≤; +-monoʳ-≤; m≤m+n; m≤n+m
+        ; ≤-antisym
         ; ^-distribˡ-+-*; ^-distribʳ-*; ^-*-assoc; ^-monoʳ-≤)
 open import Data.Nat.Solver using (module +-*-Solver)
 open +-*-Solver using (solve; _:*_; _:+_; con; _:=_)
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Relation.Nullary using (yes; no; ¬_)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; sym; trans; cong; cong₂; subst)
+  using (_≡_; refl; sym; trans; cong; cong₂; subst; subst₂)
 
 --------------------------------------------------------------------------------
 -- §0. 基础: ℕ 上幂与序的引理
@@ -1212,6 +1217,11 @@ lb-w≤ww : ∀ w → w ≤ w * w
 lb-w≤ww zero = z≤n
 lb-w≤ww (suc w) = lb-m≤m·k (suc w) (suc w) (s≤s z≤n)
 
+-- listBits 的增长条件（独立出来, 供推论与 §11 的一致性见证共用）
+lb-listBits-growcond : lb-Grow lb-listBits (λ w → w * w)
+lb-listBits-growcond =
+  lb-listBits-grow , (zero , (λ w _ → lb-w≤ww w)) , (zero , (λ w _ → ≤-refl))
+
 -- ★ 推论: Lean `Iteration.incompatible`（Seed → ManyList → Compression → False）的 ℕ 镜像。
 --   n := listBits w; h := w²（Lean 取 h = clog 2 (listBits w), 对大 w 有 w ≤ h ≤ w²,
 --   故 Lean 的压缩蕴涵以 H = λ w → w * w 写出的 lb-Comp——桥接理由见头注）。
@@ -1219,8 +1229,305 @@ lb-incompatible-lists : ∀ (P : ℕ → ℕ → ℕ → Set) →
   lb-Seed P lb-listBits → lb-Many P lb-listBits →
   lb-Comp P lb-listBits (λ w → w * w) → ⊥
 lb-incompatible-lists P seed many comp =
-  lb-incompatible P lb-listBits (λ w → w * w) grow seed many comp
+  lb-incompatible P lb-listBits (λ w → w * w) lb-listBits-growcond seed many comp
+
+--------------------------------------------------------------------------------
+-- §11. 非空真: 四条假设缺一不可
+--------------------------------------------------------------------------------
+--   主定理是「四条假设 ⟹ ⊥」。若某条假设本身不可能成立, 定理就是空真的。
+--   下面给出四个**内核检查过的**见证 P: 去掉任意一条假设, 其余三条对相应的 P 同时成立
+--   （lb-consistent-*）。再用主定理, 被去掉的那一条对同一个 P 必然不成立（lb-necessary-*）。
+
+-- h := w²（具名; 类型里裸 λ 立即应用会留未解元变量）
+lb-Hw : ℕ → ℕ
+lb-Hw w = w * w
+
+-- X ≥ 1 ⟹ X + 1 ≤ 3X
+lb-X+1≤3X : ∀ X → 1 ≤ X → X + 1 ≤ 3 * X
+lb-X+1≤3X X h =
+  ≤-trans (+-monoʳ-≤ X h)
+    (≤-trans (≤-reflexive (lb-double X)) (*-monoˡ-≤ X (m≤n+m 2 1)))
+
+-- 1 ≤ w ⟹ 1 ≤ listBits w
+lb-1≤L : ∀ w → 1 ≤ w → 1 ≤ lb-listBits w
+lb-1≤L w hw = lb-1≤· (2 * w) (2 ^ w) h2w (lb-pow1 w (lb-1≤ 1))
   where
-  grow : lb-Grow lb-listBits (λ w → w * w)
-  grow = lb-listBits-grow , (zero , (λ w _ → lb-w≤ww w)) ,
-         (zero , (λ w _ → ≤-refl))
+  h2w : 1 ≤ 2 * w
+  h2w = lb-1≤· 2 w (lb-1≤ 1) hw
+
+-- 1 ≤ w ⟹ 2 ≤ listBits w
+lb-2≤L : ∀ w → 1 ≤ w → 2 ≤ lb-listBits w
+lb-2≤L w hw =
+  ≤-trans (lb-m≤m·k 2 w hw) (lb-m≤m·k (2 * w) (2 ^ w) (lb-pow1 w (lb-1≤ 1)))
+
+-- 「硬度形」的 P 自动满足 lb-Many（取 σ = 1）
+lb-many-of : (P : ℕ → ℕ → ℕ → Set) (N : ℕ → ℕ) (W₀ : ℕ) →
+  (∀ w → W₀ ≤ w → ∀ t m → t ≤ N w → P w t m → t * N w * w + 1 ≤ 3 * m) → lb-Many P N
+lb-many-of P N W₀ h = (1 , 1) , (s≤s z≤n , s≤s z≤n , W₀ , mL)
+  where
+  mL : ∀ w → W₀ ≤ w → ∀ t m → 1 ≤ t → t ≤ N w → P w t m →
+       (t * N w) ^ 1 * w ^ 1 < (3 * m) ^ 1
+  mL w hw t m _ htn qP = subst₂ (λ a b → a < b) (sym e1) (sym (*-identityʳ (3 * m))) hlt
+    where
+    hlt : t * N w * w < 3 * m
+    hlt = subst (λ z → z ≤ 3 * m) (lb-add1 (t * N w * w)) (h w hw t m htn qP)
+    e1 : (t * N w) ^ 1 * w ^ 1 ≡ t * N w * w
+    e1 = solve 3 (λ t′ n′ w′ → (t′ :* n′) :* con 1 :* (w′ :* con 1) := t′ :* n′ :* w′)
+           refl t (N w) w
+
+-- ① 去掉 Compression: Seed ∧ Many ∧ Grow 同时成立
+--   P_hard w t m := t·listBits w·w + 1 ≤ 3m（「恰好这么硬」的实现）
+lb-P-hard : ℕ → ℕ → ℕ → Set
+lb-P-hard w t m = t * lb-listBits w * w + 1 ≤ 3 * m
+
+lb-consistent-SMG : lb-Seed lb-P-hard lb-listBits × lb-Many lb-P-hard lb-listBits
+                   × lb-Grow lb-listBits lb-Hw
+lb-consistent-SMG =
+  ((1 , 1) , (s≤s z≤n , suc zero , sL)) ,
+  lb-many-of lb-P-hard lb-listBits zero (λ w _ t m _ q → q) ,
+  lb-listBits-growcond
+  where
+  sL : ∀ w → suc zero ≤ w →
+       Σ ℕ (λ m₀ → lb-P-hard w 1 m₀ × (m₀ * 1 ≤ 1 * (lb-listBits w * (w * w))))
+  sL w hw = lb-listBits w * w , (sL1 , sL2)
+    where
+    h1L : 1 ≤ lb-listBits w
+    h1L = lb-1≤L w hw
+    h1Lw : 1 ≤ lb-listBits w * w
+    h1Lw = ≤-trans h1L (lb-m≤m·k (lb-listBits w) w hw)
+    eA : 1 * lb-listBits w * w ≡ lb-listBits w * w
+    eA = cong (λ z → z * w) (*-identityˡ (lb-listBits w))
+    sL1 : 1 * lb-listBits w * w + 1 ≤ 3 * (lb-listBits w * w)
+    sL1 = ≤-trans (≤-reflexive (cong (λ z → z + 1) eA)) (lb-X+1≤3X (lb-listBits w * w) h1Lw)
+    sL2 : lb-listBits w * w * 1 ≤ 1 * (lb-listBits w * (w * w))
+    sL2 = ≤-trans (≤-reflexive (*-identityʳ (lb-listBits w * w)))
+           (≤-trans (*-monoʳ-≤ (lb-listBits w) (lb-m≤m·k w w hw))
+             (≤-reflexive (sym (*-identityˡ (lb-listBits w * (w * w))))))
+
+-- ② 去掉 ManyList: Seed ∧ Comp ∧ Grow 同时成立
+--   P_ne w t m := 1 ≤ m（「非空实现」; 压缩取 d = 1、m′ = 1）
+lb-P-ne : ℕ → ℕ → ℕ → Set
+lb-P-ne _ _ m = 1 ≤ m
+
+lb-comp-ne : ∀ e E D → 1 ≤ D → lb-Ev (λ w → ∀ t m → 1 ≤ t → lb-P-ne w t m →
+  m ^ 20 ≤ lb-listBits w ^ 21 →
+  Σ ℕ (λ d → Σ ℕ (λ m′ → (1 ≤ d) × (d ^ D ≤ lb-listBits w) × lb-P-ne w (t * d) m′
+    × (∀ u v → 1 ≤ u → 1 ≤ v → u ^ 1 ≤ lb-Hw w ^ 1
+           → lb-Hw w ^ e ≤ v ^ E
+           → m′ * u ≤ d * (m + t * lb-listBits w * v * u)))))
+lb-comp-ne e E D _ = suc zero , cE
+  where
+  cE : ∀ w → suc zero ≤ w → ∀ t m → 1 ≤ t → lb-P-ne w t m →
+       m ^ 20 ≤ lb-listBits w ^ 21 →
+       Σ ℕ (λ d → Σ ℕ (λ m′ → (1 ≤ d) × (d ^ D ≤ lb-listBits w) × lb-P-ne w (t * d) m′
+         × (∀ u v → 1 ≤ u → 1 ≤ v → u ^ 1 ≤ lb-Hw w ^ 1
+                → lb-Hw w ^ e ≤ v ^ E
+                → m′ * u ≤ d * (m + t * lb-listBits w * v * u))))
+  cE w hw t m h1t _ _ = 1 , 1 , (s≤s z≤n , dD , ≤-refl , cb)
+    where
+    h1L : 1 ≤ lb-listBits w
+    h1L = lb-1≤L w hw
+    dD : 1 ^ D ≤ lb-listBits w
+    dD = ≤-trans (≤-reflexive (lb-pow-one D)) h1L
+    hU : ∀ u v → 1 ≤ u → 1 ≤ v → u ≤ t * lb-listBits w * v * u
+    hU u v h1u h1v =
+      lb-m≤k·m u (t * lb-listBits w * v)
+        (lb-1≤· (t * lb-listBits w) v (lb-1≤· t (lb-listBits w) h1t h1L) h1v)
+    cb : ∀ u v → 1 ≤ u → 1 ≤ v → u ^ 1 ≤ lb-Hw w ^ 1
+         → lb-Hw w ^ e ≤ v ^ E
+         → 1 * u ≤ 1 * (m + t * lb-listBits w * v * u)
+    cb u v h1u h1v _ _ =
+      ≤-trans (≤-reflexive (*-identityˡ u))
+        (≤-trans (≤-trans (hU u v h1u h1v) (m≤n+m (t * lb-listBits w * v * u) m))
+          (≤-reflexive (sym (*-identityˡ (m + t * lb-listBits w * v * u)))))
+
+lb-consistent-SCG : lb-Seed lb-P-ne lb-listBits × lb-Comp lb-P-ne lb-listBits lb-Hw
+                   × lb-Grow lb-listBits lb-Hw
+lb-consistent-SCG = ((1 , 1) , (s≤s z≤n , suc zero , sL)) , comp , lb-listBits-growcond
+  where
+  sL : ∀ w → suc zero ≤ w →
+       Σ ℕ (λ m₀ → lb-P-ne w 1 m₀ × (m₀ * 1 ≤ 1 * (lb-listBits w * (w * w))))
+  sL w hw = 1 , (≤-refl , sL2)
+    where
+    sL2 : 1 * 1 ≤ 1 * (lb-listBits w * (w * w))
+    sL2 = ≤-trans (≤-reflexive (*-identityˡ 1))
+           (≤-trans (≤-trans (lb-1≤L w hw)
+                       (lb-m≤m·k (lb-listBits w) (w * w) (lb-1≤· w w hw hw)))
+             (≤-reflexive (sym (*-identityˡ (lb-listBits w * (w * w))))))
+  comp : lb-Comp lb-P-ne lb-listBits lb-Hw
+  comp e E _ _ = (1 , 1) , (s≤s z≤n , s≤s z≤n , lb-comp-ne e E)
+
+-- ③ 去掉 Seed: Many ∧ Comp ∧ Grow 同时成立
+--   P_big w t m := listBits w² · w ≤ m（实现都很大; 压缩的前提 m ≤ listBits w^(21/20) 无实例）
+lb-P-big : ℕ → ℕ → ℕ → Set
+lb-P-big w _ m = lb-listBits w * lb-listBits w * w ≤ m
+
+-- 2 ≤ a ⟹ a ^ k < a ^ (k + 1)
+lb-pow<-step : ∀ {a} k → 2 ≤ a → a ^ k < a ^ suc k
+lb-pow<-step {a} k h =
+  ≤-trans (subst (λ z → z ≤ X + X) (lb-add1 X) (+-monoʳ-≤ X (lb-pow1 k h1a)))
+    (≤-trans (≤-reflexive (lb-double X)) (*-monoˡ-≤ X h))
+  where
+  X = a ^ k
+  h1a : 1 ≤ a
+  h1a = ≤-trans (s≤s z≤n) h
+
+-- 2 ≤ a ⟹ a < a ^ (k + 2)
+lb-pow>-self : ∀ {a} k → 2 ≤ a → a < a ^ (k + 2)
+lb-pow>-self {a} k h =
+  ≤-<-trans hA (≤-trans (lb-pow<-step 1 h) (lb-pow-mono 2 (k + 2) h1a (m≤n+m 2 k)))
+  where
+  h1a : 1 ≤ a
+  h1a = ≤-trans (s≤s z≤n) h
+  hA : a ≤ a ^ 1
+  hA = ≤-reflexive (sym (*-identityʳ a))
+
+lb-comp-big : ∀ e E D → 1 ≤ D → lb-Ev (λ w → ∀ t m → 1 ≤ t → lb-P-big w t m →
+  m ^ 20 ≤ lb-listBits w ^ 21 →
+  Σ ℕ (λ d → Σ ℕ (λ m′ → (1 ≤ d) × (d ^ D ≤ lb-listBits w) × lb-P-big w (t * d) m′
+    × (∀ u v → 1 ≤ u → 1 ≤ v → u ^ 1 ≤ lb-Hw w ^ 1
+           → lb-Hw w ^ e ≤ v ^ E
+           → m′ * u ≤ d * (m + t * lb-listBits w * v * u)))))
+lb-comp-big e E D _ = suc zero , cE
+  where
+  cE : ∀ w → suc zero ≤ w → ∀ t m → 1 ≤ t → lb-P-big w t m →
+       m ^ 20 ≤ lb-listBits w ^ 21 →
+       Σ ℕ (λ d → Σ ℕ (λ m′ → (1 ≤ d) × (d ^ D ≤ lb-listBits w) × lb-P-big w (t * d) m′
+         × (∀ u v → 1 ≤ u → 1 ≤ v → u ^ 1 ≤ lb-Hw w ^ 1
+                → lb-Hw w ^ e ≤ v ^ E
+                → m′ * u ≤ d * (m + t * lb-listBits w * v * u))))
+  cE w hw _ m _ hm hs = ⊥-elim (lb-<abs fin)
+    where
+    h1w : 1 ≤ w
+    h1w = ≤-trans (s≤s z≤n) hw
+    h1L : 1 ≤ lb-listBits w
+    h1L = lb-1≤L w h1w
+    h2L : 2 ≤ lb-listBits w
+    h2L = lb-2≤L w h1w
+    hm′ : lb-listBits w * lb-listBits w ≤ m
+    hm′ = ≤-trans (lb-m≤m·k (lb-listBits w * lb-listBits w) w h1w) hm
+    h1L20 : 1 ≤ lb-listBits w ^ 20
+    h1L20 = lb-pow1 20 h1L
+    hL20 : lb-listBits w < lb-listBits w ^ 20
+    hL20 = lb-pow>-self 18 h2L
+    eB : lb-listBits w ^ 21 ≡ lb-listBits w ^ 20 * lb-listBits w
+    eB = trans (^-distribˡ-+-* (lb-listBits w) 20 1)
+           (cong (λ z → lb-listBits w ^ 20 * z) (*-identityʳ (lb-listBits w)))
+    hB : lb-listBits w ^ 20 * lb-listBits w < lb-listBits w ^ 20 * lb-listBits w ^ 20
+    hB = lb-<· (lb-listBits w ^ 20) (lb-listBits w) (lb-listBits w ^ 20) hL20 h1L20
+    eA : lb-listBits w ^ 20 * lb-listBits w ^ 20 ≡ (lb-listBits w * lb-listBits w) ^ 20
+    eA = sym (^-distribʳ-* 20 (lb-listBits w) (lb-listBits w))
+    fin : lb-listBits w ^ 21 < lb-listBits w ^ 21
+    fin = ≤-<-trans (≤-reflexive eB)
+           (<-≤-trans hB (≤-trans (≤-reflexive eA) (≤-trans (lb-pow≤ 20 hm′) hs)))
+
+lb-consistent-MCG : lb-Many lb-P-big lb-listBits × lb-Comp lb-P-big lb-listBits lb-Hw
+                   × lb-Grow lb-listBits lb-Hw
+lb-consistent-MCG =
+  lb-many-of lb-P-big lb-listBits (suc zero) hM ,
+  comp ,
+  lb-listBits-growcond
+  where
+  comp : lb-Comp lb-P-big lb-listBits lb-Hw
+  comp e E _ _ = (1 , 1) , (s≤s z≤n , s≤s z≤n , lb-comp-big e E)
+  hM : ∀ w → suc zero ≤ w → ∀ t m → t ≤ lb-listBits w → lb-P-big w t m →
+       t * lb-listBits w * w + 1 ≤ 3 * m
+  hM w hw t m ht hm =
+    ≤-trans (≤-trans (+-monoˡ-≤ 1 (*-monoˡ-≤ w (*-monoˡ-≤ (lb-listBits w) ht)))
+               (+-mono-≤ hm ≤-refl))
+      (lb-X+1≤3X m h1m)
+    where
+    h1w : 1 ≤ w
+    h1w = ≤-trans (s≤s z≤n) hw
+    h1m : 1 ≤ m
+    h1m = ≤-trans (lb-1≤· (lb-listBits w * lb-listBits w) w
+                     (lb-1≤· (lb-listBits w) (lb-listBits w) (lb-1≤L w h1w) (lb-1≤L w h1w)) h1w)
+                   hm
+
+-- ④ 去掉 Grow（n ≡ 1、h ≡ 1, 增长条件不成立）: Seed ∧ Many ∧ Comp 仍然同时成立
+--   P_w w t m := t·w + 1 ≤ 3m
+lb-const1 : ℕ → ℕ
+lb-const1 _ = 1
+
+lb-P-w : ℕ → ℕ → ℕ → Set
+lb-P-w w t m = t * w + 1 ≤ 3 * m
+
+lb-comp-w : ∀ e E D → 1 ≤ D → lb-Ev (λ w → ∀ t m → 1 ≤ t → lb-P-w w t m →
+  m ^ 20 ≤ lb-const1 w ^ 21 →
+  Σ ℕ (λ d → Σ ℕ (λ m′ → (1 ≤ d) × (d ^ D ≤ lb-const1 w) × lb-P-w w (t * d) m′
+    × (∀ u v → 1 ≤ u → 1 ≤ v → u ^ 1 ≤ lb-const1 w ^ 1 → lb-const1 w ^ e ≤ v ^ E
+           → m′ * u ≤ d * (m + t * lb-const1 w * v * u)))))
+lb-comp-w e E D _ = zero , cE
+  where
+  cE : ∀ w → zero ≤ w → ∀ t m → 1 ≤ t → lb-P-w w t m →
+       m ^ 20 ≤ lb-const1 w ^ 21 →
+       Σ ℕ (λ d → Σ ℕ (λ m′ → (1 ≤ d) × (d ^ D ≤ lb-const1 w) × lb-P-w w (t * d) m′
+         × (∀ u v → 1 ≤ u → 1 ≤ v → u ^ 1 ≤ lb-const1 w ^ 1 → lb-const1 w ^ e ≤ v ^ E
+                → m′ * u ≤ d * (m + t * lb-const1 w * v * u))))
+  cE w _ t m _ q _ = 1 , m , (s≤s z≤n , dD , p′ , cb)
+    where
+    dD : 1 ^ D ≤ lb-const1 w
+    dD = ≤-reflexive (lb-pow-one D)
+    eT : t * 1 ≡ t
+    eT = *-identityʳ t
+    p′ : lb-P-w w (t * 1) m
+    p′ = ≤-trans (≤-reflexive (cong (λ z → z * w + 1) eT)) q
+    cb : ∀ u v → 1 ≤ u → 1 ≤ v → u ^ 1 ≤ lb-const1 w ^ 1 → lb-const1 w ^ e ≤ v ^ E
+         → m * u ≤ 1 * (m + t * lb-const1 w * v * u)
+    cb u v h1u _ hu _ =
+      subst (λ z → m * z ≤ 1 * (m + t * lb-const1 w * v * z)) (sym eU) body
+      where
+      hu′ : u ≤ 1
+      hu′ = ≤-trans (lb-m≤m·k u 1 (lb-1≤ 0)) hu
+      eU : u ≡ 1
+      eU = ≤-antisym hu′ h1u
+      body : m * 1 ≤ 1 * (m + t * lb-const1 w * v * 1)
+      body = ≤-trans (≤-reflexive (*-identityʳ m))
+              (≤-trans (m≤m+n m (t * lb-const1 w * v * 1))
+                (≤-reflexive (sym (*-identityˡ (m + t * lb-const1 w * v * 1)))))
+
+lb-consistent-SMC : lb-Seed lb-P-w lb-const1 × lb-Many lb-P-w lb-const1
+                  × lb-Comp lb-P-w lb-const1 lb-const1
+lb-consistent-SMC =
+  ((1 , 1) , (s≤s z≤n , suc zero , sL)) ,
+  lb-many-of lb-P-w lb-const1 zero hM ,
+  comp
+  where
+  comp : lb-Comp lb-P-w lb-const1 lb-const1
+  comp e E _ _ = (1 , 1) , (s≤s z≤n , s≤s z≤n , lb-comp-w e E)
+  hM : ∀ w → zero ≤ w → ∀ t m → t ≤ lb-const1 w → lb-P-w w t m →
+       t * lb-const1 w * w + 1 ≤ 3 * m
+  hM w _ t m _ q = subst (λ z → z * w + 1 ≤ 3 * m) (sym (*-identityʳ t)) q
+  sL : ∀ w → suc zero ≤ w →
+       Σ ℕ (λ m₀ → lb-P-w w 1 m₀ × (m₀ * 1 ≤ 1 * (lb-const1 w * (w * w))))
+  sL w hw = w , (sL1 , sL2)
+    where
+    h1w : 1 ≤ w
+    h1w = ≤-trans (s≤s z≤n) hw
+    eA : 1 * w ≡ w
+    eA = *-identityˡ w
+    sL1 : 1 * w + 1 ≤ 3 * w
+    sL1 = ≤-trans (≤-reflexive (cong (λ z → z + 1) eA)) (lb-X+1≤3X w h1w)
+    e2 : 1 * (1 * (w * w)) ≡ w * w
+    e2 = trans (cong (λ z → 1 * z) (*-identityˡ (w * w))) (*-identityˡ (w * w))
+    sL2 : w * 1 ≤ 1 * (lb-const1 w * (w * w))
+    sL2 = ≤-trans (≤-reflexive (*-identityʳ w)) (≤-trans (lb-w≤ww w) (≤-reflexive (sym e2)))
+
+-- ★ 四条缺一不可: 对上面四个 P, 主定理分别给出被去掉的那一条不成立
+lb-necessary-C : ¬ lb-Comp lb-P-hard lb-listBits lb-Hw
+lb-necessary-C c =
+  lb-incompatible-lists lb-P-hard (proj₁ lb-consistent-SMG)
+    (proj₁ (proj₂ lb-consistent-SMG)) c
+
+lb-necessary-M : ¬ lb-Many lb-P-ne lb-listBits
+lb-necessary-M m =
+  lb-incompatible-lists lb-P-ne (proj₁ lb-consistent-SCG) m (proj₁ (proj₂ lb-consistent-SCG))
+
+lb-necessary-S : ¬ lb-Seed lb-P-big lb-listBits
+lb-necessary-S s =
+  lb-incompatible-lists lb-P-big s (proj₁ lb-consistent-MCG) (proj₁ (proj₂ lb-consistent-MCG))
+
+lb-necessary-G : ¬ lb-Grow lb-const1 lb-const1
+lb-necessary-G g =
+  lb-incompatible lb-P-w lb-const1 lb-const1 g (proj₁ lb-consistent-SMC)
+    (proj₁ (proj₂ lb-consistent-SMC)) (proj₂ (proj₂ lb-consistent-SMC))
