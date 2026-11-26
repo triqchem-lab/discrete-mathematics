@@ -15,7 +15,7 @@
 
 | # | 任务 | 完成判据 | 依赖 | 状态/风险 |
 |---|---|---|---|---|
-| A-T1 | 获取 Wang 框架实现（2603.07280 的代码/证书格式） | 代码在手的运行记录入册；**或**「无公开实现」结论入册并切换到「按论文复现 DP」子立项（预算另评） | — | **进行中**：GitHub 两轮检索（tensor rank lower bound matrix / bilinear complexity certificate）未获；arXiv 元数据无代码链接。风险：框架不公开 |
+| A-T1 | 获取 Wang 框架实现（2603.07280 的代码/证书格式） | 代码在手的运行记录入册；**或**「无公开实现」结论入册并切换到「按论文复现 DP」子立项（预算另评） | — | ✅ **2026-11-26 收口：口径锁定「获取」**——PDF 解压流扫描命中 `github.com/wcgbg/tensor-rank-lower-bound`（C++/bazel, 874 文件: `certs/` 408 份证书(.btp+.pb.txt)/`search/`/`core/`/`verifier/`/`problems/`; Zenodo DOI 10.5281/zenodo.20752782）。矩阵证书**只有 F₂**（q02_n222/n223/n224/n233/n324）；**无 F₃ 矩阵证书** ⇒ A-T3 = 自跑 F₃ 搜索。证书格式 = protobuf 文本(.pb.txt) |
 | A-T2 | F₂ 复验 | 重验 2609.06725 的 ≥ 21 证书：verifier 通过日志入册（先算后验：先 F₂ 后 F₃，工具有效性由 F₂ 结果背书） | A-T1 | 可借范式：`Oxelra-AI/Qiushi-Engine-Matmul-Research`（F₂-21 的 **Lean 完整形式化**，2026-10）与 `fallnlove/mm325_proof`（⟨3,2,5⟩=25 的 Lean 形式化） |
 | A-T3 | F₃ 实例化 | 3×3 张量 + 对称群参数喂框架；产出 GF(3) 下界证书，**或**预算/轨道爆炸的边界记录入册 | A-T2 | 风险：轨道 DP 预算；四技术对 F₃ 的适配（论文矩阵乘法实例只报 F₂；F₃ 的 ⟨2,3,3⟩=15 走限制论证+穷举路线） |
 | A-T4 | 证书核对移植（两轨） | 证书核对器：Python（零依赖）+ 三进制 VM（TriRV）双轨通过；负控制（篡改证书一位，必须转红）——M17 三轨纪律的复用 | A-T3 | 证书若是有限对象（轨道/约束/不等式），核对是有限计算 |
@@ -31,7 +31,7 @@
 | # | 任务 | 完成判据 | 依赖 | 状态 |
 |---|---|---|---|---|
 | B-T1 | 稀疏加权谓词层 | WeightedRankLE₃/supportSize₃ exit=0 | — | ✅ M19（PROVEN §十八） |
-| B-T2 | 限制界词汇 | rows/cols/inner（镜像 `Sparse/Model.lean:15-21`：支撑集上的行/列/内集计数）+ 支撑数 ≤ ijk + 「每个子空间里第一因子个数」的限制陈述（2609.06725 的证明对象）exit=0 | B-T1 | 待做（下一个） |
+| B-T2 | 限制界词汇 | rows/cols/inner（镜像 `Sparse/Model.lean:15-21`：支撑集上的行/列/内集计数）+ 支撑数 ≤ ijk + 「每个子空间里第一因子个数」的限制陈述（2609.06725 的证明对象）exit=0 | B-T1 | ✅ **M20**（`TensorRankRestrictGF3.agda` 115 行, 2026-11-26, PROVEN §十九）：suppRows/suppCols/suppInner + sumℕ-const/one + 全 T₁ 支撑数 = n³ + ★ weighted-zero（0 项分解 ⟹ w ≡ T₀）；陪集/子空间分析与熵词汇（conditional/premium）未镜像 |
 | B-T3 | 稀疏定律有限口径 | DensityBound/CellBound/DegreeBound 的 Saving 型翻译：陈述件 exit=0（无居民，边界标注——K.1 判定的直接应用） | B-T2 | 待做 |
 | B-T4 | exponent 有限代理 | 在 (p,q) 分数对上定义 exponent 的离散代理（Saving 上的 sup/inf 型构造）并与 Saving₃ 单调性衔接；定理 exit=0 | B-T3 | 待做；ℝ 被宪法排除，这是口径关键 |
 | B-T5 | tag-fiber 计数（定价层 ℕ 镜像） | `tag_count_fiber`/`meanTag` 一族的 ℕ 版；服务上界方向 | 独立 | 大；可后置 |

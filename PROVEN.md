@@ -894,3 +894,21 @@ r = 22 也行（首个 (p,q) = (31,11), 31/11 ≈ 2.818）; r = 23 不行（`lad
 验证：standalone exit=0（0 postulate / 0 REWRITE / 0 洞）；独立检查件 7 签名 exit=0。
 诚实边界：只有谓词层；三条稀疏定律是抽象指数的泛量化命题（K.1：域泛型组合学，无可枚举的
 有限核对对象），其有限形态等 exponent 机制镜像口径；限制界词汇（rows/cols/inner、陪集）未镜像。
+
+## 十九、矩阵乘法指数线 M20——限制界词汇与零秩抽取（`TensorRankRestrictGF3.agda`，115 行，2026-11-26 登记）
+
+> 立项 B-T2（`docs/plan/matrix-rank-line-plan.md`）。下界机制的词汇层：2609.06725（F₂ 上 3×3 ≥ 21）
+> 的证明对象 = 「限制界约束每个子空间里第一因子的个数」+ 陪集分析 + 穷举；Lean 的 DegreeBound
+> 同样以这三把尺子（rows/cols/inner）计量。
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `suppRows` / `suppCols` / `suppInner` | `TensorRankRestrictGF3.agda:51` / `:55` / `:59` | 完成集计数：同 (b,c) / 同 (a,c) / 同 (a,b) 的支撑格数（镜像 Lean Sparse/Model.lean:15-21 的 Finset.filter .card） |
+| `sumℕ-const` / `sumℕ-one` | `:67` / `:72` | Σ_{i<n} c = n·c；Σ 1 = n |
+| `supportSize-allT₁` | `:76` | 全 T₁ 加权的支撑数 = n·n·n（对 n 归纳；每层 sumℕ-const + 收尾 *-identityʳ/*-assoc） |
+| `mm-cyclic` | `:98` | mm 在循环位 (a,c),(c,b),(a,b) 处 = T₁（三重 oneIf-refl + 双重 ⊗-identityˡ） |
+| ★ `weighted-zero` | `:107` | **零秩抽取：WeightedRankLE₃ n 0 w ⟹ w ≡ T₀（处处）**——下界游戏的第一个约束：0 项分解只剩零张量；证明 = 实例化 (x,y,z) = ((a,c),(c,b),(a,b)) + sumFin{0} 定义 + ⊗-identityʳ |
+
+验证：standalone exit=0（0 postulate / 0 REWRITE / 0 洞）；独立检查件 6 签名 exit=0。
+诚实边界：陪集/子空间分析未镜像（2609.06725 的第二半）；条件熵词汇（conditional/premium）
+要 ℝ 对数，有限口径属立项 B-T3/B-T4。
