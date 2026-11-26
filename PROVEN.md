@@ -674,8 +674,8 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 
 ## 十五、矩阵乘法指数线（`Algebra/LinearAlgebra/`，2026-11-26 登记）
 
-> 与 GF(3)/三进制主线的接口只有两处: M13 的 GF(3) 七乘方案（Trit 上的 2×2）、M14 的 12×12 展示群寄存器。
-> M15（ListBounds）与域无关——只用标准库 ℕ。
+> 与 GF(3)/三进制主线的接口有三处: M13 的 GF(3) 七乘方案（Trit 上的 2×2）、M14 的 12×12 展示群寄存器、
+> M16 的秩分解谓词与展平下界（只对 GF(3)）。M15（ListBounds）与域无关——只用标准库 ℕ。
 
 ### M13 · Strassen GF(3) 七乘方案全枚举（`StrassenGF3.agda`，6621 行，回执 `4ca2f1d3`）
 
@@ -715,6 +715,39 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 - 旁证: `engineering/oracle_list_bounds.py`（10 项 ALL_PASS, 整数/分数精确）+ `engineering/tests/test_oracle_list_bounds.py`（11 个 unittest）。
   ⚠ 本件顺序与「先算后验」**相反**: Agda 先行（逐段过内核）, oracle 事后核对陈述与桥接。
 
+### M16 · 秩分解谓词 + M13 接桥 + 展平下界（`TensorRankGF3.agda` 297 行 / `TensorRankFlattenGF3.agda` 281 行，2026-11-26）
+
+镜像对象: openai/math `OAI/LinearAlgebra/MatrixExponent/RationalCircuits.lean:48 RankLE`（谓词）、
+`Flattening.lean:6 rank_lower`（展平下界）。证明**独立重构**: Lean 走展平后矩阵的秩（`Rectangle.RankLE.area`）,
+本库没有矩阵秩的不变性理论, 改走有限域上的计数（基数比较代替维数比较）。
+
+| 符号 | 位置 | 命题 |
+|---|---|---|
+| `record RankLE₃` | `TensorRankGF3.agda:87` | r 项秩分解: `ra rb rc : Fin r → … → Trit` + `rank-eq : ∀ x y z → Σ_i (ra i x) ⊗ (rb i y ⊗ rc i z) ≡ mm n x y z` |
+| `mm` / `oneIf` | `:82` / `:75` | ⟨n,n,n⟩ 的结构常数 `[x.1 = z.1][x.2 = y.1][y.2 = z.2]` |
+| ★ `strassen-is-rank-form` | `:246` | `∀ A B z → Σ_i (L i A) ⊗ (R i B ⊗ C i z) ≡ at (mul₃ A B) z`（由 M13 的 `strassen-correct` 承证） |
+| ★ `rank-strassen` | `:278` | `RankLE₃ 2 7`（上界见证: 秩 ≤ 7） |
+| `ω₃-boundary` | `:296` | 外部边界类型 `∀ n r → 2 ≤ n → RankLE₃ n r → n ^ 9 ≤ r ^ 4`——**无居民**, 本库不证 |
+| ★ `rank-lower` | `TensorRankFlattenGF3.agda:272` | `∀ n r → RankLE₃ n r → n * n ≤ r`（展平下界, 计数证法） |
+| ★ `span-full` | 同上 `:227`（`module Span`） | 由秩分解构造坐标 `t v`, 使 `Σ_i (t v i) ⊗ (a i x) ≡ v x`——张成里装下一切函数 |
+| `basis-in-span` / `delta` | 同上 `:169` / `:199` | n² 个标准基落在 `span {a i}` 里 / δ 的两次消化（`sumFin-δ` ×2） |
+| `φ-injective` / `count` | 同上 `:243` / `:265` | 单射 `Fin (3^(n²)) → Fin (3^r)` ⟹ `3 ^ (n * n) ≤ 3 ^ r`（`injective⇒≤` + `combine-surjective`） |
+| `sumFin-distrʳ` / `sumFin-scale₃` / `sumFin-swap₃` / `sumX-swap` | 同上 `:73` / `:81` / `:94` / `:142` | Trit 值 `sumFin` 的分配 / 提公因子 / 双和交换 |
+| `oneIf-δc` / `δc-sym` / `oneIf-refl` / `⊗-rot` | 同上 `:118` / `:124` / `:113` / `:130` | 指示函数与库内 δc 的关系; 三因子轮换 |
+| `check-lower-strassen` | 同上 `:280` | `2 * 2 ≤ 7`: 定理作用于库内真实的分解（非空性） |
+
+**边界（引用时必带）**:
+- `ω₃-boundary` 是**外部定理的陈述**, 不是本库定理; M16 **没有**推进它。Lean 对应 `key/MatrixExponent.lean:45 square_iff_prime_ranks`
+  是阅读层的对应, 与 `RankLE₃` 的逐字对应未形式化 [手工论证·未验证]。
+- `rank-lower` 只对 GF(3)（计数用 \|Trit\| = 3）; Lean 的 `rank_lower` 对任意域。
+- n = 2 处: 库内 `r ≥ 4`（`rank-lower`）与 `r ≤ 7`（`rank-strassen`）; 外部定理按算术给 `r ≥ 5`（4⁴ = 256 < 512 ≤ 5⁴）。
+  「n = 2 时秩恰为 7」[直觉·未验证], 库内没有（要证它得有 r ≤ 6 时的排除论证）。
+- 旁证: `engineering/oracle_tensor_rank_gf3.py`（结构常数 64 / 矩阵乘法 26244 / 两路会合 64 / 张成构造 1616 / 张成容量 2061 次核对, ALL_PASS）
+  + `engineering/tests/test_oracle_tensor_rank_gf3.py`（12 个 unittest, 含 2 个负控制: 弄坏一个系数, 判据必须报错）。
+- **复用而非重写**（先查后写的结果）: `sumFin-add`（`GF3RankNullity.agda:153`）、`sumFin-δ` / `δc`（`GF3Dim`）、
+  `fromFun` / `toFun` 往返（`GF3Count`）、`fromFun-cong`（`GF3BasisCount.agda:42`）、`3^-mono-<`、`cong₁`。
+  库内已有的 `⊕-interchange`（`Algebra/Analytic/DiscreteAnalysis.agda:166`）本件**没有**用到（`sumFin-add` 已含那步交换律）。
+
 ### ⚠ 别重复实现 / 别再踩（本线）
 
 - **stdlib `^-distribʳ-*` 首参是指数**: `∀ m n o → (n * o) ^ m ≡ n ^ m * o ^ m`（写成「底、底、指数」会得到莫名其妙的 UnequalTerms）。
@@ -726,3 +759,12 @@ Q_H2O_FULL = (-2.63, 0.13, 2.50)   # (a, b, c) = 文献值整体取负
 - **`m≤n+m m n : m ≤ n + m`**（右端是 `n + m`）; `lb-1≤ k : 1 ≤ suc k`（不是 `k ≤ k + 1`）。
 - **oracle 必须打印「前提成立数」**: 迭代一步那项首版 fires = 0（m 取样范围太小, 整项空转）——打印出来才看得见。
 - **`ListBounds` 的 ℕ 表述已定**（`lb-Seed` / `lb-Many` / `lb-Comp` / `lb-Grow`）——别为同一件事再设计第二套表述。
+- **`⊗-assoc x y z : (x ⊗ y) ⊗ z ≡ x ⊗ (y ⊗ z)`, `⊕-assoc` 同向（左嵌 → 右嵌）**: M16 为反方向套 `sym` 连错两次。
+- **`sumFin-δ f i` 的形状是 `δc i j ⊗ f j`（固定指标 i 在前、求和变量 j 在后）**: 和项里若是 `δc j i` 且不在首位, 先 `δc-sym` 翻转, 再挪到首位。
+- **量词必须带类型**: `∀ v x → …` 里 v、x 的类型会成为元变量, 整条下游链 UnsolvedMetaVariables（M16 的 s1–s4 / summand-rot / d1 / d2 各犯一次）。
+- **结论里不出现隐式参数的引理要显式给**: `sumFin-zero {n = r}`、`sumFin-cong {n = r} {g = …} {h = …}`——不给就 UnsolvedMeta, 或触发「Refusing to invert pattern matching of sumFin（深度 50）」。
+- **`Injective _≡_ _≡_ f` 的两端是隐式**: 子句写 `f-injective {x} {y} h`。
+- **record 字段不随模块按名导出**: `import M using (ra)` 报 ModuleDoesntExport; 要在本地 `open RecordName using (…)`（不加 `public`）。
+- **`fromFun-cong` 在 `GF3BasisCount.agda:42`**, 不在 `GF3Count`。
+- **括号只信脚本, 不信心算**（M16 同一处连错三次）: 行首 `trans (X …)` 的括号属于**第一个参数**, 最外层调用本身没有括号。
+- **`RankLE₃` 谓词与 `rank-lower` 的表述已定**——别为同一件事再设计第二套; 秩相乘 / 取幂（Lean `RankPower.lean`）应直接建立在 `RankLE₃` 上。
