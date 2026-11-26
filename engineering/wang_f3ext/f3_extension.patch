@@ -1,0 +1,277 @@
+diff --git a/problems/matrix/BUILD b/problems/matrix/BUILD
+index e3597b3..08d2809 100644
+--- a/problems/matrix/BUILD
++++ b/problems/matrix/BUILD
+@@ -53,12 +53,42 @@ cc_test(
+     ],
+ )
+ 
++cc_library(
++    name = "fq_matrix",
++    hdrs = ["fq_matrix.h"],
++    deps = [
++        "//core:gf",
++    ],
++)
++
++cc_test(
++    name = "fq_matrix_test",
++    srcs = ["fq_matrix_test.cc"],
++    deps = [
++        ":fq_matrix",
++        ":fq_matrix_tables",
++        ":problem",
++        "//core:symmetry",
++        "@googletest//:gtest_main",
++    ],
++)
++
++cc_library(
++    name = "fq_matrix_tables",
++    hdrs = ["fq_matrix_tables.h"],
++    deps = [
++        ":fq_matrix",
++    ],
++)
++
+ cc_library(
+     name = "symmetry",
+     hdrs = ["symmetry.h"],
+     deps = [
+         ":f2_matrix",
+         ":f2_matrix_tables",
++        ":fq_matrix",
++        ":fq_matrix_tables",
+         "//core:bit_vec",
+         "//core:gf_vec",
+     ],
+diff --git a/problems/matrix/problem.h b/problems/matrix/problem.h
+index eebf228..e68262f 100644
+--- a/problems/matrix/problem.h
++++ b/problems/matrix/problem.h
+@@ -1,6 +1,6 @@
+ #pragma once
+ 
+-// ⟨N0, N1, N2⟩ matrix multiplication over 𝔽_q with q = P^M.
++// ⟨N0, N1, N2⟩ matrix multiplication over 𝔽_q with q = P^M (prime fields, M = 1).
+ //
+ //   T_mat(N0,N1,N2) : 𝔽_q^{N0×N1} × 𝔽_q^{N1×N2} → 𝔽_q^{N0×N2}
+ //   (X, Y) ↦ X · Y
+@@ -29,11 +29,12 @@ template <int P, int M, int N0, int N1, int N2> struct Problem {
+   static_assert(N0 >= 1 && N1 >= 1 && N2 >= 1);
+   static_assert(N0 * N1 <= 32); // kNA backtracking ceiling for the M = 1 path
+   static_assert(M >= 1);
+-  // The matrix family is 𝔽₂-only: its symmetry group
+-  // (problems/matrix/symmetry.h) uses 𝔽₂ lookup tables, and the paper's matrix
+-  // results and the flip-graph upper bound are all over 𝔽₂.
+-  static_assert(P == 2 && M == 1,
+-                "matrix::Problem is implemented for 𝔽₂ (P=2, M=1) only");
++  // The matrix family runs over prime fields: its symmetry group
++  // (problems/matrix/symmetry.h) has a bit-packed 𝔽₂ implementation
++  // (SymmetryGroupF2) and a base-P digit one for odd primes (SymmetryGroupFq).
++  // The paper's matrix results and the flip-graph upper bound are over 𝔽₂;
++  // odd P is the 𝔽₃ extension (lower-bound search and verifier only).
++  static_assert(M == 1, "matrix::Problem is implemented for prime fields (M=1)");
+ 
+   static constexpr int kNA = N0 * N1;
+   static constexpr int kNB = N1 * N2;
+diff --git a/problems/matrix/symmetry.h b/problems/matrix/symmetry.h
+index 130e709..0f31d86 100644
+--- a/problems/matrix/symmetry.h
++++ b/problems/matrix/symmetry.h
+@@ -37,12 +37,16 @@
+ #include "core/gf_vec.h"
+ #include "problems/matrix/f2_matrix.h"
+ #include "problems/matrix/f2_matrix_tables.h"
++#include "problems/matrix/fq_matrix.h"
++#include "problems/matrix/fq_matrix_tables.h"
+ 
+ namespace matrix {
+ 
+-template <int P, int M, int N0, int N1, int N2> class SymmetryGroup {
++// 𝔽₂ (P = 2, M = 1): bit-packed tables. Kept verbatim; odd prime fields use
++// SymmetryGroupFq below and are selected by the SymmetryGroup alias.
++template <int P, int M, int N0, int N1, int N2> class SymmetryGroupF2 {
+   static_assert(P == 2 && M == 1,
+-                "matrix symmetry is implemented for 𝔽₂ (P=2, M=1) only");
++                "SymmetryGroupF2 is the 𝔽₂ (P=2, M=1) path; use SymmetryGroup");
+   static_assert(N0 >= 1 && N1 >= 1 && N2 >= 1);
+   static_assert(N0 <= 4 && N1 <= 4,
+                 "the GL lookup-table approach caps N0, N1 ≤ 4");
+@@ -176,7 +180,175 @@ public:
+   QuerySet query;
+   StoreSet store;
+ 
+-  SymmetryGroup() : query(tables_), store(tables_) {}
++  SymmetryGroupF2() : query(tables_), store(tables_) {}
+ };
+ 
++// ---------------------------------------------------------------------------
++// Odd prime fields (P = 3, 5, …; M = 1): the same √|G| split over 𝔽_P.
++//
++//   T_mat = Σ_{i,j,k} x_{ij} ⊗ y_{jk} ⊗ z_{ki} over 𝔽_P,
++//   G = (GL_{N0}(P) × GL_{N1}(P)) ⋊ C₂      (C₂ = transpose, cubic formats only).
++//
++// Unlike GL(n,2), the centre of GL(n,P) is the non-trivial group 𝔽_P^*·I, so the
++// projective group is G / 𝔽_P^*. We keep the full GL on each side: the split
++// still covers G (Query⁻¹·Store = {L⁻¹·τ(X)·R}), at a factor |𝔽_P^*| of
++// redundancy in the orbit enumeration.
++//
++// The constraint is the N0×N1 matrix of the Vec's base-P digits (flat index
++// ij = i·N1 + j, little-endian — the same order EncodeGFVec uses), so the
++// small-matrix algebra is delegated to a held FqMatrixTables<N0, N1> instance.
++// Store::Elem is the matrix data R and QuerySet::Elem is {l, transpose}, packed
++// exactly like the 𝔽₂ ones (l | transpose << 16), so certificate witnesses keep
++// their format.
++//
++// This is the extension that lets the matrix family run over 𝔽₃.
++// ---------------------------------------------------------------------------
++template <int P, int N0, int N1, int N2> class SymmetryGroupFq {
++  static_assert(P >= 3,
++                "SymmetryGroupFq is the odd-prime-field path; P = 2 uses "
++                "SymmetryGroupF2");
++  static_assert(N0 >= 1 && N1 >= 1 && N2 >= 1);
++  static_assert(N0 <= 4 && N1 <= 4,
++                "the GL lookup-table approach caps N0, N1 ≤ 4");
++  static_assert(N0 * N1 <= 16, "constraint must fit in the packed index");
++  static_assert(FqMatrix<P, N0, N0>::kCount <= 0xFFFFu,
++                "witness packing needs P^(N0·N0) ≤ 2^16 (e.g. GL(3,3) over 𝔽₃)");
++
++public:
++  static constexpr int kM = 1;
++  static constexpr int kNA = N0 * N1;
++  static constexpr bool kCubic = (N0 == N1 && N1 == N2);
++  using Vec = GFVec<P, 1, kNA>;
++
++private:
++  using Mat01 = FqMatrix<P, N0, N1>;
++  using Mat00 = FqMatrix<P, N0, N0>;
++  using Mat11 = FqMatrix<P, N1, N1>;
++  using Tables = FqMatrixTables<P, N0, N1>;
++
++  // Vec ↔ matrix: data[k] is the base-P digit at place k (= EncodeGFVec order).
++  static Mat01 ToMat(const Vec &v) {
++    uint32_t d = 0;
++    uint32_t place = 1;
++    for (int k = 0; k < kNA; ++k) {
++      d += static_cast<uint32_t>(v.data[k].value) * place;
++      place *= static_cast<uint32_t>(P);
++    }
++    return Mat01(d);
++  }
++  static Vec FromMat(const Mat01 &m) {
++    Vec r;
++    uint32_t d = m.Data();
++    for (int k = 0; k < kNA; ++k) {
++      r.Set(k, GF<P, 1>(static_cast<uint8_t>(d % static_cast<uint32_t>(P))));
++      d /= static_cast<uint32_t>(P);
++    }
++    return r;
++  }
++
++public:
++  class StoreSet {
++  public:
++    using Elem = uint32_t;
++
++    explicit StoreSet(const Tables &tables) : tables_(tables) {}
++    int Size() const { return static_cast<int>(tables_.Gl1().size()); }
++    Elem At(int j) const { return tables_.Gl1()[j].Data(); }
++    Elem Identity() const { return tables_.Identity1().Data(); }
++    bool Contains(Elem r) const {
++      return r < Mat11::kCount && Mat11(r).IsInvertible();
++    }
++    Vec Apply(Elem r, Vec v) const {
++      return FromMat(tables_.Mult011(ToMat(v), Mat11(r)));
++    }
++    Vec ApplyInverse(Elem r, Vec v) const {
++      return FromMat(tables_.Mult011(ToMat(v), tables_.Inverse1(Mat11(r))));
++    }
++
++  private:
++    const Tables &tables_;
++  };
++
++  struct QueryElem {
++    uint32_t l = 0;
++    uint32_t transpose = 0;
++    constexpr QueryElem() = default;
++    constexpr QueryElem(uint32_t l_value, uint32_t transpose_flag)
++        : l(l_value), transpose(transpose_flag) {}
++    constexpr explicit QueryElem(uint32_t packed)
++        : l(packed & 0xFFFFu), transpose((packed >> 16) & 0xFFFFu) {}
++    constexpr explicit operator uint32_t() const {
++      return l | (transpose << 16);
++    }
++  };
++
++  class QuerySet {
++  public:
++    using Elem = QueryElem;
++    explicit QuerySet(const Tables &tables) : tables_(tables) {
++      const int t_count = kCubic ? 2 : 1;
++      for (int t = 0; t < t_count; ++t) {
++        for (const Mat00 &l : tables_.Gl0()) {
++          elems_.push_back(QueryElem{l.Data(), static_cast<uint32_t>(t)});
++        }
++      }
++    }
++    int Size() const { return static_cast<int>(elems_.size()); }
++    Elem At(int i) const { return elems_[i]; }
++    Elem Identity() const { return QueryElem{tables_.Identity0().Data(), 0}; }
++    bool Contains(Elem e) const {
++      return e.l < Mat00::kCount && Mat00(e.l).IsInvertible() &&
++             e.transpose <= (kCubic ? 1u : 0u);
++    }
++    Vec Apply(Elem e, Vec v) const {
++      Mat01 m = ToMat(v);
++      if constexpr (kCubic) {
++        if (e.transpose) {
++          m = tables_.TransposeConstraint(m); // N0=N1: N1×N0 ≡ N0×N1
++        }
++      }
++      return FromMat(tables_.Mult001(Mat00(e.l), m));
++    }
++    Vec ApplyInverse(Elem e, Vec v) const {
++      Mat01 w = tables_.Mult001(tables_.Inverse0(Mat00(e.l)), ToMat(v));
++      if constexpr (kCubic) {
++        if (e.transpose) {
++          w = tables_.TransposeConstraint(w);
++        }
++      }
++      return FromMat(w);
++    }
++
++  private:
++    const Tables &tables_;
++    std::vector<Elem> elems_;
++  };
++
++private:
++  Tables tables_;
++
++public:
++  QuerySet query;
++  StoreSet store;
++
++  SymmetryGroupFq() : query(tables_), store(tables_) {}
++};
++
++// Dispatch: 𝔽₂ keeps the bit-packed tables; other prime fields use the base-P
++// digit tables. Resolved through a class template so that only the selected
++// branch is instantiated (a std::conditional alias would instantiate both).
++template <int P, int M, int N0, int N1, int N2, bool kIsF2 = (P == 2 && M == 1)>
++struct SymmetryGroupDispatch {
++  static_assert(M == 1, "matrix symmetry is over prime fields only (M = 1)");
++  using Type = SymmetryGroupFq<P, N0, N1, N2>;
++};
++
++template <int P, int M, int N0, int N1, int N2>
++struct SymmetryGroupDispatch<P, M, N0, N1, N2, true> {
++  using Type = SymmetryGroupF2<P, M, N0, N1, N2>;
++};
++
++template <int P, int M, int N0, int N1, int N2>
++using SymmetryGroup = typename SymmetryGroupDispatch<P, M, N0, N1, N2>::Type;
++
+ } // namespace matrix

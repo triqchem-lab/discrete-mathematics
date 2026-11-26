@@ -20,3 +20,6 @@ probes/
 engineering/artifacts/
 .workbuddy/
 .DS_Store
+
+# Wang 框架 F₃ forced product 独立内核的编译产物(测试按需重编)
+engineering/forced_fq_c/forced_fq
