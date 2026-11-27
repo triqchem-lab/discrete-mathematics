@@ -27,8 +27,14 @@ M16-D（「ω = 9/4」两半的有限语言, 镜像 Lean FieldExtension.lean:72 
   · Strassen 覆盖: q ≥ 1 且 17q ≤ 6p ⟹ (7^(6q))^q < (2^(6q))^p（Agda: strassen-saving）
   · 两半不重叠: n ≥ 2、n^9 ≤ r^4（下半）且 r^q < n^p（节省）⟹ 9q < 4p（Agda: saving-above）
     负对照: 去掉「n^9 ≤ r^4」后该蕴含不成立（n=2, r=1, q=1, p=1）。
+M23 / M24（TensorRankAlgebraGF3 / TensorRankHK2GF3）: Hopcroft–Kerr 的 2×2 排除论证 —— 数值核对与分类表生成
+  · forced product 的残差: 四个权重对全部 6561 组 (u,v) 给出 δ₂, δ₃, −δ₀, −δ₁; 负对照（漏一项即出错）
+  · 超平面分类: 80 个非零泛函各一对 (P,Q) 见证, 四条恒等式（含 Agda 里重排后的 move 形状）逐条核对
+  · 端到端: Strassen 的 7 项各当一次 i₀, 限制 → 搬到 K → 两次规范化 → 残差权重, 全部对上
+  · --hk2-table [路径]: 重新生成 Agda 件里的分类表; 缺省运行时与库内那张表逐字对账
 禁浮点; 全部是 GF(3) 上的整数运算。
 """
+import os
 import sys
 from itertools import product
 
@@ -518,6 +524,296 @@ def check_m22_sym():
     return n, ok_swap, ok_rot
 
 
+# ---------------------------------------------------------------------------
+# M23 / M24（TensorRankAlgebraGF3 / TensorRankHK2GF3）: Hopcroft–Kerr 的 2×2 排除论证 —— 数值核对
+#   证明链（Agda 件 TensorRankHK2GF3.rank-2x2-lower: ∀ r → RankLE₃ 2 r → 7 ≤ r）:
+#     ① ⟨2,2,2⟩ 有 r 项分解, 取第一系数非零的一项 i₀, 把第一变元限制到 ker(ra i₀) 并丢掉第 i₀ 项
+#        ⟹ 子空间 W 上的张量有 r − 1 项分解。
+#     ② 每个非零泛函 ℓ 的核里都有一个「K 型」子空间 W: 80 个泛函各给一对可逆的 (P, Q),
+#        W_j = P⁻¹·κ_j·Q（κ = J, E₂₂; K = span{J, E₂₂}）; 分解沿 (A, cA), (B, cB) 搬到 K 上。
+#     ③ K 上的张量用 forced product: c₀₀ 与 c₀₁ 两个切片是单个的积, 两次切片规范化后余项有 r − 3 项,
+#        余项的 y-切片张成 4 维 ⟹ 4 ≤ r − 3。
+#   下面每条判据都是这条链的一环的独立实现（矩阵走普通乘法, 不经 Agda 的恒等式）。
+#   坐标: Fin 4 = 行主序 POS; 矩阵 = 行主序 4 元组 (a, b, c, d) = [[a, b],[c, d]]。
+# ---------------------------------------------------------------------------
+HK2_AGDA = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src",
+                                         "Sovereign", "Algebra", "LinearAlgebra", "TensorRankHK2GF3.agda"))
+HK2_BEGIN = "-- BEGIN hk2-table —— 由 engineering/oracle_tensor_rank_gf3.py --hk2-table 生成, 勿手改"
+HK2_END = "-- END hk2-table"
+TRIT_NAME = ("T₀", "T₁", "T₂")
+
+HK2_J = (0, 1, 2, 0)                  # [[0,1],[-1,0]]
+HK2_E22 = (0, 0, 0, 1)
+HK2_KAPPA = (HK2_J, HK2_E22)          # K = span{J, E₂₂} 的基
+HK2_SK = ((0, 1, 2, 0), (0, 0, 0, 1))  # 同一组基在 Fin 4 上的坐标行
+HK2_F = (1, 0)                        # f x = [x = a]
+HK2_I2 = (1, 0, 0, 1)
+
+
+def hk2_mm(a, b):
+    return (add(mul(a[0], b[0]), mul(a[1], b[2])),
+            add(mul(a[0], b[1]), mul(a[1], b[3])),
+            add(mul(a[2], b[0]), mul(a[3], b[2])),
+            add(mul(a[2], b[1]), mul(a[3], b[3])))
+
+
+def hk2_det(a):
+    return add(mul(a[0], a[3]), neg(mul(a[1], a[2])))
+
+
+def hk2_inv(a):
+    """adj / det（det = 0 时返回全零, 对应 Agda 的 TritInv T₀ = T₀）"""
+    d = hk2_det(a)
+    di = 0 if d == 0 else (1 if d == 1 else 2)
+    return (mul(di, a[3]), neg(mul(di, a[1])), neg(mul(di, a[2])), mul(di, a[0]))
+
+
+def hk2_tr(a):
+    return (a[0], a[2], a[1], a[3])
+
+
+def hk2_row(k):
+    return k // 2
+
+
+def hk2_col(k):
+    return k % 2
+
+
+def hk2_e(m, r, c):
+    return m[2 * r + c]
+
+
+def hk2_t4(p, y, z):
+    """坐标化的结构常数 T4(p,y,z) = mm 2 (unpos p) (unpos y) (unpos z)"""
+    return tensor(POS[p], POS[y], POS[z])
+
+
+def hk2_tk(j, y, z):
+    """K 上的张量 TK j y z = Σ_p sK j p ⊗ T4 p y z"""
+    return sum(mul(HK2_SK[j][p], hk2_t4(p, y, z)) for p in range(4)) % 3
+
+
+def hk2_delta(i, y):
+    return 1 if i == y else 0
+
+
+def hk2_R(u, v, x, y, z):
+    """forced product 两次规范化后的残差: TK ⊕ −f⊗(g⊗u) ⊕ −f⊗(g'⊗v)（g = δ₂, g' = δ₃）"""
+    return (hk2_tk(x, y, z)
+            + neg(mul(HK2_F[x], mul(hk2_delta(2, y), u[z])))
+            + neg(mul(HK2_F[x], mul(hk2_delta(3, y), v[z])))) % 3
+
+
+def hk2_W(lam, u, v, y):
+    """y-切片的线性组合: Σ_x Σ_z λ x z ⊗ R(x,y,z)"""
+    return sum(mul(lam[x][z], hk2_R(u, v, x, y, z)) for x in range(2) for z in range(4)) % 3
+
+
+def hk2_weights(u, v):
+    """四个权重: 组合出来恰是 δ₂, δ₃, −δ₀, −δ₁（与 u, v 无关）"""
+    l1 = [[0, 0, 0, 0], [0, 0, 1, 0]]
+    l2 = [[0, 0, 0, 0], [0, 0, 0, 1]]
+    l3 = [[0, 0, 1, 0], [0, 0, u[2], v[2]]]
+    l4 = [[0, 0, 0, 1], [0, 0, u[3], v[3]]]
+    return (l1, l2, l3, l4)
+
+
+HK2_EXPECT = ((0, 0, 1, 0), (0, 0, 0, 1), (2, 0, 0, 0), (0, 2, 0, 0))
+
+
+def check_hk2_residual():
+    """对全部 3⁴×3⁴ = 6561 组 (u, v): 四个权重的组合恰是 δ₂, δ₃, −δ₀, −δ₁。
+    负对照: λ₃ 去掉 v[2] 那一项后, 在 y = 3 处出错（首版手算就漏了这一项, 由本判据抓到）。"""
+    n = ok = 0
+    for ut in product(F3, repeat=4):
+        for vt in product(F3, repeat=4):
+            u, v = list(ut), list(vt)
+            for k, lam in enumerate(hk2_weights(u, v)):
+                n += 1
+                if tuple(hk2_W(lam, u, v, y) for y in range(4)) == HK2_EXPECT[k]:
+                    ok += 1
+    bad = 0
+    for ut in product(F3, repeat=4):
+        for vt in product(F3, repeat=4):
+            u, v = list(ut), list(vt)
+            l3 = [[0, 0, 1, 0], [0, 0, u[2], 0]]
+            if hk2_W(l3, u, v, 3) != 0:
+                bad += 1
+    return n, ok, bad
+
+
+def hk2_wit_data(P, Q):
+    """见证的数据: 由 (P, Q) 算出 W 的两行与两组换元矩阵。
+       A[k][w] = (Q⁻¹)[k行][w行]·[k列 = w列];  cA[w][k] = Q[w行][k行]·[同列]
+       B[k][w] = P[w行][k行]·[同列];            cB[w][k] = (P⁻ᵀ)[w行][k行]·[同列]"""
+    Pi = hk2_inv(P)
+    Qi = hk2_inv(Q)
+    PiT = hk2_tr(Pi)
+    rows = tuple(tuple(hk2_mm(hk2_mm(Pi, HK2_KAPPA[j]), Q)[p] for p in range(4)) for j in range(2))
+    same = lambda k, w: hk2_col(k) == hk2_col(w)
+    A = [[hk2_e(Qi, hk2_row(k), hk2_row(w)) if same(k, w) else 0 for w in range(4)] for k in range(4)]
+    cA = [[hk2_e(Q, hk2_row(w), hk2_row(k)) if same(k, w) else 0 for k in range(4)] for w in range(4)]
+    B = [[hk2_e(P, hk2_row(w), hk2_row(k)) if same(k, w) else 0 for w in range(4)] for k in range(4)]
+    cB = [[hk2_e(PiT, hk2_row(w), hk2_row(k)) if same(k, w) else 0 for k in range(4)] for w in range(4)]
+    return rows, A, cA, B, cB
+
+
+def hk2_wit_ok(P, Q, l):
+    """四条恒等式: ℓ 在 W 上恒零; cA·A = I; cB·B = I; T(W_j, y, z) = Σ A[k][y]·B[k'][z]·TK(j,k,k')"""
+    rows, A, cA, B, cB = hk2_wit_data(P, Q)
+    for j in range(2):
+        if sum(mul(rows[j][p], l[p]) for p in range(4)) % 3 != 0:
+            return False
+    for k in range(4):
+        for k0 in range(4):
+            if sum(mul(cA[w][k0], A[k][w]) for w in range(4)) % 3 != hk2_delta(k, k0):
+                return False
+            if sum(mul(cB[w][k0], B[k][w]) for w in range(4)) % 3 != hk2_delta(k, k0):
+                return False
+    for j, y, z in product(range(2), range(4), range(4)):
+        tw = sum(mul(rows[j][p], hk2_t4(p, y, z)) for p in range(4))
+        rhs = sum(mul(A[k][y], mul(B[kp][z], hk2_tk(j, k, kp))) for k in range(4) for kp in range(4))
+        if tw % 3 != rhs % 3:
+            return False
+        # Agda 件 Good.move 里写的是先对 k 求和的形状: Σ_{k'} B[k'][z]·Σ_k A[k][y]·TK(j,k,k')
+        rhs2 = sum(mul(B[kp][z], sum(mul(A[k][y], hk2_tk(j, k, kp)) for k in range(4))) for kp in range(4))
+        if tw % 3 != rhs2 % 3:
+            return False
+    return True
+
+
+def hk2_classify_all():
+    """80 个非零泛函各找一对 (P, Q)。优先复用已用过的对, 让表更短。
+    返回 {ℓ: (P, Q)}、试探次数、负对照计数、ℓ 的矩阵秩 1 的泛函个数（断言 32; 只是计数, 不是「两个轨道」的证明）。"""
+    gl = [m for m in product(F3, repeat=4) if hk2_det(m) != 0]
+    assert len(gl) == 48
+    table = {}
+    used = []
+    tried = 0
+    for lt in product(F3, repeat=4):
+        if lt == (0, 0, 0, 0):
+            continue
+        found = None
+        for P, Q in used + [(P, Q) for P in gl for Q in gl]:
+            tried += 1
+            if hk2_wit_ok(P, Q, lt):
+                found = (P, Q)
+                break
+        assert found is not None, lt
+        if found not in used:
+            used.append(found)
+        table[lt] = found
+    wrong = sum(1 for lt in table if not hk2_wit_ok(HK2_I2, HK2_I2, lt))
+    # 计数（不是「两个轨道」的证明）: ℓ 的矩阵秩 1 的 32 个, 可逆的 48 个
+    rank1 = sum(1 for lt in table if hk2_det(lt) == 0)
+    assert rank1 == 32 and len(table) - rank1 == 48, (rank1, len(table) - rank1)
+    return table, tried, wrong, rank1
+
+
+def hk2_normalize(T, c, f, g, A, B, Cf):
+    """slice-normalize 的构造（镜像 Agda）: T(x,y,c) ≡ f x ⊗ g y; 取第一个 rc i c ≠ 0 的项 i₀;
+       w = (rc i₀ c)⁻¹·rc i₀; 其余项 rc' i z = rc i z ⊕ −((rc i c ⊗ ki) ⊗ rc i₀ z); 去掉 i₀。"""
+    r = len(A)
+    i0 = next(i for i in range(r) if Cf[i][c] != 0)
+    k = Cf[i0][c]
+    ki = 1 if k == 1 else 2
+    w = [mul(ki, Cf[i0][z]) for z in range(4)]
+    assert w[c] == 1
+    keep = [i for i in range(r) if i != i0]
+    A2 = [A[i] for i in keep]
+    B2 = [B[i] for i in keep]
+    C2 = [[add(Cf[i][z], neg(mul(mul(Cf[i][c], ki), Cf[i0][z]))) for z in range(4)] for i in keep]
+    return w, A2, B2, C2
+
+
+def check_hk2_end_to_end(table):
+    """用 Strassen 的真实 7 项分解, 让每一项各当一次 i₀: ℓ = α_{i₀} 非零 ⇒ 见证 ⇒ T_W 有 6 项分解
+       ⇒ 搬到 K 仍是分解 ⇒ 两次规范化后余项有 4 项分解, 且恰等于残差 R(u, v) ⇒ 四个权重给出 δ。"""
+    n = ok_restr = ok_transfer = ok_res = ok_w = 0
+    for i0 in range(7):
+        l = ALPHA[i0]
+        P, Q = table[tuple(l)]
+        rows, A, cA, B, cB = hk2_wit_data(P, Q)
+        keep = [i for i in range(7) if i != i0]
+        As = [[sum(mul(rows[j][p], ALPHA[i][p]) for p in range(4)) % 3 for j in range(2)] for i in keep]
+        Bs = [BETA[i] for i in keep]
+        Cs = [C[i] for i in keep]
+        n += 1
+        # 丢掉的那一项在 W 上恒零
+        assert all(sum(mul(rows[j][p], l[p]) for p in range(4)) % 3 == 0 for j in range(2))
+        ok_restr += all(decomp_value(As, Bs, Cs, j, y, z) == sum(mul(rows[j][p], hk2_t4(p, y, z)) for p in range(4)) % 3
+                        for j, y, z in product(range(2), range(4), range(4)))
+        # 搬到 K: b' i k₀ = Σ_w cA[w][k₀]·b i w;  c' i k₀ = Σ_w cB[w][k₀]·c i w
+        Bt = [[sum(mul(cA[w][k0], Bs[i][w]) for w in range(4)) % 3 for k0 in range(4)] for i in range(6)]
+        Ct = [[sum(mul(cB[w][k0], Cs[i][w]) for w in range(4)) % 3 for k0 in range(4)] for i in range(6)]
+        ok_transfer += all(decomp_value(As, Bt, Ct, j, k0, kp) == hk2_tk(j, k0, kp)
+                           for j, k0, kp in product(range(2), range(4), range(4)))
+        # 两次规范化: c₀₀ 切片 f⊗g (g = δ₂), c₀₁ 切片 f⊗g'' (g'' = g' ⊕ −(w₀₁·g))
+        g = [hk2_delta(2, y) for y in range(4)]
+        g1 = [hk2_delta(3, y) for y in range(4)]
+        w0, A1, B1, C1 = hk2_normalize(hk2_tk, 0, HK2_F, g, As, Bt, Ct)
+        gp = [add(g1[y], neg(mul(w0[1], g[y]))) for y in range(4)]
+        assert gp[3] == 1
+        w1, A2, B2, C2 = hk2_normalize(hk2_tk, 1, HK2_F, gp, A1, B1, C1)
+        assert len(A2) == 4
+        # 余项 = TK ⊕ −f⊗g'⊗w₁ ⊕ −f⊗g⊗(w₀ − w₀₁·w₁)
+        #    = TK ⊕ −f⊗g⊗w₀ ⊕ −f⊗g''⊗w₁,  g'' = g' ⊕ −(w₀₁·g)
+        #    = TK ⊕ −f⊗g'⊗w₁ ⊕ −f⊗g⊗(w₀ − w₀₁·w₁)   (首版把 u 写成 w₀ + w₀₁·w₁, 7 个里错 4 个)
+        u = [add(w0[z], neg(mul(w0[1], w1[z]))) for z in range(4)]
+        v = w1
+        ok_res += all(decomp_value(A2, B2, C2, x, y, z) == hk2_R(u, v, x, y, z)
+                      for x, y, z in product(range(2), range(4), range(4)))
+        ok_w += all(tuple(hk2_W(lam, u, v, y) for y in range(4)) == HK2_EXPECT[q]
+                    for q, lam in enumerate(hk2_weights(u, v)))
+    return n, ok_restr, ok_transfer, ok_res, ok_w
+
+
+def hk2_mat_lit(m):
+    return "(mkMat2 %s)" % " ".join(TRIT_NAME[c] for c in m)
+
+
+def emit_hk2_table(table):
+    """Agda 的 hyper-wit 子句: 每个非零泛函一行; 见证的四条恒等式由内核归约核对（mkW … tt）。"""
+    lines = []
+    for lt in sorted(table):
+        P, Q = table[lt]
+        lits = " ".join(TRIT_NAME[c] for c in lt)
+        lines.append("hyper-wit %s _ = mkW %s %s %s tt" % (lits, hk2_mat_lit(P), hk2_mat_lit(Q), lits))
+    lines.append("hyper-wit T₀ T₀ T₀ T₀ h = ⊥-elim (nz-elim h)")
+    return HK2_BEGIN + "\n" + "\n".join(lines) + "\n" + HK2_END + "\n"
+
+
+def hk2_table_block(path):
+    """取出 Agda 件里两个标记之间的块（含标记）; 没有标记返回 None"""
+    if not os.path.exists(path):
+        return None
+    s = open(path, encoding="utf-8").read()
+    i, j = s.find(HK2_BEGIN), s.find(HK2_END)
+    if i < 0 or j < 0 or j < i:
+        return None
+    return s[i:j + len(HK2_END) + 1]
+
+
+def write_hk2_table(path, text):
+    old = hk2_table_block(path)
+    assert old is not None, "%s 缺少标记 %s / %s" % (path, HK2_BEGIN, HK2_END)
+    s = open(path, encoding="utf-8").read()
+    open(path, "w", encoding="utf-8").write(s.replace(old, text, 1))
+    print("分类表已重新生成 → %s（%d 行）" % (path, text.count("\n") - 2))
+
+
+def verify_hk2_table(path, text):
+    old = hk2_table_block(path)
+    if old is None:
+        return False, "缺标记块"
+    if old == text:
+        return True, "%d 行逐字一致" % (text.count("\n") - 2)
+    ol, nl = old.split("\n"), text.split("\n")
+    diff = [i for i, (x, y) in enumerate(zip(ol, nl)) if x != y]
+    return False, "有 %d 行不一致（首处在第 %d 行）" % (len(diff) + abs(len(ol) - len(nl)), (diff[0] if diff else min(len(ol), len(nl))))
+
+
 def main():
     n1 = check_structure_constants()
     n2 = check_matrices()
@@ -548,13 +844,43 @@ def main():
     print("M22 rank-restrict (随机 s, 恒等式) %d/%d; 三线性型意义(普通矩阵乘法独立路径) %d/%d; "
           "负对照(s = 2·e_{x₀}: 限制值 = 2·T(x₀,y,z) ≠ T(x₀,y,z), 应为 8 次) %d 次" % (r_ok, r_n, rs_ok, rs_n, r_neg))
     print("M22 rank-swap / rank-rot (64 个三元组): %d/%d, %d/%d" % (s_swap, s_n, s_rot, s_n))
+    # M23 / M24: Hopcroft–Kerr 的 2×2 排除论证
+    hk_n, hk_ok, hk_bad = check_hk2_residual()
+    hk_tab, hk_tried, hk_wrong, hk_rank1 = hk2_classify_all()
+    hk_e = check_hk2_end_to_end(hk_tab)
+    print("M24 forced product 残差: 四个权重给出 δ₂, δ₃, −δ₀, −δ₁ —— %d/%d (6561 组 (u,v) × 4); "
+          "负对照(λ₃ 漏掉 v₂·δ(d,3): 在 y = 3 处出错) %d 组"
+          % (hk_ok, hk_n, hk_bad))
+    print("M24 超平面分类: 80 个非零泛函 %d 个有 (P,Q) 见证(共试探 %d 对, 实际用到 %d 对); "
+          "负对照((P,Q) = (I,I) 对多少个泛函不成立) %d 个; 计数: ℓ 的矩阵秩 1 的 %d 个、可逆的 %d 个"
+          "(只是计数, 不是「两个轨道」的证明)"
+          % (len(hk_tab), hk_tried, len(set(hk_tab.values())), hk_wrong, hk_rank1, len(hk_tab) - hk_rank1))
+    print("M24 端到端(Strassen 的 7 项各当一次 i₀): 限制 %d/%d, 搬到 K %d/%d, 两次规范化后的残差 %d/%d, 残差权重 %d/%d"
+          % (hk_e[1], hk_e[0], hk_e[2], hk_e[0], hk_e[3], hk_e[0], hk_e[4], hk_e[0]))
     # 先算后验纪律: 前提成立数必须 > 0, 否则上面的「全部成立」是空转
     assert p_n == 64 * 3 * 16 and p_ok == p_n
     assert i_n > 0 and i_ok == i_n and i_fixed == 0
     assert r_n > 0 and r_ok == r_n and rs_n > 0 and rs_ok == rs_n and r_neg == 8
     assert s_n == 64 and s_swap == s_rot == 64
+    assert hk_n == 6561 * 4 and hk_ok == hk_n and hk_bad > 0
+    assert len(hk_tab) == 80 and hk_wrong > 0
+    assert hk_e[0] == 7 and hk_e[1] == hk_e[2] == hk_e[3] == hk_e[4] == 7
     # 与 M13 头注一致的账本: 恰 7 项
     assert len(ALPHA) == len(BETA) == len(C) == 7
+    # 分类表: 与 Agda 件里的生成块对账 / 重新生成
+    if "--hk2-table" in sys.argv:
+        i = sys.argv.index("--hk2-table")
+        tgt = sys.argv[i + 1] if len(sys.argv) > i + 1 else HK2_AGDA
+        text = emit_hk2_table(hk_tab)
+        if tgt == "-":
+            sys.stdout.write(text)
+        else:
+            write_hk2_table(tgt, text)
+        return 0
+    if os.path.exists(HK2_AGDA):
+        same, msg = verify_hk2_table(HK2_AGDA, emit_hk2_table(hk_tab))
+        print("M24 分类表对账(%s): %s" % (os.path.basename(HK2_AGDA), msg))
+        assert same
     if len(sys.argv) > 1:
         with open(sys.argv[1], "w", encoding="utf-8") as fh:
             fh.write("\n".join(emit_clauses()) + "\n")

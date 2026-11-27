@@ -24,7 +24,7 @@
 | `standalone/` | 不编译整个框架也能跑的自检：`fq_matrix_test_main.cc`、`f3_problem_check.cc`（F₃ 扩展）+ `rank_f3_fast_check.cc` / `apply_check.cc` / `get_simd_check.cc` / `fanout_check.cc`（快路径、Get 内核、扇出见证的对拍 + 微基准）+ 一份极简串行 tbb 垫片 |
 | `verify.sh` | 一份 F₃ 证书的三重验证（C++ verifier / 独立核对器 / 负控制） |
 | `scripts/` | 在别的机器上续跑要用的脚本：`run_window.sh`（在证书副本上跑一个窗口 + 内存哨兵 + 自动对比）、`guarded_run.sh`、`footprint.sh`、`monitor_run.sh`、`cmpcert.py`、`cmp_btp.py`，见 §10 |
-| `certs/` | 证书：`matrix_q03_n333_v1.{pb.txt,btp}`（F₃ ⟨3,3,3⟩ ≥ 17，见 §7）；v2 / v3 的 `.pb.txt` 与全部六个文件的 `SHA256SUMS`。v2 / v3 的轨迹档案（114 MB / 135 MB）超过 GitHub 单文件上限，放在 Release `wang-f3-certs-20261128`，见 §10 |
+| `certs/` | 证书：`matrix_q03_n333_v1.{pb.txt,btp}`（F₃ ⟨3,3,3⟩ ≥ 17，见 §7）；v2 / v3 的 `.pb.txt`；`matrix_q03_n222_v1.{pb.txt,btp}`（F₃ ⟨2,2,2⟩ ≥ 7，手写证明的路线图，见 §7.7）；`SHA256SUMS`（八个文件）。v2 / v3 的轨迹档案（114 MB / 135 MB）超过 GitHub 单文件上限，放在 Release `wang-f3-certs-20261128`，见 §10 |
 | `offline/` | 离线 bazel 路线的脚本（BCR 快照镜像、模块闭包抓取、distdir 预取）；**本机构建阶段不可用**，见 §3 |
 
 配套的独立核对器在上两级目录：`engineering/wang_cert_check.py`（F₂）、`engineering/wang_cert_check_fq.py`（素域，含 GF(3)）、`engineering/forced_fq_c/forced_fq.c`（forced product 的独立 C 实现）。
@@ -532,6 +532,46 @@ sha256  376e8b43f40cc69e3e33d5455bfda8274f40f0ad83a6a4a92490580fe1dcae5a  matrix
 **到这里，在这台机器上「加步数」的两条路都堵住了**：dim 4 卡在时间上（1e7 步是实用上限，再高是十几个小时量级），
 dim 2 卡在内存上（轨迹随步数线性增长）而且 3 倍步数下一张平面都没动。要让更大的预算可行，得先把轨迹改成边搜边压缩 / 落盘，
 那是框架层面的一处改造，不是调参。
+
+### 7.7 F₃ 上 ⟨2,2,2⟩ 的框架证书：手写证明的路线图（2026-11-28）
+
+立项 C 的 C-T2 是「不用搜索、用数学证明」的下界。动笔前先让框架在 F₃ 上跑了一遍 ⟨2,2,2⟩
+（`N0=2 N1=2 N2=2`，枚举 + 下界各 0.0 秒），把它的证明树当作路线的预言：
+
+| 轨道（按约束数） | 子空间 `X = [[x₀₀,x₀₁],[x₁₀,x₁₁]]` | 界 | 技术 |
+|---|---|---|---|
+| 0 个约束 | 全空间 | **7** | 代换（一层） |
+| 1 个约束 | `x₀₀ = 0` | 6 | 退化到 `x₀₀ = 0, x₀₁ + x₁₀ = 0` |
+| 1 个约束 | 对称 `x₀₁ + x₁₀ = 0` | 6 | 同上 |
+| 2 个约束 | `x₀₀ = 0, x₀₁ + x₁₀ = 0` | 6 | forced product（2 + 残差展平 4） |
+| 2 个约束 | `span{I, J}`（`X = aI + bJ`） | 6 | 回溯 |
+| 2 个约束 | `x₀₀ = x₀₁ = 0` / `x₀₀ = x₁₁ = 0` | 4 / 4 | 展平 |
+| 3 个约束 | `span{E₂₂}` / 反对称直线 | 2 / 4 | 展平 |
+
+与论文 §2 / 附录 C 对 F₂ 的走例同构（Wang 论文的轨道编号方向相反：它从零子空间数起）。
+
+**Agda 里的证明沿的是同一棵树**（`src/Sovereign/Algebra/LinearAlgebra/TensorRankHK2GF3.agda`）：
+全空间 ≥ 1 + 超平面 → 每个超平面含一个 K 型子空间（K = `span{J, E₂₂}`，`X = [[0,a],[-a,d]]`）→
+K 上 forced product。两点与框架不同，都是诚实的差别：
+
+- 超平面分类在 Agda 里**不是**搜索出来的：它是一张 80 行的见证表（每个非零泛函一对可逆的 `(P,Q)`），
+  每行由内核归约核对；生成与对账靠 `engineering/oracle_tensor_rank_gf3.py --hk2-table`。
+  表里逐个泛函给证据，不经过「非零泛函分两个轨道」的论证——那句话在本仓库是 [直觉·未验证]，
+  oracle 只核了计数（秩 1 的 32 个、可逆的 48 个）。
+- `span{I, J}` 那个轨道（框架用回溯）在 Agda 证明里**用不到**：两个超平面轨道都退化到 K，不经过它。
+  （`F₃[J] ≅ GF(3)[x]/(x²+1)` 只是读法 [直觉·未验证：库内没有对应定理]，不参与任何结论。）
+
+证书与验证状态：
+
+- 文件：`certs/matrix_q03_n222_v1.pb.txt`（2.7 KB）+ `.btp`（288 B），校验和已加进 `certs/SHA256SUMS`。
+- ① 框架 C++ verifier（为 2×2 单独编的一套：`N0=2 N1=2 N2=2`）：`Verified. Rank lower bound for matrix_q03_n222 is 7.` / `OK.`，rc = 0。
+- ③ 负控制（终轨道 7 → 8）：`CHECK failed: rank_lower_bound_ <= proved`，rc = 134。
+- ② **没做**：独立核对器 `wang_cert_check_fq.py` 写死了 `(na, nb, nc) == (9, 9, 9)`（第 479 行），对 2×2 直接断言失败。
+  推广到任意方阵格式不难，但没有做。这份证书在这里只是路线图，不是定理的证据；
+  **「n = 2 秩恰为 7」的权威是 Agda 内核**（`TensorRankHK2GF3.rank₂₂₂-is-7`，0 postulate）。
+
+重跑：`bash engineering/wang_f3ext/build.sh 3 enumerator /tmp/wang-f3-222/enumerator_f3`（前面加 `N0=2 N1=2 N2=2`），
+`lower`、`verifier` 同理；然后照 §4 的三步流水线跑（不需要任何额外参数）。
 
 ## 8. 踩坑记录
 

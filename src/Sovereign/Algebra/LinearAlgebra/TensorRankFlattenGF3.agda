@@ -27,7 +27,9 @@
 -- 诚实边界
 --   · 只对 GF(3) 陈述(计数用了 |Trit| = 3); Lean 的陈述对任意域。
 --   · 这是经典的展平界, 不是外部定理的一部分。n = 2 处: 本件给 r ≥ 4, Strassen(M13)给 r ≤ 7。
---   · [直觉·未验证] 库内没有「n = 2 时秩恰为 7」的最优性; 要证它得有 r ≤ 6 时的排除论证。
+--   · 「n = 2 时秩恰为 7」已证: TensorRankHK2GF3.rank₂₂₂-is-7（Hopcroft–Kerr 的排除论证,
+--     下半 rank-2x2-lower : ∀ r → RankLE₃ 2 r → 7 ≤ r, 2026-11-28）。本件的界（4）比它弱, 两者相容
+--     （TensorRankHK2GF3.check-weaker 把本件的界作用在同一个分解上）。
 --   · 外部定理(`TensorRankGF3.ω₃-boundary`, 全称句)本件**没有**推进: 它要求 n^9 ≤ r^4。
 --
 -- 复用(先查后写): sumFin-add(GF3RankNullity) / sumFin-δ(GF3Dim) / fromFun·toFun 往返

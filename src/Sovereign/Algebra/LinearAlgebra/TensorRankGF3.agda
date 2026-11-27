@@ -31,8 +31,10 @@
 -- 诚实边界
 --   · 本件**不证** n^9 ≤ r^4。那是外部定理（Lean 里有证明; 本库未导入、未复现）。
 --   · rank-strassen 只是上界见证（秩 ≤ 7）, 不是「秩恰为 7」。
---     库内的下界只有展平下界 n² ≤ r（`TensorRankFlattenGF3.rank-lower`, n = 2 时即 r ≥ 4）;
---     「n = 2 时秩恰为 7」[直觉·未验证]（要证它得有 r ≤ 6 时的排除论证, 库内没有）。
+--     下界有两个: 展平下界 n² ≤ r（`TensorRankFlattenGF3.rank-lower`, n = 2 时即 r ≥ 4）;
+--     n = 2 的精确下界 r ≥ 7 由 Hopcroft–Kerr 的排除论证给出
+--     （`TensorRankHK2GF3.rank-2x2-lower`, 2026-11-28; 见 `TensorRankHK2GF3.rank₂₂₂-is-7`:
+--     下半 rank-2x2-lower, 上半本件的 rank-strassen）。
 --   · 先算后验: engineering/oracle_tensor_rank_gf3.py 的三条判据（64 个结构常数 /
 --     6561 组输入走普通矩阵乘法 / 基矩阵两路会合）。
 --     oracle 另能按指标三元组发射 64 条 refl 子句; 本件 §2 **没有**贴用它们,
@@ -291,8 +293,9 @@ rank-strassen = record
 --   来源: Lean `key/MatrixExponent.lean:45 square_iff_prime_ranks` 取 p = 3。
 --   状态: 外部定理。本库**没有**它的证明, 也没有把它当公理导入——这里只是一个类型,
 --         用来把「我们这边还欠什么」写成一句可核对的话。
---   n = 2 时它说的是 r ≥ 5（4^4 = 256 < 512 ≤ 5^4）; 库内两个方向: 展平下界 r ≥ 4
---   （TensorRankFlattenGF3.rank-lower）, §2 的见证给 r ≤ 7。
+--   n = 2 时它说的是 r ≥ 5（4^4 = 256 < 512 ≤ 5^4）, 比库内已证的 r ≥ 7 弱
+--   （TensorRankHK2GF3.rank-2x2-lower）; 展平下界 r ≥ 4（TensorRankFlattenGF3.rank-lower）
+--   更弱; §2 的见证给 r ≤ 7。n = 2 处精确值是 7（TensorRankHK2GF3.rank₂₂₂-is-7）。
 --   这是「每域 ω = 9/4」的下半; 上半（每个比值 > 9/4 都有一个严格节省）的陈述是
 --   TensorRankUpperGF3.ω₃-upper, 库内能证的部分是 ★ strassen-saving（比值 ≥ 17/6）。
 ω₃-boundary : Set

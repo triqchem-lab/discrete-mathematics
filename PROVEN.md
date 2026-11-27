@@ -1041,7 +1041,7 @@ arXiv:2603.07280 的机器可查证书; LFS 真身 115KB 文本 + 33MB .btp 回�
   ★ `bläser₃→flatten`（它蕴含展平下界 r ≥ 9）；`sentinel-compatible`（19 ≤ 23）。
 
 **核对**：`agda` exit=0；0 postulate / 0 REWRITE 规则 / 0 洞。
-独立检查件 `/tmp/m22chk/CheckM22.agda`：21 条（主签名逐字重述 + 读法检查：对换两次 = 没动、轮回三次 = 没动、
+独立检查件 `~/work/checks/CheckM22.agda`（仓库外，持久副本；2026-11-28 从 /tmp 转存，转存后重编 exit=0）：21 条（主签名逐字重述 + 读法检查：对换两次 = 没动、轮回三次 = 没动、
 Laderman 分解先拉回再限制仍是 23 项、陈述层展开），exit=0。
 oracle `engineering/oracle_tensor_rank_gf3.py` 新增 M22 一节，ALL_PASS：
 rank-pull 3072/3072；rank-invar 384/384，负对照（非置换 g）0 个 h 能恢复；
@@ -1063,3 +1063,158 @@ of matrices of small formats»。1999 年那篇给的是 (5/2)n² − 3n。已�
 - **括号自检脚本别用 `line.split('--')`**: 它会把首行 `{-# OPTIONS --rewriting … #-}` 从 `--` 处切开, 误报一个没闭合的 `{`;
   而正文里真正的错误(第一行多一个右括号)反而被平衡计数掩盖——逐个应用各占一行, 再用脚本数, 才定位到。
 
+## 二十二、矩阵乘法指数线 M23 / M24 / M24-a——Hopcroft–Kerr 的 2×2 排除论证：GF(3) 上 ⟨2,2,2⟩ 的秩恰为 7（2026-11-28 登记）
+
+**起因**：用户对 C-T2（Hopcroft–Kerr）说「开始」。动笔前先读原始论证：Wang 论文（arXiv:2603.07280v11）§2 与附录 C
+给出 F₂ 上 ⟨2,2,2⟩ ≥ 7 的完整走例；再让框架在 F₃ 上跑了一遍 ⟨2,2,2⟩（枚举与下界各 0.0 秒，10 个轨道，下界 7），
+把它的证明树当作路线的预言。Agda 里的证明沿同一棵树：全空间 ≥ 1 + 超平面 → 每个超平面含一个 K 型子空间
+（K = span{J, E₂₂}，X = [[0,a],[-a,d]]）→ K 上 forced product（两个单积切片 + 残差展平 4）。
+
+**文件**（三件，全部 exit=0，0 postulate / 0 REWRITE 规则 / 0 洞）：
+
+- `src/Sovereign/Algebra/RingTheory/TritStdlibRing.agda`（M24-a，125 行）：Trit 作为标准库的 `CommutativeRing 0ℓ 0ℓ`
+  （★ `trit-comring`，逐字段取 Base/Trit 的律）+ Trit 上的环求解器 `module TritSolver` + 可判定相等 `_≟ₜ_`。
+  库内已有 12 个模块把 ℕ 的算术重排交给标准库 solver（ListBounds / GF3HammingCount / Ring3pow11 等），这是同一个做法在 Trit 上的实例。
+- `src/Sovereign/Algebra/LinearAlgebra/TensorRankAlgebraGF3.agda`（M23，598 行）：指标集泛型、与 2×2 无关的四条操作。
+  `skip` / `skip-sum`；★ `rank-drop`、`rank-drop₃`（去掉恒零的一项）；`TritInv`、`sumFin-nonzero`；
+  ★★ `slice-normalize`（Hopcroft–Kerr 的代换：切片是非零的秩一张量 f ⊗ g ⟹ T = f⊗g⊗w ⊕ 余项，w c ≡ 1，余项少一项；
+  证明就是 Gauss 消元）；
+  ★ `SpanGen`（切片张成：`span-full` 一切切片组合都在第一因子的张成里；`bound` 计数下界：嵌入 Fin (3^d) ⟹ d ≤ r；
+  这是 M16-B 展平下界的推广）；
+  ★ `rank-linvar` / `rank-change₂` / `rank-change₃`（线性换元：M22 `rank-restrict` 的逆向一半）；`rank-cong`。
+- `src/Sovereign/Algebra/LinearAlgebra/TensorRankHK2GF3.agda`（M24，977 行）：
+  ★★ `rank-2x2-lower : ∀ r → RankLE₃ 2 r → 7 ≤ r`；`rank₂₂₂-is-7`（下半本件、上半 M13 的 `rank-strassen`）；
+  ★ `K-bound`（K 上 ≥ 6：`slice-normalize` 两次 + `res-flatten`）；
+  ★ `res-flatten`（残差的 y-切片张成 4 维：四个权重恒给出 δ₂, δ₃, −δ₀, −δ₁，与两次规范化留下的未知量 u, v 无关）；
+  ★★ `hyper-wit`（80 个非零泛函各一个 K 型子空间的见证，`Good` 记录四条恒等式：`ker` / `inv-A` / `inv-B` / `move`）；
+  ★ `transfer`（沿见证把 W 上的分解搬到 K 上）；`check-weaker`（与展平下界相容）。
+
+**核对**：
+
+- 三件 `~/.local/bin/agda -i src …` 各自 exit=0（本机没有全库门禁，只编了动过的模块与检查件；
+  头注改过的 `TensorRankGF3` / `TensorRankFlattenGF3` 也重编 exit=0）。
+- 独立检查件 `~/work/checks/CheckHK2.agda`（仓库外，持久副本；运行方法见同目录 README.txt）：54 条，exit=0。含主签名逐字重述，以及读法检查：
+  `chk-no-below : ∀ r → r < 7 → ¬ RankLE₃ 2 r`（特别地 `chk-no-6 : ¬ RankLE₃ 2 6`）、
+  `chk-strassen : 7 ≤ 7`（定理作用在库内真实的 7 项分解上）、见证行的闭值（`Wit.row … ≡ T₂` 等由内核算出）、
+  计数下界在零张量上的实例。
+- **负控制（M24，均在副本上做，做完恢复，文件哈希不变 `297ca25aed9d0d39…`）**：
+  ① 把 trace 泛函 (1,0,0,1) 那一行的 (P,Q) 换成 (I,I)：内核在该行拒绝——`tt` 的类型 `True (good? …)` 归约成 ⊥，报 `⊤ is not a subtype of ⊥`；
+  ② 定理结论改成 8 ≤ r：拒绝（`6` 与 `7` 不等）；③ `K-bound` 结论改成 7 ≤ r：拒绝。恢复后 exit=0。
+- oracle `engineering/oracle_tensor_rank_gf3.py`（新增 M23/M24 一节）ALL_PASS：forced product 残差 26244/26244
+  （6561 组 (u,v) × 4 个权重），负对照（λ₃ 漏一项）4374 组；超平面分类 80/80（实际用到 17 对 (P,Q)），
+  负对照（(I,I) 对多少个泛函不成立）72 个，计数（ℓ 的矩阵秩 1 的 32 个、可逆的 48 个）；
+  端到端（Strassen 的 7 项各当一次 i₀：限制 → 搬到 K → 两次规范化 → 残差权重）7/7；分类表对账 81 行逐字一致。
+- `engineering/tests`：161 tests OK（2 skipped）。
+- 重名：手工模拟门禁（本机 `check_duplicate.sh` 是薄壳）。`T₀≢T₁` 库内已有两处（`NumberTheory/DiscreteFibonacci`、
+  `Synthesis/Analysis/EqualityTruncation`），本件改为 import 前者，不写第三处。其余无完全相同的签名。
+- 框架的 2×2 证书入库：`engineering/wang_f3ext/certs/matrix_q03_n222_v1.{pb.txt,btp}`（README §7.7）；
+  框架 C++ verifier exit=0，负控制（终界 7 → 8）rc=134。
+
+**文献核对（2026-11-28，用户指出「C-T2 先核对 Hopcroft–Kerr 的域假设」——动笔前没做，事后补做）**：
+
+- 动笔前实际做的是: 读 Wang 论文 §2 / 附录 C（F₂ 的走例）+ 让框架在 F₃ 上跑 ⟨2,2,2⟩。**没有对照 Hopcroft–Kerr、
+  Winograd 的原文**。
+- Hopcroft–Kerr，一手来源已读: Cornell 技术报告 TR69-44（1969-09，扫描件，`~/work/lit/HopcroftKerr_TR69-44_1969.pdf`）。
+  报告第 15 页「Minimality of the number of multiplications」: 下界**只在 GF(2) 上证**——
+  「we will assume that the elements of the matrix are binary numbers and addition and multiplication are modulo two」，
+  靠「整数上的算法取模 2」约束整数情形，并明说反方向不一定成立。所以 **GF(3) 不在 Hopcroft–Kerr 的定理范围内**;
+  用户的担心是对的。网络搜索的小模型摘要说「Hopcroft–Kerr 证的是任意域」——是错的，以一手来源为准。
+- Winograd 1971（Linear Algebra Appl. 4, 381–388; zbMATH 0225.68018 只给书目）: **域假设没有查到**——原文付费墙，
+  zbMATH 评论不开放;二手说法不一（Wang 引言说 ℚ;搜索摘要说特征 ≠ 2 且自标「不是引文」）。[未核对原文]
+- 结论不变: GF(3) 上的 7 来自本件的内核证明, 不依赖上面两篇。证明里唯一与 F₃ 绑定的是那张 80 行的见证表;
+  K 上的 forced product 与残差的切片下界对任意 u, v 成立, 不含特征假设。
+- 顺带查到一处**文献自身的不一致**（未裁决, 留给 C-T3）: Ballard–Ikenmeyer–Landsberg–Ryder 2018（arXiv:1801.00843）引言写
+  「M⟨3⟩ 秩的最好下界是 16 [17]」, [17] 是 Landsberg–Michalek 的**边界秩**界 2n²−n+1（ℂ）;
+  而 Wang 2026 引言说 Bläser 2003 给 19（秩, 任意域）。两者的对象（边界秩 / 秩）与域（ℂ / 任意）都不同,
+  谁对、是否只是措辞疏漏, 要读 Bläser 原文才知道。本仓库 `bläser₃-boundary` 的陈述依据的仍是 Wang 引言这一二手来源。
+- 展平这条线的文献值（Landsberg–Michalek, arXiv:1608.07486 引言; 全是 ℂ 上的**边界秩**）:
+  Strassen 3n²/2 → Lickteig → Landsberg–Ottaviani 2012 用 Koszul 展平 2n²−n → 2016 得 2n²−n+1 → 本文 2n²−⌈log₂n⌉−1。
+  n = 3: 15、16、15。特征 3 下是否成立没有查。
+
+**这次抓到的自己的错**（都发生在 oracle 或编译阶段，没有进内核）：
+
+- 残差的第四个权重手算时把 R(a, b₁₁, c₀₁) 写成 1−v₃（实为 −v₃），6561 组全错——独立实现抓到；
+- 残差的参数 u 写成 w₀ + w₀₁·w₁（实为 w₀ − w₀₁·w₁）——端到端 7 个里错 4 个；
+- 一度想只用「带符号置换」类的对称搬分解，枚举发现 80 个泛函有 32 个覆盖不到 ⇒ 必须上一般的 P X Q⁻¹。
+
+**诚实边界**：
+
+- 这是把一个已知的、经典的证明形式化，不是新数学结论。n = 3 的下界不变（库内仍是 r ≥ 9；文献 19，搜索 17）。
+- 超平面分类没有抽象证明：实现是一张 80 行的见证表，每行由内核归约核对（`mkW … tt`）。
+  「80 个非零泛函分两个轨道」在本仓库是 [直觉·未验证]，表不依赖它。
+- `span{I, J}` 那个轨道（框架用回溯）在 Agda 证明里用不到。
+- 依赖标准库的 `Algebra.{Bundles, Structures, Solver}`（反射生成的证明项仍由内核检查）。
+- 独立核对器 `wang_cert_check_fq.py` 写死了 n = 3，2×2 的框架证书没有做独立核对（只过了框架自己的 verifier）；
+  它在仓库里只是路线图，定理的权威是 Agda 内核。
+- M23 的 `_≡ₜ?_` 与 M24-a 的 `_≟ₜ_` 是两份可判定相等（类型相同、名字不同）；没有合并，因为不想让通用的 M23 依赖求解器模块。
+
+**新坑（别再踩）**:
+
+- **隐式集合变量要写 `: Set`**：`∀ {X Y Z} → (X → Y → Z → Trit) → …` 这种签名，若没有别的东西把 level 钉住，
+  模式变量的类型就是悬着的 level 元变量，报 `UnsolvedMetaVariables`（位置在各个模式变量上，很容易误判成别的问题）。
+  M22 的引理没事，只是因为返回类型 `RankLE … : Set` 顺带约束了它们。写成 `∀ {X Y Z : Set}`。
+- **内联的等式链过不了，拆成具名带类型的步骤就过**：`trans (cong … (sym (sumFin-scale …))) (trans …)` 内联时，
+  推断类型里留着未归约的 λ 应用，元变量解不出来；同样三步各给一个 `s1 : A ≡ B` 的签名就一次通过。以后每条链都这么写。
+- **内核不会去反演 `sumFin` 的模式匹配来猜张量参数**：`rank-drop₃ _ record{…}`、`sumFin-nonzero _ h` 里的 `_` 都是
+  `UnsolvedMetaVariables` + `Refusing to invert pattern matching of sumFin`。张量、被加项一律显式写出。
+- **Trit 的 ⊕ / ⊗ 对中性项不归约**：`x ⊗ T₀`、`T₁ ⊗ x`、`x ⊕ T₀` 在 x 是变量时都不动（库里有 `⊗-zeroʳ` 等引理正是为此）。
+  所以闭指标上的求和会留下「尾巴」，残差恒等式不能靠 `refl`。解法：给 Trit 建标准库交换环 + ring solver
+  （`TritStdlibRing`），每步「具名 + 带类型」，环内重排交给 `TritSolver.solve`；它只认 ⊕ / ⊗ / negate / 字面量，
+  δc、sumFin、Fin 的结构要先用手写引理化成干净形状（`sum₂-eval` / `sum₄-eval` / `Rc` / `Rd`）。
+- **`trans A B` 后面没有括号**：我惯用的 `trans (cong f e)
+ (solve …)` 形式里 `trans` 后面不跟左括号，
+  所以第二参数结束处不要再补右括号——这次连续四处在同一个地方多写了一个。
+- **where 块里的名字会遮蔽外层模式变量**：`Wemb u v κ y = trans (steps y) (cleanup y)` 里又写 `steps : ∀ y → …`，
+  内层的 y 与外层的 y 不是同一个，报 `y₁` 与 `y` 不等。外层已经有的变量不要再量词化。
+- **`λ` 是关键字**：不能给变量取名 `λ`（`∀ λ x →` 被读成 λ 抽象，报 `Missing body for lambda`）。
+- **`T₁` 是 Trit 的构造子**：局部定义取名 `T₁` / `T₂` 会 `ClashingDefinition`。
+- **`Record.field` 不随模块导出**：`open SpanGen …` 不写 `public`，外面就取不到 `W`；record 字段名要 `open` 过才能在
+  record 字面量里裸用。
+- **`toWitness {a? = d} tt` 在 d 是中性项时过不了**：`tt : ⊤` 对不上 `T (isYes d)`。把「判定为真」做成显式参数
+  （`mkW … : True (good? …) → …`），表里每行传 `tt`，闭项时归约成 ⊤，不成立时是 ⊥。
+
+**事故与更正（2026-11-28，下一轮自查发现）**：
+
+- 当时的本地提交（`48ec3e70`、`1ac6961f`；按用户建议压缩后这两个提交已不在历史里，内容并入压缩后的那一个）里的
+  `engineering/oracle_tensor_rank_gf3.py` 是**空文件**（0 字节）。
+  上一节「核对」里「oracle … ALL_PASS」在那次运行时是真的，但提交进去的不是那个文件。
+- 原因：改它的顶部说明时写成了 `open(p, 'w').write(open(p).read().replace(…))`——Python 先求值 `open(p, 'w')`
+  把文件清空，再去读它。随后那次「oracle exit=0」是空脚本运行成功，被当成了通过；提交前既没有重跑测试，
+  也没有看 `git diff --numstat`（那里会显示 567 行全删）。
+- 影响范围：只有这一个文件、只有本地两个提交。远端 `c76d52d9` 的版本完整（24,178 字节 / 567 行）；
+  同一天改过的其它文件、仓库外的检查件与 memory 都不空（逐个查过）。
+- 恢复：以 `c76d52d9` 的版本为基底，把当天的 M23/M24 一节按原样重放（相对基底 **+325 行 / −0 行**，892 行）。
+  忠实性核对：oracle ALL_PASS 且各项数字与截断前逐项相同（残差 26244/26244、负对照 4374；分类 80/80、
+  试探 11478 对、实际 17 对、负对照 72、32/48；端到端 7/7）；重新生成的分类表与已提交的表 81 行逐字一致；
+  `engineering/tests` 161 OK（2 skipped）。
+- 别再踩：① 改文件一律「先读进内存、改完、再写」，禁止在 `open(p, 'w')` 的参数里读同一个文件；
+  ② 改完任何文件先看 `wc -c`；③ 「exit=0」不算通过，要看预期的输出标记（ALL_PASS）且输出非空；
+  ④ 提交前看 `git diff --cached --numstat`，任何文件出现「行数归零」先停；⑤ 最后一次编辑之后必须重跑测试。
+
+**对一份外部评估文档的核对（2026-11-28，用户贴来并附建议；按「对照记录核」处理，不当指令）**：
+
+- 「阶段 0：审计 17」——重跑 `engineering/wang_f3ext/verify.sh`（对 v1 证书）：① 框架 verifier `Verified. Rank lower bound … is 17`；
+  ② 独立核对器 736 轨道全过（展平 15 / forced 2 / 回溯 339 / 退化 380，回溯节点 22,520,923）；③ 负控制（终界 17 → 24）
+  `orbit 735: backtracking kernel rejected`，rc = 1。**17 是下界证书**（排除了 ≤ 16），仓库文档里没有任何「17 项分解」的说法
+  （README §7.3 本来就写着「它是下界」）。不需要排查。
+- 外部文档的数字：子空间总数（56,632 / 8,283,458 / 13,721,229,088）、各维子空间数、射影点数都对；
+  **群阶三个数里两个与标准公式对不上**（⟨3,3,3⟩/F₃ 写 126,157,824 = |GL₃(F₃)|² 没算转置，而 F₂ 那一行算了；
+  ⟨2,3,3⟩/F₃ 写 269,568，|GL₂(F₃)|·|GL₃(F₃)| = 539,136），「群阶放大 2,235 倍」同口径应为 4,470。
+- 外部文档的代码库盘点是另一个代码状态（85–272 个文件、`jac_*` 模块名；本仓库 1066 个文件，点名的 18 个模块里
+  只有 `Trit` / `A4Group` / `BurnsideT6` / `GF9` 存在）。它说「完全缺失」的三阶张量秩 / 双线性分解 / 商约化模块，
+  库内有 12 个（`TensorRank*`，M16–M24）；它提议当「首个测试用例」的 Laderman 23 项正例早就在内核里（M17）。
+- 文献（arXiv 摘要，经代理核）：Tomar 2610.11823（F₂ = 23）的摘要里没有「互补幂等」——
+  是替换法 + 对 Wang 的 496 类中的 111 类收紧界 + 27×27 展平约束秩 + 列出全部可行的 22 个首因子集合 + **精确补全搜索**。
+  「互补幂等」出自 Yang 等 2609.18722（F₂ ≥ 21 的结构证明）：容量约束与有限几何先把 20 项分解逼到秩剖面 (16,1,3)
+  （Σ 秩 = 27），这时秩次可加性取等 ⟹ 各项两两零化的幂等元 ⟹ 与「至多一个首因子可逆」矛盾；全文（含有限商界）有 Lean 形式化。
+  另两篇存在：Rudich–Rousseau 2610.01639（整数系数递归算法 ≥ 22，496 个子问题解出 359 个）、Wang 2609.06725（F₂ ≥ 21）。
+- 互补幂等恒等式：手推复核成立；oracle 原型（`~/work/checks/proto-idem_oracle.py`，未入库）在真实分解上核对通过——
+  Laderman 23 项（GF(3)）：首因子秩剖面 (17,4,2)，Σ 秩 31，Δ = 4，恒等式 529 对零失配；
+  Strassen 7 项：剖面 (6,1,0)，Σ 秩 8 = 2³，**Δ = 0**，`R_tᵀ B_t C_tᵀ L_t = I` 成立；负对照（改一个系数）恒等式失败。
+  两处与外部文档的写法不同：① 按行主序向量化，恒等式是 `A_t B_s C_tᵀ A_s = δ_ts A_t − l_t m_sᵀ`（C 带转置；
+  不带转置时 Laderman 上 266 处失配）；② X、Y 不必满列秩（Laderman 的 rank X = 27 < N = 31），
+  但 rank Γ = 27 与 rank Π = Δ 仍成立（幂等元的秩 = 迹 = n³）。
+- F₃ 上 3×3 的低维商界（外部文档「阶段 3」的前两步）**本仓库证书里已有**：736 个轨道按余维 0–9 的个数是
+  1, 3, 14, 84, 266, 266, 84, 14, 3, 1；直线 3 个轨道，下界 3 / 6 / 9（秩 1 / 2 / 3）；
+  平面 14 个轨道，下界依次为 6, 6, 8, 9, 9, 9, 9, 9, 9, 10, 10, 11, 11, 12，其中不含秩-1 点的恰 8 个（下界 8, 9, 9, 9, 10, 11, 11, 12）。
+  余维 1 的 3 个超平面轨道下界都是 16。
