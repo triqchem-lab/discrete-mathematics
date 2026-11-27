@@ -29,6 +29,7 @@
 --      ★ upper-slope-strassen（Strassen ⟹ (2,2,2) 的上斜率 15/16）、
 --      ★ upper-lower-slope（同格式的上斜率 ≥ 下斜率）、
 --      ★★ saving→upper-slope（Saving₃ 的单尺寸见证 ⟹ 方格式的上斜率 p/(3q)）、
+--      upper-slope-one（上斜率的非空性见证, 仅平凡格式 (1,1,1)）、
 --      ★★ degree-law-boundary（DegreeBound₃ + 下半 ⟹ 支撑数⁴·n⁹ ≤ (432·n³·r)⁴）
 --
 -- 诚实边界
@@ -68,7 +69,7 @@ open import Sovereign.Algebra.LinearAlgebra.TensorRankCircuitGF3
 open import Sovereign.Algebra.LinearAlgebra.TensorRankGF3 using (RankLE₃; ω₃-boundary; rank-strassen)
 open import Sovereign.Algebra.LinearAlgebra.TensorRankSparseGF3
   using (WeightedRankLE₃; suppInd; supportSize₃)
-open import Sovereign.Algebra.LinearAlgebra.TensorRankPowGF3 using (rank-strassen-pow; rank-pow)
+open import Sovereign.Algebra.LinearAlgebra.TensorRankPowGF3 using (rank-strassen-pow; rank-pow; rank-one)
 open import Sovereign.Algebra.LinearAlgebra.TensorRankUpperGF3 using (pow-exp-mono; 1≤pow; pow-base-<; cert-strict)
 
 --------------------------------------------------------------------------------
@@ -361,6 +362,22 @@ saving→upper-slope n r p q R lt (suc m) =
 
   le : (r ^ suc m) ^ (3 * q) ≤ (n * n * n) ^ (p * suc m)
   le = ≤-trans (≤-reflexive eL) (≤-trans lt′ (≤-reflexive (sym eR)))
+
+-- 上斜率的非空性见证（平凡格式）: (1,1,1) 上任意 p/q 都是上斜率——每幂取 1 项分解（rank-one 的张量幂）。
+--   这只说明 UpperSlopeᵣ 不是空类型; 一般格式的 schoolbook 非空性（斜率 1 对一切格式可容）未做,
+--   需要尺寸相加的直和机制, 库内只有尺寸相乘的 rank-mul（见文件头「诚实边界」）。
+upper-slope-one : ∀ p q → UpperSlopeᵣ 1 1 1 p q
+upper-slope-one p q m =
+  (1 ^ m) , rankLE₃→rect (1 ^ m) (1 ^ m) (rank-pow rank-one m) , ≤-reflexive e
+  where
+  e3 : 1 * 1 * 1 ≡ 1
+  e3 = trans (*-identityʳ (1 * 1)) (*-identityʳ 1)
+
+  e : (1 ^ m) ^ q ≡ (1 * 1 * 1) ^ (p * m)
+  e = trans (^-*-assoc 1 m q)
+      (trans (1^k≡1 (m * q))
+      (trans (sym (1^k≡1 (p * m)))
+             (cong (λ t → t ^ (p * m)) (sym e3))))
 
 -- 可读实例: Strassen 在 (2,7) 的严格节省 7^6 < 2^17 给出 (2,2,2) 格式的上斜率 17/18
 --   （专门的 upper-slope-strassen 给出更紧的 15/16; 这里只演示 Saving₃ ⟹ 上斜率的换底）。

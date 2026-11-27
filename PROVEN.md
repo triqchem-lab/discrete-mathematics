@@ -927,7 +927,7 @@ arXiv:2603.07280 的机器可查证书; LFS 真身 115KB 文本 + 33MB .btp 回�
 - 意义: 我们的 GF(3) 下界路线（立项 A-T3 = F₃ 实例化自跑）的核对器范式已通（同一框架、同一格式）,
   A-T3 跑出 F₃ 证书后可直接入本核对管线。
 
-## 二十、矩阵乘法指数线 M21——稀疏定律的有限口径（`TensorRankSparseLawsGF3.agda`，445 行，2026-11-27 登记）
+## 二十、矩阵乘法指数线 M21——稀疏定律的有限口径（`TensorRankSparseLawsGF3.agda`，462 行，2026-11-27 登记）
 
 > 立项 B-T3（陈述层）+ B-T4 的代理定义。Lean 上界机器的三条定律
 > （`Rectangle/Weights.lean:19` DensityBound、`Rectangle/Mask.lean:17` CellBound、
@@ -945,15 +945,16 @@ arXiv:2603.07280 的机器可查证书; LFS 真身 115KB 文本 + 33MB .btp 回�
 | ★ `upper-slope-strassen` | `:245` | Strassen ⟹ (2,2,2) 格式的上斜率 15/16: `(7^m)^16 = (7^16)^m ≤ (8^15)^m` |
 | `pow-exp-strict` / `pow-cancel` | `:267` / `:284` | 底 ≥ 2 时幂对指数严格单调、可约指数（自写, 不走类型类实例） |
 | ★ `upper-lower-slope` | `:290` | 同格式的上斜率 ≥ 下斜率: `p′·q ≤ p·q′`（在 m = 1 处对拍） |
-| ★★ `saving→upper-slope` | `:324` | **Saving₃ ⟹ 上斜率**: `RankLE₃ n r` 且 `r^q < n^p` ⟹ `UpperSlopeᵣ n n n p (3·q)`（指数换底: Saving₃ 以 n 为底, 格式体积是 n³; m = 0 一侧要用 `*-zeroʳ` 与 `1^k≡1`, 因为变元指数下 `p · 0`、`1 ^ k` 都不归约） |
-| `saving-2-7` | `:368` | 可读实例: `UpperSlopeᵣ 2 2 2 17 18`（复用 `cert-strict`, 不重算） |
-| ★★ `degree-law-boundary` | `:434` | **应用示范**: DegreeBound₃ + ω₃-boundary ⟹ `支撑数⁴·(n·n·n)³ ≤ (432·n³·r)⁴`（U = 整个支撑, I = J = K = n, 下斜率 3/4） |
+| ★★ `saving→upper-slope` | `:325` | **Saving₃ ⟹ 上斜率**: `RankLE₃ n r` 且 `r^q < n^p` ⟹ `UpperSlopeᵣ n n n p (3·q)`（指数换底: Saving₃ 以 n 为底, 格式体积是 n³; m = 0 一侧要用 `*-zeroʳ` 与 `1^k≡1`, 因为变元指数下 `p · 0`、`1 ^ k` 都不归约） |
+| `saving-2-7` | `:385` | 可读实例: `UpperSlopeᵣ 2 2 2 17 18`（复用 `cert-strict`, 不重算） |
+| `upper-slope-one` | `:369` | 上斜率的**非空性见证**（仅平凡格式）: `∀ p q → UpperSlopeᵣ 1 1 1 p q`——每幂取 `rank-one` 的张量幂; 一般格式的 schoolbook 非空性未做 |
+| ★★ `degree-law-boundary` | `:451` | **应用示范**: DegreeBound₃ + ω₃-boundary ⟹ `支撑数⁴·(n·n·n)³ ≤ (432·n³·r)⁴`（U = 整个支撑, I = J = K = n, 下斜率 3/4） |
 
 **数值子句的来源**: `cert-7¹⁶≤8¹⁵ = m≤m+n (7^16) 1951441519231`——7^16 = 33232930569601、
 8^15 = 35184372088832 由 Python oracle 整数核对; 同一组里 7^15 ≤ 8^14 **不**成立, 所以 15/16 是这组分母下最紧的见证。
 
 **验证**: standalone exit=0（0 postulate / 0 REWRITE / 0 洞）; 独立检查件 `/tmp/m21chk/CheckM21.agda`
-16 条主签名逐字核对 exit=0; 顶层名全库扫描无重复（首版 `cube` 与三处同名, 已改 `cubeₙ`）。
+17 条主签名逐字核对 exit=0; 顶层名全库扫描无重复（首版 `cube` 与三处同名, 已改 `cubeₙ`）。
 
 **诚实边界**:
 - CellBound₃ 不是完整的 CellBound: Lean 的 `short i j |u| = min(log i, log j, log|u|/2)` 在一般 |u| 下给出
