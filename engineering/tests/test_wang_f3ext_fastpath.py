@@ -207,6 +207,32 @@ class WangF3extFastPathTest(unittest.TestCase):
             self.assertEqual(chk.returncode, 0, chk.stdout[-2000:] + chk.stderr[-2000:])
             self.assertIn("OK. 已核对 736 轨道", chk.stdout)
 
+    def test_fanout_witness_equation(self):
+        """扇出存储的见证方程(standalone/fanout_check.cc): 轨道在群作用下的随机像上, Get 交出的见证必须把 q 映回轨道代表。
+        扇出 1 与 8 各跑一遍; 不需要 NEON(走标量块内核), 所以非 ARM64 机器也跑。"""
+        repo = _find_repo()
+        if repo is None:
+            self.skipTest("上游副本未就绪（WANG_REPO 未打补丁）")
+        cxx = _find_cxx()
+        if cxx is None:
+            self.skipTest("no C++ compiler found")
+        src = os.path.join(EXT, "standalone", "fanout_check.cc")
+        with tempfile.TemporaryDirectory() as tmp:
+            exe = os.path.join(tmp, "fanout_check")
+            build = subprocess.run(
+                [cxx, "-std=c++23", "-O2", "-DNDEBUG", "-w", "-pthread",
+                 "-I" + os.path.join(EXT, "shim"), "-I" + repo, src,
+                 os.path.join(repo, "core", "dynamic_matrix.cc"), "-o", exe],
+                capture_output=True, text=True, timeout=900,
+            )
+            self.assertEqual(build.returncode, 0, build.stderr[-2000:])
+            for fanout in (1, 8):
+                run_env = dict(os.environ)
+                run_env["SOVEREIGN_F3_FANOUT"] = str(fanout)
+                run = subprocess.run([exe, "12", "20"], capture_output=True, text=True, timeout=900, env=run_env)
+                self.assertEqual(run.returncode, 0, run.stdout[-500:] + run.stderr[-500:])
+                self.assertIn("bad=0", run.stdout, run.stdout)
+
     def test_group_action_fast_path_matches_naive(self):
         """F₃ 3×3 群作用快路径 vs 独立朴素实现（全量 19683 向量 × 全部群元; 默认抽样步长 17, WANG_SLOW=1 全量）。"""
         repo = _find_repo()

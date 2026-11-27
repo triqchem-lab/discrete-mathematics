@@ -21,9 +21,10 @@
 | `shim/` | 手工构建用的垫片头文件树（`ng-log`、`gflags`、`tbb`、`boost/{unordered,iostreams}`、`google/protobuf`、`core/certificate.pb.h`），共 16 个文件 |
 | `build.sh` | clang++ 直编脚本（不依赖 bazel / Xcode） |
 | `shim_test/` | 垫片分块的回归测试（`run.sh` 对 `SHIM_THREADS=1..8` 各跑一遍） |
-| `standalone/` | 不编译整个框架也能跑的自检：`fq_matrix_test_main.cc`、`f3_problem_check.cc`（F₃ 扩展）+ `rank_f3_fast_check.cc` / `apply_check.cc` / `get_simd_check.cc`（快路径与 Get 内核的对拍 + 微基准）+ 一份极简串行 tbb 垫片 |
+| `standalone/` | 不编译整个框架也能跑的自检：`fq_matrix_test_main.cc`、`f3_problem_check.cc`（F₃ 扩展）+ `rank_f3_fast_check.cc` / `apply_check.cc` / `get_simd_check.cc` / `fanout_check.cc`（快路径、Get 内核、扇出见证的对拍 + 微基准）+ 一份极简串行 tbb 垫片 |
 | `verify.sh` | 一份 F₃ 证书的三重验证（C++ verifier / 独立核对器 / 负控制） |
-| `certs/` | 证书：`matrix_q03_n333_v1.{pb.txt,btp}`（F₃ ⟨3,3,3⟩ ≥ 17，见 §7） |
+| `scripts/` | 在别的机器上续跑要用的脚本：`run_window.sh`（在证书副本上跑一个窗口 + 内存哨兵 + 自动对比）、`guarded_run.sh`、`footprint.sh`、`monitor_run.sh`、`cmpcert.py`、`cmp_btp.py`，见 §10 |
+| `certs/` | 证书：`matrix_q03_n333_v1.{pb.txt,btp}`（F₃ ⟨3,3,3⟩ ≥ 17，见 §7）；v2 / v3 的 `.pb.txt` 与全部六个文件的 `SHA256SUMS`。v2 / v3 的轨迹档案（114 MB / 135 MB）超过 GitHub 单文件上限，放在 Release `wang-f3-certs-20261128`，见 §10 |
 | `offline/` | 离线 bazel 路线的脚本（BCR 快照镜像、模块闭包抓取、distdir 预取）；**本机构建阶段不可用**，见 §3 |
 
 配套的独立核对器在上两级目录：`engineering/wang_cert_check.py`（F₂）、`engineering/wang_cert_check_fq.py`（素域，含 GF(3)）、`engineering/forced_fq_c/forced_fq.c`（forced product 的独立 C 实现）。
@@ -363,6 +364,7 @@ dim 9–6 从零算：上游行为 56.79 CPU 秒 → dac6abdc 5.92 → 现在 4.
 | 回溯搜索去重键 + 紧凑缓存 | `test_wang_f3ext_fastpath.py::test_backtracking_dedup_keys_same_as_upstream`：同一二进制三种模式从零算 dim 9–6，比证书与 `.btp` 的 sha256 | **逐字节相同**（证书 `c56c8678…` / 轨迹 `9a8c65b2…`）；CPU 56.79 s → 4.27 s |
 | 缓存到上限的分支 | dim 4、1e6 步、`--backtracking_max_map_size=100000` | 修复前：单线程卡在重建里不结束；修复后：361 s 跑完，证书不变 |
 | 扇出存储 | `test_fanout_store_same_bounds_and_verifiable`：扇出 8 从零算 dim 9–6，去见证字段后与缺省模式逐字相同；框架 verifier 与独立核对器 | 逐字相同；`OK. Verified`；`OK. 已核对 736 轨道` |
+| 扇出见证方程 | `standalone/fanout_check.cc`：互不等价的随机子空间在群作用下的随机像上，`Get` 的见证必须把 q 映回轨道代表（`test_fanout_witness_equation`） | 扇出 1 / 8 / 16 各 600 次 **0 不匹配** |
 
 `engineering/tests/test_wang_f3ext_fastpath.py` 是这些对拍的 unittest 版（5 项：求秩 / 展平秩 / 规范形 / 剪枝各 4000 次；群作用按步长 17 抽样，`WANG_SLOW=1` 跑全量；
 Get 批量内核跑 `get_simd_check` 的扇出 1 与 8；去重键 + 紧凑缓存的逐字节等价；扇出模式的证书过两个验证端。非 ARM64 机器跳过 NEON 相关项；上游副本缺失时跳过）。
@@ -456,23 +458,24 @@ dim 3 到 15 的轨道从 3 条涨到 35 条之后 dim 2 仍然一张都没到 1
 三重验证：① 框架 verifier `OK`；② 独立核对器 736/736（flatten 15 + forced 2 + backtracking **392** + degenerate 327，
 回溯重放 184,940,900 个节点，302 s CPU，峰值内存 2.7 GB）；
 ③ 负控制（终轨道 17 → 24）：`orbit 735: backtracking kernel rejected: claim > proved`，rc = 1。
-重跑：`bash engineering/wang_f3ext/verify.sh ~/work/wang-f3-certs/matrix_q03_n333_v2.pb.txt`。
+重跑：`bash engineering/wang_f3ext/verify.sh engineering/wang_f3ext/certs/matrix_q03_n333_v2.pb.txt`。
 
-证书没有进 git：轨迹档案 114 MB（v1 是 13 MB；dim 3 与 dim 4 各约 1 GB 未压缩）。文件在
-`~/work/wang-f3-certs/matrix_q03_n333_v2.{pb.txt,btp}`：
+证书的 `.pb.txt` 在 `certs/`；轨迹档案 114 MB（v1 是 13 MB；dim 3 与 dim 4 各约 1 GB 未压缩）超过 GitHub 单文件上限，
+放在 Release `wang-f3-certs-20261128`（§10）。两份放回同一个目录、同名，即可核验。
 
 ```
 sha256  ca9cfebf94d7a0eb19b4160d1788a89d75957e27587dcb2f6a3e2015945339ac  matrix_q03_n333_v2.pb.txt
 sha256  040336bb6687a5f4eb5d5b82d583e3f53206815c87df567917c741d67875b982  matrix_q03_n333_v2.btp
 ```
 
+（与 `certs/SHA256SUMS` 一致。）
 续跑的两条经验：
 
 - A 段（dim 9–6，`--forced_product_max_iterations_log2=30`）24 秒跑完、0 条变化——forced product 对已有界的轨道不重跑（§8 第 7 条）。
   dim 6 那一遍的唯一作用是回归：102 条轨道与 v1 逐项一致。
 - dim 5 在 1e7 步下重跑也与 v1 逐项一致（266 条），说明 v1 的 dim 5 在这个预算下已经饱和，涨不动是因为 dim 6 没涨。
 
-### 7.5 续跑 v3：两次都没跑出结果
+### 7.5 续跑 v3：前三次都没跑出结果
 
 - **第一次（16:00 前后，dac6abdc 的二进制）**：dim 5–4 步数 3e7、dim 3–0 步数 1e8。dim 5 跑了约 30 分钟到 97 / 266 条，0 条改进，我把它停了。
 - **第二次（16:59 重开，75de6fdc 的二进制，扇出 4，跳过 dim 5）**：在 dim 4 上卡了 **5 小时 23 分钟，一条轨道都没跑完**，
@@ -503,7 +506,7 @@ sha256  040336bb6687a5f4eb5d5b82d583e3f53206815c87df567917c741d67875b982  matrix
 ② 独立核对器 736/736（backtracking 394 + degenerate 325 + flatten 15 + forced 2，回溯重放 218,868,492 个节点）；
 ③ 负控制（终轨道 17 → 24）在 `orbit 735: claim > proved` 处拒绝。
 
-证书不在 git 里（轨迹档案 135 MB），在 `~/work/wang-f3-certs/matrix_q03_n333_v3.{pb.txt,btp}`：
+证书的 `.pb.txt` 在 `certs/`；轨迹档案 135 MB 在 Release `wang-f3-certs-20261128`（§10）：
 
 ```
 sha256  03efce71b9add1684694501ea0af20c251da74e42549868d515a5b76dcf370ff  matrix_q03_n333_v3.pb.txt
@@ -613,3 +616,88 @@ dim 2 卡在内存上（轨迹随步数线性增长）而且 3 倍步数下一�
 - **protobuf**：手写的反射层，只实现框架用到的消息、字段与文本/二进制编解码，不是通用实现。
 - **ng-log / gflags**：`LOG` 打到 stderr，旗标是进程内注册表；没有实现日志文件轮转等特性。
   `LOG_EVERY_T` 第一版判断写反（§8 第 21 条，2026-11-28 修），现在与 glog 一致并有回归测试。
+
+## 10. 在另一台机器上继续（Linux）
+
+### 10.1 东西在哪
+
+这条线的全部代码在**数学库仓库** `github.com/triqchem-lab/discrete-mathematics`（分支 `master`）的 `engineering/` 下；与 trirv 无关。
+
+| 内容 | 位置 |
+|---|---|
+| F₃ 扩展的全部源码：补丁、垫片、新文件、对拍件、构建脚本、本 README | `engineering/wang_f3ext/` |
+| 独立核对器 | `engineering/wang_cert_check.py`（F₂）、`engineering/wang_cert_check_fq.py`（F₃）、两个 C 内核 `engineering/forced_fq_c/` |
+| unittest | `engineering/tests/test_wang_f3ext_fastpath.py`、`test_wang_cert_check_fq.py`、`test_wang_cert_check.py`、`test_wang_f3ext_shim.py` |
+| 证书 v1（≥ 17）全文 | `engineering/wang_f3ext/certs/matrix_q03_n333_v1.{pb.txt,btp}` |
+| 证书 v2 / v3 的 `.pb.txt` + 六个文件的校验和 | `engineering/wang_f3ext/certs/` |
+| 证书 v2 / v3 的轨迹档案 `.btp`（114 MB / 135 MB，超过 GitHub 单文件 100 MB 上限） | Release `wang-f3-certs-20261128` 的附件 |
+| 续跑脚本 | `engineering/wang_f3ext/scripts/` |
+| 上游框架 | `github.com/wcgbg/tensor-rank-lower-bound` @ `9db3d21`（公开证书走 Git LFS） |
+
+Release 里另有：v2 / v3 两次续跑的日志、核对日志，以及几份一次性的诊断程序源码。
+**没有**上传的：本机 `/tmp` 下各次实验的中间产物与插桩二进制（数字都已抄进本 README）。
+
+### 10.2 步骤
+
+```bash
+git clone https://github.com/triqchem-lab/discrete-mathematics
+cd discrete-mathematics
+# 轨迹档案（两个 .btp + SHA256SUMS）；放到 certs/ 下，与 .pb.txt 同目录同名
+gh release download wang-f3-certs-20261128 -D engineering/wang_f3ext/certs
+(cd engineering/wang_f3ext/certs && shasum -a 256 -c SHA256SUMS)
+
+# 上游副本: 见 §2（clone + checkout 9db3d21 + git apply f3_extension.patch + 拷新文件）
+# 构建
+bash engineering/wang_f3ext/build.sh 3 lower      $HOME/bin/lower_f3
+bash engineering/wang_f3ext/build.sh 3 verifier   $HOME/bin/verifier_f3
+bash engineering/wang_f3ext/build.sh 3 enumerator $HOME/bin/enumerator_f3
+# 先核对 v3（约 15 分钟 CPU: 框架 verifier / 独立核对器重放 2.19 亿节点 / 负控制）
+BIN_DIR=$HOME/bin bash engineering/wang_f3ext/verify.sh engineering/wang_f3ext/certs/matrix_q03_n333_v3.pb.txt
+# unittest（6 项；上游副本缺失时相关项跳过）
+python3 -m unittest discover -s engineering/tests -p "test_wang_f3ext_fastpath.py"
+```
+
+### 10.3 换机器时要知道的
+
+- **架构**。批量查找内核（`core/get_f3_simd.h`）是 ARM NEON；x86-64 上 NEON 部分不编译，自动走标量块内核，
+  结果相同、`Get` 慢约 4–7 倍（M2 上每个探针 171–291 ns 对 24–61 ns）。要恢复速度需要把 `BlockKernelNeon` 移植成 AVX2，没做过。
+  扇出存储与架构无关，照常可用。
+- **编译器**。`build.sh` 用 clang++（`CXX=` 可改）；需要 C++23（`std::format`），g++ 要 13 以上。
+- **并行度**。垫片里嵌套的并行区域是串行的（§8 第 17 条）：并行全部来自「同时搜多个轨道」，
+  同时在搜的轨道数 = min(线程数, 该维轨道数)：dim 5 / 4 是 266，dim 3 是 84，dim 2 是 14，dim 1 是 3，dim 0 是 1。
+  所以 36 线程在 dim 2 最多用上 14 个。线程数由 `SHIM_THREADS` 控制。
+  Linux 上有完整工具链，可以试上游自己的 bazel 构建（真 tbb：每个轨道的搜索内部也是并行的；真正的 `boost::unordered_flat_map`）。
+  我在 Mac 上没法跑 bazel，所以**bazel 构建 + 这份补丁从未验证过** [未验证]。
+- **内存**。证明轨迹全程在内存里、随步数增长（§7.6）。实测占用（M2，16 GB 机器，8 线程）：dim 5 扇出 8 约 4.5–5 GB；
+  dim 3 扇出 4 峰值 6.96 GB；dim 2–0 扇出 4、3e7 步峰值 6.07 GB；dim 2–0 扇出 4、3e8 步 32 分钟时 25 GB（7 个线程在搜）。
+  更多线程同时搜 = 更多份在途轨迹。**哨兵要量占用而不是 RSS**（§8 第 23 条），`scripts/guarded_run.sh` 已经这么做。
+- **证书只在整维做完时落盘**。中途被杀 = 正在跑的那一维白跑。所以在副本上跑，预算先小后大。
+- **预算要就地量**。§8 第 20 条。M2 上的实测见下表，只能当量级参考。
+
+| 窗口（v2 / v3 证书，续跑模式） | 步数 | 扇出 | 实时 |
+|---|---|---|---|
+| dim 5 | 1e6 | 1 / 8 | 112 s / 104 s |
+| dim 4 | 1e5 | 1 / 8 | 89 s / 9.8 s |
+| dim 4 | 1e6 | 8 | 80 s |
+| dim 3 | 1e6 | 4 | 38 s |
+| dim 3 | 2e7 | 4 | 520 s |
+| dim 2 / 1 / 0 | 1e6 | 4 | 8.0 / 1.5 / 0.4 s |
+| dim 2 / 1 / 0 | 3e7 | 4 | 128.6 / 26.5 / 19.6 s |
+| dim 2 / 1 / 0 | 1e6 | 1 | 63 / 9.9 / 1.7 s |
+
+### 10.4 一个窗口怎么跑
+
+```bash
+cd engineering/wang_f3ext/scripts
+# 例: 在 v3 的副本上给 dim 2-0 开 3e8 步, 扇出 4, 占用超过 40 GB 就停; 结束后自动与 v3 逐轨道比较
+WANG_LIMIT_GB=40 SHIM_THREADS=8 bash run_window.sh d210_3e8 $HOME/bin/lower_f3 300000000 4 \
+    ../certs/matrix_q03_n333_v3.pb.txt --dim_max=2
+# 盯进度(每 60 秒一行: 占用 + 日志里最新的进度行)
+WANG_RUN=./wang-run bash monitor_run.sh d210_3e8 60
+```
+
+产物：`$WANG_RUN/d210_3e8/c.pb.txt`（证书副本，被原地更新）、`$WANG_RUN/d210_3e8.{log,status}`。
+若有改进，再对副本跑一遍 `verify.sh`，然后入册。
+
+**`scripts/` 只在 macOS 上测过**（含哨兵的触发与不触发两条路径）；Linux 分支（`/proc` 取占用、无 `/usr/bin/time`）没跑过 [未验证]。
+
