@@ -8,6 +8,7 @@ RankLowerBoundFlatten 再做两次循环转置 + 三次堆分配; forced product
 需要上游副本（WANG_REPO, 缺省 /tmp/wang-tensor-rank）已打补丁; 缺失时跳过（/tmp 易失）。
 """
 import os
+import platform
 import shutil
 import subprocess
 import tempfile
@@ -56,6 +57,32 @@ class WangF3extFastPathTest(unittest.TestCase):
             self.assertEqual(run.returncode, 0, run.stdout[-1500:])
             self.assertIn("mismatches=0", run.stdout)
             self.assertNotIn("MISMATCH", run.stdout)
+
+    def test_get_batch_kernel(self):
+        """OrbitMap::Get 的批量探针内核(NEON 16 路 + 标签预筛): 块内核 / 端到端 / 未命中三项对拍 + 微基准(需 ARM64)。"""
+        repo = _find_repo()
+        if repo is None:
+            self.skipTest("上游副本未就绪（WANG_REPO 未打补丁）")
+        if platform.machine() not in ("arm64", "aarch64"):
+            self.skipTest("批量探针内核的 NEON 版需要 ARM64")
+        cxx = _find_cxx()
+        if cxx is None:
+            self.skipTest("no C++ compiler found")
+        src = os.path.join(EXT, "standalone", "get_simd_check.cc")
+        with tempfile.TemporaryDirectory() as tmp:
+            exe = os.path.join(tmp, "get_simd_check")
+            build = subprocess.run(
+                [cxx, "-std=c++23", "-O2", "-DNDEBUG", "-w", "-pthread",
+                 "-I" + os.path.join(EXT, "shim"), "-I" + repo, src,
+                 os.path.join(repo, "core", "dynamic_matrix.cc"), "-o", exe],
+                capture_output=True, text=True, timeout=900,
+            )
+            self.assertEqual(build.returncode, 0, build.stderr[-2000:])
+            run = subprocess.run([exe, "60"], capture_output=True, text=True, timeout=900)
+            self.assertEqual(run.returncode, 0, run.stdout[-1500:])
+            self.assertEqual(run.stdout.count("mismatches=0"), 3, run.stdout)
+            self.assertNotIn("MISMATCH", run.stdout)
+            self.assertIn("OK", run.stdout)
 
     def test_group_action_fast_path_matches_naive(self):
         """F₃ 3×3 群作用快路径 vs 独立朴素实现（全量 19683 向量 × 全部群元; 默认抽样步长 17, WANG_SLOW=1 全量）。"""

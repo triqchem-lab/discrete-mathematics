@@ -467,6 +467,117 @@ index 130e709..5d8ff3f 100644
 +using SymmetryGroup = typename SymmetryGroupDispatch<P, M, N0, N1, N2>::Type;
 +
  } // namespace matrix
+diff --git a/search/orbit_map.h b/search/orbit_map.h
+index db4a976..9ddd6ae 100644
+--- a/search/orbit_map.h
++++ b/search/orbit_map.h
+@@ -31,6 +31,7 @@
+ 
+ #include "core/bit_vec.h"
+ #include "core/constraints.h"
++#include "core/get_f3_simd.h"
+ #include "core/symmetry.h"
+ 
+ template <class Problem> class OrbitMap {
+@@ -94,6 +95,12 @@ private:
+       Constraints<Problem::kP, Problem::kM, Problem::kNA>, Value,
+       ConstraintsHash<Problem::kP, Problem::kM, Problem::kNA>>;
+ 
++  // F₃(NA = 9)专用: 标签预筛表(按键维数分表)与 Query 元素的按数位布局, 见 core/get_f3_simd.h。
++  static constexpr bool kF3 = (kP == 3 && kM == 1 && Problem::kNA == 9);
++  std::vector<sovereign_f3::FlatTagTable> flat_;
++  std::vector<std::mutex> flat_mu_;
++  sovereign_f3::QuerySoA query_soa_;
++
+   const SymmetryGroup *group_ = nullptr;
+   std::array<Map, kNumShards> shards_;
+   std::array<std::mutex, kNumShards> mutexes_;
+@@ -102,6 +109,18 @@ private:
+ template <class Problem>
+ OrbitMap<Problem>::OrbitMap(const SymmetryGroup *group) : group_(group) {
+   CHECK_NOTNULL(group_);
++  if constexpr (kF3) {
++    flat_.resize(Problem::kNA + 1);
++    flat_mu_ = std::vector<std::mutex>(Problem::kNA + 1);
++    sovereign_f3::BuildQuerySoA(
++        group_->query.Size(),
++        [&](int i, std::uint8_t *digits, std::uint8_t *transpose) {
++          const auto e = group_->query.At(i);
++          sovereign_f3::DigitsOfData3(e.l, digits);
++          *transpose = static_cast<std::uint8_t>(e.transpose ? 1 : 0);
++        },
++        &query_soa_);
++  }
+ }
+ 
+ template <class Problem>
+@@ -129,7 +148,21 @@ void OrbitMap<Problem>::Set(
+         ConstraintsHash<Problem::kP, Problem::kM, Problem::kNA>{}(image) %
+         kNumShards;
+     std::lock_guard<std::mutex> lock(mutexes_[shard]);
+-    shards_[shard][image] = Value{static_cast<uint8_t>(rank), store_elem};
++    if constexpr (kF3) {
++      // 首次出现的键: 标签进预筛表(只可能假阳性, 由 shards_ 排除), 再进权威表; 重复出现只覆盖见证。
++      Map &m = shards_[shard];
++      const auto it = m.find(image);
++      if (it == m.end()) {
++        const std::uint32_t tag = sovereign_f3::KeyTag(image);
++        std::lock_guard<std::mutex> flock(flat_mu_[image.size()]);
++        flat_[image.size()].Insert(tag);
++        m.emplace(image, Value{static_cast<uint8_t>(rank), store_elem});
++      } else {
++        it->second = Value{static_cast<uint8_t>(rank), store_elem};
++      }
++    } else {
++      shards_[shard][image] = Value{static_cast<uint8_t>(rank), store_elem};
++    }
+   }
+ }
+ 
+@@ -144,6 +177,37 @@ int OrbitMap<Problem>::Get(
+   // first hit settles the orbit; we return its rank and report the
+   // (query_elem, store_elem) witness verbatim. No locking: Get is only called
+   // in DP phases that do not run concurrently with Set.
++  if constexpr (kF3) {
++    // 批量探针内核(NEON + 标签预筛), 结果与下面的标量循环相同: 按下标顺序的第一个命中。
++    if (!q.empty()) {
++      int hit_query = -1;
++      StoreElem hit_store{};
++      const int rk = sovereign_f3::ProbeAll(
++          q, query_soa_, flat_,
++          [&](const Constraints<Problem::kP, Problem::kM, Problem::kNA> &key,
++              StoreElem *store) -> int {
++            const std::size_t sh =
++                ConstraintsHash<Problem::kP, Problem::kM, Problem::kNA>{}(key) % kNumShards;
++            const auto it = shards_[sh].find(key);
++            if (it == shards_[sh].end()) {
++              return -1;
++            }
++            *store = it->second.store_elem;
++            return it->second.rank;
++          },
++          &hit_query, &hit_store);
++      if (rk >= 0) {
++        if (witness_query != nullptr) {
++          *witness_query = group_->query.At(hit_query);
++        }
++        if (witness_store != nullptr) {
++          *witness_store = hit_store;
++        }
++        return rk;
++      }
++      LOG(FATAL) << "Constraints not found in OrbitMap (size=" << q.size() << ")";
++    }
++  }
+   const int query_size = group_->query.Size();
+   Constraints<Problem::kP, Problem::kM, Problem::kNA> image;
+   for (int i = 0; i < query_size; ++i) {
+@@ -181,4 +245,5 @@ template <class Problem> void OrbitMap<Problem>::Clear() {
+     std::lock_guard<std::mutex> lock(mutexes_[i]);
+     shards_[i].clear();
+   });
++  for (sovereign_f3::FlatTagTable &t : flat_) t.Clear();
+ }
 diff --git a/search/rank_lower_bound_degenerate.h b/search/rank_lower_bound_degenerate.h
 index 9375696..bfc580b 100644
 --- a/search/rank_lower_bound_degenerate.h

@@ -12,15 +12,16 @@
 
 | 路径 | 内容 |
 |---|---|
-| `f3_extension.patch` | 对上游的补丁：`problems/matrix/symmetry.h`（新增 `SymmetryGroupFq` + 分发）、`problem.h`（注释、`kN0..kN2`）、`BUILD`；**外加 core / search / problems 的 F₃ 挂钩**（`constraints.h`、`dynamic_matrix.cc`、`rank_lower_bound_flatten.h`、`rank_lower_bound_forced_product.h`、`search/rank_lower_bound_degenerate.h`、`problems/matrix/symmetry.h`，见 §5.1） |
+| `f3_extension.patch` | 对上游的补丁：`problems/matrix/symmetry.h`（新增 `SymmetryGroupFq` + 分发）、`problem.h`（注释、`kN0..kN2`）、`BUILD`；**外加 core / search / problems 的 F₃ 挂钩**（`constraints.h`、`dynamic_matrix.cc`、`rank_lower_bound_flatten.h`、`rank_lower_bound_forced_product.h`、`search/rank_lower_bound_degenerate.h`、`search/orbit_map.h`、`problems/matrix/symmetry.h`，见 §5.1） |
 | `fq_matrix.h` | 新文件：base-P 数位打包的小矩阵（`FqMatrix<P,N0,N1>`，转置 / 乘积 / 求逆 / 秩） |
 | `fq_matrix_tables.h` | 新文件：GL 表、逆表、按行查表乘积表（`FqMatrixTables<P,N0,N1>`） |
 | `fq_matrix_test.cc` | 新文件：上游 gtest 风格的扩展单元测试（bazel 下跑） |
 | `rank_f3_fast.h` | 新文件（放进上游 `core/`）：F₃ 求秩 / 展平秩快路径（性能专用，语义不变，见 §5） |
+| `get_f3_simd.h` | 新文件（放进上游 `core/`）：`OrbitMap::Get` 的批量探针内核（NEON 16 路 + 标签预筛表，语义不变，见 §5.2） |
 | `shim/` | 手工构建用的垫片头文件树（`ng-log`、`gflags`、`tbb`、`boost/{unordered,iostreams}`、`google/protobuf`、`core/certificate.pb.h`），共 16 个文件 |
 | `build.sh` | clang++ 直编脚本（不依赖 bazel / Xcode） |
 | `shim_test/` | 垫片分块的回归测试（`run.sh` 对 `SHIM_THREADS=1..8` 各跑一遍） |
-| `standalone/` | 不编译整个框架也能跑的自检：`fq_matrix_test_main.cc`、`f3_problem_check.cc`（F₃ 扩展）+ `rank_f3_fast_check.cc`（快路径对拍）+ 一份极简串行 tbb 垫片 |
+| `standalone/` | 不编译整个框架也能跑的自检：`fq_matrix_test_main.cc`、`f3_problem_check.cc`（F₃ 扩展）+ `rank_f3_fast_check.cc` / `apply_check.cc` / `get_simd_check.cc`（快路径与 Get 内核的对拍 + 微基准）+ 一份极简串行 tbb 垫片 |
 | `verify.sh` | 一份 F₃ 证书的三重验证（C++ verifier / 独立核对器 / 负控制） |
 | `certs/` | 证书：`matrix_q03_n333_v1.{pb.txt,btp}`（F₃ ⟨3,3,3⟩ ≥ 17，见 §7） |
 | `offline/` | 离线 bazel 路线的脚本（BCR 快照镜像、模块闭包抓取、distdir 预取）；**本机构建阶段不可用**，见 §3 |
@@ -36,7 +37,7 @@ git -C /tmp/wang-tensor-rank checkout 9db3d21
 HERE=/Users/zesheng/work/discrete-mathematics/engineering/wang_f3ext
 git -C /tmp/wang-tensor-rank apply "$HERE/f3_extension.patch"
 cp "$HERE/fq_matrix.h" "$HERE/fq_matrix_tables.h" "$HERE/fq_matrix_test.cc" /tmp/wang-tensor-rank/problems/matrix/
-cp "$HERE/rank_f3_fast.h" /tmp/wang-tensor-rank/core/
+cp "$HERE/rank_f3_fast.h" "$HERE/get_f3_simd.h" /tmp/wang-tensor-rank/core/
 ```
 
 **实测（2026-11-27）**：从 `git archive 9db3d21` 得到的干净副本出发执行上面几步，用本目录 `build.sh` 构建，
@@ -150,6 +151,29 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
   现在 `Get` 里的大头变成了 RREF（约 0.25–0.4 µs）。
   **这一步是先量再改的**：我起初以为 RREF 是热点，写完快路径一测才发现不是。
 
+### 5.2 `Get` 的批量探针内核（搜索的真正热点，语义不变）
+
+回溯搜索（dim ≤ 5）的时间几乎全在 `OrbitMap::Get`：对一组约束 q，把全部 22464 个 Query 元素逐个试过去，
+平均几千个探针才命中一次。即便群作用已经查表化，标量版满扫描平均每个探针仍要 0.17–0.29 µs（群作用 + 规范形 + 查表）。
+`get_f3_simd.h` 改成：
+
+- **16 个探针一批**：用 NEON 对 16 个 Query 元素同时做「群作用 → 逐列消元求规范形 → 标签」，
+  数据按道分开存放（`X[行][列]` 是 16 个探针的数位向量）。消元是无分支的：主元列从 8 到 0，
+  每列在还没当过主元的行里取最小的非零行。规范形由行空间唯一决定，所以与逐个算的结果逐位相同。
+- **32 位标签预筛**：每个键有一个与行序无关的标签 `Σ_rows mix32(行编码 | 主元列 << 22)`。
+  `Set` 首次插入一个键时把标签放进「按键维数分表」的开放寻址表；`Get` 先查标签表，命中再回到
+  权威的哈希表核对。标签表只可能假阳性（由权威表排除），不可能假阴性。
+- 回溯搜索会把多条额外行加在基上，q 可以超过 9 行且线性相关；探针循环先把 q 约化成行空间的基
+  （像的行空间只依赖 q 的跨度，所以结果与见证不变）。
+- 返回值与标量版逐项相同：按下标顺序的第一个命中、同一个界、同一对见证。没有 NEON 的机器走标量块内核
+  （同一算法的另一份实现，也是 NEON 版的对拍参考），同样享受标签表。
+
+实测（M2 空闲，2026-11-27，`standalone/get_simd_check.cc`）：满扫描平均每个探针 24–61 ns（标量 171–291 ns）；
+命中场景下一次 `Get` 从 765–1071 µs 降到 142–226 µs（4.6–6.4 倍，表越大倍数越高）。
+搜索端的回归：在同一份 v1 证书上重跑 dim 9–6（回溯步数 1e7），结束时 102 条轨道与 v1 逐项一致
+（维数 / 界 / 证明类型 / 投影位，0 条差异），dim 6 用时 21.6 s。
+  （旧二进制没有同一配置的计时；从零重算的 v3 运行里 dim 6 是 105.8 s，但那次还跑了 forced product，配置不同，只能当量级参考。）
+
 等价性见 §6。
 
 ## 6. 验证证据（2026-11-27）
@@ -165,10 +189,13 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
 | F₃ 展平秩快路径 | 同一件：随机张量 × 随机阈值，形状 (9,9,9) / (2,3,4) / (5,4,6) | 9 万次 **0 不匹配**；返回值覆盖 0–9 |
 | F₃ 规范形快路径 | `rank_f3_fast_check.cc` 的「规范形」一节：随机 0–12 行 × 9（或 4）列，与通用 `GaussJordanEliminationFq` 比输出与秩 | 1.2 万次 **0 不匹配**；各秩都被采到 |
 | F₃ 群作用快路径 | `standalone/apply_check.cc`：**全部** 19683 个向量 × 11232 个 store 元 × 22464 个 query 元，与独立朴素实现比 `Apply`，另查 `ApplyInverse ∘ Apply = id` 与单位元 | **0 不匹配**（store / query / 逆 / 单位元）；数位运算版与查表版各跑过一遍 |
+| Get 批量内核：块内核 | `standalone/get_simd_check.cc`：随机 q（1–9 行）× 真实 Query 元素，NEON 版 vs 标量版比行 / 主元标志 / 标签，并与「逐个探针用框架的 `query.Apply` + `GaussJordanRREF`」核对 | **0 不匹配**（32000 道） |
+| Get 批量内核：端到端 | 同一件：真实 `OrbitMap` 的 `Get` vs 独立重写的标量逻辑，比首命中下标 / 界 / 见证；其中 2 个键 × 全部 22464 个 Query 元素逐一枚举（无假阴性），并核对见证满足命中方程；一半查询带 1–3 条相关行（204 次超过 9 行） | **0 不匹配**（47928 次 Get） |
+| Get 批量内核：未命中 | 同一件：300 个随机 q（209 个不在任何轨道里）上 `ProbeAll` 与标量逻辑同未命中 / 同命中 | **0 不匹配** |
 | 快路径后的回归 | F₂ verifier / F₂ 枚举 / F₃ verifier / F₃ 枚举 / 轨道大小守恒 | 20 / OK；496 条逐条一致；OK；736 条不变；10 维精确相等 |
 | 复现性 | 干净上游 + 补丁 + 新文件 + 本目录垫片（`otool -l` 按段比较） | 代码段 / 数据段逐字节相同；差异只在 `LC_UUID` 与代码签名 |
 
-`engineering/tests/test_wang_f3ext_fastpath.py` 是这些对拍的 unittest 版（求秩 / 展平秩 / 规范形 / 剪枝各 4000 次；群作用按步长 17 抽样，`WANG_SLOW=1` 跑全量；上游副本缺失时跳过）。
+`engineering/tests/test_wang_f3ext_fastpath.py` 是这些对拍的 unittest 版（求秩 / 展平秩 / 规范形 / 剪枝各 4000 次；群作用按步长 17 抽样，`WANG_SLOW=1` 跑全量；Get 批量内核跑 `get_simd_check`，非 ARM64 机器跳过；上游副本缺失时跳过）。
 
 轨道大小守恒（`Σ|orbit|` 与 `[9 choose d]₃`）：
 
