@@ -178,6 +178,55 @@ inline void ApplyRight3(const std::uint8_t V[9], const std::uint8_t R[9], std::u
   }
 }
 
+// 3×3 F₃ 群作用的查表版（比上面的数位运算版更快; 语义相同）。
+// 对每个矩阵数据 d（3^9 种）、每个输出行 o、每个输入三元组 x（0..26 = x₀ + 3x₁ + 9x₂）, 预先算好
+//   左乘表 TabL[d][o·27 + x] = Σ_k M[o][k]·x_k（mod 3）
+//   右乘表 TabR[d][o·27 + x] = Σ_k M[k][o]·x_k（mod 3）   （即 Mᵀ 的左乘表）
+// 每次 Apply 只需三次「取三元组 → 查表」。
+constexpr int kLinearTab = 81; // 3 行 × 27 种三元组
+
+inline std::vector<std::array<std::uint8_t, kLinearTab>> BuildLinearTable3(bool transposed) {
+  std::vector<std::array<std::uint8_t, kLinearTab>> tab(kPack3x3);
+  std::uint8_t M[9];
+  for (std::uint32_t d = 0; d < kPack3x3; ++d) {
+    DigitsOfData3(d, M);
+    for (int o = 0; o < 3; ++o) {
+      for (int x = 0; x < 27; ++x) {
+        const int x0 = x % 3, x1 = (x / 3) % 3, x2 = x / 9;
+        int s = 0;
+        if (transposed) {
+          s = M[0 * 3 + o] * x0 + M[1 * 3 + o] * x1 + M[2 * 3 + o] * x2;
+        } else {
+          s = M[o * 3 + 0] * x0 + M[o * 3 + 1] * x1 + M[o * 3 + 2] * x2;
+        }
+        tab[d][static_cast<std::size_t>(o * 27 + x)] = static_cast<std::uint8_t>(s % 3);
+      }
+    }
+  }
+  return tab;
+}
+
+// 行向量 v（9 个数位）→ L · τᵗ(V), 用左乘表 tab（按 L 的矩阵数据索引）。
+inline void ApplyLeftTab(const std::uint8_t *tabL, bool tr, const std::uint8_t v[9], std::uint8_t w[9]) {
+  for (int j = 0; j < 3; ++j) {
+    const int x = tr ? (v[j * 3 + 0] + 3 * v[j * 3 + 1] + 9 * v[j * 3 + 2])
+                     : (v[0 * 3 + j] + 3 * v[1 * 3 + j] + 9 * v[2 * 3 + j]);
+    w[0 * 3 + j] = tabL[0 * 27 + x];
+    w[1 * 3 + j] = tabL[1 * 27 + x];
+    w[2 * 3 + j] = tabL[2 * 27 + x];
+  }
+}
+
+// 行向量 v → V · R, 用右乘表 tab（按 R 的矩阵数据索引）。
+inline void ApplyRightTab(const std::uint8_t *tabR, const std::uint8_t v[9], std::uint8_t w[9]) {
+  for (int i = 0; i < 3; ++i) {
+    const int x = v[i * 3 + 0] + 3 * v[i * 3 + 1] + 9 * v[i * 3 + 2];
+    w[i * 3 + 0] = tabR[0 * 27 + x];
+    w[i * 3 + 1] = tabR[1 * 27 + x];
+    w[i * 3 + 2] = tabR[2 * 27 + x];
+  }
+}
+
 // 「列反转」Gauss–Jordan（求规范形, OrbitMap / 枚举器 / verifier 的键都靠它）, 只对 GFVec<3,1,N>。
 // 与 core/math_utils.h 的 GaussJordanEliminationFq **输出逐元素相同**:
 //   主元列从 N−1 往下、主元行从末行往上放、零行停在最前、主元归一化为 1、上下都消。
