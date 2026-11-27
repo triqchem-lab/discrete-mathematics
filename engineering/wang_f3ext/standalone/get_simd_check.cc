@@ -11,12 +11,17 @@
 //    Get(q) 只应依赖 q 的行空间: 把一个已存键的行随机重复、随机线性组合之后, Get 必须给出
 //    与「去重后的规范行」完全相同的结果(界 + 一对见证), 且与标量逻辑一致。
 //    这是 search/rank_lower_bound_backtracking.h 里「去重键」优化的依据。
+// F. 扇出(SOVEREIGN_F3_FANOUT >= 2): Set 多存左乘像、探针顺序交错之后, 首命中与见证都会变。B / E 两节在扇出模式下
+//    不再要求「同一个下标、同一对见证」, 改为比见证方程: 两边交出的见证必须把 q 映到同一个轨道代表, rank 相同。
+//    扇出为 1(缺省)时仍按逐位相同来比。main 的第一行输出 fanout=N。
+//
 // 编译: clang++ -std=c++23 -O3 -I<shim> -I<WANG_REPO> get_simd_check.cc <WANG_REPO>/core/dynamic_matrix.cc
 // 运行: ./get_simd_check   —— 全部相同则 exit 0
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <random>
 #include <unordered_map>
 #include <vector>
@@ -102,8 +107,18 @@ int RefGet(const Group &g, const RefTable &ref, const Cons9 &q, int *rank, SElem
 
 void BuildRef(const Group &g, RefTable *ref, OrbitMap<P3> *map, std::mt19937_64 &rng, int reps,
               std::vector<Cons9> *keys) {
+  // 流水线里每个轨道只 Set 一次, 这里也要这样: 扇出之后左乘像会落到同一 H-轨道的另一个 store-轨道上,
+  // 若两条「代表」其实同属一个轨道, OrbitMap 与只存普通像的参考表就会给出不同的 rank(2026-11-27 实测踩到)。
   for (int k = 0; k < reps; ++k) {
-    const Cons9 c = RandomSubspace(rng, 1 + static_cast<int>(rng() % 8));
+    Cons9 c;
+    bool dup;
+    do {
+      c = RandomSubspace(rng, 1 + static_cast<int>(rng() % 8));
+      dup = false;
+      for (int i = 0; i < g.query.Size() && !dup; ++i) {
+        dup = ref->find(ApplyQuery(g, g.query.At(i), c)) != ref->end();
+      }
+    } while (dup);
     const int rank = static_cast<int>(rng() % 20);
     map->Set(c, rank);
     RefInsert(g, ref, c, rank);
@@ -155,6 +170,26 @@ long CheckBlockKernel(const Group &g, std::mt19937_64 &rng, long trials, long *b
   return bad;
 }
 
+int g_fanout = 1;  // main 里按环境变量 SOVEREIGN_F3_FANOUT 设置, 与 OrbitMap 读的是同一个变量
+
+// 见证 (wq, ws) 把 rows 映到的轨道代表: Canon(store.ApplyInverse(ws, query.Apply(wq, rows)))
+Cons9 WitnessRep(const Group &g, const Cons9 &rows, QElem wq, SElem ws) {
+  Cons9 back;
+  for (const Vec9 &v : rows) back.push_back(g.store.ApplyInverse(ws, g.query.Apply(wq, v)));
+  return Canon(back);
+}
+
+// map 交出的见证 (wq, ws) 与参考逻辑交出的见证 (下标 ri 的 query 元素, rs) 是否指向同一个轨道。
+// 扇出为 1 时 OrbitMap 与参考逻辑的探针顺序相同, 要求逐位一致; 否则比见证方程。
+bool SameOrbit(const Group &g, const Cons9 &q, QElem wq, SElem ws, int ri, SElem rs) {
+  if (g_fanout == 1) {
+    return ri >= 0 && wq.l == g.query.At(ri).l && wq.transpose == g.query.At(ri).transpose && ws == rs;
+  }
+  if (ri < 0 || !g.query.Contains(wq) || !g.store.Contains(ws)) {
+    return false;
+  }
+  return WitnessRep(g, q, wq, ws) == WitnessRep(g, q, g.query.At(ri), rs);
+}
 // ---- B ----
 long CheckOrbitMap(const Group &g, std::mt19937_64 &rng, int reps, int no_miss_keys, long *gets,
                    long *tall) {
@@ -190,8 +225,7 @@ long CheckOrbitMap(const Group &g, std::mt19937_64 &rng, int reps, int no_miss_k
     const int mr = map.Get(q, &wq, &ws);
     ri = RefGet(g, ref, q, &rr, &rs);
     ++*gets;
-    if (ri < 0 || mr != rr || wq.l != g.query.At(ri).l || wq.transpose != g.query.At(ri).transpose ||
-        ws != rs) {
+    if (ri < 0 || mr != rr || !SameOrbit(g, q, wq, ws, ri, rs)) {
       if (bad < 5) std::printf("GET MISMATCH: map=(%d) ref=(%d,%d)\n", mr, ri, rr);
       ++bad;
     }
@@ -302,9 +336,17 @@ long CheckRepeatedRows(const Group &g, std::mt19937_64 &rng, int reps, long tria
     int rr = 0, ri = 0;
     SElem rs{};
     ri = RefGet(g, ref, q, &rr, &rs);
-    if (r1 != r0 || wq.l != wq0.l || wq.transpose != wq0.transpose || ws != ws0 ||
-        ri < 0 || r1 != rr || wq.l != g.query.At(ri).l || wq.transpose != g.query.At(ri).transpose ||
-        ws != rs) {
+    bool ok;
+    if (g_fanout == 1) {
+      ok = !(r1 != r0 || wq.l != wq0.l || wq.transpose != wq0.transpose || ws != ws0 || ri < 0 || r1 != rr ||
+             wq.l != g.query.At(ri).l || wq.transpose != g.query.At(ri).transpose || ws != rs);
+    } else {
+      // 扇出: q(含重复 / 相关行)与 key(规范行)的见证可以不同, 但必须落在同一个轨道代表上, 且与参考一致。
+      ok = ri >= 0 && r1 == r0 && r1 == rr && g.query.Contains(wq) && g.query.Contains(wq0) &&
+           WitnessRep(g, q, wq, ws) == WitnessRep(g, key, wq0, ws0) &&
+           WitnessRep(g, q, wq, ws) == WitnessRep(g, q, g.query.At(ri), rs);
+    }
+    if (!ok) {
       if (bad < 5) std::printf("REPEAT MISMATCH: rows=%zu raw=(%d) dedup=(%d) ref=(%d,%d)\n", q.size(), r1, r0, ri, rr);
       ++bad;
     }
@@ -390,9 +432,13 @@ void Bench(const Group &g, std::mt19937_64 &rng, int reps, int qdim, int iters) 
 
 int main(int argc, char **argv) {
   const long block_trials = argc > 1 ? std::atol(argv[1]) : 2000;
+  if (const char *s = std::getenv("SOVEREIGN_F3_FANOUT")) {
+    g_fanout = std::max(1, std::atoi(s));
+  }
   Group g;
   std::mt19937_64 rng(20261127);
-  std::printf("query=%d store=%d NEON=%d\n", g.query.Size(), g.store.Size(), SOVEREIGN_F3_NEON);
+  std::printf("query=%d store=%d NEON=%d fanout=%d\n", g.query.Size(), g.store.Size(), SOVEREIGN_F3_NEON,
+              g_fanout);
   long blocks = 0, gets = 0, misses = 0;
   const long a = CheckBlockKernel(g, rng, block_trials, &blocks);
   std::printf("A block kernel: blocks=%ld lanes=%ld mismatches=%ld\n", blocks, blocks * 16, a);

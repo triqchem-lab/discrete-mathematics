@@ -10,6 +10,7 @@ RankLowerBoundFlatten 再做两次循环转置 + 三次堆分配; forced product
 import hashlib
 import os
 import platform
+import sys
 import shutil
 import subprocess
 import tempfile
@@ -79,16 +80,23 @@ class WangF3extFastPathTest(unittest.TestCase):
                 capture_output=True, text=True, timeout=900,
             )
             self.assertEqual(build.returncode, 0, build.stderr[-2000:])
-            run = subprocess.run([exe, "60"], capture_output=True, text=True, timeout=900)
-            self.assertEqual(run.returncode, 0, run.stdout[-1500:])
-            # A 块内核 / B 端到端 / C 未命中 / E 重复行: 四行都必须是 mismatches=0
-            self.assertEqual(run.stdout.count("mismatches=0"), 4, run.stdout)
-            for section in ("A block kernel", "B orbit map", "C probe-all", "E repeated rows"):
-                line = [l for l in run.stdout.splitlines() if l.startswith(section)]
-                self.assertEqual(len(line), 1, run.stdout)
-                self.assertTrue(line[0].endswith("mismatches=0"), line[0])
-            self.assertNotIn("MISMATCH", run.stdout)
-            self.assertIn("OK", run.stdout)
+            for fanout in (1, 8):
+                # 缺省(扇出 1, 与参考逻辑逐位相同)与扇出 8(B / E 两节改比见证方程)各跑一遍
+                run_env = dict(os.environ)
+                run_env.pop("SOVEREIGN_F3_FANOUT", None)
+                if fanout > 1:
+                    run_env["SOVEREIGN_F3_FANOUT"] = str(fanout)
+                run = subprocess.run([exe, "60"], capture_output=True, text=True, timeout=900, env=run_env)
+                self.assertEqual(run.returncode, 0, run.stdout[-1500:])
+                self.assertIn(f"fanout={fanout}", run.stdout.splitlines()[0], run.stdout)
+                # A 块内核 / B 端到端 / C 未命中 / E 重复行: 四行都必须是 mismatches=0
+                self.assertEqual(run.stdout.count("mismatches=0"), 4, run.stdout)
+                for section in ("A block kernel", "B orbit map", "C probe-all", "E repeated rows"):
+                    line = [l for l in run.stdout.splitlines() if l.startswith(section)]
+                    self.assertEqual(len(line), 1, run.stdout)
+                    self.assertTrue(line[0].endswith("mismatches=0"), line[0])
+                self.assertNotIn("MISMATCH", run.stdout)
+                self.assertIn("OK", run.stdout)
 
     def test_backtracking_dedup_keys_same_as_upstream(self):
         """回溯搜索的「去重键 + 类子集求值」(search/rank_lower_bound_backtracking.h 的 F₃ 分支)与上游行为逐字节相同。
@@ -109,6 +117,7 @@ class WangF3extFastPathTest(unittest.TestCase):
         env = dict(os.environ)
         env.pop("SOVEREIGN_F3_RAWKEYS", None)
         env.pop("SOVEREIGN_F3_MAX_CLASSES", None)
+        env.pop("SOVEREIGN_F3_FANOUT", None)  # 这个测试比的是缺省(扇出 1)行为
         env["WANG_REPO"] = repo
 
         def sha(path):
@@ -139,6 +148,64 @@ class WangF3extFastPathTest(unittest.TestCase):
                 digests[mode] = (sha(os.path.join(work, "c.pb.txt")), sha(os.path.join(work, "c.btp")))
             self.assertEqual(digests["dedup"], digests["raw"])
             self.assertEqual(digests["fallback"], digests["raw"])
+
+    def test_fanout_store_same_bounds_and_verifiable(self):
+        """扇出存储(SOVEREIGN_F3_FANOUT=8, 见 wang_f3ext/README.md §5.5)。
+
+        从零算 dim 9–6: 去掉见证字段之后, 扇出模式的证书与缺省模式逐字相同(界 / 证明类型 / 退化证明选的额外约束都不变),
+        见证字段确实变了; 扇出模式的证书必须被框架 verifier 与独立核对器接受——见证是 (L_f⁻¹·L_e, t) 这种
+        新的组合, 两个验证端都是按见证方程重新算的。上游副本或 v1 证书缺失时跳过。"""
+        repo = _find_repo()
+        if repo is None:
+            self.skipTest("上游副本未就绪（WANG_REPO 未打补丁）")
+        cert = os.path.join(EXT, "certs", "matrix_q03_n333_v1.pb.txt")
+        btp = os.path.join(EXT, "certs", "matrix_q03_n333_v1.btp")
+        if not (os.path.exists(cert) and os.path.exists(btp)):
+            self.skipTest("v1 证书不在库里")
+        env = dict(os.environ)
+        for key in ("SOVEREIGN_F3_RAWKEYS", "SOVEREIGN_F3_MAX_CLASSES", "SOVEREIGN_F3_FANOUT"):
+            env.pop(key, None)
+        env["WANG_REPO"] = repo
+        args = ["c.pb.txt", "--ignore_rank_lower_bound", "--dim_min=6",
+                "--backtracking_step_limit=10000000", "--forced_product_max_iterations_log2=28",
+                "--backtracking_max_map_size=2000000"]
+
+        def strip_witness(path):
+            with open(path, encoding="utf-8") as f:
+                return "".join(l for l in f if "query_elem" not in l and "store_elem" not in l)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            lower = os.path.join(tmp, "lower_f3")
+            verifier = os.path.join(tmp, "verifier_f3")
+            for what, out in (("lower", lower), ("verifier", verifier)):
+                build = subprocess.run(["bash", os.path.join(EXT, "build.sh"), "3", what, out],
+                                       capture_output=True, text=True, timeout=1800, env=env)
+                self.assertEqual(build.returncode, 0, build.stderr[-2000:])
+            texts = {}
+            for mode, extra in (("default", {}), ("fanout", {"SOVEREIGN_F3_FANOUT": "8"})):
+                work = os.path.join(tmp, mode)
+                os.mkdir(work)
+                shutil.copy(cert, os.path.join(work, "c.pb.txt"))
+                shutil.copy(btp, os.path.join(work, "c.btp"))
+                run_env = dict(env)
+                run_env.update(extra)
+                run = subprocess.run([lower] + args, cwd=work, capture_output=True, text=True,
+                                     timeout=3600, env=run_env)
+                self.assertEqual(run.returncode, 0, run.stderr[-2000:])
+                with open(os.path.join(work, "c.pb.txt"), encoding="utf-8") as f:
+                    texts[mode] = f.read()
+            self.assertEqual(strip_witness(os.path.join(tmp, "default", "c.pb.txt")),
+                             strip_witness(os.path.join(tmp, "fanout", "c.pb.txt")))
+            self.assertNotEqual(texts["default"], texts["fanout"])  # 见证字段应当不同
+            fan_cert = os.path.join(tmp, "fanout", "c.pb.txt")
+            ver = subprocess.run([verifier, fan_cert], capture_output=True, text=True, timeout=1800)
+            self.assertEqual(ver.returncode, 0, ver.stderr[-2000:])
+            self.assertIn("OK. Verified", ver.stderr + ver.stdout)
+            chk = subprocess.run([sys.executable, "-I",
+                                  os.path.join(ROOT, "engineering", "wang_cert_check_fq.py"), fan_cert],
+                                 capture_output=True, text=True, timeout=1800)
+            self.assertEqual(chk.returncode, 0, chk.stdout[-2000:] + chk.stderr[-2000:])
+            self.assertIn("OK. 已核对 736 轨道", chk.stdout)
 
     def test_group_action_fast_path_matches_naive(self):
         """F₃ 3×3 群作用快路径 vs 独立朴素实现（全量 19683 向量 × 全部群元; 默认抽样步长 17, WANG_SLOW=1 全量）。"""

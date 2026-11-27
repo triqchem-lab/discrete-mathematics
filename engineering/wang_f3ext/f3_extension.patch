@@ -716,7 +716,7 @@ index db4a976..5290261 100644
 +  for (sovereign_f3::FlatTagTable &t : flat_) t.Clear();
  }
 diff --git a/search/rank_lower_bound_backtracking.h b/search/rank_lower_bound_backtracking.h
-index e8cdd3c..ea5531e 100644
+index e8cdd3c..cd841fe 100644
 --- a/search/rank_lower_bound_backtracking.h
 +++ b/search/rank_lower_bound_backtracking.h
 @@ -26,6 +26,7 @@
@@ -727,12 +727,13 @@ index e8cdd3c..ea5531e 100644
  #include <limits>
  #include <numeric>
  #include <tuple>
-@@ -75,6 +76,170 @@ private:
+@@ -75,6 +76,377 @@ private:
        boost::unordered_flat_map<Constraints<P, M, NA>, LocalMapValue,
                                  ConstraintsHash<P, M, NA>>;
  
 +  // ---------------------------------------------------------------------------
-+  // F₃ 去重键（语义不变，只少做重复的 OrbitMap::Get；F₂ 保持上游原样）。
++  // F₃ 去重键 + 紧凑缓存（语义不变，只是少做重复的 OrbitMap::Get、少做昂贵的缓存查询；
++  // F₂ 保持上游原样）。
 +  //
 +  // 链上同一个候选可以重复出现——路径的每一项是假想分解里的一个乘积项，两项的第一因子成比例时
 +  // 候选相同。上游对每个 mask 构造「选中的路径行 + 最后一行」作缓存键，于是张成同一个子空间、
@@ -742,12 +743,17 @@ index e8cdd3c..ea5531e 100644
 +  // 序列（按下标降序）。取值仍按 popcount(mask) 计（每个路径项是一个乘积项），闭合时记录的仍是
 +  // 原顺序下第一个达到 target 的 mask，所以搜索的决策与记录的轨迹与上游逐条相同。
 +  //
-+  // 每个节点只对「类子集」做缓存查找：c = 可掩码位置上的不同候选数，类子集 2^c 个
-+  // （上游是 2^(j-1) 个 mask；dim 6 实测合计 1.44 亿对 8.25 亿）。
-+  // c 超过阈值时退回上游的逐 mask 循环（键仍是去重键）。
++  // 每个节点只对「类子集」做缓存查询：c = 可掩码位置上的不同候选数，类子集 2^c 个
++  // （上游是 2^(j-1) 个 mask）。
++  //
++  // 缓存本身是一张开放寻址表，键是这组候选的标签之和（见 F3Key）。原来用的是
++  // std::unordered_map<行向量, …>（手工构建里 boost::unordered_flat_map 的垫片就是它），
++  // 每次查询都要对行向量做哈希、再追一个堆上的节点——dim 5 上采样里约占六成时间。
++  // 不同候选超过 16 个时退回上游的逐 mask 循环（键仍是去重后的行向量）。
++  // 类子集按格雷码枚举：相邻两个只差一个类，键每步只加 / 减一个标签。
 +  // ---------------------------------------------------------------------------
 +  static constexpr bool kF3Dedup = (P == 3 && M == 1);
-+  static constexpr uint32_t kF3MaxClasses = 20;
++  static constexpr uint32_t kF3MaxClasses = 16; // 紧凑键能容纳的不同候选数
 +  // 环境变量 SOVEREIGN_F3_RAWKEYS 非空时退回上游行为（逐 mask + 含重复的原始键），
 +  // SOVEREIGN_F3_MAX_CLASSES 可调低类数阈值（逼出回退分支）；两者只用于回归对拍。
 +  static bool f3_raw_keys() {
@@ -761,20 +767,150 @@ index e8cdd3c..ea5531e 100644
 +        return kF3MaxClasses;
 +      }
 +      const long v = std::strtol(s, nullptr, 10);
-+      return v < 1 ? 1u : (v > 30 ? 30u : static_cast<uint32_t>(v));
++      return v < 1 ? 1u : (v > static_cast<long>(kF3MaxClasses)
++                               ? kF3MaxClasses
++                               : static_cast<uint32_t>(v));
 +    }();
 +    return n;
 +  }
 +
++  static uint64_t f3_mix(uint64_t x) {
++    x ^= x >> 30;
++    x *= 0xBF58476D1CE4E5B9ull;
++    x ^= x >> 27;
++    x *= 0x94D049BB133111EBull;
++    x ^= x >> 31;
++    return x;
++  }
++  // 键 = 这组候选各自的「标签」之和（两个独立的 64 位半区；标签 = 下标的 splitmix 哈希，查表得到）。
++  // 加法与次序无关，所以键只依赖「这组候选是哪些」，而且类子集按格雷码走的时候每步只加 / 减一个标签。
++  // 两组不同的候选撞出同一个键的概率是 2^-128 量级；即使撞上，后果也只是拿到别的子空间的界与见证，
++  // 验证端会拒绝那份记录（见证对不上），不会放过错误的证明。
++  struct F3Key {
++    uint64_t lo = 0;
++    uint64_t hi = 0;
++    bool operator==(const F3Key &o) const { return lo == o.lo && hi == o.hi; }
++  };
++  static F3Key f3_tag(uint32_t cand_index) {
++    return F3Key{f3_mix(static_cast<uint64_t>(cand_index) + 0x123456789ABCDEFull),
++                 f3_mix(static_cast<uint64_t>(cand_index) + 0xFEDCBA9876543210ull)};
++  }
++  static uint64_t f3_key_hash(const F3Key &k) {
++    return f3_mix(k.lo + 0x9E3779B97F4A7C15ull * (k.hi | 1u));
++  }
++
++  struct F3Slot {
++    F3Key key;
++    uint8_t rank = 0;
++    QueryElem query_elem{};
++    StoreElem store_elem{};
++    uint8_t used = 0;
++  };
++
++  // 每个线程一张。容量是 2 的幂，负载到 70% 就扩一倍；条数到了上限（上游的 max_map_size_）
++  // 就把哈希最低位为 1 的那些丢掉（对应上游的「随机减半」——只影响缓存命中率，不影响结果）。
++  struct F3Cache {
++    std::vector<F3Slot> slots;
++    uint32_t mask = 0;
++    uint32_t count = 0;
++    uint32_t pow_ = 14;
++    size_t cap_entries = 0;
++
++    void Reset(size_t max_entries) {
++      cap_entries = max_entries ? max_entries : size_t{1} << 20;
++      if (!slots.empty() && static_cast<size_t>(count) * 8 < (static_cast<size_t>(mask) + 1) &&
++          pow_ > 14) {
++        --pow_; // 上一次用得少，缩一半
++      }
++      count = 0;
++      slots.assign(std::size_t{1} << pow_, F3Slot{});
++      mask = (uint32_t{1} << pow_) - 1;
++    }
++    const F3Slot *Find(const F3Key &key, uint64_t h) const {
++      uint32_t i = static_cast<uint32_t>(h >> 40) & mask;
++      while (slots[i].used) {
++        if (slots[i].key == key) {
++          return &slots[i];
++        }
++        i = (i + 1) & mask;
++      }
++      return nullptr;
++    }
++    // 对应上游在每个节点开头做的检查：到 max_map_size 就减半。
++    void HalveIfFull() {
++      if (static_cast<size_t>(count) >= cap_entries) {
++        Rebuild(pow_, true);
++      }
++    }
++    // 插入可能扩表或减半，之前取到的指针会失效——所以一个节点里的插入都留到查询全部做完之后。
++    void Insert(const F3Key &key, uint64_t h, const LocalMapValue &v) {
++      const size_t cap = static_cast<size_t>(mask) + 1;
++      if (static_cast<size_t>(count) >= cap_entries) {
++        Rebuild(pow_, true);
++      } else if ((static_cast<size_t>(count) + 1) * 10 >= cap * 7) {
++        Rebuild(pow_ < 22 ? pow_ + 1 : pow_, pow_ >= 22);
++      }
++      uint32_t i = static_cast<uint32_t>(h >> 40) & mask;
++      while (slots[i].used) {
++        if (slots[i].key == key) {
++          slots[i].rank = v.rank;
++          slots[i].query_elem = v.query_elem;
++          slots[i].store_elem = v.store_elem;
++          return;
++        }
++        i = (i + 1) & mask;
++      }
++      slots[i].key = key;
++      slots[i].rank = v.rank;
++      slots[i].query_elem = v.query_elem;
++      slots[i].store_elem = v.store_elem;
++      slots[i].used = 1;
++      ++count;
++    }
++    void Rebuild(uint32_t new_pow, bool halve) {
++      std::vector<F3Slot> old;
++      old.swap(slots);
++      const uint32_t p = std::min(new_pow, 22u);
++      slots.assign(std::size_t{1} << p, F3Slot{});
++      mask = (uint32_t{1} << p) - 1;
++      pow_ = p;
++      count = 0;
++      for (const F3Slot &s : old) {
++        if (!s.used) {
++          continue;
++        }
++        const uint64_t h = f3_key_hash(s.key);
++        if (halve && (h & 1u)) {
++          continue;
++        }
++        uint32_t i = static_cast<uint32_t>(h >> 40) & mask;
++        while (slots[i].used) {
++          i = (i + 1) & mask;
++        }
++        slots[i] = s;
++        ++count;
++      }
++    }
++  };
++
 +  struct F3State {
-+    std::vector<uint32_t> rep;        // rep[p] = 与第 p 项同一个候选的最早位置
-+    std::vector<int32_t> last_pos;    // last_pos[i] = 候选 i 在当前链上的最后位置（无则 -1）
-+    std::vector<int32_t> saved;       // 递归栈：进入子节点前的 last_pos[i]
++    std::vector<uint32_t> rep;      // rep[p] = 与第 p 项同一个候选的最早位置
++    std::vector<uint32_t> pos_cand; // pos_cand[p] = 第 p 项在 minimal_constraints_ 里的下标
++    std::vector<int32_t> last_pos;  // last_pos[i] = 候选 i 在当前链上的最后位置（无则 -1）
++    std::vector<int32_t> saved;     // 递归栈：进入子节点前的 last_pos[i]
++    // 节点局部（复用以避免反复分配）
 +    std::vector<uint32_t> cls_of_pos; // 位置 → 紧凑类号
 +    std::vector<uint32_t> rep_of_cls; // 类号 → 代表位置（升序）
 +    std::vector<uint32_t> mult;       // 类号 → 可掩码位置上的重数
-+    std::vector<int32_t> val;         // 类子集（恒含末行类）→ 缓存的界；-1 = 未取
-+    Constraints<P, M, NA> key;        // 复用的键向量
++    std::vector<uint32_t> cls_cand;    // 类号 → 代表候选的下标（类号按首次出现排 = 下标降序）
++    std::vector<F3Key> tags;           // 候选下标 → 标签（每次 Search 调用开头按需重建）
++    std::vector<F3Key> cls_tag;        // 类号 → 代表候选的标签
++    std::vector<uint32_t> mval;       // 类子集 → 重数之和
++    std::vector<uint8_t> rank_of;     // all（恒含末行类那一位）→ 缓存的界
++    std::vector<F3Key> pend_key;      // 本节点新查到、尚未插入缓存的键
++    std::vector<LocalMapValue> pend_val;
++    Constraints<P, M, NA> key;        // 复用的行向量（查轨道图时用）
++    F3Cache cache;
 +  };
 +  static F3State &f3_state() {
 +    thread_local F3State st;
@@ -787,8 +923,10 @@ index e8cdd3c..ea5531e 100644
 +    st.saved.push_back(st.last_pos[i]);
 +    if (st.rep.size() <= pos) {
 +      st.rep.resize(pos + 1);
++      st.pos_cand.resize(pos + 1);
 +    }
 +    st.rep[pos] = st.last_pos[i] >= 0 ? static_cast<uint32_t>(st.last_pos[i]) : pos;
++    st.pos_cand[pos] = static_cast<uint32_t>(i);
 +    st.last_pos[i] = static_cast<int32_t>(pos);
 +  }
 +  void f3_pop(size_t i, Constraints<P, M, NA> *chain) const {
@@ -806,36 +944,44 @@ index e8cdd3c..ea5531e 100644
 +    int self = 0;
 +  };
 +
-+  // 键向量 = 类子集 all 的各个类的代表行, 按链上位置升序(= 候选下标降序)。
-+  // 类号 0..maskable-1 的代表是 rep_of_cls[k]; 类号 maskable 只在末行自成一类时存在, 代表就是末行。
-+  void f3_build_key(const Constraints<P, M, NA> &chain, uint32_t maskable, uint32_t back,
-+                    uint32_t all) const {
++  // 行向量 = all 里各个类的代表行，按链上位置升序（= 下标降序）。
++  // 类号 0..maskable-1 的代表是 rep_of_cls[k]；类号 maskable 只在末行自成一类时存在，代表就是末行。
++  void f3_build_rows(const Constraints<P, M, NA> &chain, uint32_t maskable, uint32_t back,
++                     uint32_t all, Constraints<P, M, NA> *rows) const {
 +    F3State &st = f3_state();
-+    st.key.clear();
++    rows->clear();
 +    for (uint32_t k = 0; k < maskable; ++k) {
 +      if ((all >> k) & 1u) {
-+        st.key.push_back(chain[st.rep_of_cls[k]]);
++        rows->push_back(chain[st.rep_of_cls[k]]);
 +      }
 +    }
 +    if ((all >> maskable) & 1u) {
-+      st.key.push_back(chain[back]);
++      rows->push_back(chain[back]);
 +    }
 +  }
 +
-+  // 评估一个节点（F₃，类数 ≤ kF3MaxClasses）。
-+  F3Node f3_evaluate(const Constraints<P, M, NA> &chain, LocalMap *local_map,
++  // 评估一个节点（F₃，不同候选数 ≤ kF3MaxClasses）。
++  F3Node f3_evaluate(const Constraints<P, M, NA> &chain,
 +                     const std::vector<uint32_t> &masks, uint32_t maskable) const {
 +    F3State &st = f3_state();
++    F3Cache &cache = st.cache;
++    cache.HalveIfFull();
 +    const uint32_t back = static_cast<uint32_t>(chain.size()) - 1;
++    // 1. 类：代表位置、重数、代表候选的下标与标签
 +    st.rep_of_cls.clear();
 +    st.mult.clear();
++    st.cls_cand.clear();
++    st.cls_tag.clear();
 +    st.cls_of_pos.resize(back);
 +    for (uint32_t p = 0; p < back; ++p) {
 +      const uint32_t r = st.rep[p];
 +      if (r == p) {
-+        st.cls_of_pos[p] = static_cast<uint32_t>(st.rep_of_cls.size());
++        const uint32_t k = static_cast<uint32_t>(st.rep_of_cls.size());
++        st.cls_of_pos[p] = k;
 +        st.rep_of_cls.push_back(p);
 +        st.mult.push_back(1);
++        st.cls_cand.push_back(st.pos_cand[p]);
++        st.cls_tag.push_back(st.tags[st.pos_cand[p]]);
 +      } else {
 +        const uint32_t k = st.cls_of_pos[r];
 +        st.cls_of_pos[p] = k;
@@ -846,48 +992,108 @@ index e8cdd3c..ea5531e 100644
 +    // 末行：它自己的类。back = 0 时 rep[0] = 0，走第一支（新的类）。
 +    const uint32_t back_cls =
 +        st.rep[back] == back ? maskable : st.cls_of_pos[st.rep[back]];
-+    // 类子集的编码恒含末行那一位：下标范围是 2^(maskable+1)。
-+    st.val.assign(std::size_t{1} << (maskable + 1), -1);
++    if (back_cls == maskable) {
++      st.cls_cand.push_back(st.pos_cand[back]);
++      st.cls_tag.push_back(st.tags[st.pos_cand[back]]);
++    }
++    CHECK_EQ(st.cls_cand.size(), static_cast<std::size_t>(back_cls) + 1);
++    const uint32_t subsets = uint32_t{1} << maskable;
 +    const uint32_t back_bit = uint32_t{1} << back_cls;
-+
++    st.mval.resize(subsets);
++    st.rank_of.resize(std::size_t{2} * subsets); // 下标 = all = kset | 末行位
++    std::fill(st.rank_of.begin(), st.rank_of.begin() + std::size_t{2} * subsets, uint8_t{0xFF});
++    st.pend_key.clear();
++    st.pend_val.clear();
++    st.mval[0] = 0;
++    for (uint32_t kset = 1; kset < subsets; ++kset) {
++      st.mval[kset] =
++          st.mval[kset & (kset - 1)] + st.mult[std::countr_zero(kset)];
++    }
++    // 2. 类子集按格雷码走：每步只翻转一个类，键跟着加 / 减一个标签。
++    //    末行的类恒在键里；它若也出现在可掩码位置上，翻转那一位不改变 all，也不改键。
++    //    两个不同的 kset 可以给出同一个 all（末行类在 / 不在 kset 里），用 rank_of 的备忘只查一次。
 +    F3Node node;
-+    for (uint32_t kset = 0; kset < (uint32_t{1} << maskable); ++kset) {
-+      const uint32_t all = kset | back_bit;
-+      if (st.val[all] < 0) {
-+        f3_build_key(chain, maskable, back, all);
-+        auto [it, inserted] = local_map->try_emplace(st.key);
-+        if (inserted) {
++    F3Key key = st.cls_tag[back_cls];
++    uint32_t cur = 0;
++    for (uint32_t i = 0; i < subsets; ++i) {
++      if (i != 0) {
++        const uint32_t b = std::countr_zero(i);
++        const uint32_t bit = uint32_t{1} << b;
++        cur ^= bit;
++        if (b != back_cls) {
++          const F3Key &tg = st.cls_tag[b];
++          if (cur & bit) {
++            key.lo += tg.lo;
++            key.hi += tg.hi;
++          } else {
++            key.lo -= tg.lo;
++            key.hi -= tg.hi;
++          }
++        }
++      }
++      const uint32_t all = cur | back_bit;
++      if (st.rank_of[all] == 0xFF) {
++        const uint64_t h = f3_key_hash(key);
++        const F3Slot *slot = cache.Find(key, h);
++        if (slot != nullptr) {
++          st.rank_of[all] = slot->rank;
++        } else {
++          // 未缓存：拼出行向量，查轨道图；稍后统一插入
++          f3_build_rows(chain, maskable, back, all, &st.key);
 +          st.key.insert(st.key.end(), base_constraints_.begin(),
 +                        base_constraints_.end());
-+          it->second.rank = static_cast<uint8_t>(orbit_map_.Get(
-+              st.key, &it->second.query_elem, &it->second.store_elem));
-+        }
-+        st.val[all] = it->second.rank;
-+      }
-+      int m = 0;
-+      for (uint32_t k = 0; k < maskable; ++k) {
-+        if ((kset >> k) & 1u) {
-+          m += static_cast<int>(st.mult[k]);
++          LocalMapValue v;
++          v.rank = static_cast<uint8_t>(
++              orbit_map_.Get(st.key, &v.query_elem, &v.store_elem));
++          st.rank_of[all] = v.rank;
++          st.pend_key.push_back(key);
++          st.pend_val.push_back(v);
 +        }
 +      }
-+      node.self = std::max(node.self, m + 1 + st.val[all]);
++      node.self = std::max(node.self, static_cast<int>(st.mval[cur]) + 1 +
++                                           static_cast<int>(st.rank_of[all]));
++    }
++    // 3. 统一插入（插入会让上面取到的指针失效，所以放在查询之后）
++    for (std::size_t i = 0; i < st.pend_key.size(); ++i) {
++      cache.Insert(st.pend_key[i], f3_key_hash(st.pend_key[i]), st.pend_val[i]);
 +    }
 +    if (node.self < target_rank_lower_bound_) {
 +      return node;
 +    }
-+    // 闭合：取原顺序下第一个达到 target 的 mask（与上游逐 mask 循环相同）。
++    // 4. 闭合：取原顺序下第一个达到 target 的 mask（与上游逐 mask 循环相同）
 +    for (uint32_t mask : masks) {
-+      uint32_t all = back_bit;
++      uint32_t all = uint32_t{1} << back_cls;
 +      for (uint32_t m = mask; m != 0; m &= m - 1) {
 +        all |= uint32_t{1} << st.cls_of_pos[std::countr_zero(m)];
 +      }
-+      const int value = std::popcount(mask) + 1 + st.val[all];
++      const int value = std::popcount(mask) + 1 + static_cast<int>(st.rank_of[all]);
 +      if (value >= target_rank_lower_bound_) {
 +        node.closes = true;
 +        node.close_mask = mask;
 +        node.close_value = value;
-+        f3_build_key(chain, maskable, back, all);
-+        node.close_witness = local_map->at(st.key);
++        // 见证：优先从缓存取；若第 3 步的插入触发了减半把它挤掉了，就再查一次轨道图。
++        F3Key key = st.cls_tag[back_cls];
++        for (uint32_t m = all & ~back_bit; m != 0; m &= m - 1) {
++          const F3Key &tg = st.cls_tag[std::countr_zero(m)];
++          key.lo += tg.lo;
++          key.hi += tg.hi;
++        }
++        const uint64_t h = f3_key_hash(key);
++        const F3Slot *slot = cache.Find(key, h);
++        if (slot != nullptr) {
++          node.close_witness.rank = slot->rank;
++          node.close_witness.query_elem = slot->query_elem;
++          node.close_witness.store_elem = slot->store_elem;
++        } else {
++          f3_build_rows(chain, maskable, back, all, &st.key);
++          st.key.insert(st.key.end(), base_constraints_.begin(),
++                        base_constraints_.end());
++          LocalMapValue v;
++          v.rank = static_cast<uint8_t>(
++              orbit_map_.Get(st.key, &v.query_elem, &v.store_elem));
++          CHECK_EQ(static_cast<int>(v.rank), static_cast<int>(st.rank_of[all]));
++          node.close_witness = v;
++        }
 +        return node;
 +      }
 +    }
@@ -895,10 +1101,11 @@ index e8cdd3c..ea5531e 100644
 +    return node;
 +  }
 +
++
    RankLowerBoundBacktracking(const Constraints<P, M, NA> &constraints,
                               const OrbitMap<Problem> &orbit_map,
                               int known_rank_lower_bound, uint64_t step_limit,
-@@ -163,15 +328,30 @@ private:
+@@ -163,15 +535,39 @@ private:
          [&](const tbb::blocked_range<size_t> &range) {
            Constraints<P, M, NA> dfs_constraints;
            LocalMap local_map;
@@ -907,7 +1114,16 @@ index e8cdd3c..ea5531e 100644
 +            st.last_pos.assign(minimal_constraints_.size(), -1);
 +            st.saved.clear();
 +            st.rep.clear();
++            st.pos_cand.clear();
 +            st.key.reserve(2 * NA);
++            st.cache.Reset(max_map_size_);
++            if (st.tags.size() != minimal_constraints_.size()) {
++              st.tags.clear();
++              st.tags.reserve(minimal_constraints_.size());
++              for (uint32_t c = 0; c < minimal_constraints_.size(); ++c) {
++                st.tags.push_back(f3_tag(c));
++              }
++            }
 +          }
            for (size_t i = range.begin(); i < range.end(); ++i) {
              if (early_break) {
@@ -931,7 +1147,7 @@ index e8cdd3c..ea5531e 100644
              if (rank_and_proof_list[i].first <= known_rank_lower_bound_) {
                early_break = true;
              }
-@@ -228,35 +408,92 @@ private:
+@@ -228,35 +624,92 @@ private:
      const auto &masks = masks_[dfs_size - 1];
      Constraints<P, M, NA> constraints;
      constraints.reserve(dfs_size);
@@ -962,7 +1178,7 @@ index e8cdd3c..ea5531e 100644
 -            constraints, &it->second.query_elem, &it->second.store_elem));
 +      if (maskable + 1 <= f3_max_classes() && !f3_raw_keys()) {
 +        evaluated = true;
-+        const F3Node node = f3_evaluate(*dfs_constraints, local_map, masks, maskable);
++        const F3Node node = f3_evaluate(*dfs_constraints, masks, maskable);
 +        rank_lower_bound_self = node.self;
 +        if (node.closes) {
 +          closed = true;
@@ -1049,7 +1265,7 @@ index e8cdd3c..ea5531e 100644
  
      if (dfs_size == static_cast<std::size_t>(max_depth_)) {
        return rank_lower_bound_self;
-@@ -264,11 +501,19 @@ private:
+@@ -264,11 +717,19 @@ private:
  
      int rank_lower_bound_child = std::numeric_limits<int>::max();
      for (int i = 0; i <= max_constraint_idx; ++i) {
