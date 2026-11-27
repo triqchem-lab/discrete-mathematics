@@ -12,7 +12,7 @@
 
 | 路径 | 内容 |
 |---|---|
-| `f3_extension.patch` | 对上游的补丁：`problems/matrix/symmetry.h`（新增 `SymmetryGroupFq` + 分发）、`problem.h`（注释、`kN0..kN2`）、`BUILD`；**外加 core / search 的四处 F₃ 挂钩**（`dynamic_matrix.cc`、`rank_lower_bound_flatten.h`、`rank_lower_bound_forced_product.h`、`search/rank_lower_bound_degenerate.h`，见 §5.1） |
+| `f3_extension.patch` | 对上游的补丁：`problems/matrix/symmetry.h`（新增 `SymmetryGroupFq` + 分发）、`problem.h`（注释、`kN0..kN2`）、`BUILD`；**外加 core / search / problems 的 F₃ 挂钩**（`constraints.h`、`dynamic_matrix.cc`、`rank_lower_bound_flatten.h`、`rank_lower_bound_forced_product.h`、`search/rank_lower_bound_degenerate.h`、`problems/matrix/symmetry.h`，见 §5.1） |
 | `fq_matrix.h` | 新文件：base-P 数位打包的小矩阵（`FqMatrix<P,N0,N1>`，转置 / 乘积 / 求逆 / 秩） |
 | `fq_matrix_tables.h` | 新文件：GL 表、逆表、按行查表乘积表（`FqMatrixTables<P,N0,N1>`） |
 | `fq_matrix_test.cc` | 新文件：上游 gtest 风格的扩展单元测试（bazel 下跑） |
@@ -37,8 +37,11 @@ cp "$HERE/fq_matrix.h" "$HERE/fq_matrix_tables.h" "$HERE/fq_matrix_test.cc" /tmp
 cp "$HERE/rank_f3_fast.h" /tmp/wang-tensor-rank/core/
 ```
 
-**实测（2026-11-27）**：从 `git archive 9db3d21` 得到的干净副本出发执行上面几步，
-用本目录 `build.sh` 构建出的 `verifier_f3`、`enumerator_f3` 与工作副本构建的二进制**逐字节相同**（`cmp` 无差异）。
+**实测（2026-11-27）**：从 `git archive 9db3d21` 得到的干净副本出发执行上面几步，用本目录 `build.sh` 构建，
+与工作副本构建的产物相比：`__TEXT` 代码、`__DATA_CONST`、`__DATA` **逐字节相同**；全部差异都在 Mach-O 头部的
+`LC_UUID`（16 字节）与 ad-hoc 代码签名里（签名覆盖可执行文件名——换个输出名，签名就变，长度还会差 8 字节）。
+所以别用 `cmp` 整文件比较不同名字的产物；要比较就按段比（`otool -l` 取段的 fileoff/filesize）。
+同一棵树、同名输出重建是逐字节确定的。
 
 ## 3. 为什么不走 bazel
 
@@ -131,6 +134,16 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
 
 **只对 (P, M) = (3, 1) 生效**；其余域、以及超出缓冲尺寸（行 > 16 或列 > 128，返回 −1）的矩阵走通用实现。
 实测（空闲 8 核，2026-11-27）：9×9×9 张量的展平秩 1118 ns（独立参考实现 5237 ns），9×81 求秩 469 ns。
+
+另外两处：
+
+- 规范形 `GaussJordanRREF`（OrbitMap / 枚举器 / verifier 的键都靠它）：同样的前向做法——但它其实**不比通用实现快**
+  （微基准 250–300 ns vs 475–520 ns，含拷贝；通用实现在 9 字节的小行上已经很快）。保留是因为无害且对拍过。
+- **群作用 `Apply`（真正的大头）**：微基准显示 `OrbitMap::Get` 的一次探针约 2.1 µs，其中对约束组每行做一次
+  `query.Apply` 占 1.4–1.8 µs（表驱动的逐行打包/解包 + 查表），RREF 只有 0.45 µs，哈希查找可忽略。
+  `SymmetryGroupFq` 在 P=3、N0=N1=3 时改用直接的 3×3 数位运算（打包数据 → 数位的表 3^9 项），
+  一次探针降到约 1.0 µs。**这一步是先量再改的**：我起初以为 RREF 是热点，写完快路径一测才发现不是。
+
 等价性见 §6。
 
 ## 6. 验证证据（2026-11-27）
@@ -144,10 +157,12 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
 | 垫片分块 | `shim_test/run.sh` | 1–8 线程全过；对旧垫片的负控制报错 |
 | F₃ 求秩快路径 | `standalone/rank_f3_fast_check.cc`：与**独立写的**通用 Gauss–Jordan 随机对拍，8 种形状（9×81、9×9、16×128、…）× 均匀 / 低秩 / 全零 | 20 万次 **0 不匹配**；直方图显示每种形状的各秩都被采到 |
 | F₃ 展平秩快路径 | 同一件：随机张量 × 随机阈值，形状 (9,9,9) / (2,3,4) / (5,4,6) | 9 万次 **0 不匹配**；返回值覆盖 0–9 |
-| 快路径后的回归 | F₂ verifier / F₂ 枚举 / F₃ verifier / F₃ 枚举 | 20 / OK；496 条逐条一致；OK；736 条不变 |
-| 复现性 | 干净上游 + 补丁 + 新文件 + 本目录垫片 | 二进制逐字节相同 |
+| F₃ 规范形快路径 | `rank_f3_fast_check.cc` 的「规范形」一节：随机 0–12 行 × 9（或 4）列，与通用 `GaussJordanEliminationFq` 比输出与秩 | 1.2 万次 **0 不匹配**；各秩都被采到 |
+| F₃ 群作用快路径 | `standalone/apply_check.cc`：**全部** 19683 个向量 × 11232 个 store 元 × 22464 个 query 元，与独立朴素实现比 `Apply`，另查 `ApplyInverse ∘ Apply = id` 与单位元 | **0 不匹配**（store / query / 逆 / 单位元） |
+| 快路径后的回归 | F₂ verifier / F₂ 枚举 / F₃ verifier / F₃ 枚举 / 轨道大小守恒 | 20 / OK；496 条逐条一致；OK；736 条不变；10 维精确相等 |
+| 复现性 | 干净上游 + 补丁 + 新文件 + 本目录垫片（`otool -l` 按段比较） | 代码段 / 数据段逐字节相同；差异只在 `LC_UUID` 与代码签名 |
 
-`engineering/tests/test_wang_f3ext_fastpath.py` 是上面两行快路径对拍的 unittest 版（4000 次；上游副本缺失时跳过）。
+`engineering/tests/test_wang_f3ext_fastpath.py` 是这些对拍的 unittest 版（求秩 / 展平秩 / 规范形 / 剪枝各 4000 次；群作用按步长 17 抽样，`WANG_SLOW=1` 跑全量；上游副本缺失时跳过）。
 
 轨道大小守恒（`Σ|orbit|` 与 `[9 choose d]₃`）：
 

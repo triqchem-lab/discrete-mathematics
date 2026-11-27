@@ -18,8 +18,13 @@
 // 超出缓冲尺寸时返回 -1, 调用方回退到通用实现。
 
 #include <algorithm>
+#include <array>
+#include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <vector>
+
+#include "core/gf_vec.h"
 
 namespace sovereign_f3 {
 
@@ -127,6 +132,136 @@ template <class Vec> bool MinimalWrtBase(const std::vector<Vec> &base, const Vec
     }
   }
   return true;
+}
+
+// 3×3 的 F₃ 群作用快路径（problems/matrix/symmetry.h 的 SymmetryGroupFq 在 P=3、M=1、N0=N1=3 时用）。
+// 约束向量 = 3×3 矩阵的 9 个数位（位 i·3 + j）; 群元 = 打包的矩阵数据（base-3, 3^9 = 19683 种）。
+// 与表驱动实现同义: ApplyLeft3 = L · τᵗ(V), ApplyRight3 = V · R。全部向量 × 全部群元的对拍见 README §6。
+constexpr std::uint32_t kPack3x3 = 19683; // 3^9
+
+// 打包数据 → 9 个数位
+inline void DigitsOfData3(std::uint32_t d, std::uint8_t out[9]) {
+  for (int k = 0; k < 9; ++k) {
+    out[k] = static_cast<std::uint8_t>(d % 3);
+    d /= 3;
+  }
+}
+
+inline std::uint8_t Mul3(std::uint8_t a, std::uint8_t b) {
+  return static_cast<std::uint8_t>(a * b % 3);
+}
+
+// W = L · τᵗ(V)
+inline void ApplyLeft3(const std::uint8_t L[9], bool tr, const std::uint8_t V[9], std::uint8_t W[9]) {
+  for (int i = 0; i < 3; ++i) {
+    for (int j = 0; j < 3; ++j) {
+      std::uint8_t s = 0;
+      for (int k = 0; k < 3; ++k) {
+        const std::uint8_t vkj = tr ? V[j * 3 + k] : V[k * 3 + j];
+        s = static_cast<std::uint8_t>((s + L[i * 3 + k] * vkj) % 3);
+      }
+      W[i * 3 + j] = s;
+    }
+  }
+}
+
+// W = V · R
+inline void ApplyRight3(const std::uint8_t V[9], const std::uint8_t R[9], std::uint8_t W[9]) {
+  for (int i = 0; i < 3; ++i) {
+    for (int j = 0; j < 3; ++j) {
+      std::uint8_t s = 0;
+      for (int k = 0; k < 3; ++k) {
+        s = static_cast<std::uint8_t>((s + V[i * 3 + k] * R[k * 3 + j]) % 3);
+      }
+      W[i * 3 + j] = s;
+    }
+  }
+}
+
+// 「列反转」Gauss–Jordan（求规范形, OrbitMap / 枚举器 / verifier 的键都靠它）, 只对 GFVec<3,1,N>。
+// 与 core/math_utils.h 的 GaussJordanEliminationFq **输出逐元素相同**:
+//   主元列从 N−1 往下、主元行从末行往上放、零行停在最前、主元归一化为 1、上下都消。
+// 行数 > kMaxRows 或 N > kMaxCols 时返回 -1 且不改 rows（调用方回退到通用实现）。
+// 等价性: engineering/wang_f3ext/standalone/rank_f3_fast_check.cc 的「规范形」一节对通用实现做随机对拍。
+template <std::size_t N>
+inline int GaussJordanRREF3Fast(std::vector<GFVec<3, 1, N>> *rows_ptr) {
+  std::vector<GFVec<3, 1, N>> &rows = *rows_ptr;
+  const int size = static_cast<int>(rows.size());
+  if (size == 0 || N == 0) {
+    return 0;
+  }
+  if (size > kMaxRows || N > kMaxCols) {
+    return -1;
+  }
+  uint8_t buf[kMaxRows][kMaxCols];
+  for (int r = 0; r < size; ++r) {
+    for (std::size_t c = 0; c < N; ++c) {
+      buf[r][c] = rows[static_cast<std::size_t>(r)][static_cast<int>(c)].value;
+    }
+  }
+  const int n = static_cast<int>(N);
+  int rank = 0;
+  int current_row = size - 1;
+  int pivot_col = n - 1;
+  while (current_row >= 0 && pivot_col >= 0) {
+    // 与通用实现同一个选取规则: 从 current_row 往下找第一个在主元列非零的行。
+    int pivot_row = -1;
+    for (int r = current_row; r >= 0; --r) {
+      if (buf[r][pivot_col] != 0) {
+        pivot_row = r;
+        break;
+      }
+    }
+    if (pivot_row < 0) {
+      --pivot_col;
+      continue;
+    }
+    if (pivot_row != current_row) {
+      for (int c = 0; c < n; ++c) {
+        const uint8_t tmp = buf[current_row][c];
+        buf[current_row][c] = buf[pivot_row][c];
+        buf[pivot_row][c] = tmp;
+      }
+    }
+    // 归一化: 2⁻¹ = 2, 即把 1 与 2 互换。
+    if (buf[current_row][pivot_col] != 1) {
+      for (int c = 0; c < n; ++c) {
+        const uint8_t x = buf[current_row][c];
+        buf[current_row][c] = static_cast<uint8_t>(x == 1 ? 2 : x == 2 ? 1 : 0);
+      }
+    }
+    // 上下都消: row_r := row_r − f · row_current（mod 3）。
+    for (int r = 0; r < size; ++r) {
+      const uint8_t f = buf[r][pivot_col];
+      if (r == current_row || f == 0) {
+        continue;
+      }
+      const uint8_t *pr = buf[current_row];
+      uint8_t *rr = buf[r];
+      if (f == 1) {
+        for (int c = 0; c < n; ++c) {
+          int t = rr[c] + 3 - pr[c];
+          t -= (t >= 3) ? 3 : 0;
+          rr[c] = static_cast<uint8_t>(t);
+        }
+      } else {
+        for (int c = 0; c < n; ++c) {
+          int t = rr[c] + pr[c];
+          t -= (t >= 3) ? 3 : 0;
+          rr[c] = static_cast<uint8_t>(t);
+        }
+      }
+    }
+    ++rank;
+    --current_row;
+    --pivot_col;
+  }
+  for (int r = 0; r < size; ++r) {
+    for (std::size_t c = 0; c < N; ++c) {
+      rows[static_cast<std::size_t>(r)].Set(static_cast<int>(c), GF<3, 1>{buf[r][c]});
+    }
+  }
+  return rank;
 }
 
 // 行跨度 = 列数的便捷重载。

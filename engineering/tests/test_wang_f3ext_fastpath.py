@@ -57,6 +57,29 @@ class WangF3extFastPathTest(unittest.TestCase):
             self.assertIn("mismatches=0", run.stdout)
             self.assertNotIn("MISMATCH", run.stdout)
 
+    def test_group_action_fast_path_matches_naive(self):
+        """F₃ 3×3 群作用快路径 vs 独立朴素实现（全量 19683 向量 × 全部群元; 默认抽样步长 17, WANG_SLOW=1 全量）。"""
+        repo = _find_repo()
+        if repo is None:
+            self.skipTest("上游副本未就绪（WANG_REPO 未打补丁）")
+        cxx = _find_cxx()
+        if cxx is None:
+            self.skipTest("no C++ compiler found")
+        src = os.path.join(EXT, "standalone", "apply_check.cc")
+        with tempfile.TemporaryDirectory() as tmp:
+            exe = os.path.join(tmp, "apply_check")
+            build = subprocess.run(
+                [cxx, "-std=c++23", "-O2", "-DNDEBUG", "-w", "-pthread",
+                 "-I" + os.path.join(EXT, "shim"), "-I" + repo, src,
+                 os.path.join(repo, "core", "dynamic_matrix.cc"), "-o", exe],
+                capture_output=True, text=True, timeout=600,
+            )
+            self.assertEqual(build.returncode, 0, build.stderr[-2000:])
+            stride = "1" if os.environ.get("WANG_SLOW") else "17"
+            run = subprocess.run([exe, stride], capture_output=True, text=True, timeout=900)
+            self.assertEqual(run.returncode, 0, run.stdout + run.stderr[-800:])
+            self.assertIn("mismatches: store=0 query=0 inverse=0 identity=0", run.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
