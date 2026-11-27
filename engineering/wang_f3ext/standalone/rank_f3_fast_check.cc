@@ -10,6 +10,7 @@
 //            <WANG_REPO>/core/dynamic_matrix.cc -o rank_f3_fast_check
 // 另有一节核对退化归约的 F₃ 剪枝: 「只扫关于基极小的候选行」访问的超空间集合
 //   == 「扫全部候选行」访问的超空间集合（对 dim 0..8 的随机基, 候选行全枚举）。
+// 另有一节核对规范形快路径: GaussJordanRREF3Fast 与通用 GaussJordanEliminationFq 的输出逐元素相同。
 // 运行: ./rank_f3_fast_check [试验数, 缺省 200000]   —— 全部相等则 exit 0
 #include <algorithm>
 #include <chrono>
@@ -258,6 +259,37 @@ long CheckDegeneratePruning(std::mt19937_64 &rng) {
   return bad;
 }
 
+// 规范形快路径的等价性: 随机 0..12 行 × N 列矩阵, 快路径与通用实现的输出逐元素相同、秩相同。
+template <std::size_t N>
+long CheckRREFShape(std::mt19937_64 &rng, long trials) {
+  long bad = 0;
+  std::vector<long> rank_hist(16, 0);
+  for (long t = 0; t < trials; ++t) {
+    const int size = static_cast<int>(rng() % 13);
+    Constraints<3, 1, N> a, b;
+    for (int i = 0; i < size; ++i) {
+      GFVec<3, 1, N> v{};
+      for (std::size_t c = 0; c < N; ++c) {
+        v.Set(static_cast<int>(c), GF<3, 1>{static_cast<std::uint8_t>(rng() % 3)});
+      }
+      a.push_back(v);
+      b.push_back(v);
+    }
+    const int r_generic = GaussJordanEliminationFq<3, 1, N>(&a);
+    const int r_fast = sovereign_f3::GaussJordanRREF3Fast<N>(&b);
+    if (r_generic != r_fast || r_fast < 0 || a != b) {
+      if (bad < 5) std::printf("RREF MISMATCH N=%zu size=%d rank generic=%d fast=%d\n", N, size, r_generic, r_fast);
+      ++bad;
+    }
+    if (r_fast >= 0 && r_fast < 16) ++rank_hist[static_cast<std::size_t>(r_fast)];
+  }
+  std::printf("rref N=%zu: trials=%ld mismatches=%ld rank histogram:", N, trials, bad);
+  const int top = static_cast<int>(std::min<std::size_t>(N, 12));
+  for (int r = 0; r <= top; ++r) std::printf(" %d:%ld", r, rank_hist[static_cast<std::size_t>(r)]);
+  std::printf("\n");
+  return bad;
+}
+
 } // namespace
 
 int main(int argc, char **argv) {
@@ -313,6 +345,10 @@ int main(int argc, char **argv) {
       std::printf("flatten result %2d: (9,9,9) %6d   (2,3,4) %5d   (5,4,6) %5d\n", v, h9[v], h234[v], h546[v]);
     }
   }
+  // 规范形快路径的等价性
+  const long rref_bad = CheckRREFShape<9>(rng, trials / 2) + CheckRREFShape<4>(rng, trials / 10);
+  std::printf("rref fast path mismatches=%ld\n", rref_bad);
+
   // 退化归约剪枝的等价性（随机基 × 候选行全枚举）
   const long pruned_bad = CheckDegeneratePruning(rng);
   std::printf("degenerate pruning mismatches=%ld\n", pruned_bad);
@@ -343,11 +379,28 @@ int main(int argc, char **argv) {
     auto t3 = std::chrono::steady_clock::now();
     for (long i = 0; i < kIters / 10; ++i) sink += ReferenceRank(mm);
     auto t4 = std::chrono::steady_clock::now();
+    {
+      Constraints<3, 1, 9> rows;
+      for (int i = 0; i < 7; ++i) {
+        GFVec<3, 1, 9> v{};
+        for (int c = 0; c < 9; ++c) v.Set(c, GF<3, 1>{static_cast<std::uint8_t>(rng() % 3)});
+        rows.push_back(v);
+      }
+      constexpr long kR = 200000;
+      auto a0 = std::chrono::steady_clock::now();
+      for (long i = 0; i < kR; ++i) { Constraints<3, 1, 9> cpy = rows; sink += sovereign_f3::GaussJordanRREF3Fast<9>(&cpy); }
+      auto a1 = std::chrono::steady_clock::now();
+      for (long i = 0; i < kR / 10; ++i) { Constraints<3, 1, 9> cpy = rows; sink += GaussJordanEliminationFq<3, 1, 9>(&cpy); }
+      auto a2 = std::chrono::steady_clock::now();
+      std::printf("timing: RREF 7x9 fast %.0f ns (incl. copy) vs generic %.0f ns (incl. copy)\n",
+                  std::chrono::duration<double, std::nano>(a1 - a0).count() / kR,
+                  std::chrono::duration<double, std::nano>(a2 - a1).count() / (kR / 10));
+    }
     std::printf("timing: flatten(9,9,9) fast %.0f ns vs reference %.0f ns; rank(9x81) fast+copy %.0f ns vs reference %.0f ns (sink %d)\n",
                 std::chrono::duration<double, std::nano>(t1 - t0).count() / kIters,
                 std::chrono::duration<double, std::nano>(t2 - t1).count() / (kIters / 10),
                 std::chrono::duration<double, std::nano>(t3 - t2).count() / kIters,
                 std::chrono::duration<double, std::nano>(t4 - t3).count() / (kIters / 10), sink);
   }
-  return (g_mismatches == 0 && pruned_bad == 0) ? 0 : 1;
+  return (g_mismatches == 0 && rref_bad == 0 && pruned_bad == 0) ? 0 : 1;
 }
