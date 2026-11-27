@@ -98,17 +98,22 @@ inline std::string FLAGS_log_dir;
 
 // LOG_EVERY_T(level, 秒数): 距上次输出达到指定秒数才记录(首次立即记录), 与 glog 语义一致。
 // 状态(上次输出时刻)是每个调用点一个的 thread_local, 由立即调用 lambda 内的静态局部变量承载。
+// 2026-11-28 修: 第一版把判断写反了——间隔不足秒数的调用才输出, 首次调用与间隔足够的反而不输出。
+// 搜索快的时候完成事件密集, 看不出问题; 一慢下来进度行就完全消失(续跑 v3 在 dim 4 上跑了 55 分钟
+// 只看到 1 行, 实际至少完成了 1 条轨道)。回归测试: shim_test/log_every_t_test.cc。
 #define LOG_EVERY_T(level, secs)                                                  \
   if ([&]() {                                                                    \
         static thread_local std::chrono::steady_clock::time_point pbshim_last_;   \
+        if (!nglog::LogEnabled(nglog::Severity::level)) {                        \
+          return true; /* 日志关着: 不输出 */                                    \
+        }                                                                        \
         const auto pbshim_now = std::chrono::steady_clock::now();                 \
-        if (!nglog::LogEnabled(nglog::Severity::level) ||                        \
-            std::chrono::duration<double>(pbshim_now - pbshim_last_).count() <    \
-                static_cast<double>(secs)) {                                      \
-          return false;                                                          \
+        if (std::chrono::duration<double>(pbshim_now - pbshim_last_).count() <    \
+            static_cast<double>(secs)) {                                          \
+          return true; /* 距上次输出还没到间隔: 不输出 */                        \
         }                                                                        \
         pbshim_last_ = pbshim_now;                                               \
-        return true;                                                             \
+        return false; /* 输出 */                                                 \
       }()) {                                                                     \
   } else                                                                         \
     nglog::Logger(nglog::Severity::level)                                        \
