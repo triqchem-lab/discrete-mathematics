@@ -34,7 +34,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define NMAX 16
+/* NMAX ≥ 32: claim ≤ 32 ⟹ DFS 深度 ≤ 31, 路径与 extended 行组都按这个上界开。
+ * 2026-11-27 实测: 取 16 时, 对 claim > 17 的证书(上游 F₂ ⟨3,3,3⟩, dim ≤ 4)重放会写越界并 abort。 */
+#define NMAX 40
 
 static int P, NA;
 
@@ -149,8 +151,10 @@ static const Entry *map_find(int k, const uint64_t key[NMAX]) {
 static int nbase, nrec, claim, g_pi, g_fail;
 static uint64_t base_rows[NMAX], minimal[100000];
 static int nminimal;
-static int rec_size[1 << 22], rec_mask[1 << 22];
-static uint32_t rec_q[1 << 22], rec_s[1 << 22];
+/* 记录按 nrec 动态分配(2026-11-27 之前是 1<<22 的静态数组: 上游 F₂ ⟨3,3,3⟩ dim 4 的证明超过 419 万条) */
+#define NREC_MAX (1u << 28)
+static int *rec_size, *rec_mask;
+static uint32_t *rec_q, *rec_s;
 static int path_idx[NMAX];           /* 路径上各层选的极小约束下标 */
 static uint64_t ext_rows[NMAX];
 static unsigned long long g_nodes;
@@ -203,7 +207,12 @@ int main(void) {
   for (int r = 0; r < nbase; ++r) { unsigned long long x; if (scanf("%llu", &x) != 1) return 2; base_rows[r] = x; }
   if (scanf("%d", &claim) != 1) return 2;
   if (scanf("%d", &nrec) != 1) return 2;
-  if (nrec < 0 || nrec > (1 << 22)) return 2;
+  if (nrec < 0 || (unsigned)nrec > NREC_MAX) return 2;
+  rec_size = malloc(sizeof(int) * (size_t)(nrec ? nrec : 1));
+  rec_mask = malloc(sizeof(int) * (size_t)(nrec ? nrec : 1));
+  rec_q = malloc(sizeof(uint32_t) * (size_t)(nrec ? nrec : 1));
+  rec_s = malloc(sizeof(uint32_t) * (size_t)(nrec ? nrec : 1));
+  if (!rec_size || !rec_mask || !rec_q || !rec_s) return 2;
   for (int i = 0; i < nrec; ++i) {
     unsigned long long m, q, s;
     if (scanf("%d %llu %llu %llu", &rec_size[i], &m, &q, &s) != 4) return 2;

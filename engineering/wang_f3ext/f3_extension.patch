@@ -578,6 +578,362 @@ index db4a976..9ddd6ae 100644
    });
 +  for (sovereign_f3::FlatTagTable &t : flat_) t.Clear();
  }
+diff --git a/search/rank_lower_bound_backtracking.h b/search/rank_lower_bound_backtracking.h
+index e8cdd3c..ea5531e 100644
+--- a/search/rank_lower_bound_backtracking.h
++++ b/search/rank_lower_bound_backtracking.h
+@@ -26,6 +26,7 @@
+ #include <atomic>
+ #include <bit>
+ #include <cstdint>
++#include <cstdlib>
+ #include <limits>
+ #include <numeric>
+ #include <tuple>
+@@ -75,6 +76,170 @@ private:
+       boost::unordered_flat_map<Constraints<P, M, NA>, LocalMapValue,
+                                 ConstraintsHash<P, M, NA>>;
+ 
++  // ---------------------------------------------------------------------------
++  // F₃ 去重键（语义不变，只少做重复的 OrbitMap::Get；F₂ 保持上游原样）。
++  //
++  // 链上同一个候选可以重复出现——路径的每一项是假想分解里的一个乘积项，两项的第一因子成比例时
++  // 候选相同。上游对每个 mask 构造「选中的路径行 + 最后一行」作缓存键，于是张成同一个子空间、
++  // 只是重复模式不同的键各查一次 Get（dim 6 实测：238 万次 Get 里只有 26 万次是不同的子空间）。
++  //
++  // 这里把缓存键换成「去重后的候选序列」。链的下标非增，所以同一组候选在每个节点都得到同一个
++  // 序列（按下标降序）。取值仍按 popcount(mask) 计（每个路径项是一个乘积项），闭合时记录的仍是
++  // 原顺序下第一个达到 target 的 mask，所以搜索的决策与记录的轨迹与上游逐条相同。
++  //
++  // 每个节点只对「类子集」做缓存查找：c = 可掩码位置上的不同候选数，类子集 2^c 个
++  // （上游是 2^(j-1) 个 mask；dim 6 实测合计 1.44 亿对 8.25 亿）。
++  // c 超过阈值时退回上游的逐 mask 循环（键仍是去重键）。
++  // ---------------------------------------------------------------------------
++  static constexpr bool kF3Dedup = (P == 3 && M == 1);
++  static constexpr uint32_t kF3MaxClasses = 20;
++  // 环境变量 SOVEREIGN_F3_RAWKEYS 非空时退回上游行为（逐 mask + 含重复的原始键），
++  // SOVEREIGN_F3_MAX_CLASSES 可调低类数阈值（逼出回退分支）；两者只用于回归对拍。
++  static bool f3_raw_keys() {
++    static const bool raw = std::getenv("SOVEREIGN_F3_RAWKEYS") != nullptr;
++    return raw;
++  }
++  static uint32_t f3_max_classes() {
++    static const uint32_t n = [] {
++      const char *s = std::getenv("SOVEREIGN_F3_MAX_CLASSES");
++      if (s == nullptr) {
++        return kF3MaxClasses;
++      }
++      const long v = std::strtol(s, nullptr, 10);
++      return v < 1 ? 1u : (v > 30 ? 30u : static_cast<uint32_t>(v));
++    }();
++    return n;
++  }
++
++  struct F3State {
++    std::vector<uint32_t> rep;        // rep[p] = 与第 p 项同一个候选的最早位置
++    std::vector<int32_t> last_pos;    // last_pos[i] = 候选 i 在当前链上的最后位置（无则 -1）
++    std::vector<int32_t> saved;       // 递归栈：进入子节点前的 last_pos[i]
++    std::vector<uint32_t> cls_of_pos; // 位置 → 紧凑类号
++    std::vector<uint32_t> rep_of_cls; // 类号 → 代表位置（升序）
++    std::vector<uint32_t> mult;       // 类号 → 可掩码位置上的重数
++    std::vector<int32_t> val;         // 类子集（恒含末行类）→ 缓存的界；-1 = 未取
++    Constraints<P, M, NA> key;        // 复用的键向量
++  };
++  static F3State &f3_state() {
++    thread_local F3State st;
++    return st;
++  }
++  void f3_push(size_t i, Constraints<P, M, NA> *chain) const {
++    F3State &st = f3_state();
++    const uint32_t pos = static_cast<uint32_t>(chain->size());
++    chain->push_back(minimal_constraints_[i]);
++    st.saved.push_back(st.last_pos[i]);
++    if (st.rep.size() <= pos) {
++      st.rep.resize(pos + 1);
++    }
++    st.rep[pos] = st.last_pos[i] >= 0 ? static_cast<uint32_t>(st.last_pos[i]) : pos;
++    st.last_pos[i] = static_cast<int32_t>(pos);
++  }
++  void f3_pop(size_t i, Constraints<P, M, NA> *chain) const {
++    F3State &st = f3_state();
++    st.last_pos[i] = st.saved.back();
++    st.saved.pop_back();
++    chain->pop_back();
++  }
++
++  struct F3Node {
++    bool closes = false;
++    uint32_t close_mask = 0; // 不含末行那一位；调用方再 OR 上
++    int close_value = 0;
++    LocalMapValue close_witness{};
++    int self = 0;
++  };
++
++  // 键向量 = 类子集 all 的各个类的代表行, 按链上位置升序(= 候选下标降序)。
++  // 类号 0..maskable-1 的代表是 rep_of_cls[k]; 类号 maskable 只在末行自成一类时存在, 代表就是末行。
++  void f3_build_key(const Constraints<P, M, NA> &chain, uint32_t maskable, uint32_t back,
++                    uint32_t all) const {
++    F3State &st = f3_state();
++    st.key.clear();
++    for (uint32_t k = 0; k < maskable; ++k) {
++      if ((all >> k) & 1u) {
++        st.key.push_back(chain[st.rep_of_cls[k]]);
++      }
++    }
++    if ((all >> maskable) & 1u) {
++      st.key.push_back(chain[back]);
++    }
++  }
++
++  // 评估一个节点（F₃，类数 ≤ kF3MaxClasses）。
++  F3Node f3_evaluate(const Constraints<P, M, NA> &chain, LocalMap *local_map,
++                     const std::vector<uint32_t> &masks, uint32_t maskable) const {
++    F3State &st = f3_state();
++    const uint32_t back = static_cast<uint32_t>(chain.size()) - 1;
++    st.rep_of_cls.clear();
++    st.mult.clear();
++    st.cls_of_pos.resize(back);
++    for (uint32_t p = 0; p < back; ++p) {
++      const uint32_t r = st.rep[p];
++      if (r == p) {
++        st.cls_of_pos[p] = static_cast<uint32_t>(st.rep_of_cls.size());
++        st.rep_of_cls.push_back(p);
++        st.mult.push_back(1);
++      } else {
++        const uint32_t k = st.cls_of_pos[r];
++        st.cls_of_pos[p] = k;
++        st.mult[k] += 1;
++      }
++    }
++    CHECK_EQ(st.rep_of_cls.size(), maskable);
++    // 末行：它自己的类。back = 0 时 rep[0] = 0，走第一支（新的类）。
++    const uint32_t back_cls =
++        st.rep[back] == back ? maskable : st.cls_of_pos[st.rep[back]];
++    // 类子集的编码恒含末行那一位：下标范围是 2^(maskable+1)。
++    st.val.assign(std::size_t{1} << (maskable + 1), -1);
++    const uint32_t back_bit = uint32_t{1} << back_cls;
++
++    F3Node node;
++    for (uint32_t kset = 0; kset < (uint32_t{1} << maskable); ++kset) {
++      const uint32_t all = kset | back_bit;
++      if (st.val[all] < 0) {
++        f3_build_key(chain, maskable, back, all);
++        auto [it, inserted] = local_map->try_emplace(st.key);
++        if (inserted) {
++          st.key.insert(st.key.end(), base_constraints_.begin(),
++                        base_constraints_.end());
++          it->second.rank = static_cast<uint8_t>(orbit_map_.Get(
++              st.key, &it->second.query_elem, &it->second.store_elem));
++        }
++        st.val[all] = it->second.rank;
++      }
++      int m = 0;
++      for (uint32_t k = 0; k < maskable; ++k) {
++        if ((kset >> k) & 1u) {
++          m += static_cast<int>(st.mult[k]);
++        }
++      }
++      node.self = std::max(node.self, m + 1 + st.val[all]);
++    }
++    if (node.self < target_rank_lower_bound_) {
++      return node;
++    }
++    // 闭合：取原顺序下第一个达到 target 的 mask（与上游逐 mask 循环相同）。
++    for (uint32_t mask : masks) {
++      uint32_t all = back_bit;
++      for (uint32_t m = mask; m != 0; m &= m - 1) {
++        all |= uint32_t{1} << st.cls_of_pos[std::countr_zero(m)];
++      }
++      const int value = std::popcount(mask) + 1 + st.val[all];
++      if (value >= target_rank_lower_bound_) {
++        node.closes = true;
++        node.close_mask = mask;
++        node.close_value = value;
++        f3_build_key(chain, maskable, back, all);
++        node.close_witness = local_map->at(st.key);
++        return node;
++      }
++    }
++    CHECK(false) << "f3_evaluate: node should close but no mask reaches target";
++    return node;
++  }
++
+   RankLowerBoundBacktracking(const Constraints<P, M, NA> &constraints,
+                              const OrbitMap<Problem> &orbit_map,
+                              int known_rank_lower_bound, uint64_t step_limit,
+@@ -163,15 +328,30 @@ private:
+         [&](const tbb::blocked_range<size_t> &range) {
+           Constraints<P, M, NA> dfs_constraints;
+           LocalMap local_map;
++          if constexpr (kF3Dedup) {
++            F3State &st = f3_state();
++            st.last_pos.assign(minimal_constraints_.size(), -1);
++            st.saved.clear();
++            st.rep.clear();
++            st.key.reserve(2 * NA);
++          }
+           for (size_t i = range.begin(); i < range.end(); ++i) {
+             if (early_break) {
+               break;
+             }
+-            dfs_constraints.push_back(minimal_constraints_[i]);
++            if constexpr (kF3Dedup) {
++              f3_push(i, &dfs_constraints);
++            } else {
++              dfs_constraints.push_back(minimal_constraints_[i]);
++            }
+             rank_and_proof_list[i].first =
+                 Search(static_cast<int>(i), &step_count, &dfs_constraints,
+                        &local_map, &rank_and_proof_list[i].second);
+-            dfs_constraints.pop_back();
++            if constexpr (kF3Dedup) {
++              f3_pop(i, &dfs_constraints);
++            } else {
++              dfs_constraints.pop_back();
++            }
+             if (rank_and_proof_list[i].first <= known_rank_lower_bound_) {
+               early_break = true;
+             }
+@@ -228,35 +408,92 @@ private:
+     const auto &masks = masks_[dfs_size - 1];
+     Constraints<P, M, NA> constraints;
+     constraints.reserve(dfs_size);
+-    for (uint32_t mask : masks) {
+-      constraints.clear();
+-      // Iterate only over set bits (LSB -> MSB).
+-      for (uint32_t m = mask; m != 0; m &= m - 1) {
+-        constraints.push_back((*dfs_constraints)[std::countr_zero(m)]);
++    bool evaluated = false; // F₃：已用类子集求值（含闭合）
++    bool closed = false;
++    int close_value = 0;    // F₃：闭合 mask 的取值（上游返回的就是它，不是各 mask 的最大值）
++    if constexpr (kF3Dedup) {
++      const F3State &st = f3_state();
++      // 可掩码位置（0..dfs_size-2）上的不同候选数
++      uint32_t maskable = 0;
++      for (size_t p = 0; p + 1 < dfs_size; ++p) {
++        if (st.rep[p] == p) {
++          ++maskable;
++        }
+       }
+-      constraints.push_back(dfs_constraints->back());
+-      auto [it, inserted] = local_map->try_emplace(constraints);
+-      if (inserted) {
+-        // Not cached: combine with the base subspace and look the orbit up.
+-        constraints.insert(constraints.end(), base_constraints_.begin(),
+-                           base_constraints_.end());
+-        it->second.rank = static_cast<uint8_t>(orbit_map_.Get(
+-            constraints, &it->second.query_elem, &it->second.store_elem));
++      if (maskable + 1 <= f3_max_classes() && !f3_raw_keys()) {
++        evaluated = true;
++        const F3Node node = f3_evaluate(*dfs_constraints, local_map, masks, maskable);
++        rank_lower_bound_self = node.self;
++        if (node.closes) {
++          closed = true;
++          close_value = node.close_value;
++          // This branch proves the target; record one step (same mask as upstream).
++          // full_mask includes the last dfs constraint, so popcount(full_mask) +
++          // value.rank reproduces the bound on replay.
++          const uint32_t full_mask =
++              node.close_mask | (uint32_t(1) << (dfs_size - 1));
++          proof->Append(static_cast<uint8_t>(dfs_size), full_mask,
++                        static_cast<uint32_t>(node.close_witness.query_elem),
++                        static_cast<uint32_t>(node.close_witness.store_elem));
++        }
+       }
+-      const LocalMapValue &value = it->second;
+-      rank_lower_bound_self = std::max<int>(
+-          rank_lower_bound_self, std::popcount(mask) + 1 + value.rank);
+-      if (rank_lower_bound_self >= target_rank_lower_bound_) {
+-        // This branch proves the target; record one step. full_mask includes
+-        // the last dfs constraint (always part of `constraints` above), so
+-        // popcount(full_mask) + value.rank reproduces the bound on replay.
+-        const uint32_t full_mask = mask | (uint32_t(1) << (dfs_size - 1));
+-        proof->Append(static_cast<uint8_t>(dfs_size), full_mask,
+-                      static_cast<uint32_t>(value.query_elem),
+-                      static_cast<uint32_t>(value.store_elem));
+-        return rank_lower_bound_self;
++    }
++    if (!evaluated) {
++      // 上游的逐 mask 循环。F₂ 总是走这里；F₃ 只在类数超过阈值时走，且键用去重后的序列。
++      for (uint32_t mask : masks) {
++        constraints.clear();
++        uint32_t seen = 0;
++        for (uint32_t m = mask; m != 0; m &= m - 1) {
++          const uint32_t p = std::countr_zero(m);
++          if constexpr (kF3Dedup) {
++            if (!f3_raw_keys()) {
++              const uint32_t r = f3_state().rep[p];
++              if ((seen >> r) & 1u) {
++                continue;
++              }
++              seen |= uint32_t{1} << r;
++            }
++          }
++          constraints.push_back((*dfs_constraints)[p]);
++        }
++        if constexpr (kF3Dedup) {
++          if (f3_raw_keys()) {
++            constraints.push_back(dfs_constraints->back());
++          } else {
++            const uint32_t r = f3_state().rep[dfs_size - 1];
++            if (!((seen >> r) & 1u)) {
++              constraints.push_back(dfs_constraints->back());
++            }
++          }
++        } else {
++          constraints.push_back(dfs_constraints->back());
++        }
++        auto [it, inserted] = local_map->try_emplace(constraints);
++        if (inserted) {
++          // Not cached: combine with the base subspace and look the orbit up.
++          constraints.insert(constraints.end(), base_constraints_.begin(),
++                             base_constraints_.end());
++          it->second.rank = static_cast<uint8_t>(orbit_map_.Get(
++              constraints, &it->second.query_elem, &it->second.store_elem));
++        }
++        const LocalMapValue &value = it->second;
++        rank_lower_bound_self = std::max<int>(
++            rank_lower_bound_self, std::popcount(mask) + 1 + value.rank);
++        if (rank_lower_bound_self >= target_rank_lower_bound_) {
++          // This branch proves the target; record one step. full_mask includes
++          // the last dfs constraint (always part of `constraints` above), so
++          // popcount(full_mask) + value.rank reproduces the bound on replay.
++          const uint32_t full_mask = mask | (uint32_t(1) << (dfs_size - 1));
++          proof->Append(static_cast<uint8_t>(dfs_size), full_mask,
++                        static_cast<uint32_t>(value.query_elem),
++                        static_cast<uint32_t>(value.store_elem));
++          return rank_lower_bound_self;
++        }
+       }
+     }
++    if (closed) {
++      return close_value;
++    }
+ 
+     if (dfs_size == static_cast<std::size_t>(max_depth_)) {
+       return rank_lower_bound_self;
+@@ -264,11 +501,19 @@ private:
+ 
+     int rank_lower_bound_child = std::numeric_limits<int>::max();
+     for (int i = 0; i <= max_constraint_idx; ++i) {
+-      dfs_constraints->push_back(minimal_constraints_[i]);
++      if constexpr (kF3Dedup) {
++        f3_push(i, dfs_constraints);
++      } else {
++        dfs_constraints->push_back(minimal_constraints_[i]);
++      }
+       rank_lower_bound_child =
+           std::min(rank_lower_bound_child,
+                    Search(i, step_count, dfs_constraints, local_map, proof));
+-      dfs_constraints->pop_back();
++      if constexpr (kF3Dedup) {
++        f3_pop(i, dfs_constraints);
++      } else {
++        dfs_constraints->pop_back();
++      }
+       if (rank_lower_bound_child <= rank_lower_bound_self) {
+         break;
+       }
 diff --git a/search/rank_lower_bound_degenerate.h b/search/rank_lower_bound_degenerate.h
 index 9375696..bfc580b 100644
 --- a/search/rank_lower_bound_degenerate.h

@@ -12,7 +12,7 @@
 
 | 路径 | 内容 |
 |---|---|
-| `f3_extension.patch` | 对上游的补丁：`problems/matrix/symmetry.h`（新增 `SymmetryGroupFq` + 分发）、`problem.h`（注释、`kN0..kN2`）、`BUILD`；**外加 core / search / problems 的 F₃ 挂钩**（`constraints.h`、`dynamic_matrix.cc`、`rank_lower_bound_flatten.h`、`rank_lower_bound_forced_product.h`、`search/rank_lower_bound_degenerate.h`、`search/orbit_map.h`、`problems/matrix/symmetry.h`，见 §5.1） |
+| `f3_extension.patch` | 对上游的补丁：`problems/matrix/symmetry.h`（新增 `SymmetryGroupFq` + 分发）、`problem.h`（注释、`kN0..kN2`）、`BUILD`；**外加 core / search / problems 的 F₃ 挂钩**（`constraints.h`、`dynamic_matrix.cc`、`rank_lower_bound_flatten.h`、`rank_lower_bound_forced_product.h`、`search/rank_lower_bound_degenerate.h`、`search/orbit_map.h`、`search/rank_lower_bound_backtracking.h`、`problems/matrix/symmetry.h`，见 §5.1 / §5.4） |
 | `fq_matrix.h` | 新文件：base-P 数位打包的小矩阵（`FqMatrix<P,N0,N1>`，转置 / 乘积 / 求逆 / 秩） |
 | `fq_matrix_tables.h` | 新文件：GL 表、逆表、按行查表乘积表（`FqMatrixTables<P,N0,N1>`） |
 | `fq_matrix_test.cc` | 新文件：上游 gtest 风格的扩展单元测试（bazel 下跑） |
@@ -176,6 +176,62 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
 
 等价性见 §6。
 
+### 5.3 回溯证明在证什么（读 `rank_lower_bound_backtracking.h` / `backtracking_verifier.h` 与论文后的小结）
+
+回溯证明容易被误读，这里把核对过的几点写下来（2026-11-27）。论文指 arXiv 2603.07280；
+下面的引文是经网页抽取读到的句子，**没有读 PDF 原文**；论证的复述是我按代码自己推的。
+
+- **验证端检查的是**：对基约束 B（维数 d）与声明 L，重放「候选下标非增序列」i₁ ≥ i₂ ≥ … 的**整棵树**
+  （深度 < L−1）；每个记录闭合一个节点，条件是 `popcount(mask) + 表中的界 ≥ L`，其中 mask 选中路径的一部分行
+  （必须含最新一行），查的是「B ∪ 选中的行」所在轨道的界。整棵树必须被记录闭合完。
+- **路径的每一项是「假想分解里的一个乘积项」，不是一条约束。** 论文的原话：
+  「As the factors are unordered, we assume the factors are non-decreasing.」，以及 Orbit 6 的例子
+  「If a₀,₀ appears at least twice in the decomposition scheme, we set a₀,₀ = 0.」→「R(T₆) ≥ R(T₅) + 2」。
+  所以**同一个候选在路径上重复出现是设计的一部分**：两项的第一因子成比例时，把它置零一次消掉两项。
+- **为什么这证明秩 ≥ L（我的复述）**：反设有一个 L−1 项的分解。把各项按「第一因子关于基的规范代表」的下标排成非增序列，
+  这条序列是树里的一条路径。在深度 j 的节点选一个含第 j 项的 mask，把这些项的因子置零（作为约束加上），
+  至少消掉 `popcount(mask)` 个**不同的**项，剩下的张量落在查到的轨道里，于是
+  (L−1) − popcount(mask) ≥ 表中的界，与 `popcount(mask) + 界 ≥ L` 矛盾。
+- **不能按「线性无关的约束条数」去数。** 我一度把叶子处「行组线性相关」当成可靠性缺口，还写了一个按无关行数计数的
+  「严格」重放：v1 证书 18,822,872 个叶子里有 4,669,134 个（307 / 339 条回溯轨道）属于这种，按无关行数数全部「不达标」。
+  查了论文的论证之后确认这是误读，**证书没有问题**；那个「严格」重放的结论作废，核对器保持与框架验证端逐条一致。
+  上面的数字保留下来，只是说明这份证书对重复因子的依赖有多重。
+- **搜索的代价结构（由代码的 min / max 与 v1 的界值推出，没有实跑验证）**：节点值 =
+  max(本节点各 mask 的最好值, 所有子节点值的最小值)，任何一个子节点没闭合，父节点就闭合不了。
+  v1 下直线 16、平面 15、3 维空间 ≤ 15，所以 dim 0 要证 18 时，9841 个一阶分支都要下探，
+  约 4.84e7 个二阶节点 [x, y] 的**每一个子节点** [x, y, z]（z ≤ y）都得闭合——至少 C(9843, 3) ≈ 1.59e11 次深度 3 的闭合，
+  每次至少一次 `Get`。若平面的界先涨到 16，这 4.84e7 个二阶节点就能就地闭合。
+  换言之，18 的瓶颈不在 `Get` 的速度，而在 dim ≥ 2 的界能不能先涨；那些维度是同一结构的小号版本（dim 2 的候选数 1093）。
+
+### 5.4 回溯搜索的去重键（搜索层，语义与轨迹逐条不变）
+
+§5.3 说过：链上同一个候选可以重复出现。上游的缓存键是「mask 选中的路径行 + 最后一行」这个**含重复的行组**，
+于是张成同一个子空间、只是重复模式不同的键各查一次 `Get`。先量再改（dim 6，v1 证书，1e7 步，插桩统计）：
+
+| 量 | 上游 | 去重后 |
+|---|---|---|
+| `Get` 次数 | 2,380,069 | 263,587（只有这些是不同的子空间） |
+| 每个节点的键求值次数（合计） | 8.25 亿（= Σ 2^(j−1)，逐 mask） | 1.44 亿（= Σ 2^c，c = 可掩码位置上的不同候选数） |
+| 闭合叶子占节点的比例 | 23%；叶子闭合前平均只有 0.04 次 `Get` | 同左（叶子本来就便宜，贵的是非叶节点） |
+
+`search/rank_lower_bound_backtracking.h` 的 F₃ 分支（`kF3Dedup`；F₂ 保持上游原样）：
+
+- **键 = 去重后的候选序列**。链的下标非增，所以同一组候选在每个节点都得到同一个序列，同一个子空间在所有节点命中同一个缓存项。
+  `Get(q)` 只依赖 q 的行空间（`get_simd_check.cc` 的 E 项：随机重复行 / 随机线性组合行 vs 去重后的规范行，2000 次 0 不匹配）。
+- **按类子集求值**。节点值 = max over 类子集 K（(K 里各类的重数之和) + 1 + 界(K ∪ 末行类)），
+  与「max over mask（popcount(mask) + 1 + 界）」相同，因为同一组类的 mask 里重数最大的那个 popcount 最大。
+- **闭合时仍按原顺序扫描 mask**，记录的还是原顺序下第一个达到 target 的那个，返回值也是它的取值——轨迹逐条不变。
+- 类数超过 20 时退回上游的逐 mask 循环（键仍是去重键；F₃ 的 claim ≤ 17 时深度 ≤ 16，实际走不到）。
+- `SOVEREIGN_F3_RAWKEYS=1` 退回上游行为，`SOVEREIGN_F3_MAX_CLASSES` 调低阈值；只用于回归对拍。
+
+**等价性（实测，2026-11-27）**：同一个二进制从零算 dim 9–6（`--ignore_rank_lower_bound --dim_min=6`，1e7 步，forced product 2^28），
+四种模式——上游行为 / 新实现 / 阈值 3（大部分节点走回退分支）/ 阈值 12——的证书 sha256 全是 `c56c8678…`、
+`.btp` 轨迹档案 sha256 全是 `9a8c65b2…`，即**记录下来的证明逐字节相同**。CPU 时间：上游行为 56.79 s，新实现 **5.92 s（9.6 倍）**；
+只换键不换枚举方式（阈值 3）42.41 s（1.35 倍）——大头来自按类子集枚举，不是少查了 `Get`。
+
+这只改变每个搜索步的代价，不改变 §5.3 的计数：dim 0 证 18 仍要 ~1.59e11 次闭合。它的用处是同样的预算下能多走约一个数量级的步数。
+dim 5–0 的实测见 §7.2。
+
 ## 6. 验证证据（2026-11-27）
 
 | 检查 | 做法 | 结果 |
@@ -194,6 +250,10 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
 | Get 批量内核：未命中 | 同一件：300 个随机 q（209 个不在任何轨道里）上 `ProbeAll` 与标量逻辑同未命中 / 同命中 | **0 不匹配** |
 | 快路径后的回归 | F₂ verifier / F₂ 枚举 / F₃ verifier / F₃ 枚举 / 轨道大小守恒 | 20 / OK；496 条逐条一致；OK；736 条不变；10 维精确相等 |
 | 复现性 | 干净上游 + 补丁 + 新文件 + 本目录垫片（`otool -l` 按段比较） | 代码段 / 数据段逐字节相同；差异只在 `LC_UUID` 与代码签名 |
+| 回溯叶子里的重复因子（审计，不是门禁） | 在 `bt_fq.c` 上加计数的审计内核：叶子处「基 ∪ 选中的行」的秩 < 行数的叶子数 | v1：18,822,872 个叶子里 4,669,134 个（307 / 339 条回溯轨道，最大重复 6 次）；属设计，见 §5.3 |
+| 独立核对器的缓冲 | `test_wang_cert_check_fq.py`：同一因子重复 2 / 3 / 17 次的记录 | 修复前深度 17 的记录写越界 abort；修复后接受，且多报 1 的声明被拒 |
+| Get 只依赖行空间 | `standalone/get_simd_check.cc` E 项：已存键的行随机重复 / 随机线性组合 / 打乱行序（可超过 9 行）后 `Get` vs 去重后的规范行 vs 标量逻辑 | **0 不匹配**（2000 次；界 + 一对见证逐项相同） |
+| 回溯搜索去重键 | `test_wang_f3ext_fastpath.py::test_backtracking_dedup_keys_same_as_upstream`：同一二进制三种模式从零算 dim 9–6，比证书与 `.btp` 的 sha256 | **逐字节相同**（证书 `c56c8678…` / 轨迹 `9a8c65b2…`）；CPU 56.79 s → 5.92 s |
 
 `engineering/tests/test_wang_f3ext_fastpath.py` 是这些对拍的 unittest 版（求秩 / 展平秩 / 规范形 / 剪枝各 4000 次；群作用按步长 17 抽样，`WANG_SLOW=1` 跑全量；Get 批量内核跑 `get_simd_check`，非 ARM64 机器跳过；上游副本缺失时跳过）。
 
@@ -262,7 +322,9 @@ lower_f3 f3.pb.txt --dim_max=4 --backtracking_step_limit=1000000 \
 - **17 低于域泛型已知的下界 19**（Bläser 2003），所以这份证书**没有刷新 F₃ 的下界**。它的价值是「机器可查」+「基础设施」。
 - 它是下界：说明秩 ≥ 17，不说明秩 = 17。已知上界仍是 23（Laderman 方案，库内 `rank-laderman`）。
 - 搜索有随机性（回溯缓存的随机减半、线程时序）：重跑不保证得到同一份证书。可复现的是**核验**，不是搜索。
-- 想缩小和 F₂ 的差距（F₂ 用满了 2^32 + 1e7 步全程），代价是数十 CPU 小时 [未验证·路线推测]。
+- 加预算不等于能涨：按 §5.3 的代价结构，dim 0 的 18 要等 dim ≥ 2 的界先涨，而那些维度受同一结构约束。
+  F₂ 用满了 2^32 + 1e7 步全程；F₃ 这边同样的预算能不能涨、涨到哪里 [未验证·路线推测]。
+  能确定的只有一件事：只调大回溯步数、不动别的，在 dim 0 上离 18 很远（§5.3 的计数）。
 
 ## 8. 踩坑记录
 
@@ -292,6 +354,24 @@ lower_f3 f3.pb.txt --dim_max=4 --backtracking_step_limit=1000000 \
    从 10–11 提到 12），但 3^18 的枚举在没有快路径时是 16 分钟 / 投影位。所以跑法是**分阶段**：
    先用中等预算拿一份完整可验证的证书，再用大预算只对高维做改进、然后向低维传播
    （上游对大格式也是这么做的：`run.py` 里 `dim_min` / `dim_max` 分两遍）。
+7. **续跑时 forced product 根本不跑**：`ProcessOrbit` 里 flatten 与 forced product 都挂在
+   `!rt.has_rank_lower_bound()` 后面——已有界的轨道直接跳过，只有 degenerate 与 backtracking 会重算。
+   2026-11-27 的 v2 续跑 A 段（dim 9–6，`--forced_product_max_iterations_log2=30`）24 秒跑完、0 条变化，
+   就是因为这个。要在已有证书上重算 forced product，只能带 `--ignore_rank_lower_bound` 从头算。
+8. **差点把设计当漏洞**：见 §5.3。教训是「叶子处行组线性相关」这种观察，在对称群 / 子空间那一层看像错，
+   在「假想分解的乘积项」那一层看才对。下结论前先读论文的论证，再写对拍。
+9. **独立核对器的两处越界（已修，带回归测试）**：`bt_fq.c` 的路径 / 行组缓冲按 16 开，claim > 17 时
+   `path_idx[16]` 写越界（对上游 F₂ ⟨3,3,3⟩ 证书 dim ≤ 4 重放时 abort）；记录数组是 1<<22 的静态数组，
+   上游 dim 4 的证明超过 419 万条，直接拒收。现在缓冲 40（claim ≤ 32）、记录动态分配。
+   F₃ 证书目前 claim ≤ 17，没有触发过；但往上做就会触发。
+10. **去重键的第一版越界（已修）**：末行自成一类时它的代表位置不在 `rep_of_cls` 里，第一版照样去取
+    `rep_of_cls[maskable]`，dim 6 一跑就段错误。修法是把末行单独处理（`f3_build_key`）。
+    教训：新增一种「类」时，代表表、重数表、下标范围三处要一起过一遍；等价回归一跑就抓到了，说明回归本身是值得先写的。
+11. **存盘的补丁要和上游树对账**：`f3_extension.patch` 不含 `MODULE.bazel.lock`（抓依赖时被改写，与补丁无关），
+   直接 `git diff` 全树会和存盘的不一致。对账命令：
+   `git -C /tmp/wang-tensor-rank diff -- core search problems/matrix/BUILD problems/matrix/problem.h problems/matrix/symmetry.h`。
+12. **zsh 的 `set -- $var` 不分词**：`for spec in "tag ENV=1"; do set -- $spec` 在 zsh 里 `$spec` 是一个整体，目录名里带上了空格和等号。
+    循环体里要分词的变量，用 bash 跑脚本，或者写成数组。
 
 ## 9. 垫片的边界（诚实声明）
 

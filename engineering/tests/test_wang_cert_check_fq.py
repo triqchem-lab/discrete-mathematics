@@ -246,6 +246,36 @@ class BacktrackingKernel(unittest.TestCase):
         with self.assertRaises(AssertionError):
             self.fq.make_backtracking_verifier_fq(self.BASE8, 6, proof, {tuple(sorted(self.EXT)): 5})()
 
+    def test_repeated_factor_counted_per_term(self):
+        """路径上同一个因子出现两次: mask 选两行, proved = 2 + 表中的界。
+        这是框架的设计而不是漏洞: 路径的每一项是「假想分解里的一个乘积项」(按因子非降序排列),
+        同一个因子出现两次 = 两项的第一因子成比例, 把它置零一次就消掉两项
+        (论文 2603.07280 的 Orbit 6 例子: 出现至少两次 ⟹ + 2)。扩展后的行组秩不变, 查的是同一个轨道。"""
+        full = {self.key(self.IDENT, self.IDENT): 5}
+        for depth, claim in ((2, 7), (3, 8)):
+            proof = {"sizes": [depth], "masks": [(1 << depth) - 1],
+                     "queries": [self.IDENT], "stores": [self.IDENT]}
+            ok, _nodes, _leaves, reason = self.fq.bt_via_c(self.BASE8, claim, proof, dict(full))
+            self.assertTrue(ok, f"depth {depth}: {reason}")
+            self.fq.make_backtracking_verifier_fq(self.BASE8, claim, proof, dict(full))()
+            ok, _n, _l, reason = self.fq.bt_via_c(self.BASE8, claim + 1, proof, dict(full))
+            self.assertFalse(ok)
+            self.assertEqual(reason, "claim > proved")
+
+    def test_deep_record_beyond_16(self):
+        """claim 18、单条记录深度 17(= claim − 1, 同一因子重复 17 次; 再深一层就不是合法记录):
+        内核的路径缓冲必须容纳下标 16。2026-11-27 之前缓冲按 16 开, 这里的 path_idx[16] 写越界,
+        对 claim > 17 的证书(上游 F₂ ⟨3,3,3⟩ 的 dim ≤ 4)重放会 abort。"""
+        full = {self.key(self.IDENT, self.IDENT): 5}
+        proof = {"sizes": [17], "masks": [(1 << 17) - 1], "queries": [self.IDENT], "stores": [self.IDENT]}
+        try:
+            ok, nodes, leaves, reason = self.fq.bt_via_c(self.BASE8, 18, proof, dict(full))
+        except subprocess.CalledProcessError as exc:
+            self.fail(f"内核崩溃(缓冲越界?): rc={exc.returncode}")
+        self.assertTrue(ok, reason)
+        self.assertEqual((nodes, leaves), (18, 1))   # 深度 0…16 的内部节点 + 叶子
+        self.fq.make_backtracking_verifier_fq(self.BASE8, 18, proof, dict(full))()
+
     def test_singular_witness_rejected(self):
         """store 取奇异矩阵(全零): 内核以「见证不在对称群里」拒绝。"""
         ok, reason, _py = self.both(6, self.IDENT, 0, {tuple(sorted(self.EXT)): 5})

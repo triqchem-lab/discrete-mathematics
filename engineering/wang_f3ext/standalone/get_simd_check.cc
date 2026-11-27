@@ -7,6 +7,10 @@
 //    22464 个 Query 元素, 每个得到的 q 都必须查得到。
 // C. ProbeAll 对随机 q(多数不在任何轨道里)的结果必须与标量逻辑一致: 同样未命中, 或同一命中。
 // D. 微基准: 一次 Get 的耗时, 标量 vs 批量。
+// E. 重复行: 回溯搜索的链上同一个候选可以重复出现, 查轨道时 q 里会有重复行 / 相关行。
+//    Get(q) 只应依赖 q 的行空间: 把一个已存键的行随机重复、随机线性组合之后, Get 必须给出
+//    与「去重后的规范行」完全相同的结果(界 + 一对见证), 且与标量逻辑一致。
+//    这是 search/rank_lower_bound_backtracking.h 里「去重键」优化的依据。
 // 编译: clang++ -std=c++23 -O3 -I<shim> -I<WANG_REPO> get_simd_check.cc <WANG_REPO>/core/dynamic_matrix.cc
 // 运行: ./get_simd_check   —— 全部相同则 exit 0
 #include <algorithm>
@@ -260,6 +264,54 @@ long CheckProbeAll(const Group &g, std::mt19937_64 &rng, int reps, long trials, 
   return bad;
 }
 
+// ---- E ----
+long CheckRepeatedRows(const Group &g, std::mt19937_64 &rng, int reps, long trials) {
+  OrbitMap<P3> map(&g);
+  RefTable ref;
+  std::vector<Cons9> reps_vec;
+  BuildRef(g, &ref, &map, rng, reps, &reps_vec);
+  std::vector<Cons9> keys;
+  for (const auto &kv : ref) keys.push_back(kv.first);
+  long bad = 0, tall = 0;
+  for (long t = 0; t < trials; ++t) {
+    const Cons9 &key = keys[static_cast<std::size_t>(rng() % keys.size())];
+    Cons9 q = key;
+    const int extra = static_cast<int>(rng() % 7);  // 0–6 条多余的行
+    for (int x = 0; x < extra; ++x) {
+      if (rng() % 2 == 0) {
+        // 重复一行
+        q.push_back(key[static_cast<std::size_t>(rng() % key.size())]);
+      } else {
+        // key 各行的随机线性组合(系数 0..2, 可能为零行)
+        Vec9 row;
+        for (const Vec9 &v : key) {
+          const int a = static_cast<int>(rng() % 3);
+          for (int c = 0; c < 9; ++c) {
+            row.Set(c, GF<3, 1>{static_cast<std::uint8_t>((row[c].value + a * v[c].value) % 3)});
+          }
+        }
+        q.push_back(row);
+      }
+    }
+    std::shuffle(q.begin(), q.end(), rng);  // 行序也打乱
+    if (q.size() > 9) ++tall;
+    QElem wq{}, wq0{};
+    SElem ws{}, ws0{};
+    const int r1 = map.Get(q, &wq, &ws);
+    const int r0 = map.Get(key, &wq0, &ws0);
+    int rr = 0, ri = 0;
+    SElem rs{};
+    ri = RefGet(g, ref, q, &rr, &rs);
+    if (r1 != r0 || wq.l != wq0.l || wq.transpose != wq0.transpose || ws != ws0 ||
+        ri < 0 || r1 != rr || wq.l != g.query.At(ri).l || wq.transpose != g.query.At(ri).transpose ||
+        ws != rs) {
+      if (bad < 5) std::printf("REPEAT MISMATCH: rows=%zu raw=(%d) dedup=(%d) ref=(%d,%d)\n", q.size(), r1, r0, ri, rr);
+      ++bad;
+    }
+  }
+  return bad;
+}
+
 // ---- D ----
 void Bench(const Group &g, std::mt19937_64 &rng, int reps, int qdim, int iters) {
   OrbitMap<P3> map(&g);
@@ -350,10 +402,12 @@ int main(int argc, char **argv) {
               gets, tall, b);
   const long c = CheckProbeAll(g, rng, 14, 300, &misses);
   std::printf("C probe-all (14 reps): trials=300 misses=%ld mismatches=%ld\n", misses, c);
+  const long e = CheckRepeatedRows(g, rng, 14, 2000);
+  std::printf("E repeated rows (14 reps): trials=2000 mismatches=%ld\n", e);
   Bench(g, rng, 14, 3, 20000);
   Bench(g, rng, 84, 4, 20000);
   Bench(g, rng, 266, 5, 4000);
-  const bool ok = a == 0 && b == 0 && c == 0;
+  const bool ok = a == 0 && b == 0 && c == 0 && e == 0;
   std::printf("%s\n", ok ? "OK" : "FAILED");
   return ok ? 0 : 1;
 }
