@@ -881,7 +881,7 @@ r = 22 也行（首个 (p,q) = (31,11), 31/11 ≈ 2.818）; r = 23 不行（`lad
 ## 十八、矩阵乘法指数线 M19——稀疏加权层 + 文献检索（2026-11-26，用户定案「检索论文 + 镜像」）
 
 > 下界（rank ≥ …）不走表，走**约束**：加权张量的支撑结构约束一切分解形态。
-> M19 镜像 Lean `Rectangle/Weights.lean` 的谓词层——Bläser 2003 的 2n²+n−2、
+> M19 镜像 Lean `Rectangle/Weights.lean` 的谓词层——Bläser 2003 的 2mn + 2n − m − 2（m ≥ n ≥ 3; 2026-11-28 更正公式, 此前记作 2n²+n−2）、
 > 2603.07280/2609.06725 的自动化下界都以它为承重结构。
 
 | 符号 | 位置 | 命题 |
@@ -1023,3 +1023,43 @@ arXiv:2603.07280 的机器可查证书; LFS 真身 115KB 文本 + 33MB .btp 回�
 - **加步数的上限（2026-11-28 01:25 实测）**: dim 2–0 开 3e8 步, 32 分钟后进程占用 25 GB、交换区 13.4 / 14.3 GB, 已杀。
   原因是回溯证明的轨迹全程在内存里、随步数增长。dim 4 卡在时间上、dim 2 卡在内存上: 这台机器上「加步数」走不到 18。
   我挂的内存哨兵量的是 RSS（3–4 GB）, 没响——macOS 上要看占用（top 的 MEM）或交换区。
+
+## 二十一、矩阵乘法指数线 M22——指标集泛型的秩分解与结构引理（`TensorRankIndexGF3.agda`，252 行，2026-11-28 登记）
+
+**起因**：用户问「3×3 能不能用代数结构闭包做数学证明、不靠暴力搜索」，要求先盘点、先规划、想清楚再尝试。
+盘点与判断写在立项书「立项 C」；本件是按计划走的第一步。
+
+**文件**：`src/Sovereign/Algebra/LinearAlgebra/TensorRankIndexGF3.agda`。
+
+- §1 `RankLE X Y Z T r`：指标集泛型的 r 项秩分解（X Y Z 任意集合，T : X → Y → Z → Trit）；
+  `rankLE₃→idx` / `idx→rankLE₃` 与 `RankLE₃` 往返。
+- §2 ★ `rank-pull`（沿任意映射 g : X' → X 拉回）、★ `rank-invar`（g 有左逆 h 时搬回原张量）。
+- §3 ★ `rank-restrict`（线性限制：子空间的基由 s : Fin k → Fin m 给出，限制后的结构常数
+  Σ_x s j x ⊗ T x y z 仍有 r 项分解；核心等式 `restrict-eq`）。
+- §4 ★ `rank-swap`（两个输入对换）、★ `rank-rot`（三变元轮回）。
+- §5 `bläser₃-boundary : Set` = ∀ r → RankLE₃ 3 r → 19 ≤ r（陈述，无居民）；
+  ★ `bläser₃→flatten`（它蕴含展平下界 r ≥ 9）；`sentinel-compatible`（19 ≤ 23）。
+
+**核对**：`agda` exit=0；0 postulate / 0 REWRITE 规则 / 0 洞。
+独立检查件 `/tmp/m22chk/CheckM22.agda`：21 条（主签名逐字重述 + 读法检查：对换两次 = 没动、轮回三次 = 没动、
+Laderman 分解先拉回再限制仍是 23 项、陈述层展开），exit=0。
+oracle `engineering/oracle_tensor_rank_gf3.py` 新增 M22 一节，ALL_PASS：
+rank-pull 3072/3072；rank-invar 384/384，负对照（非置换 g）0 个 h 能恢复；
+rank-restrict 19216/19216，独立路径（三线性型 = 普通矩阵乘法）1200/1200，负对照（s = 2·e_x₀）恰 8 次；swap / rot 64/64。
+
+**诚实边界**：不改进任何下界数字（库内 n = 3 仍是 r ≥ 9）。它交付的是以后任何一条下界证明都要用的结构事实
+（Wang 框架 §3.1 命题 1 的 monotonicity / invariance）。一般线性换元的完全不变性（「(T∘s)∘s⁻¹ ≡ T」）未做。
+
+**同日更正（文献）**：此前库内 4 处把 Bläser 的 19 写成「2n²+n−2」。按 arXiv:2603.07280v11 引言逐字核对：
+R(⟨n,m,n⟩) ≥ 2mn + 2n − m − 2（m ≥ n ≥ 3），任意域，秩；出处是 2003 年 «On the complexity of the multiplication
+of matrices of small formats»。1999 年那篇给的是 (5/2)n² − 3n。已改：立项书「现状」与 B-T6、审计 §L、
+`TensorRankSparseGF3` 头注（改后重编 exit=0）、本文件 §十八。
+
+**新坑（别再踩）**:
+- **类型签名里的隐式变量不进函数体**: `restrict-eq {k m r} …` 的定义体里要用 m / r, 必须显式绑成模式
+  `restrict-eq {m = m} {r = r} …`; where 块 / let 块的局部签名里同样取不到。
+- **「提公因子」的 u 是函数不是值**: `sumFin-scale₃ k u c` 里 u : Fin r → Trit; 写成 `(ra ρ i)`(i 未绑定)是 NotInScope。
+  要的是 `λ i → ra ρ i x`。
+- **括号自检脚本别用 `line.split('--')`**: 它会把首行 `{-# OPTIONS --rewriting … #-}` 从 `--` 处切开, 误报一个没闭合的 `{`;
+  而正文里真正的错误(第一行多一个右括号)反而被平衡计数掩盖——逐个应用各占一行, 再用脚本数, 才定位到。
+

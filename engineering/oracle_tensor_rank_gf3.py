@@ -393,6 +393,131 @@ def check_savings(pmax=12, samples=3000, seed=20261130):
     return tested, fires
 
 
+# ---------------------------------------------------------------------------
+# M22（TensorRankIndexGF3）: 指标集泛型谓词的四条结构引理 —— 数值核对
+#   把 Pos 2 的 4 个位置看作 X = Fin 4（下标 = POS 的序号）, Strassen 分解 = (α, β, 输出系数)。
+#   Agda 的「分解」是三张系数表 a : Fin r → X → Trit … 加恒等式 Σ_i a i x ⊗ (b i y ⊗ c i z) ≡ T x y z;
+#   下面每条判据都与 Agda 的陈述逐字对应, 用随机输入核对恒等式本身, 不只是核对结论「存在分解」。
+# ---------------------------------------------------------------------------
+import random as _random
+
+
+def decomp_value(A, B, Cf, x, y, z):
+    """Σ_i a i x ⊗ (b i y ⊗ c i z) —— 对应 Agda 的 sumFin (λ i → ra i x ⊗ (rb i y ⊗ (rc i z)))"""
+    return sum(mul(A[k][x], mul(B[k][y], Cf[k][z])) for k in range(len(A))) % 3
+
+
+def m22_tables():
+    """Strassen 分解写成 Fin 4 上的三张表: a i x = α_i(x), b i y = β_i(y), c i z = 输出系数(POS 序号)"""
+    A = [[ALPHA[k][x] for x in range(4)] for k in range(7)]
+    B = [[BETA[k][y] for y in range(4)] for k in range(7)]
+    Cf = [[C[k][z] for z in range(4)] for k in range(7)]
+    T = lambda x, y, z: tensor(POS[x], POS[y], POS[z])
+    return A, B, Cf, T
+
+
+def check_m22_pull():
+    """rank-pull: 对全部 4³ = 64 个映射 g : Fin 3 → Fin 4, 拉回后的分解给出 T(g x', y, z)"""
+    A, B, Cf, T = m22_tables()
+    n = ok = 0
+    for gt in product(range(4), repeat=3):
+        g = list(gt)
+        for x1, y, z in product(range(3), range(4), range(4)):
+            n += 1
+            if decomp_value([[a[g[i]] for i in range(3)] for a in A], B, Cf, x1, y, z) == T(g[x1], y, z):
+                ok += 1
+    return n, ok
+
+
+def check_m22_invar(trials=6, seed=20261201):
+    """rank-invar: g 是 Fin 4 的置换、h = g⁻¹ 时, 先沿 g 拉回再沿 h 搬回, 得到原分解 (64 个三元组逐一相等)。
+    负对照: g 不是置换时, 对全部 4⁴ = 256 个 h 没有一个能把恒等式恢复。"""
+    A, B, Cf, T = m22_tables()
+    rnd = _random.Random(seed)
+    n = ok = 0
+    perms = list(range(4))
+    for _ in range(trials):
+        rnd.shuffle(perms)
+        g = perms[:]                      # g : Fin 4 → Fin 4
+        h = [0] * 4
+        for x in range(4):
+            h[g[x]] = x
+        Ag = [[a[g[i]] for i in range(4)] for a in A]       # 沿 g 拉回后的分解
+        Agh = [[a[h[i]] for i in range(4)] for a in Ag]      # 沿 h 搬回
+        for x, y, z in product(range(4), repeat=3):
+            n += 1
+            if decomp_value(Agh, B, Cf, x, y, z) == T(x, y, z):
+                ok += 1
+    # 负对照: g = (0, 0, 2, 3) 不是置换
+    g = [0, 0, 2, 3]
+    Ag = [[a[g[i]] for i in range(4)] for a in A]
+    fixed = 0
+    for ht in product(range(4), repeat=4):
+        Agh = [[a[ht[i]] for i in range(4)] for a in Ag]
+        if all(decomp_value(Agh, B, Cf, x, y, z) == T(x, y, z) for x, y, z in product(range(4), repeat=3)):
+            fixed += 1
+    return n, ok, fixed
+
+
+def check_m22_restrict(trials=400, seed=20261202):
+    """rank-restrict: 随机 s : Fin k → Fin 4 (k = 1..5),
+       Σ_i (Σ_x s j x ⊗ a i x) ⊗ (b i y ⊗ c i z) ≡ Σ_x s j x ⊗ T x y z 对全部 (j, y, z) 成立。
+       独立路径(意义): 第一变元取 v = s[0] 时, 三线性型 Σ_{xyz} v_x·T(x,y,z)·w_y·u_z
+       等于 Σ_{ik} (V·W)_{ik}·U_{ik} —— 走普通矩阵乘法, 不经恒等式。
+       负对照: s = 2·e_{x₀}(单位向量的 2 倍)时, 限制值 = 2·T(x₀,y,z) ≠ T(x₀,y,z), 只要 T(x₀,y,z) = 1(共 8 处)。"""
+    A, B, Cf, T = m22_tables()
+    rnd = _random.Random(seed)
+
+    def restricted(s, i):
+        """a 复合 s 之后的系数: Σ_x s x ⊗ a i x"""
+        return [sum(mul(s[x], A[i][x]) for x in range(4)) % 3 for _ in (0,)][0]
+
+    n = ok = sem_n = sem_ok = neg_fire = 0
+    for _ in range(trials):
+        k = rnd.randint(1, 5)
+        s = [[rnd.randint(0, 2) for _ in range(4)] for _ in range(k)]
+        a_s = [[restricted(s[j], i) for j in range(k)] for i in range(7)]
+        for j, y, z in product(range(k), range(4), range(4)):
+            n += 1
+            lhs = decomp_value(a_s, B, Cf, j, y, z)
+            rhs = sum(mul(s[j][x], T(x, y, z)) for x in range(4)) % 3
+            if lhs == rhs:
+                ok += 1
+        for _ in range(3):
+            V = s[0]                                              # Fin 4 上的坐标(顺序同 POS)
+            W = [rnd.randint(0, 2) for _ in range(4)]
+            U = [rnd.randint(0, 2) for _ in range(4)]
+            L = sum(mul(mul(V[x], T(x, y, z)), mul(W[y], U[z]))
+                    for x, y, z in product(range(4), repeat=3)) % 3
+            Vd = {POS[i]: V[i] for i in range(4)}               # matmul_entry 要的是 位置 → 值
+            Wd = {POS[i]: W[i] for i in range(4)}
+            R = sum(mul(matmul_entry(Vd, Wd, POS[i]), U[i]) for i in range(4)) % 3
+            sem_n += 1
+            if L == R:
+                sem_ok += 1
+    for x0, y, z in product(range(4), repeat=3):
+        s2 = [2 if x == x0 else 0 for x in range(4)]
+        a_s = [[restricted(s2, i)] for i in range(7)]
+        lhs = decomp_value(a_s, B, Cf, 0, y, z)
+        if T(x0, y, z) == 1 and lhs != T(x0, y, z):
+            neg_fire += 1
+    return n, ok, sem_n, sem_ok, neg_fire
+
+
+def check_m22_sym():
+    """rank-swap / rank-rot: 交换 a 与 b(或轮回 (b, c, a))之后恒等式仍成立"""
+    A, B, Cf, T = m22_tables()
+    n = ok_swap = ok_rot = 0
+    for x, y, z in product(range(4), repeat=3):
+        n += 1
+        if decomp_value(B, A, Cf, y, x, z) == T(x, y, z):
+            ok_swap += 1
+        lhs = sum(mul(B[k][y], mul(Cf[k][z], A[k][x])) for k in range(7)) % 3
+        if lhs == T(x, y, z):
+            ok_rot += 1
+    return n, ok_swap, ok_rot
+
+
 def main():
     n1 = check_structure_constants()
     n2 = check_matrices()
@@ -413,6 +538,21 @@ def main():
     print("M16-C rank-one + 有限证书 7^6 ≤ 2^17 (及 (7^k)^6 ≤ (2^k)^17, k ≤ 7): %d 次核对" % n8)
     n9, f9 = check_savings()
     print("M16-D 严格节省: %d 次核对; 其中「下半 + 节省 ⟹ 9q < 4p」的蕴含实际触发 %d 次" % (n9, f9))
+    p_n, p_ok = check_m22_pull()
+    i_n, i_ok, i_fixed = check_m22_invar()
+    r_n, r_ok, rs_n, rs_ok, r_neg = check_m22_restrict()
+    s_n, s_swap, s_rot = check_m22_sym()
+    print("M22 rank-pull (全部 64 个 g : Fin 3 → Fin 4 × 48 个三元组): %d/%d" % (p_ok, p_n))
+    print("M22 rank-invar (置换 g 与 g⁻¹: 先拉回再搬回 = 原分解) %d/%d; 负对照: 非置换 g 时能把恒等式恢复的 h 有 %d 个(应为 0)"
+          % (i_ok, i_n, i_fixed))
+    print("M22 rank-restrict (随机 s, 恒等式) %d/%d; 三线性型意义(普通矩阵乘法独立路径) %d/%d; "
+          "负对照(s = 2·e_{x₀}: 限制值 = 2·T(x₀,y,z) ≠ T(x₀,y,z), 应为 8 次) %d 次" % (r_ok, r_n, rs_ok, rs_n, r_neg))
+    print("M22 rank-swap / rank-rot (64 个三元组): %d/%d, %d/%d" % (s_swap, s_n, s_rot, s_n))
+    # 先算后验纪律: 前提成立数必须 > 0, 否则上面的「全部成立」是空转
+    assert p_n == 64 * 3 * 16 and p_ok == p_n
+    assert i_n > 0 and i_ok == i_n and i_fixed == 0
+    assert r_n > 0 and r_ok == r_n and rs_n > 0 and rs_ok == rs_n and r_neg == 8
+    assert s_n == 64 and s_swap == s_rot == 64
     # 与 M13 头注一致的账本: 恰 7 项
     assert len(ALPHA) == len(BETA) == len(C) == 7
     if len(sys.argv) > 1:

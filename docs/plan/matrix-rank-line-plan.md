@@ -9,7 +9,7 @@
 
 **目标（可判定）**：拿到 GF(3) 上 3×3 双线性复杂度（张量秩）的**机器可查下界证书** ≥ 20（基础）/
 ≥ 21（进阶）。若 ≥ 22：GF(3) 精确秩问题收缩到「22 vs 23」。
-**现状**：域泛型 ≥ 19（Bläser 2003，2n²+n−2 在 n=3）；F₂：19 → 20（arXiv:2603.07280 Wang 框架，
+**现状**：任意域 ≥ 19（Bläser 2003, «On the complexity of the multiplication of matrices of small formats»: R(⟨n,m,n⟩) ≥ 2mn + 2n − m − 2, m ≥ n ≥ 3; n = m = 3 即 19。陈述与出处 2026-11-28 按 arXiv:2603.07280v11 引言核对, 此前本文件写的「2n²+n−2」公式记错, 数值与年份是对的）；F₂：19 → 20（arXiv:2603.07280 Wang 框架，
 机器可查证书）→ 21（arXiv:2609.06725，限制界 + 陪集分析 + 穷举）；**F₃ 的 ⟨3,3,3⟩ 未见任何声明——开口**；
 同一框架已解 F₃ 的 ⟨2,3,3⟩ = 15（精确）。
 
@@ -35,10 +35,53 @@
 | B-T3 | 稀疏定律有限口径 | DensityBound/CellBound/DegreeBound 的 Saving 型翻译：陈述件 exit=0（无居民，边界标注——K.1 判定的直接应用） | B-T2 | ✅ **M21**（`TensorRankSparseLawsGF3.agda` 393 行, 2026-11-27, PROVEN §二十）: 三条定律写成「对每个下斜率 p/q 的纯 ℕ 不等式」`|U|^q·(IJK)^p ≤ C^q`——`DensityBound₃` / `DegreeBound₃` 完整; **`CellBound₃` 只有平方输出集实例**（一般 \|u\| 下 Lean 的 short 给出实数边长, 格式非整数; 证明核心 width 是熵型实数量——边界标注）。衔接定理: ★ lower-slope-boundary（下半 ⟹ 方格式下斜率 3/4）、★ upper-slope-strassen（Strassen ⟹ (2,2,2) 上斜率 15/16）、★ upper-lower-slope（上 ≥ 下）、★★ degree-law-boundary（`支撑数⁴·n⁹ ≤ (432·n³·r)⁴`） |
 | B-T4 | exponent 有限代理 | 在 (p,q) 分数对上定义 exponent 的离散代理（Saving 上的 sup/inf 型构造）并与 Saving₃ 单调性衔接；定理 exit=0 | B-T3 | ✅ **主体完成（随 M21, PROVEN §二十）**: 代理已定义——`LowerSlopeᵣ`（每个幂的每个分解 ≥ 体积^{p/q·幂}）与 `UpperSlopeᵣ`（每个幂存在分解 ≤ 体积^{p/q·幂}）, 与 ω₃-boundary / Strassen 的衔接已证（★ lower-slope-boundary、★ upper-slope-strassen）, ★★ **saving→upper-slope**（`RankLE₃ n r` + `r^q < n^p` ⟹ `UpperSlopeᵣ n n n p (3q)`）把 `Saving₃` 的单尺寸见证接进斜率语言。非空性见证 `upper-slope-one`（仅平凡格式 (1,1,1)）。**未做**: 一般格式的 schoolbook 非空性（需尺寸相加的直和机制, 库内只有尺寸相乘的 `rank-mul`）、与 Lean `exponent` 的等价（外部, 需 ℝ）。ℝ 被宪法排除, 这是口径关键 |
 | B-T5 | tag-fiber 计数（定价层 ℕ 镜像） | `tag_count_fiber`/`meanTag` 一族的 ℕ 版；服务上界方向 | 独立 | 大；可后置 |
-| B-T6 | （远期）Bläser 2n²+n−2 镜像 | 替换法（substitution method）的下界证明 | B-T2 | 大；公开问题级下游 |
+| B-T6 | （远期）Bläser 2mn+2n−m−2 的镜像（n = 3 的实例：`RankLE₃ 3 r → 19 ≤ r`，陈述已在 M22 `bläser₃-boundary`） | 替换法（substitution method）的下界证明 | B-T2 | 大；多会话工程，见立项 C |
 
 **会合点**：A-T4/A-T5 的证书核对用 B-T2 的限制界词汇——2609.06725 的证明对象正是「限制界 + 支撑轮廓」，
 两线的任务在这一环是同一批定义。
+
+## 立项 C：不靠暴力搜索的数学证明（草案，2026-11-28，用户定案「先盘点、先规划、想清楚、再尝试」）
+
+**问题**：3×3 能不能用「代数结构闭包」（代数闭包 / Frobenius–Galois 结构 / Z[ω] 共轭）证明秩的下界，不靠搜索？
+
+**判断（盘点与核对之后）**
+
+1. 代数闭包路线与 Frobenius 结构**给不出比已知更强的下界**，更谈不上关闭 3×3：
+   - 下界的方向是 rank_F₃ ≥ rank_F₉ ≥ rank_F̄₃。Frobenius σ 只说明张量被 σ 固定
+     （Fix(σ) = GF(3)，库内 `GaloisBridge` 已证）；对分解它只给出一个对合——σ 把 rank-r 的 F₉ 分解映到另一个
+     rank-r 分解——不约束 r。「本体与投影重合」在秩这个问题上的全部内容就是这一句。
+   - Z[ω] 那套机制搬不到 char 3：特征 3 下 ω ≢ 1 失效（x³ − 1 = (x − 1)³；库内 `ZomegaMod3` §A），
+     GF(9) 用的是 x² + 1（`GF9`），C₄ 来自 α ∈ GF(9)，不是 ω。
+   - 3×3 的精确秩是公开问题（r = 21 / 22 的存在性对任何域都开放，审计 §L）。
+2. 两处事实更正（本文件「现状」行、审计 §L、`TensorRankSparseGF3` 头注、PROVEN 同步改）：
+   19 来自 Bläser **2003** 的 R(⟨n,m,n⟩) ≥ 2mn + 2n − m − 2（m ≥ n ≥ 3，**任意域**，是秩不是边界秩；
+   Bläser 1999 给的是 (5/2)n² − 3n，对 n = 3 更弱）。
+   搜索得到的 17 是较弱的证书，与 19 不矛盾；「19 来自代数闭域上的 secant variety / 边界秩」的说法与
+   arXiv:2603.07280v11 引言不符。
+
+**盘点（本地库，2026-11-28）**
+
+| 类别 | 模块 | 状态 |
+|---|---|---|
+| 秩分解谓词与见证 | `TensorRankGF3`（RankLE₃、rank-strassen）、`TensorRankLadermanGF3`（23 项）、`TensorRankPowGF3`、`TensorRankCircuitGF3` | ✅ 内核证 |
+| 下界 | `TensorRankFlattenGF3`：rank-lower，n² ≤ r（n = 3 时 **9**） | ✅ 这是库内 n = 3 唯一的下界 |
+| 外部定理的陈述层 | ω₃-boundary、ω₃-upper、bläser₃-boundary（M22） | 陈述，无居民 |
+| 限制界词汇 | `TensorRankSparseGF3`（M19）、`TensorRankRestrictGF3`（M20）、`TensorRankSparseLawsGF3`（M21） | ✅ 陈述层 + 衔接定理 |
+| 结构引理 | `TensorRankIndexGF3`（M22）：泛型谓词、rank-pull / rank-invar / rank-restrict / rank-swap / rank-rot | ✅ |
+| 特征 3 结构 | `FieldTower/GF9`（σ、Norm、Trace）、`GaloisBridge`（Fix(σ) = GF(3)）、`FrobeniusOrbit`（C₄ 相位）、`ComplexProjection`、`Zomega` / `ZomegaMod3`、`GF27`、`GF3K` | ✅ 但与张量秩线没有接口：秩谓词只在 Trit 上 |
+| 工程证书 | `engineering/wang_f3ext`（≥ 17，v1–v3） | 机器可查（C 核对器），不在 Agda 内核 |
+
+**任务表**
+
+| # | 任务 | 完成判据 | 状态 / 风险 |
+|---|---|---|---|
+| C-T0 | 盘点 + 核对前提 | 本节；PROVEN §二十一 | ✅ 2026-11-28 |
+| C-T1 | M22：指标集泛型谓词 + 结构引理 + Bläser 陈述 | exit=0；oracle ALL_PASS；CheckM22 | ✅ 2026-11-28 |
+| C-T2 | 替换法试点：Hopcroft–Kerr，GF(3) 上 ⟨2,2,2⟩ 的秩恰为 7（r ≤ 6 的排除论证） | `∀ r → r ≤ 6 → ¬ RankLE₃ 2 r`，exit=0 | 中大；手算证明的形式化（不是搜索）；关闭 `TensorRankGF3` 头注自认的缺口「n = 2 时秩恰为 7 [直觉·未验证]」 |
+| C-T3 | Bläser 2003 在 n = 3 的实例 | `bläser₃-boundary` 有居民，exit=0 | 大；多会话 [未验证·路线推测：替换法归纳在 GF(3) 上的子空间分类有多少，要读了原文才知] |
+| C-T4 | 环泛型谓词 + 标量扩张（F₃ 分解 ⟹ F₉ 分解；σ-不变） | exit=0 | 中；**不改进界**，只是把「本体 = σ-不动点」说准；做不做取决于 C-T2 / C-T3 是否需要 |
+| C-T5 | Wang 证书内核化（17）：Agda 里检查 `.btp` | exit=0 | 大且不确定：1880 万个叶子在内核里逐个检查的代价没估过 |
+| — | 关闭 3×3（精确秩） | — | 公开问题；不立项 |
 
 ## 资源与纪律
 - 工具：arXiv API / GitHub 检索走代理 `socks5h://127.0.0.1:10808`；Agda = `~/.local/bin/agda`；
