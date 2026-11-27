@@ -183,6 +183,61 @@ inline void ApplyRight3(const std::uint8_t V[9], const std::uint8_t R[9], std::u
 //   左乘表 TabL[d][o·27 + x] = Σ_k M[o][k]·x_k（mod 3）
 //   右乘表 TabR[d][o·27 + x] = Σ_k M[k][o]·x_k（mod 3）   （即 Mᵀ 的左乘表）
 // 每次 Apply 只需三次「取三元组 → 查表」。
+// 3×3 矩阵的乘积与逆, 数据打包同上(位 (i*3+j) 的数位在 3^(3i+j) 位)。扇出存储用(见 search/orbit_map.h):
+// 命中扩展像 L_f·(c·R) 时, 见证的 query 元素 = (L_f⁻¹·L_e, t)。
+inline std::uint32_t DataOfDigits3(const std::uint8_t d[9]) {
+  std::uint32_t v = 0, place = 1;
+  for (int k = 0; k < 9; ++k) {
+    v += static_cast<std::uint32_t>(d[k]) * place;
+    place *= 3;
+  }
+  return v;
+}
+inline std::uint32_t Mul3x3Data(std::uint32_t a, std::uint32_t b) {
+  std::uint8_t A[9], B[9], C[9];
+  DigitsOfData3(a, A);
+  DigitsOfData3(b, B);
+  for (int i = 0; i < 3; ++i) {
+    for (int j = 0; j < 3; ++j) {
+      int s = 0;
+      for (int k = 0; k < 3; ++k) {
+        s += A[i * 3 + k] * B[k * 3 + j];
+      }
+      C[i * 3 + j] = static_cast<std::uint8_t>(s % 3);
+    }
+  }
+  return DataOfDigits3(C);
+}
+// 逆(伴随矩阵法); 奇异时返回 0xFFFFFFFF。
+inline std::uint32_t Inv3x3Data(std::uint32_t a) {
+  std::uint8_t m[9];
+  DigitsOfData3(a, m);
+  auto md = [&](int i, int j) { return static_cast<int>(m[i * 3 + j]); };
+  int det = md(0, 0) * (md(1, 1) * md(2, 2) - md(1, 2) * md(2, 1)) -
+            md(0, 1) * (md(1, 0) * md(2, 2) - md(1, 2) * md(2, 0)) +
+            md(0, 2) * (md(1, 0) * md(2, 1) - md(1, 1) * md(2, 0));
+  det = ((det % 3) + 3) % 3;
+  if (det == 0) {
+    return 0xFFFFFFFFu;
+  }
+  const int di = (det == 1) ? 1 : 2; // 2⁻¹ = 2 (mod 3)
+  int inv[9]; // 先用 int 算完再取模: 直接写进 uint8 会先截断(负数算错)
+  inv[0] = di * (md(1, 1) * md(2, 2) - md(1, 2) * md(2, 1));
+  inv[1] = di * (md(0, 2) * md(2, 1) - md(0, 1) * md(2, 2));
+  inv[2] = di * (md(0, 1) * md(1, 2) - md(0, 2) * md(1, 1));
+  inv[3] = di * (md(1, 2) * md(2, 0) - md(1, 0) * md(2, 2));
+  inv[4] = di * (md(0, 0) * md(2, 2) - md(0, 2) * md(2, 0));
+  inv[5] = di * (md(0, 2) * md(1, 0) - md(0, 0) * md(1, 2));
+  inv[6] = di * (md(1, 0) * md(2, 1) - md(1, 1) * md(2, 0));
+  inv[7] = di * (md(0, 1) * md(2, 0) - md(0, 0) * md(2, 1));
+  inv[8] = di * (md(0, 0) * md(1, 1) - md(0, 1) * md(1, 0));
+  std::uint8_t d9[9];
+  for (int k = 0; k < 9; ++k) {
+    d9[k] = static_cast<std::uint8_t>(((inv[k] % 3) + 3) % 3);
+  }
+  return DataOfDigits3(d9);
+}
+
 constexpr int kLinearTab = 81; // 3 行 × 27 种三元组
 
 inline std::vector<std::array<std::uint8_t, kLinearTab>> BuildLinearTable3(bool transposed) {

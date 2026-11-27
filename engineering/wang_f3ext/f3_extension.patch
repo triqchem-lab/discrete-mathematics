@@ -468,10 +468,25 @@ index 130e709..5d8ff3f 100644
 +
  } // namespace matrix
 diff --git a/search/orbit_map.h b/search/orbit_map.h
-index db4a976..9ddd6ae 100644
+index db4a976..5290261 100644
 --- a/search/orbit_map.h
 +++ b/search/orbit_map.h
-@@ -31,6 +31,7 @@
+@@ -20,10 +20,14 @@
+ // Neither side has to be a subgroup; see core/symmetry.h for the full statement
+ // of the requirement.
+ 
++#include <algorithm>
+ #include <array>
+ #include <cstddef>
+ #include <cstdint>
++#include <cstdlib>
+ #include <mutex>
++#include <utility>
++#include <vector>
+ 
+ #include "boost/unordered/unordered_flat_map.hpp"
+ #include "ng-log/logging.h"
+@@ -31,6 +35,7 @@
  
  #include "core/bit_vec.h"
  #include "core/constraints.h"
@@ -479,12 +494,44 @@ index db4a976..9ddd6ae 100644
  #include "core/symmetry.h"
  
  template <class Problem> class OrbitMap {
-@@ -94,6 +95,12 @@ private:
+@@ -89,11 +94,44 @@ private:
+     // where the store action is a "small" object (Vec or int), this is
+     // cheap to store.
+     StoreElem store_elem{};
++    // F₃ 扇出存储（见 Set）：命中的是扩展像 L_f·(c·R) 时，见证的 query 元素 =
++    // prefix ∘（命中的那个 query 元素）。扇出为 1（缺省）时 prefix 是单位元，Get 返回的见证与上游逐位相同。
++    QueryElem prefix{};
+   };
+   using Map = boost::unordered_flat_map<
        Constraints<Problem::kP, Problem::kM, Problem::kNA>, Value,
        ConstraintsHash<Problem::kP, Problem::kM, Problem::kNA>>;
  
 +  // F₃(NA = 9)专用: 标签预筛表(按键维数分表)与 Query 元素的按数位布局, 见 core/get_f3_simd.h。
 +  static constexpr bool kF3 = (kP == 3 && kM == 1 && Problem::kNA == 9);
++  // —— F₃ 扇出存储 ——
++  // Get 按下标顺序探全部 query 元素，命中位置平均在后半段（稳定化群越大越靠前）。Set 时除了 c·R
++  // 再多存几组左乘像 (L_f·c)·R = L_f·(c·R)：命中条件放宽成 e·q ∈ {L_f·(c·R)}，首命中位置大致缩到
++  // 1/(1+k)，代价是表大 (1+k) 倍。命中扩展像时 L_f⁻¹·(e·q) = c·R，所以见证的 query 元素是
++  // (L_f⁻¹·L_e, t)——对验证端仍是合法见证（CanonicalFromWitness 给出同一个轨道代表）。
++  // 覆盖性不变：普通像 ⊆ 扩展像。SOVEREIGN_F3_FANOUT 设 1+k（缺省 1 = 上游行为）。
++  // fan_[f] = (L_f, L_f⁻¹)，fan_[0] 是单位元。
++  static int FanoutRequested() {
++    static const int k = [] {
++      const char *s = std::getenv("SOVEREIGN_F3_FANOUT");
++      if (s == nullptr) {
++        return 1;
++      }
++      const long v = std::strtol(s, nullptr, 10);
++      return v < 1 ? 1 : (v > 64 ? 64 : static_cast<int>(v));
++    }();
++    return k;
++  }
++  std::vector<std::pair<QueryElem, QueryElem>> fan_;
++  // 探针顺序（F₃，扇出 ≥ 2 时启用）：query 集合是「先全部 t=0、再全部 t=1」排的，
++  // 而一个 q 的命中只会落在与自己转置标志相同的那些探针上——于是约有一半的 q 的首命中天然在后半段，
++  // 扇出再大也压不下来。把两个转置块交错（第 i 个探针取 t = i mod 2 的那一块的第 i/2 个），
++  // 命中就均匀散布在全程。扇出为 1 时保持原顺序（见证与上游逐位相同）。
++  std::vector<int> probe_order_;
 +  std::vector<sovereign_f3::FlatTagTable> flat_;
 +  std::vector<std::mutex> flat_mu_;
 +  sovereign_f3::QuerySoA query_soa_;
@@ -492,17 +539,54 @@ index db4a976..9ddd6ae 100644
    const SymmetryGroup *group_ = nullptr;
    std::array<Map, kNumShards> shards_;
    std::array<std::mutex, kNumShards> mutexes_;
-@@ -102,6 +109,18 @@ private:
+@@ -102,6 +140,55 @@ private:
  template <class Problem>
  OrbitMap<Problem>::OrbitMap(const SymmetryGroup *group) : group_(group) {
    CHECK_NOTNULL(group_);
 +  if constexpr (kF3) {
 +    flat_.resize(Problem::kNA + 1);
 +    flat_mu_ = std::vector<std::mutex>(Problem::kNA + 1);
++    // 扇出元素：单位元 + 若干个纯左乘（transpose = 0 的 query 元素），下标按固定步长散开。
++    int gl_size = 0;
++    for (int i = 0; i < group_->query.Size(); ++i) {
++      if (group_->query.At(i).transpose == 0) {
++        ++gl_size;
++      }
++    }
++    const int fan = std::min(FanoutRequested(), gl_size);
++    fan_.reserve(static_cast<std::size_t>(fan));
++    probe_order_.resize(static_cast<std::size_t>(group_->query.Size()));
++    if (fan > 1) {
++      std::vector<int> t0, t1;
++      for (int i = 0; i < group_->query.Size(); ++i) {
++        (group_->query.At(i).transpose == 0 ? t0 : t1).push_back(i);
++      }
++      std::vector<int> order;
++      order.reserve(t0.size() + t1.size());
++      for (std::size_t i = 0; i < std::max(t0.size(), t1.size()); ++i) {
++        if (i < t0.size()) order.push_back(t0[i]);
++        if (i < t1.size()) order.push_back(t1[i]);
++      }
++      probe_order_ = std::move(order);
++    } else {
++      for (std::size_t i = 0; i < probe_order_.size(); ++i) {
++        probe_order_[i] = static_cast<int>(i);
++      }
++    }
++    for (int f = 0; f < fan; ++f) {
++      const QueryElem e =
++          f == 0 ? group_->query.Identity()
++                 : group_->query.At((static_cast<std::size_t>(f) * 3571 + 1) %
++                                    static_cast<std::size_t>(gl_size));
++      CHECK_EQ(e.transpose, 0u);
++      const std::uint32_t inv = sovereign_f3::Inv3x3Data(e.l);
++      CHECK_NE(inv, 0xFFFFFFFFu) << "fan-out element is not invertible";
++      fan_.emplace_back(e, QueryElem(inv, 0));
++    }
 +    sovereign_f3::BuildQuerySoA(
 +        group_->query.Size(),
 +        [&](int i, std::uint8_t *digits, std::uint8_t *transpose) {
-+          const auto e = group_->query.At(i);
++          const auto e = group_->query.At(probe_order_[static_cast<std::size_t>(i)]);
 +          sovereign_f3::DigitsOfData3(e.l, digits);
 +          *transpose = static_cast<std::uint8_t>(e.transpose ? 1 : 0);
 +        },
@@ -511,30 +595,76 @@ index db4a976..9ddd6ae 100644
  }
  
  template <class Problem>
-@@ -129,7 +148,21 @@ void OrbitMap<Problem>::Set(
-         ConstraintsHash<Problem::kP, Problem::kM, Problem::kNA>{}(image) %
-         kNumShards;
-     std::lock_guard<std::mutex> lock(mutexes_[shard]);
--    shards_[shard][image] = Value{static_cast<uint8_t>(rank), store_elem};
+@@ -115,21 +202,54 @@ void OrbitMap<Problem>::Set(
+   // is invertible, the image keeps full rank — no zero rows to drop.
+   const int store_size = group_->store.Size();
+   Constraints<Problem::kP, Problem::kM, Problem::kNA> image;
+-  for (int j = 0; j < store_size; ++j) {
+-    const StoreElem store_elem = group_->store.At(j);
+-    image.clear();
+-    image.reserve(c.size());
+-    for (const Vec v : c) {
+-      image.push_back(group_->store.Apply(store_elem, v));
++  const int fanout = kF3 ? static_cast<int>(fan_.size()) : 1;
++  for (int f = 0; f < fanout; ++f) {
++    // F₃ 扇出：第 f 组用的是左乘像 L_f·c（f = 0 是单位元，就是 c 本身）。
++    Constraints<Problem::kP, Problem::kM, Problem::kNA> left;
 +    if constexpr (kF3) {
-+      // 首次出现的键: 标签进预筛表(只可能假阳性, 由 shards_ 排除), 再进权威表; 重复出现只覆盖见证。
-+      Map &m = shards_[shard];
-+      const auto it = m.find(image);
-+      if (it == m.end()) {
-+        const std::uint32_t tag = sovereign_f3::KeyTag(image);
-+        std::lock_guard<std::mutex> flock(flat_mu_[image.size()]);
-+        flat_[image.size()].Insert(tag);
-+        m.emplace(image, Value{static_cast<uint8_t>(rank), store_elem});
-+      } else {
-+        it->second = Value{static_cast<uint8_t>(rank), store_elem};
++      if (f > 0) {
++        left.reserve(c.size());
++        for (const Vec v : c) {
++          left.push_back(group_->query.Apply(fan_[static_cast<std::size_t>(f)].first, v));
++        }
 +      }
-+    } else {
-+      shards_[shard][image] = Value{static_cast<uint8_t>(rank), store_elem};
 +    }
++    const Constraints<Problem::kP, Problem::kM, Problem::kNA> &src =
++        (kF3 && f > 0) ? left : c;
++    for (int j = 0; j < store_size; ++j) {
++      const StoreElem store_elem = group_->store.At(j);
++      image.clear();
++      image.reserve(src.size());
++      for (const Vec v : src) {
++        image.push_back(group_->store.Apply(store_elem, v));
++      }
++      const int image_rank =
++          GaussJordanRREF<Problem::kP, Problem::kM, Problem::kNA>(&image);
++      CHECK_EQ(image_rank, static_cast<int>(src.size()));
++      const std::size_t shard =
++          ConstraintsHash<Problem::kP, Problem::kM, Problem::kNA>{}(image) %
++          kNumShards;
++      std::lock_guard<std::mutex> lock(mutexes_[shard]);
++      Value value{};
++      value.rank = static_cast<std::uint8_t>(rank);
++      value.store_elem = store_elem;
++      if constexpr (kF3) {
++        value.prefix = fan_[static_cast<std::size_t>(f)].second;
++        // 首次出现的键: 标签进预筛表(只可能假阳性, 由 shards_ 排除), 再进权威表; 重复出现只覆盖见证。
++        Map &m = shards_[shard];
++        const auto it = m.find(image);
++        if (it == m.end()) {
++          const std::uint32_t tag = sovereign_f3::KeyTag(image);
++          std::lock_guard<std::mutex> flock(flat_mu_[image.size()]);
++          flat_[image.size()].Insert(tag);
++          m.emplace(image, value);
++        } else {
++          it->second = value;
++        }
++      } else {
++        shards_[shard][image] = value;
++      }
+     }
+-    const int image_rank =
+-        GaussJordanRREF<Problem::kP, Problem::kM, Problem::kNA>(&image);
+-    CHECK_EQ(image_rank, static_cast<int>(c.size()));
+-    const std::size_t shard =
+-        ConstraintsHash<Problem::kP, Problem::kM, Problem::kNA>{}(image) %
+-        kNumShards;
+-    std::lock_guard<std::mutex> lock(mutexes_[shard]);
+-    shards_[shard][image] = Value{static_cast<uint8_t>(rank), store_elem};
    }
  }
  
-@@ -144,6 +177,37 @@ int OrbitMap<Problem>::Get(
+@@ -144,6 +264,44 @@ int OrbitMap<Problem>::Get(
    // first hit settles the orbit; we return its rank and report the
    // (query_elem, store_elem) witness verbatim. No locking: Get is only called
    // in DP phases that do not run concurrently with Set.
@@ -542,27 +672,34 @@ index db4a976..9ddd6ae 100644
 +    // 批量探针内核(NEON + 标签预筛), 结果与下面的标量循环相同: 按下标顺序的第一个命中。
 +    if (!q.empty()) {
 +      int hit_query = -1;
-+      StoreElem hit_store{};
++      struct Hit {
++        StoreElem store_elem{};
++        QueryElem prefix{};
++      };
++      Hit hit_store{};
 +      const int rk = sovereign_f3::ProbeAll(
 +          q, query_soa_, flat_,
 +          [&](const Constraints<Problem::kP, Problem::kM, Problem::kNA> &key,
-+              StoreElem *store) -> int {
++              Hit *store) -> int {
 +            const std::size_t sh =
 +                ConstraintsHash<Problem::kP, Problem::kM, Problem::kNA>{}(key) % kNumShards;
 +            const auto it = shards_[sh].find(key);
 +            if (it == shards_[sh].end()) {
 +              return -1;
 +            }
-+            *store = it->second.store_elem;
++            *store = Hit{it->second.store_elem, it->second.prefix};
 +            return it->second.rank;
 +          },
 +          &hit_query, &hit_store);
 +      if (rk >= 0) {
 +        if (witness_query != nullptr) {
-+          *witness_query = group_->query.At(hit_query);
++          const QueryElem e = group_->query.At(probe_order_[static_cast<std::size_t>(hit_query)]);
++          // 扇出：见证的 query 元素 = (L_f⁻¹·L_e, t)。prefix 是单位元时就是 e 本身。
++          *witness_query = QueryElem(sovereign_f3::Mul3x3Data(hit_store.prefix.l, e.l),
++                                     e.transpose);
 +        }
 +        if (witness_store != nullptr) {
-+          *witness_store = hit_store;
++          *witness_store = hit_store.store_elem;
 +        }
 +        return rk;
 +      }
@@ -572,7 +709,7 @@ index db4a976..9ddd6ae 100644
    const int query_size = group_->query.Size();
    Constraints<Problem::kP, Problem::kM, Problem::kNA> image;
    for (int i = 0; i < query_size; ++i) {
-@@ -181,4 +245,5 @@ template <class Problem> void OrbitMap<Problem>::Clear() {
+@@ -181,4 +339,5 @@ template <class Problem> void OrbitMap<Problem>::Clear() {
      std::lock_guard<std::mutex> lock(mutexes_[i]);
      shards_[i].clear();
    });
