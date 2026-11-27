@@ -31,6 +31,8 @@ import wang_cert_check as base  # noqa: E402
 INF = float('inf')
 HERE = os.path.dirname(os.path.abspath(__file__))
 C_HELPER = os.path.join(HERE, 'forced_fq_c', 'forced_fq')
+BT_HELPER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "forced_fq_c", "bt_fq")
+BT_HELPER_SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "forced_fq_c", "bt_fq.c")
 # Python 直接枚举的上限(超过则必须用 C 内核)
 PY_ITER_CAP = 3 ** 11
 
@@ -283,6 +285,26 @@ def forced_product_a_fq(tensor, na, nb, nc):
     return local_min, bit_width, num_iterations
 
 
+def bt_via_c(base_rows, claim, proof, group_map, orbit_index=None, helper=BT_HELPER, src=BT_HELPER_SRC):
+    """回溯证明的独立重放内核(镜像 make_backtracking_verifier_fq 的逐条断言, 用 C 写以免 Python 逐节点重放过慢)。
+    轨道表 = 到此为止已核对的所有轨道规范形 → 界。返回 (ok, nodes, leaves, reason)。"""
+    if os.path.exists(src) and (not os.path.exists(helper) or os.path.getmtime(helper) < os.path.getmtime(src)):
+        subprocess.run(["cc", "-O2", "-o", helper, src], check=True)
+    lines = [f"{P} {NA}", f"{len(base_rows)} {' '.join(map(str, base_rows))}".rstrip(), str(claim), str(len(proof['sizes']))]
+    for s, m, q, st in zip(proof['sizes'], proof['masks'], proof['queries'], proof['stores']):
+        lines.append(f"{s} {m} {q} {st}")
+    lines.append(str(len(group_map)))
+    for key, b in group_map.items():
+        lines.append(f"{len(key)} {' '.join(map(str, key))} {b}".replace('  ', ' '))
+    inp = "\n".join(lines) + "\n"
+    out = subprocess.run([helper], input=inp, capture_output=True, text=True, check=True)
+    # 输出 "bt ok <0|1> nodes <n> leaves <k> reason <可含空格的文本>": 按字段名取, 不数 token
+    toks = out.stdout.split()
+    assert len(toks) >= 8 and toks[0] == 'bt' and toks[1] == 'ok' and toks[3] == 'nodes' \
+        and toks[5] == 'leaves' and toks[7] == 'reason', out.stdout
+    return int(toks[2]) == 1, int(toks[4]), int(toks[6]), out.stdout[out.stdout.index('reason ') + 7:].strip()
+
+
 def forced_via_c(rows, projection, claim, helper=C_HELPER):
     """大枚举: 调独立 C 内核。输入 P, 投影位, 约束行数与各行(基 P 整数), 声明。
     内核输出 "computed <界> bit_width <bw> iterations <n> claim_ok <0|1>"——按字段名取 computed,
@@ -482,6 +504,7 @@ def main(argv):
     group_map = {}
     counts = Counter()
     forced_stats = Counter()
+    bt_stats = Counter()
     for dim in range(na, -1, -1):
         bucket = [o for o in orbits if o['dim'] == dim]
         if not bucket:
@@ -531,8 +554,16 @@ def main(argv):
                 assert b >= claim, f"orbit {o['index']}: degenerate {b} < {claim}"
             elif kind == 'backtracking':
                 proof = base.decode_proof(archive[o['index']])
-                make_backtracking_verifier_fq(rows, claim, proof, group_map,
-                                              orbit_index=o['index'])()
+                if os.path.exists(BT_HELPER_SRC) and not os.environ.get('WANG_BT_PY'):
+                    # 独立 C 内核重放(纯 Python 逐节点重放对 1e7 步的搜索太慢; WANG_BT_PY=1 强制走 Python)
+                    ok, nodes, leaves, reason = bt_via_c(rows, claim, proof, group_map, orbit_index=o['index'])
+                    assert ok, f"orbit {o['index']}: backtracking kernel rejected: {reason}"
+                    bt_stats['nodes'] += nodes
+                    bt_stats['c'] += 1
+                else:
+                    make_backtracking_verifier_fq(rows, claim, proof, group_map,
+                                                  orbit_index=o['index'])()
+                    bt_stats['py'] += 1
             counts[kind] += 1
         for o in bucket:
             key = tuple(o['rows'])
@@ -545,7 +576,7 @@ def main(argv):
     assert last['rows'] == [], '最后轨道必须是无约束张量'
     result = last['rank_lower_bound']
     print(f"UNCONSTRAINED TENSOR RANK LOWER BOUND: {result}")
-    print(f"OK. 已核对 {len(orbits)} 轨道: {dict(counts)}; forced 路径 {dict(forced_stats)}")
+    print(f"OK. 已核对 {len(orbits)} 轨道: {dict(counts)}; forced 路径 {dict(forced_stats)}; backtracking 路径 {dict(bt_stats)}")
     return 0
 
 

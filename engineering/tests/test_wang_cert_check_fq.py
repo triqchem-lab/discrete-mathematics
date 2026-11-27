@@ -144,6 +144,115 @@ class ForcedViaCParsing(unittest.TestCase):
             self.assertEqual(py, fq.forced_via_c(self.ROWS_F3, proj, 0, helper=self.helper), (proj, py))
 
 
+class BacktrackingKernel(unittest.TestCase):
+    """回溯证明的独立重放内核(bt_fq.c) vs 纯 Python 重放: 合成实例上的交叉验证 + 负控制。
+
+    不依赖 /tmp 里的证书。实例: 基取 8 维 e₀…e₆, e₈(规范 RREF), 极小约束只剩 e₇(3⁷ = 2187) 一条,
+    所以第一层只有一个分支, 单条记录就是完整的证明。重放要求 claim ≤ popcount(mask) + 表中的界;
+    轨道表的键用 Python 自己的 canonical_from_witness_fq 算——两个独立实现的矩阵运算必须一致,
+    内核才会接受。
+    """
+
+    IDENT = 1 + 3 ** 4 + 3 ** 8          # 单位矩阵的打包数据
+    SWAP01 = 3 ** 1 + 3 ** 3 + 3 ** 8    # 交换前两行的置换矩阵(E₁₂ + E₂₁ + E₃₃; 位 (i,j) 的权重 3^(3i+j))
+    EL1 = 1 + 3 ** 1 + 3 ** 4 + 3 ** 8    # 初等矩阵 E₁₁ + E₁₂ + E₂₂ + E₃₃(第 0 行加上第 1 行)
+    BASE8 = [1, 3, 9, 27, 81, 243, 729, 6561]
+    EXT = BASE8 + [2187]
+
+    @classmethod
+    def setUpClass(cls):
+        cls.fq = load(FQ, "wang_cert_check_fq")
+        cls.fq.P = 3
+
+    def both(self, claim, query, store, group_map):
+        """返回 (内核是否接受, 内核给出的原因, 纯 Python 重放是否接受)。"""
+        proof = {"sizes": [1], "masks": [1], "queries": [query], "stores": [store]}
+        ok, _nodes, _leaves, reason = self.fq.bt_via_c(self.BASE8, claim, proof, dict(group_map))
+        try:
+            self.fq.make_backtracking_verifier_fq(self.BASE8, claim, proof, dict(group_map))()
+            py_ok = True
+        except AssertionError:
+            py_ok = False
+        return ok, reason, py_ok
+
+    def key(self, query, store):
+        return self.fq.canonical_from_witness_fq(self.EXT, query, store)
+
+    def test_accept_and_both_implementations_agree(self):
+        ok, reason, py_ok = self.both(6, self.IDENT, self.IDENT, {self.key(self.IDENT, self.IDENT): 5})
+        self.assertTrue(ok, reason)
+        self.assertTrue(py_ok)
+        self.assertEqual(self.key(self.IDENT, self.IDENT), tuple(sorted(self.EXT)))
+
+    def test_inflated_claim_rejected_by_both(self):
+        ok, reason, py_ok = self.both(7, self.IDENT, self.IDENT, {self.key(self.IDENT, self.IDENT): 5})
+        self.assertFalse(ok)
+        self.assertEqual(reason, "claim > proved")
+        self.assertFalse(py_ok)
+
+    def test_witness_arithmetic_matches_python(self):
+        """基取 7 维: 极小约束有 4 条(e₇, e₈, e₈+e₇, e₈+2e₇), 第一层 4 个分支各一条记录。
+        扩展后的行组秩为 8 < 9, 规范形才真正依赖见证。每条记录的轨道表键由 Python 的
+        canonical_from_witness_fq 算, 内核必须给出同一个规范形才会接受;
+        把某一条的键换成未变换的行组, 两边都必须拒绝。"""
+        base7 = [1, 3, 9, 27, 81, 243, 729]
+        minimal7 = [2187, 6561, 8748, 10935]
+        witnesses = [(self.IDENT, self.IDENT), (self.EL1, self.IDENT), (self.IDENT, self.EL1),
+                     (self.SWAP01, self.EL1)]
+        keys = [self.fq.canonical_from_witness_fq(base7 + [m], q, s)
+                for m, (q, s) in zip(minimal7, witnesses)]
+        self.assertTrue(all(k != tuple(sorted(base7 + [m])) for k, m in zip(keys, minimal7[1:])))
+        proof = {"sizes": [1, 1, 1, 1], "masks": [1, 1, 1, 1],
+                 "queries": [q for q, _ in witnesses], "stores": [s for _, s in witnesses]}
+        group_map = dict(zip(keys, [5, 6, 7, 8]))
+
+        def both(claim, gmap):
+            ok, nodes, leaves, reason = self.fq.bt_via_c(base7, claim, proof, dict(gmap))
+            try:
+                self.fq.make_backtracking_verifier_fq(base7, claim, proof, dict(gmap))()
+                py_ok = True
+            except AssertionError:
+                py_ok = False
+            return ok, nodes, leaves, reason, py_ok
+
+        ok, nodes, leaves, reason, py_ok = both(6, group_map)      # claim ≤ 1 + min(5,6,7,8)
+        self.assertTrue(ok, reason)
+        self.assertTrue(py_ok)
+        self.assertEqual((nodes, leaves), (5, 4))
+        ok, _n, _l, reason, py_ok = both(7, group_map)
+        self.assertFalse(ok)
+        self.assertEqual(reason, "claim > proved")
+        self.assertFalse(py_ok)
+        wrong = dict(group_map)
+        del wrong[keys[2]]                              # 把第 3 条记录的键换成「未变换的行组」
+        wrong[tuple(sorted(base7 + [minimal7[2]]))] = 7
+        ok, _n, _l, reason, py_ok = both(6, wrong)
+        self.assertFalse(ok)
+        self.assertEqual(reason, "leaf canonical not in map")
+        self.assertFalse(py_ok)
+
+    def test_transpose_witness(self):
+        """query 带 transpose 标志: 全体单位矩阵的集合在转置下不变 ⟹ 与单位见证同一个键。"""
+        q = self.IDENT | (1 << 16)
+        ok, reason, py_ok = self.both(6, q, self.IDENT, {tuple(sorted(self.EXT)): 5})
+        self.assertTrue(ok, reason)
+        self.assertTrue(py_ok)
+
+    def test_empty_trace_rejected(self):
+        proof = {"sizes": [], "masks": [], "queries": [], "stores": []}
+        ok, _n, _l, reason = self.fq.bt_via_c(self.BASE8, 6, proof, {tuple(sorted(self.EXT)): 5})
+        self.assertFalse(ok)
+        self.assertEqual(reason, "empty trace")
+        with self.assertRaises(AssertionError):
+            self.fq.make_backtracking_verifier_fq(self.BASE8, 6, proof, {tuple(sorted(self.EXT)): 5})()
+
+    def test_singular_witness_rejected(self):
+        """store 取奇异矩阵(全零): 内核以「见证不在对称群里」拒绝。"""
+        ok, reason, _py = self.both(6, self.IDENT, 0, {tuple(sorted(self.EXT)): 5})
+        self.assertFalse(ok)
+        self.assertEqual(reason, "witness not in the symmetry group")
+
+
 class FqFullCheck(unittest.TestCase):
     @unittest.skipUnless(os.environ.get("WANG_F3_CERT"), "设 WANG_F3_CERT 指向 F₃ 证书")
     def test_full_f3_certificate(self):
