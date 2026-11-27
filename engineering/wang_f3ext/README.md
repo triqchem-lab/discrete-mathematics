@@ -21,6 +21,8 @@
 | `build.sh` | clang++ 直编脚本（不依赖 bazel / Xcode） |
 | `shim_test/` | 垫片分块的回归测试（`run.sh` 对 `SHIM_THREADS=1..8` 各跑一遍） |
 | `standalone/` | 不编译整个框架也能跑的自检：`fq_matrix_test_main.cc`、`f3_problem_check.cc`（F₃ 扩展）+ `rank_f3_fast_check.cc`（快路径对拍）+ 一份极简串行 tbb 垫片 |
+| `verify.sh` | 一份 F₃ 证书的三重验证（C++ verifier / 独立核对器 / 负控制） |
+| `certs/` | 证书：`matrix_q03_n333_v1.{pb.txt,btp}`（F₃ ⟨3,3,3⟩ ≥ 17，见 §7） |
 | `offline/` | 离线 bazel 路线的脚本（BCR 快照镜像、模块闭包抓取、distdir 预取）；**本机构建阶段不可用**，见 §3 |
 
 配套的独立核对器在上两级目录：`engineering/wang_cert_check.py`（F₂）、`engineering/wang_cert_check_fq.py`（素域，含 GF(3)）、`engineering/forced_fq_c/forced_fq.c`（forced product 的独立 C 实现）。
@@ -123,7 +125,7 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
 
 第四处不是算术层面的，是**搜索层面的剪枝**（只对 F₃ 开启，F₂ 保持上游原样以便回归逐字对上公开证书）：
 
-- 退化归约对每个候选额外行做一次 `OrbitMap::Get`（约 7500 次探针 × 1.3 µs ≈ 10 ms）。但候选行只要相差一个基向量，
+- 退化归约对每个候选额外行做一次 `OrbitMap::Get`（约 7500 次探针 × 2.1 µs ≈ 16 ms；7500 是期望值 22464/3，不是实测）。但候选行只要相差一个基向量，
   张成的就是同一个 (d+1) 维超空间——dim 5 时 9841 个候选里只有 40 个不同的超空间，却查了约 9700 次。
   F₂ 的查找只有 336 个探针所以上游没觉得慢。剪枝 = 只访问「关于基极小」的候选行（在基的每个主元位置为 0），
   每个超空间恰好访问一次，max 不变；平局时记录的见证可能不同（不影响证明有效性）。
@@ -137,8 +139,9 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
 
 另外两处：
 
-- 规范形 `GaussJordanRREF`（OrbitMap / 枚举器 / verifier 的键都靠它）：同样的前向做法——但它其实**不比通用实现快**
-  （微基准 250–300 ns vs 475–520 ns，含拷贝；通用实现在 9 字节的小行上已经很快）。保留是因为无害且对拍过。
+- 规范形 `GaussJordanRREF`（OrbitMap / 枚举器 / verifier 的键都靠它）：同样的前向做法。7×9 的规范形含拷贝实测
+  250–300 ns，通用实现 475–520 ns——快约 1.7 倍，但它本来就不是热点。
+  （更正：此前这里写「不比通用实现快」，是照第一次在抢 CPU 时的读数 679 对 478 ns 写的，与同一段引用的数字自相矛盾。）
 - **群作用 `Apply`（真正的大头）**：微基准显示 `OrbitMap::Get` 的一次探针约 2.1 µs，其中对约束组每行做一次
   `query.Apply` 占 1.4–1.8 µs（表驱动的逐行打包/解包 + 查表），RREF 只有 0.45 µs，哈希查找可忽略。
   `SymmetryGroupFq` 在 P=3、N0=N1=3 时改用查表：对每个矩阵数据（3^9 种）、每个输出行、每个输入三元组（27 种）
@@ -182,7 +185,57 @@ python3 -I engineering/wang_cert_check_fq.py /tmp/wang-run/f3_lb.pb.txt --corrup
 
 ## 7. F₃ 下界搜索结果
 
-（见本文件同目录的提交说明与 `docs/plan/matrix-rank-line-plan.md` 的 A-T3 状态栏；本节只记可复跑的事实。）
+### 7.1 证书 v1：GF(3) 上 ⟨3,3,3⟩ 的秩 ≥ 17（2026-11-27）
+
+文件：`certs/matrix_q03_n333_v1.pb.txt`（322 KB）+ `certs/matrix_q03_n333_v1.btp`（13.0 MB，回溯证明的轨迹档案）。
+
+```
+sha256  5b6885472c0c77a82673da90fdaac941f888e3ad42bc490b9d326b0695ae302c  matrix_q03_n333_v1.pb.txt
+sha256  23c35902b20edfb50b417806877677bbe1145b0d29d2ac86c39f931d87bd6bd1  matrix_q03_n333_v1.btp
+```
+
+重跑三重验证（需要先按 §2、§4 构建出 `/tmp/wang-f3/verifier_f3`）：
+
+```bash
+bash engineering/wang_f3ext/verify.sh engineering/wang_f3ext/certs/matrix_q03_n333_v1.pb.txt
+```
+
+实测结果（2026-11-27）：
+
+| 步骤 | 结果 |
+|---|---|
+| ① 框架 C++ verifier | `Verified. Rank lower bound for matrix_q03_n333 is 17.` / `OK.`（8.7 s CPU） |
+| ② 独立核对器（Python + `forced_fq` + `bt_fq`） | 736/736 轨道 OK：flatten 15 + forced 2 + backtracking 339 + degenerate 380；回溯重放 22,520,923 个节点（60 s CPU） |
+| ③ 负控制（终轨道 17 → 24） | `orbit 735: backtracking kernel rejected: claim > proved` |
+
+逐维的界与证明类型、和 F₂ 公开证书的对照，见 `docs/techniques/OpenAI-omega-9-4-只读审计-2026-11-25.md` §M.6。
+
+### 7.2 这份证书是怎么跑出来的
+
+枚举（22 s）之后分两段续跑，每段做完一个维度落一次检查点：
+
+| 段 | 维度 | forced product 预算 | 回溯步数上限 / 轨道 | 耗时（8 核，与其它搜索共享 CPU） |
+|---|---|---|---|---|
+| 第一段 | 9 → 5 | 2^28 | 1e7 | dim 5: 2252 s |
+| 第二段（在第一段的检查点上续跑，不加 `--ignore_rank_lower_bound`） | 4 → 0（`--dim_max=4`） | 2^28 | 1e6 | dim 4: 3858 s；dim 3: 2667 s；dim 2: 463 s；dim 1: 138 s；dim 0: 36 s |
+
+命令（在 `/tmp/wang-run` 下的副本上）：
+
+```bash
+# 第一段
+lower_f3 f3.pb.txt --ignore_rank_lower_bound --backtracking_step_limit=10000000 \
+    --forced_product_max_iterations_log2=28 --backtracking_max_map_size=2000000
+# 第二段: 直接在同一条证书上续跑, 只处理 dim ≤ 4
+lower_f3 f3.pb.txt --dim_max=4 --backtracking_step_limit=1000000 \
+    --forced_product_max_iterations_log2=28 --backtracking_max_map_size=2000000
+```
+
+### 7.3 这个结果不说明什么
+
+- **17 低于域泛型已知的下界 19**（Bläser 2003），所以这份证书**没有刷新 F₃ 的下界**。它的价值是「机器可查」+「基础设施」。
+- 它是下界：说明秩 ≥ 17，不说明秩 = 17。已知上界仍是 23（Laderman 方案，库内 `rank-laderman`）。
+- 搜索有随机性（回溯缓存的随机减半、线程时序）：重跑不保证得到同一份证书。可复现的是**核验**，不是搜索。
+- 想缩小和 F₂ 的差距（F₂ 用满了 2^32 + 1e7 步全程），代价是数十 CPU 小时 [未验证·路线推测]。
 
 ## 8. 踩坑记录
 
