@@ -1364,3 +1364,82 @@ W ⊆ A 是子空间，N(W) = #{t : a_t ∈ W}。把第一变元限制到 V ⊆ 
   没有「被其余点破坏」这回事；难点在几百个这类子空间能否同时取好类型，以及超平面那一类（第 3 条）同时满足。
 
 **它不改进什么**：没有新的下界，没有新的内核定理。
+
+## 二十四、矩阵乘法指数线 M25 / M26 / M27——容量引理、秩剖面的算术、秩预算（2026-11-28 登记）
+
+**起因**：用户「把现在的研究成果形式化，前面规划的形式化任务重新规划下」。§二十三的探针给出了三条不依赖机器证书的
+代数事实，本节把它们写进内核；任务重排在立项书「形式化任务重排」一节。
+
+**文件**（三件，全部 exit=0，0 postulate / 0 REWRITE 规则 / 0 洞；都在 `src/Sovereign/Algebra/LinearAlgebra/`）：
+
+- `TensorRankCapacityGF3.agda`（M25，221 行）——**容量引理**。设 T 有 r 项分解（M22 的 `RankLE`），P 是项上的可判定谓词。
+  `yesCnt`（成立个数）、`rank-cons` / `rank-tail` / `head-tail`（首项处的拆分与拼装）、`suc∸`；
+  ★ `rank-drops`：P-项的首因子恒零 ⟹ T 有 r ∸ #{P-项} 项分解（对 r 归纳：首项属于 P 就用 M23 的 `rank-drop` 丢掉，
+  否则对余项归纳再把首项拼回）；★ `capacity`：沿 ι : X' → X 拉回（M22 `rank-pull`）后丢掉在 X' 上恒零的 P-项；
+  `LowerBound`（T 的任何分解都至少 L 项）；★ `capacity-bound`：N + L ≤ r；`inSpan` / `vanish-inSpan` /
+  ★ `capacity-span`（W = span g、ι 的像与 g 逐点正交的版本）。
+- `TensorRankProfileGF3.agda`（M26，173 行）——**秩剖面的算术**。`profile-Δ`（项数与秩和 ⟹ n₂ + 2·n₃ ≡ d）、
+  `profile-param`（n₁ + d ≡ r + n₃）、`profile-2n₃≤` / `profile-n₃≤` / `halve`（n₃ ≤ d / 2）、`k≤suc-cases` /
+  `≤4-cases` / `≤2-cases`；★★ `profiles-19`：r = 19、Σ 秩 = 27 的秩剖面恰是 (11,8,0) (12,6,1) (13,4,2) (14,2,3) (15,0,4)；
+  `profiles-23`：r = 23 时恰是 (19,4,0) (20,2,1) (21,0,2)；`strassen-Σrank`（(6,1,0) 的 Σ 秩 = 2³）、
+  `laderman-not-Δ0`（(17,4,2) 的 Σ 秩不是 27）。
+- `TensorRankBudgetGF3.agda`（M27，372 行）——**秩预算**。`Pieces`：首因子由 N 个秩一片块拼成（片块有左向量 ℓ、右向量 rv、
+  所属的项 own；`assemble`：a t (i,j) ≡ Σ_u [own u = t] ⊗ ℓ u i ⊗ rv u j）。
+  ★★ `rank-budget : Pieces n N r (ra ρ) → n * n * n ≤ N`。证明：分割展平
+  P[(i,a,b),(i'',i',k')] = Σ_t a_t(i,i'')·b_t(a,b)·c_t(i',k') 由 `mm` 的结构是 [i = i'][i'' = a][b = k']；
+  `P-factor`：P = X·Yᵀ（X = ℓ u i ⊗ b_{own u}(a,b)，Y = rv u i'' ⊗ c_{own u}(i',k')，逐片块用 `pick` 挑出所属的项）；
+  `P-collapse` / `rows-indep`：P 的行线性无关（三层 `collapseʳ`）；`row-expand`：行落在 Y 的 N 列张成的空间里
+  （`scaleʳ₃` + 三次 `sumFin-swap-plain`）；`φ-injective`：Fin (3^(n³)) → Fin (3^N) 单射 ⟹ n³ ≤ N。
+  计数论证的形状与 M23 `SpanGen.bound` 相同。
+
+**验证**：
+
+| 项 | 结果 |
+|---|---|
+| 三件内核检查 | exit=0（`~/.local/bin/agda -i src …`）；postulate / REWRITE / 洞 = 0 |
+| `~/work/checks/CheckCapacity.agda`（34 条） | exit=0。端到端哨兵：Laderman 的 23 项在位置 (0,0) 有 **18** 项的首因子取零（个数由内核归约数出），`capacity` 给出切片的 **5** 项分解（M22 的 `sentinel-pull` 给的是 23 项）；负对照：1 不是零张量的下界、并非全部 23 项都在该位置取零、个数写成 17 即矛盾 |
+| `~/work/checks/CheckBudgetProfile.agda`（56 条） | exit=0。端到端哨兵：Strassen 的 7 个首因子拆成 8 个秩一片块（6 个秩一矩阵 + 单位阵拆 2 片；28 条拼装等式逐条 refl），`rank-budget` 给出 **8 ≤ 8**（取等）；负对照：3 个片块、7 个片块拼不出这 7 个首因子（否则 rank-budget 给出 8 ≤ 3 / 8 ≤ 7） |
+| oracle `engineering/oracle_tensor_rank_capacity_gf3.py` | ALL_PASS：随机分解上丢项后余和 = T（200/200，负对照 122 次）；Laderman / Strassen 上的容量不等式 N + L ≤ r；6 组 (r, n) 的 Δ = 0 剖面；分割展平的 δ 结构与 P = X·Yᵀ 在 Laderman / Strassen / 标准分解上零失配，N = Σ 秩 ≥ n³（Strassen 与两个标准分解取等） |
+| 测试 `engineering/tests/test_oracle_tensor_rank_capacity_gf3.py` | 8 项：全部通过且非空转、负对照（丢错项 / 改一个系数 / 输出因子转置）、Agda 件在盘且签名在、19 的五种剖面与 oracle 逐项一致 |
+
+oracle 先行抓到了我三处手算错误：漏了 mm 的一个指标条件、参数化里 n₁ 的系数写错、标准分解的输出因子写成 E_ki。
+手数的 Laderman 零点数（16）也是错的，内核数出来是 18。
+
+**诚实边界**：
+
+- **不改进任何下界数字**。库里 n = 3 仍是展平 r ≥ 9（`TensorRankFlattenGF3.rank-lower`）+ 工程证书 ≥ 17；
+  域泛型已知的 19 在内核里只有陈述层（`bläser₃-boundary`）。
+- 容量引理只给「限制后的张量有 r − N 项分解」与「N + L ≤ r」；具体的下界 L 要另行证明。
+  库内 GF(3) 矩阵秩理论不完整（`GF3Rank` 头注），所以直线容量（L = 3·rank）、平面容量都还没有。
+- 秩预算的结论是对「片块数」说的。「Σ_t rank(a_t) ≥ n³」还要把每个首因子的最小片块分解拼成 `Pieces`，
+  这一步没有写（Laderman 的 31 片表是下一步 F-T4）。
+- M26 的「矩阵秩」只是剖面的读法，内核里没有 3×3 矩阵秩的定义。
+- 检查件在仓库外（`~/work/checks/`），不进门禁。
+- 命名: 四个通用名（`headT` / `tailT` / `double` / `pick` / `sum₃`）改成 `firstTerm` / `restTerms` / `twiceLaw` / `pickOwn` / `sumIdx₃`——
+  它们与别的模块**同名不同型**（`PClass` / `YM_SpectralGap` / `SP2Ternary` / `DCCharacter` / `FreeAbImSubsetPlane`）,
+  Agda 里不冲突, 但权威机器的重名门禁比较方式本机核实不了, 所以避开。
+
+**新坑（本轮）**：
+
+- `Data.Nat.Properties` 不导出 `suc≤suc`，`≤-step` 已弃用：用构造子 `s≤s` 与 `m≤n⇒m≤1+n`。
+- `+-cancelʳ-≡` / `+-cancelʳ-≤` / `m∸n+n≡m` 的第一个显式参数是**被消去的加数**（m），再是 x、y。
+  `*-cancelˡ-≤` 的非零证明是实例参数，写 `*-cancelˡ-≤ 2 le`。
+- `≤-reflexive : _≡_ ⇒ _≤_` 方向是 `a ≡ b → a ≤ b`（我一度怀疑它反了，其实错在别处的 `trans` 方向）。
+- `fromFun-toFun : fromFun d (toFun d k) ≡ k`，`toFun-fromFun : toFun d (fromFun d f) x ≡ f x`；
+  `fromFun-cong` 直接给 `fromFun d f ≡ fromFun d g`，不要再套 `cong`。
+- `subst P eq p`：`eq : x ≡ y`、`p : P x`、得 `P y`；动机里谁是 x 谁是 y 要对着这条写。
+- where 块里**后面的定义前面用不了**（兄弟定义之间要按顺序；函数体可以用块里任何定义）。
+- 左边的隐式模式不能写 `{r = r}`，按位置写 `{X} {Y} {Z} {r}`。
+- `with d fzero` 之后目标里的 `yesCnt d` 能不能归约，取决于归一化后目标里是否露出 `d fzero`；
+  给 `yesCnt` 配 `yesCnt-yes` / `yesCnt-no` 两条引理更稳。
+- `sumFin-swap₃ m r g c`：左边是 Σ_{i ∈ Fin r} (Σ_{q ∈ Fin m} g q i) ⊗ c i（**外层 i 走 r，内层 q 走 m**）。
+  由它派生的 `sumFin-swap-plain m r g : Σ_i Σ_q g q i ≡ Σ_q Σ_i g q i`。
+- `n * n * n` 是左结合 `(n * n) * n`；与 `n * (n * n)` 之间要 `*-assoc`。
+- 子句左边的 Fin 模式：必须是**构造子**（写已定义的名字 `t₀` 会被当成一个新变量，不归约）；
+  复合模式要套括号，嵌套的 `fsuc` 要嵌套括号；`Fin 7` 的荒谬子句把 `()` 放在最里层：
+  `(fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc ())))))))`。
+- 字面量 `8 ≤ 3` 对覆盖检查器不是空类型（`s≤s`、`primHComp` 都算合法模式）：用 `<⇒≱`（给一个 `s≤s` 链）证。
+- 括号计数：「(λ u → …」只有一个左括号。我把它数成两个，白走三四轮；`paren2.py` 是对的，
+  应该早点把内联的长链拆成具名的单步等式（与 §二十二的教训同源）。
+
+**它不改进什么**：没有新的下界，没有新的内核秩定理；三件都是把 §二十三 的探针所依赖的代数事实写进内核。
